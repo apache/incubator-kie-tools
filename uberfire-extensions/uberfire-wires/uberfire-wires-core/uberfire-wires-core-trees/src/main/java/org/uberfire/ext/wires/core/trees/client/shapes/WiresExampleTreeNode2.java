@@ -22,13 +22,12 @@ import com.ait.lienzo.client.core.shape.Circle;
  */
 public class WiresExampleTreeNode2 extends WiresExampleTreeNode1 {
 
-    public WiresExampleTreeNode2( final Circle shape ) {
-        super( shape );
+    public WiresExampleTreeNode2(final Circle shape) {
+        super(shape);
     }
 
     @Override
-    public boolean acceptChildNode( final WiresBaseTreeNode child ) {
+    public boolean acceptChildNode(final WiresBaseTreeNode child) {
         return child instanceof WiresExampleTreeNode2;
     }
-
 }

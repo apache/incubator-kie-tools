@@ -16,8 +16,6 @@
 
 package org.uberfire.wbtest.selenium;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -38,6 +36,7 @@ import org.openqa.selenium.WebElement;
 import org.uberfire.wbtest.client.security.InjectedUserScreen;
 import org.uberfire.wbtest.client.security.SecurityContextInfoScreen;
 
+import static org.junit.Assert.*;
 
 public class UserCookieTest extends AbstractSeleniumTest {
 
@@ -49,65 +48,73 @@ public class UserCookieTest extends AbstractSeleniumTest {
     @Test
     public void testGetInfoFromSecurityContext() throws Exception {
         User user = makeTestUser();
-        String jsonUser = UserCookieEncoder.toCookieValue( user );
+        String jsonUser = UserCookieEncoder.toCookieValue(user);
 
         // go to the site and set the user cookie (the security filter would normally do this upon login)
-        driver.get( baseUrl + "blank.html" );
-        driver.manage().addCookie( new Cookie( UserCookieEncoder.USER_COOKIE_NAME,
-                                               jsonUser,
-                                               "/",
-                                               new Date( System.currentTimeMillis() + 1000 * 60 * 24 ) ) );
+        driver.get(baseUrl + "blank.html");
+        driver.manage().addCookie(new Cookie(UserCookieEncoder.USER_COOKIE_NAME,
+                                             jsonUser,
+                                             "/",
+                                             new Date(System.currentTimeMillis() + 1000 * 60 * 24)));
 
         // now go to the app with the cookie in place
-        driver.get( baseUrl );
+        driver.get(baseUrl);
         waitForDefaultPerspective();
-        driver.get( baseUrl + "#" + SecurityContextInfoScreen.class.getName() );
+        driver.get(baseUrl + "#" + SecurityContextInfoScreen.class.getName());
 
-        WebElement userLabel = driver.findElement( By.id( "gwt-debug-SecurityStatusScreen-userLabel" ) );
-        assertEquals( user.getIdentifier(), userLabel.getText() );
+        WebElement userLabel = driver.findElement(By.id("gwt-debug-SecurityStatusScreen-userLabel"));
+        assertEquals(user.getIdentifier(),
+                     userLabel.getText());
 
-        WebElement rolesLabel = driver.findElement( By.id( "gwt-debug-SecurityStatusScreen-rolesLabel" ) );
-        assertEquals( user.getRoles().toString(), rolesLabel.getText() );
+        WebElement rolesLabel = driver.findElement(By.id("gwt-debug-SecurityStatusScreen-rolesLabel"));
+        assertEquals(user.getRoles().toString(),
+                     rolesLabel.getText());
 
-        WebElement groupsLabel = driver.findElement( By.id( "gwt-debug-SecurityStatusScreen-groupsLabel" ) );
-        assertEquals( user.getGroups().toString(), groupsLabel.getText() );
+        WebElement groupsLabel = driver.findElement(By.id("gwt-debug-SecurityStatusScreen-groupsLabel"));
+        assertEquals(user.getGroups().toString(),
+                     groupsLabel.getText());
     }
 
     @Test
     public void testGetInfoFromInjectedUser() throws Exception {
         User user = makeTestUser();
-        String jsonUser = UserCookieEncoder.toCookieValue( user );
+        String jsonUser = UserCookieEncoder.toCookieValue(user);
 
         // go to the site and set the user cookie (the security filter would normally do this upon login)
-        driver.get( baseUrl + "blank.html" );
-        driver.manage().addCookie( new Cookie( UserCookieEncoder.USER_COOKIE_NAME,
-                                               jsonUser,
-                                               "/",
-                                               new Date( System.currentTimeMillis() + 1000 * 60 * 24 ) ) );
+        driver.get(baseUrl + "blank.html");
+        driver.manage().addCookie(new Cookie(UserCookieEncoder.USER_COOKIE_NAME,
+                                             jsonUser,
+                                             "/",
+                                             new Date(System.currentTimeMillis() + 1000 * 60 * 24)));
 
         // now go to the app with the cookie in place
-        driver.get( baseUrl );
+        driver.get(baseUrl);
         waitForDefaultPerspective();
-        driver.get( baseUrl + "#" + InjectedUserScreen.class.getName() );
+        driver.get(baseUrl + "#" + InjectedUserScreen.class.getName());
 
-        WebElement userLabel = driver.findElement( By.id( "gwt-debug-SecurityStatusScreen-userLabel" ) );
-        assertEquals( user.getIdentifier(), userLabel.getText() );
+        WebElement userLabel = driver.findElement(By.id("gwt-debug-SecurityStatusScreen-userLabel"));
+        assertEquals(user.getIdentifier(),
+                     userLabel.getText());
 
-        WebElement rolesLabel = driver.findElement( By.id( "gwt-debug-SecurityStatusScreen-rolesLabel" ) );
-        assertEquals( user.getRoles().toString(), rolesLabel.getText() );
+        WebElement rolesLabel = driver.findElement(By.id("gwt-debug-SecurityStatusScreen-rolesLabel"));
+        assertEquals(user.getRoles().toString(),
+                     rolesLabel.getText());
 
-        WebElement groupsLabel = driver.findElement( By.id( "gwt-debug-SecurityStatusScreen-groupsLabel" ) );
-        assertEquals( user.getGroups().toString(), groupsLabel.getText() );
+        WebElement groupsLabel = driver.findElement(By.id("gwt-debug-SecurityStatusScreen-groupsLabel"));
+        assertEquals(user.getGroups().toString(),
+                     groupsLabel.getText());
     }
 
     private User makeTestUser() {
         Collection<Role> roles = new ArrayList<Role>();
-        roles.add( new RoleImpl( "role-1" ) );
+        roles.add(new RoleImpl("role-1"));
 
         Collection<Group> groups = new ArrayList<Group>();
-        groups.add( new GroupImpl( "group" ) );
+        groups.add(new GroupImpl("group"));
 
-        User user = new UserImpl( "testing-user", roles, groups );
+        User user = new UserImpl("testing-user",
+                                 roles,
+                                 groups);
         return user;
     }
 }

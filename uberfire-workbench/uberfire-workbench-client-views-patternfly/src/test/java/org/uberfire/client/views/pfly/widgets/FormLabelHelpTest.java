@@ -26,7 +26,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -42,65 +42,67 @@ public class FormLabelHelpTest {
 
     @Before
     public void setUp() {
-        this.formLabelHelp = new FormLabelHelp( formLabel, panel );
+        this.formLabelHelp = new FormLabelHelp(formLabel,
+                                               panel);
     }
 
     @Test
     public void setHelpTitleNull() {
-        Mockito.reset( panel );
+        Mockito.reset(panel);
 
-        formLabelHelp.setHelpTitle( null );
+        formLabelHelp.setHelpTitle(null);
 
-        verify( panel, times( 0 ) ).add( isA( HelpIcon.class ) );
+        verify(panel,
+               times(0)).add(isA(HelpIcon.class));
     }
-
 
     @Test
     public void setHelpTitleNotNull() {
-        Mockito.reset( panel );
+        Mockito.reset(panel);
 
-        formLabelHelp.setHelpTitle( "testTitle" );
+        formLabelHelp.setHelpTitle("testTitle");
 
-        verify( panel ).add( isA( HelpIcon.class ) );
+        verify(panel).add(isA(HelpIcon.class));
     }
 
     @Test
     public void setHelpContentNull() {
-        Mockito.reset( panel );
+        Mockito.reset(panel);
 
-        formLabelHelp.setHelpContent( null );
+        formLabelHelp.setHelpContent(null);
 
-        verify( panel, times( 0 ) ).add( isA( HelpIcon.class ) );
+        verify(panel,
+               times(0)).add(isA(HelpIcon.class));
     }
 
     @Test
     public void setHelpContentNotNull() {
-        Mockito.reset( panel );
+        Mockito.reset(panel);
 
-        formLabelHelp.setHelpContent( "testContent" );
+        formLabelHelp.setHelpContent("testContent");
 
-        verify( panel ).add( isA( HelpIcon.class ) );
+        verify(panel).add(isA(HelpIcon.class));
     }
 
     @Test
     public void setText() {
-        formLabelHelp.setText( "testText" );
+        formLabelHelp.setText("testText");
 
-        verify( formLabel ).setText( "testText" );
+        verify(formLabel).setText("testText");
     }
 
     @Test
     public void getText() {
-        Mockito.when( formLabel.getText() ).thenReturn( "testText" );
+        Mockito.when(formLabel.getText()).thenReturn("testText");
 
-        assertEquals( "testText", formLabelHelp.getText() );
+        assertEquals("testText",
+                     formLabelHelp.getText());
     }
 
     @Test
     public void setFor() {
-        formLabelHelp.setFor( "testFor" );
+        formLabelHelp.setFor("testFor");
 
-        verify( formLabel ).setFor( "testFor" );
+        verify(formLabel).setFor("testFor");
     }
-
 }

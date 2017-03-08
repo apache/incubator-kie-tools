@@ -20,22 +20,28 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.annotations.WorkbenchPopup.WorkbenchPopupSize;
 import org.uberfire.client.mvp.AbstractPopupActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.widgets.popup.PopupView;
 
-import com.google.gwt.user.client.ui.IsWidget;
-
 @ApplicationScoped
 @Named("uf.workbench.activity.notfound")
 public class ActivityNotFoundPresenter extends AbstractPopupActivity {
 
     @Inject
+    private View view;
+    @Inject
+    private PlaceManager placeManager;
+
+    @Inject
     //Constructor injection for testing
-    public ActivityNotFoundPresenter( final PlaceManager placeManager, PopupView popupView ) {
-        super( placeManager, popupView );
+    public ActivityNotFoundPresenter(final PlaceManager placeManager,
+                                     PopupView popupView) {
+        super(placeManager,
+              popupView);
     }
 
     @Override
@@ -48,28 +54,17 @@ public class ActivityNotFoundPresenter extends AbstractPopupActivity {
         return view;
     }
 
-    public interface View extends UberView<ActivityNotFoundPresenter> {
-
-        void setRequestedPlaceIdentifier( final String requestedPlaceIdentifier );
-
-    }
-
-    @Inject
-    private View view;
-
-    @Inject
-    private PlaceManager placeManager;
-
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
     public void onOpen() {
         super.onOpen();
-        final String identifier = place.getParameter( "requestedPlaceIdentifier", null );
-        view.setRequestedPlaceIdentifier( identifier );
+        final String identifier = place.getParameter("requestedPlaceIdentifier",
+                                                     null);
+        view.setRequestedPlaceIdentifier(identifier);
     }
 
     @Override
@@ -83,7 +78,11 @@ public class ActivityNotFoundPresenter extends AbstractPopupActivity {
     }
 
     public void close() {
-        placeManager.closePlace( this.place );
+        placeManager.closePlace(this.place);
     }
 
+    public interface View extends UberView<ActivityNotFoundPresenter> {
+
+        void setRequestedPlaceIdentifier(final String requestedPlaceIdentifier);
+    }
 }

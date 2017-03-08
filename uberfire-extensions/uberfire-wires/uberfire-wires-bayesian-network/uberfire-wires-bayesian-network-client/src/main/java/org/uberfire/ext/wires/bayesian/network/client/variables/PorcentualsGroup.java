@@ -39,25 +39,24 @@ public class PorcentualsGroup extends Composite {
 
     @PostConstruct
     public void init() {
-        panel = new LienzoPanel( 1200,
-                                 600 );
+        panel = new LienzoPanel(1200,
+                                600);
         layer = new Layer();
-        panel.getScene().add( layer );
-        initWidget( panel );
+        panel.getScene().add(layer);
+        initWidget(panel);
     }
 
-    public void onShapeSelectedEvent( @Observes ShapeSelectedEvent event ) {
+    public void onShapeSelectedEvent(@Observes ShapeSelectedEvent event) {
         layer.removeAll();
-        if ( event.getShape() instanceof EditableBayesianNode ) {
+        if (event.getShape() instanceof EditableBayesianNode) {
             final EditableBayesianNode node = (EditableBayesianNode) event.getShape();
-            layer.add( factory.init( node.getVariable() ) );
+            layer.add(factory.init(node.getVariable()));
         }
         layer.batch();
     }
 
-    public void clearPanel( @Observes ClearEvent event ) {
+    public void clearPanel(@Observes ClearEvent event) {
         layer.removeAll();
         layer.batch();
     }
-
 }

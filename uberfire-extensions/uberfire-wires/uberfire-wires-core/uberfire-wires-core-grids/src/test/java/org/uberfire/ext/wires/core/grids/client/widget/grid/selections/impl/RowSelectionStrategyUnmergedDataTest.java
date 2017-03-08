@@ -31,7 +31,7 @@ public class RowSelectionStrategyUnmergedDataTest extends BaseCellSelectionStrat
     @Override
     public void setup() {
         super.setup();
-        uiModel.setMerged( false );
+        uiModel.setMerged(false);
     }
 
     @Override
@@ -41,89 +41,106 @@ public class RowSelectionStrategyUnmergedDataTest extends BaseCellSelectionStrat
 
     @Test
     public void singleCellSelection() {
-        strategy.handleSelection( uiModel,
-                                  0,
-                                  0,
-                                  false,
-                                  false );
+        strategy.handleSelection(uiModel,
+                                 0,
+                                 0,
+                                 false,
+                                 false);
 
         final List<SelectedCell> selectedCells = uiModel.getSelectedCells();
-        assertEquals( 2,
-                      selectedCells.size() );
-        assertTrue( selectedCells.contains( new SelectedCell( 0, 0 ) ) );
-        assertTrue( selectedCells.contains( new SelectedCell( 0, 1 ) ) );
+        assertEquals(2,
+                     selectedCells.size());
+        assertTrue(selectedCells.contains(new SelectedCell(0,
+                                                           0)));
+        assertTrue(selectedCells.contains(new SelectedCell(0,
+                                                           1)));
     }
 
     @Test
     public void extendSelectionWithShiftKey() {
-        strategy.handleSelection( uiModel,
-                                  0,
-                                  0,
-                                  false,
-                                  false );
-        strategy.handleSelection( uiModel,
-                                  2,
-                                  1,
-                                  true,
-                                  false );
+        strategy.handleSelection(uiModel,
+                                 0,
+                                 0,
+                                 false,
+                                 false);
+        strategy.handleSelection(uiModel,
+                                 2,
+                                 1,
+                                 true,
+                                 false);
 
         final List<SelectedCell> selectedCells = uiModel.getSelectedCells();
-        assertEquals( 6,
-                      selectedCells.size() );
-        assertTrue( selectedCells.contains( new SelectedCell( 0, 0 ) ) );
-        assertTrue( selectedCells.contains( new SelectedCell( 1, 0 ) ) );
-        assertTrue( selectedCells.contains( new SelectedCell( 2, 0 ) ) );
-        assertTrue( selectedCells.contains( new SelectedCell( 0, 1 ) ) );
-        assertTrue( selectedCells.contains( new SelectedCell( 1, 1 ) ) );
-        assertTrue( selectedCells.contains( new SelectedCell( 2, 1 ) ) );
+        assertEquals(6,
+                     selectedCells.size());
+        assertTrue(selectedCells.contains(new SelectedCell(0,
+                                                           0)));
+        assertTrue(selectedCells.contains(new SelectedCell(1,
+                                                           0)));
+        assertTrue(selectedCells.contains(new SelectedCell(2,
+                                                           0)));
+        assertTrue(selectedCells.contains(new SelectedCell(0,
+                                                           1)));
+        assertTrue(selectedCells.contains(new SelectedCell(1,
+                                                           1)));
+        assertTrue(selectedCells.contains(new SelectedCell(2,
+                                                           1)));
     }
 
     @Test
     public void extendSelectionWithControlKey() {
-        strategy.handleSelection( uiModel,
-                                  0,
-                                  0,
-                                  false,
-                                  false );
-        strategy.handleSelection( uiModel,
-                                  2,
-                                  1,
-                                  false,
-                                  true );
+        strategy.handleSelection(uiModel,
+                                 0,
+                                 0,
+                                 false,
+                                 false);
+        strategy.handleSelection(uiModel,
+                                 2,
+                                 1,
+                                 false,
+                                 true);
 
         final List<SelectedCell> selectedCells = uiModel.getSelectedCells();
-        assertEquals( 4,
-                      selectedCells.size() );
-        assertTrue( selectedCells.contains( new SelectedCell( 0, 0 ) ) );
-        assertTrue( selectedCells.contains( new SelectedCell( 0, 1 ) ) );
-        assertTrue( selectedCells.contains( new SelectedCell( 2, 0 ) ) );
-        assertTrue( selectedCells.contains( new SelectedCell( 2, 1 ) ) );
+        assertEquals(4,
+                     selectedCells.size());
+        assertTrue(selectedCells.contains(new SelectedCell(0,
+                                                           0)));
+        assertTrue(selectedCells.contains(new SelectedCell(0,
+                                                           1)));
+        assertTrue(selectedCells.contains(new SelectedCell(2,
+                                                           0)));
+        assertTrue(selectedCells.contains(new SelectedCell(2,
+                                                           1)));
     }
 
     @Test
     public void extendSelectionWithColumnMovedWithShiftKey() {
-        uiModel.moveColumnTo( 0,
-                              gc2 );
-        strategy.handleSelection( uiModel,
-                                  0,
-                                  0,
-                                  false,
-                                  false );
-        strategy.handleSelection( uiModel,
-                                  2,
-                                  1,
-                                  true,
-                                  false );
+        uiModel.moveColumnTo(0,
+                             gc2);
+        strategy.handleSelection(uiModel,
+                                 0,
+                                 0,
+                                 false,
+                                 false);
+        strategy.handleSelection(uiModel,
+                                 2,
+                                 1,
+                                 true,
+                                 false);
 
         final List<SelectedCell> selectedCells = uiModel.getSelectedCells();
-        assertEquals( 6,
-                      selectedCells.size() );
-        assertTrue( selectedCells.contains( new SelectedCell( 0, 0 ) ) );
-        assertTrue( selectedCells.contains( new SelectedCell( 1, 0 ) ) );
-        assertTrue( selectedCells.contains( new SelectedCell( 2, 0 ) ) );
-        assertTrue( selectedCells.contains( new SelectedCell( 0, 1 ) ) );
-        assertTrue( selectedCells.contains( new SelectedCell( 1, 1 ) ) );
-        assertTrue( selectedCells.contains( new SelectedCell( 2, 1 ) ) );
+        assertEquals(6,
+                     selectedCells.size());
+        assertTrue(selectedCells.contains(new SelectedCell(0,
+                                                           0)));
+        assertTrue(selectedCells.contains(new SelectedCell(1,
+                                                           0)));
+        assertTrue(selectedCells.contains(new SelectedCell(2,
+                                                           0)));
+        assertTrue(selectedCells.contains(new SelectedCell(0,
+                                                           1)));
+        assertTrue(selectedCells.contains(new SelectedCell(1,
+                                                           1)));
+        assertTrue(selectedCells.contains(new SelectedCell(2,
+                                                           1)));
     }
-
 }

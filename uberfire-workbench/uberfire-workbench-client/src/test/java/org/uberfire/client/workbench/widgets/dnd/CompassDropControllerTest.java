@@ -53,30 +53,31 @@ public class CompassDropControllerTest {
     @Before
     public void setup() {
         compassDropController = new CompassDropControllerUnitTestWrapper();
-        compassDropController.setupMocks( dndManager, panelManager );
+        compassDropController.setupMocks(dndManager,
+                                         panelManager);
     }
 
     @Test
     public void setupTest() {
-        compassDropController.setup( view );
-        assertEquals( view, compassDropController.dropTarget );
+        compassDropController.setup(view);
+        assertEquals(view,
+                     compassDropController.dropTarget);
     }
 
     @Test
     public void compassDelegationTest() {
         CompassWidget compass = compassDropController.compass;
 
-        DragContext dragContext = mock( DragContext.class );
+        DragContext dragContext = mock(DragContext.class);
 
-        compassDropController.onEnter( dragContext );
-        verify( compass ).onEnter( dragContext );
+        compassDropController.onEnter(dragContext);
+        verify(compass).onEnter(dragContext);
 
-        compassDropController.onLeave( dragContext );
-        verify( compass ).onLeave( dragContext );
+        compassDropController.onLeave(dragContext);
+        verify(compass).onLeave(dragContext);
 
-        compassDropController.onMove( dragContext );
-        verify( compass ).onMove( dragContext );
-
+        compassDropController.onMove(dragContext);
+        verify(compass).onMove(dragContext);
     }
 
     @Test
@@ -84,40 +85,56 @@ public class CompassDropControllerTest {
         //Mock If not dropTarget has been identified do nothing
         compassDropController.mockDropTargetPositionNone();
 
-        DragContext dragContext = mock( DragContext.class );
-        compassDropController.onDrop( dragContext );
+        DragContext dragContext = mock(DragContext.class);
+        compassDropController.onDrop(dragContext);
 
-        verify( compassDropController.compass,never() ).onDrop( dragContext );
+        verify(compassDropController.compass,
+               never()).onDrop(dragContext);
     }
 
     @Test
     public void onDropNoEffect() {
-        compassDropController.mockDropTargetPosition( CompassPosition.SELF );
+        compassDropController.mockDropTargetPosition(CompassPosition.SELF);
 
         compassDropController.mockSamePositionDrag(view);
 
-        DragContext dragContext = mock( DragContext.class );
+        DragContext dragContext = mock(DragContext.class);
 
-        compassDropController.onDrop( dragContext );
+        compassDropController.onDrop(dragContext);
 
-        verify( panelManager, never()  ).addWorkbenchPanel( any( PanelDefinition.class), any(Position.class), any(Integer.class) , any(Integer.class), any(Integer.class), any(Integer.class));
-
+        verify(panelManager,
+               never()).addWorkbenchPanel(any(PanelDefinition.class),
+                                          any(Position.class),
+                                          any(Integer.class),
+                                          any(Integer.class),
+                                          any(Integer.class),
+                                          any(Integer.class));
     }
 
     @Test
     public void onDropHappens() {
-        compassDropController.mockDropTargetPosition( CompassPosition.WEST );
+        compassDropController.mockDropTargetPosition(CompassPosition.WEST);
 
         compassDropController.mockSamePositionDrag(view);
 
-        DragContext dragContext = mock( DragContext.class );
+        DragContext dragContext = mock(DragContext.class);
 
-        compassDropController.onDrop( dragContext );
+        compassDropController.onDrop(dragContext);
 
-        verify( panelManager ).addWorkbenchPanel( any( PanelDefinition.class), any(Position.class), any(Integer.class) , any(Integer.class), any(Integer.class), any(Integer.class));
+        verify(panelManager).addWorkbenchPanel(any(PanelDefinition.class),
+                                               any(Position.class),
+                                               any(Integer.class),
+                                               any(Integer.class),
+                                               any(Integer.class),
+                                               any(Integer.class));
 
-        verify( panelManager ).addWorkbenchPart( any( PlaceRequest.class), any(PartDefinition.class), any(PanelDefinition.class) , any(Menus.class), any(UIPart.class), any(String.class), isNull( Integer.class ), isNull( Integer.class ) );
-
+        verify(panelManager).addWorkbenchPart(any(PlaceRequest.class),
+                                              any(PartDefinition.class),
+                                              any(PanelDefinition.class),
+                                              any(Menus.class),
+                                              any(UIPart.class),
+                                              any(String.class),
+                                              isNull(Integer.class),
+                                              isNull(Integer.class));
     }
-
 }

@@ -50,81 +50,95 @@ public class WorkbenchPreferenceProcessor extends AbstractErrorAbsorbingProcesso
     }
 
     // Constructor for tests only, to prevent code being written to file. The generated code will be sent to the callback
-    WorkbenchPreferenceProcessor( final GenerationCompleteCallback callback ) {
+    WorkbenchPreferenceProcessor(final GenerationCompleteCallback callback) {
         this();
         this.callback = callback;
-        System.out.println( "GenerationCompleteCallback has been provided. Generated source code will not be compiled and hence classes will not be available." );
+        System.out.println("GenerationCompleteCallback has been provided. Generated source code will not be compiled and hence classes will not be available.");
     }
 
     @Override
-    public boolean processWithExceptions( Set<? extends TypeElement> annotations,
-                                          RoundEnvironment roundEnv ) throws IOException {
-        if ( roundEnv.processingOver() ) {
+    public boolean processWithExceptions(Set<? extends TypeElement> annotations,
+                                         RoundEnvironment roundEnv) throws IOException {
+        if (roundEnv.processingOver()) {
             return false;
         }
 
-        if ( roundEnv.errorRaised() ) {
+        if (roundEnv.errorRaised()) {
             return false;
         }
 
         final Messager messager = processingEnv.getMessager();
         final Elements elementUtils = processingEnv.getElementUtils();
 
-        for ( Element element : roundEnv.getElementsAnnotatedWith( elementUtils.getTypeElement( WORKBENCH_PREFERENCE ) ) ) {
-            if ( element.getKind() == ElementKind.CLASS ) {
+        for (Element element : roundEnv.getElementsAnnotatedWith(elementUtils.getTypeElement(WORKBENCH_PREFERENCE))) {
+            if (element.getKind() == ElementKind.CLASS) {
                 WorkbenchPreferenceGeneratedImplGenerator beanGenerator = null;
                 WorkbenchPreferenceGeneratedImplGenerator portableGenerator = null;
 
                 try {
-                    beanGenerator = new WorkbenchPreferenceGeneratedImplGenerator( GeneratorContext.BEAN );
-                    portableGenerator = new WorkbenchPreferenceGeneratedImplGenerator( GeneratorContext.PORTABLE );
-                } catch ( Throwable t ) {
-                    rememberInitializationError( t );
+                    beanGenerator = new WorkbenchPreferenceGeneratedImplGenerator(GeneratorContext.BEAN);
+                    portableGenerator = new WorkbenchPreferenceGeneratedImplGenerator(GeneratorContext.PORTABLE);
+                } catch (Throwable t) {
+                    rememberInitializationError(t);
                 }
 
                 TypeElement classElement = (TypeElement) element;
                 PackageElement packageElement = (PackageElement) classElement.getEnclosingElement();
 
-                messager.printMessage( Diagnostic.Kind.NOTE, "Discovered class [" + classElement.getSimpleName() + "]" );
+                messager.printMessage(Diagnostic.Kind.NOTE,
+                                      "Discovered class [" + classElement.getSimpleName() + "]");
 
                 final String packageName = packageElement.getQualifiedName().toString();
                 final String className = classElement.getSimpleName() + "";
 
-                generate( messager, classElement, packageElement, packageName, className, beanGenerator );
-                generate( messager, classElement, packageElement, packageName, className, portableGenerator );
+                generate(messager,
+                         classElement,
+                         packageElement,
+                         packageName,
+                         className,
+                         beanGenerator);
+                generate(messager,
+                         classElement,
+                         packageElement,
+                         packageName,
+                         className,
+                         portableGenerator);
             }
         }
 
         return true;
     }
 
-    private void generate( final Messager messager,
-                           final TypeElement classElement,
-                           final PackageElement packageElement,
-                           final String packageName,
-                           final String className,
-                           final WorkbenchPreferenceGeneratedImplGenerator generator ) throws IOException {
+    private void generate(final Messager messager,
+                          final TypeElement classElement,
+                          final PackageElement packageElement,
+                          final String packageName,
+                          final String className,
+                          final WorkbenchPreferenceGeneratedImplGenerator generator) throws IOException {
         try {
-            messager.printMessage( Diagnostic.Kind.NOTE, "Generating code for [" + className + "]" );
-            final StringBuffer generatedImplCode = generator.generate( packageName,
-                                                                       packageElement,
-                                                                       className,
-                                                                       classElement,
-                                                                       processingEnv );
+            messager.printMessage(Diagnostic.Kind.NOTE,
+                                  "Generating code for [" + className + "]");
+            final StringBuffer generatedImplCode = generator.generate(packageName,
+                                                                      packageElement,
+                                                                      className,
+                                                                      classElement,
+                                                                      processingEnv);
 
             // If code is successfully created write files, or send generated code to callback.
             // The callback function is used primarily for testing when we don't necessarily want
             // the generated code to be stored as a compilable file for javac to process.
-            if ( callback == null ) {
-                writeCode( packageName,
-                           generator.getTargetClassName(),
-                           generatedImplCode );
+            if (callback == null) {
+                writeCode(packageName,
+                          generator.getTargetClassName(),
+                          generatedImplCode);
             } else {
-                callback.generationComplete( generatedImplCode.toString() );
+                callback.generationComplete(generatedImplCode.toString());
             }
-        } catch ( GenerationException ge ) {
+        } catch (GenerationException ge) {
             final String msg = ge.getMessage();
-            processingEnv.getMessager().printMessage( Diagnostic.Kind.ERROR, msg, classElement );
+            processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
+                                                     msg,
+                                                     classElement);
         }
     }
 }

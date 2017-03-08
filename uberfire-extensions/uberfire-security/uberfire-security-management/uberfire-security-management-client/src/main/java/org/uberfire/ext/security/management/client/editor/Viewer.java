@@ -15,16 +15,16 @@
  */
 
 package org.uberfire.ext.security.management.client.editor;
+
 /**
  * <p>A client side viewer.</p>
  * @param <T> The entity type.
- *
  * @since 0.8.0
  */
 public interface Viewer<T> {
 
     /**
-     * Initialize the viewer hierarchy and display the instance to show. 
+     * Initialize the viewer hierarchy and display the instance to show.
      * @param instance The instance.
      */
     void show(T instance);

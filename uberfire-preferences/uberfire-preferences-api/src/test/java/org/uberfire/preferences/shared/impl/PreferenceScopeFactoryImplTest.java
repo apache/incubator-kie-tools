@@ -18,14 +18,16 @@ package org.uberfire.preferences.shared.impl;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.PreferenceScopeTypes;
 import org.uberfire.preferences.shared.impl.exception.InvalidPreferenceScopeException;
-import org.uberfire.mocks.SessionInfoMock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.uberfire.preferences.shared.impl.DefaultPreferenceScopesForTests.*;
+import static org.uberfire.preferences.shared.impl.DefaultPreferenceScopesForTests.entireApplicationScope;
+import static org.uberfire.preferences.shared.impl.DefaultPreferenceScopesForTests.userScope;
+import static org.uberfire.preferences.shared.impl.DefaultPreferenceScopesForTests.userScopeKey;
 
 public class PreferenceScopeFactoryImplTest {
 
@@ -35,80 +37,103 @@ public class PreferenceScopeFactoryImplTest {
 
     @Before
     public void setup() {
-        genericScope = mock( PreferenceScope.class );
+        genericScope = mock(PreferenceScope.class);
 
         final SessionInfoMock sessionInfo = new SessionInfoMock();
-        final PreferenceScopeTypes scopeTypes = new DefaultPreferenceScopeTypes( new UsernameProviderMock( sessionInfo ) );
-        scopeFactory = new PreferenceScopeFactoryImpl( scopeTypes );
+        final PreferenceScopeTypes scopeTypes = new DefaultPreferenceScopeTypes(new UsernameProviderMock(sessionInfo));
+        scopeFactory = new PreferenceScopeFactoryImpl(scopeTypes);
     }
 
     @Test
     public void createScopeByTypeWithDefaultKeyTest() {
-        PreferenceScope userScope = scopeFactory.createScope( DefaultScopes.USER.type() );
-        assertEquals( DefaultScopes.USER.type(), userScope.type() );
-        assertEquals( "admin", userScope.key() );
+        PreferenceScope userScope = scopeFactory.createScope(DefaultScopes.USER.type());
+        assertEquals(DefaultScopes.USER.type(),
+                     userScope.type());
+        assertEquals("admin",
+                     userScope.key());
     }
 
     @Test(expected = InvalidPreferenceScopeException.class)
     public void createScopeByTypeWithoutDefaultKeyTest() {
-        scopeFactory.createScope( DefaultScopes.COMPONENT.type() );
+        scopeFactory.createScope(DefaultScopes.COMPONENT.type());
     }
 
     @Test
     public void createScopeByTypeAndKeyWithoutDefaultKeyTest() {
-        PreferenceScope componentScope = scopeFactory.createScope( DefaultScopes.COMPONENT.type(), "my-component" );
-        assertEquals( DefaultScopes.COMPONENT.type(), componentScope.type() );
-        assertEquals( "my-component", componentScope.key() );
+        PreferenceScope componentScope = scopeFactory.createScope(DefaultScopes.COMPONENT.type(),
+                                                                  "my-component");
+        assertEquals(DefaultScopes.COMPONENT.type(),
+                     componentScope.type());
+        assertEquals("my-component",
+                     componentScope.key());
     }
 
     @Test(expected = InvalidPreferenceScopeException.class)
     public void createScopeByTypeAndKeyWithDefaultKeyTest() {
-        scopeFactory.createScope( DefaultScopes.USER.type(), "user" );
+        scopeFactory.createScope(DefaultScopes.USER.type(),
+                                 "user");
     }
 
     @Test
     public void createScopeByTypeAndChildScopeWithDefaultKeyTest() {
-        PreferenceScope userScope = scopeFactory.createScope( DefaultScopes.USER.type(), genericScope );
-        assertEquals( DefaultScopes.USER.type(), userScope.type() );
-        assertEquals( "admin", userScope.key() );
+        PreferenceScope userScope = scopeFactory.createScope(DefaultScopes.USER.type(),
+                                                             genericScope);
+        assertEquals(DefaultScopes.USER.type(),
+                     userScope.type());
+        assertEquals("admin",
+                     userScope.key());
     }
 
     @Test(expected = InvalidPreferenceScopeException.class)
     public void createScopeByTypeAndChildScopeWithoutDefaultKeyTest() {
-        scopeFactory.createScope( DefaultScopes.COMPONENT.type(), genericScope );
+        scopeFactory.createScope(DefaultScopes.COMPONENT.type(),
+                                 genericScope);
     }
 
     @Test
     public void createScopeByTypeKeyAndChildScopeWithoutDefaultKeyTest() {
-        PreferenceScope componentScope = scopeFactory.createScope( DefaultScopes.COMPONENT.type(), "my-component", genericScope );
-        assertEquals( DefaultScopes.COMPONENT.type(), componentScope.type() );
-        assertEquals( "my-component", componentScope.key() );
+        PreferenceScope componentScope = scopeFactory.createScope(DefaultScopes.COMPONENT.type(),
+                                                                  "my-component",
+                                                                  genericScope);
+        assertEquals(DefaultScopes.COMPONENT.type(),
+                     componentScope.type());
+        assertEquals("my-component",
+                     componentScope.key());
     }
 
     @Test(expected = InvalidPreferenceScopeException.class)
     public void createScopeByTypeKeyAndChildScopeWithDefaultKeyTest() {
-        scopeFactory.createScope( DefaultScopes.USER.type(), "user", genericScope );
+        scopeFactory.createScope(DefaultScopes.USER.type(),
+                                 "user",
+                                 genericScope);
     }
 
     @Test
     public void createHierarchicalScopeByScopesTest() {
-        PreferenceScope scope = scopeFactory.createScope( userScope, entireApplicationScope );
+        PreferenceScope scope = scopeFactory.createScope(userScope,
+                                                         entireApplicationScope);
 
-        assertEquals( DefaultScopes.USER.type(), scope.type() );
-        assertEquals( userScopeKey, scope.key() );
+        assertEquals(DefaultScopes.USER.type(),
+                     scope.type());
+        assertEquals(userScopeKey,
+                     scope.key());
 
         final PreferenceScope childScope = scope.childScope();
-        assertEquals( DefaultScopes.ENTIRE_APPLICATION.type(), childScope.type() );
-        assertEquals( DefaultScopes.ENTIRE_APPLICATION.type(), childScope.key() );
-        assertNull( childScope.childScope() );
+        assertEquals(DefaultScopes.ENTIRE_APPLICATION.type(),
+                     childScope.type());
+        assertEquals(DefaultScopes.ENTIRE_APPLICATION.type(),
+                     childScope.key());
+        assertNull(childScope.childScope());
     }
 
     @Test
     public void cloneScopeTest() {
-        PreferenceScope scope = scopeFactory.createScope( userScope, entireApplicationScope );
-        PreferenceScope newScope = scopeFactory.cloneScope( scope );
+        PreferenceScope scope = scopeFactory.createScope(userScope,
+                                                         entireApplicationScope);
+        PreferenceScope newScope = scopeFactory.cloneScope(scope);
 
-        assertTrue( scope != newScope );
-        assertEquals( scope, newScope );
+        assertTrue(scope != newScope);
+        assertEquals(scope,
+                     newScope);
     }
 }

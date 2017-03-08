@@ -44,53 +44,38 @@ import org.uberfire.security.client.authz.tree.impl.PermissionResourceNode;
 @Dependent
 public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
 
-    public interface View extends UberView<MultiplePermissionNodeEditor> {
-
-        void setNodeName(String name);
-
-        void setNodePanelWidth(int width);
-
-        void setNodeFullName(String name);
-
-        void setResourceName(String name);
-
-        void addPermission(PermissionSwitchToogle permissionSwitch);
-
-        void addChildEditor(PermissionNodeEditor editor, boolean dynamic);
-
-        void addChildSeparator();
-
-        boolean hasChildren();
-
-        void clearChildren();
-
-        String getChildSelectorHint(String resourceName);
-
-        String getChildSearchHint(String resourceName);
-
-        String getChildrenNotFoundMsg(String resourceName);
-
-        void setChildSelector(IsWidget childSelector);
-
-        void showChildSelector();
-
-        void hideChildSelector();
-
-        void setAddChildEnabled(boolean enabled);
-
-        void setClearChildrenEnabled(boolean enabled);
-
-        void setExpanded(boolean expanded);
-    }
-
     View view;
     PermissionWidgetFactory widgetFactory;
     LiveSearchDropDown liveSearchDropDown;
     Event<PermissionChangedEvent> permissionChangedEvent;
     Event<PermissionNodeAddedEvent> permissionNodeAddedEvent;
     Event<PermissionNodeRemovedEvent> permissionNodeRemovedEvent;
-    Map<String,PermissionNode> childSelectorNodeMap = new TreeMap<>();
+    Map<String, PermissionNode> childSelectorNodeMap = new TreeMap<>();
     boolean expanded = false;
+    LiveSearchService childrenSearchService = (pattern, maxResults, callback) -> {
+
+        PermissionTreeProvider provider = permissionNode.getPermissionTreeProvider();
+        DefaultLoadOptions loadOptions = new DefaultLoadOptions();
+        loadOptions.setNodeNamePattern(pattern);
+        loadOptions.setMaxNodes(maxResults);
+
+        provider.loadChildren(permissionNode,
+                              loadOptions,
+                              children -> {
+
+                                  childSelectorNodeMap.clear();
+
+                                  for (PermissionNode childNode : children) {
+                                      String childName = childNode.getNodeName();
+                                      if (!childAlreadyAdded(childName)) {
+                                          childSelectorNodeMap.put(childName,
+                                                                   childNode);
+                                      }
+                                  }
+                                  List<String> result = new ArrayList<>(childSelectorNodeMap.keySet());
+                                  callback.afterSearch(result);
+                              });
+    };
 
     @Inject
     public MultiplePermissionNodeEditor(View view,
@@ -160,15 +145,22 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
             boolean granted = AuthorizationResult.ACCESS_GRANTED.equals(permission.getResult());
 
             PermissionSwitch permissionSwitch = widgetFactory.createSwitch();
-            permissionSwitch.init(grantName, denyName, granted, 0);
+            permissionSwitch.init(grantName,
+                                  denyName,
+                                  granted,
+                                  0);
             permissionSwitch.setOnChange(() -> {
                 permission.setResult(permissionSwitch.isOn() ? AuthorizationResult.ACCESS_GRANTED : AuthorizationResult.ACCESS_DENIED);
 
                 // Notify the change in the permission
-                super.onPermissionChanged(permission, permissionSwitch.isOn());
-                permissionChangedEvent.fire(new PermissionChangedEvent(getACLEditor(), permission, permissionSwitch.isOn()));
+                super.onPermissionChanged(permission,
+                                          permissionSwitch.isOn());
+                permissionChangedEvent.fire(new PermissionChangedEvent(getACLEditor(),
+                                                                       permission,
+                                                                       permissionSwitch.isOn()));
             });
-            super.registerPermissionSwitch(permission, permissionSwitch);
+            super.registerPermissionSwitch(permission,
+                                           permissionSwitch);
         }
         // Update the switches status according to the inter-dependencies between their permissions
         super.processAllPermissionDependencies();
@@ -183,8 +175,10 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
     }
 
     @Override
-    protected void notifyPermissionChange(Permission permission, boolean on) {
-        super.notifyPermissionChange(permission, on);
+    protected void notifyPermissionChange(Permission permission,
+                                          boolean on) {
+        super.notifyPermissionChange(permission,
+                                     on);
 
         // Update the exception count
         PermissionSwitchToogle permissionSwitch = permissionSwitchMap.get(permission);
@@ -198,9 +192,10 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
 
         view.setExpanded(true);
         view.clearChildren();
-        for (int i=0; i<childEditors.size(); i++) {
+        for (int i = 0; i < childEditors.size(); i++) {
             PermissionNodeEditor nodeEditor = childEditors.get(i);
-            view.addChildEditor(nodeEditor, hasResources());
+            view.addChildEditor(nodeEditor,
+                                hasResources());
             if (i < childEditors.size() - 1) {
                 view.addChildSeparator();
             }
@@ -229,7 +224,7 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
     protected PermissionNodeEditor registerChild(PermissionNode child) {
         PermissionNodeEditor nodeEditor = widgetFactory.createEditor(child);
         nodeEditor.setACLEditor(this.getACLEditor());
-        nodeEditor.setTreeLevel(getTreeLevel()+1);
+        nodeEditor.setTreeLevel(getTreeLevel() + 1);
         nodeEditor.setParentEditor(this);
         nodeEditor.edit(child);
         super.addChildEditor(nodeEditor);
@@ -237,7 +232,9 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
     }
 
     @Override
-    public void onChildPermissionChanged(PermissionNodeEditor childEditor, Permission permission, boolean on) {
+    public void onChildPermissionChanged(PermissionNodeEditor childEditor,
+                                         Permission permission,
+                                         boolean on) {
         updateExceptionCounters();
     }
 
@@ -295,14 +292,17 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
         view.clearChildren();
 
         List<PermissionNodeEditor> childEditors = getChildEditors();
-        for (int i=0; i<childEditors.size(); i++) {
+        for (int i = 0; i < childEditors.size(); i++) {
             PermissionNodeEditor nodeEditor = childEditors.get(i);
-            view.addChildEditor(nodeEditor, hasResources());
+            view.addChildEditor(nodeEditor,
+                                hasResources());
             if (i < childEditors.size() - 1) {
                 view.addChildSeparator();
             }
         }
-        permissionNodeRemovedEvent.fire(new PermissionNodeRemovedEvent(getACLEditor(), permissionNode, child.getPermissionNode()));
+        permissionNodeRemovedEvent.fire(new PermissionNodeRemovedEvent(getACLEditor(),
+                                                                       permissionNode,
+                                                                       child.getPermissionNode()));
     }
 
     public void onChildSelected(String childName) {
@@ -312,14 +312,17 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
         if (view.hasChildren()) {
             view.addChildSeparator();
         }
-        view.addChildEditor(childEditor, hasResources());
+        view.addChildEditor(childEditor,
+                            hasResources());
         view.setClearChildrenEnabled(true);
         view.hideChildSelector();
         liveSearchDropDown.clear();
 
         updateExceptionCounters();
 
-        permissionNodeAddedEvent.fire(new PermissionNodeAddedEvent(getACLEditor(), permissionNode, childNode));
+        permissionNodeAddedEvent.fire(new PermissionNodeAddedEvent(getACLEditor(),
+                                                                   permissionNode,
+                                                                   childNode));
     }
 
     protected void overwritePermissions(PermissionNode child) {
@@ -332,28 +335,6 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
         }
     }
 
-    LiveSearchService childrenSearchService = (pattern, maxResults, callback) -> {
-
-        PermissionTreeProvider provider = permissionNode.getPermissionTreeProvider();
-        DefaultLoadOptions loadOptions = new DefaultLoadOptions();
-        loadOptions.setNodeNamePattern(pattern);
-        loadOptions.setMaxNodes(maxResults);
-
-        provider.loadChildren(permissionNode, loadOptions, children -> {
-
-            childSelectorNodeMap.clear();
-
-            for (PermissionNode childNode : children) {
-                String childName = childNode.getNodeName();
-                if (!childAlreadyAdded(childName)) {
-                    childSelectorNodeMap.put(childName, childNode);
-                }
-            }
-            List<String> result = new ArrayList<>(childSelectorNodeMap.keySet());
-            callback.afterSearch(result);
-        });
-    };
-
     protected boolean childAlreadyAdded(String nodeName) {
         for (PermissionNodeEditor childEditor : getChildEditors()) {
             String existingName = childEditor.getPermissionNode().getNodeName();
@@ -362,5 +343,45 @@ public class MultiplePermissionNodeEditor extends BasePermissionNodeEditor {
             }
         }
         return false;
+    }
+
+    public interface View extends UberView<MultiplePermissionNodeEditor> {
+
+        void setNodeName(String name);
+
+        void setNodePanelWidth(int width);
+
+        void setNodeFullName(String name);
+
+        void setResourceName(String name);
+
+        void addPermission(PermissionSwitchToogle permissionSwitch);
+
+        void addChildEditor(PermissionNodeEditor editor,
+                            boolean dynamic);
+
+        void addChildSeparator();
+
+        boolean hasChildren();
+
+        void clearChildren();
+
+        String getChildSelectorHint(String resourceName);
+
+        String getChildSearchHint(String resourceName);
+
+        String getChildrenNotFoundMsg(String resourceName);
+
+        void setChildSelector(IsWidget childSelector);
+
+        void showChildSelector();
+
+        void hideChildSelector();
+
+        void setAddChildEnabled(boolean enabled);
+
+        void setClearChildrenEnabled(boolean enabled);
+
+        void setExpanded(boolean expanded);
     }
 }

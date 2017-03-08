@@ -30,7 +30,7 @@ public interface PreferenceScopeTypes {
      * @return true if the type requires a custom key or false if it has a default one.
      * @throws InvalidPreferenceScopeException if the type passed is invalid.
      */
-    boolean typeRequiresKey( String type ) throws InvalidPreferenceScopeException;
+    boolean typeRequiresKey(String type) throws InvalidPreferenceScopeException;
 
     /**
      * Returns the default key for a type. Throws a exception if the type requires a custom one.
@@ -38,5 +38,5 @@ public interface PreferenceScopeTypes {
      * @return Default key for the type (or null if there is not one).
      * @throws InvalidPreferenceScopeException if the type passed is invalid.
      */
-    String getDefaultKeyFor( String type ) throws InvalidPreferenceScopeException;
+    String getDefaultKeyFor(String type) throws InvalidPreferenceScopeException;
 }

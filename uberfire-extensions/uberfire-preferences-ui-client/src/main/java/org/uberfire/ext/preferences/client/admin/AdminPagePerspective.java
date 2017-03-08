@@ -54,7 +54,7 @@ public class AdminPagePerspective {
 
     @Perspective
     public PerspectiveDefinition getPerspective() {
-        if ( perspective == null ) {
+        if (perspective == null) {
             return createPerspectiveDefinition();
         }
 
@@ -62,35 +62,36 @@ public class AdminPagePerspective {
     }
 
     @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
-        perspectiveIdentifierToGoBackTo = placeRequest.getParameter( "perspectiveIdentifierToGoBackTo", null );
+    public void onStartup(final PlaceRequest placeRequest) {
+        perspectiveIdentifierToGoBackTo = placeRequest.getParameter("perspectiveIdentifierToGoBackTo",
+                                                                    null);
         perspective = createPerspectiveDefinition();
-        configurePerspective( placeRequest );
+        configurePerspective(placeRequest);
     }
 
     PerspectiveDefinition createPerspectiveDefinition() {
-        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
-        perspective.setName( "Admin" );
+        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(StaticWorkbenchPanelPresenter.class.getName());
+        perspective.setName("Admin");
 
         return perspective;
     }
 
-    void configurePerspective( final PlaceRequest placeRequest ) {
-        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( AdminPagePresenter.IDENTIFIER,
-                                                                                        placeRequest.getParameters() ) ) );
+    void configurePerspective(final PlaceRequest placeRequest) {
+        perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest(AdminPagePresenter.IDENTIFIER,
+                                                                                     placeRequest.getParameters())));
     }
 
     @WorkbenchMenu
     public Menus getMenus() {
-        if ( perspectiveIdentifierToGoBackTo != null ) {
+        if (perspectiveIdentifierToGoBackTo != null) {
             return MenuFactory
-                    .newTopLevelMenu( translationService.format( Constants.AdminPagePerspective_GoBackToThePreviousPage ) )
-                    .respondsWith( new Command() {
+                    .newTopLevelMenu(translationService.format(Constants.AdminPagePerspective_GoBackToThePreviousPage))
+                    .respondsWith(new Command() {
                         @Override
                         public void execute() {
-                            placeManager.goTo( perspectiveIdentifierToGoBackTo );
+                            placeManager.goTo(perspectiveIdentifierToGoBackTo);
                         }
-                    } )
+                    })
                     .endMenu()
                     .build();
         }

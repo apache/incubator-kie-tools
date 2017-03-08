@@ -25,7 +25,7 @@ import com.google.gwt.i18n.client.Messages;
 public interface CommonConstants
         extends Messages {
 
-    public static final CommonConstants INSTANCE = GWT.create( CommonConstants.class );
+    public static final CommonConstants INSTANCE = GWT.create(CommonConstants.class);
 
     String OK();
 
@@ -63,15 +63,15 @@ public interface CommonConstants
 
     String ConcurrentIssue();
 
-    String ConcurrentUpdate( String identity,
-                             String pathURI );
+    String ConcurrentUpdate(String identity,
+                            String pathURI);
 
-    String ConcurrentRename( String identity,
-                             String sourceURI,
-                             String targetURI );
+    String ConcurrentRename(String identity,
+                            String sourceURI,
+                            String targetURI);
 
-    String ConcurrentDelete( String identity,
-                             String pathURI );
+    String ConcurrentDelete(String identity,
+                            String pathURI);
 
     String ChooseFile();
 
@@ -83,13 +83,13 @@ public interface CommonConstants
 
     String ExceptionInvalidPath();
 
-    String ExceptionFileAlreadyExists0( final String uri );
+    String ExceptionFileAlreadyExists0(final String uri);
 
-    String ExceptionNoSuchFile0( final String uri );
+    String ExceptionNoSuchFile0(final String uri);
 
-    String ExceptionSecurity0( final String uri );
+    String ExceptionSecurity0(final String uri);
 
-    String ExceptionGeneric0( final String message );
+    String ExceptionGeneric0(final String message);
 
     String ItemDeletedSuccessfully();
 
@@ -162,5 +162,4 @@ public interface CommonConstants
     String by();
 
     String on();
-
 }

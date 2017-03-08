@@ -17,6 +17,11 @@
 package org.uberfire.ext.security.management.client.widgets.management.editor.group;
 
 import java.util.Set;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.validation.ConstraintViolation;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -33,38 +38,16 @@ import org.uberfire.ext.security.management.client.widgets.management.events.OnE
 import org.uberfire.ext.security.management.client.widgets.management.events.OnShowEvent;
 import org.uberfire.security.authz.PermissionCollection;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.validation.ConstraintViolation;
-
 /**
  * <p>Editor class for a Group instance.</p>
  * <p>Additionally it shows a delete button, if the service provider supports the <code>CAN_DELETE_GROUP</code> capability.</p>
- *
  * @since 0.9.0
  */
 @Dependent
-public class GroupEditor implements IsWidget, org.uberfire.ext.security.management.client.editor.group.GroupEditor {
+public class GroupEditor implements IsWidget,
+                                    org.uberfire.ext.security.management.client.editor.group.GroupEditor {
 
-    public interface View extends UberView<GroupEditor> {
-
-        View show(final String name);
-
-        View setEditButtonVisible(boolean isVisible);
-
-        View setDeleteButtonVisible(boolean isVisible);
-
-        View clear();
-
-        View setACLSettings(IsWidget aclSettings);
-
-        View showACL(IsWidget aclViewer);
-
-        View editACL(IsWidget aclEditor);
-    }
-    
+    public View view;
     ClientUserSystemManager userSystemManager;
     Event<OnDeleteEvent> onDeleteEvent;
     Event<OnEditEvent> onEditEvent;
@@ -72,10 +55,8 @@ public class GroupEditor implements IsWidget, org.uberfire.ext.security.manageme
     ACLSettings aclSettings;
     ACLViewer aclViewer;
     ACLEditor aclEditor;
-    public View view;
     Group group;
     boolean isEditMode;
-
     @Inject
     public GroupEditor(final ClientUserSystemManager userSystemManager,
                        final Event<OnEditEvent> onEditEvent,
@@ -134,17 +115,18 @@ public class GroupEditor implements IsWidget, org.uberfire.ext.security.manageme
         return aclEditor;
     }
 
-    /*  ******************************************************************************************************
-                                 PUBLIC PRESENTER API 
-     ****************************************************************************************************** */
-
     @Override
     public void show(final Group group) {
         clear();
         this.isEditMode = false;
         open(group);
-        onShowEvent.fire(new OnShowEvent(this, group));
+        onShowEvent.fire(new OnShowEvent(this,
+                                         group));
     }
+
+    /*  ******************************************************************************************************
+                                 PUBLIC PRESENTER API 
+     ****************************************************************************************************** */
 
     @Override
     public void edit(final Group group) {
@@ -175,25 +157,23 @@ public class GroupEditor implements IsWidget, org.uberfire.ext.security.manageme
         //  Currently no violations expected.
     }
 
-     /*  ******************************************************************************************************
-                                 PACKAGE PROTECTED METHODS FOR USING AS CALLBACKS FOR THE VIEW 
-     ****************************************************************************************************** */
-    
     boolean canDelete() {
         return userSystemManager.isGroupCapabilityEnabled(Capability.CAN_DELETE_GROUP);
     }
-    
+
+     /*  ******************************************************************************************************
+                                 PACKAGE PROTECTED METHODS FOR USING AS CALLBACKS FOR THE VIEW 
+     ****************************************************************************************************** */
+
     void onDelete() {
-        GroupEditor.this.onDeleteEvent.fire(new OnDeleteEvent(GroupEditor.this, GroupEditor.this.group));
+        GroupEditor.this.onDeleteEvent.fire(new OnDeleteEvent(GroupEditor.this,
+                                                              GroupEditor.this.group));
     }
 
     void onEdit() {
-        onEditEvent.fire(new OnEditEvent(this, group));
+        onEditEvent.fire(new OnEditEvent(this,
+                                         group));
     }
-
-     /*  ******************************************************************************************************
-                                 PRIVATE METHODS AND VALIDATORS
-     ****************************************************************************************************** */
 
     protected void open(final Group group) {
         assert group != null;
@@ -217,5 +197,26 @@ public class GroupEditor implements IsWidget, org.uberfire.ext.security.manageme
             aclViewer.show(group);
             view.showACL(aclViewer);
         }
+    }
+
+     /*  ******************************************************************************************************
+                                 PRIVATE METHODS AND VALIDATORS
+     ****************************************************************************************************** */
+
+    public interface View extends UberView<GroupEditor> {
+
+        View show(final String name);
+
+        View setEditButtonVisible(boolean isVisible);
+
+        View setDeleteButtonVisible(boolean isVisible);
+
+        View clear();
+
+        View setACLSettings(IsWidget aclSettings);
+
+        View showACL(IsWidget aclViewer);
+
+        View editACL(IsWidget aclEditor);
     }
 }

@@ -39,15 +39,15 @@ public class PrettyFormLayout extends Composite {
     private String sectionName;
 
     public PrettyFormLayout() {
-        layout.setWidth( "100%" );
-        initWidget( layout );
+        layout.setWidth("100%");
+        initWidget(layout);
     }
 
     public void startSection() {
         this.currentTable = new FlexTable();
     }
 
-    public void startSection( String title ) {
+    public void startSection(String title) {
         startSection();
         this.sectionName = title;
     }
@@ -56,94 +56,97 @@ public class PrettyFormLayout extends Composite {
         this.layout.clear();
     }
 
-    public void addHeader( Image img,
-                           String name,
-                           Image edit ) {
+    public void addHeader(Image img,
+                          String name,
+                          Image edit) {
         HorizontalPanel h = new HorizontalPanel();
-        h.add( img );
-        h.add( new HTML( "&nbsp;" ) );
-        h.add( new Label( name ) );
-        if ( edit != null ) {
-            h.add( edit );
+        h.add(img);
+        h.add(new HTML("&nbsp;"));
+        h.add(new Label(name));
+        if (edit != null) {
+            h.add(edit);
         }
 
-        Form f = newForm( null );
+        Form f = newForm(null);
 
-        f.add( h );
-        layout.add( f );
+        f.add(h);
+        layout.add(f);
     }
 
-    public void addHeader( Image img,
-                           Widget content ) {
+    public void addHeader(Image img,
+                          Widget content) {
         HorizontalPanel h = new HorizontalPanel();
-        h.add( img );
-        h.add( new HTML( "&nbsp;" ) );
-        h.add( content );
-        Form f = newForm( null );
-        f.add( h );
-        layout.add( f );
+        h.add(img);
+        h.add(new HTML("&nbsp;"));
+        h.add(content);
+        Form f = newForm(null);
+        f.add(h);
+        layout.add(f);
     }
 
-    private Form newForm( final String hdr ) {
+    private Form newForm(final String hdr) {
         Form fp = new Form();
-        fp.setWidth( "100%" );
-        fp.addStyleName( "guvnor-FormPanel" );
-        if ( hdr != null ) {
-            fp.setTitle( hdr );
+        fp.setWidth("100%");
+        fp.addStyleName("guvnor-FormPanel");
+        if (hdr != null) {
+            fp.setTitle(hdr);
         }
         return fp;
     }
 
     public void endSection() {
-        Form f = newForm( this.sectionName );
+        Form f = newForm(this.sectionName);
 
-        f.add( this.currentTable );
+        f.add(this.currentTable);
 
-        this.layout.add( f );
+        this.layout.add(f);
         this.sectionName = null;
     }
 
-    public void addRow( final Widget widget ) {
+    public void addRow(final Widget widget) {
         //TODO ARIA: what to do with widget has no visible label?
 
         int row = currentTable.getRowCount();
-        currentTable.setWidget( row,
-                                0,
-                                widget );
-        currentTable.getFlexCellFormatter().setColSpan( row,
-                                                        0,
-                                                        2 );
+        currentTable.setWidget(row,
+                               0,
+                               widget);
+        currentTable.getFlexCellFormatter().setColSpan(row,
+                                                       0,
+                                                       2);
     }
 
-    public int addAttribute( String lbl,
-                             final Widget categories ) {
+    public int addAttribute(String lbl,
+                            final Widget categories) {
         String id = DOM.createUniqueId();
-        categories.getElement().setAttribute( "aria-labelledby", id );
-        categories.getElement().setAttribute( "aria-required", String.valueOf( true ) );
-        categories.getElement().setTabIndex( 0 );
+        categories.getElement().setAttribute("aria-labelledby",
+                                             id);
+        categories.getElement().setAttribute("aria-required",
+                                             String.valueOf(true));
+        categories.getElement().setTabIndex(0);
 
         int row = currentTable.getRowCount();
-        Label label = new Label( lbl );
-        label.getElement().setAttribute( "id", id );
+        Label label = new Label(lbl);
+        label.getElement().setAttribute("id",
+                                        id);
 
-        currentTable.setWidget( row,
-                                0,
-                                label );
-        currentTable.setWidget( row,
-                                1,
-                                categories );
-        currentTable.getFlexCellFormatter().setHorizontalAlignment( row,
-                                                                    0,
-                                                                    HasHorizontalAlignment.ALIGN_RIGHT );
-        currentTable.getFlexCellFormatter().setVerticalAlignment( row,
-                                                                  0,
-                                                                  HasVerticalAlignment.ALIGN_TOP );
+        currentTable.setWidget(row,
+                               0,
+                               label);
+        currentTable.setWidget(row,
+                               1,
+                               categories);
+        currentTable.getFlexCellFormatter().setHorizontalAlignment(row,
+                                                                   0,
+                                                                   HasHorizontalAlignment.ALIGN_RIGHT);
+        currentTable.getFlexCellFormatter().setVerticalAlignment(row,
+                                                                 0,
+                                                                 HasVerticalAlignment.ALIGN_TOP);
 
         return row;
     }
 
-    public void removeRow( int row ) {
+    public void removeRow(int row) {
 
-        currentTable.removeRow( row );
+        currentTable.removeRow(row);
     }
 }

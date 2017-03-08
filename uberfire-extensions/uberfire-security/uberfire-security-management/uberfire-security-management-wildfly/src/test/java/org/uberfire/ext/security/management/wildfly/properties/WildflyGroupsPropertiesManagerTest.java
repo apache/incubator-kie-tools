@@ -16,10 +16,22 @@
 
 package org.uberfire.ext.security.management.wildfly.properties;
 
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.io.FileUtils;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.GroupImpl;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
@@ -29,14 +41,9 @@ import org.uberfire.ext.security.management.BaseTest;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.api.CapabilityStatus;
-import org.uberfire.ext.security.management.api.UserSystemManager;
 import org.uberfire.ext.security.management.api.exception.GroupNotFoundException;
 import org.uberfire.ext.security.management.api.exception.UnsupportedServiceCapabilityException;
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
-
-import java.io.File;
-import java.net.URL;
-import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -46,29 +53,28 @@ public class WildflyGroupsPropertiesManagerTest extends BaseTest {
 
     protected static final String ADMIN = "admin";
     protected static final String GROUPS_FILE = "org/uberfire/ext/security/management/wildfly/application-roles.properties";
-    protected String groupsFilePath;
-    
-    @Spy
-    private WildflyGroupPropertiesManager groupsPropertiesManager = new WildflyGroupPropertiesManager();
-
-    private static File elHome;
-
     @ClassRule
     public static TemporaryFolder tempFolder = new TemporaryFolder();
+    private static File elHome;
+    protected String groupsFilePath;
+    @Spy
+    private WildflyGroupPropertiesManager groupsPropertiesManager = new WildflyGroupPropertiesManager();
 
     @BeforeClass
     public static void initWorkspace() throws Exception {
         elHome = tempFolder.newFolder("uf-extensions-security-management-wildfly");
         RoleRegistry.get().clear();
     }
-    
+
     @Before
     public void setup() throws Exception {
         URL templateURL = Thread.currentThread().getContextClassLoader().getResource(GROUPS_FILE);
         File templateFile = new File(templateURL.getFile());
         FileUtils.cleanDirectory(elHome);
-        FileUtils.copyFileToDirectory(templateFile, elHome);
-        this.groupsFilePath = new File(elHome, templateFile.getName()).getAbsolutePath();
+        FileUtils.copyFileToDirectory(templateFile,
+                                      elHome);
+        this.groupsFilePath = new File(elHome,
+                                       templateFile.getName()).getAbsolutePath();
         doReturn(groupsFilePath).when(groupsPropertiesManager).getGroupsFilePath();
         groupsPropertiesManager.initialize(userSystemManager);
     }
@@ -80,11 +86,16 @@ public class WildflyGroupsPropertiesManagerTest extends BaseTest {
 
     @Test
     public void testCapabilities() {
-        assertEquals(groupsPropertiesManager.getCapabilityStatus(Capability.CAN_SEARCH_GROUPS), CapabilityStatus.ENABLED);
-        assertEquals(groupsPropertiesManager.getCapabilityStatus(Capability.CAN_READ_GROUP), CapabilityStatus.ENABLED);
-        assertEquals(groupsPropertiesManager.getCapabilityStatus(Capability.CAN_ADD_GROUP), CapabilityStatus.ENABLED);
-        assertEquals(groupsPropertiesManager.getCapabilityStatus(Capability.CAN_DELETE_GROUP), CapabilityStatus.ENABLED);
-        assertEquals(groupsPropertiesManager.getCapabilityStatus(Capability.CAN_UPDATE_GROUP), CapabilityStatus.UNSUPPORTED);
+        assertEquals(groupsPropertiesManager.getCapabilityStatus(Capability.CAN_SEARCH_GROUPS),
+                     CapabilityStatus.ENABLED);
+        assertEquals(groupsPropertiesManager.getCapabilityStatus(Capability.CAN_READ_GROUP),
+                     CapabilityStatus.ENABLED);
+        assertEquals(groupsPropertiesManager.getCapabilityStatus(Capability.CAN_ADD_GROUP),
+                     CapabilityStatus.ENABLED);
+        assertEquals(groupsPropertiesManager.getCapabilityStatus(Capability.CAN_DELETE_GROUP),
+                     CapabilityStatus.ENABLED);
+        assertEquals(groupsPropertiesManager.getCapabilityStatus(Capability.CAN_UPDATE_GROUP),
+                     CapabilityStatus.UNSUPPORTED);
     }
 
     @Test
@@ -94,35 +105,49 @@ public class WildflyGroupsPropertiesManagerTest extends BaseTest {
 
     @Test(expected = RuntimeException.class)
     public void testSearchPageZero() {
-        AbstractEntityManager.SearchRequest request = buildSearchRequestMock("", 0, 5);
+        AbstractEntityManager.SearchRequest request = buildSearchRequestMock("",
+                                                                             0,
+                                                                             5);
         AbstractEntityManager.SearchResponse<Group> response = groupsPropertiesManager.search(request);
     }
-    
+
     @Test
     public void testSearchAll() {
-        AbstractEntityManager.SearchRequest request = buildSearchRequestMock("", 1, 5);
+        AbstractEntityManager.SearchRequest request = buildSearchRequestMock("",
+                                                                             1,
+                                                                             5);
         AbstractEntityManager.SearchResponse<Group> response = groupsPropertiesManager.search(request);
         assertNotNull(response);
         List<Group> groups = response.getResults();
         int total = response.getTotal();
         boolean hasNextPage = response.hasNextPage();
-        assertEquals(total, 4);
+        assertEquals(total,
+                     4);
         assertTrue(!hasNextPage);
-        assertEquals(groups.size(), 4);
-        List<Group> expectedGroups = createGroupList(ADMIN, "role3", "role2", "role1");
-        assertEquals(new HashSet<Group>(expectedGroups), new HashSet<Group>(groups));
+        assertEquals(groups.size(),
+                     4);
+        List<Group> expectedGroups = createGroupList(ADMIN,
+                                                     "role3",
+                                                     "role2",
+                                                     "role1");
+        assertEquals(new HashSet<Group>(expectedGroups),
+                     new HashSet<Group>(groups));
     }
-    
+
     @Test
     public void testGroupsForUser() {
         Set<Group> groups = groupsPropertiesManager.getGroupsAndRolesForUser(ADMIN)[0];
-        assertGroupsForUser(groups, new String[]{ADMIN});
+        assertGroupsForUser(groups,
+                            new String[]{ADMIN});
         groups = groupsPropertiesManager.getGroupsAndRolesForUser("user1")[0];
-        assertGroupsForUser(groups, new String[]{"role1"});
+        assertGroupsForUser(groups,
+                            new String[]{"role1"});
         groups = groupsPropertiesManager.getGroupsAndRolesForUser("user2")[0];
-        assertGroupsForUser(groups, new String[]{"role1", "role2"});
+        assertGroupsForUser(groups,
+                            new String[]{"role1", "role2"});
         groups = groupsPropertiesManager.getGroupsAndRolesForUser("user3")[0];
-        assertGroupsForUser(groups, new String[]{"role3"});
+        assertGroupsForUser(groups,
+                            new String[]{"role3"});
     }
 
     @Test
@@ -137,11 +162,13 @@ public class WildflyGroupsPropertiesManagerTest extends BaseTest {
     public void testCreateGroup() {
         Collection<String> users = new HashSet<String>();
         users.add("user10");
-        groupsPropertiesManager.assignUsers("role10", users);
+        groupsPropertiesManager.assignUsers("role10",
+                                            users);
         Group created = groupsPropertiesManager.get("role10");
         Set<Group> groups = groupsPropertiesManager.getGroupsAndRolesForUser("user10")[0];
         assertNotNull(created);
-        assertGroupsForUser(groups, new String[]{"role10"});
+        assertGroupsForUser(groups,
+                            new String[]{"role10"});
     }
 
     @Test(expected = UnsupportedServiceCapabilityException.class)
@@ -169,16 +196,19 @@ public class WildflyGroupsPropertiesManagerTest extends BaseTest {
         }
         return null;
     }
-    
+
     private void assertGet(String name) {
         Group group = groupsPropertiesManager.get(name);
         assertNotNull(group);
-        assertEquals(group.getName(), name);
+        assertEquals(group.getName(),
+                     name);
     }
 
-    private void assertGroupsForUser(Set<Group> groupsSet, String[] groups) {
+    private void assertGroupsForUser(Set<Group> groupsSet,
+                                     String[] groups) {
         assertNotNull(groupsSet);
-        assertEquals(groupsSet.size(), groups.length);
+        assertEquals(groupsSet.size(),
+                     groups.length);
         int x = 0;
         for (Group g : groupsSet) {
             String gName = groups[x];
@@ -186,7 +216,4 @@ public class WildflyGroupsPropertiesManagerTest extends BaseTest {
             x++;
         }
     }
-    
-    
-    
 }

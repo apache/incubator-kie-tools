@@ -62,7 +62,5 @@ public interface CardinalityRule extends RuleByRole {
          * @return
          */
         long getMaxOccurrences();
-
     }
-
 }

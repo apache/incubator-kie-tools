@@ -16,10 +16,10 @@
 
 package org.uberfire.workbench.model;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Represents the position of a child panel by name. For example, within a templated perspective, panels are positioned
@@ -35,24 +35,22 @@ public class NamedPosition implements Position {
     /**
      * Represents the root panel of any templated perspective.
      */
-    public static final NamedPosition ROOT = new NamedPosition( "" );
+    public static final NamedPosition ROOT = new NamedPosition("");
 
     private final String fieldName;
 
     /**
      * Creates a new position representing the ErraiUI {@code @DataField} with the given name.
      * If you are trying to refer to the root of the template itself, use {@link #ROOT}.
-     * 
-     * @param fieldName
-     *            the name of the data field. Must be non-null.
+     * @param fieldName the name of the data field. Must be non-null.
      */
-    public NamedPosition( @MapsTo( "fieldName" ) String fieldName ) {
-        this.fieldName = checkNotNull( "fieldName", fieldName );
+    public NamedPosition(@MapsTo("fieldName") String fieldName) {
+        this.fieldName = checkNotNull("fieldName",
+                                      fieldName);
     }
 
     /**
      * Returns the data field name this Position refers to.
-     * 
      * @return a non-null string. For the special {@link #ROOT} position constant, this is the empty string.
      */
     @Override
@@ -69,19 +67,24 @@ public class NamedPosition implements Position {
     }
 
     @Override
-    public boolean equals( Object obj ) {
-        if ( this == obj )
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
-        if ( obj == null )
+        }
+        if (obj == null) {
             return false;
-        if ( getClass() != obj.getClass() )
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         NamedPosition other = (NamedPosition) obj;
-        if ( fieldName == null ) {
-            if ( other.fieldName != null )
+        if (fieldName == null) {
+            if (other.fieldName != null) {
                 return false;
-        } else if ( !fieldName.equals( other.fieldName ) )
+            }
+        } else if (!fieldName.equals(other.fieldName)) {
             return false;
+        }
         return true;
     }
 

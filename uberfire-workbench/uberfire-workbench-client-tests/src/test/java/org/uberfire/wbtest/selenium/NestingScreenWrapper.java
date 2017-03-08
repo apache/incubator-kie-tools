@@ -38,32 +38,34 @@ public class NestingScreenWrapper {
     private final WebElement element;
     private final Map<CompassPosition, Integer> childCounts = new HashMap<CompassPosition, Integer>();
 
-    public NestingScreenWrapper( WebDriver driver, String positionTag ) {
+    public NestingScreenWrapper(WebDriver driver,
+                                String positionTag) {
         this.driver = driver;
         this.positionTag = positionTag;
-        element = driver.findElement( By.id( "gwt-debug-NestingScreen-" + positionTag ) );
-        if ( element == null ) {
-            throw new IllegalStateException( "NestingScreen " + positionTag + " not found!" );
+        element = driver.findElement(By.id("gwt-debug-NestingScreen-" + positionTag));
+        if (element == null) {
+            throw new IllegalStateException("NestingScreen " + positionTag + " not found!");
         }
     }
 
     /**
      * Adds a child panel at the given position and returns a wrapper for interacting with it.
-     *
      * @param position
      * @return
      */
-    public NestingScreenWrapper addChild( CompassPosition position ) {
-        WebElement button = element.findElement( By.className( position.name().toLowerCase() ) );
+    public NestingScreenWrapper addChild(CompassPosition position) {
+        WebElement button = element.findElement(By.className(position.name().toLowerCase()));
         button.click();
 
         Integer childCount = childCounts.get(position);
-        if ( childCount == null ) {
+        if (childCount == null) {
             childCount = 0;
         }
-        childCounts.put( position, childCount + 1 );
+        childCounts.put(position,
+                        childCount + 1);
 
-        return new NestingScreenWrapper( driver, positionTag + position.name().charAt( 0 ) + childCount );
+        return new NestingScreenWrapper(driver,
+                                        positionTag + position.name().charAt(0) + childCount);
     }
 
     /**
@@ -71,10 +73,12 @@ public class NestingScreenWrapper {
      */
     public boolean isStillInDom() {
         try {
-            driver.manage().timeouts().implicitlyWait( 10, TimeUnit.MILLISECONDS );
-            return driver.findElements( By.id( "gwt-debug-NestingScreen-" + positionTag ) ).size() > 0;
+            driver.manage().timeouts().implicitlyWait(10,
+                                                      TimeUnit.MILLISECONDS);
+            return driver.findElements(By.id("gwt-debug-NestingScreen-" + positionTag)).size() > 0;
         } finally {
-            driver.manage().timeouts().implicitlyWait( 10, TimeUnit.SECONDS );
+            driver.manage().timeouts().implicitlyWait(10,
+                                                      TimeUnit.SECONDS);
         }
     }
 
@@ -83,10 +87,12 @@ public class NestingScreenWrapper {
      */
     public boolean isPanelStillInDom() {
         try {
-            driver.manage().timeouts().implicitlyWait( 10, TimeUnit.MILLISECONDS );
-            return driver.findElements( By.id( "NestingScreenPanel-" + positionTag ) ).size() > 0;
+            driver.manage().timeouts().implicitlyWait(10,
+                                                      TimeUnit.MILLISECONDS);
+            return driver.findElements(By.id("NestingScreenPanel-" + positionTag)).size() > 0;
         } finally {
-            driver.manage().timeouts().implicitlyWait( 10, TimeUnit.SECONDS );
+            driver.manage().timeouts().implicitlyWait(10,
+                                                      TimeUnit.SECONDS);
         }
     }
 
@@ -108,7 +114,7 @@ public class NestingScreenWrapper {
      * Closes the place associated with this nesting screen.
      */
     public void close() {
-        element.findElement( By.className( "close" ) ).click();
+        element.findElement(By.className("close")).click();
     }
 
     /**

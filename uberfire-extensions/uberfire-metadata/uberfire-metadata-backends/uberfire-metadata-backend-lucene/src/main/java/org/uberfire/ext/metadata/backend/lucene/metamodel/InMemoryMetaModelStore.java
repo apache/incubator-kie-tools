@@ -29,18 +29,20 @@ public class InMemoryMetaModelStore implements MetaModelStore {
     private final ConcurrentHashMap<String, MetaObject> metaModel = new ConcurrentHashMap<String, MetaObject>();
 
     @Override
-    public void add( final MetaObject metaObject ) {
-        metaModel.put( metaObject.getType().getName(), metaObject );
+    public void add(final MetaObject metaObject) {
+        metaModel.put(metaObject.getType().getName(),
+                      metaObject);
     }
 
     @Override
-    public void update( final MetaObject metaObject ) {
-        metaModel.put( metaObject.getType().getName(), metaObject );
+    public void update(final MetaObject metaObject) {
+        metaModel.put(metaObject.getType().getName(),
+                      metaObject);
     }
 
     @Override
-    public MetaObject getMetaObject( final String type ) {
-        return metaModel.get( type );
+    public MetaObject getMetaObject(final String type) {
+        return metaModel.get(type);
     }
 
     @Override

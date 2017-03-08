@@ -28,8 +28,7 @@ import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
  */
 public interface SocialSecurityConstraint {
 
-    boolean hasRestrictions( SocialActivitiesEvent event );
+    boolean hasRestrictions(SocialActivitiesEvent event);
 
     void init();
-
 }

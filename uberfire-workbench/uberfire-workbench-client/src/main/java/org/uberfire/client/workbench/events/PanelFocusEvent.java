@@ -23,7 +23,7 @@ public class PanelFocusEvent implements UberFireEvent {
 
     private final PanelDefinition panel;
 
-    public PanelFocusEvent( PanelDefinition panel ) {
+    public PanelFocusEvent(PanelDefinition panel) {
         this.panel = panel;
     }
 
@@ -35,5 +35,4 @@ public class PanelFocusEvent implements UberFireEvent {
     public String toString() {
         return "PanelFocusEvent [panel=" + panel + "]";
     }
-
 }

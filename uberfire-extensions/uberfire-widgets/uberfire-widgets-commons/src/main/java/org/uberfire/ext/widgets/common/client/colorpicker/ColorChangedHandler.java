@@ -18,5 +18,6 @@ package org.uberfire.ext.widgets.common.client.colorpicker;
 import com.google.gwt.event.shared.EventHandler;
 
 public interface ColorChangedHandler extends EventHandler {
-	void colorChanged(ColorChangedEvent event);
+
+    void colorChanged(ColorChangedEvent event);
 }

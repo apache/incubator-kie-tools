@@ -42,32 +42,17 @@ public class GridWidgetDnDHandlersState {
     private GridWidgetDnDProxy eventColumnHighlight = new GridWidgetDnDProxy();
 
     /**
-     * The different states of the drag operation.
-     */
-    public enum GridWidgetHandlersOperation {
-        NONE,
-        COLUMN_RESIZE_PENDING,
-        COLUMN_RESIZE,
-        COLUMN_MOVE_PENDING,
-        COLUMN_MOVE,
-        ROW_MOVE_PENDING,
-        ROW_MOVE,
-        GRID_MOVE_PENDING,
-        GRID_MOVE
-    }
-
-    /**
      * Resets the state to no operation with no active columns or rows.
      */
     public void reset() {
-        if ( activeGridWidget != null ) {
-            activeGridWidget.setDraggable( false );
+        if (activeGridWidget != null) {
+            activeGridWidget.setDraggable(false);
         }
         this.activeGridWidget = null;
         this.activeHeaderMetaData = null;
         this.activeGridRows.clear();
-        setOperation( GridWidgetDnDHandlersState.GridWidgetHandlersOperation.NONE );
-        setCursor( Style.Cursor.DEFAULT );
+        setOperation(GridWidgetDnDHandlersState.GridWidgetHandlersOperation.NONE);
+        setCursor(Style.Cursor.DEFAULT);
     }
 
     /**
@@ -82,7 +67,7 @@ public class GridWidgetDnDHandlersState {
      * Sets the active GridWidget. Can be null.
      * @param activeGridWidget
      */
-    public void setActiveGridWidget( final GridWidget activeGridWidget ) {
+    public void setActiveGridWidget(final GridWidget activeGridWidget) {
         this.activeGridWidget = activeGridWidget;
     }
 
@@ -98,7 +83,7 @@ public class GridWidgetDnDHandlersState {
      * Sets the active HeaderMetaData.
      * @param activeHeaderMetaData
      */
-    public void setActiveHeaderMetaData( final GridColumn.HeaderMetaData activeHeaderMetaData ) {
+    public void setActiveHeaderMetaData(final GridColumn.HeaderMetaData activeHeaderMetaData) {
         this.activeHeaderMetaData = activeHeaderMetaData;
     }
 
@@ -107,15 +92,15 @@ public class GridWidgetDnDHandlersState {
      * @return
      */
     public List<GridColumn<?>> getActiveGridColumns() {
-        return Collections.unmodifiableList( activeGridColumns );
+        return Collections.unmodifiableList(activeGridColumns);
     }
 
     /**
      * Sets the active columns to be affected by the current the operation.
      */
-    public void setActiveGridColumns( final List<GridColumn<?>> activeGridColumns ) {
+    public void setActiveGridColumns(final List<GridColumn<?>> activeGridColumns) {
         this.activeGridColumns.clear();
-        this.activeGridColumns.addAll( activeGridColumns );
+        this.activeGridColumns.addAll(activeGridColumns);
     }
 
     /**
@@ -123,15 +108,15 @@ public class GridWidgetDnDHandlersState {
      * @return
      */
     public List<GridRow> getActiveGridRows() {
-        return Collections.unmodifiableList( activeGridRows );
+        return Collections.unmodifiableList(activeGridRows);
     }
 
     /**
      * Sets the active rows to be affected by the current the operation.
      */
-    public void setActiveGridRows( final List<GridRow> activeGridRows ) {
+    public void setActiveGridRows(final List<GridRow> activeGridRows) {
         this.activeGridRows.clear();
-        this.activeGridRows.addAll( activeGridRows );
+        this.activeGridRows.addAll(activeGridRows);
     }
 
     /**
@@ -146,7 +131,7 @@ public class GridWidgetDnDHandlersState {
      * Sets the current drag operation in progress.
      * @param operation
      */
-    public void setOperation( final GridWidgetHandlersOperation operation ) {
+    public void setOperation(final GridWidgetHandlersOperation operation) {
         this.operation = operation;
     }
 
@@ -165,7 +150,7 @@ public class GridWidgetDnDHandlersState {
      * Sets the Cursor type to be shown for the current operation.
      * @param cursor
      */
-    public void setCursor( Style.Cursor cursor ) {
+    public void setCursor(Style.Cursor cursor) {
         this.cursor = cursor;
     }
 
@@ -181,7 +166,7 @@ public class GridWidgetDnDHandlersState {
      * Sets the grid-relative x-coordinate of the Mouse Event.
      * @param eventInitialX
      */
-    public void setEventInitialX( final double eventInitialX ) {
+    public void setEventInitialX(final double eventInitialX) {
         this.eventInitialX = eventInitialX;
     }
 
@@ -200,7 +185,7 @@ public class GridWidgetDnDHandlersState {
      * Sets the initial width of a column to be resized.
      * @param eventInitialColumnWidth
      */
-    public void setEventInitialColumnWidth( final double eventInitialColumnWidth ) {
+    public void setEventInitialColumnWidth(final double eventInitialColumnWidth) {
         this.eventInitialColumnWidth = eventInitialColumnWidth;
     }
 
@@ -212,4 +197,18 @@ public class GridWidgetDnDHandlersState {
         return eventColumnHighlight;
     }
 
+    /**
+     * The different states of the drag operation.
+     */
+    public enum GridWidgetHandlersOperation {
+        NONE,
+        COLUMN_RESIZE_PENDING,
+        COLUMN_RESIZE,
+        COLUMN_MOVE_PENDING,
+        COLUMN_MOVE,
+        ROW_MOVE_PENDING,
+        ROW_MOVE,
+        GRID_MOVE_PENDING,
+        GRID_MOVE
+    }
 }

@@ -16,20 +16,20 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.events;
 
-import org.uberfire.workbench.events.UberFireEvent;
-
 import java.util.Set;
+
+import org.uberfire.workbench.events.UberFireEvent;
 
 /**
  * <p>A user is updating assigned user's groups.</p>
- * 
  * @since 0.8.0
  */
 public class OnUpdateUserGroupsEvent extends ContextualEvent implements UberFireEvent {
 
     private Set<String> groups;
 
-    public OnUpdateUserGroupsEvent(Object context, Set<String> groups) {
+    public OnUpdateUserGroupsEvent(Object context,
+                                   Set<String> groups) {
         super(context);
         this.groups = groups;
     }

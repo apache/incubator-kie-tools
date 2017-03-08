@@ -51,14 +51,11 @@ import static org.mockito.Mockito.*;
 public class WorkbenchMenuBarPresenterTest {
 
     @Mock
-    private PerspectiveManager perspectiveManager;
-
-    @Mock
     protected AuthorizationManager authzManager;
-
     @Mock
     protected User identity;
-
+    @Mock
+    private PerspectiveManager perspectiveManager;
     @Mock
     private ActivityManager activityManager;
 
@@ -71,76 +68,96 @@ public class WorkbenchMenuBarPresenterTest {
     @Test
     public void testAddCurrentPerspective() {
         final String perspectiveId = "perspectiveId";
-        final Menus menus = MenuFactory.newSimpleItem( "test" ).perspective( perspectiveId ).endMenu().build();
-        final PlaceRequest placeRequest = new DefaultPlaceRequest( perspectiveId );
-        final PerspectiveActivity perspectiveActivity = mock( PerspectiveActivity.class );
+        final Menus menus = MenuFactory.newSimpleItem("test").perspective(perspectiveId).endMenu().build();
+        final PlaceRequest placeRequest = new DefaultPlaceRequest(perspectiveId);
+        final PerspectiveActivity perspectiveActivity = mock(PerspectiveActivity.class);
 
-        when( perspectiveActivity.getPlace() ).thenReturn( placeRequest );
-        when( perspectiveManager.getCurrentPerspective() ).thenReturn( perspectiveActivity );
-        when( authzManager.authorize( any( Resource.class ), eq( identity ) ) ).thenReturn( true );
+        when(perspectiveActivity.getPlace()).thenReturn(placeRequest);
+        when(perspectiveManager.getCurrentPerspective()).thenReturn(perspectiveActivity);
+        when(authzManager.authorize(any(Resource.class),
+                                    eq(identity))).thenReturn(true);
 
-        presenter.addMenus( menus );
-        verify( view ).selectMenuItem( perspectiveId );
+        presenter.addMenus(menus);
+        verify(view).selectMenuItem(perspectiveId);
     }
 
     @Test
     public void testAddPerspective() {
         final String perspectiveId = "perspectiveId";
-        final Menus menus = MenuFactory.newSimpleItem( "test" ).perspective( perspectiveId ).endMenu().build();
-        final PlaceRequest placeRequest = new DefaultPlaceRequest( "anyId" );
-        final PerspectiveActivity perspectiveActivity = mock( PerspectiveActivity.class );
+        final Menus menus = MenuFactory.newSimpleItem("test").perspective(perspectiveId).endMenu().build();
+        final PlaceRequest placeRequest = new DefaultPlaceRequest("anyId");
+        final PerspectiveActivity perspectiveActivity = mock(PerspectiveActivity.class);
 
-        when( perspectiveActivity.getPlace() ).thenReturn( placeRequest );
-        when( perspectiveManager.getCurrentPerspective() ).thenReturn( perspectiveActivity );
-        when( authzManager.authorize( any( Resource.class ), eq( identity ) ) ).thenReturn( true );
+        when(perspectiveActivity.getPlace()).thenReturn(placeRequest);
+        when(perspectiveManager.getCurrentPerspective()).thenReturn(perspectiveActivity);
+        when(authzManager.authorize(any(Resource.class),
+                                    eq(identity))).thenReturn(true);
 
-        presenter.addMenus( menus );
+        presenter.addMenus(menus);
 
-        verify( view, never() ).selectMenuItem( perspectiveId );
+        verify(view,
+               never()).selectMenuItem(perspectiveId);
     }
 
     @Test
     public void testPerspectiveChangeEvent() {
         final String perspectiveId = "perspectiveId";
-        final Menus menus = MenuFactory.newSimpleItem( "test" ).perspective( perspectiveId ).endMenu().build();
-        final PlaceRequest placeRequest = new DefaultPlaceRequest( perspectiveId );
-        final PerspectiveActivity perspectiveActivity = mock( PerspectiveActivity.class );
-        final PerspectiveChange perspectiveChange = new PerspectiveChange( placeRequest, null, null, perspectiveId );
+        final Menus menus = MenuFactory.newSimpleItem("test").perspective(perspectiveId).endMenu().build();
+        final PlaceRequest placeRequest = new DefaultPlaceRequest(perspectiveId);
+        final PerspectiveActivity perspectiveActivity = mock(PerspectiveActivity.class);
+        final PerspectiveChange perspectiveChange = new PerspectiveChange(placeRequest,
+                                                                          null,
+                                                                          null,
+                                                                          perspectiveId);
 
-        when( perspectiveActivity.getPlace() ).thenReturn( placeRequest );
-        when( perspectiveActivity.isType( ActivityResourceType.PERSPECTIVE.name() ) ).thenReturn( true );
-        when( authzManager.authorize( any( Resource.class ), eq( identity ) ) ).thenReturn( true );
+        when(perspectiveActivity.getPlace()).thenReturn(placeRequest);
+        when(perspectiveActivity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
+        when(authzManager.authorize(any(Resource.class),
+                                    eq(identity))).thenReturn(true);
 
-        presenter.addMenus( menus );
-        presenter.onPerspectiveChange( perspectiveChange );
+        presenter.addMenus(menus);
+        presenter.onPerspectiveChange(perspectiveChange);
 
-        verify( view ).selectMenuItem( perspectiveId );
+        verify(view).selectMenuItem(perspectiveId);
     }
 
     @Test
     public void testAddMenuWithPermission() {
         final String perspectiveId = "perspectiveId";
         final String label = "perspectiveLabel";
-        final Menus menus = MenuFactory.newSimpleItem( label ).perspective( perspectiveId ).endMenu().build();
-        when( authzManager.authorize( menus.getItems().get( 0 ), identity ) ).thenReturn( true );
+        final Menus menus = MenuFactory.newSimpleItem(label).perspective(perspectiveId).endMenu().build();
+        when(authzManager.authorize(menus.getItems().get(0),
+                                    identity)).thenReturn(true);
 
-        presenter.addMenus( menus );
+        presenter.addMenus(menus);
 
-        verify( authzManager ).authorize( menus.getItems().get( 0 ), identity );
-        verify( view ).addMenuItem( eq( perspectiveId ), eq( label ), isNull( String.class ), any( Command.class ), any( MenuPosition.class ) );
+        verify(authzManager).authorize(menus.getItems().get(0),
+                                       identity);
+        verify(view).addMenuItem(eq(perspectiveId),
+                                 eq(label),
+                                 isNull(String.class),
+                                 any(Command.class),
+                                 any(MenuPosition.class));
     }
 
     @Test
     public void testAddMenuWithoutPermission() {
         final String perspectiveId = "perspectiveId";
         final String label = "perspectiveLabel";
-        final Menus menus = MenuFactory.newSimpleItem( label ).perspective( perspectiveId ).endMenu().build();
-        when( authzManager.authorize( menus.getItems().get( 0 ), identity ) ).thenReturn( false );
+        final Menus menus = MenuFactory.newSimpleItem(label).perspective(perspectiveId).endMenu().build();
+        when(authzManager.authorize(menus.getItems().get(0),
+                                    identity)).thenReturn(false);
 
-        presenter.addMenus( menus );
+        presenter.addMenus(menus);
 
-        verify( authzManager ).authorize( menus.getItems().get( 0 ), identity );
-        verify( view, never() ).addMenuItem( eq( perspectiveId ), eq( label ), isNull( String.class ), any( Command.class ), any( MenuPosition.class ) );
+        verify(authzManager).authorize(menus.getItems().get(0),
+                                       identity);
+        verify(view,
+               never()).addMenuItem(eq(perspectiveId),
+                                    eq(label),
+                                    isNull(String.class),
+                                    any(Command.class),
+                                    any(MenuPosition.class));
     }
 
     @Test
@@ -148,251 +165,299 @@ public class WorkbenchMenuBarPresenterTest {
         final String perspectiveId = "perspectiveId";
         final String contextLabel = "contextLabel";
         final MenuPosition position = MenuPosition.LEFT;
-        final Menus contextMenus = MenuFactory.newSimpleItem( contextLabel ).endMenu().build();
-        final PerspectiveActivity activity = mock( PerspectiveActivity.class );
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
+        final Menus contextMenus = MenuFactory.newSimpleItem(contextLabel).endMenu().build();
+        final PerspectiveActivity activity = mock(PerspectiveActivity.class);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
-        when( activity.getIdentifier() ).thenReturn( perspectiveId );
-        when( activity.getMenus() ).thenReturn( contextMenus );
-        when( activity.isType( ActivityResourceType.PERSPECTIVE.name() ) ).thenReturn( true );
-        when( authzManager.authorize( contextMenus.getItems().get( 0 ), identity ) ).thenReturn( true );
-        when( activityManager.getActivity( placeRequest ) ).thenReturn( activity );
+        when(activity.getIdentifier()).thenReturn(perspectiveId);
+        when(activity.getMenus()).thenReturn(contextMenus);
+        when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
+        when(authzManager.authorize(contextMenus.getItems().get(0),
+                                    identity)).thenReturn(true);
+        when(activityManager.getActivity(placeRequest)).thenReturn(activity);
 
-        presenter.onPerspectiveChange( new PerspectiveChange( placeRequest, null, contextMenus, perspectiveId ) );
+        presenter.onPerspectiveChange(new PerspectiveChange(placeRequest,
+                                                            null,
+                                                            contextMenus,
+                                                            perspectiveId));
 
-        verify( authzManager ).authorize( contextMenus.getItems().get( 0 ), identity );
-        verify( view ).clearContextMenu();
-        verify( view ).addContextMenuItem( eq( perspectiveId ), anyString(), eq( contextLabel ), isNull( String.class ), any( Command.class ), eq( position ) );
+        verify(authzManager).authorize(contextMenus.getItems().get(0),
+                                       identity);
+        verify(view).clearContextMenu();
+        verify(view).addContextMenuItem(eq(perspectiveId),
+                                        anyString(),
+                                        eq(contextLabel),
+                                        isNull(String.class),
+                                        any(Command.class),
+                                        eq(position));
     }
 
     @Test
     public void testAddContextMenuWithoutPermission() {
         final String perspectiveId = "perspectiveId";
         final String contextLabel = "contextLabel";
-        final Menus contextMenus = MenuFactory.newSimpleItem( contextLabel ).endMenu().build();
-        final PerspectiveActivity activity = mock( PerspectiveActivity.class );
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
+        final Menus contextMenus = MenuFactory.newSimpleItem(contextLabel).endMenu().build();
+        final PerspectiveActivity activity = mock(PerspectiveActivity.class);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
-        when( activity.getIdentifier() ).thenReturn( perspectiveId );
-        when( activity.getMenus() ).thenReturn( contextMenus );
-        when( activity.isType( ActivityResourceType.PERSPECTIVE.name() ) ).thenReturn( true );
-        when( authzManager.authorize( contextMenus.getItems().get( 0 ), identity ) ).thenReturn( false );
-        when( activityManager.getActivity( placeRequest ) ).thenReturn( activity );
+        when(activity.getIdentifier()).thenReturn(perspectiveId);
+        when(activity.getMenus()).thenReturn(contextMenus);
+        when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
+        when(authzManager.authorize(contextMenus.getItems().get(0),
+                                    identity)).thenReturn(false);
+        when(activityManager.getActivity(placeRequest)).thenReturn(activity);
 
-        presenter.onPerspectiveChange( new PerspectiveChange( placeRequest, null, contextMenus, perspectiveId ) );
+        presenter.onPerspectiveChange(new PerspectiveChange(placeRequest,
+                                                            null,
+                                                            contextMenus,
+                                                            perspectiveId));
 
-        verify( authzManager ).authorize( contextMenus.getItems().get( 0 ), identity );
-        verify( view ).clearContextMenu();
-        verify( view, never() ).addContextMenuItem( anyString(), anyString(), anyString(), anyString(), any( Command.class ), any( MenuPosition.class ) );
+        verify(authzManager).authorize(contextMenus.getItems().get(0),
+                                       identity);
+        verify(view).clearContextMenu();
+        verify(view,
+               never()).addContextMenuItem(anyString(),
+                                           anyString(),
+                                           anyString(),
+                                           anyString(),
+                                           any(Command.class),
+                                           any(MenuPosition.class));
     }
 
     @Test
     public void testSetupEnableDisableMenuItemCommand() {
         final String label = "command";
-        final Command command = mock( Command.class );
-        final Menus menus = MenuFactory.newSimpleItem( label ).respondsWith( command ).endMenu().build();
+        final Command command = mock(Command.class);
+        final Menus menus = MenuFactory.newSimpleItem(label).respondsWith(command).endMenu().build();
 
-        when( authzManager.authorize( menus.getItems().get( 0 ), identity ) ).thenReturn( true );
+        when(authzManager.authorize(menus.getItems().get(0),
+                                    identity)).thenReturn(true);
 
-        presenter.addMenus( menus );
-        verify( view,
-                times( 1 ) ).enableMenuItem( anyString(), eq( true ) );
+        presenter.addMenus(menus);
+        verify(view,
+               times(1)).enableMenuItem(anyString(),
+                                        eq(true));
 
-        menus.getItems().get( 0 ).setEnabled( true );
-        verify( view,
-                times( 2 ) ).enableMenuItem( anyString(), eq( true ) );
+        menus.getItems().get(0).setEnabled(true);
+        verify(view,
+               times(2)).enableMenuItem(anyString(),
+                                        eq(true));
 
-        menus.getItems().get( 0 ).setEnabled( false );
-        verify( view,
-                times( 1 ) ).enableMenuItem( anyString(), eq( false ) );
+        menus.getItems().get(0).setEnabled(false);
+        verify(view,
+               times(1)).enableMenuItem(anyString(),
+                                        eq(false));
     }
 
     @Test
     public void testSetupEnableDisableMenuItemPlace() {
         final String label = "placeLabel";
-        final PlaceRequest place = mock( PlaceRequest.class );
-        final Menus menus = MenuFactory.newSimpleItem( label ).place( place ).endMenu().build();
+        final PlaceRequest place = mock(PlaceRequest.class);
+        final Menus menus = MenuFactory.newSimpleItem(label).place(place).endMenu().build();
 
-        when( authzManager.authorize( menus.getItems().get( 0 ), identity ) ).thenReturn( true );
+        when(authzManager.authorize(menus.getItems().get(0),
+                                    identity)).thenReturn(true);
 
-        presenter.addMenus( menus );
-        verify( view,
-                times( 1 ) ).enableMenuItem( anyString(), eq( true ) );
+        presenter.addMenus(menus);
+        verify(view,
+               times(1)).enableMenuItem(anyString(),
+                                        eq(true));
 
-        menus.getItems().get( 0 ).setEnabled( true );
-        verify( view,
-                times( 2 ) ).enableMenuItem( anyString(), eq( true ) );
+        menus.getItems().get(0).setEnabled(true);
+        verify(view,
+               times(2)).enableMenuItem(anyString(),
+                                        eq(true));
 
-        menus.getItems().get( 0 ).setEnabled( false );
-        verify( view,
-                times( 1 ) ).enableMenuItem( anyString(), eq( false ) );
+        menus.getItems().get(0).setEnabled(false);
+        verify(view,
+               times(1)).enableMenuItem(anyString(),
+                                        eq(false));
     }
 
     @Test
     public void testSetupEnableDisableMenuItemPerspective() {
         final String label = "perspectiveLabel";
         final String perspectiveId = "perspectiveId";
-        final Menus menus = MenuFactory.newSimpleItem( label ).perspective( perspectiveId ).endMenu().build();
+        final Menus menus = MenuFactory.newSimpleItem(label).perspective(perspectiveId).endMenu().build();
 
-        when( authzManager.authorize( menus.getItems().get( 0 ), identity ) ).thenReturn( true );
+        when(authzManager.authorize(menus.getItems().get(0),
+                                    identity)).thenReturn(true);
 
-        presenter.addMenus( menus );
-        verify( view,
-                times( 1 ) ).enableMenuItem( anyString(), eq( true ) );
+        presenter.addMenus(menus);
+        verify(view,
+               times(1)).enableMenuItem(anyString(),
+                                        eq(true));
 
-        menus.getItems().get( 0 ).setEnabled( true );
-        verify( view,
-                times( 2 ) ).enableMenuItem( anyString(), eq( true ) );
+        menus.getItems().get(0).setEnabled(true);
+        verify(view,
+               times(2)).enableMenuItem(anyString(),
+                                        eq(true));
 
-        menus.getItems().get( 0 ).setEnabled( false );
-        verify( view,
-                times( 1 ) ).enableMenuItem( anyString(), eq( false ) );
+        menus.getItems().get(0).setEnabled(false);
+        verify(view,
+               times(1)).enableMenuItem(anyString(),
+                                        eq(false));
     }
 
     @Test
     public void testSetupEnableDisableContextMenuItem() {
         final String contextLabel = "contextLabel";
         final String perspectiveId = "perspectiveId";
-        final Menus contextMenus = MenuFactory.newSimpleItem( contextLabel ).endMenu().build();
-        final PerspectiveActivity activity = mock( PerspectiveActivity.class );
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
+        final Menus contextMenus = MenuFactory.newSimpleItem(contextLabel).endMenu().build();
+        final PerspectiveActivity activity = mock(PerspectiveActivity.class);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
-        when( activity.getIdentifier() ).thenReturn( perspectiveId );
-        when( activity.getMenus() ).thenReturn( contextMenus );
-        when( activity.isType( ActivityResourceType.PERSPECTIVE.name() ) ).thenReturn( true );
-        when( authzManager.authorize( contextMenus.getItems().get( 0 ), identity ) ).thenReturn( true );
-        when( activityManager.getActivity( placeRequest ) ).thenReturn( activity );
+        when(activity.getIdentifier()).thenReturn(perspectiveId);
+        when(activity.getMenus()).thenReturn(contextMenus);
+        when(activity.isType(ActivityResourceType.PERSPECTIVE.name())).thenReturn(true);
+        when(authzManager.authorize(contextMenus.getItems().get(0),
+                                    identity)).thenReturn(true);
+        when(activityManager.getActivity(placeRequest)).thenReturn(activity);
 
-        presenter.onPerspectiveChange( new PerspectiveChange( placeRequest, null, contextMenus, perspectiveId ) );
-        verify( view,
-                times( 1 ) ).enableContextMenuItem( anyString(), eq( true ) );
+        presenter.onPerspectiveChange(new PerspectiveChange(placeRequest,
+                                                            null,
+                                                            contextMenus,
+                                                            perspectiveId));
+        verify(view,
+               times(1)).enableContextMenuItem(anyString(),
+                                               eq(true));
 
-        contextMenus.getItems().get( 0 ).setEnabled( true );
-        verify( view,
-                times( 2 ) ).enableContextMenuItem( anyString(), eq( true ) );
+        contextMenus.getItems().get(0).setEnabled(true);
+        verify(view,
+               times(2)).enableContextMenuItem(anyString(),
+                                               eq(true));
 
-        contextMenus.getItems().get( 0 ).setEnabled( false );
-        verify( view ).enableContextMenuItem( anyString(), eq( false ) );
+        contextMenus.getItems().get(0).setEnabled(false);
+        verify(view).enableContextMenuItem(anyString(),
+                                           eq(false));
     }
 
     @Test
     public void testMenuInsertionOrder() {
         final String perspectiveId = "perspectiveId";
         final String label = "perspectiveLabel";
-        final Menus firstMenus = MenuFactory.newSimpleItem( label ).perspective( perspectiveId ).endMenu().build();
-        final Menus secondMenus = MenuFactory.newSimpleItem( label ).orderAll( 1 ).perspective( perspectiveId ).endMenu().build();
-        final Menus thirdMenus = MenuFactory.newSimpleItem( label ).orderAll( 2 ).perspective( perspectiveId ).endMenu().build();
+        final Menus firstMenus = MenuFactory.newSimpleItem(label).perspective(perspectiveId).endMenu().build();
+        final Menus secondMenus = MenuFactory.newSimpleItem(label).orderAll(1).perspective(perspectiveId).endMenu().build();
+        final Menus thirdMenus = MenuFactory.newSimpleItem(label).orderAll(2).perspective(perspectiveId).endMenu().build();
 
-        when( authzManager.authorize( firstMenus.getItems().get( 0 ), identity ) ).thenReturn( true );
-        when( authzManager.authorize( secondMenus.getItems().get( 0 ), identity ) ).thenReturn( true );
-        when( authzManager.authorize( thirdMenus.getItems().get( 0 ), identity ) ).thenReturn( true );
+        when(authzManager.authorize(firstMenus.getItems().get(0),
+                                    identity)).thenReturn(true);
+        when(authzManager.authorize(secondMenus.getItems().get(0),
+                                    identity)).thenReturn(true);
+        when(authzManager.authorize(thirdMenus.getItems().get(0),
+                                    identity)).thenReturn(true);
 
-        presenter.addMenus( thirdMenus );
-        presenter.addMenus( firstMenus );
-        presenter.addMenus( secondMenus );
+        presenter.addMenus(thirdMenus);
+        presenter.addMenus(firstMenus);
+        presenter.addMenus(secondMenus);
 
-        assertEquals( 3, presenter.getAddedMenus().size() );
-        assertSame( firstMenus, presenter.getAddedMenus().get( 0 ) );
-        assertSame( secondMenus, presenter.getAddedMenus().get( 1 ) );
-        assertSame( thirdMenus, presenter.getAddedMenus().get( 2 ) );
+        assertEquals(3,
+                     presenter.getAddedMenus().size());
+        assertSame(firstMenus,
+                   presenter.getAddedMenus().get(0));
+        assertSame(secondMenus,
+                   presenter.getAddedMenus().get(1));
+        assertSame(thirdMenus,
+                   presenter.getAddedMenus().get(2));
     }
 
     @Test
     public void testView() {
-        assertEquals( view, presenter.getView() );
+        assertEquals(view,
+                     presenter.getView());
     }
 
     @Test
     public void testCollapse() {
         presenter.collapse();
 
-        assertFalse( presenter.isUseExpandedMode() );
-        verify( view ).collapse();
+        assertFalse(presenter.isUseExpandedMode());
+        verify(view).collapse();
     }
 
     @Test
     public void testExpand() {
         presenter.expand();
 
-        assertTrue( presenter.isUseExpandedMode() );
-        verify( view ).expand();
+        assertTrue(presenter.isUseExpandedMode());
+        verify(view).expand();
     }
 
     @Test
     public void testAddCollapseHandler() {
-        final Command command = mock( Command.class );
+        final Command command = mock(Command.class);
 
-        presenter.addCollapseHandler( command );
+        presenter.addCollapseHandler(command);
 
-        verify( view ).addCollapseHandler( command );
+        verify(view).addCollapseHandler(command);
     }
 
     @Test
     public void testExpandHandler() {
-        doAnswer( new Answer() {
+        doAnswer(new Answer() {
             @Override
-            public Object answer( InvocationOnMock invocation ) throws Throwable {
-                ( (Command) invocation.getArguments()[ 0 ] ).execute();
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                ((Command) invocation.getArguments()[0]).execute();
                 return null;
             }
-        } ).when( view ).addExpandHandler( any( Command.class ) );
+        }).when(view).addExpandHandler(any(Command.class));
 
         presenter.setup();
 
-        assertTrue( presenter.isExpanded() );
+        assertTrue(presenter.isExpanded());
     }
 
     @Test
     public void testCollapseHandler() {
-        doAnswer( new Answer() {
+        doAnswer(new Answer() {
             @Override
-            public Object answer( InvocationOnMock invocation ) throws Throwable {
-                ( (Command) invocation.getArguments()[ 0 ] ).execute();
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                ((Command) invocation.getArguments()[0]).execute();
                 return null;
             }
-        } ).when( view ).addCollapseHandler( any( Command.class ) );
+        }).when(view).addCollapseHandler(any(Command.class));
 
         presenter.setup();
 
-        assertFalse( presenter.isExpanded() );
+        assertFalse(presenter.isExpanded());
     }
 
     @Test
     public void testAddExpandHandler() {
-        final Command command = mock( Command.class );
+        final Command command = mock(Command.class);
 
-        presenter.addExpandHandler( command );
+        presenter.addExpandHandler(command);
 
-        verify( view ).addExpandHandler( command );
+        verify(view).addExpandHandler(command);
     }
 
     @Test
     public void testClear() {
         presenter.clear();
 
-        verify( view ).clear();
+        verify(view).clear();
     }
 
     @Test
     public void testOnPlaceMaximized() {
-        presenter.onPlaceMaximized( mock( PlaceMaximizedEvent.class ) );
+        presenter.onPlaceMaximized(mock(PlaceMaximizedEvent.class));
 
-        verify( view ).collapse();
+        verify(view).collapse();
     }
 
     @Test
     public void testOnPlaceMinimized() {
-        presenter.onPlaceMinimized( mock( PlaceMinimizedEvent.class ) );
+        presenter.onPlaceMinimized(mock(PlaceMinimizedEvent.class));
 
-        verify( view ).expand();
+        verify(view).expand();
     }
 
     @Test
     public void testOnPlaceMinimizedExpandMode() {
         presenter.collapse();
-        presenter.onPlaceMinimized( mock( PlaceMinimizedEvent.class ) );
+        presenter.onPlaceMinimized(mock(PlaceMinimizedEvent.class));
 
-        verify( view, never() ).expand();
+        verify(view,
+               never()).expand();
     }
-
 }

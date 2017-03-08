@@ -37,57 +37,92 @@ public class CommentedOption
     private final Date when;
     private final TimeZone timeZone;
 
-    public CommentedOption( final String name ) {
-        this( null, name, null, null, null, null );
+    public CommentedOption(final String name) {
+        this(null,
+             name,
+             null,
+             null,
+             null,
+             null);
     }
 
-    public CommentedOption( final String name,
-                            final String message ) {
-        this( null, name, null, message, null, null );
+    public CommentedOption(final String name,
+                           final String message) {
+        this(null,
+             name,
+             null,
+             message,
+             null,
+             null);
     }
 
-    public CommentedOption( final String name,
-                            final String email,
-                            final String message ) {
-        this( null, name, email, message, null, null );
+    public CommentedOption(final String name,
+                           final String email,
+                           final String message) {
+        this(null,
+             name,
+             email,
+             message,
+             null,
+             null);
     }
 
-    public CommentedOption( final String sessionId,
-                            final String name,
-                            final String email,
-                            final String message ) {
-        this( sessionId, name, email, message, null, null );
+    public CommentedOption(final String sessionId,
+                           final String name,
+                           final String email,
+                           final String message) {
+        this(sessionId,
+             name,
+             email,
+             message,
+             null,
+             null);
     }
 
-    public CommentedOption( final String name,
-                            final String email,
-                            final String message,
-                            final Date when ) {
-        this( null, name, email, message, when, null );
+    public CommentedOption(final String name,
+                           final String email,
+                           final String message,
+                           final Date when) {
+        this(null,
+             name,
+             email,
+             message,
+             when,
+             null);
     }
 
-    public CommentedOption( final String sessionId,
-                            final String name,
-                            final String email,
-                            final String message,
-                            final Date when ) {
-        this( sessionId, name, email, message, when, null );
+    public CommentedOption(final String sessionId,
+                           final String name,
+                           final String email,
+                           final String message,
+                           final Date when) {
+        this(sessionId,
+             name,
+             email,
+             message,
+             when,
+             null);
     }
 
-    public CommentedOption( final String name,
-                            final String email,
-                            final String message,
-                            final Date when,
-                            final TimeZone timeZone ) {
-        this( null, name, email, message, when, timeZone );
+    public CommentedOption(final String name,
+                           final String email,
+                           final String message,
+                           final Date when,
+                           final TimeZone timeZone) {
+        this(null,
+             name,
+             email,
+             message,
+             when,
+             timeZone);
     }
 
-    public CommentedOption( final String sessionId,
-                            final String name,
-                            final String email,
-                            final String message,
-                            final Date when,
-                            final TimeZone timeZone ) {
+    public CommentedOption(final String sessionId,
+                           final String name,
+                           final String email,
+                           final String message,
+                           final Date when,
+                           final TimeZone timeZone) {
         this.sessionId = sessionId;
         this.name = name;
         this.email = email;

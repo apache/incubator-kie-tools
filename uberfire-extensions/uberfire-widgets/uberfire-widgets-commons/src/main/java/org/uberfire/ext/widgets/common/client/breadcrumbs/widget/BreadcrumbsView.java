@@ -27,33 +27,33 @@ import org.uberfire.mvp.Command;
 
 @Templated
 public class BreadcrumbsView implements UberElement<BreadcrumbsPresenter>,
-        BreadcrumbsPresenter.View, IsElement {
-
-
-    private BreadcrumbsPresenter presenter;
+                                        BreadcrumbsPresenter.View,
+                                        IsElement {
 
     @Inject
     @DataField
     Anchor breadcrumb;
+    private BreadcrumbsPresenter presenter;
 
     @Override
-    public void init( BreadcrumbsPresenter presenter ) {
+    public void init(BreadcrumbsPresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setup( String label, Command clickCommand ) {
-        breadcrumb.setTextContent( label );
-        breadcrumb.setOnclick( ( e ) -> clickCommand.execute() );
+    public void setup(String label,
+                      Command clickCommand) {
+        breadcrumb.setTextContent(label);
+        breadcrumb.setOnclick((e) -> clickCommand.execute());
     }
 
     @Override
     public void activate() {
-        breadcrumb.setClassName( "active" );
+        breadcrumb.setClassName("active");
     }
 
     @Override
     public void deactivate() {
-        breadcrumb.setClassName( "" );
+        breadcrumb.setClassName("");
     }
 }

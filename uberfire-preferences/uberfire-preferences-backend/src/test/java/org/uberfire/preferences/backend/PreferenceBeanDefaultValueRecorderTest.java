@@ -35,34 +35,42 @@ public class PreferenceBeanDefaultValueRecorderTest {
 
     @Before
     public void setup() {
-        store = mock( PreferenceBeanStore.class );
-        defaultValueRecorder = spy( PreferenceBeanDefaultValueRecorder.class );
+        store = mock(PreferenceBeanStore.class);
+        defaultValueRecorder = spy(PreferenceBeanDefaultValueRecorder.class);
     }
 
     @Test
     public void initializePreferenceValuesTest() {
-        final MyPreferenceBeanGeneratedImpl myPreference = spy( new MyPreferenceBeanGeneratedImpl( store ) );
-        final MyInnerPreferenceBeanGeneratedImpl myInnerPreference = spy( new MyInnerPreferenceBeanGeneratedImpl( store ) );
+        final MyPreferenceBeanGeneratedImpl myPreference = spy(new MyPreferenceBeanGeneratedImpl(store));
+        final MyInnerPreferenceBeanGeneratedImpl myInnerPreference = spy(new MyInnerPreferenceBeanGeneratedImpl(store));
 
-        final List<BasePreference<? extends BasePreference<? extends BasePreference<?>>>> preferences = Arrays.asList( myPreference, myInnerPreference );
-        doReturn( preferences ).when( defaultValueRecorder ).getPreferences();
+        final List<BasePreference<? extends BasePreference<? extends BasePreference<?>>>> preferences = Arrays.asList(myPreference,
+                                                                                                                      myInnerPreference);
+        doReturn(preferences).when(defaultValueRecorder).getPreferences();
 
         defaultValueRecorder.initializePreferenceValues();
 
-        verify( store, times( 1 ) ).saveDefaultValue( anyObject(), anyObject(), anyObject() );
+        verify(store,
+               times(1)).saveDefaultValue(anyObject(),
+                                          anyObject(),
+                                          anyObject());
 
-        InOrder ordenatedVerification = inOrder( store, myPreference, myInnerPreference );
-        ordenatedVerification.verify( myPreference ).saveDefaultValue();
-        ordenatedVerification.verify( store ).saveDefaultValue( anyObject(), anyObject(), anyObject() );
-        ordenatedVerification.verify( myInnerPreference ).saveDefaultValue();
+        InOrder ordenatedVerification = inOrder(store,
+                                                myPreference,
+                                                myInnerPreference);
+        ordenatedVerification.verify(myPreference).saveDefaultValue();
+        ordenatedVerification.verify(store).saveDefaultValue(anyObject(),
+                                                             anyObject(),
+                                                             anyObject());
+        ordenatedVerification.verify(myInnerPreference).saveDefaultValue();
     }
 
     @Test(expected = RuntimeException.class)
     public void initializePreferenceValuesWithInvalidDefaultValueInstanceTest() {
-        final InvalidDefaultPreferenceBeanGeneratedImpl invalidDefaultPreference = spy( new InvalidDefaultPreferenceBeanGeneratedImpl( store ) );
+        final InvalidDefaultPreferenceBeanGeneratedImpl invalidDefaultPreference = spy(new InvalidDefaultPreferenceBeanGeneratedImpl(store));
 
-        final List<BasePreference<? extends BasePreference<? extends BasePreference<?>>>> preferences = Arrays.asList( invalidDefaultPreference );
-        doReturn( preferences ).when( defaultValueRecorder ).getPreferences();
+        final List<BasePreference<? extends BasePreference<? extends BasePreference<?>>>> preferences = Arrays.asList(invalidDefaultPreference);
+        doReturn(preferences).when(defaultValueRecorder).getPreferences();
 
         defaultValueRecorder.initializePreferenceValues();
     }

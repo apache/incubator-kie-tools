@@ -16,7 +16,6 @@
 
 package org.uberfire.ext.widgets.table.client;
 
-
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.cellview.client.Column;
@@ -38,7 +37,6 @@ public class UberfireSimpleTableTest {
     @InjectMocks
     private UberfireSimpleTable<String> uberfireSimpleTable;
 
-
     @Before
     public void setup() {
 
@@ -53,11 +51,10 @@ public class UberfireSimpleTableTest {
             }
         };
         uberfireSimpleTable.setColumnPicker(columnPickerMock);
-        uberfireSimpleTable.setColumnWidth(testColumn, 35, Style.Unit.PX);
+        uberfireSimpleTable.setColumnWidth(testColumn,
+                                           35,
+                                           Style.Unit.PX);
         verify(columnPickerMock).adjustColumnWidths();
-
     }
-
-
 }
 

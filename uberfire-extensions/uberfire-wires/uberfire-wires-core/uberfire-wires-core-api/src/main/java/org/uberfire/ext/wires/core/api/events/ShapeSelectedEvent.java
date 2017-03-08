@@ -21,12 +21,11 @@ public class ShapeSelectedEvent {
 
     private WiresBaseShape shape;
 
-    public ShapeSelectedEvent( final WiresBaseShape shape ) {
+    public ShapeSelectedEvent(final WiresBaseShape shape) {
         this.shape = shape;
     }
 
     public WiresBaseShape getShape() {
         return shape;
     }
-
 }

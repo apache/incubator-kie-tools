@@ -24,7 +24,7 @@ import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.gwtbootstrap3.client.ui.gwt.*;
+import org.gwtbootstrap3.client.ui.gwt.Widget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,21 +39,20 @@ public class UberfireColumnPickerTest {
 
     @Mock
     protected org.gwtbootstrap3.client.ui.gwt.DataGrid dataGrid;
-
-    @InjectMocks
-    private UberfireColumnPicker<String> uberfireColumnPicker;
-
     @GwtMock
     VerticalPanel popupContent;
-
+    @InjectMocks
+    private UberfireColumnPicker<String> uberfireColumnPicker;
     private ColumnMeta columnMetaTextCell1;
     private ColumnMeta columnMetaTextCell2;
     private ColumnMeta columnMetaCheckBoxCell;
 
     @Before
     public void setup() {
-        columnMetaTextCell1 = createColumnTextCell("val1", "col1");
-        columnMetaTextCell2 = createColumnTextCell("val2", "col2");
+        columnMetaTextCell1 = createColumnTextCell("val1",
+                                                   "col1");
+        columnMetaTextCell2 = createColumnTextCell("val2",
+                                                   "col2");
         columnMetaCheckBoxCell = createColumnCheckboxCell("columnMetaCheckBoxCell");
         uberfireColumnPicker.addColumn(columnMetaCheckBoxCell);
         uberfireColumnPicker.addColumn(columnMetaTextCell1);
@@ -68,11 +67,14 @@ public class UberfireColumnPickerTest {
 
     @Test
     public void testOnlyAddHeaderStringColumnPickerPopup() {
-        uberfireColumnPicker.showColumnPickerPopup(0, 0);
-        verify(popupContent, times(2)).add(any(Widget.class));
+        uberfireColumnPicker.showColumnPickerPopup(0,
+                                                   0);
+        verify(popupContent,
+               times(2)).add(any(Widget.class));
     }
 
-    private ColumnMeta createColumnTextCell(final String value, String dataStoreName) {
+    private ColumnMeta createColumnTextCell(final String value,
+                                            String dataStoreName) {
         Column<String, String> testColumn = new Column<String, String>(new TextCell()) {
             @Override
             public String getValue(String object) {
@@ -83,13 +85,15 @@ public class UberfireColumnPickerTest {
         testColumn.setDataStoreName(dataStoreName);
 
         final Header<String> header = new TextHeader(value);
-        ColumnMeta<String> columnMeta = new ColumnMeta(testColumn, dataStoreName);
+        ColumnMeta<String> columnMeta = new ColumnMeta(testColumn,
+                                                       dataStoreName);
         columnMeta.setHeader(header);
         return columnMeta;
     }
 
     private ColumnMeta createColumnCheckboxCell(String dataStoreName) {
-        CheckboxCell checkboxCell = new CheckboxCell(true, false);
+        CheckboxCell checkboxCell = new CheckboxCell(true,
+                                                     false);
         Column<String, Boolean> checkColumn = new Column<String, Boolean>(checkboxCell) {
             @Override
             public Boolean getValue(String object) {
@@ -106,11 +110,10 @@ public class UberfireColumnPickerTest {
 
         checkColumn.setSortable(false);
         checkColumn.setDataStoreName(dataStoreName);
-        ColumnMeta<String> checkColMeta = new ColumnMeta<String>(checkColumn, "");
+        ColumnMeta<String> checkColMeta = new ColumnMeta<String>(checkColumn,
+                                                                 "");
         checkColMeta.setHeader(selectPageHeader);
         return checkColMeta;
     }
-
-
 }
 

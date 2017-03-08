@@ -16,9 +16,6 @@
 
 package org.uberfire.wbtest.client.api;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import org.uberfire.client.mvp.AbstractWorkbenchPerspectiveActivity;
 import org.uberfire.client.mvp.PlaceManager;
 
@@ -27,8 +24,8 @@ import org.uberfire.client.mvp.PlaceManager;
  */
 public abstract class AbstractTestPerspectiveActivity extends AbstractWorkbenchPerspectiveActivity {
 
-    public AbstractTestPerspectiveActivity( PlaceManager placeManager ) {
-        super( placeManager );
+    public AbstractTestPerspectiveActivity(PlaceManager placeManager) {
+        super(placeManager);
     }
 
     @Override

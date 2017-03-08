@@ -29,7 +29,7 @@ public class AnyResourceType
         extends AnyResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( UberfireResources.INSTANCE.images().typeGenericFile() );
+    private static final Image IMAGE = new Image(UberfireResources.INSTANCE.images().typeGenericFile());
 
     @Override
     public IsWidget getIcon() {
@@ -39,7 +39,9 @@ public class AnyResourceType
     @Override
     public String getDescription() {
         String desc = UberfireConstants.INSTANCE.anyResourceTypeDescription();
-        if ( desc == null || desc.isEmpty() ) return super.getDescription();
+        if (desc == null || desc.isEmpty()) {
+            return super.getDescription();
+        }
         return desc;
     }
 }

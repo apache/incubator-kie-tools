@@ -31,65 +31,79 @@ import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.ListBox;
 import org.uberfire.ext.plugin.model.Framework;
 
-import static org.uberfire.ext.plugin.client.code.CodeList.*;
+import static org.uberfire.ext.plugin.client.code.CodeList.BODY_HEIGHT;
+import static org.uberfire.ext.plugin.client.code.CodeList.DIVIDER;
+import static org.uberfire.ext.plugin.client.code.CodeList.INTERCEPTION_POINTS;
+import static org.uberfire.ext.plugin.client.code.CodeList.MAIN;
+import static org.uberfire.ext.plugin.client.code.CodeList.ON_CLOSE;
+import static org.uberfire.ext.plugin.client.code.CodeList.ON_OPEN;
+import static org.uberfire.ext.plugin.client.code.CodeList.ON_SHUTDOWN;
+import static org.uberfire.ext.plugin.client.code.CodeList.ON_STARTUP;
+import static org.uberfire.ext.plugin.client.code.CodeList.TITLE;
 
 @Dependent
 public class SplashEditorView
         extends RuntimePluginBaseView
         implements RequiresResize {
 
-    interface ViewBinder
-            extends
-            UiBinder<Widget, SplashEditorView> {
-
-    }
-
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
     @UiField
     FlowPanel htmlPanel;
-
     @UiField
     FlowPanel formArea;
-
     @UiField
     ListBox framework;
 
     @PostConstruct
     public void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
-        editor.setup( MAIN, DIVIDER, ON_OPEN, ON_CLOSE, ON_STARTUP, ON_SHUTDOWN, DIVIDER, TITLE, BODY_HEIGHT, INTERCEPTION_POINTS );
-        htmlPanel.add( editor );
+        editor.setup(MAIN,
+                     DIVIDER,
+                     ON_OPEN,
+                     ON_CLOSE,
+                     ON_STARTUP,
+                     ON_SHUTDOWN,
+                     DIVIDER,
+                     TITLE,
+                     BODY_HEIGHT,
+                     INTERCEPTION_POINTS);
+        htmlPanel.add(editor);
     }
 
     @Override
-    protected void setFramework( final Collection<Framework> frameworks ) {
-        if ( frameworks != null && !frameworks.isEmpty() ) {
+    protected void setFramework(final Collection<Framework> frameworks) {
+        if (frameworks != null && !frameworks.isEmpty()) {
             final Framework framework = frameworks.iterator().next();
-            for ( int i = 0; i < this.framework.getItemCount(); i++ ) {
-                if ( this.framework.getItemText( i ).equalsIgnoreCase( framework.toString() ) ) {
-                    this.framework.setSelectedIndex( i );
+            for (int i = 0; i < this.framework.getItemCount(); i++) {
+                if (this.framework.getItemText(i).equalsIgnoreCase(framework.toString())) {
+                    this.framework.setSelectedIndex(i);
                     return;
                 }
             }
         }
-        this.framework.setSelectedIndex( 0 );
+        this.framework.setSelectedIndex(0);
     }
 
     @Override
     protected Collection<Framework> getFrameworks() {
-        if ( framework.getSelectedValue().equalsIgnoreCase( "(Framework)" ) ) {
+        if (framework.getSelectedValue().equalsIgnoreCase("(Framework)")) {
             return Collections.emptyList();
         }
         return new ArrayList<Framework>() {{
-            add( Framework.valueOf( framework.getSelectedValue().toUpperCase() ) );
+            add(Framework.valueOf(framework.getSelectedValue().toUpperCase()));
         }};
     }
 
     @Override
     public void onResize() {
-        htmlPanel.setHeight( getParent().getParent().getOffsetHeight() + "px" );
+        htmlPanel.setHeight(getParent().getParent().getOffsetHeight() + "px");
         editor.onResize();
+    }
+
+    interface ViewBinder
+            extends
+            UiBinder<Widget, SplashEditorView> {
+
     }
 }

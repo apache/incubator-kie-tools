@@ -1,5 +1,7 @@
 package org.uberfire.backend.server.plugins.processors;
 
+import javax.enterprise.event.Event;
+
 import org.jboss.errai.cdi.server.scripts.ScriptRegistry;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,18 +12,16 @@ import org.uberfire.backend.server.plugins.engine.AbstractPluginsTest;
 import org.uberfire.workbench.events.PluginAddedEvent;
 import org.uberfire.workbench.events.PluginUpdatedEvent;
 
-import javax.enterprise.event.Event;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GWTScriptPluginProcessorTest extends AbstractPluginsTest {
 
-
+    GWTScriptPluginProcessor processor;
     @Mock
     private ScriptRegistry scriptRegistry;
     @Mock
@@ -29,32 +29,40 @@ public class GWTScriptPluginProcessorTest extends AbstractPluginsTest {
     @Mock
     private Event<PluginUpdatedEvent> pluginUpdatedEvent;
 
-    GWTScriptPluginProcessor processor;
-
     @Before
     public void setup() {
         super.setup();
-        processor = new GWTScriptPluginProcessor(scriptRegistry, pluginAddedEvent, pluginUpdatedEvent);
+        processor = new GWTScriptPluginProcessor(scriptRegistry,
+                                                 pluginAddedEvent,
+                                                 pluginUpdatedEvent);
     }
 
     @Test
     public void processTest() {
         assertFalse(processor.isRegistered("test-app.nocache.js"));
-        processor.process("test-app.nocache.js", pluginDeploymentDir, true);
+        processor.process("test-app.nocache.js",
+                          pluginDeploymentDir,
+                          true);
 
         assertTrue(processor.isRegistered("test-app.nocache.js"));
-        verify(scriptRegistry, times(1)).addScript(eq("UF"), anyString());
-        verify(pluginAddedEvent, times(1)).fire(any());
+        verify(scriptRegistry,
+               times(1)).addScript(eq("UF"),
+                                   anyString());
+        verify(pluginAddedEvent,
+               times(1)).fire(any());
 
-        processor.process("test-app.nocache.js", pluginDeploymentDir, true);
-        verify(pluginUpdatedEvent, times(1)).fire(any());
-
+        processor.process("test-app.nocache.js",
+                          pluginDeploymentDir,
+                          true);
+        verify(pluginUpdatedEvent,
+               times(1)).fire(any());
     }
 
     @Test
     public void shutDownShouldRemoveScripts() throws Exception {
         processor.shutDown();
-        verify(scriptRegistry, times(1)).removeScripts("UF");
+        verify(scriptRegistry,
+               times(1)).removeScripts("UF");
     }
 
     @Test
@@ -63,7 +71,8 @@ public class GWTScriptPluginProcessorTest extends AbstractPluginsTest {
         assertFalse(processor.availablePlugins.isEmpty());
 
         processor.removeAll();
-        verify(scriptRegistry, times(1)).removeScripts("UF");
+        verify(scriptRegistry,
+               times(1)).removeScripts("UF");
 
         assertTrue(processor.availablePlugins.isEmpty());
     }
@@ -73,7 +82,5 @@ public class GWTScriptPluginProcessorTest extends AbstractPluginsTest {
 
         assertFalse(processor.shouldProcess("pluginname.html"));
         assertTrue(processor.shouldProcess("pluginname.nocache.js"));
-
     }
-
 }

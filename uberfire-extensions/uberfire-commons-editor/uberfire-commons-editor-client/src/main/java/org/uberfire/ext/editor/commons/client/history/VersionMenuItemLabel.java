@@ -36,57 +36,25 @@ import org.uberfire.java.nio.base.version.VersionRecord;
 public class VersionMenuItemLabel
         extends Composite {
 
-    private final Callback<VersionRecord> selectionCallback;
-    private VersionRecord versionRecord;
-
-    public interface VersionMenuItemStyle
-            extends CssResource {
-
-        String normal();
-
-        String selected();
-
-        String comment();
-
-        String version();
-
-        String author();
-
-        String authorSelected();
-
-    }
-
-    interface Binder
-            extends
-            UiBinder<Widget, VersionMenuItemLabel> {
-
-    }
-
     private static Binder uiBinder = GWT.create(Binder.class);
-
+    private final Callback<VersionRecord> selectionCallback;
     @UiField
     VersionMenuItemStyle style;
-
     @UiField
     FocusPanel base;
-
     @UiField
     InlineLabel author;
-
     @UiField
     InlineLabel date;
-
     @UiField
     Label comment;
-
     @UiField
     HTMLPanel panel;
-
     @UiField
     InlineLabel number;
-
     @UiField
     DivElement authorContainer;
+    private VersionRecord versionRecord;
 
     public VersionMenuItemLabel(
             VersionRecord versionRecord,
@@ -118,7 +86,8 @@ public class VersionMenuItemLabel
 
     private String snip(String comment) {
         if (comment != null && comment.length() >= 60) {
-            return comment.substring(0, 58) + " ...";
+            return comment.substring(0,
+                                     58) + " ...";
         } else {
             return comment;
         }
@@ -129,5 +98,27 @@ public class VersionMenuItemLabel
         if (selectionCallback != null) {
             selectionCallback.callback(versionRecord);
         }
+    }
+
+    public interface VersionMenuItemStyle
+            extends CssResource {
+
+        String normal();
+
+        String selected();
+
+        String comment();
+
+        String version();
+
+        String author();
+
+        String authorSelected();
+    }
+
+    interface Binder
+            extends
+            UiBinder<Widget, VersionMenuItemLabel> {
+
     }
 }

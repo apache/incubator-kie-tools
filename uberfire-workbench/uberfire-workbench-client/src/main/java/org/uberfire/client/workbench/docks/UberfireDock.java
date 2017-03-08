@@ -51,7 +51,10 @@ public class UberfireDock {
     public UberfireDock(UberfireDockPosition uberfireDockPosition,
                         String iconType,
                         PlaceRequest placeRequest) {
-        this(uberfireDockPosition, iconType, placeRequest, null);
+        this(uberfireDockPosition,
+             iconType,
+             placeRequest,
+             null);
     }
 
     public UberfireDock(UberfireDockPosition uberfireDockPosition,
@@ -71,7 +74,11 @@ public class UberfireDock {
                         ImageResource imageIcon,
                         ImageResource imageIconFocused,
                         PlaceRequest placeRequest) {
-        this(uberfireDockPosition, imageIcon, imageIconFocused, placeRequest, null);
+        this(uberfireDockPosition,
+             imageIcon,
+             imageIconFocused,
+             placeRequest,
+             null);
     }
 
     public UberfireDock withLabel(String label) {
@@ -126,19 +133,31 @@ public class UberfireDock {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         UberfireDock that = (UberfireDock) o;
 
-        if (placeRequest != null ? !placeRequest.equals(that.placeRequest) : that.placeRequest != null) return false;
-        if (iconType != that.iconType) return false;
-        if (uberfireDockPosition != that.uberfireDockPosition) return false;
-        if (associatedPerspective != null ? !associatedPerspective.equals(that.associatedPerspective) : that.associatedPerspective != null)
+        if (placeRequest != null ? !placeRequest.equals(that.placeRequest) : that.placeRequest != null) {
             return false;
-        if (size != null ? !size.equals(that.size) : that.size != null) return false;
+        }
+        if (iconType != that.iconType) {
+            return false;
+        }
+        if (uberfireDockPosition != that.uberfireDockPosition) {
+            return false;
+        }
+        if (associatedPerspective != null ? !associatedPerspective.equals(that.associatedPerspective) : that.associatedPerspective != null) {
+            return false;
+        }
+        if (size != null ? !size.equals(that.size) : that.size != null) {
+            return false;
+        }
         return !(label != null ? !label.equals(that.label) : that.label != null);
-
     }
 
     @Override

@@ -30,7 +30,7 @@ public interface WiresShape {
     /**
      * Select the shape. Implementations may choose to change their appearance
      */
-    void setSelected( final boolean isSelected );
+    void setSelected(final boolean isSelected);
 
     /**
      * Destroy the shape and any related components
@@ -43,26 +43,26 @@ public interface WiresShape {
      * @param cy Canvas Y coordinate
      * @return
      */
-    boolean contains( final double cx,
-                      final double cy );
+    boolean contains(final double cx,
+                     final double cy);
 
     /**
      * Add a Control to the WiresShape
      * @param ctrl
      */
-    void addControl( final Group ctrl );
+    void addControl(final Group ctrl);
 
     /**
      * Remove a Control from the WiresShape
      * @param ctrl
      */
-    void removeControl( final Group ctrl );
+    void removeControl(final Group ctrl);
 
     /**
      * Set the Controls for the WiresShape
      * @param controls
      */
-    void setControls( final List<Group> controls );
+    void setControls(final List<Group> controls);
 
     /**
      * Show Controls related to this WiresShape
@@ -79,5 +79,4 @@ public interface WiresShape {
      * @return true is the Controls are visible
      */
     boolean isControlsVisible();
-
 }

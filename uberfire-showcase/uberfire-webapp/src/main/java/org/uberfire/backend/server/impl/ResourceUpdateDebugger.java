@@ -29,19 +29,19 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 @Startup
 public class ResourceUpdateDebugger {
 
-    public void onNewFile( @Observes ResourceAddedEvent event ) {
-        System.err.println( "ResourceAddedEvent:" + event.getPath().toURI() + " ['" + event.getMessage() + "']" );
+    public void onNewFile(@Observes ResourceAddedEvent event) {
+        System.err.println("ResourceAddedEvent:" + event.getPath().toURI() + " ['" + event.getMessage() + "']");
     }
 
-    public void onUpdateFile( @Observes ResourceUpdatedEvent event ) {
-        System.err.println( "ResourceUpdatedEvent:" + event.getPath().toURI() + " ['" + event.getMessage() + "']" );
+    public void onUpdateFile(@Observes ResourceUpdatedEvent event) {
+        System.err.println("ResourceUpdatedEvent:" + event.getPath().toURI() + " ['" + event.getMessage() + "']");
     }
 
-    public void onRenameFile( @Observes ResourceRenamedEvent event ) {
-        System.err.println( "ResourceRenamedEvent:" + event.getPath().toURI() + " -> " + event.getDestinationPath().toURI() + " ['" + event.getMessage() + "']" );
+    public void onRenameFile(@Observes ResourceRenamedEvent event) {
+        System.err.println("ResourceRenamedEvent:" + event.getPath().toURI() + " -> " + event.getDestinationPath().toURI() + " ['" + event.getMessage() + "']");
     }
 
-    public void onDeleteFile( @Observes ResourceDeletedEvent event ) {
-        System.err.println( "ResourceDeletedEvent:" + event.getPath().toURI() + " ['" + event.getMessage() + "']" );
+    public void onDeleteFile(@Observes ResourceDeletedEvent event) {
+        System.err.println("ResourceDeletedEvent:" + event.getPath().toURI() + " ['" + event.getMessage() + "']");
     }
 }

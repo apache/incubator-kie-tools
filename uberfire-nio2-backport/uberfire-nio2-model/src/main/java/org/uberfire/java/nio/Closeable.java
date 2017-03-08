@@ -19,5 +19,4 @@ package org.uberfire.java.nio;
 public interface Closeable extends java.io.Closeable {
 
     public void close() throws IOException;
-
 }

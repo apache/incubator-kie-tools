@@ -24,13 +24,12 @@ import org.uberfire.mvp.PlaceRequest;
  */
 public class ClosePlaceEvent extends AbstractPlaceEvent {
 
-    public ClosePlaceEvent( final PlaceRequest place ) {
-        super( place );
+    public ClosePlaceEvent(final PlaceRequest place) {
+        super(place);
     }
 
     @Override
     public String toString() {
         return "ClosePlaceEvent [place=" + getPlace() + "]";
     }
-
 }

@@ -18,22 +18,20 @@ package org.uberfire.ext.widgets.core.client.wizards;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-
-import org.gwtbootstrap3.client.ui.Column;
-import org.gwtbootstrap3.client.ui.NavPills;
-import org.gwtbootstrap3.client.ui.base.modal.ModalDialog;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Column;
+import org.gwtbootstrap3.client.ui.NavPills;
+import org.gwtbootstrap3.client.ui.base.modal.ModalDialog;
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 
 /**
  * The generic Wizard view implementation
@@ -43,9 +41,7 @@ public class WizardViewImpl extends BaseModal
         implements
         WizardView {
 
-    @Inject
-    private SyncBeanManager iocBeanManager;
-
+    private static WizardActivityViewImplBinder uiBinder = GWT.create(WizardActivityViewImplBinder.class);
     @UiField
     protected NavPills sideBar;
 
@@ -53,42 +49,33 @@ public class WizardViewImpl extends BaseModal
     protected Column body;
 
     protected WizardPopupFooter footer;
-
+    @Inject
+    private SyncBeanManager iocBeanManager;
     private List<WizardPageTitle> pageTitleWidgets = new ArrayList<WizardPageTitle>();
-
     private int pageNumber;
     private int pageNumberTotal;
-
     private AbstractWizard presenter;
-
-    interface WizardActivityViewImplBinder
-            extends
-            UiBinder<Widget, WizardViewImpl> {
-
-    }
-
-    private static WizardActivityViewImplBinder uiBinder = GWT.create( WizardActivityViewImplBinder.class );
 
     public WizardViewImpl() {
         footer = new WizardPopupFooter(
                 new Command() {
                     @Override
                     public void execute() {
-                        if ( pageNumber == 0 ) {
+                        if (pageNumber == 0) {
                             return;
                         }
-                        selectPage( pageNumber - 1 );
-                        footer.setPreviousButtonFocus( false );
+                        selectPage(pageNumber - 1);
+                        footer.setPreviousButtonFocus(false);
                     }
                 },
                 new Command() {
                     @Override
                     public void execute() {
-                        if ( pageNumber == pageNumberTotal - 1 ) {
+                        if (pageNumber == pageNumberTotal - 1) {
                             return;
                         }
-                        selectPage( pageNumber + 1 );
-                        footer.setNextButtonFocus( false );
+                        selectPage(pageNumber + 1);
+                        footer.setNextButtonFocus(false);
                     }
                 },
                 new Command() {
@@ -105,88 +92,88 @@ public class WizardViewImpl extends BaseModal
                 }
         );
 
-        setBody( uiBinder.createAndBindUi( WizardViewImpl.this ) );
+        setBody(uiBinder.createAndBindUi(WizardViewImpl.this));
 
-        add( footer );
+        add(footer);
     }
 
     @Override
-    public void init( final AbstractWizard presenter ) {
+    public void init(final AbstractWizard presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setPageTitles( final List<WizardPage> pages ) {
+    public void setPageTitles(final List<WizardPage> pages) {
         //Clear existing titles
         releaseWizardPageTitles();
         sideBar.clear();
 
         //Add new titles for pages
         this.pageNumberTotal = pages.size();
-        for ( WizardPage page : pages ) {
-            final WizardPageTitle wpt = makeWizardPageTitle( page );
-            pageTitleWidgets.add( wpt );
-            sideBar.add( wpt );
+        for (WizardPage page : pages) {
+            final WizardPageTitle wpt = makeWizardPageTitle(page);
+            pageTitleWidgets.add(wpt);
+            sideBar.add(wpt);
         }
     }
 
     private void releaseWizardPageTitles() {
-        for ( WizardPageTitle wpt : pageTitleWidgets ) {
-            iocBeanManager.destroyBean( wpt );
+        for (WizardPageTitle wpt : pageTitleWidgets) {
+            iocBeanManager.destroyBean(wpt);
         }
         pageTitleWidgets.clear();
     }
 
-    private WizardPageTitle makeWizardPageTitle( final WizardPage page ) {
-        final SyncBeanDef<WizardPageTitle> beanDefinition = iocBeanManager.lookupBean( WizardPageTitle.class );
+    private WizardPageTitle makeWizardPageTitle(final WizardPage page) {
+        final SyncBeanDef<WizardPageTitle> beanDefinition = iocBeanManager.lookupBean(WizardPageTitle.class);
         final WizardPageTitle bean = beanDefinition.getInstance();
-        bean.setContent( page );
+        bean.setContent(page);
         return bean;
     }
 
     @Override
-    public void selectPage( final int pageNumber ) {
-        if ( pageNumber < 0 || pageNumber > pageNumberTotal - 1 ) {
+    public void selectPage(final int pageNumber) {
+        if (pageNumber < 0 || pageNumber > pageNumberTotal - 1) {
             return;
         }
         this.pageNumber = pageNumber;
-        for ( int i = 0; i < this.pageTitleWidgets.size(); i++ ) {
-            final WizardPageTitle wpt = this.pageTitleWidgets.get( i );
-            wpt.setPageSelected( i == pageNumber );
+        for (int i = 0; i < this.pageTitleWidgets.size(); i++) {
+            final WizardPageTitle wpt = this.pageTitleWidgets.get(i);
+            wpt.setPageSelected(i == pageNumber);
         }
-        footer.enableNextButton( pageNumber < pageNumberTotal - 1 );
-        footer.enablePreviousButton( pageNumber > 0 );
-        presenter.pageSelected( pageNumber );
+        footer.enableNextButton(pageNumber < pageNumberTotal - 1);
+        footer.enablePreviousButton(pageNumber > 0);
+        presenter.pageSelected(pageNumber);
     }
 
     @Override
-    public void setBodyWidget( final Widget w ) {
+    public void setBodyWidget(final Widget w) {
         body.clear();
-        body.add( w );
+        body.add(w);
     }
 
     @Override
-    public void setPreferredHeight( final int height ) {
-        if( getWidgetCount() == 1 && getWidget( 0 ) instanceof ModalDialog ){
-            this.getWidget( 0 ).setHeight( height + "px" );
+    public void setPreferredHeight(final int height) {
+        if (getWidgetCount() == 1 && getWidget(0) instanceof ModalDialog) {
+            this.getWidget(0).setHeight(height + "px");
         }
     }
 
     @Override
-    public void setPreferredWidth( final int width ) {
-        setWidth( width + "px" );
+    public void setPreferredWidth(final int width) {
+        setWidth(width + "px");
     }
 
     @Override
-    public void setPageCompletionState( final int pageIndex,
-                                        final boolean isComplete ) {
-        final WizardPageTitle wpt = this.pageTitleWidgets.get( pageIndex );
-        wpt.setComplete( isComplete );
+    public void setPageCompletionState(final int pageIndex,
+                                       final boolean isComplete) {
+        final WizardPageTitle wpt = this.pageTitleWidgets.get(pageIndex);
+        wpt.setComplete(isComplete);
     }
 
     @Override
-    public void setCompletionStatus( final boolean isComplete ) {
-        footer.enableFinishButton( isComplete );
+    public void setCompletionStatus(final boolean isComplete) {
+        footer.enableFinishButton(isComplete);
     }
 
     @Override
@@ -194,4 +181,9 @@ public class WizardViewImpl extends BaseModal
         super.show();
     }
 
+    interface WizardActivityViewImplBinder
+            extends
+            UiBinder<Widget, WizardViewImpl> {
+
+    }
 }

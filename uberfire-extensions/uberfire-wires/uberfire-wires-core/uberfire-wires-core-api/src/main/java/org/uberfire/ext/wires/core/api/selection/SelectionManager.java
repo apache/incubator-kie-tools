@@ -24,12 +24,11 @@ public interface SelectionManager {
 
     public void clearSelection();
 
-    public void selectShape( final WiresBaseShape shape );
+    public void selectShape(final WiresBaseShape shape);
 
-    public void deselectShape( final WiresBaseShape shape );
+    public void deselectShape(final WiresBaseShape shape);
 
     boolean isShapeSelected();
 
     WiresBaseShape getSelectedShape();
-
 }

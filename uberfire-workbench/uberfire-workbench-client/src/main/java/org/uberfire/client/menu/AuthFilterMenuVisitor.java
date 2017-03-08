@@ -30,8 +30,8 @@ import org.uberfire.workbench.model.menu.MenuItemPlain;
 import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-import static org.uberfire.plugin.PluginUtil.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.plugin.PluginUtil.ensureIterable;
 
 /**
  * Wraps a menu visitor, filtering out menu items that a given user is not allowed to access. The wrapped visitor only
@@ -45,104 +45,107 @@ public class AuthFilterMenuVisitor implements MenuVisitor {
 
     /**
      * Wraps the given menu visitor, only forwarding calls that represent menu items the given user is allowed to see.
-     *
      * @param authzManager The authorization manager that decides what is visible. Not null.
      * @param user The user who will see the menus being visited. Not null.
      * @param chainedVisitor The menu visitor that receives calls for all authorized parts of the menu tree. Not null.
      */
-    public AuthFilterMenuVisitor( AuthorizationManager authzManager,
-                                  User user,
-                                  MenuVisitor chainedVisitor ) {
-        this.authzManager = checkNotNull( "authzManager",
-                                          authzManager );
-        this.user = checkNotNull( "user",
-                                  user );
-        this.chainedVisitor = checkNotNull( "chainedVisitor",
-                                            chainedVisitor );
+    public AuthFilterMenuVisitor(AuthorizationManager authzManager,
+                                 User user,
+                                 MenuVisitor chainedVisitor) {
+        this.authzManager = checkNotNull("authzManager",
+                                         authzManager);
+        this.user = checkNotNull("user",
+                                 user);
+        this.chainedVisitor = checkNotNull("chainedVisitor",
+                                           chainedVisitor);
     }
 
     @Override
-    public boolean visitEnter( Menus menus ) {
-        return chainedVisitor.visitEnter( menus );
+    public boolean visitEnter(Menus menus) {
+        return chainedVisitor.visitEnter(menus);
     }
 
     @Override
-    public void visitLeave( Menus menus ) {
-        chainedVisitor.visitLeave( menus );
+    public void visitLeave(Menus menus) {
+        chainedVisitor.visitLeave(menus);
     }
 
     @Override
-    public boolean visitEnter( MenuGroup menuGroup ) {
-        if ( !authorize( menuGroup ) ) {
+    public boolean visitEnter(MenuGroup menuGroup) {
+        if (!authorize(menuGroup)) {
             return false;
         }
-        return chainedVisitor.visitEnter( menuGroup );
+        return chainedVisitor.visitEnter(menuGroup);
     }
 
     @Override
-    public void visitLeave( MenuGroup menuGroup ) {
-        chainedVisitor.visitLeave( menuGroup );
+    public void visitLeave(MenuGroup menuGroup) {
+        chainedVisitor.visitLeave(menuGroup);
     }
 
     @Override
-    public void visit( MenuItemPlain menuItemPlain ) {
-        if ( authorize( menuItemPlain ) ) {
-            chainedVisitor.visit( menuItemPlain );
+    public void visit(MenuItemPlain menuItemPlain) {
+        if (authorize(menuItemPlain)) {
+            chainedVisitor.visit(menuItemPlain);
         }
     }
 
     @Override
-    public void visit( MenuItemCommand menuItemCommand ) {
-        if ( authorize( menuItemCommand ) ) {
-            chainedVisitor.visit( menuItemCommand );
+    public void visit(MenuItemCommand menuItemCommand) {
+        if (authorize(menuItemCommand)) {
+            chainedVisitor.visit(menuItemCommand);
         }
     }
 
     @Override
-    public void visit( MenuCustom<?> menuCustom ) {
-        if ( authorize( menuCustom ) ) {
-            chainedVisitor.visit( menuCustom );
+    public void visit(MenuCustom<?> menuCustom) {
+        if (authorize(menuCustom)) {
+            chainedVisitor.visit(menuCustom);
         }
     }
 
     @Override
-    public void visit( MenuItemPerspective menuItemPerspective ) {
-        if ( authorize( menuItemPerspective ) ) {
-            chainedVisitor.visit( menuItemPerspective );
+    public void visit(MenuItemPerspective menuItemPerspective) {
+        if (authorize(menuItemPerspective)) {
+            chainedVisitor.visit(menuItemPerspective);
         }
     }
 
     /**
      * Check the user is allowed to access the given menu item.
-     *
+     * <p>
      * <p>If the item has any references to resource actions {@link ResourceActionRef} or custom permissions
      * then the access is granted provided all those references are also granted.</p>
      */
-    public boolean authorize( MenuItem item ) {
+    public boolean authorize(MenuItem item) {
         List<ResourceActionRef> actions = item.getResourceActions();
         if (actions != null && !actions.isEmpty()) {
-            for (ResourceActionRef ref : ensureIterable ( actions ) ) {
-                if (!authzManager.authorize( ref.getResource(), ref.getAction(), user ) ) {
+            for (ResourceActionRef ref : ensureIterable(actions)) {
+                if (!authzManager.authorize(ref.getResource(),
+                                            ref.getAction(),
+                                            user)) {
                     return false;
                 }
             }
         }
-        List<String> permissions = ensureIterable ( item.getPermissions() );
+        List<String> permissions = ensureIterable(item.getPermissions());
         if (permissions != null && !permissions.isEmpty()) {
             for (String p : permissions) {
-                if (!authzManager.authorize( p , user ) ) {
+                if (!authzManager.authorize(p,
+                                            user)) {
                     return false;
                 }
             }
         }
         // Check the item
-        boolean itemResult = authzManager.authorize( item, user );
+        boolean itemResult = authzManager.authorize(item,
+                                                    user);
         boolean denied = false;
 
         // For menu groups ensure at least one child item can be accessed
         if (item instanceof MenuGroup) {
             MenuGroup group = (MenuGroup) item;
-            for (MenuItem child : ensureIterable ( group.getItems() ) ) {
+            for (MenuItem child : ensureIterable(group.getItems())) {
                 if (authorize(child)) {
                     return itemResult;
                 } else {

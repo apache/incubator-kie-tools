@@ -23,7 +23,6 @@ public interface PerspectiveNameProvider {
 
     /**
      * Get a user friendly name for the4 given perspective identifier
-
      * @param perspectiveId The id. of an existing perspective.
      * @return A displayable name
      */

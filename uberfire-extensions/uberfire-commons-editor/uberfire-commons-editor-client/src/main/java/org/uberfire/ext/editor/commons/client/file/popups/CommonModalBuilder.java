@@ -24,7 +24,6 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 
-
 public class CommonModalBuilder {
 
     private final BaseModal modal;
@@ -33,23 +32,25 @@ public class CommonModalBuilder {
         modal = new BaseModal();
     }
 
-    public CommonModalBuilder addHeader( String title ) {
-        modal.setTitle( title );
+    public CommonModalBuilder addHeader(String title) {
+        modal.setTitle(title);
         return this;
     }
 
-    public CommonModalBuilder addBody( HTMLElement element ) {
-        modal.add( buildPanel( element, new ModalBody() ) );
+    public CommonModalBuilder addBody(HTMLElement element) {
+        modal.add(buildPanel(element,
+                             new ModalBody()));
         return this;
     }
 
-    public CommonModalBuilder addFooter( ModalFooter footer ) {
-        modal.add( footer );
+    public CommonModalBuilder addFooter(ModalFooter footer) {
+        modal.add(footer);
         return this;
     }
 
-    public CommonModalBuilder addFooter( HTMLElement element ) {
-        modal.add( buildPanel( element, new ModalFooter() ) );
+    public CommonModalBuilder addFooter(HTMLElement element) {
+        modal.add(buildPanel(element,
+                             new ModalFooter()));
         return this;
     }
 
@@ -57,12 +58,13 @@ public class CommonModalBuilder {
         return modal;
     }
 
-    private FlowPanel buildPanel( HTMLElement element, FlowPanel panel ) {
-        panel.add( build( element ) );
+    private FlowPanel buildPanel(HTMLElement element,
+                                 FlowPanel panel) {
+        panel.add(build(element));
         return panel;
     }
 
-    private Widget build( HTMLElement element ) {
-        return ElementWrapperWidget.getWidget( element );
+    private Widget build(HTMLElement element) {
+        return ElementWrapperWidget.getWidget(element);
     }
 }

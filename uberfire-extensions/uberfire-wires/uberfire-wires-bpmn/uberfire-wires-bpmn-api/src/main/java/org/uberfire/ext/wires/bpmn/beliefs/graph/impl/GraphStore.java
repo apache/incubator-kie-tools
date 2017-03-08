@@ -19,12 +19,11 @@ import org.uberfire.ext.wires.bpmn.beliefs.graph.GraphNode;
 
 public interface GraphStore<T extends GraphNode> extends Iterable<T> {
 
-    public T addNode( T node );
+    public T addNode(T node);
 
-    public T removeNode( int id );
+    public T removeNode(int id);
 
-    public T getNode( int id );
+    public T getNode(int id);
 
     public int size();
-
 }

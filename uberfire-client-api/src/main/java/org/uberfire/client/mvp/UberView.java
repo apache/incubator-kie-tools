@@ -26,10 +26,9 @@ import com.google.gwt.user.client.ui.IsWidget;
  * Developers wishing to implement MVP-based Widgets are encouraged to have
  * their View implement this interface if they require access to the appropriate
  * Presenter.
- * 
  * @param <T> The Presenter type
  */
 public interface UberView<T> extends IsWidget {
 
-    void init( T presenter );
+    void init(T presenter);
 }

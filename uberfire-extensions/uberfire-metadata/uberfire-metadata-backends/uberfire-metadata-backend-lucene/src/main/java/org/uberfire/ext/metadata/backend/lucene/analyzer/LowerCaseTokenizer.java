@@ -21,16 +21,16 @@ import org.apache.lucene.util.AttributeFactory;
 
 public class LowerCaseTokenizer extends CharTokenizer {
 
-    public LowerCaseTokenizer( ) {
+    public LowerCaseTokenizer() {
         super();
     }
 
-    public LowerCaseTokenizer( AttributeFactory factory ) {
-        super( factory );
+    public LowerCaseTokenizer(AttributeFactory factory) {
+        super(factory);
     }
 
     @Override
-    protected boolean isTokenChar( int c ) {
+    protected boolean isTokenChar(int c) {
         return true;
     }
 
@@ -39,12 +39,11 @@ public class LowerCaseTokenizer extends CharTokenizer {
      * {@link Character#toLowerCase(int)}.
      */
     @Override
-    protected int normalize( int c ) {
+    protected int normalize(int c) {
         try {
-            return Character.toLowerCase( c );
-        } catch ( Exception ex ) {
+            return Character.toLowerCase(c);
+        } catch (Exception ex) {
             return c;
         }
     }
-
 }

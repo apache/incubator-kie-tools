@@ -66,29 +66,39 @@ public class MultiplePermissionNodeViewerTest {
 
     @Before
     public void setUp() {
-        presenter = new MultiplePermissionNodeViewer(view, widgetFactory);
+        presenter = new MultiplePermissionNodeViewer(view,
+                                                     widgetFactory);
 
         when(widgetFactory.createViewer(childNode1)).thenReturn(childViewer1);
         when(widgetFactory.createViewer(childNode2)).thenReturn(childViewer2);
 
-        permission1 = new DotNamedPermission("p1", false);
-        permission2 = new DotNamedPermission("p2", true);
-        permission3 = new DotNamedPermission("p2.a", false);
+        permission1 = new DotNamedPermission("p1",
+                                             false);
+        permission2 = new DotNamedPermission("p2",
+                                             true);
+        permission3 = new DotNamedPermission("p2.a",
+                                             false);
 
         permissionGroupNode = spy(new PermissionGroupNode(null));
         permissionGroupNode.setNodeName("r1");
 
-        permissionResourceNode = spy(new PermissionResourceNode("r2", null));
+        permissionResourceNode = spy(new PermissionResourceNode("r2",
+                                                                null));
         permissionResourceNode.setNodeName("r2");
-        permissionResourceNode.addPermission(permission1, "grant1", "deny1");
-        permissionResourceNode.addPermission(permission2, "grant2", "deny2");
+        permissionResourceNode.addPermission(permission1,
+                                             "grant1",
+                                             "deny1");
+        permissionResourceNode.addPermission(permission2,
+                                             "grant2",
+                                             "deny2");
 
         when(childNode1.getNodeName()).thenReturn("p2.a");
         when(childNode1.getPermissionList()).thenReturn(Arrays.asList(permission3));
 
         doAnswer(invocationOnMock -> {
             LoadCallback callback = (LoadCallback) invocationOnMock.getArguments()[0];
-            callback.afterLoad(Arrays.asList(childNode1, childNode2));
+            callback.afterLoad(Arrays.asList(childNode1,
+                                             childNode2));
             return null;
         }).when(permissionGroupNode).expand(any(LoadCallback.class));
 
@@ -98,15 +108,17 @@ public class MultiplePermissionNodeViewerTest {
             return null;
         }).when(permissionResourceNode).expand(any(LoadCallback.class));
     }
-    
+
     @Test
     public void testInitGroupNode() {
         presenter.show(permissionGroupNode);
 
-        assertEquals(presenter.getPermissionNode(), permissionGroupNode);
+        assertEquals(presenter.getPermissionNode(),
+                     permissionGroupNode);
 
         verify(view).setNodeName("r1");
-        verify(view, never()).setNodeFullName(anyString());
+        verify(view,
+               never()).setNodeFullName(anyString());
         verify(view).setPermissionsVisible(false);
         verify(view).addChildViewer(childViewer1);
         verify(view).addChildViewer(childViewer2);
@@ -116,13 +128,17 @@ public class MultiplePermissionNodeViewerTest {
     public void testInitResourceNode() {
         presenter.show(permissionResourceNode);
 
-        assertEquals(presenter.getPermissionNode(), permissionResourceNode);
+        assertEquals(presenter.getPermissionNode(),
+                     permissionResourceNode);
 
-        verify(view, never()).addChildViewer(any());
+        verify(view,
+               never()).addChildViewer(any());
         verify(view).setNodeName("r2");
-        verify(view, never()).setNodeFullName(anyString());
+        verify(view,
+               never()).setNodeFullName(anyString());
         verify(view).setPermissionsVisible(true);
-        verify(view).addItemsGrantedPermission("grant2", "r2");
+        verify(view).addItemsGrantedPermission("grant2",
+                                               "r2");
         verify(view).addItemException("p2.a");
     }
 }

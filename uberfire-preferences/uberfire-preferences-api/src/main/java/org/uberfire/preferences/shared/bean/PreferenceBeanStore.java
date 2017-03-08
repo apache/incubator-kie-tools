@@ -18,9 +18,9 @@ package org.uberfire.preferences.shared.bean;
 
 import java.util.Collection;
 
-import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 /**
  * Service to manage preference beans, with server-side and client-side implementations.
@@ -35,9 +35,9 @@ public interface PreferenceBeanStore {
      * @param <U> Preference bean type.
      * @param <T> Preference bean generated portable type.
      */
-    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void load( T emptyPortablePreference,
-                                                                                  ParameterizedCommand<T> successCallback,
-                                                                                  ParameterizedCommand<Throwable> errorCallback );
+    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void load(T emptyPortablePreference,
+                                                                                 ParameterizedCommand<T> successCallback,
+                                                                                 ParameterizedCommand<Throwable> errorCallback);
 
     /**
      * Loads all preference bean properties, following the passed scope resolution strategy.
@@ -48,10 +48,10 @@ public interface PreferenceBeanStore {
      * @param <U> Preference bean type.
      * @param <T> Preference bean generated portable type.
      */
-    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void load( T emptyPortablePreference,
-                                                                                  PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                                                                                  ParameterizedCommand<T> successCallback,
-                                                                                  ParameterizedCommand<Throwable> errorCallback );
+    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void load(T emptyPortablePreference,
+                                                                                 PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                                                                                 ParameterizedCommand<T> successCallback,
+                                                                                 ParameterizedCommand<Throwable> errorCallback);
 
     /**
      * Saves all preference data.
@@ -61,9 +61,9 @@ public interface PreferenceBeanStore {
      * @param <U> Preference bean type.
      * @param <T> Preference bean generated portable type.
      */
-    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save( T portablePreference,
-                                                                                  Command successCallback,
-                                                                                  ParameterizedCommand<Throwable> errorCallback );
+    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save(T portablePreference,
+                                                                                 Command successCallback,
+                                                                                 ParameterizedCommand<Throwable> errorCallback);
 
     /**
      * Saves all preference data, following the passed scope resolution strategy.
@@ -74,10 +74,10 @@ public interface PreferenceBeanStore {
      * @param <U> Preference bean type.
      * @param <T> Preference bean generated portable type.
      */
-    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save( T portablePreference,
-                                                                                  PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                                                                                  Command successCallback,
-                                                                                  ParameterizedCommand<Throwable> errorCallback );
+    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save(T portablePreference,
+                                                                                 PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                                                                                 Command successCallback,
+                                                                                 ParameterizedCommand<Throwable> errorCallback);
 
     /**
      * Saves all preferences passed.
@@ -85,9 +85,9 @@ public interface PreferenceBeanStore {
      * @param successCallback Success callback that indicates that the preference was saved.
      * @param errorCallback Error callback that returns the exception that occurred (if any).
      */
-    void save( Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
-               Command successCallback,
-               ParameterizedCommand<Throwable> errorCallback );
+    void save(Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
+              Command successCallback,
+              ParameterizedCommand<Throwable> errorCallback);
 
     /**
      * Saves all preferences passed, following the passed scope resolution strategy.
@@ -96,10 +96,10 @@ public interface PreferenceBeanStore {
      * @param successCallback Success callback that indicates that the preference was saved.
      * @param errorCallback Error callback that returns the exception that occurred (if any).
      */
-    void save( Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
-               PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-               Command successCallback,
-               ParameterizedCommand<Throwable> errorCallback );
+    void save(Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
+              PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+              Command successCallback,
+              ParameterizedCommand<Throwable> errorCallback);
 
     /**
      * Saves all preference data, in the last scope of the hierarchy.
@@ -109,7 +109,7 @@ public interface PreferenceBeanStore {
      * @param <U> Preference bean type.
      * @param <T> Preference bean generated portable type.
      */
-    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void saveDefaultValue( T defaultValue,
-                                                                                              Command successCallback,
-                                                                                              ParameterizedCommand<Throwable> errorCallback );
+    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void saveDefaultValue(T defaultValue,
+                                                                                             Command successCallback,
+                                                                                             ParameterizedCommand<Throwable> errorCallback);
 }

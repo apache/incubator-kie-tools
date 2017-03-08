@@ -32,9 +32,8 @@ public interface PermissionTypeRegistry {
 
     /**
      * Get the first permission type that matches the given name.
-     *
+     * <p>
      * <p>It's always up to every permission type to define what are the valid format for its permission names.</p>
-     *
      * @see PermissionType#supportsPermission(String)
      */
     PermissionType resolve(String name);

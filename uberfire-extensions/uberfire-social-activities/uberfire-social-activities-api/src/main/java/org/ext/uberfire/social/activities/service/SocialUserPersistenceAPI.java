@@ -25,10 +25,9 @@ public interface SocialUserPersistenceAPI {
 
     List<String> getSocialUsersName();
 
-    SocialUser getSocialUser( String userName );
+    SocialUser getSocialUser(String userName);
 
-    void updateUsers( SocialUser... users );
+    void updateUsers(SocialUser... users);
 
     SocialUser systemUser();
-
 }

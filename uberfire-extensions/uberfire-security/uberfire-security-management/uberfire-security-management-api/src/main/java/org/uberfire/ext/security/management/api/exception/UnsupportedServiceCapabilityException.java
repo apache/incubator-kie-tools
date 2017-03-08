@@ -29,7 +29,7 @@ public class UnsupportedServiceCapabilityException extends SecurityManagementExc
 
     private Capability capability;
 
-    public UnsupportedServiceCapabilityException( @MapsTo("capability") Capability capability ) {
+    public UnsupportedServiceCapabilityException(@MapsTo("capability") Capability capability) {
         this.capability = capability;
     }
 

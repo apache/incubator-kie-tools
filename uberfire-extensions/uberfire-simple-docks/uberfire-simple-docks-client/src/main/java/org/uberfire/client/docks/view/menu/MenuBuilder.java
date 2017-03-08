@@ -47,94 +47,94 @@ public class MenuBuilder {
     @Inject
     private User identity;
 
-    public Widget makeItem( final MenuItem item,
-                            boolean isRoot ) {
-        if ( !authzManager.authorize( item, identity ) ) {
+    public Widget makeItem(final MenuItem item,
+                           boolean isRoot) {
+        if (!authzManager.authorize(item,
+                                    identity)) {
             return null;
         }
 
-        if ( item instanceof MenuItemCommand ) {
+        if (item instanceof MenuItemCommand) {
             final MenuItemCommand cmdItem = (MenuItemCommand) item;
-            if ( isRoot ) {
-                final Button button = new Button( cmdItem.getCaption() );
-                button.setSize( ButtonSize.SMALL );
-                button.setEnabled( item.isEnabled() );
-                button.addClickHandler( new ClickHandler() {
+            if (isRoot) {
+                final Button button = new Button(cmdItem.getCaption());
+                button.setSize(ButtonSize.SMALL);
+                button.setEnabled(item.isEnabled());
+                button.addClickHandler(new ClickHandler() {
                     @Override
-                    public void onClick( final ClickEvent event ) {
+                    public void onClick(final ClickEvent event) {
                         cmdItem.getCommand().execute();
                     }
-                } );
-                item.addEnabledStateChangeListener( new EnabledStateChangeListener() {
+                });
+                item.addEnabledStateChangeListener(new EnabledStateChangeListener() {
                     @Override
-                    public void enabledStateChanged( final boolean enabled ) {
-                        button.setEnabled( enabled );
+                    public void enabledStateChanged(final boolean enabled) {
+                        button.setEnabled(enabled);
                     }
-                } );
+                });
                 return button;
             } else {
                 final NavbarLink navbarLink = new NavbarLink();
-                navbarLink.setText( cmdItem.getCaption() );
-                if ( !item.isEnabled() ) {
-                    navbarLink.addStyleName( "disabled" );
+                navbarLink.setText(cmdItem.getCaption());
+                if (!item.isEnabled()) {
+                    navbarLink.addStyleName("disabled");
                 }
-                navbarLink.addClickHandler( new ClickHandler() {
+                navbarLink.addClickHandler(new ClickHandler() {
                     @Override
-                    public void onClick( final ClickEvent event ) {
+                    public void onClick(final ClickEvent event) {
                         cmdItem.getCommand().execute();
                     }
-                } );
-                item.addEnabledStateChangeListener( new EnabledStateChangeListener() {
+                });
+                item.addEnabledStateChangeListener(new EnabledStateChangeListener() {
                     @Override
-                    public void enabledStateChanged( final boolean enabled ) {
-                        if ( enabled ) {
-                            navbarLink.removeStyleName( "disabled" );
+                    public void enabledStateChanged(final boolean enabled) {
+                        if (enabled) {
+                            navbarLink.removeStyleName("disabled");
                         } else {
-                            navbarLink.addStyleName( "disabled" );
+                            navbarLink.addStyleName("disabled");
                         }
                     }
-                } );
+                });
                 return navbarLink;
             }
-
-        } else if ( item instanceof MenuGroup ) {
+        } else if (item instanceof MenuGroup) {
             final MenuGroup groups = (MenuGroup) item;
-            if ( isRoot ) {
+            if (isRoot) {
                 final List<Widget> widgetList = new ArrayList<Widget>();
-                for ( final MenuItem _item : groups.getItems() ) {
-                    final Widget widget = makeItem( _item, false );
-                    if ( widget != null ) {
-                        widgetList.add( widget );
+                for (final MenuItem _item : groups.getItems()) {
+                    final Widget widget = makeItem(_item,
+                                                   false);
+                    if (widget != null) {
+                        widgetList.add(widget);
                     }
                 }
 
-                if ( widgetList.isEmpty() ) {
+                if (widgetList.isEmpty()) {
                     return null;
                 }
 
-                return makeDropDownMenuButton( groups.getCaption(),
-                                               widgetList );
-
+                return makeDropDownMenuButton(groups.getCaption(),
+                                              widgetList);
             } else {
                 final List<Widget> widgetList = new ArrayList<Widget>();
-                for ( final MenuItem _item : groups.getItems() ) {
-                    final Widget result = makeItem( _item, false );
-                    if ( result != null ) {
-                        widgetList.add( result );
+                for (final MenuItem _item : groups.getItems()) {
+                    final Widget result = makeItem(_item,
+                                                   false);
+                    if (result != null) {
+                        widgetList.add(result);
                     }
                 }
 
-                if ( widgetList.isEmpty() ) {
+                if (widgetList.isEmpty()) {
                     return null;
                 }
 
-                return makeDropDownMenuButton( groups.getCaption(),
-                                               widgetList );
+                return makeDropDownMenuButton(groups.getCaption(),
+                                              widgetList);
             }
-
-        } else if ( item instanceof MenuCustom ) {
-            final Object result = ( (MenuCustom) item ).build();
-            if ( result instanceof Widget ) {
+        } else if (item instanceof MenuCustom) {
+            final Object result = ((MenuCustom) item).build();
+            if (result instanceof Widget) {
                 return (Widget) result;
             }
         }
@@ -142,19 +142,18 @@ public class MenuBuilder {
         return null;
     }
 
-    private Widget makeDropDownMenuButton( final String caption,
-                                           final List<Widget> widgetList ) {
+    private Widget makeDropDownMenuButton(final String caption,
+                                          final List<Widget> widgetList) {
         final ButtonGroup buttonGroup = new ButtonGroup();
-        final Button dropdownButton = new Button( caption );
-        dropdownButton.setDataToggle( Toggle.DROPDOWN );
-        dropdownButton.setSize( ButtonSize.SMALL );
+        final Button dropdownButton = new Button(caption);
+        dropdownButton.setDataToggle(Toggle.DROPDOWN);
+        dropdownButton.setSize(ButtonSize.SMALL);
         final DropDownMenu dropDownMenu = new DropDownMenu();
-        for ( final Widget _item : widgetList ) {
-            dropDownMenu.add( _item );
+        for (final Widget _item : widgetList) {
+            dropDownMenu.add(_item);
         }
-        buttonGroup.add( dropdownButton );
-        buttonGroup.add( dropDownMenu );
+        buttonGroup.add(dropdownButton);
+        buttonGroup.add(dropDownMenu);
         return buttonGroup;
     }
-
 }

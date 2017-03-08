@@ -16,7 +16,7 @@
 
 package org.uberfire.ext.editor.commons.client.history;
 
-import java.lang.Override;import java.util.ArrayList;
+import java.util.ArrayList;
 
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -33,18 +33,21 @@ class VersionServiceCallerMock
         service = new VersionServiceMock(versions);
     }
 
-    @Override public VersionService call() {
+    @Override
+    public VersionService call() {
         return service;
     }
 
-    @Override public VersionService call(RemoteCallback<?> remoteCallback) {
+    @Override
+    public VersionService call(RemoteCallback<?> remoteCallback) {
         service.setCallback(remoteCallback);
         return service;
     }
 
-    @Override public VersionService call(RemoteCallback<?> remoteCallback, ErrorCallback<?> errorCallback) {
+    @Override
+    public VersionService call(RemoteCallback<?> remoteCallback,
+                               ErrorCallback<?> errorCallback) {
         service.setCallback(remoteCallback);
         return service;
     }
-
 }

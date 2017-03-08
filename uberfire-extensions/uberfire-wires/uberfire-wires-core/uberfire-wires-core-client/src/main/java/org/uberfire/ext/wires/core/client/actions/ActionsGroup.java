@@ -49,11 +49,11 @@ public class ActionsGroup extends Composite {
 
     @PostConstruct
     public void init() {
-        panel = new FocusableLienzoPanel( ShapeFactoryUtil.WIDTH_PANEL,
-                                          ShapesUtils.calculateHeight( 1 ) );
+        panel = new FocusableLienzoPanel(ShapeFactoryUtil.WIDTH_PANEL,
+                                         ShapesUtils.calculateHeight(1));
         layer = new Layer();
-        panel.getScene().add( layer );
-        initWidget( panel );
+        panel.getScene().add(layer);
+        initWidget(panel);
 
         drawActions();
     }
@@ -61,16 +61,16 @@ public class ActionsGroup extends Composite {
     private void drawActions() {
         //Hard-coded list of ActionShapes
         final List<ActionShape> shapes = new ArrayList<ActionShape>();
-        shapes.add( stencilBuilder.build( getClearCanvasClickHandler(),
-                                          AppResource.INSTANCE.images().clear() ) );
+        shapes.add(stencilBuilder.build(getClearCanvasClickHandler(),
+                                        AppResource.INSTANCE.images().clear()));
         layer.batch();
 
         //Add ActionShapes to the UI
         int shapeCount = 1;
-        for ( ActionShape shape : shapes ) {
-            shape.setX( 0 );
-            shape.setY( PaletteLayoutUtilities.getY( shapeCount ) );
-            layer.add( shape );
+        for (ActionShape shape : shapes) {
+            shape.setX(0);
+            shape.setY(PaletteLayoutUtilities.getY(shapeCount));
+            layer.add(shape);
             shapeCount++;
         }
     }
@@ -78,12 +78,11 @@ public class ActionsGroup extends Composite {
     private NodeMouseClickHandler getClearCanvasClickHandler() {
         return new NodeMouseClickHandler() {
             @Override
-            public void onNodeMouseClick( final NodeMouseClickEvent event ) {
-                if ( Window.confirm( "Are you sure to clean the canvas?" ) ) {
-                    clearEvent.fire( new ClearEvent() );
+            public void onNodeMouseClick(final NodeMouseClickEvent event) {
+                if (Window.confirm("Are you sure to clean the canvas?")) {
+                    clearEvent.fire(new ClearEvent());
                 }
             }
         };
     }
-
 }

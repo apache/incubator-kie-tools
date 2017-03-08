@@ -25,8 +25,7 @@ import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;
  */
 public interface PropertyEditorAdaptor {
 
-    boolean supports( final WiresBaseShape shape );
+    boolean supports(final WiresBaseShape shape);
 
-    List<PropertyEditorCategory> getProperties( final WiresBaseShape shape );
-
+    List<PropertyEditorCategory> getProperties(final WiresBaseShape shape);
 }

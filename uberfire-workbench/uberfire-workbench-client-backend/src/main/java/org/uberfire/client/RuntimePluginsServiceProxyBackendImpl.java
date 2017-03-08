@@ -35,33 +35,33 @@ public class RuntimePluginsServiceProxyBackendImpl implements RuntimePluginsServ
     private Caller<RuntimePluginService> runtimePluginsService;
 
     @Override
-    public void getTemplateContent( final String contentUrl,
-                                    final ParameterizedCommand<String> command ) {
-        runtimePluginsService.call( new RemoteCallback<String>() {
+    public void getTemplateContent(final String contentUrl,
+                                   final ParameterizedCommand<String> command) {
+        runtimePluginsService.call(new RemoteCallback<String>() {
             @Override
-            public void callback( String o ) {
-                command.execute( o );
+            public void callback(String o) {
+                command.execute(o);
             }
-        } ).getTemplateContent( contentUrl );
+        }).getTemplateContent(contentUrl);
     }
 
     @Override
-    public void listFrameworksContent( final ParameterizedCommand<Collection<String>> command ) {
-        runtimePluginsService.call( new RemoteCallback<Collection<String>>() {
+    public void listFrameworksContent(final ParameterizedCommand<Collection<String>> command) {
+        runtimePluginsService.call(new RemoteCallback<Collection<String>>() {
             @Override
-            public void callback( Collection<String> o ) {
-                command.execute( o );
+            public void callback(Collection<String> o) {
+                command.execute(o);
             }
-        } ).listFrameworksContent();
+        }).listFrameworksContent();
     }
 
     @Override
-    public void listPluginsContent( final ParameterizedCommand<Collection<String>> command ) {
-        runtimePluginsService.call( new RemoteCallback<Collection<String>>() {
+    public void listPluginsContent(final ParameterizedCommand<Collection<String>> command) {
+        runtimePluginsService.call(new RemoteCallback<Collection<String>>() {
             @Override
-            public void callback( Collection<String> o ) {
-                command.execute( o );
+            public void callback(Collection<String> o) {
+                command.execute(o);
             }
-        } ).listPluginsContent();
+        }).listPluginsContent();
     }
 }

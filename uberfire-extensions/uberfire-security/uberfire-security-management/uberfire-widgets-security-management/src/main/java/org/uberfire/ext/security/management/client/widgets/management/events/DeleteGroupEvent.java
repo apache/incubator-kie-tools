@@ -34,5 +34,4 @@ public class DeleteGroupEvent implements UberFireEvent {
     public String toString() {
         return "DeleteGroupEvent [name=" + name + "]";
     }
-
 }

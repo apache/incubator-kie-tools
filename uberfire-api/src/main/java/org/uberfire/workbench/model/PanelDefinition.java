@@ -18,12 +18,11 @@ package org.uberfire.workbench.model;
 import java.util.List;
 import java.util.Set;
 
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
-
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsMethod;
 import jsinterop.annotations.JsType;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 /**
  * Describes a physical region within a Workbench Perspective. Panels have a set physical size that they occupy, which
@@ -42,19 +41,17 @@ public interface PanelDefinition {
     String PARENT_CHOOSES_TYPE = "PARENT_CHOOSES_TYPE";
 
     /**
-     * Specifies the DOM ID that should be given to the live panel's element. Applications are responsible for ensuring
-     * the ID values are unique among all live panels.
-     *
-     * @param id
-     *            the DOM ID to give the panel when it is created. If null, no ID will be set on the panel.
-     */
-    public void setElementId( final String id );
-
-    /**
      * Returns the DOM ID that will be given to a panel created from this definition. If null, no ID attribute will be
      * set on a panel created from this definition.
      */
     public String getElementId();
+
+    /**
+     * Specifies the DOM ID that should be given to the live panel's element. Applications are responsible for ensuring
+     * the ID values are unique among all live panels.
+     * @param id the DOM ID to give the panel when it is created. If null, no ID will be set on the panel.
+     */
+    public void setElementId(final String id);
 
     /**
      * Specifies content that should be put in this panel's main display area when it is materialized. The content to
@@ -63,34 +60,29 @@ public interface PanelDefinition {
      * <p>
      * If the given part already belongs to an existing panel, it will be removed from that panel by a call to
      * removePart(part).
-     *
-     * @param part
-     *            The Part to add. Must not be null. The part's place must specify a WorkbenchActivity bean.
+     * @param part The Part to add. Must not be null. The part's place must specify a WorkbenchActivity bean.
      */
-    public void addPart( final PartDefinition part );
+    public void addPart(final PartDefinition part);
 
     /**
      * Specifies content that should be put in this panel's main display area when it is materialized.
      * <p>
      * This is a convenience method equivalent to
      * <tt>addPart(new&nbsp;PartDefinitionImpl(DefaultPlaceRequest.parse(partSpec)))</tt>.
-     *
-     * @param partSpec
-     *            An PlaceRequest ID with optional parameters, encoded as specified in
-     *            {@link DefaultPlaceRequest#parse(CharSequence)}. Must not be null. The place ID must specify a
-     *            WorkbenchActivity bean (either a screen or an editor).
+     * @param partSpec An PlaceRequest ID with optional parameters, encoded as specified in
+     * {@link DefaultPlaceRequest#parse(CharSequence)}. Must not be null. The place ID must specify a
+     * WorkbenchActivity bean (either a screen or an editor).
      * @return the PartDefinition object that was created and added to this panel definition.
      */
     @JsMethod(name = "addPartById")
-    public PartDefinition addPart( final String partSpec );
+    public PartDefinition addPart(final String partSpec);
 
     /**
      * Removes the given part definition from this panel definition.
-     *
      * @param part The Part to be removed
      * @return true if the part was found and removed; false if it did not belong to this panel in the first place.
      */
-    public boolean removePart( final PartDefinition part );
+    public boolean removePart(final PartDefinition part);
 
     /**
      * Get the Parts contained in the Panel
@@ -100,9 +92,8 @@ public interface PanelDefinition {
 
     /**
      * Returns this panel's immediate child panels.
-     *
      * @return a snapshot of the current child list. The list is not modifiable, and will not change as panels are added
-     *         and removed from this panel. The returned list is never null.
+     * and removed from this panel. The returned list is never null.
      */
     public List<PanelDefinition> getChildren();
 
@@ -114,8 +105,8 @@ public interface PanelDefinition {
      * @param position The Position to add the child
      * @param panel The child Panel
      */
-    public void insertChild( final Position position,
-                             final PanelDefinition panel );
+    public void insertChild(final Position position,
+                            final PanelDefinition panel);
 
     /**
      * Append a Panel at the first empty child position. If this Panel already
@@ -124,9 +115,9 @@ public interface PanelDefinition {
      * @param position The Position to add the child
      * @param panel The child Panel
      */
-    @JsMethod(name="appendChildAtPosition")
-    public void appendChild( final Position position,
-                             final PanelDefinition panel );
+    @JsMethod(name = "appendChildAtPosition")
+    public void appendChild(final Position position,
+                            final PanelDefinition panel);
 
     /**
      * Append a Panel at the first empty child position. If this Panel already
@@ -135,12 +126,11 @@ public interface PanelDefinition {
      * @param panel The child Panel
      */
     public void appendChild(
-                            final PanelDefinition panel );
+            final PanelDefinition panel);
 
     /**
      * Return the parent panel, or null if {@link #isRoot()}} returns true.
-     *
-     * @return  a parent panel definition or null if at the top of the hierarchy
+     * @return a parent panel definition or null if at the top of the hierarchy
      */
     public PanelDefinition getParent();
 
@@ -150,13 +140,13 @@ public interface PanelDefinition {
      * @return The child Panel or null, if a child does not exist at the given
      * Position
      */
-    public PanelDefinition getChild( final Position position );
+    public PanelDefinition getChild(final Position position);
 
     /**
      * Remove a child from the Panel
      * @param position
      */
-    public void removeChild( final Position position );
+    public void removeChild(final Position position);
 
     /**
      * Is this Panel the root of the Perspective definition
@@ -167,21 +157,18 @@ public interface PanelDefinition {
     /**
      * Specifies the WorkbenchPanelPresenter implementation that should be used when adding this panel to the UI. Must
      * refer to a Dependent-scoped Errai IOC bean type.
-     *
      * @return fully-qualified class name of the WorkbenchPanelPresenter implementation to use. Must not be null, but
-     *         may be the special value {@link #PARENT_CHOOSES_TYPE}.
+     * may be the special value {@link #PARENT_CHOOSES_TYPE}.
      */
     public String getPanelType();
 
     /**
      * Specifies the WorkbenchPanelPresenter implementation that should be used when adding this panel to the UI. Must
      * refer to a Dependent-scoped Errai IOC bean type.
-     *
-     * @param fqcn
-     *            fully-qualified class name of the WorkbenchPanelPresenter implementation to use. Must not be null, but
-     *            may be the special value {@link #PARENT_CHOOSES_TYPE}.
+     * @param fqcn fully-qualified class name of the WorkbenchPanelPresenter implementation to use. Must not be null, but
+     * may be the special value {@link #PARENT_CHOOSES_TYPE}.
      */
-    public void setPanelType( String fqcn );
+    public void setPanelType(String fqcn);
 
     /**
      * Get the height of the Panel in pixels
@@ -191,91 +178,82 @@ public interface PanelDefinition {
     public Integer getHeight();
 
     /**
+     * Set the height of this panel in pixels using a primitive int to make this method exportable to JS.
+     * @param width The width to set.
+     */
+    default void setHeight(int height) {
+        setHeight(Integer.valueOf(height));
+    }
+
+    /**
      * Get the height of this panel in pixels as a primitive int to make this method exportable to JS.
-     * 
      * @return The height, or -1 if not set.
      */
     default int getHeightAsInt() {
         final Integer height = getHeight();
-        return (height != null ) ? height : -1;
+        return (height != null) ? height : -1;
     }
-    
+
     /**
      * Set the height of this panel in pixels.
-     * 
      * @param height The height to set. If null, the existing height value is retained.
      */
     @JsIgnore
-    public void setHeight( Integer height );
+    public void setHeight(Integer height);
 
     /**
-     * Set the height of this panel in pixels using a primitive int to make this method exportable to JS.
-     * 
-     * @param width The width to set.
-     */
-    default void setHeight( int height ) {
-        setHeight( Integer.valueOf( height ) );
-    }
-    
-    /**
      * Get the width of this panel in pixels.
-     * 
      * @return The width, or null if not set.
      */
     @JsIgnore
     public Integer getWidth();
-    
+
+    /**
+     * Set the width of this panel in pixels using a primitive int to make this method exportable to JS.
+     * @param width The width to set.
+     */
+    default void setWidth(int width) {
+        setWidth(Integer.valueOf(width));
+    }
+
     /**
      * Get the width of this panel in pixels as a primitive int to make this method exportable to JS.
-     * 
      * @return The width, or -1 if not set.
      */
     default int getWidthAsInt() {
         final Integer width = getWidth();
-        return (width != null ) ? width : -1;
+        return (width != null) ? width : -1;
     }
 
     /**
      * Set the width of this panel in pixels.
-     * 
      * @param width The width to set. If null, the existing width value is retained.
      */
     @JsIgnore
-    public void setWidth( Integer width );
-    
-    /**
-     * Set the width of this panel in pixels using a primitive int to make this method exportable to JS.
-     * 
-     * @param width The width to set.
-     */
-    default void setWidth( int width ) {
-        setWidth( Integer.valueOf( width ) );
-    }
+    public void setWidth(Integer width);
 
     /**
      * Get the minimum height of this panel in pixels.
-     * 
      * @return The minimum height, or null if not set.
      */
     @JsIgnore
     public Integer getMinHeight();
-    
-    /**
-     * Get the minimum width of this panel in pixels as a primitive int to make this method exportable to JS.
-     * 
-     * @return The height, or -1 if not set.
-     */
-    default int getMinHeightAsInt() {
-        final Integer height = getMinHeight();
-        return (height != null ) ? height : -1;
-    }
 
     /**
      * Set the minimum height of the Panel in pixels
      * @param minHeight The minimum height, or null if not set
      */
     @JsIgnore
-    public void setMinHeight( Integer minHeight );
+    public void setMinHeight(Integer minHeight);
+
+    /**
+     * Get the minimum width of this panel in pixels as a primitive int to make this method exportable to JS.
+     * @return The height, or -1 if not set.
+     */
+    default int getMinHeightAsInt() {
+        final Integer height = getMinHeight();
+        return (height != null) ? height : -1;
+    }
 
     /**
      * Get the minimum width of the Panel in pixels
@@ -283,30 +261,28 @@ public interface PanelDefinition {
      */
     @JsIgnore
     public Integer getMinWidth();
-    
-    /**
-     * Get the minimum width of this panel in pixels as a primitive int to make this method exportable to JS.
-     * 
-     * @return The width, or -1 if not set.
-     */
-    default int getMinWidthAsInt() {
-        final Integer width = getMinWidth();
-        return (width != null ) ? width : -1;
-    }
 
     /**
      * Set the minimum width of the Panel in pixels
      * @param minWidth The width, or null if not set
      */
     @JsIgnore
-    public void setMinWidth( Integer minWidth );
+    public void setMinWidth(Integer minWidth);
+
+    /**
+     * Get the minimum width of this panel in pixels as a primitive int to make this method exportable to JS.
+     * @return The width, or -1 if not set.
+     */
+    default int getMinWidthAsInt() {
+        final Integer width = getMinWidth();
+        return (width != null) ? width : -1;
+    }
 
     /**
      * Get the Position of the Panel relate to it's Parent
      * <p>
      * TODO remove this. parent panels should track the positions of their children; making it a property of the child
      * is error-prone when moving panels around in the UI.
-     *
      * @return The Position of the Panel
      */
     public Position getPosition();
@@ -316,10 +292,9 @@ public interface PanelDefinition {
      * <p>
      * TODO remove this. parent panels should track the positions of their children; making it a property of the child
      * is error-prone when moving panels around in the UI.
-     *
      * @param position The Position of the Panel relative to it's parent
      */
-    public void setPosition( Position position );
+    public void setPosition(Position position);
 
     /**
      * Has the Panel been expanded to a maximum size
@@ -327,19 +302,18 @@ public interface PanelDefinition {
      */
     public boolean isMaximized();
 
-    void setContextDefinition( final ContextDefinition contextDefinition );
-
     ContextDefinition getContextDefinition();
+
+    void setContextDefinition(final ContextDefinition contextDefinition);
 
     ContextDisplayMode getContextDisplayMode();
 
-    void setContextDisplayMode( final ContextDisplayMode contextDisplayMode );
-    
+    void setContextDisplayMode(final ContextDisplayMode contextDisplayMode);
+
     /**
      * Invokes {@link #toString()} but exported to JavaScript so it can be invoked from different scripts.
      */
     default String asString() {
         return this.toString();
     }
-
 }

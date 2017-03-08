@@ -32,7 +32,7 @@ public interface GridRow {
      * Sets the height of the row
      * @param height
      */
-    void setHeight( final double height );
+    void setHeight(final double height);
 
     /**
      * Collapsed rows have zero height. This returns the height of the row before it was collapsed.
@@ -76,5 +76,4 @@ public interface GridRow {
      * Resets all cells on the row to a non-merged, non-collapsed state.
      */
     void reset();
-
 }

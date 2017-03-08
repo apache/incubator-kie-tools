@@ -23,8 +23,6 @@ import javax.inject.Named;
 
 import org.jboss.errai.marshalling.server.MappingContextSingleton;
 import org.jboss.errai.marshalling.server.ServerMarshalling;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
@@ -37,82 +35,85 @@ public class ObjectStorageImpl implements ObjectStorage {
     private FileSystem fileSystem;
 
     @Inject
-    public ObjectStorageImpl( @Named("configIO") final IOService ioService ) {
+    public ObjectStorageImpl(@Named("configIO") final IOService ioService) {
         this.ioService = ioService;
     }
 
     @Override
-    public void init( String rootPath ) {
+    public void init(String rootPath) {
         initializeMarshaller();
-        initializeFileSystem( rootPath );
+        initializeFileSystem(rootPath);
     }
 
     @Override
-    public boolean exists( final String path ) {
-        Path fsPath = fileSystem.getPath( path );
+    public boolean exists(final String path) {
+        Path fsPath = fileSystem.getPath(path);
 
         try {
-            return ioService.exists( fsPath );
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
+            return ioService.exists(fsPath);
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public <T> T read( final String path ) {
-        Path fsPath = fileSystem.getPath( path );
+    public <T> T read(final String path) {
+        Path fsPath = fileSystem.getPath(path);
         try {
-            if ( ioService.exists( fsPath ) ) {
-                String content = ioService.readAllString( fsPath );
-                return (T) ServerMarshalling.fromJSON( content );
+            if (ioService.exists(fsPath)) {
+                String content = ioService.readAllString(fsPath);
+                return (T) ServerMarshalling.fromJSON(content);
             }
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
         }
 
         return null;
     }
 
     @Override
-    public <T> void write( final String path,
-                           final T value ) {
+    public <T> void write(final String path,
+                          final T value) {
         try {
-            ioService.startBatch( fileSystem );
-            Path fsPath = fileSystem.getPath( path );
-            String content = ServerMarshalling.toJSON( value );
-            ioService.write( fsPath, content );
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
+            ioService.startBatch(fileSystem);
+            Path fsPath = fileSystem.getPath(path);
+            String content = ServerMarshalling.toJSON(value);
+            ioService.write(fsPath,
+                            content);
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
         } finally {
             ioService.endBatch();
         }
-
     }
 
     @Override
-    public void delete( final String path ) {
-        ioService.deleteIfExists( fileSystem.getPath( path ) );
+    public void delete(final String path) {
+        ioService.deleteIfExists(fileSystem.getPath(path));
     }
 
     @Override
-    public Path getPath( String first,
-                         String... paths ) {
-        return this.fileSystem.getPath( first, paths );
+    public Path getPath(String first,
+                        String... paths) {
+        return this.fileSystem.getPath(first,
+                                       paths);
     }
 
     private void initializeMarshaller() {
         MappingContextSingleton.get();
     }
 
-    private void initializeFileSystem( final String rootPath ) {
+    private void initializeFileSystem(final String rootPath) {
         try {
-            fileSystem = ioService.newFileSystem( URI.create( rootPath ),
-                                                  new HashMap<String, Object>() {{
-                                                      put( "init", Boolean.TRUE );
-                                                      put( "internal", Boolean.TRUE );
-                                                  }} );
-        } catch ( FileSystemAlreadyExistsException e ) {
-            fileSystem = ioService.getFileSystem( URI.create( rootPath ) );
+            fileSystem = ioService.newFileSystem(URI.create(rootPath),
+                                                 new HashMap<String, Object>() {{
+                                                     put("init",
+                                                         Boolean.TRUE);
+                                                     put("internal",
+                                                         Boolean.TRUE);
+                                                 }});
+        } catch (FileSystemAlreadyExistsException e) {
+            fileSystem = ioService.getFileSystem(URI.create(rootPath));
         }
     }
 }

@@ -15,7 +15,6 @@
 
 package org.ext.uberfire.social.activities.service;
 
-
 import java.util.List;
 
 import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
@@ -27,9 +26,9 @@ public interface SocialAdapter<T> {
 
     SocialEventType socialEventType();
 
-    boolean shouldInterceptThisEvent( Object event );
+    boolean shouldInterceptThisEvent(Object event);
 
-    SocialActivitiesEvent toSocial( Object object );
+    SocialActivitiesEvent toSocial(Object object);
 
     List<SocialCommandTypeFilter> getTimelineFilters();
 

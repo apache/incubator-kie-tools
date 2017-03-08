@@ -36,7 +36,7 @@ public class PortablePreferenceMockPortableGeneratedImpl extends PortablePrefere
     public PortablePreferenceMockPortableGeneratedImpl() {
     }
 
-    public PortablePreferenceMockPortableGeneratedImpl( @MapsTo("property") java.lang.String property ) {
+    public PortablePreferenceMockPortableGeneratedImpl(@MapsTo("property") java.lang.String property) {
         this.property = property;
     }
 
@@ -52,7 +52,7 @@ public class PortablePreferenceMockPortableGeneratedImpl extends PortablePrefere
 
     @Override
     public String[] parents() {
-        return new String[]{ "" };
+        return new String[]{""};
     }
 
     @Override
@@ -61,21 +61,21 @@ public class PortablePreferenceMockPortableGeneratedImpl extends PortablePrefere
     }
 
     @Override
-    public void set( String property,
-                     Object value ) {
-        if ( property.equals( "property" ) ) {
+    public void set(String property,
+                    Object value) {
+        if (property.equals("property")) {
             property = (java.lang.String) value;
         } else {
-            throw new RuntimeException( "Unknown property: " + property );
+            throw new RuntimeException("Unknown property: " + property);
         }
     }
 
     @Override
-    public Object get( String property ) {
-        if ( property.equals( "property" ) ) {
+    public Object get(String property) {
+        if (property.equals("property")) {
             return property;
         } else {
-            throw new RuntimeException( "Unknown property: " + property );
+            throw new RuntimeException("Unknown property: " + property);
         }
     }
 
@@ -83,23 +83,24 @@ public class PortablePreferenceMockPortableGeneratedImpl extends PortablePrefere
     public Map<String, PropertyFormType> getPropertiesTypes() {
         Map<String, PropertyFormType> propertiesTypes = new HashMap<>();
 
-        propertiesTypes.put( "property", PropertyFormType.TEXT );
+        propertiesTypes.put("property",
+                            PropertyFormType.TEXT);
 
         return propertiesTypes;
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         final PortablePreferenceMockPortableGeneratedImpl that = (PortablePreferenceMockPortableGeneratedImpl) o;
 
-        if ( property != null ? !property.equals( that.property ) : that.property != null ) {
+        if (property != null ? !property.equals(that.property) : that.property != null) {
             return false;
         }
 
@@ -110,7 +111,7 @@ public class PortablePreferenceMockPortableGeneratedImpl extends PortablePrefere
     public int hashCode() {
         int result = 0;
 
-        result = 31 * result + ( property != null ? property.hashCode() : 0 );
+        result = 31 * result + (property != null ? property.hashCode() : 0);
         result = ~~result;
 
         return result;

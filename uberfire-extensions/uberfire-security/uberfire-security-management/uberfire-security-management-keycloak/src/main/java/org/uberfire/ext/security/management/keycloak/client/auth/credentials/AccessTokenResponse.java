@@ -17,13 +17,13 @@
 
 package org.uberfire.ext.security.management.keycloak.client.auth.credentials;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.codehaus.jackson.annotate.JsonAnyGetter;
 import org.codehaus.jackson.annotate.JsonAnySetter;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @JsonPropertyOrder({
         "access_token",
@@ -37,7 +37,7 @@ import java.util.Map;
 })
 /**
  * The response for the access token service.
- * 
+ *
  * @since 0.9.0
  */
 public class AccessTokenResponse {
@@ -138,8 +138,9 @@ public class AccessTokenResponse {
     }
 
     @JsonAnySetter
-    public void setOtherClaims(String name, Object value) {
-        otherClaims.put(name, value);
+    public void setOtherClaims(String name,
+                               Object value) {
+        otherClaims.put(name,
+                        value);
     }
-
 }

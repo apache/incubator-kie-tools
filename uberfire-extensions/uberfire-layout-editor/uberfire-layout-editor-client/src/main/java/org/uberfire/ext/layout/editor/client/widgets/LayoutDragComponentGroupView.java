@@ -16,6 +16,11 @@
 
 package org.uberfire.ext.layout.editor.client.widgets;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -25,19 +30,14 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
-
 @Dependent
 @Templated
 public class LayoutDragComponentGroupView implements UberElement<LayoutDragComponentGroupPresenter>,
-        LayoutDragComponentGroupPresenter.View, IsElement {
-
+                                                     LayoutDragComponentGroupPresenter.View,
+                                                     IsElement {
 
     @Inject
-    @DataField( "group-title" )
+    @DataField("group-title")
     Anchor groupTitle;
 
     @Inject
@@ -56,44 +56,48 @@ public class LayoutDragComponentGroupView implements UberElement<LayoutDragCompo
     private Map<String, LayoutDragComponentWidget> componentsMap = new HashMap<>();
 
     @Override
-    public void init( LayoutDragComponentGroupPresenter presenter ) {
+    public void init(LayoutDragComponentGroupPresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setTitle( String name ) {
-        groupTitle.setTextContent( name );
-        String componentId = name.replaceAll( "\\s", "" );
-        collapse.setId( componentId );
-        groupTitle.setAttribute( "href", "#"+ componentId );
-
+    public void setTitle(String name) {
+        groupTitle.setTextContent(name);
+        String componentId = name.replaceAll("\\s",
+                                             "");
+        collapse.setId(componentId);
+        groupTitle.setAttribute("href",
+                                "#" + componentId);
     }
 
     @Override
-    public void addComponents( Map<String, LayoutDragComponent> dragComponents ) {
-        for ( String key : dragComponents.keySet() ) {
-            LayoutDragComponentWidget widget = createDragComponentWidget( dragComponents.get( key ) );
-            componentsMap.put( key, widget );
-            components.appendChild( widget.getElement() );
+    public void addComponents(Map<String, LayoutDragComponent> dragComponents) {
+        for (String key : dragComponents.keySet()) {
+            LayoutDragComponentWidget widget = createDragComponentWidget(dragComponents.get(key));
+            componentsMap.put(key,
+                              widget);
+            components.appendChild(widget.getElement());
         }
     }
 
     @Override
-    public void addComponent( String componentId, LayoutDragComponent component ) {
-        LayoutDragComponentWidget widget = createDragComponentWidget( component );
-        componentsMap.put( componentId, widget );
-        components.appendChild( widget.getElement() );
+    public void addComponent(String componentId,
+                             LayoutDragComponent component) {
+        LayoutDragComponentWidget widget = createDragComponentWidget(component);
+        componentsMap.put(componentId,
+                          widget);
+        components.appendChild(widget.getElement());
     }
 
     @Override
-    public void removeComponent( String componentId ) {
-        LayoutDragComponentWidget layoutDragComponentWidget = componentsMap.get( componentId );
-        components.removeChild( layoutDragComponentWidget.getElement() );
+    public void removeComponent(String componentId) {
+        LayoutDragComponentWidget layoutDragComponentWidget = componentsMap.get(componentId);
+        components.removeChild(layoutDragComponentWidget.getElement());
     }
 
-    private LayoutDragComponentWidget createDragComponentWidget( LayoutDragComponent dragComponent ) {
+    private LayoutDragComponentWidget createDragComponentWidget(LayoutDragComponent dragComponent) {
         LayoutDragComponentWidget widget = layoutDragComponentWidgets.get();
-        widget.init( dragComponent );
+        widget.init(dragComponent);
         return widget;
     }
 }

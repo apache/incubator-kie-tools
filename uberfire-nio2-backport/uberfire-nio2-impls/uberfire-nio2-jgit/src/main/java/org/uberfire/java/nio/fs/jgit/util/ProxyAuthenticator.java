@@ -26,10 +26,10 @@ public class ProxyAuthenticator extends Authenticator {
     private final String httpsProxyUser;
     private final String httpsProxyPassword;
 
-    public ProxyAuthenticator( final String httpProxyUser,
-                               final String httpProxyPassword,
-                               final String httpsProxyUser,
-                               final String httpsProxyPassword ) {
+    public ProxyAuthenticator(final String httpProxyUser,
+                              final String httpProxyPassword,
+                              final String httpsProxyUser,
+                              final String httpsProxyPassword) {
         this.httpProxyUser = httpProxyUser;
         this.httpProxyPassword = httpProxyPassword;
         this.httpsProxyUser = httpsProxyUser;
@@ -38,13 +38,15 @@ public class ProxyAuthenticator extends Authenticator {
 
     @Override
     protected PasswordAuthentication getPasswordAuthentication() {
-        if ( getRequestorType() == RequestorType.PROXY ) {
+        if (getRequestorType() == RequestorType.PROXY) {
             final String protocol = getRequestingProtocol();
 
-            if ( protocol.equalsIgnoreCase( "http" ) && ( httpProxyUser != null && httpProxyPassword != null ) ) {
-                return new PasswordAuthentication( httpProxyUser, httpProxyPassword.toCharArray() );
-            } else if ( protocol.equalsIgnoreCase( "https" ) && ( httpsProxyUser != null && httpsProxyPassword != null ) ) {
-                return new PasswordAuthentication( httpsProxyUser, httpsProxyPassword.toCharArray() );
+            if (protocol.equalsIgnoreCase("http") && (httpProxyUser != null && httpProxyPassword != null)) {
+                return new PasswordAuthentication(httpProxyUser,
+                                                  httpProxyPassword.toCharArray());
+            } else if (protocol.equalsIgnoreCase("https") && (httpsProxyUser != null && httpsProxyPassword != null)) {
+                return new PasswordAuthentication(httpsProxyUser,
+                                                  httpsProxyPassword.toCharArray());
             }
         }
         return super.getPasswordAuthentication();

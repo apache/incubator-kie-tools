@@ -41,44 +41,56 @@ public class PermissionCheckProcessorTest {
     Context context = Context.create();
     PermissionCheckProcessor processor;
 
-    interface FunctionTest {
-        void granted();
-        void denied();
-    }
-
     @Before
     public void setUp() {
         processor = new PermissionCheckProcessor(PermissionCheck.class);
-        context.addVariable("this", FunctionTest.class);
+        context.addVariable("this",
+                            FunctionTest.class);
     }
 
     @Test
     public void testPermissionStatement() {
-        Statement stmt = processor.createPermissionCheck("myfeature", null, null);
+        Statement stmt = processor.createPermissionCheck("myfeature",
+                                                         null,
+                                                         null);
         String ifStr = stmt.generate(context);
-        assertEquals(ifStr, "if (!(org.uberfire.security.client.authz.AuthorizationManagerHelper.authorize(\"myfeature\"))) {\n" +
-                "  return;\n" +
-                "}");
+        assertEquals(ifStr,
+                     "if (!(org.uberfire.security.client.authz.AuthorizationManagerHelper.authorize(\"myfeature\"))) {\n" +
+                             "  return;\n" +
+                             "}");
     }
 
     @Test
     public void testEmptyCallback() {
-        Statement stmt = processor.createPermissionCheck("myfeature", "", "");
+        Statement stmt = processor.createPermissionCheck("myfeature",
+                                                         "",
+                                                         "");
         String ifStr = stmt.generate(context);
-        assertEquals(ifStr, "if (!(org.uberfire.security.client.authz.AuthorizationManagerHelper.authorize(\"myfeature\"))) {\n" +
-                "  return;\n" +
-                "}");
+        assertEquals(ifStr,
+                     "if (!(org.uberfire.security.client.authz.AuthorizationManagerHelper.authorize(\"myfeature\"))) {\n" +
+                             "  return;\n" +
+                             "}");
     }
 
     @Test
     public void testPermissionCallbacks() {
-        Statement stmt = processor.createPermissionCheck("myfeature", "granted", "denied");
+        Statement stmt = processor.createPermissionCheck("myfeature",
+                                                         "granted",
+                                                         "denied");
         String ifStr = stmt.generate(context);
-        assertEquals(ifStr, "if (!(org.uberfire.security.client.authz.AuthorizationManagerHelper.authorize(\"myfeature\"))) {\n" +
-                "  denied();\n" +
-                "  return;\n" +
-                "} else {\n" +
-                "  granted();\n" +
-                "}");
+        assertEquals(ifStr,
+                     "if (!(org.uberfire.security.client.authz.AuthorizationManagerHelper.authorize(\"myfeature\"))) {\n" +
+                             "  denied();\n" +
+                             "  return;\n" +
+                             "} else {\n" +
+                             "  granted();\n" +
+                             "}");
+    }
+
+    interface FunctionTest {
+
+        void granted();
+
+        void denied();
     }
 }

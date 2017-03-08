@@ -47,7 +47,7 @@ public class MyPreference implements BasePreference<MyPreference> {
     MySharedPreference mySharedPreference;
 
     @Override
-    public MyPreference defaultValue( final MyPreference defaultValue ) {
+    public MyPreference defaultValue(final MyPreference defaultValue) {
         defaultValue.text = "text";
         defaultValue.sendReports = true;
         defaultValue.backgroundColor = "ABCDEF";

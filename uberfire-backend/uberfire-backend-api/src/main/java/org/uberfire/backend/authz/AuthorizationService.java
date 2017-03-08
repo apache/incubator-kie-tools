@@ -26,7 +26,6 @@ public interface AuthorizationService {
 
     /**
      * Retrieves the current {@link AuthorizationPolicy} instance from the backend storage.
-     *
      * @return The stored {@link AuthorizationPolicy} instance
      */
     AuthorizationPolicy loadPolicy();
@@ -34,7 +33,6 @@ public interface AuthorizationService {
     /**
      * Overwrites the content of the {@link AuthorizationPolicy} instance stored in the backend
      * by the contents of the instance passed as a parameter.
-     *
      * @param policy The authorization policy to store
      */
     void savePolicy(AuthorizationPolicy policy);

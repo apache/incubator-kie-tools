@@ -15,6 +15,10 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -24,18 +28,12 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PartDefinition;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-
 import static org.jgroups.util.Util.assertEquals;
 import static org.jgroups.util.Util.assertTrue;
 import static org.mockito.Mockito.*;
 
-
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class SinglePartPanelHelperTest {
-
 
     private SinglePartPanelHelper singlePartHelper;
 
@@ -45,41 +43,42 @@ public class SinglePartPanelHelperTest {
     @Test
     public void thereIsNoPartsTest() {
 
-        singlePartHelper = new SinglePartPanelHelper( new ArrayList<>(), placeManager );
-        assertTrue( singlePartHelper.hasNoParts() );
-
+        singlePartHelper = new SinglePartPanelHelper(new ArrayList<>(),
+                                                     placeManager);
+        assertTrue(singlePartHelper.hasNoParts());
     }
 
     @Test
     public void getPlaceFromFirstPartTest() {
 
-        PlaceRequest place = mock( PlaceRequest.class );
-        PartDefinition part = mock( PartDefinition.class );
-        when( part.getPlace() ).thenReturn( place );
+        PlaceRequest place = mock(PlaceRequest.class);
+        PartDefinition part = mock(PartDefinition.class);
+        when(part.getPlace()).thenReturn(place);
 
-        Collection<PartDefinition> parts = Arrays.asList( part );
-        singlePartHelper = new SinglePartPanelHelper( parts, placeManager );
+        Collection<PartDefinition> parts = Arrays.asList(part);
+        singlePartHelper = new SinglePartPanelHelper(parts,
+                                                     placeManager);
 
-        assertTrue( !singlePartHelper.hasNoParts() );
-        assertEquals( place, singlePartHelper.getPlaceFromFirstPart() );
-
+        assertTrue(!singlePartHelper.hasNoParts());
+        assertEquals(place,
+                     singlePartHelper.getPlaceFromFirstPart());
     }
 
     @Test
     public void closeFirstPartAndAddNewOneTest() {
 
-        PlaceRequest place = mock( PlaceRequest.class );
-        PartDefinition part = mock( PartDefinition.class );
-        Command cmd = mock( Command.class );
+        PlaceRequest place = mock(PlaceRequest.class);
+        PartDefinition part = mock(PartDefinition.class);
+        Command cmd = mock(Command.class);
 
-        when( part.getPlace() ).thenReturn( place );
+        when(part.getPlace()).thenReturn(place);
 
-        Collection<PartDefinition> parts = Arrays.asList( part );
-        singlePartHelper = new SinglePartPanelHelper( parts, placeManager );
+        Collection<PartDefinition> parts = Arrays.asList(part);
+        singlePartHelper = new SinglePartPanelHelper(parts,
+                                                     placeManager);
 
-        singlePartHelper.closeFirstPartAndAddNewOne( cmd );
-        verify( placeManager ).tryClosePlace( place, cmd );
-
+        singlePartHelper.closeFirstPartAndAddNewOne(cmd);
+        verify(placeManager).tryClosePlace(place,
+                                           cmd);
     }
-
 }

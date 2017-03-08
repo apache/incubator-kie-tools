@@ -101,129 +101,190 @@ public class PluginServicesImplTest {
     public void setup() throws IOException {
         fileSystemTestingUtils.setup();
 
-        MockitoAnnotations.initMocks( this );
-        ioService = spy( (IOServiceDotFileImpl) fileSystemTestingUtils.getIoService() );
-        doReturn( fileSystemTestingUtils.getFileSystem() ).when( ioService ).getFileSystem( any( URI.class ) );
-        doNothing().when( ioService ).startBatch( any( FileSystem.class ) );
-        doNothing().when( ioService ).endBatch();
-        doReturn( "script" ).when( pluginServices ).getFrameworkScript( any( Framework.class ) );
+        MockitoAnnotations.initMocks(this);
+        ioService = spy((IOServiceDotFileImpl) fileSystemTestingUtils.getIoService());
+        doReturn(fileSystemTestingUtils.getFileSystem()).when(ioService).getFileSystem(any(URI.class));
+        doNothing().when(ioService).startBatch(any(FileSystem.class));
+        doNothing().when(ioService).endBatch();
+        doReturn("script").when(pluginServices).getFrameworkScript(any(Framework.class));
 
-        doReturn( ioService ).when( pluginServices ).getIoService();
+        doReturn(ioService).when(pluginServices).getIoService();
 
         pluginServices.init();
     }
 
     @Test(expected = PluginAlreadyExists.class)
     public void testCreateTwoPluginsWithTheSameName() {
-        createPlugin( "pluginName", PluginType.SCREEN, null );
-        createPlugin( "pluginName", PluginType.EDITOR, null );
+        createPlugin("pluginName",
+                     PluginType.SCREEN,
+                     null);
+        createPlugin("pluginName",
+                     PluginType.EDITOR,
+                     null);
     }
 
     @Test
     public void testListRuntimePluginsOfEmptyScreen() {
-        createPlugin( "emptyScreen", PluginType.SCREEN, null );
+        createPlugin("emptyScreen",
+                     PluginType.SCREEN,
+                     null);
 
         Collection<RuntimePlugin> runtimePlugins = pluginServices.listRuntimePlugins();
-        assertEquals( 1, runtimePlugins.size() );
-        assertTrue( contains( runtimePlugins, "emptyScreen" ) );
+        assertEquals(1,
+                     runtimePlugins.size());
+        assertTrue(contains(runtimePlugins,
+                            "emptyScreen"));
     }
 
     @Test
     public void testListRuntimePluginsOfScreenWithFramework() {
-        createPlugin( "angularScreen", PluginType.SCREEN, Framework.ANGULAR );
+        createPlugin("angularScreen",
+                     PluginType.SCREEN,
+                     Framework.ANGULAR);
 
         Collection<RuntimePlugin> runtimePlugins = pluginServices.listRuntimePlugins();
-        assertEquals( 2, runtimePlugins.size() );
-        assertTrue( contains( runtimePlugins, "angularScreen" ) );
+        assertEquals(2,
+                     runtimePlugins.size());
+        assertTrue(contains(runtimePlugins,
+                            "angularScreen"));
     }
 
     @Test
     public void testListRuntimePluginsOfMultipleScreens() {
-        createPlugin( "emptyScreen", PluginType.SCREEN, null );
-        createPlugin( "angularScreen", PluginType.SCREEN, Framework.ANGULAR );
-        createPlugin( "knockoutScreen", PluginType.SCREEN, Framework.KNOCKOUT );
+        createPlugin("emptyScreen",
+                     PluginType.SCREEN,
+                     null);
+        createPlugin("angularScreen",
+                     PluginType.SCREEN,
+                     Framework.ANGULAR);
+        createPlugin("knockoutScreen",
+                     PluginType.SCREEN,
+                     Framework.KNOCKOUT);
 
         Collection<RuntimePlugin> runtimePlugins = pluginServices.listRuntimePlugins();
-        assertEquals( 5, runtimePlugins.size() );
-        assertTrue( contains( runtimePlugins, "emptyScreen" ) );
-        assertTrue( contains( runtimePlugins, "angularScreen" ) );
-        assertTrue( contains( runtimePlugins, "knockoutScreen" ) );
+        assertEquals(5,
+                     runtimePlugins.size());
+        assertTrue(contains(runtimePlugins,
+                            "emptyScreen"));
+        assertTrue(contains(runtimePlugins,
+                            "angularScreen"));
+        assertTrue(contains(runtimePlugins,
+                            "knockoutScreen"));
     }
 
     @Test
     public void testCopyPlugin() {
-        Path pluginPath = createPlugin( "emptyScreen", PluginType.SCREEN, null );
+        Path pluginPath = createPlugin("emptyScreen",
+                                       PluginType.SCREEN,
+                                       null);
 
-        pluginServices.copy( pluginPath, "newEmptyScreen", "" );
-        verify( pluginAddedEvent, times( 1 ) ).fire( any( PluginAdded.class ) );
+        pluginServices.copy(pluginPath,
+                            "newEmptyScreen",
+                            "");
+        verify(pluginAddedEvent,
+               times(1)).fire(any(PluginAdded.class));
 
         Collection<RuntimePlugin> runtimePlugins = pluginServices.listRuntimePlugins();
-        assertEquals( 2, runtimePlugins.size() );
-        assertTrue( contains( runtimePlugins, "emptyScreen" ) );
-        assertTrue( contains( runtimePlugins, "newEmptyScreen" ) );
+        assertEquals(2,
+                     runtimePlugins.size());
+        assertTrue(contains(runtimePlugins,
+                            "emptyScreen"));
+        assertTrue(contains(runtimePlugins,
+                            "newEmptyScreen"));
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testCopyPluginToAnotherDirectory() {
-        Path pluginPath = createPlugin( "emptyScreen", PluginType.SCREEN, null );
+        Path pluginPath = createPlugin("emptyScreen",
+                                       PluginType.SCREEN,
+                                       null);
 
-        pluginServices.copy( pluginPath, "newEmptyScreen", pluginPath, "" );
+        pluginServices.copy(pluginPath,
+                            "newEmptyScreen",
+                            pluginPath,
+                            "");
     }
 
     @Test
     public void testRenamePlugin() {
-        Path pluginPath = createPlugin( "emptyScreen", PluginType.SCREEN, null );
+        Path pluginPath = createPlugin("emptyScreen",
+                                       PluginType.SCREEN,
+                                       null);
 
-        pluginServices.rename( pluginPath, "newEmptyScreen", "" );
-        verify( pluginRenamedEvent, times( 1 ) ).fire( any( PluginRenamed.class ) );
+        pluginServices.rename(pluginPath,
+                              "newEmptyScreen",
+                              "");
+        verify(pluginRenamedEvent,
+               times(1)).fire(any(PluginRenamed.class));
 
         Collection<RuntimePlugin> runtimePlugins = pluginServices.listRuntimePlugins();
-        assertEquals( 1, runtimePlugins.size() );
-        assertTrue( contains( runtimePlugins, "newEmptyScreen" ) );
+        assertEquals(1,
+                     runtimePlugins.size());
+        assertTrue(contains(runtimePlugins,
+                            "newEmptyScreen"));
     }
 
     @Test
     public void testDeletePlugin() {
-        Path pluginPath = createPlugin( "emptyScreen", PluginType.SCREEN, null );
+        Path pluginPath = createPlugin("emptyScreen",
+                                       PluginType.SCREEN,
+                                       null);
 
-        pluginServices.delete( pluginPath, "" );
-        verify( pluginDeletedEvent, times( 1 ) ).fire( any( PluginDeleted.class ) );
+        pluginServices.delete(pluginPath,
+                              "");
+        verify(pluginDeletedEvent,
+               times(1)).fire(any(PluginDeleted.class));
 
         Collection<RuntimePlugin> runtimePlugins = pluginServices.listRuntimePlugins();
-        assertEquals( 0, runtimePlugins.size() );
+        assertEquals(0,
+                     runtimePlugins.size());
     }
 
-    private Path createPlugin( String name,
-                               PluginType type,
-                               Framework framework ) {
-        pluginServices.createNewPlugin( name, type );
-        verify( pluginAddedEvent, times( 1 ) ).fire( any( PluginAdded.class ) );
-        reset( pluginAddedEvent );
+    private Path createPlugin(String name,
+                              PluginType type,
+                              Framework framework) {
+        pluginServices.createNewPlugin(name,
+                                       type);
+        verify(pluginAddedEvent,
+               times(1)).fire(any(PluginAdded.class));
+        reset(pluginAddedEvent);
 
-        final PluginSimpleContent pluginSimpleContent = buildPlugin( name, type, framework );
-        pluginServices.save( pluginSimpleContent, "" );
-        verify( pluginSavedEvent, times( 1 ) ).fire( any( PluginSaved.class ) );
-        reset( pluginSavedEvent );
+        final PluginSimpleContent pluginSimpleContent = buildPlugin(name,
+                                                                    type,
+                                                                    framework);
+        pluginServices.save(pluginSimpleContent,
+                            "");
+        verify(pluginSavedEvent,
+               times(1)).fire(any(PluginSaved.class));
+        reset(pluginSavedEvent);
 
         return pluginSimpleContent.getPath();
     }
 
-    private PluginSimpleContent buildPlugin( String name,
-                                             PluginType type,
-                                             Framework framework ) {
+    private PluginSimpleContent buildPlugin(String name,
+                                            PluginType type,
+                                            Framework framework) {
         Set<Framework> frameworks = new HashSet<Framework>();
 
-        if ( framework != null ) {
-            frameworks.add( framework );
+        if (framework != null) {
+            frameworks.add(framework);
         }
 
-        return new PluginSimpleContent( name, type, PathFactory.newPath( type.name().toLowerCase() + ".plugin", "git://amend-repo-test/" + name + "/" + type.name().toLowerCase() + ".plugin" ), null, null, new HashMap<CodeType, String>(), frameworks, null );
+        return new PluginSimpleContent(name,
+                                       type,
+                                       PathFactory.newPath(type.name().toLowerCase() + ".plugin",
+                                                           "git://amend-repo-test/" + name + "/" + type.name().toLowerCase() + ".plugin"),
+                                       null,
+                                       null,
+                                       new HashMap<CodeType, String>(),
+                                       frameworks,
+                                       null);
     }
 
-    private boolean contains( Collection<RuntimePlugin> runtimePlugins,
-                              String pluginName ) {
-        for ( RuntimePlugin runtimePlugin : runtimePlugins ) {
-            if ( runtimePlugin.getScript().contains( "$registerPlugin({id:\"" + pluginName ) ) {
+    private boolean contains(Collection<RuntimePlugin> runtimePlugins,
+                             String pluginName) {
+        for (RuntimePlugin runtimePlugin : runtimePlugins) {
+            if (runtimePlugin.getScript().contains("$registerPlugin({id:\"" + pluginName)) {
                 return true;
             }
         }

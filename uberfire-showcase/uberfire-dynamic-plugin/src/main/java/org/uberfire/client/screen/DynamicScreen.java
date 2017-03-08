@@ -19,6 +19,9 @@ package org.uberfire.client.screen;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
 import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -26,27 +29,23 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
-
 @Dependent
-@WorkbenchScreen( identifier = "DynamicScreen", isDynamic = true )
+@WorkbenchScreen(identifier = "DynamicScreen", isDynamic = true)
 @Templated
 public class DynamicScreen extends Composite {
 
-    @Inject @DataField
+    @Inject
+    @DataField
     private Button hello;
-    
+
     @WorkbenchPartTitle
     public String getName() {
         return "Dynamic Screen";
     }
-    
+
     @EventHandler("hello")
     private void onClick(ClickEvent e) {
         // Test Errai UI / DOM event handlers from dynamically loaded plugin screen
-        Window.alert( "Hello!" );
+        Window.alert("Hello!");
     }
-
 }

@@ -15,12 +15,11 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
+import java.util.Collection;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RequiresResize;
 import org.uberfire.client.util.Layouts;
@@ -30,8 +29,6 @@ import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
-
-import java.util.Collection;
 
 /**
  * Supertype for both the DnD and non-DnD simple workbench panel views.
@@ -46,32 +43,32 @@ public abstract class AbstractSimpleWorkbenchPanelView<P extends WorkbenchPanelP
     void setup() {
         setupListBar();
 
-        getPartViewContainer().add( listBar );
+        getPartViewContainer().add(listBar);
     }
 
     protected void setupListBar() {
-        listBar.setDndManager( dndManager );
+        listBar.setDndManager(dndManager);
         listBar.disableDnd();
-        dndManager.unregisterDropController( this );
-        addOnFocusHandler( listBar );
-        addSelectionHandler( listBar );
-        listBar.asWidget().getElement().getStyle().setOverflow( Style.Overflow.HIDDEN );
-        Layouts.setToFillParent( listBar.asWidget() );
+        dndManager.unregisterDropController(this);
+        addOnFocusHandler(listBar);
+        addSelectionHandler(listBar);
+        listBar.asWidget().getElement().getStyle().setOverflow(Style.Overflow.HIDDEN);
+        Layouts.setToFillParent(listBar.asWidget());
 
         final MaximizeToggleButtonPresenter maximizeButton = listBar.getMaximizeButton();
-        maximizeButton.setVisible( true );
-        maximizeButton.setMaximizeCommand( new Command() {
+        maximizeButton.setVisible(true);
+        maximizeButton.setMaximizeCommand(new Command() {
             @Override
             public void execute() {
                 maximize();
             }
-        } );
-        maximizeButton.setUnmaximizeCommand( new Command() {
+        });
+        maximizeButton.setUnmaximizeCommand(new Command() {
             @Override
             public void execute() {
                 unmaximize();
             }
-        } );
+        });
     }
 
     public void enableDnd() {
@@ -79,9 +76,9 @@ public abstract class AbstractSimpleWorkbenchPanelView<P extends WorkbenchPanelP
     }
 
     @Override
-    public void init( final P presenter ) {
+    public void init(final P presenter) {
         this.presenter = presenter;
-        listBar.setPresenter( presenter );
+        listBar.setPresenter(presenter);
     }
 
     @Override
@@ -90,45 +87,47 @@ public abstract class AbstractSimpleWorkbenchPanelView<P extends WorkbenchPanelP
     }
 
     @Override
-    public void addPart( final WorkbenchPartPresenter.View view ) {
-        if( listBar.getPartsSize() == 0 ){
-            listBar.addPart( view );
+    public void addPart(final WorkbenchPartPresenter.View view) {
+        if (listBar.getPartsSize() == 0) {
+            listBar.addPart(view);
+        } else {
+            throw new RuntimeException("Uberfire Panel Invalid State: This panel support only one part.");
         }
-        else{
-           throw new RuntimeException( "Uberfire Panel Invalid State: This panel support only one part." );
-        }
     }
 
     @Override
-    public void changeTitle( final PartDefinition part,
-                             final String title,
-                             final IsWidget titleDecoration ) {
-        listBar.changeTitle( part, title, titleDecoration );
+    public void changeTitle(final PartDefinition part,
+                            final String title,
+                            final IsWidget titleDecoration) {
+        listBar.changeTitle(part,
+                            title,
+                            titleDecoration);
     }
 
     @Override
-    public boolean selectPart( final PartDefinition part ) {
-        return listBar.selectPart( part );
+    public boolean selectPart(final PartDefinition part) {
+        return listBar.selectPart(part);
     }
 
     @Override
-    public boolean removePart( final PartDefinition part ) {
-        return listBar.remove( part );
+    public boolean removePart(final PartDefinition part) {
+        return listBar.remove(part);
     }
 
     @Override
-    public void setFocus( boolean hasFocus ) {
-        listBar.setFocus( hasFocus );
+    public void setFocus(boolean hasFocus) {
+        listBar.setFocus(hasFocus);
     }
 
     @Override
     public void onResize() {
-        if ( isAttached() ) {
-            presenter.onResize( getOffsetWidth(), getOffsetHeight() );
+        if (isAttached()) {
+            presenter.onResize(getOffsetWidth(),
+                               getOffsetHeight());
         }
 
         // this will always be true in real life, but during GwtMockito tests it is not
-        if ( getWidget() instanceof RequiresResize ) {
+        if (getWidget() instanceof RequiresResize) {
             super.onResize();
         }
     }
@@ -136,19 +135,19 @@ public abstract class AbstractSimpleWorkbenchPanelView<P extends WorkbenchPanelP
     @Override
     public void maximize() {
         super.maximize();
-        listBar.getMaximizeButton().setMaximized( true );
+        listBar.getMaximizeButton().setMaximized(true);
     }
 
     @Override
     public void unmaximize() {
         super.unmaximize();
-        listBar.getMaximizeButton().setMaximized( false );
+        listBar.getMaximizeButton().setMaximized(false);
     }
 
     @Override
-    public void setElementId( String elementId ) {
-        super.setElementId( elementId );
-        listBar.getMaximizeButton().getView().asWidget().ensureDebugId( elementId + "-maximizeButton" );
+    public void setElementId(String elementId) {
+        super.setElementId(elementId);
+        listBar.getMaximizeButton().getView().asWidget().ensureDebugId(elementId + "-maximizeButton");
     }
 
     @Override

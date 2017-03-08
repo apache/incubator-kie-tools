@@ -16,43 +16,46 @@
 
 package org.uberfire.ext.security.management.keycloak.client.auth;
 
+import java.lang.reflect.Method;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.ext.Provider;
+
 import org.jboss.resteasy.annotations.interception.ClientInterceptor;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.spi.interception.AcceptedByMethod;
 import org.jboss.resteasy.spi.interception.ClientExecutionContext;
 import org.jboss.resteasy.spi.interception.ClientExecutionInterceptor;
 
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.ext.Provider;
-import java.lang.reflect.Method;
-
 @Provider
 @ClientInterceptor
 /**
  * A Resteasy client interceptor used for Keycloak's client authentication based on the Bearer authentication method.
  * It does not intercept the "grantToken" and "refreshToken" calls from the token service endpoint (those requests are basic authentication based).
- * 
+ *
  * @since 0.9.0
  */
-public class BearerAuthenticationInterceptor implements ClientExecutionInterceptor, AcceptedByMethod {
+public class BearerAuthenticationInterceptor implements ClientExecutionInterceptor,
+                                                        AcceptedByMethod {
 
     private TokenManager tokenManager;
 
     public BearerAuthenticationInterceptor(TokenManager tokenManager) {
         this.tokenManager = tokenManager;
     }
-    
+
     @Override
     public ClientResponse execute(ClientExecutionContext ctx) throws Exception {
         String token = tokenManager.getAccessTokenString();
-        if ( null != token ) {
-            ctx.getRequest().header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+        if (null != token) {
+            ctx.getRequest().header(HttpHeaders.AUTHORIZATION,
+                                    "Bearer " + token);
         }
         return ctx.proceed();
     }
 
     @Override
-    public boolean accept(Class declaring, Method method) {
+    public boolean accept(Class declaring,
+                          Method method) {
         String name = method.getName();
         boolean isToken = "grantToken".equals(name) || "refreshToken".equals(name);
         return !isToken;

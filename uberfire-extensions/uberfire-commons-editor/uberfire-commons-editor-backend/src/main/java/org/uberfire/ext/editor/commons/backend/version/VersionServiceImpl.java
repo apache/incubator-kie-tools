@@ -31,8 +31,8 @@ import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.rpc.SessionInfo;
 
-import static org.uberfire.backend.server.util.Paths.*;
-import static org.uberfire.java.nio.file.StandardCopyOption.*;
+import static org.uberfire.backend.server.util.Paths.convert;
+import static org.uberfire.java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @Service
 @ApplicationScoped
@@ -71,13 +71,14 @@ public class VersionServiceImpl
             final org.uberfire.java.nio.file.Path path = convert(_path);
             final org.uberfire.java.nio.file.Path target = path.getFileSystem().getPath(path.toString());
 
-            return convert(ioService.copy(path, target, REPLACE_EXISTING,
+            return convert(ioService.copy(path,
+                                          target,
+                                          REPLACE_EXISTING,
                                           new CommentedOption(
                                                   sessionInfo != null ? sessionInfo.getId() : "--",
                                                   sessionInfo != null ? sessionInfo.getIdentity().getIdentifier() : "system",
                                                   null,
                                                   comment)));
-
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

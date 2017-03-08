@@ -35,15 +35,15 @@ public class PreferenceBeanDefaultValueRecorder {
     }
 
     @Inject
-    public PreferenceBeanDefaultValueRecorder( final Instance<Preference> preferences ) {
+    public PreferenceBeanDefaultValueRecorder(final Instance<Preference> preferences) {
         this.preferences = preferences;
     }
 
     @PostConstruct
     public void initializePreferenceValues() {
-        getPreferences().forEach( preference -> {
-            ( (BasePreferenceBean) preference ).saveDefaultValue();
-        } );
+        getPreferences().forEach(preference -> {
+            ((BasePreferenceBean) preference).saveDefaultValue();
+        });
     }
 
     Iterable<Preference> getPreferences() {

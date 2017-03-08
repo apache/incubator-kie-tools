@@ -15,9 +15,8 @@
  */
 package org.uberfire.workbench.model;
 
-import org.uberfire.security.ResourceType;
-
 import jsinterop.annotations.JsType;
+import org.uberfire.security.ResourceType;
 
 /**
  * An extension of the {@link ResourceType} interface holding an enumeration with the

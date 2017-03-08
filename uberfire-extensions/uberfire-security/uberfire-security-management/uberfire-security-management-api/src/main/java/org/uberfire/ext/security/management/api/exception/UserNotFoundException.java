@@ -21,7 +21,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * <p>Exception for user system management when the user is not found.</p>
- *
  * @since 0.8.0
  */
 @Portable
@@ -29,7 +28,7 @@ public class UserNotFoundException extends SecurityManagementException {
 
     private String identifier;
 
-    public UserNotFoundException( @MapsTo("identifier") String identifier ) {
+    public UserNotFoundException(@MapsTo("identifier") String identifier) {
         this.identifier = identifier;
     }
 

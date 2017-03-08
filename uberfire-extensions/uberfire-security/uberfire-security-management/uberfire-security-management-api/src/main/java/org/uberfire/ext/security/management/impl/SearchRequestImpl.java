@@ -16,18 +16,18 @@
 
 package org.uberfire.ext.security.management.impl;
 
+import java.util.Set;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
 
-import java.util.Set;
-
 /**
  * <p>A default search request implementation for the users system management.</p>
- * 
  * @since 0.8.0
  */
 @Portable
 public class SearchRequestImpl implements AbstractEntityManager.SearchRequest {
+
     private String searchPattern = "";
     private Set<String> constrainedIdentifiers;
     private int page = 1;
@@ -36,13 +36,18 @@ public class SearchRequestImpl implements AbstractEntityManager.SearchRequest {
     public SearchRequestImpl() {
     }
 
-    public SearchRequestImpl(String searchPattern, int page, int pageSize) {
+    public SearchRequestImpl(String searchPattern,
+                             int page,
+                             int pageSize) {
         this.searchPattern = searchPattern;
         this.page = page;
         this.pageSize = pageSize;
     }
 
-    public SearchRequestImpl(String searchPattern, int page, int pageSize, Set<String> constrainedIdentifiers) {
+    public SearchRequestImpl(String searchPattern,
+                             int page,
+                             int pageSize,
+                             Set<String> constrainedIdentifiers) {
         this.searchPattern = searchPattern;
         this.page = page;
         this.pageSize = pageSize;
@@ -74,5 +79,4 @@ public class SearchRequestImpl implements AbstractEntityManager.SearchRequest {
     public int getPageSize() {
         return pageSize;
     }
-    
 }

@@ -39,10 +39,13 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.*;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.COPY;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.DELETE;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.RENAME;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.SAVE;
 
 @Dependent
-@WorkbenchEditor(identifier = "BPMN Editor", supportedTypes = { BpmnResourceType.class }, priority = Integer.MAX_VALUE)
+@WorkbenchEditor(identifier = "BPMN Editor", supportedTypes = {BpmnResourceType.class}, priority = Integer.MAX_VALUE)
 public class BpmnEditorPresenter
         extends BaseEditor {
 
@@ -57,23 +60,23 @@ public class BpmnEditorPresenter
     private ProcessNode process;
 
     @Inject
-    public BpmnEditorPresenter( final BpmnEditorView baseView ) {
-        super( baseView );
+    public BpmnEditorPresenter(final BpmnEditorView baseView) {
+        super(baseView);
         this.view = baseView;
     }
 
     @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        init( path,
-              place,
-              resourceType,
-              true,
-              false,
-              SAVE,
-              COPY,
-              RENAME,
-              DELETE );
+    public void onStartup(final ObservablePath path,
+                          final PlaceRequest place) {
+        init(path,
+             place,
+             resourceType,
+             true,
+             false,
+             SAVE,
+             COPY,
+             RENAME,
+             DELETE);
     }
 
     @WorkbenchPartTitleDecoration
@@ -98,13 +101,13 @@ public class BpmnEditorPresenter
 
     @OnMayClose
     public boolean onMayClose() {
-        return super.mayClose( process.hashCode() );
+        return super.mayClose(process.hashCode());
     }
 
     @Override
     protected void loadContent() {
         //TODO {manstis} When we move to KIE-WB this class can extend KieBaseEditor and be refactored
-        service.call( getModelSuccessCallback() ).loadContent( versionRecordManager.getCurrentPath() );
+        service.call(getModelSuccessCallback()).loadContent(versionRecordManager.getCurrentPath());
     }
 
     private RemoteCallback<BpmnEditorContent> getModelSuccessCallback() {
@@ -112,19 +115,18 @@ public class BpmnEditorPresenter
         return new RemoteCallback<BpmnEditorContent>() {
 
             @Override
-            public void callback( final BpmnEditorContent content ) {
+            public void callback(final BpmnEditorContent content) {
                 //Path is set to null when the Editor is closed (which can happen before async calls complete).
-                if ( versionRecordManager.getCurrentPath() == null ) {
+                if (versionRecordManager.getCurrentPath() == null) {
                     return;
                 }
 
                 process = content.getProcess();
 
-                view.setContent( content,
-                                 isReadOnly );
+                view.setContent(content,
+                                isReadOnly);
                 view.hideBusyIndicator();
             }
         };
     }
-
 }

@@ -30,33 +30,36 @@ public class SocialUserServicesExtendedBackEndImpl {
 
     private FileSystem fileSystem;
 
-    public SocialUserServicesExtendedBackEndImpl( final FileSystem fileSystem ) {
+    public SocialUserServicesExtendedBackEndImpl(final FileSystem fileSystem) {
         this.fileSystem = fileSystem;
     }
 
     public List<String> getAllBranches() {
         FileSystem _fileSystem = getFileSystem();
         final List<String> branches = new ArrayList<String>();
-        for ( Iterator it = _fileSystem.getRootDirectories().iterator(); it.hasNext(); ) {
+        for (Iterator it = _fileSystem.getRootDirectories().iterator(); it.hasNext(); ) {
             AbstractPath path = (AbstractPath) it.next();
-            branches.add( path.getHost() );
+            branches.add(path.getHost());
         }
         return branches;
     }
 
-    public Path buildPath( final String serviceType,
-                           final String relativePath ) {
+    public Path buildPath(final String serviceType,
+                          final String relativePath) {
         FileSystem _fileSystem = getFileSystem();
-        if ( relativePath != null && !"".equals( relativePath ) ) {
-            return _fileSystem.getPath( "social", serviceType, relativePath );
+        if (relativePath != null && !"".equals(relativePath)) {
+            return _fileSystem.getPath("social",
+                                       serviceType,
+                                       relativePath);
         } else {
-            return _fileSystem.getPath( "social", serviceType );
+            return _fileSystem.getPath("social",
+                                       serviceType);
         }
     }
 
     FileSystem getFileSystem() {
         FileSystem _fileSystem = getConfigIOServiceProducer().configFileSystem();
-        if ( _fileSystem == null ) {
+        if (_fileSystem == null) {
             _fileSystem = fileSystem;
         }
         return _fileSystem;

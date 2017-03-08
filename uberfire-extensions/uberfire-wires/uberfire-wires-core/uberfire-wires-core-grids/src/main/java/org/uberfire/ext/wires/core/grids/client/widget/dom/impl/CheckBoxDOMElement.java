@@ -30,58 +30,57 @@ public class CheckBoxDOMElement extends BaseDOMElement<Boolean, CheckBox> {
     //Hack to centre CheckBox
     private static final int SIZE = 20;
 
-    public CheckBoxDOMElement( final CheckBox widget,
-                               final GridLayer gridLayer,
-                               final GridWidget gridWidget ) {
-        super( widget,
-               gridLayer,
-               gridWidget );
+    public CheckBoxDOMElement(final CheckBox widget,
+                              final GridLayer gridLayer,
+                              final GridWidget gridWidget) {
+        super(widget,
+              gridLayer,
+              gridWidget);
         final Style style = widget.getElement().getStyle();
-        style.setMarginTop( 0,
-                            Style.Unit.PX );
-        style.setMarginLeft( 2,
-                             Style.Unit.PX );
-        style.setWidth( SIZE,
-                        Style.Unit.PX );
-        style.setHeight( SIZE,
-                         Style.Unit.PX );
+        style.setMarginTop(0,
+                           Style.Unit.PX);
+        style.setMarginLeft(2,
+                            Style.Unit.PX);
+        style.setWidth(SIZE,
+                       Style.Unit.PX);
+        style.setHeight(SIZE,
+                        Style.Unit.PX);
 
         // --- Workaround for BS2 ---
-        style.setPosition( Style.Position.RELATIVE );
-        style.setPaddingTop( 0,
-                             Style.Unit.PX );
-        style.setPaddingBottom( 0,
-                                Style.Unit.PX );
-        style.setProperty( "WebkitBoxSizing",
-                           "border-box" );
-        style.setProperty( "MozBoxSizing",
-                           "border-box" );
-        style.setProperty( "boxSizing",
-                           "border-box" );
-        style.setProperty( "lineHeight",
-                           "normal" );
+        style.setPosition(Style.Position.RELATIVE);
+        style.setPaddingTop(0,
+                            Style.Unit.PX);
+        style.setPaddingBottom(0,
+                               Style.Unit.PX);
+        style.setProperty("WebkitBoxSizing",
+                          "border-box");
+        style.setProperty("MozBoxSizing",
+                          "border-box");
+        style.setProperty("boxSizing",
+                          "border-box");
+        style.setProperty("lineHeight",
+                          "normal");
         // --- End workaround ---
 
-        getContainer().setWidget( widget );
+        getContainer().setWidget(widget);
     }
 
     @Override
-    public void initialise( final GridBodyCellRenderContext context ) {
+    public void initialise(final GridBodyCellRenderContext context) {
         final Style style = widget.getElement().getStyle();
-        style.setLeft( ( context.getCellWidth() - SIZE ) / 2,
-                       Style.Unit.PX );
-        style.setTop( ( context.getCellHeight() - SIZE ) / 2,
-                      Style.Unit.PX );
-        transform( context );
+        style.setLeft((context.getCellWidth() - SIZE) / 2,
+                      Style.Unit.PX);
+        style.setTop((context.getCellHeight() - SIZE) / 2,
+                     Style.Unit.PX);
+        transform(context);
     }
 
     @Override
-    public void flush( final Boolean value ) {
+    public void flush(final Boolean value) {
         final int rowIndex = context.getRowIndex();
         final int columnIndex = context.getColumnIndex();
-        gridWidget.getModel().setCell( rowIndex,
-                                       columnIndex,
-                                       new BaseGridCellValue<Boolean>( value ) );
+        gridWidget.getModel().setCell(rowIndex,
+                                      columnIndex,
+                                      new BaseGridCellValue<Boolean>(value));
     }
-
 }

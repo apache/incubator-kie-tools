@@ -22,9 +22,8 @@ import org.uberfire.workbench.events.UberFireEvent;
  * <p>Event fired when a user's password has been changed.</p>
  */
 public class ChangePasswordEvent extends ContextualEvent implements UberFireEvent {
-    
+
     public ChangePasswordEvent(final Object context) {
         super(context);
     }
-
 }

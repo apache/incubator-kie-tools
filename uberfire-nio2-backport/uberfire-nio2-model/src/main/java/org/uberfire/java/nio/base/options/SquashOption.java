@@ -16,8 +16,6 @@
 
 package org.uberfire.java.nio.base.options;
 
-import java.util.Date;
-
 import org.uberfire.java.nio.base.version.VersionRecord;
 
 public class SquashOption extends CommentedOption {
@@ -25,17 +23,21 @@ public class SquashOption extends CommentedOption {
     public static final String SQUASH_ATTR = "SQUASH_ATTR";
     public VersionRecord versionRecord;
 
-    public SquashOption( VersionRecord record ) {
-        super( null, record.author(), record.email(), record.comment(), record.date(), null );
-        this.setRecord( record );
+    public SquashOption(VersionRecord record) {
+        super(null,
+              record.author(),
+              record.email(),
+              record.comment(),
+              record.date(),
+              null);
+        this.setRecord(record);
     }
 
     public VersionRecord getRecord() {
         return versionRecord;
     }
 
-    public void setRecord( final VersionRecord versionRecord ) {
+    public void setRecord(final VersionRecord versionRecord) {
         this.versionRecord = versionRecord;
     }
-
 }

@@ -46,18 +46,28 @@ public class SideDockItemTest {
 
     private SideDockItem sideDockWithFontIcon, sideDockWithImageIcon;
 
-
     @Before
     public void setup() {
-        dockWithFontIcon = new UberfireDock( UberfireDockPosition.EAST, "BRIEFCASE", placeRequest, "" ).withSize( 450 ).withLabel( "dock" );
-        dockWithImageIcon = new UberfireDock( UberfireDockPosition.EAST, imageResource, imageResourceFocused, placeRequest, "" ).withSize( 450 ).withLabel( "dock" );
+        dockWithFontIcon = new UberfireDock(UberfireDockPosition.EAST,
+                                            "BRIEFCASE",
+                                            placeRequest,
+                                            "").withSize(450).withLabel("dock");
+        dockWithImageIcon = new UberfireDock(UberfireDockPosition.EAST,
+                                             imageResource,
+                                             imageResourceFocused,
+                                             placeRequest,
+                                             "").withSize(450).withLabel("dock");
 
-        sideDockWithFontIcon = spy( new SideDockItem( dockWithFontIcon, emptyCommand, emptyCommand ) );
-        sideDockWithImageIcon = spy( new SideDockItem( dockWithImageIcon, emptyCommand, emptyCommand ) );
+        sideDockWithFontIcon = spy(new SideDockItem(dockWithFontIcon,
+                                                    emptyCommand,
+                                                    emptyCommand));
+        sideDockWithImageIcon = spy(new SideDockItem(dockWithImageIcon,
+                                                     emptyCommand,
+                                                     emptyCommand));
 
         emptyCommand = new ParameterizedCommand<String>() {
             @Override
-            public void execute( final String parameter ) {
+            public void execute(final String parameter) {
 
             }
         };
@@ -67,62 +77,80 @@ public class SideDockItemTest {
     public void createSideDockItemWithFontIconTest() {
         sideDockWithFontIcon.createButton();
 
-        verify( sideDockWithFontIcon ).configureIcon( any( Button.class ), eq( (ImageResource) null ) );
-        verify( sideDockWithFontIcon, never() ).configureImageIcon( any( Button.class ), any( ImageResource.class ) );
+        verify(sideDockWithFontIcon).configureIcon(any(Button.class),
+                                                   eq((ImageResource) null));
+        verify(sideDockWithFontIcon,
+               never()).configureImageIcon(any(Button.class),
+                                           any(ImageResource.class));
     }
 
     @Test
     public void createSideDockItemFocusedWithFontIconTest() {
-        sideDockWithFontIcon.getPopup().createButton( sideDockWithFontIcon );
+        sideDockWithFontIcon.getPopup().createButton(sideDockWithFontIcon);
 
-        verify( sideDockWithFontIcon ).configureIcon( any( Button.class ), eq( (ImageResource) null ) );
-        verify( sideDockWithFontIcon ).configureIcon( any( Button.class ), eq( (ImageResource) null ) );
-        verify( sideDockWithFontIcon, never() ).configureImageIcon( any( Button.class ), any( ImageResource.class ) );
+        verify(sideDockWithFontIcon).configureIcon(any(Button.class),
+                                                   eq((ImageResource) null));
+        verify(sideDockWithFontIcon).configureIcon(any(Button.class),
+                                                   eq((ImageResource) null));
+        verify(sideDockWithFontIcon,
+               never()).configureImageIcon(any(Button.class),
+                                           any(ImageResource.class));
     }
 
     @Test
     public void selectSideDockItemWithFontIconTest() {
         sideDockWithFontIcon.select();
 
-        verify( sideDockWithFontIcon, never() ).configureImageIcon( any( Button.class ), any( ImageResource.class ) );
+        verify(sideDockWithFontIcon,
+               never()).configureImageIcon(any(Button.class),
+                                           any(ImageResource.class));
     }
 
     @Test
     public void deselectSideDockItemWithFontIconTest() {
         sideDockWithFontIcon.deselect();
 
-        verify( sideDockWithFontIcon, never() ).configureImageIcon( any( Button.class ), any( ImageResource.class ) );
+        verify(sideDockWithFontIcon,
+               never()).configureImageIcon(any(Button.class),
+                                           any(ImageResource.class));
     }
 
     @Test
     public void createSideDockItemWithImageIconTest() {
         sideDockWithImageIcon.createButton();
 
-        verify( sideDockWithImageIcon ).configureIcon( any( Button.class ), eq( imageResource ) );
-        verify( sideDockWithImageIcon ).configureImageIcon( any( Button.class ), eq( imageResource ) );
+        verify(sideDockWithImageIcon).configureIcon(any(Button.class),
+                                                    eq(imageResource));
+        verify(sideDockWithImageIcon).configureImageIcon(any(Button.class),
+                                                         eq(imageResource));
     }
 
     @Test
     public void createSideDockItemFocusedWithImageIconTest() {
-        sideDockWithImageIcon.getPopup().createButton( sideDockWithImageIcon );
+        sideDockWithImageIcon.getPopup().createButton(sideDockWithImageIcon);
 
-        InOrder ordenatedVerification = inOrder( sideDockWithImageIcon );
-        ordenatedVerification.verify( sideDockWithImageIcon ).configureText( any( Button.class ), anyString() );
-        ordenatedVerification.verify( sideDockWithImageIcon ).configureIcon( any( Button.class ), eq( imageResourceFocused ) );
-        ordenatedVerification.verify( sideDockWithImageIcon ).configureImageIcon( any( Button.class ), eq( imageResourceFocused ) );
+        InOrder ordenatedVerification = inOrder(sideDockWithImageIcon);
+        ordenatedVerification.verify(sideDockWithImageIcon).configureText(any(Button.class),
+                                                                          anyString());
+        ordenatedVerification.verify(sideDockWithImageIcon).configureIcon(any(Button.class),
+                                                                          eq(imageResourceFocused));
+        ordenatedVerification.verify(sideDockWithImageIcon).configureImageIcon(any(Button.class),
+                                                                               eq(imageResourceFocused));
     }
 
     @Test
     public void selectSouthDockItemWithImageIconTest() {
         sideDockWithImageIcon.select();
 
-        verify( sideDockWithImageIcon ).configureImageIcon( any( Button.class ), eq( imageResourceFocused ) );
+        verify(sideDockWithImageIcon).configureImageIcon(any(Button.class),
+                                                         eq(imageResourceFocused));
     }
 
     @Test
     public void deselectSouthDockItemWithImageIconTest() {
         sideDockWithImageIcon.deselect();
 
-        verify( sideDockWithImageIcon ).configureImageIcon( any( Button.class ), eq( imageResource ) );
+        verify(sideDockWithImageIcon).configureImageIcon(any(Button.class),
+                                                         eq(imageResource));
     }
 }

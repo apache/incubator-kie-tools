@@ -19,20 +19,18 @@ import org.junit.Test;
 import org.uberfire.ext.wires.bpmn.api.model.Role;
 
 import static junit.framework.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class CopyRolesTest {
 
     @Test
     public void testCopyRole() {
-        final Role role = new DefaultRoleImpl( "a-role" );
+        final Role role = new DefaultRoleImpl("a-role");
         final Role copy = role.copy();
 
-        assertNotNull( copy );
-        assertFalse( role == copy );
-        assertEquals( role.getName(),
-                      copy.getName() );
+        assertNotNull(copy);
+        assertFalse(role == copy);
+        assertEquals(role.getName(),
+                     copy.getName());
     }
-
 }

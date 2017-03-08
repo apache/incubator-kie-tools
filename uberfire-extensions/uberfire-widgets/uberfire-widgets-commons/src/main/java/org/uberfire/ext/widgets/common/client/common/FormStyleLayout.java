@@ -29,59 +29,60 @@ import org.gwtbootstrap3.client.ui.constants.FormType;
 public class FormStyleLayout extends Form {
 
     public FormStyleLayout() {
-        setType( FormType.HORIZONTAL );
+        setType(FormType.HORIZONTAL);
     }
 
-    public FormStyleLayout( final String title ) {
+    public FormStyleLayout(final String title) {
         this();
-        add( new Legend( title ) );
+        add(new Legend(title));
     }
 
-    public FormStyleLayout( final Image icon,
-                            final String title ) {
+    public FormStyleLayout(final Image icon,
+                           final String title) {
         this();
-        add( new Legend() {{
-            getElement().appendChild( icon.getElement() );
-            getElement().setInnerText( title );
-        }} );
+        add(new Legend() {{
+            getElement().appendChild(icon.getElement());
+            getElement().setInnerText(title);
+        }});
     }
 
-    public FormStyleItem addAttribute( String label,
-                             IsWidget widget ) {
-        final FormStyleItem formStyleItem = GWT.create( FormStyleItem.class );
-        formStyleItem.setup( label, widget, getWidgetCount() );
-        add( formStyleItem );
+    public FormStyleItem addAttribute(String label,
+                                      IsWidget widget) {
+        final FormStyleItem formStyleItem = GWT.create(FormStyleItem.class);
+        formStyleItem.setup(label,
+                            widget,
+                            getWidgetCount());
+        add(formStyleItem);
         return formStyleItem;
     }
 
-    public int addRow( final IsWidget widget ) {
+    public int addRow(final IsWidget widget) {
         final FormGroup formGroup;
-        if ( widget instanceof FormGroup ) {
+        if (widget instanceof FormGroup) {
             formGroup = (FormGroup) widget;
         } else {
             formGroup = new FormGroup();
-            if ( widget instanceof Column ) {
-                formGroup.add( widget );
+            if (widget instanceof Column) {
+                formGroup.add(widget);
             } else {
-                formGroup.add( new Column( ColumnSize.MD_12 ) {{
-                    add( widget );
-                }} );
+                formGroup.add(new Column(ColumnSize.MD_12) {{
+                    add(widget);
+                }});
             }
         }
 
-        add( formGroup );
+        add(formGroup);
         return getWidgetCount() - 1;
     }
 
-    public void setAttributeVisibility( final int index,
-                                        final boolean b ) {
+    public void setAttributeVisibility(final int index,
+                                       final boolean b) {
         try {
-            final IsWidget widget = getWidget( index );
-            if ( widget != null ) {
-                getWidget( index ).setVisible( b );
+            final IsWidget widget = getWidget(index);
+            if (widget != null) {
+                getWidget(index).setVisible(b);
             }
-        } catch ( final IndexOutOfBoundsException ignore ) {
+        } catch (final IndexOutOfBoundsException ignore) {
         }
     }
-
 }

@@ -22,6 +22,5 @@ import com.google.gwt.user.client.Command;
  */
 public interface WorkbenchCloseHandler {
 
-    void onWindowClose( final Command command );
-
+    void onWindowClose(final Command command);
 }

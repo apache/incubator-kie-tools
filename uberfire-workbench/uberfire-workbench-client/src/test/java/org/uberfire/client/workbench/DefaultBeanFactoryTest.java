@@ -46,21 +46,31 @@ public class DefaultBeanFactoryTest {
 
     @Before
     public void setup() {
-        when( iocManager.lookupBean( UnanchoredWorkbenchPartPresenter.class ).getInstance() ).thenReturn( unanchoredWorkbenchPartPresenter );
-        when( iocManager.lookupBean( WorkbenchPartPresenterDefault.class ).getInstance() ).thenReturn( workbenchPartPresenterDefault );
+        when(iocManager.lookupBean(UnanchoredWorkbenchPartPresenter.class).getInstance()).thenReturn(unanchoredWorkbenchPartPresenter);
+        when(iocManager.lookupBean(WorkbenchPartPresenterDefault.class).getInstance()).thenReturn(workbenchPartPresenterDefault);
     }
 
     @Test
     public void testNewTemplateWorkbenchPartPresenter() {
-        beanFactory.newWorkbenchPart( null, null, null, null, UnanchoredWorkbenchPartPresenter.class );
-        verify( iocManager.lookupBean( UnanchoredWorkbenchPartPresenter.class ) ).getInstance();
-        verify( iocManager.lookupBean( WorkbenchPartPresenterDefault.class ), never() ).getInstance();
+        beanFactory.newWorkbenchPart(null,
+                                     null,
+                                     null,
+                                     null,
+                                     UnanchoredWorkbenchPartPresenter.class);
+        verify(iocManager.lookupBean(UnanchoredWorkbenchPartPresenter.class)).getInstance();
+        verify(iocManager.lookupBean(WorkbenchPartPresenterDefault.class),
+               never()).getInstance();
     }
 
     @Test
     public void testNewWorkbenchPartPresenterDefault() {
-        beanFactory.newWorkbenchPart( null, null, null, null, WorkbenchPartPresenterDefault.class );
-        verify( iocManager.lookupBean( WorkbenchPartPresenterDefault.class ) ).getInstance();
-        verify( iocManager.lookupBean( UnanchoredWorkbenchPartPresenter.class ), never() ).getInstance();
+        beanFactory.newWorkbenchPart(null,
+                                     null,
+                                     null,
+                                     null,
+                                     WorkbenchPartPresenterDefault.class);
+        verify(iocManager.lookupBean(WorkbenchPartPresenterDefault.class)).getInstance();
+        verify(iocManager.lookupBean(UnanchoredWorkbenchPartPresenter.class),
+               never()).getInstance();
     }
 }

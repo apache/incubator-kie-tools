@@ -25,22 +25,13 @@ import org.uberfire.mvp.PlaceRequest;
 @Dependent
 public class BreadcrumbsPresenter {
 
+    private final View view;
     private PlaceRequest placeRequest;
 
-    public interface View extends UberElement<BreadcrumbsPresenter> {
-
-        void setup( String label, Command clickCommand );
-
-        void activate();
-
-        void deactivate();
-    }
-    private final View view;
-
     @Inject
-    public BreadcrumbsPresenter( final View view ) {
+    public BreadcrumbsPresenter(final View view) {
         this.view = view;
-        view.init( this );
+        view.init(this);
     }
 
     public void activate() {
@@ -51,11 +42,12 @@ public class BreadcrumbsPresenter {
         view.deactivate();
     }
 
-    public void setup( final String label,
-                       final PlaceRequest placeRequest,
-                       final Command selectCommand ) {
+    public void setup(final String label,
+                      final PlaceRequest placeRequest,
+                      final Command selectCommand) {
         this.placeRequest = placeRequest;
-        view.setup( label, selectCommand );
+        view.setup(label,
+                   selectCommand);
     }
 
     public PlaceRequest getPlaceRequest() {
@@ -66,4 +58,13 @@ public class BreadcrumbsPresenter {
         return view;
     }
 
+    public interface View extends UberElement<BreadcrumbsPresenter> {
+
+        void setup(String label,
+                   Command clickCommand);
+
+        void activate();
+
+        void deactivate();
+    }
 }

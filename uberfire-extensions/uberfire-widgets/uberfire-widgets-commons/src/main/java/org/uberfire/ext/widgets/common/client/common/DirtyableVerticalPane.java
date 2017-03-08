@@ -26,15 +26,15 @@ public class DirtyableVerticalPane extends VerticalPanel implements DirtyableCon
         int widNumber = getWidgetCount();
         Widget element;
 
-        for ( int i = 0; i < widNumber; i++ ) {
-            element = getWidget( i );
-            if ( element instanceof DirtyableWidget ) {
-                if ( ( (DirtyableWidget) element ).isDirty() ) {
+        for (int i = 0; i < widNumber; i++) {
+            element = getWidget(i);
+            if (element instanceof DirtyableWidget) {
+                if (((DirtyableWidget) element).isDirty()) {
                     return true;
                 }
             }
-            if ( element instanceof DirtyableContainer ) {
-                if ( ( (DirtyableContainer) element ).hasDirty() ) {
+            if (element instanceof DirtyableContainer) {
+                if (((DirtyableContainer) element).hasDirty()) {
                     return true;
                 }
             }

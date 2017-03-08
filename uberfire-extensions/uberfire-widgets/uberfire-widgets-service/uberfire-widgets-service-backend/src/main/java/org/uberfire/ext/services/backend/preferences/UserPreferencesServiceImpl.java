@@ -44,55 +44,53 @@ public class UserPreferencesServiceImpl implements UserPreferencesService {
     private XStream xs = new XStream();
 
     @Override
-    public void saveUserPreferences( final UserPreference preferences ) {
-        final Path preferencesPath = userServicesBackend.buildPath( identity.getIdentifier(),
-                                                                    preferences.getType().getExt(),
-                                                                    preferences.getPreferenceKey() );
-        saveUserPreferences( preferences,
-                             preferencesPath );
+    public void saveUserPreferences(final UserPreference preferences) {
+        final Path preferencesPath = userServicesBackend.buildPath(identity.getIdentifier(),
+                                                                   preferences.getType().getExt(),
+                                                                   preferences.getPreferenceKey());
+        saveUserPreferences(preferences,
+                            preferencesPath);
     }
 
     @Override
-    public UserPreference loadUserPreferences( final String key,
-                                               final UserPreferencesType type ) {
-        final Path preferencesPath = userServicesBackend.buildPath( identity.getIdentifier(),
-                                                                    type.getExt(),
-                                                                    key );
-        return loadUserPreferences( preferencesPath );
+    public UserPreference loadUserPreferences(final String key,
+                                              final UserPreferencesType type) {
+        final Path preferencesPath = userServicesBackend.buildPath(identity.getIdentifier(),
+                                                                   type.getExt(),
+                                                                   key);
+        return loadUserPreferences(preferencesPath);
     }
 
-    private void saveUserPreferences( final UserPreference preferences,
-                                      final Path path ) {
+    private void saveUserPreferences(final UserPreference preferences,
+                                     final Path path) {
         try {
-            ioServiceConfig.startBatch( path.getFileSystem() );
-            ioServiceConfig.write( path, xs.toXML( preferences ) );
-
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
+            ioServiceConfig.startBatch(path.getFileSystem());
+            ioServiceConfig.write(path,
+                                  xs.toXML(preferences));
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
         } finally {
             ioServiceConfig.endBatch();
         }
     }
 
-    private UserPreference loadUserPreferences( final Path path ) {
+    private UserPreference loadUserPreferences(final Path path) {
         try {
-            if ( ioServiceConfig.exists( path ) ) {
-                final String xml = ioServiceConfig.readAllString( path );
-                return (UserPreference) xs.fromXML( xml );
+            if (ioServiceConfig.exists(path)) {
+                final String xml = ioServiceConfig.readAllString(path);
+                return (UserPreference) xs.fromXML(xml);
             }
-
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
         }
         return null;
     }
 
     @Override
-    public UserPreference loadUserPreferences( final UserPreference preferences ) {
-        final Path preferencesPath = userServicesBackend.buildPath( identity.getIdentifier(),
-                                                                    preferences.getType().getExt(),
-                                                                    preferences.getPreferenceKey() );
-        return loadUserPreferences( preferencesPath );
+    public UserPreference loadUserPreferences(final UserPreference preferences) {
+        final Path preferencesPath = userServicesBackend.buildPath(identity.getIdentifier(),
+                                                                   preferences.getType().getExt(),
+                                                                   preferences.getPreferenceKey());
+        return loadUserPreferences(preferencesPath);
     }
-
 }

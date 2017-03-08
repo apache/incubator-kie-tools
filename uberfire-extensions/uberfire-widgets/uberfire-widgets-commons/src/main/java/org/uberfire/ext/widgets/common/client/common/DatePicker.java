@@ -98,18 +98,15 @@ public class DatePicker extends Composite
                    HasPosition,
                    IsEditor<LeafValueEditor<Date>> {
 
+    private final boolean allowEmptyValues;
+    private final org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker datePicker;
     //Default GWT date format
     private String gwtDateFormat = "dd-MMM-yyyy";
-    private DateTimeFormat gwtDateTimeFormat = DateTimeFormat.getFormat( gwtDateFormat );
-
-    private final boolean allowEmptyValues;
-
-    private final org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker datePicker;
-
+    private DateTimeFormat gwtDateTimeFormat = DateTimeFormat.getFormat(gwtDateFormat);
     private String localeName;
 
     public DatePicker() {
-        this( true );
+        this(true);
     }
 
     /**
@@ -117,117 +114,118 @@ public class DatePicker extends Composite
      * handler to manage the interaction with org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker popup
      * @param datePicker
      */
-    public DatePicker( org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker datePicker ) {
+    public DatePicker(org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker datePicker) {
         this.datePicker = datePicker;
         this.allowEmptyValues = true;
     }
 
-    public DatePicker( final boolean allowEmptyValues ) {
-        datePicker = GWT.create( org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker.class );
+    public DatePicker(final boolean allowEmptyValues) {
+        datePicker = GWT.create(org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker.class);
         this.allowEmptyValues = allowEmptyValues;
-        datePicker.setContainer( RootPanel.get() );
+        datePicker.setContainer(RootPanel.get());
 
-        datePicker.setAutoClose( true );
+        datePicker.setAutoClose(true);
         setLocaleName();
-        setFormat( gwtDateFormat );
+        setFormat(gwtDateFormat);
 
         //When the popup Date Picker component is hidden assert empty values
-        datePicker.addHideHandler( new HideHandler() {
+        datePicker.addHideHandler(new HideHandler() {
             @Override
-            public void onHide( HideEvent hideEvent ) {
+            public void onHide(HideEvent hideEvent) {
                 final Date value = getDataPickerDate();
-                if ( !allowEmptyValues && value == null ) {
-                    doSetValue( new Date(),
-                                true );
+                if (!allowEmptyValues && value == null) {
+                    doSetValue(new Date(),
+                               true);
                 } else {
-                    doSetValue( value,
-                                true );
+                    doSetValue(value,
+                               true);
                 }
             }
-        } );
+        });
 
-        initWidget( datePicker );
+        initWidget(datePicker);
     }
 
     private Date getDataPickerDate() {
-        DateTimeFormat dtf = DateTimeFormat.getFormat( "dd/M/yyyy" );
-        String dateStr = parseDate( datePicker.getTextBox().getElement(), DatePickerFormatUtilities.convertToBS3DateFormat( "dd/M/yyyy" ) );
-        Date dateRes = dtf.parse( dateStr );
+        DateTimeFormat dtf = DateTimeFormat.getFormat("dd/M/yyyy");
+        String dateStr = parseDate(datePicker.getTextBox().getElement(),
+                                   DatePickerFormatUtilities.convertToBS3DateFormat("dd/M/yyyy"));
+        Date dateRes = dtf.parse(dateStr);
         return dateRes;
     }
 
-    public void setContainer( final Widget container ) {
-        datePicker.setContainer( container );
+    public void setContainer(final Widget container) {
+        datePicker.setContainer(container);
     }
 
     @Override
-    public void setAutoClose( final boolean autoClose ) {
-        datePicker.setAutoClose( autoClose );
+    public void setAutoClose(final boolean autoClose) {
+        datePicker.setAutoClose(autoClose);
     }
 
     @Override
-    public void onShow( final Event e ) {
-        datePicker.onShow( e );
+    public void onShow(final Event e) {
+        datePicker.onShow(e);
     }
 
     @Override
-    public HandlerRegistration addShowHandler( final ShowHandler showHandler ) {
-        return datePicker.addShowHandler( showHandler );
+    public HandlerRegistration addShowHandler(final ShowHandler showHandler) {
+        return datePicker.addShowHandler(showHandler);
     }
 
     @Override
-    public void onHide( final Event e ) {
-        datePicker.onHide( e );
+    public void onHide(final Event e) {
+        datePicker.onHide(e);
     }
 
     @Override
-    public HandlerRegistration addHideHandler( final HideHandler hideHandler ) {
-        return datePicker.addHideHandler( hideHandler );
+    public HandlerRegistration addHideHandler(final HideHandler hideHandler) {
+        return datePicker.addHideHandler(hideHandler);
     }
 
     @Override
-    public void onChangeDate( final Event e ) {
-        datePicker.onChangeDate( e );
+    public void onChangeDate(final Event e) {
+        datePicker.onChangeDate(e);
     }
 
     @Override
-    public HandlerRegistration addChangeDateHandler( final ChangeDateHandler changeDateHandler ) {
-        return datePicker.addChangeDateHandler( changeDateHandler );
+    public HandlerRegistration addChangeDateHandler(final ChangeDateHandler changeDateHandler) {
+        return datePicker.addChangeDateHandler(changeDateHandler);
     }
 
     @Override
-    public void onChangeYear( final Event e ) {
-        datePicker.onChangeYear( e );
+    public void onChangeYear(final Event e) {
+        datePicker.onChangeYear(e);
     }
 
     @Override
-    public HandlerRegistration addChangeYearHandler( final ChangeYearHandler changeYearHandler ) {
-        return datePicker.addChangeYearHandler( changeYearHandler );
+    public HandlerRegistration addChangeYearHandler(final ChangeYearHandler changeYearHandler) {
+        return datePicker.addChangeYearHandler(changeYearHandler);
     }
 
     @Override
-    public void onChangeMonth( final Event e ) {
-        datePicker.onChangeMonth( e );
+    public void onChangeMonth(final Event e) {
+        datePicker.onChangeMonth(e);
     }
 
     @Override
-    public HandlerRegistration addChangeMonthHandler( final ChangeMonthHandler changeMonthHandler ) {
-        return datePicker.addChangeMonthHandler( changeMonthHandler );
+    public HandlerRegistration addChangeMonthHandler(final ChangeMonthHandler changeMonthHandler) {
+        return datePicker.addChangeMonthHandler(changeMonthHandler);
     }
 
     @Override
-    public void onClearDate( final Event e ) {
-        datePicker.onClearDate( e );
+    public void onClearDate(final Event e) {
+        datePicker.onClearDate(e);
     }
 
     @Override
-    public HandlerRegistration addClearDateHandler( final ClearDateHandler outOfRangeHandler ) {
-        return datePicker.addClearDateHandler( outOfRangeHandler );
+    public HandlerRegistration addClearDateHandler(final ClearDateHandler outOfRangeHandler) {
+        return datePicker.addClearDateHandler(outOfRangeHandler);
     }
 
     @Override
-    public void setDaysOfWeekDisabled( final DatePickerDayOfWeek... daysOfWeekDisabled ) {
-        datePicker.setDaysOfWeekDisabled( daysOfWeekDisabled );
+    public void setDaysOfWeekDisabled(final DatePickerDayOfWeek... daysOfWeekDisabled) {
+        datePicker.setDaysOfWeekDisabled(daysOfWeekDisabled);
     }
 
     @Override
@@ -236,18 +234,18 @@ public class DatePicker extends Composite
     }
 
     @Override
-    public void setEnabled( final boolean enabled ) {
-        datePicker.setEnabled( enabled );
+    public void setEnabled(final boolean enabled) {
+        datePicker.setEnabled(enabled);
     }
 
     @Override
-    public void setEndDate( final Date endDate ) {
-        datePicker.setEndDate( endDate );
+    public void setEndDate(final Date endDate) {
+        datePicker.setEndDate(endDate);
     }
 
     @Override
-    public void setEndDate( final String endDate ) {
-        datePicker.setEndDate( endDate );
+    public void setEndDate(final String endDate) {
+        datePicker.setEndDate(endDate);
     }
 
     @Override
@@ -256,8 +254,8 @@ public class DatePicker extends Composite
     }
 
     @Override
-    public void setForceParse( final boolean forceParse ) {
-        datePicker.setForceParse( forceParse );
+    public void setForceParse(final boolean forceParse) {
+        datePicker.setForceParse(forceParse);
     }
 
     /**
@@ -266,45 +264,39 @@ public class DatePicker extends Composite
      * uses to convert values in the TextBox to selections in the popup date picker element.
      * @param gwtDateFormat
      */
-    public void setFormat( final String gwtDateFormat ) {
+    public void setFormat(final String gwtDateFormat) {
         this.gwtDateFormat = gwtDateFormat;
-        this.gwtDateTimeFormat = DateTimeFormat.getFormat( this.gwtDateFormat );
-        if(getLocaleName().equals("")){
+        this.gwtDateTimeFormat = DateTimeFormat.getFormat(this.gwtDateFormat);
+        if (getLocaleName().equals("")) {
             datePicker.setLanguage(DatePickerLanguage.EN);
         } else {
             datePicker.setLanguage(DatePickerLanguage.valueOf(getLocaleName().toUpperCase()));
         }
-        datePicker.setFormat( DatePickerFormatUtilities.convertToBS3DateFormat( gwtDateFormat ) );
+        datePicker.setFormat(DatePickerFormatUtilities.convertToBS3DateFormat(gwtDateFormat));
     }
 
     public String getLocaleName() {
-        if ( localeName != null && !localeName.isEmpty() && !localeName.equalsIgnoreCase( "default" )) {
+        if (localeName != null && !localeName.isEmpty() && !localeName.equalsIgnoreCase("default")) {
             return localeName;
         }
         return "";
     }
 
-    public void setLocaleName() {
-        localeName = LocaleInfo.getCurrentLocale().getLocaleName();
-    }
-
     public void setLocaleName(String localeName) {
-        if(localeName!=null) {
+        if (localeName != null) {
             this.localeName = localeName;
         } else {
             this.localeName = "";
         }
     }
 
-
-    @Override
-    public void setHighlightToday( final boolean highlightToday ) {
-        datePicker.setHighlightToday( highlightToday );
+    public void setLocaleName() {
+        localeName = LocaleInfo.getCurrentLocale().getLocaleName();
     }
 
     @Override
-    public void setId( final String id ) {
-        datePicker.setId( id );
+    public void setHighlightToday(final boolean highlightToday) {
+        datePicker.setHighlightToday(highlightToday);
     }
 
     @Override
@@ -313,13 +305,13 @@ public class DatePicker extends Composite
     }
 
     @Override
-    public void setHasKeyboardNavigation( final boolean hasKeyboardNavigation ) {
-        datePicker.setHasKeyboardNavigation( hasKeyboardNavigation );
+    public void setId(final String id) {
+        datePicker.setId(id);
     }
 
     @Override
-    public void setLanguage( final DatePickerLanguage language ) {
-        datePicker.setLanguage( language );
+    public void setHasKeyboardNavigation(final boolean hasKeyboardNavigation) {
+        datePicker.setHasKeyboardNavigation(hasKeyboardNavigation);
     }
 
     @Override
@@ -328,13 +320,13 @@ public class DatePicker extends Composite
     }
 
     @Override
-    public void setMinView( final DatePickerMinView datePickerMinView ) {
-        datePicker.setMinView( datePickerMinView );
+    public void setLanguage(final DatePickerLanguage language) {
+        datePicker.setLanguage(language);
     }
 
     @Override
-    public void setName( final String name ) {
-        datePicker.setName( name );
+    public void setMinView(final DatePickerMinView datePickerMinView) {
+        datePicker.setMinView(datePickerMinView);
     }
 
     @Override
@@ -343,8 +335,8 @@ public class DatePicker extends Composite
     }
 
     @Override
-    public void setPlaceholder( final String placeholder ) {
-        datePicker.setPlaceholder( placeholder );
+    public void setName(final String name) {
+        datePicker.setName(name);
     }
 
     @Override
@@ -353,8 +345,8 @@ public class DatePicker extends Composite
     }
 
     @Override
-    public void setPosition( final DatePickerPosition position ) {
-        datePicker.setPosition( position );
+    public void setPlaceholder(final String placeholder) {
+        datePicker.setPlaceholder(placeholder);
     }
 
     @Override
@@ -363,28 +355,33 @@ public class DatePicker extends Composite
     }
 
     @Override
-    public void setVisibleOn( final DeviceSize deviceSize ) {
-        datePicker.setVisibleOn( deviceSize );
+    public void setPosition(final DatePickerPosition position) {
+        datePicker.setPosition(position);
     }
 
     @Override
-    public void setHiddenOn( final DeviceSize deviceSize ) {
-        datePicker.setHiddenOn( deviceSize );
+    public void setVisibleOn(final DeviceSize deviceSize) {
+        datePicker.setVisibleOn(deviceSize);
     }
 
     @Override
-    public void setShowTodayButton( final boolean showTodayButton ) {
-        datePicker.setShowTodayButton( showTodayButton );
+    public void setHiddenOn(final DeviceSize deviceSize) {
+        datePicker.setHiddenOn(deviceSize);
     }
 
     @Override
-    public void setStartDate( final Date startDate ) {
-        datePicker.setStartDate( startDate );
+    public void setShowTodayButton(final boolean showTodayButton) {
+        datePicker.setShowTodayButton(showTodayButton);
     }
 
     @Override
-    public void setStartDate( final String startDate ) {
-        datePicker.setStartDate( startDate );
+    public void setStartDate(final Date startDate) {
+        datePicker.setStartDate(startDate);
+    }
+
+    @Override
+    public void setStartDate(final String startDate) {
+        datePicker.setStartDate(startDate);
     }
 
     @Override
@@ -393,82 +390,82 @@ public class DatePicker extends Composite
     }
 
     @Override
-    public void setStartView( final DatePickerMinView datePickerMinView ) {
-        datePicker.setStartView( datePickerMinView );
+    public void setStartView(final DatePickerMinView datePickerMinView) {
+        datePicker.setStartView(datePickerMinView);
     }
 
     @Override
     //We don't delegate this to the wrapped DatePicker as that has some issues with the mismatch between GWT's DateFormat and BS3's DateFormat
     public Date getValue() {
         try {
-            return gwtDateTimeFormat != null && datePicker.getTextBox().getValue() != null ? gwtDateTimeFormat.parse( datePicker.getTextBox().getValue() ) : null;
-        } catch ( final Exception e ) {
+            return gwtDateTimeFormat != null && datePicker.getTextBox().getValue() != null ? gwtDateTimeFormat.parse(datePicker.getTextBox().getValue()) : null;
+        } catch (final Exception e) {
             return null;
         }
     }
 
     @Override
     //We don't delegate this to the wrapped DatePicker as that has some issues with the mismatch between GWT's DateFormat and BS3's DateFormat
-    public void setValue( final Date value ) {
-        if ( !allowEmptyValues && value == null ) {
-            doSetValue( new Date(),
-                        true );
+    public void setValue(final Date value) {
+        if (!allowEmptyValues && value == null) {
+            doSetValue(new Date(),
+                       true);
         } else {
-            doSetValue( value,
-                        false );
+            doSetValue(value,
+                       false);
         }
     }
 
     @Override
     //We don't delegate this to the wrapped DatePicker as that has some issues with the mismatch between GWT's DateFormat and BS3's DateFormat
-    public void setValue( final Date value,
-                          final boolean fireEvents ) {
-        if ( !allowEmptyValues && value == null ) {
-            doSetValue( new Date(),
-                        true );
+    public void setValue(final Date value,
+                         final boolean fireEvents) {
+        if (!allowEmptyValues && value == null) {
+            doSetValue(new Date(),
+                       true);
         } else {
-            doSetValue( value,
-                        fireEvents );
+            doSetValue(value,
+                       fireEvents);
         }
     }
 
     //This is essentially an override of the wrapped DatePicker's setValue() method however
     //we need to override it to use the "improved" GWT DateFormat<->BS3's DateFormat handling.
-    private void doSetValue( final Date value,
-                             final boolean fireEvents ) {
-        datePicker.getTextBox().setValue( value != null ? gwtDateTimeFormat.format( value ) : null );
-        update( datePicker.getTextBox().getElement() );
+    private void doSetValue(final Date value,
+                            final boolean fireEvents) {
+        datePicker.getTextBox().setValue(value != null ? gwtDateTimeFormat.format(value) : null);
+        update(datePicker.getTextBox().getElement());
 
-        if ( fireEvents ) {
-            ValueChangeEvent.fire( datePicker,
-                                   value );
+        if (fireEvents) {
+            ValueChangeEvent.fire(datePicker,
+                                  value);
         }
     }
 
     //Unfortunately the wrapped DatePicker hides the "update" method so we have to repeat it here
-    private native void update( Element e ) /*-{
+    private native void update(Element e) /*-{
         $wnd.jQuery(e).datepicker('update');
     }-*/;
 
-    private final native String parseDate( Element e,
-                                           String format ) /*-{
+    private final native String parseDate(Element e,
+                                          String format) /*-{
         var dateStr = $wnd.jQuery(e).datepicker('getFormattedDate', format);
         return dateStr
     }-*/;
 
     @Override
-    public com.google.gwt.event.shared.HandlerRegistration addValueChangeHandler( final ValueChangeHandler<Date> handler ) {
-        return datePicker.addValueChangeHandler( handler );
+    public com.google.gwt.event.shared.HandlerRegistration addValueChangeHandler(final ValueChangeHandler<Date> handler) {
+        return datePicker.addValueChangeHandler(handler);
     }
 
     @Override
-    public void setViewSelect( final DatePickerMinView datePickerMinView ) {
-        datePicker.setViewSelect( datePickerMinView );
+    public void setViewSelect(final DatePickerMinView datePickerMinView) {
+        datePicker.setViewSelect(datePickerMinView);
     }
 
     @Override
-    public void setWeekStart( final DatePickerDayOfWeek weekStart ) {
-        datePicker.setWeekStart( weekStart );
+    public void setWeekStart(final DatePickerDayOfWeek weekStart) {
+        datePicker.setWeekStart(weekStart);
     }
 
     @Override
@@ -482,23 +479,21 @@ public class DatePicker extends Composite
     }
 
     @Override
-    public void setAccessKey( final char key ) {
-        datePicker.getTextBox().setAccessKey( key );
-
+    public void setTabIndex(final int index) {
+        datePicker.getTextBox().setTabIndex(index);
     }
 
     @Override
-    public void setFocus( final boolean focused ) {
-        datePicker.getTextBox().setFocus( focused );
+    public void setAccessKey(final char key) {
+        datePicker.getTextBox().setAccessKey(key);
     }
 
     @Override
-    public void setTabIndex( final int index ) {
-        datePicker.getTextBox().setTabIndex( index );
+    public void setFocus(final boolean focused) {
+        datePicker.getTextBox().setFocus(focused);
     }
 
-    public HandlerRegistration addBlurHandler( final BlurHandler handler ) {
-        return datePicker.getTextBox().addBlurHandler( handler );
+    public HandlerRegistration addBlurHandler(final BlurHandler handler) {
+        return datePicker.getTextBox().addBlurHandler(handler);
     }
-
 }

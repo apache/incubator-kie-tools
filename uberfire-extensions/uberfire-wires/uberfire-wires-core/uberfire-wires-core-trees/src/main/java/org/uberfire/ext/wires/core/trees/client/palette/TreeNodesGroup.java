@@ -28,5 +28,4 @@ public class TreeNodesGroup extends BaseGroup {
     public Category getCategory() {
         return TreeNodesCategory.CATEGORY;
     }
-
 }

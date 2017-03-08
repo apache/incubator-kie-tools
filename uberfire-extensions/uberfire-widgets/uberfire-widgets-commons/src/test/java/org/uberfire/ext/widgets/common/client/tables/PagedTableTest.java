@@ -32,17 +32,15 @@ import static org.mockito.Mockito.*;
 @WithClassesToStub({Image.class, Label.class, Text.class})
 public class PagedTableTest {
 
-    private PagedTable pagedTable;
-
     @GwtMock
     AsyncDataProvider dataProvider;
+    private PagedTable pagedTable;
 
     @Test
     public void testSetDataProvider() throws Exception {
-        this.pagedTable = new PagedTable( 5 );
+        this.pagedTable = new PagedTable(5);
 
         pagedTable.setDataProvider(dataProvider);
-        verify( dataProvider ).addDataDisplay(pagedTable);
-
+        verify(dataProvider).addDataDisplay(pagedTable);
     }
 }

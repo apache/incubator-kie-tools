@@ -26,8 +26,8 @@ public class MediaAdded {
     private String pluginName;
     private Media media;
 
-    public MediaAdded( @MapsTo("pluginName") final String pluginName,
-                       @MapsTo("media") final Media media ) {
+    public MediaAdded(@MapsTo("pluginName") final String pluginName,
+                      @MapsTo("media") final Media media) {
         this.pluginName = pluginName;
         this.media = media;
     }

@@ -45,39 +45,38 @@ public class BezierCurveFactory extends AbstractBaseFactory<BezierCurve> {
     }
 
     @Override
-    public WiresBaseShape getShape( final FactoryHelper helper ) {
-        return new WiresBezierCurve( makeShape() );
+    public WiresBaseShape getShape(final FactoryHelper helper) {
+        return new WiresBezierCurve(makeShape());
     }
 
     @Override
-    public boolean builds( final WiresBaseShape shapeType ) {
+    public boolean builds(final WiresBaseShape shapeType) {
         return shapeType instanceof WiresBezierCurve;
     }
 
     @Override
     protected BezierCurve makeShape() {
-        final BezierCurve curve = new BezierCurve( 0 - SHAPE_SIZE_X,
-                                                   0 - SHAPE_SIZE_Y,
-                                                   0 - SHAPE_SIZE_X,
-                                                   SHAPE_SIZE_Y,
-                                                   SHAPE_SIZE_X,
-                                                   0 - SHAPE_SIZE_Y,
-                                                   SHAPE_SIZE_X,
-                                                   SHAPE_SIZE_Y );
-        curve.setStrokeColor( ShapesUtils.RGB_STROKE_SHAPE )
-                .setStrokeWidth( ShapesUtils.RGB_STROKE_WIDTH_SHAPE )
-                .setDraggable( false );
+        final BezierCurve curve = new BezierCurve(0 - SHAPE_SIZE_X,
+                                                  0 - SHAPE_SIZE_Y,
+                                                  0 - SHAPE_SIZE_X,
+                                                  SHAPE_SIZE_Y,
+                                                  SHAPE_SIZE_X,
+                                                  0 - SHAPE_SIZE_Y,
+                                                  SHAPE_SIZE_X,
+                                                  SHAPE_SIZE_Y);
+        curve.setStrokeColor(ShapesUtils.RGB_STROKE_SHAPE)
+                .setStrokeWidth(ShapesUtils.RGB_STROKE_WIDTH_SHAPE)
+                .setDraggable(false);
         return curve;
     }
 
     @Override
     protected double getWidth() {
-        return ( SHAPE_SIZE_X + ShapesUtils.RGB_STROKE_WIDTH_SHAPE ) * 2;
+        return (SHAPE_SIZE_X + ShapesUtils.RGB_STROKE_WIDTH_SHAPE) * 2;
     }
 
     @Override
     protected double getHeight() {
-        return ( SHAPE_SIZE_Y + ShapesUtils.RGB_STROKE_WIDTH_SHAPE ) * 2;
+        return (SHAPE_SIZE_Y + ShapesUtils.RGB_STROKE_WIDTH_SHAPE) * 2;
     }
-
 }

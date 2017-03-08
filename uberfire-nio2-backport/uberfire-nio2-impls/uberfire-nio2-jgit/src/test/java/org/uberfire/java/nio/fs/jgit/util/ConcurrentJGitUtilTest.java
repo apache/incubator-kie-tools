@@ -33,7 +33,13 @@ import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.fs.jgit.AbstractTestInfra;
 
 import static org.junit.Assert.*;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.checkPath;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.commit;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.getCommits;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.getLastCommit;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.listPathContent;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.resolveInputStream;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.resolvePath;
 
 @RunWith(BMUnitRunner.class)
 @BMUnitConfig(loadDirectory = "target/test-classes", debug = true) // set "debug=true to see debug output
@@ -41,41 +47,71 @@ public class ConcurrentJGitUtilTest extends AbstractTestInfra {
 
     @BeforeClass
     public static void setup() {
-        JGitUtil.setRetryTimes( 5 );
+        JGitUtil.setRetryTimes(5);
     }
 
     @Test
     @BMScript(value = "byteman/retry/resolve_path.btm")
     public void testRetryResolvePath() throws IOException {
         final File parentFolder = createTempDirectory();
-        final File gitFolder = new File( parentFolder, "mytest.git" );
+        final File gitFolder = new File(parentFolder,
+                                        "mytest.git");
 
-        final Git git = JGitUtil.newRepository( gitFolder, true );
+        final Git git = JGitUtil.newRepository(gitFolder,
+                                               true);
 
-        commit( git, "master", "name", "name@example.com", "1st commit", null, new Date(), false, new HashMap<String, File>() {
-            {
-                put( "path/to/file1.txt", tempFile( "temp2222" ) );
-            }
-        } );
-        commit( git, "master", "name", "name@example.com", "2nd commit", null, new Date(), false, new HashMap<String, File>() {
-            {
-                put( "path/to/file2.txt", tempFile( "temp2222" ) );
-            }
-        } );
+        commit(git,
+               "master",
+               "name",
+               "name@example.com",
+               "1st commit",
+               null,
+               new Date(),
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file1.txt",
+                           tempFile("temp2222"));
+                   }
+               });
+        commit(git,
+               "master",
+               "name",
+               "name@example.com",
+               "2nd commit",
+               null,
+               new Date(),
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file2.txt",
+                           tempFile("temp2222"));
+                   }
+               });
 
         try {
-            assertNotNull( resolvePath( git, "master", "path/to/file1.txt" ) );
-            assertNotNull( resolvePath( git, "master", "path/to/file1.txt" ) );
-            assertNotNull( resolvePath( git, "master", "path/to/file1.txt" ) );
-            assertNotNull( resolvePath( git, "master", "path/to/file1.txt" ) );
-        } catch ( Exception ex ) {
+            assertNotNull(resolvePath(git,
+                                      "master",
+                                      "path/to/file1.txt"));
+            assertNotNull(resolvePath(git,
+                                      "master",
+                                      "path/to/file1.txt"));
+            assertNotNull(resolvePath(git,
+                                      "master",
+                                      "path/to/file1.txt"));
+            assertNotNull(resolvePath(git,
+                                      "master",
+                                      "path/to/file1.txt"));
+        } catch (Exception ex) {
             fail();
         }
 
         try {
-            resolvePath( git, "master", "path/to/file1.txt" );
-            fail( "forced to fail!" );
-        } catch ( RuntimeException ex ) {
+            resolvePath(git,
+                        "master",
+                        "path/to/file1.txt");
+            fail("forced to fail!");
+        } catch (RuntimeException ex) {
         }
     }
 
@@ -84,34 +120,64 @@ public class ConcurrentJGitUtilTest extends AbstractTestInfra {
     public void testRetryResolveInputStream() throws IOException {
 
         final File parentFolder = createTempDirectory();
-        final File gitFolder = new File( parentFolder, "mytest.git" );
+        final File gitFolder = new File(parentFolder,
+                                        "mytest.git");
 
-        final Git git = JGitUtil.newRepository( gitFolder, true );
+        final Git git = JGitUtil.newRepository(gitFolder,
+                                               true);
 
-        commit( git, "master", "name", "name@example.com", "1st commit", null, new Date(), false, new HashMap<String, File>() {
-            {
-                put( "path/to/file1.txt", tempFile( "temp2222" ) );
-            }
-        } );
-        commit( git, "master", "name", "name@example.com", "2nd commit", null, new Date(), false, new HashMap<String, File>() {
-            {
-                put( "path/to/file2.txt", tempFile( "temp2222" ) );
-            }
-        } );
+        commit(git,
+               "master",
+               "name",
+               "name@example.com",
+               "1st commit",
+               null,
+               new Date(),
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file1.txt",
+                           tempFile("temp2222"));
+                   }
+               });
+        commit(git,
+               "master",
+               "name",
+               "name@example.com",
+               "2nd commit",
+               null,
+               new Date(),
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file2.txt",
+                           tempFile("temp2222"));
+                   }
+               });
 
         try {
-            assertNotNull( resolveInputStream( git, "master", "path/to/file1.txt" ) );
-            assertNotNull( resolveInputStream( git, "master", "path/to/file1.txt" ) );
-            assertNotNull( resolveInputStream( git, "master", "path/to/file1.txt" ) );
-            assertNotNull( resolveInputStream( git, "master", "path/to/file1.txt" ) );
-        } catch ( Exception ex ) {
+            assertNotNull(resolveInputStream(git,
+                                             "master",
+                                             "path/to/file1.txt"));
+            assertNotNull(resolveInputStream(git,
+                                             "master",
+                                             "path/to/file1.txt"));
+            assertNotNull(resolveInputStream(git,
+                                             "master",
+                                             "path/to/file1.txt"));
+            assertNotNull(resolveInputStream(git,
+                                             "master",
+                                             "path/to/file1.txt"));
+        } catch (Exception ex) {
             fail();
         }
 
         try {
-            assertNotNull( resolveInputStream( git, "master", "path/to/file1.txt" ) );
-            fail( "forced to fail!" );
-        } catch ( NoSuchFileException ex ) {
+            assertNotNull(resolveInputStream(git,
+                                             "master",
+                                             "path/to/file1.txt"));
+            fail("forced to fail!");
+        } catch (NoSuchFileException ex) {
         }
     }
 
@@ -120,34 +186,64 @@ public class ConcurrentJGitUtilTest extends AbstractTestInfra {
     public void testRetryListPathContent() throws IOException {
 
         final File parentFolder = createTempDirectory();
-        final File gitFolder = new File( parentFolder, "mytest.git" );
+        final File gitFolder = new File(parentFolder,
+                                        "mytest.git");
 
-        final Git git = JGitUtil.newRepository( gitFolder, true );
+        final Git git = JGitUtil.newRepository(gitFolder,
+                                               true);
 
-        commit( git, "master", "name", "name@example.com", "1st commit", null, new Date(), false, new HashMap<String, File>() {
-            {
-                put( "path/to/file1.txt", tempFile( "temp2222" ) );
-            }
-        } );
-        commit( git, "master", "name", "name@example.com", "2nd commit", null, new Date(), false, new HashMap<String, File>() {
-            {
-                put( "path/to/file2.txt", tempFile( "temp2222" ) );
-            }
-        } );
+        commit(git,
+               "master",
+               "name",
+               "name@example.com",
+               "1st commit",
+               null,
+               new Date(),
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file1.txt",
+                           tempFile("temp2222"));
+                   }
+               });
+        commit(git,
+               "master",
+               "name",
+               "name@example.com",
+               "2nd commit",
+               null,
+               new Date(),
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file2.txt",
+                           tempFile("temp2222"));
+                   }
+               });
 
         try {
-            assertNotNull( listPathContent( git, "master", "path/to/" ) );
-            assertNotNull( listPathContent( git, "master", "path/to/" ) );
-            assertNotNull( listPathContent( git, "master", "path/to/" ) );
-            assertNotNull( listPathContent( git, "master", "path/to/" ) );
-        } catch ( Exception ex ) {
+            assertNotNull(listPathContent(git,
+                                          "master",
+                                          "path/to/"));
+            assertNotNull(listPathContent(git,
+                                          "master",
+                                          "path/to/"));
+            assertNotNull(listPathContent(git,
+                                          "master",
+                                          "path/to/"));
+            assertNotNull(listPathContent(git,
+                                          "master",
+                                          "path/to/"));
+        } catch (Exception ex) {
             fail();
         }
 
         try {
-            assertNotNull( listPathContent( git, "master", "path/to/" ) );
-            fail( "forced to fail!" );
-        } catch ( RuntimeException ex ) {
+            assertNotNull(listPathContent(git,
+                                          "master",
+                                          "path/to/"));
+            fail("forced to fail!");
+        } catch (RuntimeException ex) {
         }
     }
 
@@ -156,34 +252,64 @@ public class ConcurrentJGitUtilTest extends AbstractTestInfra {
     public void testRetryCheckPath() throws IOException {
 
         final File parentFolder = createTempDirectory();
-        final File gitFolder = new File( parentFolder, "mytest.git" );
+        final File gitFolder = new File(parentFolder,
+                                        "mytest.git");
 
-        final Git git = JGitUtil.newRepository( gitFolder, true );
+        final Git git = JGitUtil.newRepository(gitFolder,
+                                               true);
 
-        commit( git, "master", "name", "name@example.com", "1st commit", null, new Date(), false, new HashMap<String, File>() {
-            {
-                put( "path/to/file1.txt", tempFile( "temp2222" ) );
-            }
-        } );
-        commit( git, "master", "name", "name@example.com", "2nd commit", null, new Date(), false, new HashMap<String, File>() {
-            {
-                put( "path/to/file2.txt", tempFile( "temp2222" ) );
-            }
-        } );
+        commit(git,
+               "master",
+               "name",
+               "name@example.com",
+               "1st commit",
+               null,
+               new Date(),
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file1.txt",
+                           tempFile("temp2222"));
+                   }
+               });
+        commit(git,
+               "master",
+               "name",
+               "name@example.com",
+               "2nd commit",
+               null,
+               new Date(),
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file2.txt",
+                           tempFile("temp2222"));
+                   }
+               });
 
         try {
-            assertNotNull( checkPath( git, "master", "path/to/file2.txt" ) );
-            assertNotNull( checkPath( git, "master", "path/to/file2.txt" ) );
-            assertNotNull( checkPath( git, "master", "path/to/file2.txt" ) );
-            assertNotNull( checkPath( git, "master", "path/to/file2.txt" ) );
-        } catch ( Exception ex ) {
+            assertNotNull(checkPath(git,
+                                    "master",
+                                    "path/to/file2.txt"));
+            assertNotNull(checkPath(git,
+                                    "master",
+                                    "path/to/file2.txt"));
+            assertNotNull(checkPath(git,
+                                    "master",
+                                    "path/to/file2.txt"));
+            assertNotNull(checkPath(git,
+                                    "master",
+                                    "path/to/file2.txt"));
+        } catch (Exception ex) {
             fail();
         }
 
         try {
-            assertNotNull( checkPath( git, "master", "path/to/file2.txt" ) );
-            fail( "forced to fail!" );
-        } catch ( RuntimeException ex ) {
+            assertNotNull(checkPath(git,
+                                    "master",
+                                    "path/to/file2.txt"));
+            fail("forced to fail!");
+        } catch (RuntimeException ex) {
         }
     }
 
@@ -192,34 +318,59 @@ public class ConcurrentJGitUtilTest extends AbstractTestInfra {
     public void testRetryGetLastCommit() throws IOException {
 
         final File parentFolder = createTempDirectory();
-        final File gitFolder = new File( parentFolder, "mytest.git" );
+        final File gitFolder = new File(parentFolder,
+                                        "mytest.git");
 
-        final Git git = JGitUtil.newRepository( gitFolder, true );
+        final Git git = JGitUtil.newRepository(gitFolder,
+                                               true);
 
-        commit( git, "master", "name", "name@example.com", "1st commit", null, new Date(), false, new HashMap<String, File>() {
-            {
-                put( "path/to/file1.txt", tempFile( "temp2222" ) );
-            }
-        } );
-        commit( git, "master", "name", "name@example.com", "2nd commit", null, new Date(), false, new HashMap<String, File>() {
-            {
-                put( "path/to/file2.txt", tempFile( "temp2222" ) );
-            }
-        } );
+        commit(git,
+               "master",
+               "name",
+               "name@example.com",
+               "1st commit",
+               null,
+               new Date(),
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file1.txt",
+                           tempFile("temp2222"));
+                   }
+               });
+        commit(git,
+               "master",
+               "name",
+               "name@example.com",
+               "2nd commit",
+               null,
+               new Date(),
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file2.txt",
+                           tempFile("temp2222"));
+                   }
+               });
 
         try {
-            assertNotNull( getLastCommit( git, "master" ) );
-            assertNotNull( getLastCommit( git, "master" ) );
-            assertNotNull( getLastCommit( git, "master" ) );
-            assertNotNull( getLastCommit( git, "master" ) );
-        } catch ( Exception ex ) {
+            assertNotNull(getLastCommit(git,
+                                        "master"));
+            assertNotNull(getLastCommit(git,
+                                        "master"));
+            assertNotNull(getLastCommit(git,
+                                        "master"));
+            assertNotNull(getLastCommit(git,
+                                        "master"));
+        } catch (Exception ex) {
             fail();
         }
 
         try {
-            assertNotNull( getLastCommit( git, "master" ) );
-            fail( "forced to fail!" );
-        } catch ( RuntimeException ex ) {
+            assertNotNull(getLastCommit(git,
+                                        "master"));
+            fail("forced to fail!");
+        } catch (RuntimeException ex) {
         }
     }
 
@@ -228,34 +379,67 @@ public class ConcurrentJGitUtilTest extends AbstractTestInfra {
     public void testRetryGetCommits() throws IOException {
 
         final File parentFolder = createTempDirectory();
-        final File gitFolder = new File( parentFolder, "mytest.git" );
+        final File gitFolder = new File(parentFolder,
+                                        "mytest.git");
 
-        final Git git = JGitUtil.newRepository( gitFolder, true );
+        final Git git = JGitUtil.newRepository(gitFolder,
+                                               true);
 
-        commit( git, "master", "name", "name@example.com", "1st commit", null, new Date(), false, new HashMap<String, File>() {
-            {
-                put( "path/to/file1.txt", tempFile( "temp2222" ) );
-            }
-        } );
-        commit( git, "master", "name", "name@example.com", "2nd commit", null, new Date(), false, new HashMap<String, File>() {
-            {
-                put( "path/to/file2.txt", tempFile( "temp2222" ) );
-            }
-        } );
+        commit(git,
+               "master",
+               "name",
+               "name@example.com",
+               "1st commit",
+               null,
+               new Date(),
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file1.txt",
+                           tempFile("temp2222"));
+                   }
+               });
+        commit(git,
+               "master",
+               "name",
+               "name@example.com",
+               "2nd commit",
+               null,
+               new Date(),
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file2.txt",
+                           tempFile("temp2222"));
+                   }
+               });
 
-        final RevCommit commit = getLastCommit( git, "master" );
+        final RevCommit commit = getLastCommit(git,
+                                               "master");
         try {
-            assertNotNull( getCommits( git, "master", null, commit ) );
-            assertNotNull( getCommits( git, "master", null, commit ) );
-            assertNotNull( getCommits( git, "master", null, commit ) );
-        } catch ( Exception ex ) {
+            assertNotNull(getCommits(git,
+                                     "master",
+                                     null,
+                                     commit));
+            assertNotNull(getCommits(git,
+                                     "master",
+                                     null,
+                                     commit));
+            assertNotNull(getCommits(git,
+                                     "master",
+                                     null,
+                                     commit));
+        } catch (Exception ex) {
             fail();
         }
 
         try {
-            assertNotNull( getCommits( git, "master", null, commit ) );
-            fail( "forced to fail!" );
-        } catch ( RuntimeException ex ) {
+            assertNotNull(getCommits(git,
+                                     "master",
+                                     null,
+                                     commit));
+            fail("forced to fail!");
+        } catch (RuntimeException ex) {
         }
     }
 }

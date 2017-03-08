@@ -34,5 +34,4 @@ public class ReadGroupEvent implements UberFireEvent {
     public String toString() {
         return "ReadGroupEvent [name=" + name + "]";
     }
-
 }

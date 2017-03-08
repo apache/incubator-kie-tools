@@ -28,11 +28,16 @@ public class ResourceRef implements Resource {
     private ResourceType type;
     private List<Resource> dependencies;
 
-    public ResourceRef(String identifier, ResourceType type) {
-        this(identifier, type, null);
+    public ResourceRef(String identifier,
+                       ResourceType type) {
+        this(identifier,
+             type,
+             null);
     }
 
-    public ResourceRef(String identifier, ResourceType type, List<Resource> dependencies) {
+    public ResourceRef(String identifier,
+                       ResourceType type,
+                       List<Resource> dependencies) {
         this.identifier = identifier;
         this.type = type;
         this.dependencies = new ArrayList<>();

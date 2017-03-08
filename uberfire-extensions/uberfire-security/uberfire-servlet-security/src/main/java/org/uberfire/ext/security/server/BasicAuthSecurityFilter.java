@@ -44,9 +44,9 @@ public class BasicAuthSecurityFilter implements Filter {
     private String realmName = "UberFire Security Extension Default Realm";
 
     @Override
-    public void init( FilterConfig filterConfig ) throws ServletException {
-        final String realmName = filterConfig.getInitParameter( REALM_NAME_PARAM );
-        if ( realmName != null ) {
+    public void init(FilterConfig filterConfig) throws ServletException {
+        final String realmName = filterConfig.getInitParameter(REALM_NAME_PARAM);
+        if (realmName != null) {
             this.realmName = realmName;
         }
     }
@@ -56,9 +56,9 @@ public class BasicAuthSecurityFilter implements Filter {
     }
 
     @Override
-    public void doFilter( final ServletRequest _request,
-                          final ServletResponse _response,
-                          final FilterChain chain ) throws IOException, ServletException {
+    public void doFilter(final ServletRequest _request,
+                         final ServletResponse _response,
+                         final FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) _request;
         final HttpServletResponse response = (HttpServletResponse) _response;
 
@@ -67,15 +67,18 @@ public class BasicAuthSecurityFilter implements Filter {
         try {
             if (user == null) {
                 if (authenticate(request)) {
-                    chain.doFilter(request, response);
+                    chain.doFilter(request,
+                                   response);
                     if (response.isCommitted()) {
                         authenticationService.logout();
                     }
                 } else {
-                    challengeClient(request, response);
+                    challengeClient(request,
+                                    response);
                 }
             } else {
-                chain.doFilter(request, response);
+                chain.doFilter(request,
+                               response);
             }
         } finally {
             // invalidate session only when it did not exists before this request
@@ -89,29 +92,33 @@ public class BasicAuthSecurityFilter implements Filter {
         }
     }
 
-    public void challengeClient( final HttpServletRequest request,
-                                 final HttpServletResponse response ) throws IOException {
-        response.setHeader( "WWW-Authenticate", "Basic realm=\"" + this.realmName + "\"" );
+    public void challengeClient(final HttpServletRequest request,
+                                final HttpServletResponse response) throws IOException {
+        response.setHeader("WWW-Authenticate",
+                           "Basic realm=\"" + this.realmName + "\"");
 
         // this usually means we have a failing authentication request from an ajax client. so we return SC_FORBIDDEN instead.
-        if ( isAjaxRequest( request ) ) {
-            response.sendError( HttpServletResponse.SC_FORBIDDEN );
+        if (isAjaxRequest(request)) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
         } else {
-            response.sendError( HttpServletResponse.SC_UNAUTHORIZED );
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
 
-    private boolean authenticate( final HttpServletRequest req ) {
-        final String authHead = req.getHeader( "Authorization" );
+    private boolean authenticate(final HttpServletRequest req) {
+        final String authHead = req.getHeader("Authorization");
 
-        if ( authHead != null ) {
-            final int index = authHead.indexOf( ' ' );
-            final String[] credentials = new String( Base64.decodeBase64( authHead.substring( index ) ), Charsets.UTF_8 ).split( ":", -1 );
+        if (authHead != null) {
+            final int index = authHead.indexOf(' ');
+            final String[] credentials = new String(Base64.decodeBase64(authHead.substring(index)),
+                                                    Charsets.UTF_8).split(":",
+                                                                          -1);
 
             try {
-                authenticationService.login( credentials[ 0 ], credentials[ 1 ] );
+                authenticationService.login(credentials[0],
+                                            credentials[1]);
                 return true;
-            } catch ( final FailedAuthenticationException e ) {
+            } catch (final FailedAuthenticationException e) {
                 return false;
             }
         }
@@ -119,8 +126,7 @@ public class BasicAuthSecurityFilter implements Filter {
         return false;
     }
 
-    private boolean isAjaxRequest( HttpServletRequest request ) {
-        return request.getHeader( "X-Requested-With" ) != null && "XMLHttpRequest".equalsIgnoreCase( request.getHeader( "X-Requested-With" ) );
+    private boolean isAjaxRequest(HttpServletRequest request) {
+        return request.getHeader("X-Requested-With") != null && "XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"));
     }
-
 }

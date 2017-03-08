@@ -43,55 +43,53 @@ public class MarkdownLiveEditorView extends Composite
         RequiresResize,
         MarkdownLiveEditorPresenter.View {
 
-    interface MarkdownLiveEditorViewBinder
-            extends
-            UiBinder<ResizeLayoutPanel, MarkdownLiveEditorView> {
-
-    }
-
-    private static MarkdownLiveEditorViewBinder uiBinder = GWT.create( MarkdownLiveEditorViewBinder.class );
-
+    private static MarkdownLiveEditorViewBinder uiBinder = GWT.create(MarkdownLiveEditorViewBinder.class);
     @UiField
     protected ResizableTextArea fileContent;
-
     @Inject
     protected Event<MarkdownTextContent> event;
 
     @PostConstruct
     public void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
-        fileContent.addKeyDownHandler( new KeyDownHandler() {
+        fileContent.addKeyDownHandler(new KeyDownHandler() {
             @Override
-            public void onKeyDown( final KeyDownEvent changeEvent ) {
-                event.fire( new MarkdownTextContent( fileContent.getText() ) );
+            public void onKeyDown(final KeyDownEvent changeEvent) {
+                event.fire(new MarkdownTextContent(fileContent.getText()));
             }
-        } );
+        });
 
-        fileContent.addKeyUpHandler( new KeyUpHandler() {
+        fileContent.addKeyUpHandler(new KeyUpHandler() {
             @Override
-            public void onKeyUp( final KeyUpEvent changeEvent ) {
-                event.fire( new MarkdownTextContent( fileContent.getText() ) );
+            public void onKeyUp(final KeyUpEvent changeEvent) {
+                event.fire(new MarkdownTextContent(fileContent.getText()));
             }
-        } );
+        });
 
-        fileContent.addChangeHandler( new ChangeHandler() {
-            public void onChange( ChangeEvent changeEvent ) {
-                event.fire( new MarkdownTextContent( fileContent.getText() ) );
+        fileContent.addChangeHandler(new ChangeHandler() {
+            public void onChange(ChangeEvent changeEvent) {
+                event.fire(new MarkdownTextContent(fileContent.getText()));
             }
-        } );
+        });
     }
 
-    public void setContent( final String content ) {
-        fileContent.setText( content );
+    public void setContent(final String content) {
+        fileContent.setText(content);
     }
 
     @Override
     public void onResize() {
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();
-        setPixelSize( width, height );
+        setPixelSize(width,
+                     height);
         fileContent.onResize();
     }
 
+    interface MarkdownLiveEditorViewBinder
+            extends
+            UiBinder<ResizeLayoutPanel, MarkdownLiveEditorView> {
+
+    }
 }

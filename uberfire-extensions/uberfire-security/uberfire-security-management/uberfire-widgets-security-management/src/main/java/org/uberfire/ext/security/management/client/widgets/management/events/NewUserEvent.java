@@ -24,5 +24,4 @@ public class NewUserEvent implements UberFireEvent {
     public String toString() {
         return "NewUserEvent";
     }
-
 }

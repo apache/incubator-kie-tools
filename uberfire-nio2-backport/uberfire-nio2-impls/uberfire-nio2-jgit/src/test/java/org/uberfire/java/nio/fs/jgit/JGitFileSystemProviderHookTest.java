@@ -37,24 +37,29 @@ import org.junit.Test;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 
-import static org.fest.assertions.api.Assertions.*;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 public class JGitFileSystemProviderHookTest extends AbstractTestInfra {
 
     @Override
     public Map<String, String> getGitPreferences() {
         Map<String, String> gitPrefs = super.getGitPreferences();
-        gitPrefs.put( "org.uberfire.nio.git.daemon.enabled", "true" );
+        gitPrefs.put("org.uberfire.nio.git.daemon.enabled",
+                     "true");
         int gitDaemonPort = findFreePort();
-        gitPrefs.put("org.uberfire.nio.git.daemon.port", String.valueOf(gitDaemonPort));
+        gitPrefs.put("org.uberfire.nio.git.daemon.port",
+                     String.valueOf(gitDaemonPort));
 
         try {
             final File hooksDir = createTempDirectory();
-            gitPrefs.put("org.uberfire.nio.git.hooks", hooksDir.getAbsolutePath());
+            gitPrefs.put("org.uberfire.nio.git.hooks",
+                         hooksDir.getAbsolutePath());
 
-            writeMockHook(hooksDir, "post-commit");
-            writeMockHook(hooksDir, PreCommitHook.NAME);
-        } catch ( IOException e ) {
+            writeMockHook(hooksDir,
+                          "post-commit");
+            writeMockHook(hooksDir,
+                          PreCommitHook.NAME);
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -65,37 +70,43 @@ public class JGitFileSystemProviderHookTest extends AbstractTestInfra {
     public void testInstalledHook() {
         final URI newRepo = URI.create("git://hook-repo-name");
 
-        final FileSystem fs = provider.newFileSystem(newRepo, EMPTY_ENV);
+        final FileSystem fs = provider.newFileSystem(newRepo,
+                                                     EMPTY_ENV);
 
-        assertThat( fs ).isNotNull();
+        assertThat(fs).isNotNull();
 
-        if ( fs instanceof JGitFileSystem ) {
-            File[] hooks = new File( ( (JGitFileSystem) fs ).gitRepo().getRepository().getDirectory(), "hooks" ).listFiles();
-            assertThat( hooks ).isNotEmpty().isNotNull();
-            assertThat( hooks.length ).isEqualTo( 2 );
+        if (fs instanceof JGitFileSystem) {
+            File[] hooks = new File(((JGitFileSystem) fs).gitRepo().getRepository().getDirectory(),
+                                    "hooks").listFiles();
+            assertThat(hooks).isNotEmpty().isNotNull();
+            assertThat(hooks.length).isEqualTo(2);
 
             boolean foundPreCommitHook = false;
             boolean foundPostCommitHook = false;
-            for ( File hook : hooks ) {
-                if ( hook.getName().equals( "pre-commit" ) ) {
+            for (File hook : hooks) {
+                if (hook.getName().equals("pre-commit")) {
                     foundPreCommitHook = hook.canExecute();
-                } else if ( hook.getName().equals( "post-commit" ) ) {
+                } else if (hook.getName().equals("post-commit")) {
                     foundPostCommitHook = hook.canExecute();
                 }
             }
-            assertThat( foundPreCommitHook ).isTrue();
-            assertThat( foundPostCommitHook ).isTrue();
+            assertThat(foundPreCommitHook).isTrue();
+            assertThat(foundPostCommitHook).isTrue();
         }
     }
 
     @Test
     public void testExecutedPostCommitHook() throws IOException {
-        testHook("hook-repo-name-executed", "post-commit", true);
+        testHook("hook-repo-name-executed",
+                 "post-commit",
+                 true);
     }
 
     @Test
     public void testNotSupportedPreCommitHook() throws IOException {
-        testHook("hook-repo-name-executed-pre-commit", "pre-commit", false);
+        testHook("hook-repo-name-executed-pre-commit",
+                 "pre-commit",
+                 false);
     }
 
     /**
@@ -103,48 +114,51 @@ public class JGitFileSystemProviderHookTest extends AbstractTestInfra {
      * @param gitRepoName Name of test git repository that is created for committing changes.
      * @param testedHookName Tested hook name. This hook is checked for its execution.
      * @param wasExecuted Expected hook execution state. If true, test expects that defined hook is executed.
-     *                    If false, test expects that defined hook is not executed.
+     * If false, test expects that defined hook is not executed.
      * @throws IOException
      */
-    private void testHook(final String gitRepoName, final String testedHookName, final boolean wasExecuted) throws IOException {
-        final URI newRepo = URI.create( "git://" + gitRepoName );
+    private void testHook(final String gitRepoName,
+                          final String testedHookName,
+                          final boolean wasExecuted) throws IOException {
+        final URI newRepo = URI.create("git://" + gitRepoName);
 
-        final AtomicBoolean hookExecuted = new AtomicBoolean( false );
-        final FileSystem fs = provider.newFileSystem( newRepo, EMPTY_ENV );
+        final AtomicBoolean hookExecuted = new AtomicBoolean(false);
+        final FileSystem fs = provider.newFileSystem(newRepo,
+                                                     EMPTY_ENV);
 
-        provider.setDetectedFS( new FS_POSIX() {
+        provider.setDetectedFS(new FS_POSIX() {
             @Override
-            public ProcessResult runHookIfPresent( Repository repox,
-                                                   String hookName,
-                                                   String[] args ) throws JGitInternalException {
-                if ( hookName.equals( testedHookName ) ) {
-                    hookExecuted.set( true );
+            public ProcessResult runHookIfPresent(Repository repox,
+                                                  String hookName,
+                                                  String[] args) throws JGitInternalException {
+                if (hookName.equals(testedHookName)) {
+                    hookExecuted.set(true);
                 }
                 return null;
             }
-        } );
+        });
 
-        assertThat( fs ).isNotNull();
+        assertThat(fs).isNotNull();
 
-        final Path path = provider.getPath( URI.create( "git://user_branch@" + gitRepoName + "/some/path/myfile.txt" ) );
+        final Path path = provider.getPath(URI.create("git://user_branch@" + gitRepoName + "/some/path/myfile.txt"));
 
-        final OutputStream outStream = provider.newOutputStream( path );
-        assertThat( outStream ).isNotNull();
-        outStream.write( "my cool content".getBytes() );
+        final OutputStream outStream = provider.newOutputStream(path);
+        assertThat(outStream).isNotNull();
+        outStream.write("my cool content".getBytes());
         outStream.close();
 
-        final InputStream inStream = provider.newInputStream( path );
+        final InputStream inStream = provider.newInputStream(path);
 
-        final String content = new Scanner( inStream ).useDelimiter( "\\A" ).next();
+        final String content = new Scanner(inStream).useDelimiter("\\A").next();
 
         inStream.close();
 
-        assertThat( content ).isNotNull().isEqualTo( "my cool content" );
+        assertThat(content).isNotNull().isEqualTo("my cool content");
 
         if (wasExecuted) {
-            assertThat( hookExecuted.get() ).isTrue();
+            assertThat(hookExecuted.get()).isTrue();
         } else {
-            assertThat( hookExecuted.get() ).isFalse();
+            assertThat(hookExecuted.get()).isFalse();
         }
     }
 
@@ -155,10 +169,13 @@ public class JGitFileSystemProviderHookTest extends AbstractTestInfra {
      * @throws FileNotFoundException
      * @throws UnsupportedEncodingException
      */
-    private void writeMockHook(final File hooksDirectory, final String hookName)
+    private void writeMockHook(final File hooksDirectory,
+                               final String hookName)
             throws FileNotFoundException, UnsupportedEncodingException {
-        final PrintWriter writer = new PrintWriter( new File( hooksDirectory, hookName ), "UTF-8" );
-        writer.println( "# something" );
+        final PrintWriter writer = new PrintWriter(new File(hooksDirectory,
+                                                            hookName),
+                                                   "UTF-8");
+        writer.println("# something");
         writer.close();
     }
 }

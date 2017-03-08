@@ -26,7 +26,7 @@ public class ContextDefinitionImpl implements ContextDefinition {
 
     private PlaceRequest place;
 
-    public ContextDefinitionImpl( @MapsTo("place") final PlaceRequest place ) {
+    public ContextDefinitionImpl(@MapsTo("place") final PlaceRequest place) {
         this.place = place;
     }
 
@@ -36,7 +36,7 @@ public class ContextDefinitionImpl implements ContextDefinition {
     }
 
     @Override
-    public void setPlace( final PlaceRequest place ) {
+    public void setPlace(final PlaceRequest place) {
         this.place = place;
     }
 }

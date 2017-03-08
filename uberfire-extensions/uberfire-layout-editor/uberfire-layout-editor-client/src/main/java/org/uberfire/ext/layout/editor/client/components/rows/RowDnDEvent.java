@@ -22,8 +22,9 @@ public class RowDnDEvent {
     private final String rowIdEnd;
     private final RowDrop.Orientation orientation;
 
-
-    public RowDnDEvent( String rowIdBegin, String rowIdEnd, RowDrop.Orientation orientation ) {
+    public RowDnDEvent(String rowIdBegin,
+                       String rowIdEnd,
+                       RowDrop.Orientation orientation) {
         this.rowIdBegin = rowIdBegin;
         this.rowIdEnd = rowIdEnd;
         this.orientation = orientation;

@@ -19,7 +19,8 @@ package org.uberfire.java.nio.file;
 import org.uberfire.java.nio.Closeable;
 import org.uberfire.java.nio.IOException;
 
-public interface DirectoryStream<T> extends Closeable, Iterable<T> {
+public interface DirectoryStream<T> extends Closeable,
+                                            Iterable<T> {
 
     public static interface Filter<T> {
 

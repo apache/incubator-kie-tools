@@ -25,7 +25,7 @@ import org.uberfire.client.workbench.docks.UberfireDockPosition;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class DocksExpandedBarTest {
 
     private DocksExpandedBar docksExpandedBar;
@@ -33,52 +33,60 @@ public class DocksExpandedBarTest {
 
     @Before
     public void setup() {
-        DocksExpandedBar dock = new DocksExpandedBar( UberfireDockPosition.WEST );
-        targetPanel = mock( FlowPanel.class );
+        DocksExpandedBar dock = new DocksExpandedBar(UberfireDockPosition.WEST);
+        targetPanel = mock(FlowPanel.class);
         dock.targetPanel = targetPanel;
-        docksExpandedBar = spy( dock );
+        docksExpandedBar = spy(dock);
     }
 
     @Test
     public void resizeTest() {
         docksExpandedBar.onResize();
-        verify( docksExpandedBar ).resizeTargetPanel();
+        verify(docksExpandedBar).resizeTargetPanel();
     }
 
     @Test
     public void resizeWithAnInvalidWidthShouldNeverSetupSizeOfTargetPanel() {
-        doReturn( 0 ).when( docksExpandedBar ).calculateDockHeight();
-        doReturn( 0 ).when( docksExpandedBar ).calculateDockWidth();
+        doReturn(0).when(docksExpandedBar).calculateDockHeight();
+        doReturn(0).when(docksExpandedBar).calculateDockWidth();
 
         docksExpandedBar.onResize();
 
-        verify( targetPanel, never() ).setPixelSize( anyInt(), anyInt() );
+        verify(targetPanel,
+               never()).setPixelSize(anyInt(),
+                                     anyInt());
     }
 
     @Test
     public void resizeWithAValidWidthShouldNeverSetupSizeOfTargetPanel() {
-        doReturn( 10 ).when( docksExpandedBar ).calculateDockHeight();
-        doReturn( 110 ).when( docksExpandedBar ).calculateDockWidth();
+        doReturn(10).when(docksExpandedBar).calculateDockHeight();
+        doReturn(110).when(docksExpandedBar).calculateDockWidth();
 
         docksExpandedBar.onResize();
 
-        verify( targetPanel, never() ).setPixelSize( 10, 110 );
+        verify(targetPanel,
+               never()).setPixelSize(10,
+                                     110);
     }
 
     @Test
     public void setPanelSizeWithAnInvalidWidthShouldNeverSetupSizeOfTargetPanel() {
 
-        docksExpandedBar.setPanelSize( 0, -1 );
+        docksExpandedBar.setPanelSize(0,
+                                      -1);
 
-        verify( targetPanel, never() ).setPixelSize( anyInt(), anyInt() );
+        verify(targetPanel,
+               never()).setPixelSize(anyInt(),
+                                     anyInt());
     }
-
 
     @Test
     public void setPanelSizeAValidWidthShouldNeverSetupSizeOfTargetPanel() {
 
-        docksExpandedBar.setPanelSize( 1, 10 );
+        docksExpandedBar.setPanelSize(1,
+                                      10);
 
-        verify( targetPanel ).setPixelSize( 1, 10 );
+        verify(targetPanel).setPixelSize(1,
+                                         10);
     }
 }

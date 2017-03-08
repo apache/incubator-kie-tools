@@ -37,68 +37,67 @@ import org.uberfire.ext.wires.core.trees.client.shapes.WiresBaseTreeNode;
 public class WiresTreesDefaultLayout implements LayoutManager {
 
     @Override
-    public Map<WiresBaseShape, Point2D> getLayoutInformation( final WiresBaseShape root ) {
-        if ( root == null ) {
+    public Map<WiresBaseShape, Point2D> getLayoutInformation(final WiresBaseShape root) {
+        if (root == null) {
             return Collections.emptyMap();
         }
-        if ( !( root instanceof WiresBaseTreeNode ) ) {
+        if (!(root instanceof WiresBaseTreeNode)) {
             return Collections.emptyMap();
         }
 
         //Layout tree
         final WiresBaseTreeNode treeRootNode = (WiresBaseTreeNode) root;
-        final WiresTreeForTreeLayout treeNodesProvider = new WiresTreeForTreeLayout( treeRootNode );
+        final WiresTreeForTreeLayout treeNodesProvider = new WiresTreeForTreeLayout(treeRootNode);
         final WiresTreeNodeExtentProvider treeNodesExtentProvider = new WiresTreeNodeExtentProvider();
-        final Configuration<WiresBaseTreeNode> treeNodesLayoutConfiguration = new DefaultConfiguration<WiresBaseTreeNode>( 50,
-                                                                                                                           50 );
-        final TreeLayout<WiresBaseTreeNode> layout = new TreeLayout<WiresBaseTreeNode>( treeNodesProvider,
-                                                                                        treeNodesExtentProvider,
-                                                                                        treeNodesLayoutConfiguration );
+        final Configuration<WiresBaseTreeNode> treeNodesLayoutConfiguration = new DefaultConfiguration<WiresBaseTreeNode>(50,
+                                                                                                                          50);
+        final TreeLayout<WiresBaseTreeNode> layout = new TreeLayout<WiresBaseTreeNode>(treeNodesProvider,
+                                                                                       treeNodesExtentProvider,
+                                                                                       treeNodesLayoutConfiguration);
 
         //Set absolute positions
         final Map<WiresBaseShape, Point2D> locations = new HashMap<WiresBaseShape, Point2D>();
-        for ( Map.Entry<WiresBaseTreeNode, Rectangle2D> e : layout.getNodeBounds().entrySet() ) {
-            locations.put( e.getKey(),
-                           new Point2D( e.getValue().getX(),
-                                        e.getValue().getY() ) );
+        for (Map.Entry<WiresBaseTreeNode, Rectangle2D> e : layout.getNodeBounds().entrySet()) {
+            locations.put(e.getKey(),
+                          new Point2D(e.getValue().getX(),
+                                      e.getValue().getY()));
         }
 
         //Collapse children into parent if required. By setting the location of "collapsed" nodes to that
         //of their parent we can animate the layout changes required to collapse a node and repositioning
         //of the remaining nodes with a single animation.
-        collapseChildren( treeRootNode,
-                          locations );
+        collapseChildren(treeRootNode,
+                         locations);
 
         return locations;
     }
 
-    private void collapseChildren( final WiresBaseTreeNode node,
-                                   final Map<WiresBaseShape, Point2D> locations ) {
-        if ( node.hasCollapsedChildren() ) {
-            final Point2D destination = locations.get( node );
-            for ( WiresBaseTreeNode child : node.getChildren() ) {
-                collapseChildren( child,
-                                  destination,
-                                  locations );
+    private void collapseChildren(final WiresBaseTreeNode node,
+                                  final Map<WiresBaseShape, Point2D> locations) {
+        if (node.hasCollapsedChildren()) {
+            final Point2D destination = locations.get(node);
+            for (WiresBaseTreeNode child : node.getChildren()) {
+                collapseChildren(child,
+                                 destination,
+                                 locations);
             }
-
         } else {
-            for ( WiresBaseTreeNode child : node.getChildren() ) {
-                collapseChildren( child,
-                                  locations );
+            for (WiresBaseTreeNode child : node.getChildren()) {
+                collapseChildren(child,
+                                 locations);
             }
         }
     }
 
-    private void collapseChildren( final WiresBaseTreeNode node,
-                                   final Point2D destination,
-                                   final Map<WiresBaseShape, Point2D> locations ) {
-        locations.put( node,
-                       destination );
-        for ( WiresBaseTreeNode child : node.getChildren() ) {
-            collapseChildren( child,
-                              destination,
-                              locations );
+    private void collapseChildren(final WiresBaseTreeNode node,
+                                  final Point2D destination,
+                                  final Map<WiresBaseShape, Point2D> locations) {
+        locations.put(node,
+                      destination);
+        for (WiresBaseTreeNode child : node.getChildren()) {
+            collapseChildren(child,
+                             destination,
+                             locations);
         }
     }
 
@@ -107,19 +106,19 @@ public class WiresTreesDefaultLayout implements LayoutManager {
      */
     private static class WiresTreeForTreeLayout extends AbstractTreeForTreeLayout<WiresBaseTreeNode> {
 
-        public WiresTreeForTreeLayout( final WiresBaseTreeNode root ) {
-            super( root );
+        public WiresTreeForTreeLayout(final WiresBaseTreeNode root) {
+            super(root);
         }
 
         @Override
-        public WiresBaseTreeNode getParent( final WiresBaseTreeNode node ) {
+        public WiresBaseTreeNode getParent(final WiresBaseTreeNode node) {
             return node.getParentNode();
         }
 
         @Override
-        public List<WiresBaseTreeNode> getChildrenList( final WiresBaseTreeNode node ) {
+        public List<WiresBaseTreeNode> getChildrenList(final WiresBaseTreeNode node) {
             //If node has collapsed children don't return them so it appears we have a single node
-            if ( node.hasCollapsedChildren() ) {
+            if (node.hasCollapsedChildren()) {
                 return Collections.emptyList();
             }
             return node.getChildren();
@@ -133,14 +132,13 @@ public class WiresTreesDefaultLayout implements LayoutManager {
                                                      NodeExtentProvider<WiresBaseTreeNode> {
 
         @Override
-        public double getWidth( final WiresBaseTreeNode node ) {
+        public double getWidth(final WiresBaseTreeNode node) {
             return node.getWidth();
         }
 
         @Override
-        public double getHeight( final WiresBaseTreeNode node ) {
+        public double getHeight(final WiresBaseTreeNode node) {
             return node.getHeight();
         }
     }
-
 }

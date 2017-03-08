@@ -27,5 +27,4 @@ public interface Workspace {
      * @return the workspace name.
      */
     String getName();
-
 }

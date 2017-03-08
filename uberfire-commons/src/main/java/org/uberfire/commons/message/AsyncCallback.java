@@ -22,7 +22,6 @@ public interface AsyncCallback {
 
     void onTimeOut();
 
-    void onReply( final MessageType type,
-                  final Map<String, String> content );
-
+    void onReply(final MessageType type,
+                 final Map<String, String> content);
 }

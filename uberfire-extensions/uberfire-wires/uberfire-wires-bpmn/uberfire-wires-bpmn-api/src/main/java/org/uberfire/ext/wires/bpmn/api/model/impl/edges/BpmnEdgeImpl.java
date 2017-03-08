@@ -31,9 +31,9 @@ public class BpmnEdgeImpl extends EdgeImpl<BpmnGraphNode> implements BpmnEdge {
 
     private Role role;
 
-    public BpmnEdgeImpl( @MapsTo("role") final Role role ) {
-        this.role = PortablePreconditions.checkNotNull( "role",
-                                                        role );
+    public BpmnEdgeImpl(@MapsTo("role") final Role role) {
+        this.role = PortablePreconditions.checkNotNull("role",
+                                                       role);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class BpmnEdgeImpl extends EdgeImpl<BpmnGraphNode> implements BpmnEdge {
 
     @Override
     public BpmnEdge copy() {
-        return new BpmnEdgeImpl( this.getRole() );
+        return new BpmnEdgeImpl(this.getRole());
     }
 
     @Override
@@ -52,5 +52,4 @@ public class BpmnEdgeImpl extends EdgeImpl<BpmnGraphNode> implements BpmnEdge {
                 "role=" + role +
                 '}';
     }
-
 }

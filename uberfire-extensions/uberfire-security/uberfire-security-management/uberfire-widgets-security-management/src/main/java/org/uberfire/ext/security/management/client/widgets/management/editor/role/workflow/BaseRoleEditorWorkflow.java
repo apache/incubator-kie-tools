@@ -44,16 +44,16 @@ import org.uberfire.security.authz.PermissionCollection;
 import org.uberfire.security.authz.PermissionManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.uberfire.workbench.events.NotificationEvent.NotificationType.*;
+import static org.uberfire.workbench.events.NotificationEvent.NotificationType.SUCCESS;
 
 /**
  * <p>The workflow for editing a role.</p>
  * <p>It links the editor & sub-editors components with the editor driver and the remote user services.</p>
- * 
  * @since 0.9.0
  */
 public abstract class BaseRoleEditorWorkflow implements IsWidget {
 
+    public EntityWorkflowView view;
     protected ClientUserSystemManager userSystemManager;
     protected Caller<AuthorizationService> authorizationService;
     protected PermissionManager permissionManager;
@@ -64,8 +64,11 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
     protected RoleEditor roleEditor;
     protected RoleEditorDriver roleEditorDriver;
     protected LoadingBox loadingBox;
-    public EntityWorkflowView view;
-
+    protected final ErrorCallback<Message> errorCallback = (message, throwable) -> {
+        hideLoadingBox();
+        showError(throwable);
+        return false;
+    };
     protected Role role;
     protected boolean isDirty;
 
@@ -104,13 +107,13 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
         return roleEditor;
     }
 
-    public void clear() {
-        checkDirty(this::doClear);
-    }
-
     /*  ******************************************************************************************************
                                      PROTECTED PRESENTER API
          ****************************************************************************************************** */
+
+    public void clear() {
+        checkDirty(this::doClear);
+    }
 
     protected void doShow(final String roleName) {
         assert roleName != null;
@@ -128,12 +131,13 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
         // Call backend service.
         showLoadingBox();
         userSystemManager.roles((Role o) -> {
-            hideLoadingBox();
-            BaseRoleEditorWorkflow.this.role = o;
-            assert role != null;
+                                    hideLoadingBox();
+                                    BaseRoleEditorWorkflow.this.role = o;
+                                    assert role != null;
 
-            edit();
-        }, errorCallback).get(roleName);
+                                    edit();
+                                },
+                                errorCallback).get(roleName);
     }
 
     protected void onSave() {
@@ -146,21 +150,21 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
 
     protected void doInitView() {
         view.setWidget(roleEditor.view)
-            .setCancelButtonVisible(true)
-            .setSaveButtonVisible(true)
-            .setSaveButtonEnabled(isDirty)
-            .setSaveButtonText(getSaveButtonText())
-            .setCallback(new EntityWorkflowView.Callback() {
-                @Override
-                public void onSave() {
-                    BaseRoleEditorWorkflow.this.onSave();
-                }
+                .setCancelButtonVisible(true)
+                .setSaveButtonVisible(true)
+                .setSaveButtonEnabled(isDirty)
+                .setSaveButtonText(getSaveButtonText())
+                .setCallback(new EntityWorkflowView.Callback() {
+                    @Override
+                    public void onSave() {
+                        BaseRoleEditorWorkflow.this.onSave();
+                    }
 
-                @Override
-                public void onCancel() {
-                    BaseRoleEditorWorkflow.this.onCancel();
-                }
-            });
+                    @Override
+                    public void onCancel() {
+                        BaseRoleEditorWorkflow.this.onCancel();
+                    }
+                });
     }
 
     protected String getSaveButtonText() {
@@ -182,13 +186,14 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
             view.clearNotification();
         }
     }
-    
+
     protected void edit() {
-        roleEditorDriver.edit(role, roleEditor);
+        roleEditorDriver.edit(role,
+                              roleEditor);
         view.setCancelButtonVisible(false);
         view.setSaveButtonVisible(false);
     }
-    
+
     protected void doSave() {
         assert role != null;
 
@@ -203,8 +208,10 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
 
             // Update the current active policy
             AuthorizationPolicy authzPolicy = permissionManager.getAuthorizationPolicy();
-            authzPolicy.setHomePerspective(role, homePerspective.getIdentifier());
-            authzPolicy.setPriority(role, rolePriority);
+            authzPolicy.setHomePerspective(role,
+                                           homePerspective.getIdentifier());
+            authzPolicy.setPriority(role,
+                                    rolePriority);
             Collection<Permission> pc = authzPolicy.getPermissions(role).collection();
             pc.clear();
             pc.addAll(rolePermissions.collection());
@@ -212,14 +219,14 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
             // Save the policy in the backend
             authorizationService.call(r -> {
 
-                hideLoadingBox();
-                isDirty = false;
-                workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.roleSaved(role.getName()), SUCCESS));
-                saveRoleEvent.fire(new SaveRoleEvent(role.getName()));
-                doShow(role.getName());
-
-            }, errorCallback).savePolicy(authzPolicy);
-
+                                          hideLoadingBox();
+                                          isDirty = false;
+                                          workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.roleSaved(role.getName()),
+                                                                                           SUCCESS));
+                                          saveRoleEvent.fire(new SaveRoleEvent(role.getName()));
+                                          doShow(role.getName());
+                                      },
+                                      errorCallback).savePolicy(authzPolicy);
         } else {
             throw new RuntimeException("Role must be valid before updating it.");
         }
@@ -231,15 +238,10 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
         role = null;
     }
 
-    protected boolean checkEventContext(final ContextualEvent contextualEvent, final Object context) {
+    protected boolean checkEventContext(final ContextualEvent contextualEvent,
+                                        final Object context) {
         return contextualEvent != null && contextualEvent.getContext() != null && contextualEvent.getContext().equals(context);
     }
-
-    protected final ErrorCallback<Message> errorCallback = (message, throwable) -> {
-        hideLoadingBox();
-        showError(throwable);
-        return false;
-    };
 
     protected void showError(final Throwable throwable) {
         final String msg = throwable != null ? throwable.getMessage() : UsersManagementWidgetsConstants.INSTANCE.genericError();
@@ -247,16 +249,20 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
     }
 
     protected void showError(final String message) {
-        errorEvent.fire(new OnErrorEvent(BaseRoleEditorWorkflow.this, message));
+        errorEvent.fire(new OnErrorEvent(BaseRoleEditorWorkflow.this,
+                                         message));
     }
 
     protected void checkDirty(final Command callback) {
         if (isDirty) {
             confirmBox.show(UsersManagementWidgetsConstants.INSTANCE.confirmAction(),
-                    UsersManagementWidgetsConstants.INSTANCE.roleIsDirty(), () -> {
-                        BaseRoleEditorWorkflow.this.isDirty = false;
-                        callback.execute();
-                    }, () -> {});
+                            UsersManagementWidgetsConstants.INSTANCE.roleIsDirty(),
+                            () -> {
+                                BaseRoleEditorWorkflow.this.isDirty = false;
+                                callback.execute();
+                            },
+                            () -> {
+                            });
         } else {
             callback.execute();
         }
@@ -265,7 +271,7 @@ public abstract class BaseRoleEditorWorkflow implements IsWidget {
     protected void showLoadingBox() {
         loadingBox.show();
     }
-    
+
     protected void hideLoadingBox() {
         loadingBox.hide();
     }

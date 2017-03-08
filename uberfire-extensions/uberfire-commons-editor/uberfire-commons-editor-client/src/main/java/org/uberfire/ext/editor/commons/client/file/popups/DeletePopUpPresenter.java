@@ -24,37 +24,28 @@ import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.editor.commons.client.file.popups.commons.ToggleCommentPresenter;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class DeletePopUpPresenter {
 
-    public interface View extends UberElement<DeletePopUpPresenter> {
-
-        void show();
-
-        void hide();
-    }
-
     private ParameterizedCommand<String> command;
-
     private View view;
-
     private ToggleCommentPresenter toggleCommentPresenter;
 
     @Inject
-    public DeletePopUpPresenter( View view,
-                                 ToggleCommentPresenter toggleCommentPresenter ) {
+    public DeletePopUpPresenter(View view,
+                                ToggleCommentPresenter toggleCommentPresenter) {
         this.view = view;
         this.toggleCommentPresenter = toggleCommentPresenter;
     }
 
     @PostConstruct
     public void setup() {
-        view.init( this );
+        view.init(this);
     }
 
-    public void show( final ParameterizedCommand<String> command ) {
+    public void show(final ParameterizedCommand<String> command) {
         this.command = command;
         view.show();
     }
@@ -68,12 +59,20 @@ public class DeletePopUpPresenter {
     }
 
     public void delete() {
-        checkNotNull( "command", command );
-        command.execute( toggleCommentPresenter.getComment() );
+        checkNotNull("command",
+                     command);
+        command.execute(toggleCommentPresenter.getComment());
         view.hide();
     }
 
     public ToggleCommentPresenter getToggleCommentPresenter() {
         return toggleCommentPresenter;
+    }
+
+    public interface View extends UberElement<DeletePopUpPresenter> {
+
+        void show();
+
+        void hide();
     }
 }

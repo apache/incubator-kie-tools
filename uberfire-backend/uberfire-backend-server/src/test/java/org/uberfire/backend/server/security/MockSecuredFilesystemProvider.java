@@ -99,184 +99,184 @@ public class MockSecuredFilesystemProvider implements SecuredFileSystemProvider 
     }
 
     @Override
-    public FileSystem newFileSystem( URI uri,
-                                     Map<String, ?> env ) throws IllegalArgumentException, IOException, SecurityException, FileSystemAlreadyExistsException {
+    public FileSystem newFileSystem(URI uri,
+                                    Map<String, ?> env) throws IllegalArgumentException, IOException, SecurityException, FileSystemAlreadyExistsException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public FileSystem getFileSystem( URI uri ) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
+    public FileSystem getFileSystem(URI uri) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Path getPath( URI uri ) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
+    public Path getPath(URI uri) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
         return new MockPath();
     }
 
     @Override
-    public FileSystem newFileSystem( Path path,
-                                     Map<String, ?> env ) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+    public FileSystem newFileSystem(Path path,
+                                    Map<String, ?> env) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public InputStream newInputStream( Path path,
-                                       OpenOption... options ) throws IllegalArgumentException, UnsupportedOperationException, NoSuchFileException, IOException, SecurityException {
+    public InputStream newInputStream(Path path,
+                                      OpenOption... options) throws IllegalArgumentException, UnsupportedOperationException, NoSuchFileException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public OutputStream newOutputStream( Path path,
-                                         OpenOption... options ) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+    public OutputStream newOutputStream(Path path,
+                                        OpenOption... options) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public FileChannel newFileChannel( Path path,
-                                       Set<? extends OpenOption> options,
-                                       FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+    public FileChannel newFileChannel(Path path,
+                                      Set<? extends OpenOption> options,
+                                      FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public AsynchronousFileChannel newAsynchronousFileChannel( Path path,
-                                                               Set<? extends OpenOption> options,
-                                                               ExecutorService executor,
-                                                               FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+    public AsynchronousFileChannel newAsynchronousFileChannel(Path path,
+                                                              Set<? extends OpenOption> options,
+                                                              ExecutorService executor,
+                                                              FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public SeekableByteChannel newByteChannel( Path path,
-                                               Set<? extends OpenOption> options,
-                                               FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+    public SeekableByteChannel newByteChannel(Path path,
+                                              Set<? extends OpenOption> options,
+                                              FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public DirectoryStream<Path> newDirectoryStream( Path dir,
-                                                     Filter<Path> filter ) throws NotDirectoryException, IOException, SecurityException {
+    public DirectoryStream<Path> newDirectoryStream(Path dir,
+                                                    Filter<Path> filter) throws NotDirectoryException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void createDirectory( Path dir,
-                                 FileAttribute<?>... attrs ) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+    public void createDirectory(Path dir,
+                                FileAttribute<?>... attrs) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void createSymbolicLink( Path link,
-                                    Path target,
-                                    FileAttribute<?>... attrs ) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+    public void createSymbolicLink(Path link,
+                                   Path target,
+                                   FileAttribute<?>... attrs) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void createLink( Path link,
-                            Path existing ) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+    public void createLink(Path link,
+                           Path existing) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void delete( Path path,
-                        DeleteOption... options ) throws DirectoryNotEmptyException, NoSuchFileException, IOException, SecurityException {
+    public void delete(Path path,
+                       DeleteOption... options) throws DirectoryNotEmptyException, NoSuchFileException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean deleteIfExists( Path path,
-                                   DeleteOption... options ) throws DirectoryNotEmptyException, IOException, SecurityException {
+    public boolean deleteIfExists(Path path,
+                                  DeleteOption... options) throws DirectoryNotEmptyException, IOException, SecurityException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Path readSymbolicLink( Path link ) throws UnsupportedOperationException, NotLinkException, IOException, SecurityException {
+    public Path readSymbolicLink(Path link) throws UnsupportedOperationException, NotLinkException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void copy( Path source,
-                      Path target,
-                      CopyOption... options ) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException, SecurityException {
+    public void copy(Path source,
+                     Path target,
+                     CopyOption... options) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void move( Path source,
-                      Path target,
-                      CopyOption... options ) throws DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException, SecurityException {
+    public void move(Path source,
+                     Path target,
+                     CopyOption... options) throws DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean isSameFile( Path path,
-                               Path path2 ) throws IOException, SecurityException {
+    public boolean isSameFile(Path path,
+                              Path path2) throws IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean isHidden( Path path ) throws IllegalArgumentException, IOException, SecurityException {
+    public boolean isHidden(Path path) throws IllegalArgumentException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public FileStore getFileStore( Path path ) throws IOException, SecurityException {
+    public FileStore getFileStore(Path path) throws IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void checkAccess( Path path,
-                             AccessMode... modes ) throws UnsupportedOperationException, NoSuchFileException, AccessDeniedException, IOException, SecurityException {
+    public void checkAccess(Path path,
+                            AccessMode... modes) throws UnsupportedOperationException, NoSuchFileException, AccessDeniedException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public <V extends FileAttributeView> V getFileAttributeView( Path path,
-                                                                 Class<V> type,
-                                                                 LinkOption... options ) throws NoSuchFileException {
+    public <V extends FileAttributeView> V getFileAttributeView(Path path,
+                                                                Class<V> type,
+                                                                LinkOption... options) throws NoSuchFileException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public <A extends BasicFileAttributes> A readAttributes( Path path,
-                                                             Class<A> type,
-                                                             LinkOption... options ) throws NoSuchFileException, UnsupportedOperationException, IOException, SecurityException {
+    public <A extends BasicFileAttributes> A readAttributes(Path path,
+                                                            Class<A> type,
+                                                            LinkOption... options) throws NoSuchFileException, UnsupportedOperationException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Map<String, Object> readAttributes( Path path,
-                                               String attributes,
-                                               LinkOption... options ) throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
+    public Map<String, Object> readAttributes(Path path,
+                                              String attributes,
+                                              LinkOption... options) throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setAttribute( Path path,
-                              String attribute,
-                              Object value,
-                              LinkOption... options ) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
+    public void setAttribute(Path path,
+                             String attribute,
+                             Object value,
+                             LinkOption... options) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setAuthenticator( FileSystemAuthenticator authenticator ) {
+    public void setAuthenticator(FileSystemAuthenticator authenticator) {
         this.authenticator = authenticator;
     }
 
     @Override
-    public void setAuthorizer( FileSystemAuthorizer authorizer ) {
+    public void setAuthorizer(FileSystemAuthorizer authorizer) {
         this.authorizer = authorizer;
     }
 
     private class MockPath extends AbstractPath {
 
         public MockPath() {
-            super( new MockFileSystem(),
-                   new File("mock"));
+            super(new MockFileSystem(),
+                  new File("mock"));
         }
 
         @Override
@@ -285,41 +285,44 @@ public class MockSecuredFilesystemProvider implements SecuredFileSystemProvider 
         }
 
         @Override
-        public WatchKey register( WatchService watcher,
-                                  Kind[] events,
-                                  Modifier... modifiers ) throws UnsupportedOperationException, IllegalArgumentException, ClosedWatchServiceException, IOException, SecurityException {
+        public WatchKey register(WatchService watcher,
+                                 Kind[] events,
+                                 Modifier... modifiers) throws UnsupportedOperationException, IllegalArgumentException, ClosedWatchServiceException, IOException, SecurityException {
             return null;
         }
 
         @Override
-        public WatchKey register( WatchService watcher,
-                                  Kind... events ) throws UnsupportedOperationException, IllegalArgumentException, ClosedWatchServiceException, IOException, SecurityException {
+        public WatchKey register(WatchService watcher,
+                                 Kind... events) throws UnsupportedOperationException, IllegalArgumentException, ClosedWatchServiceException, IOException, SecurityException {
             return null;
         }
 
         @Override
-        protected Path newPath( FileSystem fs,
-                                String substring,
-                                String host,
-                                boolean realPath,
-                                boolean isNormalized ) {
+        protected Path newPath(FileSystem fs,
+                               String substring,
+                               String host,
+                               boolean realPath,
+                               boolean isNormalized) {
             return null;
         }
 
         @Override
-        protected Path newRoot( FileSystem fs,
-                                String substring,
-                                String host,
-                                boolean realPath ) {
+        protected Path newRoot(FileSystem fs,
+                               String substring,
+                               String host,
+                               boolean realPath) {
             return null;
         }
 
         @Override
-        protected RootInfo setupRoot( FileSystem fs,
-                                      String path,
-                                      String host,
-                                      boolean isRoot ) {
-            return new RootInfo(0, true, true, new byte[0]);
+        protected RootInfo setupRoot(FileSystem fs,
+                                     String path,
+                                     String host,
+                                     boolean isRoot) {
+            return new RootInfo(0,
+                                true,
+                                true,
+                                new byte[0]);
         }
 
         @Override
@@ -374,13 +377,13 @@ public class MockSecuredFilesystemProvider implements SecuredFileSystemProvider 
         }
 
         @Override
-        public Path getPath( String first,
-                             String... more ) throws InvalidPathException {
+        public Path getPath(String first,
+                            String... more) throws InvalidPathException {
             return null;
         }
 
         @Override
-        public PathMatcher getPathMatcher( String syntaxAndPattern ) throws IllegalArgumentException, PatternSyntaxException, UnsupportedOperationException {
+        public PathMatcher getPathMatcher(String syntaxAndPattern) throws IllegalArgumentException, PatternSyntaxException, UnsupportedOperationException {
             return null;
         }
 
@@ -393,7 +396,5 @@ public class MockSecuredFilesystemProvider implements SecuredFileSystemProvider 
         public WatchService newWatchService() throws UnsupportedOperationException, IOException {
             return null;
         }
-
     }
-
 }

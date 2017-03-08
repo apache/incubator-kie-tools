@@ -26,8 +26,7 @@ import org.uberfire.ext.security.management.keycloak.client.resource.RealmResour
 import org.uberfire.ext.security.management.keycloak.client.resource.RolesResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.UsersResource;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * <p>Base test class for KeyCloak based services.</p>
@@ -37,10 +36,10 @@ import static org.mockito.Mockito.when;
 public abstract class BaseKeyCloakTest extends BaseTest {
 
     public static final String REALM = "testRealm";
-    
+
     @Mock
     protected Keycloak keycloakMock;
-    
+
     @Mock
     protected RealmResource realmResource;
 
@@ -56,5 +55,4 @@ public abstract class BaseKeyCloakTest extends BaseTest {
         when(realmResource.roles()).thenReturn(rolesResource);
         when(keycloakMock.realm()).thenReturn(realmResource);
     }
-    
 }

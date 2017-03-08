@@ -28,36 +28,25 @@ import org.uberfire.preferences.shared.bean.PreferenceHierarchyElement;
 
 public class TreeHierarchyLeafItemPresenter implements HierarchyLeafItemPresenter {
 
-    public interface View extends HierarchyItemView,
-                                  UberElement<TreeHierarchyLeafItemPresenter> {
-
-        void select();
-
-        void selectElement();
-    }
-
     private final View view;
-
     private final Event<HierarchyItemSelectedEvent> hierarchyItemSelectedEvent;
-
     private PreferenceHierarchyElement<?> hierarchyElement;
-
     private int level;
 
     @Inject
-    public TreeHierarchyLeafItemPresenter( final View view,
-                                           final Event<HierarchyItemSelectedEvent> hierarchyItemSelectedEvent ) {
+    public TreeHierarchyLeafItemPresenter(final View view,
+                                          final Event<HierarchyItemSelectedEvent> hierarchyItemSelectedEvent) {
         this.view = view;
         this.hierarchyItemSelectedEvent = hierarchyItemSelectedEvent;
     }
 
     @Override
-    public <T> void init( final PreferenceHierarchyElement<T> preference,
-                          final int level,
-                          final boolean tryToSelectChild ) {
+    public <T> void init(final PreferenceHierarchyElement<T> preference,
+                         final int level,
+                         final boolean tryToSelectChild) {
         hierarchyElement = preference;
         this.level = level;
-        view.init( this );
+        view.init(this);
     }
 
     @Override
@@ -66,15 +55,15 @@ public class TreeHierarchyLeafItemPresenter implements HierarchyLeafItemPresente
     }
 
     public void select() {
-        if ( hierarchyElement.isSelectable() ) {
-            final HierarchyItemSelectedEvent event = new HierarchyItemSelectedEvent( hierarchyElement );
-            hierarchyItemSelectedEvent.fire( event );
+        if (hierarchyElement.isSelectable()) {
+            final HierarchyItemSelectedEvent event = new HierarchyItemSelectedEvent(hierarchyElement);
+            hierarchyItemSelectedEvent.fire(event);
             view.selectElement();
         }
     }
 
-    public void itemSelectedEvent( @Observes HierarchyItemSelectedEvent event ) {
-        if ( !hierarchyElement.getId().equals( event.getItemId() ) ) {
+    public void itemSelectedEvent(@Observes HierarchyItemSelectedEvent event) {
+        if (!hierarchyElement.getId().equals(event.getItemId())) {
             view.deselect();
         }
     }
@@ -90,5 +79,13 @@ public class TreeHierarchyLeafItemPresenter implements HierarchyLeafItemPresente
 
     public int getLevel() {
         return level;
+    }
+
+    public interface View extends HierarchyItemView,
+                                  UberElement<TreeHierarchyLeafItemPresenter> {
+
+        void select();
+
+        void selectElement();
     }
 }

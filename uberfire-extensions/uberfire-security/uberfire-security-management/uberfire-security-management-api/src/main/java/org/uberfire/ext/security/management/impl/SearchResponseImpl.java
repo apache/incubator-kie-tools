@@ -16,18 +16,18 @@
 
 package org.uberfire.ext.security.management.impl;
 
+import java.util.List;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
 
-import java.util.List;
-
 /**
  * <p>A default search response implementation for the users system management.</p>
- * 
  * @since 0.8.0
  */
 @Portable
-public class SearchResponseImpl<T> implements AbstractEntityManager.SearchResponse<T>{
+public class SearchResponseImpl<T> implements AbstractEntityManager.SearchResponse<T> {
+
     private String searchPattern = "";
     private int page = -1;
     private int pageSize = -1;
@@ -38,7 +38,11 @@ public class SearchResponseImpl<T> implements AbstractEntityManager.SearchRespon
     public SearchResponseImpl() {
     }
 
-    public SearchResponseImpl(final List<T> results, final int page, final int pageSize, final int total, final boolean hasNextPage) {
+    public SearchResponseImpl(final List<T> results,
+                              final int page,
+                              final int pageSize,
+                              final int total,
+                              final boolean hasNextPage) {
         this.results = results;
         this.page = page;
         this.pageSize = pageSize;

@@ -19,12 +19,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 
 public interface UFTableResources
-    extends
-    ClientBundle {
+        extends
+        ClientBundle {
 
-    UFTableResources INSTANCE = GWT.create( UFTableResources.class );
+    UFTableResources INSTANCE = GWT.create(UFTableResources.class);
 
     @Source("css/uftable.css")
     UFTableCss CSS();
-
 }

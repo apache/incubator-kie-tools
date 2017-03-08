@@ -40,17 +40,17 @@ public abstract class AbstractGitHubStatsScreen extends Composite implements Req
     @PostConstruct
     protected void setup() {
         final String id = Document.get().createUniqueId();
-        panel.setId( id );
-        panel.addStyleName( "text-center" );
-        initWidget( panel );
-        panel.addAttachHandler( new AttachEvent.Handler() {
+        panel.setId(id);
+        panel.addStyleName("text-center");
+        initWidget(panel);
+        panel.addAttachHandler(new AttachEvent.Handler() {
             @Override
-            public void onAttachOrDetach( final AttachEvent event ) {
-                if ( event.isAttached() && graph == null ) {
-                    graph = generateGraph( panel.getId() );
+            public void onAttachOrDetach(final AttachEvent event) {
+                if (event.isAttached() && graph == null) {
+                    graph = generateGraph(panel.getId());
                 }
             }
-        } );
+        });
     }
 
     protected int getPadding() {
@@ -71,22 +71,27 @@ public abstract class AbstractGitHubStatsScreen extends Composite implements Req
     public void onResize() {
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();
-        setPixelSize( width, height );
+        setPixelSize(width,
+                     height);
         final int padding = getPadding();
         int graphHeight = height < padding ? height : height - padding;
         int graphWidth = width < padding ? width : width - padding;
-        if ( graphInitialized && graph != null ) {
-            resizeGraph( graph, graphHeight, graphWidth );
+        if (graphInitialized && graph != null) {
+            resizeGraph(graph,
+                        graphHeight,
+                        graphWidth);
         }
     }
 
-    public native void resizeGraph( JavaScriptObject graph, int graphHeight, int graphWidth )/*-{
+    public native void resizeGraph(JavaScriptObject graph,
+                                   int graphHeight,
+                                   int graphWidth)/*-{
         graph.resize({
             height: graphHeight,
             width: graphWidth
         });
     }-*/;
 
-    public abstract JavaScriptObject generateGraph( final String id );
+    public abstract JavaScriptObject generateGraph(final String id);
 }
 

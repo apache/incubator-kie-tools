@@ -38,12 +38,11 @@ import org.uberfire.ext.metadata.backend.lucene.analyzer.FilenameAnalyzer;
  * does not match a field, it then delegates the field to the {@link Analyzer}s defined in the <code>fieldAnalyzer</code> parameter.
  * </p>
  * (At least, that's an example of what it can and should do, but that's up to the implementation details).
- *
  * @see LuceneConfigBuilder#withDefaultAnalyzer()
  * @see LuceneConfigBuilder#usingAnalyzerWrapperFactory(CustomAnalyzerWrapperFactory)
  */
 public interface CustomAnalyzerWrapperFactory {
 
-    public Analyzer getAnalyzerWrapper(Analyzer defaultAnalyzer, Map<String, Analyzer> fieldAnalyzers );
-
+    public Analyzer getAnalyzerWrapper(Analyzer defaultAnalyzer,
+                                       Map<String, Analyzer> fieldAnalyzers);
 }

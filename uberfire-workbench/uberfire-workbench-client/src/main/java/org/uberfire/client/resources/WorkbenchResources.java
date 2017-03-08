@@ -25,11 +25,10 @@ public interface WorkbenchResources
         extends
         ClientBundle {
 
-    WorkbenchResources INSTANCE = GWT.create( WorkbenchResources.class );
+    WorkbenchResources INSTANCE = GWT.create(WorkbenchResources.class);
 
     @Source("css/workbench.css")
     WorkbenchCss CSS();
 
     WorkbenchImages images();
-
 }

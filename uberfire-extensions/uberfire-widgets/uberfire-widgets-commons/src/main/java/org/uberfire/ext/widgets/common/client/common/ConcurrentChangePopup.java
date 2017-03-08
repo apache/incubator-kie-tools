@@ -24,54 +24,75 @@ import org.uberfire.mvp.Command;
 
 public class ConcurrentChangePopup extends AbstractConcurrentChangePopup {
 
-    private ConcurrentChangePopup( final String content,
-                                   final Command onIgnore,
-                                   final Command onAction,
-                                   final String buttonText ) {
-        super( content, onIgnore, onAction, buttonText );
+    private ConcurrentChangePopup(final String content,
+                                  final Command onIgnore,
+                                  final Command onAction,
+                                  final String buttonText) {
+        super(content,
+              onIgnore,
+              onAction,
+              buttonText);
     }
 
-    private ConcurrentChangePopup( final String content,
-                                   final Command onIgnore,
-                                   final Command onReOpen ) {
-        this( content, onIgnore, onReOpen, CommonConstants.INSTANCE.ReOpen() );
+    private ConcurrentChangePopup(final String content,
+                                  final Command onIgnore,
+                                  final Command onReOpen) {
+        this(content,
+             onIgnore,
+             onReOpen,
+             CommonConstants.INSTANCE.ReOpen());
     }
 
-    private ConcurrentChangePopup( final String content,
-                                   final Command onForceSave,
-                                   final Command onIgnore,
-                                   final Command onReOpen ) {
-        super( content, onForceSave, onIgnore, onReOpen );
+    private ConcurrentChangePopup(final String content,
+                                  final Command onForceSave,
+                                  final Command onIgnore,
+                                  final Command onReOpen) {
+        super(content,
+              onForceSave,
+              onIgnore,
+              onReOpen);
     }
 
-    public static ConcurrentChangePopup newConcurrentUpdate( final Path path,
-                                                             final User identity,
-                                                             final Command onForceSave,
-                                                             final Command onCancel,
-                                                             final Command onReOpen ) {
+    public static ConcurrentChangePopup newConcurrentUpdate(final Path path,
+                                                            final User identity,
+                                                            final Command onForceSave,
+                                                            final Command onCancel,
+                                                            final Command onReOpen) {
 
-        final String message = CommonConstants.INSTANCE.ConcurrentUpdate( identity.getIdentifier(), decode( path ) );
-        return new ConcurrentChangePopup( message, onForceSave, onCancel, onReOpen );
+        final String message = CommonConstants.INSTANCE.ConcurrentUpdate(identity.getIdentifier(),
+                                                                         decode(path));
+        return new ConcurrentChangePopup(message,
+                                         onForceSave,
+                                         onCancel,
+                                         onReOpen);
     }
 
-    public static ConcurrentChangePopup newConcurrentRename( final Path source,
-                                                             final Path target,
-                                                             final User identity,
-                                                             final Command onIgnore,
-                                                             final Command onReOpen ) {
-        final String message = CommonConstants.INSTANCE.ConcurrentRename( identity.getIdentifier(), decode( source ), decode( target ) );
-        return new ConcurrentChangePopup( message, onIgnore, onReOpen );
+    public static ConcurrentChangePopup newConcurrentRename(final Path source,
+                                                            final Path target,
+                                                            final User identity,
+                                                            final Command onIgnore,
+                                                            final Command onReOpen) {
+        final String message = CommonConstants.INSTANCE.ConcurrentRename(identity.getIdentifier(),
+                                                                         decode(source),
+                                                                         decode(target));
+        return new ConcurrentChangePopup(message,
+                                         onIgnore,
+                                         onReOpen);
     }
 
-    public static ConcurrentChangePopup newConcurrentDelete( final Path path,
-                                                             final User identity,
-                                                             final Command onIgnore,
-                                                             final Command onClose ) {
-        final String message = CommonConstants.INSTANCE.ConcurrentDelete( identity.getIdentifier(), decode( path ) );
-        return new ConcurrentChangePopup( message, onIgnore, onClose, CommonConstants.INSTANCE.Close() );
+    public static ConcurrentChangePopup newConcurrentDelete(final Path path,
+                                                            final User identity,
+                                                            final Command onIgnore,
+                                                            final Command onClose) {
+        final String message = CommonConstants.INSTANCE.ConcurrentDelete(identity.getIdentifier(),
+                                                                         decode(path));
+        return new ConcurrentChangePopup(message,
+                                         onIgnore,
+                                         onClose,
+                                         CommonConstants.INSTANCE.Close());
     }
 
-    private static String decode( final Path path ) {
-        return URL.decode( path.toURI() );
+    private static String decode(final Path path) {
+        return URL.decode(path.toURI());
     }
 }

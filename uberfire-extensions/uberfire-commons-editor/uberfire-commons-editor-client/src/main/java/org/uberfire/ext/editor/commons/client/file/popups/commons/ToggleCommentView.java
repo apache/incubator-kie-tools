@@ -49,7 +49,7 @@ public class ToggleCommentView implements ToggleCommentPresenter.View,
     private ToggleCommentPresenter presenter;
 
     @Override
-    public void init( final ToggleCommentPresenter presenter ) {
+    public void init(final ToggleCommentPresenter presenter) {
         this.presenter = presenter;
     }
 
@@ -60,18 +60,18 @@ public class ToggleCommentView implements ToggleCommentPresenter.View,
 
     @PostConstruct
     public void setup() {
-        commentTextBox.setText( "" );
-        commentTextBox.setVisible( false );
-        commentTextBox.setPlaceholder( translationService.format( Constants.ToggleCommentView_EnterComment ) );
+        commentTextBox.setText("");
+        commentTextBox.setVisible(false);
+        commentTextBox.setPlaceholder(translationService.format(Constants.ToggleCommentView_EnterComment));
     }
 
     @EventHandler("addComment")
-    public void addComment( ClickEvent event ) {
+    public void addComment(ClickEvent event) {
         toggleCommentTextBox();
         event.preventDefault();
     }
 
     private void toggleCommentTextBox() {
-        commentTextBox.setVisible( !commentTextBox.isVisible() );
+        commentTextBox.setVisible(!commentTextBox.isVisible());
     }
 }

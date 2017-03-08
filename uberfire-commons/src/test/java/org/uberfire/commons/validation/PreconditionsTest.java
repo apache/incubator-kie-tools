@@ -17,11 +17,14 @@
 package org.uberfire.commons.validation;
 
 import org.junit.Test;
-import org.uberfire.commons.validation.Preconditions;
 
-import static org.hamcrest.core.Is.*;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
-import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.Preconditions.checkCondition;
+import static org.uberfire.commons.validation.Preconditions.checkEachParameterNotNull;
+import static org.uberfire.commons.validation.Preconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.Preconditions.checkNotNull;
+import static org.uberfire.commons.validation.Preconditions.checkNullMandatory;
 
 /**
  * Test class for {@link Preconditions}
@@ -30,92 +33,112 @@ public class PreconditionsTest {
 
     @Test
     public void shouldDoNotThrowExceptionWhenGettingNotEmptyArray() {
-        checkNotEmpty( "notEmpty", new Object[]{ 1, 2, 3 } );
+        checkNotEmpty("notEmpty",
+                      new Object[]{1, 2, 3});
     }
 
     @Test
     public void shouldDoNotThrowExceptionWhenGettingNotEmptyParameter() {
-        checkNotEmpty( "notEmpty", "notEmpty" );
+        checkNotEmpty("notEmpty",
+                      "notEmpty");
     }
 
     @Test
     public void shouldDoNotThrowExceptionWhenGettingNotNullParameter() {
-        checkNotNull( "notNullable", "notNullValue" );
+        checkNotNull("notNullable",
+                     "notNullValue");
     }
 
     @Test
     public void shouldDoNotThrowExceptionWhenGettingNullParameter() {
-        checkNullMandatory( "nullable", null );
+        checkNullMandatory("nullable",
+                           null);
     }
 
     @Test
     public void shouldDoNotThrowExceptionWhenGettingValidConditionParameter() {
-        checkCondition( "valid", true );
+        checkCondition("valid",
+                       true);
     }
 
     @Test
     public void shouldDoNotThrowExceptionWhenGettinOnlyNonNullParameters() {
-        checkEachParameterNotNull( "notNullable", "nonNull" );
-        checkEachParameterNotNull( "notNullable", "nonNull", "anotherNonNull" );
+        checkEachParameterNotNull("notNullable",
+                                  "nonNull");
+        checkEachParameterNotNull("notNullable",
+                                  "nonNull",
+                                  "anotherNonNull");
     }
 
     @Test
     public void shouldGetCorrectErrorNessage() {
         try {
-            checkNotNull( "notNullable", null );
-        } catch ( final IllegalArgumentException e ) {
-            assertThat( e.getMessage(), is( "Parameter named 'notNullable' should be not null!" ) );
+            checkNotNull("notNullable",
+                         null);
+        } catch (final IllegalArgumentException e) {
+            assertThat(e.getMessage(),
+                       is("Parameter named 'notNullable' should be not null!"));
         }
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionOnCheckEmptyWhenGettingNullParameter() {
-        checkNotEmpty( "notEmpty", (String) null );
+        checkNotEmpty("notEmpty",
+                      (String) null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenGettinAllNullParameter() {
-        checkEachParameterNotNull( "notNullable", (Object) null );
+        checkEachParameterNotNull("notNullable",
+                                  (Object) null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenGettingEmptyArray() {
-        checkNotEmpty( "empty", new Object[]{ } );
+        checkNotEmpty("empty",
+                      new Object[]{});
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenGettingEmptyParameter() {
-        checkNotEmpty( "notEmpty", "" );
+        checkNotEmpty("notEmpty",
+                      "");
     }
 
     @Test(expected = IllegalStateException.class)
     public void shouldThrowExceptionWhenGettingInvalidConditionParameter() {
-        checkCondition( "valid", false );
+        checkCondition("valid",
+                       false);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenGettingNonNullParameter() {
-        checkNullMandatory( "nullable", "non null" );
+        checkNullMandatory("nullable",
+                           "non null");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenGettingNullArray() {
-        checkNotEmpty( "empty", (Object[]) null );
+        checkNotEmpty("empty",
+                      (Object[]) null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenGettingNullParameter() {
-        checkNotNull( "notNullable", null );
+        checkNotNull("notNullable",
+                     null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenGettingSpacedParameter() {
-        checkNotEmpty( "notEmpty", "    " );
+        checkNotEmpty("notEmpty",
+                      "    ");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldThrowExceptionWhenGettinOneNullParameter() {
-        checkEachParameterNotNull( "notNullable", "nonNull", null );
+        checkEachParameterNotNull("notNullable",
+                                  "nonNull",
+                                  null);
     }
-
 }

@@ -35,25 +35,24 @@ public class GridDataFactory {
      * @param grid The grid to populate
      * @param rowCount The number of required rows
      */
-    public static void populate( final GridData grid,
-                                 final int rowCount ) {
+    public static void populate(final GridData grid,
+                                final int rowCount) {
         final int columnCount = grid.getColumnCount();
-        for ( int rowIndex = 0; rowIndex < rowCount; rowIndex++ ) {
-            final GridRow row = new BaseGridRow( getRowHeight() );
-            grid.appendRow( row );
-            for ( int columnIndex = 0; columnIndex < columnCount; columnIndex++ ) {
-                final GridColumn<?> column = grid.getColumns().get( columnIndex );
-                if ( column instanceof RowNumberColumn ) {
-                    grid.setCell( rowIndex,
-                                  columnIndex,
-                                  new BaseGridCellValue<Integer>( rowIndex + 1 ) );
-                    grid.getCell( rowIndex,
-                                  columnIndex ).setSelectionManager( RowSelectionStrategy.INSTANCE );
-
-                } else if ( Math.random() < FILL_FACTOR ) {
-                    grid.setCell( rowIndex,
-                                  columnIndex,
-                                  new BaseGridCellValue<String>( "(" + columnIndex + ", " + rowIndex + ")" ) );
+        for (int rowIndex = 0; rowIndex < rowCount; rowIndex++) {
+            final GridRow row = new BaseGridRow(getRowHeight());
+            grid.appendRow(row);
+            for (int columnIndex = 0; columnIndex < columnCount; columnIndex++) {
+                final GridColumn<?> column = grid.getColumns().get(columnIndex);
+                if (column instanceof RowNumberColumn) {
+                    grid.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<Integer>(rowIndex + 1));
+                    grid.getCell(rowIndex,
+                                 columnIndex).setSelectionManager(RowSelectionStrategy.INSTANCE);
+                } else if (Math.random() < FILL_FACTOR) {
+                    grid.setCell(rowIndex,
+                                 columnIndex,
+                                 new BaseGridCellValue<String>("(" + columnIndex + ", " + rowIndex + ")"));
                 }
             }
         }
@@ -61,8 +60,8 @@ public class GridDataFactory {
 
     //Pick one of three random row heights
     private static double getRowHeight() {
-        final int r = (int) Math.round( Math.random() * 3 );
-        switch ( r ) {
+        final int r = (int) Math.round(Math.random() * 3);
+        switch (r) {
             case 0:
                 return 20.0;
             case 1:
@@ -70,5 +69,4 @@ public class GridDataFactory {
         }
         return 60.0;
     }
-
 }

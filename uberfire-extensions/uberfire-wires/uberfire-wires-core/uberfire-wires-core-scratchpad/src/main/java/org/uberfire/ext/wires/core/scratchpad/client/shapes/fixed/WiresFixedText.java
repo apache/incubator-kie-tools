@@ -47,112 +47,110 @@ public class WiresFixedText extends WiresBaseShape implements RequiresContainerM
     private final Text text;
     private final Text bounding;
     private final TextBox editTextBox = new TextBox();
-
+    protected ContainerManager containerManager;
     private WiresContainer boundContainer;
 
-    protected ContainerManager containerManager;
-
-    public WiresFixedText( final Text shape ) {
+    public WiresFixedText(final Text shape) {
         text = shape;
-        text.setText( "Text" );
+        text.setText("Text");
 
-        bounding = new Text( text.getText(),
-                             text.getFontFamily(),
-                             text.getFontSize() );
-        bounding.setTextBaseLine( text.getTextBaseLine() );
-        bounding.setTextAlign( text.getTextAlign() );
-        bounding.setStrokeWidth( BOUNDARY_SIZE );
-        bounding.setAlpha( ALPHA_DESELECTED );
+        bounding = new Text(text.getText(),
+                            text.getFontFamily(),
+                            text.getFontSize());
+        bounding.setTextBaseLine(text.getTextBaseLine());
+        bounding.setTextAlign(text.getTextAlign());
+        bounding.setStrokeWidth(BOUNDARY_SIZE);
+        bounding.setAlpha(ALPHA_DESELECTED);
 
-        add( text );
-        add( bounding );
+        add(text);
+        add(bounding);
 
         //This class doesn't extend a super-class that handles Containers, so we add it manually
         //Check for the Shape being added to a Container as it is dragged around
-        addNodeDragMoveHandler( new NodeDragMoveHandler() {
+        addNodeDragMoveHandler(new NodeDragMoveHandler() {
 
             @Override
-            public void onNodeDragMove( final NodeDragMoveEvent nodeDragMoveEvent ) {
-                boundContainer = containerManager.getContainer( WiresFixedText.this.getX(),
-                                                                WiresFixedText.this.getY() );
-                if ( boundContainer != null ) {
-                    boundContainer.detachShape( WiresFixedText.this );
+            public void onNodeDragMove(final NodeDragMoveEvent nodeDragMoveEvent) {
+                boundContainer = containerManager.getContainer(WiresFixedText.this.getX(),
+                                                               WiresFixedText.this.getY());
+                if (boundContainer != null) {
+                    boundContainer.detachShape(WiresFixedText.this);
                 }
 
                 getLayer().batch();
             }
-        } );
+        });
 
         //When the drag ends; if it was within a Container add this Shape to the Container
-        addNodeDragEndHandler( new NodeDragEndHandler() {
+        addNodeDragEndHandler(new NodeDragEndHandler() {
 
             @Override
-            public void onNodeDragEnd( final NodeDragEndEvent nodeDragEndEvent ) {
-                if ( boundContainer != null ) {
-                    boundContainer.attachShape( WiresFixedText.this );
-                    boundContainer.setHover( false );
+            public void onNodeDragEnd(final NodeDragEndEvent nodeDragEndEvent) {
+                if (boundContainer != null) {
+                    boundContainer.attachShape(WiresFixedText.this);
+                    boundContainer.setHover(false);
                 }
 
                 getLayer().batch();
             }
-        } );
+        });
 
         //Add support for "in place" editing of text
-        editTextBox.addBlurHandler( new BlurHandler() {
+        editTextBox.addBlurHandler(new BlurHandler() {
             @Override
-            public void onBlur( final BlurEvent event ) {
-                text.setText( editTextBox.getText() );
-                bounding.setText( editTextBox.getText() );
+            public void onBlur(final BlurEvent event) {
+                text.setText(editTextBox.getText());
+                bounding.setText(editTextBox.getText());
                 text.getLayer().batch();
-                RootPanel.get().remove( editTextBox );
+                RootPanel.get().remove(editTextBox);
             }
-        } );
-        editTextBox.addKeyDownHandler( new KeyDownHandler() {
+        });
+        editTextBox.addKeyDownHandler(new KeyDownHandler() {
             @Override
-            public void onKeyDown( final KeyDownEvent event ) {
-                if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
-                    text.setText( editTextBox.getText() );
-                    bounding.setText( editTextBox.getText() );
+            public void onKeyDown(final KeyDownEvent event) {
+                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+                    text.setText(editTextBox.getText());
+                    bounding.setText(editTextBox.getText());
                     text.getLayer().batch();
-                    RootPanel.get().remove( editTextBox );
+                    RootPanel.get().remove(editTextBox);
                 }
-                if ( event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE ) {
-                    RootPanel.get().remove( editTextBox );
+                if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
+                    RootPanel.get().remove(editTextBox);
                 }
             }
-        } );
-        addNodeMouseDoubleClickHandler( new NodeMouseDoubleClickHandler() {
+        });
+        addNodeMouseDoubleClickHandler(new NodeMouseDoubleClickHandler() {
             @Override
-            public void onNodeMouseDoubleClick( final NodeMouseDoubleClickEvent nodeMouseDoubleClickEvent ) {
-                editTextBox.setText( text.getText() );
-                editTextBox.getElement().getStyle().setPosition( Style.Position.FIXED );
-                editTextBox.getElement().getStyle().setLeft( getX() + getLayer().getCanvasElement().getAbsoluteLeft(),
-                                                             Style.Unit.PX );
-                editTextBox.getElement().getStyle().setTop( getY() + getLayer().getCanvasElement().getAbsoluteTop(),
-                                                            Style.Unit.PX );
-                RootPanel.get().add( editTextBox );
-                editTextBox.setFocus( true );
+            public void onNodeMouseDoubleClick(final NodeMouseDoubleClickEvent nodeMouseDoubleClickEvent) {
+                editTextBox.setText(text.getText());
+                editTextBox.getElement().getStyle().setPosition(Style.Position.FIXED);
+                editTextBox.getElement().getStyle().setLeft(getX() + getLayer().getCanvasElement().getAbsoluteLeft(),
+                                                            Style.Unit.PX);
+                editTextBox.getElement().getStyle().setTop(getY() + getLayer().getCanvasElement().getAbsoluteTop(),
+                                                           Style.Unit.PX);
+                RootPanel.get().add(editTextBox);
+                editTextBox.setFocus(true);
             }
-        } );
+        });
     }
 
     @Override
-    public void setContainerManager( final ContainerManager containerManager ) {
+    public void setContainerManager(final ContainerManager containerManager) {
         this.containerManager = containerManager;
     }
 
     @Override
-    public void setSelected( final boolean isSelected ) {
-        if ( isSelected ) {
-            bounding.setAlpha( ALPHA_SELECTED );
+    public void setSelected(final boolean isSelected) {
+        if (isSelected) {
+            bounding.setAlpha(ALPHA_SELECTED);
         } else {
-            bounding.setAlpha( ALPHA_DESELECTED );
+            bounding.setAlpha(ALPHA_DESELECTED);
         }
     }
 
     @Override
-    public boolean contains( final double cx,
-                             final double cy ) {
+    public boolean contains(final double cx,
+                            final double cy) {
         return false;
     }
 
@@ -160,43 +158,42 @@ public class WiresFixedText extends WiresBaseShape implements RequiresContainerM
         return text.getText();
     }
 
-    public void setText( final String text ) {
-        this.text.setText( text );
-        this.bounding.setText( text );
+    public void setText(final String text) {
+        this.text.setText(text);
+        this.bounding.setText(text);
     }
 
     public TextAlign getTextAlign() {
         return text.getTextAlign();
     }
 
-    public void setTextAlign( final TextAlign align ) {
-        text.setTextAlign( align );
-        bounding.setTextAlign( align );
+    public void setTextAlign(final TextAlign align) {
+        text.setTextAlign(align);
+        bounding.setTextAlign(align);
     }
 
     public String getStrokeColour() {
         return text.getStrokeColor();
     }
 
-    public void setStrokeColour( final String strokeColour ) {
-        text.setStrokeColor( strokeColour );
+    public void setStrokeColour(final String strokeColour) {
+        text.setStrokeColor(strokeColour);
     }
 
     public String getFillColour() {
         return text.getFillColor();
     }
 
-    public void setFillColour( final String fillColour ) {
-        text.setFillColor( fillColour );
+    public void setFillColour(final String fillColour) {
+        text.setFillColor(fillColour);
     }
 
     public double getFontSize() {
         return text.getFontSize();
     }
 
-    public void setFontSize( final double fontSize ) {
-        text.setFontSize( fontSize );
-        bounding.setFontSize( fontSize );
+    public void setFontSize(final double fontSize) {
+        text.setFontSize(fontSize);
+        bounding.setFontSize(fontSize);
     }
-
 }

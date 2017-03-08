@@ -18,10 +18,10 @@ package org.ext.uberfire.social.activities.server;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.bus.server.annotations.Service;
 import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.ext.uberfire.social.activities.repository.SocialTimeLineRepository;
 import org.ext.uberfire.social.activities.service.SocialActivitiesAPI;
+import org.jboss.errai.bus.server.annotations.Service;
 
 @Service
 @ApplicationScoped
@@ -34,21 +34,21 @@ public class SocialActivitiesServer implements SocialActivitiesAPI {
 
     }
 
-    public SocialActivitiesServer( SocialTimeLineRepository timeLineRepository ) {
+    public SocialActivitiesServer(SocialTimeLineRepository timeLineRepository) {
         this.timeLineRepository = timeLineRepository;
     }
 
     @Override
-    public void register( SocialActivitiesEvent event ) {
-        registerTypeEvent( event );
-        registerEventUserTimeLine( event );
+    public void register(SocialActivitiesEvent event) {
+        registerTypeEvent(event);
+        registerEventUserTimeLine(event);
     }
 
-    private void registerEventUserTimeLine( SocialActivitiesEvent event ) {
-        timeLineRepository.saveUserEvent( event );
+    private void registerEventUserTimeLine(SocialActivitiesEvent event) {
+        timeLineRepository.saveUserEvent(event);
     }
 
-    private void registerTypeEvent( SocialActivitiesEvent event ) {
-        timeLineRepository.saveTypeEvent( event );
+    private void registerTypeEvent(SocialActivitiesEvent event) {
+        timeLineRepository.saveTypeEvent(event);
     }
 }

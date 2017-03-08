@@ -16,72 +16,72 @@
 package org.uberfire.ext.editor.commons.backend.validation;
 
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
+import static org.junit.Assert.*;
+
 @RunWith(Parameterized.class)
 public class ValidationUtils_ParameterizedFilenameTest {
-
-    @Parameters
-    public static Object[][] data() {
-        return new Object[][]{{null, false},
-                              {"", false},
-                              {" ", false},
-                              {"\n", false},
-                              {"\\", false},
-                              {"/", false},
-                              {"\r", false},
-                              {"\t", false},
-                              {"\"", false},
-                              {"`", false},
-                              {"?", false},
-                              {"*", false},
-                              {"<", false},
-                              {">", false},
-                              {"|", false},
-                              {":", false},
-
-                              {".", false},
-                              {"..", false},
-                              {". ", false},
-                              {" .", false},
-                              {".-.", false},
-
-                              {"a\nz", false},
-                              {"a\\z", false},
-                              {"a/z", false},
-                              {"a\rz", false},
-                              {"a\tz", false},
-                              {"a\"z", false},
-                              {"a`z", false},
-                              {"a?z", false},
-                              {"a*z", false},
-                              {"a<z", false},
-                              {"a>z", false},
-                              {"a|z", false},
-                              {"a:z", false},
-
-                              {"a", true},
-                              {"a ", true},
-                              {" z", true},
-                              {"a.z", true},
-                              {"Füür!füür!hilfe", true},
-                              {"tchao salut", true},
-                              {"under_score", true}};
-    }
 
     @Parameter(0)
     public String input;
     @Parameter(1)
     public boolean valid;
 
+    @Parameters
+    public static Object[][] data() {
+        return new Object[][]{{null, false},
+                {"", false},
+                {" ", false},
+                {"\n", false},
+                {"\\", false},
+                {"/", false},
+                {"\r", false},
+                {"\t", false},
+                {"\"", false},
+                {"`", false},
+                {"?", false},
+                {"*", false},
+                {"<", false},
+                {">", false},
+                {"|", false},
+                {":", false},
+
+                {".", false},
+                {"..", false},
+                {". ", false},
+                {" .", false},
+                {".-.", false},
+
+                {"a\nz", false},
+                {"a\\z", false},
+                {"a/z", false},
+                {"a\rz", false},
+                {"a\tz", false},
+                {"a\"z", false},
+                {"a`z", false},
+                {"a?z", false},
+                {"a*z", false},
+                {"a<z", false},
+                {"a>z", false},
+                {"a|z", false},
+                {"a:z", false},
+
+                {"a", true},
+                {"a ", true},
+                {" z", true},
+                {"a.z", true},
+                {"Füür!füür!hilfe", true},
+                {"tchao salut", true},
+                {"under_score", true}};
+    }
+
     @Test
     public void isValidFileName() {
-        assertEquals(valid, ValidationUtils.isFileName(input));
+        assertEquals(valid,
+                     ValidationUtils.isFileName(input));
     }
 }

@@ -25,17 +25,17 @@ public class ForcedPlaceRequest
         extends DefaultPlaceRequest {
 
     public ForcedPlaceRequest() {
-        super( "" );
+        super("");
     }
 
-    public ForcedPlaceRequest( final String identifier ) {
-        super( identifier );
+    public ForcedPlaceRequest(final String identifier) {
+        super(identifier);
     }
 
-    public ForcedPlaceRequest( final String identifier,
-                               final Map<String, String> parameters ) {
-        super( identifier,
-               parameters );
+    public ForcedPlaceRequest(final String identifier,
+                              final Map<String, String> parameters) {
+        super(identifier,
+              parameters);
     }
 
     /**
@@ -46,17 +46,16 @@ public class ForcedPlaceRequest
      * @param updateLocationBar If true, the browser's history will be updated with this place request. If false, the location bar
      * will not be modified as a result of this place request.
      */
-    public ForcedPlaceRequest( final String identifier,
-                               final Map<String, String> parameters,
-                               final boolean updateLocationBar ) {
-        super( identifier,
-               parameters,
-               updateLocationBar );
+    public ForcedPlaceRequest(final String identifier,
+                              final Map<String, String> parameters,
+                              final boolean updateLocationBar) {
+        super(identifier,
+              parameters,
+              updateLocationBar);
     }
 
     @Override
     public String toString() {
         return "ForcedPlaceRequest [identifier=" + identifier + ", parameters=" + parameters + "]";
     }
-
 }

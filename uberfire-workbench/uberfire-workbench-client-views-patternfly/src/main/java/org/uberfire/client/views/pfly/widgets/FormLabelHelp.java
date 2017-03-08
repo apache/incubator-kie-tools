@@ -30,11 +30,13 @@ public class FormLabelHelp extends Composite implements HasText {
     private HelpIcon helpIcon;
 
     public FormLabelHelp() {
-        this( new FormLabel(), new FlowPanel() );
+        this(new FormLabel(),
+             new FlowPanel());
     }
 
     // Defined for testing purposes
-    FormLabelHelp( FormLabel formLabel, FlowPanel panel ) {
+    FormLabelHelp(FormLabel formLabel,
+                  FlowPanel panel) {
         this.formLabel = formLabel;
         this.panel = panel;
 
@@ -42,34 +44,29 @@ public class FormLabelHelp extends Composite implements HasText {
     }
 
     private void init() {
-        initWidget( panel );
-        addStyleName( "uf-form-label" );
-        panel.add( formLabel );
+        initWidget(panel);
+        addStyleName("uf-form-label");
+        panel.add(formLabel);
     }
 
-    public void setHelpTitle( final String title ) {
-        if ( title != null ) {
-            getHelpIcon().setHelpTitle( title );
+    public void setHelpTitle(final String title) {
+        if (title != null) {
+            getHelpIcon().setHelpTitle(title);
         }
     }
 
-    public void setHelpContent( final String content ) {
-        if ( content != null ) {
-            getHelpIcon().setHelpContent( content );
+    public void setHelpContent(final String content) {
+        if (content != null) {
+            getHelpIcon().setHelpContent(content);
         }
     }
 
     private HelpIcon getHelpIcon() {
-        if ( helpIcon == null ) {
-            helpIcon = GWT.create( HelpIcon.class );
-            panel.add( helpIcon );
+        if (helpIcon == null) {
+            helpIcon = GWT.create(HelpIcon.class);
+            panel.add(helpIcon);
         }
         return helpIcon;
-    }
-
-    @Override
-    public void setText( final String text ) {
-        formLabel.setText( text );
     }
 
     @Override
@@ -77,11 +74,16 @@ public class FormLabelHelp extends Composite implements HasText {
         return formLabel.getText();
     }
 
-    public void setFor( final String forValue ) {
-        formLabel.setFor( forValue );
+    @Override
+    public void setText(final String text) {
+        formLabel.setText(text);
     }
 
-    public void setShowRequiredIndicator( final boolean required ) {
-        formLabel.setShowRequiredIndicator( required );
+    public void setFor(final String forValue) {
+        formLabel.setFor(forValue);
+    }
+
+    public void setShowRequiredIndicator(final boolean required) {
+        formLabel.setShowRequiredIndicator(required);
     }
 }

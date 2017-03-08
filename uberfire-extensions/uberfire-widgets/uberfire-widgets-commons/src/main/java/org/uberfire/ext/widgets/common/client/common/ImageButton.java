@@ -27,87 +27,87 @@ import com.google.gwt.user.client.ui.Image;
  */
 public class ImageButton extends FocusPanel {
 
-    private final Image               img;
-    private final Image               disabledImg;
-    private       ClickHandler        clickHandler;
-    private       HandlerRegistration handlerRegistration;
+    private final Image img;
+    private final Image disabledImg;
+    private ClickHandler clickHandler;
+    private HandlerRegistration handlerRegistration;
 
     @UiConstructor
-    public ImageButton( Image img ) {
-        add( img );
+    public ImageButton(Image img) {
+        add(img);
         this.img = img;
         this.disabledImg = img;
-        setStyleName( "image-Button" );
+        setStyleName("image-Button");
     }
 
-    public ImageButton( Image img,
-                        Image disabledImg,
-                        String tooltip ) {
-        add( img );
+    public ImageButton(Image img,
+                       Image disabledImg,
+                       String tooltip) {
+        add(img);
         this.img = img;
         this.disabledImg = disabledImg;
-        setStyleName( "image-Button" );
-        setTitle( tooltip );
+        setStyleName("image-Button");
+        setTitle(tooltip);
     }
 
-    public ImageButton( Image img,
-                        Image disabledImg ) {
-        add( img );
+    public ImageButton(Image img,
+                       Image disabledImg) {
+        add(img);
         this.img = img;
         this.disabledImg = disabledImg;
-        setStyleName( "image-Button" );
+        setStyleName("image-Button");
     }
 
-    public ImageButton( Image img,
-                        String tooltip ) {
-        add( img );
+    public ImageButton(Image img,
+                       String tooltip) {
+        add(img);
         this.img = img;
         this.disabledImg = img;
-        setStyleName( "image-Button" );
-        setTitle( tooltip );
+        setStyleName("image-Button");
+        setTitle(tooltip);
     }
 
-    public ImageButton( Image img,
-                        String tooltip,
-                        ClickHandler clickHandler ) {
-        this( img,
-              tooltip );
+    public ImageButton(Image img,
+                       String tooltip,
+                       ClickHandler clickHandler) {
+        this(img,
+             tooltip);
         this.clickHandler = clickHandler;
         assertClickHandler();
     }
 
-    public ImageButton( Image img,
-                        Image disabledImg,
-                        String tooltip,
-                        ClickHandler clickHandler ) {
-        this( img,
-              disabledImg,
-              tooltip );
+    public ImageButton(Image img,
+                       Image disabledImg,
+                       String tooltip,
+                       ClickHandler clickHandler) {
+        this(img,
+             disabledImg,
+             tooltip);
         this.clickHandler = clickHandler;
         assertClickHandler();
     }
 
-    public void setEnabled( boolean enabled ) {
+    public void setEnabled(boolean enabled) {
         clear();
-        if ( enabled ) {
-            add( img );
+        if (enabled) {
+            add(img);
             assertClickHandler();
         } else {
-            add( disabledImg );
+            add(disabledImg);
             removeClickHandler();
         }
     }
 
     private void assertClickHandler() {
-        if ( this.clickHandler != null ) {
-            if ( this.handlerRegistration == null ) {
-                this.handlerRegistration = addClickHandler( this.clickHandler );
+        if (this.clickHandler != null) {
+            if (this.handlerRegistration == null) {
+                this.handlerRegistration = addClickHandler(this.clickHandler);
             }
         }
     }
 
     private void removeClickHandler() {
-        if ( this.handlerRegistration != null ) {
+        if (this.handlerRegistration != null) {
             this.handlerRegistration.removeHandler();
             this.handlerRegistration = null;
         }

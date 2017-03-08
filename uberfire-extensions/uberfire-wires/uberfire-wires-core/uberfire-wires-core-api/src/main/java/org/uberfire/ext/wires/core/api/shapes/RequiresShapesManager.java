@@ -20,6 +20,5 @@ package org.uberfire.ext.wires.core.api.shapes;
  */
 public interface RequiresShapesManager {
 
-    void setShapesManager( final ShapesManager shapesManager );
-
+    void setShapesManager(final ShapesManager shapesManager);
 }

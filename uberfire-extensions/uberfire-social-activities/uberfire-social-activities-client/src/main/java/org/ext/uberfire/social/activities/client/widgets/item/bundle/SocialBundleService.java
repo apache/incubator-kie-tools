@@ -18,5 +18,5 @@ package org.ext.uberfire.social.activities.client.widgets.item.bundle;
 
 public interface SocialBundleService {
 
-    String getTranslation( String key );
+    String getTranslation(String key);
 }

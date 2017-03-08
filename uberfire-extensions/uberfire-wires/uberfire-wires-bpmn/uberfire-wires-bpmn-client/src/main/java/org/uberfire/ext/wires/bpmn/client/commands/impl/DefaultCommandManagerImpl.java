@@ -34,23 +34,22 @@ public class DefaultCommandManagerImpl implements CommandManager {
     private Stack<Command> commands = new Stack<Command>();
 
     @Override
-    public Results execute( final RuleManager ruleManager,
-                            final Command command ) {
-        PortablePreconditions.checkNotNull( "command",
-                                            command );
-        final Results results = command.apply( ruleManager );
-        if ( !results.contains( ResultType.ERROR ) ) {
-            commands.push( command );
+    public Results execute(final RuleManager ruleManager,
+                           final Command command) {
+        PortablePreconditions.checkNotNull("command",
+                                           command);
+        final Results results = command.apply(ruleManager);
+        if (!results.contains(ResultType.ERROR)) {
+            commands.push(command);
         }
         return results;
     }
 
     @Override
-    public Results undo( final RuleManager ruleManager ) {
-        if ( commands.isEmpty() ) {
-            throw new IllegalStateException( "No commands to undo" );
+    public Results undo(final RuleManager ruleManager) {
+        if (commands.isEmpty()) {
+            throw new IllegalStateException("No commands to undo");
         }
-        return commands.pop().undo( ruleManager );
+        return commands.pop().undo(ruleManager);
     }
-
 }

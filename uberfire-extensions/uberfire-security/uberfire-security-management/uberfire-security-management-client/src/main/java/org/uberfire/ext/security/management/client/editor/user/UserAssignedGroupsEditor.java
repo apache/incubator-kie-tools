@@ -16,16 +16,16 @@
 
 package org.uberfire.ext.security.management.client.editor.user;
 
+import java.util.Set;
+
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.ext.security.management.client.editor.Editor;
 
-import java.util.Set;
-
 /**
  * <p>A user groups editor contract.</p>
- *
  * @since 0.8.0
  */
 public interface UserAssignedGroupsEditor extends Editor<User, Set<Group>> {
+
 }

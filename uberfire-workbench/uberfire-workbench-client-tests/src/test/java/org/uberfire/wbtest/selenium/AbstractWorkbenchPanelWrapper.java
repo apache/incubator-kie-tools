@@ -31,21 +31,23 @@ public abstract class AbstractWorkbenchPanelWrapper {
     protected WebDriver driver;
     protected String panelId;
 
-    public AbstractWorkbenchPanelWrapper( WebDriver driver,
-                                          String panelId ) {
-        this.driver = PortablePreconditions.checkNotNull( "driver", driver );
-        this.panelId = PortablePreconditions.checkNotNull( "panelId", panelId );
+    public AbstractWorkbenchPanelWrapper(WebDriver driver,
+                                         String panelId) {
+        this.driver = PortablePreconditions.checkNotNull("driver",
+                                                         driver);
+        this.panelId = PortablePreconditions.checkNotNull("panelId",
+                                                          panelId);
     }
 
     /**
      * Clicks the maximize toggle button on the panel that this wrapper wraps.
      */
     public void clickMaximizeButton() {
-        WebElement button = driver.findElement( By.id( "gwt-debug-" + panelId + "-maximizeButton" ) );
+        WebElement button = driver.findElement(By.id("gwt-debug-" + panelId + "-maximizeButton"));
         button.click();
     }
 
-    public boolean isObscuredBy( AbstractWorkbenchPanelWrapper bigger ) {
+    public boolean isObscuredBy(AbstractWorkbenchPanelWrapper bigger) {
         Dimension mySize = getSize();
         Point myPos = getLocation();
         Dimension biggerSize = bigger.getSize();
@@ -58,10 +60,10 @@ public abstract class AbstractWorkbenchPanelWrapper {
     }
 
     public Dimension getSize() {
-        return driver.findElement( By.id( panelId ) ).getSize();
+        return driver.findElement(By.id(panelId)).getSize();
     }
 
     public Point getLocation() {
-        return driver.findElement( By.id( panelId ) ).getLocation();
+        return driver.findElement(By.id(panelId)).getLocation();
     }
 }

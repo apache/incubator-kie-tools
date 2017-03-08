@@ -41,45 +41,61 @@ public class ResourceCheckProcessorTest {
     Context context = Context.create();
     ResourceCheckProcessor processor;
 
-    interface FunctionTest {
-        void granted();
-        void denied();
-    }
-
     @Before
     public void setUp() {
         processor = new ResourceCheckProcessor(ResourceCheck.class);
-        context.addVariable("project1", String.class);
-        context.addVariable("this", FunctionTest.class);
+        context.addVariable("project1",
+                            String.class);
+        context.addVariable("this",
+                            FunctionTest.class);
     }
 
     @Test
     public void testGlobalActionStatement() {
-        Statement stmt = processor.createGlobalActionCheck("project", "create", null, null);
+        Statement stmt = processor.createGlobalActionCheck("project",
+                                                           "create",
+                                                           null,
+                                                           null);
         String ifStr = stmt.generate(context);
-        assertEquals(ifStr, "if (!(org.uberfire.security.client.authz.AuthorizationManagerHelper.authorize(\"project\", \"create\"))) {\n" +
-                "  return;\n" +
-                "}");
+        assertEquals(ifStr,
+                     "if (!(org.uberfire.security.client.authz.AuthorizationManagerHelper.authorize(\"project\", \"create\"))) {\n" +
+                             "  return;\n" +
+                             "}");
     }
 
     @Test
     public void testResourceActionStatement() {
-        Statement stmt = processor.createResourceActionCheck("project1", "create", null, null);
+        Statement stmt = processor.createResourceActionCheck("project1",
+                                                             "create",
+                                                             null,
+                                                             null);
         String ifStr = stmt.generate(context);
-        assertEquals(ifStr, "if (!(org.uberfire.security.client.authz.AuthorizationManagerHelper.authorize(project1, \"create\"))) {\n" +
-                "  return;\n" +
-                "}");
+        assertEquals(ifStr,
+                     "if (!(org.uberfire.security.client.authz.AuthorizationManagerHelper.authorize(project1, \"create\"))) {\n" +
+                             "  return;\n" +
+                             "}");
     }
 
     @Test
     public void testCallbacks() {
-        Statement stmt = processor.createResourceActionCheck("project1", "read", "granted", "denied");
+        Statement stmt = processor.createResourceActionCheck("project1",
+                                                             "read",
+                                                             "granted",
+                                                             "denied");
         String ifStr = stmt.generate(context);
-        assertEquals(ifStr, "if (!(org.uberfire.security.client.authz.AuthorizationManagerHelper.authorize(project1, \"read\"))) {\n" +
-                "  denied();\n" +
-                "  return;\n" +
-                "} else {\n" +
-                "  granted();\n" +
-                "}");
+        assertEquals(ifStr,
+                     "if (!(org.uberfire.security.client.authz.AuthorizationManagerHelper.authorize(project1, \"read\"))) {\n" +
+                             "  denied();\n" +
+                             "  return;\n" +
+                             "} else {\n" +
+                             "  granted();\n" +
+                             "}");
+    }
+
+    interface FunctionTest {
+
+        void granted();
+
+        void denied();
     }
 }

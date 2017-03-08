@@ -27,13 +27,12 @@ import org.uberfire.ext.properties.editor.model.PropertyEditorType;
  */
 public class WiresComboPropertyEditorFieldInfo extends PropertyEditorFieldInfo {
 
-    public WiresComboPropertyEditorFieldInfo( final String label,
-                                              final String currentStringValue,
-                                              final List<String> comboValues ) {
-        super( label,
-               currentStringValue,
-               PropertyEditorType.COMBO );
-        withComboValues( comboValues );
+    public WiresComboPropertyEditorFieldInfo(final String label,
+                                             final String currentStringValue,
+                                             final List<String> comboValues) {
+        super(label,
+              currentStringValue,
+              PropertyEditorType.COMBO);
+        withComboValues(comboValues);
     }
-
 }

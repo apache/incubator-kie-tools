@@ -83,107 +83,106 @@ public class GridWidgetDnDMouseDownHandlerTest {
 
     @Before
     public void setup() {
-        when( layer.getViewport() ).thenReturn( viewport );
-        when( viewport.getElement() ).thenReturn( element );
-        when( element.getStyle() ).thenReturn( style );
-        when( gridWidget.getViewport() ).thenReturn( viewport );
-        when( gridWidget.getRendererHelper() ).thenReturn( helper );
-        when( gridWidget.getLocation() ).thenReturn( new Point2D( 100,
-                                                                  100 ) );
+        when(layer.getViewport()).thenReturn(viewport);
+        when(viewport.getElement()).thenReturn(element);
+        when(element.getStyle()).thenReturn(style);
+        when(gridWidget.getViewport()).thenReturn(viewport);
+        when(gridWidget.getRendererHelper()).thenReturn(helper);
+        when(gridWidget.getLocation()).thenReturn(new Point2D(100,
+                                                              100));
 
         final GridWidgetDnDHandlersState wrappedState = new GridWidgetDnDHandlersState();
-        this.state = spy( wrappedState );
+        this.state = spy(wrappedState);
 
-        final GridWidgetDnDMouseDownHandler wrapped = new GridWidgetDnDMouseDownHandler( layer,
-                                                                                         state );
-        this.handler = spy( wrapped );
+        final GridWidgetDnDMouseDownHandler wrapped = new GridWidgetDnDMouseDownHandler(layer,
+                                                                                        state);
+        this.handler = spy(wrapped);
     }
 
     @Test
     public void skipNonActiveGrid() {
-        when( state.getActiveGridWidget() ).thenReturn( null );
+        when(state.getActiveGridWidget()).thenReturn(null);
 
-        handler.onNodeMouseDown( event );
+        handler.onNodeMouseDown(event);
 
         // This is the only reasonable check that "nothing" happened; as the implementation calls
         // these directly after the check for an "active grid widget" has succeeded.
-        verify( event,
-                never() ).getX();
-        verify( event,
-                never() ).getY();
+        verify(event,
+               never()).getX();
+        verify(event,
+               never()).getY();
     }
 
     @Test
     public void stateColumnResizePendingMovesToColumnResize() {
-        when( state.getActiveGridWidget() ).thenReturn( gridWidget );
-        when( state.getOperation() ).thenReturn( GridWidgetHandlersOperation.COLUMN_RESIZE_PENDING );
-        when( state.getActiveGridColumns() ).thenReturn( new ArrayList<GridColumn<?>>() {{
-            add( uiColumn );
-        }} );
+        when(state.getActiveGridWidget()).thenReturn(gridWidget);
+        when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.COLUMN_RESIZE_PENDING);
+        when(state.getActiveGridColumns()).thenReturn(new ArrayList<GridColumn<?>>() {{
+            add(uiColumn);
+        }});
 
-        handler.onNodeMouseDown( event );
+        handler.onNodeMouseDown(event);
 
-        verify( state,
-                times( 1 ) ).setOperation( GridWidgetHandlersOperation.COLUMN_RESIZE );
+        verify(state,
+               times(1)).setOperation(GridWidgetHandlersOperation.COLUMN_RESIZE);
     }
 
     @Test
     public void stateColumnMovePendingMovesToColumnMove() {
-        when( state.getActiveGridWidget() ).thenReturn( gridWidget );
-        when( state.getOperation() ).thenReturn( GridWidgetHandlersOperation.COLUMN_MOVE_PENDING );
-        when( state.getActiveGridColumns() ).thenReturn( new ArrayList<GridColumn<?>>() {{
-            add( uiColumn );
-        }} );
+        when(state.getActiveGridWidget()).thenReturn(gridWidget);
+        when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.COLUMN_MOVE_PENDING);
+        when(state.getActiveGridColumns()).thenReturn(new ArrayList<GridColumn<?>>() {{
+            add(uiColumn);
+        }});
 
-        handler.onNodeMouseDown( event );
+        handler.onNodeMouseDown(event);
 
-        verify( handler,
-                times( 1 ) ).showColumnHighlight( eq( gridWidget ),
-                                                  uiColumnsArgumentCaptor.capture() );
-        verify( state,
-                times( 1 ) ).setOperation( GridWidgetHandlersOperation.COLUMN_MOVE );
+        verify(handler,
+               times(1)).showColumnHighlight(eq(gridWidget),
+                                             uiColumnsArgumentCaptor.capture());
+        verify(state,
+               times(1)).setOperation(GridWidgetHandlersOperation.COLUMN_MOVE);
 
         final List<GridColumn<?>> uiColumns = uiColumnsArgumentCaptor.getValue();
-        assertNotNull( uiColumns );
-        assertEquals( 1,
-                      uiColumns.size() );
-        assertTrue( uiColumns.contains( uiColumn ) );
+        assertNotNull(uiColumns);
+        assertEquals(1,
+                     uiColumns.size());
+        assertTrue(uiColumns.contains(uiColumn));
     }
 
     @Test
     public void stateRowMovePendingMovesToRowMove() {
-        when( state.getActiveGridWidget() ).thenReturn( gridWidget );
-        when( state.getOperation() ).thenReturn( GridWidgetHandlersOperation.ROW_MOVE_PENDING );
-        when( state.getActiveGridRows() ).thenReturn( new ArrayList<GridRow>() {{
-            add( uiRow );
-        }} );
+        when(state.getActiveGridWidget()).thenReturn(gridWidget);
+        when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.ROW_MOVE_PENDING);
+        when(state.getActiveGridRows()).thenReturn(new ArrayList<GridRow>() {{
+            add(uiRow);
+        }});
 
-        handler.onNodeMouseDown( event );
+        handler.onNodeMouseDown(event);
 
-        verify( handler,
-                times( 1 ) ).showRowHighlight( eq( gridWidget ),
-                                               uiRowsArgumentCaptor.capture() );
-        verify( state,
-                times( 1 ) ).setOperation( GridWidgetHandlersOperation.ROW_MOVE );
+        verify(handler,
+               times(1)).showRowHighlight(eq(gridWidget),
+                                          uiRowsArgumentCaptor.capture());
+        verify(state,
+               times(1)).setOperation(GridWidgetHandlersOperation.ROW_MOVE);
 
         final List<GridRow> uiRows = uiRowsArgumentCaptor.getValue();
-        assertNotNull( uiRows );
-        assertEquals( 1,
-                      uiRows.size() );
-        assertTrue( uiRows.contains( uiRow ) );
+        assertNotNull(uiRows);
+        assertEquals(1,
+                     uiRows.size());
+        assertTrue(uiRows.contains(uiRow));
     }
 
     @Test
     public void stateGridMovePendingMovesToGridMove() {
-        when( state.getActiveGridWidget() ).thenReturn( gridWidget );
-        when( state.getOperation() ).thenReturn( GridWidgetHandlersOperation.GRID_MOVE_PENDING );
+        when(state.getActiveGridWidget()).thenReturn(gridWidget);
+        when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.GRID_MOVE_PENDING);
 
-        handler.onNodeMouseDown( event );
+        handler.onNodeMouseDown(event);
 
-        verify( state,
-                times( 1 ) ).setOperation( GridWidgetHandlersOperation.GRID_MOVE );
-        verify( gridWidget,
-                times( 1 ) ).setDraggable( eq( true ) );
+        verify(state,
+               times(1)).setOperation(GridWidgetHandlersOperation.GRID_MOVE);
+        verify(gridWidget,
+               times(1)).setDraggable(eq(true));
     }
-
 }

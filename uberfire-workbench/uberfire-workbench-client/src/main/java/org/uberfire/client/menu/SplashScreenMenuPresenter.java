@@ -16,23 +16,21 @@
 
 package org.uberfire.client.menu;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.SplashScreenActivity;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.client.workbench.events.NewSplashScreenActiveEvent;
 import org.uberfire.mvp.Command;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * A drop-down style widget that contains an up-to-date list of the available splash screens. Each currently-displayed
@@ -46,25 +44,42 @@ import com.google.gwt.user.client.ui.Widget;
 @ApplicationScoped
 public class SplashScreenMenuPresenter implements IsWidget {
 
-    public static class SplashScreenListEntry {
+    private final PlaceManager placeManager;
+    private final View view;
 
-        private final String screenName;
-        private final Command showCommand;
+    // For proxying
+    protected SplashScreenMenuPresenter() {
+        this.placeManager = null;
+        this.view = null;
+    }
+    @Inject
+    public SplashScreenMenuPresenter(PlaceManager placeManager,
+                                     View view) {
+        this.placeManager = checkNotNull("placeManager",
+                                         placeManager);
+        this.view = checkNotNull("view",
+                                 view);
+        view.init(this);
+    }
 
-        public SplashScreenListEntry( String screenName,
-                                      Command showCommand ) {
-            this.screenName = checkNotNull( "screenName", screenName );
-            this.showCommand = checkNotNull( "showCommand", showCommand );
+    @SuppressWarnings("unused")
+    private void onNewSplashScreen(@Observes NewSplashScreenActiveEvent event) {
+        List<SplashScreenListEntry> splashScreens = new ArrayList<SplashScreenListEntry>();
+        for (final SplashScreenActivity activity : placeManager.getActiveSplashScreens()) {
+            splashScreens.add(new SplashScreenListEntry(activity.getTitle(),
+                                                        new Command() {
+                                                            @Override
+                                                            public void execute() {
+                                                                activity.forceShow();
+                                                            }
+                                                        }));
         }
+        view.setSplashScreenList(splashScreens);
+    }
 
-        public String getScreenName() {
-            return screenName;
-        }
-
-        public Command getShowCommand() {
-            return showCommand;
-        }
-
+    @Override
+    public Widget asWidget() {
+        return view.asWidget();
     }
 
     public interface View extends UberView<SplashScreenMenuPresenter> {
@@ -75,40 +90,25 @@ public class SplashScreenMenuPresenter implements IsWidget {
         void setSplashScreenList(List<SplashScreenListEntry> splashScreens);
     }
 
-    private final PlaceManager placeManager;
-    private final View view;
+    public static class SplashScreenListEntry {
 
-    // For proxying
-    protected SplashScreenMenuPresenter() {
-        this.placeManager = null;
-        this.view = null;
-    }
+        private final String screenName;
+        private final Command showCommand;
 
-    @Inject
-    public SplashScreenMenuPresenter(PlaceManager placeManager, View view) {
-        this.placeManager = checkNotNull( "placeManager", placeManager );
-        this.view = checkNotNull( "view", view );
-        view.init( this );
-    }
-
-    @SuppressWarnings( "unused" )
-    private void onNewSplashScreen( @Observes NewSplashScreenActiveEvent event ) {
-        List<SplashScreenListEntry> splashScreens = new ArrayList<SplashScreenListEntry>();
-        for ( final SplashScreenActivity activity : placeManager.getActiveSplashScreens() ) {
-            splashScreens.add( new SplashScreenListEntry( activity.getTitle(),
-                                                          new Command() {
-                @Override
-                public void execute() {
-                    activity.forceShow();
-                }
-            } ) );
+        public SplashScreenListEntry(String screenName,
+                                     Command showCommand) {
+            this.screenName = checkNotNull("screenName",
+                                           screenName);
+            this.showCommand = checkNotNull("showCommand",
+                                            showCommand);
         }
-        view.setSplashScreenList( splashScreens );
-    }
 
-    @Override
-    public Widget asWidget() {
-        return view.asWidget();
-    }
+        public String getScreenName() {
+            return screenName;
+        }
 
+        public Command getShowCommand() {
+            return showCommand;
+        }
+    }
 }

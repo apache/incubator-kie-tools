@@ -40,36 +40,27 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 @WorkbenchScreen(identifier = "BayesianTemplatesScreen")
 public class TemplateScreen extends Composite {
 
-    interface ViewBinder extends UiBinder<Widget, TemplateScreen> {
-
-    }
-
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
     @UiField
     PanelGroup accordion;
-
     @UiField
     PanelHeader headerTemplates;
-
     @UiField
     PanelCollapse collapseTemplates;
-
     @UiField
     SimplePanel templates;
-
     @Inject
     private SyncBeanManager iocManager;
 
     @PostConstruct
     public void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
-        accordion.setId( DOM.createUniqueId() );
-        headerTemplates.setDataParent( accordion.getId() );
-        headerTemplates.setDataTargetWidget( collapseTemplates );
+        accordion.setId(DOM.createUniqueId());
+        headerTemplates.setDataParent(accordion.getId());
+        headerTemplates.setDataTargetWidget(collapseTemplates);
 
-        templates.add( iocManager.lookupBean( TemplatesGroup.class ).getInstance() );
+        templates.add(iocManager.lookupBean(TemplatesGroup.class).getInstance());
     }
 
     @WorkbenchPartTitle
@@ -83,4 +74,7 @@ public class TemplateScreen extends Composite {
         return this;
     }
 
+    interface ViewBinder extends UiBinder<Widget, TemplateScreen> {
+
+    }
 }

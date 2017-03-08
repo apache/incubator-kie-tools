@@ -27,13 +27,13 @@ public class LayoutPanelPresenter extends AbstractWorkbenchPanelPresenter<Layout
 
     @Inject
     public LayoutPanelPresenter(@Named("LayoutPanelView") final LayoutPanelView view,
-                                final PerspectiveManager perspectiveManager ) {
-        super( view, perspectiveManager );
+                                final PerspectiveManager perspectiveManager) {
+        super(view,
+              perspectiveManager);
     }
 
     @Override
     protected LayoutPanelPresenter asPresenterType() {
         return this;
     }
-
 }

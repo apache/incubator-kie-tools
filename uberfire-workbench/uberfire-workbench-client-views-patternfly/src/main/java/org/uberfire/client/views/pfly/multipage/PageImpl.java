@@ -28,13 +28,15 @@ public class PageImpl implements Page {
     private final String label;
     private final PageView view;
 
-    public PageImpl( final IsWidget widget ) {
-        this( widget, "" );
+    public PageImpl(final IsWidget widget) {
+        this(widget,
+             "");
     }
 
-    public PageImpl( final IsWidget widget,
-                     final String label ) {
-        this.view = new PageViewImpl( this, widget );
+    public PageImpl(final IsWidget widget,
+                    final String label) {
+        this.view = new PageViewImpl(this,
+                                     widget);
         this.label = label;
     }
 
@@ -51,5 +53,4 @@ public class PageImpl implements Page {
     public PageView getView() {
         return view;
     }
-
 }

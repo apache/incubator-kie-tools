@@ -37,18 +37,10 @@ import org.uberfire.security.client.authz.tree.PermissionTreeFactory;
 @Dependent
 public class ACLViewer implements IsWidget {
 
-    public interface View extends UberView<ACLViewer> {
-
-        void clear();
-
-        void addRootNodeWidget(IsWidget rootNodeWidget);
-    }
-
     View view;
     PermissionWidgetFactory nodeWidgetFactory;
     PermissionTreeFactory permissionTreeFactory;
     PermissionTree permissionTree;
-
     @Inject
     public ACLViewer(View view,
                      PermissionWidgetFactory nodeWidgetFactory,
@@ -60,7 +52,7 @@ public class ACLViewer implements IsWidget {
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
@@ -77,7 +69,8 @@ public class ACLViewer implements IsWidget {
     }
 
     public void show(User user) {
-        show(permissionTreeFactory.createPermissionTree(user, VotingStrategy.PRIORITY));
+        show(permissionTreeFactory.createPermissionTree(user,
+                                                        VotingStrategy.PRIORITY));
     }
 
     private void show(PermissionTree tree) {
@@ -92,5 +85,12 @@ public class ACLViewer implements IsWidget {
                 view.addRootNodeWidget(rootNodeViewer);
             }
         }
+    }
+
+    public interface View extends UberView<ACLViewer> {
+
+        void clear();
+
+        void addRootNodeWidget(IsWidget rootNodeWidget);
     }
 }

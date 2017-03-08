@@ -34,7 +34,8 @@ public class ResizeWidgetWrapper {
     private final WebDriver driver;
     private final String id;
 
-    public ResizeWidgetWrapper( WebDriver driver, String id ) {
+    public ResizeWidgetWrapper(WebDriver driver,
+                               String id) {
         this.driver = driver;
         this.id = id;
     }
@@ -44,7 +45,7 @@ public class ResizeWidgetWrapper {
      * widget is not found within the driver's current implicit wait period.
      */
     public WebElement find() {
-        return driver.findElement( By.id( "gwt-debug-ResizeTestWidget-" + id ) );
+        return driver.findElement(By.id("gwt-debug-ResizeTestWidget-" + id));
     }
 
     /**
@@ -61,11 +62,11 @@ public class ResizeWidgetWrapper {
     public Dimension getReportedSize() {
         WebElement element = find();
         String text = element.getText();
-        Matcher matcher = Pattern.compile( "([0-9]+)x([0-9]+)" ).matcher( text );
-        if ( matcher.matches() ) {
-            return new Dimension( Integer.parseInt( matcher.group( 1 ) ),
-                                  Integer.parseInt( matcher.group( 2 ) ) );
+        Matcher matcher = Pattern.compile("([0-9]+)x([0-9]+)").matcher(text);
+        if (matcher.matches()) {
+            return new Dimension(Integer.parseInt(matcher.group(1)),
+                                 Integer.parseInt(matcher.group(2)));
         }
-        throw new IllegalStateException( "Couldn't understand reported size \"" + text + "\"" );
+        throw new IllegalStateException("Couldn't understand reported size \"" + text + "\"");
     }
 }

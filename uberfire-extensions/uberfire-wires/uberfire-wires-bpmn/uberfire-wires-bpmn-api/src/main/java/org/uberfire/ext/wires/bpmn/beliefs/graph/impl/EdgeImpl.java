@@ -41,5 +41,4 @@ public class EdgeImpl<T extends GraphNode> implements Edge<T> {
                 ", outGraphNode=" + outGraphNode +
                 '}';
     }
-
 }

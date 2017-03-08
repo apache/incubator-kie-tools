@@ -24,17 +24,14 @@ public interface DeleteHelper {
 
     /**
      * Helpers signal whether it supports the given Path
-     * @param path
-     *         The Path that was deleted.
+     * @param path The Path that was deleted.
      * @return
      */
-    boolean supports( final Path path );
+    boolean supports(final Path path);
 
     /**
      * Performs post processing following the delete operation. This is always within a IOService batch operation.
-     * @param path
-     *         The Path that was deleted.
+     * @param path The Path that was deleted.
      */
-    void postProcess( final Path path );
-
+    void postProcess(final Path path);
 }

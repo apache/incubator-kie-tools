@@ -23,13 +23,12 @@ import org.uberfire.mvp.PlaceRequest;
  */
 public class PlaceGainFocusEvent extends AbstractPlaceEvent {
 
-    public PlaceGainFocusEvent( final PlaceRequest place ) {
-        super( place );
+    public PlaceGainFocusEvent(final PlaceRequest place) {
+        super(place);
     }
 
     @Override
     public String toString() {
         return "PlaceGainFocusEvent [place=" + getPlace() + "]";
     }
-
 }

@@ -24,14 +24,14 @@ import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidato
 
 public abstract class AbstractField {
 
-    public abstract Widget widget( PropertyEditorFieldInfo property );
+    public abstract Widget widget(PropertyEditorFieldInfo property);
 
-    protected boolean validate( PropertyEditorFieldInfo property,
-                                String value ) {
+    protected boolean validate(PropertyEditorFieldInfo property,
+                               String value) {
         List<PropertyFieldValidator> validators = property.getValidators();
 
-        for ( PropertyFieldValidator validator : validators ) {
-            if ( !validator.validate( value ) ) {
+        for (PropertyFieldValidator validator : validators) {
+            if (!validator.validate(value)) {
                 return false;
             }
         }
@@ -39,12 +39,12 @@ public abstract class AbstractField {
         return true;
     }
 
-    protected String getValidatorErrorMessage( PropertyEditorFieldInfo property,
-                                               String value) {
+    protected String getValidatorErrorMessage(PropertyEditorFieldInfo property,
+                                              String value) {
         List<PropertyFieldValidator> validators = property.getValidators();
 
-        for ( PropertyFieldValidator validator : validators ) {
-            if ( !validator.validate( value ) ) {
+        for (PropertyFieldValidator validator : validators) {
+            if (!validator.validate(value)) {
                 return validator.getValidatorErrorMessage();
             }
         }

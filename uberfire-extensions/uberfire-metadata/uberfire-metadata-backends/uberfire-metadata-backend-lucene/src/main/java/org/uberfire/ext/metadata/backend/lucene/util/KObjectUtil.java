@@ -30,12 +30,12 @@ import org.uberfire.ext.metadata.model.schema.MetaType;
  */
 public final class KObjectUtil {
 
-    public static KObject toKObject( final Document document ) {
+    public static KObject toKObject(final Document document) {
         return new KObject() {
 
             @Override
             public String getId() {
-                return document.get( "id" );
+                return document.get("id");
             }
 
             @Override
@@ -43,39 +43,39 @@ public final class KObjectUtil {
                 return new MetaType() {
                     @Override
                     public String getName() {
-                        return document.get( "type" );
+                        return document.get("type");
                     }
                 };
             }
 
             @Override
             public String getClusterId() {
-                return document.get( "cluster.id" );
+                return document.get("cluster.id");
             }
 
             @Override
             public String getSegmentId() {
-                return document.get( "segment.id" );
+                return document.get("segment.id");
             }
 
             @Override
             public String getKey() {
-                return document.get( "key" );
+                return document.get("key");
             }
 
             @Override
-            public boolean equals( final Object obj ) {
-                if ( obj == null ) {
+            public boolean equals(final Object obj) {
+                if (obj == null) {
                     return false;
                 }
-                if ( !( obj instanceof KObject ) ) {
+                if (!(obj instanceof KObject)) {
                     return false;
                 }
                 final KObject kobj = (KObject) obj;
-                return getClusterId().equals( kobj.getClusterId() ) &&
-                        getId().equals( kobj.getId() ) &&
-                        getKey().equals( kobj.getKey() ) &&
-                        getType().getName().equals( kobj.getType().getName() );
+                return getClusterId().equals(kobj.getClusterId()) &&
+                        getId().equals(kobj.getId()) &&
+                        getKey().equals(kobj.getKey()) &&
+                        getType().getName().equals(kobj.getType().getName());
             }
 
             @Override
@@ -85,15 +85,14 @@ public final class KObjectUtil {
                 result = 31 * result + getKey().hashCode();
                 result = 31 * result + getType().getName().hashCode();
                 return result;
-
             }
 
             @Override
             public Iterable<KProperty<?>> getProperties() {
                 final List<KProperty<?>> kProperties = new ArrayList<KProperty<?>>();
-                for ( final IndexableField indexableField : document ) {
-                    if ( isExtension( indexableField.name() ) ) {
-                        kProperties.add( new KProperty<Object>() {
+                for (final IndexableField indexableField : document) {
+                    if (isExtension(indexableField.name())) {
+                        kProperties.add(new KProperty<Object>() {
                             @Override
                             public String getName() {
                                 return indexableField.name();
@@ -108,7 +107,7 @@ public final class KObjectUtil {
                             public boolean isSearchable() {
                                 return true;
                             }
-                        } );
+                        });
                     }
                 }
 
@@ -120,8 +119,8 @@ public final class KObjectUtil {
                 return true;
             }
 
-            private boolean isExtension( final String name ) {
-                return !( name.equals( "id" ) || name.equals( "type" ) || name.equals( "cluster.id" ) || name.equals( "segment.id" ) || name.equals( "key" ) );
+            private boolean isExtension(final String name) {
+                return !(name.equals("id") || name.equals("type") || name.equals("cluster.id") || name.equals("segment.id") || name.equals("key"));
             }
         };
     }

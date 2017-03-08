@@ -17,11 +17,6 @@ package org.uberfire.ext.widgets.table.client;
 
 import java.util.List;
 
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.Label;
-import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
-import org.uberfire.ext.widgets.table.client.resources.UFTableResources;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Style;
@@ -45,6 +40,10 @@ import com.google.gwt.view.client.Range;
 import com.google.gwt.view.client.RangeChangeEvent;
 import com.google.gwt.view.client.RowCountChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Label;
+import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
+import org.uberfire.ext.widgets.table.client.resources.UFTableResources;
 
 /**
  * A composite Widget that shows rows of data (not-paged) and a "column picker"
@@ -52,51 +51,42 @@ import com.google.gwt.view.client.SelectionModel;
  */
 public class UberfireSimpleTable<T>
         extends Composite
-        implements HasData<T>{
+        implements HasData<T> {
 
-
-    interface Binder
-            extends
-            UiBinder<Widget, UberfireSimpleTable> {
-
-    }
-
-    private static Binder uiBinder = GWT.create( Binder.class );
-
+    private static Binder uiBinder = GWT.create(Binder.class);
     @UiField(provided = true)
     public Button columnPickerButton;
-
     @UiField(provided = true)
     public DataGrid<T> dataGrid;
-
     @UiField
     public HorizontalPanel toolbarContainer;
-
     @UiField
     public HorizontalPanel rightToolbar;
-
     @UiField
     public FlowPanel rightActionsToolbar;
-
     @UiField
     public FlowPanel leftToolbar;
-
     @UiField
     public FlowPanel centerToolbar;
-
+    protected UberfireColumnPicker<T> columnPicker;
     private String emptyTableCaption;
 
-    protected UberfireColumnPicker<T> columnPicker;
-
     public UberfireSimpleTable() {
-        setupDataGrid( null );
+        setupDataGrid(null);
         setupGridTable();
     }
 
-    public UberfireSimpleTable( final ProvidesKey<T> providesKey ) {
-        setupDataGrid( providesKey );
+    public UberfireSimpleTable(final ProvidesKey<T> providesKey) {
+        setupDataGrid(providesKey);
         setupGridTable();
     }
+
+    protected static native void addDataGridStyles(final JavaScriptObject grid,
+                                                   final String header,
+                                                   final String content)/*-{
+        $wnd.jQuery(grid).find('table:first').addClass(header);
+        $wnd.jQuery(grid).find('table:last').addClass(content);
+    }-*/;
 
     protected void setupGridTable() {
         setupDataGrid();
@@ -110,27 +100,26 @@ public class UberfireSimpleTable<T>
     }
 
     protected void setupColumnPicker() {
-        setColumnPicker( new UberfireColumnPicker<>( dataGrid ));
+        setColumnPicker(new UberfireColumnPicker<>(dataGrid));
     }
 
-    protected UberfireColumnPicker<T> getColumnPicker(){
+    protected UberfireColumnPicker<T> getColumnPicker() {
         return columnPicker;
     }
 
-    protected void setColumnPicker(UberfireColumnPicker<T> columnPicker){
+    protected void setColumnPicker(UberfireColumnPicker<T> columnPicker) {
         this.columnPicker = columnPicker;
     }
 
-    protected void setupDataGrid( ProvidesKey<T> providesKey ) {
-        if ( providesKey != null ) {
-            dataGrid = new DataGrid<T>( providesKey );
-        }
-        else{
-            dataGrid = new DataGrid<T>( );
+    protected void setupDataGrid(ProvidesKey<T> providesKey) {
+        if (providesKey != null) {
+            dataGrid = new DataGrid<T>(providesKey);
+        } else {
+            dataGrid = new DataGrid<T>();
         }
     }
 
-    public void setEmptyTableCaption( final String emptyTableCaption ) {
+    public void setEmptyTableCaption(final String emptyTableCaption) {
         this.emptyTableCaption = emptyTableCaption;
         setEmptyTableWidget();
     }
@@ -138,36 +127,30 @@ public class UberfireSimpleTable<T>
     protected void setupDataGrid() {
         PatternFlyBootstrapper.ensurejQueryIsAvailable();
 
-        dataGrid.setSkipRowHoverCheck( false );
-        dataGrid.setSkipRowHoverStyleUpdate( false );
-        dataGrid.addStyleName( UFTableResources.INSTANCE.CSS().dataGridMain() );
-        dataGrid.addStyleName( UFTableResources.INSTANCE.CSS().dataGrid() );
-        dataGrid.setRowStyles( ( row, rowIndex ) -> UFTableResources.INSTANCE.CSS().dataGridRow() );
-        addDataGridStyles( dataGrid.getElement(), UFTableResources.INSTANCE.CSS().dataGridHeader(),
-                           UFTableResources.INSTANCE.CSS().dataGridContent() );
+        dataGrid.setSkipRowHoverCheck(false);
+        dataGrid.setSkipRowHoverStyleUpdate(false);
+        dataGrid.addStyleName(UFTableResources.INSTANCE.CSS().dataGridMain());
+        dataGrid.addStyleName(UFTableResources.INSTANCE.CSS().dataGrid());
+        dataGrid.setRowStyles((row, rowIndex) -> UFTableResources.INSTANCE.CSS().dataGridRow());
+        addDataGridStyles(dataGrid.getElement(),
+                          UFTableResources.INSTANCE.CSS().dataGridHeader(),
+                          UFTableResources.INSTANCE.CSS().dataGridContent());
     }
 
     protected void setEmptyTableWidget() {
         String caption = "-----";
-        if ( !emptyCaptionIsDefined() ) {
+        if (!emptyCaptionIsDefined()) {
             caption = emptyTableCaption;
         }
-        dataGrid.setEmptyTableWidget( new Label( caption ) );
+        dataGrid.setEmptyTableWidget(new Label(caption));
     }
 
     private boolean emptyCaptionIsDefined() {
         return emptyTableCaption == null || emptyTableCaption.trim().isEmpty();
     }
 
-    protected static native void addDataGridStyles( final JavaScriptObject grid,
-                                                  final String header,
-                                                  final String content )/*-{
-        $wnd.jQuery(grid).find('table:first').addClass(header);
-        $wnd.jQuery(grid).find('table:last').addClass(content);
-    }-*/;
-
     protected Widget makeWidget() {
-        return uiBinder.createAndBindUi( this );
+        return uiBinder.createAndBindUi(this);
     }
 
     public void redraw() {
@@ -176,31 +159,31 @@ public class UberfireSimpleTable<T>
     }
 
     public void refresh() {
-        dataGrid.setVisibleRangeAndClearData( dataGrid.getVisibleRange(),
-                                              true );
+        dataGrid.setVisibleRangeAndClearData(dataGrid.getVisibleRange(),
+                                             true);
     }
 
     @Override
-    public HandlerRegistration addCellPreviewHandler( final CellPreviewEvent.Handler<T> handler ) {
-        return dataGrid.addCellPreviewHandler( handler );
+    public HandlerRegistration addCellPreviewHandler(final CellPreviewEvent.Handler<T> handler) {
+        return dataGrid.addCellPreviewHandler(handler);
     }
 
     @Override
-    public HandlerRegistration addRangeChangeHandler( final RangeChangeEvent.Handler handler ) {
-        return dataGrid.addRangeChangeHandler( handler );
+    public HandlerRegistration addRangeChangeHandler(final RangeChangeEvent.Handler handler) {
+        return dataGrid.addRangeChangeHandler(handler);
     }
 
     @Override
-    public HandlerRegistration addRowCountChangeHandler( final RowCountChangeEvent.Handler handler ) {
-        return dataGrid.addRowCountChangeHandler( handler );
+    public HandlerRegistration addRowCountChangeHandler(final RowCountChangeEvent.Handler handler) {
+        return dataGrid.addRowCountChangeHandler(handler);
     }
 
-    public int getColumnIndex( final Column<T, ?> column ) {
-        return dataGrid.getColumnIndex( column );
+    public int getColumnIndex(final Column<T, ?> column) {
+        return dataGrid.getColumnIndex(column);
     }
 
-    public HandlerRegistration addColumnSortHandler( final ColumnSortEvent.Handler handler ) {
-        return this.dataGrid.addColumnSortHandler( handler );
+    public HandlerRegistration addColumnSortHandler(final ColumnSortEvent.Handler handler) {
+        return this.dataGrid.addColumnSortHandler(handler);
     }
 
     @Override
@@ -209,8 +192,18 @@ public class UberfireSimpleTable<T>
     }
 
     @Override
+    public void setRowCount(final int count) {
+        dataGrid.setRowCount(count);
+    }
+
+    @Override
     public Range getVisibleRange() {
         return dataGrid.getVisibleRange();
+    }
+
+    @Override
+    public void setVisibleRange(final Range range) {
+        dataGrid.setVisibleRange(range);
     }
 
     @Override
@@ -219,27 +212,17 @@ public class UberfireSimpleTable<T>
     }
 
     @Override
-    public void setRowCount( final int count ) {
-        dataGrid.setRowCount( count );
+    public void setRowCount(final int count,
+                            final boolean isExact) {
+        dataGrid.setRowCount(count,
+                             isExact);
     }
 
     @Override
-    public void setRowCount( final int count,
-                             final boolean isExact ) {
-        dataGrid.setRowCount( count,
-                              isExact );
-    }
-
-    @Override
-    public void setVisibleRange( final int start,
-                                 final int length ) {
-        dataGrid.setVisibleRange( start,
-                                  length );
-    }
-
-    @Override
-    public void setVisibleRange( final Range range ) {
-        dataGrid.setVisibleRange( range );
+    public void setVisibleRange(final int start,
+                                final int length) {
+        dataGrid.setVisibleRange(start,
+                                 length);
     }
 
     @Override
@@ -248,8 +231,13 @@ public class UberfireSimpleTable<T>
     }
 
     @Override
-    public T getVisibleItem( final int indexOnPage ) {
-        return dataGrid.getVisibleItem( indexOnPage );
+    public void setSelectionModel(final SelectionModel<? super T> selectionModel) {
+        dataGrid.setSelectionModel(selectionModel);
+    }
+
+    @Override
+    public T getVisibleItem(final int indexOnPage) {
+        return dataGrid.getVisibleItem(indexOnPage);
     }
 
     @Override
@@ -263,73 +251,66 @@ public class UberfireSimpleTable<T>
     }
 
     @Override
-    public void setRowData( final int start,
-                            final List<? extends T> values ) {
-        dataGrid.setRowData( start,
-                             values );
+    public void setRowData(final int start,
+                           final List<? extends T> values) {
+        dataGrid.setRowData(start,
+                            values);
         redraw();
     }
 
-    public void setRowData( final List<? extends T> values ) {
-        dataGrid.setRowData( values );
+    public void setRowData(final List<? extends T> values) {
+        dataGrid.setRowData(values);
         redraw();
     }
 
-    @Override
-    public void setSelectionModel( final SelectionModel<? super T> selectionModel ) {
-        dataGrid.setSelectionModel( selectionModel );
-    }
-
-    public void setSelectionModel( final SelectionModel<? super T> selectionModel,
-                                   final CellPreviewEvent.Handler<T> selectionEventManager ) {
-        dataGrid.setSelectionModel( selectionModel,
-                                    selectionEventManager );
+    public void setSelectionModel(final SelectionModel<? super T> selectionModel,
+                                  final CellPreviewEvent.Handler<T> selectionEventManager) {
+        dataGrid.setSelectionModel(selectionModel,
+                                   selectionEventManager);
     }
 
     @Override
-    public void setVisibleRangeAndClearData( final Range range,
-                                             final boolean forceRangeChangeEvent ) {
-        dataGrid.setVisibleRangeAndClearData( range,
-                                              forceRangeChangeEvent );
-    }
-
-
-    @Override
-    public void setHeight( final String height ) {
-        dataGrid.setHeight( height );
+    public void setVisibleRangeAndClearData(final Range range,
+                                            final boolean forceRangeChangeEvent) {
+        dataGrid.setVisibleRangeAndClearData(range,
+                                             forceRangeChangeEvent);
     }
 
     @Override
-    public void setPixelSize( final int width,
-                              final int height ) {
-        dataGrid.setPixelSize( width,
-                               height );
+    public void setHeight(final String height) {
+        dataGrid.setHeight(height);
     }
 
     @Override
-    public void setSize( final String width,
-                         final String height ) {
-        dataGrid.setSize( width,
-                          height );
+    public void setPixelSize(final int width,
+                             final int height) {
+        dataGrid.setPixelSize(width,
+                              height);
     }
 
     @Override
-    public void setWidth( final String width ) {
-        dataGrid.setWidth( width );
+    public void setSize(final String width,
+                        final String height) {
+        dataGrid.setSize(width,
+                         height);
     }
 
-    public void setColumnWidth( final Column<T, ?> column,
-                                final double width,
-                                final Style.Unit unit ) {
-        dataGrid.setColumnWidth( column,
-                                 width,
-                                 unit );
+    @Override
+    public void setWidth(final String width) {
+        dataGrid.setWidth(width);
+    }
+
+    public void setColumnWidth(final Column<T, ?> column,
+                               final double width,
+                               final Style.Unit unit) {
+        dataGrid.setColumnWidth(column,
+                                width,
+                                unit);
         getColumnPicker().adjustColumnWidths();
     }
 
-
-    public void setToolBarVisible( final boolean visible ) {
-        toolbarContainer.setVisible( visible );
+    public void setToolBarVisible(final boolean visible) {
+        toolbarContainer.setVisible(visible);
     }
 
     public ColumnSortList getColumnSortList() {
@@ -356,64 +337,64 @@ public class UberfireSimpleTable<T>
         return centerToolbar;
     }
 
-    public void setRowStyles( final RowStyles<T> styles ) {
-        dataGrid.setRowStyles( styles );
+    public void setRowStyles(final RowStyles<T> styles) {
+        dataGrid.setRowStyles(styles);
     }
 
-    public void addTableTitle( String tableTitle ) {
-        getLeftToolbar().add( new HTML( "<h4>" + tableTitle + "</h4>" ) );
+    public void addTableTitle(String tableTitle) {
+        getLeftToolbar().add(new HTML("<h4>" + tableTitle + "</h4>"));
     }
 
-    public void setAlwaysShowScrollBars( boolean alwaysShowScrollBars ) {
-        dataGrid.setAlwaysShowScrollBars( alwaysShowScrollBars );
+    public void setAlwaysShowScrollBars(boolean alwaysShowScrollBars) {
+        dataGrid.setAlwaysShowScrollBars(alwaysShowScrollBars);
     }
 
-    public void addColumn( final Column<T, ?> column,
-                           final String caption ) {
-        addColumn( column,
-                   caption,
-                   true );
+    public void addColumn(final Column<T, ?> column,
+                          final String caption) {
+        addColumn(column,
+                  caption,
+                  true);
     }
 
-    public void addColumn( final Column<T, ?> column,
-                           final String caption,
-                           final boolean visible ) {
-        ColumnMeta<T> columnMeta = new ColumnMeta<T>( column,
-                                                      caption,
-                                                      visible );
-        addColumn( columnMeta );
+    public void addColumn(final Column<T, ?> column,
+                          final String caption,
+                          final boolean visible) {
+        ColumnMeta<T> columnMeta = new ColumnMeta<T>(column,
+                                                     caption,
+                                                     visible);
+        addColumn(columnMeta);
     }
 
-    public void addColumns( final List<ColumnMeta<T>> columnMetas ) {
-        for ( ColumnMeta columnMeta : columnMetas ) {
-            if ( columnMeta.getHeader() == null ) {
-                columnMeta.setHeader( getColumnHeader( columnMeta.getCaption(),
-                                                       columnMeta.getColumn() ) );
+    public void addColumns(final List<ColumnMeta<T>> columnMetas) {
+        for (ColumnMeta columnMeta : columnMetas) {
+            if (columnMeta.getHeader() == null) {
+                columnMeta.setHeader(getColumnHeader(columnMeta.getCaption(),
+                                                     columnMeta.getColumn()));
             }
         }
-        getColumnPicker().addColumns( columnMetas );
+        getColumnPicker().addColumns(columnMetas);
     }
 
-    protected void addColumn( final ColumnMeta<T> columnMeta ) {
-        if ( columnMeta.getHeader() == null ) {
-            columnMeta.setHeader( getColumnHeader( columnMeta.getCaption(),
-                                                   columnMeta.getColumn() ) );
+    protected void addColumn(final ColumnMeta<T> columnMeta) {
+        if (columnMeta.getHeader() == null) {
+            columnMeta.setHeader(getColumnHeader(columnMeta.getCaption(),
+                                                 columnMeta.getColumn()));
         }
-        getColumnPicker().addColumn( columnMeta );
+        getColumnPicker().addColumn(columnMeta);
     }
 
-    protected ResizableMovableHeader<T> getColumnHeader( final String caption,
-                                                         final Column column ) {
-        final ResizableMovableHeader header = new ResizableMovableHeader<T>( caption,
-                                                                             dataGrid,
-                                                                             columnPicker,
-                                                                             column ) {
+    protected ResizableMovableHeader<T> getColumnHeader(final String caption,
+                                                        final Column column) {
+        final ResizableMovableHeader header = new ResizableMovableHeader<T>(caption,
+                                                                            dataGrid,
+                                                                            columnPicker,
+                                                                            column) {
             @Override
             protected int getTableBodyHeight() {
                 return dataGrid.getOffsetHeight();
             }
         };
-        header.addColumnChangedHandler( new ColumnChangedHandler() {
+        header.addColumnChangedHandler(new ColumnChangedHandler() {
             @Override
             public void afterColumnChanged() {
                 afterColumnChangedHandler();
@@ -423,15 +404,21 @@ public class UberfireSimpleTable<T>
             public void beforeColumnChanged() {
 
             }
-        } );
+        });
         return header;
     }
 
-    public void setColumnPickerButtonVisible( final boolean show ) {
-        columnPickerButton.setVisible( show );
+    public void setColumnPickerButtonVisible(final boolean show) {
+        columnPickerButton.setVisible(show);
     }
 
     protected void afterColumnChangedHandler() {
+
+    }
+
+    interface Binder
+            extends
+            UiBinder<Widget, UberfireSimpleTable> {
 
     }
 }

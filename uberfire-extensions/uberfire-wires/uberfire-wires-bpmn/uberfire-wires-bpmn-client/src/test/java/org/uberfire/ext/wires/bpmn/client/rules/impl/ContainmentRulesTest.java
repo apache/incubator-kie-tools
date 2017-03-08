@@ -27,7 +27,8 @@ import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
 import org.uberfire.ext.wires.bpmn.client.commands.Results;
 import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 public class ContainmentRulesTest extends AbstractBaseRuleTest {
 
@@ -37,16 +38,16 @@ public class ContainmentRulesTest extends AbstractBaseRuleTest {
         final StartProcessNode candidate = new StartProcessNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : getContainmentRules() ) {
-            ruleManager.addRule( rule );
+        for (Rule rule : getContainmentRules()) {
+            ruleManager.addRule(rule);
         }
 
-        final Results results = ruleManager.checkContainment( process,
-                                                              candidate );
+        final Results results = ruleManager.checkContainment(process,
+                                                             candidate);
 
-        assertNotNull( results );
-        assertEquals( 0,
-                      results.getMessages().size() );
+        assertNotNull(results);
+        assertEquals(0,
+                     results.getMessages().size());
     }
 
     @Test
@@ -55,16 +56,16 @@ public class ContainmentRulesTest extends AbstractBaseRuleTest {
         final EndProcessNode candidate = new EndProcessNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : getContainmentRules() ) {
-            ruleManager.addRule( rule );
+        for (Rule rule : getContainmentRules()) {
+            ruleManager.addRule(rule);
         }
 
-        final Results results = ruleManager.checkContainment( process,
-                                                              candidate );
+        final Results results = ruleManager.checkContainment(process,
+                                                             candidate);
 
-        assertNotNull( results );
-        assertEquals( 0,
-                      results.getMessages().size() );
+        assertNotNull(results);
+        assertEquals(0,
+                     results.getMessages().size());
     }
 
     @Test
@@ -73,18 +74,17 @@ public class ContainmentRulesTest extends AbstractBaseRuleTest {
         final BpmnGraphNode candidate = new TestDummyNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : getContainmentRules() ) {
-            ruleManager.addRule( rule );
+        for (Rule rule : getContainmentRules()) {
+            ruleManager.addRule(rule);
         }
 
-        final Results results = ruleManager.checkContainment( process,
-                                                              candidate );
+        final Results results = ruleManager.checkContainment(process,
+                                                             candidate);
 
-        assertNotNull( results );
-        assertEquals( 1,
-                      results.getMessages().size() );
-        assertEquals( 1,
-                      results.getMessages( ResultType.ERROR ).size() );
+        assertNotNull(results);
+        assertEquals(1,
+                     results.getMessages().size());
+        assertEquals(1,
+                     results.getMessages(ResultType.ERROR).size());
     }
-
 }

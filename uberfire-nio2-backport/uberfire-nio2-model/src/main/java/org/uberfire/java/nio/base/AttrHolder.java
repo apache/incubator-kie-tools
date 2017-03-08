@@ -22,10 +22,9 @@ public interface AttrHolder {
 
     AttrsStorage getAttrStorage();
 
-    <V extends AttributeView> void addAttrView( final V view );
+    <V extends AttributeView> void addAttrView(final V view);
 
-    <V extends AttributeView> V getAttrView( final Class<V> type );
+    <V extends AttributeView> V getAttrView(final Class<V> type);
 
-    <V extends AttributeView> V getAttrView( final String name );
-
+    <V extends AttributeView> V getAttrView(final String name);
 }

@@ -22,7 +22,7 @@ import org.uberfire.mvp.PlaceRequest;
  */
 public class PlaceHiddenEvent extends AbstractPlaceEvent {
 
-    public PlaceHiddenEvent( final PlaceRequest place ) {
+    public PlaceHiddenEvent(final PlaceRequest place) {
         super(place);
     }
 
@@ -30,6 +30,4 @@ public class PlaceHiddenEvent extends AbstractPlaceEvent {
     public String toString() {
         return "PlaceHiddenEvent [place=" + getPlace() + "]";
     }
-
-
 }

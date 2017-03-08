@@ -30,69 +30,84 @@ import org.uberfire.ext.metadata.model.KCluster;
 public enum DirectoryType {
     INMEMORY {
         @Override
-        public LuceneIndex newIndex( final KCluster cluster,
-                                     final IndexWriterConfig config ) {
-            final Directory directory = new Directory( new RAMDirectory(), new DeleteCommand() {
-                @Override
-                public void execute( org.apache.lucene.store.Directory directory ) {
-                }
-            }, true );
-            return new DirectoryLuceneIndex( cluster, directory, config );
+        public LuceneIndex newIndex(final KCluster cluster,
+                                    final IndexWriterConfig config) {
+            final Directory directory = new Directory(new RAMDirectory(),
+                                                      new DeleteCommand() {
+                                                          @Override
+                                                          public void execute(org.apache.lucene.store.Directory directory) {
+                                                          }
+                                                      },
+                                                      true);
+            return new DirectoryLuceneIndex(cluster,
+                                            directory,
+                                            config);
         }
-    }, NIO {
+    },
+    NIO {
         @Override
-        public LuceneIndex newIndex( final KCluster cluster,
-                                     final IndexWriterConfig config ) {
+        public LuceneIndex newIndex(final KCluster cluster,
+                                    final IndexWriterConfig config) {
 
-            final File clusterDir = clusterDir( cluster.getClusterId() );
+            final File clusterDir = clusterDir(cluster.getClusterId());
             final NIOFSDirectory luceneDir;
             try {
-                luceneDir = new NIOFSDirectory( clusterDir.toPath() );
-            } catch ( IOException e ) {
-                throw new org.uberfire.java.nio.IOException( e );
+                luceneDir = new NIOFSDirectory(clusterDir.toPath());
+            } catch (IOException e) {
+                throw new org.uberfire.java.nio.IOException(e);
             }
 
-            final Directory directory = new Directory( luceneDir, new DeleteCommand() {
-                @Override
-                public void execute( org.apache.lucene.store.Directory directory ) {
-                    ( (NIOFSDirectory) directory ).close();
-                    FileDeleteStrategy.FORCE.deleteQuietly( clusterDir );
-                }
-            }, freshIndex( clusterDir ) );
+            final Directory directory = new Directory(luceneDir,
+                                                      new DeleteCommand() {
+                                                          @Override
+                                                          public void execute(org.apache.lucene.store.Directory directory) {
+                                                              ((NIOFSDirectory) directory).close();
+                                                              FileDeleteStrategy.FORCE.deleteQuietly(clusterDir);
+                                                          }
+                                                      },
+                                                      freshIndex(clusterDir));
 
-            return new DirectoryLuceneIndex( cluster, directory, config );
+            return new DirectoryLuceneIndex(cluster,
+                                            directory,
+                                            config);
         }
-    }, MMAP {
+    },
+    MMAP {
         @Override
-        public LuceneIndex newIndex( final KCluster cluster,
-                                     final IndexWriterConfig config ) {
-            final File clusterDir = clusterDir( cluster.getClusterId() );
+        public LuceneIndex newIndex(final KCluster cluster,
+                                    final IndexWriterConfig config) {
+            final File clusterDir = clusterDir(cluster.getClusterId());
             final MMapDirectory luceneDir;
             try {
-                luceneDir = new MMapDirectory( clusterDir.toPath() );
-            } catch ( IOException e ) {
-                throw new org.uberfire.java.nio.IOException( e );
+                luceneDir = new MMapDirectory(clusterDir.toPath());
+            } catch (IOException e) {
+                throw new org.uberfire.java.nio.IOException(e);
             }
-            final Directory directory = new Directory( luceneDir, new DeleteCommand() {
-                @Override
-                public void execute( org.apache.lucene.store.Directory directory ) {
-                    ( (MMapDirectory) directory ).close();
-                    FileDeleteStrategy.FORCE.deleteQuietly( clusterDir );
-                }
-            }, freshIndex( clusterDir ) );
+            final Directory directory = new Directory(luceneDir,
+                                                      new DeleteCommand() {
+                                                          @Override
+                                                          public void execute(org.apache.lucene.store.Directory directory) {
+                                                              ((MMapDirectory) directory).close();
+                                                              FileDeleteStrategy.FORCE.deleteQuietly(clusterDir);
+                                                          }
+                                                      },
+                                                      freshIndex(clusterDir));
 
-            return new DirectoryLuceneIndex( cluster, directory, config );
+            return new DirectoryLuceneIndex(cluster,
+                                            directory,
+                                            config);
         }
     };
 
-    public abstract LuceneIndex newIndex( final KCluster cluster,
-                                          final IndexWriterConfig config );
-
-    private static File clusterDir( final String clusterId ) {
-        return new File( DirectoryFactory.defaultHostingDir(), clusterId );
+    private static File clusterDir(final String clusterId) {
+        return new File(DirectoryFactory.defaultHostingDir(),
+                        clusterId);
     }
 
-    private static boolean freshIndex( final File clusterDir ) {
+    private static boolean freshIndex(final File clusterDir) {
         return !clusterDir.exists();
     }
+
+    public abstract LuceneIndex newIndex(final KCluster cluster,
+                                         final IndexWriterConfig config);
 }

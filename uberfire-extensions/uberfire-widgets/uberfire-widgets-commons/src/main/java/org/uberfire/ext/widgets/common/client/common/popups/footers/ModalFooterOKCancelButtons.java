@@ -31,48 +31,45 @@ import org.uberfire.commons.validation.PortablePreconditions;
  */
 public class ModalFooterOKCancelButtons extends ModalFooter {
 
-    private static ModalFooterOKCancelButtonsBinder uiBinder = GWT.create( ModalFooterOKCancelButtonsBinder.class );
+    private static ModalFooterOKCancelButtonsBinder uiBinder = GWT.create(ModalFooterOKCancelButtonsBinder.class);
 
     private final Command okCommand;
     private final Command cancelCommand;
+    @UiField
+    Button okButton;
+    @UiField
+    Button cancelButton;
+
+    public ModalFooterOKCancelButtons(final Command okCommand,
+                                      final Command cancelCommand) {
+        this.okCommand = PortablePreconditions.checkNotNull("okCommand",
+                                                            okCommand);
+        this.cancelCommand = PortablePreconditions.checkNotNull("cancelCommand",
+                                                                cancelCommand);
+        add(uiBinder.createAndBindUi(this));
+    }
+
+    public void enableOkButton(final boolean enabled) {
+        okButton.setEnabled(enabled);
+    }
+
+    public void enableCancelButton(final boolean enabled) {
+        cancelButton.setEnabled(enabled);
+    }
+
+    @UiHandler("okButton")
+    public void onOKButtonClick(final ClickEvent e) {
+        okCommand.execute();
+    }
+
+    @UiHandler("cancelButton")
+    public void onCancelButtonClick(final ClickEvent e) {
+        cancelCommand.execute();
+    }
 
     interface ModalFooterOKCancelButtonsBinder
             extends
             UiBinder<Widget, ModalFooterOKCancelButtons> {
 
     }
-
-    @UiField
-    Button okButton;
-
-    @UiField
-    Button cancelButton;
-
-    public ModalFooterOKCancelButtons( final Command okCommand,
-                                       final Command cancelCommand ) {
-        this.okCommand = PortablePreconditions.checkNotNull( "okCommand",
-                                                             okCommand );
-        this.cancelCommand = PortablePreconditions.checkNotNull( "cancelCommand",
-                                                                 cancelCommand );
-        add( uiBinder.createAndBindUi( this ) );
-    }
-
-    public void enableOkButton( final boolean enabled ) {
-        okButton.setEnabled( enabled );
-    }
-
-    public void enableCancelButton( final boolean enabled ) {
-        cancelButton.setEnabled( enabled );
-    }
-
-    @UiHandler("okButton")
-    public void onOKButtonClick( final ClickEvent e ) {
-        okCommand.execute();
-    }
-
-    @UiHandler("cancelButton")
-    public void onCancelButtonClick( final ClickEvent e ) {
-        cancelCommand.execute();
-    }
-
 }

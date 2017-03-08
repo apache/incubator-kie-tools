@@ -30,82 +30,88 @@ public enum PropertyEditorType {
 
     TEXT {
         @Override
-        public boolean isType( Class<?> type ) {
-            return isString( type ) || isFloat( type ) || isDouble( type );
+        public boolean isType(Class<?> type) {
+            return isString(type) || isFloat(type) || isDouble(type);
         }
 
-        private boolean isFloat( Class<?> type ) {
-            return ( type.equals( Float.class ) || ( type.toString().equalsIgnoreCase( "float" ) ) );
+        private boolean isFloat(Class<?> type) {
+            return (type.equals(Float.class) || (type.toString().equalsIgnoreCase("float")));
         }
 
-        private boolean isDouble( Class<?> type ) {
-            return ( type.equals( Double.class ) || ( type.toString().equalsIgnoreCase( "double" ) ) );
+        private boolean isDouble(Class<?> type) {
+            return (type.equals(Double.class) || (type.toString().equalsIgnoreCase("double")));
         }
 
-        private boolean isString( Class<?> type ) {
-            return type.equals( String.class );
+        private boolean isString(Class<?> type) {
+            return type.equals(String.class);
         }
-    }, BOOLEAN {
+    },
+    BOOLEAN {
         @Override
-        public boolean isType( Class<?> type ) {
-            return ( type.equals( Boolean.class ) || ( type.toString().equalsIgnoreCase( "boolean" ) ) );
+        public boolean isType(Class<?> type) {
+            return (type.equals(Boolean.class) || (type.toString().equalsIgnoreCase("boolean")));
         }
-    }, NATURAL_NUMBER {
+    },
+    NATURAL_NUMBER {
         @Override
         public List<PropertyFieldValidator> getValidators() {
             ArrayList validators = new ArrayList();
-            validators.add( new LongValidator() );
+            validators.add(new LongValidator());
             return validators;
         }
 
         @Override
-        public boolean isType( Class<?> type ) {
-            return isInteger( type ) || isLong( type ) || isShort( type );
+        public boolean isType(Class<?> type) {
+            return isInteger(type) || isLong(type) || isShort(type);
         }
 
-        private boolean isShort( Class<?> type ) {
-            return ( type.equals( Short.class ) || ( type.toString().equalsIgnoreCase( "short" ) ) );
+        private boolean isShort(Class<?> type) {
+            return (type.equals(Short.class) || (type.toString().equalsIgnoreCase("short")));
         }
 
-        private boolean isLong( Class<?> type ) {
-            return ( type.equals( Long.class ) || ( type.toString().equalsIgnoreCase( "long" ) ) );
+        private boolean isLong(Class<?> type) {
+            return (type.equals(Long.class) || (type.toString().equalsIgnoreCase("long")));
         }
 
-        private boolean isInteger( Class<?> type ) {
-            return ( type.equals( Integer.class ) || ( type.toString().equalsIgnoreCase( "int" ) ) );
+        private boolean isInteger(Class<?> type) {
+            return (type.equals(Integer.class) || (type.toString().equalsIgnoreCase("int")));
         }
-    }, COMBO {
+    },
+    COMBO {
         @Override
-        public boolean isType( Class<?> type ) {
+        public boolean isType(Class<?> type) {
             return type.isEnum();
         }
-    }, SECRET_TEXT {
+    },
+    SECRET_TEXT {
 
-    }, COLOR {
+    },
+    COLOR {
         public List<PropertyFieldValidator> getValidators() {
             ArrayList validators = new ArrayList();
-            validators.add( new ColorValidator() );
+            validators.add(new ColorValidator());
             return validators;
         }
-    }, CUSTOM {
+    },
+    CUSTOM {
 
     };
 
-    public boolean isType( Class<?> type ) {
+    public static PropertyEditorType getFromType(Class<?> type) {
+        for (PropertyEditorType candidate : PropertyEditorType.values()) {
+            if (candidate.isType(type)) {
+                return candidate;
+            }
+        }
+        return null;
+    }
+
+    public boolean isType(Class<?> type) {
         return false;
     }
 
     public List<PropertyFieldValidator> getValidators() {
         return new ArrayList();
-    }
-
-    public static PropertyEditorType getFromType( Class<?> type ) {
-        for ( PropertyEditorType candidate : PropertyEditorType.values() ) {
-            if ( candidate.isType( type ) ) {
-                return candidate;
-            }
-        }
-        return null;
     }
 
 }

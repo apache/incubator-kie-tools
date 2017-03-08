@@ -15,13 +15,17 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
+import java.util.Collection;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.LayoutSelection;
-import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.commons.data.Pair;
@@ -30,14 +34,7 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.SplitLayoutPanel;
-import com.google.gwt.user.client.ui.Widget;
-
-import static org.uberfire.plugin.PluginUtil.*;
-
-import java.util.Collection;
+import static org.uberfire.plugin.PluginUtil.ensureIterable;
 
 /**
  * Corresponding view to {@link SplitLayoutPanelPresenter}. Only supports panels, not parts.
@@ -52,12 +49,10 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
     private final SplitLayoutPanel layout;
     private final LayoutPanel centerPanel;
     private final LayoutPanel westPanel;
-    private SplitLayoutPanelPresenter presenter;
-    private Pair<PanelDefinition, Widget> activePanel;
-
     @Inject
     PlaceManager placeManager;
-
+    private SplitLayoutPanelPresenter presenter;
+    private Pair<PanelDefinition, Widget> activePanel;
     @Inject
     private LayoutSelection layoutSelection;
 
@@ -68,39 +63,42 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
         westPanel = new LayoutPanel();
 
         // TODO (hbraun): the actual width should become meta data. i.e. passed through the position object
-        layout.addWest(westPanel, 217);
+        layout.addWest(westPanel,
+                       217);
         layout.add(centerPanel);
     }
 
     @Override
-    public void addPanel(PanelDefinition panel, WorkbenchPanelView view, Position position) {
+    public void addPanel(PanelDefinition panel,
+                         WorkbenchPanelView view,
+                         Position position) {
 
-        if ( CompassPosition.WEST.equals( position ) ) {
+        if (CompassPosition.WEST.equals(position)) {
             Widget widget = view.asWidget();
-            widget.addStyleName( "split-west" ); // HAL specific
-            westPanel.add( widget );
-
-        } else if ( CompassPosition.CENTER.equals( position ) ) {
-            if ( activePanel != null ) {
+            widget.addStyleName("split-west"); // HAL specific
+            westPanel.add(widget);
+        } else if (CompassPosition.CENTER.equals(position)) {
+            if (activePanel != null) {
                 // close active parts of current panel
-                for ( PartDefinition part : ensureIterable( activePanel.getK1().getParts() ) ) {
-                    placeManager.closePlace( part.getPlace() );
+                for (PartDefinition part : ensureIterable(activePanel.getK1().getParts())) {
+                    placeManager.closePlace(part.getPlace());
                 }
             }
 
             Widget widget = view.asWidget();
-            widget.addStyleName( "split-center" ); // HAL specific
+            widget.addStyleName("split-center"); // HAL specific
             centerPanel.clear();
-            centerPanel.add( widget );
-            activePanel = new Pair<PanelDefinition, Widget>( panel, widget );
+            centerPanel.add(widget);
+            activePanel = new Pair<PanelDefinition, Widget>(panel,
+                                                            widget);
         } else {
-            throw new IllegalArgumentException( "Unsupported position directive: " + position );
+            throw new IllegalArgumentException("Unsupported position directive: " + position);
         }
     }
 
     @Override
-    public boolean removePanel( WorkbenchPanelView<?> child ) {
-        return westPanel.remove( child ) || centerPanel.remove( child );
+    public boolean removePanel(WorkbenchPanelView<?> child) {
+        return westPanel.remove(child) || centerPanel.remove(child);
     }
 
     @Override
@@ -109,7 +107,7 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
     }
 
     @Override
-    public void init( final SplitLayoutPanelPresenter presenter ) {
+    public void init(final SplitLayoutPanelPresenter presenter) {
         this.presenter = presenter;
     }
 
@@ -119,17 +117,17 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
     }
 
     @Override
-    public void addPart( final WorkbenchPartPresenter.View view ) {
+    public void addPart(final WorkbenchPartPresenter.View view) {
         throw new IllegalArgumentException("Presenter doesn't manage parts!");
     }
 
     @Override
-    public boolean removePart( final PartDefinition part ) {
+    public boolean removePart(final PartDefinition part) {
         throw new IllegalArgumentException("Presenter doesn't manage parts!");
     }
 
     @Override
-    public boolean selectPart( final PartDefinition part ) {
+    public boolean selectPart(final PartDefinition part) {
         throw new IllegalArgumentException("Presenter doesn't manage parts!");
     }
 
@@ -144,7 +142,7 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
     }
 
     @Override
-    public void setFocus( boolean hasFocus ) {
+    public void setFocus(boolean hasFocus) {
 
     }
 
@@ -154,29 +152,29 @@ public class SplitLayoutPanelView implements WorkbenchPanelView<SplitLayoutPanel
     }
 
     @Override
-    public void changeTitle( final PartDefinition part,
-                             final String title,
-                             final IsWidget titleDecoration ) {
+    public void changeTitle(final PartDefinition part,
+                            final String title,
+                            final IsWidget titleDecoration) {
         // noop
     }
 
     @Override
-    public void setElementId( String elementId ) {
-        if ( elementId == null ) {
-            asWidget().getElement().removeAttribute( "id" );
+    public void setElementId(String elementId) {
+        if (elementId == null) {
+            asWidget().getElement().removeAttribute("id");
         } else {
-            asWidget().getElement().setAttribute( "id", elementId );
+            asWidget().getElement().setAttribute("id",
+                                                 elementId);
         }
     }
 
     @Override
     public void maximize() {
-        layoutSelection.get().maximize( asWidget() );
+        layoutSelection.get().maximize(asWidget());
     }
 
     @Override
     public void unmaximize() {
-        layoutSelection.get().unmaximize( asWidget() );
+        layoutSelection.get().unmaximize(asWidget());
     }
-
 }

@@ -27,16 +27,13 @@ public class ColumnDrop {
     private Type type;
     private Column oldColumn;
 
-    public ColumnDrop( LayoutComponent component, String endId,
-                       Orientation orientation ) {
+    public ColumnDrop(LayoutComponent component,
+                      String endId,
+                      Orientation orientation) {
         this.component = component;
         this.endId = endId;
         this.orientation = orientation;
         this.type = Type.NEW;
-    }
-
-    public enum Orientation {
-        LEFT, RIGHT, UP, DOWN
     }
 
     public Orientation getOrientation() {
@@ -68,18 +65,25 @@ public class ColumnDrop {
         return oldColumn;
     }
 
-    public enum Type {
-        NEW, FROM_MOVE
-    }
-
     public boolean newComponent() {
         return type == Type.NEW;
     }
 
-    public ColumnDrop fromMove( Column oldColumn ) {
+    public ColumnDrop fromMove(Column oldColumn) {
         this.oldColumn = oldColumn;
         this.type = Type.FROM_MOVE;
         return this;
     }
 
+    public enum Orientation {
+        LEFT,
+        RIGHT,
+        UP,
+        DOWN
+    }
+
+    public enum Type {
+        NEW,
+        FROM_MOVE
+    }
 }

@@ -17,5 +17,5 @@ package org.ext.uberfire.social.activities.service;
 
 public interface SocialPredicate<T> {
 
-    boolean test( T t );
+    boolean test(T t);
 }

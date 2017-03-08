@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -46,21 +45,20 @@ public class ShapeFactoryCache {
     }
 
     public Set<ShapeFactory> getShapeFactories() {
-        return Collections.unmodifiableSet( factories );
+        return Collections.unmodifiableSet(factories);
     }
 
-    public void addShapeFactory( final ShapeFactory factory ) {
-        factories.add( PortablePreconditions.checkNotNull( "factory",
-                                                           factory ) );
+    public void addShapeFactory(final ShapeFactory factory) {
+        factories.add(PortablePreconditions.checkNotNull("factory",
+                                                         factory));
     }
 
     private Set<ShapeFactory> getAvailableFactories() {
         final Set<ShapeFactory> factories = new HashSet<ShapeFactory>();
-        final Collection<SyncBeanDef<ShapeFactory>> factoryBeans = iocManager.lookupBeans( ShapeFactory.class );
-        for ( SyncBeanDef<ShapeFactory> factoryBean : factoryBeans ) {
-            factories.add( factoryBean.getInstance() );
+        final Collection<SyncBeanDef<ShapeFactory>> factoryBeans = iocManager.lookupBeans(ShapeFactory.class);
+        for (SyncBeanDef<ShapeFactory> factoryBean : factoryBeans) {
+            factories.add(factoryBean.getInstance());
         }
         return factories;
     }
-
 }

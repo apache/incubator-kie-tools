@@ -34,12 +34,12 @@ public class PluginConfigService {
 
     @AfterInitialization
     public void init() {
-        pluginServices.call( new RemoteCallback<String>() {
+        pluginServices.call(new RemoteCallback<String>() {
             @Override
-            public void callback( final String response ) {
+            public void callback(final String response) {
                 mediaServletURI = response;
             }
-        } ).getMediaServletURI();
+        }).getMediaServletURI();
     }
 
     public String getMediaServletURI() {

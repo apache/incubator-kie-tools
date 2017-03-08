@@ -24,7 +24,7 @@ public interface WebAppResource
         extends
         ClientBundle {
 
-    WebAppResource INSTANCE = GWT.create( WebAppResource.class );
+    WebAppResource INSTANCE = GWT.create(WebAppResource.class);
 
     @Source("css/plugin.css")
     PluginCss CSS();
@@ -34,5 +34,4 @@ public interface WebAppResource
 
     @Source("images/handle-h.png")
     DataResource handleHorizontal();
-
 }

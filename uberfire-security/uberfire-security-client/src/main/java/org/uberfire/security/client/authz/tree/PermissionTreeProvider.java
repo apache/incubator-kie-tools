@@ -18,7 +18,7 @@ package org.uberfire.security.client.authz.tree;
 /**
  * A {@link PermissionTree} is composed by a list of root nodes. The classes implementing this interface are used by
  * the {@link PermissionTreeFactory} to build those root nodes.
- *
+ * <p>
  * <p>From application perspective, custom tree providers can be implemented in order to make application related
  * permissions part of the permission tree.</p>
  */
@@ -26,23 +26,23 @@ public interface PermissionTreeProvider {
 
     /**
      * Returns a brand new node containing a permission node hierarchy.
-     *
      * @return A completely initialized {@link PermissionNode} instance.
      */
     PermissionNode buildRootNode();
 
     /**
      * Asynchronous interface for loading the children nodes of a given parent permission node.
-     *
      * @param parent The parent node
      * @param options The load options
      * @param consumer The callback instance to notify once the loading process is done.
      */
-    void loadChildren(PermissionNode parent, LoadOptions options, LoadCallback consumer);
+    void loadChildren(PermissionNode parent,
+                      LoadOptions options,
+                      LoadCallback consumer);
 
     /**
      * Flag indicating if this provider is in active state.
-     *
+     * <p>
      * <p>Only if active, its root node is added to the permission tree.</p>
      */
     default boolean isActive() {

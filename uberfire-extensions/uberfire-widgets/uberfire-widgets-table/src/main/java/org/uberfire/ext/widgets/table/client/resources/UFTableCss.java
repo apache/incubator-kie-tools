@@ -40,5 +40,7 @@ public interface UFTableCss
     String columnPickerButton();
 
     @ClassName("columnPickerPopup")
-    String columnPickerPopup();;
+    String columnPickerPopup();
+
+    ;
 }

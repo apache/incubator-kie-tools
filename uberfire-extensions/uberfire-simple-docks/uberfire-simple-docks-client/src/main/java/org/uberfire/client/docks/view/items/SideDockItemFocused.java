@@ -35,37 +35,31 @@ import org.uberfire.client.workbench.docks.UberfireDockPosition;
 public class SideDockItemFocused
         extends PopupPanel {
 
-    interface ViewBinder
-            extends
-            UiBinder<Widget, SideDockItemFocused> {
-
-    }
-
-    private ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
     @UiField
     Button itemButton;
-
+    private ViewBinder uiBinder = GWT.create(ViewBinder.class);
     private SideDockItem parent;
 
-    public SideDockItemFocused( final SideDockItem parent ) {
-        super( true );
+    public SideDockItemFocused(final SideDockItem parent) {
+        super(true);
         this.parent = parent;
-        add( uiBinder.createAndBindUi( this ) );
-        removeStyleName( "gwt-PopupPanel" );
-        createButton( parent );
+        add(uiBinder.createAndBindUi(this));
+        removeStyleName("gwt-PopupPanel");
+        createButton(parent);
     }
 
-    void createButton( final SideDockItem parent ) {
-        itemButton.setSize( ButtonSize.SMALL );
-        itemButton.setType( ButtonType.INFO );
-        parent.configureText( itemButton, parent.getLabel() );
-        parent.configureIcon( itemButton, parent.getDock().getImageIconFocused() );
+    void createButton(final SideDockItem parent) {
+        itemButton.setSize(ButtonSize.SMALL);
+        itemButton.setType(ButtonType.INFO);
+        parent.configureText(itemButton,
+                             parent.getLabel());
+        parent.configureIcon(itemButton,
+                             parent.getDock().getImageIconFocused());
         onMouseOutHidePopup();
-        itemButton.addClickHandler( new ClickHandler() {
+        itemButton.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
-                if ( !parent.isSelected() ) {
+            public void onClick(ClickEvent event) {
+                if (!parent.isSelected()) {
                     select();
                     parent.selectAndExecuteExpandCommand();
                 } else {
@@ -73,53 +67,60 @@ public class SideDockItemFocused
                     parent.deselectAndExecuteCommand();
                 }
             }
-        } );
+        });
     }
 
     public void deselect() {
-        itemButton.setActive( false );
+        itemButton.setActive(false);
     }
 
     public void select() {
-        itemButton.setActive( true );
+        itemButton.setActive(true);
     }
 
     public void open() {
         setupPositionAndShow();
-        if( parent != null ) {
-            parent.getElement().getStyle().setVisibility( Style.Visibility.HIDDEN );
+        if (parent != null) {
+            parent.getElement().getStyle().setVisibility(Style.Visibility.HIDDEN);
         }
     }
 
     private void onMouseOutHidePopup() {
-        this.addDomHandler( new MouseOutHandler() {
-            public void onMouseOut( MouseOutEvent event ) {
-                hide();
-            }
-        }, MouseOutEvent.getType() );
-        setAutoHideEnabled( true );
+        this.addDomHandler(new MouseOutHandler() {
+                               public void onMouseOut(MouseOutEvent event) {
+                                   hide();
+                               }
+                           },
+                           MouseOutEvent.getType());
+        setAutoHideEnabled(true);
     }
 
     @Override
     public void hide() {
         super.hide();
-        if( parent != null ) {
-            parent.getElement().getStyle().setVisibility( Style.Visibility.VISIBLE );
+        if (parent != null) {
+            parent.getElement().getStyle().setVisibility(Style.Visibility.VISIBLE);
         }
     }
 
     private void setupPositionAndShow() {
-        this.setPopupPositionAndShow( new PositionCallback() {
-            public void setPosition( int offsetWidth,
-                                     int offsetHeight ) {
+        this.setPopupPositionAndShow(new PositionCallback() {
+            public void setPosition(int offsetWidth,
+                                    int offsetHeight) {
                 int left = 0;
-                if ( parent.getDock().getDockPosition() == UberfireDockPosition.EAST ) {
+                if (parent.getDock().getDockPosition() == UberfireDockPosition.EAST) {
                     left = Window.getClientWidth() - getOffsetWidth();
                 }
                 int top = parent.getAbsoluteTop();
-                setPopupPosition( left, top );
+                setPopupPosition(left,
+                                 top);
             }
-        } );
+        });
     }
 
+    interface ViewBinder
+            extends
+            UiBinder<Widget, SideDockItemFocused> {
+
+    }
 }

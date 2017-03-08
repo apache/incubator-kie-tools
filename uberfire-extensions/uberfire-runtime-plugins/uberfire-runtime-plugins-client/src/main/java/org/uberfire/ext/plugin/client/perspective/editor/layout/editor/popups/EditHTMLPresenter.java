@@ -27,34 +27,21 @@ import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayou
 @Dependent
 public class EditHTMLPresenter {
 
-    public interface View extends UberElement<EditHTMLPresenter> {
-
-        void show();
-
-        void hide();
-
-        String getHtmlEditorPlaceHolder();
-
-        Modal getModal();
-    }
-
     private View view;
-
     private ModalConfigurationContext modalConfigurationContext;
-
     private HtmlEditorPresenter htmlEditor;
 
     @Inject
-    public EditHTMLPresenter( final View view,
-                              final HtmlEditorPresenter htmlEditor ) {
+    public EditHTMLPresenter(final View view,
+                             final HtmlEditorPresenter htmlEditor) {
         this.view = view;
         this.htmlEditor = htmlEditor;
     }
 
-    public void init( final ModalConfigurationContext modalConfigurationContext ) {
+    public void init(final ModalConfigurationContext modalConfigurationContext) {
         this.modalConfigurationContext = modalConfigurationContext;
         setupHTMLEditor();
-        view.init( this );
+        view.init(this);
     }
 
     public void show() {
@@ -62,13 +49,13 @@ public class EditHTMLPresenter {
     }
 
     void setupHTMLEditor() {
-        String html = modalConfigurationContext.getComponentProperty( HTMLLayoutDragComponent.HTML_CODE_PARAMETER );
+        String html = modalConfigurationContext.getComponentProperty(HTMLLayoutDragComponent.HTML_CODE_PARAMETER);
 
-        if ( html == null || html.isEmpty() ) {
+        if (html == null || html.isEmpty()) {
             html = view.getHtmlEditorPlaceHolder();
         }
 
-        htmlEditor.setContent( html );
+        htmlEditor.setContent(html);
         htmlEditor.load();
     }
 
@@ -83,7 +70,8 @@ public class EditHTMLPresenter {
 
     void okClick() {
         view.hide();
-        modalConfigurationContext.setComponentProperty( HTMLLayoutDragComponent.HTML_CODE_PARAMETER, htmlEditor.getContent() );
+        modalConfigurationContext.setComponentProperty(HTMLLayoutDragComponent.HTML_CODE_PARAMETER,
+                                                       htmlEditor.getContent());
         modalConfigurationContext.configurationFinished();
     }
 
@@ -97,5 +85,16 @@ public class EditHTMLPresenter {
 
     public View getView() {
         return view;
+    }
+
+    public interface View extends UberElement<EditHTMLPresenter> {
+
+        void show();
+
+        void hide();
+
+        String getHtmlEditorPlaceHolder();
+
+        Modal getModal();
     }
 }

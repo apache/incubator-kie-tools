@@ -20,4 +20,5 @@ package org.uberfire.ext.editor.commons.service.restrictor;
  * Represents a restrictor to a rename operation.
  */
 public interface RenameRestrictor extends PathOperationRestrictor {
+
 }

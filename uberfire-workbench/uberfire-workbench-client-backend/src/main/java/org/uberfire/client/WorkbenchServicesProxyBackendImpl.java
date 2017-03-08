@@ -38,83 +38,83 @@ public class WorkbenchServicesProxyBackendImpl implements WorkbenchServicesProxy
     private Caller<WorkbenchServices> workbenchServices;
 
     @Override
-    public void save( final String perspectiveId,
-                      final PerspectiveDefinition activePerspective,
-                      final Command callback ) {
-        workbenchServices.call( new RemoteCallback<Void>() {
+    public void save(final String perspectiveId,
+                     final PerspectiveDefinition activePerspective,
+                     final Command callback) {
+        workbenchServices.call(new RemoteCallback<Void>() {
             @Override
-            public void callback( Void o ) {
+            public void callback(Void o) {
                 callback.execute();
             }
-        } ).save( perspectiveId, activePerspective );
+        }).save(perspectiveId,
+                activePerspective);
     }
 
     @Override
-    public void loadPerspective( final String name,
-                                 final ParameterizedCommand<PerspectiveDefinition> parameterizedCommand ) {
-        workbenchServices.call( new RemoteCallback<PerspectiveDefinition>() {
+    public void loadPerspective(final String name,
+                                final ParameterizedCommand<PerspectiveDefinition> parameterizedCommand) {
+        workbenchServices.call(new RemoteCallback<PerspectiveDefinition>() {
             @Override
-            public void callback( final PerspectiveDefinition result ) {
-                parameterizedCommand.execute( result );
+            public void callback(final PerspectiveDefinition result) {
+                parameterizedCommand.execute(result);
             }
-        } ).loadPerspective( name );
+        }).loadPerspective(name);
     }
 
     @Override
-    public void loadPerspectives( final ParameterizedCommand<Set<PerspectiveDefinition>> parameterizedCommand ) {
-        workbenchServices.call( new RemoteCallback<Set<PerspectiveDefinition>>() {
+    public void loadPerspectives(final ParameterizedCommand<Set<PerspectiveDefinition>> parameterizedCommand) {
+        workbenchServices.call(new RemoteCallback<Set<PerspectiveDefinition>>() {
             @Override
-            public void callback( final Set<PerspectiveDefinition> result ) {
-                parameterizedCommand.execute( result );
+            public void callback(final Set<PerspectiveDefinition> result) {
+                parameterizedCommand.execute(result);
             }
-        } ).loadPerspectives();
+        }).loadPerspectives();
     }
 
     @Override
-    public void removePerspectiveState( final String perspectiveId,
-                                        final Command callback ) {
-        workbenchServices.call( new RemoteCallback<Void>() {
+    public void removePerspectiveState(final String perspectiveId,
+                                       final Command callback) {
+        workbenchServices.call(new RemoteCallback<Void>() {
             @Override
-            public void callback( Void o ) {
+            public void callback(Void o) {
                 callback.execute();
             }
-        } ).removePerspectiveState( perspectiveId );
+        }).removePerspectiveState(perspectiveId);
     }
 
     @Override
-    public void removePerspectiveStates( final Command doWhenFinished ) {
-        workbenchServices.call( new RemoteCallback<Void>() {
+    public void removePerspectiveStates(final Command doWhenFinished) {
+        workbenchServices.call(new RemoteCallback<Void>() {
             @Override
-            public void callback( Void o ) {
+            public void callback(Void o) {
                 doWhenFinished.execute();
             }
-        } ).removePerspectiveStates();
+        }).removePerspectiveStates();
     }
 
     @Override
-    public void save( final SplashScreenFilter splashFilter ) {
-        workbenchServices.call().save( splashFilter );
+    public void save(final SplashScreenFilter splashFilter) {
+        workbenchServices.call().save(splashFilter);
     }
 
     @Override
-    public void loadSplashScreenFilter( final String name,
-                                        final ParameterizedCommand<SplashScreenFilter> parameterizedCommand ) {
-        workbenchServices.call( new RemoteCallback<SplashScreenFilter>() {
+    public void loadSplashScreenFilter(final String name,
+                                       final ParameterizedCommand<SplashScreenFilter> parameterizedCommand) {
+        workbenchServices.call(new RemoteCallback<SplashScreenFilter>() {
             @Override
-            public void callback( final SplashScreenFilter result ) {
-                parameterizedCommand.execute( result );
+            public void callback(final SplashScreenFilter result) {
+                parameterizedCommand.execute(result);
             }
-        } ).loadSplashScreenFilter( name );
+        }).loadSplashScreenFilter(name);
     }
 
     @Override
-    public void isWorkbenchOnCluster( final ParameterizedCommand<Boolean> parameterizedCommand ) {
-        workbenchServices.call( new RemoteCallback<Boolean>() {
+    public void isWorkbenchOnCluster(final ParameterizedCommand<Boolean> parameterizedCommand) {
+        workbenchServices.call(new RemoteCallback<Boolean>() {
             @Override
-            public void callback( final Boolean result ) {
-                parameterizedCommand.execute( result );
+            public void callback(final Boolean result) {
+                parameterizedCommand.execute(result);
             }
-        } ).isWorkbenchOnCluster();
-
+        }).isWorkbenchOnCluster();
     }
 }

@@ -22,8 +22,7 @@ import org.uberfire.ext.wires.client.resources.images.UberfireWiresImageResource
 
 public interface UberfireWiresResources extends ClientBundle {
 
-    public static final UberfireWiresResources INSTANCE = GWT.create( UberfireWiresResources.class );
+    public static final UberfireWiresResources INSTANCE = GWT.create(UberfireWiresResources.class);
 
     UberfireWiresImageResources images();
-
 }

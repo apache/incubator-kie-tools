@@ -43,7 +43,8 @@ public class GroupEditorDriver implements Driver<Group, GroupEditor> {
         this.userSystemManager = userSystemManager;
     }
 
-    public void show(final Group group, final GroupEditor groupEditor) {
+    public void show(final Group group,
+                     final GroupEditor groupEditor) {
         this.isFlushed = false;
         this.isEditMode = false;
         this.group = group;
@@ -51,7 +52,8 @@ public class GroupEditorDriver implements Driver<Group, GroupEditor> {
         groupEditor.show(group);
     }
 
-    public void edit(final Group group, final GroupEditor groupEditor) {
+    public void edit(final Group group,
+                     final GroupEditor groupEditor) {
         this.isFlushed = false;
         this.isEditMode = true;
         this.group = group;
@@ -70,7 +72,7 @@ public class GroupEditorDriver implements Driver<Group, GroupEditor> {
 
         // Create a new resulting instance
         group = new GroupImpl(name);
-        
+
         // Validate the instance and set delegate violations, if any, to the editors hierarchy.
         Set<ConstraintViolation<Group>> violations = userSystemManager.groupsValidator().validate(group);
         groupEditor.setViolations(violations);

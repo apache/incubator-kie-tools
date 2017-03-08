@@ -21,7 +21,9 @@ import java.net.URI;
 
 import org.uberfire.java.nio.IOException;
 
-public interface Path extends Comparable<Path>, Iterable<Path>, Watchable {
+public interface Path extends Comparable<Path>,
+                              Iterable<Path>,
+                              Watchable {
 
     FileSystem getFileSystem();
 
@@ -37,7 +39,8 @@ public interface Path extends Comparable<Path>, Iterable<Path>, Watchable {
 
     Path getName(int index) throws IllegalArgumentException;
 
-    Path subpath(int beginIndex, int endIndex) throws IllegalArgumentException;
+    Path subpath(int beginIndex,
+                 int endIndex) throws IllegalArgumentException;
 
     boolean startsWith(Path other);
 

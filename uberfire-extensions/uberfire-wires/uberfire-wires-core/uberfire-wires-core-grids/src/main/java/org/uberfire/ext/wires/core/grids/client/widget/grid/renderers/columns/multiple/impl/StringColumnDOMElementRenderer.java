@@ -25,31 +25,30 @@ import org.uberfire.ext.wires.core.grids.client.widget.dom.multiple.impl.TextBox
 
 public class StringColumnDOMElementRenderer extends BaseGridColumnMultipleDOMElementRenderer<String, TextBox, TextBoxDOMElement> {
 
-    public StringColumnDOMElementRenderer( final TextBoxDOMElementFactory factory ) {
-        super( factory );
+    public StringColumnDOMElementRenderer(final TextBoxDOMElementFactory factory) {
+        super(factory);
     }
 
     @Override
-    public Group renderCell( final GridCell<String> cell,
-                             final GridBodyCellRenderContext context ) {
-        if ( cell == null || cell.getValue() == null ) {
+    public Group renderCell(final GridCell<String> cell,
+                            final GridBodyCellRenderContext context) {
+        if (cell == null || cell.getValue() == null) {
             return null;
         }
         final Group g = new Group();
-        factory.attachDomElement( context,
-                                  new Callback<TextBoxDOMElement>() {
-                                      @Override
-                                      public void callback( final TextBoxDOMElement e ) {
-                                          e.getWidget().setValue( cell.getValue().getValue() );
-                                      }
-                                  },
-                                  new Callback<TextBoxDOMElement>() {
-                                      @Override
-                                      public void callback( final TextBoxDOMElement e ) {
-                                          //Do nothing
-                                      }
-                                  } );
+        factory.attachDomElement(context,
+                                 new Callback<TextBoxDOMElement>() {
+                                     @Override
+                                     public void callback(final TextBoxDOMElement e) {
+                                         e.getWidget().setValue(cell.getValue().getValue());
+                                     }
+                                 },
+                                 new Callback<TextBoxDOMElement>() {
+                                     @Override
+                                     public void callback(final TextBoxDOMElement e) {
+                                         //Do nothing
+                                     }
+                                 });
         return g;
     }
-
 }

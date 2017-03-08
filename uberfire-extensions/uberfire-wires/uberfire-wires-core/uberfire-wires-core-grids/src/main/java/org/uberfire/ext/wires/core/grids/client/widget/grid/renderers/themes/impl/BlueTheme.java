@@ -40,100 +40,107 @@ public class BlueTheme implements GridRendererTheme {
     @Override
     public MultiPath getSelector() {
         final MultiPath selector = new MultiPath()
-                .setStrokeWidth( 2.0 )
-                .setStrokeColor( ColorName.BLUE )
-                .setShadow( new Shadow( ColorName.DARKBLUE, 4, 0.0, 0.0 ) );
+                .setStrokeWidth(2.0)
+                .setStrokeColor(ColorName.BLUE)
+                .setShadow(new Shadow(ColorName.DARKBLUE,
+                                      4,
+                                      0.0,
+                                      0.0));
         return selector;
     }
 
     @Override
     public Rectangle getCellSelector() {
-        final Rectangle selector = new Rectangle( 0, 0 )
-                .setStrokeColor( ColorName.BLUE );
+        final Rectangle selector = new Rectangle(0,
+                                                 0)
+                .setStrokeColor(ColorName.BLUE);
         return selector;
     }
 
     @Override
-    public Rectangle getHeaderBackground( final GridColumn<?> column ) {
-        final Rectangle header = new Rectangle( 0, 0 )
-                .setFillColor( ColorName.CYAN );
+    public Rectangle getHeaderBackground(final GridColumn<?> column) {
+        final Rectangle header = new Rectangle(0,
+                                               0)
+                .setFillColor(ColorName.CYAN);
         return header;
     }
 
     @Override
-    public Rectangle getHeaderLinkBackground( final GridColumn<?> column ) {
-        final Rectangle link = new Rectangle( 0, 0 )
-                .setFillColor( ColorName.BROWN );
+    public Rectangle getHeaderLinkBackground(final GridColumn<?> column) {
+        final Rectangle link = new Rectangle(0,
+                                             0)
+                .setFillColor(ColorName.BROWN);
         return link;
     }
 
     @Override
     public MultiPath getHeaderGridLine() {
         final MultiPath headerGrid = new MultiPath()
-                .setStrokeColor( ColorName.SLATEGRAY )
-                .setStrokeWidth( 0.5 )
-                .setListening( false );
+                .setStrokeColor(ColorName.SLATEGRAY)
+                .setStrokeWidth(0.5)
+                .setListening(false);
         return headerGrid;
     }
 
     @Override
     public Text getHeaderText() {
-        final Text t = new Text( "" )
-                .setFillColor( ColorName.DARKBLUE )
-                .setFontSize( 12 )
-                .setFontStyle( "bold" )
-                .setFontFamily( "serif" )
-                .setListening( false )
-                .setTextBaseLine( TextBaseLine.MIDDLE )
-                .setTextAlign( TextAlign.CENTER );
+        final Text t = new Text("")
+                .setFillColor(ColorName.DARKBLUE)
+                .setFontSize(12)
+                .setFontStyle("bold")
+                .setFontFamily("serif")
+                .setListening(false)
+                .setTextBaseLine(TextBaseLine.MIDDLE)
+                .setTextAlign(TextAlign.CENTER);
         return t;
     }
 
     @Override
-    public Rectangle getBodyBackground( final GridColumn<?> column ) {
-        if ( column instanceof IsRowDragHandle ) {
-            return getHeaderBackground( column );
+    public Rectangle getBodyBackground(final GridColumn<?> column) {
+        if (column instanceof IsRowDragHandle) {
+            return getHeaderBackground(column);
         }
-        final Rectangle body = new Rectangle( 0, 0 )
-                .setFillColor( ColorName.LIGHTCYAN );
+        final Rectangle body = new Rectangle(0,
+                                             0)
+                .setFillColor(ColorName.LIGHTCYAN);
         return body;
     }
 
     @Override
     public MultiPath getBodyGridLine() {
         final MultiPath bodyGrid = new MultiPath()
-                .setStrokeColor( ColorName.SLATEGRAY )
-                .setStrokeWidth( 0.5 );
+                .setStrokeColor(ColorName.SLATEGRAY)
+                .setStrokeWidth(0.5);
         return bodyGrid;
     }
 
     @Override
     public Text getBodyText() {
-        final Text t = new Text( "" )
-                .setFillColor( ColorName.BLUE )
-                .setFontSize( 12 )
-                .setFontFamily( "serif" )
-                .setListening( false )
-                .setTextBaseLine( TextBaseLine.MIDDLE )
-                .setTextAlign( TextAlign.CENTER );
+        final Text t = new Text("")
+                .setFillColor(ColorName.BLUE)
+                .setFontSize(12)
+                .setFontFamily("serif")
+                .setListening(false)
+                .setTextBaseLine(TextBaseLine.MIDDLE)
+                .setTextAlign(TextAlign.CENTER);
         return t;
     }
 
     @Override
     public Rectangle getGridBoundary() {
-        final Rectangle boundary = new Rectangle( 0, 0 )
-                .setStrokeColor( ColorName.SLATEGRAY )
-                .setStrokeWidth( 0.5 )
-                .setListening( false );
+        final Rectangle boundary = new Rectangle(0,
+                                                 0)
+                .setStrokeColor(ColorName.SLATEGRAY)
+                .setStrokeWidth(0.5)
+                .setListening(false);
         return boundary;
     }
 
     @Override
     public Line getGridHeaderBodyDivider() {
         final Line divider = new Line()
-                .setStrokeColor( ColorName.SLATEGRAY )
-                .setStrokeWidth( 0.5 );
+                .setStrokeColor(ColorName.SLATEGRAY)
+                .setStrokeWidth(0.5);
         return divider;
     }
-
 }

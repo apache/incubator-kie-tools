@@ -28,8 +28,8 @@ import org.uberfire.workbench.model.toolbar.ToolBar;
  */
 public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActivity implements PerspectiveActivity {
 
-    public AbstractWorkbenchPerspectiveActivity( final PlaceManager placeManager ) {
-        super( placeManager );
+    public AbstractWorkbenchPerspectiveActivity(final PlaceManager placeManager) {
+        super(placeManager);
     }
 
     @Override
@@ -59,5 +59,4 @@ public abstract class AbstractWorkbenchPerspectiveActivity extends AbstractActiv
     public ToolBar getToolBar() {
         return null;
     }
-    
 }

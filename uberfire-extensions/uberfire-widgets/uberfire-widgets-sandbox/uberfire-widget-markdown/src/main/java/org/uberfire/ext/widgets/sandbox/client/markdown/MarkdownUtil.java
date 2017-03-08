@@ -25,5 +25,4 @@ public class MarkdownUtil {
         var converter = new $wnd.Showdown.converter();
         return converter.makeHtml(text);
     }-*/;
-
 }

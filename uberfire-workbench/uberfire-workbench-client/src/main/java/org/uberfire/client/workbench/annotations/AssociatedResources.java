@@ -29,9 +29,8 @@ import org.uberfire.client.workbench.type.ClientResourceType;
  */
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
+@Target({ElementType.TYPE})
 public @interface AssociatedResources {
 
     Class<? extends ClientResourceType>[] value();
-
 }

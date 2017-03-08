@@ -22,6 +22,6 @@ public interface DirectoryStream<T> extends Iterable<T> {
 
     public static interface Filter<T> {
 
-        boolean accept( T entry ) throws IOException;
+        boolean accept(T entry) throws IOException;
     }
 }

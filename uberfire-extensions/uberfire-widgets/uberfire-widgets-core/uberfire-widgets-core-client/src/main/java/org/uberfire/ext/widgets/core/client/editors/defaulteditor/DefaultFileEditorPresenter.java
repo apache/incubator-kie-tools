@@ -21,7 +21,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
-import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
@@ -29,6 +28,7 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.type.AnyResourceType;
+import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnStartup;
 
@@ -36,22 +36,14 @@ import org.uberfire.lifecycle.OnStartup;
 @WorkbenchEditor(identifier = "DefaultFileEditor", supportedTypes = {AnyResourceType.class}, priority = Integer.MIN_VALUE)
 public class DefaultFileEditorPresenter {
 
-    interface View {
-
-        void setPath(Path path);
-
-    }
-
     @Inject
     public DefaultFileEditorView view;
-
     @Inject
     private Caller<VFSService> vfsServices;
-
     private Path path;
 
     @OnStartup
-    public void onStartup( final ObservablePath path ) {
+    public void onStartup(final ObservablePath path) {
         this.path = path;
         view.setPath(path);
     }
@@ -63,7 +55,7 @@ public class DefaultFileEditorPresenter {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return CoreConstants.INSTANCE.DefaultEditor()+" [" + path.getFileName() + "]";
+        return CoreConstants.INSTANCE.DefaultEditor() + " [" + path.getFileName() + "]";
     }
 
     @WorkbenchPartView
@@ -71,4 +63,8 @@ public class DefaultFileEditorPresenter {
         return view;
     }
 
+    interface View {
+
+        void setPath(Path path);
+    }
 }

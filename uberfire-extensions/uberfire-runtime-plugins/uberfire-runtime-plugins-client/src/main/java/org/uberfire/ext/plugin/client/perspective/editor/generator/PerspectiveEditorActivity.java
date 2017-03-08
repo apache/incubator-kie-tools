@@ -37,13 +37,13 @@ public class PerspectiveEditorActivity implements PerspectiveActivity {
     private PlaceRequest place;
 
     public PerspectiveEditorActivity(final LayoutTemplate editor,
-            PerspectiveEditorScreenActivity screen) {
+                                     PerspectiveEditorScreenActivity screen) {
         this.editor = editor;
         this.screen = screen;
     }
 
     public void update(final LayoutTemplate editor,
-                       PerspectiveEditorScreenActivity screen ){
+                       PerspectiveEditorScreenActivity screen) {
         this.editor = editor;
         this.screen = screen;
     }
@@ -54,7 +54,7 @@ public class PerspectiveEditorActivity implements PerspectiveActivity {
     }
 
     @Override
-    public void onStartup( final PlaceRequest place ) {
+    public void onStartup(final PlaceRequest place) {
         this.place = place;
     }
 
@@ -77,14 +77,14 @@ public class PerspectiveEditorActivity implements PerspectiveActivity {
     }
 
     public PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinition perspectiveDefinition = new PerspectiveDefinitionImpl( getDefaultPanelType() );
-        perspectiveDefinition.setName( editor.getName() );
+        final PerspectiveDefinition perspectiveDefinition = new PerspectiveDefinitionImpl(getDefaultPanelType());
+        perspectiveDefinition.setName(editor.getName());
 
         final PanelDefinition root = perspectiveDefinition.getRoot();
 
-        final PlaceRequest placeRequest = new DefaultPlaceRequest( screen.getIdentifier() );
-        final PartDefinition partDefinition = new PartDefinitionImpl( placeRequest );
-        root.addPart( partDefinition );
+        final PlaceRequest placeRequest = new DefaultPlaceRequest(screen.getIdentifier());
+        final PartDefinition partDefinition = new PartDefinitionImpl(placeRequest);
+        root.addPart(partDefinition);
 
         return perspectiveDefinition;
     }
@@ -122,5 +122,4 @@ public class PerspectiveEditorActivity implements PerspectiveActivity {
     public ActivityResourceType getResourceType() {
         return ActivityResourceType.PERSPECTIVE;
     }
-    
 }

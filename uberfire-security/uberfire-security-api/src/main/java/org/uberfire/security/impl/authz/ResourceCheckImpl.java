@@ -22,7 +22,6 @@ import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceAction;
 import org.uberfire.security.ResourceType;
 import org.uberfire.security.authz.AuthorizationManager;
-import org.uberfire.security.authz.AuthorizationCheck;
 import org.uberfire.security.authz.ResourceCheck;
 import org.uberfire.security.authz.VotingStrategy;
 
@@ -36,26 +35,36 @@ public class ResourceCheckImpl<C extends ResourceCheckImpl> implements ResourceC
     protected VotingStrategy votingStrategy;
     protected Boolean result = null;
 
-    public ResourceCheckImpl(AuthorizationManager authorizationManager, Resource resource, User user) {
+    public ResourceCheckImpl(AuthorizationManager authorizationManager,
+                             Resource resource,
+                             User user) {
         this.authorizationManager = authorizationManager;
         this.resource = resource;
         this.user = user;
     }
 
-    public ResourceCheckImpl(AuthorizationManager authorizationManager, ResourceType resourceType, User user) {
+    public ResourceCheckImpl(AuthorizationManager authorizationManager,
+                             ResourceType resourceType,
+                             User user) {
         this.authorizationManager = authorizationManager;
         this.resourceType = resourceType;
         this.user = user;
     }
 
-    public ResourceCheckImpl(AuthorizationManager authorizationManager, Resource resource, User user, VotingStrategy votingStrategy) {
+    public ResourceCheckImpl(AuthorizationManager authorizationManager,
+                             Resource resource,
+                             User user,
+                             VotingStrategy votingStrategy) {
         this.authorizationManager = authorizationManager;
         this.resource = resource;
         this.user = user;
         this.votingStrategy = votingStrategy;
     }
 
-    public ResourceCheckImpl(AuthorizationManager authorizationManager, ResourceType resourceType, User user, VotingStrategy votingStrategy) {
+    public ResourceCheckImpl(AuthorizationManager authorizationManager,
+                             ResourceType resourceType,
+                             User user,
+                             VotingStrategy votingStrategy) {
         this.authorizationManager = authorizationManager;
         this.resourceType = resourceType;
         this.user = user;
@@ -65,15 +74,25 @@ public class ResourceCheckImpl<C extends ResourceCheckImpl> implements ResourceC
     protected void check(ResourceAction action) {
         if (votingStrategy == null) {
             if (resource == null) {
-                result = authorizationManager.authorize(resourceType, action, user);
+                result = authorizationManager.authorize(resourceType,
+                                                        action,
+                                                        user);
             } else {
-                result = authorizationManager.authorize(resource, action, user);
+                result = authorizationManager.authorize(resource,
+                                                        action,
+                                                        user);
             }
         } else {
             if (resource == null) {
-                result = authorizationManager.authorize(resourceType, action, user, votingStrategy);
+                result = authorizationManager.authorize(resourceType,
+                                                        action,
+                                                        user,
+                                                        votingStrategy);
             } else {
-                result = authorizationManager.authorize(resource, action, user, votingStrategy);
+                result = authorizationManager.authorize(resource,
+                                                        action,
+                                                        user,
+                                                        votingStrategy);
             }
         }
     }

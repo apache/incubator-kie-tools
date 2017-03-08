@@ -42,62 +42,61 @@ public class StencilLayerBuilder extends Composite {
     @Inject
     private Event<ShapeSelectedEvent> shapeSelectedEvent;
 
-    public LayerShape build( final WiresBaseShape shape,
-                             final ShapeFactory factory ) {
+    public LayerShape build(final WiresBaseShape shape,
+                            final ShapeFactory factory) {
         final LayerShape layerShape = new LayerShape();
         final Rectangle bounding = drawBoundingBox();
         final ShapeGlyph glyph = factory.getGlyph();
 
         //Get display name to show in Panel
-        final String name = ( shape instanceof OverridesFactoryDescription ) ? ( (OverridesFactoryDescription) shape ).getDescription() : factory.getShapeDescription();
-        final Text description = drawDescription( name );
+        final String name = (shape instanceof OverridesFactoryDescription) ? ((OverridesFactoryDescription) shape).getDescription() : factory.getShapeDescription();
+        final Text description = drawDescription(name);
 
         //Clicking on the Shape selects it - Lienzo doesn't support bubbling click events down through
         //overlapping items as it uses a bitmap SelectionLayer to detect mouse-clicks. Therefore we need
         //to attach the handler to all elements
         final NodeMouseClickHandler handler = new NodeMouseClickHandler() {
             @Override
-            public void onNodeMouseClick( final NodeMouseClickEvent nodeMouseClickEvent ) {
-                shapeSelectedEvent.fire( new ShapeSelectedEvent( shape ) );
+            public void onNodeMouseClick(final NodeMouseClickEvent nodeMouseClickEvent) {
+                shapeSelectedEvent.fire(new ShapeSelectedEvent(shape));
             }
         };
-        layerShape.addNodeMouseClickHandler( handler );
+        layerShape.addNodeMouseClickHandler(handler);
 
         //Build Layer Shape
-        layerShape.setBounding( bounding );
-        layerShape.setDescription( description );
-        layerShape.setGroup( scaleGlyph( glyph ) );
+        layerShape.setBounding(bounding);
+        layerShape.setDescription(description);
+        layerShape.setGroup(scaleGlyph(glyph));
 
         return layerShape;
     }
 
-    private Group scaleGlyph( final ShapeGlyph glyph ) {
+    private Group scaleGlyph(final ShapeGlyph glyph) {
         final double sx = GLYPH_WIDTH / glyph.getWidth();
         final double sy = GLYPH_HEIGHT / glyph.getHeight();
         final Group group = glyph.getGroup();
-        return group.setX( ShapeFactoryUtil.HEIGHT_BOUNDING_LAYER / 2 ).setY( ShapeFactoryUtil.HEIGHT_BOUNDING_LAYER / 2 ).setScale( sx,
-                                                                                                                                     sy );
+        return group.setX(ShapeFactoryUtil.HEIGHT_BOUNDING_LAYER / 2).setY(ShapeFactoryUtil.HEIGHT_BOUNDING_LAYER / 2).setScale(sx,
+                                                                                                                                sy);
     }
 
     private Rectangle drawBoundingBox() {
-        final Rectangle boundingBox = new Rectangle( ShapeFactoryUtil.WIDTH_BOUNDING_LAYER,
-                                                     ShapeFactoryUtil.HEIGHT_BOUNDING_LAYER );
-        boundingBox.setStrokeColor( ShapeFactoryUtil.RGB_STROKE_BOUNDING )
-                .setStrokeWidth( 1 )
-                .setFillColor( ShapeFactoryUtil.RGB_FILL_BOUNDING )
-                .setDraggable( false );
+        final Rectangle boundingBox = new Rectangle(ShapeFactoryUtil.WIDTH_BOUNDING_LAYER,
+                                                    ShapeFactoryUtil.HEIGHT_BOUNDING_LAYER);
+        boundingBox.setStrokeColor(ShapeFactoryUtil.RGB_STROKE_BOUNDING)
+                .setStrokeWidth(1)
+                .setFillColor(ShapeFactoryUtil.RGB_FILL_BOUNDING)
+                .setDraggable(false);
         return boundingBox;
     }
 
-    private Text drawDescription( final String description ) {
-        Text text = new Text( description,
-                              ShapeFactoryUtil.FONT_FAMILY_DESCRIPTION,
-                              ShapeFactoryUtil.FONT_SIZE_DESCRIPTION );
-        text.setFillColor( ShapeFactoryUtil.RGB_TEXT_DESCRIPTION );
-        text.setTextBaseLine( TextBaseLine.MIDDLE );
-        text.setX( 40 );
-        text.setY( 15 );
+    private Text drawDescription(final String description) {
+        Text text = new Text(description,
+                             ShapeFactoryUtil.FONT_FAMILY_DESCRIPTION,
+                             ShapeFactoryUtil.FONT_SIZE_DESCRIPTION);
+        text.setFillColor(ShapeFactoryUtil.RGB_TEXT_DESCRIPTION);
+        text.setTextBaseLine(TextBaseLine.MIDDLE);
+        text.setX(40);
+        text.setY(15);
         return text;
     }
-
 }

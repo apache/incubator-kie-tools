@@ -24,13 +24,13 @@ import org.uberfire.client.mvp.Activity;
 
 public class JSExporterUtils {
 
-    public static <T extends Activity> T findActivityIfExists( final SyncBeanManager beanManager,
-                                                               String id,
-                                                               Class<T> activityType ) {
-        Iterator<SyncBeanDef> existentActivities = beanManager.lookupBeans( id ).iterator();
-        while ( existentActivities.hasNext() ) {
+    public static <T extends Activity> T findActivityIfExists(final SyncBeanManager beanManager,
+                                                              String id,
+                                                              Class<T> activityType) {
+        Iterator<SyncBeanDef> existentActivities = beanManager.lookupBeans(id).iterator();
+        while (existentActivities.hasNext()) {
             Object existentActivity = existentActivities.next().getInstance();
-            if ( activityType.equals( existentActivity.getClass() ) ) {
+            if (activityType.equals(existentActivity.getClass())) {
                 return (T) existentActivity;
             }
         }

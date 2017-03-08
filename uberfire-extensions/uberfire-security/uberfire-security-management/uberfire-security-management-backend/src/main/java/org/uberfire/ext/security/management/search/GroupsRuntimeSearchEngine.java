@@ -16,13 +16,12 @@
 
 package org.uberfire.ext.security.management.search;
 
-import org.jboss.errai.security.shared.api.Group;
-
 import javax.enterprise.context.ApplicationScoped;
+
+import org.jboss.errai.security.shared.api.Group;
 
 /**
  * <p>Default runtime search engine implementation for collections of groups.</p>
- * 
  * @since 0.8.0
  */
 @ApplicationScoped

@@ -36,29 +36,28 @@ import org.gwtbootstrap3.client.ui.base.HasActive;
  */
 public class TabPanelEntry implements HasActive {
 
-    private String title;
     private final DropDownTabListItem tab;
-
     /**
      * Container for {@link #contents}.
      */
     private final TabPane contentPane;
-
     /**
      * The application-provided content widget that should show up when the tab is clicked.
      */
     private final Widget contents;
+    private String title;
 
-    public TabPanelEntry( String title, Widget contents ) {
+    public TabPanelEntry(String title,
+                         Widget contents) {
         this.title = title;
         this.tab = GWT.create(DropDownTabListItem.class);
         this.tab.setText(title);
         this.contents = contents;
 
         contentPane = GWT.create(TabPane.class);
-        contentPane.add( contents );
+        contentPane.add(contents);
 
-        tab.setDataTargetWidget( contentPane );
+        tab.setDataTargetWidget(contentPane);
     }
 
     public DropDownTabListItem getTabWidget() {
@@ -80,53 +79,13 @@ public class TabPanelEntry implements HasActive {
         return title;
     }
 
-    public void setTitle( String title ) {
+    public void setTitle(String title) {
         this.title = title;
-        tab.setText( title );
+        tab.setText(title);
     }
 
-    public void setInDropdown( boolean inDropdown ) {
-        tab.setInDropdown( inDropdown );
-    }
-
-    /**
-     * Represents the tab widget that lives in the tab bar or under a dropdown tab.
-     */
-    public static class DropDownTabListItem extends TabListItem implements HasClickHandlers,
-            HasMouseDownHandlers {
-
-        public DropDownTabListItem() {
-            this(null);
-        }
-
-        public DropDownTabListItem( String label ) {
-            super( label );
-            addStyleName( "uf-dropdown-tab-list-item" );
-        }
-
-        /**
-         * Sets this tab for use in the top-level tab bar (isDropdown false) or inside a dropdown tab (isDropdown true).
-         */
-        public void setInDropdown( boolean inDropdown ) {
-            anchor.setTabIndex( inDropdown ? -1 : 0 );
-        }
-
-        /**
-         * Adds the given widget as a child of the anchor within the tab.
-         */
-        public void addToAnchor( Widget w ) {
-            anchor.add( w );
-        }
-
-        @Override
-        public HandlerRegistration addClickHandler( ClickHandler handler ) {
-            return addDomHandler( handler, ClickEvent.getType() );
-        }
-
-        @Override
-        public HandlerRegistration addMouseDownHandler( MouseDownHandler handler ) {
-            return addDomHandler( handler, MouseDownEvent.getType() );
-        }
+    public void setInDropdown(boolean inDropdown) {
+        tab.setInDropdown(inDropdown);
     }
 
     /**
@@ -141,16 +100,16 @@ public class TabPanelEntry implements HasActive {
      * Sets or clears the active state on this tab. Does not actually cause the tab to hide or show.
      */
     @Override
-    public void setActive( boolean b ) {
-        tab.setActive( b );
-        contentPane.setActive( b );
+    public void setActive(boolean b) {
+        tab.setActive(b);
+        contentPane.setActive(b);
     }
 
     /**
      * Makes this tab show itself and become the active tab, replacing whatever tab was previously active.
      */
     public void showTab() {
-        tab.showTab( false );
+        tab.showTab(false);
     }
 
     @Override
@@ -158,4 +117,45 @@ public class TabPanelEntry implements HasActive {
         return "TabPanelEntry \"" + title + "\"";
     }
 
+    /**
+     * Represents the tab widget that lives in the tab bar or under a dropdown tab.
+     */
+    public static class DropDownTabListItem extends TabListItem implements HasClickHandlers,
+                                                                           HasMouseDownHandlers {
+
+        public DropDownTabListItem() {
+            this(null);
+        }
+
+        public DropDownTabListItem(String label) {
+            super(label);
+            addStyleName("uf-dropdown-tab-list-item");
+        }
+
+        /**
+         * Sets this tab for use in the top-level tab bar (isDropdown false) or inside a dropdown tab (isDropdown true).
+         */
+        public void setInDropdown(boolean inDropdown) {
+            anchor.setTabIndex(inDropdown ? -1 : 0);
+        }
+
+        /**
+         * Adds the given widget as a child of the anchor within the tab.
+         */
+        public void addToAnchor(Widget w) {
+            anchor.add(w);
+        }
+
+        @Override
+        public HandlerRegistration addClickHandler(ClickHandler handler) {
+            return addDomHandler(handler,
+                                 ClickEvent.getType());
+        }
+
+        @Override
+        public HandlerRegistration addMouseDownHandler(MouseDownHandler handler) {
+            return addDomHandler(handler,
+                                 MouseDownEvent.getType());
+        }
+    }
 }

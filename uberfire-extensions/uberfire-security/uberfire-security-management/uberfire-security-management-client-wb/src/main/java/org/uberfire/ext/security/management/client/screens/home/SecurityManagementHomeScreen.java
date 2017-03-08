@@ -29,21 +29,15 @@ import org.uberfire.ext.security.management.client.resources.i18n.UsersManagemen
 import org.uberfire.ext.security.management.client.screens.BaseScreen;
 
 @Dependent
-@WorkbenchScreen(identifier = SecurityManagementHomeScreen.SCREEN_ID )
+@WorkbenchScreen(identifier = SecurityManagementHomeScreen.SCREEN_ID)
 public class SecurityManagementHomeScreen {
 
     public static final String SCREEN_ID = "SecurityManagementHomeScreen";
-
-    public interface View extends UberView<SecurityManagementHomeScreen> {
-
-    }
-
     @Inject
     BaseScreen baseScreen;
-    
     @Inject
     View view;
-    
+
     @PostConstruct
     public void init() {
         view.init(this);
@@ -58,5 +52,9 @@ public class SecurityManagementHomeScreen {
     @WorkbenchPartView
     public Widget getWidget() {
         return baseScreen.asWidget();
+    }
+
+    public interface View extends UberView<SecurityManagementHomeScreen> {
+
     }
 }

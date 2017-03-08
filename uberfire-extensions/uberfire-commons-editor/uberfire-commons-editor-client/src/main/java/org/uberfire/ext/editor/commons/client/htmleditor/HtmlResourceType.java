@@ -61,7 +61,7 @@ public class HtmlResourceType implements ClientResourceType {
     }
 
     @Override
-    public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( "" + getSuffix() );
+    public boolean accept(final Path path) {
+        return path.getFileName().endsWith("" + getSuffix());
     }
 }

@@ -28,5 +28,4 @@ public interface MenuGroup
         extends MenuItem {
 
     List<MenuItem> getItems();
-
 }

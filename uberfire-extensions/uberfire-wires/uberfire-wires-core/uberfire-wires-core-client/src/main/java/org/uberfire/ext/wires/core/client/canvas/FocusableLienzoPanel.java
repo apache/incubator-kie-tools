@@ -31,33 +31,32 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class FocusableLienzoPanel extends LienzoPanel {
 
-    public FocusableLienzoPanel( final int width,
-                                 final int height ) {
-        super( width,
-               height );
+    public FocusableLienzoPanel(final int width,
+                                final int height) {
+        super(width,
+              height);
 
         //Basic support to loose focus on other Widgets when a WiresCanvas is clicked
-        addMouseDownHandler( new MouseDownHandler() {
+        addMouseDownHandler(new MouseDownHandler() {
             @Override
-            public void onMouseDown( final MouseDownEvent event ) {
+            public void onMouseDown(final MouseDownEvent event) {
                 broadcastBlurEvent();
             }
-        } );
-        addMouseWheelHandler( new MouseWheelHandler() {
+        });
+        addMouseWheelHandler(new MouseWheelHandler() {
             @Override
-            public void onMouseWheel( final MouseWheelEvent event ) {
+            public void onMouseWheel(final MouseWheelEvent event) {
                 broadcastBlurEvent();
             }
-        } );
+        });
     }
 
     protected void broadcastBlurEvent() {
         final NativeEvent blur = Document.get().createBlurEvent();
-        for ( int i = 0; i < RootPanel.get().getWidgetCount(); i++ ) {
-            final Widget w = RootPanel.get().getWidget( i );
-            DomEvent.fireNativeEvent( blur,
-                                      w );
+        for (int i = 0; i < RootPanel.get().getWidgetCount(); i++) {
+            final Widget w = RootPanel.get().getWidget(i);
+            DomEvent.fireNativeEvent(blur,
+                                     w);
         }
     }
-
 }

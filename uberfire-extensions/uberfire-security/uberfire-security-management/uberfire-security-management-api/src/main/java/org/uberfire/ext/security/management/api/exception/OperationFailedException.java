@@ -29,8 +29,8 @@ public class OperationFailedException extends SecurityManagementException {
     private int code;
     private String message;
 
-    public OperationFailedException( @MapsTo("code") int code,
-                                     @MapsTo("message") String message ) {
+    public OperationFailedException(@MapsTo("code") int code,
+                                    @MapsTo("message") String message) {
         this.code = code;
         this.message = message;
     }

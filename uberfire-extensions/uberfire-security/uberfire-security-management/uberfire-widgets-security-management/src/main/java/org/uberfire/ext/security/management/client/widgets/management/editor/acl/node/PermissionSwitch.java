@@ -19,7 +19,6 @@ package org.uberfire.ext.security.management.client.widgets.management.editor.ac
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
@@ -27,24 +26,8 @@ import org.uberfire.mvp.Command;
 @Dependent
 public class PermissionSwitch implements PermissionSwitchToogle {
 
-    public interface View extends UberView<PermissionSwitch> {
-
-        void init(String textOn, String textOff, boolean on);
-
-        void showExceptionsCount(int n);
-
-        void hideExceptionsCount();
-
-        boolean isOn();
-
-        void setOn(boolean on);
-
-        void setEnabled(boolean enabled);
-    }
-
     View view;
     Command onChange;
-
     @Inject
     public PermissionSwitch(View view) {
         this.view = view;
@@ -56,8 +39,13 @@ public class PermissionSwitch implements PermissionSwitchToogle {
         return view.asWidget();
     }
 
-    public void init(String switchOnName, String switchOffName, boolean on, int nexceptions) {
-        view.init(switchOnName, switchOffName, on);
+    public void init(String switchOnName,
+                     String switchOffName,
+                     boolean on,
+                     int nexceptions) {
+        view.init(switchOnName,
+                  switchOffName,
+                  on);
         setNumberOfExceptions(nexceptions);
     }
 
@@ -91,5 +79,22 @@ public class PermissionSwitch implements PermissionSwitchToogle {
 
     public void onChange() {
         onChange.execute();
+    }
+
+    public interface View extends UberView<PermissionSwitch> {
+
+        void init(String textOn,
+                  String textOff,
+                  boolean on);
+
+        void showExceptionsCount(int n);
+
+        void hideExceptionsCount();
+
+        boolean isOn();
+
+        void setOn(boolean on);
+
+        void setEnabled(boolean enabled);
     }
 }

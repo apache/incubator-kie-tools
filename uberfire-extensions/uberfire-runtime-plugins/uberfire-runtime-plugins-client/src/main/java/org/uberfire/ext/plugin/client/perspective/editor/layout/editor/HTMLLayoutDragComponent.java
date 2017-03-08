@@ -16,6 +16,10 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor.layout.editor;
 
+import java.util.Map;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.Modal;
@@ -26,13 +30,9 @@ import org.uberfire.ext.plugin.client.perspective.editor.api.PerspectiveEditorDr
 import org.uberfire.ext.plugin.client.perspective.editor.layout.editor.popups.EditHTMLPresenter;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.Map;
-
 @Dependent
 public class HTMLLayoutDragComponent implements PerspectiveEditorDragComponent,
-        HasModalConfiguration {
+                                                HasModalConfiguration {
 
     public static final String HTML_CODE_PARAMETER = "HTML_CODE";
 
@@ -45,21 +45,20 @@ public class HTMLLayoutDragComponent implements PerspectiveEditorDragComponent,
     }
 
     @Override
-    public IsWidget getPreviewWidget( RenderingContext container ) {
-        return getShowWidget( container );
+    public IsWidget getPreviewWidget(RenderingContext container) {
+        return getShowWidget(container);
     }
 
     @Override
-    public IsWidget getShowWidget( RenderingContext context ) {
+    public IsWidget getShowWidget(RenderingContext context) {
         Map<String, String> properties = context.getComponent().getProperties();
-        String html = properties.get( HTMLLayoutDragComponent.HTML_CODE_PARAMETER );
-        return html == null ? null : new HTMLPanel( html );
+        String html = properties.get(HTMLLayoutDragComponent.HTML_CODE_PARAMETER);
+        return html == null ? null : new HTMLPanel(html);
     }
 
     @Override
-    public Modal getConfigurationModal( ModalConfigurationContext ctx ) {
-        htmlEditor.init( ctx );
+    public Modal getConfigurationModal(ModalConfigurationContext ctx) {
+        htmlEditor.init(ctx);
         return htmlEditor.getView().getModal();
     }
-
 }

@@ -21,12 +21,12 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 /**
  * <p>The status for a capability.</p>
  * <p>Usually a capability can be executed in the service provider if the status of it is <code>ENABLED</code>.</p>
- * 
  * @since 0.8.0
  */
 @Portable
 public enum CapabilityStatus {
-    UNSUPPORTED, ENABLED;
+    UNSUPPORTED,
+    ENABLED;
 
     CapabilityStatus() {
     }

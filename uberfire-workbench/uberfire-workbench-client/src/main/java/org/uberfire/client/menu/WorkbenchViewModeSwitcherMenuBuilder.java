@@ -28,7 +28,7 @@ import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 public class WorkbenchViewModeSwitcherMenuBuilder implements MenuFactory.CustomMenuBuilder {
 
     @Override
-    public void push( MenuFactory.CustomMenuBuilder element ) {
+    public void push(MenuFactory.CustomMenuBuilder element) {
 
     }
 
@@ -38,7 +38,7 @@ public class WorkbenchViewModeSwitcherMenuBuilder implements MenuFactory.CustomM
 
             @Override
             public IsWidget build() {
-                return IOC.getBeanManager().lookupBean( WorkbenchViewModeSwitcherPresenter.class ).getInstance();
+                return IOC.getBeanManager().lookupBean(WorkbenchViewModeSwitcherPresenter.class).getInstance();
             }
         };
     }

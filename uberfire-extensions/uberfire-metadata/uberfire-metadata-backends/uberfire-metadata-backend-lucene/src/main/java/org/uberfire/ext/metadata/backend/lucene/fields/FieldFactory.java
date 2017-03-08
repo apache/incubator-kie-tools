@@ -24,5 +24,5 @@ import org.uberfire.ext.metadata.model.KProperty;
  */
 public interface FieldFactory {
 
-    IndexableField[] build( final KProperty<?> property );
+    IndexableField[] build(final KProperty<?> property);
 }

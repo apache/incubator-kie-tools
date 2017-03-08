@@ -25,12 +25,12 @@ public class DefaultEditorFileUploadBaseTestWrapper extends DefaultEditorFileUpl
     boolean isValid;
 
     public DefaultEditorFileUploadBaseTestWrapper() {
-        super( false );
+        super(false);
     }
 
     @Override
     void initForm() {
-        if ( initialized ) {
+        if (initialized) {
             super.initForm();
         }
     }
@@ -40,18 +40,17 @@ public class DefaultEditorFileUploadBaseTestWrapper extends DefaultEditorFileUpl
         initForm();
     }
 
-    void setValid( final boolean isValid ) {
-        this.isValid = isValid;
-    }
-
     @Override
     boolean isValid() {
         return isValid;
+    }
+
+    void setValid(final boolean isValid) {
+        this.isValid = isValid;
     }
 
     @Override
     protected Map<String, String> getParameters() {
         return Collections.emptyMap();
     }
-
 }

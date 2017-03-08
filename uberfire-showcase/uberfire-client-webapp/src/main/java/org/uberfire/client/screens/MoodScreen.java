@@ -21,6 +21,10 @@ import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.TextBox;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -30,21 +34,16 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.util.Layouts;
 import org.uberfire.shared.Mood;
 
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.TextBox;
-
 @Dependent
 @Templated
-@WorkbenchScreen(identifier="MoodScreen")
+@WorkbenchScreen(identifier = "MoodScreen")
 public class MoodScreen extends Composite {
 
     @Inject
+    Event<Mood> moodEvent;
+    @Inject
     @DataField
     private TextBox moodTextBox;
-
-    @Inject Event<Mood> moodEvent;
 
     @WorkbenchPartTitle
     public String getScreenTitle() {
@@ -61,6 +60,6 @@ public class MoodScreen extends Composite {
 
     public void dumpHierarchy(@Observes DumpLayout e) {
         System.out.println("Containment hierarchy of MoodScreen textbox:");
-        System.out.println(Layouts.getContainmentHierarchy( moodTextBox ));
+        System.out.println(Layouts.getContainmentHierarchy(moodTextBox));
     }
 }

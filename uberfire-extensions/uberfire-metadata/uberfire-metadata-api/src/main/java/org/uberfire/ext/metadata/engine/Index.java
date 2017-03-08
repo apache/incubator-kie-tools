@@ -28,5 +28,4 @@ public interface Index extends Disposable {
     void commit();
 
     void delete();
-
 }

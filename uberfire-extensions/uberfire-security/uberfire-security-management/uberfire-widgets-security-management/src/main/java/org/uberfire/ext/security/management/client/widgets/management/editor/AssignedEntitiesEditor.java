@@ -24,7 +24,6 @@ import org.uberfire.mvp.Command;
  * <p>An editor view contract for modifying the assigned entities.</p>
  * <p>This view wraps the given <code>EntitiesExplorerView</code> instance for exploring the users, groups or roles and adds editing features.</p>
  * @param <T> The presenter instance.
- * 
  * @since 0.8.0
  */
 public interface AssignedEntitiesEditor<T> extends UberView<T> {
@@ -42,7 +41,8 @@ public interface AssignedEntitiesEditor<T> extends UberView<T> {
      * @param closeCallback The button's click handler callback.
      * @return The view implementation.
      */
-    AssignedEntitiesEditor<T> configureClose(final String closeText, final Command closeCallback);
+    AssignedEntitiesEditor<T> configureClose(final String closeText,
+                                             final Command closeCallback);
 
     /**
      * Configures the editor save button's text and click callback.
@@ -50,7 +50,8 @@ public interface AssignedEntitiesEditor<T> extends UberView<T> {
      * @param saveCallback The button's click handler callback.
      * @return The view implementation.
      */
-    AssignedEntitiesEditor<T> configureSave(final String saveText, final Command saveCallback);
+    AssignedEntitiesEditor<T> configureSave(final String saveText,
+                                            final Command saveCallback);
 
     /**
      * Show the editor view.
@@ -64,5 +65,4 @@ public interface AssignedEntitiesEditor<T> extends UberView<T> {
      * @return The view implementation.
      */
     AssignedEntitiesEditor<T> hide();
-
 }

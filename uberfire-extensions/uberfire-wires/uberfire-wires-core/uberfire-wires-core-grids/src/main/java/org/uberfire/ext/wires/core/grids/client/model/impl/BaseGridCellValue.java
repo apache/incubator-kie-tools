@@ -25,7 +25,7 @@ public class BaseGridCellValue<T> implements GridCellValue<T> {
 
     protected T value;
 
-    public BaseGridCellValue( final T value ) {
+    public BaseGridCellValue(final T value) {
         this.value = value;
     }
 
@@ -35,17 +35,17 @@ public class BaseGridCellValue<T> implements GridCellValue<T> {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         BaseGridCellValue that = (BaseGridCellValue) o;
 
-        if ( value != null ? !value.equals( that.value ) : that.value != null ) {
+        if (value != null ? !value.equals(that.value) : that.value != null) {
             return false;
         }
 

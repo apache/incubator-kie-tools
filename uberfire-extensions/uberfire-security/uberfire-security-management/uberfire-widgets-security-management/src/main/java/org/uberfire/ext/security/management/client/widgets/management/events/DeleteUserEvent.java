@@ -34,5 +34,4 @@ public class DeleteUserEvent implements UberFireEvent {
     public String toString() {
         return "DeleteUserEvent [identifier=" + identifier + "]";
     }
-
 }

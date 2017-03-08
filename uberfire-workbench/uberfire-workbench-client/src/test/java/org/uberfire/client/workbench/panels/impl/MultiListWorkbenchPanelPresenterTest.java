@@ -29,7 +29,7 @@ public class MultiListWorkbenchPanelPresenterTest extends AbstractMultiPartWorkb
 
     @Before
     public void setUp2() {
-        presenter.setDefinition( panelPresenterPanelDefinition );
+        presenter.setDefinition(panelPresenterPanelDefinition);
     }
 
     @Override

@@ -55,37 +55,35 @@ public class ExampleTreeNode3DynamicFactory {
             }
 
             @Override
-            public WiresBaseShape getShape( final FactoryHelper helper ) {
-                return new WiresExampleTreeNode3( makeShape() );
+            public WiresBaseShape getShape(final FactoryHelper helper) {
+                return new WiresExampleTreeNode3(makeShape());
             }
 
             @Override
-            public boolean builds( final WiresBaseShape shapeType ) {
-                return shapeType.getClass().getName().equals( WiresExampleTreeNode3.class.getName() );
+            public boolean builds(final WiresBaseShape shapeType) {
+                return shapeType.getClass().getName().equals(WiresExampleTreeNode3.class.getName());
             }
 
             @Override
             protected Circle makeShape() {
-                final Circle circle = new Circle( SHAPE_RADIUS );
-                circle.setStrokeColor( "#000000" )
-                        .setStrokeWidth( ShapesUtils.RGB_STROKE_WIDTH_SHAPE )
-                        .setFillColor( "#660099" )
-                        .setDraggable( false );
+                final Circle circle = new Circle(SHAPE_RADIUS);
+                circle.setStrokeColor("#000000")
+                        .setStrokeWidth(ShapesUtils.RGB_STROKE_WIDTH_SHAPE)
+                        .setFillColor("#660099")
+                        .setDraggable(false);
                 return circle;
             }
 
             @Override
             protected double getWidth() {
-                return ( SHAPE_RADIUS + ShapesUtils.RGB_STROKE_WIDTH_SHAPE ) * 2;
+                return (SHAPE_RADIUS + ShapesUtils.RGB_STROKE_WIDTH_SHAPE) * 2;
             }
 
             @Override
             protected double getHeight() {
-                return ( SHAPE_RADIUS + ShapesUtils.RGB_STROKE_WIDTH_SHAPE ) * 2;
+                return (SHAPE_RADIUS + ShapesUtils.RGB_STROKE_WIDTH_SHAPE) * 2;
             }
-
         };
-        shapeFactoryCache.addShapeFactory( factory );
+        shapeFactoryCache.addShapeFactory(factory);
     }
-
 }

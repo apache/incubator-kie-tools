@@ -49,35 +49,34 @@ public class WiresTreesPerspective {
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
-        perspective.setName( WIRES );
+        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        perspective.setName(WIRES);
 
-        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( WIRES_CANVAS_SCREEN ) ) );
+        perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest(WIRES_CANVAS_SCREEN)));
 
-        final PanelDefinition palettePanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        palettePanel.setMinWidth( MIN_WIDTH_PANEL );
-        palettePanel.setWidth( WIDTH_PANEL );
-        palettePanel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( WIRES_PALETTE_SCREEN ) ) );
+        final PanelDefinition palettePanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        palettePanel.setMinWidth(MIN_WIDTH_PANEL);
+        palettePanel.setWidth(WIDTH_PANEL);
+        palettePanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(WIRES_PALETTE_SCREEN)));
 
-        final PanelDefinition propertiesPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        propertiesPanel.setMinWidth( MIN_WIDTH_PANEL );
-        propertiesPanel.setWidth( WIDTH_PANEL );
-        propertiesPanel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( WIRES_PROPERTIES_SCREEN ) ) );
-        palettePanel.appendChild( CompassPosition.SOUTH,
-                                  propertiesPanel );
+        final PanelDefinition propertiesPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        propertiesPanel.setMinWidth(MIN_WIDTH_PANEL);
+        propertiesPanel.setWidth(WIDTH_PANEL);
+        propertiesPanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(WIRES_PROPERTIES_SCREEN)));
+        palettePanel.appendChild(CompassPosition.SOUTH,
+                                 propertiesPanel);
 
-        perspective.getRoot().insertChild( CompassPosition.WEST,
-                                           palettePanel );
+        perspective.getRoot().insertChild(CompassPosition.WEST,
+                                          palettePanel);
 
-        final PanelDefinition layersPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        layersPanel.setMinWidth( MIN_WIDTH_PANEL );
-        layersPanel.setWidth( WIDTH_PANEL );
-        layersPanel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( WIRES_LAYERS_SCREEN ) ) );
+        final PanelDefinition layersPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        layersPanel.setMinWidth(MIN_WIDTH_PANEL);
+        layersPanel.setWidth(WIDTH_PANEL);
+        layersPanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(WIRES_LAYERS_SCREEN)));
 
-        perspective.getRoot().insertChild( CompassPosition.EAST,
-                                           layersPanel );
+        perspective.getRoot().insertChild(CompassPosition.EAST,
+                                          layersPanel);
 
         return perspective;
     }
-
 }

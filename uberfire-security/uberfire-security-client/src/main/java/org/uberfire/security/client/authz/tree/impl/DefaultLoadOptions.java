@@ -34,20 +34,20 @@ public class DefaultLoadOptions implements LoadOptions {
         this.nodeNamePattern = nodeNamePattern;
     }
 
-    public void setResourceIds(Collection<String> resourceIds) {
-        this.resourceIds = resourceIds;
-    }
-
-    public void setMaxNodes(int maxNodes) {
-        this.maxNodes = maxNodes;
-    }
-
     public Collection<String> getResourceIds() {
         return resourceIds;
+    }
+
+    public void setResourceIds(Collection<String> resourceIds) {
+        this.resourceIds = resourceIds;
     }
 
     @Override
     public int getMaxNodes() {
         return maxNodes;
+    }
+
+    public void setMaxNodes(int maxNodes) {
+        this.maxNodes = maxNodes;
     }
 }

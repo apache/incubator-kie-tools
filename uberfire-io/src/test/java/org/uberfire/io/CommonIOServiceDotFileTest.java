@@ -47,102 +47,144 @@ import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
 import static org.junit.Assert.*;
-import static org.uberfire.java.nio.base.dotfiles.DotFileUtils.*;
+import static org.uberfire.java.nio.base.dotfiles.DotFileUtils.dot;
 
 /**
  *
  */
 public abstract class CommonIOServiceDotFileTest {
 
+    protected static final List<File> tempFiles = new ArrayList<File>();
+    protected static IOService ioService = null;
     protected final Date dateValue = new Date();
 
-    protected static final List<File> tempFiles = new ArrayList<File>();
+    public static File createTempDirectory()
+            throws IOException {
+        final File temp = File.createTempFile("temp",
+                                              Long.toString(System.nanoTime()));
+        if (!(temp.delete())) {
+            throw new IOException("Could not delete temp file: " + temp.getAbsolutePath());
+        }
+
+        if (!(temp.mkdir())) {
+            throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
+        }
+
+        tempFiles.add(temp);
+
+        return temp;
+    }
+
+    @AfterClass
+    @BeforeClass
+    public static void cleanup() {
+        for (final File tempFile : tempFiles) {
+            FileUtils.deleteQuietly(tempFile);
+        }
+    }
 
     @Test
     public void testFile() throws IOException {
         final Path path = getFilePath();
-        ioService().write( path, "ooooo!", Collections.<OpenOption>emptySet(), new FileAttribute<Object>() {
-                               @Override
-                               public String name() {
-                                   return "custom";
-                               }
+        ioService().write(path,
+                          "ooooo!",
+                          Collections.<OpenOption>emptySet(),
+                          new FileAttribute<Object>() {
+                              @Override
+                              public String name() {
+                                  return "custom";
+                              }
 
-                               @Override
-                               public Object value() {
-                                   return dateValue;
-                               }
-                           }, new FileAttribute<String>() {
-                               @Override
-                               public String name() {
-                                   return "int.hello";
-                               }
+                              @Override
+                              public Object value() {
+                                  return dateValue;
+                              }
+                          },
+                          new FileAttribute<String>() {
+                              @Override
+                              public String name() {
+                                  return "int.hello";
+                              }
 
-                               @Override
-                               public String value() {
-                                   return "world";
-                               }
-                           }, new FileAttribute<Integer>() {
-                               @Override
-                               public String name() {
-                                   return "int";
-                               }
+                              @Override
+                              public String value() {
+                                  return "world";
+                              }
+                          },
+                          new FileAttribute<Integer>() {
+                              @Override
+                              public String name() {
+                                  return "int";
+                              }
 
-                               @Override
-                               public Integer value() {
-                                   return 10;
-                               }
-                           }
-                         );
+                              @Override
+                              public Integer value() {
+                                  return 10;
+                              }
+                          }
+        );
 
-        Map<String, Object> attrs = ioService().readAttributes( path );
+        Map<String, Object> attrs = ioService().readAttributes(path);
 
-        assertEquals( testFileAttrSize1(), attrs.size() );
-        assertTrue( attrs.containsKey( "int.hello" ) );
-        assertTrue( attrs.containsKey( "custom" ) );
-        assertTrue( attrs.containsKey( "int" ) );
+        assertEquals(testFileAttrSize1(),
+                     attrs.size());
+        assertTrue(attrs.containsKey("int.hello"));
+        assertTrue(attrs.containsKey("custom"));
+        assertTrue(attrs.containsKey("int"));
 
-        assertEquals( 10, attrs.get( "int" ) );
-        assertEquals( dateValue, attrs.get( "custom" ) );
-        assertEquals( "world", attrs.get( "int.hello" ) );
+        assertEquals(10,
+                     attrs.get("int"));
+        assertEquals(dateValue,
+                     attrs.get("custom"));
+        assertEquals("world",
+                     attrs.get("int.hello"));
 
-        if ( path instanceof AttrHolder ) {
-            ( (AttrHolder) path ).getAttrStorage().clear();
+        if (path instanceof AttrHolder) {
+            ((AttrHolder) path).getAttrStorage().clear();
         }
 
-        attrs = ioService().readAttributes( path );
+        attrs = ioService().readAttributes(path);
 
-        assertEquals( 10, attrs.get( "int" ) );
-        assertEquals( dateValue, attrs.get( "custom" ) );
-        assertEquals( "world", attrs.get( "int.hello" ) );
+        assertEquals(10,
+                     attrs.get("int"));
+        assertEquals(dateValue,
+                     attrs.get("custom"));
+        assertEquals("world",
+                     attrs.get("int.hello"));
 
-        final Map<String, Object> attrsValue = ioService().readAttributes( path );
+        final Map<String, Object> attrsValue = ioService().readAttributes(path);
 
-        assertEquals( testFileAttrSize2(), attrsValue.size() );
+        assertEquals(testFileAttrSize2(),
+                     attrsValue.size());
 
-        ioService().setAttributes( path, new FileAttribute<Object>() {
-            @Override
-            public String name() {
-                return "my_new_key";
-            }
+        ioService().setAttributes(path,
+                                  new FileAttribute<Object>() {
+                                      @Override
+                                      public String name() {
+                                          return "my_new_key";
+                                      }
 
-            @Override
-            public Object value() {
-                return null;
-            }
-        } );
+                                      @Override
+                                      public Object value() {
+                                          return null;
+                                      }
+                                  });
 
-        final Map<String, Object> attrsValue2 = ioService().readAttributes( path );
+        final Map<String, Object> attrsValue2 = ioService().readAttributes(path);
 
-        assertEquals( testFileAttrSize3(), attrsValue2.size() );
-        assertFalse( attrsValue2.containsKey( "my_new_key" ) );
+        assertEquals(testFileAttrSize3(),
+                     attrsValue2.size());
+        assertFalse(attrsValue2.containsKey("my_new_key"));
 
-        ioService().delete( path );
+        ioService().delete(path);
 
-        ioService().write( path, "ooooo!" );
+        ioService().write(path,
+                          "ooooo!");
 
-        final Map<String, Object> attrsClean = ioService().readAttributes( path );
+        final Map<String, Object> attrsClean = ioService().readAttributes(path);
 
-        assertEquals( testFileAttrSize4(), attrsClean.size() );
+        assertEquals(testFileAttrSize4(),
+                     attrsClean.size());
     }
 
     protected abstract int testFileAttrSize4();
@@ -156,67 +198,78 @@ public abstract class CommonIOServiceDotFileTest {
     @Test
     public void testDirectory() throws IOException {
         final Path path = getDirectoryPath();
-        ioService().createDirectory( path, new FileAttribute<Object>() {
-                                         @Override
-                                         public String name() {
-                                             return "custom";
-                                         }
+        ioService().createDirectory(path,
+                                    new FileAttribute<Object>() {
+                                        @Override
+                                        public String name() {
+                                            return "custom";
+                                        }
 
-                                         @Override
-                                         public Object value() {
-                                             return dateValue;
-                                         }
-                                     }, new FileAttribute<String>() {
-                                         @Override
-                                         public String name() {
-                                             return "int.hello";
-                                         }
+                                        @Override
+                                        public Object value() {
+                                            return dateValue;
+                                        }
+                                    },
+                                    new FileAttribute<String>() {
+                                        @Override
+                                        public String name() {
+                                            return "int.hello";
+                                        }
 
-                                         @Override
-                                         public String value() {
-                                             return "world";
-                                         }
-                                     }, new FileAttribute<Integer>() {
-                                         @Override
-                                         public String name() {
-                                             return "int";
-                                         }
+                                        @Override
+                                        public String value() {
+                                            return "world";
+                                        }
+                                    },
+                                    new FileAttribute<Integer>() {
+                                        @Override
+                                        public String name() {
+                                            return "int";
+                                        }
 
-                                         @Override
-                                         public Integer value() {
-                                             return 10;
-                                         }
-                                     }
-                                   );
+                                        @Override
+                                        public Integer value() {
+                                            return 10;
+                                        }
+                                    }
+        );
 
-        Map<String, Object> attrs = ioService().readAttributes( path );
+        Map<String, Object> attrs = ioService().readAttributes(path);
 
-        assertEquals( testDirectoryAttrSize1(), attrs.size() );
-        assertTrue( attrs.containsKey( "int.hello" ) );
-        assertTrue( attrs.containsKey( "custom" ) );
-        assertTrue( attrs.containsKey( "int" ) );
+        assertEquals(testDirectoryAttrSize1(),
+                     attrs.size());
+        assertTrue(attrs.containsKey("int.hello"));
+        assertTrue(attrs.containsKey("custom"));
+        assertTrue(attrs.containsKey("int"));
 
-        assertEquals( 10, attrs.get( "int" ) );
-        assertEquals( dateValue, attrs.get( "custom" ) );
-        assertEquals( "world", attrs.get( "int.hello" ) );
+        assertEquals(10,
+                     attrs.get("int"));
+        assertEquals(dateValue,
+                     attrs.get("custom"));
+        assertEquals("world",
+                     attrs.get("int.hello"));
 
-        if ( path instanceof AttrHolder ) {
-            ( (AttrHolder) path ).getAttrStorage().clear();
+        if (path instanceof AttrHolder) {
+            ((AttrHolder) path).getAttrStorage().clear();
         }
 
-        attrs = ioService().readAttributes( path );
+        attrs = ioService().readAttributes(path);
 
-        assertEquals( 10, attrs.get( "int" ) );
-        assertEquals( dateValue, attrs.get( "custom" ) );
-        assertEquals( "world", attrs.get( "int.hello" ) );
+        assertEquals(10,
+                     attrs.get("int"));
+        assertEquals(dateValue,
+                     attrs.get("custom"));
+        assertEquals("world",
+                     attrs.get("int.hello"));
 
-        ioService().delete( path );
+        ioService().delete(path);
 
-        ioService().createDirectory( path );
+        ioService().createDirectory(path);
 
-        final Map<String, Object> attrsClean = ioService().readAttributes( path );
+        final Map<String, Object> attrsClean = ioService().readAttributes(path);
 
-        assertEquals( testDirectoryAttrSize4(), attrsClean.size() );
+        assertEquals(testDirectoryAttrSize4(),
+                     attrsClean.size());
     }
 
     protected abstract int testDirectoryAttrSize4();
@@ -231,71 +284,77 @@ public abstract class CommonIOServiceDotFileTest {
     public void testDelete() throws IOException {
         final Path dir = getDirectoryPath();
 
-        ioService().createDirectory( dir, new FileAttribute<Object>() {
-                                         @Override
-                                         public String name() {
-                                             return "custom";
-                                         }
+        ioService().createDirectory(dir,
+                                    new FileAttribute<Object>() {
+                                        @Override
+                                        public String name() {
+                                            return "custom";
+                                        }
 
-                                         @Override
-                                         public Object value() {
-                                             return dateValue;
-                                         }
-                                     }, new FileAttribute<String>() {
-                                         @Override
-                                         public String name() {
-                                             return "int.hello";
-                                         }
+                                        @Override
+                                        public Object value() {
+                                            return dateValue;
+                                        }
+                                    },
+                                    new FileAttribute<String>() {
+                                        @Override
+                                        public String name() {
+                                            return "int.hello";
+                                        }
 
-                                         @Override
-                                         public String value() {
-                                             return "world";
-                                         }
-                                     }, new FileAttribute<Integer>() {
-                                         @Override
-                                         public String name() {
-                                             return "int";
-                                         }
+                                        @Override
+                                        public String value() {
+                                            return "world";
+                                        }
+                                    },
+                                    new FileAttribute<Integer>() {
+                                        @Override
+                                        public String name() {
+                                            return "int";
+                                        }
 
-                                         @Override
-                                         public Integer value() {
-                                             return 10;
-                                         }
-                                     }
-                                   );
-        assertTrue( ioService().exists( dir ) );
-        assertTrue( ioService().exists( dot( dir ) ) );
+                                        @Override
+                                        public Integer value() {
+                                            return 10;
+                                        }
+                                    }
+        );
+        assertTrue(ioService().exists(dir));
+        assertTrue(ioService().exists(dot(dir)));
 
-        ioService().delete( dir );
+        ioService().delete(dir);
 
-        assertFalse( ioService().exists( dir ) );
-        assertFalse( ioService().exists( dot( dir ) ) );
+        assertFalse(ioService().exists(dir));
+        assertFalse(ioService().exists(dot(dir)));
 
         final Path file = getFilePath();
 
-        ioService().write( file, "ooooo!", Collections.<OpenOption>emptySet(), new FileAttribute<Object>() {
-            @Override
-            public String name() {
-                return "custom";
-            }
+        ioService().write(file,
+                          "ooooo!",
+                          Collections.<OpenOption>emptySet(),
+                          new FileAttribute<Object>() {
+                              @Override
+                              public String name() {
+                                  return "custom";
+                              }
 
-            @Override
-            public Object value() {
-                return dateValue;
-            }
-        } );
+                              @Override
+                              public Object value() {
+                                  return dateValue;
+                              }
+                          });
 
-        assertTrue( ioService().exists( file ) );
-        assertTrue( ioService().exists( dot( file ) ) );
+        assertTrue(ioService().exists(file));
+        assertTrue(ioService().exists(dot(file)));
 
-        assertFalse( ( (AttrHolder) file ).getAttrStorage().getContent().isEmpty() );
+        assertFalse(((AttrHolder) file).getAttrStorage().getContent().isEmpty());
 
-        ioService().delete( file );
+        ioService().delete(file);
 
-        assertTrue( ( (AttrHolder) file ).getAttrStorage().getContent().isEmpty() );
+        assertTrue(((AttrHolder) file).getAttrStorage().getContent().isEmpty());
 
-        assertFalse( ioService().exists( file ) );
-        assertFalse( ioService().exists( dot( file ) ) );
+        assertFalse(ioService().exists(file));
+        assertFalse(ioService().exists(dot(file)));
     }
 
     @Test
@@ -303,64 +362,70 @@ public abstract class CommonIOServiceDotFileTest {
         final Path sfile = getFilePath();
         final Path tfile = getTargetPath();
 
-        ioService().deleteIfExists( sfile );
-        ioService().deleteIfExists( tfile );
+        ioService().deleteIfExists(sfile);
+        ioService().deleteIfExists(tfile);
 
-        ioService().write( sfile, "wow", Collections.<OpenOption>emptySet(), new FileAttribute<Object>() {
-            @Override
-            public String name() {
-                return "custom";
-            }
+        ioService().write(sfile,
+                          "wow",
+                          Collections.<OpenOption>emptySet(),
+                          new FileAttribute<Object>() {
+                              @Override
+                              public String name() {
+                                  return "custom";
+                              }
 
-            @Override
-            public Object value() {
-                return dateValue;
-            }
-        } );
+                              @Override
+                              public Object value() {
+                                  return dateValue;
+                              }
+                          });
 
-        assertTrue( ioService().exists( sfile ) );
-        assertTrue( ioService().exists( dot( sfile ) ) );
-        assertFalse( ioService().exists( tfile ) );
-        assertFalse( ioService().exists( dot( tfile ) ) );
+        assertTrue(ioService().exists(sfile));
+        assertTrue(ioService().exists(dot(sfile)));
+        assertFalse(ioService().exists(tfile));
+        assertFalse(ioService().exists(dot(tfile)));
 
-        ioService().copy( sfile, tfile );
+        ioService().copy(sfile,
+                         tfile);
 
-        assertTrue( ioService().exists( sfile ) );
-        assertTrue( ioService().exists( dot( sfile ) ) );
-        assertTrue( ioService().exists( tfile ) );
-        assertTrue( ioService().exists( dot( tfile ) ) );
+        assertTrue(ioService().exists(sfile));
+        assertTrue(ioService().exists(dot(sfile)));
+        assertTrue(ioService().exists(tfile));
+        assertTrue(ioService().exists(dot(tfile)));
     }
 
     @Test
     public void createDirectories() {
         final Path dir = getComposedDirectoryPath();
 
-        assertFalse( ioService().exists( dir ) );
+        assertFalse(ioService().exists(dir));
 
-        ioService().createDirectories( dir, new FileAttribute<Object>() {
-            @Override
-            public String name() {
-                return "custom";
-            }
+        ioService().createDirectories(dir,
+                                      new FileAttribute<Object>() {
+                                          @Override
+                                          public String name() {
+                                              return "custom";
+                                          }
 
-            @Override
-            public Object value() {
-                return dateValue;
-            }
-        } );
+                                          @Override
+                                          public Object value() {
+                                              return dateValue;
+                                          }
+                                      });
 
-        assertTrue( ioService().exists( dir ) );
+        assertTrue(ioService().exists(dir));
 
-        assertTrue( ioService().exists( dir.getParent() ) );
-        assertNotNull( ioService().exists( dir.getParent().getFileName() ) );
+        assertTrue(ioService().exists(dir.getParent()));
+        assertNotNull(ioService().exists(dir.getParent().getFileName()));
 
-        Map<String, Object> attrs = ioService().readAttributes( dir );
+        Map<String, Object> attrs = ioService().readAttributes(dir);
 
-        assertEquals( createDirectoriesAttrSize(), attrs.size() );
+        assertEquals(createDirectoriesAttrSize(),
+                     attrs.size());
 
-        ioService().delete( dir );
+        ioService().delete(dir);
 
-        ioService().exists( dir.getParent() );
+        ioService().exists(dir.getParent());
     }
 
     protected abstract int createDirectoriesAttrSize();
@@ -369,127 +434,140 @@ public abstract class CommonIOServiceDotFileTest {
     public void testDeleteIfExistis() throws IOException {
         final Path dir = getDirectoryPath();
 
-        ioService().deleteIfExists( dir );
+        ioService().deleteIfExists(dir);
 
-        ioService().createDirectory( dir, new FileAttribute<Object>() {
-                                         @Override
-                                         public String name() {
-                                             return "custom";
-                                         }
+        ioService().createDirectory(dir,
+                                    new FileAttribute<Object>() {
+                                        @Override
+                                        public String name() {
+                                            return "custom";
+                                        }
 
-                                         @Override
-                                         public Object value() {
-                                             return dateValue;
-                                         }
-                                     }, new FileAttribute<String>() {
-                                         @Override
-                                         public String name() {
-                                             return "int.hello";
-                                         }
+                                        @Override
+                                        public Object value() {
+                                            return dateValue;
+                                        }
+                                    },
+                                    new FileAttribute<String>() {
+                                        @Override
+                                        public String name() {
+                                            return "int.hello";
+                                        }
 
-                                         @Override
-                                         public String value() {
-                                             return "world";
-                                         }
-                                     }, new FileAttribute<Integer>() {
-                                         @Override
-                                         public String name() {
-                                             return "int";
-                                         }
+                                        @Override
+                                        public String value() {
+                                            return "world";
+                                        }
+                                    },
+                                    new FileAttribute<Integer>() {
+                                        @Override
+                                        public String name() {
+                                            return "int";
+                                        }
 
-                                         @Override
-                                         public Integer value() {
-                                             return 10;
-                                         }
-                                     }
-                                   );
+                                        @Override
+                                        public Integer value() {
+                                            return 10;
+                                        }
+                                    }
+        );
 
-        assertTrue( ioService().deleteIfExists( dir ) );
-        assertFalse( ioService().deleteIfExists( dir ) );
+        assertTrue(ioService().deleteIfExists(dir));
+        assertFalse(ioService().deleteIfExists(dir));
 
         final Path file = getFilePath();
 
-        ioService().deleteIfExists( file );
+        ioService().deleteIfExists(file);
 
-        ioService().write( file, "ooooo!", Collections.<OpenOption>emptySet(), new FileAttribute<Object>() {
-            @Override
-            public String name() {
-                return "custom";
-            }
+        ioService().write(file,
+                          "ooooo!",
+                          Collections.<OpenOption>emptySet(),
+                          new FileAttribute<Object>() {
+                              @Override
+                              public String name() {
+                                  return "custom";
+                              }
 
-            @Override
-            public Object value() {
-                return dateValue;
-            }
-        } );
+                              @Override
+                              public Object value() {
+                                  return dateValue;
+                              }
+                          });
 
-        assertFalse( ( (AttrHolder) file ).getAttrStorage().getContent().isEmpty() );
+        assertFalse(((AttrHolder) file).getAttrStorage().getContent().isEmpty());
 
-        assertTrue( ioService().deleteIfExists( file ) );
+        assertTrue(ioService().deleteIfExists(file));
 
-        assertTrue( ( (AttrHolder) file ).getAttrStorage().getContent().isEmpty() );
+        assertTrue(((AttrHolder) file).getAttrStorage().getContent().isEmpty());
 
-        assertFalse( ioService().deleteIfExists( file ) );
+        assertFalse(ioService().deleteIfExists(file));
     }
 
     @Test
     public void testReadNewByteChannel() throws IOException {
         final Path file = getFilePath();
-        ioService().deleteIfExists( file );
-        assertFalse( ioService().exists( file ) );
+        ioService().deleteIfExists(file);
+        assertFalse(ioService().exists(file));
         String content = "sample content";
-        ioService.write( file, content );
-        assertTrue( ioService().exists( file ) );
+        ioService.write(file,
+                        content);
+        assertTrue(ioService().exists(file));
 
-        final SeekableByteChannel sbc = ioService().newByteChannel( file, StandardOpenOption.READ );
-        String readContent = readSbc( sbc );
+        final SeekableByteChannel sbc = ioService().newByteChannel(file,
+                                                                   StandardOpenOption.READ);
+        String readContent = readSbc(sbc);
 
-        assertEquals( content, readContent );
+        assertEquals(content,
+                     readContent);
 
-        ioService().delete( file );
-
+        ioService().delete(file);
     }
 
     @Test
     public void testNewByteChannel() throws IOException {
         final Path file = getFilePath();
 
-        ioService().deleteIfExists( file );
+        ioService().deleteIfExists(file);
 
-        assertFalse( ioService().exists( file ) );
+        assertFalse(ioService().exists(file));
 
-        final SeekableByteChannel sbc = ioService().newByteChannel( file, Collections.<OpenOption>emptySet(), new FileAttribute<Object>() {
-            @Override
-            public String name() {
-                return "custom";
-            }
+        final SeekableByteChannel sbc = ioService().newByteChannel(file,
+                                                                   Collections.<OpenOption>emptySet(),
+                                                                   new FileAttribute<Object>() {
+                                                                       @Override
+                                                                       public String name() {
+                                                                           return "custom";
+                                                                       }
 
-            @Override
-            public Object value() {
-                return dateValue;
-            }
-        } );
+                                                                       @Override
+                                                                       public Object value() {
+                                                                           return dateValue;
+                                                                       }
+                                                                   });
 
-        sbc.write( ByteBuffer.wrap( "helloWorld!".getBytes() ) );
+        sbc.write(ByteBuffer.wrap("helloWorld!".getBytes()));
         sbc.close();
 
-        assertTrue( ioService().exists( file ) );
+        assertTrue(ioService().exists(file));
 
-        Map<String, Object> attrs = ioService().readAttributes( file );
+        Map<String, Object> attrs = ioService().readAttributes(file);
 
-        assertEquals( testNewByteChannelAttrSize(), attrs.size() );
+        assertEquals(testNewByteChannelAttrSize(),
+                     attrs.size());
 
         try {
-            ioService().newByteChannel( file, Collections.<OpenOption>emptySet() );
-            fail( "FileAlreadyExistsException expected" );
-        } catch ( FileAlreadyExistsException ex ) {
+            ioService().newByteChannel(file,
+                                       Collections.<OpenOption>emptySet());
+            fail("FileAlreadyExistsException expected");
+        } catch (FileAlreadyExistsException ex) {
         }
 
-        ioService().delete( file );
+        ioService().delete(file);
 
-        ioService().newByteChannel( file, Collections.<OpenOption>emptySet() ).close();
+        ioService().newByteChannel(file,
+                                   Collections.<OpenOption>emptySet()).close();
 
-        assertTrue( ioService().deleteIfExists( file ) );
+        assertTrue(ioService().deleteIfExists(file));
     }
 
     protected abstract int testNewByteChannelAttrSize();
@@ -498,89 +576,114 @@ public abstract class CommonIOServiceDotFileTest {
     public void testGetAttribute() {
         final Path file = getFilePath();
 
-        ioService().deleteIfExists( file );
+        ioService().deleteIfExists(file);
 
-        ioService().write( file, "ooooo!", Collections.<OpenOption>emptySet(), new FileAttribute<Object>() {
-            @Override
-            public String name() {
-                return "dcore.author";
-            }
+        ioService().write(file,
+                          "ooooo!",
+                          Collections.<OpenOption>emptySet(),
+                          new FileAttribute<Object>() {
+                              @Override
+                              public String name() {
+                                  return "dcore.author";
+                              }
 
-            @Override
-            public Object value() {
-                return "AuthorName";
-            }
-        } );
+                              @Override
+                              public Object value() {
+                                  return "AuthorName";
+                              }
+                          });
 
-        assertNotNull( ioService().getAttribute( file, "dcore:dcore.author" ) );
-        assertNull( ioService().getAttribute( file, "dcore:dcore.not_here" ) );
-        assertNotNull( ioService().getAttribute( file, "dcore.author" ) );
-        assertNull( ioService().getAttribute( file, "something" ) );
+        assertNotNull(ioService().getAttribute(file,
+                                               "dcore:dcore.author"));
+        assertNull(ioService().getAttribute(file,
+                                            "dcore:dcore.not_here"));
+        assertNotNull(ioService().getAttribute(file,
+                                               "dcore.author"));
+        assertNull(ioService().getAttribute(file,
+                                            "something"));
 
-        ( (AttrHolder) file ).getAttrStorage().clear();
+        ((AttrHolder) file).getAttrStorage().clear();
 
-        assertNotNull( ioService().getAttribute( file, "dcore:dcore.author" ) );
-        assertNull( ioService().getAttribute( file, "dcore:dcore.not_here" ) );
-        assertNotNull( ioService().getAttribute( file, "dcore.author" ) );
-        assertNull( ioService().getAttribute( file, "something" ) );
+        assertNotNull(ioService().getAttribute(file,
+                                               "dcore:dcore.author"));
+        assertNull(ioService().getAttribute(file,
+                                            "dcore:dcore.not_here"));
+        assertNotNull(ioService().getAttribute(file,
+                                               "dcore.author"));
+        assertNull(ioService().getAttribute(file,
+                                            "something"));
     }
 
     @Test
     public void testGetAttributeView() {
         final Path file = getFilePath();
 
-        ioService().deleteIfExists( file );
+        ioService().deleteIfExists(file);
 
-        ioService().write( file, "ooooo!", Collections.<OpenOption>emptySet(), new FileAttribute<Object>() {
-            @Override
-            public String name() {
-                return "dcore.author";
-            }
+        ioService().write(file,
+                          "ooooo!",
+                          Collections.<OpenOption>emptySet(),
+                          new FileAttribute<Object>() {
+                              @Override
+                              public String name() {
+                                  return "dcore.author";
+                              }
 
-            @Override
-            public Object value() {
-                return "AuthorName";
-            }
-        } );
+                              @Override
+                              public Object value() {
+                                  return "AuthorName";
+                              }
+                          });
 
-        assertNotNull( ioService().getFileAttributeView( file, BasicFileAttributeView.class ) );
-        assertNull( ioService().getFileAttributeView( file, MyAttrsView.class ) );
-        assertNotNull( ioService().getFileAttributeView( file, XDublinCoreView.class ) );
+        assertNotNull(ioService().getFileAttributeView(file,
+                                                       BasicFileAttributeView.class));
+        assertNull(ioService().getFileAttributeView(file,
+                                                    MyAttrsView.class));
+        assertNotNull(ioService().getFileAttributeView(file,
+                                                       XDublinCoreView.class));
 
-        final DublinCoreAttributes attr = ioService().getFileAttributeView( file, XDublinCoreView.class ).readAttributes();
-        assertEquals( "AuthorName", attr.getAuthor() );
+        final DublinCoreAttributes attr = ioService().getFileAttributeView(file,
+                                                                           XDublinCoreView.class).readAttributes();
+        assertEquals("AuthorName",
+                     attr.getAuthor());
 
-        ( (AttrHolder) file ).getAttrStorage().clear();
+        ((AttrHolder) file).getAttrStorage().clear();
 
-        assertNotNull( ioService().getFileAttributeView( file, BasicFileAttributeView.class ) );
-        assertNull( ioService().getFileAttributeView( file, MyAttrsView.class ) );
-        assertNotNull( ioService().getFileAttributeView( file, XDublinCoreView.class ) );
+        assertNotNull(ioService().getFileAttributeView(file,
+                                                       BasicFileAttributeView.class));
+        assertNull(ioService().getFileAttributeView(file,
+                                                    MyAttrsView.class));
+        assertNotNull(ioService().getFileAttributeView(file,
+                                                       XDublinCoreView.class));
     }
 
     @Test(expected = NoSuchFileException.class)
     public void testReadAllStringFromUnexistentFile() {
-        String content = ioService().readAllString( getFilePath() );
+        String content = ioService().readAllString(getFilePath());
     }
 
     @Test
     public void testReadAllStringFromEmptyFile() {
         final Path filePath = getFilePath();
-        ioService().createFile( filePath );
+        ioService().createFile(filePath);
 
-        String content = ioService().readAllString( filePath );
+        String content = ioService().readAllString(filePath);
 
-        assertEquals( "", content );
+        assertEquals("",
+                     content);
     }
 
     @Test
     public void testReadAllStringFromExistentFile() {
         final Path filePath = getFilePath();
-        ioService().createFile( filePath );
-        ioService().write( filePath, "text" );
+        ioService().createFile(filePath);
+        ioService().write(filePath,
+                          "text");
 
-        String content = ioService().readAllString( filePath );
+        String content = ioService().readAllString(filePath);
 
-        assertEquals( "text", content );
+        assertEquals("text",
+                     content);
     }
 
     public abstract Path getFilePath();
@@ -591,36 +694,30 @@ public abstract class CommonIOServiceDotFileTest {
 
     public abstract Path getComposedDirectoryPath();
 
-    public static File createTempDirectory()
-            throws IOException {
-        final File temp = File.createTempFile( "temp", Long.toString( System.nanoTime() ) );
-        if ( !( temp.delete() ) ) {
-            throw new IOException( "Could not delete temp file: " + temp.getAbsolutePath() );
-        }
-
-        if ( !( temp.mkdir() ) ) {
-            throw new IOException( "Could not create temp directory: " + temp.getAbsolutePath() );
-        }
-
-        tempFiles.add( temp );
-
-        return temp;
-    }
-
-    private String readSbc( SeekableByteChannel sbc ) {
-        ByteBuffer byteBuffer = ByteBuffer.allocate( 100 );
+    private String readSbc(SeekableByteChannel sbc) {
+        ByteBuffer byteBuffer = ByteBuffer.allocate(100);
         StringBuilder content = new StringBuilder();
         byteBuffer.clear();
         try {
-            while ( ( sbc.read( byteBuffer ) ) > 0 ) {
+            while ((sbc.read(byteBuffer)) > 0) {
                 byteBuffer.flip();
-                content.append( new String( byteBuffer.array(),0, byteBuffer.remaining()) );
+                content.append(new String(byteBuffer.array(),
+                                          0,
+                                          byteBuffer.remaining()));
                 byteBuffer.compact();
             }
-        } catch ( IOException e ) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return content.toString();
+    }
+
+    public IOService ioService() {
+        if (ioService == null) {
+            ioService = new IOServiceDotFileImpl();
+            assertTrue(PriorityDisposableRegistry.getDisposables().contains(ioService));
+        }
+        return ioService;
     }
 
     private static interface MyAttrsView extends BasicFileAttributeView {
@@ -632,22 +729,23 @@ public abstract class CommonIOServiceDotFileTest {
 
         private BasicFileAttributes attrs = null;
 
-        public XDublinCoreView( final AbstractPath path ) {
-            super( path );
+        public XDublinCoreView(final AbstractPath path) {
+            super(path);
         }
 
         @Override
         public <T extends BasicFileAttributes> T readAttributes() throws org.uberfire.java.nio.IOException {
-            if ( attrs == null ) {
-                final BasicFileAttributes basicAtts = ( (BasicFileAttributeView) path.getAttrView( BasicFileAttributeView.class ) ).readAttributes();
-                attrs = new DublinCoreAttributes( basicAtts, (String) path.getAttrStorage().getContent().get( "dcore.author" ) );
+            if (attrs == null) {
+                final BasicFileAttributes basicAtts = ((BasicFileAttributeView) path.getAttrView(BasicFileAttributeView.class)).readAttributes();
+                attrs = new DublinCoreAttributes(basicAtts,
+                                                 (String) path.getAttrStorage().getContent().get("dcore.author"));
             }
             return (T) attrs;
         }
 
         @Override
         public Class<? extends BasicFileAttributeView>[] viewTypes() {
-            return new Class[]{ XDublinCoreView.class };
+            return new Class[]{XDublinCoreView.class};
         }
     }
 
@@ -656,8 +754,8 @@ public abstract class CommonIOServiceDotFileTest {
         private final BasicFileAttributes attributes;
         private final String author;
 
-        private DublinCoreAttributes( final BasicFileAttributes attributes,
-                                      final String author ) {
+        private DublinCoreAttributes(final BasicFileAttributes attributes,
+                                     final String author) {
             this.attributes = attributes;
             this.author = author;
         }
@@ -711,23 +809,4 @@ public abstract class CommonIOServiceDotFileTest {
             return attributes.fileKey();
         }
     }
-
-    @AfterClass
-    @BeforeClass
-    public static void cleanup() {
-        for ( final File tempFile : tempFiles ) {
-            FileUtils.deleteQuietly( tempFile );
-        }
-    }
-
-    protected static IOService ioService = null;
-
-    public IOService ioService() {
-        if ( ioService == null ) {
-            ioService = new IOServiceDotFileImpl();
-            assertTrue( PriorityDisposableRegistry.getDisposables().contains( ioService ) );
-        }
-        return ioService;
-    }
-
 }

@@ -19,10 +19,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.workbench.model.CompassPosition;
-
-import com.google.gwt.user.client.ui.SplitLayoutPanel;
 
 /**
  * SplitLayoutPanelPresenter and {@link SplitLayoutPanelView} arrange panels using a GWT {@link SplitLayoutPanel}.
@@ -34,8 +33,9 @@ public class SplitLayoutPanelPresenter extends AbstractWorkbenchPanelPresenter<S
 
     @Inject
     public SplitLayoutPanelPresenter(@Named("SplitLayoutPanelView") final SplitLayoutPanelView view,
-                                     final PerspectiveManager perspectiveManager ) {
-        super( view, perspectiveManager );
+                                     final PerspectiveManager perspectiveManager) {
+        super(view,
+              perspectiveManager);
     }
 
     @Override

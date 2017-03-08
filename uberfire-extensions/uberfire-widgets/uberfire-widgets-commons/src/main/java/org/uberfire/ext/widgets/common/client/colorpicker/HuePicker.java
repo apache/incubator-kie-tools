@@ -29,99 +29,118 @@ import org.uberfire.ext.widgets.common.client.colorpicker.canvas.Canvas;
 import org.uberfire.ext.widgets.common.client.colorpicker.canvas.RenderingContext;
 
 public class HuePicker extends Composite {
-	private Canvas canvas;
-	private int handleY = 90;
-	private boolean mouseDown;
 
-	public HuePicker() {
-		canvas = new Canvas();
-		canvas.setStylePrimaryName("subshell-HuePicker");
-		canvas.setCanvasSize(26, 180);
-		
-		initWidget(canvas);
+    private Canvas canvas;
+    private int handleY = 90;
+    private boolean mouseDown;
 
-		canvas.addMouseDownHandler(new MouseDownHandler() {
-			public void onMouseDown(MouseDownEvent event) {
-				handleY = event.getRelativeY(canvas.getElement());
-				drawGradient();
-				fireHueChanged(getHue());
-				
-				mouseDown = true;
-			}
-		});
-		canvas.addMouseMoveHandler(new MouseMoveHandler() {
-			public void onMouseMove(MouseMoveEvent event) {
-				if (mouseDown) {
-					handleY = event.getRelativeY(canvas.getElement());
-					drawGradient();
-					fireHueChanged(getHue());
-				}
-			}
-		});
-		canvas.addMouseUpHandler(new MouseUpHandler() {
-			public void onMouseUp(MouseUpEvent event) {
-				mouseDown = false;
-			}
-		});
-		canvas.addMouseOutHandler(new MouseOutHandler() {
-			public void onMouseOut(MouseOutEvent event) {
-				mouseDown = false;
-			}
-		});
-	}
+    public HuePicker() {
+        canvas = new Canvas();
+        canvas.setStylePrimaryName("subshell-HuePicker");
+        canvas.setCanvasSize(26,
+                             180);
 
-	@Override
-	protected void onAttach() {
-		super.onAttach();
-		drawGradient();
-	}
+        initWidget(canvas);
 
-	private void drawGradient() {
-		RenderingContext ctx = canvas.getContext();
+        canvas.addMouseDownHandler(new MouseDownHandler() {
+            public void onMouseDown(MouseDownEvent event) {
+                handleY = event.getRelativeY(canvas.getElement());
+                drawGradient();
+                fireHueChanged(getHue());
 
-		// draw gradient
-		ctx.setFillStyle("#ffffff");
-		ctx.fillRect(0, 0, 26, 180);
-		for (int y = 0; y <= 179; y++) {
-			String hex = ColorUtils.hsl2hex(y * 2, 100, 100);
-			ctx.setFillStyle("#" + hex);
-			ctx.fillRect(3, y, 20, 1);
-		}
+                mouseDown = true;
+            }
+        });
+        canvas.addMouseMoveHandler(new MouseMoveHandler() {
+            public void onMouseMove(MouseMoveEvent event) {
+                if (mouseDown) {
+                    handleY = event.getRelativeY(canvas.getElement());
+                    drawGradient();
+                    fireHueChanged(getHue());
+                }
+            }
+        });
+        canvas.addMouseUpHandler(new MouseUpHandler() {
+            public void onMouseUp(MouseUpEvent event) {
+                mouseDown = false;
+            }
+        });
+        canvas.addMouseOutHandler(new MouseOutHandler() {
+            public void onMouseOut(MouseOutEvent event) {
+                mouseDown = false;
+            }
+        });
+    }
 
-		// draw handle
-		if (handleY >= 0) {
-			ctx.setFillStyle("#000000");
+    @Override
+    protected void onAttach() {
+        super.onAttach();
+        drawGradient();
+    }
 
-			ctx.beginPath();
-			ctx.moveTo(3, handleY);
-			ctx.lineTo(0, handleY - 3);
-			ctx.lineTo(0, handleY + 3);
-			ctx.closePath();
-			ctx.fill();
-			
-			ctx.moveTo(23, handleY);
-			ctx.lineTo(26, handleY - 3);
-			ctx.lineTo(26, handleY + 3);
-			ctx.closePath();
-			ctx.fill();
-		}
-	}
-	
-	public HandlerRegistration addHueChangedHandler(HueChangedHandler handler) {
-		return addHandler(handler, HueChangedEvent.getType());
-	}
-	
-	private void fireHueChanged(int hue) {
-		fireEvent(new HueChangedEvent(hue));
-	}
-	
-	public int getHue() {
-		return handleY * 2;
-	}
+    private void drawGradient() {
+        RenderingContext ctx = canvas.getContext();
 
-	public void setHue(int hue) {
-		handleY = (int) Math.min(Math.max(Math.round(hue / 2d), 0d), 179d);
-		drawGradient();
-		fireHueChanged(hue);
-	}
+        // draw gradient
+        ctx.setFillStyle("#ffffff");
+        ctx.fillRect(0,
+                     0,
+                     26,
+                     180);
+        for (int y = 0; y <= 179; y++) {
+            String hex = ColorUtils.hsl2hex(y * 2,
+                                            100,
+                                            100);
+            ctx.setFillStyle("#" + hex);
+            ctx.fillRect(3,
+                         y,
+                         20,
+                         1);
+        }
+
+        // draw handle
+        if (handleY >= 0) {
+            ctx.setFillStyle("#000000");
+
+            ctx.beginPath();
+            ctx.moveTo(3,
+                       handleY);
+            ctx.lineTo(0,
+                       handleY - 3);
+            ctx.lineTo(0,
+                       handleY + 3);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.moveTo(23,
+                       handleY);
+            ctx.lineTo(26,
+                       handleY - 3);
+            ctx.lineTo(26,
+                       handleY + 3);
+            ctx.closePath();
+            ctx.fill();
+        }
+    }
+
+    public HandlerRegistration addHueChangedHandler(HueChangedHandler handler) {
+        return addHandler(handler,
+                          HueChangedEvent.getType());
+    }
+
+    private void fireHueChanged(int hue) {
+        fireEvent(new HueChangedEvent(hue));
+    }
+
+    public int getHue() {
+        return handleY * 2;
+    }
+
+    public void setHue(int hue) {
+        handleY = (int) Math.min(Math.max(Math.round(hue / 2d),
+                                          0d),
+                                 179d);
+        drawGradient();
+        fireHueChanged(hue);
+    }
 }

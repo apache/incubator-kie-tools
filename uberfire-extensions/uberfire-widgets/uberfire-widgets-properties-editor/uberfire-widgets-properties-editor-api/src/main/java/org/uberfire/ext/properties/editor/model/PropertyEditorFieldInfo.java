@@ -22,7 +22,7 @@ import java.util.List;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidator;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Portable
 /**
@@ -52,12 +52,14 @@ public class PropertyEditorFieldInfo {
      * @param label field descriptor
      * @param type Property Editor Type of this field
      */
-    public PropertyEditorFieldInfo( String label,
-                                    PropertyEditorType type ) {
-        this.label = checkNotNull( "label", label );
+    public PropertyEditorFieldInfo(String label,
+                                   PropertyEditorType type) {
+        this.label = checkNotNull("label",
+                                  label);
         this.originalValue = currentStringValue;
-        this.type = checkNotNull( "type", type );
-        this.validators.addAll( type.getValidators() );
+        this.type = checkNotNull("type",
+                                 type);
+        this.validators.addAll(type.getValidators());
     }
 
     /**
@@ -66,14 +68,17 @@ public class PropertyEditorFieldInfo {
      * @param type Property Editor Type of this field
      * @param currentStringValue Current value of this field
      */
-    public PropertyEditorFieldInfo( String label,
-                                    String currentStringValue,
-                                    PropertyEditorType type ) {
-        this.label = checkNotNull( "label", label );
-        this.currentStringValue = checkNotNull( "currentStringValue", currentStringValue );
+    public PropertyEditorFieldInfo(String label,
+                                   String currentStringValue,
+                                   PropertyEditorType type) {
+        this.label = checkNotNull("label",
+                                  label);
+        this.currentStringValue = checkNotNull("currentStringValue",
+                                               currentStringValue);
         this.originalValue = currentStringValue;
-        this.type = checkNotNull( "type", type );
-        this.validators.addAll( type.getValidators() );
+        this.type = checkNotNull("type",
+                                 type);
+        this.validators.addAll(type.getValidators());
     }
 
     /**
@@ -81,8 +86,9 @@ public class PropertyEditorFieldInfo {
      * This key is a nice way to identify a property in a PropertyEditorChangeEvent.
      * @param key
      */
-    public PropertyEditorFieldInfo withKey( String key ) {
-        this.key = checkNotNull( "key", key );
+    public PropertyEditorFieldInfo withKey(String key) {
+        this.key = checkNotNull("key",
+                                key);
         return this;
     }
 
@@ -90,8 +96,9 @@ public class PropertyEditorFieldInfo {
      * Combo values used in PropertyEditorType.COMBO fields.
      * @param comboValues a list of combo values
      */
-    public PropertyEditorFieldInfo withComboValues( List<String> comboValues ) {
-        this.comboValues = checkNotNull( "comboValues", comboValues );
+    public PropertyEditorFieldInfo withComboValues(List<String> comboValues) {
+        this.comboValues = checkNotNull("comboValues",
+                                        comboValues);
         return this;
     }
 
@@ -100,12 +107,14 @@ public class PropertyEditorFieldInfo {
      * @param priority
      * @return
      */
-    public PropertyEditorFieldInfo withPriority( int priority ) {
-        this.priority = checkNotNull( "priority", priority );
+    public PropertyEditorFieldInfo withPriority(int priority) {
+        this.priority = checkNotNull("priority",
+                                     priority);
         return this;
     }
 
-    public PropertyEditorFieldInfo withHelpInfo( String helpHeading, String helpText ) {
+    public PropertyEditorFieldInfo withHelpInfo(String helpHeading,
+                                                String helpText) {
         this.helpHeading = helpHeading;
         this.helpText = helpText;
         return this;
@@ -116,16 +125,17 @@ public class PropertyEditorFieldInfo {
      * @param validators
      * @return
      */
-    public PropertyEditorFieldInfo withValidators( PropertyFieldValidator... validators ) {
-        checkNotNull( "validators", validators );
+    public PropertyEditorFieldInfo withValidators(PropertyFieldValidator... validators) {
+        checkNotNull("validators",
+                     validators);
         this.validators.clear();
-        for ( PropertyFieldValidator field : validators ) {
-            this.validators.add( field );
+        for (PropertyFieldValidator field : validators) {
+            this.validators.add(field);
         }
         return this;
     }
 
-    public PropertyEditorFieldInfo withRemovalSupported( boolean isRemovalSupported ) {
+    public PropertyEditorFieldInfo withRemovalSupported(boolean isRemovalSupported) {
         this.isRemovalSupported = isRemovalSupported;
         return this;
     }
@@ -150,6 +160,10 @@ public class PropertyEditorFieldInfo {
         return currentStringValue;
     }
 
+    public void setCurrentStringValue(String currentStringValue) {
+        this.currentStringValue = currentStringValue;
+    }
+
     public boolean isRemovalSupported() {
         return isRemovalSupported;
     }
@@ -158,11 +172,7 @@ public class PropertyEditorFieldInfo {
         return helpHeading != null && helpText != null;
     }
 
-    public void setCurrentStringValue( String currentStringValue ) {
-        this.currentStringValue = currentStringValue;
-    }
-
-    public void setPropertyEditorCategory( PropertyEditorCategory category ) {
+    public void setPropertyEditorCategory(PropertyEditorCategory category) {
         this.category = category;
     }
 

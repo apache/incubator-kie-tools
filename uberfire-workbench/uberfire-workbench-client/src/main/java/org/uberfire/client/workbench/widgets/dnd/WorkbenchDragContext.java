@@ -39,23 +39,25 @@ public class WorkbenchDragContext {
     private Integer minHeight;
     private Integer minWidth;
 
-    public WorkbenchDragContext( final PlaceRequest place,
-                                 final PartDefinition sourcePart,
-                                 final PanelDefinition sourcePanel,
-                                 final Menus menus,
-                                 final String title,
-                                 final IsWidget titleDecoration,
-                                 final IsWidget widget,
-                                 final String contextId,
-                                 final Integer height,
-                                 final Integer width,
-                                 final Integer minHeight,
-                                 final Integer minWidth ) {
+    public WorkbenchDragContext(final PlaceRequest place,
+                                final PartDefinition sourcePart,
+                                final PanelDefinition sourcePanel,
+                                final Menus menus,
+                                final String title,
+                                final IsWidget titleDecoration,
+                                final IsWidget widget,
+                                final String contextId,
+                                final Integer height,
+                                final Integer width,
+                                final Integer minHeight,
+                                final Integer minWidth) {
         this.place = place;
         this.sourcePart = sourcePart;
         this.sourcePanel = sourcePanel;
         this.menus = menus;
-        this.uiPart = new UIPart( title, titleDecoration, widget );
+        this.uiPart = new UIPart(title,
+                                 titleDecoration,
+                                 widget);
         this.contextId = contextId;
         this.height = height;
         this.width = width;

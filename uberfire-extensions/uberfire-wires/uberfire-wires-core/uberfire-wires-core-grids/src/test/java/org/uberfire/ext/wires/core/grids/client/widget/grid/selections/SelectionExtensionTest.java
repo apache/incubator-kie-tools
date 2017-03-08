@@ -25,59 +25,52 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public class SelectionExtensionTest {
 
-    @Parameterized.Parameters
-    public static Object[][] data() {
-        return new Object[][]{
-                { SelectionExtension.LEFT, -1, 0, 9, 4, 10, 5 },
-                { SelectionExtension.RIGHT, 1, 0, 11, 6, 10, 5 },
-                { SelectionExtension.UP, 0, -1, 10, 5, 9, 4 },
-                { SelectionExtension.DOWN, 0, 1, 10, 5, 11, 6 }
-        };
-    }
-
     @Parameterized.Parameter(0)
     public SelectionExtension extension;
-
     @Parameterized.Parameter(1)
     public int deltaX;
-
     @Parameterized.Parameter(2)
     public int deltaY;
-
     @Parameterized.Parameter(3)
     public int expectedX1;
-
     @Parameterized.Parameter(4)
     public int expectedX2;
-
     @Parameterized.Parameter(5)
     public int expectedY1;
-
     @Parameterized.Parameter(6)
     public int expectedY2;
 
-    @Test
-    public void check() {
-        assertEquals( deltaX,
-                      extension.getDeltaX() );
-        assertEquals( deltaY,
-                      extension.getDeltaY() );
-        assertEquals( expectedX1,
-                      extension.getNextX( 5,
-                                          10,
-                                          5 ) );
-        assertEquals( expectedX2,
-                      extension.getNextX( 5,
-                                          10,
-                                          10 ) );
-        assertEquals( expectedY1,
-                      extension.getNextY( 5,
-                                          10,
-                                          5 ) );
-        assertEquals( expectedY2,
-                      extension.getNextY( 5,
-                                          10,
-                                          10 ) );
+    @Parameterized.Parameters
+    public static Object[][] data() {
+        return new Object[][]{
+                {SelectionExtension.LEFT, -1, 0, 9, 4, 10, 5},
+                {SelectionExtension.RIGHT, 1, 0, 11, 6, 10, 5},
+                {SelectionExtension.UP, 0, -1, 10, 5, 9, 4},
+                {SelectionExtension.DOWN, 0, 1, 10, 5, 11, 6}
+        };
     }
 
+    @Test
+    public void check() {
+        assertEquals(deltaX,
+                     extension.getDeltaX());
+        assertEquals(deltaY,
+                     extension.getDeltaY());
+        assertEquals(expectedX1,
+                     extension.getNextX(5,
+                                        10,
+                                        5));
+        assertEquals(expectedX2,
+                     extension.getNextX(5,
+                                        10,
+                                        10));
+        assertEquals(expectedY1,
+                     extension.getNextY(5,
+                                        10,
+                                        5));
+        assertEquals(expectedY2,
+                     extension.getNextY(5,
+                                        10,
+                                        10));
+    }
 }

@@ -15,6 +15,11 @@
  */
 package org.uberfire.ext.widgets.table.client;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -32,19 +37,14 @@ import org.gwtbootstrap3.client.ui.gwt.DataGrid;
 import org.uberfire.ext.widgets.table.client.resources.UFTableResources;
 import org.uberfire.ext.widgets.table.client.resources.i18n.CommonConstants;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 public class UberfireColumnPicker<T> {
 
     protected final DataGrid<T> dataGrid;
     protected final List<ColumnMeta<T>> columnMetaList = new ArrayList<>();
-    protected final PopupPanel popup = GWT.create( PopupPanel.class );
+    protected final PopupPanel popup = GWT.create(PopupPanel.class);
     protected List<ColumnChangedHandler> columnChangedHandler = new ArrayList<>();
 
-    public UberfireColumnPicker( DataGrid<T> dataGrid ) {
+    public UberfireColumnPicker(DataGrid<T> dataGrid) {
         this.dataGrid = dataGrid;
         setupPopup();
     }
@@ -54,19 +54,19 @@ public class UberfireColumnPicker<T> {
         popup.setAutoHideOnHistoryEventsEnabled(true);
     }
 
-    public void addColumnChangedHandler( ColumnChangedHandler handler ) {
-        columnChangedHandler.add( handler );
+    public void addColumnChangedHandler(ColumnChangedHandler handler) {
+        columnChangedHandler.add(handler);
     }
 
     public Collection<ColumnMeta<T>> getColumnMetaList() {
         return columnMetaList;
     }
 
-    protected String getColumnStoreName(ColumnMeta columnMeta){
-        if(columnMeta!=null){
-            if(columnMeta.getColumn()!=null) {
+    protected String getColumnStoreName(ColumnMeta columnMeta) {
+        if (columnMeta != null) {
+            if (columnMeta.getColumn() != null) {
                 String colStoreName = columnMeta.getColumn().getDataStoreName();
-                if (colStoreName!=null && !colStoreName.isEmpty()) {
+                if (colStoreName != null && !colStoreName.isEmpty()) {
                     return colStoreName;
                 }
             }
@@ -75,198 +75,207 @@ public class UberfireColumnPicker<T> {
         return "";
     }
 
-    public void columnMoved( final int visibleFromIndex,
-                                final int visibleBeforeIndex ) {
+    public void columnMoved(final int visibleFromIndex,
+                            final int visibleBeforeIndex) {
         int visibleColumnFromIndex = 0;
         ColumnMeta<T> columnMetaToMove = null;
-        for ( int i = 0; i < columnMetaList.size(); i++ ) {
-            final ColumnMeta<T> columnMeta = columnMetaList.get( i );
-            if ( columnMeta.isVisible() ) {
-                if ( visibleFromIndex == visibleColumnFromIndex ) {
+        for (int i = 0; i < columnMetaList.size(); i++) {
+            final ColumnMeta<T> columnMeta = columnMetaList.get(i);
+            if (columnMeta.isVisible()) {
+                if (visibleFromIndex == visibleColumnFromIndex) {
                     columnMetaToMove = columnMeta;
                     break;
                 }
                 visibleColumnFromIndex++;
             }
         }
-        if ( columnMetaToMove == null ) {
+        if (columnMetaToMove == null) {
             return;
         }
 
-        columnMetaList.remove( columnMetaToMove );
+        columnMetaList.remove(columnMetaToMove);
 
         boolean columnInserted = false;
         int visibleColumnBeforeIndex = 0;
-        for ( int i = 0; i < columnMetaList.size(); i++ ) {
-            final ColumnMeta<T> columnMeta = columnMetaList.get( i );
-            if ( columnMeta.isVisible() ) {
-                if ( visibleBeforeIndex == visibleColumnBeforeIndex ) {
-                    columnMetaList.add( i,
-                                        columnMetaToMove );
+        for (int i = 0; i < columnMetaList.size(); i++) {
+            final ColumnMeta<T> columnMeta = columnMetaList.get(i);
+            if (columnMeta.isVisible()) {
+                if (visibleBeforeIndex == visibleColumnBeforeIndex) {
+                    columnMetaList.add(i,
+                                       columnMetaToMove);
                     columnInserted = true;
                     break;
                 }
                 visibleColumnBeforeIndex++;
             }
         }
-        if ( !columnInserted ) {
-            columnMetaList.add( columnMetaToMove );
+        if (!columnInserted) {
+            columnMetaList.add(columnMetaToMove);
         }
     }
 
-    protected int getVisibleColumnIndex( final ColumnMeta<T> columnMeta ) {
+    protected int getVisibleColumnIndex(final ColumnMeta<T> columnMeta) {
         int index = 0;
-        for ( final ColumnMeta<T> cm : columnMetaList ) {
-            if ( cm.equals( columnMeta ) ) {
+        for (final ColumnMeta<T> cm : columnMetaList) {
+            if (cm.equals(columnMeta)) {
                 return index;
             }
-            if ( cm.isVisible() ) {
+            if (cm.isVisible()) {
                 index++;
             }
         }
         return index;
     }
 
-    public void addColumn( ColumnMeta<T> columnMeta ) {
-        if ( columnMeta == null ) {
+    public void addColumn(ColumnMeta<T> columnMeta) {
+        if (columnMeta == null) {
             return;
         }
-        if ( !columnMetaList.contains( columnMeta ) ) {
-            columnMetaList.add( columnMeta );
+        if (!columnMetaList.contains(columnMeta)) {
+            columnMetaList.add(columnMeta);
         }
-        if ( columnMeta.isVisible() ) {
-            dataGrid.addColumn( columnMeta.getColumn(), columnMeta.getHeader() );
+        if (columnMeta.isVisible()) {
+            dataGrid.addColumn(columnMeta.getColumn(),
+                               columnMeta.getHeader());
         }
     }
 
-    protected void sortAndAddColumns( List<ColumnMeta<T>> columnMetas ) {
+    protected void sortAndAddColumns(List<ColumnMeta<T>> columnMetas) {
         // Sort based on preferences applied
-        Collections.sort( columnMetas );
+        Collections.sort(columnMetas);
         //Add the columns based on the preferences
-        for ( ColumnMeta meta : columnMetas ) {
-            addColumn( meta );
+        for (ColumnMeta meta : columnMetas) {
+            addColumn(meta);
         }
     }
 
     public void adjustColumnWidths() {
-        for ( ColumnChangedHandler handler : columnChangedHandler ) {
+        for (ColumnChangedHandler handler : columnChangedHandler) {
             handler.afterColumnChanged();
         }
     }
 
-    public void addColumns( List<ColumnMeta<T>> columnMetas ) {
-        columnMetaList.addAll( columnMetas );
-        sortAndAddColumns( columnMetas );
+    public void addColumns(List<ColumnMeta<T>> columnMetas) {
+        columnMetaList.addAll(columnMetas);
+        sortAndAddColumns(columnMetas);
         adjustColumnWidths();
     }
 
-    public void removeColumn( ColumnMeta<T> columnMeta ) {
-        columnMetaList.remove( columnMeta );
+    public void removeColumn(ColumnMeta<T> columnMeta) {
+        columnMetaList.remove(columnMeta);
         int count = dataGrid.getColumnCount();
-        for ( int i = 0; i < count; i++ ) {
-            dataGrid.removeColumn( 0 );
+        for (int i = 0; i < count; i++) {
+            dataGrid.removeColumn(0);
         }
 
-        sortAndAddColumns( columnMetaList );
+        sortAndAddColumns(columnMetaList);
         adjustColumnWidths();
     }
 
-    protected void configureColorPickerPopup( int left, int top, VerticalPanel popupContent ) {
-        popup.setWidget( popupContent );
+    protected void configureColorPickerPopup(int left,
+                                             int top,
+                                             VerticalPanel popupContent) {
+        popup.setWidget(popupContent);
         popup.show();
         int finalLeft = left - popup.getOffsetWidth();
-        popup.setPopupPosition( finalLeft, top );
+        popup.setPopupPosition(finalLeft,
+                               top);
     }
 
-    protected boolean addThisColumnToPopup( ColumnMeta<T> columnMeta ) {
+    protected boolean addThisColumnToPopup(ColumnMeta<T> columnMeta) {
         return (columnMeta.getHeader().getValue() instanceof String);
     }
 
-    protected void addResetButtom( final int left, final int top, VerticalPanel popupContent ) {
+    protected void addResetButtom(final int left,
+                                  final int top,
+                                  VerticalPanel popupContent) {
         //there is no reset buttom
     }
 
-    protected void showColumnPickerPopup( final int left,
-                                          final int top ) {
-        VerticalPanel popupContent = GWT.create( VerticalPanel.class );
+    protected void showColumnPickerPopup(final int left,
+                                         final int top) {
+        VerticalPanel popupContent = GWT.create(VerticalPanel.class);
 
-        for ( final ColumnMeta<T> columnMeta : columnMetaList ) {
-            if ( addThisColumnToPopup( columnMeta ) ) {
-                final CheckBox checkBox = GWT.create( CheckBox.class );
-                checkBox.setText( (String)columnMeta.getHeader().getValue() );
-                checkBox.setValue( columnMeta.isVisible() );
-                checkBox.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
-                    public void onValueChange( ValueChangeEvent<Boolean> booleanValueChangeEvent ) {
+        for (final ColumnMeta<T> columnMeta : columnMetaList) {
+            if (addThisColumnToPopup(columnMeta)) {
+                final CheckBox checkBox = GWT.create(CheckBox.class);
+                checkBox.setText((String) columnMeta.getHeader().getValue());
+                checkBox.setValue(columnMeta.isVisible());
+                checkBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+                    public void onValueChange(ValueChangeEvent<Boolean> booleanValueChangeEvent) {
                         boolean visible = booleanValueChangeEvent.getValue();
-                        if ( visible ) {
-                            dataGrid.insertColumn( getVisibleColumnIndex( columnMeta ),
-                                                   columnMeta.getColumn(),
-                                                   columnMeta.getHeader() );
+                        if (visible) {
+                            dataGrid.insertColumn(getVisibleColumnIndex(columnMeta),
+                                                  columnMeta.getColumn(),
+                                                  columnMeta.getHeader());
                         } else {
-                            dataGrid.removeColumn( columnMeta.getColumn() );
+                            dataGrid.removeColumn(columnMeta.getColumn());
                         }
-                        columnMeta.setVisible( visible );
+                        columnMeta.setVisible(visible);
                         adjustColumnWidths();
                     }
-                } );
+                });
 
-                popupContent.add( checkBox );
+                popupContent.add(checkBox);
             }
         }
 
-        addResetButtom( left, top, popupContent );
-        configureColorPickerPopup( left, top, popupContent );
+        addResetButtom(left,
+                       top,
+                       popupContent);
+        configureColorPickerPopup(left,
+                                  top,
+                                  popupContent);
     }
 
     public Button createToggleButton() {
-        final Button button = GWT.create( Button.class );
-        button.addStyleName( UFTableResources.INSTANCE.CSS().columnPickerButton() );
-        button.setDataToggle( Toggle.BUTTON );
-        button.setIcon( IconType.LIST_UL );
-        button.setTitle( CommonConstants.INSTANCE.ColumnPickerButtonTooltip() );
+        final Button button = GWT.create(Button.class);
+        button.addStyleName(UFTableResources.INSTANCE.CSS().columnPickerButton());
+        button.setDataToggle(Toggle.BUTTON);
+        button.setIcon(IconType.LIST_UL);
+        button.setTitle(CommonConstants.INSTANCE.ColumnPickerButtonTooltip());
 
-        popup.addStyleName( UFTableResources.INSTANCE.CSS().columnPickerPopup() );
-        popup.addAutoHidePartner( button.getElement() );
-        popup.addCloseHandler( new CloseHandler<PopupPanel>() {
-            public void onClose( CloseEvent<PopupPanel> popupPanelCloseEvent ) {
-                if ( popupPanelCloseEvent.isAutoClosed() ) {
-                    button.setActive( false );
+        popup.addStyleName(UFTableResources.INSTANCE.CSS().columnPickerPopup());
+        popup.addAutoHidePartner(button.getElement());
+        popup.addCloseHandler(new CloseHandler<PopupPanel>() {
+            public void onClose(CloseEvent<PopupPanel> popupPanelCloseEvent) {
+                if (popupPanelCloseEvent.isAutoClosed()) {
+                    button.setActive(false);
                 }
             }
-        } );
+        });
 
-        button.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent event ) {
-                if ( !button.isActive() ) {
-                    showColumnPickerPopup( button.getAbsoluteLeft() + button.getOffsetWidth(),
-                                           button.getAbsoluteTop() + button.getOffsetHeight() );
+        button.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                if (!button.isActive()) {
+                    showColumnPickerPopup(button.getAbsoluteLeft() + button.getOffsetWidth(),
+                                          button.getAbsoluteTop() + button.getOffsetHeight());
                 } else {
-                    popup.hide( false );
+                    popup.hide(false);
                 }
             }
-        } );
+        });
         return button;
     }
 
-    protected void resetTableColumns( int left,
-                                      int top ) {
+    protected void resetTableColumns(int left,
+                                     int top) {
         int count = dataGrid.getColumnCount();
-        for ( int i = 0; i < count; i++ ) {
-            dataGrid.removeColumn( 0 );
+        for (int i = 0; i < count; i++) {
+            dataGrid.removeColumn(0);
         }
 
         loadGlobalGridPreferences();
 
-        sortAndAddColumns( new ArrayList<ColumnMeta<T>>( columnMetaList ) );
+        sortAndAddColumns(new ArrayList<ColumnMeta<T>>(columnMetaList));
 
         adjustColumnWidths();
 
-        showColumnPickerPopup( left, top );
+        showColumnPickerPopup(left,
+                              top);
     }
 
-    protected void loadGlobalGridPreferences(){
+    protected void loadGlobalGridPreferences() {
 
     }
-
-
 }

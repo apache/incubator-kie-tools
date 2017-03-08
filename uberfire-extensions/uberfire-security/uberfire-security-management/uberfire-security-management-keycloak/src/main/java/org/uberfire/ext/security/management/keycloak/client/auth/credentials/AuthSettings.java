@@ -19,7 +19,6 @@ package org.uberfire.ext.security.management.keycloak.client.auth.credentials;
 
 /**
  * The settings for credentials based authentication.
- * 
  * @since 0.9.0
  */
 public class AuthSettings {
@@ -31,7 +30,12 @@ public class AuthSettings {
     private String clientId;
     private String clientSecret;
 
-    public AuthSettings(String serverUrl, String realm, String username, String password, String clientId, String clientSecret) {
+    public AuthSettings(String serverUrl,
+                        String realm,
+                        String username,
+                        String password,
+                        String clientId,
+                        String clientSecret) {
         this.serverUrl = serverUrl;
         this.realm = realm;
         this.username = username;
@@ -88,8 +92,7 @@ public class AuthSettings {
         this.clientSecret = clientSecret;
     }
 
-    public boolean isPublicClient(){
+    public boolean isPublicClient() {
         return clientSecret == null;
     }
-
 }

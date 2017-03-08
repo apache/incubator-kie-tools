@@ -15,14 +15,14 @@
  */
 package org.uberfire.workbench.model.toolbar.impl;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.uberfire.workbench.model.toolbar.ToolBar;
 import org.uberfire.workbench.model.toolbar.ToolBarItem;
+
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Default implementation of ToolBar
@@ -30,18 +30,21 @@ import org.uberfire.workbench.model.toolbar.ToolBarItem;
 public class DefaultToolBar
         implements ToolBar {
 
-    private final String            id;
+    private final String id;
     private final List<ToolBarItem> items;
 
-    public DefaultToolBar( final String id ) {
+    public DefaultToolBar(final String id) {
 
-        this( id, new ArrayList<ToolBarItem>() );
+        this(id,
+             new ArrayList<ToolBarItem>());
     }
 
-    public DefaultToolBar( final String id,
-                           final List<ToolBarItem> items ) {
-        this.id = checkNotEmpty( "id", id );
-        this.items = checkNotNull( "items", items );
+    public DefaultToolBar(final String id,
+                          final List<ToolBarItem> items) {
+        this.id = checkNotEmpty("id",
+                                id);
+        this.items = checkNotNull("items",
+                                  items);
     }
 
     @Override
@@ -50,13 +53,13 @@ public class DefaultToolBar
     }
 
     @Override
-    public void addItem( final ToolBarItem item ) {
-        this.items.add( checkNotNull( "item", item ) );
+    public void addItem(final ToolBarItem item) {
+        this.items.add(checkNotNull("item",
+                                    item));
     }
 
     @Override
     public List<ToolBarItem> getItems() {
         return this.items;
     }
-    
 }

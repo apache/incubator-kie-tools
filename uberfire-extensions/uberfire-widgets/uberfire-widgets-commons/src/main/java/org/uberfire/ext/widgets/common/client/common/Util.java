@@ -31,9 +31,9 @@ public class Util {
      * @param text the header text
      * @return the header as a string
      */
-    public static String getHeader( final ImageResource image,
-                                    final String text ) {
-        return AbstractImagePrototype.create( image ).getHTML() + " " + text;
+    public static String getHeader(final ImageResource image,
+                                   final String text) {
+        return AbstractImagePrototype.create(image).getHTML() + " " + text;
     }
 
     /**
@@ -42,12 +42,12 @@ public class Util {
      * @param text the header text
      * @return the header as HTML
      */
-    public static HTML getHeaderHTML( final ImageResource image,
-                                      final String text ) {
+    public static HTML getHeaderHTML(final ImageResource image,
+                                     final String text) {
         HeaderHTML headerHTML = new HeaderHTML();
-        headerHTML.setText( text );
-        headerHTML.setImageResource( image );
-        return new HTML( headerHTML.getElement().getString() );
+        headerHTML.setText(text);
+        headerHTML.setImageResource(image);
+        return new HTML(headerHTML.getElement().getString());
     }
 
     /**
@@ -56,12 +56,12 @@ public class Util {
      * @param text the header text
      * @return the header as SafeHtml
      */
-    public static SafeHtml getHeaderSafeHtml( final ImageResource image,
-                                              final String text ) {
+    public static SafeHtml getHeaderSafeHtml(final ImageResource image,
+                                             final String text) {
         HeaderHTML headerHTML = new HeaderHTML();
-        headerHTML.setText( text );
-        headerHTML.setImageResource( image );
-        return toSafeHtml( headerHTML.getElement().getString() );
+        headerHTML.setText(text);
+        headerHTML.setImageResource(image);
+        return toSafeHtml(headerHTML.getElement().getString());
     }
 
     /**
@@ -70,9 +70,9 @@ public class Util {
      */
     public static String getSelfURL() {
         String selfURL = Window.Location.getHref();
-        if ( selfURL.contains( "#" ) ) {
-            selfURL = selfURL.substring( 0,
-                                         selfURL.indexOf( "#" ) );
+        if (selfURL.contains("#")) {
+            selfURL = selfURL.substring(0,
+                                        selfURL.indexOf("#"));
         }
         return selfURL;
     }
@@ -82,9 +82,9 @@ public class Util {
      * @param html
      * @return
      */
-    public static SafeHtml toSafeHtml( final String html ) {
+    public static SafeHtml toSafeHtml(final String html) {
         final SafeHtmlBuilder builder = new SafeHtmlBuilder();
-        builder.appendHtmlConstant( html );
+        builder.appendHtmlConstant(html);
         return builder.toSafeHtml();
     }
 }

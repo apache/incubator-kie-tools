@@ -19,7 +19,7 @@ package org.uberfire.client.workbench.events;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.UberFireEvent;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Created by Cristiano Nicolai.
@@ -28,8 +28,9 @@ public abstract class AbstractPlaceEvent implements UberFireEvent {
 
     private final PlaceRequest place;
 
-    public AbstractPlaceEvent( final PlaceRequest place ) {
-        checkNotNull( "place", place );
+    public AbstractPlaceEvent(final PlaceRequest place) {
+        checkNotNull("place",
+                     place);
         this.place = place;
     }
 

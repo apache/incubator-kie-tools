@@ -21,7 +21,8 @@ import org.uberfire.security.authz.VotingAlgorithm;
 import org.uberfire.security.authz.VotingStrategy;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.security.authz.AuthorizationResult.*;
+import static org.uberfire.security.authz.AuthorizationResult.ACCESS_DENIED;
+import static org.uberfire.security.authz.AuthorizationResult.ACCESS_GRANTED;
 
 /**
  * Algorithm implementation of the {@link VotingStrategy#CONSENSUS} strategy.
@@ -31,7 +32,8 @@ public class ConsensusBasedVoter implements VotingAlgorithm {
 
     @Override
     public AuthorizationResult vote(final Iterable<AuthorizationResult> results) {
-        checkNotNull("results", results);
+        checkNotNull("results",
+                     results);
         for (final AuthorizationResult currentResult : results) {
             if (currentResult.equals(ACCESS_DENIED)) {
                 return ACCESS_DENIED;

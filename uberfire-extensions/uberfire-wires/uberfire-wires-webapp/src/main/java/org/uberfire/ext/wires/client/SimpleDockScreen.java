@@ -28,10 +28,10 @@ import org.uberfire.client.annotations.WorkbenchScreen;
  * Created by Cristiano Nicolai.
  */
 @Dependent
-@WorkbenchScreen( identifier = "SimpleDockScreen" )
+@WorkbenchScreen(identifier = "SimpleDockScreen")
 public class SimpleDockScreen {
 
-    final Label label = new Label( "Docks Content" );
+    final Label label = new Label("Docks Content");
 
     @WorkbenchPartTitle
     public String getTitle() {
@@ -42,5 +42,4 @@ public class SimpleDockScreen {
     public IsWidget getView() {
         return label;
     }
-
 }

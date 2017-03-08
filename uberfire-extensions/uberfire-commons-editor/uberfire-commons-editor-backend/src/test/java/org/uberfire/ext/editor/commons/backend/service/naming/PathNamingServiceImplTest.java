@@ -57,94 +57,153 @@ public class PathNamingServiceImplTest {
 
     @Test
     public void buildTargetPathForFolderInTheSameDirectoryTest() {
-        assertEquals( "newFolderName", targetFolderName( "originalFolderName", "newFolderName" ) );
-        assertEquals( "newFolderName", targetFolderName( "original.folder.name", "newFolderName" ) );
-        assertEquals( "newFolderName", targetFolderName( "originalFolder.name", "newFolderName" ) );
-        assertEquals( "new.folder.name", targetFolderName( "originalFolderName", "new.folder.name" ) );
-        assertEquals( "new.folder.name", targetFolderName( "original.folder.name", "new.folder.name" ) );
-        assertEquals( "new.folder.name", targetFolderName( "originalFolder.name", "new.folder.name" ) );
-        assertEquals( "newFolder.name", targetFolderName( "originalFolderName", "newFolder.name" ) );
-        assertEquals( "newFolder.name", targetFolderName( "original.folder.name", "newFolder.name" ) );
-        assertEquals( "newFolder.name", targetFolderName( "originalFolder.name", "newFolder.name" ) );
+        assertEquals("newFolderName",
+                     targetFolderName("originalFolderName",
+                                      "newFolderName"));
+        assertEquals("newFolderName",
+                     targetFolderName("original.folder.name",
+                                      "newFolderName"));
+        assertEquals("newFolderName",
+                     targetFolderName("originalFolder.name",
+                                      "newFolderName"));
+        assertEquals("new.folder.name",
+                     targetFolderName("originalFolderName",
+                                      "new.folder.name"));
+        assertEquals("new.folder.name",
+                     targetFolderName("original.folder.name",
+                                      "new.folder.name"));
+        assertEquals("new.folder.name",
+                     targetFolderName("originalFolder.name",
+                                      "new.folder.name"));
+        assertEquals("newFolder.name",
+                     targetFolderName("originalFolderName",
+                                      "newFolder.name"));
+        assertEquals("newFolder.name",
+                     targetFolderName("original.folder.name",
+                                      "newFolder.name"));
+        assertEquals("newFolder.name",
+                     targetFolderName("originalFolder.name",
+                                      "newFolder.name"));
     }
 
     @Test
     public void buildTargetPathForFileInTheSameDirectoryTest() {
-        assertEquals( "newFileName", targetFileName( "originalFileName", "newFileName" ) );
-        assertEquals( "newFileName.extension2", targetFileName( "originalFileName.extension1.extension2", "newFileName" ) );
-        assertEquals( "newFileName.extension", targetFileName( "originalFileName.extension", "newFileName" ) );
-        assertEquals( "newFileName.extension1.extension2", targetFileName( "originalFileName", "newFileName.extension1.extension2" ) );
-        assertEquals( "newFileName.extension1.extension2.extension2", targetFileName( "originalFileName.extension1.extension2", "newFileName.extension1.extension2" ) );
-        assertEquals( "newFileName.extension1.extension2.extension", targetFileName( "originalFileName.extension", "newFileName.extension1.extension2" ) );
-        assertEquals( "newFileName.extension", targetFileName( "originalFileName", "newFileName.extension" ) );
-        assertEquals( "newFileName.extension.extension2", targetFileName( "originalFileName.extension1.extension2", "newFileName.extension" ) );
-        assertEquals( "newFileName.extension.extension", targetFileName( "originalFileName.extension", "newFileName.extension" ) );
+        assertEquals("newFileName",
+                     targetFileName("originalFileName",
+                                    "newFileName"));
+        assertEquals("newFileName.extension2",
+                     targetFileName("originalFileName.extension1.extension2",
+                                    "newFileName"));
+        assertEquals("newFileName.extension",
+                     targetFileName("originalFileName.extension",
+                                    "newFileName"));
+        assertEquals("newFileName.extension1.extension2",
+                     targetFileName("originalFileName",
+                                    "newFileName.extension1.extension2"));
+        assertEquals("newFileName.extension1.extension2.extension2",
+                     targetFileName("originalFileName.extension1.extension2",
+                                    "newFileName.extension1.extension2"));
+        assertEquals("newFileName.extension1.extension2.extension",
+                     targetFileName("originalFileName.extension",
+                                    "newFileName.extension1.extension2"));
+        assertEquals("newFileName.extension",
+                     targetFileName("originalFileName",
+                                    "newFileName.extension"));
+        assertEquals("newFileName.extension.extension2",
+                     targetFileName("originalFileName.extension1.extension2",
+                                    "newFileName.extension"));
+        assertEquals("newFileName.extension.extension",
+                     targetFileName("originalFileName.extension",
+                                    "newFileName.extension"));
     }
 
     @Test
     public void buildTargetPathForResourceTypeFileInTheSameDirectoryTest() {
-        assertEquals( "newFileName.resource", targetFileName( "originalFileName.resource", "newFileName" ) );
-        assertEquals( "newFileName.resource.xml", targetFileName( "originalFileName.resource.xml", "newFileName" ) );
-        assertEquals( "newFileName.resource.xml.txt", targetFileName( "originalFileName.resource.xml.txt", "newFileName" ) );
+        assertEquals("newFileName.resource",
+                     targetFileName("originalFileName.resource",
+                                    "newFileName"));
+        assertEquals("newFileName.resource.xml",
+                     targetFileName("originalFileName.resource.xml",
+                                    "newFileName"));
+        assertEquals("newFileName.resource.xml.txt",
+                     targetFileName("originalFileName.resource.xml.txt",
+                                    "newFileName"));
     }
 
     @Test
     public void buildTargetPathForFolderInAnotherDirectoryTest() {
-        Path originalPath = createFolder( "parent/folder" );
-        Path targetParentDirectory = createFolder( "new-parent" );
+        Path originalPath = createFolder("parent/folder");
+        Path targetParentDirectory = createFolder("new-parent");
         String targetFileName = "new-folder";
 
-        Path targetPath = pathNamingService.buildTargetPath( originalPath, targetParentDirectory, targetFileName );
+        Path targetPath = pathNamingService.buildTargetPath(originalPath,
+                                                            targetParentDirectory,
+                                                            targetFileName);
 
-        assertEquals( targetParentDirectory.toURI() + "/" + targetFileName, targetPath.toURI() );
+        assertEquals(targetParentDirectory.toURI() + "/" + targetFileName,
+                     targetPath.toURI());
     }
 
     @Test
     public void buildTargetPathForFileInAnotherDirectoryTest() {
         String extension = ".txt";
 
-        Path originalPath = createFile( "parent/file" + extension );
-        Path targetParentDirectory = createFolder( "new-parent" );
+        Path originalPath = createFile("parent/file" + extension);
+        Path targetParentDirectory = createFolder("new-parent");
         String targetFileName = "new-file";
 
-        Path targetPath = pathNamingService.buildTargetPath( originalPath, targetParentDirectory, targetFileName );
+        Path targetPath = pathNamingService.buildTargetPath(originalPath,
+                                                            targetParentDirectory,
+                                                            targetFileName);
 
-        assertEquals( targetParentDirectory.toURI() + "/" + targetFileName + extension, targetPath.toURI() );
+        assertEquals(targetParentDirectory.toURI() + "/" + targetFileName + extension,
+                     targetPath.toURI());
     }
 
     @Test
     public void buildTargetPathForResourceTypeFileInAnotherDirectoryTest() {
         String extension = ".resource.xml.txt";
 
-        Path originalPath = createFile( "parent/resource-file" + extension );
-        Path targetParentDirectory = createFolder( "new-parent" );
+        Path originalPath = createFile("parent/resource-file" + extension);
+        Path targetParentDirectory = createFolder("new-parent");
         String targetFileName = "new-resource-file";
 
-        Path targetPath = pathNamingService.buildTargetPath( originalPath, targetParentDirectory, targetFileName );
+        Path targetPath = pathNamingService.buildTargetPath(originalPath,
+                                                            targetParentDirectory,
+                                                            targetFileName);
 
-        assertEquals( targetParentDirectory.toURI() + "/" + targetFileName + extension, targetPath.toURI() );
+        assertEquals(targetParentDirectory.toURI() + "/" + targetFileName + extension,
+                     targetPath.toURI());
     }
 
-    private Path createFolder( final String folderName ) {
-        return Paths.convert( Paths.convert( PathFactory.newPath( "file", PATH_PREFIX + folderName + "/file" ) ).getParent() );
+    private Path createFolder(final String folderName) {
+        return Paths.convert(Paths.convert(PathFactory.newPath("file",
+                                                               PATH_PREFIX + folderName + "/file")).getParent());
     }
 
-    private Path createFile( final String fileName ) {
-        return PathFactory.newPath( fileName, PATH_PREFIX + fileName );
+    private Path createFile(final String fileName) {
+        return PathFactory.newPath(fileName,
+                                   PATH_PREFIX + fileName);
     }
 
-    private String targetFolderName( final String originalFolderName,
-                                     final String newFolderName ) {
-        final Path path = PathFactory.newPath( "file", PATH_PREFIX + originalFolderName + "/file" );
-        fileSystemTestingUtils.getIoService().write( Paths.convert( path ), "content" );
-        return pathNamingService.buildTargetPath( Paths.convert( Paths.convert( path ).getParent() ), newFolderName ).getFileName();
+    private String targetFolderName(final String originalFolderName,
+                                    final String newFolderName) {
+        final Path path = PathFactory.newPath("file",
+                                              PATH_PREFIX + originalFolderName + "/file");
+        fileSystemTestingUtils.getIoService().write(Paths.convert(path),
+                                                    "content");
+        return pathNamingService.buildTargetPath(Paths.convert(Paths.convert(path).getParent()),
+                                                 newFolderName).getFileName();
     }
 
-    private String targetFileName( final String originalFileName,
-                                   final String newFileName ) {
-        final Path path = PathFactory.newPath( originalFileName, PATH_PREFIX + originalFileName );
-        fileSystemTestingUtils.getIoService().write( Paths.convert( path ), "content" );
-        return pathNamingService.buildTargetPath( path, newFileName ).getFileName();
+    private String targetFileName(final String originalFileName,
+                                  final String newFileName) {
+        final Path path = PathFactory.newPath(originalFileName,
+                                              PATH_PREFIX + originalFileName);
+        fileSystemTestingUtils.getIoService().write(Paths.convert(path),
+                                                    "content");
+        return pathNamingService.buildTargetPath(path,
+                                                 newFileName).getFileName();
     }
 
     private PathNamingService createPathNamingService() {
@@ -160,14 +219,14 @@ public class PathNamingServiceImplTest {
     private Collection<ResourceTypeDefinition> createResourceTypeDefinitions() {
         List<ResourceTypeDefinition> resourceTypeDefinitions = new ArrayList<>();
 
-        resourceTypeDefinitions.add( createResourceTypeDefinition( "resource" ) );
-        resourceTypeDefinitions.add( createResourceTypeDefinition( "resource.xml" ) );
-        resourceTypeDefinitions.add( createResourceTypeDefinition( "resource.xml.txt" ) );
+        resourceTypeDefinitions.add(createResourceTypeDefinition("resource"));
+        resourceTypeDefinitions.add(createResourceTypeDefinition("resource.xml"));
+        resourceTypeDefinitions.add(createResourceTypeDefinition("resource.xml.txt"));
 
         return resourceTypeDefinitions;
     }
 
-    private ResourceTypeDefinition createResourceTypeDefinition( String suffix ) {
+    private ResourceTypeDefinition createResourceTypeDefinition(String suffix) {
         return new ResourceTypeDefinition() {
             @Override
             public String getShortName() {
@@ -200,7 +259,7 @@ public class PathNamingServiceImplTest {
             }
 
             @Override
-            public boolean accept( final org.uberfire.backend.vfs.Path path ) {
+            public boolean accept(final org.uberfire.backend.vfs.Path path) {
                 return false;
             }
         };

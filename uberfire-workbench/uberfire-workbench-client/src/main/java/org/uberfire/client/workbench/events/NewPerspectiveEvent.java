@@ -22,7 +22,7 @@ public class NewPerspectiveEvent implements UberFireEvent {
 
     private final String perspectiveName;
 
-    public NewPerspectiveEvent( final String perspectiveName ) {
+    public NewPerspectiveEvent(final String perspectiveName) {
         this.perspectiveName = perspectiveName;
     }
 
@@ -34,5 +34,4 @@ public class NewPerspectiveEvent implements UberFireEvent {
     public String toString() {
         return "NewPerspectiveEvent [perspectiveName=" + perspectiveName + "]";
     }
-
 }

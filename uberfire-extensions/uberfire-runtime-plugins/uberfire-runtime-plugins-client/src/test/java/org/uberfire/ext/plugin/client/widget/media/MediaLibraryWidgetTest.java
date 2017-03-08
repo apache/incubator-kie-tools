@@ -33,7 +33,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-@WithClassesToStub({ Text.class })
+@WithClassesToStub({Text.class})
 public class MediaLibraryWidgetTest {
 
     public static final String PLUGIN_NAME = "plugin";
@@ -47,57 +47,72 @@ public class MediaLibraryWidgetTest {
     @Before
     public void setup() {
         mediaLibraryWidget = new MediaLibraryWidget();
-        mediaLibraryWidget.library = mock( Row.class );
+        mediaLibraryWidget.library = mock(Row.class);
 
-        media = mock( Media.class );
+        media = mock(Media.class);
         existentMedia = new ArrayList<>();
-        onMediaDelete = spy( new ParameterizedCommand<Media>() {
+        onMediaDelete = spy(new ParameterizedCommand<Media>() {
             @Override
-            public void execute( final Media parameter ) {
+            public void execute(final Media parameter) {
             }
-        } );
+        });
     }
 
     @Test
     public void newMediaDeletedOnCloseTest() {
-        mediaLibraryWidget.setup( PLUGIN_NAME, existentMedia, onMediaDelete );
-        mediaLibraryWidget.onNewMedia( new MediaAdded( PLUGIN_NAME, media ) );
+        mediaLibraryWidget.setup(PLUGIN_NAME,
+                                 existentMedia,
+                                 onMediaDelete);
+        mediaLibraryWidget.onNewMedia(new MediaAdded(PLUGIN_NAME,
+                                                     media));
         mediaLibraryWidget.updateMediaOnClose();
 
-        verify( onMediaDelete ).execute( media );
+        verify(onMediaDelete).execute(media);
     }
 
     @Test
     public void newMediaNotDeletedOnSaveTest() {
-        mediaLibraryWidget.setup( PLUGIN_NAME, existentMedia, onMediaDelete );
-        mediaLibraryWidget.onNewMedia( new MediaAdded( PLUGIN_NAME, media ) );
+        mediaLibraryWidget.setup(PLUGIN_NAME,
+                                 existentMedia,
+                                 onMediaDelete);
+        mediaLibraryWidget.onNewMedia(new MediaAdded(PLUGIN_NAME,
+                                                     media));
         mediaLibraryWidget.updateMediaOnSave();
 
-        verify( onMediaDelete, never() ).execute( media );
+        verify(onMediaDelete,
+               never()).execute(media);
     }
 
     @Test
     public void existentMediaNotDeletedOnCloseTest() {
-        existentMedia.add( mock( Media.class ) );
-        existentMedia.add( mock( Media.class ) );
+        existentMedia.add(mock(Media.class));
+        existentMedia.add(mock(Media.class));
 
-        mediaLibraryWidget.setup( PLUGIN_NAME, existentMedia, onMediaDelete );
-        mediaLibraryWidget.onNewMedia( new MediaAdded( PLUGIN_NAME, media ) );
+        mediaLibraryWidget.setup(PLUGIN_NAME,
+                                 existentMedia,
+                                 onMediaDelete);
+        mediaLibraryWidget.onNewMedia(new MediaAdded(PLUGIN_NAME,
+                                                     media));
         mediaLibraryWidget.updateMediaOnClose();
 
-        verify( onMediaDelete, times( 1 ) ).execute( any( Media.class ) );
-        verify( onMediaDelete ).execute( media );
+        verify(onMediaDelete,
+               times(1)).execute(any(Media.class));
+        verify(onMediaDelete).execute(media);
     }
 
     @Test
     public void existentAndUnexistentMediaNotDeletedOnSaveTest() {
-        existentMedia.add( mock( Media.class ) );
-        existentMedia.add( mock( Media.class ) );
+        existentMedia.add(mock(Media.class));
+        existentMedia.add(mock(Media.class));
 
-        mediaLibraryWidget.setup( PLUGIN_NAME, existentMedia, onMediaDelete );
-        mediaLibraryWidget.onNewMedia( new MediaAdded( PLUGIN_NAME, media ) );
+        mediaLibraryWidget.setup(PLUGIN_NAME,
+                                 existentMedia,
+                                 onMediaDelete);
+        mediaLibraryWidget.onNewMedia(new MediaAdded(PLUGIN_NAME,
+                                                     media));
         mediaLibraryWidget.updateMediaOnSave();
 
-        verify( onMediaDelete, never() ).execute( any( Media.class ) );
+        verify(onMediaDelete,
+               never()).execute(any(Media.class));
     }
 }

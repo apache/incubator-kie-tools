@@ -16,16 +16,15 @@
 
 package org.uberfire.ext.security.management.service;
 
+import javax.inject.Inject;
+
 import org.uberfire.ext.security.management.UberfireRoleManager;
 import org.uberfire.ext.security.management.api.RoleManager;
 import org.uberfire.ext.security.management.api.UserManagementService;
 
-import javax.inject.Inject;
-
 /**
- * <p>The base user management service that uses the <code>org.uberfire.ext.security.management.UberfireRoleManager</code> 
+ * <p>The base user management service that uses the <code>org.uberfire.ext.security.management.UberfireRoleManager</code>
  * as the role manager service used in the platform.</p>
- * 
  * @since 0.8.0
  */
 public abstract class AbstractUserManagementService implements UserManagementService {

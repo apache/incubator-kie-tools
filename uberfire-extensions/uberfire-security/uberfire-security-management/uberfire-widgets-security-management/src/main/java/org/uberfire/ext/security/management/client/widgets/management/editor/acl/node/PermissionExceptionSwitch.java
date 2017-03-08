@@ -26,22 +26,8 @@ import org.uberfire.mvp.Command;
 @Dependent
 public class PermissionExceptionSwitch implements PermissionSwitchToogle {
 
-    public interface View extends UberView<PermissionExceptionSwitch> {
-
-        void init(String textOn, String textOff);
-
-        boolean isOn();
-
-        void setOn(boolean on);
-
-        void setExceptionEnabled(boolean enabled);
-
-        void setEnabled(boolean enabled);
-    }
-
     View view;
     Command onChange;
-
     @Inject
     public PermissionExceptionSwitch(View view) {
         this.view = view;
@@ -53,8 +39,12 @@ public class PermissionExceptionSwitch implements PermissionSwitchToogle {
         return view.asWidget();
     }
 
-    public void init(String switchOnName, String switchOffName, boolean on, boolean isException) {
-        view.init(switchOnName, switchOffName);
+    public void init(String switchOnName,
+                     String switchOffName,
+                     boolean on,
+                     boolean isException) {
+        view.init(switchOnName,
+                  switchOffName);
         view.setOn(on);
         view.setExceptionEnabled(isException);
     }
@@ -86,5 +76,19 @@ public class PermissionExceptionSwitch implements PermissionSwitchToogle {
 
     public void onChange() {
         onChange.execute();
+    }
+
+    public interface View extends UberView<PermissionExceptionSwitch> {
+
+        void init(String textOn,
+                  String textOff);
+
+        boolean isOn();
+
+        void setOn(boolean on);
+
+        void setExceptionEnabled(boolean enabled);
+
+        void setEnabled(boolean enabled);
     }
 }

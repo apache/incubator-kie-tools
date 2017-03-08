@@ -16,6 +16,12 @@
 
 package org.uberfire.ext.security.management.client.screens.editor;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -35,14 +41,8 @@ import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 @Dependent
-@WorkbenchScreen(identifier = GroupEditorScreen.SCREEN_ID )
+@WorkbenchScreen(identifier = GroupEditorScreen.SCREEN_ID)
 public class GroupEditorScreen {
 
     public static final String SCREEN_ID = "GroupEditorScreen";
@@ -60,20 +60,19 @@ public class GroupEditorScreen {
 
     @Inject
     BaseScreen baseScreen;
-    
+
     @Inject
     GroupEditorWorkflow groupEditorWorkflow;
 
     @Inject
     GroupCreationWorkflow groupCreationWorkflow;
-    
+
     @Inject
     ClientUserSystemManager clientUserSystemManager;
-
+    String groupName;
     private String title;
     private PlaceRequest placeRequest;
-    String groupName;
-    
+
     @PostConstruct
     public void init() {
     }
@@ -81,15 +80,17 @@ public class GroupEditorScreen {
     @OnStartup
     public void onStartup(final PlaceRequest placeRequest) {
         this.placeRequest = placeRequest;
-        final String addGroup = placeRequest.getParameter(ADD_GROUP, "false");
-        groupName = placeRequest.getParameter(GROUP_NAME, null);
+        final String addGroup = placeRequest.getParameter(ADD_GROUP,
+                                                          "false");
+        groupName = placeRequest.getParameter(GROUP_NAME,
+                                              null);
         if (Boolean.valueOf(addGroup)) {
             create();
         } else {
             show();
         }
     }
-    
+
     @OnOpen
     public void onOpen() {
 
@@ -128,7 +129,7 @@ public class GroupEditorScreen {
     public IsWidget getWidget() {
         return baseScreen;
     }
-    
+
     @WorkbenchContextId
     public String getMyContextRef() {
         return "groupEditorContext";

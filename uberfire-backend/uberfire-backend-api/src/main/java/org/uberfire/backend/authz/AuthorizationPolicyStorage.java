@@ -15,7 +15,6 @@
  */
 package org.uberfire.backend.authz;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.uberfire.security.authz.AuthorizationPolicy;
 
 /**
@@ -25,7 +24,6 @@ public interface AuthorizationPolicyStorage {
 
     /**
      * Retrieves the current {@link AuthorizationPolicy} instance from the backend storage.
-     *
      * @return The stored {@link AuthorizationPolicy} instance or null if no policy exists.
      */
     AuthorizationPolicy loadPolicy();
@@ -33,7 +31,6 @@ public interface AuthorizationPolicyStorage {
     /**
      * Overwrites the content of the {@link AuthorizationPolicy} instance stored in the backend
      * by the contents of the instance passed as a parameter.
-     *
      * @param policy The authorization policy to store
      */
     void savePolicy(AuthorizationPolicy policy);

@@ -56,22 +56,22 @@ public class SocialActivitiesEventObserver {
         socialAdapters = socialAdapterRepository.getSocialAdapters();
     }
 
-    public void handleSocialActivitiesEvent( @Observes SocialActivitiesEvent event ) {
-        if ( socialConfiguration.isSocialEnable() ) {
-            socialAPI.register( event );
+    public void handleSocialActivitiesEvent(@Observes SocialActivitiesEvent event) {
+        if (socialConfiguration.isSocialEnable()) {
+            socialAPI.register(event);
         }
     }
 
-    public void observeAllEvents( @Observes(notifyObserver = Reception.IF_EXISTS) Object event ) {
-        if ( socialConfiguration.isSocialEnable() ) {
-            if ( socialAdapters == null ) {
+    public void observeAllEvents(@Observes(notifyObserver = Reception.IF_EXISTS) Object event) {
+        if (socialConfiguration.isSocialEnable()) {
+            if (socialAdapters == null) {
                 return;
             }
-            for ( Map.Entry<Class, SocialAdapter> entry : socialAdapters.entrySet() ) {
+            for (Map.Entry<Class, SocialAdapter> entry : socialAdapters.entrySet()) {
                 SocialAdapter adapter = entry.getValue();
-                if ( adapter.shouldInterceptThisEvent( event ) ) {
-                    SocialActivitiesEvent socialEvent = adapter.toSocial( event );
-                    socialActivitiesEvent.fire( socialEvent );
+                if (adapter.shouldInterceptThisEvent(event)) {
+                    SocialActivitiesEvent socialEvent = adapter.toSocial(event);
+                    socialActivitiesEvent.fire(socialEvent);
                 }
             }
         }

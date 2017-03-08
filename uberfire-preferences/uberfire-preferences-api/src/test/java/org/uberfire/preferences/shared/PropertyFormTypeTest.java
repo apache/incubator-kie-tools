@@ -18,57 +18,67 @@ package org.uberfire.preferences.shared;
 
 import org.junit.Test;
 
-import static org.jgroups.util.Util.*;
+import static org.jgroups.util.Util.assertEquals;
 
 public class PropertyFormTypeTest {
 
     @Test
     public void textTypeTest() {
         String someText = "someText";
-        String stringValue = PropertyFormType.TEXT.toString( someText );
-        Object realValue = PropertyFormType.TEXT.fromString( stringValue );
+        String stringValue = PropertyFormType.TEXT.toString(someText);
+        Object realValue = PropertyFormType.TEXT.fromString(stringValue);
 
-        assertEquals( "someText", stringValue );
-        assertEquals( someText, realValue );
+        assertEquals("someText",
+                     stringValue);
+        assertEquals(someText,
+                     realValue);
     }
 
     @Test
     public void booleanTypeTest() {
         boolean someBoolean = true;
-        String stringValue = PropertyFormType.BOOLEAN.toString( someBoolean );
-        Object realValue = PropertyFormType.BOOLEAN.fromString( stringValue );
+        String stringValue = PropertyFormType.BOOLEAN.toString(someBoolean);
+        Object realValue = PropertyFormType.BOOLEAN.fromString(stringValue);
 
-        assertEquals( "true", stringValue );
-        assertEquals( someBoolean, realValue );
+        assertEquals("true",
+                     stringValue);
+        assertEquals(someBoolean,
+                     realValue);
     }
 
     @Test
     public void naturalNumberTypeTest() {
         int someNaturalNumber = 3;
-        String stringValue = PropertyFormType.NATURAL_NUMBER.toString( someNaturalNumber );
-        Object realValue = PropertyFormType.NATURAL_NUMBER.fromString( stringValue );
+        String stringValue = PropertyFormType.NATURAL_NUMBER.toString(someNaturalNumber);
+        Object realValue = PropertyFormType.NATURAL_NUMBER.fromString(stringValue);
 
-        assertEquals( "3", stringValue );
-        assertEquals( someNaturalNumber, realValue );
+        assertEquals("3",
+                     stringValue);
+        assertEquals(someNaturalNumber,
+                     realValue);
     }
 
     @Test
     public void secretTextTypeTest() {
         String someSecretText = "someSecretText";
-        String stringValue = PropertyFormType.SECRET_TEXT.toString( someSecretText );
-        Object realValue = PropertyFormType.SECRET_TEXT.fromString( stringValue );
+        String stringValue = PropertyFormType.SECRET_TEXT.toString(someSecretText);
+        Object realValue = PropertyFormType.SECRET_TEXT.fromString(stringValue);
 
-        assertEquals( "someSecretText", stringValue );
-        assertEquals( someSecretText, realValue );
+        assertEquals("someSecretText",
+                     stringValue);
+        assertEquals(someSecretText,
+                     realValue);
     }
 
     @Test
     public void colorTypeTest() {
         String someColor = "11FF55";
-        String stringValue = PropertyFormType.COLOR.toString( someColor );
-        Object realValue = PropertyFormType.COLOR.fromString( stringValue );
+        String stringValue = PropertyFormType.COLOR.toString(someColor);
+        Object realValue = PropertyFormType.COLOR.fromString(stringValue);
 
-        assertEquals( "11FF55", stringValue );
-        assertEquals( someColor, realValue );
+        assertEquals("11FF55",
+                     stringValue);
+        assertEquals(someColor,
+                     realValue);
     }
 }

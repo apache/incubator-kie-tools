@@ -24,33 +24,34 @@ import org.gwtbootstrap3.client.ui.gwt.DataGrid;
 
 public class SelectionColumn<T> extends Column<T, Boolean> {
 
-    public static <T> SelectionColumn<T> createAndAddSelectionColumn( DataGrid<T> dataGrid ) {
-        SelectionColumn<T> selectionColumn = new SelectionColumn<T>( dataGrid );
-        dataGrid.addColumn( selectionColumn, SafeHtmlUtils.fromSafeConstant( "<br>" ) );
-        return selectionColumn;
-    }
-
     private final DataGrid<T> dataGrid;
 
-    public SelectionColumn( DataGrid<T> dataGrid ) {
-        super( new CheckboxCell( true,
-                                 true ) );
+    public SelectionColumn(DataGrid<T> dataGrid) {
+        super(new CheckboxCell(true,
+                               true));
         this.dataGrid = dataGrid;
         addUpdater();
     }
 
+    public static <T> SelectionColumn<T> createAndAddSelectionColumn(DataGrid<T> dataGrid) {
+        SelectionColumn<T> selectionColumn = new SelectionColumn<T>(dataGrid);
+        dataGrid.addColumn(selectionColumn,
+                           SafeHtmlUtils.fromSafeConstant("<br>"));
+        return selectionColumn;
+    }
+
     private void addUpdater() {
-        setFieldUpdater( new FieldUpdater<T, Boolean>() {
-            public void update( int index,
-                                T object,
-                                Boolean value ) {
-                dataGrid.getSelectionModel().setSelected( object, value );
+        setFieldUpdater(new FieldUpdater<T, Boolean>() {
+            public void update(int index,
+                               T object,
+                               Boolean value) {
+                dataGrid.getSelectionModel().setSelected(object,
+                                                         value);
             }
-        } );
+        });
     }
 
-    public Boolean getValue( T object ) {
-        return dataGrid.getSelectionModel().isSelected( object );
+    public Boolean getValue(T object) {
+        return dataGrid.getSelectionModel().isSelected(object);
     }
-
 }

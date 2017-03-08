@@ -35,86 +35,84 @@ public class SimpleAsyncExecutorServiceTest {
     @Before
     public void before() {
         SimpleAsyncExecutorService.recycle();
-        spUberfireAsyncExecutorSafeMode = System.getProperty( "org.uberfire.async.executor.safemode" );
-        spJavaNamingFactoryInitial = System.getProperty( Context.INITIAL_CONTEXT_FACTORY );
-        System.clearProperty( "org.uberfire.async.executor.safemode" );
-        System.clearProperty( Context.INITIAL_CONTEXT_FACTORY );
+        spUberfireAsyncExecutorSafeMode = System.getProperty("org.uberfire.async.executor.safemode");
+        spJavaNamingFactoryInitial = System.getProperty(Context.INITIAL_CONTEXT_FACTORY);
+        System.clearProperty("org.uberfire.async.executor.safemode");
+        System.clearProperty(Context.INITIAL_CONTEXT_FACTORY);
     }
 
     @After
     public void after() {
-        if ( spUberfireAsyncExecutorSafeMode != null ) {
-            System.setProperty( "org.uberfire.async.executor.safemode",
-                                spUberfireAsyncExecutorSafeMode );
+        if (spUberfireAsyncExecutorSafeMode != null) {
+            System.setProperty("org.uberfire.async.executor.safemode",
+                               spUberfireAsyncExecutorSafeMode);
         }
-        if ( spJavaNamingFactoryInitial != null ) {
-            System.setProperty( Context.INITIAL_CONTEXT_FACTORY,
-                                spJavaNamingFactoryInitial );
+        if (spJavaNamingFactoryInitial != null) {
+            System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
+                               spJavaNamingFactoryInitial);
         }
     }
 
     @Test
     public void testUseJDNILookup() throws NamingException {
         //Test ExecutorService is looked up from JNDI
-        System.setProperty( Context.INITIAL_CONTEXT_FACTORY,
-                            MockInitialContextFactory.class.getName() );
+        System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
+                           MockInitialContextFactory.class.getName());
 
-        final Context context = mock( Context.class );
-        final DisposableExecutor service = mock( DisposableExecutor.class );
-        when( context.lookup( "java:module/SimpleAsyncExecutorService" ) ).thenReturn( service );
-        MockInitialContextFactory.setCurrentContext( context );
+        final Context context = mock(Context.class);
+        final DisposableExecutor service = mock(DisposableExecutor.class);
+        when(context.lookup("java:module/SimpleAsyncExecutorService")).thenReturn(service);
+        MockInitialContextFactory.setCurrentContext(context);
 
         final DisposableExecutor executor1 = SimpleAsyncExecutorService.getDefaultInstance();
 
-        assertNotNull( executor1 );
-        assertTrue( executor1 instanceof DisposableExecutor );
-        assertSame( service,
-                    executor1 );
+        assertNotNull(executor1);
+        assertTrue(executor1 instanceof DisposableExecutor);
+        assertSame(service,
+                   executor1);
 
         final DisposableExecutor executor2 = SimpleAsyncExecutorService.getDefaultInstance();
 
-        assertNotNull( executor2 );
-        assertTrue( executor2 instanceof DisposableExecutor );
-        assertSame( service,
-                    executor2 );
+        assertNotNull(executor2);
+        assertTrue(executor2 instanceof DisposableExecutor);
+        assertSame(service,
+                   executor2);
 
-        assertSame( executor1,
-                    executor2 );
+        assertSame(executor1,
+                   executor2);
     }
 
     @Test
     public void testUseExecutorThreadPool() {
         //Test ExecutorService is a "simple" implementation
-        System.setProperty( "org.uberfire.async.executor.safemode",
-                            "true" );
+        System.setProperty("org.uberfire.async.executor.safemode",
+                           "true");
 
         final DisposableExecutor executor1 = SimpleAsyncExecutorService.getDefaultInstance();
 
-        assertNotNull( executor1 );
-        assertTrue( executor1 instanceof SimpleAsyncExecutorService );
+        assertNotNull(executor1);
+        assertTrue(executor1 instanceof SimpleAsyncExecutorService);
 
         final DisposableExecutor executor2 = SimpleAsyncExecutorService.getDefaultInstance();
 
-        assertNotNull( executor2 );
-        assertTrue( executor2 instanceof SimpleAsyncExecutorService );
+        assertNotNull(executor2);
+        assertTrue(executor2 instanceof SimpleAsyncExecutorService);
 
-        assertSame( executor1,
-                    executor2 );
+        assertSame(executor1,
+                   executor2);
     }
 
     public static class MockInitialContextFactory implements InitialContextFactory {
 
         private static final ThreadLocal<Context> currentContext = new ThreadLocal<Context>();
 
+        public static void setCurrentContext(final Context context) {
+            currentContext.set(context);
+        }
+
         @Override
-        public Context getInitialContext( final Hashtable<?, ?> environment ) throws NamingException {
+        public Context getInitialContext(final Hashtable<?, ?> environment) throws NamingException {
             return currentContext.get();
         }
-
-        public static void setCurrentContext( final Context context ) {
-            currentContext.set( context );
-        }
-
     }
-
 }

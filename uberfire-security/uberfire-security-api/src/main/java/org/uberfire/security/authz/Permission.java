@@ -31,14 +31,12 @@ public interface Permission {
 
     /**
      * The authorization result or permission status.
-     *
      * @return One of the available results: GRANT / DENY / ABSTAIN
      */
     AuthorizationResult getResult();
 
     /**
      * Change the authorzation result.
-     *
      * @param result GRANT / DENY / ABSTAIN
      */
     void setResult(AuthorizationResult result);
@@ -48,9 +46,8 @@ public interface Permission {
      * if one is granted permission p1, one is naturally granted permission p2.
      * Thus, this is not an equality test, but rather more of a
      * subset test.
-     *
+     * <p>
      * <p>Both calls to {@link #impliesName(Permission)} & {@link #impliesResult(Permission)} return true.</p>
-     *
      * @param other the permission to check against.
      * @return true if the specified permission is implied by this object, false if not.
      */
@@ -58,7 +55,6 @@ public interface Permission {
 
     /**
      * If "permission p1 impliesName permission p2" means that the feature represented by p1 is a superset of p2.
-     *
      * @param other the permission to check against.
      * @return true if the specified permission name is implied by this object, false if not.
      */
@@ -66,7 +62,6 @@ public interface Permission {
 
     /**
      * If "permission p1 impliesResult permission p2" means that both permissions give the same result.
-     *
      * @param other the permission to check against.
      * @return true if the specified permission result is implied by this object, false if not.
      */
@@ -74,7 +69,6 @@ public interface Permission {
 
     /**
      * Creates an exact copy of this instance.
-     *
      * @return A brand new Permission instance
      */
     Permission clone();

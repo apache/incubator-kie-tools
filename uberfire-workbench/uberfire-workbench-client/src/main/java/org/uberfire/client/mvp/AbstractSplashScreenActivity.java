@@ -18,18 +18,15 @@ package org.uberfire.client.mvp;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.annotations.WorkbenchSplashScreen;
-import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.client.workbench.widgets.splash.SplashView;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.SplashScreenFilter;
-
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Implementation of behaviour common to all splash screen activities. Concrete implementations are typically not written by
@@ -37,30 +34,28 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public abstract class AbstractSplashScreenActivity extends AbstractActivity implements SplashScreenActivity {
 
+    private final SplashView splash;
     @Inject
     private WorkbenchServicesProxy wbServices;
-
-    private final SplashView splash;
-
     private Boolean showAgain;
     private SplashScreenFilter splashFilter;
 
     @Inject
-    public AbstractSplashScreenActivity( final PlaceManager placeManager,
-                                         final SplashView splash ) {
-        super( placeManager );
+    public AbstractSplashScreenActivity(final PlaceManager placeManager,
+                                        final SplashView splash) {
+        super(placeManager);
         this.splash = splash;
     }
 
     @PostConstruct
     private void initialize() {
         this.splashFilter = getFilter();
-        splash.addCloseHandler( new CloseHandler<SplashView>() {
+        splash.addCloseHandler(new CloseHandler<SplashView>() {
             @Override
-            public void onClose( final CloseEvent<SplashView> event ) {
+            public void onClose(final CloseEvent<SplashView> event) {
                 AbstractSplashScreenActivity.this.onClose();
             }
-        } );
+        });
     }
 
     @Override
@@ -69,19 +64,20 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
     }
 
     @Override
-    public void onStartup( PlaceRequest place ) {
-        super.onStartup( place );
-        wbServices.loadSplashScreenFilter( getFilter().getName(), new ParameterizedCommand<SplashScreenFilter>() {
-            @Override
-            public void execute( final SplashScreenFilter response ) {
-                if ( response != null ) {
-                    splashFilter = response;
-                }
-                if ( splashFilter.displayNextTime() ) {
-                    forceShow();
-                }
-            }
-        } );
+    public void onStartup(PlaceRequest place) {
+        super.onStartup(place);
+        wbServices.loadSplashScreenFilter(getFilter().getName(),
+                                          new ParameterizedCommand<SplashScreenFilter>() {
+                                              @Override
+                                              public void execute(final SplashScreenFilter response) {
+                                                  if (response != null) {
+                                                      splashFilter = response;
+                                                  }
+                                                  if (splashFilter.displayNextTime()) {
+                                                      forceShow();
+                                                  }
+                                              }
+                                          });
     }
 
     @Override
@@ -105,7 +101,7 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
 
     @Override
     public void closeIfOpen() {
-        if ( splash.isAttached() ) {
+        if (splash.isAttached()) {
             splash.hide();
             onClose();
         }
@@ -115,8 +111,9 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
     public void forceShow() {
         final IsWidget widget = getWidget();
 
-        splash.setContent( widget, getBodyHeight() );
-        splash.setTitle( getTitle() );
+        splash.setContent(widget,
+                          getBodyHeight());
+        splash.setTitle(getTitle());
         splash.show();
     }
 
@@ -127,12 +124,12 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
     }
 
     @Override
-    public Boolean intercept( final PlaceRequest intercepted ) {
-        if ( splashFilter == null ) {
+    public Boolean intercept(final PlaceRequest intercepted) {
+        if (splashFilter == null) {
             return false;
         }
-        for ( final String interceptPoint : splashFilter.getInterceptionPoints() ) {
-            if ( intercepted.getIdentifier().equals( interceptPoint ) ) {
+        for (final String interceptPoint : splashFilter.getInterceptionPoints()) {
+            if (intercepted.getIdentifier().equals(interceptPoint)) {
                 return true;
             }
         }
@@ -142,10 +139,9 @@ public abstract class AbstractSplashScreenActivity extends AbstractActivity impl
 
     private void saveState() {
         showAgain = splash.showAgain();
-        if ( showAgain != null ) {
-            splashFilter.setDisplayNextTime( showAgain );
-            wbServices.save( splashFilter );
+        if (showAgain != null) {
+            splashFilter.setDisplayNextTime(showAgain);
+            wbServices.save(splashFilter);
         }
     }
-
 }

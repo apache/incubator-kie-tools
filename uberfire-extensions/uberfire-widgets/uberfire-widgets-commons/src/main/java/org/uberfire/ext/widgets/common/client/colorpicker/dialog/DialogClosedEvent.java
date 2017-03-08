@@ -18,32 +18,33 @@ package org.uberfire.ext.widgets.common.client.colorpicker.dialog;
 import com.google.gwt.event.shared.GwtEvent;
 
 public class DialogClosedEvent extends GwtEvent<DialogClosedHandler> {
-	private static Type<DialogClosedHandler> TYPE;
 
-	private boolean canceled;
+    private static Type<DialogClosedHandler> TYPE;
 
-	DialogClosedEvent(boolean canceled) {
-		this.canceled = canceled;
-	}
+    private boolean canceled;
 
-	public static Type<DialogClosedHandler> getType() {
-		if (TYPE == null) {
-			TYPE = new Type<DialogClosedHandler>();
-		}
-		return TYPE;
-	}
+    DialogClosedEvent(boolean canceled) {
+        this.canceled = canceled;
+    }
 
-	@Override
-	public Type<DialogClosedHandler> getAssociatedType() {
-		return TYPE;
-	}
+    public static Type<DialogClosedHandler> getType() {
+        if (TYPE == null) {
+            TYPE = new Type<DialogClosedHandler>();
+        }
+        return TYPE;
+    }
 
-	@Override
-	protected void dispatch(DialogClosedHandler handler) {
-		handler.dialogClosed(this);
-	}
-	
-	public boolean isCanceled() {
-		return canceled;
-	}
+    @Override
+    public Type<DialogClosedHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(DialogClosedHandler handler) {
+        handler.dialogClosed(this);
+    }
+
+    public boolean isCanceled() {
+        return canceled;
+    }
 }

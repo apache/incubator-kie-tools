@@ -19,6 +19,7 @@ package org.uberfire.ext.widgets.common.client.common;
 import com.google.gwt.resources.client.ImageResource;
 
 public class StackItemHeader {
+
     private StackItemHeaderView view;
 
     public StackItemHeader(StackItemHeaderView view) {

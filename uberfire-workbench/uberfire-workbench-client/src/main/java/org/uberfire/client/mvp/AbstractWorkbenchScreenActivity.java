@@ -16,8 +16,8 @@
 package org.uberfire.client.mvp;
 
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.security.ResourceType;
+import org.uberfire.workbench.model.ActivityResourceType;
 
 /**
  * Implementation of behaviour common to all workbench screen activities. Concrete implementations are typically
@@ -26,18 +26,13 @@ import org.uberfire.security.ResourceType;
  * <p>
  * When implementing a Screen by extending this class, you must follow three rules:
  * <ol>
- *  <li>mark it as a {@code @Dependent} bean;
- *  <li>specify its place ID via the {@code @Named} annotation;
- *  <li>include an {@code @Inject} constructor that passes the {@code PlaceManager} up to
- *      the super constructor.
+ * <li>mark it as a {@code @Dependent} bean;
+ * <li>specify its place ID via the {@code @Named} annotation;
+ * <li>include an {@code @Inject} constructor that passes the {@code PlaceManager} up to
+ * the super constructor.
  * </ol>
  */
 public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchActivity implements WorkbenchScreenActivity {
-
-    @Override
-    public ResourceType getResourceType() {
-        return ActivityResourceType.SCREEN;
-    }
 
     /**
      * Passes the given PlaceManager up to the superclass.
@@ -45,11 +40,14 @@ public abstract class AbstractWorkbenchScreenActivity extends AbstractWorkbenchA
      * In order to make the {@code super()} call to this constructor, subclasses should declare their own constructor
      * that takes a {@code PlaceManager} plus any other dependencies required by the screen, and annotate that
      * constructor with {@code @Inject}.
-     *
      * @param placeManager The PlaceManager in force for the current application. Must not be null.
      */
-    public AbstractWorkbenchScreenActivity( final PlaceManager placeManager ) {
-        super( placeManager );
+    public AbstractWorkbenchScreenActivity(final PlaceManager placeManager) {
+        super(placeManager);
     }
 
+    @Override
+    public ResourceType getResourceType() {
+        return ActivityResourceType.SCREEN;
+    }
 }

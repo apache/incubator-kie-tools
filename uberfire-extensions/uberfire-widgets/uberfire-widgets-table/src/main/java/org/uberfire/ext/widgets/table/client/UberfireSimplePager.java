@@ -41,66 +41,26 @@ import org.uberfire.ext.widgets.table.client.resources.i18n.CommonConstants;
  */
 public class UberfireSimplePager extends AbstractPager {
 
-    /**
-     * Styles used by this widget.
-     */
-    public interface Style
-            extends
-            CssResource {
-
-        /**
-         * Applied to buttons.
-         */
-        String button();
-
-        /**
-         * Applied to the details text.
-         */
-        String pageDetails();
-    }
-
-    /**
-     * The location of the text relative to the paging buttons.
-     */
-    public enum TextLocation {
-        CENTER, LEFT, RIGHT
-    }
-
     private static int DEFAULT_FAST_FORWARD_ROWS = 100;
     private static UberfireSimplePagerResources DEFAULT_RESOURCES;
-
-    private static UberfireSimplePagerResources getDefaultResources() {
-        if ( DEFAULT_RESOURCES == null ) {
-            DEFAULT_RESOURCES = UberfireSimplePagerResources.INSTANCE;
-        }
-        return DEFAULT_RESOURCES;
-    }
-
     private final Button fastForward;
-
     private final int fastForwardRows;
-
     private final Button firstPage;
-
     /**
      * We use an {@link HTML} so we can embed the loading image.
      */
     private final HTML label = new HTML();
-
     private final Button lastPage;
     private final Button nextPage;
     private final Button prevPage;
-
     /**
      * The {@link UberfireSimplePagerResources} used by this widget.
      */
     private final UberfireSimplePagerResources resources;
-
     /**
      * The {@link Style} used by this widget.
      */
     private final Style style;
-
     //Page size is normally derieved from the visibleRange
     private int pageSize = 10;
 
@@ -108,27 +68,28 @@ public class UberfireSimplePager extends AbstractPager {
      * Construct a {@link SimplePager} with the default text location.
      */
     public UberfireSimplePager() {
-        this( TextLocation.CENTER );
+        this(TextLocation.CENTER);
     }
 
     /**
      * Construct a {@link SimplePager} with the specified text location.
      * @param location the location of the text relative to the buttons
      */
-    public UberfireSimplePager( TextLocation location ) {
-        this( location,
-              getDefaultResources(),
-              true,
-              DEFAULT_FAST_FORWARD_ROWS,
-              true );
+    public UberfireSimplePager(TextLocation location) {
+        this(location,
+             getDefaultResources(),
+             true,
+             DEFAULT_FAST_FORWARD_ROWS,
+             true);
     }
 
-    public UberfireSimplePager( boolean showFastForwardButton, boolean showLastPageButton ) {
-        this( TextLocation.CENTER,
-              getDefaultResources(),
-              showFastForwardButton,
-              DEFAULT_FAST_FORWARD_ROWS,
-              showLastPageButton );
+    public UberfireSimplePager(boolean showFastForwardButton,
+                               boolean showLastPageButton) {
+        this(TextLocation.CENTER,
+             getDefaultResources(),
+             showFastForwardButton,
+             DEFAULT_FAST_FORWARD_ROWS,
+             showLastPageButton);
     }
 
     /**
@@ -140,11 +101,11 @@ public class UberfireSimplePager extends AbstractPager {
      * @param fastForwardRows the number of rows to jump when fast forwarding
      * @param showLastPageButton if true, show a button to go the the last page
      */
-    public UberfireSimplePager( TextLocation location,
-                                UberfireSimplePagerResources resources,
-                                boolean showFastForwardButton,
-                                final int fastForwardRows,
-                                boolean showLastPageButton ) {
+    public UberfireSimplePager(TextLocation location,
+                               UberfireSimplePagerResources resources,
+                               boolean showFastForwardButton,
+                               final int fastForwardRows,
+                               boolean showLastPageButton) {
         this.resources = resources;
         this.fastForwardRows = fastForwardRows;
         this.style = resources.simplePagerStyle();
@@ -152,85 +113,91 @@ public class UberfireSimplePager extends AbstractPager {
 
         // Create the buttons.
         firstPage = new Button();
-        firstPage.setIcon( IconType.ANGLE_DOUBLE_LEFT );
-        firstPage.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent event ) {
+        firstPage.setIcon(IconType.ANGLE_DOUBLE_LEFT);
+        firstPage.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
                 firstPage();
             }
-        } );
-        nextPage = new Button( );
-        nextPage.setIcon( IconType.ANGLE_RIGHT );
-        nextPage.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent event ) {
+        });
+        nextPage = new Button();
+        nextPage.setIcon(IconType.ANGLE_RIGHT);
+        nextPage.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
                 nextPage();
             }
-        } );
+        });
         prevPage = new Button();
-        prevPage.setIcon( IconType.ANGLE_LEFT );
-        prevPage.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent event ) {
+        prevPage.setIcon(IconType.ANGLE_LEFT);
+        prevPage.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
                 previousPage();
             }
-        } );
+        });
 
         lastPage = new Button();
-        lastPage.setIcon( IconType.ANGLE_DOUBLE_RIGHT );
-        lastPage.addClickHandler( new ClickHandler() {
-                public void onClick( ClickEvent event ) {
-                    lastPage();
-                }
-            } );
+        lastPage.setIcon(IconType.ANGLE_DOUBLE_RIGHT);
+        lastPage.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                lastPage();
+            }
+        });
 
         fastForward = new Button();
-        fastForward.setIcon( IconType.FAST_FORWARD );
-        fastForward.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent event ) {
-                setPage( getPage() + getFastForwardPages() );
+        fastForward.setIcon(IconType.FAST_FORWARD);
+        fastForward.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                setPage(getPage() + getFastForwardPages());
             }
-        } );
-
+        });
 
         // Construct the widget.
         HorizontalPanel layout = new HorizontalPanel();
-        layout.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
-        initWidget( layout );
-        if ( location == TextLocation.RIGHT ) {
-            layout.add( label );
+        layout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+        initWidget(layout);
+        if (location == TextLocation.RIGHT) {
+            layout.add(label);
         }
-        layout.add( firstPage );
-        layout.add( prevPage );
-        if ( location == TextLocation.CENTER ) {
-            layout.add( label );
+        layout.add(firstPage);
+        layout.add(prevPage);
+        if (location == TextLocation.CENTER) {
+            layout.add(label);
         }
-        layout.add( nextPage );
-        layout.add( fastForward );
-        layout.add( lastPage );
+        layout.add(nextPage);
+        layout.add(fastForward);
+        layout.add(lastPage);
 
-        if ( location == TextLocation.LEFT ) {
-            layout.add( label );
+        if (location == TextLocation.LEFT) {
+            layout.add(label);
         }
 
         // Add style names to the cells.
-        firstPage.getElement().getParentElement().addClassName( style.button() );
-        prevPage.getElement().getParentElement().addClassName( style.button() );
-        label.getElement().getParentElement().addClassName( style.pageDetails() );
-        nextPage.getElement().getParentElement().addClassName( style.button() );
-        fastForward.getElement().getParentElement().addClassName( style.button() );
-        lastPage.getElement().getParentElement().addClassName( style.button() );
+        firstPage.getElement().getParentElement().addClassName(style.button());
+        prevPage.getElement().getParentElement().addClassName(style.button());
+        label.getElement().getParentElement().addClassName(style.pageDetails());
+        nextPage.getElement().getParentElement().addClassName(style.button());
+        fastForward.getElement().getParentElement().addClassName(style.button());
+        lastPage.getElement().getParentElement().addClassName(style.button());
 
-        setShowLastPageButton( showLastPageButton );
-        setShowFastFordwardPageButton( showFastForwardButton );
+        setShowLastPageButton(showLastPageButton);
+        setShowFastFordwardPageButton(showFastForwardButton);
 
         // Disable the buttons by default.
-        setDisplay( null );
+        setDisplay(null);
     }
 
-    public void setShowLastPageButton( boolean showLastPageButton ) {
-        this.lastPage.setVisible( showLastPageButton );
+    private static UberfireSimplePagerResources getDefaultResources() {
+        if (DEFAULT_RESOURCES == null) {
+            DEFAULT_RESOURCES = UberfireSimplePagerResources.INSTANCE;
+        }
+        return DEFAULT_RESOURCES;
     }
 
-    public void setShowFastFordwardPageButton( boolean showFastFordwardPageButton ) {
-        this.fastForward.setVisible( showFastFordwardPageButton );
+    public void setShowLastPageButton(boolean showLastPageButton) {
+        this.lastPage.setVisible(showLastPageButton);
+    }
+
+    public void setShowFastFordwardPageButton(boolean showFastFordwardPageButton) {
+        this.fastForward.setVisible(showFastFordwardPageButton);
     }
 
     // We want pageSize to remain constant
@@ -239,14 +206,20 @@ public class UberfireSimplePager extends AbstractPager {
         return pageSize;
     }
 
+    @Override
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+        super.setPageSize(pageSize);
+    }
+
     // Page forward by an exact size rather than the number of visible
     // rows as is in the norm in the underlying implementation
     @Override
     public void nextPage() {
-        if ( getDisplay() != null ) {
+        if (getDisplay() != null) {
             Range range = getDisplay().getVisibleRange();
-            setPageStart( range.getStart()
-                                  + getPageSize() );
+            setPageStart(range.getStart()
+                                 + getPageSize());
         }
     }
 
@@ -254,32 +227,26 @@ public class UberfireSimplePager extends AbstractPager {
     // as is in the norm in the underlying implementation
     @Override
     public void previousPage() {
-        if ( getDisplay() != null ) {
+        if (getDisplay() != null) {
             Range range = getDisplay().getVisibleRange();
-            setPageStart( range.getStart()
-                                  - getPageSize() );
+            setPageStart(range.getStart()
+                                 - getPageSize());
         }
     }
 
     @Override
-    public void setDisplay( HasRows display ) {
+    public void setDisplay(HasRows display) {
         // Enable or disable all buttons.
-        boolean disableButtons = ( display == null );
-        setFastForwardDisabled( disableButtons );
-        setNextPageButtonsDisabled( disableButtons );
-        setPrevPageButtonsDisabled( disableButtons );
-        super.setDisplay( display );
+        boolean disableButtons = (display == null);
+        setFastForwardDisabled(disableButtons);
+        setNextPageButtonsDisabled(disableButtons);
+        setPrevPageButtonsDisabled(disableButtons);
+        super.setDisplay(display);
     }
 
     @Override
-    public void setPage( int index ) {
-        super.setPage( index );
-    }
-
-    @Override
-    public void setPageSize( int pageSize ) {
-        this.pageSize = pageSize;
-        super.setPageSize( pageSize );
+    public void setPage(int index) {
+        super.setPage(index);
     }
 
     // Override so the last page is shown with a number of rows less
@@ -287,18 +254,21 @@ public class UberfireSimplePager extends AbstractPager {
     // of rows and possibly repeating rows on the last and penultimate
     // page
     @Override
-    public void setPageStart( int index ) {
+    public void setPageStart(int index) {
         if (getDisplay() != null) {
-          Range range = getDisplay().getVisibleRange();
-          int displayPageSize = range.getLength();
-          if (!isRangeLimited() && getDisplay().isRowCountExact()) {
-            index = Math.min(index, getDisplay().getRowCount() - displayPageSize);
-          }
-          index = Math.max(0, index);
-          if (index != range.getStart()) {
-            getDisplay().setVisibleRange(index, displayPageSize);
-          }
-        }  
+            Range range = getDisplay().getVisibleRange();
+            int displayPageSize = range.getLength();
+            if (!isRangeLimited() && getDisplay().isRowCountExact()) {
+                index = Math.min(index,
+                                 getDisplay().getRowCount() - displayPageSize);
+            }
+            index = Math.max(0,
+                             index);
+            if (index != range.getStart()) {
+                getDisplay().setVisibleRange(index,
+                                             displayPageSize);
+            }
+        }
     }
 
     /**
@@ -307,9 +277,9 @@ public class UberfireSimplePager extends AbstractPager {
      * loaded into the table.
      */
     public void startLoading() {
-        getDisplay().setRowCount( 0,
-                                  true );
-        label.setHTML( "" );
+        getDisplay().setRowCount(0,
+                                 true);
+        label.setHTML("");
     }
 
     /**
@@ -325,23 +295,23 @@ public class UberfireSimplePager extends AbstractPager {
      * Enable or disable the fast forward button.
      * @param disabled true to disable, false to enable
      */
-    private void setFastForwardDisabled( boolean disabled ) {
-        if ( fastForward == null ) {
+    private void setFastForwardDisabled(boolean disabled) {
+        if (fastForward == null) {
             return;
         }
 
         //The one line change to GWT's SimplePager code!
-        fastForward.setEnabled( !disabled );
+        fastForward.setEnabled(!disabled);
     }
 
     /**
      * Enable or disable the next page buttons.
      * @param disabled true to disable, false to enable
      */
-    private void setNextPageButtonsDisabled( boolean disabled ) {
-        nextPage.setEnabled( !disabled );
-        if ( lastPage != null ) {
-            lastPage.setEnabled( !disabled );
+    private void setNextPageButtonsDisabled(boolean disabled) {
+        nextPage.setEnabled(!disabled);
+        if (lastPage != null) {
+            lastPage.setEnabled(!disabled);
         }
     }
 
@@ -349,9 +319,9 @@ public class UberfireSimplePager extends AbstractPager {
      * Enable or disable the previous page buttons.
      * @param disabled true to disable, false to enable
      */
-    private void setPrevPageButtonsDisabled( boolean disabled ) {
-        firstPage.setEnabled( !disabled );
-        prevPage.setEnabled( !disabled );
+    private void setPrevPageButtonsDisabled(boolean disabled) {
+        firstPage.setEnabled(!disabled);
+        prevPage.setEnabled(!disabled);
     }
 
     // Override to display "0 of 0" when there are no records (otherwise
@@ -359,45 +329,45 @@ public class UberfireSimplePager extends AbstractPager {
     // (otherwise you get "1-1 of 1"). Not internationalised (but
     // neither is SimplePager)
     protected String createText() {
-        NumberFormat formatter = NumberFormat.getFormat( "#,###" );
+        NumberFormat formatter = NumberFormat.getFormat("#,###");
         HasRows display = getDisplay();
         Range range = display.getVisibleRange();
         int pageStart = range.getStart() + 1;
         int pageSize = range.getLength();
         int dataSize = display.getRowCount();
-        int endIndex = Math.min( dataSize,
-                                 pageStart
-                                         + pageSize
-                                         - 1 );
-        endIndex = Math.max( pageStart,
-                             endIndex );
+        int endIndex = Math.min(dataSize,
+                                pageStart
+                                        + pageSize
+                                        - 1);
+        endIndex = Math.max(pageStart,
+                            endIndex);
         boolean exact = display.isRowCountExact();
-        if ( dataSize == 0 ) {
+        if (dataSize == 0) {
             return "0 " + of() + " 0";
-        } else if ( pageStart == endIndex ) {
-            return formatter.format( pageStart )
+        } else if (pageStart == endIndex) {
+            return formatter.format(pageStart)
                     + " " + of() + " "
-                    + formatter.format( dataSize );
+                    + formatter.format(dataSize);
         }
-        return formatter.format( pageStart )
+        return formatter.format(pageStart)
                 + "-"
-                + formatter.format( endIndex )
-                + ( exact ? " " + of() + " " : " " + of() + " " + over() + " " )
-                + formatter.format( dataSize );
+                + formatter.format(endIndex)
+                + (exact ? " " + of() + " " : " " + of() + " " + over() + " ")
+                + formatter.format(dataSize);
     }
 
     @Override
     protected void onRangeOrRowCountChanged() {
         HasRows display = getDisplay();
-        label.setText( createText() );
+        label.setText(createText());
 
         // Update the prev and first buttons.
-        setPrevPageButtonsDisabled( !hasPreviousPage() );
+        setPrevPageButtonsDisabled(!hasPreviousPage());
 
         // Update the next and last buttons.
-        if ( isRangeLimited() || !display.isRowCountExact() ) {
-            setNextPageButtonsDisabled( !hasNextPage() );
-            setFastForwardDisabled( !hasNextPages( getFastForwardPages() ) );
+        if (isRangeLimited() || !display.isRowCountExact()) {
+            setNextPageButtonsDisabled(!hasNextPage());
+            setFastForwardDisabled(!hasNextPages(getFastForwardPages()));
         }
     }
 
@@ -423,4 +393,30 @@ public class UberfireSimplePager extends AbstractPager {
         return CommonConstants.INSTANCE.Over();
     }
 
+    /**
+     * The location of the text relative to the paging buttons.
+     */
+    public enum TextLocation {
+        CENTER,
+        LEFT,
+        RIGHT
+    }
+
+    /**
+     * Styles used by this widget.
+     */
+    public interface Style
+            extends
+            CssResource {
+
+        /**
+         * Applied to buttons.
+         */
+        String button();
+
+        /**
+         * Applied to the details text.
+         */
+        String pageDetails();
+    }
 }

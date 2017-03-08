@@ -34,65 +34,81 @@ public class WorkbenchSplashScreenProcessorTest extends AbstractProcessorTest {
 
     @Override
     protected AbstractErrorAbsorbingProcessor getProcessorUnderTest() {
-        return new WorkbenchSplashScreenProcessor( new GenerationCompleteCallback() {
+        return new WorkbenchSplashScreenProcessor(new GenerationCompleteCallback() {
             @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
+            public void generationComplete(final String code) {
+                result.setActualCode(code);
             }
-        } );
+        });
     }
 
     @Test
     public void testNoWorkbenchScreenAnnotation() throws FileNotFoundException {
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                "org/uberfire/annotations/processors/WorkbenchSplashScreenTest1" );
+                "org/uberfire/annotations/processors/WorkbenchSplashScreenTest1");
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNull( result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNull(result.getActualCode());
     }
 
     @Test
     public void testWorkbenchScreenMissingViewAnnotation() {
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                "org/uberfire/annotations/processors/WorkbenchSplashScreenTest2" );
+                "org/uberfire/annotations/processors/WorkbenchSplashScreenTest2");
 
-        assertFailedCompilation( diagnostics );
-        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchSplashScreenTest2Activity: The WorkbenchSplashScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
-        assertNull( result.getActualCode() );
+        assertFailedCompilation(diagnostics);
+        assertCompilationMessage(diagnostics,
+                                 Kind.ERROR,
+                                 Diagnostic.NOPOS,
+                                 Diagnostic.NOPOS,
+                                 "org.uberfire.annotations.processors.WorkbenchSplashScreenTest2Activity: The WorkbenchSplashScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget.");
+        assertNull(result.getActualCode());
     }
 
     @Test
     public void testWorkbenchScreenHasViewAnnotationMissingTitleAnnotation() {
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                "org/uberfire/annotations/processors/WorkbenchSplashScreenTest3" );
+                "org/uberfire/annotations/processors/WorkbenchSplashScreenTest3");
 
-        assertFailedCompilation( diagnostics );
-        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchSplashScreenTest3Activity: The WorkbenchSplashScreen must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
-        assertNull( result.getActualCode() );
+        assertFailedCompilation(diagnostics);
+        assertCompilationMessage(diagnostics,
+                                 Kind.ERROR,
+                                 Diagnostic.NOPOS,
+                                 Diagnostic.NOPOS,
+                                 "org.uberfire.annotations.processors.WorkbenchSplashScreenTest3Activity: The WorkbenchSplashScreen must provide a @WorkbenchPartTitle annotated method to return a java.lang.String.");
+        assertNull(result.getActualCode());
     }
 
     @Test
     public void testWorkbenchScreenMissingViewAnnotationHasTitleAnnotation() {
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                "org/uberfire/annotations/processors/WorkbenchSplashScreenTest4" );
+                "org/uberfire/annotations/processors/WorkbenchSplashScreenTest4");
 
-        assertFailedCompilation( diagnostics );
-        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchSplashScreenTest4Activity: The WorkbenchSplashScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
-        assertNull( result.getActualCode() );
+        assertFailedCompilation(diagnostics);
+        assertCompilationMessage(diagnostics,
+                                 Kind.ERROR,
+                                 Diagnostic.NOPOS,
+                                 Diagnostic.NOPOS,
+                                 "org.uberfire.annotations.processors.WorkbenchSplashScreenTest4Activity: The WorkbenchSplashScreen must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget.");
+        assertNull(result.getActualCode());
     }
 
     @Test
     public void testIncorrectReturnTypeWithoutArguments() throws FileNotFoundException {
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                "org/uberfire/annotations/processors/WorkbenchSplashScreenTest5" );
+                "org/uberfire/annotations/processors/WorkbenchSplashScreenTest5");
 
-        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchSplashScreenTest5Activity: The WorkbenchSplashScreen must provide a @SplashFilter annotated method to return a org.uberfire.workbench.model.SplashScreenFilter." );
-        assertNull( result.getActualCode() );
+        assertCompilationMessage(diagnostics,
+                                 Kind.ERROR,
+                                 Diagnostic.NOPOS,
+                                 Diagnostic.NOPOS,
+                                 "org.uberfire.annotations.processors.WorkbenchSplashScreenTest5Activity: The WorkbenchSplashScreen must provide a @SplashFilter annotated method to return a org.uberfire.workbench.model.SplashScreenFilter.");
+        assertNull(result.getActualCode());
     }
 
     @Test
@@ -100,17 +116,17 @@ public class WorkbenchSplashScreenProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchSplashScreenTest6";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchSplashScreenTest6.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -118,17 +134,17 @@ public class WorkbenchSplashScreenProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchSplashScreenTest7";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchSplashScreenTest7.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -137,16 +153,20 @@ public class WorkbenchSplashScreenProcessorTest extends AbstractProcessorTest {
 
         final Result result = new Result();
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( new WorkbenchSplashScreenProcessor( new GenerationCompleteCallback() {
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(new WorkbenchSplashScreenProcessor(new GenerationCompleteCallback() {
 
-            @Override
-            public void generationComplete( String code ) {
-                result.setActualCode( code );
-            }
-        } ), pathCompilationUnit );
-        assertFailedCompilation( diagnostics );
-        assertCompilationMessage( diagnostics, Kind.ERROR, -1, -1,
-                                  "Found multiple @OnStartup methods. Each class can declare at most one." );
+                                                                                   @Override
+                                                                                   public void generationComplete(String code) {
+                                                                                       result.setActualCode(code);
+                                                                                   }
+                                                                               }),
+                                                                               pathCompilationUnit);
+        assertFailedCompilation(diagnostics);
+        assertCompilationMessage(diagnostics,
+                                 Kind.ERROR,
+                                 -1,
+                                 -1,
+                                 "Found multiple @OnStartup methods. Each class can declare at most one.");
     }
 
     @Test
@@ -154,17 +174,17 @@ public class WorkbenchSplashScreenProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchSplashScreenTest9";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchSplashScreenTest9.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -172,17 +192,16 @@ public class WorkbenchSplashScreenProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchSplashScreenTest10";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchSplashScreenTest10.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
-
 }

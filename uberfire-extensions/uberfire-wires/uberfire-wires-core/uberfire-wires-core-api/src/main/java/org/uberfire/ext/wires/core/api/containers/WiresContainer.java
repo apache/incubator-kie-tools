@@ -26,13 +26,13 @@ public interface WiresContainer extends WiresShape {
      * Attach a Shape to the Container
      * @param shape
      */
-    void attachShape( final WiresBaseShape shape );
+    void attachShape(final WiresBaseShape shape);
 
     /**
      * Detach a Shape from the Container
      * @param shape
      */
-    void detachShape( final WiresBaseShape shape );
+    void detachShape(final WiresBaseShape shape);
 
     /**
      * Get a list of WiresBaseShape contained within the Container
@@ -43,6 +43,5 @@ public interface WiresContainer extends WiresShape {
     /**
      * Signal the Container is being hovered over
      */
-    void setHover( final boolean isHover );
-
+    void setHover(final boolean isHover);
 }

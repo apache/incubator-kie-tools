@@ -28,7 +28,7 @@ public class GroupNotFoundException extends SecurityManagementException {
 
     private String identifier;
 
-    public GroupNotFoundException( @MapsTo("identifier") String identifier ) {
+    public GroupNotFoundException(@MapsTo("identifier") String identifier) {
         this.identifier = identifier;
     }
 

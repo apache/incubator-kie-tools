@@ -37,9 +37,9 @@ import static org.mockito.Mockito.*;
 public class VersionRecordServiceImplTest {
 
     private MockIOService ioService;
-    private Path          pathToFile;
-    private Path          pathToDotFile;
-    private ArrayList<VersionRecord> dotFileVersionRecords  = new ArrayList<VersionRecord>();
+    private Path pathToFile;
+    private Path pathToDotFile;
+    private ArrayList<VersionRecord> dotFileVersionRecords = new ArrayList<VersionRecord>();
     private ArrayList<VersionRecord> mainFileVersionRecords = new ArrayList<VersionRecord>();
 
     @Before
@@ -52,25 +52,38 @@ public class VersionRecordServiceImplTest {
 
         ioService = new MockIOService() {
             @Override
-            public <V extends FileAttributeView> V getFileAttributeView(org.uberfire.java.nio.file.Path path, Class<V> vClass) throws IllegalArgumentException {
+            public <V extends FileAttributeView> V getFileAttributeView(org.uberfire.java.nio.file.Path path,
+                                                                        Class<V> vClass) throws IllegalArgumentException {
                 return (V) new MockVersionAttributeView(path);
             }
         };
 
-        mainFileVersionRecords.add(makeVersionRecord("id1", "file.txt", new Date(1)));
-        mainFileVersionRecords.add(makeVersionRecord("id3", "file.txt", new Date(3)));
-        mainFileVersionRecords.add(makeVersionRecord("id4", "file.txt", new Date(4)));
+        mainFileVersionRecords.add(makeVersionRecord("id1",
+                                                     "file.txt",
+                                                     new Date(1)));
+        mainFileVersionRecords.add(makeVersionRecord("id3",
+                                                     "file.txt",
+                                                     new Date(3)));
+        mainFileVersionRecords.add(makeVersionRecord("id4",
+                                                     "file.txt",
+                                                     new Date(4)));
 
-        dotFileVersionRecords.add(makeVersionRecord("id1", ".file.txt", new Date(1)));
-        dotFileVersionRecords.add(makeVersionRecord("id2", ".file.txt", new Date(2)));
-        dotFileVersionRecords.add(makeVersionRecord("id5", ".file.txt", new Date(5)));
-
+        dotFileVersionRecords.add(makeVersionRecord("id1",
+                                                    ".file.txt",
+                                                    new Date(1)));
+        dotFileVersionRecords.add(makeVersionRecord("id2",
+                                                    ".file.txt",
+                                                    new Date(2)));
+        dotFileVersionRecords.add(makeVersionRecord("id5",
+                                                    ".file.txt",
+                                                    new Date(5)));
     }
 
     @Test
     public void testSimple() throws Exception {
 
-        ioService.setExistingPaths(pathToFile, pathToDotFile);
+        ioService.setExistingPaths(pathToFile,
+                                   pathToDotFile);
 
         VersionRecordServiceImpl versionRecordServiceImpl = new VersionRecordServiceImpl(
                 ioService,
@@ -79,19 +92,25 @@ public class VersionRecordServiceImplTest {
 
         List<VersionRecord> versions = versionRecordServiceImpl.load(pathToFile);
 
-        assertEquals(5, versions.size());
-        assertEquals("id1", versions.get(0).id());
-        assertEquals("id2", versions.get(1).id());
-        assertEquals("id3", versions.get(2).id());
-        assertEquals("id4", versions.get(3).id());
-        assertEquals("id5", versions.get(4).id());
-
+        assertEquals(5,
+                     versions.size());
+        assertEquals("id1",
+                     versions.get(0).id());
+        assertEquals("id2",
+                     versions.get(1).id());
+        assertEquals("id3",
+                     versions.get(2).id());
+        assertEquals("id4",
+                     versions.get(3).id());
+        assertEquals("id5",
+                     versions.get(4).id());
     }
 
     @Test
     public void testMainFileHasHigherPriorityWhenCommitTimeIsEqual() throws Exception {
 
-        ioService.setExistingPaths(pathToFile, pathToDotFile);
+        ioService.setExistingPaths(pathToFile,
+                                   pathToDotFile);
 
         mainFileVersionRecords.clear();
         dotFileVersionRecords.clear();
@@ -99,8 +118,8 @@ public class VersionRecordServiceImplTest {
                                                      "default://f6d48ce4c00a915185668c8df33bb500b3889c95@uf-playground/mortgages/src/main/resources/org/mortgages/Bankruptcy%20history.rdrl",
                                                      new Date(1)));
         dotFileVersionRecords.add(makeVersionRecord("dot1 file",
-                                                     "default://f6d48ce4c00a915185668c8df33bb500b3889c95@uf-playground/mortgages/src/main/resources/org/mortgages/.Bankruptcy%20history.rdrl",
-                                                     new Date(1)));
+                                                    "default://f6d48ce4c00a915185668c8df33bb500b3889c95@uf-playground/mortgages/src/main/resources/org/mortgages/.Bankruptcy%20history.rdrl",
+                                                    new Date(1)));
 
         VersionRecordServiceImpl versionRecordServiceImpl = new VersionRecordServiceImpl(
                 ioService,
@@ -109,10 +128,12 @@ public class VersionRecordServiceImplTest {
 
         List<VersionRecord> versions = versionRecordServiceImpl.load(pathToFile);
 
-        assertEquals(2, versions.size());
-        assertEquals("main file", versions.get(0).id());
-        assertEquals("dot1 file", versions.get(1).id());
-
+        assertEquals(2,
+                     versions.size());
+        assertEquals("main file",
+                     versions.get(0).id());
+        assertEquals("dot1 file",
+                     versions.get(1).id());
     }
 
     @Test
@@ -127,11 +148,14 @@ public class VersionRecordServiceImplTest {
 
         List<VersionRecord> versions = versionRecordServiceImpl.load(pathToFile);
 
-        assertEquals(3, versions.size());
-        assertEquals("id1", versions.get(0).id());
-        assertEquals("id3", versions.get(1).id());
-        assertEquals("id4", versions.get(2).id());
-
+        assertEquals(3,
+                     versions.size());
+        assertEquals("id1",
+                     versions.get(0).id());
+        assertEquals("id3",
+                     versions.get(1).id());
+        assertEquals("id4",
+                     versions.get(2).id());
     }
 
     @Test
@@ -142,11 +166,14 @@ public class VersionRecordServiceImplTest {
         VersionRecordServiceImpl versionRecordServiceImpl = new VersionRecordServiceImpl(
                 ioService,
                 new VersionUtil() {
-                    @Override public Path getPath(Path path, String version) throws URISyntaxException {
+                    @Override
+                    public Path getPath(Path path,
+                                        String version) throws URISyntaxException {
                         return path;
                     }
 
-                    @Override public String getVersion(Path path) {
+                    @Override
+                    public String getVersion(Path path) {
                         return "id3";
                     }
                 }
@@ -154,8 +181,8 @@ public class VersionRecordServiceImplTest {
 
         VersionRecord record = versionRecordServiceImpl.loadRecord(pathToFile);
 
-        assertEquals(record.id(), "id3");
-
+        assertEquals(record.id(),
+                     "id3");
     }
 
     @Test
@@ -166,11 +193,14 @@ public class VersionRecordServiceImplTest {
         VersionRecordServiceImpl versionRecordServiceImpl = new VersionRecordServiceImpl(
                 ioService,
                 new VersionUtil() {
-                    @Override public Path getPath(Path path, String version) throws URISyntaxException {
+                    @Override
+                    public Path getPath(Path path,
+                                        String version) throws URISyntaxException {
                         return path;
                     }
 
-                    @Override public String getVersion(Path path) {
+                    @Override
+                    public String getVersion(Path path) {
                         return "master";
                     }
                 }
@@ -178,33 +208,41 @@ public class VersionRecordServiceImplTest {
 
         VersionRecord record = versionRecordServiceImpl.loadRecord(pathToFile);
 
-        assertEquals(record.id(), "id1");
-
+        assertEquals(record.id(),
+                     "id1");
     }
 
-    private VersionRecord makeVersionRecord(final String id, final String uri, final Date date) {
+    private VersionRecord makeVersionRecord(final String id,
+                                            final String uri,
+                                            final Date date) {
         return new VersionRecord() {
-            @Override public String id() {
+            @Override
+            public String id() {
                 return id;
             }
 
-            @Override public String author() {
+            @Override
+            public String author() {
                 return null;
             }
 
-            @Override public String email() {
+            @Override
+            public String email() {
                 return null;
             }
 
-            @Override public String comment() {
+            @Override
+            public String comment() {
                 return null;
             }
 
-            @Override public Date date() {
+            @Override
+            public Date date() {
                 return date;
             }
 
-            @Override public String uri() {
+            @Override
+            public String uri() {
                 return uri;
             }
         };
@@ -224,57 +262,69 @@ public class VersionRecordServiceImplTest {
             }
         }
 
-        @Override public VersionAttributes readAttributes() throws IOException {
+        @Override
+        public VersionAttributes readAttributes() throws IOException {
             return new VersionAttributes() {
-                @Override public VersionHistory history() {
+                @Override
+                public VersionHistory history() {
                     return new VersionHistory() {
-                        @Override public List<VersionRecord> records() {
+                        @Override
+                        public List<VersionRecord> records() {
                             return records;
                         }
                     };
                 }
 
-                @Override public FileTime lastModifiedTime() {
+                @Override
+                public FileTime lastModifiedTime() {
                     return null;
                 }
 
-                @Override public FileTime lastAccessTime() {
+                @Override
+                public FileTime lastAccessTime() {
                     return null;
                 }
 
-                @Override public FileTime creationTime() {
+                @Override
+                public FileTime creationTime() {
                     return null;
                 }
 
-                @Override public boolean isRegularFile() {
+                @Override
+                public boolean isRegularFile() {
                     return false;
                 }
 
-                @Override public boolean isDirectory() {
+                @Override
+                public boolean isDirectory() {
                     return false;
                 }
 
-                @Override public boolean isSymbolicLink() {
+                @Override
+                public boolean isSymbolicLink() {
                     return false;
                 }
 
-                @Override public boolean isOther() {
+                @Override
+                public boolean isOther() {
                     return false;
                 }
 
-                @Override public long size() {
+                @Override
+                public long size() {
                     return 0;
                 }
 
-                @Override public Object fileKey() {
+                @Override
+                public Object fileKey() {
                     return null;
                 }
             };
         }
 
-        @Override public Class[] viewTypes() {
+        @Override
+        public Class[] viewTypes() {
             return new Class[0];
         }
     }
-
 }

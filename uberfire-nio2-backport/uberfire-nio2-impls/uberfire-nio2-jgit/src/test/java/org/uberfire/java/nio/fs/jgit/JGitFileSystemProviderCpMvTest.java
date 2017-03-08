@@ -29,505 +29,557 @@ import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.java.nio.file.NoSuchFileException;
 import org.uberfire.java.nio.file.Path;
 
-import static org.fest.assertions.api.Assertions.*;
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.fail;
+import static org.fest.assertions.api.Assertions.failBecauseExceptionWasNotThrown;
 
 public class JGitFileSystemProviderCpMvTest extends AbstractTestInfra {
 
+    static String convertStreamToString(java.io.InputStream is) {
+        java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
+    }
+
     @Test
     public void testCopyBranches() throws IOException {
-        final URI newRepo = URI.create( "git://copybranch-test-repo" );
-        provider.newFileSystem( newRepo, EMPTY_ENV );
+        final URI newRepo = URI.create("git://copybranch-test-repo");
+        provider.newFileSystem(newRepo,
+                               EMPTY_ENV);
 
         {
-            final Path path = provider.getPath( URI.create( "git://master@copybranch-test-repo/myfile1.txt" ) );
+            final Path path = provider.getPath(URI.create("git://master@copybranch-test-repo/myfile1.txt"));
 
-            final OutputStream outStream = provider.newOutputStream( path );
-            outStream.write( "my cool content".getBytes() );
+            final OutputStream outStream = provider.newOutputStream(path);
+            outStream.write("my cool content".getBytes());
             outStream.close();
         }
 
         {
-            final Path path2 = provider.getPath( URI.create( "git://user_branch@copybranch-test-repo/other/path/myfile2.txt" ) );
+            final Path path2 = provider.getPath(URI.create("git://user_branch@copybranch-test-repo/other/path/myfile2.txt"));
 
-            final OutputStream outStream2 = provider.newOutputStream( path2 );
-            outStream2.write( "my cool content".getBytes() );
+            final OutputStream outStream2 = provider.newOutputStream(path2);
+            outStream2.write("my cool content".getBytes());
             outStream2.close();
         }
         {
-            final Path path3 = provider.getPath( URI.create( "git://user_branch@copybranch-test-repo/myfile3.txt" ) );
+            final Path path3 = provider.getPath(URI.create("git://user_branch@copybranch-test-repo/myfile3.txt"));
 
-            final OutputStream outStream3 = provider.newOutputStream( path3 );
-            outStream3.write( "my cool content".getBytes() );
+            final OutputStream outStream3 = provider.newOutputStream(path3);
+            outStream3.write("my cool content".getBytes());
             outStream3.close();
         }
 
-        final Path source = provider.getPath( URI.create( "git://user_branch@copybranch-test-repo" ) );
-        final Path target = provider.getPath( URI.create( "git://other_branch@copybranch-test-repo" ) );
+        final Path source = provider.getPath(URI.create("git://user_branch@copybranch-test-repo"));
+        final Path target = provider.getPath(URI.create("git://other_branch@copybranch-test-repo"));
 
-        provider.copy( source, target );
+        provider.copy(source,
+                      target);
 
-        final DirectoryStream<Path> stream = provider.newDirectoryStream( provider.getPath( URI.create( "git://other_branch@copybranch-test-repo/" ) ), null );
+        final DirectoryStream<Path> stream = provider.newDirectoryStream(provider.getPath(URI.create("git://other_branch@copybranch-test-repo/")),
+                                                                         null);
 
-        assertThat( stream ).isNotNull().hasSize( 2 );
+        assertThat(stream).isNotNull().hasSize(2);
 
         try {
-            provider.copy( source, target );
-            failBecauseExceptionWasNotThrown( FileAlreadyExistsException.class );
-        } catch ( FileAlreadyExistsException e ) {
+            provider.copy(source,
+                          target);
+            failBecauseExceptionWasNotThrown(FileAlreadyExistsException.class);
+        } catch (FileAlreadyExistsException e) {
         }
 
-        final Path notExists = provider.getPath( URI.create( "git://xxx_user_branch@copybranch-test-repo" ) );
-        final Path notExists2 = provider.getPath( URI.create( "git://xxx_other_branch@copybranch-test-repo" ) );
+        final Path notExists = provider.getPath(URI.create("git://xxx_user_branch@copybranch-test-repo"));
+        final Path notExists2 = provider.getPath(URI.create("git://xxx_other_branch@copybranch-test-repo"));
 
         try {
-            provider.copy( notExists, notExists2 );
-            failBecauseExceptionWasNotThrown( NoSuchFileException.class );
-        } catch ( NoSuchFileException e ) {
+            provider.copy(notExists,
+                          notExists2);
+            failBecauseExceptionWasNotThrown(NoSuchFileException.class);
+        } catch (NoSuchFileException e) {
         }
     }
 
     @Test
     public void testCopyFiles() throws IOException {
-        final URI newRepo = URI.create( "git://copyasset-test-repo" );
-        provider.newFileSystem( newRepo, EMPTY_ENV );
+        final URI newRepo = URI.create("git://copyasset-test-repo");
+        provider.newFileSystem(newRepo,
+                               EMPTY_ENV);
 
-        final Path path = provider.getPath( URI.create( "git://master@copyasset-test-repo/myfile1.txt" ) );
+        final Path path = provider.getPath(URI.create("git://master@copyasset-test-repo/myfile1.txt"));
         {
-            final OutputStream outStream = provider.newOutputStream( path );
-            outStream.write( "my cool content".getBytes() );
+            final OutputStream outStream = provider.newOutputStream(path);
+            outStream.write("my cool content".getBytes());
             outStream.close();
         }
-        final Path path2 = provider.getPath( URI.create( "git://user_branch@copyasset-test-repo/other/path/myfile2.txt" ) );
+        final Path path2 = provider.getPath(URI.create("git://user_branch@copyasset-test-repo/other/path/myfile2.txt"));
         {
-            final OutputStream outStream2 = provider.newOutputStream( path2 );
-            outStream2.write( "my cool content".getBytes() );
+            final OutputStream outStream2 = provider.newOutputStream(path2);
+            outStream2.write("my cool content".getBytes());
             outStream2.close();
         }
-        final Path path3 = provider.getPath( URI.create( "git://user_branch@copyasset-test-repo/myfile3.txt" ) );
+        final Path path3 = provider.getPath(URI.create("git://user_branch@copyasset-test-repo/myfile3.txt"));
         {
-            final OutputStream outStream3 = provider.newOutputStream( path3 );
-            outStream3.write( "my cool content".getBytes() );
+            final OutputStream outStream3 = provider.newOutputStream(path3);
+            outStream3.write("my cool content".getBytes());
             outStream3.close();
         }
 
-        final Path target = provider.getPath( URI.create( "git://user_branch@copyasset-test-repo/myfile1.txt" ) );
+        final Path target = provider.getPath(URI.create("git://user_branch@copyasset-test-repo/myfile1.txt"));
 
-        provider.copy( path, target );
+        provider.copy(path,
+                      target);
 
-        final DirectoryStream<Path> stream = provider.newDirectoryStream( provider.getPath( URI.create( "git://user_branch@copyasset-test-repo/" ) ), null );
+        final DirectoryStream<Path> stream = provider.newDirectoryStream(provider.getPath(URI.create("git://user_branch@copyasset-test-repo/")),
+                                                                         null);
 
-        for ( Path path1 : stream ) {
-            System.out.println( "content: " + path1.toUri() );
+        for (Path path1 : stream) {
+            System.out.println("content: " + path1.toUri());
         }
 
-        assertThat( stream ).isNotNull().hasSize( 3 );
+        assertThat(stream).isNotNull().hasSize(3);
     }
 
     @Test
     public void testCopyDir() throws IOException {
-        final URI newRepo = URI.create( "git://copydir-test-repo" );
-        provider.newFileSystem( newRepo, EMPTY_ENV );
+        final URI newRepo = URI.create("git://copydir-test-repo");
+        provider.newFileSystem(newRepo,
+                               EMPTY_ENV);
 
-        final Path path = provider.getPath( URI.create( "git://master@copydir-test-repo/myfile1.txt" ) );
+        final Path path = provider.getPath(URI.create("git://master@copydir-test-repo/myfile1.txt"));
         {
-            final OutputStream outStream = provider.newOutputStream( path );
-            outStream.write( "my cool content".getBytes() );
+            final OutputStream outStream = provider.newOutputStream(path);
+            outStream.write("my cool content".getBytes());
             outStream.close();
         }
-        final Path path2 = provider.getPath( URI.create( "git://user_branch@copydir-test-repo/path/myfile2.txt" ) );
+        final Path path2 = provider.getPath(URI.create("git://user_branch@copydir-test-repo/path/myfile2.txt"));
         {
-            final OutputStream outStream2 = provider.newOutputStream( path2 );
-            outStream2.write( "my cool content".getBytes() );
+            final OutputStream outStream2 = provider.newOutputStream(path2);
+            outStream2.write("my cool content".getBytes());
             outStream2.close();
         }
-        final Path path3 = provider.getPath( URI.create( "git://user_branch@copydir-test-repo/path/myfile3.txt" ) );
+        final Path path3 = provider.getPath(URI.create("git://user_branch@copydir-test-repo/path/myfile3.txt"));
         {
-            final OutputStream outStream3 = provider.newOutputStream( path3 );
-            outStream3.write( "my cool content".getBytes() );
+            final OutputStream outStream3 = provider.newOutputStream(path3);
+            outStream3.write("my cool content".getBytes());
             outStream3.close();
         }
 
         {
-            final Path source = provider.getPath( URI.create( "git://user_branch@copydir-test-repo/path" ) );
-            final Path target = provider.getPath( URI.create( "git://master@copydir-test-repo/" ) );
+            final Path source = provider.getPath(URI.create("git://user_branch@copydir-test-repo/path"));
+            final Path target = provider.getPath(URI.create("git://master@copydir-test-repo/"));
 
-            provider.copy( source, target );
+            provider.copy(source,
+                          target);
 
-            final DirectoryStream<Path> stream = provider.newDirectoryStream( target, null );
+            final DirectoryStream<Path> stream = provider.newDirectoryStream(target,
+                                                                             null);
 
-            assertThat( stream ).isNotNull().hasSize( 3 );
+            assertThat(stream).isNotNull().hasSize(3);
         }
 
         {
-            final Path source = provider.getPath( URI.create( "git://user_branch@copydir-test-repo/path" ) );
-            final Path target = provider.getPath( URI.create( "git://master@copydir-test-repo/some/place/here/" ) );
+            final Path source = provider.getPath(URI.create("git://user_branch@copydir-test-repo/path"));
+            final Path target = provider.getPath(URI.create("git://master@copydir-test-repo/some/place/here/"));
 
-            provider.copy( source, target );
+            provider.copy(source,
+                          target);
 
-            final DirectoryStream<Path> stream = provider.newDirectoryStream( target, null );
+            final DirectoryStream<Path> stream = provider.newDirectoryStream(target,
+                                                                             null);
 
-            assertThat( stream ).isNotNull().hasSize( 2 );
+            assertThat(stream).isNotNull().hasSize(2);
         }
 
         {
-            final Path source = provider.getPath( URI.create( "git://user_branch@copydir-test-repo/path" ) );
-            final Path target = provider.getPath( URI.create( "git://master@copydir-test-repo/soXme/place/here" ) );
+            final Path source = provider.getPath(URI.create("git://user_branch@copydir-test-repo/path"));
+            final Path target = provider.getPath(URI.create("git://master@copydir-test-repo/soXme/place/here"));
 
-            provider.copy( source, target );
+            provider.copy(source,
+                          target);
 
-            final DirectoryStream<Path> stream = provider.newDirectoryStream( target, null );
+            final DirectoryStream<Path> stream = provider.newDirectoryStream(target,
+                                                                             null);
 
-            assertThat( stream ).isNotNull().hasSize( 2 );
+            assertThat(stream).isNotNull().hasSize(2);
         }
 
         {
-            final Path source = provider.getPath( URI.create( "git://user_branch@copydir-test-repo/" ) );
-            final Path target = provider.getPath( URI.create( "git://master@copydir-test-repo/other_here/" ) );
+            final Path source = provider.getPath(URI.create("git://user_branch@copydir-test-repo/"));
+            final Path target = provider.getPath(URI.create("git://master@copydir-test-repo/other_here/"));
 
-            provider.copy( source, target );
+            provider.copy(source,
+                          target);
 
-            final DirectoryStream<Path> stream = provider.newDirectoryStream( target, null );
+            final DirectoryStream<Path> stream = provider.newDirectoryStream(target,
+                                                                             null);
 
-            assertThat( stream ).isNotNull().hasSize( 1 );
+            assertThat(stream).isNotNull().hasSize(1);
         }
 
         {
-            final Path source = provider.getPath( URI.create( "git://user_branch@copydir-test-repo/not_exists" ) );
-            final Path target = provider.getPath( URI.create( "git://master@copydir-test-repo/xxxxxxxxother_here/" ) );
+            final Path source = provider.getPath(URI.create("git://user_branch@copydir-test-repo/not_exists"));
+            final Path target = provider.getPath(URI.create("git://master@copydir-test-repo/xxxxxxxxother_here/"));
 
             try {
-                provider.copy( source, target );
-                failBecauseExceptionWasNotThrown( NoSuchFileException.class );
-            } catch ( NoSuchFileException e ) {
+                provider.copy(source,
+                              target);
+                failBecauseExceptionWasNotThrown(NoSuchFileException.class);
+            } catch (NoSuchFileException e) {
             }
         }
 
         {
-            final Path source = provider.getPath( URI.create( "git://user_branch@copydir-test-repo/" ) );
-            final Path target = provider.getPath( URI.create( "git://master@copydir-test-repo/other_here/" ) );
+            final Path source = provider.getPath(URI.create("git://user_branch@copydir-test-repo/"));
+            final Path target = provider.getPath(URI.create("git://master@copydir-test-repo/other_here/"));
 
             try {
-                provider.copy( source, target );
-                failBecauseExceptionWasNotThrown( FileAlreadyExistsException.class );
-            } catch ( FileAlreadyExistsException e ) {
+                provider.copy(source,
+                              target);
+                failBecauseExceptionWasNotThrown(FileAlreadyExistsException.class);
+            } catch (FileAlreadyExistsException e) {
             }
         }
     }
 
     @Test
     public void testCopyFilesAcrossRepositories() throws IOException {
-        final URI newRepo1 = URI.create( "git://copyasset-test-repo1" );
-        provider.newFileSystem( newRepo1, EMPTY_ENV );
+        final URI newRepo1 = URI.create("git://copyasset-test-repo1");
+        provider.newFileSystem(newRepo1,
+                               EMPTY_ENV);
 
-        final URI newRepo2 = URI.create( "git://copyasset-test-repo2" );
-        provider.newFileSystem( newRepo2, EMPTY_ENV );
+        final URI newRepo2 = URI.create("git://copyasset-test-repo2");
+        provider.newFileSystem(newRepo2,
+                               EMPTY_ENV);
 
-        final Path path = provider.getPath( URI.create( "git://master@copyasset-test-repo1/myfile1.txt" ) );
+        final Path path = provider.getPath(URI.create("git://master@copyasset-test-repo1/myfile1.txt"));
         {
-            final OutputStream outStream = provider.newOutputStream( path );
-            outStream.write( "my cool content".getBytes() );
+            final OutputStream outStream = provider.newOutputStream(path);
+            outStream.write("my cool content".getBytes());
             outStream.close();
         }
 
-        final Path target = provider.getPath( URI.create( "git://master@copyasset-test-repo2/myfile1.txt" ) );
+        final Path target = provider.getPath(URI.create("git://master@copyasset-test-repo2/myfile1.txt"));
 
-        provider.copy( path, target );
+        provider.copy(path,
+                      target);
 
-        final DirectoryStream<Path> stream = provider.newDirectoryStream( provider.getPath( URI.create( "git://master@copyasset-test-repo2/" ) ), null );
+        final DirectoryStream<Path> stream = provider.newDirectoryStream(provider.getPath(URI.create("git://master@copyasset-test-repo2/")),
+                                                                         null);
 
-        for ( Path path1 : stream ) {
-            System.out.println( "content: " + path1.toUri() );
+        for (Path path1 : stream) {
+            System.out.println("content: " + path1.toUri());
         }
 
-        assertThat( stream ).isNotNull().hasSize( 1 );
+        assertThat(stream).isNotNull().hasSize(1);
     }
 
     @Test
     public void testCopyDirAcrossRepositories() throws IOException {
-        final URI newRepo1 = URI.create( "git://copydir-test-repo1" );
-        provider.newFileSystem( newRepo1, EMPTY_ENV );
+        final URI newRepo1 = URI.create("git://copydir-test-repo1");
+        provider.newFileSystem(newRepo1,
+                               EMPTY_ENV);
 
-        final URI newRepo2 = URI.create( "git://copydir-test-repo2" );
-        provider.newFileSystem( newRepo2, EMPTY_ENV );
+        final URI newRepo2 = URI.create("git://copydir-test-repo2");
+        provider.newFileSystem(newRepo2,
+                               EMPTY_ENV);
 
-        final Path path = provider.getPath( URI.create( "git://master@copydir-test-repo1/myfile1.txt" ) );
+        final Path path = provider.getPath(URI.create("git://master@copydir-test-repo1/myfile1.txt"));
         {
-            final OutputStream outStream = provider.newOutputStream( path );
-            outStream.write( "my cool content".getBytes() );
+            final OutputStream outStream = provider.newOutputStream(path);
+            outStream.write("my cool content".getBytes());
             outStream.close();
         }
-        final Path path2 = provider.getPath( URI.create( "git://master@copydir-test-repo2/path/myfile2.txt" ) );
+        final Path path2 = provider.getPath(URI.create("git://master@copydir-test-repo2/path/myfile2.txt"));
         {
-            final OutputStream outStream2 = provider.newOutputStream( path2 );
-            outStream2.write( "my cool content".getBytes() );
+            final OutputStream outStream2 = provider.newOutputStream(path2);
+            outStream2.write("my cool content".getBytes());
             outStream2.close();
         }
-        final Path path3 = provider.getPath( URI.create( "git://master@copydir-test-repo2/path/myfile3.txt" ) );
+        final Path path3 = provider.getPath(URI.create("git://master@copydir-test-repo2/path/myfile3.txt"));
         {
-            final OutputStream outStream3 = provider.newOutputStream( path3 );
-            outStream3.write( "my cool content".getBytes() );
+            final OutputStream outStream3 = provider.newOutputStream(path3);
+            outStream3.write("my cool content".getBytes());
             outStream3.close();
         }
 
         {
-            final Path source = provider.getPath( URI.create( "git://master@copydir-test-repo2/path" ) );
-            final Path target = provider.getPath( URI.create( "git://master@copydir-test-repo1/" ) );
+            final Path source = provider.getPath(URI.create("git://master@copydir-test-repo2/path"));
+            final Path target = provider.getPath(URI.create("git://master@copydir-test-repo1/"));
 
-            provider.copy( source, target );
+            provider.copy(source,
+                          target);
 
-            final DirectoryStream<Path> stream = provider.newDirectoryStream( target, null );
+            final DirectoryStream<Path> stream = provider.newDirectoryStream(target,
+                                                                             null);
 
-            assertThat( stream ).isNotNull().hasSize( 3 );
+            assertThat(stream).isNotNull().hasSize(3);
         }
 
         {
-            final Path source = provider.getPath( URI.create( "git://master@copydir-test-repo2/path" ) );
-            final Path target = provider.getPath( URI.create( "git://master@copydir-test-repo1/some/place/here/" ) );
+            final Path source = provider.getPath(URI.create("git://master@copydir-test-repo2/path"));
+            final Path target = provider.getPath(URI.create("git://master@copydir-test-repo1/some/place/here/"));
 
-            provider.copy( source, target );
+            provider.copy(source,
+                          target);
 
-            final DirectoryStream<Path> stream = provider.newDirectoryStream( target, null );
+            final DirectoryStream<Path> stream = provider.newDirectoryStream(target,
+                                                                             null);
 
-            assertThat( stream ).isNotNull().hasSize( 2 );
+            assertThat(stream).isNotNull().hasSize(2);
         }
 
         {
-            final Path source = provider.getPath( URI.create( "git://master@copydir-test-repo2/path" ) );
-            final Path target = provider.getPath( URI.create( "git://master@copydir-test-repo1/soXme/place/here" ) );
+            final Path source = provider.getPath(URI.create("git://master@copydir-test-repo2/path"));
+            final Path target = provider.getPath(URI.create("git://master@copydir-test-repo1/soXme/place/here"));
 
-            provider.copy( source, target );
+            provider.copy(source,
+                          target);
 
-            final DirectoryStream<Path> stream = provider.newDirectoryStream( target, null );
+            final DirectoryStream<Path> stream = provider.newDirectoryStream(target,
+                                                                             null);
 
-            assertThat( stream ).isNotNull().hasSize( 2 );
+            assertThat(stream).isNotNull().hasSize(2);
         }
 
         {
-            final Path source = provider.getPath( URI.create( "git://master@copydir-test-repo1/not_exists" ) );
-            final Path target = provider.getPath( URI.create( "git://master@copydir-test-repo2/xxxxxxxxother_here/" ) );
+            final Path source = provider.getPath(URI.create("git://master@copydir-test-repo1/not_exists"));
+            final Path target = provider.getPath(URI.create("git://master@copydir-test-repo2/xxxxxxxxother_here/"));
 
             try {
-                provider.copy( source, target );
-                failBecauseExceptionWasNotThrown( NoSuchFileException.class );
-            } catch ( NoSuchFileException e ) {
+                provider.copy(source,
+                              target);
+                failBecauseExceptionWasNotThrown(NoSuchFileException.class);
+            } catch (NoSuchFileException e) {
             }
         }
 
         {
-            final Path source = provider.getPath( URI.create( "git://master@copydir-test-repo2/path" ) );
-            final Path target = provider.getPath( URI.create( "git://master@copydir-test-repo1/some/place/here/" ) );
+            final Path source = provider.getPath(URI.create("git://master@copydir-test-repo2/path"));
+            final Path target = provider.getPath(URI.create("git://master@copydir-test-repo1/some/place/here/"));
 
             try {
-                provider.copy( source, target );
-                failBecauseExceptionWasNotThrown( FileAlreadyExistsException.class );
-            } catch ( FileAlreadyExistsException e ) {
+                provider.copy(source,
+                              target);
+                failBecauseExceptionWasNotThrown(FileAlreadyExistsException.class);
+            } catch (FileAlreadyExistsException e) {
             }
         }
     }
 
     @Test
     public void testMoveBranches() throws IOException {
-        final URI newRepo = URI.create( "git://movebranch-test-repo" );
-        provider.newFileSystem( newRepo, EMPTY_ENV );
+        final URI newRepo = URI.create("git://movebranch-test-repo");
+        provider.newFileSystem(newRepo,
+                               EMPTY_ENV);
 
         {
-            final Path path = provider.getPath( URI.create( "git://master@movebranch-test-repo/myfile1.txt" ) );
+            final Path path = provider.getPath(URI.create("git://master@movebranch-test-repo/myfile1.txt"));
 
-            final OutputStream outStream = provider.newOutputStream( path );
-            outStream.write( "my cool content".getBytes() );
+            final OutputStream outStream = provider.newOutputStream(path);
+            outStream.write("my cool content".getBytes());
             outStream.close();
         }
 
         {
-            final Path path2 = provider.getPath( URI.create( "git://user_branch@movebranch-test-repo/other/path/myfile2.txt" ) );
+            final Path path2 = provider.getPath(URI.create("git://user_branch@movebranch-test-repo/other/path/myfile2.txt"));
 
-            final OutputStream outStream2 = provider.newOutputStream( path2 );
-            outStream2.write( "my cool content".getBytes() );
+            final OutputStream outStream2 = provider.newOutputStream(path2);
+            outStream2.write("my cool content".getBytes());
             outStream2.close();
         }
         {
-            final Path path3 = provider.getPath( URI.create( "git://user_branch@movebranch-test-repo/myfile3.txt" ) );
+            final Path path3 = provider.getPath(URI.create("git://user_branch@movebranch-test-repo/myfile3.txt"));
 
-            final OutputStream outStream3 = provider.newOutputStream( path3 );
-            outStream3.write( "my cool content".getBytes() );
+            final OutputStream outStream3 = provider.newOutputStream(path3);
+            outStream3.write("my cool content".getBytes());
             outStream3.close();
         }
 
-        final Path source = provider.getPath( URI.create( "git://user_branch@movebranch-test-repo/" ) );
-        final Path target = provider.getPath( URI.create( "git://master@movebranch-test-repo/" ) );
+        final Path source = provider.getPath(URI.create("git://user_branch@movebranch-test-repo/"));
+        final Path target = provider.getPath(URI.create("git://master@movebranch-test-repo/"));
 
         try {
-            provider.move( source, target );
-            failBecauseExceptionWasNotThrown( FileAlreadyExistsException.class );
-        } catch ( org.uberfire.java.nio.IOException e ) {
+            provider.move(source,
+                          target);
+            failBecauseExceptionWasNotThrown(FileAlreadyExistsException.class);
+        } catch (org.uberfire.java.nio.IOException e) {
         }
 
-        final Path source2 = provider.getPath( URI.create( "git://user_branch@movebranch-test-repo/" ) );
-        final Path target2 = provider.getPath( URI.create( "git://xxxxddddkh@movebranch-test-repo/" ) );
+        final Path source2 = provider.getPath(URI.create("git://user_branch@movebranch-test-repo/"));
+        final Path target2 = provider.getPath(URI.create("git://xxxxddddkh@movebranch-test-repo/"));
 
         try {
-            provider.move( source2, target2 );
-        } catch ( final Exception e ) {
-            fail( "should not throw" );
+            provider.move(source2,
+                          target2);
+        } catch (final Exception e) {
+            fail("should not throw");
         }
     }
 
     @Test
     public void testMoveFiles() throws IOException {
-        final URI newRepo = URI.create( "git://moveasset-test-repo" );
-        provider.newFileSystem( newRepo, EMPTY_ENV );
+        final URI newRepo = URI.create("git://moveasset-test-repo");
+        provider.newFileSystem(newRepo,
+                               EMPTY_ENV);
 
-        final Path path = provider.getPath( URI.create( "git://master@moveasset-test-repo/myfile1.txt" ) );
+        final Path path = provider.getPath(URI.create("git://master@moveasset-test-repo/myfile1.txt"));
         {
-            final OutputStream outStream = provider.newOutputStream( path );
-            outStream.write( "my cool content".getBytes() );
+            final OutputStream outStream = provider.newOutputStream(path);
+            outStream.write("my cool content".getBytes());
             outStream.close();
         }
-        final Path path2 = provider.getPath( URI.create( "git://user_branch@moveasset-test-repo/other/path/myfile2.txt" ) );
+        final Path path2 = provider.getPath(URI.create("git://user_branch@moveasset-test-repo/other/path/myfile2.txt"));
         {
-            final OutputStream outStream2 = provider.newOutputStream( path2 );
-            outStream2.write( "my cool content".getBytes() );
+            final OutputStream outStream2 = provider.newOutputStream(path2);
+            outStream2.write("my cool content".getBytes());
             outStream2.close();
         }
-        final Path path3 = provider.getPath( URI.create( "git://user_branch@moveasset-test-repo/myfile3.txt" ) );
+        final Path path3 = provider.getPath(URI.create("git://user_branch@moveasset-test-repo/myfile3.txt"));
         {
-            final OutputStream outStream3 = provider.newOutputStream( path3 );
-            outStream3.write( "my cool content".getBytes() );
+            final OutputStream outStream3 = provider.newOutputStream(path3);
+            outStream3.write("my cool content".getBytes());
             outStream3.close();
         }
 
-        final Path target = provider.getPath( URI.create( "git://user_branch@moveasset-test-repo/myfile1.txt" ) );
+        final Path target = provider.getPath(URI.create("git://user_branch@moveasset-test-repo/myfile1.txt"));
 
         try {
-            provider.move( path, target );
-        } catch ( final Exception e ) {
-            fail( "should move file", e );
+            provider.move(path,
+                          target);
+        } catch (final Exception e) {
+            fail("should move file",
+                 e);
         }
     }
 
     @Test
     public void testMoveDir() throws IOException {
-        final URI newRepo = URI.create( "git://movedir-test-repo" );
-        provider.newFileSystem( newRepo, EMPTY_ENV );
+        final URI newRepo = URI.create("git://movedir-test-repo");
+        provider.newFileSystem(newRepo,
+                               EMPTY_ENV);
 
-        final Path path = provider.getPath( URI.create( "git://master@movedir-test-repo/myfile1.txt" ) );
+        final Path path = provider.getPath(URI.create("git://master@movedir-test-repo/myfile1.txt"));
         {
-            final OutputStream outStream = provider.newOutputStream( path );
-            outStream.write( "my cool content".getBytes() );
+            final OutputStream outStream = provider.newOutputStream(path);
+            outStream.write("my cool content".getBytes());
             outStream.close();
         }
-        final Path path2 = provider.getPath( URI.create( "git://user_branch@movedir-test-repo/path/myfile2.txt" ) );
+        final Path path2 = provider.getPath(URI.create("git://user_branch@movedir-test-repo/path/myfile2.txt"));
         {
-            final OutputStream outStream2 = provider.newOutputStream( path2 );
-            outStream2.write( "my cool content".getBytes() );
+            final OutputStream outStream2 = provider.newOutputStream(path2);
+            outStream2.write("my cool content".getBytes());
             outStream2.close();
         }
-        final Path path3 = provider.getPath( URI.create( "git://user_branch@movedir-test-repo/path/myfile3.txt" ) );
+        final Path path3 = provider.getPath(URI.create("git://user_branch@movedir-test-repo/path/myfile3.txt"));
         {
-            final OutputStream outStream3 = provider.newOutputStream( path3 );
-            outStream3.write( "my cool content".getBytes() );
+            final OutputStream outStream3 = provider.newOutputStream(path3);
+            outStream3.write("my cool content".getBytes());
             outStream3.close();
         }
 
         {
-            final Path source = provider.getPath( URI.create( "git://user_branch@movedir-test-repo/path" ) );
-            final Path target = provider.getPath( URI.create( "git://master@movedir-test-repo/" ) );
+            final Path source = provider.getPath(URI.create("git://user_branch@movedir-test-repo/path"));
+            final Path target = provider.getPath(URI.create("git://master@movedir-test-repo/"));
 
             try {
-                provider.move( source, target );
-            } catch ( org.uberfire.java.nio.IOException e ) {
-                assertThat( e ).isInstanceOf( DirectoryNotEmptyException.class );
+                provider.move(source,
+                              target);
+            } catch (org.uberfire.java.nio.IOException e) {
+                assertThat(e).isInstanceOf(DirectoryNotEmptyException.class);
             }
         }
     }
 
     @Test
     public void testCherryPick() throws IOException, InterruptedException {
-        final URI newRepo = URI.create( "git://cherrypick-test-repo" );
-        provider.newFileSystem( newRepo, EMPTY_ENV );
+        final URI newRepo = URI.create("git://cherrypick-test-repo");
+        provider.newFileSystem(newRepo,
+                               EMPTY_ENV);
 
         {
-            final Path path = provider.getPath( URI.create( "git://master@cherrypick-test-repo/myfile1.txt" ) );
+            final Path path = provider.getPath(URI.create("git://master@cherrypick-test-repo/myfile1.txt"));
 
-            final OutputStream outStream = provider.newOutputStream( path );
-            outStream.write( "my cool content".getBytes() );
+            final OutputStream outStream = provider.newOutputStream(path);
+            outStream.write("my cool content".getBytes());
             outStream.close();
         }
 
         {
-            final Path path2 = provider.getPath( URI.create( "git://user_branch@cherrypick-test-repo/other/path/myfile2.txt" ) );
+            final Path path2 = provider.getPath(URI.create("git://user_branch@cherrypick-test-repo/other/path/myfile2.txt"));
 
-            final OutputStream outStream2 = provider.newOutputStream( path2 );
-            outStream2.write( "my cool content".getBytes() );
+            final OutputStream outStream2 = provider.newOutputStream(path2);
+            outStream2.write("my cool content".getBytes());
             outStream2.close();
         }
         {
-            final Path path3 = provider.getPath( URI.create( "git://user_branch@cherrypick-test-repo/myfile3.txt" ) );
+            final Path path3 = provider.getPath(URI.create("git://user_branch@cherrypick-test-repo/myfile3.txt"));
 
-            final OutputStream outStream3 = provider.newOutputStream( path3 );
-            outStream3.write( "my cool content".getBytes() );
+            final OutputStream outStream3 = provider.newOutputStream(path3);
+            outStream3.write("my cool content".getBytes());
             outStream3.close();
         }
 
         String commit2CherryPick;
         String cherryPickContent = "my 2nd cool content";
         {
-            final Path path = provider.getPath( URI.create( "git://master@cherrypick-test-repo/myfile1.txt" ) );
+            final Path path = provider.getPath(URI.create("git://master@cherrypick-test-repo/myfile1.txt"));
 
-            final OutputStream outStream = provider.newOutputStream( path );
-            outStream.write( cherryPickContent.getBytes() );
+            final OutputStream outStream = provider.newOutputStream(path);
+            outStream.write(cherryPickContent.getBytes());
             outStream.close();
 
-            final VersionAttributes versionAttributes = provider.readAttributes( path, VersionAttributes.class );
+            final VersionAttributes versionAttributes = provider.readAttributes(path,
+                                                                                VersionAttributes.class);
 
-            assertThat( versionAttributes.history().records() ).isNotNull().hasSize( 2 );
-            commit2CherryPick = versionAttributes.history().records().get( versionAttributes.history().records().size() - 1 ).id();
+            assertThat(versionAttributes.history().records()).isNotNull().hasSize(2);
+            commit2CherryPick = versionAttributes.history().records().get(versionAttributes.history().records().size() - 1).id();
 
-            final OutputStream outStream2 = provider.newOutputStream( path );
-            outStream2.write( "my 3rd cool content".getBytes() );
+            final OutputStream outStream2 = provider.newOutputStream(path);
+            outStream2.write("my 3rd cool content".getBytes());
             outStream2.close();
         }
 
-        final Path source = provider.getPath( URI.create( "git://user_branch@cherrypick-test-repo" ) );
-        final Path target = provider.getPath( URI.create( "git://other_branch@cherrypick-test-repo" ) );
+        final Path source = provider.getPath(URI.create("git://user_branch@cherrypick-test-repo"));
+        final Path target = provider.getPath(URI.create("git://other_branch@cherrypick-test-repo"));
 
-        provider.copy( source, target );
+        provider.copy(source,
+                      target);
 
         String commit2CherryPick2;
         String cherryPickContent2 = "my 4tn cool content";
         {
-            final Path path = provider.getPath( URI.create( "git://master@cherrypick-test-repo/myfile1.txt" ) );
+            final Path path = provider.getPath(URI.create("git://master@cherrypick-test-repo/myfile1.txt"));
 
-            final OutputStream outStream = provider.newOutputStream( path );
-            outStream.write( cherryPickContent2.getBytes() );
+            final OutputStream outStream = provider.newOutputStream(path);
+            outStream.write(cherryPickContent2.getBytes());
             outStream.close();
 
-            final VersionAttributes versionAttributes = provider.readAttributes( path, VersionAttributes.class );
+            final VersionAttributes versionAttributes = provider.readAttributes(path,
+                                                                                VersionAttributes.class);
 
-            commit2CherryPick2 = versionAttributes.history().records().get( versionAttributes.history().records().size() - 1 ).id();
+            commit2CherryPick2 = versionAttributes.history().records().get(versionAttributes.history().records().size() - 1).id();
         }
 
-        final Path target2 = provider.getPath( URI.create( "git://other_branch2@cherrypick-test-repo" ) );
-        provider.copy( source, target2 );
+        final Path target2 = provider.getPath(URI.create("git://other_branch2@cherrypick-test-repo"));
+        provider.copy(source,
+                      target2);
 
         {
-            provider.copy( source, target, new CherryPickCopyOption( commit2CherryPick ) );
+            provider.copy(source,
+                          target,
+                          new CherryPickCopyOption(commit2CherryPick));
 
-            String result = convertStreamToString( provider.newInputStream( provider.getPath( URI.create( "git://other_branch@cherrypick-test-repo/myfile1.txt" ) ) ) );
-            assertThat( result ).isEqualTo( cherryPickContent );
+            String result = convertStreamToString(provider.newInputStream(provider.getPath(URI.create("git://other_branch@cherrypick-test-repo/myfile1.txt"))));
+            assertThat(result).isEqualTo(cherryPickContent);
         }
 
         {
-            provider.copy( source, target2, new CherryPickCopyOption( commit2CherryPick, commit2CherryPick2 ) );
+            provider.copy(source,
+                          target2,
+                          new CherryPickCopyOption(commit2CherryPick,
+                                                   commit2CherryPick2));
 
-            final String result = convertStreamToString( provider.newInputStream( provider.getPath( URI.create( "git://other_branch2@cherrypick-test-repo/myfile1.txt" ) ) ) );
-            assertThat( result ).isEqualTo( cherryPickContent2 );
+            final String result = convertStreamToString(provider.newInputStream(provider.getPath(URI.create("git://other_branch2@cherrypick-test-repo/myfile1.txt"))));
+            assertThat(result).isEqualTo(cherryPickContent2);
         }
     }
-
-    static String convertStreamToString( java.io.InputStream is ) {
-        java.util.Scanner s = new java.util.Scanner( is ).useDelimiter( "\\A" );
-        return s.hasNext() ? s.next() : "";
-    }
-
 }

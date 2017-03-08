@@ -27,5 +27,4 @@ public class ContainersGroup extends BaseGroup {
     public Category getCategory() {
         return ContainerCategory.CATEGORY;
     }
-
 }

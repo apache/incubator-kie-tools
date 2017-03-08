@@ -16,20 +16,18 @@
 
 package org.uberfire.ext.security.management.api;
 
+import java.util.Collection;
+
 import org.jboss.errai.security.shared.api.Group;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 
-import java.util.Collection;
-
-
 /**
  * <p>The Groups Manager.</p>
- * 
- * <p>NOTE: Some user management security systems do not provide support for roles and groups, only one of them. 
- *  Consider that UF roles are the ones defined in the deployment descriptor (web.xml) and present in the <code>org.uberfire.ext.security.server.RolesRegistry</code>. 
- *  So take care when searching or getting a group, if it's name is registered as a role, it must NOT be considered for management here.
- *  This behavior has to be done by each security management provider implementation, depending on the external security system being used.</p>
- * 
+ * <p>
+ * <p>NOTE: Some user management security systems do not provide support for roles and groups, only one of them.
+ * Consider that UF roles are the ones defined in the deployment descriptor (web.xml) and present in the <code>org.uberfire.ext.security.server.RolesRegistry</code>.
+ * So take care when searching or getting a group, if it's name is registered as a role, it must NOT be considered for management here.
+ * This behavior has to be done by each security management provider implementation, depending on the external security system being used.</p>
  * @since 0.8.0
  */
 public interface GroupManager extends AbstractEntityManager<Group, GroupManagerSettings> {
@@ -40,6 +38,6 @@ public interface GroupManager extends AbstractEntityManager<Group, GroupManagerS
      * @param users The collection of user identifiers. The group will be assigned to each one.
      * @throws SecurityManagementException
      */
-    void assignUsers(String name, Collection<String> users) throws SecurityManagementException;
-
+    void assignUsers(String name,
+                     Collection<String> users) throws SecurityManagementException;
 }

@@ -27,5 +27,4 @@ public class BpmnEntryPoint {
     public void init() {
         BpmnEditorResources.INSTANCE.css().ensureInjected();
     }
-
 }

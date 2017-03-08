@@ -16,12 +16,11 @@
 
 package org.uberfire.client.screens;
 
+import com.google.gwt.user.client.ui.Label;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.perspectives.SimplePerspective;
-
-import com.google.gwt.user.client.ui.Label;
 
 @WorkbenchScreen(identifier = "OwnedScreen", owningPerspective = SimplePerspective.class)
 public class OwnedScreen {
@@ -37,5 +36,4 @@ public class OwnedScreen {
     public Label getView() {
         return view;
     }
-
 }

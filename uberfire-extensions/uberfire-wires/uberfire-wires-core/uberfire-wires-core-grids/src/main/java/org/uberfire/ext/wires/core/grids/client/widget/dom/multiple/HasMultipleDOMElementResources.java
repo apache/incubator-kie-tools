@@ -35,5 +35,4 @@ public interface HasMultipleDOMElementResources extends HasDOMElementResources {
      * and can be released.
      */
     void freeUnusedResources();
-
 }

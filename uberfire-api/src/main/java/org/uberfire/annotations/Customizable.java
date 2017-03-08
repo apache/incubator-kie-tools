@@ -26,7 +26,7 @@ import javax.inject.Qualifier;
  * Internal annotation used to inject/produce beans in a way that the user can provide a default
  * implementation for them, otherwise a fallback implementation will be used.
  */
-@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD })
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier
 public @interface Customizable {

@@ -32,9 +32,9 @@ public interface CellSelectionStrategy {
      * @param isControlKeyDown True if the control key is pressed.
      * @return true if the selections have changed.
      */
-    boolean handleSelection( final GridData model,
-                             final int uiRowIndex,
-                             final int uiColumnIndex,
-                             final boolean isShiftKeyDown,
-                             final boolean isControlKeyDown );
+    boolean handleSelection(final GridData model,
+                            final int uiRowIndex,
+                            final int uiColumnIndex,
+                            final boolean isShiftKeyDown,
+                            final boolean isControlKeyDown);
 }

@@ -48,25 +48,26 @@ public class WorkbenchPreferenceGeneratedImplGenerator extends AbstractGenerator
     private GeneratorContext generatorContext;
     private String targetClassName = null;
 
-    public WorkbenchPreferenceGeneratedImplGenerator( final GeneratorContext generatorContext ) {
+    public WorkbenchPreferenceGeneratedImplGenerator(final GeneratorContext generatorContext) {
         this.generatorContext = generatorContext;
     }
 
     @Override
-    public StringBuffer generate( final String packageName,
-                                  final PackageElement packageElement,
-                                  final String className,
-                                  final Element element,
-                                  final ProcessingEnvironment processingEnvironment ) throws GenerationException {
+    public StringBuffer generate(final String packageName,
+                                 final PackageElement packageElement,
+                                 final String className,
+                                 final Element element,
+                                 final ProcessingEnvironment processingEnvironment) throws GenerationException {
 
         final Messager messager = processingEnvironment.getMessager();
-        messager.printMessage( Kind.NOTE, "Starting code generation for [" + className + "]" );
+        messager.printMessage(Kind.NOTE,
+                              "Starting code generation for [" + className + "]");
 
         final Elements elementUtils = processingEnvironment.getElementUtils();
 
         final TypeElement classElement = (TypeElement) element;
 
-        final WorkbenchPreference annotation = element.getAnnotation( WorkbenchPreference.class );
+        final WorkbenchPreference annotation = element.getAnnotation(WorkbenchPreference.class);
 
         String sourcePackage = packageName;
         String sourceClassName = className;
@@ -76,146 +77,170 @@ public class WorkbenchPreferenceGeneratedImplGenerator extends AbstractGenerator
         String[] parents = annotation.parents();
         String bundleKey = annotation.bundleKey();
 
-        if ( GeneratorContext.BEAN.equals( generatorContext ) ) {
+        if (GeneratorContext.BEAN.equals(generatorContext)) {
             targetClassName = className + "BeanGeneratedImpl";
-        } else if ( GeneratorContext.PORTABLE.equals( generatorContext ) ) {
+        } else if (GeneratorContext.PORTABLE.equals(generatorContext)) {
             targetClassName = className + "PortableGeneratedImpl";
         }
 
         List<PropertyData> properties = new ArrayList<>();
 
         TypeElement c = classElement;
-        c.getEnclosedElements().forEach( el -> {
-            final Property propertyAnnotation = el.getAnnotation( Property.class );
-            if ( propertyAnnotation != null ) {
-                properties.add( new PropertyData( el, propertyAnnotation, elementUtils ) );
+        c.getEnclosedElements().forEach(el -> {
+            final Property propertyAnnotation = el.getAnnotation(Property.class);
+            if (propertyAnnotation != null) {
+                properties.add(new PropertyData(el,
+                                                propertyAnnotation,
+                                                elementUtils));
             }
-        } );
+        });
 
         final List<PropertyData> simpleProperties = properties.stream()
-                .filter( p -> !p.isSubPreference() )
-                .collect( Collectors.toList() );
+                .filter(p -> !p.isSubPreference())
+                .collect(Collectors.toList());
 
         final List<PropertyData> subPreferences = properties.stream()
-                .filter( p -> p.isSubPreference() )
-                .collect( Collectors.toList() );
+                .filter(p -> p.isSubPreference())
+                .collect(Collectors.toList());
 
         final List<PropertyData> nonSharedSubPreferences = subPreferences.stream()
-                .filter( p -> !p.isShared() )
-                .collect( Collectors.toList() );
+                .filter(p -> !p.isShared())
+                .collect(Collectors.toList());
 
         final List<PropertyData> sharedSubPreferences = subPreferences.stream()
-                .filter( p -> p.isShared() )
-                .collect( Collectors.toList() );
+                .filter(p -> p.isShared())
+                .collect(Collectors.toList());
 
         final List<String> constructorParams = properties.stream()
-                .map( p -> "@MapsTo(\"" + p.getFieldName() + "\") " + p.getTypeFullName() + " " + p.getFieldName() )
-                .collect( Collectors.toList() );
-        final String constructorParamsText = String.join( ", ", constructorParams );
+                .map(p -> "@MapsTo(\"" + p.getFieldName() + "\") " + p.getTypeFullName() + " " + p.getFieldName())
+                .collect(Collectors.toList());
+        final String constructorParamsText = String.join(", ",
+                                                         constructorParams);
 
         final List<String> propertyFields = properties.stream()
-                .map( PropertyData::getFieldName )
-                .collect( Collectors.toList() );
-        final String propertyFieldsText = String.join( ", ", propertyFields );
+                .map(PropertyData::getFieldName)
+                .collect(Collectors.toList());
+        final String propertyFieldsText = String.join(", ",
+                                                      propertyFields);
 
-        final String parentsIdentifiers = String.join( ", ", parents );
+        final String parentsIdentifiers = String.join(", ",
+                                                      parents);
 
-        final String isPersistable = Boolean.toString( !simpleProperties.isEmpty() || !nonSharedSubPreferences.isEmpty() );
+        final String isPersistable = Boolean.toString(!simpleProperties.isEmpty() || !nonSharedSubPreferences.isEmpty());
 
-        if ( GeneratorUtils.debugLoggingEnabled() ) {
+        if (GeneratorUtils.debugLoggingEnabled()) {
             final List<String> simplePropertiesNames = simpleProperties.stream()
-                    .map( PropertyData::getFieldName )
-                    .collect( Collectors.toList() );
-            final String simplePropertiesText = String.join( ", ", simplePropertiesNames );
+                    .map(PropertyData::getFieldName)
+                    .collect(Collectors.toList());
+            final String simplePropertiesText = String.join(", ",
+                                                            simplePropertiesNames);
 
             final List<String> subPreferencesNames = subPreferences.stream()
-                    .map( PropertyData::getFieldName )
-                    .collect( Collectors.toList() );
-            final String subPreferencesText = String.join( ", ", subPreferencesNames );
+                    .map(PropertyData::getFieldName)
+                    .collect(Collectors.toList());
+            final String subPreferencesText = String.join(", ",
+                                                          subPreferencesNames);
 
             final List<String> sharedSubPreferencesNames = sharedSubPreferences.stream()
-                    .map( PropertyData::getFieldName )
-                    .collect( Collectors.toList() );
-            final String sharedSubPreferencesText = String.join( ", ", sharedSubPreferencesNames );
+                    .map(PropertyData::getFieldName)
+                    .collect(Collectors.toList());
+            final String sharedSubPreferencesText = String.join(", ",
+                                                                sharedSubPreferencesNames);
 
             final List<String> nonSharedSubPreferencesNames = nonSharedSubPreferences.stream()
-                    .map( PropertyData::getFieldName )
-                    .collect( Collectors.toList() );
-            final String nonSharedSubPreferencesText = String.join( ", ", nonSharedSubPreferencesNames );
+                    .map(PropertyData::getFieldName)
+                    .collect(Collectors.toList());
+            final String nonSharedSubPreferencesText = String.join(", ",
+                                                                   nonSharedSubPreferencesNames);
 
-            messager.printMessage( Kind.NOTE, "Source package name: " + sourcePackage );
-            messager.printMessage( Kind.NOTE, "Source class name: " + sourceClassName );
-            messager.printMessage( Kind.NOTE, "Target package name: " + targetPackage );
-            messager.printMessage( Kind.NOTE, "Target class name: " + targetClassName );
-            messager.printMessage( Kind.NOTE, "Identifier: " + identifier );
-            messager.printMessage( Kind.NOTE, "Parents: " + parentsIdentifiers );
-            messager.printMessage( Kind.NOTE, "Property fields: " + propertyFieldsText );
-            messager.printMessage( Kind.NOTE, "Simple properties fields: " + simplePropertiesText );
-            messager.printMessage( Kind.NOTE, "Sub-preferences fields: " + subPreferencesText );
-            messager.printMessage( Kind.NOTE, "Shared subPreferences fields: " + sharedSubPreferencesText );
-            messager.printMessage( Kind.NOTE, "Non-shared subPreferences fields: " + nonSharedSubPreferencesText );
-            messager.printMessage( Kind.NOTE, "Constructor parameters: " + constructorParamsText );
-            messager.printMessage( Kind.NOTE, "Is persistable: " + isPersistable );
+            messager.printMessage(Kind.NOTE,
+                                  "Source package name: " + sourcePackage);
+            messager.printMessage(Kind.NOTE,
+                                  "Source class name: " + sourceClassName);
+            messager.printMessage(Kind.NOTE,
+                                  "Target package name: " + targetPackage);
+            messager.printMessage(Kind.NOTE,
+                                  "Target class name: " + targetClassName);
+            messager.printMessage(Kind.NOTE,
+                                  "Identifier: " + identifier);
+            messager.printMessage(Kind.NOTE,
+                                  "Parents: " + parentsIdentifiers);
+            messager.printMessage(Kind.NOTE,
+                                  "Property fields: " + propertyFieldsText);
+            messager.printMessage(Kind.NOTE,
+                                  "Simple properties fields: " + simplePropertiesText);
+            messager.printMessage(Kind.NOTE,
+                                  "Sub-preferences fields: " + subPreferencesText);
+            messager.printMessage(Kind.NOTE,
+                                  "Shared subPreferences fields: " + sharedSubPreferencesText);
+            messager.printMessage(Kind.NOTE,
+                                  "Non-shared subPreferences fields: " + nonSharedSubPreferencesText);
+            messager.printMessage(Kind.NOTE,
+                                  "Constructor parameters: " + constructorParamsText);
+            messager.printMessage(Kind.NOTE,
+                                  "Is persistable: " + isPersistable);
         }
 
         Map<String, Object> root = new HashMap<String, Object>();
-        root.put( "sourcePackage",
-                  sourcePackage );
-        root.put( "sourceClassName",
-                  sourceClassName );
-        root.put( "targetPackage",
-                  targetPackage );
-        root.put( "targetClassName",
-                  targetClassName );
-        root.put( "identifier",
-                  identifier );
-        root.put( "parentsIdentifiers",
-                  parentsIdentifiers );
-        root.put( "bundleKey",
-                  bundleKey );
-        root.put( "properties",
-                  properties );
-        root.put( "simpleProperties",
-                  simpleProperties );
-        root.put( "subPreferences",
-                  subPreferences );
-        root.put( "sharedSubPreferences",
-                  sharedSubPreferences );
-        root.put( "nonSharedSubPreferences",
-                  nonSharedSubPreferences );
-        root.put( "constructorParamsText",
-                  constructorParamsText );
-        root.put( "propertyFieldsText",
-                  propertyFieldsText );
-        root.put( "isPersistable",
-                  isPersistable );
+        root.put("sourcePackage",
+                 sourcePackage);
+        root.put("sourceClassName",
+                 sourceClassName);
+        root.put("targetPackage",
+                 targetPackage);
+        root.put("targetClassName",
+                 targetClassName);
+        root.put("identifier",
+                 identifier);
+        root.put("parentsIdentifiers",
+                 parentsIdentifiers);
+        root.put("bundleKey",
+                 bundleKey);
+        root.put("properties",
+                 properties);
+        root.put("simpleProperties",
+                 simpleProperties);
+        root.put("subPreferences",
+                 subPreferences);
+        root.put("sharedSubPreferences",
+                 sharedSubPreferences);
+        root.put("nonSharedSubPreferences",
+                 nonSharedSubPreferences);
+        root.put("constructorParamsText",
+                 constructorParamsText);
+        root.put("propertyFieldsText",
+                 propertyFieldsText);
+        root.put("isPersistable",
+                 isPersistable);
 
         final StringWriter sw = new StringWriter();
-        final BufferedWriter bw = new BufferedWriter( sw );
+        final BufferedWriter bw = new BufferedWriter(sw);
         try {
             Template template = null;
-            if ( GeneratorContext.BEAN.equals( generatorContext ) ) {
-                template = config.getTemplate( "workbenchPreferenceBean.ftl" );
-            } else if ( GeneratorContext.PORTABLE.equals( generatorContext ) ) {
-                template = config.getTemplate( "workbenchPreferencePortable.ftl" );
+            if (GeneratorContext.BEAN.equals(generatorContext)) {
+                template = config.getTemplate("workbenchPreferenceBean.ftl");
+            } else if (GeneratorContext.PORTABLE.equals(generatorContext)) {
+                template = config.getTemplate("workbenchPreferencePortable.ftl");
             }
 
-            if ( template != null ) {
-                template.process( root, bw );
+            if (template != null) {
+                template.process(root,
+                                 bw);
             }
-        } catch ( IOException ioe ) {
-            throw new GenerationException( ioe );
-        } catch ( TemplateException te ) {
-            throw new GenerationException( te );
+        } catch (IOException ioe) {
+            throw new GenerationException(ioe);
+        } catch (TemplateException te) {
+            throw new GenerationException(te);
         } finally {
             try {
                 bw.close();
                 sw.close();
-            } catch ( IOException ioe ) {
-                throw new GenerationException( ioe );
+            } catch (IOException ioe) {
+                throw new GenerationException(ioe);
             }
         }
-        messager.printMessage( Kind.NOTE, "Successfully generated code for [" + className + "]" );
+        messager.printMessage(Kind.NOTE,
+                              "Successfully generated code for [" + className + "]");
 
         return sw.getBuffer();
     }

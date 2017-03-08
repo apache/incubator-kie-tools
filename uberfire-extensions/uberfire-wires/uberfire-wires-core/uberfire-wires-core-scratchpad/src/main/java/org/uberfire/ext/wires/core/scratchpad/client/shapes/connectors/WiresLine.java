@@ -44,119 +44,119 @@ public class WiresLine extends WiresBaseDynamicShape implements MagnetManager,
 
     private MagnetManager magnetManager;
 
-    public WiresLine( final Line shape ) {
-        final double x1 = shape.getPoints().get( 0 ).getX();
-        final double y1 = shape.getPoints().get( 0 ).getY();
-        final double x2 = shape.getPoints().get( 1 ).getX();
-        final double y2 = shape.getPoints().get( 1 ).getY();
+    public WiresLine(final Line shape) {
+        final double x1 = shape.getPoints().get(0).getX();
+        final double y1 = shape.getPoints().get(0).getY();
+        final double x2 = shape.getPoints().get(1).getX();
+        final double y2 = shape.getPoints().get(1).getY();
 
         line = shape;
-        bounding = new Line( x1,
-                             y1,
-                             x2,
-                             y2 );
-        bounding.setStrokeWidth( BOUNDARY_SIZE );
-        bounding.setAlpha( ALPHA_DESELECTED );
+        bounding = new Line(x1,
+                            y1,
+                            x2,
+                            y2);
+        bounding.setStrokeWidth(BOUNDARY_SIZE);
+        bounding.setAlpha(ALPHA_DESELECTED);
 
-        add( line );
-        add( bounding );
+        add(line);
+        add(bounding);
 
         magnets.clear();
 
         controlPoints.clear();
-        controlPoint1 = new ConnectibleControlPoint( x1,
-                                                     y1,
-                                                     this,
-                                                     this,
-                                                     new ControlPointMoveHandler() {
-                                                         @Override
-                                                         public void onMove( final double x,
-                                                                             final double y ) {
-                                                             line.getPoints().get( 0 ).setX( x - getX() );
-                                                             line.getPoints().get( 0 ).setY( y - getY() );
-                                                             bounding.getPoints().get( 0 ).setX( x - getX() );
-                                                             bounding.getPoints().get( 0 ).setY( y - getY() );
-                                                         }
-                                                     } );
+        controlPoint1 = new ConnectibleControlPoint(x1,
+                                                    y1,
+                                                    this,
+                                                    this,
+                                                    new ControlPointMoveHandler() {
+                                                        @Override
+                                                        public void onMove(final double x,
+                                                                           final double y) {
+                                                            line.getPoints().get(0).setX(x - getX());
+                                                            line.getPoints().get(0).setY(y - getY());
+                                                            bounding.getPoints().get(0).setX(x - getX());
+                                                            bounding.getPoints().get(0).setY(y - getY());
+                                                        }
+                                                    });
 
-        controlPoint2 = new ConnectibleControlPoint( x2,
-                                                     y2,
-                                                     this,
-                                                     this,
-                                                     new ControlPointMoveHandler() {
-                                                         @Override
-                                                         public void onMove( final double x,
-                                                                             final double y ) {
-                                                             line.getPoints().get( 1 ).setX( x - getX() );
-                                                             line.getPoints().get( 1 ).setY( y - getY() );
-                                                             bounding.getPoints().get( 1 ).setX( x - getX() );
-                                                             bounding.getPoints().get( 1 ).setY( y - getY() );
-                                                         }
-                                                     } );
-        addControlPoint( controlPoint1 );
-        addControlPoint( controlPoint2 );
+        controlPoint2 = new ConnectibleControlPoint(x2,
+                                                    y2,
+                                                    this,
+                                                    this,
+                                                    new ControlPointMoveHandler() {
+                                                        @Override
+                                                        public void onMove(final double x,
+                                                                           final double y) {
+                                                            line.getPoints().get(1).setX(x - getX());
+                                                            line.getPoints().get(1).setY(y - getY());
+                                                            bounding.getPoints().get(1).setX(x - getX());
+                                                            bounding.getPoints().get(1).setY(y - getY());
+                                                        }
+                                                    });
+        addControlPoint(controlPoint1);
+        addControlPoint(controlPoint2);
 
         //If Connector is dragged as a whole (i.e. not a ControlPoint) detach it from Magnets
-        addNodeDragMoveHandler( new NodeDragMoveHandler() {
+        addNodeDragMoveHandler(new NodeDragMoveHandler() {
             @Override
-            public void onNodeDragMove( final NodeDragMoveEvent nodeDragMoveEvent ) {
+            public void onNodeDragMove(final NodeDragMoveEvent nodeDragMoveEvent) {
                 final Magnet boundMagnet1 = controlPoint1.getBoundMagnet();
                 final Magnet boundMagnet2 = controlPoint2.getBoundMagnet();
-                if ( boundMagnet1 != null ) {
-                    boundMagnet1.detachControlPoint( controlPoint1 );
+                if (boundMagnet1 != null) {
+                    boundMagnet1.detachControlPoint(controlPoint1);
                 }
-                if ( boundMagnet2 != null ) {
-                    boundMagnet2.detachControlPoint( controlPoint2 );
+                if (boundMagnet2 != null) {
+                    boundMagnet2.detachControlPoint(controlPoint2);
                 }
                 getLayer().batch();
             }
-        } );
+        });
     }
 
     @Override
-    public void setMagnetManager( final MagnetManager magnetManager ) {
+    public void setMagnetManager(final MagnetManager magnetManager) {
         this.magnetManager = magnetManager;
     }
 
     @Override
     public void hideAllMagnets() {
-        if ( magnetManager != null ) {
+        if (magnetManager != null) {
             magnetManager.hideAllMagnets();
         }
     }
 
     @Override
-    public Magnet getMagnet( final WiresShape shapeActive,
-                             final double cx,
-                             final double cy ) {
-        if ( this.magnetManager != null ) {
-            return magnetManager.getMagnet( shapeActive,
-                                            cx,
-                                            cy );
+    public Magnet getMagnet(final WiresShape shapeActive,
+                            final double cx,
+                            final double cy) {
+        if (this.magnetManager != null) {
+            return magnetManager.getMagnet(shapeActive,
+                                           cx,
+                                           cy);
         }
         return null;
     }
 
     @Override
-    public void setSelected( final boolean isSelected ) {
-        if ( isSelected ) {
-            bounding.setAlpha( ALPHA_SELECTED );
+    public void setSelected(final boolean isSelected) {
+        if (isSelected) {
+            bounding.setAlpha(ALPHA_SELECTED);
         } else {
-            bounding.setAlpha( ALPHA_DESELECTED );
+            bounding.setAlpha(ALPHA_DESELECTED);
         }
     }
 
     @Override
-    public boolean contains( final double cx,
-                             final double cy ) {
+    public boolean contains(final double cx,
+                            final double cy) {
         final double _x = cx - getX();
         final double _y = cy - getY();
-        return Math.sqrt( GeometryUtil.ptSegDistSq( line.getPoints().get( 0 ).getX(),
-                                                    line.getPoints().get( 0 ).getY(),
-                                                    line.getPoints().get( 1 ).getX(),
-                                                    line.getPoints().get( 1 ).getY(),
-                                                    _x,
-                                                    _y ) ) < BOUNDARY_SIZE;
+        return Math.sqrt(GeometryUtil.ptSegDistSq(line.getPoints().get(0).getX(),
+                                                  line.getPoints().get(0).getY(),
+                                                  line.getPoints().get(1).getX(),
+                                                  line.getPoints().get(1).getY(),
+                                                  _x,
+                                                  _y)) < BOUNDARY_SIZE;
     }
 
     @Override

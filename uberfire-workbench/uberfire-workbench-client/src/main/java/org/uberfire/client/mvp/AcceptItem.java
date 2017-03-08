@@ -17,5 +17,5 @@ package org.uberfire.client.mvp;
 
 public interface AcceptItem {
 
-    void add( final UIPart uiPart );
+    void add(final UIPart uiPart);
 }

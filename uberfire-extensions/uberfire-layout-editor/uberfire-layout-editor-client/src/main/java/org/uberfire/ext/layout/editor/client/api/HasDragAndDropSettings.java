@@ -22,8 +22,13 @@ import java.util.Map;
  * events
  */
 public interface HasDragAndDropSettings {
+
     String[] getSettingsKeys();
-    String getSettingValue( String key );
-    void setSettingValue( String key, String value );
+
+    String getSettingValue(String key);
+
+    void setSettingValue(String key,
+                         String value);
+
     Map<String, String> getMapSettings();
 }

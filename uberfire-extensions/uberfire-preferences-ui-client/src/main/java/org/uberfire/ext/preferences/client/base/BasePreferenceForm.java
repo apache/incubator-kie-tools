@@ -40,7 +40,7 @@ public abstract class BasePreferenceForm<T> {
      * Method called when the form is opened, so it can receive the current persisted preference value.
      * @param preference
      */
-    public abstract void init( T preference );
+    public abstract void init(T preference);
 
     /**
      * Method called just before the preferences saving.
@@ -54,22 +54,23 @@ public abstract class BasePreferenceForm<T> {
     public abstract void onUndo();
 
     @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
-        id = placeRequest.getParameter( "id", null );
+    public void onStartup(final PlaceRequest placeRequest) {
+        id = placeRequest.getParameter("id",
+                                       null);
     }
 
-    public void hierarchyItemFormInitializationEvent( @Observes HierarchyItemFormInitializationEvent event ) {
-        if ( preference == null && event.getItemId().equals( id ) ) {
+    public void hierarchyItemFormInitializationEvent(@Observes HierarchyItemFormInitializationEvent event) {
+        if (preference == null && event.getItemId().equals(id)) {
             preference = event.getPreference();
-            init( preference );
+            init(preference);
         }
     }
 
-    public void preSaveEvent( @Observes PreferencesCentralPreSaveEvent event ) {
+    public void preSaveEvent(@Observes PreferencesCentralPreSaveEvent event) {
         beforeSave();
     }
 
-    public void undoChangesEvent( @Observes PreferencesCentralUndoChangesEvent event ) {
+    public void undoChangesEvent(@Observes PreferencesCentralUndoChangesEvent event) {
         onUndo();
     }
 

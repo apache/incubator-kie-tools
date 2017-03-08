@@ -28,59 +28,58 @@ import org.uberfire.ext.wires.core.client.util.ShapesUtils;
  */
 public class StencilTemplateBuilder {
 
-    public TemplateShape build( final String templateName,
-                                final NodeMouseClickHandler clickHandler ) {
+    public TemplateShape build(final String templateName,
+                               final NodeMouseClickHandler clickHandler) {
 
         final TemplateShape templateShape = new TemplateShape();
         final Shape shape = drawShape();
         final Rectangle bounding = drawBoundingBox();
-        final Text description = drawDescription( templateName );
+        final Text description = drawDescription(templateName);
 
         //Attach handles for drag operation
-        shape.addNodeMouseClickHandler( clickHandler );
-        bounding.addNodeMouseClickHandler( clickHandler );
-        description.addNodeMouseClickHandler( clickHandler );
+        shape.addNodeMouseClickHandler(clickHandler);
+        bounding.addNodeMouseClickHandler(clickHandler);
+        description.addNodeMouseClickHandler(clickHandler);
 
         //Build Template Shape
-        templateShape.setBounding( bounding );
-        templateShape.setShape( shape );
-        templateShape.setDescription( description );
+        templateShape.setBounding(bounding);
+        templateShape.setShape(shape);
+        templateShape.setDescription(description);
 
         return templateShape;
     }
 
     private Shape drawShape() {
-        final Rectangle rectangle = new Rectangle( 20,
-                                                   20 );
+        final Rectangle rectangle = new Rectangle(20,
+                                                  20);
 
-        rectangle.setX( 5 ).setY( 5 )
-                .setStrokeColor( ShapesUtils.RGB_STROKE_SHAPE )
-                .setStrokeWidth( ShapesUtils.RGB_STROKE_WIDTH_SHAPE )
-                .setFillColor( ShapesUtils.RGB_FILL_SHAPE )
-                .setDraggable( false );
+        rectangle.setX(5).setY(5)
+                .setStrokeColor(ShapesUtils.RGB_STROKE_SHAPE)
+                .setStrokeWidth(ShapesUtils.RGB_STROKE_WIDTH_SHAPE)
+                .setFillColor(ShapesUtils.RGB_FILL_SHAPE)
+                .setDraggable(false);
 
         return rectangle;
     }
 
     private Rectangle drawBoundingBox() {
-        final Rectangle boundingBox = new Rectangle( ShapeFactoryUtil.WIDTH_BOUNDING_LAYER,
-                                                     ShapeFactoryUtil.HEIGHT_BOUNDING_LAYER );
-        boundingBox.setStrokeColor( ShapeFactoryUtil.RGB_STROKE_BOUNDING )
-                .setStrokeWidth( 1 )
-                .setFillColor( ShapeFactoryUtil.RGB_FILL_BOUNDING )
-                .setDraggable( false );
+        final Rectangle boundingBox = new Rectangle(ShapeFactoryUtil.WIDTH_BOUNDING_LAYER,
+                                                    ShapeFactoryUtil.HEIGHT_BOUNDING_LAYER);
+        boundingBox.setStrokeColor(ShapeFactoryUtil.RGB_STROKE_BOUNDING)
+                .setStrokeWidth(1)
+                .setFillColor(ShapeFactoryUtil.RGB_FILL_BOUNDING)
+                .setDraggable(false);
         return boundingBox;
     }
 
-    private Text drawDescription( final String templateName ) {
-        Text text = new Text( templateName,
-                              ShapeFactoryUtil.FONT_FAMILY_DESCRIPTION,
-                              ShapeFactoryUtil.FONT_SIZE_DESCRIPTION );
-        text.setFillColor( ShapeFactoryUtil.RGB_TEXT_DESCRIPTION );
-        text.setTextBaseLine( TextBaseLine.MIDDLE );
-        text.setX( 30 );
-        text.setY( 10 );
+    private Text drawDescription(final String templateName) {
+        Text text = new Text(templateName,
+                             ShapeFactoryUtil.FONT_FAMILY_DESCRIPTION,
+                             ShapeFactoryUtil.FONT_SIZE_DESCRIPTION);
+        text.setFillColor(ShapeFactoryUtil.RGB_TEXT_DESCRIPTION);
+        text.setTextBaseLine(TextBaseLine.MIDDLE);
+        text.setX(30);
+        text.setY(10);
         return text;
     }
-
 }

@@ -27,71 +27,69 @@ import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class UnanchoredStaticWorkbenchPanelPresenterTest {
 
     @Mock
-    private PlaceManager placeManager;
-
-    @Mock
     UnanchoredStaticWorkbenchPanelView view;
-
     UnanchoredStaticWorkbenchPanelPresenter presenter;
+    @Mock
+    private PlaceManager placeManager;
 
     @Before
     public void setup() {
-        presenter = new UnanchoredStaticWorkbenchPanelPresenter( view, mock( PerspectiveManager.class ), placeManager );
+        presenter = new UnanchoredStaticWorkbenchPanelPresenter(view,
+                                                                mock(PerspectiveManager.class),
+                                                                placeManager);
         presenter.init();
-        presenter.setDefinition( new PanelDefinitionImpl() );
+        presenter.setDefinition(new PanelDefinitionImpl());
     }
 
     @Test
     public void getDefaultChildTypeTest() {
 
-        assertNull( presenter.getDefaultChildType() );
-
+        assertNull(presenter.getDefaultChildType());
     }
 
     @Test
     public void addPartTest() {
 
-        WorkbenchPartPresenter part = mock( WorkbenchPartPresenter.class );
-        when( part.getDefinition() ).thenReturn( mock( PartDefinition.class ) );
+        WorkbenchPartPresenter part = mock(WorkbenchPartPresenter.class);
+        when(part.getDefinition()).thenReturn(mock(PartDefinition.class));
 
-        presenter.addPart( part );
+        presenter.addPart(part);
 
-        verify( view ).addPart( any() );
+        verify(view).addPart(any());
     }
 
     @Test
     public void addPartTwiceShouldCloseOtherPartTest() {
 
-        SinglePartPanelHelper singlePartPanelHelper = mock( SinglePartPanelHelper.class );
+        SinglePartPanelHelper singlePartPanelHelper = mock(SinglePartPanelHelper.class);
 
-        UnanchoredStaticWorkbenchPanelPresenter presenter = new UnanchoredStaticWorkbenchPanelPresenter( view,
-                                                                                     mock( PerspectiveManager.class ),
-                                                                                     placeManager ) {
+        UnanchoredStaticWorkbenchPanelPresenter presenter = new UnanchoredStaticWorkbenchPanelPresenter(view,
+                                                                                                        mock(PerspectiveManager.class),
+                                                                                                        placeManager) {
             SinglePartPanelHelper createSinglePartPanelHelper() {
                 return singlePartPanelHelper;
             }
         };
 
         presenter.init();
-        presenter.setDefinition( new PanelDefinitionImpl() );
+        presenter.setDefinition(new PanelDefinitionImpl());
 
         //there is already a part
-        when( singlePartPanelHelper.hasNoParts() ).thenReturn( false );
+        when(singlePartPanelHelper.hasNoParts()).thenReturn(false);
 
-        WorkbenchPartPresenter part2 = mock( WorkbenchPartPresenter.class );
-        when( part2.getDefinition() ).thenReturn( mock( PartDefinition.class ) );
+        WorkbenchPartPresenter part2 = mock(WorkbenchPartPresenter.class);
+        when(part2.getDefinition()).thenReturn(mock(PartDefinition.class));
 
-        presenter.addPart( part2 );
+        presenter.addPart(part2);
 
-        verify( singlePartPanelHelper ).closeFirstPartAndAddNewOne( any( Command.class ) );
-
+        verify(singlePartPanelHelper).closeFirstPartAndAddNewOne(any(Command.class));
     }
 }

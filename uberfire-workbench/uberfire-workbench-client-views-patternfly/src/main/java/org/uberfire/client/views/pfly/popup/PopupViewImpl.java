@@ -42,19 +42,19 @@ public class PopupViewImpl extends Composite implements PopupView {
 
     @PostConstruct
     public void init() {
-        final SimplePanel panel = new SimplePanel( modal );
-        initWidget( panel );
+        final SimplePanel panel = new SimplePanel(modal);
+        initWidget(panel);
     }
 
     @Override
-    public void setContent( final IsWidget widget ) {
-        modal.setContent( widget );
+    public void setContent(final IsWidget widget) {
+        modal.setContent(widget);
     }
 
     @Override
-    public void setSize( final WorkbenchPopupSize size ) {
+    public void setSize(final WorkbenchPopupSize size) {
         ModalSize modalSize = ModalSize.MEDIUM;
-        switch ( size ){
+        switch (size) {
             case LARGE:
                 modalSize = ModalSize.LARGE;
                 break;
@@ -65,31 +65,35 @@ public class PopupViewImpl extends Composite implements PopupView {
                 modalSize = ModalSize.SMALL;
                 break;
         }
-        modal.setSize( modalSize );
+        modal.setSize(modalSize);
     }
 
     @Override
-    public void setTitle( final String title ) {
-        modal.setTitle( title );
+    public void setTitle(final String title) {
+        modal.setTitle(title);
     }
 
     @Override
     public void show() {
         modal.show();
 
-        modal.addHiddenHandler( new ModalHiddenHandler() {
+        modal.addHiddenHandler(new ModalHiddenHandler() {
             @Override
-            public void onHidden( final ModalHiddenEvent hiddenEvent ) {
-                CloseEvent.fire( PopupViewImpl.this, PopupViewImpl.this, false );
+            public void onHidden(final ModalHiddenEvent hiddenEvent) {
+                CloseEvent.fire(PopupViewImpl.this,
+                                PopupViewImpl.this,
+                                false);
             }
-        } );
+        });
 
-        modal.addHideHandler( new ModalHideHandler() {
+        modal.addHideHandler(new ModalHideHandler() {
             @Override
-            public void onHide( ModalHideEvent evt ) {
-                CloseEvent.fire( PopupViewImpl.this, PopupViewImpl.this, false );
+            public void onHide(ModalHideEvent evt) {
+                CloseEvent.fire(PopupViewImpl.this,
+                                PopupViewImpl.this,
+                                false);
             }
-        } );
+        });
     }
 
     @Override
@@ -98,8 +102,8 @@ public class PopupViewImpl extends Composite implements PopupView {
     }
 
     @Override
-    public HandlerRegistration addCloseHandler( final CloseHandler<PopupView> handler ) {
-        return addHandler( handler, CloseEvent.getType() );
+    public HandlerRegistration addCloseHandler(final CloseHandler<PopupView> handler) {
+        return addHandler(handler,
+                          CloseEvent.getType());
     }
-
 }

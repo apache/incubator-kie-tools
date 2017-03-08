@@ -33,22 +33,23 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
  * A perspective with a root panel of type SimpleWorkbenchPanelPresenter.
  */
 @Dependent
-@Named( "org.uberfire.wbtest.client.perspective.SimplePerspectiveActivity" )
+@Named("org.uberfire.wbtest.client.perspective.SimplePerspectiveActivity")
 public class SimplePerspectiveActivity extends AbstractTestPerspectiveActivity {
 
     @Inject
-    public SimplePerspectiveActivity( PlaceManager placeManager ) {
-        super( placeManager );
+    public SimplePerspectiveActivity(PlaceManager placeManager) {
+        super(placeManager);
     }
 
     @Override
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
-        PerspectiveDefinition pdef = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
-        pdef.setName( "SimplePerspectiveActivity" );
+        PerspectiveDefinition pdef = new PerspectiveDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        pdef.setName("SimplePerspectiveActivity");
 
-        DefaultPlaceRequest destintationPlace = new DefaultPlaceRequest( ResizeTestScreenActivity.class.getName() );
-        destintationPlace.addParameter( "debugId", "simplePerspectiveDefault" );
-        pdef.getRoot().addPart( new PartDefinitionImpl( destintationPlace ) );
+        DefaultPlaceRequest destintationPlace = new DefaultPlaceRequest(ResizeTestScreenActivity.class.getName());
+        destintationPlace.addParameter("debugId",
+                                       "simplePerspectiveDefault");
+        pdef.getRoot().addPart(new PartDefinitionImpl(destintationPlace));
 
         return pdef;
     }

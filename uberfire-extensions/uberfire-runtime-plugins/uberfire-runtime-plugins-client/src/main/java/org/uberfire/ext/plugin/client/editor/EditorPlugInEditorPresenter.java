@@ -35,7 +35,7 @@ import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchEditor(identifier = "Editor PlugIn Editor", supportedTypes = { EditorPluginResourceType.class }, priority = Integer.MAX_VALUE)
+@WorkbenchEditor(identifier = "Editor PlugIn Editor", supportedTypes = {EditorPluginResourceType.class}, priority = Integer.MAX_VALUE)
 public class EditorPlugInEditorPresenter
         extends RuntimePluginBaseEditor {
 
@@ -46,8 +46,8 @@ public class EditorPlugInEditorPresenter
     private Caller<PluginServices> pluginServices;
 
     @Inject
-    public EditorPlugInEditorPresenter( final EditorPlugInEditorView baseView ) {
-        super( baseView );
+    public EditorPlugInEditorPresenter(final EditorPlugInEditorView baseView) {
+        super(baseView);
     }
 
     protected ClientResourceType getResourceType() {
@@ -87,5 +87,4 @@ public class EditorPlugInEditorPresenter
     EditorPlugInEditorView view() {
         return (EditorPlugInEditorView) baseView;
     }
-
 }

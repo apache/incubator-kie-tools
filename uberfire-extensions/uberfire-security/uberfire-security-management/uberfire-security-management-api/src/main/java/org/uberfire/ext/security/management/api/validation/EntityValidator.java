@@ -16,14 +16,13 @@
 
 package org.uberfire.ext.security.management.api.validation;
 
-import javax.validation.ConstraintViolation;
 import java.util.Set;
+import javax.validation.ConstraintViolation;
 
 /**
  * <p>The validator contract for a given security entity of type <code>T</code>.</p>
  * <p>Compatible with JSR303 Bean Validation for future integration with other validation frameworks.</p>
- * @param <T> The security entity type. 
- *           
+ * @param <T> The security entity type.
  * @since 0.8.0
  */
 public interface EntityValidator<T> {
@@ -31,7 +30,7 @@ public interface EntityValidator<T> {
     /**
      * <p>Validates the given entity.</p>
      * @param entity The entity instance to validate.
-     * @return The validation constraints collection produced. 
+     * @return The validation constraints collection produced.
      */
     Set<ConstraintViolation<T>> validate(T entity);
 }

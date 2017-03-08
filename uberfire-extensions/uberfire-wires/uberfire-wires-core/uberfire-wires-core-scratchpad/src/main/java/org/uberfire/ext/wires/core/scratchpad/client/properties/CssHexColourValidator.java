@@ -27,19 +27,19 @@ import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidato
 @ApplicationScoped
 public class CssHexColourValidator implements PropertyFieldValidator {
 
-    private static final List<Character> HEX_DIGITS = Arrays.asList( new Character[]{ '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' } );
+    private static final List<Character> HEX_DIGITS = Arrays.asList(new Character[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'});
 
     @Override
-    public boolean validate( Object value ) {
+    public boolean validate(Object value) {
         String hex = value.toString().toLowerCase();
-        if ( hex.length() != 7 ) {
+        if (hex.length() != 7) {
             return false;
         }
-        if ( !hex.startsWith( "#" ) ) {
+        if (!hex.startsWith("#")) {
             return false;
         }
-        for ( Character c : hex.substring( 1 ).toCharArray() ) {
-            if ( !HEX_DIGITS.contains( c ) ) {
+        for (Character c : hex.substring(1).toCharArray()) {
+            if (!HEX_DIGITS.contains(c)) {
                 return false;
             }
         }
@@ -50,5 +50,4 @@ public class CssHexColourValidator implements PropertyFieldValidator {
     public String getValidatorErrorMessage() {
         return "Value must be a CSS colour #rrggbb.";
     }
-
 }

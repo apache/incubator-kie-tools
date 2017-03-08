@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.uberfire.commons.lifecycle.Disposable;
 import org.uberfire.commons.lifecycle.PriorityDisposable;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.channels.SeekableByteChannel;
@@ -57,292 +56,291 @@ public interface IOService extends PriorityDisposable {
 
     public static Set<OpenOption> EMPTY_OPTIONS = new HashSet<OpenOption>();
 
-    void startBatch( final FileSystem fs );
+    void startBatch(final FileSystem fs);
 
-    void startBatch( final FileSystem[] fs,
-                     final Option... options );
+    void startBatch(final FileSystem[] fs,
+                    final Option... options);
 
-    void startBatch( final FileSystem fs,
-                     final Option... options );
+    void startBatch(final FileSystem fs,
+                    final Option... options);
 
-    void startBatch( final FileSystem... fs );
+    void startBatch(final FileSystem... fs);
 
     void endBatch();
 
-    FileAttribute<?>[] convert( final Map<String, ?> attrs );
+    FileAttribute<?>[] convert(final Map<String, ?> attrs);
 
-    Path get( final String first,
-              final String... more )
+    Path get(final String first,
+             final String... more)
             throws IllegalArgumentException;
 
-    Path get( final URI uri )
+    Path get(final URI uri)
             throws IllegalArgumentException, FileSystemNotFoundException, SecurityException;
 
     Iterable<FileSystem> getFileSystems();
 
-    FileSystem getFileSystem( final URI uri )
+    FileSystem getFileSystem(final URI uri)
             throws IllegalArgumentException, FileSystemNotFoundException,
             ProviderNotFoundException, SecurityException;
 
-    FileSystem newFileSystem( final URI uri,
-                              final Map<String, ?> env )
+    FileSystem newFileSystem(final URI uri,
+                             final Map<String, ?> env)
             throws IllegalArgumentException, FileSystemAlreadyExistsException,
             ProviderNotFoundException, IOException, SecurityException;
 
-    void onNewFileSystem( final NewFileSystemListener listener );
+    void onNewFileSystem(final NewFileSystemListener listener);
 
-    InputStream newInputStream( final Path path,
-                                final OpenOption... options )
+    InputStream newInputStream(final Path path,
+                               final OpenOption... options)
             throws IllegalArgumentException, NoSuchFileException,
             UnsupportedOperationException, IOException, SecurityException;
 
-    OutputStream newOutputStream( final Path path,
-                                  final OpenOption... options )
+    OutputStream newOutputStream(final Path path,
+                                 final OpenOption... options)
             throws IllegalArgumentException, UnsupportedOperationException,
             IOException, SecurityException;
 
-    SeekableByteChannel newByteChannel( final Path path,
-                                        final OpenOption... options )
+    SeekableByteChannel newByteChannel(final Path path,
+                                       final OpenOption... options)
             throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException,
             IOException, SecurityException;
 
-    SeekableByteChannel newByteChannel( final Path path,
-                                        final Set<? extends OpenOption> options,
-                                        final FileAttribute<?>... attrs )
+    SeekableByteChannel newByteChannel(final Path path,
+                                       final Set<? extends OpenOption> options,
+                                       final FileAttribute<?>... attrs)
             throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException,
             IOException, SecurityException;
 
-    DirectoryStream<Path> newDirectoryStream( final Path dir )
+    DirectoryStream<Path> newDirectoryStream(final Path dir)
             throws IllegalArgumentException, NotDirectoryException, IOException, SecurityException;
 
-    DirectoryStream<Path> newDirectoryStream( final Path dir,
-                                              final DirectoryStream.Filter<Path> filter )
+    DirectoryStream<Path> newDirectoryStream(final Path dir,
+                                             final DirectoryStream.Filter<Path> filter)
             throws IllegalArgumentException, NotDirectoryException, IOException, SecurityException;
 
-    Path createFile( final Path path,
-                     final FileAttribute<?>... attrs )
+    Path createFile(final Path path,
+                    final FileAttribute<?>... attrs)
             throws IllegalArgumentException, UnsupportedOperationException,
             FileAlreadyExistsException, IOException, SecurityException;
 
-    Path createDirectory( final Path dir,
-                          final FileAttribute<?>... attrs )
+    Path createDirectory(final Path dir,
+                         final FileAttribute<?>... attrs)
             throws IllegalArgumentException, UnsupportedOperationException,
             FileAlreadyExistsException, IOException, SecurityException;
 
-    Path createDirectories( final Path dir,
-                            final FileAttribute<?>... attrs )
+    Path createDirectories(final Path dir,
+                           final FileAttribute<?>... attrs)
             throws UnsupportedOperationException, FileAlreadyExistsException,
             IOException, SecurityException;
 
-    Path createDirectory( final Path dir,
-                          final Map<String, ?> attrs )
+    Path createDirectory(final Path dir,
+                         final Map<String, ?> attrs)
             throws IllegalArgumentException, UnsupportedOperationException,
             FileAlreadyExistsException, IOException, SecurityException;
 
-    Path createDirectories( final Path dir,
-                            final Map<String, ?> attrs )
+    Path createDirectories(final Path dir,
+                           final Map<String, ?> attrs)
             throws UnsupportedOperationException, FileAlreadyExistsException,
             IOException, SecurityException;
 
-    void delete( final Path path,
-                 final DeleteOption... options )
+    void delete(final Path path,
+                final DeleteOption... options)
             throws IllegalArgumentException, NoSuchFileException,
             DirectoryNotEmptyException, IOException, SecurityException;
 
-    boolean deleteIfExists( final Path path,
-                            final DeleteOption... options )
+    boolean deleteIfExists(final Path path,
+                           final DeleteOption... options)
             throws IllegalArgumentException, DirectoryNotEmptyException,
             IOException, SecurityException;
 
-    Path createTempFile( final String prefix,
-                         final String suffix,
-                         final FileAttribute<?>... attrs )
+    Path createTempFile(final String prefix,
+                        final String suffix,
+                        final FileAttribute<?>... attrs)
             throws IllegalArgumentException, UnsupportedOperationException,
             IOException, SecurityException;
 
-    Path createTempFile( final Path dir,
-                         final String prefix,
-                         final String suffix,
-                         final FileAttribute<?>... attrs )
+    Path createTempFile(final Path dir,
+                        final String prefix,
+                        final String suffix,
+                        final FileAttribute<?>... attrs)
             throws IllegalArgumentException, UnsupportedOperationException,
             IOException, SecurityException;
 
-    Path createTempDirectory( final String prefix,
-                              final FileAttribute<?>... attrs )
+    Path createTempDirectory(final String prefix,
+                             final FileAttribute<?>... attrs)
             throws IllegalArgumentException, UnsupportedOperationException,
             IOException, SecurityException;
 
-    Path createTempDirectory( final Path dir,
-                              final String prefix,
-                              final FileAttribute<?>... attrs )
+    Path createTempDirectory(final Path dir,
+                             final String prefix,
+                             final FileAttribute<?>... attrs)
             throws IllegalArgumentException, UnsupportedOperationException,
             IOException, SecurityException;
 
-    Path copy( final Path source,
-               final Path target,
-               final CopyOption... options )
+    Path copy(final Path source,
+              final Path target,
+              final CopyOption... options)
             throws UnsupportedOperationException, FileAlreadyExistsException,
             DirectoryNotEmptyException, IOException, SecurityException;
 
-    Path move( final Path source,
-               final Path target,
-               final CopyOption... options )
+    Path move(final Path source,
+              final Path target,
+              final CopyOption... options)
             throws UnsupportedOperationException, FileAlreadyExistsException,
             DirectoryNotEmptyException, AtomicMoveNotSupportedException,
             IOException, SecurityException;
 
-    <V extends FileAttributeView> V getFileAttributeView( final Path path,
-                                                          final Class<V> type )
+    <V extends FileAttributeView> V getFileAttributeView(final Path path,
+                                                         final Class<V> type)
             throws IllegalArgumentException;
 
-    Map<String, Object> readAttributes( final Path path )
+    Map<String, Object> readAttributes(final Path path)
             throws UnsupportedOperationException, NoSuchFileException,
             IllegalArgumentException, IOException, SecurityException;
 
-    Map<String, Object> readAttributes( final Path path,
-                                        final String attributes )
+    Map<String, Object> readAttributes(final Path path,
+                                       final String attributes)
             throws UnsupportedOperationException, NoSuchFileException,
             IllegalArgumentException, IOException, SecurityException;
 
-    Path setAttributes( final Path path,
-                        final FileAttribute<?>... attrs )
+    Path setAttributes(final Path path,
+                       final FileAttribute<?>... attrs)
             throws UnsupportedOperationException, IllegalArgumentException,
             ClassCastException, IOException, SecurityException;
 
-    Path setAttributes( final Path path,
-                        final Map<String, Object> attrs )
+    Path setAttributes(final Path path,
+                       final Map<String, Object> attrs)
             throws UnsupportedOperationException, IllegalArgumentException,
             ClassCastException, IOException, SecurityException;
 
-    Path setAttribute( final Path path,
-                       final String attribute,
-                       final Object value )
+    Path setAttribute(final Path path,
+                      final String attribute,
+                      final Object value)
             throws UnsupportedOperationException, IllegalArgumentException,
             ClassCastException, IOException, SecurityException;
 
-    Object getAttribute( final Path path,
-                         final String attribute )
+    Object getAttribute(final Path path,
+                        final String attribute)
             throws UnsupportedOperationException, IllegalArgumentException,
             IOException, SecurityException;
 
-    FileTime getLastModifiedTime( final Path path )
+    FileTime getLastModifiedTime(final Path path)
             throws IllegalArgumentException, IOException, SecurityException;
 
-    long size( final Path path )
+    long size(final Path path)
             throws IllegalArgumentException, IOException, SecurityException;
 
-    boolean exists( final Path path )
+    boolean exists(final Path path)
             throws IllegalArgumentException, SecurityException;
 
-    boolean notExists( final Path path )
+    boolean notExists(final Path path)
             throws IllegalArgumentException, SecurityException;
 
-    boolean isSameFile( final Path path,
-                        final Path path2 )
+    boolean isSameFile(final Path path,
+                       final Path path2)
             throws IllegalArgumentException, IOException, SecurityException;
 
-    BufferedReader newBufferedReader( final Path path,
-                                      final Charset cs )
+    BufferedReader newBufferedReader(final Path path,
+                                     final Charset cs)
             throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException;
 
-    BufferedWriter newBufferedWriter( final Path path,
-                                      final Charset cs,
-                                      final OpenOption... options )
+    BufferedWriter newBufferedWriter(final Path path,
+                                     final Charset cs,
+                                     final OpenOption... options)
             throws IllegalArgumentException, IOException, UnsupportedOperationException, SecurityException;
 
-    long copy( final InputStream in,
-               final Path target,
-               final CopyOption... options )
+    long copy(final InputStream in,
+              final Path target,
+              final CopyOption... options)
             throws IOException, FileAlreadyExistsException, DirectoryNotEmptyException,
             UnsupportedOperationException, SecurityException;
 
-    long copy( final Path source,
-               final OutputStream out )
+    long copy(final Path source,
+              final OutputStream out)
             throws IOException, SecurityException;
 
-    byte[] readAllBytes( final Path path )
+    byte[] readAllBytes(final Path path)
             throws IOException, OutOfMemoryError, SecurityException;
 
-    List<String> readAllLines( final Path path )
+    List<String> readAllLines(final Path path)
             throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException;
 
-    List<String> readAllLines( final Path path,
-                               final Charset cs )
+    List<String> readAllLines(final Path path,
+                              final Charset cs)
             throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException;
 
-    String readAllString( final Path path,
-                          final Charset cs )
+    String readAllString(final Path path,
+                         final Charset cs)
             throws IllegalArgumentException, NoSuchFileException, IOException;
 
-    String readAllString( final Path path )
+    String readAllString(final Path path)
             throws IllegalArgumentException, NoSuchFileException, IOException;
 
-    Path write( final Path path,
-                final byte[] bytes,
-                final OpenOption... options )
+    Path write(final Path path,
+               final byte[] bytes,
+               final OpenOption... options)
             throws IOException, UnsupportedOperationException, SecurityException;
 
-    Path write( final Path path,
-                final byte[] bytes,
-                final Map<String, ?> attrs,
-                final OpenOption... options )
+    Path write(final Path path,
+               final byte[] bytes,
+               final Map<String, ?> attrs,
+               final OpenOption... options)
             throws IOException, UnsupportedOperationException, SecurityException;
 
-    Path write( final Path path,
-                final byte[] bytes,
-                final Set<? extends OpenOption> options,
-                final FileAttribute<?>... attrs )
+    Path write(final Path path,
+               final byte[] bytes,
+               final Set<? extends OpenOption> options,
+               final FileAttribute<?>... attrs)
             throws IllegalArgumentException, IOException, UnsupportedOperationException;
 
-    Path write( final Path path,
-                final Iterable<? extends CharSequence> lines,
-                final Charset cs,
-                final OpenOption... options )
+    Path write(final Path path,
+               final Iterable<? extends CharSequence> lines,
+               final Charset cs,
+               final OpenOption... options)
             throws IllegalArgumentException, IOException, UnsupportedOperationException, SecurityException;
 
-    Path write( final Path path,
-                final String content,
-                final OpenOption... options )
+    Path write(final Path path,
+               final String content,
+               final OpenOption... options)
             throws IllegalArgumentException, IOException, UnsupportedOperationException;
 
-    Path write( final Path path,
-                final String content,
-                final Charset cs,
-                final OpenOption... options )
+    Path write(final Path path,
+               final String content,
+               final Charset cs,
+               final OpenOption... options)
             throws IllegalArgumentException, IOException, UnsupportedOperationException;
 
-    Path write( final Path path,
-                final String content,
-                final Set<? extends OpenOption> options,
-                final FileAttribute<?>... attrs )
+    Path write(final Path path,
+               final String content,
+               final Set<? extends OpenOption> options,
+               final FileAttribute<?>... attrs)
             throws IllegalArgumentException, IOException, UnsupportedOperationException;
 
-    Path write( final Path path,
-                final String content,
-                final Charset cs,
-                final Set<? extends OpenOption> options,
-                final FileAttribute<?>... attrs )
+    Path write(final Path path,
+               final String content,
+               final Charset cs,
+               final Set<? extends OpenOption> options,
+               final FileAttribute<?>... attrs)
             throws IllegalArgumentException, IOException, UnsupportedOperationException;
 
-    Path write( final Path path,
-                final String content,
-                final Map<String, ?> attrs,
-                final OpenOption... options )
+    Path write(final Path path,
+               final String content,
+               final Map<String, ?> attrs,
+               final OpenOption... options)
             throws IllegalArgumentException, IOException, UnsupportedOperationException;
 
-    Path write( final Path path,
-                final String content,
-                final Charset cs,
-                final Map<String, ?> attrs,
-                final OpenOption... options )
+    Path write(final Path path,
+               final String content,
+               final Charset cs,
+               final Map<String, ?> attrs,
+               final OpenOption... options)
             throws IllegalArgumentException, IOException, UnsupportedOperationException;
 
     public abstract static class NewFileSystemListener {
 
-        public abstract void execute( final FileSystem newFileSystem,
-                                      final String scheme,
-                                      final String name,
-                                      final Map<String, ?> env );
-
+        public abstract void execute(final FileSystem newFileSystem,
+                                     final String scheme,
+                                     final String name,
+                                     final Map<String, ?> env);
     }
 }

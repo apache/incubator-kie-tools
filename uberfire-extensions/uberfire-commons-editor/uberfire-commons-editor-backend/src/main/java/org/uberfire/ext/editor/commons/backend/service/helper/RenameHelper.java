@@ -27,14 +27,13 @@ public interface RenameHelper {
      * @param destination Path
      * @return
      */
-    boolean supports( final Path destination );
+    boolean supports(final Path destination);
 
     /**
      * Perform post processing following the rename operation. This is always within a IOService batch operation.
      * @param source Path Source before copy
      * @param destination Path Destination after copy
      */
-    void postProcess( final Path source,
-                      final Path destination );
-
+    void postProcess(final Path source,
+                     final Path destination);
 }

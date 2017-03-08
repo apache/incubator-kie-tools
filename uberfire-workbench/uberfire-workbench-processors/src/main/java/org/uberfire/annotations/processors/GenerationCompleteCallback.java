@@ -24,10 +24,7 @@ public interface GenerationCompleteCallback {
 
     /**
      * The source code has been generated.
-     * 
-     * @param code
-     *            The generated source code.
+     * @param code The generated source code.
      */
     void generationComplete(final String code);
-
 }

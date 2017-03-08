@@ -19,7 +19,7 @@ package org.uberfire.java.nio.file;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 
-import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.Preconditions.checkNotNull;
 
 public class SimpleFileVisitor<T> implements FileVisitor<T> {
 
@@ -27,36 +27,47 @@ public class SimpleFileVisitor<T> implements FileVisitor<T> {
     }
 
     @Override
-    public FileVisitResult preVisitDirectory(T dir, BasicFileAttributes attrs)
+    public FileVisitResult preVisitDirectory(T dir,
+                                             BasicFileAttributes attrs)
             throws IOException {
-        checkNotNull("dir", dir);
-        checkNotNull("attrs", attrs);
+        checkNotNull("dir",
+                     dir);
+        checkNotNull("attrs",
+                     attrs);
 
         return FileVisitResult.CONTINUE;
     }
 
     @Override
-    public FileVisitResult visitFile(T file, BasicFileAttributes attrs)
+    public FileVisitResult visitFile(T file,
+                                     BasicFileAttributes attrs)
             throws IOException {
-        checkNotNull("file", file);
-        checkNotNull("attrs", attrs);
+        checkNotNull("file",
+                     file);
+        checkNotNull("attrs",
+                     attrs);
 
         return FileVisitResult.CONTINUE;
     }
 
     @Override
-    public FileVisitResult visitFileFailed(T file, IOException exc)
+    public FileVisitResult visitFileFailed(T file,
+                                           IOException exc)
             throws IOException {
-        checkNotNull("file", file);
-        checkNotNull("exc", exc);
+        checkNotNull("file",
+                     file);
+        checkNotNull("exc",
+                     exc);
 
         throw exc;
     }
 
     @Override
-    public FileVisitResult postVisitDirectory(T dir, IOException exc)
+    public FileVisitResult postVisitDirectory(T dir,
+                                              IOException exc)
             throws IOException {
-        checkNotNull("dir", dir);
+        checkNotNull("dir",
+                     dir);
 
         if (exc != null) {
             throw exc;

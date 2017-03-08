@@ -30,5 +30,5 @@ public interface PreferenceScopeValidator {
      * is null and a key is required for that type, or if the key is not null and the scope's type
      * does not require one.
      */
-    void validate( PreferenceScope scope ) throws InvalidPreferenceScopeException;
+    void validate(PreferenceScope scope) throws InvalidPreferenceScopeException;
 }

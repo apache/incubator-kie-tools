@@ -29,13 +29,6 @@ import org.uberfire.lifecycle.OnStartup;
 @WorkbenchScreen(identifier = "MarkdownLiveEditor")
 public class MarkdownLiveEditorPresenter {
 
-    public interface View
-            extends
-            IsWidget {
-
-        void setContent(String content);
-    }
-
     @Inject
     public View view;
 
@@ -54,4 +47,10 @@ public class MarkdownLiveEditorPresenter {
         return view;
     }
 
+    public interface View
+            extends
+            IsWidget {
+
+        void setContent(String content);
+    }
 }

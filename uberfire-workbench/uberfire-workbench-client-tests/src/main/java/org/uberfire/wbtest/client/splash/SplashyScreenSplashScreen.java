@@ -16,12 +16,12 @@
 
 package org.uberfire.wbtest.client.splash;
 
-import static java.util.Arrays.*;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
 import org.uberfire.client.mvp.IsSplashScreen;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.splash.SplashView;
@@ -30,29 +30,30 @@ import org.uberfire.wbtest.client.api.AbstractTestSplashScreenActivity;
 import org.uberfire.workbench.model.SplashScreenFilter;
 import org.uberfire.workbench.model.impl.SplashScreenFilterImpl;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
+import static java.util.Arrays.*;
 
 @ApplicationScoped
 @Named("org.uberfire.wbtest.client.splash.SplashyScreenSplashScreen")
 @IsSplashScreen
 public class SplashyScreenSplashScreen extends AbstractTestSplashScreenActivity {
 
-    Label view = new Label( "Not started" );
+    Label view = new Label("Not started");
 
     @Inject
-    public SplashyScreenSplashScreen( final PlaceManager placeManager,
-                                      final SplashView view ) {
-        super( placeManager, view );
+    public SplashyScreenSplashScreen(final PlaceManager placeManager,
+                                     final SplashView view) {
+        super(placeManager,
+              view);
     }
 
     @Override
-    public void onStartup( PlaceRequest place ) {
-        super.onStartup( place );
-        String debugId = place.getParameter( "debugId", null );
-        if ( debugId != null ) {
-            view.getElement().setId( "SplashyScreenSplashScreen-" + debugId );
-            view.setText( "Splash Screen for " + debugId );
+    public void onStartup(PlaceRequest place) {
+        super.onStartup(place);
+        String debugId = place.getParameter("debugId",
+                                            null);
+        if (debugId != null) {
+            view.getElement().setId("SplashyScreenSplashScreen-" + debugId);
+            view.setText("Splash Screen for " + debugId);
         }
     }
 
@@ -63,12 +64,13 @@ public class SplashyScreenSplashScreen extends AbstractTestSplashScreenActivity 
 
     @Override
     public SplashScreenFilter getFilter() {
-        return new SplashScreenFilterImpl( getClass().getName(), true, asList( SplashyScreen.class.getName() ) );
+        return new SplashScreenFilterImpl(getClass().getName(),
+                                          true,
+                                          asList(SplashyScreen.class.getName()));
     }
 
     @Override
     public boolean isEnabled() {
         return true;
     }
-
 }

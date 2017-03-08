@@ -22,7 +22,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.FormGroup;
 import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.ModalBody;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.uberfire.ext.apps.api.Directory;
@@ -34,49 +33,38 @@ import org.uberfire.mvp.ParameterizedCommand;
 public class NewDirectoryPopup
         extends BaseModal {
 
-    private ParameterizedCommand clickCommand;
-
-    interface Binder
-            extends
-            UiBinder<Widget, NewDirectoryPopup> {
-
-    }
-
+    private static Binder uiBinder = GWT.create(Binder.class);
     @UiField
     FormGroup directoryNameControlGroup;
-
     @UiField
     TextBox directoryName;
-
     @UiField
     HelpBlock directoryNameInline;
-
+    private ParameterizedCommand clickCommand;
     private DirectoryNameValidator directoryNameValidator;
 
-    private static Binder uiBinder = GWT.create( Binder.class );
+    public NewDirectoryPopup(final Directory currentDirectory) {
+        setTitle(CommonConstants.INSTANCE.CreateDir());
+        setBody(uiBinder.createAndBindUi(NewDirectoryPopup.this));
 
-    public NewDirectoryPopup( final Directory currentDirectory ) {
-        setTitle( CommonConstants.INSTANCE.CreateDir() );
-        setBody( uiBinder.createAndBindUi( NewDirectoryPopup.this ) );
-
-        add( new ModalFooterOKCancelButtons(
-                     new Command() {
-                         @Override
-                         public void execute() {
-                             okButton();
-                         }
-                     },
-                     new Command() {
-                         @Override
-                         public void execute() {
-                             cancelButton();
-                         }
-                     } )
-           );
-        directoryNameValidator = new DirectoryNameValidator( currentDirectory );
+        add(new ModalFooterOKCancelButtons(
+                new Command() {
+                    @Override
+                    public void execute() {
+                        okButton();
+                    }
+                },
+                new Command() {
+                    @Override
+                    public void execute() {
+                        cancelButton();
+                    }
+                })
+        );
+        directoryNameValidator = new DirectoryNameValidator(currentDirectory);
     }
 
-    public void show( ParameterizedCommand clickCommand ) {
+    public void show(ParameterizedCommand clickCommand) {
         this.clickCommand = clickCommand;
         show();
     }
@@ -86,19 +74,24 @@ public class NewDirectoryPopup
     }
 
     private void okButton() {
-        if ( directoryNameValidator.isValid( directoryName.getText() ) ) {
-            this.clickCommand.execute( directoryName.getText() );
+        if (directoryNameValidator.isValid(directoryName.getText())) {
+            this.clickCommand.execute(directoryName.getText());
             closePopup();
         } else {
-            directoryNameControlGroup.setValidationState( ValidationState.ERROR );
-            directoryNameInline.setText( directoryNameValidator.getValidationError() );
+            directoryNameControlGroup.setValidationState(ValidationState.ERROR);
+            directoryNameInline.setText(directoryNameValidator.getValidationError());
         }
     }
 
     private void closePopup() {
-        this.directoryName.setText( "" );
+        this.directoryName.setText("");
         hide();
         super.hide();
     }
 
+    interface Binder
+            extends
+            UiBinder<Widget, NewDirectoryPopup> {
+
+    }
 }

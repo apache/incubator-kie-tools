@@ -25,12 +25,11 @@ import org.uberfire.ext.wires.core.client.util.ShapesUtils;
 public class WiresTreeNodeConnector extends Line {
 
     public WiresTreeNodeConnector() {
-        setStrokeColor( ShapesUtils.RGB_STROKE_SHAPE )
-                .setStrokeWidth( ShapesUtils.RGB_STROKE_WIDTH_SHAPE )
-                .setFillColor( ShapesUtils.RGB_FILL_SHAPE )
-                .setLineCap( LineCap.ROUND )
-                .setStrokeWidth( 3 )
-                .setDraggable( false );
+        setStrokeColor(ShapesUtils.RGB_STROKE_SHAPE)
+                .setStrokeWidth(ShapesUtils.RGB_STROKE_WIDTH_SHAPE)
+                .setFillColor(ShapesUtils.RGB_FILL_SHAPE)
+                .setLineCap(LineCap.ROUND)
+                .setStrokeWidth(3)
+                .setDraggable(false);
     }
-
 }

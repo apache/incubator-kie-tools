@@ -27,5 +27,5 @@ public interface PreferenceScopeResolver {
      * @param scopeTypes Scope types associated to the desired scope.
      * @return The PreferenceScope related to the passed types (if it exists, null otherwise).
      */
-    PreferenceScope resolve( String... scopeTypes );
+    PreferenceScope resolve(String... scopeTypes);
 }

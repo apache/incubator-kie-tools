@@ -17,12 +17,17 @@
 
 package org.uberfire.ext.security.management.keycloak.client.resource;
 
-import org.keycloak.representations.idm.CredentialRepresentation;
-import org.keycloak.representations.idm.UserRepresentation;
-
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.UserRepresentation;
 
 /**
  * @since 0.9.0
@@ -46,5 +51,4 @@ public interface UserResource {
 
     @Path("role-mappings")
     public RoleMappingResource roles();
-
 }

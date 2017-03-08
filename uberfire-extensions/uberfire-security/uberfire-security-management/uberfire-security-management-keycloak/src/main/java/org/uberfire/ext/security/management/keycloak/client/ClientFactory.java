@@ -18,7 +18,6 @@ package org.uberfire.ext.security.management.keycloak.client;
 
 /**
  * The Keycloak client factory.
- *
  * @since 0.9.0
  */
 public interface ClientFactory {
@@ -27,5 +26,4 @@ public interface ClientFactory {
      * Returns a valid Keycloak client.
      */
     Keycloak get();
-    
 }

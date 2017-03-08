@@ -25,7 +25,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * An Event indicating a various changes to various Resources
@@ -37,29 +37,31 @@ public class ResourceBatchChangesEvent implements UberFireEvent {
     private SessionInfo sessionInfo;
     private Map<Path, Collection<ResourceChange>> batch = new HashMap<Path, Collection<ResourceChange>>();
 
-    public ResourceBatchChangesEvent( @MapsTo("batch") final Map<Path, Collection<ResourceChange>> batch,
-                                      @MapsTo("message") final String message,
-                                      @MapsTo("sessionInfo") final SessionInfo sessionInfo ) {
-        checkNotNull( "batch", batch );
-        this.batch.putAll( batch );
+    public ResourceBatchChangesEvent(@MapsTo("batch") final Map<Path, Collection<ResourceChange>> batch,
+                                     @MapsTo("message") final String message,
+                                     @MapsTo("sessionInfo") final SessionInfo sessionInfo) {
+        checkNotNull("batch",
+                     batch);
+        this.batch.putAll(batch);
         this.message = message;
-        this.sessionInfo = checkNotNull( "sessionInfo", sessionInfo );
+        this.sessionInfo = checkNotNull("sessionInfo",
+                                        sessionInfo);
     }
 
     public Map<Path, Collection<ResourceChange>> getBatch() {
         return this.batch;
     }
 
-    public boolean containPath( final Path path ) {
-        return batch.containsKey( path );
+    public boolean containPath(final Path path) {
+        return batch.containsKey(path);
     }
 
     public Collection<Path> getAffectedPaths() {
         return batch.keySet();
     }
 
-    public Collection<ResourceChange> getChanges( final Path path ) {
-        return batch.get( path );
+    public Collection<ResourceChange> getChanges(final Path path) {
+        return batch.get(path);
     }
 
     public SessionInfo getSessionInfo() {

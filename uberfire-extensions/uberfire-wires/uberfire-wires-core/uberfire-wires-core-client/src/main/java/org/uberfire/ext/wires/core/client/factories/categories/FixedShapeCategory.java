@@ -22,7 +22,6 @@ public class FixedShapeCategory extends Category {
     public static final FixedShapeCategory CATEGORY = new FixedShapeCategory();
 
     private FixedShapeCategory() {
-        super( "Fixed Shapes" );
+        super("Fixed Shapes");
     }
-
 }

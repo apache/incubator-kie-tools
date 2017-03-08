@@ -16,7 +16,6 @@
 package org.ext.uberfire.social.activities.persistence;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +63,7 @@ public class SocialClusterMessaging {
     private SocialEventTypeRepositoryAPI socialEventTypeRepository;
 
     @Inject
-    @Named( "socialUserPersistenceAPI" )
+    @Named("socialUserPersistenceAPI")
     private SocialUserPersistenceAPI socialUserPersistenceAPI;
 
     private ClusterService clusterService;
@@ -72,38 +71,39 @@ public class SocialClusterMessaging {
     @PostConstruct
     public void setup() {
         gsonFactory();
-        if ( clusterServiceFactory != null ) {
-            clusterService = clusterServiceFactory.build( new MessageHandlerResolver() {
+        if (clusterServiceFactory != null) {
+            clusterService = clusterServiceFactory.build(new MessageHandlerResolver() {
                 @Override
                 public String getServiceId() {
                     return cluster;
                 }
 
                 @Override
-                public MessageHandler resolveHandler( String serviceId,
-                                                      MessageType type ) {
+                public MessageHandler resolveHandler(String serviceId,
+                                                     MessageType type) {
                     return new MessageHandler() {
                         @Override
-                        public Pair<MessageType, Map<String, String>> handleMessage( MessageType type,
-                                                                                     Map<String, String> content ) {
-                            if ( type != null ) {
+                        public Pair<MessageType, Map<String, String>> handleMessage(MessageType type,
+                                                                                    Map<String, String> content) {
+                            if (type != null) {
                                 String strType = type.toString();
-                                if ( strType.equals( SocialClusterMessage.SOCIAL_EVENT.name() ) ) {
-                                    handleSocialEvent( content );
+                                if (strType.equals(SocialClusterMessage.SOCIAL_EVENT.name())) {
+                                    handleSocialEvent(content);
                                 }
-                                if ( strType.equals( SocialClusterMessage.SOCIAL_FILE_SYSTEM_PERSISTENCE.name() ) ) {
-                                    handleSocialPersistenceEvent( content );
+                                if (strType.equals(SocialClusterMessage.SOCIAL_FILE_SYSTEM_PERSISTENCE.name())) {
+                                    handleSocialPersistenceEvent(content);
                                 }
-                                if ( strType.equals( SocialClusterMessage.CLUSTER_SHUTDOWN.name() ) ) {
+                                if (strType.equals(SocialClusterMessage.CLUSTER_SHUTDOWN.name())) {
                                     handleClusterShutdown();
                                 }
                             }
 
-                            return new Pair<MessageType, Map<String, String>>( type, content );
+                            return new Pair<MessageType, Map<String, String>>(type,
+                                                                              content);
                         }
                     };
                 }
-            } );
+            });
         } else {
             clusterService = null;
         }
@@ -114,51 +114,61 @@ public class SocialClusterMessaging {
         cacheClusterPersistence.someNodeShutdownAndPersistEvents();
     }
 
-    private void handleSocialPersistenceEvent( Map<String, String> content ) {
+    private void handleSocialPersistenceEvent(Map<String, String> content) {
         SocialActivitiesEvent eventTypeName = null;
         SocialUser user = null;
         SocialTimelineCacheClusterPersistence cacheClusterPersistence = (SocialTimelineCacheClusterPersistence) socialTimelinePersistence;
-        for ( final Map.Entry<String, String> entry : content.entrySet() ) {
-            if ( entry.getKey().equalsIgnoreCase( SocialClusterMessage.UPDATE_TYPE_EVENT.name() ) ) {
-                eventTypeName = gson.fromJson( entry.getValue(), SocialActivitiesEvent.class );
+        for (final Map.Entry<String, String> entry : content.entrySet()) {
+            if (entry.getKey().equalsIgnoreCase(SocialClusterMessage.UPDATE_TYPE_EVENT.name())) {
+                eventTypeName = gson.fromJson(entry.getValue(),
+                                              SocialActivitiesEvent.class);
             }
-            if ( entry.getKey().equalsIgnoreCase( SocialClusterMessage.UPDATE_USER_EVENT.name() ) ) {
-                user = gson.fromJson( entry.getValue(), SocialUser.class );
+            if (entry.getKey().equalsIgnoreCase(SocialClusterMessage.UPDATE_USER_EVENT.name())) {
+                user = gson.fromJson(entry.getValue(),
+                                     SocialUser.class);
             }
         }
-        if ( user == null || user.getUserName() == null ) {
-            SocialEventType typeEvent = socialEventTypeRepository.findType( eventTypeName.getType() );
-            cacheClusterPersistence.persist( SocialActivitiesEvent.getDummyLastWrittenMarker(), typeEvent, false );
+        if (user == null || user.getUserName() == null) {
+            SocialEventType typeEvent = socialEventTypeRepository.findType(eventTypeName.getType());
+            cacheClusterPersistence.persist(SocialActivitiesEvent.getDummyLastWrittenMarker(),
+                                            typeEvent,
+                                            false);
         } else {
-            cacheClusterPersistence.persist( user, SocialActivitiesEvent.getDummyLastWrittenMarker() );
+            cacheClusterPersistence.persist(user,
+                                            SocialActivitiesEvent.getDummyLastWrittenMarker());
         }
     }
 
-    private void handleSocialEvent( Map<String, String> content ) {
+    private void handleSocialEvent(Map<String, String> content) {
         SocialActivitiesEvent event = null;
         SocialUser user = null;
-        for ( final Map.Entry<String, String> entry : content.entrySet() ) {
-            if ( entry.getKey().equalsIgnoreCase( SocialClusterMessage.NEW_EVENT.name() ) ) {
-                event = gson.fromJson( entry.getValue(), SocialActivitiesEvent.class );
+        for (final Map.Entry<String, String> entry : content.entrySet()) {
+            if (entry.getKey().equalsIgnoreCase(SocialClusterMessage.NEW_EVENT.name())) {
+                event = gson.fromJson(entry.getValue(),
+                                      SocialActivitiesEvent.class);
             }
-            if ( entry.getKey().equalsIgnoreCase( SocialClusterMessage.NEW_EVENT_USER.name() ) ) {
-                user = gson.fromJson( entry.getValue(), SocialUser.class );
+            if (entry.getKey().equalsIgnoreCase(SocialClusterMessage.NEW_EVENT_USER.name())) {
+                user = gson.fromJson(entry.getValue(),
+                                     SocialUser.class);
             }
         }
-        if ( event != null ) {
-            SocialEventType typeEvent = socialEventTypeRepository.findType( event.getType() );
+        if (event != null) {
+            SocialEventType typeEvent = socialEventTypeRepository.findType(event.getType());
             SocialTimelineCacheClusterPersistence cacheClusterPersistence = (SocialTimelineCacheClusterPersistence) socialTimelinePersistence;
 
-            cacheClusterPersistence.persist( event, typeEvent, false );
-            if ( user != null ) {
-                cacheClusterPersistence.persist( user, event );
-                for ( String followerName : user.getFollowersName() ) {
-                    SocialUser follower = socialUserPersistenceAPI.getSocialUser( followerName );
-                    cacheClusterPersistence.persist( follower, event );
+            cacheClusterPersistence.persist(event,
+                                            typeEvent,
+                                            false);
+            if (user != null) {
+                cacheClusterPersistence.persist(user,
+                                                event);
+                for (String followerName : user.getFollowersName()) {
+                    SocialUser follower = socialUserPersistenceAPI.getSocialUser(followerName);
+                    cacheClusterPersistence.persist(follower,
+                                                    event);
                 }
             }
         }
-
     }
 
     void gsonFactory() {
@@ -169,59 +179,75 @@ public class SocialClusterMessaging {
         }.getType();
     }
 
-    public void notify( SocialActivitiesEvent event ) {
-        if ( clusterService == null ) {
+    public void notify(SocialActivitiesEvent event) {
+        if (clusterService == null) {
             return;
         }
-        String eventJson = gson.toJson( event );
-        String userJson = gson.toJson( event.getSocialUser() );
+        String eventJson = gson.toJson(event);
+        String userJson = gson.toJson(event.getSocialUser());
         Map<String, String> content = new HashMap<String, String>();
-        content.put( SocialClusterMessage.NEW_EVENT.name(), eventJson );
-        content.put( SocialClusterMessage.NEW_EVENT_USER.name(), userJson );
-        clusterService.broadcast( cluster, SocialClusterMessage.SOCIAL_EVENT,
-                                  content );
+        content.put(SocialClusterMessage.NEW_EVENT.name(),
+                    eventJson);
+        content.put(SocialClusterMessage.NEW_EVENT_USER.name(),
+                    userJson);
+        clusterService.broadcast(cluster,
+                                 SocialClusterMessage.SOCIAL_EVENT,
+                                 content);
     }
 
-    public void notifyTimeLineUpdate( SocialActivitiesEvent event ) {
-        if ( clusterService == null ) {
+    public void notifyTimeLineUpdate(SocialActivitiesEvent event) {
+        if (clusterService == null) {
             return;
         }
         Map<String, String> content = new HashMap<String, String>();
-        String json = gson.toJson( event );
-        content.put( SocialClusterMessage.UPDATE_TYPE_EVENT.name(), json );
+        String json = gson.toJson(event);
+        content.put(SocialClusterMessage.UPDATE_TYPE_EVENT.name(),
+                    json);
 
-        clusterService.broadcast( cluster, SocialClusterMessage.SOCIAL_FILE_SYSTEM_PERSISTENCE,
-                                  content );
+        clusterService.broadcast(cluster,
+                                 SocialClusterMessage.SOCIAL_FILE_SYSTEM_PERSISTENCE,
+                                 content);
     }
 
-    public void notifyTimeLineUpdate( SocialUser user,
-                                      List<SocialActivitiesEvent> storedEvents ) {
-        if ( clusterService == null ) {
+    public void notifyTimeLineUpdate(SocialUser user,
+                                     List<SocialActivitiesEvent> storedEvents) {
+        if (clusterService == null) {
             return;
         }
         Map<String, String> content = new HashMap<String, String>();
-        String json = gson.toJson( user );
-        content.put( SocialClusterMessage.UPDATE_USER_EVENT.name(), json );
-        clusterService.broadcast( cluster, SocialClusterMessage.SOCIAL_FILE_SYSTEM_PERSISTENCE,
-                                  content );
+        String json = gson.toJson(user);
+        content.put(SocialClusterMessage.UPDATE_USER_EVENT.name(),
+                    json);
+        clusterService.broadcast(cluster,
+                                 SocialClusterMessage.SOCIAL_FILE_SYSTEM_PERSISTENCE,
+                                 content);
     }
 
     public void notifySomeInstanceisOnShutdown() {
-        if ( clusterService == null ) {
+        if (clusterService == null) {
             return;
         }
-        clusterService.broadcast( cluster, SocialClusterMessage.CLUSTER_SHUTDOWN,
-                                  new HashMap<String, String>() );
+        clusterService.broadcast(cluster,
+                                 SocialClusterMessage.CLUSTER_SHUTDOWN,
+                                 new HashMap<String, String>());
     }
 
-    private enum SocialClusterMessage implements MessageType {
-        NEW_EVENT, NEW_EVENT_USER, UPDATE_TYPE_EVENT, UPDATE_USER_EVENT, SOCIAL_EVENT, SOCIAL_FILE_SYSTEM_PERSISTENCE, CLUSTER_SHUTDOWN;
-
-    }
     public void lockFileSystem() {
         clusterService.lock();
     }
+
     public void unlockFileSystem() {
         clusterService.unlock();
+    }
+
+    private enum SocialClusterMessage implements MessageType {
+        NEW_EVENT,
+        NEW_EVENT_USER,
+        UPDATE_TYPE_EVENT,
+        UPDATE_USER_EVENT,
+        SOCIAL_EVENT,
+        SOCIAL_FILE_SYSTEM_PERSISTENCE,
+        CLUSTER_SHUTDOWN;
+
     }
 }

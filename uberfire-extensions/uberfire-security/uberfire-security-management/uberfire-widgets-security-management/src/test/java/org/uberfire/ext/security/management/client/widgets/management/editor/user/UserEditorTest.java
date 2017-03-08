@@ -16,6 +16,11 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.user;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.GroupImpl;
 import org.jboss.errai.security.shared.api.Role;
@@ -31,13 +36,13 @@ import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.widgets.management.editor.AssignedEntitiesEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.AssignedEntitiesExplorer;
 import org.uberfire.ext.security.management.client.widgets.management.editor.acl.ACLViewer;
-import org.uberfire.ext.security.management.client.widgets.management.events.*;
+import org.uberfire.ext.security.management.client.widgets.management.events.OnChangePasswordEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.OnDeleteEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.OnEditEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.OnShowEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.OnUpdateUserGroupsEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.OnUpdateUserRolesEvent;
 import org.uberfire.mocks.EventSourceMock;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -48,47 +53,80 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class UserEditorTest {
 
-    @Mock ClientUserSystemManager userSystemManager;
-    @Mock UserAttributesEditor userAttributesEditor;
-    @Mock UserAssignedGroupsExplorer userAssignedGroupsExplorer;
-    @Mock UserAssignedRolesExplorer userAssignedRolesExplorer;
-    @Mock UserAssignedGroupsEditor userAssignedGroupsEditor;
-    @Mock UserAssignedRolesEditor userAssignedRolesEditor;
-    @Mock ACLViewer aclViewer;
-    @Mock EventSourceMock<OnEditEvent> onEditEvent;
-    @Mock EventSourceMock<OnShowEvent> onShowEvent;
-    @Mock EventSourceMock<OnDeleteEvent> onDeleteEvent;
-    @Mock EventSourceMock<OnChangePasswordEvent> onChangePasswordEvent;
-    @Mock UserEditor.View view;
-
+    @Mock
+    ClientUserSystemManager userSystemManager;
+    @Mock
+    UserAttributesEditor userAttributesEditor;
+    @Mock
+    UserAssignedGroupsExplorer userAssignedGroupsExplorer;
+    @Mock
+    UserAssignedRolesExplorer userAssignedRolesExplorer;
+    @Mock
+    UserAssignedGroupsEditor userAssignedGroupsEditor;
+    @Mock
+    UserAssignedRolesEditor userAssignedRolesEditor;
+    @Mock
+    ACLViewer aclViewer;
+    @Mock
+    EventSourceMock<OnEditEvent> onEditEvent;
+    @Mock
+    EventSourceMock<OnShowEvent> onShowEvent;
+    @Mock
+    EventSourceMock<OnDeleteEvent> onDeleteEvent;
+    @Mock
+    EventSourceMock<OnChangePasswordEvent> onChangePasswordEvent;
+    @Mock
+    UserEditor.View view;
+    @Mock
+    User user;
     private UserEditor presenter;
-    @Mock User user;
 
     @Before
     public void setup() {
         Map<String, String> userAttributes = new HashMap<String, String>(1);
-        userAttributes.put("attr1", "value1");
+        userAttributes.put("attr1",
+                           "value1");
         when(user.getIdentifier()).thenReturn("user1");
         when(user.getProperties()).thenReturn(userAttributes);
         when(userSystemManager.isUserCapabilityEnabled(any(Capability.class))).thenReturn(true);
-        presenter = new UserEditor(userSystemManager, userAttributesEditor, userAssignedGroupsExplorer,
-                userAssignedGroupsEditor, userAssignedRolesExplorer, userAssignedRolesEditor, aclViewer,
-                onEditEvent, onShowEvent, onDeleteEvent, onChangePasswordEvent, view);
+        presenter = new UserEditor(userSystemManager,
+                                   userAttributesEditor,
+                                   userAssignedGroupsExplorer,
+                                   userAssignedGroupsEditor,
+                                   userAssignedRolesExplorer,
+                                   userAssignedRolesEditor,
+                                   aclViewer,
+                                   onEditEvent,
+                                   onShowEvent,
+                                   onDeleteEvent,
+                                   onChangePasswordEvent,
+                                   view);
     }
 
     @Test
     public void testInit() {
         presenter.init();
-        verify(view, times(1)).init(presenter);
-        verify(view, times(1)).initWidgets(any(UserAttributesEditor.View.class), any(AssignedEntitiesExplorer.class),
-                any(AssignedEntitiesEditor.class), any(AssignedEntitiesExplorer.class),
-                any(AssignedEntitiesEditor.class), any(ACLViewer.class));
-        verify(view, times(0)).setAddToGroupsButtonVisible(anyBoolean());
-        verify(view, times(0)).setAttributesEditorVisible(anyBoolean());
-        verify(view, times(0)).setChangePasswordButtonVisible(anyBoolean());
-        verify(view, times(0)).setDeleteButtonVisible(anyBoolean());
-        verify(view, times(0)).setEditButtonVisible(anyBoolean());
-        verify(view, times(0)).setUsername(anyString());
+        verify(view,
+               times(1)).init(presenter);
+        verify(view,
+               times(1)).initWidgets(any(UserAttributesEditor.View.class),
+                                     any(AssignedEntitiesExplorer.class),
+                                     any(AssignedEntitiesEditor.class),
+                                     any(AssignedEntitiesExplorer.class),
+                                     any(AssignedEntitiesEditor.class),
+                                     any(ACLViewer.class));
+        verify(view,
+               times(0)).setAddToGroupsButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setAttributesEditorVisible(anyBoolean());
+        verify(view,
+               times(0)).setChangePasswordButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setDeleteButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setEditButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setUsername(anyString());
     }
 
     @Test
@@ -98,9 +136,12 @@ public class UserEditorTest {
         presenter.clear();
         assertNull(presenter.user);
         assertFalse(presenter.isEditMode);
-        verify(userAttributesEditor, times(1)).clear();
-        verify(userAssignedGroupsExplorer, times(1)).clear();
-        verify(userAssignedGroupsEditor, times(1)).clear();
+        verify(userAttributesEditor,
+               times(1)).clear();
+        verify(userAssignedGroupsExplorer,
+               times(1)).clear();
+        verify(userAssignedGroupsEditor,
+               times(1)).clear();
         assertNoViewCalls();
     }
 
@@ -108,37 +149,43 @@ public class UserEditorTest {
     public void testIdentifier() {
         presenter.user = user;
         String id = presenter.identifier();
-        assertEquals("user1", id);
+        assertEquals("user1",
+                     id);
         assertNoViewCalls();
     }
 
     @Test
     public void testAttributesEditor() {
-        assertEquals(userAttributesEditor, presenter.attributesEditor());
+        assertEquals(userAttributesEditor,
+                     presenter.attributesEditor());
         assertNoViewCalls();
     }
 
     @Test
     public void testGroupsExplorer() {
-        assertEquals(userAssignedGroupsExplorer, presenter.groupsExplorer());
+        assertEquals(userAssignedGroupsExplorer,
+                     presenter.groupsExplorer());
         assertNoViewCalls();
     }
 
     @Test
     public void testGroupsEditor() {
-        assertEquals(userAssignedGroupsEditor, presenter.groupsEditor());
+        assertEquals(userAssignedGroupsEditor,
+                     presenter.groupsEditor());
         assertNoViewCalls();
     }
 
     @Test
     public void testRolesExplorer() {
-        assertEquals(userAssignedRolesExplorer, presenter.rolesExplorer());
+        assertEquals(userAssignedRolesExplorer,
+                     presenter.rolesExplorer());
         assertNoViewCalls();
     }
 
     @Test
     public void testRolesEditor() {
-        assertEquals(userAssignedRolesEditor, presenter.rolesEditor());
+        assertEquals(userAssignedRolesEditor,
+                     presenter.rolesEditor());
         assertNoViewCalls();
     }
 
@@ -146,86 +193,128 @@ public class UserEditorTest {
     public void testShow() {
         presenter.show(user);
         assertFalse(presenter.isEditMode);
-        verify(userAttributesEditor, times(1)).clear();
-        verify(userAssignedGroupsExplorer, times(1)).clear();
-        verify(userAssignedRolesExplorer, times(1)).clear();
-        verify(userAssignedGroupsEditor, times(1)).clear();
-        verify(onShowEvent, times(1)).fire(any(OnShowEvent.class));
-        verify(view, times(0)).init(any(UserEditor.class));
-        verify(view, times(0)).initWidgets(any(UserAttributesEditor.View.class), any(AssignedEntitiesExplorer.class),
-                any(AssignedEntitiesEditor.class), any(AssignedEntitiesExplorer.class),
-                any(AssignedEntitiesEditor.class), any(ACLViewer.class));
-        verify(view, times(1)).setAddToGroupsButtonVisible(false);
-        verify(view, times(1)).setAttributesEditorVisible(true);
-        verify(view, times(1)).setChangePasswordButtonVisible(false);
-        verify(view, times(1)).setDeleteButtonVisible(false);
-        verify(view, times(1)).setEditButtonVisible(true);
-        verify(view, times(1)).setUsername("user1");
+        verify(userAttributesEditor,
+               times(1)).clear();
+        verify(userAssignedGroupsExplorer,
+               times(1)).clear();
+        verify(userAssignedRolesExplorer,
+               times(1)).clear();
+        verify(userAssignedGroupsEditor,
+               times(1)).clear();
+        verify(onShowEvent,
+               times(1)).fire(any(OnShowEvent.class));
+        verify(view,
+               times(0)).init(any(UserEditor.class));
+        verify(view,
+               times(0)).initWidgets(any(UserAttributesEditor.View.class),
+                                     any(AssignedEntitiesExplorer.class),
+                                     any(AssignedEntitiesEditor.class),
+                                     any(AssignedEntitiesExplorer.class),
+                                     any(AssignedEntitiesEditor.class),
+                                     any(ACLViewer.class));
+        verify(view,
+               times(1)).setAddToGroupsButtonVisible(false);
+        verify(view,
+               times(1)).setAttributesEditorVisible(true);
+        verify(view,
+               times(1)).setChangePasswordButtonVisible(false);
+        verify(view,
+               times(1)).setDeleteButtonVisible(false);
+        verify(view,
+               times(1)).setEditButtonVisible(true);
+        verify(view,
+               times(1)).setUsername("user1");
     }
 
     @Test
     public void testSetEditButtonVisible() {
         presenter.setEditButtonVisible(true);
-        verify(view, times(1)).setEditButtonVisible(true);
-        verify(view, times(0)).setAddToGroupsButtonVisible(anyBoolean());
-        verify(view, times(0)).setAttributesEditorVisible(anyBoolean());
-        verify(view, times(0)).setChangePasswordButtonVisible(anyBoolean());
-        verify(view, times(0)).setDeleteButtonVisible(anyBoolean());
-        verify(view, times(0)).setUsername(anyString());
-
+        verify(view,
+               times(1)).setEditButtonVisible(true);
+        verify(view,
+               times(0)).setAddToGroupsButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setAttributesEditorVisible(anyBoolean());
+        verify(view,
+               times(0)).setChangePasswordButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setDeleteButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setUsername(anyString());
     }
 
     @Test
     public void testSetDeleteButtonVisible() {
         presenter.setDeleteButtonVisible(true);
-        verify(view, times(1)).setDeleteButtonVisible(true);
-        verify(view, times(0)).setAddToGroupsButtonVisible(anyBoolean());
-        verify(view, times(0)).setAttributesEditorVisible(anyBoolean());
-        verify(view, times(0)).setChangePasswordButtonVisible(anyBoolean());
-        verify(view, times(0)).setEditButtonVisible(anyBoolean());
-        verify(view, times(0)).setUsername(anyString());
+        verify(view,
+               times(1)).setDeleteButtonVisible(true);
+        verify(view,
+               times(0)).setAddToGroupsButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setAttributesEditorVisible(anyBoolean());
+        verify(view,
+               times(0)).setChangePasswordButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setEditButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setUsername(anyString());
     }
 
     @Test
     public void testSetChangePasswordButtonVisible() {
         presenter.setChangePasswordButtonVisible(true);
-        verify(view, times(1)).setChangePasswordButtonVisible(true);
-        verify(view, times(0)).setAddToGroupsButtonVisible(anyBoolean());
-        verify(view, times(0)).setAttributesEditorVisible(anyBoolean());
-        verify(view, times(0)).setDeleteButtonVisible(anyBoolean());
-        verify(view, times(0)).setEditButtonVisible(anyBoolean());
-        verify(view, times(0)).setUsername(anyString());
+        verify(view,
+               times(1)).setChangePasswordButtonVisible(true);
+        verify(view,
+               times(0)).setAddToGroupsButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setAttributesEditorVisible(anyBoolean());
+        verify(view,
+               times(0)).setDeleteButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setEditButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setUsername(anyString());
     }
 
     @Test
     public void testSetAttributesEditorVisible() {
         presenter.setAttributesEditorVisible(true);
-        verify(view, times(1)).setAttributesEditorVisible(true);
-        verify(view, times(0)).setAddToGroupsButtonVisible(anyBoolean());
-        verify(view, times(0)).setChangePasswordButtonVisible(anyBoolean());
-        verify(view, times(0)).setDeleteButtonVisible(anyBoolean());
-        verify(view, times(0)).setEditButtonVisible(anyBoolean());
-        verify(view, times(0)).setUsername(anyString());
+        verify(view,
+               times(1)).setAttributesEditorVisible(true);
+        verify(view,
+               times(0)).setAddToGroupsButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setChangePasswordButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setDeleteButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setEditButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setUsername(anyString());
     }
 
     @Test
     public void testOnEdit() {
         presenter.onEdit();
-        verify(onEditEvent, times(1)).fire(any(OnEditEvent.class));
+        verify(onEditEvent,
+               times(1)).fire(any(OnEditEvent.class));
         assertNoViewCalls();
     }
 
     @Test
     public void testOnDelete() {
         presenter.onDelete();
-        verify(onDeleteEvent, times(1)).fire(any(OnDeleteEvent.class));
+        verify(onDeleteEvent,
+               times(1)).fire(any(OnDeleteEvent.class));
         assertNoViewCalls();
     }
 
     @Test
     public void testOnChangePassword() {
         presenter.onChangePassword();
-        verify(onChangePasswordEvent, times(1)).fire(any(OnChangePasswordEvent.class));
+        verify(onChangePasswordEvent,
+               times(1)).fire(any(OnChangePasswordEvent.class));
         assertNoViewCalls();
     }
 
@@ -234,8 +323,10 @@ public class UserEditorTest {
         presenter.user = user;
         presenter.isEditMode = false;
         presenter.onAssignGroups();
-        verify(userAssignedGroupsEditor, times(1)).show(any(User.class));
-        verify(userAssignedGroupsEditor, times(0)).edit(any(User.class));
+        verify(userAssignedGroupsEditor,
+               times(1)).show(any(User.class));
+        verify(userAssignedGroupsEditor,
+               times(0)).edit(any(User.class));
         assertNoViewCalls();
     }
 
@@ -244,10 +335,11 @@ public class UserEditorTest {
         presenter.user = user;
         presenter.isEditMode = true;
         presenter.onAssignGroups();
-        verify(userAssignedGroupsEditor, times(0)).show(any(User.class));
-        verify(userAssignedGroupsEditor, times(1)).edit(any(User.class));
+        verify(userAssignedGroupsEditor,
+               times(0)).show(any(User.class));
+        verify(userAssignedGroupsEditor,
+               times(1)).edit(any(User.class));
         assertNoViewCalls();
-
     }
 
     @Test
@@ -260,20 +352,24 @@ public class UserEditorTest {
         groups.add(new GroupImpl("group1"));
         when(userAssignedGroupsEditor.getValue()).thenReturn(groups);
         presenter.onOnUserGroupsUpdatedEvent(onUpdateUserGroupsEvent);
-        assertEquals(groups, userAssignedGroupsExplorer.getValue());
-        verify(userAssignedGroupsEditor, times(1)).flush();
-        verify(userAssignedGroupsExplorer, times(1)).doShow();
+        assertEquals(groups,
+                     userAssignedGroupsExplorer.getValue());
+        verify(userAssignedGroupsEditor,
+               times(1)).flush();
+        verify(userAssignedGroupsExplorer,
+               times(1)).doShow();
         assertNoViewCalls();
     }
-
 
     @Test
     public void testOnAssignRolesInReadMode() {
         presenter.user = user;
         presenter.isEditMode = false;
         presenter.onAssignRoles();
-        verify(userAssignedRolesEditor, times(1)).show(any(User.class));
-        verify(userAssignedRolesEditor, times(0)).edit(any(User.class));
+        verify(userAssignedRolesEditor,
+               times(1)).show(any(User.class));
+        verify(userAssignedRolesEditor,
+               times(0)).edit(any(User.class));
         assertNoViewCalls();
     }
 
@@ -282,10 +378,11 @@ public class UserEditorTest {
         presenter.user = user;
         presenter.isEditMode = true;
         presenter.onAssignRoles();
-        verify(userAssignedRolesEditor, times(0)).show(any(User.class));
-        verify(userAssignedRolesEditor, times(1)).edit(any(User.class));
+        verify(userAssignedRolesEditor,
+               times(0)).show(any(User.class));
+        verify(userAssignedRolesEditor,
+               times(1)).edit(any(User.class));
         assertNoViewCalls();
-
     }
 
     @Test
@@ -298,24 +395,36 @@ public class UserEditorTest {
         roles.add(new RoleImpl("role1"));
         when(userAssignedRolesEditor.getValue()).thenReturn(roles);
         presenter.onOnUserRolesUpdatedEvent(onUpdateUserRolesEvent);
-        assertEquals(roles, userAssignedRolesExplorer.getValue());
-        verify(userAssignedRolesEditor, times(1)).flush();
-        verify(userAssignedRolesExplorer, times(1)).doShow();
+        assertEquals(roles,
+                     userAssignedRolesExplorer.getValue());
+        verify(userAssignedRolesEditor,
+               times(1)).flush();
+        verify(userAssignedRolesExplorer,
+               times(1)).doShow();
         assertNoViewCalls();
     }
 
-
     private void assertNoViewCalls() {
-        verify(view, times(0)).init(any(UserEditor.class));
-        verify(view, times(0)).initWidgets(any(UserAttributesEditor.View.class), any(AssignedEntitiesExplorer.class),
-                any(AssignedEntitiesEditor.class), any(AssignedEntitiesExplorer.class),
-                any(AssignedEntitiesEditor.class), any(ACLViewer.class));
-        verify(view, times(0)).setAddToGroupsButtonVisible(anyBoolean());
-        verify(view, times(0)).setAttributesEditorVisible(anyBoolean());
-        verify(view, times(0)).setChangePasswordButtonVisible(anyBoolean());
-        verify(view, times(0)).setDeleteButtonVisible(anyBoolean());
-        verify(view, times(0)).setEditButtonVisible(anyBoolean());
-        verify(view, times(0)).setUsername(anyString());
+        verify(view,
+               times(0)).init(any(UserEditor.class));
+        verify(view,
+               times(0)).initWidgets(any(UserAttributesEditor.View.class),
+                                     any(AssignedEntitiesExplorer.class),
+                                     any(AssignedEntitiesEditor.class),
+                                     any(AssignedEntitiesExplorer.class),
+                                     any(AssignedEntitiesEditor.class),
+                                     any(ACLViewer.class));
+        verify(view,
+               times(0)).setAddToGroupsButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setAttributesEditorVisible(anyBoolean());
+        verify(view,
+               times(0)).setChangePasswordButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setDeleteButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setEditButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setUsername(anyString());
     }
-
 }

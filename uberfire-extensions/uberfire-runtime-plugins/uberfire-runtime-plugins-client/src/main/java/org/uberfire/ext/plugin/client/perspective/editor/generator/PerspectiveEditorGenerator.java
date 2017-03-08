@@ -16,14 +16,11 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor.generator;
 
-import static org.jboss.errai.ioc.client.QualifierUtil.DEFAULT_QUALIFIERS;
-
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
@@ -46,6 +43,8 @@ import org.uberfire.ext.layout.editor.client.generator.LayoutGenerator;
 import org.uberfire.ext.plugin.model.LayoutEditorModel;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
+
+import static org.jboss.errai.ioc.client.QualifierUtil.DEFAULT_QUALIFIERS;
 
 @EntryPoint
 public class PerspectiveEditorGenerator {
@@ -94,10 +93,12 @@ public class PerspectiveEditorGenerator {
     public void generate(LayoutTemplate layoutTemplate) {
         if (isANewPerspective(layoutTemplate)) {
             PerspectiveEditorScreenActivity screen = createNewScreen(layoutTemplate);
-            createNewPerspective(layoutTemplate, screen);
+            createNewPerspective(layoutTemplate,
+                                 screen);
         } else {
             PerspectiveEditorScreenActivity screen = updateScreen(layoutTemplate);
-            updatePerspective(layoutTemplate, screen);
+            updatePerspective(layoutTemplate,
+                              screen);
         }
     }
 
@@ -105,7 +106,8 @@ public class PerspectiveEditorGenerator {
                                    PerspectiveEditorScreenActivity screen) {
         final SyncBeanDef<Activity> activity = activityBeansCache.getActivity(layoutTemplate.getName());
         final PerspectiveEditorActivity perspectiveEditorActivity = (PerspectiveEditorActivity) activity.getInstance();
-        perspectiveEditorActivity.update(layoutTemplate, screen);
+        perspectiveEditorActivity.update(layoutTemplate,
+                                         screen);
     }
 
     private PerspectiveEditorScreenActivity updateScreen(LayoutTemplate layoutTemplate) {
@@ -117,20 +119,21 @@ public class PerspectiveEditorGenerator {
 
     private void createNewPerspective(LayoutTemplate perspective,
                                       PerspectiveEditorScreenActivity screen) {
-        final PerspectiveEditorActivity activity = new PerspectiveEditorActivity(perspective, screen);
+        final PerspectiveEditorActivity activity = new PerspectiveEditorActivity(perspective,
+                                                                                 screen);
 
         beanManager.registerBean(new SingletonBeanDef<PerspectiveActivity, PerspectiveEditorActivity>(activity,
-                PerspectiveActivity.class,
-                new HashSet<Annotation>(Arrays.asList(DEFAULT_QUALIFIERS)),
-                perspective.getName(),
-                true));
+                                                                                                      PerspectiveActivity.class,
+                                                                                                      new HashSet<Annotation>(Arrays.asList(DEFAULT_QUALIFIERS)),
+                                                                                                      perspective.getName(),
+                                                                                                      true));
 
         activityBeansCache.addNewPerspectiveActivity(beanManager.lookupBeans(perspective.getName()).iterator().next());
-
     }
 
     private PerspectiveEditorScreenActivity createNewScreen(LayoutTemplate perspective) {
-        PerspectiveEditorScreenActivity activity = new PerspectiveEditorScreenActivity(perspective, layoutGenerator);
+        PerspectiveEditorScreenActivity activity = new PerspectiveEditorScreenActivity(perspective,
+                                                                                       layoutGenerator);
 
         final Set<Annotation> qualifiers = new HashSet<Annotation>(Arrays.asList(DEFAULT_QUALIFIERS));
         final SingletonBeanDef<PerspectiveEditorScreenActivity, PerspectiveEditorScreenActivity> beanDef =
@@ -144,8 +147,10 @@ public class PerspectiveEditorGenerator {
                         Activity.class);
 
         beanManager.registerBean(beanDef);
-        beanManager.registerBeanTypeAlias(beanDef, Activity.class);
-        beanManager.registerBeanTypeAlias(beanDef, WorkbenchScreenActivity.class);
+        beanManager.registerBeanTypeAlias(beanDef,
+                                          Activity.class);
+        beanManager.registerBeanTypeAlias(beanDef,
+                                          WorkbenchScreenActivity.class);
 
         activityBeansCache.addNewScreenActivity(beanManager.lookupBeans(activity.getIdentifier()).iterator().next());
         return activity;
@@ -155,5 +160,4 @@ public class PerspectiveEditorGenerator {
         final IOCBeanDef<Activity> activity = activityBeansCache.getActivity(layoutTemplate.getName());
         return activity == null;
     }
-
 }

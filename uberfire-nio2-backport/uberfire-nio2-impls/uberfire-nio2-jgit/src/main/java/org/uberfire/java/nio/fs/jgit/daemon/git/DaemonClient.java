@@ -38,12 +38,8 @@ public class DaemonClient {
 
     private OutputStream rawOut;
 
-    DaemonClient( final Daemon d ) {
+    DaemonClient(final Daemon d) {
         daemon = d;
-    }
-
-    void setRemoteAddress( final InetAddress ia ) {
-        peer = ia;
     }
 
     /**
@@ -60,6 +56,10 @@ public class DaemonClient {
         return peer;
     }
 
+    void setRemoteAddress(final InetAddress ia) {
+        peer = ia;
+    }
+
     /**
      * @return input stream to read from the connected client.
      */
@@ -74,29 +74,31 @@ public class DaemonClient {
         return rawOut;
     }
 
-    void execute( final Socket sock ) throws IOException,
+    void execute(final Socket sock) throws IOException,
             ServiceNotEnabledException, ServiceNotAuthorizedException {
-        rawIn = new BufferedInputStream( sock.getInputStream() );
-        rawOut = new SafeBufferedOutputStream( sock.getOutputStream() );
+        rawIn = new BufferedInputStream(sock.getInputStream());
+        rawOut = new SafeBufferedOutputStream(sock.getOutputStream());
 
-        if ( 0 < daemon.getTimeout() ) {
-            sock.setSoTimeout( daemon.getTimeout() * 1000 );
+        if (0 < daemon.getTimeout()) {
+            sock.setSoTimeout(daemon.getTimeout() * 1000);
         }
-        String cmd = new PacketLineIn( rawIn ).readStringRaw();
-        final int nul = cmd.indexOf( '\0' );
-        if ( nul >= 0 ) {
+        String cmd = new PacketLineIn(rawIn).readStringRaw();
+        final int nul = cmd.indexOf('\0');
+        if (nul >= 0) {
             // Newer clients hide a "host" header behind this byte.
             // Currently we don't use it for anything, so we ignore
             // this portion of the command.
             //
-            cmd = cmd.substring( 0, nul );
+            cmd = cmd.substring(0,
+                                nul);
         }
 
-        final DaemonService srv = getDaemon().matchService( cmd );
-        if ( srv == null ) {
+        final DaemonService srv = getDaemon().matchService(cmd);
+        if (srv == null) {
             return;
         }
-        sock.setSoTimeout( 0 );
-        srv.execute( this, cmd );
+        sock.setSoTimeout(0);
+        srv.execute(this,
+                    cmd);
     }
 }

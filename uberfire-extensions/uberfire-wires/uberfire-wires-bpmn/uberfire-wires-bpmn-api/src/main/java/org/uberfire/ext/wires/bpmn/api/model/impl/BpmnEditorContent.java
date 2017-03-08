@@ -25,13 +25,12 @@ public class BpmnEditorContent {
 
     private ProcessNode process;
 
-    public BpmnEditorContent( @MapsTo("process") final ProcessNode process ) {
-        this.process = PortablePreconditions.checkNotNull( "process",
-                                                           process );
+    public BpmnEditorContent(@MapsTo("process") final ProcessNode process) {
+        this.process = PortablePreconditions.checkNotNull("process",
+                                                          process);
     }
 
     public ProcessNode getProcess() {
         return this.process;
     }
-
 }

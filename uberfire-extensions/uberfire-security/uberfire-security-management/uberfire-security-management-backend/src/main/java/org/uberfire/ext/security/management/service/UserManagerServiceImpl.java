@@ -16,6 +16,11 @@
 
 package org.uberfire.ext.security.management.service;
 
+import java.util.Collection;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.slf4j.Logger;
@@ -26,11 +31,6 @@ import org.uberfire.ext.security.management.api.UserManagerSettings;
 import org.uberfire.ext.security.management.api.exception.NoImplementationAvailableException;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.api.service.UserManagerService;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.Collection;
 
 /**
  * <p>The UberFire service implementation for UsersManager API.</p>
@@ -43,14 +43,14 @@ public class UserManagerServiceImpl implements UserManagerService {
 
     @Inject
     private BackendUserSystemManager userSystemManager;
-    
+
     private UserManager service;
-    
+
     @PostConstruct
     public void init() {
         service = userSystemManager.users();
     }
-    
+
     private UserManager getService() throws SecurityManagementException {
         if (!userSystemManager.isActive() || service == null) {
             throw new NoImplementationAvailableException();
@@ -59,25 +59,31 @@ public class UserManagerServiceImpl implements UserManagerService {
     }
 
     @Override
-    public void assignGroups(String username, Collection<String> groups)  {
+    public void assignGroups(String username,
+                             Collection<String> groups) {
         final UserManager serviceImpl = getService();
-        serviceImpl.assignGroups(username, groups);
+        serviceImpl.assignGroups(username,
+                                 groups);
     }
 
     @Override
-    public void assignRoles(String username, Collection<String> roles)  {
+    public void assignRoles(String username,
+                            Collection<String> roles) {
         final UserManager serviceImpl = getService();
-        serviceImpl.assignRoles(username, roles);
+        serviceImpl.assignRoles(username,
+                                roles);
     }
 
     @Override
-    public void changePassword(String username, String newPassword)  {
+    public void changePassword(String username,
+                               String newPassword) {
         final UserManager serviceImpl = getService();
-        serviceImpl.changePassword(username, newPassword);
+        serviceImpl.changePassword(username,
+                                   newPassword);
     }
 
     @Override
-    public SearchResponse<User> search(SearchRequest request)  {
+    public SearchResponse<User> search(SearchRequest request) {
         final UserManager serviceImpl = getService();
 
         // Delegate to the current service provider implementation.
@@ -89,32 +95,30 @@ public class UserManagerServiceImpl implements UserManagerService {
             response = serviceImpl.search(request);
         } catch (RuntimeException e) {
             throw new SecurityManagementException(e);
-        } 
-        return response;        
+        }
+        return response;
     }
 
     @Override
-    public User get(String identifier)  {
+    public User get(String identifier) {
         final UserManager serviceImpl = getService();
         return serviceImpl.get(identifier);
     }
 
     @Override
-    public User create(User entity)  {
+    public User create(User entity) {
         final UserManager serviceImpl = getService();
         return serviceImpl.create(entity);
-
     }
 
     @Override
-    public User update(User entity)  {
+    public User update(User entity) {
         final UserManager serviceImpl = getService();
         return serviceImpl.update(entity);
-
     }
 
     @Override
-    public void delete(String... identifiers)  {
+    public void delete(String... identifiers) {
         final UserManager serviceImpl = getService();
         serviceImpl.delete(identifiers);
     }
@@ -124,5 +128,4 @@ public class UserManagerServiceImpl implements UserManagerService {
         final UserManager serviceImpl = getService();
         return serviceImpl.getSettings();
     }
-
 }

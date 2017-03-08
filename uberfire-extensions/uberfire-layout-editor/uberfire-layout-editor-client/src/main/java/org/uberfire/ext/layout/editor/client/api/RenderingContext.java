@@ -15,9 +15,7 @@
  */
 package org.uberfire.ext.layout.editor.client.api;
 
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.dom.HTMLElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 
 /**
@@ -28,7 +26,8 @@ public class RenderingContext {
     private LayoutComponent component;
     private Widget container;
 
-    public RenderingContext(LayoutComponent component, Widget container) {
+    public RenderingContext(LayoutComponent component,
+                            Widget container) {
         this.component = component;
         this.container = container;
     }

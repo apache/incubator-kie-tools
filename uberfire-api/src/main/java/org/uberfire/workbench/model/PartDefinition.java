@@ -15,9 +15,8 @@
  */
 package org.uberfire.workbench.model;
 
-import org.uberfire.mvp.PlaceRequest;
-
 import jsinterop.annotations.JsType;
+import org.uberfire.mvp.PlaceRequest;
 
 /**
  * Describes the assignment of a {@link PlaceRequest} to a tab/card/item in a {@link PanelDefinition}. Given this
@@ -30,19 +29,21 @@ import jsinterop.annotations.JsType;
 public interface PartDefinition {
 
     PlaceRequest getPlace();
-    void setPlace( final PlaceRequest place );
+
+    void setPlace(final PlaceRequest place);
 
     PanelDefinition getParentPanel();
-    void setParentPanel( final PanelDefinition parentPanel );
 
-    void setContextDefinition( final ContextDefinition contextDefinition );
+    void setParentPanel(final PanelDefinition parentPanel);
 
     ContextDefinition getContextDefinition();
 
+    void setContextDefinition(final ContextDefinition contextDefinition);
+
     ContextDisplayMode getContextDisplayMode();
 
-    void setContextDisplayMode( final ContextDisplayMode contextDisplayMode );
-    
+    void setContextDisplayMode(final ContextDisplayMode contextDisplayMode);
+
     /**
      * Invokes {@link #toString()} but exported to JavaScript so it can be invoked from different scripts.
      */
@@ -51,5 +52,6 @@ public interface PartDefinition {
     }
 
     boolean isSelectable();
-    void setSelectable( boolean selectable );
+
+    void setSelectable(boolean selectable);
 }

@@ -54,156 +54,168 @@ public class VFSServicesServerImpl implements VFSService {
     private IOService ioService;
 
     @Override
-    public Path get( final String uri ) {
-        return Paths.convert( ioService.get( URI.create( uri ) ) );
+    public Path get(final String uri) {
+        return Paths.convert(ioService.get(URI.create(uri)));
     }
 
     @Override
-    public DirectoryStream<Path> newDirectoryStream( final Path dir )
+    public DirectoryStream<Path> newDirectoryStream(final Path dir)
             throws IllegalArgumentException, NotDirectoryException, IOException {
 
-        final Iterator<org.uberfire.java.nio.file.Path> content = ioService.newDirectoryStream( Paths.convert( dir ) ).iterator();
+        final Iterator<org.uberfire.java.nio.file.Path> content = ioService.newDirectoryStream(Paths.convert(dir)).iterator();
 
-        return newDirectoryStream( content );
+        return newDirectoryStream(content);
     }
 
     @Override
-    public DirectoryStream<Path> newDirectoryStream( final Path dir,
-                                                     final DirectoryStream.Filter<Path> filter )
+    public DirectoryStream<Path> newDirectoryStream(final Path dir,
+                                                    final DirectoryStream.Filter<Path> filter)
             throws IllegalArgumentException, NotDirectoryException, IOException {
-        final Iterator<org.uberfire.java.nio.file.Path> content = ioService.newDirectoryStream( Paths.convert( dir ), null ).iterator();
+        final Iterator<org.uberfire.java.nio.file.Path> content = ioService.newDirectoryStream(Paths.convert(dir),
+                                                                                               null).iterator();
 
-        return newDirectoryStream( content );
+        return newDirectoryStream(content);
     }
 
     @Override
-    public Path createDirectory( final Path dir )
+    public Path createDirectory(final Path dir)
             throws IllegalArgumentException, UnsupportedOperationException,
             FileAlreadyExistsException, IOException, SecurityException {
-        return Paths.convert( ioService.createDirectory( Paths.convert( dir ) ) );
+        return Paths.convert(ioService.createDirectory(Paths.convert(dir)));
     }
 
     @Override
-    public Path createDirectories( final Path dir )
+    public Path createDirectories(final Path dir)
             throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        return Paths.convert( ioService.createDirectories( Paths.convert( dir ) ) );
+        return Paths.convert(ioService.createDirectories(Paths.convert(dir)));
     }
 
     @Override
-    public Path createDirectory( final Path dir,
-                                 final Map<String, ?> attrs )
+    public Path createDirectory(final Path dir,
+                                final Map<String, ?> attrs)
             throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        return Paths.convert( ioService.createDirectory( Paths.convert( dir ), attrs ) );
+        return Paths.convert(ioService.createDirectory(Paths.convert(dir),
+                                                       attrs));
     }
 
     @Override
-    public Path createDirectories( final Path dir,
-                                   final Map<String, ?> attrs )
+    public Path createDirectories(final Path dir,
+                                  final Map<String, ?> attrs)
             throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        return Paths.convert( ioService.createDirectories( Paths.convert( dir ), attrs ) );
+        return Paths.convert(ioService.createDirectories(Paths.convert(dir),
+                                                         attrs));
     }
 
     @Override
-    public Map<String, Object> readAttributes( final Path path ) throws UnsupportedOperationException, IllegalArgumentException, IOException {
+    public Map<String, Object> readAttributes(final Path path) throws UnsupportedOperationException, IllegalArgumentException, IOException {
 
-        final Map<String, Object> attributes = new HashMap<String, Object>( ioService.readAttributes( Paths.convert( path ) ) );
-        final Object _lastModifiedTime = attributes.get( "lastModifiedTime" );
-        if ( _lastModifiedTime != null ) {
-            attributes.put( "lastModifiedTime", new Date( ( (FileTime) _lastModifiedTime ).toMillis() ) );
+        final Map<String, Object> attributes = new HashMap<String, Object>(ioService.readAttributes(Paths.convert(path)));
+        final Object _lastModifiedTime = attributes.get("lastModifiedTime");
+        if (_lastModifiedTime != null) {
+            attributes.put("lastModifiedTime",
+                           new Date(((FileTime) _lastModifiedTime).toMillis()));
         }
 
-        final Object _lastAccessTime = attributes.get( "lastAccessTime" );
-        if ( _lastAccessTime != null ) {
-            attributes.put( "lastAccessTime", new Date( ( (FileTime) _lastAccessTime ).toMillis() ) );
+        final Object _lastAccessTime = attributes.get("lastAccessTime");
+        if (_lastAccessTime != null) {
+            attributes.put("lastAccessTime",
+                           new Date(((FileTime) _lastAccessTime).toMillis()));
         }
 
-        final Object _creationTime = attributes.get( "creationTime" );
-        if ( _creationTime != null ) {
-            attributes.put( "creationTime", new Date( ( (FileTime) _creationTime ).toMillis() ) );
+        final Object _creationTime = attributes.get("creationTime");
+        if (_creationTime != null) {
+            attributes.put("creationTime",
+                           new Date(((FileTime) _creationTime).toMillis()));
         }
 
         return attributes;
     }
 
     @Override
-    public void setAttributes( final Path path,
-                               final Map<String, Object> attrs ) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException {
-        ioService.setAttributes( Paths.convert( path ), attrs );
+    public void setAttributes(final Path path,
+                              final Map<String, Object> attrs) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException {
+        ioService.setAttributes(Paths.convert(path),
+                                attrs);
     }
 
     @Override
-    public void delete( final Path path ) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException {
-        ioService.delete( Paths.convert( path ) );
+    public void delete(final Path path) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException {
+        ioService.delete(Paths.convert(path));
     }
 
     @Override
-    public boolean deleteIfExists( final Path path ) throws IllegalArgumentException, DirectoryNotEmptyException, IOException {
-        return ioService.deleteIfExists( Paths.convert( path ) );
+    public boolean deleteIfExists(final Path path) throws IllegalArgumentException, DirectoryNotEmptyException, IOException {
+        return ioService.deleteIfExists(Paths.convert(path));
     }
 
     @Override
-    public Path copy( final Path source,
-                      final Path target ) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException {
-        return Paths.convert( ioService.copy( Paths.convert( source ), Paths.convert( target ) ) );
+    public Path copy(final Path source,
+                     final Path target) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException {
+        return Paths.convert(ioService.copy(Paths.convert(source),
+                                            Paths.convert(target)));
     }
 
     @Override
-    public Path move( final Path source,
-                      final Path target ) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException {
-        return Paths.convert( ioService.move( Paths.convert( source ), Paths.convert( target ) ) );
+    public Path move(final Path source,
+                     final Path target) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException {
+        return Paths.convert(ioService.move(Paths.convert(source),
+                                            Paths.convert(target)));
     }
 
     @Override
-    public String readAllString( final Path path ) throws IllegalArgumentException, NoSuchFileException, IOException {
-        return ioService.readAllString( Paths.convert( path ) );
+    public String readAllString(final Path path) throws IllegalArgumentException, NoSuchFileException, IOException {
+        return ioService.readAllString(Paths.convert(path));
     }
 
     @Override
-    public Path write( final Path path,
-                       final String content ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return Paths.convert( ioService.write( Paths.convert( path ), content ) );
+    public Path write(final Path path,
+                      final String content) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+        return Paths.convert(ioService.write(Paths.convert(path),
+                                             content));
     }
 
     @Override
-    public Path write( final Path path,
-                       final String content,
-                       final Map<String, ?> attrs ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return Paths.convert( ioService.write( Paths.convert( path ), content, attrs ) );
+    public Path write(final Path path,
+                      final String content,
+                      final Map<String, ?> attrs) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+        return Paths.convert(ioService.write(Paths.convert(path),
+                                             content,
+                                             attrs));
     }
 
     @Override
-    public boolean isRegularFile( final String uri ) {
-        return Files.isRegularFile( ioService.get( URI.create( uri ) ) );
+    public boolean isRegularFile(final String uri) {
+        return Files.isRegularFile(ioService.get(URI.create(uri)));
     }
 
     @Override
-    public boolean isRegularFile( final Path path ) {
-        return Files.isRegularFile( Paths.convert( path ) );
+    public boolean isRegularFile(final Path path) {
+        return Files.isRegularFile(Paths.convert(path));
     }
 
     @Override
-    public boolean isDirectory( final String uri ) {
-        return Files.isDirectory( ioService.get( URI.create( uri ) ) );
+    public boolean isDirectory(final String uri) {
+        return Files.isDirectory(ioService.get(URI.create(uri)));
     }
 
     @Override
-    public boolean isDirectory( final Path path ) {
-        return Files.isDirectory( Paths.convert( path ) );
+    public boolean isDirectory(final Path path) {
+        return Files.isDirectory(Paths.convert(path));
     }
 
-    private DirectoryStream<Path> newDirectoryStream( final Iterator<org.uberfire.java.nio.file.Path> iterator ) {
+    private DirectoryStream<Path> newDirectoryStream(final Iterator<org.uberfire.java.nio.file.Path> iterator) {
         final List<Path> content = new LinkedList<Path>();
-        while ( iterator.hasNext() ) {
-            content.add( Paths.convert( iterator.next() ) );
+        while (iterator.hasNext()) {
+            content.add(Paths.convert(iterator.next()));
         }
-        return new DirectoryStreamImpl( content );
+        return new DirectoryStreamImpl(content);
     }
 
-    private DirectoryStream.Filter<org.uberfire.java.nio.file.Path> convert( final DirectoryStream.Filter<Path> filter ) {
+    private DirectoryStream.Filter<org.uberfire.java.nio.file.Path> convert(final DirectoryStream.Filter<Path> filter) {
         return new DirectoryStream.Filter<org.uberfire.java.nio.file.Path>() {
             @Override
-            public boolean accept( final org.uberfire.java.nio.file.Path entry ) throws IOException {
-                return filter.accept( Paths.convert( entry ) );
+            public boolean accept(final org.uberfire.java.nio.file.Path entry) throws IOException {
+                return filter.accept(Paths.convert(entry));
             }
         };
     }

@@ -16,6 +16,11 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.user;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -34,13 +39,7 @@ import org.uberfire.ext.security.management.client.widgets.management.explorer.R
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -49,18 +48,23 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class UserAssignedRolesEditorTest {
 
-    @Mock ClientUserSystemManager userSystemManager;
-    @Mock EventSourceMock<OnUpdateUserRolesEvent> updateUserRolesEvent;
-    @Mock RolesExplorer rolesExplorer;
-    @Mock AssignedEntitiesEditor<UserAssignedRolesEditor> view;
-
+    @Mock
+    ClientUserSystemManager userSystemManager;
+    @Mock
+    EventSourceMock<OnUpdateUserRolesEvent> updateUserRolesEvent;
+    @Mock
+    RolesExplorer rolesExplorer;
+    @Mock
+    AssignedEntitiesEditor<UserAssignedRolesEditor> view;
+    @Mock
+    User user;
     private UserAssignedRolesEditor tested;
-    @Mock User user;
 
     @Before
     public void setup() {
         Map<String, String> userAttributes = new HashMap<String, String>(1);
-        userAttributes.put("attr1", "value1");
+        userAttributes.put("attr1",
+                           "value1");
         when(user.getIdentifier()).thenReturn("user1");
         when(user.getProperties()).thenReturn(userAttributes);
         final Set<Role> roles = new HashSet<Role>();
@@ -75,25 +79,38 @@ public class UserAssignedRolesEditorTest {
                 return _role;
             }
         }).when(userSystemManager).createRole(anyString());
-        tested = new UserAssignedRolesEditor(userSystemManager, rolesExplorer, view, updateUserRolesEvent);
+        tested = new UserAssignedRolesEditor(userSystemManager,
+                                             rolesExplorer,
+                                             view,
+                                             updateUserRolesEvent);
     }
 
     @Test
     public void testInit() {
         tested.init();
-        verify(view, times(1)).init(tested);
-        verify(view, times(1)).configure(any(EntitiesExplorerView.class));
-        verify(view, times(1)).configureClose(anyString(), any(Command.class));
-        verify(view, times(1)).configureSave(anyString(), any(Command.class));
-        verify(rolesExplorer, times(1)).setPageSize(anyInt());
-        verify(view, times(0)).show(anyString());
-        verify(view, times(0)).hide();
+        verify(view,
+               times(1)).init(tested);
+        verify(view,
+               times(1)).configure(any(EntitiesExplorerView.class));
+        verify(view,
+               times(1)).configureClose(anyString(),
+                                        any(Command.class));
+        verify(view,
+               times(1)).configureSave(anyString(),
+                                       any(Command.class));
+        verify(rolesExplorer,
+               times(1)).setPageSize(anyInt());
+        verify(view,
+               times(0)).show(anyString());
+        verify(view,
+               times(0)).hide();
     }
 
     @Test
     public void testClear() {
         tested.clear();
-        verify(rolesExplorer, times(1)).clear();
+        verify(rolesExplorer,
+               times(1)).clear();
         assertTrue(tested.entities.isEmpty());
         assertNoViewCalls();
     }
@@ -101,12 +118,20 @@ public class UserAssignedRolesEditorTest {
     @Test
     public void testHide() {
         tested.hide();
-        verify(view, times(1)).hide();
-        verify(view, times(0)).init(any(UserAssignedRolesEditor.class));
-        verify(view, times(0)).configure(any(EntitiesExplorerView.class));
-        verify(view, times(0)).show(anyString());
-        verify(view, times(0)).configureClose(anyString(), any(Command.class));
-        verify(view, times(0)).configureSave(anyString(), any(Command.class));
+        verify(view,
+               times(1)).hide();
+        verify(view,
+               times(0)).init(any(UserAssignedRolesEditor.class));
+        verify(view,
+               times(0)).configure(any(EntitiesExplorerView.class));
+        verify(view,
+               times(0)).show(anyString());
+        verify(view,
+               times(0)).configureClose(anyString(),
+                                        any(Command.class));
+        verify(view,
+               times(0)).configureSave(anyString(),
+                                       any(Command.class));
     }
 
     @Test
@@ -114,13 +139,22 @@ public class UserAssignedRolesEditorTest {
         tested.show(user);
         assertFalse(tested.isEditMode);
         assertTrue(tested.entities.size() == 1);
-        verify(rolesExplorer, times(1)).show(any(ExplorerViewContext.class));
-        verify(view, times(1)).show(anyString());
-        verify(view, times(0)).init(any(UserAssignedRolesEditor.class));
-        verify(view, times(0)).configure(any(EntitiesExplorerView.class));
-        verify(view, times(0)).hide();
-        verify(view, times(0)).configureClose(anyString(), any(Command.class));
-        verify(view, times(0)).configureSave(anyString(), any(Command.class));
+        verify(rolesExplorer,
+               times(1)).show(any(ExplorerViewContext.class));
+        verify(view,
+               times(1)).show(anyString());
+        verify(view,
+               times(0)).init(any(UserAssignedRolesEditor.class));
+        verify(view,
+               times(0)).configure(any(EntitiesExplorerView.class));
+        verify(view,
+               times(0)).hide();
+        verify(view,
+               times(0)).configureClose(anyString(),
+                                        any(Command.class));
+        verify(view,
+               times(0)).configureSave(anyString(),
+                                       any(Command.class));
     }
 
     @Test
@@ -128,24 +162,41 @@ public class UserAssignedRolesEditorTest {
         tested.edit(user);
         assertTrue(tested.isEditMode);
         assertTrue(tested.entities.size() == 1);
-        verify(rolesExplorer, times(1)).show(any(ExplorerViewContext.class));
-        verify(view, times(1)).show(anyString());
-        verify(view, times(0)).init(any(UserAssignedRolesEditor.class));
-        verify(view, times(0)).configure(any(EntitiesExplorerView.class));
-        verify(view, times(0)).hide();
-        verify(view, times(0)).configureClose(anyString(), any(Command.class));
-        verify(view, times(0)).configureSave(anyString(), any(Command.class));
+        verify(rolesExplorer,
+               times(1)).show(any(ExplorerViewContext.class));
+        verify(view,
+               times(1)).show(anyString());
+        verify(view,
+               times(0)).init(any(UserAssignedRolesEditor.class));
+        verify(view,
+               times(0)).configure(any(EntitiesExplorerView.class));
+        verify(view,
+               times(0)).hide();
+        verify(view,
+               times(0)).configureClose(anyString(),
+                                        any(Command.class));
+        verify(view,
+               times(0)).configureSave(anyString(),
+                                       any(Command.class));
     }
 
     @Test
     public void testCloseEditorCallback() {
         tested.closeEditorCallback.execute();
-        verify(view, times(1)).hide();
-        verify(view, times(0)).init(any(UserAssignedRolesEditor.class));
-        verify(view, times(0)).configure(any(EntitiesExplorerView.class));
-        verify(view, times(0)).show(anyString());
-        verify(view, times(0)).configureClose(anyString(), any(Command.class));
-        verify(view, times(0)).configureSave(anyString(), any(Command.class));
+        verify(view,
+               times(1)).hide();
+        verify(view,
+               times(0)).init(any(UserAssignedRolesEditor.class));
+        verify(view,
+               times(0)).configure(any(EntitiesExplorerView.class));
+        verify(view,
+               times(0)).show(anyString());
+        verify(view,
+               times(0)).configureClose(anyString(),
+                                        any(Command.class));
+        verify(view,
+               times(0)).configureSave(anyString(),
+                                       any(Command.class));
     }
 
     @Test
@@ -155,23 +206,42 @@ public class UserAssignedRolesEditorTest {
         when(rolesExplorer.getSelectedEntities()).thenReturn(selectedRoles);
         tested.saveEditorCallback.execute();
         assertTrue(tested.entities.size() == 1);
-        verify(rolesExplorer, times(1)).getSelectedEntities();
-        verify(rolesExplorer, times(1)).clear();
-        verify(updateUserRolesEvent, times(1)).fire(any(OnUpdateUserRolesEvent.class));
-        verify(view, times(1)).hide();
-        verify(view, times(0)).init(any(UserAssignedRolesEditor.class));
-        verify(view, times(0)).configure(any(EntitiesExplorerView.class));
-        verify(view, times(0)).show(anyString());
-        verify(view, times(0)).configureClose(anyString(), any(Command.class));
-        verify(view, times(0)).configureSave(anyString(), any(Command.class));
+        verify(rolesExplorer,
+               times(1)).getSelectedEntities();
+        verify(rolesExplorer,
+               times(1)).clear();
+        verify(updateUserRolesEvent,
+               times(1)).fire(any(OnUpdateUserRolesEvent.class));
+        verify(view,
+               times(1)).hide();
+        verify(view,
+               times(0)).init(any(UserAssignedRolesEditor.class));
+        verify(view,
+               times(0)).configure(any(EntitiesExplorerView.class));
+        verify(view,
+               times(0)).show(anyString());
+        verify(view,
+               times(0)).configureClose(anyString(),
+                                        any(Command.class));
+        verify(view,
+               times(0)).configureSave(anyString(),
+                                       any(Command.class));
     }
 
     private void assertNoViewCalls() {
-        verify(view, times(0)).init(any(UserAssignedRolesEditor.class));
-        verify(view, times(0)).configure(any(EntitiesExplorerView.class));
-        verify(view, times(0)).show(anyString());
-        verify(view, times(0)).hide();
-        verify(view, times(0)).configureClose(anyString(), any(Command.class));
-        verify(view, times(0)).configureSave(anyString(), any(Command.class));
+        verify(view,
+               times(0)).init(any(UserAssignedRolesEditor.class));
+        verify(view,
+               times(0)).configure(any(EntitiesExplorerView.class));
+        verify(view,
+               times(0)).show(anyString());
+        verify(view,
+               times(0)).hide();
+        verify(view,
+               times(0)).configureClose(anyString(),
+                                        any(Command.class));
+        verify(view,
+               times(0)).configureSave(anyString(),
+                                       any(Command.class));
     }
 }

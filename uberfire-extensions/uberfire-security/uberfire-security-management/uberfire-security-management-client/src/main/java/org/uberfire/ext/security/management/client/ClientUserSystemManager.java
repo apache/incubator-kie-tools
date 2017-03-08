@@ -16,6 +16,11 @@
 
 package org.uberfire.ext.security.management.client;
 
+import java.util.Collection;
+import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.jboss.errai.bus.client.api.messaging.Message;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
@@ -28,7 +33,14 @@ import org.jboss.errai.security.shared.api.RoleImpl;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.uberfire.client.workbench.widgets.common.ErrorPopupPresenter;
-import org.uberfire.ext.security.management.api.*;
+import org.uberfire.ext.security.management.api.Capability;
+import org.uberfire.ext.security.management.api.CapabilityStatus;
+import org.uberfire.ext.security.management.api.GroupManager;
+import org.uberfire.ext.security.management.api.GroupManagerSettings;
+import org.uberfire.ext.security.management.api.RoleManager;
+import org.uberfire.ext.security.management.api.UserManager;
+import org.uberfire.ext.security.management.api.UserManagerSettings;
+import org.uberfire.ext.security.management.api.UserSystemManager;
 import org.uberfire.ext.security.management.api.exception.NoImplementationAvailableException;
 import org.uberfire.ext.security.management.api.service.GroupManagerService;
 import org.uberfire.ext.security.management.api.service.RoleManagerService;
@@ -41,46 +53,47 @@ import org.uberfire.ext.security.management.client.validation.ClientUserValidato
 import org.uberfire.ext.security.management.impl.UserAttributeImpl;
 import org.uberfire.mvp.Command;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.Collection;
-import java.util.Map;
-
 /**
  * <p>The main client side manager for the user management stuff.</p>
- *
+ * <p>
  * Note: No full role management support yet.
  * @since 0.8.0
  */
 @ApplicationScoped
 public class ClientUserSystemManager implements UserSystemManager {
 
+    // User management provider settings are immutable and can be cached to avoid some backend service calls.
+    UserManagerSettings userManagerSettings;
+    // Group management provider settings are immutable and can be cached to avoid some backend service calls.
+    GroupManagerSettings groupManagerSettings;
+    // The error presenter.
+    ErrorPopupPresenter errorPopupPresenter;
     /**
      * The service caller for the Users Manager.
      */
     private Caller<UserManagerService> usersManagerService;
-
     /**
      * The service caller for the Groups Manager.
      */
     private Caller<GroupManagerService> groupsManagerService;
-
     /**
      * The service caller for the Users Manager.
      */
     private Caller<RoleManagerService> rolesManagerService;
-
-    // User management provider settings are immutable and can be cached to avoid some backend service calls.
-    UserManagerSettings userManagerSettings;
-
-    // Group management provider settings are immutable and can be cached to avoid some backend service calls.
-    GroupManagerSettings groupManagerSettings;
-
-    // The error presenter.
-    ErrorPopupPresenter errorPopupPresenter;
-    
     private boolean isActive;
-    
+    protected final ErrorCallback<Message> loadErrorCallback = new ErrorCallback<Message>() {
+        @Override
+        public boolean error(final Message message,
+                             final Throwable throwable) {
+            if (!(throwable instanceof NoImplementationAvailableException)) {
+                // If no user management services, do not complain. Just complain for service errors, if specified.
+                showError(throwable);
+            }
+            ClientUserSystemManager.this.isActive = false;
+            return false;
+        }
+    };
+
     @Inject
     public ClientUserSystemManager(final Caller<UserManagerService> usersManagerService,
                                    final Caller<GroupManagerService> groupsManagerService,
@@ -96,23 +109,30 @@ public class ClientUserSystemManager implements UserSystemManager {
     @AfterInitialization
     public void initCache() {
         initializeCache(new Command() {
-            @Override
-            public void execute() {
-                ClientUserSystemManager.this.isActive = true;
-            }
-        }, loadErrorCallback);
-    }
-    
-    public UserManager users(RemoteCallback<?> remoteCallback, ErrorCallback errorCallback) {
-        return usersManagerService.call(remoteCallback, errorCallback);
+                            @Override
+                            public void execute() {
+                                ClientUserSystemManager.this.isActive = true;
+                            }
+                        },
+                        loadErrorCallback);
     }
 
-    public GroupManager groups(RemoteCallback<?> remoteCallback, ErrorCallback errorCallback) {
-        return groupsManagerService.call(remoteCallback, errorCallback);
+    public UserManager users(RemoteCallback<?> remoteCallback,
+                             ErrorCallback errorCallback) {
+        return usersManagerService.call(remoteCallback,
+                                        errorCallback);
     }
 
-    public RoleManager roles(RemoteCallback<?> remoteCallback, ErrorCallback errorCallback) {
-        return rolesManagerService.call(remoteCallback, errorCallback);
+    public GroupManager groups(RemoteCallback<?> remoteCallback,
+                               ErrorCallback errorCallback) {
+        return groupsManagerService.call(remoteCallback,
+                                         errorCallback);
+    }
+
+    public RoleManager roles(RemoteCallback<?> remoteCallback,
+                             ErrorCallback errorCallback) {
+        return rolesManagerService.call(remoteCallback,
+                                        errorCallback);
     }
 
     @Override
@@ -132,7 +152,8 @@ public class ClientUserSystemManager implements UserSystemManager {
 
     public boolean isUserCapabilityEnabled(final Capability capability) {
         if (userManagerSettings != null) {
-            return isCapabilityEnabled(userManagerSettings.getCapabilities(), capability);
+            return isCapabilityEnabled(userManagerSettings.getCapabilities(),
+                                       capability);
         }
         return false;
     }
@@ -142,28 +163,30 @@ public class ClientUserSystemManager implements UserSystemManager {
     }
 
     public UserManager.UserAttribute getUserSupportedAttribute(final String attributeName) {
-        if (attributeName != null && userManagerSettings != null && 
-                userManagerSettings.getSupportedAttributes() != null ) {
+        if (attributeName != null && userManagerSettings != null &&
+                userManagerSettings.getSupportedAttributes() != null) {
             for (final UserManager.UserAttribute attribute : userManagerSettings.getSupportedAttributes()) {
-                if (attributeName.equals(attribute.getName())) return attribute;
+                if (attributeName.equals(attribute.getName())) {
+                    return attribute;
+                }
             }
         }
         return null;
     }
 
-
     public boolean isGroupCapabilityEnabled(final Capability capability) {
-        if ( groupManagerSettings != null ) {
-            return isCapabilityEnabled(groupManagerSettings.getCapabilities(), capability);
+        if (groupManagerSettings != null) {
+            return isCapabilityEnabled(groupManagerSettings.getCapabilities(),
+                                       capability);
         }
         return false;
     }
 
-    public boolean isCapabilityEnabled(final Map<Capability, CapabilityStatus> capabilities, final Capability capability) {
+    public boolean isCapabilityEnabled(final Map<Capability, CapabilityStatus> capabilities,
+                                       final Capability capability) {
         if (capabilities != null) {
             final CapabilityStatus status = capabilities.get(capability);
             return status != null && CapabilityStatus.ENABLED.equals(status);
-
         }
         return false;
     }
@@ -173,24 +196,36 @@ public class ClientUserSystemManager implements UserSystemManager {
     }
 
     public User createUser(final String identifier) {
-        if (identifier == null) return null;
+        if (identifier == null) {
+            return null;
+        }
         return new UserImpl(identifier);
     }
 
-    public UserManager.UserAttribute createUserAttribute(final String name, final boolean isMandatory,
+    public UserManager.UserAttribute createUserAttribute(final String name,
+                                                         final boolean isMandatory,
                                                          boolean isEditable,
                                                          final String defaultValue) {
-        if (name == null) return null;
-        return new UserAttributeImpl(name, isMandatory, isEditable, defaultValue);
+        if (name == null) {
+            return null;
+        }
+        return new UserAttributeImpl(name,
+                                     isMandatory,
+                                     isEditable,
+                                     defaultValue);
     }
 
     public Group createGroup(final String name) {
-        if (name == null) return null;
+        if (name == null) {
+            return null;
+        }
         return new GroupImpl(name);
     }
 
     public Role createRole(final String name) {
-        if (name == null) return null;
+        if (name == null) {
+            return null;
+        }
         return new RoleImpl(name);
     }
 
@@ -220,14 +255,16 @@ public class ClientUserSystemManager implements UserSystemManager {
      * @param command The command executed when the initialization has finished.
      */
     public void waitForInitialization(final Command command) {
-        if ( null != command ) {
-            initializeCache(command, new ErrorCallback<Message>() {
-                @Override
-                public boolean error(Message message, Throwable throwable) {
-                    command.execute();
-                    return false;
-                }
-            });
+        if (null != command) {
+            initializeCache(command,
+                            new ErrorCallback<Message>() {
+                                @Override
+                                public boolean error(Message message,
+                                                     Throwable throwable) {
+                                    command.execute();
+                                    return false;
+                                }
+                            });
         }
     }
 
@@ -239,37 +276,41 @@ public class ClientUserSystemManager implements UserSystemManager {
         return groupManagerSettings;
     }
 
-    private void initializeCache(final Command command, final ErrorCallback<Message> errorCallback) {
+    private void initializeCache(final Command command,
+                                 final ErrorCallback<Message> errorCallback) {
         // Load user & group management providers' settings.
         loadUserSettings(new Command() {
-            @Override
-            public void execute() {
-                loadGroupSettings(new Command() {
-                    @Override
-                    public void execute() {
-                        command.execute();
-                    }
-                }, errorCallback);
-            }
-        }, errorCallback);
+                             @Override
+                             public void execute() {
+                                 loadGroupSettings(new Command() {
+                                                       @Override
+                                                       public void execute() {
+                                                           command.execute();
+                                                       }
+                                                   },
+                                                   errorCallback);
+                             }
+                         },
+                         errorCallback);
     }
-    
+
     /**
      * Loads the user management provider's settings into cache.
-     *
      * @param callback Load finished callback.
      */
-    private void loadUserSettings(final Command callback, final ErrorCallback<Message> errorCallback) {
-        if ( null == userManagerSettings ) {
+    private void loadUserSettings(final Command callback,
+                                  final ErrorCallback<Message> errorCallback) {
+        if (null == userManagerSettings) {
             usersManagerService.call(new RemoteCallback<UserManagerSettings>() {
-                @Override
-                public void callback(final UserManagerSettings userManagerSettings) {
-                    ClientUserSystemManager.this.userManagerSettings = userManagerSettings;
-                    if ( null != callback ) {
-                        callback.execute();
-                    }
-                }
-            }, errorCallback).getSettings();
+                                         @Override
+                                         public void callback(final UserManagerSettings userManagerSettings) {
+                                             ClientUserSystemManager.this.userManagerSettings = userManagerSettings;
+                                             if (null != callback) {
+                                                 callback.execute();
+                                             }
+                                         }
+                                     },
+                                     errorCallback).getSettings();
         } else {
             callback.execute();
         }
@@ -277,37 +318,25 @@ public class ClientUserSystemManager implements UserSystemManager {
 
     /**
      * Loads the group management provider's settings into cache.
-     *
      * @param callback Load finished callback.
      */
-    private void loadGroupSettings(final Command callback, final ErrorCallback<Message> errorCallback) {
-        if ( null == groupManagerSettings ) {
+    private void loadGroupSettings(final Command callback,
+                                   final ErrorCallback<Message> errorCallback) {
+        if (null == groupManagerSettings) {
             groupsManagerService.call(new RemoteCallback<GroupManagerSettings>() {
-                @Override
-                public void callback(final GroupManagerSettings groupManagerSettings) {
-                    ClientUserSystemManager.this.groupManagerSettings = groupManagerSettings;
-                    if ( null != callback ) {
-                        callback.execute();
-                    }
-
-                }
-            }, errorCallback).getSettings();
+                                          @Override
+                                          public void callback(final GroupManagerSettings groupManagerSettings) {
+                                              ClientUserSystemManager.this.groupManagerSettings = groupManagerSettings;
+                                              if (null != callback) {
+                                                  callback.execute();
+                                              }
+                                          }
+                                      },
+                                      errorCallback).getSettings();
         } else {
             callback.execute();
         }
     }
-
-    protected final ErrorCallback<Message> loadErrorCallback = new ErrorCallback<Message>() {
-        @Override
-        public boolean error(final Message message, final Throwable throwable) {
-            if ( !(throwable instanceof NoImplementationAvailableException) ) {
-                // If no user management services, do not complain. Just complain for service errors, if specified.
-                showError(throwable);
-            }
-            ClientUserSystemManager.this.isActive = false;
-            return false;
-        }
-    };
 
     protected void showError(final Throwable throwable) {
         final String msg = throwable.getCause() != null ? throwable.getCause().getMessage() : throwable.getMessage();

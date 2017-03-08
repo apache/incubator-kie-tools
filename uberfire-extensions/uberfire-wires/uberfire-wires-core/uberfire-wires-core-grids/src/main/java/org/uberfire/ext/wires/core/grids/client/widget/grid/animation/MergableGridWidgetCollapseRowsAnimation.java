@@ -29,52 +29,50 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
  */
 public class MergableGridWidgetCollapseRowsAnimation extends TimedAnimation {
 
-    public MergableGridWidgetCollapseRowsAnimation( final GridWidget gridWidget,
-                                                    final int uiRowIndex,
-                                                    final int uiColumnIndex,
-                                                    final int rowCount ) {
-        super( 500,
-               new IAnimationCallback() {
+    public MergableGridWidgetCollapseRowsAnimation(final GridWidget gridWidget,
+                                                   final int uiRowIndex,
+                                                   final int uiColumnIndex,
+                                                   final int rowCount) {
+        super(500,
+              new IAnimationCallback() {
 
-                   private AnimationTweener tweener = AnimationTweener.EASE_OUT;
+                  private AnimationTweener tweener = AnimationTweener.EASE_OUT;
 
-                   @Override
-                   public void onStart( final IAnimation iAnimation,
-                                        final IAnimationHandle iAnimationHandle ) {
-                       //Mark cells as collapsed
-                       gridWidget.getModel().collapseCell( uiRowIndex,
-                                                           uiColumnIndex );
-                   }
+                  @Override
+                  public void onStart(final IAnimation iAnimation,
+                                      final IAnimationHandle iAnimationHandle) {
+                      //Mark cells as collapsed
+                      gridWidget.getModel().collapseCell(uiRowIndex,
+                                                         uiColumnIndex);
+                  }
 
-                   @Override
-                   public void onFrame( final IAnimation iAnimation,
-                                        final IAnimationHandle iAnimationHandle ) {
-                       //Set the rows' height to their starting height down to zero
-                       final double pct = assertPct( iAnimation.getPercent() );
-                       for ( int i = 1; i < rowCount; i++ ) {
-                           final GridRow row = gridWidget.getModel().getRow( uiRowIndex + i );
-                           row.setHeight( ( 1.0 - pct ) * row.peekHeight() );
-                       }
-                       gridWidget.getLayer().batch();
-                   }
+                  @Override
+                  public void onFrame(final IAnimation iAnimation,
+                                      final IAnimationHandle iAnimationHandle) {
+                      //Set the rows' height to their starting height down to zero
+                      final double pct = assertPct(iAnimation.getPercent());
+                      for (int i = 1; i < rowCount; i++) {
+                          final GridRow row = gridWidget.getModel().getRow(uiRowIndex + i);
+                          row.setHeight((1.0 - pct) * row.peekHeight());
+                      }
+                      gridWidget.getLayer().batch();
+                  }
 
-                   @Override
-                   public void onClose( final IAnimation iAnimation,
-                                        final IAnimationHandle iAnimationHandle ) {
-                       //Do nothing
-                   }
+                  @Override
+                  public void onClose(final IAnimation iAnimation,
+                                      final IAnimationHandle iAnimationHandle) {
+                      //Do nothing
+                  }
 
-                   private double assertPct( final double pct ) {
-                       if ( pct < 0 ) {
-                           return 0;
-                       }
-                       if ( pct > 1.0 ) {
-                           return 1.0;
-                       }
-                       return tweener.apply( pct );
-                   }
-
-               } );
+                  private double assertPct(final double pct) {
+                      if (pct < 0) {
+                          return 0;
+                      }
+                      if (pct > 1.0) {
+                          return 1.0;
+                      }
+                      return tweener.apply(pct);
+                  }
+              });
     }
-
 }

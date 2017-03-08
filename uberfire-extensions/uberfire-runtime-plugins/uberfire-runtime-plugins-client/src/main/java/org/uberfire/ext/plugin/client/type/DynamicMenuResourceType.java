@@ -31,6 +31,6 @@ public class DynamicMenuResourceType
 
     @Override
     public IsWidget getIcon() {
-        return new Icon( IconType.SHARE );
+        return new Icon(IconType.SHARE);
     }
 }

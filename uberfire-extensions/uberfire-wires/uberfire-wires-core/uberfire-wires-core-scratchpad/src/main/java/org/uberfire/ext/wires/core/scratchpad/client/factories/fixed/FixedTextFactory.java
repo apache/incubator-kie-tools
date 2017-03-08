@@ -43,11 +43,11 @@ public class FixedTextFactory extends AbstractBaseFactory<Text> {
 
     public FixedTextFactory() {
         final Text text = makeShape();
-        final LienzoPanel panel = new LienzoPanel( 100,
-                                                   100 );
+        final LienzoPanel panel = new LienzoPanel(100,
+                                                  100);
         final Layer layer = new Layer();
-        panel.add( layer );
-        final TextMetrics tm = text.measure( layer.getContext() );
+        panel.add(layer);
+        final TextMetrics tm = text.measure(layer.getContext());
         TEXT_WIDTH = tm.getWidth();
         TEXT_HEIGHT = tm.getHeight();
     }
@@ -63,36 +63,35 @@ public class FixedTextFactory extends AbstractBaseFactory<Text> {
     }
 
     @Override
-    public WiresBaseShape getShape( final FactoryHelper helper ) {
-        return new WiresFixedText( makeShape() );
+    public WiresBaseShape getShape(final FactoryHelper helper) {
+        return new WiresFixedText(makeShape());
     }
 
     @Override
-    public boolean builds( final WiresBaseShape shapeType ) {
+    public boolean builds(final WiresBaseShape shapeType) {
         return shapeType instanceof WiresFixedText;
     }
 
     @Override
     protected Text makeShape() {
-        final Text text = new Text( "T",
-                                    "normal",
-                                    FONT_POINT );
-        text.setStrokeColor( ShapesUtils.RGB_STROKE_TEXT )
-                .setFillColor( ShapesUtils.RGB_FILL_TEXT )
-                .setTextBaseLine( TextBaseLine.MIDDLE )
-                .setTextAlign( TextAlign.CENTER )
-                .setDraggable( false );
+        final Text text = new Text("T",
+                                   "normal",
+                                   FONT_POINT);
+        text.setStrokeColor(ShapesUtils.RGB_STROKE_TEXT)
+                .setFillColor(ShapesUtils.RGB_FILL_TEXT)
+                .setTextBaseLine(TextBaseLine.MIDDLE)
+                .setTextAlign(TextAlign.CENTER)
+                .setDraggable(false);
         return text;
     }
 
     @Override
     protected double getWidth() {
-        return Math.round( TEXT_WIDTH );
+        return Math.round(TEXT_WIDTH);
     }
 
     @Override
     protected double getHeight() {
-        return Math.round( TEXT_HEIGHT );
+        return Math.round(TEXT_HEIGHT);
     }
-
 }

@@ -28,43 +28,46 @@ public class CallerProxy implements java.lang.reflect.InvocationHandler {
     private RemoteCallback<Object> successCallBack;
     private ErrorCallback<Object> errorCallBack;
 
-    static Object newInstance( final Object target ) {
-        return java.lang.reflect.Proxy.newProxyInstance( target.getClass().getClassLoader(), target
-                .getClass().getInterfaces(), new CallerProxy( target ) );
-    }
-
-    private CallerProxy( final Object target ) {
+    private CallerProxy(final Object target) {
         this.target = target;
     }
 
-    public void setSuccessCallBack( final RemoteCallback<Object> successCallBack ) {
+    static Object newInstance(final Object target) {
+        return java.lang.reflect.Proxy.newProxyInstance(target.getClass().getClassLoader(),
+                                                        target
+                                                                .getClass().getInterfaces(),
+                                                        new CallerProxy(target));
+    }
+
+    public void setSuccessCallBack(final RemoteCallback<Object> successCallBack) {
         this.successCallBack = successCallBack;
     }
 
-    public void setErrorCallBack( final ErrorCallback<Object> errorCallBack ) {
+    public void setErrorCallBack(final ErrorCallback<Object> errorCallBack) {
         this.errorCallBack = errorCallBack;
     }
 
-    public Object invoke( final Object proxy,
-                          final Method m,
-                          final Object[] args ) throws Throwable {
+    public Object invoke(final Object proxy,
+                         final Method m,
+                         final Object[] args) throws Throwable {
         Object result = null;
         try {
-            result = m.invoke( target, args );
-        } catch ( Exception e ) {
-            if ( errorCallBack != null ) {
-                errorCallBack.error( result, e );
+            result = m.invoke(target,
+                              args);
+        } catch (Exception e) {
+            if (errorCallBack != null) {
+                errorCallBack.error(result,
+                                    e);
             }
-            if( m.getReturnType().isPrimitive() ) {
-                return Defaults.defaultValue( m.getReturnType() );
+            if (m.getReturnType().isPrimitive()) {
+                return Defaults.defaultValue(m.getReturnType());
             } else {
                 return result;
             }
         }
-        if ( successCallBack != null ) {
-            successCallBack.callback( result );
+        if (successCallBack != null) {
+            successCallBack.callback(result);
         }
         return result;
     }
-
 }

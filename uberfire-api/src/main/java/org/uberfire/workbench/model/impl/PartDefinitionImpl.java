@@ -15,8 +15,6 @@
  */
 package org.uberfire.workbench.model.impl;
 
-import static org.uberfire.workbench.model.ContextDisplayMode.*;
-
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.ContextDefinition;
@@ -24,13 +22,15 @@ import org.uberfire.workbench.model.ContextDisplayMode;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 
+import static org.uberfire.workbench.model.ContextDisplayMode.SHOW;
+
 /**
  * Default implementation of PartDefinition
  */
 @Portable
 public class PartDefinitionImpl
-implements
-PartDefinition {
+        implements
+        PartDefinition {
 
     private PlaceRequest place;
 
@@ -44,7 +44,7 @@ PartDefinition {
     public PartDefinitionImpl() {
     }
 
-    public PartDefinitionImpl( final PlaceRequest place ) {
+    public PartDefinitionImpl(final PlaceRequest place) {
         this.place = place;
     }
 
@@ -60,7 +60,7 @@ PartDefinition {
      * @param place the place to set
      */
     @Override
-    public void setPlace( final PlaceRequest place ) {
+    public void setPlace(final PlaceRequest place) {
         this.place = place;
     }
 
@@ -76,16 +76,11 @@ PartDefinition {
      * @param parentPanel the parentPanel to set
      */
     @Override
-    public void setParentPanel( final PanelDefinition parentPanel ) {
-        if ( parentPanel != null && this.parentPanel != null ) {
-            throw new IllegalStateException( "Can't set parent: this part already belongs to " + this.parentPanel );
+    public void setParentPanel(final PanelDefinition parentPanel) {
+        if (parentPanel != null && this.parentPanel != null) {
+            throw new IllegalStateException("Can't set parent: this part already belongs to " + this.parentPanel);
         }
         this.parentPanel = parentPanel;
-    }
-
-    @Override
-    public void setContextDefinition( final ContextDefinition contextDefinition ) {
-        this.contextDefinition = contextDefinition;
     }
 
     @Override
@@ -94,12 +89,17 @@ PartDefinition {
     }
 
     @Override
+    public void setContextDefinition(final ContextDefinition contextDefinition) {
+        this.contextDefinition = contextDefinition;
+    }
+
+    @Override
     public ContextDisplayMode getContextDisplayMode() {
         return contextDisplayMode;
     }
 
     @Override
-    public void setContextDisplayMode( final ContextDisplayMode contextDisplayMode ) {
+    public void setContextDisplayMode(final ContextDisplayMode contextDisplayMode) {
         this.contextDisplayMode = contextDisplayMode;
     }
 
@@ -109,7 +109,7 @@ PartDefinition {
     }
 
     @Override
-    public void setSelectable( final boolean selectable ) {
+    public void setSelectable(final boolean selectable) {
         this.selectable = selectable;
     }
 
@@ -119,25 +119,24 @@ PartDefinition {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null ) {
+        if (o == null) {
             return false;
         }
-        if ( !( o instanceof PartDefinitionImpl ) ) {
+        if (!(o instanceof PartDefinitionImpl)) {
             return false;
         }
 
         PartDefinitionImpl that = (PartDefinitionImpl) o;
 
-        return place.equals( that.place );
+        return place.equals(that.place);
     }
 
     @Override
     public String toString() {
         return "PartDefinitionImpl [place=" + place + "]";
     }
-
 }

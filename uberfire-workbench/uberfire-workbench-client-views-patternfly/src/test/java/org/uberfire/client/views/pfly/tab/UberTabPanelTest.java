@@ -29,31 +29,31 @@ import static org.junit.Assert.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class UberTabPanelTest {
 
+    private final MockPlaceManager mockPlaceManager = new MockPlaceManager();
     private UberTabPanel uberTabPanel;
-
     @GwtMock
     private ResizeTabPanel resizeTabPanel;
 
-    private final MockPlaceManager mockPlaceManager = new MockPlaceManager();
-
     @Before
     public void gwtSetUp() throws Exception {
-        uberTabPanel = new UberTabPanel( mockPlaceManager, resizeTabPanel );
+        uberTabPanel = new UberTabPanel(mockPlaceManager,
+                                        resizeTabPanel);
     }
 
     @Test
     public void testFireFocusEventWhenClickedWhenUnfocused() throws Exception {
-        uberTabPanel.setFocus( false );
+        uberTabPanel.setFocus(false);
 
         final int[] focusEventCount = new int[1];
-        uberTabPanel.addOnFocusHandler( new Command() {
+        uberTabPanel.addOnFocusHandler(new Command() {
             @Override
             public void execute() {
                 focusEventCount[0]++;
             }
-        } );
+        });
 
-        uberTabPanel.onClick( null );
-        assertEquals( 1, focusEventCount[0] );
+        uberTabPanel.onClick(null);
+        assertEquals(1,
+                     focusEventCount[0]);
     }
 }

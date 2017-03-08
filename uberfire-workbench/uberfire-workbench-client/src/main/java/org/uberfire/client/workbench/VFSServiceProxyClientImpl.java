@@ -25,8 +25,8 @@ import org.uberfire.mvp.ParameterizedCommand;
 public class VFSServiceProxyClientImpl implements VFSServiceProxy {
 
     @Override
-    public void get( final String path,
-                     final ParameterizedCommand<Path> parameterizedCommand ) {
-        parameterizedCommand.execute( null );
+    public void get(final String path,
+                    final ParameterizedCommand<Path> parameterizedCommand) {
+        parameterizedCommand.execute(null);
     }
 }

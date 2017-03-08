@@ -29,58 +29,59 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
 @Dependent
-@Named( "org.uberfire.wbtest.client.breakable.BreakablePerspective" )
+@Named("org.uberfire.wbtest.client.breakable.BreakablePerspective")
 public class BreakablePerspective extends AbstractTestPerspectiveActivity {
 
     private LifecyclePhase brokenLifecycle;
 
     @Inject
-    public BreakablePerspective( PlaceManager placeManager ) {
-        super( placeManager );
+    public BreakablePerspective(PlaceManager placeManager) {
+        super(placeManager);
     }
 
     @Override
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
-        PerspectiveDefinition pdef = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        pdef.setName( "BreakablePerspective" );
-        pdef.getRoot().addPart( BreakableMenuScreen.class.getName() );
+        PerspectiveDefinition pdef = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        pdef.setName("BreakablePerspective");
+        pdef.getRoot().addPart(BreakableMenuScreen.class.getName());
         return pdef;
     }
 
     @Override
-    public void onStartup( PlaceRequest place ) {
-        super.onStartup( place );
-        String brokenParam = place.getParameter( "broken", null );
-        if ( brokenParam != null && brokenParam.length() > 0 ) {
-            brokenLifecycle = LifecyclePhase.valueOf( brokenParam );
+    public void onStartup(PlaceRequest place) {
+        super.onStartup(place);
+        String brokenParam = place.getParameter("broken",
+                                                null);
+        if (brokenParam != null && brokenParam.length() > 0) {
+            brokenLifecycle = LifecyclePhase.valueOf(brokenParam);
         }
 
-        if ( brokenLifecycle == LifecyclePhase.STARTUP ) {
-            throw new RuntimeException( "This perspective has a broken startup callback" );
+        if (brokenLifecycle == LifecyclePhase.STARTUP) {
+            throw new RuntimeException("This perspective has a broken startup callback");
         }
     }
 
     @Override
     public void onOpen() {
         super.onOpen();
-        if ( brokenLifecycle == LifecyclePhase.OPEN ) {
-            throw new RuntimeException( "This perspective has a broken open callback" );
+        if (brokenLifecycle == LifecyclePhase.OPEN) {
+            throw new RuntimeException("This perspective has a broken open callback");
         }
     }
 
     @Override
     public void onClose() {
         super.onClose();
-        if ( brokenLifecycle == LifecyclePhase.CLOSE ) {
-            throw new RuntimeException( "This perspective has a broken close callback" );
+        if (brokenLifecycle == LifecyclePhase.CLOSE) {
+            throw new RuntimeException("This perspective has a broken close callback");
         }
     }
 
     @Override
     public void onShutdown() {
         super.onShutdown();
-        if ( brokenLifecycle == LifecyclePhase.SHUTDOWN ) {
-            throw new RuntimeException( "This perspective has a broken shutdown callback" );
+        if (brokenLifecycle == LifecyclePhase.SHUTDOWN) {
+            throw new RuntimeException("This perspective has a broken shutdown callback");
         }
     }
 }

@@ -58,15 +58,15 @@ public interface BasePreferencePortable<T> extends BasePreference<T> {
      * @param property Name of the property field to be set.
      * @param value New value for the property.
      */
-    void set( String property,
-              Object value );
+    void set(String property,
+             Object value);
 
     /**
      * Returns a property value by its name.
      * @param property Name of the property field to be fetched.
      * @return The property value.
      */
-    Object get( String property );
+    Object get(String property);
 
     /**
      * Returns the form types of all simple (non-preference) properties by their field name.
@@ -79,8 +79,8 @@ public interface BasePreferencePortable<T> extends BasePreference<T> {
      * @param propertyName The property field name.
      * @return The property form type.
      */
-    default PropertyFormType getPropertyType( String propertyName ) {
-        return getPropertiesTypes().get( propertyName );
+    default PropertyFormType getPropertyType(String propertyName) {
+        return getPropertiesTypes().get(propertyName);
     }
 
     /**

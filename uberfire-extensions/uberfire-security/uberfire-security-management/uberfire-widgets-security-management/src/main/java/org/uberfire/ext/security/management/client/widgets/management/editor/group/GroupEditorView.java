@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.group;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -29,36 +31,22 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Heading;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
 
-import javax.enterprise.context.Dependent;
-
 @Dependent
 public class GroupEditorView extends Composite implements GroupEditor.View {
 
-    interface GroupEditorViewBinder
-            extends
-            UiBinder<Widget, GroupEditorView> {
-
-    }
-
-    private static GroupEditorViewBinder uiBinder = GWT.create( GroupEditorViewBinder.class );
-
+    private static GroupEditorViewBinder uiBinder = GWT.create(GroupEditorViewBinder.class);
     @UiField
     Heading groupTitle;
-
     @UiField
     Button editButton;
-
     @UiField
     Button deleteButton;
-
     @UiField
     FlowPanel aclPanel;
-
     @UiField
     FlowPanel aclSettingsPanel;
-
     GroupEditor presenter;
-    
+
     @Override
     public void init(final GroupEditor presenter) {
         this.presenter = presenter;
@@ -72,7 +60,7 @@ public class GroupEditorView extends Composite implements GroupEditor.View {
         groupTitle.setTitle(headerText);
         return this;
     }
-    
+
     @Override
     public GroupEditor.View setDeleteButtonVisible(boolean isVisible) {
         deleteButton.setVisible(isVisible);
@@ -113,14 +101,21 @@ public class GroupEditorView extends Composite implements GroupEditor.View {
         return this;
     }
 
-    @UiHandler( "editButton" )
+    @UiHandler("editButton")
     public void onEditButtonClick(final ClickEvent event) {
         presenter.onEdit();
     }
 
-    @UiHandler( "deleteButton" )
-    public void onDeleteButtonClick( final ClickEvent event ) {
-        if (presenter != null) presenter.onDelete();
+    @UiHandler("deleteButton")
+    public void onDeleteButtonClick(final ClickEvent event) {
+        if (presenter != null) {
+            presenter.onDelete();
+        }
     }
 
+    interface GroupEditorViewBinder
+            extends
+            UiBinder<Widget, GroupEditorView> {
+
+    }
 }

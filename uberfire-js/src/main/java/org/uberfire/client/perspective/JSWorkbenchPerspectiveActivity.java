@@ -16,27 +16,23 @@
 
 package org.uberfire.client.perspective;
 
-import java.util.List;
+import javax.enterprise.inject.Alternative;
 
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
-import javax.enterprise.inject.Alternative;
-
 @Alternative
 public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
 
+    private final JSNativePerspective nativePerspective;
     private PlaceRequest place;
 
-    private final JSNativePerspective nativePerspective;
-
-    public JSWorkbenchPerspectiveActivity( final JSNativePerspective nativePerspective ) {
+    public JSWorkbenchPerspectiveActivity(final JSNativePerspective nativePerspective) {
         this.nativePerspective = nativePerspective;
     }
 
@@ -46,9 +42,9 @@ public class JSWorkbenchPerspectiveActivity implements PerspectiveActivity {
     }
 
     @Override
-    public void onStartup( final PlaceRequest place ) {
+    public void onStartup(final PlaceRequest place) {
         this.place = place;
-        nativePerspective.onStartup( place );
+        nativePerspective.onStartup(place);
     }
 
     @Override

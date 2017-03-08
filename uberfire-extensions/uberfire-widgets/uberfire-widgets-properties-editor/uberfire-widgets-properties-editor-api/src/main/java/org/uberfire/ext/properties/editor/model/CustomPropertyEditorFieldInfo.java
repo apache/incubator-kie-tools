@@ -16,15 +16,16 @@
 
 package org.uberfire.ext.properties.editor.model;
 
-import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
-import org.uberfire.ext.properties.editor.model.PropertyEditorType;
-
 public class CustomPropertyEditorFieldInfo extends PropertyEditorFieldInfo {
 
     private Class<?> customEditorClass;
 
-    public CustomPropertyEditorFieldInfo( String label, String stringValue, Class<?> customEditorClass ) {
-        super( label, stringValue, PropertyEditorType.CUSTOM );
+    public CustomPropertyEditorFieldInfo(String label,
+                                         String stringValue,
+                                         Class<?> customEditorClass) {
+        super(label,
+              stringValue,
+              PropertyEditorType.CUSTOM);
         this.customEditorClass = customEditorClass;
     }
 
@@ -32,7 +33,7 @@ public class CustomPropertyEditorFieldInfo extends PropertyEditorFieldInfo {
         return customEditorClass;
     }
 
-    public void setCustomEditorClass( Class<?> customEditorClass ) {
+    public void setCustomEditorClass(Class<?> customEditorClass) {
         this.customEditorClass = customEditorClass;
     }
 }

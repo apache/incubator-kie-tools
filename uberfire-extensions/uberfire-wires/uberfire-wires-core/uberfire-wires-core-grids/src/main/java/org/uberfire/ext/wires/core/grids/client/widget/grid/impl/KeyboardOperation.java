@@ -23,12 +23,6 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
  */
 public interface KeyboardOperation {
 
-    enum TriStateBoolean {
-        TRUE,
-        FALSE,
-        DONT_CARE
-    }
-
     /**
      * Gets the @{link com.google.gwt.event.dom.client.KeyCodes} that this operation matches.
      * @return A key code.
@@ -49,16 +43,18 @@ public interface KeyboardOperation {
 
     /**
      * Performs the operation on the given @{link GridWidget}
-     * @param gridWidget
-     *         The GridWidget on which to perform the operation.
-     * @param isShiftKeyDown
-     *         True if the shift-key is down.
-     * @param isControlKeyDown
-     *         True if the control-key is down.
+     * @param gridWidget The GridWidget on which to perform the operation.
+     * @param isShiftKeyDown True if the shift-key is down.
+     * @param isControlKeyDown True if the control-key is down.
      * @return true if the view needs to be rendered.
      */
-    boolean perform( final GridWidget gridWidget,
-                     final boolean isShiftKeyDown,
-                     final boolean isControlKeyDown );
+    boolean perform(final GridWidget gridWidget,
+                    final boolean isShiftKeyDown,
+                    final boolean isControlKeyDown);
 
+    enum TriStateBoolean {
+        TRUE,
+        FALSE,
+        DONT_CARE
+    }
 }

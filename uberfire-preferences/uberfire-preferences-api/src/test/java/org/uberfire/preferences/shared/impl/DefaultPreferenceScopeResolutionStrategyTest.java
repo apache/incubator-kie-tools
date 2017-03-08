@@ -20,10 +20,10 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.preferences.shared.PreferenceScopeTypes;
-import org.uberfire.mocks.SessionInfoMock;
 
 import static org.junit.Assert.*;
 
@@ -37,85 +37,117 @@ public class DefaultPreferenceScopeResolutionStrategyTest {
 
     @Before
     public void setup() {
-        final SessionInfoMock sessionInfo = new SessionInfoMock( DefaultPreferenceScopesForTests.userScopeKey );
-        scopeTypes = new DefaultPreferenceScopeTypes( new UsernameProviderMock( sessionInfo ) );
-        scopesBuilder = new PreferenceScopeFactoryImpl( scopeTypes );
+        final SessionInfoMock sessionInfo = new SessionInfoMock(DefaultPreferenceScopesForTests.userScopeKey);
+        scopeTypes = new DefaultPreferenceScopeTypes(new UsernameProviderMock(sessionInfo));
+        scopesBuilder = new PreferenceScopeFactoryImpl(scopeTypes);
 
-        defaultPreferenceScopeResolutionStrategy = new DefaultPreferenceScopeResolutionStrategy( scopesBuilder, null );
+        defaultPreferenceScopeResolutionStrategy = new DefaultPreferenceScopeResolutionStrategy(scopesBuilder,
+                                                                                                null);
     }
 
     @Test
     public void defaultOrderTest() {
         final List<PreferenceScope> order = defaultPreferenceScopeResolutionStrategy.getInfo().order();
 
-        assertEquals( 2, order.size() );
+        assertEquals(2,
+                     order.size());
 
-        final PreferenceScope secondScope = order.get( 0 );
-        assertEquals( DefaultPreferenceScopesForTests.userScopeType, secondScope.type() );
-        assertEquals( DefaultPreferenceScopesForTests.userScopeKey, secondScope.key() );
+        final PreferenceScope secondScope = order.get(0);
+        assertEquals(DefaultPreferenceScopesForTests.userScopeType,
+                     secondScope.type());
+        assertEquals(DefaultPreferenceScopesForTests.userScopeKey,
+                     secondScope.key());
         final PreferenceScope secondScopeChild = secondScope.childScope();
-        assertEquals( DefaultPreferenceScopesForTests.entireApplicationScopeType, secondScopeChild.type() );
-        assertEquals( DefaultPreferenceScopesForTests.entireApplicationScopeKey, secondScopeChild.key() );
-        assertNull( secondScopeChild.childScope() );
+        assertEquals(DefaultPreferenceScopesForTests.entireApplicationScopeType,
+                     secondScopeChild.type());
+        assertEquals(DefaultPreferenceScopesForTests.entireApplicationScopeKey,
+                     secondScopeChild.key());
+        assertNull(secondScopeChild.childScope());
 
-        final PreferenceScope fourthScope = order.get( 1 );
-        assertEquals( DefaultPreferenceScopesForTests.allUsersScopeType, fourthScope.type() );
-        assertEquals( DefaultPreferenceScopesForTests.allUsersScopeKey, fourthScope.key() );
+        final PreferenceScope fourthScope = order.get(1);
+        assertEquals(DefaultPreferenceScopesForTests.allUsersScopeType,
+                     fourthScope.type());
+        assertEquals(DefaultPreferenceScopesForTests.allUsersScopeKey,
+                     fourthScope.key());
         final PreferenceScope fourthScopeChild = fourthScope.childScope();
-        assertEquals( DefaultPreferenceScopesForTests.entireApplicationScopeType, fourthScopeChild.type() );
-        assertEquals( DefaultPreferenceScopesForTests.entireApplicationScopeKey, fourthScopeChild.key() );
-        assertNull( fourthScopeChild.childScope() );
+        assertEquals(DefaultPreferenceScopesForTests.entireApplicationScopeType,
+                     fourthScopeChild.type());
+        assertEquals(DefaultPreferenceScopesForTests.entireApplicationScopeKey,
+                     fourthScopeChild.key());
+        assertNull(fourthScopeChild.childScope());
     }
 
     @Test
     public void orderWithComponentScopeTest() {
-        defaultPreferenceScopeResolutionStrategy = new DefaultPreferenceScopeResolutionStrategy( scopesBuilder, DefaultPreferenceScopesForTests.componentScopeKey );
+        defaultPreferenceScopeResolutionStrategy = new DefaultPreferenceScopeResolutionStrategy(scopesBuilder,
+                                                                                                DefaultPreferenceScopesForTests.componentScopeKey);
         final List<PreferenceScope> order = defaultPreferenceScopeResolutionStrategy.getInfo().order();
 
-        assertEquals( 4, order.size() );
+        assertEquals(4,
+                     order.size());
 
-        final PreferenceScope firstScope = order.get( 0 );
-        assertEquals( DefaultPreferenceScopesForTests.userScopeType, firstScope.type() );
-        assertEquals( DefaultPreferenceScopesForTests.userScopeKey, firstScope.key() );
+        final PreferenceScope firstScope = order.get(0);
+        assertEquals(DefaultPreferenceScopesForTests.userScopeType,
+                     firstScope.type());
+        assertEquals(DefaultPreferenceScopesForTests.userScopeKey,
+                     firstScope.key());
         final PreferenceScope firstScopeChild = firstScope.childScope();
-        assertEquals( DefaultPreferenceScopesForTests.componentScopeType, firstScopeChild.type() );
-        assertEquals( DefaultPreferenceScopesForTests.componentScopeKey, firstScopeChild.key() );
-        assertNull( firstScopeChild.childScope() );
+        assertEquals(DefaultPreferenceScopesForTests.componentScopeType,
+                     firstScopeChild.type());
+        assertEquals(DefaultPreferenceScopesForTests.componentScopeKey,
+                     firstScopeChild.key());
+        assertNull(firstScopeChild.childScope());
 
-        final PreferenceScope secondScope = order.get( 1 );
-        assertEquals( DefaultPreferenceScopesForTests.userScopeType, secondScope.type() );
-        assertEquals( DefaultPreferenceScopesForTests.userScopeKey, secondScope.key() );
+        final PreferenceScope secondScope = order.get(1);
+        assertEquals(DefaultPreferenceScopesForTests.userScopeType,
+                     secondScope.type());
+        assertEquals(DefaultPreferenceScopesForTests.userScopeKey,
+                     secondScope.key());
         final PreferenceScope secondScopeChild = secondScope.childScope();
-        assertEquals( DefaultPreferenceScopesForTests.entireApplicationScopeType, secondScopeChild.type() );
-        assertEquals( DefaultPreferenceScopesForTests.entireApplicationScopeKey, secondScopeChild.key() );
-        assertNull( secondScopeChild.childScope() );
+        assertEquals(DefaultPreferenceScopesForTests.entireApplicationScopeType,
+                     secondScopeChild.type());
+        assertEquals(DefaultPreferenceScopesForTests.entireApplicationScopeKey,
+                     secondScopeChild.key());
+        assertNull(secondScopeChild.childScope());
 
-        final PreferenceScope thirdScope = order.get( 2 );
-        assertEquals( DefaultPreferenceScopesForTests.allUsersScopeType, thirdScope.type() );
-        assertEquals( DefaultPreferenceScopesForTests.allUsersScopeKey, thirdScope.key() );
+        final PreferenceScope thirdScope = order.get(2);
+        assertEquals(DefaultPreferenceScopesForTests.allUsersScopeType,
+                     thirdScope.type());
+        assertEquals(DefaultPreferenceScopesForTests.allUsersScopeKey,
+                     thirdScope.key());
         final PreferenceScope thirdScopeChild = thirdScope.childScope();
-        assertEquals( DefaultPreferenceScopesForTests.componentScopeType, thirdScopeChild.type() );
-        assertEquals( DefaultPreferenceScopesForTests.componentScopeKey, thirdScopeChild.key() );
-        assertNull( thirdScopeChild.childScope() );
+        assertEquals(DefaultPreferenceScopesForTests.componentScopeType,
+                     thirdScopeChild.type());
+        assertEquals(DefaultPreferenceScopesForTests.componentScopeKey,
+                     thirdScopeChild.key());
+        assertNull(thirdScopeChild.childScope());
 
-        final PreferenceScope fourthScope = order.get( 3 );
-        assertEquals( DefaultPreferenceScopesForTests.allUsersScopeType, fourthScope.type() );
-        assertEquals( DefaultPreferenceScopesForTests.allUsersScopeKey, fourthScope.key() );
+        final PreferenceScope fourthScope = order.get(3);
+        assertEquals(DefaultPreferenceScopesForTests.allUsersScopeType,
+                     fourthScope.type());
+        assertEquals(DefaultPreferenceScopesForTests.allUsersScopeKey,
+                     fourthScope.key());
         final PreferenceScope fourthScopeChild = fourthScope.childScope();
-        assertEquals( DefaultPreferenceScopesForTests.entireApplicationScopeType, fourthScopeChild.type() );
-        assertEquals( DefaultPreferenceScopesForTests.entireApplicationScopeKey, fourthScopeChild.key() );
-        assertNull( fourthScopeChild.childScope() );
+        assertEquals(DefaultPreferenceScopesForTests.entireApplicationScopeType,
+                     fourthScopeChild.type());
+        assertEquals(DefaultPreferenceScopesForTests.entireApplicationScopeKey,
+                     fourthScopeChild.key());
+        assertNull(fourthScopeChild.childScope());
     }
 
     @Test
     public void defaultScopeTest() {
         final PreferenceScope defaultScope = defaultPreferenceScopeResolutionStrategy.getInfo().defaultScope();
 
-        assertEquals( DefaultPreferenceScopesForTests.userScopeType, defaultScope.type() );
-        assertEquals( DefaultPreferenceScopesForTests.userScopeKey, defaultScope.key() );
+        assertEquals(DefaultPreferenceScopesForTests.userScopeType,
+                     defaultScope.type());
+        assertEquals(DefaultPreferenceScopesForTests.userScopeKey,
+                     defaultScope.key());
         final PreferenceScope defaultScopeChild = defaultScope.childScope();
-        assertEquals( DefaultPreferenceScopesForTests.entireApplicationScopeType, defaultScopeChild.type() );
-        assertEquals( DefaultPreferenceScopesForTests.entireApplicationScopeKey, defaultScopeChild.key() );
-        assertNull( defaultScopeChild.childScope() );
+        assertEquals(DefaultPreferenceScopesForTests.entireApplicationScopeType,
+                     defaultScopeChild.type());
+        assertEquals(DefaultPreferenceScopesForTests.entireApplicationScopeKey,
+                     defaultScopeChild.key());
+        assertNull(defaultScopeChild.childScope());
     }
 }

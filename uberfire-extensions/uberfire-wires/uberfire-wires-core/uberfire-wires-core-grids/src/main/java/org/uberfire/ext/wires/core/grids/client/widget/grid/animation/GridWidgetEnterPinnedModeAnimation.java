@@ -35,112 +35,108 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
  */
 public class GridWidgetEnterPinnedModeAnimation extends TimedAnimation {
 
-    public GridWidgetEnterPinnedModeAnimation( final GridWidget gridWidget,
-                                               final Set<GridWidget> gridWidgets,
-                                               final Set<IPrimitive<?>> gridWidgetConnectors,
-                                               final Command onStartCommand ) {
-        super( 500,
-               new IAnimationCallback() {
+    public GridWidgetEnterPinnedModeAnimation(final GridWidget gridWidget,
+                                              final Set<GridWidget> gridWidgets,
+                                              final Set<IPrimitive<?>> gridWidgetConnectors,
+                                              final Command onStartCommand) {
+        super(500,
+              new IAnimationCallback() {
 
-                   private Point2D delta;
-                   private Point2D startTranslation;
+                  private final double endScaleX = 1.0;
+                  private final double endScaleY = 1.0;
+                  private Point2D delta;
+                  private Point2D startTranslation;
+                  private double startScaleX;
+                  private double startScaleY;
+                  private AnimationTweener tweener = AnimationTweener.EASE_OUT;
 
-                   private double startScaleX;
-                   private double startScaleY;
-                   private final double endScaleX = 1.0;
-                   private final double endScaleY = 1.0;
+                  @Override
+                  public void onStart(final IAnimation animation,
+                                      final IAnimationHandle handle) {
+                      final Viewport vp = gridWidget.getViewport();
+                      if (vp.getTransform() == null) {
+                          vp.setTransform(new Transform());
+                      }
+                      startScaleX = vp.getTransform().getScaleX();
+                      startScaleY = vp.getTransform().getScaleY();
+                      startTranslation = getViewportTranslation().mul(-1.0);
 
-                   private AnimationTweener tweener = AnimationTweener.EASE_OUT;
+                      final Point2D endTranslation = new Point2D(gridWidget.getX(),
+                                                                 gridWidget.getY()).mul(-1.0);
 
-                   @Override
-                   public void onStart( final IAnimation animation,
-                                        final IAnimationHandle handle ) {
-                       final Viewport vp = gridWidget.getViewport();
-                       if ( vp.getTransform() == null ) {
-                           vp.setTransform( new Transform() );
-                       }
-                       startScaleX = vp.getTransform().getScaleX();
-                       startScaleY = vp.getTransform().getScaleY();
-                       startTranslation = getViewportTranslation().mul( -1.0 );
+                      delta = new Point2D(endTranslation.getX() - startTranslation.getX(),
+                                          endTranslation.getY() - startTranslation.getY());
 
-                       final Point2D endTranslation = new Point2D( gridWidget.getX(),
-                                                                   gridWidget.getY() ).mul( -1.0 );
+                      onStartCommand.execute();
 
-                       delta = new Point2D( endTranslation.getX() - startTranslation.getX(),
-                                            endTranslation.getY() - startTranslation.getY() );
+                      gridWidget.getLayer().setListening(false);
+                      gridWidget.getLayer().batch();
+                  }
 
-                       onStartCommand.execute();
+                  @Override
+                  public void onFrame(final IAnimation animation,
+                                      final IAnimationHandle handle) {
+                      final double pct = assertPct(animation.getPercent());
+                      final Viewport vp = gridWidget.getViewport();
+                      final Transform transform = vp.getTransform();
+                      transform.reset();
 
-                       gridWidget.getLayer().setListening( false );
-                       gridWidget.getLayer().batch();
-                   }
+                      final Point2D frameLocation = startTranslation.add(delta.mul(pct));
+                      final double frameScaleX = startScaleX + (endScaleX - startScaleX) * pct;
+                      final double frameScaleY = startScaleY + (endScaleY - startScaleY) * pct;
+                      transform.scale(frameScaleX,
+                                      frameScaleY).translate(frameLocation.getX(),
+                                                             frameLocation.getY());
 
-                   @Override
-                   public void onFrame( final IAnimation animation,
-                                        final IAnimationHandle handle ) {
-                       final double pct = assertPct( animation.getPercent() );
-                       final Viewport vp = gridWidget.getViewport();
-                       final Transform transform = vp.getTransform();
-                       transform.reset();
+                      hideGridWidgets(pct);
+                      hideGridWidgetConnectors(pct);
 
-                       final Point2D frameLocation = startTranslation.add( delta.mul( pct ) );
-                       final double frameScaleX = startScaleX + ( endScaleX - startScaleX ) * pct;
-                       final double frameScaleY = startScaleY + ( endScaleY - startScaleY ) * pct;
-                       transform.scale( frameScaleX,
-                                        frameScaleY ).translate( frameLocation.getX(),
-                                                                 frameLocation.getY() );
+                      gridWidget.getLayer().batch();
+                  }
 
-                       hideGridWidgets( pct );
-                       hideGridWidgetConnectors( pct );
+                  @Override
+                  public void onClose(final IAnimation animation,
+                                      final IAnimationHandle handle) {
+                      for (GridWidget gw : gridWidgets) {
+                          gw.setVisible(false);
+                      }
+                      for (IPrimitive<?> p : gridWidgetConnectors) {
+                          p.setVisible(false);
+                      }
+                      gridWidget.getLayer().setListening(true);
+                      gridWidget.getLayer().batch();
+                  }
 
-                       gridWidget.getLayer().batch();
-                   }
+                  private Point2D getViewportTranslation() {
+                      final Viewport vp = gridWidget.getViewport();
+                      final Transform transform = vp.getTransform();
+                      final Transform t = transform.copy().getInverse();
+                      final Point2D p = new Point2D(t.getTranslateX(),
+                                                    t.getTranslateY());
+                      return p;
+                  }
 
-                   @Override
-                   public void onClose( final IAnimation animation,
-                                        final IAnimationHandle handle ) {
-                       for ( GridWidget gw : gridWidgets ) {
-                           gw.setVisible( false );
-                       }
-                       for ( IPrimitive<?> p : gridWidgetConnectors ) {
-                           p.setVisible( false );
-                       }
-                       gridWidget.getLayer().setListening( true );
-                       gridWidget.getLayer().batch();
-                   }
+                  private double assertPct(final double pct) {
+                      if (pct < 0) {
+                          return 0;
+                      }
+                      if (pct > 1.0) {
+                          return 1.0;
+                      }
+                      return tweener.apply(pct);
+                  }
 
-                   private Point2D getViewportTranslation() {
-                       final Viewport vp = gridWidget.getViewport();
-                       final Transform transform = vp.getTransform();
-                       final Transform t = transform.copy().getInverse();
-                       final Point2D p = new Point2D( t.getTranslateX(),
-                                                      t.getTranslateY() );
-                       return p;
-                   }
+                  private void hideGridWidgets(final double pct) {
+                      for (GridWidget gw : gridWidgets) {
+                          gw.setAlpha(1.0 - pct);
+                      }
+                  }
 
-                   private double assertPct( final double pct ) {
-                       if ( pct < 0 ) {
-                           return 0;
-                       }
-                       if ( pct > 1.0 ) {
-                           return 1.0;
-                       }
-                       return tweener.apply( pct );
-                   }
-
-                   private void hideGridWidgets( final double pct ) {
-                       for ( GridWidget gw : gridWidgets ) {
-                           gw.setAlpha( 1.0 - pct );
-                       }
-                   }
-
-                   private void hideGridWidgetConnectors( final double pct ) {
-                       for ( IPrimitive<?> p : gridWidgetConnectors ) {
-                           p.setAlpha( 1.0 - pct );
-                       }
-                   }
-
-               } );
+                  private void hideGridWidgetConnectors(final double pct) {
+                      for (IPrimitive<?> p : gridWidgetConnectors) {
+                          p.setAlpha(1.0 - pct);
+                      }
+                  }
+              });
     }
-
 }

@@ -28,39 +28,31 @@ import org.uberfire.ext.preferences.client.base.BasePreferenceForm;
 import org.uberfire.ext.wires.shared.preferences.bean.MyInnerPreference;
 
 @Dependent
-@PreferenceForm( "MyInnerPreference" )
+@PreferenceForm("MyInnerPreference")
 @WorkbenchScreen(identifier = MyInnerPreferenceCustomForm.IDENTIFIER)
 public class MyInnerPreferenceCustomForm extends BasePreferenceForm<MyInnerPreference> {
 
     public static final String IDENTIFIER = "MyInnerPreferenceCustomForm";
-
-    public interface View extends UberElement<MyInnerPreferenceCustomForm> {
-
-        void init( final MyInnerPreferenceCustomForm presenter );
-
-        void updatePreference( final MyInnerPreference preference );
-    }
-
     private final View view;
 
     @Inject
-    public MyInnerPreferenceCustomForm( final View view ) {
+    public MyInnerPreferenceCustomForm(final View view) {
         this.view = view;
     }
 
     @Override
-    public void init( final MyInnerPreference preference ) {
-        view.init( this );
+    public void init(final MyInnerPreference preference) {
+        view.init(this);
     }
 
     @Override
     public void beforeSave() {
-        view.updatePreference( getPreference() );
+        view.updatePreference(getPreference());
     }
 
     @Override
     public void onUndo() {
-        view.init( this );
+        view.init(this);
     }
 
     @WorkbenchPartView
@@ -73,4 +65,10 @@ public class MyInnerPreferenceCustomForm extends BasePreferenceForm<MyInnerPrefe
         return "Custom Form for MyInnerPreference";
     }
 
+    public interface View extends UberElement<MyInnerPreferenceCustomForm> {
+
+        void init(final MyInnerPreferenceCustomForm presenter);
+
+        void updatePreference(final MyInnerPreference preference);
+    }
 }

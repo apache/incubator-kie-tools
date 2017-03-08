@@ -37,13 +37,11 @@ import org.uberfire.ext.editor.commons.backend.service.restriction.LockRestricto
 import org.uberfire.ext.editor.commons.service.ValidationService;
 import org.uberfire.ext.editor.commons.service.restrictor.RenameRestrictor;
 import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.eq;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RenameServiceImplTest {
@@ -73,166 +71,193 @@ public class RenameServiceImplTest {
 
     @Before
     public void setup() throws Exception {
-        when( identity.getIdentifier() ).thenReturn( "user" );
+        when(identity.getIdentifier()).thenReturn("user");
 
-        doReturn( getPath() ).when( renameService ).renamePath( any( Path.class ), any( String.class ), any( String.class ) );
-        doNothing().when( renameService ).renamePathIfExists( any( Path.class ), any( String.class ), any( String.class ) );
-        doNothing().when( renameService ).startBatch( Matchers.<Collection<Path>>any() );
-        doNothing().when( renameService ).endBatch();
+        doReturn(getPath()).when(renameService).renamePath(any(Path.class),
+                                                           any(String.class),
+                                                           any(String.class));
+        doNothing().when(renameService).renamePathIfExists(any(Path.class),
+                                                           any(String.class),
+                                                           any(String.class));
+        doNothing().when(renameService).startBatch(Matchers.<Collection<Path>>any());
+        doNothing().when(renameService).endBatch();
 
         List<RenameRestrictor> renameRestrictors = new ArrayList<RenameRestrictor>();
-        renameRestrictors.add( lockRestrictor );
-        when( renameService.getRenameRestrictors() ).thenReturn( renameRestrictors );
+        renameRestrictors.add(lockRestrictor);
+        when(renameService.getRenameRestrictors()).thenReturn(renameRestrictors);
     }
 
     @Test
     public void renameLockedPathTest() {
         final Path path = getPath();
 
-        givenThatPathIsLocked( path );
+        givenThatPathIsLocked(path);
 
         try {
-            whenPathIsRenamed( path );
-        } catch ( RuntimeException e ) {
-            thenPathWasNotRenamed( path, e );
+            whenPathIsRenamed(path);
+        } catch (RuntimeException e) {
+            thenPathWasNotRenamed(path,
+                                  e);
         }
 
-        thenPathWasNotRenamed( path );
+        thenPathWasNotRenamed(path);
     }
 
     @Test
     public void renameUnlockedPathTest() {
         final Path path = getPath();
 
-        givenThatPathIsUnlocked( path );
-        whenPathIsRenamed( path );
-        thenPathWasRenamed( path );
+        givenThatPathIsUnlocked(path);
+        whenPathIsRenamed(path);
+        thenPathWasRenamed(path);
     }
 
     @Test
     public void renameLockedPathIfExistsTest() {
         final List<Path> paths = new ArrayList<Path>();
-        paths.add( getPath( "file0.txt" ) );
-        paths.add( getPath( "file1.txt" ) );
-        paths.add( getPath( "file2.txt" ) );
+        paths.add(getPath("file0.txt"));
+        paths.add(getPath("file1.txt"));
+        paths.add(getPath("file2.txt"));
 
-        givenThatPathIsUnlocked( paths.get( 0 ) );
-        givenThatPathIsLocked( paths.get( 1 ) );
-        givenThatPathIsUnlocked( paths.get( 2 ) );
+        givenThatPathIsUnlocked(paths.get(0));
+        givenThatPathIsLocked(paths.get(1));
+        givenThatPathIsUnlocked(paths.get(2));
 
         try {
-            whenPathsAreRenamedIfExists( paths );
-        } catch ( RuntimeException e ) {
-            thenPathWasNotRenamedIfExists( paths.get( 1 ), e );
+            whenPathsAreRenamedIfExists(paths);
+        } catch (RuntimeException e) {
+            thenPathWasNotRenamedIfExists(paths.get(1),
+                                          e);
         }
 
-        thenPathWasRenamedIfExists( paths.get( 0 ) );
-        thenPathWasNotRenamedIfExists( paths.get( 1 ) );
+        thenPathWasRenamedIfExists(paths.get(0));
+        thenPathWasNotRenamedIfExists(paths.get(1));
 
         // This will not be renamed because the process stops when some exception is raised.
-        thenPathWasNotRenamedIfExists( paths.get( 2 ) );
+        thenPathWasNotRenamedIfExists(paths.get(2));
     }
 
     @Test
     public void renameUnlockedPathIfExistsTest() {
         final List<Path> paths = new ArrayList<Path>();
-        paths.add( getPath( "file0.txt" ) );
-        paths.add( getPath( "file1.txt" ) );
-        paths.add( getPath( "file2.txt" ) );
+        paths.add(getPath("file0.txt"));
+        paths.add(getPath("file1.txt"));
+        paths.add(getPath("file2.txt"));
 
-        givenThatPathIsUnlocked( paths.get( 0 ) );
-        givenThatPathIsUnlocked( paths.get( 1 ) );
-        givenThatPathIsUnlocked( paths.get( 2 ) );
+        givenThatPathIsUnlocked(paths.get(0));
+        givenThatPathIsUnlocked(paths.get(1));
+        givenThatPathIsUnlocked(paths.get(2));
 
-        whenPathsAreRenamedIfExists( paths );
+        whenPathsAreRenamedIfExists(paths);
 
-        thenPathWasRenamedIfExists( paths.get( 0 ) );
-        thenPathWasRenamedIfExists( paths.get( 1 ) );
-        thenPathWasRenamedIfExists( paths.get( 2 ) );
+        thenPathWasRenamedIfExists(paths.get(0));
+        thenPathWasRenamedIfExists(paths.get(1));
+        thenPathWasRenamedIfExists(paths.get(2));
     }
 
     @Test
     public void pathHasNoRenameRestrictionTest() {
         final Path path = getPath();
 
-        givenThatPathIsUnlocked( path );
-        boolean hasRestriction = whenPathIsCheckedForRenameRestrictions( path );
-        thenPathHasNoRenameRestrictions( hasRestriction );
+        givenThatPathIsUnlocked(path);
+        boolean hasRestriction = whenPathIsCheckedForRenameRestrictions(path);
+        thenPathHasNoRenameRestrictions(hasRestriction);
     }
 
     @Test
     public void pathHasRenameRestrictionTest() {
         final Path path = getPath();
 
-        givenThatPathIsLocked( path );
-        boolean hasRestriction = whenPathIsCheckedForRenameRestrictions( path );
-        thenPathHasRenameRestrictions( hasRestriction );
+        givenThatPathIsLocked(path);
+        boolean hasRestriction = whenPathIsCheckedForRenameRestrictions(path);
+        thenPathHasRenameRestrictions(hasRestriction);
     }
 
-    private void givenThatPathIsLocked( final Path path ) {
-        changeLockInfo( path, true );
+    private void givenThatPathIsLocked(final Path path) {
+        changeLockInfo(path,
+                       true);
     }
 
-    private void givenThatPathIsUnlocked( final Path path ) {
-        changeLockInfo( path, false );
+    private void givenThatPathIsUnlocked(final Path path) {
+        changeLockInfo(path,
+                       false);
     }
 
-    private void whenPathIsRenamed( final Path path ) {
-        renameService.rename( path, "newname", "comment" );
+    private void whenPathIsRenamed(final Path path) {
+        renameService.rename(path,
+                             "newname",
+                             "comment");
     }
 
-    private void whenPathsAreRenamedIfExists( final Collection<Path> paths ) {
-        renameService.renameIfExists( paths, "newname", "comment" );
+    private void whenPathsAreRenamedIfExists(final Collection<Path> paths) {
+        renameService.renameIfExists(paths,
+                                     "newname",
+                                     "comment");
     }
 
-    private boolean whenPathIsCheckedForRenameRestrictions( final Path path ) {
-        return renameService.hasRestriction( path );
+    private boolean whenPathIsCheckedForRenameRestrictions(final Path path) {
+        return renameService.hasRestriction(path);
     }
 
-    private void thenPathWasRenamed( final Path path ) {
-        verify( renameService ).renamePath( eq( path ), any( String.class ), any( String.class ) );
+    private void thenPathWasRenamed(final Path path) {
+        verify(renameService).renamePath(eq(path),
+                                         any(String.class),
+                                         any(String.class));
     }
 
-    private void thenPathWasNotRenamed( final Path path ) {
-        verify( renameService, never() ).renamePath( eq( path ), any( String.class ), any( String.class ) );
+    private void thenPathWasNotRenamed(final Path path) {
+        verify(renameService,
+               never()).renamePath(eq(path),
+                                   any(String.class),
+                                   any(String.class));
     }
 
-    private void thenPathWasNotRenamed( final Path path,
-                                        final RuntimeException e ) {
-        assertEquals( path.toURI() + " cannot be deleted, moved or renamed. It is locked by: lockedBy", e.getMessage() );
+    private void thenPathWasNotRenamed(final Path path,
+                                       final RuntimeException e) {
+        assertEquals(path.toURI() + " cannot be deleted, moved or renamed. It is locked by: lockedBy",
+                     e.getMessage());
     }
 
-    private void thenPathWasRenamedIfExists( final Path path ) {
-        verify( renameService ).renamePathIfExists( eq( path ), any( String.class ), any( String.class ) );
+    private void thenPathWasRenamedIfExists(final Path path) {
+        verify(renameService).renamePathIfExists(eq(path),
+                                                 any(String.class),
+                                                 any(String.class));
     }
 
-    private void thenPathWasNotRenamedIfExists( final Path path ) {
-        verify( renameService, never() ).renamePathIfExists( eq( path ), any( String.class ), any( String.class ) );
+    private void thenPathWasNotRenamedIfExists(final Path path) {
+        verify(renameService,
+               never()).renamePathIfExists(eq(path),
+                                           any(String.class),
+                                           any(String.class));
     }
 
-    private void thenPathWasNotRenamedIfExists( final Path path,
-                                                final RuntimeException e ) {
-        assertEquals( path.toURI() + " cannot be deleted, moved or renamed. It is locked by: lockedBy", e.getMessage() );
+    private void thenPathWasNotRenamedIfExists(final Path path,
+                                               final RuntimeException e) {
+        assertEquals(path.toURI() + " cannot be deleted, moved or renamed. It is locked by: lockedBy",
+                     e.getMessage());
     }
 
-    private void thenPathHasNoRenameRestrictions( final boolean hasRestriction ) {
-        assertFalse( hasRestriction );
+    private void thenPathHasNoRenameRestrictions(final boolean hasRestriction) {
+        assertFalse(hasRestriction);
     }
 
-    private void thenPathHasRenameRestrictions( final boolean hasRestriction ) {
-        assertTrue( hasRestriction );
+    private void thenPathHasRenameRestrictions(final boolean hasRestriction) {
+        assertTrue(hasRestriction);
     }
 
     private Path getPath() {
-        return getPath( "file.txt" );
+        return getPath("file.txt");
     }
 
-    private Path getPath( String fileName ) {
-        return PathFactory.newPath( fileName, "file://tmp/" + fileName );
+    private Path getPath(String fileName) {
+        return PathFactory.newPath(fileName,
+                                   "file://tmp/" + fileName);
     }
 
-    private void changeLockInfo( Path path,
-                                 boolean locked ) {
-        when( lockService.retrieveLockInfo( path ) ).thenReturn( new LockInfo( locked, "lockedBy", path ) );
+    private void changeLockInfo(Path path,
+                                boolean locked) {
+        when(lockService.retrieveLockInfo(path)).thenReturn(new LockInfo(locked,
+                                                                         "lockedBy",
+                                                                         path));
     }
 }

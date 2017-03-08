@@ -16,7 +16,7 @@
 
 package org.uberfire.ext.widgets.sandbox.client.markdown;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 public class MarkdownTextContent {
 
@@ -26,11 +26,11 @@ public class MarkdownTextContent {
     }
 
     public MarkdownTextContent(final String content) {
-        this.content = checkNotNull("content", content);
+        this.content = checkNotNull("content",
+                                    content);
     }
 
     public String getContent() {
         return content;
     }
-
 }

@@ -16,14 +16,14 @@
 
 package org.uberfire.ext.layout.editor.client.infra;
 
-
 public class ColumnResizeEvent {
 
     private String columnID;
     private String rowID;
     private Direction direction = Direction.LEFT;
 
-    public ColumnResizeEvent( String columnID, String rowID ) {
+    public ColumnResizeEvent(String columnID,
+                             String rowID) {
 
         this.columnID = columnID;
         this.rowID = rowID;
@@ -51,13 +51,12 @@ public class ColumnResizeEvent {
         return direction == Direction.LEFT;
     }
 
-    private enum Direction {
-        LEFT, RIGHT;
-    }
-
-
     public Direction getDirection() {
         return direction;
     }
 
+    private enum Direction {
+        LEFT,
+        RIGHT;
+    }
 }

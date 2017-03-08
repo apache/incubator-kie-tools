@@ -23,7 +23,7 @@ public interface CommonConstants
         extends
         Messages {
 
-    public static final CommonConstants INSTANCE = GWT.create( CommonConstants.class );
+    public static final CommonConstants INSTANCE = GWT.create(CommonConstants.class);
 
     String SavePopupTitle();
 
@@ -45,7 +45,7 @@ public interface CommonConstants
 
     String CopyPopupCreateACopy();
 
-    String InvalidFileName0( String baseFileName );
+    String InvalidFileName0(String baseFileName);
 
     String DeletePopupTitle();
 
@@ -85,7 +85,7 @@ public interface CommonConstants
 
     String LatestVersion();
 
-    String Version( int versionIndex );
+    String Version(int versionIndex);
 
     String Date();
 
@@ -109,7 +109,7 @@ public interface CommonConstants
 
     String ItemCopiedSuccessfully();
 
-    String ExceptionFileAlreadyExists0( final String uri );
+    String ExceptionFileAlreadyExists0(final String uri);
 
     String Current();
 
@@ -118,5 +118,4 @@ public interface CommonConstants
     String PackageColon();
 
     String HtmlEditor();
-
 }

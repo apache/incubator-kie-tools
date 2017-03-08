@@ -91,197 +91,198 @@ public class BasicFileMenuBuilderTest {
 
     @Before
     public void setup() {
-        builder = new BasicFileMenuBuilderImpl( deletePopUpPresenter,
-                                                copyPopUpPresenter,
-                                                renamePopUpPresenter,
-                                                busyIndicatorView,
-                                                notification,
-                                                restoreVersionCommandProvider );
-        deleteCaller = new CallerMock<>( deleteService );
-        renameCaller = new CallerMock<>( renameService );
-        when( provider.getPath() ).thenReturn( mockPath );
+        builder = new BasicFileMenuBuilderImpl(deletePopUpPresenter,
+                                               copyPopUpPresenter,
+                                               renamePopUpPresenter,
+                                               busyIndicatorView,
+                                               notification,
+                                               restoreVersionCommandProvider);
+        deleteCaller = new CallerMock<>(deleteService);
+        renameCaller = new CallerMock<>(renameService);
+        when(provider.getPath()).thenReturn(mockPath);
     }
 
     @Test
     public void testDelete() {
-        builder.addDelete( provider,
-                           deleteCaller );
+        builder.addDelete(provider,
+                          deleteCaller);
 
         final Menus menus = builder.build();
-        final MenuItem mi = menus.getItems().get( 0 );
+        final MenuItem mi = menus.getItems().get(0);
         final MenuItemCommand mic = (MenuItemCommand) mi;
 
-        verify( provider,
-                never() ).getPath();
+        verify(provider,
+               never()).getPath();
 
         mic.getCommand().execute();
 
-        verify( provider, times( 1 ) ).getPath();
+        verify(provider,
+               times(1)).getPath();
     }
 
     @Test
     public void testRename() {
-        builder.addRename( provider,
-                           validator,
-                           renameCaller );
+        builder.addRename(provider,
+                          validator,
+                          renameCaller);
 
         final Menus menus = builder.build();
-        final MenuItem mi = menus.getItems().get( 0 );
+        final MenuItem mi = menus.getItems().get(0);
         final MenuItemCommand mic = (MenuItemCommand) mi;
 
-        verify( provider,
-                never() ).getPath();
+        verify(provider,
+               never()).getPath();
 
         mic.getCommand().execute();
 
-        verify( provider,
-                times( 1 ) ).getPath();
+        verify(provider,
+               times(1)).getPath();
     }
 
     @Test
     public void testCopy() {
-        builder.addCopy( provider,
-                         validator,
-                         copyCaller );
+        builder.addCopy(provider,
+                        validator,
+                        copyCaller);
 
         final Menus menus = builder.build();
-        final MenuItem mi = menus.getItems().get( 0 );
+        final MenuItem mi = menus.getItems().get(0);
         final MenuItemCommand mic = (MenuItemCommand) mi;
 
-        verify( provider,
-                never() ).getPath();
+        verify(provider,
+               never()).getPath();
 
         mic.getCommand().execute();
 
-        verify( provider,
-                times( 1 ) ).getPath();
+        verify(provider,
+               times(1)).getPath();
     }
 
     @Test
     public void menuItemsDisabledWhenLockedByDifferentUser() {
-        builder.addSave( new MockSaveButton() );
-        builder.addRename( mock( Command.class ) );
-        builder.addDelete( mock( Command.class ) );
+        builder.addSave(new MockSaveButton());
+        builder.addRename(mock(Command.class));
+        builder.addDelete(mock(Command.class));
 
         final Menus menus = builder.build();
 
-        final UpdatedLockStatusEvent event = new UpdatedLockStatusEvent( mock( Path.class ),
-                                                                         true,
-                                                                         false );
+        final UpdatedLockStatusEvent event = new UpdatedLockStatusEvent(mock(Path.class),
+                                                                        true,
+                                                                        false);
 
-        builder.onEditorLockInfo( event );
+        builder.onEditorLockInfo(event);
 
-        assertMenuItemEnabled( menus.getItems().get( 0 ),
-                               false );
-        assertMenuItemEnabled( menus.getItems().get( 1 ),
-                               false );
-        assertMenuItemEnabled( menus.getItems().get( 2 ),
-                               false );
+        assertMenuItemEnabled(menus.getItems().get(0),
+                              false);
+        assertMenuItemEnabled(menus.getItems().get(1),
+                              false);
+        assertMenuItemEnabled(menus.getItems().get(2),
+                              false);
     }
 
     @Test
     public void menuItemsEnabledWhenNotLocked() {
-        builder.addSave( new MockSaveButton() );
-        builder.addRename( mock( Command.class ) );
-        builder.addDelete( mock( Command.class ) );
+        builder.addSave(new MockSaveButton());
+        builder.addRename(mock(Command.class));
+        builder.addDelete(mock(Command.class));
 
         final Menus menus = builder.build();
 
-        final UpdatedLockStatusEvent event = new UpdatedLockStatusEvent( mock( Path.class ),
-                                                                         false,
-                                                                         false );
+        final UpdatedLockStatusEvent event = new UpdatedLockStatusEvent(mock(Path.class),
+                                                                        false,
+                                                                        false);
 
-        builder.onEditorLockInfo( event );
+        builder.onEditorLockInfo(event);
 
-        assertMenuItemEnabled( menus.getItems().get( 0 ),
-                               true );
-        assertMenuItemEnabled( menus.getItems().get( 1 ),
-                               true );
-        assertMenuItemEnabled( menus.getItems().get( 2 ),
-                               true );
+        assertMenuItemEnabled(menus.getItems().get(0),
+                              true);
+        assertMenuItemEnabled(menus.getItems().get(1),
+                              true);
+        assertMenuItemEnabled(menus.getItems().get(2),
+                              true);
     }
 
     @Test
     public void menuItemsEnabledWhenLockedByCurrentUser() {
-        builder.addSave( new MockSaveButton() );
-        builder.addRename( mock( Command.class ) );
-        builder.addDelete( mock( Command.class ) );
+        builder.addSave(new MockSaveButton());
+        builder.addRename(mock(Command.class));
+        builder.addDelete(mock(Command.class));
 
         final Menus menus = builder.build();
 
-        final UpdatedLockStatusEvent event = new UpdatedLockStatusEvent( mock( Path.class ),
-                                                                         true,
-                                                                         true );
+        final UpdatedLockStatusEvent event = new UpdatedLockStatusEvent(mock(Path.class),
+                                                                        true,
+                                                                        true);
 
-        builder.onEditorLockInfo( event );
+        builder.onEditorLockInfo(event);
 
-        assertMenuItemEnabled( menus.getItems().get( 0 ),
-                               true );
-        assertMenuItemEnabled( menus.getItems().get( 1 ),
-                               true );
-        assertMenuItemEnabled( menus.getItems().get( 2 ),
-                               true );
+        assertMenuItemEnabled(menus.getItems().get(0),
+                              true);
+        assertMenuItemEnabled(menus.getItems().get(1),
+                              true);
+        assertMenuItemEnabled(menus.getItems().get(2),
+                              true);
     }
 
     @Test
     public void menuItemsDisabledWhenNotLockedWithCustomStateHelper() {
-        builder.addSave( new MockSaveButton() );
-        builder.addRename( mock( Command.class ) );
-        builder.addDelete( mock( Command.class ) );
-        builder.setLockSyncMenuStateHelper( ( final Path file,
-                                              final boolean isLocked,
-                                              final boolean isLockedByCurrentUser ) -> Operation.DISABLE );
+        builder.addSave(new MockSaveButton());
+        builder.addRename(mock(Command.class));
+        builder.addDelete(mock(Command.class));
+        builder.setLockSyncMenuStateHelper((final Path file,
+                                            final boolean isLocked,
+                                            final boolean isLockedByCurrentUser) -> Operation.DISABLE);
 
         final Menus menus = builder.build();
 
         //Not locked, MenuItems should normally be enabled however our custom helper forces disable
-        final UpdatedLockStatusEvent event = new UpdatedLockStatusEvent( mock( Path.class ),
-                                                                         false,
-                                                                         false );
+        final UpdatedLockStatusEvent event = new UpdatedLockStatusEvent(mock(Path.class),
+                                                                        false,
+                                                                        false);
 
-        builder.onEditorLockInfo( event );
+        builder.onEditorLockInfo(event);
 
-        assertMenuItemEnabled( menus.getItems().get( 0 ),
-                               false );
-        assertMenuItemEnabled( menus.getItems().get( 1 ),
-                               false );
-        assertMenuItemEnabled( menus.getItems().get( 2 ),
-                               false );
+        assertMenuItemEnabled(menus.getItems().get(0),
+                              false);
+        assertMenuItemEnabled(menus.getItems().get(1),
+                              false);
+        assertMenuItemEnabled(menus.getItems().get(2),
+                              false);
     }
 
     @Test
     public void menuItemsStateChangeVetoedWhenLockedWithCustomStateHelper() {
-        builder.addSave( new MockSaveButton() );
-        builder.addRename( mock( Command.class ) );
-        builder.addDelete( mock( Command.class ) );
-        builder.setLockSyncMenuStateHelper( ( final Path file,
-                                              final boolean isLocked,
-                                              final boolean isLockedByCurrentUser ) -> Operation.VETO );
+        builder.addSave(new MockSaveButton());
+        builder.addRename(mock(Command.class));
+        builder.addDelete(mock(Command.class));
+        builder.setLockSyncMenuStateHelper((final Path file,
+                                            final boolean isLocked,
+                                            final boolean isLockedByCurrentUser) -> Operation.VETO);
 
         final Menus menus = builder.build();
-        menus.getItems().get( 0 ).setEnabled( true );
-        menus.getItems().get( 1 ).setEnabled( true );
-        menus.getItems().get( 2 ).setEnabled( true );
+        menus.getItems().get(0).setEnabled(true);
+        menus.getItems().get(1).setEnabled(true);
+        menus.getItems().get(2).setEnabled(true);
 
         //Locked, MenuItems should normally be disabled however our custom helper vetos changes
-        final UpdatedLockStatusEvent event = new UpdatedLockStatusEvent( mock( Path.class ),
-                                                                         true,
-                                                                         false );
+        final UpdatedLockStatusEvent event = new UpdatedLockStatusEvent(mock(Path.class),
+                                                                        true,
+                                                                        false);
 
-        builder.onEditorLockInfo( event );
+        builder.onEditorLockInfo(event);
 
-        assertMenuItemEnabled( menus.getItems().get( 0 ),
-                               true );
-        assertMenuItemEnabled( menus.getItems().get( 1 ),
-                               true );
-        assertMenuItemEnabled( menus.getItems().get( 2 ),
-                               true );
+        assertMenuItemEnabled(menus.getItems().get(0),
+                              true);
+        assertMenuItemEnabled(menus.getItems().get(1),
+                              true);
+        assertMenuItemEnabled(menus.getItems().get(2),
+                              true);
     }
 
-    private void assertMenuItemEnabled( final MenuItem menuItem,
-                                        final boolean enabled ) {
-        assertEquals( enabled,
-                      menuItem.isEnabled() );
+    private void assertMenuItemEnabled(final MenuItem menuItem,
+                                       final boolean enabled) {
+        assertEquals(enabled,
+                     menuItem.isEnabled());
     }
 
     //The real SaveButton keeps state in the GWT Widget.. override to keep in the Presenter
@@ -295,9 +296,8 @@ public class BasicFileMenuBuilderTest {
         }
 
         @Override
-        public void setEnabled( final boolean enabled ) {
+        public void setEnabled(final boolean enabled) {
             this.enabled = enabled;
         }
     }
-
 }

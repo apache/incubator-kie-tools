@@ -20,7 +20,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 
 public class ConcurrentRenameAcceptedEvent extends AbstractConcurrentOperationEvent {
 
-    public ConcurrentRenameAcceptedEvent( final ObservablePath path ) {
-        super( path );
+    public ConcurrentRenameAcceptedEvent(final ObservablePath path) {
+        super(path);
     }
 }

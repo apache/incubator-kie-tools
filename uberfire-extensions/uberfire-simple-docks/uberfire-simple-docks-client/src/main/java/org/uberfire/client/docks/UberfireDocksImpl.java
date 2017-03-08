@@ -16,16 +16,25 @@
 
 package org.uberfire.client.docks;
 
-import org.uberfire.client.docks.view.DocksBar;
-import org.uberfire.client.docks.view.DocksBars;
-import org.uberfire.client.workbench.docks.*;
-import org.uberfire.client.workbench.events.PerspectiveChange;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import java.util.*;
+
+import org.uberfire.client.docks.view.DocksBar;
+import org.uberfire.client.docks.view.DocksBars;
+import org.uberfire.client.workbench.docks.UberfireDock;
+import org.uberfire.client.workbench.docks.UberfireDockContainerReadyEvent;
+import org.uberfire.client.workbench.docks.UberfireDockPosition;
+import org.uberfire.client.workbench.docks.UberfireDockReadyEvent;
+import org.uberfire.client.workbench.docks.UberfireDocks;
+import org.uberfire.client.workbench.events.PerspectiveChange;
 
 @ApplicationScoped
 public class UberfireDocksImpl implements UberfireDocks {
@@ -35,119 +44,120 @@ public class UberfireDocksImpl implements UberfireDocks {
     final Map<String, List<UberfireDock>> docksPerPerspective = new HashMap<String, List<UberfireDock>>();
 
     final Map<String, Set<UberfireDockPosition>> disableDocksPerPerspective = new HashMap<String, Set<UberfireDockPosition>>();
-
-    private DocksBars docksBars;
-
     String currentSelectedPerspective;
-
+    private DocksBars docksBars;
     @Inject
     private Event<UberfireDockReadyEvent> dockReadyEvent;
 
     @Inject
-    public UberfireDocksImpl( DocksBars docksBars ) {
+    public UberfireDocksImpl(DocksBars docksBars) {
         this.docksBars = docksBars;
     }
 
-    protected void setup( @Observes UberfireDockContainerReadyEvent event ) {
+    protected void setup(@Observes UberfireDockContainerReadyEvent event) {
         docksBars.setup();
     }
 
     @Override
-    public void configure( Map<String, String> configurations ) {
-        if ( configurations != null && configurations.get( IDE_DOCK ) != null ) {
-            docksBars.setIDEdock( Boolean.valueOf( configurations.get( IDE_DOCK ) ) );
+    public void configure(Map<String, String> configurations) {
+        if (configurations != null && configurations.get(IDE_DOCK) != null) {
+            docksBars.setIDEdock(Boolean.valueOf(configurations.get(IDE_DOCK)));
         }
     }
 
     @Override
-    public void add( UberfireDock... docks ) {
-        for ( UberfireDock dock : docks ) {
-            if ( dock.getAssociatedPerspective() != null ) {
-                List<UberfireDock> uberfireDocks = docksPerPerspective.get( dock.getAssociatedPerspective() );
-                if ( uberfireDocks == null ) {
+    public void add(UberfireDock... docks) {
+        for (UberfireDock dock : docks) {
+            if (dock.getAssociatedPerspective() != null) {
+                List<UberfireDock> uberfireDocks = docksPerPerspective.get(dock.getAssociatedPerspective());
+                if (uberfireDocks == null) {
                     uberfireDocks = new ArrayList<UberfireDock>();
                 }
-                uberfireDocks.add( dock );
-                docksPerPerspective.put( dock.getAssociatedPerspective(), uberfireDocks );
+                uberfireDocks.add(dock);
+                docksPerPerspective.put(dock.getAssociatedPerspective(),
+                                        uberfireDocks);
             }
         }
         updateDocks();
     }
 
-    public void perspectiveChangeEvent( @Observes PerspectiveChange perspectiveChange ) {
+    public void perspectiveChangeEvent(@Observes PerspectiveChange perspectiveChange) {
         this.currentSelectedPerspective = perspectiveChange.getIdentifier();
         updateDocks();
         fireDockReadyEvent();
     }
 
     protected void fireDockReadyEvent() {
-        dockReadyEvent.fire( new UberfireDockReadyEvent( currentSelectedPerspective ) );
+        dockReadyEvent.fire(new UberfireDockReadyEvent(currentSelectedPerspective));
     }
 
     @Override
-    public void remove( UberfireDock... docks ) {
-        for ( UberfireDock dock : docks ) {
-            if ( dock.getAssociatedPerspective() != null ) {
-                List<UberfireDock> uberfireDocks = docksPerPerspective.get( dock.getAssociatedPerspective() );
-                uberfireDocks.remove( dock );
-                docksPerPerspective.put( dock.getAssociatedPerspective(), uberfireDocks );
+    public void remove(UberfireDock... docks) {
+        for (UberfireDock dock : docks) {
+            if (dock.getAssociatedPerspective() != null) {
+                List<UberfireDock> uberfireDocks = docksPerPerspective.get(dock.getAssociatedPerspective());
+                uberfireDocks.remove(dock);
+                docksPerPerspective.put(dock.getAssociatedPerspective(),
+                                        uberfireDocks);
             }
         }
         updateDocks();
     }
 
     @Override
-    public void expand( UberfireDock dock ) {
-        if ( docksBars.isReady() ) {
-            docksBars.expand( dock );
+    public void expand(UberfireDock dock) {
+        if (docksBars.isReady()) {
+            docksBars.expand(dock);
         }
     }
 
     @Override
-    public void disable( UberfireDockPosition position,
-                         String perspectiveName ) {
-        addToDisableDocksList( position, perspectiveName );
-        disableDock( position );
+    public void disable(UberfireDockPosition position,
+                        String perspectiveName) {
+        addToDisableDocksList(position,
+                              perspectiveName);
+        disableDock(position);
     }
 
-    private void disableDock( UberfireDockPosition position ) {
-        if ( docksBars.isReady() ) {
-            docksBars.clearAndCollapse( position );
+    private void disableDock(UberfireDockPosition position) {
+        if (docksBars.isReady()) {
+            docksBars.clearAndCollapse(position);
         }
     }
 
     @Override
-    public void enable( UberfireDockPosition position,
-                        String perspectiveName ) {
-        removeFromDisableDocksList( position, perspectiveName );
-        enableDock( position );
+    public void enable(UberfireDockPosition position,
+                       String perspectiveName) {
+        removeFromDisableDocksList(position,
+                                   perspectiveName);
+        enableDock(position);
     }
 
-    private void enableDock( UberfireDockPosition position ) {
-        if ( docksBars.isReady() ) {
-            docksBars.clearAndCollapse( position );
-            if ( currentSelectedPerspective != null ) {
-                List<UberfireDock> docks = docksPerPerspective.get( currentSelectedPerspective );
-                if ( docks != null && !docks.isEmpty() ) {
-                    for ( UberfireDock dock : docks ) {
-                        if ( dock.getDockPosition().equals( position ) ) {
-                            docksBars.addDock( dock );
+    private void enableDock(UberfireDockPosition position) {
+        if (docksBars.isReady()) {
+            docksBars.clearAndCollapse(position);
+            if (currentSelectedPerspective != null) {
+                List<UberfireDock> docks = docksPerPerspective.get(currentSelectedPerspective);
+                if (docks != null && !docks.isEmpty()) {
+                    for (UberfireDock dock : docks) {
+                        if (dock.getDockPosition().equals(position)) {
+                            docksBars.addDock(dock);
                         }
                     }
-                    docksBars.expand( position );
+                    docksBars.expand(position);
                 }
             }
         }
     }
 
     private void updateDocks() {
-        if ( docksBars.isReady() ) {
+        if (docksBars.isReady()) {
             docksBars.clearAndCollapseAllDocks();
-            if ( currentSelectedPerspective != null ) {
-                List<UberfireDock> docks = docksPerPerspective.get( currentSelectedPerspective );
-                if ( docks != null && !docks.isEmpty() ) {
-                    for ( UberfireDock dock : docks ) {
-                        docksBars.addDock( dock );
+            if (currentSelectedPerspective != null) {
+                List<UberfireDock> docks = docksPerPerspective.get(currentSelectedPerspective);
+                if (docks != null && !docks.isEmpty()) {
+                    for (UberfireDock dock : docks) {
+                        docksBars.addDock(dock);
                     }
                     expandAllAvailableDocks();
                 }
@@ -156,34 +166,35 @@ public class UberfireDocksImpl implements UberfireDocks {
     }
 
     private void expandAllAvailableDocks() {
-        for ( DocksBar docksBar : docksBars.getDocksBars() ) {
-            if ( dockIsEnable( docksBar.getPosition() ) ) {
-                docksBars.expand( docksBar );
+        for (DocksBar docksBar : docksBars.getDocksBars()) {
+            if (dockIsEnable(docksBar.getPosition())) {
+                docksBars.expand(docksBar);
             }
         }
     }
 
-    private void addToDisableDocksList( UberfireDockPosition position,
-                                        String perspectiveName ) {
-        Set<UberfireDockPosition> disableDocks = disableDocksPerPerspective.get( perspectiveName );
-        if ( disableDocks == null ) {
+    private void addToDisableDocksList(UberfireDockPosition position,
+                                       String perspectiveName) {
+        Set<UberfireDockPosition> disableDocks = disableDocksPerPerspective.get(perspectiveName);
+        if (disableDocks == null) {
             disableDocks = new HashSet<UberfireDockPosition>();
-            disableDocksPerPerspective.put( perspectiveName, disableDocks );
+            disableDocksPerPerspective.put(perspectiveName,
+                                           disableDocks);
         }
-        disableDocks.add( position );
+        disableDocks.add(position);
     }
 
-    private void removeFromDisableDocksList( UberfireDockPosition position,
-                                             String perspectiveName ) {
-        Set<UberfireDockPosition> disableDocks = disableDocksPerPerspective.get( perspectiveName );
-        if ( disableDocks != null ) {
-            disableDocks.remove( position );
+    private void removeFromDisableDocksList(UberfireDockPosition position,
+                                            String perspectiveName) {
+        Set<UberfireDockPosition> disableDocks = disableDocksPerPerspective.get(perspectiveName);
+        if (disableDocks != null) {
+            disableDocks.remove(position);
         }
     }
 
-    private boolean dockIsEnable( UberfireDockPosition dockPosition ) {
-        Set<UberfireDockPosition> uberfireDockPositions = disableDocksPerPerspective.get( currentSelectedPerspective );
-        if ( uberfireDockPositions != null && uberfireDockPositions.contains( dockPosition ) ) {
+    private boolean dockIsEnable(UberfireDockPosition dockPosition) {
+        Set<UberfireDockPosition> uberfireDockPositions = disableDocksPerPerspective.get(currentSelectedPerspective);
+        if (uberfireDockPositions != null && uberfireDockPositions.contains(dockPosition)) {
             return false;
         }
         return true;

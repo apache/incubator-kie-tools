@@ -38,45 +38,45 @@ public interface GridData {
      * Appends a column to the end of the grid. End being considered the far most right.
      * @param column
      */
-    void appendColumn( final GridColumn<?> column );
+    void appendColumn(final GridColumn<?> column);
 
     /**
      * Inserts a column to the grid at the specified index.
      * @param index
      * @param column
      */
-    void insertColumn( final int index,
-                       final GridColumn<?> column );
+    void insertColumn(final int index,
+                      final GridColumn<?> column);
 
     /**
      * Updates a column in the grid at the specified index. All existing row data will be cleared.
      * @param index
      * @param column
      */
-    void updateColumn( final int index,
-                       final GridColumn<?> column );
+    void updateColumn(final int index,
+                      final GridColumn<?> column);
 
     /**
      * Deletes a column from the grid.
      * @param column
      */
-    void deleteColumn( final GridColumn<?> column );
+    void deleteColumn(final GridColumn<?> column);
 
     /**
      * Moves a column to a new index within the grid
      * @param index
      * @param column
      */
-    void moveColumnTo( final int index,
-                       final GridColumn<?> column );
+    void moveColumnTo(final int index,
+                      final GridColumn<?> column);
 
     /**
      * Moves columns to a new index within the grid
      * @param index
      * @param columns
      */
-    void moveColumnsTo( final int index,
-                        final List<GridColumn<?>> columns );
+    void moveColumnsTo(final int index,
+                       final List<GridColumn<?>> columns);
 
     /**
      * Returns the rows associated with the grid.
@@ -89,44 +89,44 @@ public interface GridData {
      * @param rowIndex
      * @return
      */
-    GridRow getRow( final int rowIndex );
+    GridRow getRow(final int rowIndex);
 
     /**
      * Appends a row to the end of the grid.
      * @param row
      */
-    void appendRow( final GridRow row );
+    void appendRow(final GridRow row);
 
     /**
      * Inserts a row to the grid at the specified index.
      * @param rowIndex
      * @param row
      */
-    void insertRow( final int rowIndex,
-                    final GridRow row );
+    void insertRow(final int rowIndex,
+                   final GridRow row);
 
     /**
      * Deletes a row from the grid at the specified index.
      * @param rowIndex
      * @return The Range of rows affected by the operation.
      */
-    Range deleteRow( final int rowIndex );
+    Range deleteRow(final int rowIndex);
 
     /**
      * Moves a row to a new index within the grid
      * @param index
      * @param row
      */
-    void moveRowTo( final int index,
-                    final GridRow row );
+    void moveRowTo(final int index,
+                   final GridRow row);
 
     /**
      * Moves rowss to a new index within the grid
      * @param index
      * @param rows
      */
-    void moveRowsTo( final int index,
-                     final List<GridRow> rows );
+    void moveRowsTo(final int index,
+                    final List<GridRow> rows);
 
     /**
      * Returns the total number of rows in the grid, including collapsed rows.
@@ -144,7 +144,7 @@ public interface GridData {
      * Sets the number of rows in the grid's header.
      * @param headerRowCount Cannot be less than 1.
      */
-    void setHeaderRowCount( final int headerRowCount );
+    void setHeaderRowCount(final int headerRowCount);
 
     /**
      * Returns a cell at the specified physical coordinate.
@@ -152,8 +152,8 @@ public interface GridData {
      * @param columnIndex
      * @return
      */
-    GridCell<?> getCell( final int rowIndex,
-                         final int columnIndex );
+    GridCell<?> getCell(final int rowIndex,
+                        final int columnIndex);
 
     /**
      * Sets a cell at the specified physical coordinate.
@@ -162,9 +162,9 @@ public interface GridData {
      * @param value
      * @return The Range of rows affected by the operation.
      */
-    Range setCell( final int rowIndex,
-                   final int columnIndex,
-                   final GridCellValue<?> value );
+    Range setCell(final int rowIndex,
+                  final int columnIndex,
+                  final GridCellValue<?> value);
 
     /**
      * Deletes a cell at the specified physical coordinate.
@@ -172,8 +172,8 @@ public interface GridData {
      * @param columnIndex
      * @return The Range of rows affected by the operation.
      */
-    Range deleteCell( final int rowIndex,
-                      final int columnIndex );
+    Range deleteCell(final int rowIndex,
+                     final int columnIndex);
 
     /**
      * Selects a cell at the specified physical coordinate.
@@ -181,8 +181,8 @@ public interface GridData {
      * @param columnIndex
      * @return The Range of rows affected by the operation.
      */
-    Range selectCell( final int rowIndex,
-                      final int columnIndex );
+    Range selectCell(final int rowIndex,
+                     final int columnIndex);
 
     /**
      * Selects a cell at the specified physical coordinate.
@@ -192,10 +192,10 @@ public interface GridData {
      * @param height
      * @return The Range of rows affected by the operation.
      */
-    Range selectCells( final int rowIndex,
-                       final int columnIndex,
-                       final int width,
-                       final int height );
+    Range selectCells(final int rowIndex,
+                      final int columnIndex,
+                      final int width,
+                      final int height);
 
     /**
      * Returns the origin of a selected range.
@@ -224,7 +224,7 @@ public interface GridData {
      * Sets whether the data is in merged state.
      * @param isMerged
      */
-    void setMerged( final boolean isMerged );
+    void setMerged(final boolean isMerged);
 
     /**
      * Returns whether rows can be repositioned by dragging and dropping.
@@ -236,7 +236,7 @@ public interface GridData {
      * Set whether rows can be repositioned by dragging and dropping.
      * @param enabled true if drag and drop is enabled.
      */
-    void setRowDraggingEnabled( final boolean enabled );
+    void setRowDraggingEnabled(final boolean enabled);
 
     /**
      * Returns whether columns can be repositioned by dragging and dropping.
@@ -248,7 +248,7 @@ public interface GridData {
      * Sets whether columns can be repositioned by dragging and dropping.
      * @param enabled true if drag and drop is enabled.
      */
-    void setColumnDraggingEnabled( final boolean enabled );
+    void setColumnDraggingEnabled(final boolean enabled);
 
     /**
      * Collapses a cell and corresponding rows. The cell being collapsed has all other merged
@@ -256,8 +256,8 @@ public interface GridData {
      * @param rowIndex
      * @param columnIndex
      */
-    void collapseCell( final int rowIndex,
-                       final int columnIndex );
+    void collapseCell(final int rowIndex,
+                      final int columnIndex);
 
     /**
      * Expands a cell and corresponding rows. The cell being collapsed has all other merged cells
@@ -265,8 +265,8 @@ public interface GridData {
      * @param rowIndex
      * @param columnIndex
      */
-    void expandCell( final int rowIndex,
-                     final int columnIndex );
+    void expandCell(final int rowIndex,
+                    final int columnIndex);
 
     /**
      * A range of rows.
@@ -276,13 +276,13 @@ public interface GridData {
         private int minRowIndex;
         private int maxRowIndex;
 
-        public Range( final int rowIndex ) {
-            this( rowIndex,
-                  rowIndex );
+        public Range(final int rowIndex) {
+            this(rowIndex,
+                 rowIndex);
         }
 
-        public Range( final int minRowIndex,
-                      final int maxRowIndex ) {
+        public Range(final int minRowIndex,
+                     final int maxRowIndex) {
             this.minRowIndex = minRowIndex;
             this.maxRowIndex = maxRowIndex;
         }
@@ -306,8 +306,8 @@ public interface GridData {
         private final int rowIndex;
         private final int columnIndex;
 
-        public SelectedCell( final int rowIndex,
-                             final int columnIndex ) {
+        public SelectedCell(final int rowIndex,
+                            final int columnIndex) {
             this.rowIndex = rowIndex;
             this.columnIndex = columnIndex;
         }
@@ -321,20 +321,20 @@ public interface GridData {
         }
 
         @Override
-        public boolean equals( final Object o ) {
-            if ( this == o ) {
+        public boolean equals(final Object o) {
+            if (this == o) {
                 return true;
             }
-            if ( !( o instanceof SelectedCell ) ) {
+            if (!(o instanceof SelectedCell)) {
                 return false;
             }
 
             SelectedCell that = (SelectedCell) o;
 
-            if ( rowIndex != that.rowIndex ) {
+            if (rowIndex != that.rowIndex) {
                 return false;
             }
-            if ( columnIndex != that.columnIndex ) {
+            if (columnIndex != that.columnIndex) {
                 return false;
             }
             return true;
@@ -349,5 +349,4 @@ public interface GridData {
             return result;
         }
     }
-
 }

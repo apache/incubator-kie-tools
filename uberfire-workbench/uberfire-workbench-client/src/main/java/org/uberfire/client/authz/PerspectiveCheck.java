@@ -27,12 +27,20 @@ import org.uberfire.security.authz.AuthorizationManager;
  */
 public class PerspectiveCheck extends ActivityCheck<PerspectiveCheck> {
 
-    public PerspectiveCheck(AuthorizationManager authorizationManager, Resource resource, User user) {
-        super(authorizationManager, resource, user);
+    public PerspectiveCheck(AuthorizationManager authorizationManager,
+                            Resource resource,
+                            User user) {
+        super(authorizationManager,
+              resource,
+              user);
     }
 
-    public PerspectiveCheck(AuthorizationManager authorizationManager, ResourceType resourceType, User user) {
-        super(authorizationManager, resourceType, user);
+    public PerspectiveCheck(AuthorizationManager authorizationManager,
+                            ResourceType resourceType,
+                            User user) {
+        super(authorizationManager,
+              resourceType,
+              user);
     }
 
     public PerspectiveCheck update() {

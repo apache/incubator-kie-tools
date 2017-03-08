@@ -27,7 +27,7 @@ import org.uberfire.security.client.authz.AuthorizationManagerHelper;
 
 /**
  * <p>Given a method where a specific permission is required like, for instance:</p>
- *
+ * <p>
  * <pre>
  * {@code @PermissionCheck("featureX")
  *    private void enableFeatureX() {
@@ -35,7 +35,7 @@ import org.uberfire.security.client.authz.AuthorizationManagerHelper;
  *    }
  * }
  * </pre>
- *
+ * <p>
  * <p>This processor will append the required security check code to ensure the method body
  * is only executed when the user is granted with the proper permission rights.</p>
  * </pre>
@@ -48,7 +48,8 @@ public class PermissionCheckProcessor extends IOCDecoratorExtension<PermissionCh
     }
 
     @Override
-    public void generateDecorator(final Decorable decorable, final FactoryController controller) {
+    public void generateDecorator(final Decorable decorable,
+                                  final FactoryController controller) {
         MetaMethod metaMethod = decorable.getAsMethod();
         PermissionCheck securedResource = metaMethod.getAnnotation(PermissionCheck.class);
         String permission = securedResource.value();
@@ -59,20 +60,27 @@ public class PermissionCheckProcessor extends IOCDecoratorExtension<PermissionCh
         // The method must return void
         if (!metaMethod.getReturnType().getName().equals("void")) {
             throw new RuntimeException("The @PermissionCheck annotated method \"" +
-                    declaringClass + "#" + metaMethod.getName() + "\" must return void");
-
+                                               declaringClass + "#" + metaMethod.getName() + "\" must return void");
         }
 
         // Permission check
         if (permission == null || permission.trim().length() == 0) {
-            Statement stmt = createPermissionCheck(permission, onGranted, onDenied);
-            controller.addInvokeBefore(metaMethod, stmt);
+            Statement stmt = createPermissionCheck(permission,
+                                                   onGranted,
+                                                   onDenied);
+            controller.addInvokeBefore(metaMethod,
+                                       stmt);
         }
     }
 
-    public Statement createPermissionCheck(String permission, String onGranted, String onDenied) {
+    public Statement createPermissionCheck(String permission,
+                                           String onGranted,
+                                           String onDenied) {
         return ResourceCheckProcessor.buildCheckStatement(
-                Stmt.invokeStatic(AuthorizationManagerHelper.class, "authorize", permission),
-                onGranted, onDenied);
+                Stmt.invokeStatic(AuthorizationManagerHelper.class,
+                                  "authorize",
+                                  permission),
+                onGranted,
+                onDenied);
     }
 }

@@ -28,18 +28,20 @@ public class DirtyableFlexTable
 
     public boolean hasDirty() {
         Iterator<Widget> itr = iterator();
-        while ( itr.hasNext() ) {
+        while (itr.hasNext()) {
             Widget w = itr.next();
-            if ( ( w instanceof DirtyableWidget && ( (DirtyableWidget) w ).isDirty() ) || ( w instanceof DirtyableContainer && ( (DirtyableContainer) w ).hasDirty() ) ) {
+            if ((w instanceof DirtyableWidget && ((DirtyableWidget) w).isDirty()) || (w instanceof DirtyableContainer && ((DirtyableContainer) w).hasDirty())) {
                 return true;
             }
         }
         return false;
     }
 
-    public void setHorizontalAlignmentForFlexCellFormatter( int row,
-                                                            int column,
-                                                            HorizontalAlignmentConstant horizontalAlignmentConstant ) {
-        getFlexCellFormatter().setHorizontalAlignment( row, column, horizontalAlignmentConstant );
+    public void setHorizontalAlignmentForFlexCellFormatter(int row,
+                                                           int column,
+                                                           HorizontalAlignmentConstant horizontalAlignmentConstant) {
+        getFlexCellFormatter().setHorizontalAlignment(row,
+                                                      column,
+                                                      horizontalAlignmentConstant);
     }
 }

@@ -16,66 +16,73 @@
 
 package org.uberfire.ext.properties.editor.client.fields;
 
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 
-import com.google.gwt.user.client.ui.Widget;
-
 public enum PropertyEditorFieldType {
 
     TEXT {
         @Override
-        public Widget widget( PropertyEditorFieldInfo property ) {
-            return getWidget( property, TextField.class );
+        public Widget widget(PropertyEditorFieldInfo property) {
+            return getWidget(property,
+                             TextField.class);
         }
-
-    }, BOOLEAN {
+    },
+    BOOLEAN {
         @Override
-        public Widget widget( PropertyEditorFieldInfo property ) {
-            return getWidget( property, BooleanField.class );
+        public Widget widget(PropertyEditorFieldInfo property) {
+            return getWidget(property,
+                             BooleanField.class);
         }
-
-    }, NATURAL_NUMBER {
+    },
+    NATURAL_NUMBER {
         @Override
-        public Widget widget( PropertyEditorFieldInfo property ) {
-            return TEXT.widget( property );
+        public Widget widget(PropertyEditorFieldInfo property) {
+            return TEXT.widget(property);
         }
-
-    }, COMBO {
+    },
+    COMBO {
         @Override
-        public Widget widget( PropertyEditorFieldInfo property ) {
-            return getWidget( property, ComboField.class );
+        public Widget widget(PropertyEditorFieldInfo property) {
+            return getWidget(property,
+                             ComboField.class);
         }
-
-    }, SECRET_TEXT {
+    },
+    SECRET_TEXT {
         @Override
-        public Widget widget( PropertyEditorFieldInfo property ) {
-            return getWidget( property, SecretTextField.class );
+        public Widget widget(PropertyEditorFieldInfo property) {
+            return getWidget(property,
+                             SecretTextField.class);
         }
-    }, COLOR {
+    },
+    COLOR {
         @Override
-        public Widget widget( PropertyEditorFieldInfo property ) {
-            return getWidget( property, ColorField.class );
+        public Widget widget(PropertyEditorFieldInfo property) {
+            return getWidget(property,
+                             ColorField.class);
         }
-    }, CUSTOM {
-        @Override public Widget widget( PropertyEditorFieldInfo property ) {
+    },
+    CUSTOM {
+        @Override
+        public Widget widget(PropertyEditorFieldInfo property) {
             return null;
         }
     };
 
-    private static Widget getWidget( PropertyEditorFieldInfo property,
-                                     Class fieldType ) {
+    private static Widget getWidget(PropertyEditorFieldInfo property,
+                                    Class fieldType) {
         SyncBeanManager beanManager = IOC.getBeanManager();
-        SyncBeanDef<?> iocBeanDef = beanManager.lookupBean( fieldType );
+        SyncBeanDef<?> iocBeanDef = beanManager.lookupBean(fieldType);
         AbstractField field = (AbstractField) iocBeanDef.getInstance();
-        return field.widget( property );
+        return field.widget(property);
     }
 
-    public abstract Widget widget( PropertyEditorFieldInfo property );
-
-    public static PropertyEditorFieldType getFieldTypeFrom( PropertyEditorFieldInfo fieldInfo ) {
-        return PropertyEditorFieldType.valueOf( fieldInfo.getType().name() );
+    public static PropertyEditorFieldType getFieldTypeFrom(PropertyEditorFieldInfo fieldInfo) {
+        return PropertyEditorFieldType.valueOf(fieldInfo.getType().name());
     }
+
+    public abstract Widget widget(PropertyEditorFieldInfo property);
 }

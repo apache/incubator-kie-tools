@@ -35,7 +35,7 @@ public class PreferenceFormBeansInfo {
     private ActivityBeansInfo activityBeansInfo;
 
     @Inject
-    public PreferenceFormBeansInfo( final ActivityBeansInfo activityBeansInfo ) {
+    public PreferenceFormBeansInfo(final ActivityBeansInfo activityBeansInfo) {
         this.activityBeansInfo = activityBeansInfo;
     }
 
@@ -45,15 +45,15 @@ public class PreferenceFormBeansInfo {
      * @param preferenceIdentifier The {@link PreferenceForm} value to be searched.
      * @return The screen bean identifier.
      */
-    public String getPreferenceFormFor( final String preferenceIdentifier ) {
-        final Collection<? extends IOCBeanDef<?>> screenBeans = activityBeansInfo.lookupBeans( WorkbenchScreenActivity.class );
+    public String getPreferenceFormFor(final String preferenceIdentifier) {
+        final Collection<? extends IOCBeanDef<?>> screenBeans = activityBeansInfo.lookupBeans(WorkbenchScreenActivity.class);
 
-        for ( final IOCBeanDef<?> beanDef : screenBeans ) {
-            for ( final Annotation annotation : beanDef.getQualifiers() ) {
-                if ( annotation instanceof PreferenceForm ) {
+        for (final IOCBeanDef<?> beanDef : screenBeans) {
+            for (final Annotation annotation : beanDef.getQualifiers()) {
+                if (annotation instanceof PreferenceForm) {
                     PreferenceForm preferenceFormQualifier = (PreferenceForm) annotation;
-                    if ( preferenceIdentifier.equals( preferenceFormQualifier.value() ) ) {
-                        return activityBeansInfo.getId( beanDef );
+                    if (preferenceIdentifier.equals(preferenceFormQualifier.value())) {
+                        return activityBeansInfo.getId(beanDef);
                     }
                 }
             }

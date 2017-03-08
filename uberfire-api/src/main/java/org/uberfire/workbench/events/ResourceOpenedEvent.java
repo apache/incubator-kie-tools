@@ -21,7 +21,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * An Event indicating a Resource has been opened
@@ -32,10 +32,12 @@ public class ResourceOpenedEvent implements UberFireEvent {
     private Path path;
     private SessionInfo sessionInfo;
 
-    public ResourceOpenedEvent( @MapsTo("path") final Path path,
-                                @MapsTo("sessionInfo") final SessionInfo sessionInfo ) {
-        this.path = checkNotNull( "path", path );
-        this.sessionInfo = checkNotNull( "sessionInfo", sessionInfo );
+    public ResourceOpenedEvent(@MapsTo("path") final Path path,
+                               @MapsTo("sessionInfo") final SessionInfo sessionInfo) {
+        this.path = checkNotNull("path",
+                                 path);
+        this.sessionInfo = checkNotNull("sessionInfo",
+                                        sessionInfo);
     }
 
     public Path getPath() {
@@ -50,5 +52,4 @@ public class ResourceOpenedEvent implements UberFireEvent {
     public String toString() {
         return "ResourceOpenedEvent [path=" + path + ", sessionInfo=" + sessionInfo + "]";
     }
-
 }

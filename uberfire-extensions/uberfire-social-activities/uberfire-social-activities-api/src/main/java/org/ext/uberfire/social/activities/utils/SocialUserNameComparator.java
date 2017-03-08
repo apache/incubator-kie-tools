@@ -21,8 +21,8 @@ import org.ext.uberfire.social.activities.model.SocialUser;
 public class SocialUserNameComparator implements Comparator<SocialUser> {
 
     @Override
-    public int compare( final SocialUser u1, final SocialUser u2 ) {
-        return u1.getName().compareTo( u2.getName() );
+    public int compare(final SocialUser u1,
+                       final SocialUser u2) {
+        return u1.getName().compareTo(u2.getName());
     }
-
 }

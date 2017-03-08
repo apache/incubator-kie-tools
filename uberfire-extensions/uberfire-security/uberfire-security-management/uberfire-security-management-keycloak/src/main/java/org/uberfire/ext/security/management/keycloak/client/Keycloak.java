@@ -17,6 +17,7 @@
 
 package org.uberfire.ext.security.management.keycloak.client;
 
+import javax.ws.rs.core.UriBuilder;
 
 import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
@@ -25,11 +26,8 @@ import org.uberfire.ext.security.management.keycloak.client.auth.TokenManager;
 import org.uberfire.ext.security.management.keycloak.client.resource.RealmResource;
 import org.uberfire.ext.security.management.keycloak.client.resource.RealmsResource;
 
-import javax.ws.rs.core.UriBuilder;
-
 /**
  * The Keycloak client.
- *
  * @since 0.9.0
  */
 public class Keycloak {
@@ -38,18 +36,24 @@ public class Keycloak {
     private final String realm;
     private final ClientRequestFactory clientRequestFactory;
 
-    public static Keycloak getInstance(String serverUrl, String realm, TokenManager tokenManager){
-        return new Keycloak(serverUrl, realm, tokenManager);
-    }
-    
-    Keycloak(String serverUrl, String realm, TokenManager tokenManager){
+    Keycloak(String serverUrl,
+             String realm,
+             TokenManager tokenManager) {
         this.serverUrl = serverUrl;
         this.realm = realm;
         this.clientRequestFactory = new ClientRequestFactory(UriBuilder.fromUri(serverUrl).build());
         ResteasyProviderFactory.getInstance().getClientExecutionInterceptorRegistry().register(new BearerAuthenticationInterceptor(tokenManager));
     }
 
-    public RealmResource realm(){
+    public static Keycloak getInstance(String serverUrl,
+                                       String realm,
+                                       TokenManager tokenManager) {
+        return new Keycloak(serverUrl,
+                            realm,
+                            tokenManager);
+    }
+
+    public RealmResource realm() {
         return clientRequestFactory.createProxy(RealmsResource.class).realm(getRealm());
     }
 
@@ -62,7 +66,6 @@ public class Keycloak {
     }
 
     public void close() {
-        
-    }
 
+    }
 }

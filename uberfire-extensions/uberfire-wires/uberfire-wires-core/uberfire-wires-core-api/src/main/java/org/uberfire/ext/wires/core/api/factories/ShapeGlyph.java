@@ -39,5 +39,4 @@ public interface ShapeGlyph {
      * @return
      */
     double getHeight();
-
 }

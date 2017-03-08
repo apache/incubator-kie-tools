@@ -18,10 +18,9 @@ package org.uberfire.ext.security.management.client.editor;
 
 /**
  * <p>A client side editor's driver.</p>
- * 
+ * <p>
  * <p>Drivers are used to isolate the editors hierarchy from the edition logic for an instance of type <code>T</code>.</p>
  * <p>So do not matter the editors' concrete implementations, same driver can be used agains different client side editors reusing the edition logic.</p>
- *
  * @since 0.8.0
  */
 public interface Driver<T, E extends Editor<T, T>> {
@@ -31,14 +30,16 @@ public interface Driver<T, E extends Editor<T, T>> {
      * @param instance The instance to show.
      * @param viewer The viewer for the instance.
      */
-    void show(T instance, E viewer);
+    void show(T instance,
+              E viewer);
 
     /**
      * Edit the instance using the given editor.
      * @param instance The instance to show.
      * @param editor The editor for the instance.
      */
-    void edit(T instance, E editor);
+    void edit(T instance,
+              E editor);
 
     /**
      * Flush the editors hierarchy states and perform the validations.
@@ -47,9 +48,8 @@ public interface Driver<T, E extends Editor<T, T>> {
     boolean flush();
 
     /**
-     * The instance after being flush with against the editors hierarchy. 
+     * The instance after being flush with against the editors hierarchy.
      * @return The instance.
      */
     T getValue();
-    
 }

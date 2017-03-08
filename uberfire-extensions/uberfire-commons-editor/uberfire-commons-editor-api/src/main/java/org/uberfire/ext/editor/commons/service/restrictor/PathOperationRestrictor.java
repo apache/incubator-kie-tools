@@ -29,5 +29,5 @@ public interface PathOperationRestrictor {
      * @param path Path to be checked.
      * @return The restriction to execute the operation, or null if there is not one.
      */
-    PathOperationRestriction hasRestriction( Path path );
+    PathOperationRestriction hasRestriction(Path path);
 }

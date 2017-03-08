@@ -20,6 +20,5 @@ package org.uberfire.client.callbacks;
  */
 public interface Callback<T> {
 
-    void callback( T result );
-
+    void callback(T result);
 }

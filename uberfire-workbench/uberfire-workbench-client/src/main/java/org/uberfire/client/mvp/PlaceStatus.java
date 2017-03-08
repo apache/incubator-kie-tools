@@ -20,5 +20,6 @@ import jsinterop.annotations.JsType;
 
 @JsType
 public enum PlaceStatus {
-    OPEN, CLOSE
+    OPEN,
+    CLOSE
 }

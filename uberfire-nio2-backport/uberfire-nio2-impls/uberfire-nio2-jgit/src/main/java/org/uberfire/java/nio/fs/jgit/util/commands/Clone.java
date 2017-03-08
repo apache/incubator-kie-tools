@@ -26,16 +26,20 @@ import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
 
 public abstract class Clone extends GitCommand {
 
-    Logger logger = LoggerFactory.getLogger( Clone.class );
+    Logger logger = LoggerFactory.getLogger(Clone.class);
 
-    protected <T> Optional<T> clone( File directory,
-                                     String origin,
-                                     CredentialsProvider credentialsProvider ) {
-        JGitUtil.cloneRepository( directory, origin, true, credentialsProvider );
-        if ( logger.isDebugEnabled() ) {
-            logger.debug( "{} repository successfully cloned into {}", origin, directory.getPath() );
+    protected <T> Optional<T> clone(File directory,
+                                    String origin,
+                                    CredentialsProvider credentialsProvider) {
+        JGitUtil.cloneRepository(directory,
+                                 origin,
+                                 true,
+                                 credentialsProvider);
+        if (logger.isDebugEnabled()) {
+            logger.debug("{} repository successfully cloned into {}",
+                         origin,
+                         directory.getPath());
         }
         return Optional.empty();
     }
-
 }

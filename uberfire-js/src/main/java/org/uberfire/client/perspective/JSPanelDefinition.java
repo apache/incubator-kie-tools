@@ -75,6 +75,4 @@ public class JSPanelDefinition extends JavaScriptObject {
     public final native String getContextDisplayModeAsString()  /*-{
         return this.context_display_mode;
     }-*/;
-
-
 }

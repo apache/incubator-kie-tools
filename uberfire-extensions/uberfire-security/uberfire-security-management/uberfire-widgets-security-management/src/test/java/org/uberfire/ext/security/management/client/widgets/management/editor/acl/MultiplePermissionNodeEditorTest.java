@@ -126,12 +126,18 @@ public class MultiplePermissionNodeEditorTest {
 
     @Before
     public void setUp() {
-        permissionRead = spy(new DotNamedPermission("read", true));
-        permissionRead1 = spy(new DotNamedPermission("read.p1", false));
-        permissionRead2 = spy(new DotNamedPermission("read.p2", false));
-        permissionUpdate = spy(new DotNamedPermission("update", true));
-        permissionUpdate1 = spy(new DotNamedPermission("update.p1", false));
-        permissionUpdate2 = spy(new DotNamedPermission("update.p2", false));
+        permissionRead = spy(new DotNamedPermission("read",
+                                                    true));
+        permissionRead1 = spy(new DotNamedPermission("read.p1",
+                                                     false));
+        permissionRead2 = spy(new DotNamedPermission("read.p2",
+                                                     false));
+        permissionUpdate = spy(new DotNamedPermission("update",
+                                                      true));
+        permissionUpdate1 = spy(new DotNamedPermission("update.p1",
+                                                       false));
+        permissionUpdate2 = spy(new DotNamedPermission("update.p2",
+                                                       false));
 
         permissionSwitchRead = spy(new PermissionSwitch(permissionSwitchReadView));
         permissionSwitchRead1 = spy(new PermissionExceptionSwitch(permissionSwitchReadView1));
@@ -141,70 +147,115 @@ public class MultiplePermissionNodeEditorTest {
         permissionSwitchUpdate2 = spy(new PermissionExceptionSwitch(permissionSwitchUpdateView2));
 
         permissionChildNode1 = spy(new PermissionLeafNode());
-        permissionChildNode1.addPermission(permissionRead1, "read", "read");
-        permissionChildNode1.addPermission(permissionUpdate1, "update", "update");
-        permissionChildNode1.addDependencies(permissionRead1, permissionUpdate1);
+        permissionChildNode1.addPermission(permissionRead1,
+                                           "read",
+                                           "read");
+        permissionChildNode1.addPermission(permissionUpdate1,
+                                           "update",
+                                           "update");
+        permissionChildNode1.addDependencies(permissionRead1,
+                                             permissionUpdate1);
 
         permissionChildNode2 = spy(new PermissionLeafNode());
-        permissionChildNode2.addPermission(permissionRead2, "read", "read");
-        permissionChildNode2.addPermission(permissionUpdate2, "update", "update");
-        permissionChildNode2.addDependencies(permissionRead2, permissionUpdate2);
+        permissionChildNode2.addPermission(permissionRead2,
+                                           "read",
+                                           "read");
+        permissionChildNode2.addPermission(permissionUpdate2,
+                                           "update",
+                                           "update");
+        permissionChildNode2.addDependencies(permissionRead2,
+                                             permissionUpdate2);
 
         permissionGroupNode = spy(new PermissionGroupNode(permissionTreeProvider));
         permissionGroupNode.setNodeName("group");
-        permissionGroupNode.addPermission(permissionRead, "read", "read");
-        permissionGroupNode.addPermission(permissionUpdate, "update", "update");
-        permissionGroupNode.addDependencies(permissionRead, permissionUpdate);
+        permissionGroupNode.addPermission(permissionRead,
+                                          "read",
+                                          "read");
+        permissionGroupNode.addPermission(permissionUpdate,
+                                          "update",
+                                          "update");
+        permissionGroupNode.addDependencies(permissionRead,
+                                            permissionUpdate);
 
-        permissionResourceNode = spy(new PermissionResourceNode("resource", permissionTreeProvider));
+        permissionResourceNode = spy(new PermissionResourceNode("resource",
+                                                                permissionTreeProvider));
         permissionResourceNode.setNodeName("resource");
-        permissionResourceNode.addPermission(permissionRead, "read", "read");
-        permissionResourceNode.addPermission(permissionUpdate, "update", "update");
-        permissionResourceNode.addDependencies(permissionRead, permissionUpdate);
+        permissionResourceNode.addPermission(permissionRead,
+                                             "read",
+                                             "read");
+        permissionResourceNode.addPermission(permissionUpdate,
+                                             "update",
+                                             "update");
+        permissionResourceNode.addDependencies(permissionRead,
+                                               permissionUpdate);
 
-        when(widgetFactory1.createExceptionSwitch()).thenReturn(permissionSwitchRead1, permissionSwitchUpdate1);
-        when(widgetFactory2.createExceptionSwitch()).thenReturn(permissionSwitchRead2, permissionSwitchUpdate2);
+        when(widgetFactory1.createExceptionSwitch()).thenReturn(permissionSwitchRead1,
+                                                                permissionSwitchUpdate1);
+        when(widgetFactory2.createExceptionSwitch()).thenReturn(permissionSwitchRead2,
+                                                                permissionSwitchUpdate2);
 
-        childEditor1 = spy(new LeafPermissionNodeEditor(childView1, widgetFactory1, changedEvent));
-        childEditor2 = spy(new LeafPermissionNodeEditor(childView2, widgetFactory2, changedEvent));
+        childEditor1 = spy(new LeafPermissionNodeEditor(childView1,
+                                                        widgetFactory1,
+                                                        changedEvent));
+        childEditor2 = spy(new LeafPermissionNodeEditor(childView2,
+                                                        widgetFactory2,
+                                                        changedEvent));
 
-        when(widgetFactory.createSwitch()).thenReturn(permissionSwitchRead, permissionSwitchUpdate);
+        when(widgetFactory.createSwitch()).thenReturn(permissionSwitchRead,
+                                                      permissionSwitchUpdate);
         when(widgetFactory.createEditor(permissionChildNode1)).thenReturn(childEditor1);
         when(widgetFactory.createEditor(permissionChildNode2)).thenReturn(childEditor2);
 
-        presenter = new MultiplePermissionNodeEditor(view, liveSearchDropDown, widgetFactory,
-                changedEvent, nodeAddedEvent, nodeRemovedEvent);
+        presenter = new MultiplePermissionNodeEditor(view,
+                                                     liveSearchDropDown,
+                                                     widgetFactory,
+                                                     changedEvent,
+                                                     nodeAddedEvent,
+                                                     nodeRemovedEvent);
 
         doAnswer(invocationOnMock -> {
             LoadCallback callback = (LoadCallback) invocationOnMock.getArguments()[0];
-            callback.afterLoad(Arrays.asList(permissionChildNode1, permissionChildNode2));
+            callback.afterLoad(Arrays.asList(permissionChildNode1,
+                                             permissionChildNode2));
             return null;
         }).when(permissionGroupNode).expand(any(LoadCallback.class));
 
         doAnswer(invocationOnMock -> {
             LoadCallback callback = (LoadCallback) invocationOnMock.getArguments()[0];
-            callback.afterLoad(Arrays.asList(permissionChildNode1, permissionChildNode2));
+            callback.afterLoad(Arrays.asList(permissionChildNode1,
+                                             permissionChildNode2));
             return null;
         }).when(permissionResourceNode).expand(any(LoadCallback.class));
     }
-    
+
     @Test
     public void testInitGroupNode() {
         presenter.edit(permissionGroupNode);
 
-        assertEquals(presenter.getChildEditors().size(), 2);
-        assertEquals(presenter.getPermissionNode(), permissionGroupNode);
+        assertEquals(presenter.getChildEditors().size(),
+                     2);
+        assertEquals(presenter.getPermissionNode(),
+                     permissionGroupNode);
 
         verify(view).setNodeName("group");
-        verify(view, never()).setNodeFullName(anyString());
+        verify(view,
+               never()).setNodeFullName(anyString());
         verify(view).addPermission(permissionSwitchRead);
         verify(view).addPermission(permissionSwitchUpdate);
-        verify(permissionSwitchRead).init(eq("read"), eq("read"), eq(true), eq(0));
-        verify(permissionSwitchUpdate).init(eq("update"), eq("update"), eq(true), eq(0));
+        verify(permissionSwitchRead).init(eq("read"),
+                                          eq("read"),
+                                          eq(true),
+                                          eq(0));
+        verify(permissionSwitchUpdate).init(eq("update"),
+                                            eq("update"),
+                                            eq(true),
+                                            eq(0));
 
         verify(view).setClearChildrenEnabled(false);
-        verify(view, never()).setAddChildEnabled(true);
-        verify(view, never()).setChildSelector(any());
+        verify(view,
+               never()).setAddChildEnabled(true);
+        verify(view,
+               never()).setChildSelector(any());
         verifyZeroInteractions(liveSearchDropDown);
     }
 
@@ -212,8 +263,10 @@ public class MultiplePermissionNodeEditorTest {
     public void testInitResourceNode() {
         presenter.edit(permissionResourceNode);
 
-        assertEquals(presenter.getChildEditors().size(), 2);
-        assertEquals(presenter.getPermissionNode(), permissionResourceNode);
+        assertEquals(presenter.getChildEditors().size(),
+                     2);
+        assertEquals(presenter.getPermissionNode(),
+                     permissionResourceNode);
 
         verify(view).setAddChildEnabled(true);
         verify(view).setChildSelector(liveSearchDropDown);
@@ -224,12 +277,17 @@ public class MultiplePermissionNodeEditorTest {
         presenter.edit(permissionGroupNode);
         presenter.onNodeClick();
 
-        verify(view).addChildEditor(childEditor1, false);
-        verify(view).addChildEditor(childEditor2, false);
+        verify(view).addChildEditor(childEditor1,
+                                    false);
+        verify(view).addChildEditor(childEditor2,
+                                    false);
         verify(view).setAddChildEnabled(false);
-        verify(view, never()).setAddChildEnabled(true);
-        verify(view, never()).setChildSelector(any());
-        verify(view, never()).setClearChildrenEnabled(true);
+        verify(view,
+               never()).setAddChildEnabled(true);
+        verify(view,
+               never()).setChildSelector(any());
+        verify(view,
+               never()).setClearChildrenEnabled(true);
         verify(childEditor1).edit(permissionChildNode1);
         verify(childEditor2).edit(permissionChildNode2);
     }
@@ -239,11 +297,14 @@ public class MultiplePermissionNodeEditorTest {
         presenter.edit(permissionResourceNode);
         presenter.onNodeClick();
 
-        verify(view).addChildEditor(childEditor1, true);
-        verify(view).addChildEditor(childEditor2, true);
+        verify(view).addChildEditor(childEditor1,
+                                    true);
+        verify(view).addChildEditor(childEditor2,
+                                    true);
         verify(view).setAddChildEnabled(true);
         verify(view).setChildSelector(any());
-        verify(view, atLeastOnce()).setClearChildrenEnabled(true);
+        verify(view,
+               atLeastOnce()).setClearChildrenEnabled(true);
         verify(childEditor1).edit(permissionChildNode1);
         verify(childEditor2).edit(permissionChildNode2);
     }
@@ -292,7 +353,8 @@ public class MultiplePermissionNodeEditorTest {
 
         // "update" permission enabled but not switched on
         verify(permissionSwitchUpdate).setEnabled(true);
-        verify(permissionSwitchUpdate, never()).setOn(anyBoolean());
+        verify(permissionSwitchUpdate,
+               never()).setOn(anyBoolean());
     }
 
     @Test
@@ -343,7 +405,8 @@ public class MultiplePermissionNodeEditorTest {
         verify(permissionUpdate).setResult(AuthorizationResult.ACCESS_DENIED);
         verify(permissionSwitchUpdate).setEnabled(false);
         verify(permissionSwitchUpdate).setOn(false);
-        verify(permissionSwitchUpdateView1, atLeastOnce()).setExceptionEnabled(false);
+        verify(permissionSwitchUpdateView1,
+               atLeastOnce()).setExceptionEnabled(false);
 
         // Deny parent's read permission
         reset(permissionUpdate);
@@ -363,6 +426,7 @@ public class MultiplePermissionNodeEditorTest {
         verify(permissionUpdate1).setResult(AuthorizationResult.ACCESS_DENIED);
         verify(permissionSwitchUpdate).setEnabled(false);
         verify(permissionSwitchUpdate).setOn(false);
-        verify(permissionSwitchUpdateView1, atLeastOnce()).setExceptionEnabled(false);
+        verify(permissionSwitchUpdateView1,
+               atLeastOnce()).setExceptionEnabled(false);
     }
 }

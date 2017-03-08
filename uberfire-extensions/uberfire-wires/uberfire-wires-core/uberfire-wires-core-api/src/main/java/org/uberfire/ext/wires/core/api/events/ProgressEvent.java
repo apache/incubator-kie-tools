@@ -23,7 +23,7 @@ public class ProgressEvent {
         clearProgressBar = false;
     }
 
-    public ProgressEvent( final boolean clearProgressBar ) {
+    public ProgressEvent(final boolean clearProgressBar) {
         this.clearProgressBar = clearProgressBar;
     }
 
@@ -31,8 +31,7 @@ public class ProgressEvent {
         return clearProgressBar;
     }
 
-    public void setClearProgressBar( final boolean clearProgressBar ) {
+    public void setClearProgressBar(final boolean clearProgressBar) {
         this.clearProgressBar = clearProgressBar;
     }
-
 }

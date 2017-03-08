@@ -37,36 +37,36 @@ public class SplashScreenMenuView extends AnchorListItem implements SplashScreen
     final DropDownMenu dropdown = new DropDownMenu();
 
     public SplashScreenMenuView() {
-        addStyleName( Styles.DROPDOWN_TOGGLE );
-        ensureDebugId( "MenuSplashList-dropdown" );
+        addStyleName(Styles.DROPDOWN_TOGGLE);
+        ensureDebugId("MenuSplashList-dropdown");
 
-        anchor.addStyleName( Styles.DROPDOWN_TOGGLE );
-        anchor.setDataToggle( Toggle.DROPDOWN );
-        anchor.setIcon( IconType.QUESTION );
+        anchor.addStyleName(Styles.DROPDOWN_TOGGLE);
+        anchor.setDataToggle(Toggle.DROPDOWN);
+        anchor.setIcon(IconType.QUESTION);
 
-        add( dropdown );
+        add(dropdown);
     }
 
     @Override
-    public void init( SplashScreenMenuPresenter presenter ) {
+    public void init(SplashScreenMenuPresenter presenter) {
         // don't need presenter ref
     }
 
     @Override
-    public void setSplashScreenList( final List<SplashScreenListEntry> splashScreens ) {
+    public void setSplashScreenList(final List<SplashScreenListEntry> splashScreens) {
         dropdown.clear();
-        for ( final SplashScreenListEntry entry : splashScreens ) {
-            final AnchorListItem item = new AnchorListItem( entry.getScreenName() );
-            item.addClickHandler( new ClickHandler() {
+        for (final SplashScreenListEntry entry : splashScreens) {
+            final AnchorListItem item = new AnchorListItem(entry.getScreenName());
+            item.addClickHandler(new ClickHandler() {
                 @Override
-                public void onClick( ClickEvent event ) {
+                public void onClick(ClickEvent event) {
                     entry.getShowCommand().execute();
                 }
-            } );
-            dropdown.add( item );
+            });
+            dropdown.add(item);
         }
-        if ( dropdown.getWidgetCount() == 0 ) {
-            dropdown.add( new DropDownHeader( WorkbenchConstants.INSTANCE.splashScreenNoneAvailable() ) );
+        if (dropdown.getWidgetCount() == 0) {
+            dropdown.add(new DropDownHeader(WorkbenchConstants.INSTANCE.splashScreenNoneAvailable()));
         }
     }
 }

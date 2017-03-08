@@ -42,10 +42,6 @@ public class ClientAPIModule {
     public static final String IS_TEMPLATE = "isTemplate";
     public static final String IS_ENABLED = "isEnabled";
     public static final String VALUE = "value";
-
-    private ClientAPIModule() {
-    }
-
     public static final String workbenchSplashScreen = "org.uberfire.client.annotations.WorkbenchSplashScreen";
     public static final String workbenchPerspective = "org.uberfire.client.annotations.WorkbenchPerspective";
     public static final String workbenchPopup = "org.uberfire.client.annotations.WorkbenchPopup";
@@ -65,6 +61,8 @@ public class ClientAPIModule {
     public static final String intercept = "org.uberfire.client.annotations.Intercept";
     public static final String workbenchPanel = "org.uberfire.client.annotations.WorkbenchPanel";
     public static final String jsType = "jsinterop.annotations.JsType";
+    private ClientAPIModule() {
+    }
 
     public static String getWorkbenchScreenClass() {
         return workbenchScreen;
@@ -143,11 +141,13 @@ public class ClientAPIModule {
      * exists on the annotation. Returns an empty string if the type lacks the given annotation, or if the annotation
      * lacks the given parameter.
      */
-    private static String getAnnotationStringParam( TypeElement target,
-                                                    String annotationClassName,
-                                                    String annotationParamName ) {
-        AnnotationValue paramValue = getAnnotationParamValue( target, annotationClassName, annotationParamName );
-        if ( paramValue == null ) {
+    private static String getAnnotationStringParam(TypeElement target,
+                                                   String annotationClassName,
+                                                   String annotationParamName) {
+        AnnotationValue paramValue = getAnnotationParamValue(target,
+                                                             annotationClassName,
+                                                             annotationParamName);
+        if (paramValue == null) {
             return "";
         }
         return paramValue.getValue().toString();
@@ -158,14 +158,16 @@ public class ClientAPIModule {
      * exists on the annotation. Returns false if the type lacks the given annotation, or if the annotation
      * lacks the given parameter.
      */
-    private static Boolean getAnnotationBooleanParam( TypeElement target,
-                                                      String annotationClassName,
-                                                      String annotationParamName ) {
-        AnnotationValue paramValue = getAnnotationParamValue( target, annotationClassName, annotationParamName );
-        if ( paramValue == null ) {
+    private static Boolean getAnnotationBooleanParam(TypeElement target,
+                                                     String annotationClassName,
+                                                     String annotationParamName) {
+        AnnotationValue paramValue = getAnnotationParamValue(target,
+                                                             annotationClassName,
+                                                             annotationParamName);
+        if (paramValue == null) {
             return null;
         }
-        return Boolean.parseBoolean( paramValue.getValue().toString() );
+        return Boolean.parseBoolean(paramValue.getValue().toString());
     }
 
     /**
@@ -173,13 +175,13 @@ public class ClientAPIModule {
      * ignoring any default value that exists on the annotation. Returns null if the type lacks the given annotation, or
      * if the annotation lacks the given parameter.
      */
-    private static AnnotationValue getAnnotationParamValue( TypeElement target,
-                                                            String annotationClassName,
-                                                            String annotationName ) {
-        for ( final AnnotationMirror am : target.getAnnotationMirrors() ) {
-            if ( annotationClassName.equals( am.getAnnotationType().toString() ) ) {
-                for ( Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : am.getElementValues().entrySet() ) {
-                    if ( annotationName.equals( entry.getKey().getSimpleName().toString() ) ) {
+    private static AnnotationValue getAnnotationParamValue(TypeElement target,
+                                                           String annotationClassName,
+                                                           String annotationName) {
+        for (final AnnotationMirror am : target.getAnnotationMirrors()) {
+            if (annotationClassName.equals(am.getAnnotationType().toString())) {
+                for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : am.getElementValues().entrySet()) {
+                    if (annotationName.equals(entry.getKey().getSimpleName().toString())) {
                         return entry.getValue();
                     }
                 }
@@ -188,71 +190,96 @@ public class ClientAPIModule {
         return null;
     }
 
-    public static Boolean getWbPerspectiveScreenIsDefaultValueOnClass( TypeElement classElement ) {
-        String bool = ( getAnnotationStringParam( classElement, workbenchPerspective, IS_DEFAULT ) );
-        return Boolean.valueOf( bool );
-    }
-    
-    public static Boolean getWbPerspectiveScreenIsDynamicValueOnClass( TypeElement classElement ) {
-        String bool = ( getAnnotationStringParam( classElement, workbenchPerspective, IS_DYNAMIC ) );
-        return Boolean.valueOf( bool );
-    }
-    
-    public static Boolean getWbScreenIsDynamicValueOnClass( TypeElement classElement ) {
-        String bool = ( getAnnotationStringParam( classElement, workbenchScreen, IS_DYNAMIC ) );
-        return Boolean.valueOf( bool );
-    }
-    
-    public static Boolean getWbEditorIsDynamicValueOnClass( TypeElement classElement ) {
-        String bool = ( getAnnotationStringParam( classElement, workbenchEditor, IS_DYNAMIC ) );
-        return Boolean.valueOf( bool );
+    public static Boolean getWbPerspectiveScreenIsDefaultValueOnClass(TypeElement classElement) {
+        String bool = (getAnnotationStringParam(classElement,
+                                                workbenchPerspective,
+                                                IS_DEFAULT));
+        return Boolean.valueOf(bool);
     }
 
-    public static Boolean getWbPerspectiveScreenIsTransientValueOnClass( TypeElement classElement ) {
-        String bool = ( getAnnotationStringParam( classElement, workbenchPerspective, IS_TRANSIENT ) );
+    public static Boolean getWbPerspectiveScreenIsDynamicValueOnClass(TypeElement classElement) {
+        String bool = (getAnnotationStringParam(classElement,
+                                                workbenchPerspective,
+                                                IS_DYNAMIC));
+        return Boolean.valueOf(bool);
+    }
+
+    public static Boolean getWbScreenIsDynamicValueOnClass(TypeElement classElement) {
+        String bool = (getAnnotationStringParam(classElement,
+                                                workbenchScreen,
+                                                IS_DYNAMIC));
+        return Boolean.valueOf(bool);
+    }
+
+    public static Boolean getWbEditorIsDynamicValueOnClass(TypeElement classElement) {
+        String bool = (getAnnotationStringParam(classElement,
+                                                workbenchEditor,
+                                                IS_DYNAMIC));
+        return Boolean.valueOf(bool);
+    }
+
+    public static Boolean getWbPerspectiveScreenIsTransientValueOnClass(TypeElement classElement) {
+        String bool = (getAnnotationStringParam(classElement,
+                                                workbenchPerspective,
+                                                IS_TRANSIENT));
 
         // XXX this is non-ideal because it restates the default of the isTransient property
         // we should use the getAnnotationValueWithDefaults method in this entire class so
         // we aren't redundantly declaring defaults here
-        if ( bool.isEmpty() ) {
+        if (bool.isEmpty()) {
             return true;
         }
 
-        return Boolean.valueOf( bool );
+        return Boolean.valueOf(bool);
     }
 
-    public static String getWbPerspectiveScreenIdentifierValueOnClass( TypeElement classElement ) {
-        return getAnnotationStringParam( classElement, workbenchPerspective, IDENTIFIER );
+    public static String getWbPerspectiveScreenIdentifierValueOnClass(TypeElement classElement) {
+        return getAnnotationStringParam(classElement,
+                                        workbenchPerspective,
+                                        IDENTIFIER);
     }
 
-    public static String getWbPopupScreenIdentifierValueOnClass( TypeElement classElement ) {
-        return getAnnotationStringParam( classElement, workbenchPopup, IDENTIFIER );
+    public static String getWbPopupScreenIdentifierValueOnClass(TypeElement classElement) {
+        return getAnnotationStringParam(classElement,
+                                        workbenchPopup,
+                                        IDENTIFIER);
     }
 
-    public static String getWbPopupScreenSizeValueOnClass( TypeElement classElement ) {
-        return getAnnotationStringParam( classElement, workbenchPopup, SIZE );
+    public static String getWbPopupScreenSizeValueOnClass(TypeElement classElement) {
+        return getAnnotationStringParam(classElement,
+                                        workbenchPopup,
+                                        SIZE);
     }
 
-    public static String getWbSplashScreenIdentifierValueOnClass( TypeElement classElement ) {
-        return getAnnotationStringParam( classElement, workbenchSplashScreen, IDENTIFIER );
+    public static String getWbSplashScreenIdentifierValueOnClass(TypeElement classElement) {
+        return getAnnotationStringParam(classElement,
+                                        workbenchSplashScreen,
+                                        IDENTIFIER);
     }
 
-    public static boolean getWbSplashScreenIsEnabledValueOnClass( TypeElement classElement ) {
-        final Boolean bool = getAnnotationBooleanParam( classElement, workbenchSplashScreen, IS_ENABLED );
+    public static boolean getWbSplashScreenIsEnabledValueOnClass(TypeElement classElement) {
+        final Boolean bool = getAnnotationBooleanParam(classElement,
+                                                       workbenchSplashScreen,
+                                                       IS_ENABLED);
         return bool == null || bool;
     }
 
-    public static String getWbScreenIdentifierValueOnClass( TypeElement classElement ) {
-        return getAnnotationStringParam( classElement, workbenchScreen, IDENTIFIER );
+    public static String getWbScreenIdentifierValueOnClass(TypeElement classElement) {
+        return getAnnotationStringParam(classElement,
+                                        workbenchScreen,
+                                        IDENTIFIER);
     }
 
-    public static String getWbContextIdentifierValueOnClass( TypeElement classElement ) {
-        return getAnnotationStringParam( classElement, workbenchContext, IDENTIFIER );
+    public static String getWbContextIdentifierValueOnClass(TypeElement classElement) {
+        return getAnnotationStringParam(classElement,
+                                        workbenchContext,
+                                        IDENTIFIER);
     }
 
-    public static boolean isATemplate( Elements elementUtils,
-                                       Element element ) {
-        return GeneratorUtils.getAnnotation( elementUtils, element, workbenchPanel ) != null;
+    public static boolean isATemplate(Elements elementUtils,
+                                      Element element) {
+        return GeneratorUtils.getAnnotation(elementUtils,
+                                            element,
+                                            workbenchPanel) != null;
     }
-    
 }

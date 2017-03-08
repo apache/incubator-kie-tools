@@ -44,12 +44,12 @@ public class RuleValidatorTest {
 
     @Before
     public void setup() {
-        field = mock( FormGroup.class );
-        help = mock( HelpBlock.class );
+        field = mock(FormGroup.class);
+        help = mock(HelpBlock.class);
 
         validRuleValidator = new RuleValidator() {
             @Override
-            public boolean isValid( final String value ) {
+            public boolean isValid(final String value) {
                 return true;
             }
 
@@ -61,7 +61,7 @@ public class RuleValidatorTest {
 
         invalidRuleValidator = new RuleValidator() {
             @Override
-            public boolean isValid( final String value ) {
+            public boolean isValid(final String value) {
                 return false;
             }
 
@@ -74,17 +74,21 @@ public class RuleValidatorTest {
 
     @Test
     public void validRuleValidatorTest() {
-        validRuleValidator.validateFieldInline( VALID_VALUE, field, help );
+        validRuleValidator.validateFieldInline(VALID_VALUE,
+                                               field,
+                                               help);
 
-        verify( field ).setValidationState( ValidationState.NONE );
-        verify( help ).setText( "" );
+        verify(field).setValidationState(ValidationState.NONE);
+        verify(help).setText("");
     }
 
     @Test
     public void invalidRuleValidatorTest() {
-        invalidRuleValidator.validateFieldInline( INVALID_VALUE, field, help );
+        invalidRuleValidator.validateFieldInline(INVALID_VALUE,
+                                                 field,
+                                                 help);
 
-        verify( field ).setValidationState( ValidationState.ERROR );
-        verify( help ).setText( ERROR_MESSAGE );
+        verify(field).setValidationState(ValidationState.ERROR);
+        verify(help).setText(ERROR_MESSAGE);
     }
 }

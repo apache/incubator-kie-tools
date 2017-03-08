@@ -25,6 +25,5 @@ public interface FactoryHelper<T> {
 
     T getContext();
 
-    void setContext( final T context );
-
+    void setContext(final T context);
 }

@@ -27,12 +27,12 @@ public class DefaultResultImpl implements Result {
     private ResultType type;
     private String message;
 
-    public DefaultResultImpl( final ResultType type,
-                              final String message ) {
-        this.type = PortablePreconditions.checkNotNull( "type",
-                                                        type );
-        this.message = PortablePreconditions.checkNotNull( "message",
-                                                           message );
+    public DefaultResultImpl(final ResultType type,
+                             final String message) {
+        this.type = PortablePreconditions.checkNotNull("type",
+                                                       type);
+        this.message = PortablePreconditions.checkNotNull("message",
+                                                          message);
     }
 
     @Override
@@ -46,20 +46,20 @@ public class DefaultResultImpl implements Result {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof DefaultResultImpl ) ) {
+        if (!(o instanceof DefaultResultImpl)) {
             return false;
         }
 
         DefaultResultImpl that = (DefaultResultImpl) o;
 
-        if ( !message.equals( that.message ) ) {
+        if (!message.equals(that.message)) {
             return false;
         }
-        if ( type != that.type ) {
+        if (type != that.type) {
             return false;
         }
 
@@ -80,5 +80,4 @@ public class DefaultResultImpl implements Result {
                 ", message='" + message + '\'' +
                 '}';
     }
-
 }

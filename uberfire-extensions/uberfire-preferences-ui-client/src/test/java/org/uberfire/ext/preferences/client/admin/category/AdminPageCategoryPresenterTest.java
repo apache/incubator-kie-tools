@@ -37,22 +37,27 @@ public class AdminPageCategoryPresenterTest {
 
     @Before
     public void setup() {
-        view = mock( AdminPageCategoryPresenter.View.class );
-        adminPageItemPresenterProvider = mock( ManagedInstance.class );
-        doReturn( mock( AdminPageItemPresenter.class ) ).when( adminPageItemPresenterProvider ).get();
+        view = mock(AdminPageCategoryPresenter.View.class);
+        adminPageItemPresenterProvider = mock(ManagedInstance.class);
+        doReturn(mock(AdminPageItemPresenter.class)).when(adminPageItemPresenterProvider).get();
 
-        presenter = new AdminPageCategoryPresenter( view, adminPageItemPresenterProvider );
+        presenter = new AdminPageCategoryPresenter(view,
+                                                   adminPageItemPresenterProvider);
     }
 
     @Test
     public void setupTest() {
         List<AdminTool> adminTools = new ArrayList<>();
-        adminTools.add( mock( AdminTool.class ) );
-        adminTools.add( mock( AdminTool.class ) );
+        adminTools.add(mock(AdminTool.class));
+        adminTools.add(mock(AdminTool.class));
 
-        presenter.setup( adminTools, "screen", null );
+        presenter.setup(adminTools,
+                        "screen",
+                        null);
 
-        verify( adminPageItemPresenterProvider, times( 2 ) ).get();
-        verify( view, times( 2 ) ).add( any() );
+        verify(adminPageItemPresenterProvider,
+               times(2)).get();
+        verify(view,
+               times(2)).add(any());
     }
 }

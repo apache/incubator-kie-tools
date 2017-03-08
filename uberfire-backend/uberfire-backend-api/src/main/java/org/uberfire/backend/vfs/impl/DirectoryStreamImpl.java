@@ -31,8 +31,8 @@ public class DirectoryStreamImpl implements DirectoryStream<Path> {
 
     private List<Path> content;
 
-    public DirectoryStreamImpl( @MapsTo("content") final List<Path> content ) {
-        this.content = new ArrayList<Path>( content );
+    public DirectoryStreamImpl(@MapsTo("content") final List<Path> content) {
+        this.content = new ArrayList<Path>(content);
     }
 
     @Override
@@ -47,8 +47,8 @@ public class DirectoryStreamImpl implements DirectoryStream<Path> {
 
             @Override
             public Path next() {
-                if ( i < content.size() ) {
-                    final Path result = content.get( i );
+                if (i < content.size()) {
+                    final Path result = content.get(i);
                     i++;
                     return result;
                 } else {

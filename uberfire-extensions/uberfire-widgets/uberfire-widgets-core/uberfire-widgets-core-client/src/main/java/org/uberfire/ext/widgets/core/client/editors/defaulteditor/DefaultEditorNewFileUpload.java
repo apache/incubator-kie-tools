@@ -35,8 +35,10 @@ public class DefaultEditorNewFileUpload
     protected Map<String, String> getParameters() {
         HashMap<String, String> parameters = new HashMap<String, String>();
 
-        parameters.put("folder", path.toURI());
-        parameters.put("fileName", fileName);
+        parameters.put("folder",
+                       path.toURI());
+        parameters.put("fileName",
+                       fileName);
 
         return parameters;
     }

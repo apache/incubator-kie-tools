@@ -16,21 +16,26 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.explorer;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
-import org.uberfire.ext.security.management.client.widgets.management.events.*;
+import org.uberfire.ext.security.management.client.widgets.management.events.CreateUserEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.DeleteUserEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.NewUserEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.OnErrorEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.ReadUserEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.SaveUserEvent;
 import org.uberfire.ext.security.management.client.widgets.management.list.EntitiesList;
 import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 import org.uberfire.ext.security.management.impl.SearchRequestImpl;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 
 /**
  * <p>Presenter class for users explorer widget.</p>
@@ -42,14 +47,18 @@ public class UsersExplorer extends AbstractEntityExplorer<User> {
     Event<NewUserEvent> newUserEvent;
 
     @Inject
-    public UsersExplorer(final ClientUserSystemManager userSystemManager, 
-                         final Event<OnErrorEvent> errorEvent, 
-                         final LoadingBox loadingBox, 
-                         final EntitiesList<User> entitiesList, 
+    public UsersExplorer(final ClientUserSystemManager userSystemManager,
+                         final Event<OnErrorEvent> errorEvent,
+                         final LoadingBox loadingBox,
+                         final EntitiesList<User> entitiesList,
                          final EntitiesExplorerView view,
                          final Event<ReadUserEvent> readUserEvent,
                          final Event<NewUserEvent> newUserEvent) {
-        super(userSystemManager, errorEvent, loadingBox, entitiesList, view);
+        super(userSystemManager,
+              errorEvent,
+              loadingBox,
+              entitiesList,
+              view);
         this.readUserEvent = readUserEvent;
         this.newUserEvent = newUserEvent;
     }
@@ -110,23 +119,26 @@ public class UsersExplorer extends AbstractEntityExplorer<User> {
 
         // Call backend service.
         userSystemManager.users(new RemoteCallback<AbstractEntityManager.SearchResponse<User>>() {
-            @Override
-            public void callback(final AbstractEntityManager.SearchResponse<User> response) {
-                
-                // Configure the entities list view.
-                final EntitiesList.Callback<User> callback = createCallback();
-                entitiesList.show(response, callback);
-                
-                // Show the explorer view.
-                view.show(context, viewCallback);
+                                    @Override
+                                    public void callback(final AbstractEntityManager.SearchResponse<User> response) {
 
-                hideLoadingView();
+                                        // Configure the entities list view.
+                                        final EntitiesList.Callback<User> callback = createCallback();
+                                        entitiesList.show(response,
+                                                          callback);
 
-            }
-        }, errorCallback).search(new SearchRequestImpl(searchPattern, currentPage, PAGE_SIZE));
-        
+                                        // Show the explorer view.
+                                        view.show(context,
+                                                  viewCallback);
+
+                                        hideLoadingView();
+                                    }
+                                },
+                                errorCallback).search(new SearchRequestImpl(searchPattern,
+                                                                            currentPage,
+                                                                            PAGE_SIZE));
     }
-    
+
     void onUserDeleted(@Observes final DeleteUserEvent deleteUserEvent) {
         showSearch();
     }
@@ -138,5 +150,4 @@ public class UsersExplorer extends AbstractEntityExplorer<User> {
     void onUserSaved(@Observes final SaveUserEvent saveUserEvent) {
         showSearch();
     }
-    
 }

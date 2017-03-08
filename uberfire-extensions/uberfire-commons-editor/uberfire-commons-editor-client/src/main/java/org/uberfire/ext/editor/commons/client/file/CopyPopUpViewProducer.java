@@ -38,7 +38,7 @@ public class CopyPopUpViewProducer {
     @Produces
     @Customizable
     public CopyPopUpPresenter.View copyPopUpViewProducer() {
-        if ( this.copyPopUpViewInstance.isUnsatisfied() ) {
+        if (this.copyPopUpViewInstance.isUnsatisfied()) {
             return fallbackCopyPopUpViewInstance.get();
         }
 

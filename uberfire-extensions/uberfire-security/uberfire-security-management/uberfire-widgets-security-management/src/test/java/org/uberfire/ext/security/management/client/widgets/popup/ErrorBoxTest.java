@@ -22,13 +22,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ErrorBoxTest {
-    
-    @Mock ErrorBox.View view;
+
+    @Mock
+    ErrorBox.View view;
     private ErrorBox presenter;
 
     @Before
@@ -40,7 +40,7 @@ public class ErrorBoxTest {
     public void testShow() throws Exception {
         final String message = "message";
         presenter.show(message);
-        verify(view, times(1)).show(message);
+        verify(view,
+               times(1)).show(message);
     }
-    
 }

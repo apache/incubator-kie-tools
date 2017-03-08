@@ -16,9 +16,6 @@
 
 package org.uberfire.backend.server.io.watch;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Set;
@@ -34,18 +31,21 @@ import org.uberfire.java.nio.file.WatchKey;
 import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.Watchable;
 
+import static org.junit.Assert.*;
+
 public class AbstractIOWatchServiceTest {
 
     @Test
     public void testAddWatchServiceException() {
         // BZ1323572
         try {
-            System.setProperty( "org.uberfire.watcher.autostart", "false" );
+            System.setProperty("org.uberfire.watcher.autostart",
+                               "false");
 
             AbstractIOWatchService service = new AbstractIOWatchService() {
 
                 @Override
-                public boolean doFilter( WatchEvent<?> t ) {
+                public boolean doFilter(WatchEvent<?> t) {
                     return false;
                 }
             };
@@ -62,7 +62,8 @@ public class AbstractIOWatchServiceTest {
                 }
 
                 @Override
-                public WatchKey poll( long timeout, TimeUnit unit ) throws ClosedWatchServiceException, InterruptedException {
+                public WatchKey poll(long timeout,
+                                     TimeUnit unit) throws ClosedWatchServiceException, InterruptedException {
                     return null;
                 }
 
@@ -102,14 +103,15 @@ public class AbstractIOWatchServiceTest {
                 }
             };
 
-            service.addWatchService( null, ws );
+            service.addWatchService(null,
+                                    ws);
 
             Set<AsyncWatchService> watchThreads = null;
             try {
-                Field field = AbstractIOWatchService.class.getDeclaredField( "watchThreads" );
-                field.setAccessible( true );
-                watchThreads = (Set<AsyncWatchService>) field.get( service );
-            } catch ( Exception e ) {
+                Field field = AbstractIOWatchService.class.getDeclaredField("watchThreads");
+                field.setAccessible(true);
+                watchThreads = (Set<AsyncWatchService>) field.get(service);
+            } catch (Exception e) {
                 fail(e.getMessage());
             }
             AsyncWatchService asyncWatchService = watchThreads.iterator().next();
@@ -117,20 +119,20 @@ public class AbstractIOWatchServiceTest {
             IOWatchServiceExecutor wsExecutor = new IOWatchServiceExecutor() {
 
                 @Override
-                public void execute( WatchKey watchKey, Filter<WatchEvent<?>> filter ) {
-                    throw new RuntimeException( "dummy" );
+                public void execute(WatchKey watchKey,
+                                    Filter<WatchEvent<?>> filter) {
+                    throw new RuntimeException("dummy");
                 }
             };
 
             try {
-                asyncWatchService.execute( wsExecutor );
-                assertTrue( true );
-            } catch ( Exception e ) {
-                fail( "Exception is thrown from asyncWatchService.execute()" );
+                asyncWatchService.execute(wsExecutor);
+                assertTrue(true);
+            } catch (Exception e) {
+                fail("Exception is thrown from asyncWatchService.execute()");
             }
-
         } finally {
-            System.clearProperty( "org.uberfire.watcher.autostart" );
+            System.clearProperty("org.uberfire.watcher.autostart");
         }
     }
 }

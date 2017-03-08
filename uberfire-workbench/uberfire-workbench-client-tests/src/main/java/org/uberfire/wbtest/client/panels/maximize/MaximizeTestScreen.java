@@ -20,13 +20,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.util.Layouts;
-import org.uberfire.client.workbench.WorkbenchLayout;
-import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
-import org.uberfire.mvp.PlaceRequest;
-import org.uberfire.wbtest.client.api.AbstractTestScreenActivity;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -34,13 +27,20 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.util.Layouts;
+import org.uberfire.client.workbench.WorkbenchLayout;
+import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
+import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.wbtest.client.api.AbstractTestScreenActivity;
 
 @Dependent
-@Named( "org.uberfire.wbtest.client.panels.maximize.MaximizeTestScreen" )
+@Named("org.uberfire.wbtest.client.panels.maximize.MaximizeTestScreen")
 public class MaximizeTestScreen extends AbstractTestScreenActivity {
 
-    @Inject WorkbenchLayout workbenchLayout;
-
+    @Inject
+    WorkbenchLayout workbenchLayout;
+    private Label sizeLabel = new Label("size not initialized");
     private ResizeFlowPanel panel = new ResizeFlowPanel() {
         @Override
         public void onResize() {
@@ -48,54 +48,52 @@ public class MaximizeTestScreen extends AbstractTestScreenActivity {
             // (when we live inside the scroll panel, we can't be sized to fill the panel's display area).
             // the cast is a failsafe in case the assumption "parent is scroll panel" becomes wrong.
             ScrollPanel parent = (ScrollPanel) getParent();
-            sizeLabel.setText( parent.getOffsetWidth() + "x" + parent.getOffsetHeight() );
+            sizeLabel.setText(parent.getOffsetWidth() + "x" + parent.getOffsetHeight());
             super.onResize();
         }
     };
-
-    private Label sizeLabel = new Label( "size not initialized" );
-
     private String id;
 
     @Inject
-    public MaximizeTestScreen( PlaceManager placeManager ) {
-        super( placeManager );
+    public MaximizeTestScreen(PlaceManager placeManager) {
+        super(placeManager);
     }
 
     @Override
-    public void onStartup( PlaceRequest place ) {
-        super.onStartup( place );
+    public void onStartup(PlaceRequest place) {
+        super.onStartup(place);
 
-        id = place.getParameter( "debugId", "" );
+        id = place.getParameter("debugId",
+                                "");
 
         panel.clear();
 
-        panel.getElement().setId( "MaximizeTestScreen-" + id );
+        panel.getElement().setId("MaximizeTestScreen-" + id);
 
-        sizeLabel.getElement().setId( "MaximizeTestScreen-" + id + "-sizeLabel" );
-        panel.add( sizeLabel );
+        sizeLabel.getElement().setId("MaximizeTestScreen-" + id + "-sizeLabel");
+        panel.add(sizeLabel);
 
         TextBox textBox = new TextBox();
-        textBox.getElement().setId( "MaximizeTestScreen-" + id + "-textBox" );
-        panel.add( textBox );
+        textBox.getElement().setId("MaximizeTestScreen-" + id + "-textBox");
+        panel.add(textBox);
 
-        Button dumpLayoutButton = new Button( "Dump Layout" );
-        dumpLayoutButton.addClickHandler( new ClickHandler() {
+        Button dumpLayoutButton = new Button("Dump Layout");
+        dumpLayoutButton.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
-                System.out.println( Layouts.getContainmentHierarchy( panel ) );
+            public void onClick(ClickEvent event) {
+                System.out.println(Layouts.getContainmentHierarchy(panel));
             }
-        } );
-        panel.add( dumpLayoutButton );
+        });
+        panel.add(dumpLayoutButton);
 
-        Button forceResizeButton = new Button( "Force resize" );
-        forceResizeButton.addClickHandler( new ClickHandler() {
+        Button forceResizeButton = new Button("Force resize");
+        forceResizeButton.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 workbenchLayout.onResize();
             }
-        } );
-        panel.add( forceResizeButton );
+        });
+        panel.add(forceResizeButton);
     }
 
     @Override
@@ -107,5 +105,4 @@ public class MaximizeTestScreen extends AbstractTestScreenActivity {
     public IsWidget getWidget() {
         return panel;
     }
-
 }

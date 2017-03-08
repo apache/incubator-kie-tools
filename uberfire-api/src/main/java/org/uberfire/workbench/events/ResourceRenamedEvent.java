@@ -21,7 +21,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * An Event indicating a Resource has been renamed
@@ -32,13 +32,16 @@ public class ResourceRenamedEvent extends ResourceRenamed implements ResourceEve
     private Path sourcePath;
     private SessionInfo sessionInfo;
 
-    public ResourceRenamedEvent( @MapsTo("sourcePath") final Path sourcePath,
-                                 @MapsTo("destinationPath") final Path destinationPath,
-                                 @MapsTo("message") final String message,
-                                 @MapsTo("sessionInfo") final SessionInfo sessionInfo ) {
-        super( destinationPath, message );
-        this.sourcePath = checkNotNull( "sourcePath", sourcePath );
-        this.sessionInfo = checkNotNull( "sessionInfo", sessionInfo );
+    public ResourceRenamedEvent(@MapsTo("sourcePath") final Path sourcePath,
+                                @MapsTo("destinationPath") final Path destinationPath,
+                                @MapsTo("message") final String message,
+                                @MapsTo("sessionInfo") final SessionInfo sessionInfo) {
+        super(destinationPath,
+              message);
+        this.sourcePath = checkNotNull("sourcePath",
+                                       sourcePath);
+        this.sessionInfo = checkNotNull("sessionInfo",
+                                        sessionInfo);
     }
 
     public SessionInfo getSessionInfo() {
@@ -54,5 +57,4 @@ public class ResourceRenamedEvent extends ResourceRenamed implements ResourceEve
     public String toString() {
         return "ResourceRenamedEvent [sourcePath=" + sourcePath + ", sessionInfo=" + sessionInfo + "]";
     }
-
 }

@@ -22,13 +22,12 @@ import org.uberfire.mvp.PlaceRequest;
  */
 public class PlaceMaximizedEvent extends AbstractPlaceEvent {
 
-    public PlaceMaximizedEvent( final PlaceRequest place ) {
-        super( place );
+    public PlaceMaximizedEvent(final PlaceRequest place) {
+        super(place);
     }
 
     @Override
     public String toString() {
         return "PlaceMaximizedEvent [place=" + getPlace() + "]";
     }
-
 }

@@ -25,29 +25,27 @@ import org.gwtbootstrap3.client.ui.CheckBox;
 
 public class PropertyEditorCheckBox extends AbstractPropertyEditorWidget {
 
+    private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
     @UiField
     CheckBox checkBox;
 
     public PropertyEditorCheckBox() {
-        initWidget( uiBinder.createAndBindUi( this ) );
-    }
-
-    public void setValue( Boolean value ) {
-        checkBox.setValue( value );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     public Boolean getValue() {
         return checkBox.getValue();
     }
 
-    public void addValueChangeHandler( ValueChangeHandler<Boolean> valueChangeHandler ) {
-        checkBox.addValueChangeHandler( valueChangeHandler );
+    public void setValue(Boolean value) {
+        checkBox.setValue(value);
+    }
+
+    public void addValueChangeHandler(ValueChangeHandler<Boolean> valueChangeHandler) {
+        checkBox.addValueChangeHandler(valueChangeHandler);
     }
 
     interface MyUiBinder extends UiBinder<Widget, PropertyEditorCheckBox> {
 
     }
-
-    private static MyUiBinder uiBinder = GWT.create( MyUiBinder.class );
-
 }

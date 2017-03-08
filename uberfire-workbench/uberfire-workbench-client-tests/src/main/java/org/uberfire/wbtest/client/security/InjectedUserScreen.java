@@ -32,15 +32,15 @@ import org.uberfire.client.mvp.PlaceManager;
 public class InjectedUserScreen extends AbstractUserInfoScreen {
 
     @Inject
-    public InjectedUserScreen( PlaceManager placeManager ) {
-        super( placeManager );
-    }
+    User user;
 
-    @Inject User user;
+    @Inject
+    public InjectedUserScreen(PlaceManager placeManager) {
+        super(placeManager);
+    }
 
     @PostConstruct
     public void setupLabels() {
-        updateLabels( user );
+        updateLabels(user);
     }
-
 }

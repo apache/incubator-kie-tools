@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.security.management.keycloak.client.auth.credentials;
 
+import javax.ws.rs.core.MultivaluedMap;
+
 import org.jboss.resteasy.client.exception.ResteasyClientException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,19 +29,18 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.security.management.keycloak.client.auth.TokenService;
 
-import javax.ws.rs.core.MultivaluedMap;
-
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuthTokenManagerTest {
 
-    @Mock AuthSettings config;
-    
+    @Mock
+    AuthSettings config;
+
     private AuthTokenManager tokenManager;
     private TokenService tokenService;
     private AccessTokenResponse response;
-    
+
     @Before
     public void setup() throws Exception {
         when(config.getUsername()).thenReturn("user1");
@@ -53,14 +54,17 @@ public class AuthTokenManagerTest {
         this.tokenService = mock(TokenService.class);
         doReturn(tokenService).when(this.tokenManager).createTokenService();
         this.response = mock(AccessTokenResponse.class);
-        doReturn(response).when(tokenService).grantToken(anyString(), anyString(), any(MultivaluedMap.class));
+        doReturn(response).when(tokenService).grantToken(anyString(),
+                                                         anyString(),
+                                                         any(MultivaluedMap.class));
         when(response.getRefreshToken()).thenReturn("refreshToken");
     }
 
     @Test
     public void testGetRealm() throws Exception {
         String r = this.tokenManager.getRealm();
-        Assert.assertEquals("realm1", r);
+        Assert.assertEquals("realm1",
+                            r);
     }
 
     @Test
@@ -71,7 +75,8 @@ public class AuthTokenManagerTest {
         this.tokenManager.expirationTime = Long.MAX_VALUE;
         this.tokenManager.minTokenValidity = 0;
         String s = this.tokenManager.getAccessTokenString();
-        Assert.assertEquals("token2", s);
+        Assert.assertEquals("token2",
+                            s);
     }
 
     @Test
@@ -79,10 +84,15 @@ public class AuthTokenManagerTest {
         when(response.getExpiresIn()).thenReturn(1000l);
         this.tokenManager.grantToken();
         ArgumentCaptor<MultivaluedMap> mapCaptor = ArgumentCaptor.forClass(MultivaluedMap.class);
-        verify(this.tokenService, times(1)).grantToken(eq("realm1"), anyString(), mapCaptor.capture());
+        verify(this.tokenService,
+               times(1)).grantToken(eq("realm1"),
+                                    anyString(),
+                                    mapCaptor.capture());
         MultivaluedMap<String, String> mvm = mapCaptor.getValue();
-        Assert.assertEquals("user1", mvm.get("username").get(0));
-        Assert.assertEquals("password1", mvm.get("password").get(0));
+        Assert.assertEquals("user1",
+                            mvm.get("username").get(0));
+        Assert.assertEquals("password1",
+                            mvm.get("password").get(0));
     }
 
     @Test
@@ -91,12 +101,19 @@ public class AuthTokenManagerTest {
         when(config.isPublicClient()).thenReturn(true);
         this.tokenManager.grantToken();
         ArgumentCaptor<MultivaluedMap> mapCaptor = ArgumentCaptor.forClass(MultivaluedMap.class);
-        verify(this.tokenService, times(1)).grantToken(eq("realm1"), anyString(), mapCaptor.capture());
+        verify(this.tokenService,
+               times(1)).grantToken(eq("realm1"),
+                                    anyString(),
+                                    mapCaptor.capture());
         MultivaluedMap<String, String> mvm = mapCaptor.getValue();
-        Assert.assertEquals("password", mvm.get(OAuth2Constants.GRANT_TYPE).get(0));
-        Assert.assertEquals("user1", mvm.get("username").get(0));
-        Assert.assertEquals("password1", mvm.get("password").get(0));
-        Assert.assertEquals("clientId1", mvm.get(OAuth2Constants.CLIENT_ID).get(0));
+        Assert.assertEquals("password",
+                            mvm.get(OAuth2Constants.GRANT_TYPE).get(0));
+        Assert.assertEquals("user1",
+                            mvm.get("username").get(0));
+        Assert.assertEquals("password1",
+                            mvm.get("password").get(0));
+        Assert.assertEquals("clientId1",
+                            mvm.get(OAuth2Constants.CLIENT_ID).get(0));
     }
 
     @Test
@@ -107,10 +124,15 @@ public class AuthTokenManagerTest {
         this.tokenManager.minTokenValidity = 100;
         String s = this.tokenManager.getAccessTokenString();
         ArgumentCaptor<MultivaluedMap> mapCaptor = ArgumentCaptor.forClass(MultivaluedMap.class);
-        verify(this.tokenService, times(1)).grantToken(eq("realm1"), anyString(), mapCaptor.capture());
+        verify(this.tokenService,
+               times(1)).grantToken(eq("realm1"),
+                                    anyString(),
+                                    mapCaptor.capture());
         MultivaluedMap<String, String> mvm = mapCaptor.getValue();
-        Assert.assertEquals("refresh_token", mvm.get(OAuth2Constants.GRANT_TYPE).get(0));
-        Assert.assertEquals("refreshToken", mvm.get("refresh_token").get(0));
+        Assert.assertEquals("refresh_token",
+                            mvm.get(OAuth2Constants.GRANT_TYPE).get(0));
+        Assert.assertEquals("refreshToken",
+                            mvm.get("refresh_token").get(0));
     }
 
     @Test
@@ -122,21 +144,28 @@ public class AuthTokenManagerTest {
         this.tokenManager.minTokenValidity = 100;
         String s = this.tokenManager.getAccessTokenString();
         ArgumentCaptor<MultivaluedMap> mapCaptor = ArgumentCaptor.forClass(MultivaluedMap.class);
-        verify(this.tokenService, times(1)).grantToken(eq("realm1"), anyString(), mapCaptor.capture());
+        verify(this.tokenService,
+               times(1)).grantToken(eq("realm1"),
+                                    anyString(),
+                                    mapCaptor.capture());
         MultivaluedMap<String, String> mvm = mapCaptor.getValue();
-        Assert.assertEquals("refresh_token", mvm.get(OAuth2Constants.GRANT_TYPE).get(0));
-        Assert.assertEquals("refreshToken", mvm.get("refresh_token").get(0));
-        Assert.assertEquals("clientId1", mvm.get(OAuth2Constants.CLIENT_ID).get(0));
+        Assert.assertEquals("refresh_token",
+                            mvm.get(OAuth2Constants.GRANT_TYPE).get(0));
+        Assert.assertEquals("refreshToken",
+                            mvm.get("refresh_token").get(0));
+        Assert.assertEquals("clientId1",
+                            mvm.get(OAuth2Constants.CLIENT_ID).get(0));
     }
 
-    @Test( expected = RuntimeException.class)
+    @Test(expected = RuntimeException.class)
     public void testClientError() throws Exception {
         ResteasyClientException exception = mock(ResteasyClientException.class);
-        doThrow(exception).when(tokenService).grantToken(anyString(), anyString(), any(MultivaluedMap.class));
+        doThrow(exception).when(tokenService).grantToken(anyString(),
+                                                         anyString(),
+                                                         any(MultivaluedMap.class));
         when(response.getExpiresIn()).thenReturn(1000l);
         when(config.isPublicClient()).thenReturn(true);
         this.tokenManager.grantToken();
         Assert.assertNull(this.tokenManager.accessTokenResponse);
     }
-    
 }

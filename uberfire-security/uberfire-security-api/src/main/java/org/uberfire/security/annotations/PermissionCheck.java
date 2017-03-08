@@ -25,6 +25,8 @@ import java.lang.annotation.Target;
 public @interface PermissionCheck {
 
     String value() default "";
+
     String onGranted() default "";
+
     String onDenied() default "";
 }

@@ -18,46 +18,58 @@ package org.uberfire.commons.lifecycle;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class PriorityDisposableRegistryTest {
 
     @Test
     public void testGeneralDisposableState() {
-        final PriorityDisposable mocked1 = mock( PriorityDisposable.class );
-        final PriorityDisposable mocked2 = mock( PriorityDisposable.class );
+        final PriorityDisposable mocked1 = mock(PriorityDisposable.class);
+        final PriorityDisposable mocked2 = mock(PriorityDisposable.class);
 
         PriorityDisposableRegistry.clear();
-        assertEquals( 0, PriorityDisposableRegistry.getDisposables().size() );
-        PriorityDisposableRegistry.register( mocked1 );
-        assertEquals( 1, PriorityDisposableRegistry.getDisposables().size() );
-        PriorityDisposableRegistry.register( mocked1 );
-        assertEquals( 1, PriorityDisposableRegistry.getDisposables().size() );
-        PriorityDisposableRegistry.register( mocked2 );
-        assertEquals( 2, PriorityDisposableRegistry.getDisposables().size() );
+        assertEquals(0,
+                     PriorityDisposableRegistry.getDisposables().size());
+        PriorityDisposableRegistry.register(mocked1);
+        assertEquals(1,
+                     PriorityDisposableRegistry.getDisposables().size());
+        PriorityDisposableRegistry.register(mocked1);
+        assertEquals(1,
+                     PriorityDisposableRegistry.getDisposables().size());
+        PriorityDisposableRegistry.register(mocked2);
+        assertEquals(2,
+                     PriorityDisposableRegistry.getDisposables().size());
         PriorityDisposableRegistry.clear();
-        assertEquals( 0, PriorityDisposableRegistry.getDisposables().size() );
-
+        assertEquals(0,
+                     PriorityDisposableRegistry.getDisposables().size());
     }
 
     @Test
     public void testGeneralRegistryState() {
-        final PriorityDisposable mocked1 = mock( PriorityDisposable.class );
-        final PriorityDisposable mocked2 = mock( PriorityDisposable.class );
+        final PriorityDisposable mocked1 = mock(PriorityDisposable.class);
+        final PriorityDisposable mocked2 = mock(PriorityDisposable.class);
 
         PriorityDisposableRegistry.clear();
-        assertEquals( 0, PriorityDisposableRegistry.getRegistry().size() );
-        PriorityDisposableRegistry.register( "refName", mocked1 );
-        assertEquals( 1, PriorityDisposableRegistry.getRegistry().size() );
-        PriorityDisposableRegistry.register("refName", mocked1 );
-        assertEquals( 1, PriorityDisposableRegistry.getRegistry().size() );
-        PriorityDisposableRegistry.register("refName1", mocked2 );
-        assertEquals( 2, PriorityDisposableRegistry.getRegistry().size() );
-        PriorityDisposableRegistry.unregister("refName" );
-        assertEquals( 1, PriorityDisposableRegistry.getRegistry().size() );
+        assertEquals(0,
+                     PriorityDisposableRegistry.getRegistry().size());
+        PriorityDisposableRegistry.register("refName",
+                                            mocked1);
+        assertEquals(1,
+                     PriorityDisposableRegistry.getRegistry().size());
+        PriorityDisposableRegistry.register("refName",
+                                            mocked1);
+        assertEquals(1,
+                     PriorityDisposableRegistry.getRegistry().size());
+        PriorityDisposableRegistry.register("refName1",
+                                            mocked2);
+        assertEquals(2,
+                     PriorityDisposableRegistry.getRegistry().size());
+        PriorityDisposableRegistry.unregister("refName");
+        assertEquals(1,
+                     PriorityDisposableRegistry.getRegistry().size());
         PriorityDisposableRegistry.clear();
-        assertEquals( 0, PriorityDisposableRegistry.getRegistry().size() );
+        assertEquals(0,
+                     PriorityDisposableRegistry.getRegistry().size());
     }
-
 }

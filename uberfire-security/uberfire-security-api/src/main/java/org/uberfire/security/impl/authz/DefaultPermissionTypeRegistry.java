@@ -31,7 +31,7 @@ public class DefaultPermissionTypeRegistry implements PermissionTypeRegistry {
     @Inject
     Instance<PermissionType> permissionTypeBeans;
 
-    private Map<String,PermissionType> permissionTypes = new HashMap<>();
+    private Map<String, PermissionType> permissionTypes = new HashMap<>();
     private PermissionType defaultPermissionType = new DotNamedPermissionType("");
 
     @PostConstruct
@@ -46,7 +46,8 @@ public class DefaultPermissionTypeRegistry implements PermissionTypeRegistry {
         if (permissionTypes.containsKey(instance.getType())) {
             throw new IllegalStateException("PermissionType already exists: " + instance.getType());
         }
-        permissionTypes.put(instance.getType(), instance);
+        permissionTypes.put(instance.getType(),
+                            instance);
     }
 
     @Override

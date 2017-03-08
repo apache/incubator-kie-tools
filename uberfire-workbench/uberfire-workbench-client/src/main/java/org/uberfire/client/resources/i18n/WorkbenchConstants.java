@@ -23,10 +23,10 @@ import com.google.gwt.i18n.client.Messages;
  * Workbench I18N constants
  */
 public interface WorkbenchConstants
-extends
-Messages {
+        extends
+        Messages {
 
-    WorkbenchConstants INSTANCE = GWT.create( WorkbenchConstants.class );
+    WorkbenchConstants INSTANCE = GWT.create(WorkbenchConstants.class);
 
     String maximizePanel();
 
@@ -41,13 +41,13 @@ Messages {
     String collapseToolbar();
 
     String showSplashHelp();
-    
+
     String lockHint();
-    
+
     String lockOwnedHint();
-    
+
     String lockError();
-    
+
     String lockedMessage(String lockedBy);
 
     String splashScreenNoneAvailable();

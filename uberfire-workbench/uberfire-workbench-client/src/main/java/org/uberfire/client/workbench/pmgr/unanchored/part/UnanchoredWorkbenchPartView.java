@@ -33,14 +33,20 @@ public class UnanchoredWorkbenchPartView
         extends SimplePanel
         implements WorkbenchPartPresenter.View {
 
+    private final ScrollPanel sp = new ScrollPanel();
     private WorkbenchPartPresenter presenter;
 
-    private final ScrollPanel sp = new ScrollPanel();
+    public UnanchoredWorkbenchPartView() {
+        setWidget(sp);
+
+        // ScrollPanel creates an additional internal div that we need to style
+        sp.getElement().getFirstChildElement().setClassName("uf-scroll-panel");
+    }
 
     @Override
-    public void init( WorkbenchPartPresenter presenter ) {
+    public void init(WorkbenchPartPresenter presenter) {
         this.presenter = presenter;
-        Layouts.setToFillParent( this );
+        Layouts.setToFillParent(this);
     }
 
     @Override
@@ -49,26 +55,19 @@ public class UnanchoredWorkbenchPartView
     }
 
     @Override
-    public void setWrappedWidget( final IsWidget widget ) {
-        sp.setWidget( widget );
-    }
-
-    @Override
     public IsWidget getWrappedWidget() {
         return sp.getWidget();
     }
 
-    public UnanchoredWorkbenchPartView() {
-        setWidget( sp );
-
-        // ScrollPanel creates an additional internal div that we need to style
-        sp.getElement().getFirstChildElement().setClassName( "uf-scroll-panel" );
+    @Override
+    public void setWrappedWidget(final IsWidget widget) {
+        sp.setWidget(widget);
     }
 
     @Override
     public void onResize() {
-        if ( getWidget() instanceof RequiresResize ) {
-            ( (RequiresResize) getWidget() ).onResize();
+        if (getWidget() instanceof RequiresResize) {
+            ((RequiresResize) getWidget()).onResize();
         }
     }
 }

@@ -37,7 +37,7 @@ public interface WizardPage
      * page might consider the User ID and Password as necessary.
      * @param callback True if the page is complete
      */
-    void isComplete( Callback<Boolean> callback );
+    void isComplete(Callback<Boolean> callback);
 
     /**
      * Initialise the page with things that don't change between page visits
@@ -49,5 +49,4 @@ public interface WizardPage
      * between page visits
      */
     void prepareView();
-
 }

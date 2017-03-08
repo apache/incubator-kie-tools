@@ -20,12 +20,9 @@ import org.uberfire.ext.security.management.api.GroupManager;
 
 /**
  * <p>Remote service API for the Groups Manager.</p>
- *
  * @since 0.8.0
  */
 @Remote
 public interface GroupManagerService extends GroupManager {
 
-    
-    
 }

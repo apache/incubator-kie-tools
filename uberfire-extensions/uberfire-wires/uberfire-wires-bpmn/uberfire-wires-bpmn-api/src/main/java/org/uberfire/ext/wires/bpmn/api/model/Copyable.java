@@ -21,5 +21,4 @@ package org.uberfire.ext.wires.bpmn.api.model;
 public interface Copyable<T> {
 
     T copy();
-
 }

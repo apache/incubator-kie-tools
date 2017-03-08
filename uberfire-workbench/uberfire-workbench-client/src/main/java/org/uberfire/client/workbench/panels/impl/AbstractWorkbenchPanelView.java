@@ -18,9 +18,13 @@ package org.uberfire.client.workbench.panels.impl;
 
 import javax.inject.Inject;
 
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.LayoutSelection;
 import org.uberfire.client.workbench.PanelManager;
-import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.panels.MultiPartWidget;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
@@ -29,20 +33,13 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.ResizeComposite;
-import com.google.gwt.user.client.ui.Widget;
-
 /**
  * Implements focus and selection handling.
- *
  * @param <P> the type of presenter this view goes with
  */
 public abstract class AbstractWorkbenchPanelView<P extends WorkbenchPanelPresenter>
-extends ResizeComposite
-implements WorkbenchPanelView<P> {
+        extends ResizeComposite
+        implements WorkbenchPanelView<P> {
 
     @Inject
     protected PanelManager panelManager;
@@ -57,9 +54,9 @@ implements WorkbenchPanelView<P> {
      * override this and {@link #removePanel(WorkbenchPanelView)}.
      */
     @Override
-    public void addPanel( PanelDefinition panel,
-                          WorkbenchPanelView<?> view,
-                          Position position ) {
+    public void addPanel(PanelDefinition panel,
+                         WorkbenchPanelView<?> view,
+                         Position position) {
         throw new UnsupportedOperationException("This panel does not support child panels");
     }
 
@@ -68,7 +65,7 @@ implements WorkbenchPanelView<P> {
      * override this and {@link #addPanel(PanelDefinition, WorkbenchPanelView, Position)}.
      */
     @Override
-    public boolean removePanel( WorkbenchPanelView<?> child ) {
+    public boolean removePanel(WorkbenchPanelView<?> child) {
         throw new UnsupportedOperationException("This panel does not support child panels");
     }
 
@@ -77,39 +74,40 @@ implements WorkbenchPanelView<P> {
         return this.presenter;
     }
 
-    protected void addOnFocusHandler( MultiPartWidget widget ) {
-        widget.addOnFocusHandler( new Command() {
+    protected void addOnFocusHandler(MultiPartWidget widget) {
+        widget.addOnFocusHandler(new Command() {
             @Override
             public void execute() {
-                panelManager.onPanelFocus( presenter.getDefinition() );
+                panelManager.onPanelFocus(presenter.getDefinition());
             }
-        } );
+        });
     }
 
-    protected void addSelectionHandler( HasSelectionHandlers<PartDefinition> widget ) {
-        widget.addSelectionHandler( new SelectionHandler<PartDefinition>() {
+    protected void addSelectionHandler(HasSelectionHandlers<PartDefinition> widget) {
+        widget.addSelectionHandler(new SelectionHandler<PartDefinition>() {
             @Override
-            public void onSelection( final SelectionEvent<PartDefinition> event ) {
+            public void onSelection(final SelectionEvent<PartDefinition> event) {
                 panelManager.onPartLostFocus();
-                panelManager.onPartFocus( event.getSelectedItem() );
+                panelManager.onPartFocus(event.getSelectedItem());
             }
-        } );
+        });
     }
 
     @Override
-    public void setElementId( String elementId ) {
-        if ( elementId == null ) {
-            getElement().removeAttribute( "id" );
+    public void setElementId(String elementId) {
+        if (elementId == null) {
+            getElement().removeAttribute("id");
         } else {
-            getElement().setAttribute( "id", elementId );
+            getElement().setAttribute("id",
+                                      elementId);
         }
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder( getClass().getName() );
-        sb.append( "@" ).append(  System.identityHashCode( this ) );
-        sb.append( " id=" ).append( getElement().getAttribute( "id" ) );
+        StringBuilder sb = new StringBuilder(getClass().getName());
+        sb.append("@").append(System.identityHashCode(this));
+        sb.append(" id=").append(getElement().getAttribute("id"));
         return sb.toString();
     }
 
@@ -124,11 +122,11 @@ implements WorkbenchPanelView<P> {
 
     @Override
     public void maximize() {
-        layoutSelection.get().maximize( this );
+        layoutSelection.get().maximize(this);
     }
 
     @Override
     public void unmaximize() {
-        layoutSelection.get().unmaximize( this );
+        layoutSelection.get().unmaximize(this);
     }
 }

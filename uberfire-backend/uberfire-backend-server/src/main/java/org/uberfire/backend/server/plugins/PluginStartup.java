@@ -20,7 +20,6 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
-
 /**
  * Initializes the {@link PluginService} when the web application starts
  * up.
@@ -29,13 +28,12 @@ import javax.servlet.annotation.WebListener;
 public class PluginStartup implements ServletContextListener {
 
     @Override
-    public void contextInitialized( ServletContextEvent sce ) {
-        PluginService.getInstance().init( sce.getServletContext() );
+    public void contextInitialized(ServletContextEvent sce) {
+        PluginService.getInstance().init(sce.getServletContext());
     }
 
     @Override
-    public void contextDestroyed( ServletContextEvent sce ) {
+    public void contextDestroyed(ServletContextEvent sce) {
 
     }
-
 }

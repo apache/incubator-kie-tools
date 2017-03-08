@@ -39,46 +39,45 @@ public class IOServiceSecuritySetupTest {
 
     @Test
     public void nonSecureExecuted() {
-        final FileSystem fs = mock( FileSystem.class );
-        final Path rootPath = mock( Path.class );
+        final FileSystem fs = mock(FileSystem.class);
+        final Path rootPath = mock(Path.class);
 
-        when( fs.getRootDirectories() ).thenReturn( Arrays.asList( rootPath ) );
-        when( rootPath.getFileSystem() ).thenReturn( fs );
+        when(fs.getRootDirectories()).thenReturn(Arrays.asList(rootPath));
+        when(rootPath.getFileSystem()).thenReturn(fs);
 
         final IOSecurityService service = new IOSecurityService(new MockIOService(),
                                                                 new MockAuthenticationService(),
-                                                                new DummyAuthorizationManager( true ) );
+                                                                new DummyAuthorizationManager(true));
 
-        assertTrue( PriorityDisposableRegistry.getDisposables().contains( service ) );
+        assertTrue(PriorityDisposableRegistry.getDisposables().contains(service));
 
         try {
-            service.startBatch( fs );
-        } catch ( Exception e ) {
-            fail( "error" );
+            service.startBatch(fs);
+        } catch (Exception e) {
+            fail("error");
         }
     }
 
     @Test
     public void secureExecuted() {
-        final FileSystem fs = mock( FileSystem.class );
-        final Path rootPath = mock( Path.class );
+        final FileSystem fs = mock(FileSystem.class);
+        final Path rootPath = mock(Path.class);
 
-        when( fs.getRootDirectories() ).thenReturn( Arrays.asList( rootPath ) );
-        when( rootPath.getFileSystem() ).thenReturn( fs );
+        when(fs.getRootDirectories()).thenReturn(Arrays.asList(rootPath));
+        when(rootPath.getFileSystem()).thenReturn(fs);
 
-        final IOSecurityService service = new IOSecurityService( new MockIOService(),
-                                                                 new MockAuthenticationService(),
-                                                                 new DummyAuthorizationManager( false ) );
+        final IOSecurityService service = new IOSecurityService(new MockIOService(),
+                                                                new MockAuthenticationService(),
+                                                                new DummyAuthorizationManager(false));
 
         try {
-            service.startBatch( fs );
-            fail( "error" );
-        } catch ( SecurityException e ) {
-        } catch ( Exception e ) {
-            fail( "error" );
+            service.startBatch(fs);
+            fail("error");
+        } catch (SecurityException e) {
+        } catch (Exception e) {
+            fail("error");
         }
     }
-
 
     class DummyAuthorizationManager implements AuthorizationManager {
 
@@ -89,83 +88,113 @@ public class IOServiceSecuritySetupTest {
         }
 
         @Override
-        public boolean authorize(Resource resource, User user, VotingStrategy votingStrategy) {
+        public boolean authorize(Resource resource,
+                                 User user,
+                                 VotingStrategy votingStrategy) {
             return grant;
         }
 
         @Override
-        public boolean authorize(Resource resource, ResourceAction action, User user, VotingStrategy votingStrategy) {
+        public boolean authorize(Resource resource,
+                                 ResourceAction action,
+                                 User user,
+                                 VotingStrategy votingStrategy) {
             return grant;
         }
 
         @Override
-        public boolean authorize(ResourceType resourceType, ResourceAction action, User user, VotingStrategy votingStrategy) {
+        public boolean authorize(ResourceType resourceType,
+                                 ResourceAction action,
+                                 User user,
+                                 VotingStrategy votingStrategy) {
             return grant;
         }
 
         @Override
-        public boolean authorize(String permission, User user, VotingStrategy votingStrategy) {
+        public boolean authorize(String permission,
+                                 User user,
+                                 VotingStrategy votingStrategy) {
             return grant;
         }
 
         @Override
-        public boolean authorize(Permission permission, User user, VotingStrategy votingStrategy) {
+        public boolean authorize(Permission permission,
+                                 User user,
+                                 VotingStrategy votingStrategy) {
             return grant;
         }
 
         @Override
-        public ResourceCheck check(Resource resource, User user, VotingStrategy votingStrategy) {
+        public ResourceCheck check(Resource resource,
+                                   User user,
+                                   VotingStrategy votingStrategy) {
             return null;
         }
 
         @Override
-        public ResourceCheck check(ResourceType resourceType, User user, VotingStrategy votingStrategy) {
+        public ResourceCheck check(ResourceType resourceType,
+                                   User user,
+                                   VotingStrategy votingStrategy) {
             return null;
         }
 
         @Override
-        public PermissionCheck check(String permission, User user, VotingStrategy votingStrategy) {
+        public PermissionCheck check(String permission,
+                                     User user,
+                                     VotingStrategy votingStrategy) {
             return null;
         }
 
         @Override
-        public boolean authorize(Resource resource, User user) {
+        public boolean authorize(Resource resource,
+                                 User user) {
             return grant;
         }
 
         @Override
-        public boolean authorize(Resource resource, ResourceAction action, User user) {
+        public boolean authorize(Resource resource,
+                                 ResourceAction action,
+                                 User user) {
             return grant;
         }
 
         @Override
-        public boolean authorize(ResourceType resourceType, ResourceAction action, User user) {
+        public boolean authorize(ResourceType resourceType,
+                                 ResourceAction action,
+                                 User user) {
             return grant;
         }
 
         @Override
-        public boolean authorize(String permission, User user) {
+        public boolean authorize(String permission,
+                                 User user) {
             return grant;
         }
 
         @Override
-        public boolean authorize(Permission permission, User user) {
+        public boolean authorize(Permission permission,
+                                 User user) {
             return grant;
         }
 
         @Override
-        public ResourceCheck check(Resource resource, User user) {
+        public ResourceCheck check(Resource resource,
+                                   User user) {
             return null;
         }
 
         @Override
-        public ResourceCheck check(ResourceType type, User user) {
+        public ResourceCheck check(ResourceType type,
+                                   User user) {
             return null;
         }
 
         @Override
-        public PermissionCheck check(String permission, User user) {
+        public PermissionCheck check(String permission,
+                                     User user) {
             return null;
         }
-    };
+    }
+
+    ;
 }

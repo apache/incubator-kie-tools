@@ -30,11 +30,15 @@ public class HelpIcon extends Composite {
     private Popover popover;
 
     public HelpIcon() {
-        this( new Icon(), new SimplePanel(), new Popover() );
+        this(new Icon(),
+             new SimplePanel(),
+             new Popover());
     }
 
     // Defined for testing purposes
-    HelpIcon( Icon icon, SimplePanel panel, Popover popover ) {
+    HelpIcon(Icon icon,
+             SimplePanel panel,
+             Popover popover) {
         this.icon = icon;
         this.popover = popover;
         this.panel = panel;
@@ -43,27 +47,26 @@ public class HelpIcon extends Composite {
     }
 
     private void init() {
-        initWidget( panel );
-        addStyleName( "uf-help-icon" );
+        initWidget(panel);
+        addStyleName("uf-help-icon");
 
-        icon.setType( IconType.INFO_CIRCLE );
+        icon.setType(IconType.INFO_CIRCLE);
 
-        popover.setWidget( icon );
-        popover.setContainer( "body" );
-        popover.setIsHtml( true );
-        popover.setPlacement( Placement.AUTO );
+        popover.setWidget(icon);
+        popover.setContainer("body");
+        popover.setIsHtml(true);
+        popover.setPlacement(Placement.AUTO);
 
-        panel.setWidget( popover );
+        panel.setWidget(popover);
     }
 
-    public void setHelpTitle( final String title ) {
-        popover.setTitle( title );
+    public void setHelpTitle(final String title) {
+        popover.setTitle(title);
         popover.reconfigure();
     }
 
-    public void setHelpContent( final String content ) {
-        popover.setContent( content );
+    public void setHelpContent(final String content) {
+        popover.setContent(content);
         popover.reconfigure();
     }
-
 }

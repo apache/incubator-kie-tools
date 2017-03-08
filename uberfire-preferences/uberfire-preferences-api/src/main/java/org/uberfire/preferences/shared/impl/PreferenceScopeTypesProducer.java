@@ -45,7 +45,7 @@ public class PreferenceScopeTypesProducer {
     @Produces
     @Customizable
     public PreferenceScopeTypes preferenceScopeTypesProducer() {
-        if ( this.preferenceScopeTypes.isUnsatisfied() ) {
+        if (this.preferenceScopeTypes.isUnsatisfied()) {
             return defaultPreferenceScopeTypes;
         }
 

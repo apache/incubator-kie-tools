@@ -39,20 +39,19 @@ public class MultiTabWorkbenchPanelViewTest {
 
     @Before
     public void setup() {
-        view = new MultiTabWorkbenchPanelView( uberTabPanel );
+        view = new MultiTabWorkbenchPanelView(uberTabPanel);
 
-        Element uberTabPanelElement = mock( Element.class );
-        Style uberTabPanelElementStyle = mock( Style.class );
-        when( uberTabPanel.getElement() ).thenReturn( uberTabPanelElement );
-        when( uberTabPanelElement.getStyle() ).thenReturn( uberTabPanelElementStyle );
+        Element uberTabPanelElement = mock(Element.class);
+        Style uberTabPanelElementStyle = mock(Style.class);
+        when(uberTabPanel.getElement()).thenReturn(uberTabPanelElement);
+        when(uberTabPanelElement.getStyle()).thenReturn(uberTabPanelElementStyle);
     }
 
     @Test
     public void setupWidget() {
         view.setupWidget();
         //assert event handlers
-        verify( uberTabPanel ).addSelectionHandler(any(SelectionHandler.class));
-        verify( uberTabPanel ).addOnFocusHandler( any( Command.class ));
+        verify(uberTabPanel).addSelectionHandler(any(SelectionHandler.class));
+        verify(uberTabPanel).addOnFocusHandler(any(Command.class));
     }
-
 }

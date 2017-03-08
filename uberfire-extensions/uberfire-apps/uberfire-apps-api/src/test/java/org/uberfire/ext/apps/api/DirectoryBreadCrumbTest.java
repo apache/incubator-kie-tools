@@ -16,12 +16,12 @@
 
 package org.uberfire.ext.apps.api;
 
-import org.junit.Test;
-
 import java.util.HashMap;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class DirectoryBreadCrumbTest {
 
@@ -32,25 +32,48 @@ public class DirectoryBreadCrumbTest {
 
     @Test
     public void breadCrumbsOrderTest() {
-        Directory topDir = new Directory( TOP_DIR_NAME, "", "", new HashMap<String, List<String>>() );
-        Directory middleDir = new Directory( MIDDLE_DIR_NAME, "", "", topDir );
-        Directory lowDir = new Directory( LOW_DIR_NAME, "", "", middleDir );
-        Directory otherDir = new Directory( OTHER_DIR_NAME, "", "", topDir);
+        Directory topDir = new Directory(TOP_DIR_NAME,
+                                         "",
+                                         "",
+                                         new HashMap<String, List<String>>());
+        Directory middleDir = new Directory(MIDDLE_DIR_NAME,
+                                            "",
+                                            "",
+                                            topDir);
+        Directory lowDir = new Directory(LOW_DIR_NAME,
+                                         "",
+                                         "",
+                                         middleDir);
+        Directory otherDir = new Directory(OTHER_DIR_NAME,
+                                           "",
+                                           "",
+                                           topDir);
 
-        assertDirectoryBreadCrumbs( topDir, TOP_DIR_NAME );
-        assertDirectoryBreadCrumbs( middleDir, TOP_DIR_NAME, MIDDLE_DIR_NAME );
-        assertDirectoryBreadCrumbs( lowDir, TOP_DIR_NAME, MIDDLE_DIR_NAME, LOW_DIR_NAME );
-        assertDirectoryBreadCrumbs( otherDir, TOP_DIR_NAME, OTHER_DIR_NAME );
+        assertDirectoryBreadCrumbs(topDir,
+                                   TOP_DIR_NAME);
+        assertDirectoryBreadCrumbs(middleDir,
+                                   TOP_DIR_NAME,
+                                   MIDDLE_DIR_NAME);
+        assertDirectoryBreadCrumbs(lowDir,
+                                   TOP_DIR_NAME,
+                                   MIDDLE_DIR_NAME,
+                                   LOW_DIR_NAME);
+        assertDirectoryBreadCrumbs(otherDir,
+                                   TOP_DIR_NAME,
+                                   OTHER_DIR_NAME);
     }
 
-    private void assertDirectoryBreadCrumbs( Directory workingDir, String... expectedNames ) {
-        List<DirectoryBreadCrumb> breadCrumbs = DirectoryBreadCrumb.getBreadCrumbs( workingDir );
+    private void assertDirectoryBreadCrumbs(Directory workingDir,
+                                            String... expectedNames) {
+        List<DirectoryBreadCrumb> breadCrumbs = DirectoryBreadCrumb.getBreadCrumbs(workingDir);
         int breadCrumbsSize = breadCrumbs.size();
 
-        assertEquals( expectedNames.length, breadCrumbsSize );
+        assertEquals(expectedNames.length,
+                     breadCrumbsSize);
 
-        for ( int i = 0; i < breadCrumbsSize; i++ ) {
-            assertEquals( expectedNames[i], breadCrumbs.get(i).getName() );
+        for (int i = 0; i < breadCrumbsSize; i++) {
+            assertEquals(expectedNames[i],
+                         breadCrumbs.get(i).getName());
         }
     }
 }

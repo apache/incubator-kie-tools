@@ -25,9 +25,9 @@ import java.util.Set;
 import org.jboss.errai.ioc.client.QualifierUtil;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 
-public class MockIOCBeanDef<T,B extends T>
-    implements
-    SyncBeanDef<T> {
+public class MockIOCBeanDef<T, B extends T>
+        implements
+        SyncBeanDef<T> {
 
     private final B beanInstance;
     private final Class<T> type;
@@ -37,21 +37,21 @@ public class MockIOCBeanDef<T,B extends T>
     private final boolean activated;
     private final Set<Class<?>> assignableTypes = new HashSet<>();
 
-    public MockIOCBeanDef( final B beanInstance,
-                           final Class<T> type,
-                           final Class< ? extends Annotation> scope,
-                           final Set<Annotation> qualifiers,
-                           final String name,
-                           final boolean activated,
-                           final Class<?>... otherTypes) {
+    public MockIOCBeanDef(final B beanInstance,
+                          final Class<T> type,
+                          final Class<? extends Annotation> scope,
+                          final Set<Annotation> qualifiers,
+                          final String name,
+                          final boolean activated,
+                          final Class<?>... otherTypes) {
         this.beanInstance = beanInstance;
         this.type = type;
         this.scope = scope;
         this.qualifiers = qualifiers;
         this.name = name;
         this.activated = activated;
-        assignableTypes.add( type );
-        assignableTypes.addAll( Arrays.asList( otherTypes ) );
+        assignableTypes.add(type);
+        assignableTypes.addAll(Arrays.asList(otherTypes));
     }
 
     @Override
@@ -60,12 +60,12 @@ public class MockIOCBeanDef<T,B extends T>
     }
 
     @Override
-    public Class< ? > getBeanClass() {
+    public Class<?> getBeanClass() {
         return beanInstance.getClass();
     }
 
     @Override
-    public Class< ? extends Annotation> getScope() {
+    public Class<? extends Annotation> getScope() {
         return scope;
     }
 
@@ -89,8 +89,9 @@ public class MockIOCBeanDef<T,B extends T>
     }
 
     @Override
-    public boolean matches( final Set<Annotation> annotations ) {
-        return QualifierUtil.matches( annotations, getQualifiers() );
+    public boolean matches(final Set<Annotation> annotations) {
+        return QualifierUtil.matches(annotations,
+                                     getQualifiers());
     }
 
     @Override
@@ -104,8 +105,7 @@ public class MockIOCBeanDef<T,B extends T>
     }
 
     @Override
-    public boolean isAssignableTo( final Class< ? > type ) {
-        return assignableTypes.contains( type );
+    public boolean isAssignableTo(final Class<?> type) {
+        return assignableTypes.contains(type);
     }
-
 }

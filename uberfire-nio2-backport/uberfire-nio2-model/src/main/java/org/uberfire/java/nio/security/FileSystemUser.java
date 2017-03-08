@@ -22,5 +22,4 @@ package org.uberfire.java.nio.security;
 public interface FileSystemUser {
 
     String getName();
-
 }

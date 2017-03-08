@@ -25,20 +25,10 @@ import org.uberfire.ext.editor.commons.client.BaseEditorView;
 @Dependent
 public class HtmlEditorPresenter {
 
-    public interface View extends UberElement<HtmlEditorPresenter>,
-                                  BaseEditorView {
-
-        void setContent( String content );
-
-        String getContent();
-
-        void load();
-    }
-
     private final View view;
 
     @Inject
-    public HtmlEditorPresenter( final View view ) {
+    public HtmlEditorPresenter(final View view) {
         this.view = view;
     }
 
@@ -54,7 +44,17 @@ public class HtmlEditorPresenter {
         return view.getContent();
     }
 
-    public void setContent( final String content ) {
-        view.setContent( content );
+    public void setContent(final String content) {
+        view.setContent(content);
+    }
+
+    public interface View extends UberElement<HtmlEditorPresenter>,
+                                  BaseEditorView {
+
+        String getContent();
+
+        void setContent(String content);
+
+        void load();
     }
 }

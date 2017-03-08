@@ -19,6 +19,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import com.googlecode.gwt.crypto.bouncycastle.util.encoders.Hex;
+
 /**
  * Url Builder
  * @author francois wauquier
@@ -35,7 +36,7 @@ public class GravatarUrlBuilder {
      * @return
      */
     public static GravatarUrlBuilder get() {
-        if ( instance == null ) {
+        if (instance == null) {
             instance = new GravatarUrlBuilder();
         }
         return instance;
@@ -46,18 +47,18 @@ public class GravatarUrlBuilder {
      * @param email
      * @return
      */
-    public String build( final String email,
-                         final int size ) {
-        return "http://www.gravatar.com/avatar/" + hash( email ) + "?s=" + size + "&d=mm";
+    public String build(final String email,
+                        final int size) {
+        return "http://www.gravatar.com/avatar/" + hash(email) + "?s=" + size + "&d=mm";
     }
 
-    private String hash( String email ) {
+    private String hash(String email) {
         try {
             String cleanEmail = email.trim().toLowerCase();
-            return new String( Hex.encode( MessageDigest.getInstance( "MD5" ).digest( cleanEmail.getBytes() ) ) );
-        } catch ( NoSuchAlgorithmException e ) {
-            throw new RuntimeException( "MD5 implementation not found", e );
+            return new String(Hex.encode(MessageDigest.getInstance("MD5").digest(cleanEmail.getBytes())));
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("MD5 implementation not found",
+                                       e);
         }
     }
-
 }

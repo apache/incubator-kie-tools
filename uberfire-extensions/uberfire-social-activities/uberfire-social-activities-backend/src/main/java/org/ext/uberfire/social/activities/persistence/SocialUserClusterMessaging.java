@@ -62,42 +62,44 @@ public class SocialUserClusterMessaging {
     public void setup() {
         gsonFactory();
 
-        if ( clusterServiceFactory != null ) {
-            clusterService = clusterServiceFactory.build( new MessageHandlerResolver() {
+        if (clusterServiceFactory != null) {
+            clusterService = clusterServiceFactory.build(new MessageHandlerResolver() {
                 @Override
                 public String getServiceId() {
                     return cluster;
                 }
 
                 @Override
-                public MessageHandler resolveHandler( String serviceId,
-                                                      MessageType type ) {
+                public MessageHandler resolveHandler(String serviceId,
+                                                     MessageType type) {
                     return new MessageHandler() {
                         @Override
-                        public Pair<MessageType, Map<String, String>> handleMessage( MessageType type,
-                                                                                     Map<String, String> content ) {
-                            if ( type != null ) {
+                        public Pair<MessageType, Map<String, String>> handleMessage(MessageType type,
+                                                                                    Map<String, String> content) {
+                            if (type != null) {
                                 String strType = type.toString();
-                                if ( strType.equals( SocialUserClusterMessage.SOCIAL_USER_UPDATE.name() ) ) {
-                                    handleUserUpdate( content );
+                                if (strType.equals(SocialUserClusterMessage.SOCIAL_USER_UPDATE.name())) {
+                                    handleUserUpdate(content);
                                 }
                             }
-                            return new Pair<MessageType, Map<String, String>>( type, content );
+                            return new Pair<MessageType, Map<String, String>>(type,
+                                                                              content);
                         }
                     };
                 }
-            } );
+            });
         } else {
             clusterService = null;
         }
     }
 
-    private void handleUserUpdate( Map<String, String> content ) {
-        for ( final Map.Entry<String, String> entry : content.entrySet() ) {
-            if ( entry.getKey().equalsIgnoreCase( SocialUserClusterMessage.UPDATE_USER.name() ) ) {
-                SocialUser user = gson.fromJson( entry.getValue(), SocialUser.class );
+    private void handleUserUpdate(Map<String, String> content) {
+        for (final Map.Entry<String, String> entry : content.entrySet()) {
+            if (entry.getKey().equalsIgnoreCase(SocialUserClusterMessage.UPDATE_USER.name())) {
+                SocialUser user = gson.fromJson(entry.getValue(),
+                                                SocialUser.class);
                 SocialUserClusterPersistence socialUserClusterPersistence = (SocialUserClusterPersistence) socialUserCachePersistence;
-                socialUserClusterPersistence.sync( user );
+                socialUserClusterPersistence.sync(user);
             }
         }
     }
@@ -110,18 +112,21 @@ public class SocialUserClusterMessaging {
         }.getType();
     }
 
-    public void notify( SocialUser user ) {
-        if ( clusterService == null ) {
+    public void notify(SocialUser user) {
+        if (clusterService == null) {
             return;
         }
         Map<String, String> content = new HashMap<String, String>();
-        String json = gson.toJson( user );
-        content.put( SocialUserClusterMessage.UPDATE_USER.name(), json );
-        clusterService.broadcast( cluster, SocialUserClusterMessage.SOCIAL_USER_UPDATE,
-                                  content );
+        String json = gson.toJson(user);
+        content.put(SocialUserClusterMessage.UPDATE_USER.name(),
+                    json);
+        clusterService.broadcast(cluster,
+                                 SocialUserClusterMessage.SOCIAL_USER_UPDATE,
+                                 content);
     }
 
     private enum SocialUserClusterMessage implements MessageType {
-        UPDATE_USER, SOCIAL_USER_UPDATE
+        UPDATE_USER,
+        SOCIAL_USER_UPDATE
     }
 }

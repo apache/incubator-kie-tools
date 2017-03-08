@@ -24,5 +24,4 @@ public interface BpmnEditorImageResources
 
     @Source("BPM_FileIcons_bpmn.png")
     ImageResource typeBpmn();
-
 }

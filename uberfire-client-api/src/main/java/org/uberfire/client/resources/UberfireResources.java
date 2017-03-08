@@ -23,8 +23,7 @@ public interface UberfireResources
         extends
         ClientBundle {
 
-    public static final UberfireResources INSTANCE = GWT.create( UberfireResources.class );
+    public static final UberfireResources INSTANCE = GWT.create(UberfireResources.class);
 
     UberfireImageResources images();
-
 }

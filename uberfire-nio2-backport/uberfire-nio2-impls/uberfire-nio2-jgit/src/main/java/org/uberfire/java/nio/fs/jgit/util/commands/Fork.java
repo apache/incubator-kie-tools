@@ -30,68 +30,84 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
 import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 public class Fork extends Clone {
 
     private static final String DOT_GIT_EXT = ".git";
-    private Logger logger = LoggerFactory.getLogger( Fork.class );
-
-    private File parentFolder;
     private final String source;
     private final String target;
+    private Logger logger = LoggerFactory.getLogger(Fork.class);
+    private File parentFolder;
     private CredentialsProvider credentialsProvider;
 
-    public Fork( File parentFolder,
-                 String source,
-                 String target,
-                 CredentialsProvider credentialsProvider ) {
+    public Fork(File parentFolder,
+                String source,
+                String target,
+                CredentialsProvider credentialsProvider) {
 
-        this.parentFolder = checkNotNull( "parentFolder", parentFolder );
-        this.source = checkNotEmpty( "source", source );
-        this.target = checkNotEmpty( "target", target );
-        this.credentialsProvider = checkNotNull( "credentialsProvider", credentialsProvider );
+        this.parentFolder = checkNotNull("parentFolder",
+                                         parentFolder);
+        this.source = checkNotEmpty("source",
+                                    source);
+        this.target = checkNotEmpty("target",
+                                    target);
+        this.credentialsProvider = checkNotNull("credentialsProvider",
+                                                credentialsProvider);
     }
 
     @Override
     public Optional<Git> execute() {
 
-        if ( logger.isDebugEnabled() ) {
-            logger.debug( "Forking repository <{}> to <{}>", source, target );
+        if (logger.isDebugEnabled()) {
+            logger.debug("Forking repository <{}> to <{}>",
+                         source,
+                         target);
         }
 
         Git gitDestination;
-        final File origin = new File( parentFolder, source + DOT_GIT_EXT );
-        final File destination = new File( parentFolder, target + DOT_GIT_EXT );
+        final File origin = new File(parentFolder,
+                                     source + DOT_GIT_EXT);
+        final File destination = new File(parentFolder,
+                                          target + DOT_GIT_EXT);
 
         try {
 
-            if ( destination.exists() ) {
-                String message = String.format( "Cannot fork because destination repository <%s> already exists", target );
-                logger.error( message );
-                throw new GitException( message );
+            if (destination.exists()) {
+                String message = String.format("Cannot fork because destination repository <%s> already exists",
+                                               target);
+                logger.error(message);
+                throw new GitException(message);
             }
-            FileUtils.copyDirectory( origin, destination );
-            gitDestination = Git.open( destination );
-            this.setOriginToRepository( gitDestination, origin );
-            JGitUtil.fetchRepository( gitDestination, credentialsProvider );
+            FileUtils.copyDirectory(origin,
+                                    destination);
+            gitDestination = Git.open(destination);
+            this.setOriginToRepository(gitDestination,
+                                       origin);
+            JGitUtil.fetchRepository(gitDestination,
+                                     credentialsProvider);
 
-            if ( logger.isDebugEnabled() ) {
-                logger.debug( "Repository <{}> forked successfuly from <{}>", target, source );
+            if (logger.isDebugEnabled()) {
+                logger.debug("Repository <{}> forked successfuly from <{}>",
+                             target,
+                             source);
             }
-
-        } catch ( IOException | GitAPIException e ) {
-            throw new GitException( "Cannot fork repository", e );
+        } catch (IOException | GitAPIException e) {
+            throw new GitException("Cannot fork repository",
+                                   e);
         }
 
-        return Optional.ofNullable( gitDestination );
+        return Optional.ofNullable(gitDestination);
     }
 
-    private void setOriginToRepository( final Git gitDestination,
-                                        final File origin ) throws IOException {
+    private void setOriginToRepository(final Git gitDestination,
+                                       final File origin) throws IOException {
         final StoredConfig config = gitDestination.getRepository().getConfig();
-        config.setString( "remote", "origin", "url", origin.getPath() );
+        config.setString("remote",
+                         "origin",
+                         "url",
+                         origin.getPath());
         config.save();
     }
-
 }

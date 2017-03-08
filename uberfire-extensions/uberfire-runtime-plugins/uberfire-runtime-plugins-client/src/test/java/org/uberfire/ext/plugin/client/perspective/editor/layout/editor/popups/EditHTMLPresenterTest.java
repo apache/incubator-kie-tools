@@ -40,70 +40,75 @@ public class EditHTMLPresenterTest {
 
     @Before
     public void setup() {
-        modalConfigurationContext = mock( ModalConfigurationContext.class );
-        htmlEditor = mock( HtmlEditorPresenter.class );
-        view = mock( EditHTMLPresenter.View.class );
-        doReturn( DEFAULT_CONTENT ).when( view ).getHtmlEditorPlaceHolder();
-        presenter = spy( new EditHTMLPresenter( view, htmlEditor ) );
+        modalConfigurationContext = mock(ModalConfigurationContext.class);
+        htmlEditor = mock(HtmlEditorPresenter.class);
+        view = mock(EditHTMLPresenter.View.class);
+        doReturn(DEFAULT_CONTENT).when(view).getHtmlEditorPlaceHolder();
+        presenter = spy(new EditHTMLPresenter(view,
+                                              htmlEditor));
     }
 
     @Test
     public void setupEmptyHTMLEditorTest() {
-        presenter.init( modalConfigurationContext );
+        presenter.init(modalConfigurationContext);
 
-        verify( presenter ).setupHTMLEditor();
-        verify( modalConfigurationContext ).getComponentProperty( HTMLLayoutDragComponent.HTML_CODE_PARAMETER );
-        verify( view ).getHtmlEditorPlaceHolder();
-        verify( htmlEditor ).setContent( DEFAULT_CONTENT );
-        verify( htmlEditor ).load();
+        verify(presenter).setupHTMLEditor();
+        verify(modalConfigurationContext).getComponentProperty(HTMLLayoutDragComponent.HTML_CODE_PARAMETER);
+        verify(view).getHtmlEditorPlaceHolder();
+        verify(htmlEditor).setContent(DEFAULT_CONTENT);
+        verify(htmlEditor).load();
     }
 
     @Test
     public void setupNotEmptyHTMLEditorTest() {
-        doReturn( SOME_CONTENT ).when( modalConfigurationContext ).getComponentProperty( anyString() );
-        presenter.init( modalConfigurationContext );
+        doReturn(SOME_CONTENT).when(modalConfigurationContext).getComponentProperty(anyString());
+        presenter.init(modalConfigurationContext);
 
-        verify( presenter ).setupHTMLEditor();
-        verify( modalConfigurationContext ).getComponentProperty( HTMLLayoutDragComponent.HTML_CODE_PARAMETER );
-        verify( view, never() ).getHtmlEditorPlaceHolder();
-        verify( htmlEditor ).setContent( SOME_CONTENT );
-        verify( htmlEditor ).load();
+        verify(presenter).setupHTMLEditor();
+        verify(modalConfigurationContext).getComponentProperty(HTMLLayoutDragComponent.HTML_CODE_PARAMETER);
+        verify(view,
+               never()).getHtmlEditorPlaceHolder();
+        verify(htmlEditor).setContent(SOME_CONTENT);
+        verify(htmlEditor).load();
     }
 
     @Test
     public void showTest() {
-        presenter.init( modalConfigurationContext );
+        presenter.init(modalConfigurationContext);
         presenter.show();
 
-        verify( view ).show();
+        verify(view).show();
     }
 
     @Test
     public void okClickTest() {
-        presenter.init( modalConfigurationContext );
+        presenter.init(modalConfigurationContext);
         presenter.okClick();
 
-        verify( view ).hide();
-        verify( modalConfigurationContext, never() ).configurationCancelled();
-        verify( modalConfigurationContext ).configurationFinished();
+        verify(view).hide();
+        verify(modalConfigurationContext,
+               never()).configurationCancelled();
+        verify(modalConfigurationContext).configurationFinished();
     }
 
     @Test
     public void cancelButtonClickHandlerTest() {
-        presenter.init( modalConfigurationContext );
+        presenter.init(modalConfigurationContext);
         presenter.cancelClick();
 
-        verify( view ).hide();
-        verify( modalConfigurationContext ).configurationCancelled();
-        verify( modalConfigurationContext, never() ).configurationFinished();
+        verify(view).hide();
+        verify(modalConfigurationContext).configurationCancelled();
+        verify(modalConfigurationContext,
+               never()).configurationFinished();
     }
 
     @Test
     public void closeButtonClickHandlerTest() {
-        presenter.init( modalConfigurationContext );
+        presenter.init(modalConfigurationContext);
         presenter.closeClick();
 
-        verify( presenter.getModalConfigurationContext() ).configurationCancelled();
-        verify( presenter.getModalConfigurationContext(), never() ).configurationFinished();
+        verify(presenter.getModalConfigurationContext()).configurationCancelled();
+        verify(presenter.getModalConfigurationContext(),
+               never()).configurationFinished();
     }
 }

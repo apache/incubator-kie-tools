@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -28,12 +30,9 @@ import org.gwtbootstrap3.client.ui.Modal;
 import org.uberfire.ext.security.management.client.widgets.management.explorer.EntitiesExplorerView;
 import org.uberfire.mvp.Command;
 
-import javax.enterprise.context.Dependent;
-
 /**
  * <p>An editor view implementation for modifying the assigned entities using a modal panel.</p>
  * <p>This view wraps the given <code>ExplorerView</code> instance in a GWT Bootstrap 3 Modal panel.</p>
- *
  * @since 0.8.0
  */
 
@@ -43,29 +42,17 @@ public class AssignedEntitiesModalEditorView<T> extends Composite
         implements
         AssignedEntitiesEditor<T> {
 
-    interface AssignedEntitiesModalEditorViewBinder
-            extends
-            UiBinder<FlowPanel, AssignedEntitiesModalEditorView> {
-
-    }
-
     private static AssignedEntitiesModalEditorViewBinder uiBinder = GWT.create(AssignedEntitiesModalEditorViewBinder.class);
-
     @UiField
     FlowPanel mainPanel;
-
     @UiField
     Modal entitiesModal;
-    
     @UiField(provided = true)
     EntitiesExplorerView entitiesExplorerView;
-    
     @UiField
     Button closeButton;
-
     @UiField
     Button saveButton;
-
     private T presenter;
 
     @Override
@@ -76,19 +63,21 @@ public class AssignedEntitiesModalEditorView<T> extends Composite
     @Override
     public AssignedEntitiesEditor<T> configure(final EntitiesExplorerView explorerView) {
         this.entitiesExplorerView = explorerView;
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
         return this;
     }
 
     @Override
-    public AssignedEntitiesEditor<T> configureClose(final String closeText, final Command closeCallback) {
+    public AssignedEntitiesEditor<T> configureClose(final String closeText,
+                                                    final Command closeCallback) {
         closeButton.setText(closeText);
         closeButton.setTitle(closeText);
         closeButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(final ClickEvent clickEvent) {
                 if (closeCallback != null) {
-                    closeCallback.execute();;
+                    closeCallback.execute();
+                    ;
                 } else {
                     entitiesModal.hide();
                 }
@@ -98,14 +87,16 @@ public class AssignedEntitiesModalEditorView<T> extends Composite
     }
 
     @Override
-    public AssignedEntitiesEditor<T> configureSave(final String saveText, final Command saveCallback) {
+    public AssignedEntitiesEditor<T> configureSave(final String saveText,
+                                                   final Command saveCallback) {
         saveButton.setText(saveText);
         saveButton.setTitle(saveText);
         saveButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(final ClickEvent clickEvent) {
                 if (saveCallback != null) {
-                    saveCallback.execute();;
+                    saveCallback.execute();
+                    ;
                 } else {
                     entitiesModal.hide();
                 }
@@ -127,4 +118,9 @@ public class AssignedEntitiesModalEditorView<T> extends Composite
         return this;
     }
 
+    interface AssignedEntitiesModalEditorViewBinder
+            extends
+            UiBinder<FlowPanel, AssignedEntitiesModalEditorView> {
+
+    }
 }

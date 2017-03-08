@@ -17,6 +17,11 @@
 package org.uberfire.ext.security.management.client.widgets.management.editor.group.workflow;
 
 import java.util.Collection;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -53,26 +58,25 @@ import org.uberfire.security.authz.PermissionCollection;
 import org.uberfire.security.authz.PermissionManager;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
-import static org.uberfire.workbench.events.NotificationEvent.NotificationType.*;
+import static org.uberfire.workbench.events.NotificationEvent.NotificationType.INFO;
+import static org.uberfire.workbench.events.NotificationEvent.NotificationType.SUCCESS;
 
 /**
  * <p>Main entry point for viewing a group instance.</p>
- * 
  * @since 0.8.0
  */
 @Dependent
 public class GroupEditorWorkflow implements IsWidget {
 
+    public EntityWorkflowView view;
     ClientUserSystemManager userSystemManager;
     Caller<AuthorizationService> authorizationService;
     PermissionManager permissionManager;
     Event<OnErrorEvent> errorEvent;
+    protected final ErrorCallback<Message> errorCallback = (Message message, Throwable throwable) -> {
+        showError(throwable);
+        return false;
+    };
     Event<NotificationEvent> workbenchNotification;
     Event<SaveGroupEvent> saveGroupEvent;
     Event<DeleteGroupEvent> deleteGroupEvent;
@@ -80,8 +84,6 @@ public class GroupEditorWorkflow implements IsWidget {
     LoadingBox loadingBox;
     GroupEditor groupEditor;
     GroupEditorDriver groupEditorDriver;
-    public EntityWorkflowView view;
-
     Group group;
     boolean isDirty;
     PerspectiveActivity selectedHomePerspective = null;
@@ -150,18 +152,20 @@ public class GroupEditorWorkflow implements IsWidget {
         group = null;
     }
 
-    void delete() {
-        final String name = group.getName();
-        userSystemManager.groups((Void v) -> {
-            deleteGroupEvent.fire(new DeleteGroupEvent(name));
-            workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.groupRemoved(name), INFO));
-            clear();
-        }, errorCallback).delete(name);
-    }
-
     /*  ******************************************************************************************************
                                  PROTECTED PRESENTER API
      ****************************************************************************************************** */
+
+    void delete() {
+        final String name = group.getName();
+        userSystemManager.groups((Void v) -> {
+                                     deleteGroupEvent.fire(new DeleteGroupEvent(name));
+                                     workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.groupRemoved(name),
+                                                                                      INFO));
+                                     clear();
+                                 },
+                                 errorCallback).delete(name);
+    }
 
     protected void doShow(final String groupName) {
         assert groupName != null;
@@ -199,12 +203,13 @@ public class GroupEditorWorkflow implements IsWidget {
         // Call backend service.
         showLoadingBox();
         userSystemManager.groups((Group o) -> {
-            hideLoadingBox();
-            GroupEditorWorkflow.this.group = o;
-            assert group != null;
+                                     hideLoadingBox();
+                                     GroupEditorWorkflow.this.group = o;
+                                     assert group != null;
 
-            edit();
-        }, errorCallback).get(name);
+                                     edit();
+                                 },
+                                 errorCallback).get(name);
     }
 
     protected void doSave() {
@@ -221,8 +226,10 @@ public class GroupEditorWorkflow implements IsWidget {
 
             // Update the current active policy
             AuthorizationPolicy authzPolicy = permissionManager.getAuthorizationPolicy();
-            authzPolicy.setHomePerspective(group, homePerspective.getIdentifier());
-            authzPolicy.setPriority(group, groupPriority);
+            authzPolicy.setHomePerspective(group,
+                                           homePerspective.getIdentifier());
+            authzPolicy.setPriority(group,
+                                    groupPriority);
             Collection<Permission> pc = authzPolicy.getPermissions(group).collection();
             pc.clear();
             pc.addAll(groupPermissions.collection());
@@ -230,14 +237,14 @@ public class GroupEditorWorkflow implements IsWidget {
             // Save the policy in the backend
             authorizationService.call(r -> {
 
-                hideLoadingBox();
-                isDirty = false;
-                workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.groupSaved(group.getName()), SUCCESS));
-                saveGroupEvent.fire(new SaveGroupEvent(group.getName()));
-                doShow(group.getName());
-
-            }, errorCallback).savePolicy(authzPolicy);
-
+                                          hideLoadingBox();
+                                          isDirty = false;
+                                          workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.groupSaved(group.getName()),
+                                                                                           SUCCESS));
+                                          saveGroupEvent.fire(new SaveGroupEvent(group.getName()));
+                                          doShow(group.getName());
+                                      },
+                                      errorCallback).savePolicy(authzPolicy);
         } else {
             throw new RuntimeException("Group must be valid before updating it.");
         }
@@ -262,10 +269,13 @@ public class GroupEditorWorkflow implements IsWidget {
     protected void checkDirty(final Command callback) {
         if (isDirty) {
             confirmBox.show(UsersManagementWidgetsConstants.INSTANCE.confirmAction(),
-                    UsersManagementWidgetsConstants.INSTANCE.groupIsDirty(), () -> {
-                        GroupEditorWorkflow.this.isDirty = false;
-                        callback.execute();
-                    }, () -> {});
+                            UsersManagementWidgetsConstants.INSTANCE.groupIsDirty(),
+                            () -> {
+                                GroupEditorWorkflow.this.isDirty = false;
+                                callback.execute();
+                            },
+                            () -> {
+                            });
         } else {
             callback.execute();
         }
@@ -281,11 +291,15 @@ public class GroupEditorWorkflow implements IsWidget {
 
     protected void showError(final Throwable throwable) {
         final String msg = throwable != null ? throwable.getMessage() : UsersManagementWidgetsConstants.INSTANCE.genericError();
-        errorEvent.fire(new OnErrorEvent(GroupEditorWorkflow.this, msg));
+        errorEvent.fire(new OnErrorEvent(GroupEditorWorkflow.this,
+                                         msg));
     }
 
+    // Event observers
+
     protected void edit() {
-        groupEditorDriver.edit(group, groupEditor);
+        groupEditorDriver.edit(group,
+                               groupEditor);
         view.setCancelButtonVisible(false);
         view.setSaveButtonVisible(false);
 
@@ -295,61 +309,64 @@ public class GroupEditorWorkflow implements IsWidget {
         }
     }
 
-    // Event observers
-
     void onEditGroupEvent(@Observes final OnEditEvent onEditEvent) {
-        if (checkEventContext(onEditEvent, groupEditor)) {
+        if (checkEventContext(onEditEvent,
+                              groupEditor)) {
             edit();
         }
     }
 
     void onDeleteGroupEvent(@Observes final OnDeleteEvent onDeleteEvent) {
-        if (checkEventContext(onDeleteEvent, groupEditor)) {
-            confirmBox.show(UsersManagementWidgetsConstants.INSTANCE.confirmAction(), UsersManagementWidgetsConstants.INSTANCE.ensureRemoveGroup(),
-                    this::delete,
-                    () -> {});
+        if (checkEventContext(onDeleteEvent,
+                              groupEditor)) {
+            confirmBox.show(UsersManagementWidgetsConstants.INSTANCE.confirmAction(),
+                            UsersManagementWidgetsConstants.INSTANCE.ensureRemoveGroup(),
+                            this::delete,
+                            () -> {
+                            });
         }
     }
 
     void onHomePerspectiveChangedEvent(@Observes final HomePerspectiveChangedEvent event) {
-        if (checkEventContext(event, groupEditor.getAclSettings())) {
+        if (checkEventContext(event,
+                              groupEditor.getAclSettings())) {
             selectedHomePerspective = event.getPerspective();
             checkStatus();
         }
     }
 
     void onPriorityChangedEvent(@Observes final PriorityChangedEvent event) {
-        if (checkEventContext(event, groupEditor.getAclSettings())) {
+        if (checkEventContext(event,
+                              groupEditor.getAclSettings())) {
             checkStatus();
         }
     }
 
     void onPermissionChangedEvent(@Observes final PermissionChangedEvent event) {
-        if (checkEventContext(event, groupEditor.getAclEditor())) {
+        if (checkEventContext(event,
+                              groupEditor.getAclEditor())) {
             checkStatus();
         }
     }
 
     void onPermissionAddedEvent(@Observes final PermissionNodeAddedEvent event) {
-        if (checkEventContext(event, groupEditor.getAclEditor())) {
+        if (checkEventContext(event,
+                              groupEditor.getAclEditor())) {
             checkStatus();
         }
     }
 
     void onPermissionRemovedEvent(@Observes final PermissionNodeRemovedEvent event) {
-        if (checkEventContext(event, groupEditor.getAclEditor())) {
+        if (checkEventContext(event,
+                              groupEditor.getAclEditor())) {
             checkStatus();
         }
     }
 
-    protected boolean checkEventContext(final ContextualEvent contextualEvent, final Object context) {
+    protected boolean checkEventContext(final ContextualEvent contextualEvent,
+                                        final Object context) {
         return contextualEvent != null && contextualEvent.getContext() != null && contextualEvent.getContext().equals(context);
     }
-
-    protected final ErrorCallback<Message> errorCallback = (Message message, Throwable throwable) -> {
-        showError(throwable);
-        return false;
-    };
 
     protected void checkStatus() {
         boolean readDenied = isPerspectiveReadDenied(selectedHomePerspective);
@@ -369,7 +386,9 @@ public class GroupEditorWorkflow implements IsWidget {
         if (permissionCollection == null) {
             return false;
         }
-        Permission p = permissionManager.createPermission(perspectiveActivity, PerspectiveAction.READ, false);
+        Permission p = permissionManager.createPermission(perspectiveActivity,
+                                                          PerspectiveAction.READ,
+                                                          false);
         Permission existing = permissionCollection.get(p.getName());
         if (existing != null) {
             return existing.getResult().equals(AuthorizationResult.ACCESS_DENIED);

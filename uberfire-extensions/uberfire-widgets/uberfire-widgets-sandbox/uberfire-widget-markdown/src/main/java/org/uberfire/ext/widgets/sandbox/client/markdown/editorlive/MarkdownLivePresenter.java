@@ -21,21 +21,14 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.uberfire.ext.widgets.sandbox.client.markdown.MarkdownTextContent;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
+import org.uberfire.ext.widgets.sandbox.client.markdown.MarkdownTextContent;
 
 @Dependent
 @WorkbenchScreen(identifier = "MarkdownLiveViewer")
 public class MarkdownLivePresenter {
-
-    public interface View
-            extends
-            IsWidget {
-
-        void setContent(final String htmlContent);
-    }
 
     @Inject
     public View view;
@@ -54,4 +47,10 @@ public class MarkdownLivePresenter {
         view.setContent(content.getContent());
     }
 
+    public interface View
+            extends
+            IsWidget {
+
+        void setContent(final String htmlContent);
+    }
 }

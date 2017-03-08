@@ -16,8 +16,6 @@
 
 package org.uberfire.ext.preferences.client.event;
 
-import java.util.Map;
-
 import org.uberfire.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.preferences.shared.bean.PreferenceHierarchyElement;
 
@@ -28,8 +26,8 @@ public class HierarchyItemSelectedEvent extends AbstractHierarchyItemEvent {
 
     private PreferenceHierarchyElement<?> hierarchyElement;
 
-    public HierarchyItemSelectedEvent( final PreferenceHierarchyElement<?> hierarchyElement ) {
-        super( hierarchyElement.getId() );
+    public HierarchyItemSelectedEvent(final PreferenceHierarchyElement<?> hierarchyElement) {
+        super(hierarchyElement.getId());
         this.hierarchyElement = hierarchyElement;
     }
 

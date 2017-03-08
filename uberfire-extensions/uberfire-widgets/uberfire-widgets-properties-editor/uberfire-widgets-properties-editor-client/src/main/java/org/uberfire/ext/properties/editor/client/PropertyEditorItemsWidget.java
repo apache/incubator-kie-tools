@@ -27,34 +27,31 @@ import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 public class PropertyEditorItemsWidget extends Composite {
 
+    private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
     @UiField
     FormGroup items;
-
     @UiField
     HelpBlock helpInline;
 
     public PropertyEditorItemsWidget() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
-    public void add( Widget item ) {
-        items.add( item );
+    public void add(Widget item) {
+        items.add(item);
     }
 
-    public void setError(String errorMessage){
-        items.setValidationState( ValidationState.ERROR );
-        helpInline.setText( errorMessage );
+    public void setError(String errorMessage) {
+        items.setValidationState(ValidationState.ERROR);
+        helpInline.setText(errorMessage);
     }
 
     public void clearError() {
-        helpInline.setText( "" );
-        items.setValidationState( ValidationState.NONE );
+        helpInline.setText("");
+        items.setValidationState(ValidationState.NONE);
     }
 
     interface MyUiBinder extends UiBinder<Widget, PropertyEditorItemsWidget> {
 
     }
-
-    private static MyUiBinder uiBinder = GWT.create( MyUiBinder.class );
-
 }

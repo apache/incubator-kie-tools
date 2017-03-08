@@ -18,5 +18,6 @@ package org.uberfire.ext.preferences.processors;
 
 public enum GeneratorContext {
 
-    BEAN, PORTABLE
+    BEAN,
+    PORTABLE
 }

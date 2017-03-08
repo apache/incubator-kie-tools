@@ -32,94 +32,114 @@ import org.uberfire.java.nio.fs.jgit.JGitFileSystem;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 import org.uberfire.java.nio.fs.jgit.JGitPathImpl;
 
-import static org.fest.assertions.api.Assertions.*;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 public class FileSystemsTest {
 
     @Before
     @After
     public void cleanup() throws IOException {
-        FileUtils.deleteDirectory( new File( JGitFileSystemProvider.REPOSITORIES_CONTAINER_DIR ) );
+        FileUtils.deleteDirectory(new File(JGitFileSystemProvider.REPOSITORIES_CONTAINER_DIR));
     }
 
     @Test
     public void testGetDefault() {
-        assertThat( FileSystems.getDefault() ).isNotNull().isInstanceOf( BaseSimpleFileSystem.class );
+        assertThat(FileSystems.getDefault()).isNotNull().isInstanceOf(BaseSimpleFileSystem.class);
     }
 
     @Test
     public void testGetFileSystemByURI() {
-        assertThat( FileSystems.getFileSystem( URI.create( "default:///" ) ) ).isNotNull().isInstanceOf( BaseSimpleFileSystem.class );
-        assertThat( FileSystems.getFileSystem( URI.create( "file:///" ) ) ).isNotNull().isInstanceOf( BaseSimpleFileSystem.class );
+        assertThat(FileSystems.getFileSystem(URI.create("default:///"))).isNotNull().isInstanceOf(BaseSimpleFileSystem.class);
+        assertThat(FileSystems.getFileSystem(URI.create("file:///"))).isNotNull().isInstanceOf(BaseSimpleFileSystem.class);
     }
 
     @Test
     public void testNewFileSystem() {
 
-        final Map<String, Object> env = new HashMap<String, Object>( 2 );
-        env.put( "userName", "user" );
-        env.put( "password", "pass" );
+        final Map<String, Object> env = new HashMap<String, Object>(2);
+        env.put("userName",
+                "user");
+        env.put("password",
+                "pass");
 
-        final FileSystem fs = FileSystems.newFileSystem( URI.create( "git://my-test" ), env );
+        final FileSystem fs = FileSystems.newFileSystem(URI.create("git://my-test"),
+                                                        env);
 
-        assertThat( fs ).isNotNull();
+        assertThat(fs).isNotNull();
 
-        final FileSystem newFS = FileSystems.newFileSystem( JGitPathImpl.create( (JGitFileSystem) fs, "new_test", "my-other-test", false ), null );
+        final FileSystem newFS = FileSystems.newFileSystem(JGitPathImpl.create((JGitFileSystem) fs,
+                                                                               "new_test",
+                                                                               "my-other-test",
+                                                                               false),
+                                                           null);
 
-        assertThat( newFS ).isNotNull();
+        assertThat(newFS).isNotNull();
     }
 
     @Test(expected = FileSystemAlreadyExistsException.class)
     public void testNewOnExistingFileSystem() {
 
-        final Map<String, Object> env = new HashMap<String, Object>( 2 );
-        env.put( "userName", "user" );
-        env.put( "password", "pass" );
+        final Map<String, Object> env = new HashMap<String, Object>(2);
+        env.put("userName",
+                "user");
+        env.put("password",
+                "pass");
 
-        FileSystems.newFileSystem( URI.create( "git://test" ), env );
+        FileSystems.newFileSystem(URI.create("git://test"),
+                                  env);
 
-        FileSystems.newFileSystem( URI.create( "git://test" ), env );
+        FileSystems.newFileSystem(URI.create("git://test"),
+                                  env);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void getFileSystemNull() {
-        FileSystems.getFileSystem( null );
+        FileSystems.getFileSystem(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void newFileSystemNull1() {
         final Map<String, ?> emptyMap = Collections.emptyMap();
-        FileSystems.newFileSystem( null, emptyMap );
+        FileSystems.newFileSystem(null,
+                                  emptyMap);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void newFileSystemNull2() {
-        FileSystems.newFileSystem( URI.create( "jgit:///test" ), null );
+        FileSystems.newFileSystem(URI.create("jgit:///test"),
+                                  null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void newFileSystemNull3() {
-        FileSystems.newFileSystem( (URI) null, null );
+        FileSystems.newFileSystem((URI) null,
+                                  null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void newFileSystemNull4() {
-        FileSystems.newFileSystem( (Path) null, null );
+        FileSystems.newFileSystem((Path) null,
+                                  null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void newFileSystemNull5() {
-        FileSystems.newFileSystem( URI.create( "jgit:///test" ), null, null );
+        FileSystems.newFileSystem(URI.create("jgit:///test"),
+                                  null,
+                                  null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void newFileSystemNull6() {
-        FileSystems.newFileSystem( URI.create( "jgit:///test" ), null, null );
+        FileSystems.newFileSystem(URI.create("jgit:///test"),
+                                  null,
+                                  null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void newFileSystemNull7() {
-        FileSystems.newFileSystem( null, null, null );
+        FileSystems.newFileSystem(null,
+                                  null,
+                                  null);
     }
-
 }

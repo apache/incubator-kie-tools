@@ -34,89 +34,88 @@ import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class StaticWorkbenchPanelViewTest {
 
+    // Not a @Mock or @GwtMock because we want to test the view.init() method
+    private final StaticWorkbenchPanelPresenter presenter = mock(StaticWorkbenchPanelPresenter.class);
     @InjectMocks
     private StaticWorkbenchPanelView view;
-
-    // Not a @Mock or @GwtMock because we want to test the view.init() method
-    private final StaticWorkbenchPanelPresenter presenter = mock( StaticWorkbenchPanelPresenter.class );
-
     @Mock
     private PanelManager panelManager;
 
     @Mock
     private PlaceManager placeManager;
 
-    @Mock( answer = Answers.RETURNS_MOCKS )
+    @Mock(answer = Answers.RETURNS_MOCKS)
     private StaticFocusedResizePanel panel;
 
     @Before
     public void setup() {
         view.postConstruct();
-        view.init( presenter );
+        view.init(presenter);
     }
 
     @Test
     public void addPresenterOnInit() {
-        assertEquals( presenter, view.getPresenter() );
+        assertEquals(presenter,
+                     view.getPresenter());
     }
 
     @Test
     public void addPartToPanelWhenPartViewIsNull() {
-        WorkbenchPartPresenter.View viewWbPartPresenter = mock( WorkbenchPartPresenter.View.class );
-        when( panel.getPartView() ).thenReturn( null );
+        WorkbenchPartPresenter.View viewWbPartPresenter = mock(WorkbenchPartPresenter.View.class);
+        when(panel.getPartView()).thenReturn(null);
 
-        view.addPart( viewWbPartPresenter );
+        view.addPart(viewWbPartPresenter);
 
-        verify( panel ).setPart( viewWbPartPresenter );
-
+        verify(panel).setPart(viewWbPartPresenter);
     }
 
     @Test
     public void removeContainedPart() {
-        WorkbenchPartPresenter mockPresenter = mock( WorkbenchPartPresenter.class );
-        WorkbenchPartPresenter.View mockPartView = mock( WorkbenchPartPresenter.View.class );
-        PartDefinition mockPartDefinition = new PartDefinitionImpl( new DefaultPlaceRequest( "mockPlace" ) );
+        WorkbenchPartPresenter mockPresenter = mock(WorkbenchPartPresenter.class);
+        WorkbenchPartPresenter.View mockPartView = mock(WorkbenchPartPresenter.View.class);
+        PartDefinition mockPartDefinition = new PartDefinitionImpl(new DefaultPlaceRequest("mockPlace"));
 
-        when( mockPartView.getPresenter() ).thenReturn( mockPresenter );
-        when( mockPresenter.getDefinition() ).thenReturn( mockPartDefinition );
+        when(mockPartView.getPresenter()).thenReturn(mockPresenter);
+        when(mockPresenter.getDefinition()).thenReturn(mockPartDefinition);
 
-        when( view.panel.getPartView() ).thenReturn( null );
-        view.addPart( mockPartView );
-        when( view.panel.getPartView() ).thenReturn( mockPartView );
+        when(view.panel.getPartView()).thenReturn(null);
+        view.addPart(mockPartView);
+        when(view.panel.getPartView()).thenReturn(mockPartView);
 
-        boolean removed = view.removePart( mockPartDefinition );
+        boolean removed = view.removePart(mockPartDefinition);
 
-        assertTrue( removed );
-        verify( panel ).clear();
+        assertTrue(removed);
+        verify(panel).clear();
     }
 
     @Test
     public void removeNonContainedPart() {
-        WorkbenchPartPresenter mockPresenter = mock( WorkbenchPartPresenter.class );
-        WorkbenchPartPresenter.View mockPartView = mock( WorkbenchPartPresenter.View.class );
-        PartDefinition mockPartDefinition = new PartDefinitionImpl( new DefaultPlaceRequest( "mock1" ) );
+        WorkbenchPartPresenter mockPresenter = mock(WorkbenchPartPresenter.class);
+        WorkbenchPartPresenter.View mockPartView = mock(WorkbenchPartPresenter.View.class);
+        PartDefinition mockPartDefinition = new PartDefinitionImpl(new DefaultPlaceRequest("mock1"));
 
-        when( mockPartView.getPresenter() ).thenReturn( mockPresenter );
-        when( mockPresenter.getDefinition() ).thenReturn( mockPartDefinition );
+        when(mockPartView.getPresenter()).thenReturn(mockPresenter);
+        when(mockPresenter.getDefinition()).thenReturn(mockPartDefinition);
 
-        WorkbenchPartPresenter mockPresenter2 = mock( WorkbenchPartPresenter.class );
-        WorkbenchPartPresenter.View mockPartView2 = mock( WorkbenchPartPresenter.View.class );
-        PartDefinition mockPartDefinition2 = new PartDefinitionImpl( new DefaultPlaceRequest( "mock2" ) );
+        WorkbenchPartPresenter mockPresenter2 = mock(WorkbenchPartPresenter.class);
+        WorkbenchPartPresenter.View mockPartView2 = mock(WorkbenchPartPresenter.View.class);
+        PartDefinition mockPartDefinition2 = new PartDefinitionImpl(new DefaultPlaceRequest("mock2"));
 
-        when( mockPartView2.getPresenter() ).thenReturn( mockPresenter2 );
-        when( mockPresenter2.getDefinition() ).thenReturn( mockPartDefinition2 );
+        when(mockPartView2.getPresenter()).thenReturn(mockPresenter2);
+        when(mockPresenter2.getDefinition()).thenReturn(mockPartDefinition2);
 
-        when( view.panel.getPartView() ).thenReturn( null );
-        view.addPart( mockPartView );
-        when( view.panel.getPartView() ).thenReturn( mockPartView );
+        when(view.panel.getPartView()).thenReturn(null);
+        view.addPart(mockPartView);
+        when(view.panel.getPartView()).thenReturn(mockPartView);
 
-        boolean removed = view.removePart( mockPartDefinition2 );
+        boolean removed = view.removePart(mockPartDefinition2);
 
-        assertFalse( removed );
-        verify( panel, never() ).clear();
+        assertFalse(removed);
+        verify(panel,
+               never()).clear();
     }
 
     @Test
@@ -124,16 +123,16 @@ public class StaticWorkbenchPanelViewTest {
         final int width = 42;
         final int height = 10;
 
-        view.setPixelSize( width, height );
+        view.setPixelSize(width,
+                          height);
 
         view.onResize();
 
-        verify( panel ).onResize();
+        verify(panel).onResize();
     }
-
 
     @Test
     public void getPartsShouldReturnCurrentPart() {
-        assertFalse( view.getParts().isEmpty() );
+        assertFalse(view.getParts().isEmpty());
     }
 }

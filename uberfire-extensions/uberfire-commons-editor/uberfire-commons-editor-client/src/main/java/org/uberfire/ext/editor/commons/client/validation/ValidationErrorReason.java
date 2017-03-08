@@ -17,5 +17,7 @@
 package org.uberfire.ext.editor.commons.client.validation;
 
 public enum ValidationErrorReason {
-    EMPTY_NAME, INVALID_NAME, DUPLICATED_NAME;
+    EMPTY_NAME,
+    INVALID_NAME,
+    DUPLICATED_NAME;
 }

@@ -17,9 +17,8 @@ package org.uberfire.workbench.model.toolbar;
 
 import java.util.List;
 
-import org.uberfire.security.authz.RuntimeFeatureResource;
-
 import jsinterop.annotations.JsType;
+import org.uberfire.security.authz.RuntimeFeatureResource;
 
 /**
  * Meta-data for a Workbench Tool Bar including permissions
@@ -28,8 +27,7 @@ import jsinterop.annotations.JsType;
 public interface ToolBar
         extends RuntimeFeatureResource {
 
-    void addItem( final ToolBarItem item );
+    void addItem(final ToolBarItem item);
 
     List<ToolBarItem> getItems();
-
 }

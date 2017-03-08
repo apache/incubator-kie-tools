@@ -31,5 +31,4 @@ public interface MetadataConfig extends PriorityDisposable {
     IndexManager getIndexManager();
 
     MetaModelStore getMetaModelStore();
-
 }

@@ -31,10 +31,10 @@ public class PerspectiveChange implements UberFireEvent {
     private final String identifier;
     private final PlaceRequest placeRequest;
 
-    public PerspectiveChange( final PlaceRequest placeRequest,
-                              final PerspectiveDefinition perspectiveDefinition,
-                              final Menus menus,
-                              final String identifier ) {
+    public PerspectiveChange(final PlaceRequest placeRequest,
+                             final PerspectiveDefinition perspectiveDefinition,
+                             final Menus menus,
+                             final String identifier) {
         this.placeRequest = placeRequest;
         this.perspectiveDefinition = perspectiveDefinition;
         this.menus = menus;

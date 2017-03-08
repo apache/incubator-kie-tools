@@ -33,16 +33,15 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 public class NestedDockingPanelPerspective extends AbstractTestPerspectiveActivity {
 
     @Inject
-    public NestedDockingPanelPerspective( PlaceManager placeManager ) {
-        super( placeManager );
+    public NestedDockingPanelPerspective(PlaceManager placeManager) {
+        super(placeManager);
     }
 
     @Override
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
-        PerspectiveDefinition pd = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
-        pd.getRoot().setElementId( "root" );
-        pd.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( NestingScreen.class.getName() ) ) );
+        PerspectiveDefinition pd = new PerspectiveDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        pd.getRoot().setElementId("root");
+        pd.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest(NestingScreen.class.getName())));
         return pd;
     }
-
 }

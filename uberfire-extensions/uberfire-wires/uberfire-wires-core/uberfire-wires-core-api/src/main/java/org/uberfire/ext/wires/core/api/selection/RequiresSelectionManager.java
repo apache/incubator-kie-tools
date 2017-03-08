@@ -20,6 +20,5 @@ package org.uberfire.ext.wires.core.api.selection;
  */
 public interface RequiresSelectionManager {
 
-    public void setSelectionManager( final SelectionManager manager );
-
+    public void setSelectionManager(final SelectionManager manager);
 }

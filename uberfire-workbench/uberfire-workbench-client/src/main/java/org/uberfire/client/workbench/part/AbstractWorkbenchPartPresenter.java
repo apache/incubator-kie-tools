@@ -41,13 +41,13 @@ public abstract class AbstractWorkbenchPartPresenter implements WorkbenchPartPre
     private PartDefinition definition;
 
     @Inject
-    public AbstractWorkbenchPartPresenter( final View view ) {
+    public AbstractWorkbenchPartPresenter(final View view) {
         this.view = view;
     }
 
     @PostConstruct
     void init() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
@@ -56,7 +56,7 @@ public abstract class AbstractWorkbenchPartPresenter implements WorkbenchPartPre
     }
 
     @Override
-    public void setDefinition( final PartDefinition definition ) {
+    public void setDefinition(final PartDefinition definition) {
         this.definition = definition;
     }
 
@@ -66,8 +66,8 @@ public abstract class AbstractWorkbenchPartPresenter implements WorkbenchPartPre
     }
 
     @Override
-    public void setWrappedWidget( final IsWidget widget ) {
-        this.view.setWrappedWidget( widget );
+    public void setWrappedWidget(final IsWidget widget) {
+        this.view.setWrappedWidget(widget);
     }
 
     @Override
@@ -76,7 +76,7 @@ public abstract class AbstractWorkbenchPartPresenter implements WorkbenchPartPre
     }
 
     @Override
-    public void setTitle( final String title ) {
+    public void setTitle(final String title) {
         this.title = title;
     }
 
@@ -86,7 +86,7 @@ public abstract class AbstractWorkbenchPartPresenter implements WorkbenchPartPre
     }
 
     @Override
-    public void setMenus( Menus menus ) {
+    public void setMenus(Menus menus) {
         this.menus = menus;
     }
 
@@ -96,7 +96,7 @@ public abstract class AbstractWorkbenchPartPresenter implements WorkbenchPartPre
     }
 
     @Override
-    public void setTitleDecoration( final IsWidget titleDecoration ) {
+    public void setTitleDecoration(final IsWidget titleDecoration) {
         this.titleDecoration = titleDecoration;
     }
 
@@ -106,7 +106,7 @@ public abstract class AbstractWorkbenchPartPresenter implements WorkbenchPartPre
     }
 
     @Override
-    public void setContextId( String contextId ) {
+    public void setContextId(String contextId) {
         this.contextId = contextId;
     }
 }

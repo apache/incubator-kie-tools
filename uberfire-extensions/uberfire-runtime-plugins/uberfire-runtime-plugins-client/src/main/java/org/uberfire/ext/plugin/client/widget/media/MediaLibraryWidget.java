@@ -28,7 +28,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -64,36 +63,21 @@ import org.uberfire.mvp.ParameterizedCommand;
 @Dependent
 public class MediaLibraryWidget extends Composite implements RequiresResize {
 
-    interface ViewBinder
-            extends
-            UiBinder<Widget, MediaLibraryWidget> {
-
-    }
-
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
-    private FileUploadFormEncoder formEncoder = new FileUploadFormEncoder();
-
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
     @UiField
     FlowPanel content;
-
     @UiField
     Form form;
-
     @UiField(provided = true)
     FileUpload fileUpload;
-
     @UiField
     Row library;
-
+    private FileUploadFormEncoder formEncoder = new FileUploadFormEncoder();
     @Inject
     private PluginConfigService pluginConfigService;
-
     private String pluginName;
     private ParameterizedCommand<Media> onMediaDelete;
-
     private Map<Path, IsWidget> mediaRef = new HashMap<Path, IsWidget>();
-
     private List<Command> updateMediaOnSaveCommands = new ArrayList<>();
     private List<Command> updateMediaOnCloseCommands = new ArrayList<>();
 
@@ -101,150 +85,162 @@ public class MediaLibraryWidget extends Composite implements RequiresResize {
     public void init() {
         fileUpload = createFileUpload();
 
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
-        form.setEncoding( FormPanel.ENCODING_MULTIPART );
-        form.setMethod( FormPanel.METHOD_POST );
+        form.setEncoding(FormPanel.ENCODING_MULTIPART);
+        form.setMethod(FormPanel.METHOD_POST);
 
-        formEncoder.addUtf8Charset( form );
+        formEncoder.addUtf8Charset(form);
 
-        form.addSubmitHandler( new AbstractForm.SubmitHandler() {
+        form.addSubmitHandler(new AbstractForm.SubmitHandler() {
             @Override
-            public void onSubmit( final AbstractForm.SubmitEvent event ) {
+            public void onSubmit(final AbstractForm.SubmitEvent event) {
                 final String fileName = fileUpload.getFilename();
-                if ( isNullOrEmpty( fileName ) ) {
+                if (isNullOrEmpty(fileName)) {
                     event.cancel();
                 }
             }
 
-            private boolean isNullOrEmpty( final String fileName ) {
-                return fileName == null || "".equals( fileName );
+            private boolean isNullOrEmpty(final String fileName) {
+                return fileName == null || "".equals(fileName);
             }
-        } );
+        });
 
-        form.addSubmitCompleteHandler( new AbstractForm.SubmitCompleteHandler() {
+        form.addSubmitCompleteHandler(new AbstractForm.SubmitCompleteHandler() {
             @Override
-            public void onSubmitComplete( final AbstractForm.SubmitCompleteEvent event ) {
-                if ( "OK".equalsIgnoreCase( event.getResults() ) ) {
-                    Window.alert( "Upload Success" );
-                } else if ( "FAIL".equalsIgnoreCase( event.getResults() ) ) {
-                    Window.alert( "Upload Failed" );
-                } else if ( "FAIL - ALREADY EXISTS".equalsIgnoreCase( event.getResults() ) ) {
-                    Window.alert( "File already exists" );
+            public void onSubmitComplete(final AbstractForm.SubmitCompleteEvent event) {
+                if ("OK".equalsIgnoreCase(event.getResults())) {
+                    Window.alert("Upload Success");
+                } else if ("FAIL".equalsIgnoreCase(event.getResults())) {
+                    Window.alert("Upload Failed");
+                } else if ("FAIL - ALREADY EXISTS".equalsIgnoreCase(event.getResults())) {
+                    Window.alert("File already exists");
                 }
             }
-        } );
+        });
     }
 
-    public void setup( final String pluginName,
-                       final Collection<Media> mediaLibrary,
-                       final ParameterizedCommand<Media> onMediaDelete ) {
+    public void setup(final String pluginName,
+                      final Collection<Media> mediaLibrary,
+                      final ParameterizedCommand<Media> onMediaDelete) {
         this.pluginName = pluginName;
         this.onMediaDelete = onMediaDelete;
 
         this.mediaRef.clear();
         this.library.clear();
 
-        for ( final Media media : mediaLibrary ) {
-            addMedia( media );
+        for (final Media media : mediaLibrary) {
+            addMedia(media);
         }
     }
 
     private FileUpload createFileUpload() {
-        return new FileUpload( new Command() {
+        return new FileUpload(new Command() {
             @Override
             public void execute() {
-                form.setAction( GWT.getHostPageBaseURL().replaceAll( "/" + GWT.getModuleName(), "" ) + pluginConfigService.getMediaServletURI() + pluginName );
+                form.setAction(GWT.getHostPageBaseURL().replaceAll("/" + GWT.getModuleName(),
+                                                                   "") + pluginConfigService.getMediaServletURI() + pluginName);
                 form.submit();
             }
-        }, true );
+        },
+                              true);
     }
 
     @Override
     public void onResize() {
-        getParent().getElement().getStyle().setBackgroundColor( "#F6F6F6" );
-        content.getElement().getStyle().setTop( 60, Style.Unit.PX );
+        getParent().getElement().getStyle().setBackgroundColor("#F6F6F6");
+        content.getElement().getStyle().setTop(60,
+                                               Style.Unit.PX);
     }
 
-    public void onNewMedia( @Observes final MediaAdded mediaAddedEvent ) {
-        if ( mediaAddedEvent.getPluginName().equals( pluginName ) ) {
+    public void onNewMedia(@Observes final MediaAdded mediaAddedEvent) {
+        if (mediaAddedEvent.getPluginName().equals(pluginName)) {
             final Media media = mediaAddedEvent.getMedia();
 
-            addMedia( media );
+            addMedia(media);
 
-            updateMediaOnCloseCommands.add( new Command() {
+            updateMediaOnCloseCommands.add(new Command() {
                 @Override
                 public void execute() {
-                    onMediaDelete.execute( media );
+                    onMediaDelete.execute(media);
                 }
-            } );
+            });
         }
     }
 
-    public void onMediaDelete( @Observes final MediaDeleted mediaDeleted ) {
-        if ( mediaDeleted.getPluginName().equals( pluginName ) ) {
-            final IsWidget thumb = mediaRef.get( mediaDeleted.getMedia().getPath() );
-            if ( thumb != null ) {
-                library.remove( thumb );
+    public void onMediaDelete(@Observes final MediaDeleted mediaDeleted) {
+        if (mediaDeleted.getPluginName().equals(pluginName)) {
+            final IsWidget thumb = mediaRef.get(mediaDeleted.getMedia().getPath());
+            if (thumb != null) {
+                library.remove(thumb);
             }
         }
     }
 
-    public void addMedia( final Media media ) {
+    public void addMedia(final Media media) {
 
-        final Column column = new Column( ColumnSize.XS_4 );
+        final Column column = new Column(ColumnSize.XS_4);
 
         final Button trash = new Button();
-        trash.setIcon( IconType.TRASH );
+        trash.setIcon(IconType.TRASH);
 
         final ThumbnailPanel thumbnail = new ThumbnailPanel() {{
-            add( new Image( media.getPreviewURI() ) {{
-                setType( ImageType.CIRCLE );
-                setHeight( "140px" );
-                setWidth( "140px" );
-            }} );
-            add( new Caption() {{
-                add( new Paragraph( media.getExternalURI() ) {{
-                    getElement().getStyle().setProperty( "maxWidth", "180px" );
-                }} );
-                add( new Paragraph() {{
-                    add( trash );
-                }} );
-            }} );
+            add(new Image(media.getPreviewURI()) {{
+                setType(ImageType.CIRCLE);
+                setHeight("140px");
+                setWidth("140px");
+            }});
+            add(new Caption() {{
+                add(new Paragraph(media.getExternalURI()) {{
+                    getElement().getStyle().setProperty("maxWidth",
+                                                        "180px");
+                }});
+                add(new Paragraph() {{
+                    add(trash);
+                }});
+            }});
         }};
 
-        trash.addClickHandler( getTrashClickHandler( media, column ) );
+        trash.addClickHandler(getTrashClickHandler(media,
+                                                   column));
 
-        column.add( thumbnail );
-        library.add( column );
+        column.add(thumbnail);
+        library.add(column);
 
-        mediaRef.put( media.getPath(), column );
+        mediaRef.put(media.getPath(),
+                     column);
     }
 
-    private ClickHandler getTrashClickHandler( final Media media,
-                                               final Column column ) {
+    private ClickHandler getTrashClickHandler(final Media media,
+                                              final Column column) {
         return event -> {
-            mediaRef.remove( media.getPath() );
-            updateMediaOnSaveCommands.add( new Command() {
+            mediaRef.remove(media.getPath());
+            updateMediaOnSaveCommands.add(new Command() {
                 @Override
                 public void execute() {
-                    onMediaDelete.execute( media );
+                    onMediaDelete.execute(media);
                 }
-            } );
-            library.remove( column );
+            });
+            library.remove(column);
         };
     }
 
     public void updateMediaOnClose() {
-        for ( Command command : updateMediaOnCloseCommands ) {
+        for (Command command : updateMediaOnCloseCommands) {
             command.execute();
         }
     }
 
     public void updateMediaOnSave() {
-        for ( Command command : updateMediaOnSaveCommands ) {
+        for (Command command : updateMediaOnSaveCommands) {
             command.execute();
         }
         updateMediaOnCloseCommands = new ArrayList<>();
+    }
+
+    interface ViewBinder
+            extends
+            UiBinder<Widget, MediaLibraryWidget> {
+
     }
 }

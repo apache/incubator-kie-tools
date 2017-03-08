@@ -36,50 +36,50 @@ public class StringDOMElementSingletonColumn extends BaseGridColumn<String> impl
 
     private final TextBoxSingletonDOMElementFactory factory;
 
-    public StringDOMElementSingletonColumn( final GridColumn.HeaderMetaData headerMetaData,
-                                            final TextBoxSingletonDOMElementFactory factory,
-                                            final double width ) {
-        this( new ArrayList<HeaderMetaData>() {{
-                  add( headerMetaData );
-              }},
-              factory,
-              width );
+    public StringDOMElementSingletonColumn(final GridColumn.HeaderMetaData headerMetaData,
+                                           final TextBoxSingletonDOMElementFactory factory,
+                                           final double width) {
+        this(new ArrayList<HeaderMetaData>() {{
+                 add(headerMetaData);
+             }},
+             factory,
+             width);
     }
 
-    public StringDOMElementSingletonColumn( final List<GridColumn.HeaderMetaData> headerMetaData,
-                                            final TextBoxSingletonDOMElementFactory factory,
-                                            final double width ) {
-        super( headerMetaData,
-               new StringColumnDOMElementSingletonRenderer( factory ),
-               width );
-        this.factory = PortablePreconditions.checkNotNull( "factory",
-                                                           factory );
+    public StringDOMElementSingletonColumn(final List<GridColumn.HeaderMetaData> headerMetaData,
+                                           final TextBoxSingletonDOMElementFactory factory,
+                                           final double width) {
+        super(headerMetaData,
+              new StringColumnDOMElementSingletonRenderer(factory),
+              width);
+        this.factory = PortablePreconditions.checkNotNull("factory",
+                                                          factory);
     }
 
     @Override
-    public void edit( final GridCell<String> cell,
-                      final GridBodyCellRenderContext context,
-                      final Callback<GridCellValue<String>> callback ) {
-        factory.attachDomElement( context,
-                                  new Callback<TextBoxDOMElement>() {
-                                      @Override
-                                      public void callback( final TextBoxDOMElement e ) {
-                                          e.getWidget().setValue( assertCell( cell ).getValue().getValue() );
-                                      }
-                                  },
-                                  new Callback<TextBoxDOMElement>() {
-                                      @Override
-                                      public void callback( final TextBoxDOMElement e ) {
-                                          e.getWidget().setFocus( true );
-                                      }
-                                  } );
+    public void edit(final GridCell<String> cell,
+                     final GridBodyCellRenderContext context,
+                     final Callback<GridCellValue<String>> callback) {
+        factory.attachDomElement(context,
+                                 new Callback<TextBoxDOMElement>() {
+                                     @Override
+                                     public void callback(final TextBoxDOMElement e) {
+                                         e.getWidget().setValue(assertCell(cell).getValue().getValue());
+                                     }
+                                 },
+                                 new Callback<TextBoxDOMElement>() {
+                                     @Override
+                                     public void callback(final TextBoxDOMElement e) {
+                                         e.getWidget().setFocus(true);
+                                     }
+                                 });
     }
 
-    private GridCell<String> assertCell( final GridCell<String> cell ) {
-        if ( cell != null ) {
+    private GridCell<String> assertCell(final GridCell<String> cell) {
+        if (cell != null) {
             return cell;
         }
-        return new BaseGridCell<String>( new BaseGridCellValue<String>( "" ) );
+        return new BaseGridCell<String>(new BaseGridCellValue<String>(""));
     }
 
     @Override
@@ -91,5 +91,4 @@ public class StringDOMElementSingletonColumn extends BaseGridColumn<String> impl
     public void destroyResources() {
         factory.destroyResources();
     }
-
 }

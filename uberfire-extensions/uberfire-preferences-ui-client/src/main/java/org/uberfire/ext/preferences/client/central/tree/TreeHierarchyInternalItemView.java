@@ -35,65 +35,60 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 public class TreeHierarchyInternalItemView implements IsElement,
                                                       TreeHierarchyInternalItemPresenter.View {
 
-    private TreeHierarchyInternalItemPresenter presenter;
-
-    @Inject
-    private TranslationService translationService;
-
     @DataField("preference-tree-internal-item-label")
     Element label = DOM.createLabel();
-
     @Inject
     @DataField("preference-tree-internal-item-node")
     Div treeNode;
-
     @Inject
     @DataField("preference-tree-internal-item-children")
     Div children;
-
     @DataField("preference-tree-internal-item-expand-icon")
-    Element expandIcon = DOM.createElement( "i" );
-
+    Element expandIcon = DOM.createElement("i");
     @DataField("preference-tree-internal-item-contract-icon")
-    Element contractIcon = DOM.createElement( "i" );
+    Element contractIcon = DOM.createElement("i");
+    private TreeHierarchyInternalItemPresenter presenter;
+    @Inject
+    private TranslationService translationService;
 
     @Override
-    public void init( final TreeHierarchyInternalItemPresenter presenter ) {
+    public void init(final TreeHierarchyInternalItemPresenter presenter) {
         this.presenter = presenter;
 
-        final String preferenceLabel = getPreferenceLabel( presenter.getHierarchyElement().getBundleKey() );
-        label.setInnerHTML( preferenceLabel );
+        final String preferenceLabel = getPreferenceLabel(presenter.getHierarchyElement().getBundleKey());
+        label.setInnerHTML(preferenceLabel);
 
-        treeNode.getStyle().setProperty( "padding-left", presenter.getLevel() * 27 + 8 + "px" );
+        treeNode.getStyle().setProperty("padding-left",
+                                        presenter.getLevel() * 27 + 8 + "px");
 
-        presenter.getHierarchyItems().forEach( hierarchyItem -> {
-            children.appendChild( ( (IsElement) hierarchyItem.getView() ).getElement() );
-        } );
+        presenter.getHierarchyItems().forEach(hierarchyItem -> {
+            children.appendChild(((IsElement) hierarchyItem.getView()).getElement());
+        });
     }
 
     @Override
     public void deselect() {
-        treeNode.getClassList().remove( "selected" );
+        treeNode.getClassList().remove("selected");
     }
 
     @EventHandler("preference-tree-internal-item-expand-icon")
-    public void expand( final ClickEvent event ) {
+    public void expand(final ClickEvent event) {
         expand();
     }
 
     @EventHandler("preference-tree-internal-item-contract-icon")
-    public void contract( final ClickEvent event ) {
+    public void contract(final ClickEvent event) {
         contract();
     }
 
     @EventHandler("preference-tree-internal-item-label")
-    public void select( final ClickEvent event ) {
+    public void select(final ClickEvent event) {
         select();
     }
 
     @EventHandler("preference-tree-internal-item-label")
-    public void contractExpand( final DoubleClickEvent event ) {
-        if ( !children.getHidden() ) {
+    public void contractExpand(final DoubleClickEvent event) {
+        if (!children.getHidden()) {
             contract();
         } else {
             expand();
@@ -101,30 +96,30 @@ public class TreeHierarchyInternalItemView implements IsElement,
     }
 
     private void expand() {
-        expandIcon.addClassName( "hidden" );
-        contractIcon.removeClassName( "hidden" );
-        children.setHidden( false );
+        expandIcon.addClassName("hidden");
+        contractIcon.removeClassName("hidden");
+        children.setHidden(false);
     }
 
     private void contract() {
-        expandIcon.removeClassName( "hidden" );
-        contractIcon.addClassName( "hidden" );
-        children.setHidden( true );
+        expandIcon.removeClassName("hidden");
+        contractIcon.addClassName("hidden");
+        children.setHidden(true);
     }
 
     @Override
     public void select() {
-        if ( !label.hasClassName( "selected" ) ) {
+        if (!label.hasClassName("selected")) {
             presenter.select();
         }
     }
 
     @Override
     public void selectElement() {
-        treeNode.getClassList().add( "selected" );
+        treeNode.getClassList().add("selected");
     }
 
-    private String getPreferenceLabel( String bundleKey ) {
-        return translationService.format( bundleKey );
+    private String getPreferenceLabel(String bundleKey) {
+        return translationService.format(bundleKey);
     }
 }

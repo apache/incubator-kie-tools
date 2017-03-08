@@ -19,9 +19,8 @@ package org.uberfire.ext.security.management.api;
 /**
  * <p>The services provided by a concrete user management service provider implementation.</p>
  * <p>Each concrete service provider has to implement this interface to provider the different managers.
- * Note that the service is found given a CDI bean name, eg: <code>Wildfly</code>, 
+ * Note that the service is found given a CDI bean name, eg: <code>Wildfly</code>,
  * so this interface defines the users, groups and roles manager beans to use when using the <code>Wildfly</code> or whatever the implementation is.</p>
- * 
  * @since 0.8.0
  */
 public interface UserManagementService {
@@ -43,5 +42,4 @@ public interface UserManagementService {
      * @return The concrete roles manager service implementation used by this provider.
      */
     RoleManager roles();
-    
 }

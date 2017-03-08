@@ -24,10 +24,9 @@ import org.junit.Test;
 import org.uberfire.client.mvp.ActivityBeansInfo;
 import org.uberfire.ext.plugin.event.NewPluginRegistered;
 import org.uberfire.ext.plugin.event.PluginUnregistered;
-import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
 
-import static org.jgroups.util.Util.*;
+import static org.jgroups.util.Util.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class ScreenLayoutDragComponentTest {
@@ -38,54 +37,66 @@ public class ScreenLayoutDragComponentTest {
 
     @Before
     public void setup() {
-        screenLayoutDragComponent = spy( new ScreenLayoutDragComponent() );
+        screenLayoutDragComponent = spy(new ScreenLayoutDragComponent());
 
-        activityBeansInfo = spy( new ActivityBeansInfo() );
+        activityBeansInfo = spy(new ActivityBeansInfo());
 
         List<String> availableWorkbenchScreensIds = new ArrayList<String>();
-        availableWorkbenchScreensIds.add( "screen1" );
-        availableWorkbenchScreensIds.add( "screen2" );
-        availableWorkbenchScreensIds.add( "screen3" );
+        availableWorkbenchScreensIds.add("screen1");
+        availableWorkbenchScreensIds.add("screen2");
+        availableWorkbenchScreensIds.add("screen3");
 
-        doReturn( availableWorkbenchScreensIds ).when( activityBeansInfo ).getAvailableWorkbenchScreensIds();
-        doReturn( activityBeansInfo ).when( screenLayoutDragComponent ).getActivityBeansInfo();
+        doReturn(availableWorkbenchScreensIds).when(activityBeansInfo).getAvailableWorkbenchScreensIds();
+        doReturn(activityBeansInfo).when(screenLayoutDragComponent).getActivityBeansInfo();
 
         screenLayoutDragComponent.setup();
     }
 
     @Test
     public void newNotScreenPluginRegisteredTest() {
-        screenLayoutDragComponent.onNewPluginRegistered( new NewPluginRegistered( "newPlugin", PluginType.EDITOR ) );
-        assertEquals( 3, screenLayoutDragComponent.getAvailableWorkbenchScreensIds().size() );
+        screenLayoutDragComponent.onNewPluginRegistered(new NewPluginRegistered("newPlugin",
+                                                                                PluginType.EDITOR));
+        assertEquals(3,
+                     screenLayoutDragComponent.getAvailableWorkbenchScreensIds().size());
     }
 
     @Test
     public void existingScreenRegisteredTest() {
-        screenLayoutDragComponent.onNewPluginRegistered( new NewPluginRegistered( "screen1", PluginType.SCREEN ) );
-        assertEquals( 3, screenLayoutDragComponent.getAvailableWorkbenchScreensIds().size() );
+        screenLayoutDragComponent.onNewPluginRegistered(new NewPluginRegistered("screen1",
+                                                                                PluginType.SCREEN));
+        assertEquals(3,
+                     screenLayoutDragComponent.getAvailableWorkbenchScreensIds().size());
     }
 
     @Test
     public void newScreenRegisteredTest() {
-        screenLayoutDragComponent.onNewPluginRegistered( new NewPluginRegistered( "newScreen", PluginType.SCREEN ) );
-        assertEquals( 4, screenLayoutDragComponent.getAvailableWorkbenchScreensIds().size() );
+        screenLayoutDragComponent.onNewPluginRegistered(new NewPluginRegistered("newScreen",
+                                                                                PluginType.SCREEN));
+        assertEquals(4,
+                     screenLayoutDragComponent.getAvailableWorkbenchScreensIds().size());
     }
 
     @Test
     public void notScreenPluginUnregisteredTest() {
-        screenLayoutDragComponent.onPluginUnregistered( new PluginUnregistered( "screen1", PluginType.EDITOR ) );
-        assertEquals( 3, screenLayoutDragComponent.getAvailableWorkbenchScreensIds().size() );
+        screenLayoutDragComponent.onPluginUnregistered(new PluginUnregistered("screen1",
+                                                                              PluginType.EDITOR));
+        assertEquals(3,
+                     screenLayoutDragComponent.getAvailableWorkbenchScreensIds().size());
     }
 
     @Test
     public void existingScreenUnregisteredTest() {
-        screenLayoutDragComponent.onPluginUnregistered( new PluginUnregistered( "screen1", PluginType.SCREEN ) );
-        assertEquals( 2, screenLayoutDragComponent.getAvailableWorkbenchScreensIds().size() );
+        screenLayoutDragComponent.onPluginUnregistered(new PluginUnregistered("screen1",
+                                                                              PluginType.SCREEN));
+        assertEquals(2,
+                     screenLayoutDragComponent.getAvailableWorkbenchScreensIds().size());
     }
 
     @Test
     public void unexistingScreenUnregisteredTest() {
-        screenLayoutDragComponent.onPluginUnregistered( new PluginUnregistered( "unexistingPlugin", PluginType.SCREEN ) );
-        assertEquals( 3, screenLayoutDragComponent.getAvailableWorkbenchScreensIds().size() );
+        screenLayoutDragComponent.onPluginUnregistered(new PluginUnregistered("unexistingPlugin",
+                                                                              PluginType.SCREEN));
+        assertEquals(3,
+                     screenLayoutDragComponent.getAvailableWorkbenchScreensIds().size());
     }
 }

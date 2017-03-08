@@ -20,7 +20,7 @@ public abstract class AbstractHierarchyItemEvent {
 
     private final String itemId;
 
-    public AbstractHierarchyItemEvent( final String itemId ) {
+    public AbstractHierarchyItemEvent(final String itemId) {
         this.itemId = itemId;
     }
 

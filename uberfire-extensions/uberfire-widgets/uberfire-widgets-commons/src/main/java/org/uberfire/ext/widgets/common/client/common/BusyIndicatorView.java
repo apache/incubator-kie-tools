@@ -21,8 +21,8 @@ import javax.enterprise.context.Dependent;
 public class BusyIndicatorView implements HasBusyIndicator {
 
     @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
+    public void showBusyIndicator(final String message) {
+        BusyPopup.showMessage(message);
     }
 
     @Override

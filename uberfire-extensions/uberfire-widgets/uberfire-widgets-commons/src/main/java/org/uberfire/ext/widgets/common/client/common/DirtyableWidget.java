@@ -17,13 +17,12 @@
 package org.uberfire.ext.widgets.common.client.common;
 
 public interface DirtyableWidget
-    extends
-    IDirtyable {
+        extends
+        IDirtyable {
 
     public abstract boolean isDirty();
 
     public abstract void resetDirty();
 
     public abstract void makeDirty();
-
 }

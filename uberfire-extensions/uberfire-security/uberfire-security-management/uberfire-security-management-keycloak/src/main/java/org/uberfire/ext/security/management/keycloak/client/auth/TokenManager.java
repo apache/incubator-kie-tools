@@ -18,15 +18,13 @@ package org.uberfire.ext.security.management.keycloak.client.auth;
 
 /**
  * The Token Manager.
- * 
  * @since 0.9.0
  */
 public interface TokenManager {
-    
+
     void grantToken();
 
     String getAccessTokenString();
-    
-    String getRealm();
 
+    String getRealm();
 }

@@ -15,6 +15,15 @@
  */
 package org.uberfire.ext.wires.backend.server.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import org.ext.uberfire.social.activities.model.DefaultTypes;
 import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.ext.uberfire.social.activities.model.SocialEventType;
@@ -23,15 +32,6 @@ import org.ext.uberfire.social.activities.service.SocialAdapter;
 import org.ext.uberfire.social.activities.service.SocialCommandTypeFilter;
 import org.ext.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.uberfire.ext.wires.shared.social.ShowcaseSocialUserEvent;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.ContextNotActiveException;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @ApplicationScoped
 public class ShowcaseSocialUserEventAdapter implements SocialAdapter<ShowcaseSocialUserEvent> {
@@ -52,30 +52,37 @@ public class ShowcaseSocialUserEventAdapter implements SocialAdapter<ShowcaseSoc
     }
 
     @Override
-    public boolean shouldInterceptThisEvent( Object event ) {
-        return event.getClass().getCanonicalName().equals( eventToIntercept().getCanonicalName() ) ? true : false;
+    public boolean shouldInterceptThisEvent(Object event) {
+        return event.getClass().getCanonicalName().equals(eventToIntercept().getCanonicalName()) ? true : false;
     }
 
-    public void onEvent( @Observes ShowcaseSocialUserEvent event ) {
+    public void onEvent(@Observes ShowcaseSocialUserEvent event) {
         //Include @Observes only so events are propagated to server side.
     }
 
     @Override
-    public SocialActivitiesEvent toSocial( Object object ) {
+    public SocialActivitiesEvent toSocial(Object object) {
         final ShowcaseSocialUserEvent event = (ShowcaseSocialUserEvent) object;
         SocialUser socialUser = null;
         try {
-            socialUser = socialUserRepositoryAPI.findSocialUser( event.getUsername() );
-        } catch ( ContextNotActiveException e ) {
+            socialUser = socialUserRepositoryAPI.findSocialUser(event.getUsername());
+        } catch (ContextNotActiveException e) {
             //clean repository
-            socialUser = new SocialUser( "system" );
+            socialUser = new SocialUser("system");
         }
-        final String desc = String.format( "new social event (%d)", counter.incrementAndGet() );
-        return new SocialActivitiesEvent( socialUser, DefaultTypes.DUMMY_EVENT, new Date() )
-                .withAdicionalInfo( "edited" )
-                .withDescription( desc )
-                .withLink( String.format( "Main$%d.java", counter.get() ), "file", SocialActivitiesEvent.LINK_TYPE.CUSTOM )
-                .withParam( "scheme", "http" );
+        final String desc = String.format("new social event (%d)",
+                                          counter.incrementAndGet());
+        return new SocialActivitiesEvent(socialUser,
+                                         DefaultTypes.DUMMY_EVENT,
+                                         new Date())
+                .withAdicionalInfo("edited")
+                .withDescription(desc)
+                .withLink(String.format("Main$%d.java",
+                                        counter.get()),
+                          "file",
+                          SocialActivitiesEvent.LINK_TYPE.CUSTOM)
+                .withParam("scheme",
+                           "http");
     }
 
     @Override

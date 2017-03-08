@@ -34,32 +34,38 @@ public class SimpleBasicFileAttributeView extends AbstractBasicFileAttributeView
 
     private BasicFileAttributes attrs = null;
 
-    public SimpleBasicFileAttributeView( final Path path ) {
-        super( path );
+    public SimpleBasicFileAttributeView(final Path path) {
+        super(path);
     }
 
     @Override
     public <T extends BasicFileAttributes> T readAttributes() throws IOException {
-        if ( attrs == null ) {
+        if (attrs == null) {
             final File file = path.toFile();
-            this.attrs = new BasicFileAttributesImpl( path.toString(), new FileTimeImpl( file.lastModified() ), null, null, new LazyAttrLoader<Long>() {
-                private Long size = null;
+            this.attrs = new BasicFileAttributesImpl(path.toString(),
+                                                     new FileTimeImpl(file.lastModified()),
+                                                     null,
+                                                     null,
+                                                     new LazyAttrLoader<Long>() {
+                                                         private Long size = null;
 
-                @Override
-                public Long get() {
-                    if ( size == null ) {
-                        size = file.length();
-                    }
+                                                         @Override
+                                                         public Long get() {
+                                                             if (size == null) {
+                                                                 size = file.length();
+                                                             }
 
-                    return size;
-                }
-            }, file.isFile(), file.isDirectory() );
+                                                             return size;
+                                                         }
+                                                     },
+                                                     file.isFile(),
+                                                     file.isDirectory());
         }
         return (T) attrs;
     }
 
     @Override
     public Class<? extends BasicFileAttributeView>[] viewTypes() {
-        return new Class[]{ BasicFileAttributeView.class, SimpleBasicFileAttributeView.class };
+        return new Class[]{BasicFileAttributeView.class, SimpleBasicFileAttributeView.class};
     }
 }

@@ -24,5 +24,4 @@ public interface Path extends Comparable<Path> {
     String getFileName();
 
     String toURI();
-
 }

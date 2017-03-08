@@ -21,5 +21,4 @@ public interface ResourceChange {
     public ResourceChangeType getType();
 
     public String getMessage();
-
 }

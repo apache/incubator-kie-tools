@@ -23,7 +23,7 @@ import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.base.AbstractBasicFileAttributeView;
 import org.uberfire.java.nio.file.Path;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
 
 /**
  *
@@ -33,8 +33,8 @@ public abstract class VersionAttributeView<P extends Path>
 
     public static final String VERSION = "version";
 
-    public VersionAttributeView( final P path ) {
-        super( path );
+    public VersionAttributeView(final P path) {
+        super(path);
     }
 
     @Override
@@ -45,18 +45,20 @@ public abstract class VersionAttributeView<P extends Path>
     public abstract VersionAttributes readAttributes() throws IOException;
 
     @Override
-    public Map<String, Object> readAttributes( final String... attributes ) {
+    public Map<String, Object> readAttributes(final String... attributes) {
         final VersionAttributes attrs = readAttributes();
 
-        return new HashMap<String, Object>( super.readAttributes( attributes ) ) {{
-            for ( final String attribute : attributes ) {
-                checkNotEmpty( "attribute", attribute );
+        return new HashMap<String, Object>(super.readAttributes(attributes)) {{
+            for (final String attribute : attributes) {
+                checkNotEmpty("attribute",
+                              attribute);
 
-                if ( attribute.equals( "*" ) || attribute.equals( VERSION ) ) {
-                    put( VERSION, attrs.history() );
+                if (attribute.equals("*") || attribute.equals(VERSION)) {
+                    put(VERSION,
+                        attrs.history());
                 }
 
-                if ( attribute.equals( "*" ) ) {
+                if (attribute.equals("*")) {
                     break;
                 }
             }

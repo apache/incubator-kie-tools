@@ -35,5 +35,4 @@ public class EditorPluginResourceTypeDefinition extends BasePluginResourceTypeDe
     public String getSuffix() {
         return "/" + PluginType.EDITOR.toString().toLowerCase() + ".plugin";
     }
-
 }

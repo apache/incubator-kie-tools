@@ -25,51 +25,54 @@ import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.FileSystemAlreadyExistsException;
 import org.uberfire.java.nio.file.Path;
 
-import static org.fest.assertions.api.Assertions.*;
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.failBecauseExceptionWasNotThrown;
 
 public class JGitFileSystemProviderGCTest extends AbstractTestInfra {
 
     @Test
     public void testGC() throws IOException {
-        final URI newRepo = URI.create( "git://gc-repo-name" );
+        final URI newRepo = URI.create("git://gc-repo-name");
 
-        final JGitFileSystem fs = (JGitFileSystem) provider.newFileSystem( newRepo, EMPTY_ENV );
+        final JGitFileSystem fs = (JGitFileSystem) provider.newFileSystem(newRepo,
+                                                                          EMPTY_ENV);
 
-        assertThat( fs ).isNotNull();
+        assertThat(fs).isNotNull();
 
-        final DirectoryStream<Path> stream = provider.newDirectoryStream( provider.getPath( newRepo ), null );
-        assertThat( stream ).isNotNull().hasSize( 0 );
+        final DirectoryStream<Path> stream = provider.newDirectoryStream(provider.getPath(newRepo),
+                                                                         null);
+        assertThat(stream).isNotNull().hasSize(0);
 
         try {
-            provider.newFileSystem( newRepo, EMPTY_ENV );
-            failBecauseExceptionWasNotThrown( FileSystemAlreadyExistsException.class );
-        } catch ( final Exception ex ) {
+            provider.newFileSystem(newRepo,
+                                   EMPTY_ENV);
+            failBecauseExceptionWasNotThrown(FileSystemAlreadyExistsException.class);
+        } catch (final Exception ex) {
         }
 
-        for ( int i = 0; i < 19; i++ ) {
-            assertThat( fs.getNumberOfCommitsSinceLastGC() ).isEqualTo( i );
+        for (int i = 0; i < 19; i++) {
+            assertThat(fs.getNumberOfCommitsSinceLastGC()).isEqualTo(i);
 
-            final Path path = provider.getPath( URI.create( "git://gc-repo-name/path/to/myfile" + i + ".txt" ) );
+            final Path path = provider.getPath(URI.create("git://gc-repo-name/path/to/myfile" + i + ".txt"));
 
-            final OutputStream outStream = provider.newOutputStream( path );
-            assertThat( outStream ).isNotNull();
-            outStream.write( ( "my cool" + i + " content" ).getBytes() );
+            final OutputStream outStream = provider.newOutputStream(path);
+            assertThat(outStream).isNotNull();
+            outStream.write(("my cool" + i + " content").getBytes());
             outStream.close();
         }
 
-        final Path path = provider.getPath( URI.create( "git://gc-repo-name/path/to/myfile.txt" ) );
+        final Path path = provider.getPath(URI.create("git://gc-repo-name/path/to/myfile.txt"));
 
-        final OutputStream outStream = provider.newOutputStream( path );
-        assertThat( outStream ).isNotNull();
-        outStream.write( "my cool content".getBytes() );
+        final OutputStream outStream = provider.newOutputStream(path);
+        assertThat(outStream).isNotNull();
+        outStream.write("my cool content".getBytes());
         outStream.close();
-        assertThat( fs.getNumberOfCommitsSinceLastGC() ).isEqualTo( 0 );
+        assertThat(fs.getNumberOfCommitsSinceLastGC()).isEqualTo(0);
 
-        final OutputStream outStream2 = provider.newOutputStream( path );
-        assertThat( outStream2 ).isNotNull();
-        outStream2.write( "my co dwf sdf ol content".getBytes() );
+        final OutputStream outStream2 = provider.newOutputStream(path);
+        assertThat(outStream2).isNotNull();
+        outStream2.write("my co dwf sdf ol content".getBytes());
         outStream2.close();
-        assertThat( fs.getNumberOfCommitsSinceLastGC() ).isEqualTo( 1 );
+        assertThat(fs.getNumberOfCommitsSinceLastGC()).isEqualTo(1);
     }
-
 }

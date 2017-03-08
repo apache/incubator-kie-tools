@@ -41,38 +41,37 @@ public abstract class WiresScratchPadDefaultShape extends WiresBaseDynamicShape 
 
     public WiresScratchPadDefaultShape() {
         //Check for the Shape being added to a Container as it is dragged around
-        addNodeDragMoveHandler( new NodeDragMoveHandler() {
+        addNodeDragMoveHandler(new NodeDragMoveHandler() {
 
             @Override
-            public void onNodeDragMove( final NodeDragMoveEvent nodeDragMoveEvent ) {
-                boundContainer = containerManager.getContainer( WiresScratchPadDefaultShape.this.getX(),
-                                                                WiresScratchPadDefaultShape.this.getY() );
-                if ( boundContainer != null ) {
-                    boundContainer.detachShape( WiresScratchPadDefaultShape.this );
+            public void onNodeDragMove(final NodeDragMoveEvent nodeDragMoveEvent) {
+                boundContainer = containerManager.getContainer(WiresScratchPadDefaultShape.this.getX(),
+                                                               WiresScratchPadDefaultShape.this.getY());
+                if (boundContainer != null) {
+                    boundContainer.detachShape(WiresScratchPadDefaultShape.this);
                 }
 
                 getLayer().batch();
             }
-        } );
+        });
 
         //When the drag ends; if it was within a Container add this Shape to the Container
-        addNodeDragEndHandler( new NodeDragEndHandler() {
+        addNodeDragEndHandler(new NodeDragEndHandler() {
 
             @Override
-            public void onNodeDragEnd( final NodeDragEndEvent nodeDragEndEvent ) {
-                if ( boundContainer != null ) {
-                    boundContainer.attachShape( WiresScratchPadDefaultShape.this );
-                    boundContainer.setHover( false );
+            public void onNodeDragEnd(final NodeDragEndEvent nodeDragEndEvent) {
+                if (boundContainer != null) {
+                    boundContainer.attachShape(WiresScratchPadDefaultShape.this);
+                    boundContainer.setHover(false);
                 }
 
                 getLayer().batch();
             }
-        } );
+        });
     }
 
     @Override
-    public void setContainerManager( final ContainerManager containerManager ) {
+    public void setContainerManager(final ContainerManager containerManager) {
         this.containerManager = containerManager;
     }
-
 }

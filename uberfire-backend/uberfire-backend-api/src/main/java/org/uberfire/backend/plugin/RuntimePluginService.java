@@ -28,10 +28,9 @@ public interface RuntimePluginService {
 
     Collection<String> listPluginsContent();
 
-    String getTemplateContent( final String url );
+    String getTemplateContent(final String url);
 
     String getRuntimePluginTemplateContent(String url);
 
     List<RuntimePlugin> getRuntimePlugins();
-
 }

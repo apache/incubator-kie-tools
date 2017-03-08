@@ -21,7 +21,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.rpc.SessionInfo;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * An Event indicating a Resource has been deleted
@@ -32,12 +32,14 @@ public class ResourceDeletedEvent extends ResourceDeleted implements ResourceEve
     private Path path;
     private SessionInfo sessionInfo;
 
-    public ResourceDeletedEvent( @MapsTo("path") final Path path,
-                                 @MapsTo("message") final String message,
-                                 @MapsTo("sessionInfo") final SessionInfo sessionInfo ) {
-        super( message );
-        this.path = checkNotNull( "path", path );
-        this.sessionInfo = checkNotNull( "executedBy", sessionInfo );
+    public ResourceDeletedEvent(@MapsTo("path") final Path path,
+                                @MapsTo("message") final String message,
+                                @MapsTo("sessionInfo") final SessionInfo sessionInfo) {
+        super(message);
+        this.path = checkNotNull("path",
+                                 path);
+        this.sessionInfo = checkNotNull("executedBy",
+                                        sessionInfo);
     }
 
     @Override

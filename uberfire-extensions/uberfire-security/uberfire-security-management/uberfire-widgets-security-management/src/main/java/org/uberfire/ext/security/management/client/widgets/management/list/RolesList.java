@@ -16,12 +16,12 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.list;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.jboss.errai.security.shared.api.Role;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 /**
  * <p>Presenter class for listing roles, includes the super-type pagination features.</p>
@@ -30,11 +30,13 @@ import javax.inject.Inject;
 public class RolesList extends EntitiesPagedList<Role> {
 
     ClientUserSystemManager userSystemManager;
-    
+
     @Inject
-    public RolesList(LoadingBox loadingBox, View view, ClientUserSystemManager userSystemManager) {
-        super(loadingBox, view);
+    public RolesList(LoadingBox loadingBox,
+                     View view,
+                     ClientUserSystemManager userSystemManager) {
+        super(loadingBox,
+              view);
         this.userSystemManager = userSystemManager;
     }
-
 }

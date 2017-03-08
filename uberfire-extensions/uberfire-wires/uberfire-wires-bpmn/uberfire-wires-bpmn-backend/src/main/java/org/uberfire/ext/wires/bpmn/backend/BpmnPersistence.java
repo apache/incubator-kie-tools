@@ -31,13 +31,12 @@ public class BpmnPersistence {
         return INSTANCE;
     }
 
-    public String marshal( final ProcessNode process ) {
-        return xs.toXML( process );
+    public String marshal(final ProcessNode process) {
+        return xs.toXML(process);
     }
 
-    public ProcessNode unmarshal( final String content ) {
-        final ProcessNode process = (ProcessNode) xs.fromXML( content );
+    public ProcessNode unmarshal(final String content) {
+        final ProcessNode process = (ProcessNode) xs.fromXML(content);
         return process;
     }
-
 }

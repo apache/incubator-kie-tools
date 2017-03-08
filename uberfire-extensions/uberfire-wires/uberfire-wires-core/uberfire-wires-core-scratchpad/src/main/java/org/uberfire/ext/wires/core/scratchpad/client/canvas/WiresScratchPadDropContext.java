@@ -28,8 +28,7 @@ public class WiresScratchPadDropContext implements ShapeDropContext<WiresContain
     }
 
     @Override
-    public void setContext( final WiresContainer context ) {
+    public void setContext(final WiresContainer context) {
         this.context = context;
     }
-
 }

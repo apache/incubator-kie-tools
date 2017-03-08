@@ -29,27 +29,39 @@ import org.ext.uberfire.social.activities.model.SocialUser;
 public class SocialUserJsonSerializer implements JsonSerializer<SocialUser> {
 
     @Override
-    public JsonElement serialize( SocialUser socialUser,
-                                  Type type,
-                                  JsonSerializationContext jsonSerializationContext ) {
+    public JsonElement serialize(SocialUser socialUser,
+                                 Type type,
+                                 JsonSerializationContext jsonSerializationContext) {
         final JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("userName", socialUser.getUserName());
-        jsonObject.addProperty("realName", socialUser.getRealName());
-        jsonObject.addProperty("email", socialUser.getEmail());
+        jsonObject.addProperty("userName",
+                               socialUser.getUserName());
+        jsonObject.addProperty("realName",
+                               socialUser.getRealName());
+        jsonObject.addProperty("email",
+                               socialUser.getEmail());
 
-        serializeList(socialUser,"following", socialUser.getFollowingName(), jsonObject);
-        serializeList(socialUser,"followers", socialUser.getFollowersName(), jsonObject);
+        serializeList(socialUser,
+                      "following",
+                      socialUser.getFollowingName(),
+                      jsonObject);
+        serializeList(socialUser,
+                      "followers",
+                      socialUser.getFollowersName(),
+                      jsonObject);
 
         return jsonObject;
     }
 
-    private void serializeList(SocialUser socialUser, String jsonName, List<String> list,  JsonObject jsonObject) {
+    private void serializeList(SocialUser socialUser,
+                               String jsonName,
+                               List<String> list,
+                               JsonObject jsonObject) {
         final JsonArray jsonArray = new JsonArray();
         for (final String field : list) {
             final JsonPrimitive jsonSocialType = new JsonPrimitive(field);
-            jsonArray.add( jsonSocialType );
+            jsonArray.add(jsonSocialType);
         }
-        jsonObject.add(jsonName, jsonArray);
+        jsonObject.add(jsonName,
+                       jsonArray);
     }
-
 }

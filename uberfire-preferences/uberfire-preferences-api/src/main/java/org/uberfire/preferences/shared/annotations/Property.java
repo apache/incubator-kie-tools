@@ -29,7 +29,7 @@ import org.uberfire.preferences.shared.PropertyFormType;
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD })
+@Target({ElementType.FIELD})
 public @interface Property {
 
     /**

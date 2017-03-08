@@ -41,13 +41,15 @@ public class AppSetup {
     @PostConstruct
     public void assertPlayground() {
         try {
-            ioService.newFileSystem( URI.create( "default://uf-playground" ), new HashMap<String, Object>() {{
-                put( "origin", PLAYGROUND_ORIGIN );
-                put( "username", PLAYGROUND_UID );
-            }} );
-        } catch ( final FileSystemAlreadyExistsException ignore ) {
+            ioService.newFileSystem(URI.create("default://uf-playground"),
+                                    new HashMap<String, Object>() {{
+                                        put("origin",
+                                            PLAYGROUND_ORIGIN);
+                                        put("username",
+                                            PLAYGROUND_UID);
+                                    }});
+        } catch (final FileSystemAlreadyExistsException ignore) {
 
         }
     }
-
 }

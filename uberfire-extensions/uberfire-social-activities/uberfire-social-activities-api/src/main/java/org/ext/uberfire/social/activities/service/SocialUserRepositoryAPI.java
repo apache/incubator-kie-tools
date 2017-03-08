@@ -17,13 +17,13 @@ package org.ext.uberfire.social.activities.service;
 
 import java.util.List;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.ext.uberfire.social.activities.model.SocialUser;
+import org.jboss.errai.bus.server.annotations.Remote;
 
 @Remote
 public interface SocialUserRepositoryAPI {
 
-    SocialUser findSocialUser( String userName );
+    SocialUser findSocialUser(String userName);
 
     List<SocialUser> findAllUsers();
 }

@@ -49,7 +49,7 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 @WorkbenchScreen(identifier = SecurityExplorerScreen.SCREEN_ID)
@@ -62,45 +62,18 @@ public class SecurityExplorerScreen {
     public static final String GROUPS_TAB = "GroupsTab";
 
     public static final String USERS_TAB = "UsersTab";
-
-    public interface View extends UberView<SecurityExplorerScreen> {
-
-        void init( SecurityExplorerScreen presenter,
-                   IsWidget rolesExplorer,
-                   IsWidget groupsExplorer,
-                   IsWidget usersExplorer );
-
-        void rolesEnabled( boolean enabled );
-
-        void groupsEnabled( boolean enabled );
-
-        void usersEnabled( boolean enabled );
-
-        void rolesActive( boolean active );
-
-        void groupsActive( boolean active );
-
-        void usersActive( boolean active );
-    }
-
     @Inject
     View view;
-
     @Inject
     RolesExplorer rolesExplorer;
-
     @Inject
     GroupsExplorer groupsExplorer;
-
     @Inject
     UsersExplorer usersExplorer;
-
     @Inject
     ErrorPopupPresenter errorPopupPresenter;
-
     @Inject
     PlaceManager placeManager;
-
     @Inject
     ClientUserSystemManager userSystemManager;
 
@@ -116,36 +89,40 @@ public class SecurityExplorerScreen {
 
     @PostConstruct
     public void init() {
-        view.init( this, rolesExplorer, groupsExplorer, usersExplorer );
+        view.init(this,
+                  rolesExplorer,
+                  groupsExplorer,
+                  usersExplorer);
         rolesExplorer.show();
 
-        view.rolesEnabled( true );
-        view.groupsEnabled( false );
-        view.usersEnabled( false );
+        view.rolesEnabled(true);
+        view.groupsEnabled(false);
+        view.usersEnabled(false);
     }
 
     @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
-        final String activeTab = placeRequest.getParameter( "activeTab", ROLES_TAB );
+    public void onStartup(final PlaceRequest placeRequest) {
+        final String activeTab = placeRequest.getParameter("activeTab",
+                                                           ROLES_TAB);
 
-        userSystemManager.waitForInitialization( () -> {
-            if ( userSystemManager.isActive() ) {
+        userSystemManager.waitForInitialization(() -> {
+            if (userSystemManager.isActive()) {
                 groupsExplorer.show();
                 usersExplorer.show();
-                view.groupsEnabled( true );
-                view.usersEnabled( true );
+                view.groupsEnabled(true);
+                view.usersEnabled(true);
 
-                if ( activeTab.equals( USERS_TAB ) ) {
-                    view.rolesActive( false );
-                    view.groupsActive( false );
-                    view.usersActive( true );
-                } else if ( activeTab.equals( GROUPS_TAB ) ) {
-                    view.rolesActive( false );
-                    view.groupsActive( true );
-                    view.usersActive( false );
+                if (activeTab.equals(USERS_TAB)) {
+                    view.rolesActive(false);
+                    view.groupsActive(false);
+                    view.usersActive(true);
+                } else if (activeTab.equals(GROUPS_TAB)) {
+                    view.rolesActive(false);
+                    view.groupsActive(true);
+                    view.usersActive(false);
                 }
             }
-        } );
+        });
     }
 
     @OnClose
@@ -155,50 +132,85 @@ public class SecurityExplorerScreen {
         usersExplorer.clear();
     }
 
+    void onRoleRead(@Observes final ReadRoleEvent readRoleEvent) {
+        checkNotNull("event",
+                     readRoleEvent);
+        final String name = readRoleEvent.getName();
+        final Map<String, String> params = new HashMap(1);
+        params.put(RoleEditorScreen.ROLE_NAME,
+                   name);
+        placeManager.goTo(new DefaultPlaceRequest(RoleEditorScreen.SCREEN_ID,
+                                                  params));
+    }
+
     // Event processing
 
-    void onRoleRead( @Observes final ReadRoleEvent readRoleEvent ) {
-        checkNotNull( "event", readRoleEvent );
-        final String name = readRoleEvent.getName();
-        final Map<String, String> params = new HashMap( 1 );
-        params.put( RoleEditorScreen.ROLE_NAME, name );
-        placeManager.goTo( new DefaultPlaceRequest( RoleEditorScreen.SCREEN_ID, params ) );
-    }
-
-    void onGroupRead( @Observes final ReadGroupEvent readGroupEvent ) {
+    void onGroupRead(@Observes final ReadGroupEvent readGroupEvent) {
         final String name = readGroupEvent.getName();
-        final Map<String, String> params = new HashMap<String, String>( 1 );
-        params.put( GroupEditorScreen.GROUP_NAME, name );
-        placeManager.goTo( new DefaultPlaceRequest( GroupEditorScreen.SCREEN_ID, params ) );
+        final Map<String, String> params = new HashMap<String, String>(1);
+        params.put(GroupEditorScreen.GROUP_NAME,
+                   name);
+        placeManager.goTo(new DefaultPlaceRequest(GroupEditorScreen.SCREEN_ID,
+                                                  params));
     }
 
-    void onUserRead( @Observes final ReadUserEvent readUserEvent ) {
-        checkNotNull( "event", readUserEvent );
+    void onUserRead(@Observes final ReadUserEvent readUserEvent) {
+        checkNotNull("event",
+                     readUserEvent);
         final String id = readUserEvent.getIdentifier();
-        final Map<String, String> params = new HashMap<String, String>( 1 );
-        params.put( UserEditorScreen.USER_ID, id );
-        placeManager.goTo( new DefaultPlaceRequest( UserEditorScreen.SCREEN_ID, params ) );
+        final Map<String, String> params = new HashMap<String, String>(1);
+        params.put(UserEditorScreen.USER_ID,
+                   id);
+        placeManager.goTo(new DefaultPlaceRequest(UserEditorScreen.SCREEN_ID,
+                                                  params));
     }
 
-    void onGroupCreate( @Observes final NewGroupEvent newGroupEvent ) {
-        checkNotNull( "event", newGroupEvent );
-        final Map<String, String> params = new HashMap( 1 );
-        params.put( GroupEditorScreen.ADD_GROUP, "true" );
-        placeManager.goTo( new DefaultPlaceRequest( GroupEditorScreen.SCREEN_ID, params ) );
+    void onGroupCreate(@Observes final NewGroupEvent newGroupEvent) {
+        checkNotNull("event",
+                     newGroupEvent);
+        final Map<String, String> params = new HashMap(1);
+        params.put(GroupEditorScreen.ADD_GROUP,
+                   "true");
+        placeManager.goTo(new DefaultPlaceRequest(GroupEditorScreen.SCREEN_ID,
+                                                  params));
     }
 
-    void onUserCreate( @Observes final NewUserEvent newUserEvent ) {
-        checkNotNull( "event", newUserEvent );
-        final Map<String, String> params = new HashMap( 1 );
-        params.put( UserEditorScreen.ADD_USER, "true" );
-        placeManager.goTo( new DefaultPlaceRequest( UserEditorScreen.SCREEN_ID, params ) );
+    void onUserCreate(@Observes final NewUserEvent newUserEvent) {
+        checkNotNull("event",
+                     newUserEvent);
+        final Map<String, String> params = new HashMap(1);
+        params.put(UserEditorScreen.ADD_USER,
+                   "true");
+        placeManager.goTo(new DefaultPlaceRequest(UserEditorScreen.SCREEN_ID,
+                                                  params));
     }
 
-    void onErrorEvent( @Observes final OnErrorEvent onErrorEvent ) {
-        checkNotNull( "event", onErrorEvent );
+    void onErrorEvent(@Observes final OnErrorEvent onErrorEvent) {
+        checkNotNull("event",
+                     onErrorEvent);
         final Throwable cause = onErrorEvent.getCause();
         final String message = onErrorEvent.getMessage();
         final String m = message != null ? message : cause.getMessage();
-        errorPopupPresenter.showMessage( m );
+        errorPopupPresenter.showMessage(m);
+    }
+
+    public interface View extends UberView<SecurityExplorerScreen> {
+
+        void init(SecurityExplorerScreen presenter,
+                  IsWidget rolesExplorer,
+                  IsWidget groupsExplorer,
+                  IsWidget usersExplorer);
+
+        void rolesEnabled(boolean enabled);
+
+        void groupsEnabled(boolean enabled);
+
+        void usersEnabled(boolean enabled);
+
+        void rolesActive(boolean active);
+
+        void groupsActive(boolean active);
+
+        void usersActive(boolean active);
     }
 }

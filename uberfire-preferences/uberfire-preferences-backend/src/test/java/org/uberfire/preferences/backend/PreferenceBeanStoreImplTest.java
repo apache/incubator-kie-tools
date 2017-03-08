@@ -47,19 +47,22 @@ public class PreferenceBeanStoreImplTest {
 
     @Before
     public void setup() {
-        preferenceScopeResolutionStrategy = mock( PreferenceScopeResolutionStrategy.class );
-        preferenceStore = mock( PreferenceStore.class );
-        preferenceBeanStoreImpl = spy( new PreferenceBeanStoreImpl( preferenceStore, preferenceScopeResolutionStrategy, null ) );
+        preferenceScopeResolutionStrategy = mock(PreferenceScopeResolutionStrategy.class);
+        preferenceStore = mock(PreferenceStore.class);
+        preferenceBeanStoreImpl = spy(new PreferenceBeanStoreImpl(preferenceStore,
+                                                                  preferenceScopeResolutionStrategy,
+                                                                  null));
 
-        lastScope = mock( PreferenceScope.class );
-        scopeInfo = new PreferenceScopeResolutionStrategyInfo( Arrays.asList( lastScope ), mock( PreferenceScope.class ) );
-        doReturn( scopeInfo ).when( preferenceScopeResolutionStrategy ).getInfo();
+        lastScope = mock(PreferenceScope.class);
+        scopeInfo = new PreferenceScopeResolutionStrategyInfo(Arrays.asList(lastScope),
+                                                              mock(PreferenceScope.class));
+        doReturn(scopeInfo).when(preferenceScopeResolutionStrategy).getInfo();
 
-        doAnswer( invocationOnMock -> {
+        doAnswer(invocationOnMock -> {
             Object[] args = invocationOnMock.getArguments();
-            Class<?> clazz = (Class<?>) args[ 0 ];
-            return getPortablePreferenceByClass( clazz );
-        } ).when( preferenceBeanStoreImpl ).lookupPortablePreference( any( Class.class ) );
+            Class<?> clazz = (Class<?>) args[0];
+            return getPortablePreferenceByClass(clazz);
+        }).when(preferenceBeanStoreImpl).lookupPortablePreference(any(Class.class));
     }
 
     @Test
@@ -68,22 +71,30 @@ public class PreferenceBeanStoreImplTest {
         MySharedPreference mySharedPreference = new MySharedPreferencePortableGeneratedImpl();
         MySharedPreference2 mySharedPreference2 = new MySharedPreference2PortableGeneratedImpl();
 
-        doReturn( myPreference ).when( preferenceStore ).get( MyPreference.class.getSimpleName() );
-        doReturn( mySharedPreference ).when( preferenceStore ).get( MySharedPreference.class.getSimpleName() );
-        doReturn( mySharedPreference2 ).when( preferenceStore ).get( MySharedPreference2.class.getSimpleName() );
+        doReturn(myPreference).when(preferenceStore).get(MyPreference.class.getSimpleName());
+        doReturn(mySharedPreference).when(preferenceStore).get(MySharedPreference.class.getSimpleName());
+        doReturn(mySharedPreference2).when(preferenceStore).get(MySharedPreference2.class.getSimpleName());
 
-        final MyPreferencePortableGeneratedImpl loadedMyPreference = preferenceBeanStoreImpl.load( new MyPreferencePortableGeneratedImpl() );
-        final MySharedPreference2PortableGeneratedImpl loadedMySharedPreference2 = preferenceBeanStoreImpl.load( new MySharedPreference2PortableGeneratedImpl() );
+        final MyPreferencePortableGeneratedImpl loadedMyPreference = preferenceBeanStoreImpl.load(new MyPreferencePortableGeneratedImpl());
+        final MySharedPreference2PortableGeneratedImpl loadedMySharedPreference2 = preferenceBeanStoreImpl.load(new MySharedPreference2PortableGeneratedImpl());
 
-        verify( preferenceStore, times( 3 ) ).get( eq( scopeInfo ), anyString() );
+        verify(preferenceStore,
+               times(3)).get(eq(scopeInfo),
+                             anyString());
 
-        verify( preferenceStore ).get( scopeInfo, MyPreference.class.getSimpleName() );
-        verify( preferenceStore ).get( scopeInfo, MySharedPreference.class.getSimpleName() );
-        verify( preferenceStore ).get( scopeInfo, MySharedPreference2.class.getSimpleName() );
+        verify(preferenceStore).get(scopeInfo,
+                                    MyPreference.class.getSimpleName());
+        verify(preferenceStore).get(scopeInfo,
+                                    MySharedPreference.class.getSimpleName());
+        verify(preferenceStore).get(scopeInfo,
+                                    MySharedPreference2.class.getSimpleName());
 
-        assertEquals( myPreference, loadedMyPreference );
-        assertEquals( mySharedPreference, loadedMyPreference.mySharedPreference );
-        assertEquals( mySharedPreference2, loadedMySharedPreference2 );
+        assertEquals(myPreference,
+                     loadedMyPreference);
+        assertEquals(mySharedPreference,
+                     loadedMyPreference.mySharedPreference);
+        assertEquals(mySharedPreference2,
+                     loadedMySharedPreference2);
     }
 
     @Test
@@ -92,144 +103,210 @@ public class PreferenceBeanStoreImplTest {
         MySharedPreference mySharedPreference = new MySharedPreferencePortableGeneratedImpl();
         MySharedPreference2 mySharedPreference2 = new MySharedPreference2PortableGeneratedImpl();
 
-        doReturn( myPreference ).when( preferenceStore ).get( MyPreference.class.getSimpleName() );
-        doReturn( mySharedPreference ).when( preferenceStore ).get( MySharedPreference.class.getSimpleName() );
-        doReturn( mySharedPreference2 ).when( preferenceStore ).get( MySharedPreference2.class.getSimpleName() );
+        doReturn(myPreference).when(preferenceStore).get(MyPreference.class.getSimpleName());
+        doReturn(mySharedPreference).when(preferenceStore).get(MySharedPreference.class.getSimpleName());
+        doReturn(mySharedPreference2).when(preferenceStore).get(MySharedPreference2.class.getSimpleName());
 
-        PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo = new PreferenceScopeResolutionStrategyInfo( new ArrayList<>(), mock( PreferenceScope.class ) );
+        PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo = new PreferenceScopeResolutionStrategyInfo(new ArrayList<>(),
+                                                                                                                      mock(PreferenceScope.class));
 
-        final MyPreferencePortableGeneratedImpl loadedMyPreference = preferenceBeanStoreImpl.load( new MyPreferencePortableGeneratedImpl(), scopeResolutionStrategyInfo );
-        final MySharedPreference2PortableGeneratedImpl loadedMySharedPreference2 = preferenceBeanStoreImpl.load( new MySharedPreference2PortableGeneratedImpl(), scopeResolutionStrategyInfo );
+        final MyPreferencePortableGeneratedImpl loadedMyPreference = preferenceBeanStoreImpl.load(new MyPreferencePortableGeneratedImpl(),
+                                                                                                  scopeResolutionStrategyInfo);
+        final MySharedPreference2PortableGeneratedImpl loadedMySharedPreference2 = preferenceBeanStoreImpl.load(new MySharedPreference2PortableGeneratedImpl(),
+                                                                                                                scopeResolutionStrategyInfo);
 
-        verify( preferenceStore, times( 3 ) ).get( eq( scopeResolutionStrategyInfo ), anyString() );
+        verify(preferenceStore,
+               times(3)).get(eq(scopeResolutionStrategyInfo),
+                             anyString());
 
-        verify( preferenceStore ).get( scopeResolutionStrategyInfo, MyPreference.class.getSimpleName() );
-        verify( preferenceStore ).get( scopeResolutionStrategyInfo, MySharedPreference.class.getSimpleName() );
-        verify( preferenceStore ).get( scopeResolutionStrategyInfo, MySharedPreference2.class.getSimpleName() );
+        verify(preferenceStore).get(scopeResolutionStrategyInfo,
+                                    MyPreference.class.getSimpleName());
+        verify(preferenceStore).get(scopeResolutionStrategyInfo,
+                                    MySharedPreference.class.getSimpleName());
+        verify(preferenceStore).get(scopeResolutionStrategyInfo,
+                                    MySharedPreference2.class.getSimpleName());
 
-        assertEquals( myPreference, loadedMyPreference );
-        assertEquals( mySharedPreference, loadedMyPreference.mySharedPreference );
-        assertEquals( mySharedPreference2, loadedMySharedPreference2 );
+        assertEquals(myPreference,
+                     loadedMyPreference);
+        assertEquals(mySharedPreference,
+                     loadedMyPreference.mySharedPreference);
+        assertEquals(mySharedPreference2,
+                     loadedMySharedPreference2);
     }
 
     @Test
     public void saveTest() {
-        final MyPreferencePortableGeneratedImpl myPreference = preferenceBeanStoreImpl.load( new MyPreferencePortableGeneratedImpl() );
+        final MyPreferencePortableGeneratedImpl myPreference = preferenceBeanStoreImpl.load(new MyPreferencePortableGeneratedImpl());
 
-        preferenceBeanStoreImpl.save( myPreference );
+        preferenceBeanStoreImpl.save(myPreference);
 
-        verify( preferenceStore, times( 2 ) ).put( any( PreferenceScope.class ), anyString(), any( Object.class ) );
+        verify(preferenceStore,
+               times(2)).put(any(PreferenceScope.class),
+                             anyString(),
+                             any(Object.class));
 
-        verify( preferenceStore ).put( eq( scopeInfo.defaultScope() ), eq( MyPreference.class.getSimpleName() ), eq( myPreference ) );
-        verify( preferenceStore ).put( eq( scopeInfo.defaultScope() ), eq( MySharedPreference.class.getSimpleName() ), eq( myPreference.mySharedPreference ) );
+        verify(preferenceStore).put(eq(scopeInfo.defaultScope()),
+                                    eq(MyPreference.class.getSimpleName()),
+                                    eq(myPreference));
+        verify(preferenceStore).put(eq(scopeInfo.defaultScope()),
+                                    eq(MySharedPreference.class.getSimpleName()),
+                                    eq(myPreference.mySharedPreference));
     }
 
     @Test
     public void saveWithCustomResolutionStrategyScopeTest() {
-        PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo = new PreferenceScopeResolutionStrategyInfo( new ArrayList<>(), mock( PreferenceScope.class ) );
+        PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo = new PreferenceScopeResolutionStrategyInfo(new ArrayList<>(),
+                                                                                                                      mock(PreferenceScope.class));
 
-        final MyPreferencePortableGeneratedImpl myPreference = preferenceBeanStoreImpl.load( new MyPreferencePortableGeneratedImpl(),
-                                                                                             scopeResolutionStrategyInfo );
+        final MyPreferencePortableGeneratedImpl myPreference = preferenceBeanStoreImpl.load(new MyPreferencePortableGeneratedImpl(),
+                                                                                            scopeResolutionStrategyInfo);
 
-        preferenceBeanStoreImpl.save( myPreference, scopeResolutionStrategyInfo );
+        preferenceBeanStoreImpl.save(myPreference,
+                                     scopeResolutionStrategyInfo);
 
-        verify( preferenceStore, times( 2 ) ).put( same( scopeResolutionStrategyInfo.defaultScope() ), anyString(), any( Object.class ) );
+        verify(preferenceStore,
+               times(2)).put(same(scopeResolutionStrategyInfo.defaultScope()),
+                             anyString(),
+                             any(Object.class));
 
-        verify( preferenceStore ).put( same( scopeResolutionStrategyInfo.defaultScope() ), eq( MyPreference.class.getSimpleName() ), eq( myPreference ) );
-        verify( preferenceStore ).put( same( scopeResolutionStrategyInfo.defaultScope() ), eq( MySharedPreference.class.getSimpleName() ), eq( myPreference.mySharedPreference ) );
+        verify(preferenceStore).put(same(scopeResolutionStrategyInfo.defaultScope()),
+                                    eq(MyPreference.class.getSimpleName()),
+                                    eq(myPreference));
+        verify(preferenceStore).put(same(scopeResolutionStrategyInfo.defaultScope()),
+                                    eq(MySharedPreference.class.getSimpleName()),
+                                    eq(myPreference.mySharedPreference));
     }
 
     @Test
     public void saveCollectionTest() {
         final List<BasePreferencePortable<? extends BasePreference<?>>> preferencesToSave = getRootPortablePreferences();
-        final MyPreference myPreference = (MyPreference) preferencesToSave.get( 0 );
-        final MySharedPreference2 mySharedPreference2 = (MySharedPreference2) preferencesToSave.get( 1 );
+        final MyPreference myPreference = (MyPreference) preferencesToSave.get(0);
+        final MySharedPreference2 mySharedPreference2 = (MySharedPreference2) preferencesToSave.get(1);
 
-        preferenceBeanStoreImpl.save( preferencesToSave );
+        preferenceBeanStoreImpl.save(preferencesToSave);
 
-        verify( preferenceStore, times( 2 ) ).put( eq( scopeInfo.defaultScope() ), anyString(), any( Object.class ) );
+        verify(preferenceStore,
+               times(2)).put(eq(scopeInfo.defaultScope()),
+                             anyString(),
+                             any(Object.class));
 
-        verify( preferenceStore ).put( scopeInfo.defaultScope(), MyPreference.class.getSimpleName(), myPreference );
-        verify( preferenceStore ).put( scopeInfo.defaultScope(), MySharedPreference.class.getSimpleName(), myPreference.mySharedPreference );
-        verify( preferenceStore, never() ).put( eq( scopeInfo.defaultScope() ), eq( MySharedPreference2.class.getSimpleName() ), same( mySharedPreference2 ) );
+        verify(preferenceStore).put(scopeInfo.defaultScope(),
+                                    MyPreference.class.getSimpleName(),
+                                    myPreference);
+        verify(preferenceStore).put(scopeInfo.defaultScope(),
+                                    MySharedPreference.class.getSimpleName(),
+                                    myPreference.mySharedPreference);
+        verify(preferenceStore,
+               never()).put(eq(scopeInfo.defaultScope()),
+                            eq(MySharedPreference2.class.getSimpleName()),
+                            same(mySharedPreference2));
     }
 
     @Test
     public void saveCollectionWithCustomResolutionStrategyScopeTest() {
-        PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo = new PreferenceScopeResolutionStrategyInfo( new ArrayList<>(), mock( PreferenceScope.class ) );
+        PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo = new PreferenceScopeResolutionStrategyInfo(new ArrayList<>(),
+                                                                                                                      mock(PreferenceScope.class));
 
         final List<BasePreferencePortable<? extends BasePreference<?>>> preferencesToSave = getRootPortablePreferences();
-        final MyPreference myPreference = (MyPreference) preferencesToSave.get( 0 );
-        final MySharedPreference2 mySharedPreference2 = (MySharedPreference2) preferencesToSave.get( 1 );
+        final MyPreference myPreference = (MyPreference) preferencesToSave.get(0);
+        final MySharedPreference2 mySharedPreference2 = (MySharedPreference2) preferencesToSave.get(1);
 
-        preferenceBeanStoreImpl.save( preferencesToSave, scopeResolutionStrategyInfo );
+        preferenceBeanStoreImpl.save(preferencesToSave,
+                                     scopeResolutionStrategyInfo);
 
-        verify( preferenceStore, times( 2 ) ).put( eq( scopeResolutionStrategyInfo.defaultScope() ), anyString(), any( Object.class ) );
+        verify(preferenceStore,
+               times(2)).put(eq(scopeResolutionStrategyInfo.defaultScope()),
+                             anyString(),
+                             any(Object.class));
 
-        verify( preferenceStore ).put( scopeResolutionStrategyInfo.defaultScope(), MyPreference.class.getSimpleName(), myPreference );
-        verify( preferenceStore ).put( scopeResolutionStrategyInfo.defaultScope(), MySharedPreference.class.getSimpleName(), myPreference.mySharedPreference );
-        verify( preferenceStore, never() ).put( eq( scopeResolutionStrategyInfo.defaultScope() ), eq( MySharedPreference2.class.getSimpleName() ), same( mySharedPreference2 ) );
+        verify(preferenceStore).put(scopeResolutionStrategyInfo.defaultScope(),
+                                    MyPreference.class.getSimpleName(),
+                                    myPreference);
+        verify(preferenceStore).put(scopeResolutionStrategyInfo.defaultScope(),
+                                    MySharedPreference.class.getSimpleName(),
+                                    myPreference.mySharedPreference);
+        verify(preferenceStore,
+               never()).put(eq(scopeResolutionStrategyInfo.defaultScope()),
+                            eq(MySharedPreference2.class.getSimpleName()),
+                            same(mySharedPreference2));
     }
 
     @Test
     public void saveDefaultValueTest() {
         final MyPreferencePortableGeneratedImpl myPreference = new MyPreferencePortableGeneratedImpl();
 
-        preferenceBeanStoreImpl.saveDefaultValue( (MyPreferencePortableGeneratedImpl) myPreference.defaultValue( myPreference ) );
+        preferenceBeanStoreImpl.saveDefaultValue((MyPreferencePortableGeneratedImpl) myPreference.defaultValue(myPreference));
 
-        verify( preferenceStore, times( 2 ) ).put( any( PreferenceScope.class ), anyString(), any( Object.class ) );
+        verify(preferenceStore,
+               times(2)).put(any(PreferenceScope.class),
+                             anyString(),
+                             any(Object.class));
 
-        verify( preferenceStore ).put( eq( lastScope ), eq( MyPreference.class.getSimpleName() ), eq( myPreference ) );
-        verify( preferenceStore ).put( eq( lastScope ), eq( MySharedPreference.class.getSimpleName() ), eq( myPreference.mySharedPreference ) );
+        verify(preferenceStore).put(eq(lastScope),
+                                    eq(MyPreference.class.getSimpleName()),
+                                    eq(myPreference));
+        verify(preferenceStore).put(eq(lastScope),
+                                    eq(MySharedPreference.class.getSimpleName()),
+                                    eq(myPreference.mySharedPreference));
     }
 
     @Test
     public void buildHierarchyStructureTest() {
         final List<BasePreferencePortable<? extends BasePreference<?>>> rootPreferences = getRootPortablePreferences();
-        final MyPreferencePortableGeneratedImpl myPreference = (MyPreferencePortableGeneratedImpl) rootPreferences.get( 0 );
+        final MyPreferencePortableGeneratedImpl myPreference = (MyPreferencePortableGeneratedImpl) rootPreferences.get(0);
 
-        doReturn( getPortablePreferences() ).when( preferenceBeanStoreImpl ).getPortablePreferences();
+        doReturn(getPortablePreferences()).when(preferenceBeanStoreImpl).getPortablePreferences();
 
-        final PreferenceHierarchyElement<?> preferenceHierarchyElement = preferenceBeanStoreImpl.buildHierarchyStructureForPreference( myPreference.identifier() );
+        final PreferenceHierarchyElement<?> preferenceHierarchyElement = preferenceBeanStoreImpl.buildHierarchyStructureForPreference(myPreference.identifier());
 
         final PreferenceHierarchyElement<?> firstElement = preferenceHierarchyElement;
-        assertEquals( myPreference.identifier(), firstElement.getPortablePreference().identifier() );
-        assertTrue( firstElement.isRoot() );
-        assertFalse( firstElement.isShared() );
-        assertEquals( 2, firstElement.getChildren().size() );
+        assertEquals(myPreference.identifier(),
+                     firstElement.getPortablePreference().identifier());
+        assertTrue(firstElement.isRoot());
+        assertFalse(firstElement.isShared());
+        assertEquals(2,
+                     firstElement.getChildren().size());
 
-        final PreferenceHierarchyElement<?> firstElementFirstChild = firstElement.getChildren().get( 0 );
-        assertEquals( ( (MyInnerPreferencePortableGeneratedImpl) myPreference.myInnerPreference ).identifier(), firstElementFirstChild.getPortablePreference().identifier() );
-        assertFalse( firstElementFirstChild.isRoot() );
-        assertFalse( firstElementFirstChild.isShared() );
-        assertEquals( 0, firstElementFirstChild.getChildren().size() );
+        final PreferenceHierarchyElement<?> firstElementFirstChild = firstElement.getChildren().get(0);
+        assertEquals(((MyInnerPreferencePortableGeneratedImpl) myPreference.myInnerPreference).identifier(),
+                     firstElementFirstChild.getPortablePreference().identifier());
+        assertFalse(firstElementFirstChild.isRoot());
+        assertFalse(firstElementFirstChild.isShared());
+        assertEquals(0,
+                     firstElementFirstChild.getChildren().size());
 
-        final PreferenceHierarchyElement<?> firstElementSecondChild = firstElement.getChildren().get( 1 );
-        assertEquals( ( (MySharedPreferencePortableGeneratedImpl) myPreference.mySharedPreference ).identifier(), firstElementSecondChild.getPortablePreference().identifier() );
-        assertFalse( firstElementSecondChild.isRoot() );
-        assertTrue( firstElementSecondChild.isShared() );
-        assertEquals( 1, firstElementSecondChild.getChildren().size() );
+        final PreferenceHierarchyElement<?> firstElementSecondChild = firstElement.getChildren().get(1);
+        assertEquals(((MySharedPreferencePortableGeneratedImpl) myPreference.mySharedPreference).identifier(),
+                     firstElementSecondChild.getPortablePreference().identifier());
+        assertFalse(firstElementSecondChild.isRoot());
+        assertTrue(firstElementSecondChild.isShared());
+        assertEquals(1,
+                     firstElementSecondChild.getChildren().size());
 
-        final PreferenceHierarchyElement<?> firstElementSecondChildFirstChild = firstElementSecondChild.getChildren().get( 0 );
-        assertEquals( ( (MyInnerPreference2PortableGeneratedImpl) myPreference.mySharedPreference.myInnerPreference2 ).identifier(), firstElementSecondChildFirstChild.getPortablePreference().identifier() );
-        assertFalse( firstElementSecondChildFirstChild.isRoot() );
-        assertFalse( firstElementSecondChildFirstChild.isShared() );
-        assertEquals( 1, firstElementSecondChildFirstChild.getChildren().size() );
+        final PreferenceHierarchyElement<?> firstElementSecondChildFirstChild = firstElementSecondChild.getChildren().get(0);
+        assertEquals(((MyInnerPreference2PortableGeneratedImpl) myPreference.mySharedPreference.myInnerPreference2).identifier(),
+                     firstElementSecondChildFirstChild.getPortablePreference().identifier());
+        assertFalse(firstElementSecondChildFirstChild.isRoot());
+        assertFalse(firstElementSecondChildFirstChild.isShared());
+        assertEquals(1,
+                     firstElementSecondChildFirstChild.getChildren().size());
 
-        final PreferenceHierarchyElement<?> firstElementSecondChildFirstChildFirstChild = firstElementSecondChildFirstChild.getChildren().get( 0 );
-        assertEquals( "MySharedPreference2", firstElementSecondChildFirstChildFirstChild.getPortablePreference().identifier() );
-        assertTrue( firstElementSecondChildFirstChildFirstChild.isRoot() );
-        assertFalse( firstElementSecondChildFirstChildFirstChild.isShared() );
-        assertEquals( 0, firstElementSecondChildFirstChildFirstChild.getChildren().size() );
+        final PreferenceHierarchyElement<?> firstElementSecondChildFirstChildFirstChild = firstElementSecondChildFirstChild.getChildren().get(0);
+        assertEquals("MySharedPreference2",
+                     firstElementSecondChildFirstChildFirstChild.getPortablePreference().identifier());
+        assertTrue(firstElementSecondChildFirstChildFirstChild.isRoot());
+        assertFalse(firstElementSecondChildFirstChildFirstChild.isShared());
+        assertEquals(0,
+                     firstElementSecondChildFirstChildFirstChild.getChildren().size());
     }
 
     private List<BasePreferencePortable<? extends BasePreference<?>>> getRootPortablePreferences() {
-        final MyPreferencePortableGeneratedImpl myPreference = preferenceBeanStoreImpl.load( new MyPreferencePortableGeneratedImpl() );
-        final MySharedPreference2PortableGeneratedImpl mySharedPreference2 = preferenceBeanStoreImpl.load( new MySharedPreference2PortableGeneratedImpl() );
+        final MyPreferencePortableGeneratedImpl myPreference = preferenceBeanStoreImpl.load(new MyPreferencePortableGeneratedImpl());
+        final MySharedPreference2PortableGeneratedImpl mySharedPreference2 = preferenceBeanStoreImpl.load(new MySharedPreference2PortableGeneratedImpl());
 
         List<BasePreferencePortable<? extends BasePreference<?>>> rootPreferences = new ArrayList<>();
-        rootPreferences.add( myPreference );
-        rootPreferences.add( mySharedPreference2 );
+        rootPreferences.add(myPreference);
+        rootPreferences.add(mySharedPreference2);
 
         return rootPreferences;
     }
@@ -237,25 +314,25 @@ public class PreferenceBeanStoreImplTest {
     private List<BasePreferencePortable<?>> getPortablePreferences() {
         List<BasePreferencePortable<?>> portablePreferences = new ArrayList<>();
 
-        portablePreferences.add( getPortablePreferenceByClass( MyPreference.class ) );
-        portablePreferences.add( getPortablePreferenceByClass( MyInnerPreference.class ) );
-        portablePreferences.add( getPortablePreferenceByClass( MyInnerPreference2.class ) );
-        portablePreferences.add( getPortablePreferenceByClass( MySharedPreference.class ) );
-        portablePreferences.add( getPortablePreferenceByClass( MySharedPreference2.class ) );
+        portablePreferences.add(getPortablePreferenceByClass(MyPreference.class));
+        portablePreferences.add(getPortablePreferenceByClass(MyInnerPreference.class));
+        portablePreferences.add(getPortablePreferenceByClass(MyInnerPreference2.class));
+        portablePreferences.add(getPortablePreferenceByClass(MySharedPreference.class));
+        portablePreferences.add(getPortablePreferenceByClass(MySharedPreference2.class));
 
         return portablePreferences;
     }
 
-    private BasePreferencePortable<?> getPortablePreferenceByClass( final Class<?> clazz ) {
-        if ( MyPreference.class.equals( clazz ) ) {
+    private BasePreferencePortable<?> getPortablePreferenceByClass(final Class<?> clazz) {
+        if (MyPreference.class.equals(clazz)) {
             return new MyPreferencePortableGeneratedImpl();
-        } else if ( MyInnerPreference.class.equals( clazz ) ) {
+        } else if (MyInnerPreference.class.equals(clazz)) {
             return new MyInnerPreferencePortableGeneratedImpl();
-        } else if ( MyInnerPreference2.class.equals( clazz ) ) {
+        } else if (MyInnerPreference2.class.equals(clazz)) {
             return new MyInnerPreference2PortableGeneratedImpl();
-        } else if ( MySharedPreference.class.equals( clazz ) ) {
+        } else if (MySharedPreference.class.equals(clazz)) {
             return new MySharedPreferencePortableGeneratedImpl();
-        } else if ( MySharedPreference2.class.equals( clazz ) ) {
+        } else if (MySharedPreference2.class.equals(clazz)) {
             return new MySharedPreference2PortableGeneratedImpl();
         }
 

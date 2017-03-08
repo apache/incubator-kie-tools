@@ -16,9 +16,8 @@
 
 package org.uberfire.client.mvp;
 
-import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
-
 import jsinterop.annotations.JsType;
+import org.uberfire.client.workbench.events.ChangeTitleWidgetEvent;
 
 /**
  * Provides functionality to lock a file or directory, associated with a widget
@@ -30,12 +29,10 @@ public interface LockManager {
     /**
      * Retrieves the latest lock information for the provided target and fires
      * events to update the corresponding UI.
-     *
-     * @param lockTarget
-     *            the {@link LockTarget} providing information about what to
-     *            lock.
+     * @param lockTarget the {@link LockTarget} providing information about what to
+     * lock.
      */
-    void init( LockTarget lockTarget );
+    void init(LockTarget lockTarget);
 
     /**
      * Notifies this lock manager that the lock target's widget got focus to

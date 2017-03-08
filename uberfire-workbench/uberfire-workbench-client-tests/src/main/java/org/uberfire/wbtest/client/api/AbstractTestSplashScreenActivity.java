@@ -16,18 +16,16 @@
 
 package org.uberfire.wbtest.client.api;
 
-import java.util.Collection;
-import java.util.Collections;
-
 import org.uberfire.client.mvp.AbstractSplashScreenActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.widgets.splash.SplashView;
 
-
 public abstract class AbstractTestSplashScreenActivity extends AbstractSplashScreenActivity {
 
-    public AbstractTestSplashScreenActivity(PlaceManager placeManager, SplashView view) {
-        super(placeManager, view);
+    public AbstractTestSplashScreenActivity(PlaceManager placeManager,
+                                            SplashView view) {
+        super(placeManager,
+              view);
     }
 
     @Override

@@ -33,21 +33,21 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
  * bootstrapping.
  */
 @Dependent
-@Named( "org.uberfire.wbtest.client.main.DefaultPerspectiveActivity" )
+@Named("org.uberfire.wbtest.client.main.DefaultPerspectiveActivity")
 public class DefaultPerspectiveActivity extends AbstractTestPerspectiveActivity {
 
     @Inject
-    public DefaultPerspectiveActivity( PlaceManager placeManager ) {
-        super( placeManager );
+    public DefaultPerspectiveActivity(PlaceManager placeManager) {
+        super(placeManager);
     }
 
     @Override
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
-        PerspectiveDefinition pdef = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
-        pdef.setName( "DefaultPerspectiveActivity" );
+        PerspectiveDefinition pdef = new PerspectiveDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        pdef.setName("DefaultPerspectiveActivity");
 
-        DefaultPlaceRequest destintationPlace = new DefaultPlaceRequest( DefaultScreenActivity.class.getName() );
-        pdef.getRoot().addPart( new PartDefinitionImpl( destintationPlace ) );
+        DefaultPlaceRequest destintationPlace = new DefaultPlaceRequest(DefaultScreenActivity.class.getName());
+        pdef.getRoot().addPart(new PartDefinitionImpl(destintationPlace));
 
         return pdef;
     }

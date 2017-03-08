@@ -35,21 +35,27 @@ public class PluginController {
     private User user;
 
     @Inject
-    public PluginController(AuthorizationManager authorizationManager, User user) {
+    public PluginController(AuthorizationManager authorizationManager,
+                            User user) {
         this.authorizationManager = authorizationManager;
         this.user = user;
     }
 
     public boolean canCreatePerspectives() {
-        return authorizationManager.authorize(ActivityResourceType.PERSPECTIVE, PerspectiveAction.CREATE, user);
+        return authorizationManager.authorize(ActivityResourceType.PERSPECTIVE,
+                                              PerspectiveAction.CREATE,
+                                              user);
     }
 
     public boolean canRead(Activity activity) {
         if (PluginType.PERSPECTIVE.equals(activity.getType())
                 || PluginType.PERSPECTIVE_LAYOUT.equals(activity.getType())) {
 
-            Resource ref = new ResourceRef(activity.getName(), ActivityResourceType.PERSPECTIVE);
-            return authorizationManager.authorize(ref, PerspectiveAction.READ, user);
+            Resource ref = new ResourceRef(activity.getName(),
+                                           ActivityResourceType.PERSPECTIVE);
+            return authorizationManager.authorize(ref,
+                                                  PerspectiveAction.READ,
+                                                  user);
         }
         return true;
     }
@@ -58,8 +64,11 @@ public class PluginController {
         if (PluginType.PERSPECTIVE.equals(activity.getType())
                 || PluginType.PERSPECTIVE_LAYOUT.equals(activity.getType())) {
 
-            Resource ref = new ResourceRef(activity.getName(), ActivityResourceType.PERSPECTIVE);
-            return authorizationManager.authorize(ref, PerspectiveAction.UPDATE, user);
+            Resource ref = new ResourceRef(activity.getName(),
+                                           ActivityResourceType.PERSPECTIVE);
+            return authorizationManager.authorize(ref,
+                                                  PerspectiveAction.UPDATE,
+                                                  user);
         }
         return true;
     }
@@ -68,8 +77,11 @@ public class PluginController {
         if (PluginType.PERSPECTIVE.equals(activity.getType())
                 || PluginType.PERSPECTIVE_LAYOUT.equals(activity.getType())) {
 
-            Resource ref = new ResourceRef(activity.getName(), ActivityResourceType.PERSPECTIVE);
-            return authorizationManager.authorize(ref, PerspectiveAction.DELETE, user);
+            Resource ref = new ResourceRef(activity.getName(),
+                                           ActivityResourceType.PERSPECTIVE);
+            return authorizationManager.authorize(ref,
+                                                  PerspectiveAction.DELETE,
+                                                  user);
         }
         return true;
     }

@@ -64,41 +64,38 @@ import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
-import static org.uberfire.commons.validation.Preconditions.*;
-import static org.uberfire.java.nio.file.StandardOpenOption.*;
+import static org.uberfire.commons.validation.Preconditions.checkCondition;
+import static org.uberfire.commons.validation.Preconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.Preconditions.checkNotNull;
+import static org.uberfire.java.nio.file.StandardOpenOption.READ;
+import static org.uberfire.java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 public class SimpleFileSystemProvider implements FileSystemProvider {
 
     private static final String USER_DIR = "user.dir";
     private final BaseSimpleFileSystem fileSystem;
-    private boolean isDefault;
     private final OSType osType;
     private final File[] roots;
-
-    enum OSType {
-        WINDOWS, UNIX_LIKE;
-
-        public static OSType currentOS() {
-            if ( System.getProperty( "os.name" ).toLowerCase().indexOf( "win" ) >= 0 ) {
-                return WINDOWS;
-            }
-            return UNIX_LIKE;
-        }
-    }
+    private boolean isDefault;
 
     public SimpleFileSystemProvider() {
-        this( File.listRoots(), OSType.currentOS() );
+        this(File.listRoots(),
+             OSType.currentOS());
     }
 
-    SimpleFileSystemProvider( final File[] roots,
-                              final OSType osType ) {
-        final String defaultPath = System.getProperty( USER_DIR );
-        this.osType = checkNotNull( "osType", osType );
-        this.roots = checkNotNull( "roots", roots );
-        if ( osType == OSType.WINDOWS ) {
-            this.fileSystem = new SimpleWindowsFileSystem( this, defaultPath );
+    SimpleFileSystemProvider(final File[] roots,
+                             final OSType osType) {
+        final String defaultPath = System.getProperty(USER_DIR);
+        this.osType = checkNotNull("osType",
+                                   osType);
+        this.roots = checkNotNull("roots",
+                                  roots);
+        if (osType == OSType.WINDOWS) {
+            this.fileSystem = new SimpleWindowsFileSystem(this,
+                                                          defaultPath);
         } else {
-            this.fileSystem = new SimpleUnixFileSystem( this, defaultPath );
+            this.fileSystem = new SimpleUnixFileSystem(this,
+                                                       defaultPath);
         }
     }
 
@@ -118,111 +115,125 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
     }
 
     @Override
-    public FileSystem getFileSystem( final URI uri )
+    public FileSystem getFileSystem(final URI uri)
             throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
         return getDefaultFileSystem();
     }
 
     @Override
-    public Path getPath( final URI uri )
+    public Path getPath(final URI uri)
             throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
-        checkNotNull( "uri", uri );
-        checkCondition( "uri scheme not supported", uri.getScheme().equals( getScheme() ) || uri.getScheme().equals( "default" ) );
+        checkNotNull("uri",
+                     uri);
+        checkCondition("uri scheme not supported",
+                       uri.getScheme().equals(getScheme()) || uri.getScheme().equals("default"));
 
-        return getDefaultFileSystem().getPath( uri.getPath() );
+        return getDefaultFileSystem().getPath(uri.getPath());
     }
 
     @Override
-    public FileSystem newFileSystem( final URI uri,
-                                     final Map<String, ?> env )
+    public FileSystem newFileSystem(final URI uri,
+                                    final Map<String, ?> env)
             throws IllegalArgumentException, IOException, SecurityException, FileSystemAlreadyExistsException {
-        checkNotNull( "uri", uri );
-        checkNotNull( "env", env );
-        throw new FileSystemAlreadyExistsException( uri.toString() );
+        checkNotNull("uri",
+                     uri);
+        checkNotNull("env",
+                     env);
+        throw new FileSystemAlreadyExistsException(uri.toString());
     }
 
     @Override
-    public FileSystem newFileSystem( final Path path,
-                                     final Map<String, ?> env )
+    public FileSystem newFileSystem(final Path path,
+                                    final Map<String, ?> env)
             throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        checkNotNull( "path", path );
-        checkNotNull( "env", env );
-        throw new FileSystemAlreadyExistsException( path.toString() );
+        checkNotNull("path",
+                     path);
+        checkNotNull("env",
+                     env);
+        throw new FileSystemAlreadyExistsException(path.toString());
     }
 
     @Override
-    public InputStream newInputStream( final Path path,
-                                       final OpenOption... options )
+    public InputStream newInputStream(final Path path,
+                                      final OpenOption... options)
             throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
-        checkNotNull( "path", path );
+        checkNotNull("path",
+                     path);
         final File file = path.toFile();
-        if ( !file.exists() ) {
-            throw new NoSuchFileException( file.toString() );
+        if (!file.exists()) {
+            throw new NoSuchFileException(file.toString());
         }
         try {
-            return new FileInputStream( path.toFile() );
-        } catch ( FileNotFoundException e ) {
-            throw new NoSuchFileException( e.getMessage() );
+            return new FileInputStream(path.toFile());
+        } catch (FileNotFoundException e) {
+            throw new NoSuchFileException(e.getMessage());
         }
     }
 
     @Override
-    public OutputStream newOutputStream( final Path path,
-                                         final OpenOption... options )
+    public OutputStream newOutputStream(final Path path,
+                                        final OpenOption... options)
             throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        checkNotNull( "path", path );
+        checkNotNull("path",
+                     path);
         try {
-            return new FileOutputStream( path.toFile() );
-        } catch ( Exception e ) {
-            throw new IOException( "Could not open output stream.", e );
+            return new FileOutputStream(path.toFile());
+        } catch (Exception e) {
+            throw new IOException("Could not open output stream.",
+                                  e);
         }
     }
 
     @Override
-    public FileChannel newFileChannel( final Path path,
-                                       final Set<? extends OpenOption> options,
-                                       final FileAttribute<?>... attrs )
+    public FileChannel newFileChannel(final Path path,
+                                      final Set<? extends OpenOption> options,
+                                      final FileAttribute<?>... attrs)
             throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        checkNotNull( "path", path );
-        return ( (FileOutputStream) newOutputStream( path ) ).getChannel();
+        checkNotNull("path",
+                     path);
+        return ((FileOutputStream) newOutputStream(path)).getChannel();
     }
 
     @Override
-    public AsynchronousFileChannel newAsynchronousFileChannel( final Path path,
-                                                               final Set<? extends OpenOption> options,
-                                                               final ExecutorService executor,
-                                                               FileAttribute<?>... attrs )
+    public AsynchronousFileChannel newAsynchronousFileChannel(final Path path,
+                                                              final Set<? extends OpenOption> options,
+                                                              final ExecutorService executor,
+                                                              FileAttribute<?>... attrs)
             throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        checkNotNull( "path", path );
+        checkNotNull("path",
+                     path);
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public SeekableByteChannel newByteChannel( final Path path,
-                                               final Set<? extends OpenOption> options,
-                                               final FileAttribute<?>... attrs )
+    public SeekableByteChannel newByteChannel(final Path path,
+                                              final Set<? extends OpenOption> options,
+                                              final FileAttribute<?>... attrs)
             throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        final File file = checkNotNull( "path", path ).toFile();
+        final File file = checkNotNull("path",
+                                       path).toFile();
 
-        if ( file.exists() ) {
-            if ( !shouldCreateOrOpenAByteChannel( options ) ) {
-                throw new FileAlreadyExistsException( path.toString() );
+        if (file.exists()) {
+            if (!shouldCreateOrOpenAByteChannel(options)) {
+                throw new FileAlreadyExistsException(path.toString());
             }
         }
 
         try {
-            if ( options != null && options.contains( READ ) ) {
-                return openAByteChannel( path );
+            if (options != null && options.contains(READ)) {
+                return openAByteChannel(path);
             } else {
-                return createANewByteChannel( file );
+                return createANewByteChannel(file);
             }
-        } catch ( java.io.IOException e ) {
-            throw new IOException( "Failed to open or create a byte channel.", e );
+        } catch (java.io.IOException e) {
+            throw new IOException("Failed to open or create a byte channel.",
+                                  e);
         }
     }
 
-    private SeekableByteChannelFileBasedImpl createANewByteChannel( final File file ) throws FileNotFoundException {
-        return new SeekableByteChannelFileBasedImpl( new RandomAccessFile( file, "rw" ).getChannel() ) {
+    private SeekableByteChannelFileBasedImpl createANewByteChannel(final File file) throws FileNotFoundException {
+        return new SeekableByteChannelFileBasedImpl(new RandomAccessFile(file,
+                                                                         "rw").getChannel()) {
             @Override
             public void close() throws java.io.IOException {
                 super.close();
@@ -230,40 +241,44 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
         };
     }
 
-    private SeekableByteChannelFileBasedImpl openAByteChannel( Path path ) throws FileNotFoundException {
-        return new SeekableByteChannelFileBasedImpl( new RandomAccessFile( path.toFile(), "r" ).getChannel() );
+    private SeekableByteChannelFileBasedImpl openAByteChannel(Path path) throws FileNotFoundException {
+        return new SeekableByteChannelFileBasedImpl(new RandomAccessFile(path.toFile(),
+                                                                         "r").getChannel());
     }
 
-    private boolean shouldCreateOrOpenAByteChannel( final Set<? extends OpenOption> options ) {
-        return ( options != null && ( options.contains( TRUNCATE_EXISTING ) || options.contains( READ ) ) );
+    private boolean shouldCreateOrOpenAByteChannel(final Set<? extends OpenOption> options) {
+        return (options != null && (options.contains(TRUNCATE_EXISTING) || options.contains(READ)));
     }
 
     @Override
-    public void createDirectory( final Path dir,
-                                 final FileAttribute<?>... attrs )
+    public void createDirectory(final Path dir,
+                                final FileAttribute<?>... attrs)
             throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        checkNotNull( "dir", dir );
+        checkNotNull("dir",
+                     dir);
         final Path realDir = dir.toAbsolutePath();
-        if ( realDir.toFile().exists() ) {
-            throw new FileAlreadyExistsException( dir.toString() );
+        if (realDir.toFile().exists()) {
+            throw new FileAlreadyExistsException(dir.toString());
         }
         realDir.toFile().mkdirs();
     }
 
     @Override
-    public DirectoryStream<Path> newDirectoryStream( final Path dir,
-                                                     final DirectoryStream.Filter<Path> filter )
+    public DirectoryStream<Path> newDirectoryStream(final Path dir,
+                                                    final DirectoryStream.Filter<Path> filter)
             throws NotDirectoryException, IOException, SecurityException {
-        checkNotNull( "filter", filter );
-        final File file = checkNotNull( "dir", dir ).toFile();
+        checkNotNull("filter",
+                     filter);
+        final File file = checkNotNull("dir",
+                                       dir).toFile();
 
-        if ( !file.isDirectory() ) {
-            throw new NotDirectoryException( dir.toString() );
+        if (!file.isDirectory()) {
+            throw new NotDirectoryException(dir.toString());
         }
         final File[] content = file.listFiles();
 
-        if ( content == null ) {
-            throw new NotDirectoryException( dir.toString() );
+        if (content == null) {
+            throw new NotDirectoryException(dir.toString());
         }
 
         return new DirectoryStream<Path>() {
@@ -271,25 +286,25 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
 
             @Override
             public void close() throws IOException {
-                if ( isClosed ) {
-                    throw new IOException( "This stream is closed." );
+                if (isClosed) {
+                    throw new IOException("This stream is closed.");
                 }
                 isClosed = true;
             }
 
             @Override
             public Iterator<Path> iterator() {
-                if ( isClosed ) {
-                    throw new IOException( "This stream is closed." );
+                if (isClosed) {
+                    throw new IOException("This stream is closed.");
                 }
                 return new Iterator<Path>() {
+                    public boolean atEof = false;
                     private int i = -1;
                     private Path nextEntry = null;
-                    public boolean atEof = false;
 
                     @Override
                     public boolean hasNext() {
-                        if ( nextEntry == null && !atEof ) {
+                        if (nextEntry == null && !atEof) {
                             nextEntry = readNextEntry();
                         }
                         return nextEntry != null;
@@ -298,33 +313,34 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
                     @Override
                     public Path next() {
                         final Path result;
-                        if ( nextEntry == null && !atEof ) {
+                        if (nextEntry == null && !atEof) {
                             result = readNextEntry();
                         } else {
                             result = nextEntry;
                             nextEntry = null;
                         }
-                        if ( result == null ) {
+                        if (result == null) {
                             throw new NoSuchElementException();
                         }
                         return result;
                     }
 
                     private Path readNextEntry() {
-                        if ( atEof ) {
+                        if (atEof) {
                             return null;
                         }
 
                         Path result = null;
-                        while ( true ) {
+                        while (true) {
                             i++;
-                            if ( i >= content.length ) {
+                            if (i >= content.length) {
                                 atEof = true;
                                 break;
                             }
 
-                            final Path path = GeneralPathImpl.newFromFile( getDefaultFileSystem(), content[ i ] );
-                            if ( filter.accept( path ) ) {
+                            final Path path = GeneralPathImpl.newFromFile(getDefaultFileSystem(),
+                                                                          content[i]);
+                            if (filter.accept(path)) {
                                 result = path;
                                 break;
                             }
@@ -343,83 +359,94 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
     }
 
     @Override
-    public void createSymbolicLink( final Path link,
-                                    final Path target,
-                                    final FileAttribute<?>... attrs )
+    public void createSymbolicLink(final Path link,
+                                   final Path target,
+                                   final FileAttribute<?>... attrs)
             throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        checkNotNull( "link", link );
-        checkNotNull( "target", target );
-        checkCondition( "link and target can't be same", !link.equals( target ) );
-        checkCondition( "target must already exists", target.toFile().exists() );
+        checkNotNull("link",
+                     link);
+        checkNotNull("target",
+                     target);
+        checkCondition("link and target can't be same",
+                       !link.equals(target));
+        checkCondition("target must already exists",
+                       target.toFile().exists());
 
-        if ( link.toFile().exists() ) {
-            throw new FileAlreadyExistsException( link.toString() );
+        if (link.toFile().exists()) {
+            throw new FileAlreadyExistsException(link.toString());
         }
 
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void createLink( final Path link,
-                            final Path existing )
+    public void createLink(final Path link,
+                           final Path existing)
             throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        checkNotNull( "link", link );
-        checkNotNull( "existing", existing );
-        checkCondition( "existing must already exists", existing.toFile().exists() );
-        checkCondition( "link and target can't be same", !link.equals( existing ) );
+        checkNotNull("link",
+                     link);
+        checkNotNull("existing",
+                     existing);
+        checkCondition("existing must already exists",
+                       existing.toFile().exists());
+        checkCondition("link and target can't be same",
+                       !link.equals(existing));
 
-        if ( link.toFile().exists() ) {
-            throw new FileAlreadyExistsException( link.toString() );
+        if (link.toFile().exists()) {
+            throw new FileAlreadyExistsException(link.toString());
         }
 
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void delete( final Path path,
-                        final DeleteOption... options ) throws NoSuchFileException, DirectoryNotEmptyException, IOException, SecurityException {
-        checkNotNull( "path", path );
+    public void delete(final Path path,
+                       final DeleteOption... options) throws NoSuchFileException, DirectoryNotEmptyException, IOException, SecurityException {
+        checkNotNull("path",
+                     path);
 
-        if ( !path.toFile().exists() ) {
-            throw new NoSuchFileException( path.toString() );
+        if (!path.toFile().exists()) {
+            throw new NoSuchFileException(path.toString());
         }
 
-        deleteIfExists( path, options );
+        deleteIfExists(path,
+                       options);
     }
 
     @Override
-    public boolean deleteIfExists( final Path path,
-                                   final DeleteOption... options )
+    public boolean deleteIfExists(final Path path,
+                                  final DeleteOption... options)
             throws DirectoryNotEmptyException, IOException, SecurityException {
-        checkNotNull( "path", path );
-        synchronized ( this ) {
+        checkNotNull("path",
+                     path);
+        synchronized (this) {
 
             final File file = path.toFile();
             try {
-                if ( file.isDirectory() && !deleteNonEmptyDirectory( options ) && file.list().length > 0 ) {
-                    throw new DirectoryNotEmptyException( path.toString() );
+                if (file.isDirectory() && !deleteNonEmptyDirectory(options) && file.list().length > 0) {
+                    throw new DirectoryNotEmptyException(path.toString());
                 }
 
                 final boolean result = file.exists();
 
                 try {
-                    FileUtils.forceDelete( file );
-                } catch ( final FileNotFoundException ignore ) {
-                } catch ( java.io.IOException e ) {
-                    throw new IOException( e );
+                    FileUtils.forceDelete(file);
+                } catch (final FileNotFoundException ignore) {
+                } catch (java.io.IOException e) {
+                    throw new IOException(e);
                 }
 
                 return result;
             } finally {
-                toGeneralPathImpl( path ).clearCache();
+                toGeneralPathImpl(path).clearCache();
             }
         }
     }
 
-    private boolean deleteNonEmptyDirectory( final DeleteOption... options ) {
+    private boolean deleteNonEmptyDirectory(final DeleteOption... options) {
 
-        for ( final DeleteOption option : options ) {
-            if ( option.equals( StandardDeleteOption.NON_EMPTY_DIRECTORIES ) ) {
+        for (final DeleteOption option : options) {
+            if (option.equals(StandardDeleteOption.NON_EMPTY_DIRECTORIES)) {
                 return true;
             }
         }
@@ -428,62 +455,69 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
     }
 
     @Override
-    public Path readSymbolicLink( final Path link )
+    public Path readSymbolicLink(final Path link)
             throws UnsupportedOperationException, NotLinkException, IOException, SecurityException {
-        checkNotNull( "link", link );
+        checkNotNull("link",
+                     link);
 
-        if ( !link.toFile().exists() ) {
-            throw new NotLinkException( link.toString() );
+        if (!link.toFile().exists()) {
+            throw new NotLinkException(link.toString());
         }
 
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean isSameFile( final Path path,
-                               final Path path2 )
+    public boolean isSameFile(final Path path,
+                              final Path path2)
             throws IOException, SecurityException {
-        checkNotNull( "path", path );
-        checkNotNull( "path2", path2 );
+        checkNotNull("path",
+                     path);
+        checkNotNull("path2",
+                     path2);
 
-        return path.equals( path2 );
+        return path.equals(path2);
     }
 
     @Override
-    public boolean isHidden( final Path path ) throws IllegalArgumentException, IOException, SecurityException {
-        checkNotNull( "path", path );
+    public boolean isHidden(final Path path) throws IllegalArgumentException, IOException, SecurityException {
+        checkNotNull("path",
+                     path);
 
         return path.toFile().isHidden();
     }
 
     @Override
-    public void checkAccess( final Path path,
-                             AccessMode... modes )
+    public void checkAccess(final Path path,
+                            AccessMode... modes)
             throws UnsupportedOperationException, NoSuchFileException, AccessDeniedException, IOException, SecurityException {
-        checkNotNull( "path", path );
-        checkNotNull( "modes", modes );
+        checkNotNull("path",
+                     path);
+        checkNotNull("modes",
+                     modes);
 
-        if ( !path.toFile().exists() ) {
-            throw new NoSuchFileException( path.toString() );
+        if (!path.toFile().exists()) {
+            throw new NoSuchFileException(path.toString());
         }
 
-        if ( path.toFile() != null ) {
-            for ( final AccessMode mode : modes ) {
-                checkNotNull( "mode", mode );
-                switch ( mode ) {
+        if (path.toFile() != null) {
+            for (final AccessMode mode : modes) {
+                checkNotNull("mode",
+                             mode);
+                switch (mode) {
                     case READ:
-                        if ( !path.toFile().canRead() ) {
-                            throw new AccessDeniedException( path.toString() );
+                        if (!path.toFile().canRead()) {
+                            throw new AccessDeniedException(path.toString());
                         }
                         break;
                     case EXECUTE:
-                        if ( !path.toFile().canExecute() ) {
-                            throw new AccessDeniedException( path.toString() );
+                        if (!path.toFile().canExecute()) {
+                            throw new AccessDeniedException(path.toString());
                         }
                         break;
                     case WRITE:
-                        if ( !path.toFile().canWrite() ) {
-                            throw new AccessDeniedException( path.toString() );
+                        if (!path.toFile().canWrite()) {
+                            throw new AccessDeniedException(path.toString());
                         }
                         break;
                 }
@@ -492,69 +526,77 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
     }
 
     @Override
-    public FileStore getFileStore( final Path path ) throws IOException, SecurityException {
-        checkNotNull( "path", path );
-        if ( osType == OSType.WINDOWS ) {
-            return new SimpleWindowsFileStore( roots, path );
+    public FileStore getFileStore(final Path path) throws IOException, SecurityException {
+        checkNotNull("path",
+                     path);
+        if (osType == OSType.WINDOWS) {
+            return new SimpleWindowsFileStore(roots,
+                                              path);
         }
-        return new SimpleUnixFileStore( path );
+        return new SimpleUnixFileStore(path);
     }
 
     @Override
-    public <V extends FileAttributeView> V getFileAttributeView( final Path path,
-                                                                 final Class<V> type,
-                                                                 final LinkOption... options )
+    public <V extends FileAttributeView> V getFileAttributeView(final Path path,
+                                                                final Class<V> type,
+                                                                final LinkOption... options)
             throws NoSuchFileException {
 
-        checkNotNull( "path", path );
-        checkNotNull( "type", type );
+        checkNotNull("path",
+                     path);
+        checkNotNull("type",
+                     type);
 
-        if ( !path.toFile().exists() ) {
-            throw new NoSuchFileException( path.toString() );
+        if (!path.toFile().exists()) {
+            throw new NoSuchFileException(path.toString());
         }
 
-        final GeneralPathImpl gPath = toGeneralPathImpl( path );
+        final GeneralPathImpl gPath = toGeneralPathImpl(path);
 
-        final V view = gPath.getAttrView( type );
+        final V view = gPath.getAttrView(type);
 
-        if ( view == null && type == BasicFileAttributeView.class || type == SimpleBasicFileAttributeView.class ) {
-            final V newView = (V) new SimpleBasicFileAttributeView( gPath );
-            gPath.addAttrView( newView );
+        if (view == null && type == BasicFileAttributeView.class || type == SimpleBasicFileAttributeView.class) {
+            final V newView = (V) new SimpleBasicFileAttributeView(gPath);
+            gPath.addAttrView(newView);
             return newView;
         }
 
         return view;
     }
 
-    private ExtendedAttributeView getFileAttributeView( final Path path,
-                                                        final String name,
-                                                        final LinkOption... options ) {
-        final GeneralPathImpl gPath = toGeneralPathImpl( path );
+    private ExtendedAttributeView getFileAttributeView(final Path path,
+                                                       final String name,
+                                                       final LinkOption... options) {
+        final GeneralPathImpl gPath = toGeneralPathImpl(path);
 
-        final ExtendedAttributeView view = gPath.getAttrView( name );
+        final ExtendedAttributeView view = gPath.getAttrView(name);
 
-        if ( view == null && name.equals( "basic" ) ) {
-            final SimpleBasicFileAttributeView newView = new SimpleBasicFileAttributeView( gPath );
-            gPath.addAttrView( newView );
+        if (view == null && name.equals("basic")) {
+            final SimpleBasicFileAttributeView newView = new SimpleBasicFileAttributeView(gPath);
+            gPath.addAttrView(newView);
             return newView;
         }
         return view;
     }
 
     @Override
-    public <A extends BasicFileAttributes> A readAttributes( final Path path,
-                                                             final Class<A> type,
-                                                             final LinkOption... options )
+    public <A extends BasicFileAttributes> A readAttributes(final Path path,
+                                                            final Class<A> type,
+                                                            final LinkOption... options)
             throws NoSuchFileException, UnsupportedOperationException, IOException, SecurityException {
-        checkNotNull( "path", path );
-        checkNotNull( "type", type );
+        checkNotNull("path",
+                     path);
+        checkNotNull("type",
+                     type);
 
-        if ( !path.toFile().exists() ) {
-            throw new NoSuchFileException( path.toString() );
+        if (!path.toFile().exists()) {
+            throw new NoSuchFileException(path.toString());
         }
 
-        if ( type == BasicFileAttributesImpl.class || type == BasicFileAttributes.class ) {
-            final SimpleBasicFileAttributeView view = getFileAttributeView( path, SimpleBasicFileAttributeView.class, options );
+        if (type == BasicFileAttributesImpl.class || type == BasicFileAttributes.class) {
+            final SimpleBasicFileAttributeView view = getFileAttributeView(path,
+                                                                           SimpleBasicFileAttributeView.class,
+                                                                           options);
             return (A) view.readAttributes();
         }
 
@@ -562,97 +604,116 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
     }
 
     @Override
-    public Map<String, Object> readAttributes( final Path path,
-                                               final String attributes,
-                                               final LinkOption... options )
+    public Map<String, Object> readAttributes(final Path path,
+                                              final String attributes,
+                                              final LinkOption... options)
             throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
-        checkNotNull( "path", path );
-        checkNotEmpty( "attributes", attributes );
+        checkNotNull("path",
+                     path);
+        checkNotEmpty("attributes",
+                      attributes);
 
-        final String[] s = split( attributes );
-        if ( s[ 0 ].length() == 0 ) {
-            throw new IllegalArgumentException( attributes );
+        final String[] s = split(attributes);
+        if (s[0].length() == 0) {
+            throw new IllegalArgumentException(attributes);
         }
 
-        final ExtendedAttributeView view = getFileAttributeView( path, s[ 0 ], options );
-        if ( view == null ) {
-            throw new UnsupportedOperationException( "View '" + s[ 0 ] + "' not available" );
+        final ExtendedAttributeView view = getFileAttributeView(path,
+                                                                s[0],
+                                                                options);
+        if (view == null) {
+            throw new UnsupportedOperationException("View '" + s[0] + "' not available");
         }
-        return view.readAttributes( s[ 1 ].split( "," ) );
+        return view.readAttributes(s[1].split(","));
     }
 
     @Override
-    public void setAttribute( final Path path,
-                              final String attribute,
-                              final Object value,
-                              final LinkOption... options )
+    public void setAttribute(final Path path,
+                             final String attribute,
+                             final Object value,
+                             final LinkOption... options)
             throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
-        checkNotNull( "path", path );
-        checkNotEmpty( "attributes", attribute );
+        checkNotNull("path",
+                     path);
+        checkNotEmpty("attributes",
+                      attribute);
 
-        final String[] s = split( attribute );
-        if ( s[ 0 ].length() == 0 ) {
-            throw new IllegalArgumentException( attribute );
+        final String[] s = split(attribute);
+        if (s[0].length() == 0) {
+            throw new IllegalArgumentException(attribute);
         }
-        final ExtendedAttributeView view = getFileAttributeView( path, s[ 0 ], options );
-        if ( view == null ) {
-            throw new UnsupportedOperationException( "View '" + s[ 0 ] + "' not available" );
+        final ExtendedAttributeView view = getFileAttributeView(path,
+                                                                s[0],
+                                                                options);
+        if (view == null) {
+            throw new UnsupportedOperationException("View '" + s[0] + "' not available");
         }
-        view.setAttribute( attribute, value );
+        view.setAttribute(attribute,
+                          value);
     }
 
     @Override
-    public void copy( final Path source,
-                      final Path target,
-                      final CopyOption... options )
+    public void copy(final Path source,
+                     final Path target,
+                     final CopyOption... options)
             throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException, SecurityException {
-        checkNotNull( "source", source );
-        checkNotNull( "target", target );
-        checkCondition( "source must exist", source.toFile().exists() );
+        checkNotNull("source",
+                     source);
+        checkNotNull("target",
+                     target);
+        checkCondition("source must exist",
+                       source.toFile().exists());
 
-        if ( target.toFile().exists() ) {
-            throw new FileAlreadyExistsException( target.toString() );
+        if (target.toFile().exists()) {
+            throw new FileAlreadyExistsException(target.toString());
         }
-        if ( source.toFile().isDirectory() && source.toFile().list().length > 0 ) {
-            throw new DirectoryNotEmptyException( source.toString() );
+        if (source.toFile().isDirectory() && source.toFile().list().length > 0) {
+            throw new DirectoryNotEmptyException(source.toString());
         }
 
         try {
-            if ( source.toFile().isDirectory() ) {
-                FileUtils.copyDirectory( source.toFile(), target.toFile() );
+            if (source.toFile().isDirectory()) {
+                FileUtils.copyDirectory(source.toFile(),
+                                        target.toFile());
             } else {
-                FileUtils.copyFile( source.toFile(), target.toFile() );
+                FileUtils.copyFile(source.toFile(),
+                                   target.toFile());
             }
-        } catch ( java.io.IOException ex ) {
-            throw new IOException( ex );
+        } catch (java.io.IOException ex) {
+            throw new IOException(ex);
         }
     }
 
     @Override
-    public void move( final Path source,
-                      final Path target,
-                      final CopyOption... options )
+    public void move(final Path source,
+                     final Path target,
+                     final CopyOption... options)
             throws DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException, SecurityException {
-        checkNotNull( "source", source );
-        checkNotNull( "target", target );
-        checkCondition( "source must exist", source.toFile().exists() );
+        checkNotNull("source",
+                     source);
+        checkNotNull("target",
+                     target);
+        checkCondition("source must exist",
+                       source.toFile().exists());
 
-        if ( target.toFile().exists() ) {
-            throw new FileAlreadyExistsException( target.toString() );
+        if (target.toFile().exists()) {
+            throw new FileAlreadyExistsException(target.toString());
         }
 
-        if ( source.toFile().isDirectory() && source.toFile().list().length > 0 ) {
-            throw new DirectoryNotEmptyException( source.toString() );
+        if (source.toFile().isDirectory() && source.toFile().list().length > 0) {
+            throw new DirectoryNotEmptyException(source.toString());
         }
 
         try {
-            if ( source.toFile().isDirectory() ) {
-                FileUtils.moveDirectory( source.toFile(), target.toFile() );
+            if (source.toFile().isDirectory()) {
+                FileUtils.moveDirectory(source.toFile(),
+                                        target.toFile());
             } else {
-                FileUtils.moveFile( source.toFile(), target.toFile() );
+                FileUtils.moveFile(source.toFile(),
+                                   target.toFile());
             }
-        } catch ( java.io.IOException ex ) {
-            throw new IOException( ex );
+        } catch (java.io.IOException ex) {
+            throw new IOException(ex);
         }
     }
 
@@ -660,24 +721,38 @@ public class SimpleFileSystemProvider implements FileSystemProvider {
         return fileSystem;
     }
 
-    private GeneralPathImpl toGeneralPathImpl( final Path path ) {
-        if ( path instanceof GeneralPathImpl ) {
+    private GeneralPathImpl toGeneralPathImpl(final Path path) {
+        if (path instanceof GeneralPathImpl) {
             return (GeneralPathImpl) path;
         }
-        return GeneralPathImpl.create( fileSystem, path.toString(), false );
+        return GeneralPathImpl.create(fileSystem,
+                                      path.toString(),
+                                      false);
     }
 
-    private String[] split( final String attribute ) {
-        final String[] s = new String[ 2 ];
-        final int pos = attribute.indexOf( ':' );
-        if ( pos == -1 ) {
-            s[ 0 ] = "basic";
-            s[ 1 ] = attribute;
+    private String[] split(final String attribute) {
+        final String[] s = new String[2];
+        final int pos = attribute.indexOf(':');
+        if (pos == -1) {
+            s[0] = "basic";
+            s[1] = attribute;
         } else {
-            s[ 0 ] = attribute.substring( 0, pos );
-            s[ 1 ] = ( pos == attribute.length() ) ? "" : attribute.substring( pos + 1 );
+            s[0] = attribute.substring(0,
+                                       pos);
+            s[1] = (pos == attribute.length()) ? "" : attribute.substring(pos + 1);
         }
         return s;
     }
 
+    enum OSType {
+        WINDOWS,
+        UNIX_LIKE;
+
+        public static OSType currentOS() {
+            if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
+                return WINDOWS;
+            }
+            return UNIX_LIKE;
+        }
+    }
 }

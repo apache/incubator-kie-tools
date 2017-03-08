@@ -23,9 +23,9 @@ public class ShapeDragCompleteEvent {
     private double x;
     private double y;
 
-    public ShapeDragCompleteEvent( final WiresBaseShape shape,
-                                   final double x,
-                                   final double y ) {
+    public ShapeDragCompleteEvent(final WiresBaseShape shape,
+                                  final double x,
+                                  final double y) {
         this.shape = shape;
         this.x = x;
         this.y = y;

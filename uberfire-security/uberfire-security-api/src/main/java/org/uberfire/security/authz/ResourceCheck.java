@@ -25,7 +25,6 @@ public interface ResourceCheck<C extends ResourceCheck> extends AuthorizationChe
 
     /**
      * Specifies the action to check
-     *
      * @param action The action to check
      */
     C action(ResourceAction action);

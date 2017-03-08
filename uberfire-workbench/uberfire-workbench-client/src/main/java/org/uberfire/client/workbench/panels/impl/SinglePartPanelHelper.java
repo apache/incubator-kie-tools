@@ -15,19 +15,20 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
+import java.util.Collection;
+
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PartDefinition;
-
-import java.util.Collection;
 
 public class SinglePartPanelHelper {
 
     private Collection<PartDefinition> parts;
     private PlaceManager placeManager;
 
-    public SinglePartPanelHelper( Collection<PartDefinition> parts, PlaceManager placeManager ) {
+    public SinglePartPanelHelper(Collection<PartDefinition> parts,
+                                 PlaceManager placeManager) {
         this.parts = parts;
         this.placeManager = placeManager;
     }
@@ -36,19 +37,18 @@ public class SinglePartPanelHelper {
         return parts.isEmpty();
     }
 
-    public void closeFirstPartAndAddNewOne( Command command ) {
-        placeManager.tryClosePlace( getPlaceFromFirstPart(),
-                                    command );
+    public void closeFirstPartAndAddNewOne(Command command) {
+        placeManager.tryClosePlace(getPlaceFromFirstPart(),
+                                   command);
     }
 
     PlaceRequest getPlaceFromFirstPart() {
-        if(parts.iterator().hasNext()){
+        if (parts.iterator().hasNext()) {
             PartDefinition part = this.parts.iterator().next();
-            if ( part != null ){
+            if (part != null) {
                 return part.getPlace();
             }
         }
         return null;
     }
-
 }

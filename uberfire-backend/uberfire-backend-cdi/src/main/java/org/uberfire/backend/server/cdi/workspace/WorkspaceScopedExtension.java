@@ -30,21 +30,22 @@ import org.slf4j.LoggerFactory;
  */
 public class WorkspaceScopedExtension implements Extension {
 
-    private Logger logger = LoggerFactory.getLogger( WorkspaceScopedExtension.class );
+    private Logger logger = LoggerFactory.getLogger(WorkspaceScopedExtension.class);
 
-    public void beforeBeanDiscovery( @Observes BeforeBeanDiscovery bbd ) {
-        if ( logger.isDebugEnabled() ) {
-            logger.debug( "Before bean discovery, adding WosrkspaceScoped" );
+    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Before bean discovery, adding WosrkspaceScoped");
         }
-        bbd.addScope( WorkspaceScoped.class, true, false );
+        bbd.addScope(WorkspaceScoped.class,
+                     true,
+                     false);
     }
 
-    public void afterBeanDiscovery( @Observes AfterBeanDiscovery abd,
-                                    BeanManager beanManager ) {
-        if ( logger.isDebugEnabled() ) {
-            logger.debug( "After bean discovery, adding WorkspaceScopeContext" );
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery abd,
+                                   BeanManager beanManager) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("After bean discovery, adding WorkspaceScopeContext");
         }
-        abd.addContext( new WorkspaceScopeContext( beanManager ) );
+        abd.addContext(new WorkspaceScopeContext(beanManager));
     }
-
 }

@@ -34,53 +34,53 @@ public class ListBoxDOMElementSingletonColumn extends BaseGridColumn<String> imp
 
     private final ListBoxSingletonDOMElementFactory factory;
 
-    public ListBoxDOMElementSingletonColumn( final HeaderMetaData headerMetaData,
-                                             final ListBoxSingletonDOMElementFactory factory,
-                                             final double width ) {
-        this( new ArrayList<HeaderMetaData>() {{
-                  add( headerMetaData );
-              }},
-              factory,
-              width );
+    public ListBoxDOMElementSingletonColumn(final HeaderMetaData headerMetaData,
+                                            final ListBoxSingletonDOMElementFactory factory,
+                                            final double width) {
+        this(new ArrayList<HeaderMetaData>() {{
+                 add(headerMetaData);
+             }},
+             factory,
+             width);
     }
 
-    public ListBoxDOMElementSingletonColumn( final List<HeaderMetaData> headerMetaData,
-                                             final ListBoxSingletonDOMElementFactory factory,
-                                             final double width ) {
-        super( headerMetaData,
-               new ListBoxColumnDOMElementSingletonRenderer( factory ),
-               width );
-        this.factory = PortablePreconditions.checkNotNull( "factory",
-                                                           factory );
+    public ListBoxDOMElementSingletonColumn(final List<HeaderMetaData> headerMetaData,
+                                            final ListBoxSingletonDOMElementFactory factory,
+                                            final double width) {
+        super(headerMetaData,
+              new ListBoxColumnDOMElementSingletonRenderer(factory),
+              width);
+        this.factory = PortablePreconditions.checkNotNull("factory",
+                                                          factory);
     }
 
     @Override
-    public void edit( final GridCell<String> cell,
-                      final GridBodyCellRenderContext context,
-                      final Callback<GridCellValue<String>> callback ) {
-        factory.attachDomElement( context,
-                                  new Callback<ListBoxDOMElement>() {
-                                      @Override
-                                      public void callback( final ListBoxDOMElement e ) {
-                                          final ListBox widget = e.getWidget();
-                                          widget.addItem( "one" );
-                                          widget.addItem( "two" );
-                                          if ( cell != null && cell.getValue() != null ) {
-                                              for ( int i = 0; i < widget.getItemCount(); i++ ) {
-                                                  if ( widget.getItemText( i ).equals( cell.getValue().getValue() ) ) {
-                                                      widget.setSelectedIndex( i );
-                                                      break;
-                                                  }
-                                              }
-                                          }
-                                      }
-                                  },
-                                  new Callback<ListBoxDOMElement>() {
-                                      @Override
-                                      public void callback( final ListBoxDOMElement e ) {
-                                          e.getWidget().setFocus( true );
-                                      }
-                                  } );
+    public void edit(final GridCell<String> cell,
+                     final GridBodyCellRenderContext context,
+                     final Callback<GridCellValue<String>> callback) {
+        factory.attachDomElement(context,
+                                 new Callback<ListBoxDOMElement>() {
+                                     @Override
+                                     public void callback(final ListBoxDOMElement e) {
+                                         final ListBox widget = e.getWidget();
+                                         widget.addItem("one");
+                                         widget.addItem("two");
+                                         if (cell != null && cell.getValue() != null) {
+                                             for (int i = 0; i < widget.getItemCount(); i++) {
+                                                 if (widget.getItemText(i).equals(cell.getValue().getValue())) {
+                                                     widget.setSelectedIndex(i);
+                                                     break;
+                                                 }
+                                             }
+                                         }
+                                     }
+                                 },
+                                 new Callback<ListBoxDOMElement>() {
+                                     @Override
+                                     public void callback(final ListBoxDOMElement e) {
+                                         e.getWidget().setFocus(true);
+                                     }
+                                 });
     }
 
     @Override
@@ -92,5 +92,4 @@ public class ListBoxDOMElementSingletonColumn extends BaseGridColumn<String> imp
     public void destroyResources() {
         factory.destroyResources();
     }
-
 }

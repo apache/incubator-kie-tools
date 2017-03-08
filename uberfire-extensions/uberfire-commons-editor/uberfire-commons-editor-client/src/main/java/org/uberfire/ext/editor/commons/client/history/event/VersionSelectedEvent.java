@@ -25,9 +25,12 @@ public class VersionSelectedEvent {
     private VersionRecord versionRecord;
     private Path pathToFile;
 
-    public VersionSelectedEvent(Path pathToFile,VersionRecord versionRecord) {
-        this.pathToFile = PortablePreconditions.checkNotNull("pathToFile", pathToFile);
-        this.versionRecord = PortablePreconditions.checkNotNull("versionRecord", versionRecord);
+    public VersionSelectedEvent(Path pathToFile,
+                                VersionRecord versionRecord) {
+        this.pathToFile = PortablePreconditions.checkNotNull("pathToFile",
+                                                             pathToFile);
+        this.versionRecord = PortablePreconditions.checkNotNull("versionRecord",
+                                                                versionRecord);
     }
 
     public VersionRecord getVersionRecord() {

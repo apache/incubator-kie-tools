@@ -16,9 +16,6 @@
 
 package org.uberfire.client.workbench.panels.impl;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -38,6 +35,9 @@ import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 /**
  * Tests for behaviours that are required of all implementations of WorkbenchPanelPresenter.
  * <p>
@@ -45,16 +45,20 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
  */
 public abstract class AbstractWorkbenchPanelPresenterTest {
 
-    @Mock protected PerspectiveManager mockPerspectiveManager;
-    @Mock protected ActivityManager mockActivityManager;
-    @Mock protected View mockPartView;
-    @Mock protected WorkbenchPartPresenter mockPartPresenter;
-    @Mock protected ContextActivity perspectiveContextActivity;
-
     protected final PerspectiveDefinition panelManagerPerspectiveDefinition = new PerspectiveDefinitionImpl();
-    protected final PartDefinition partPresenterPartDefinition = new PartDefinitionImpl( new DefaultPlaceRequest( "belongs_to_mockPartPresenter" ) );
+    protected final PartDefinition partPresenterPartDefinition = new PartDefinitionImpl(new DefaultPlaceRequest("belongs_to_mockPartPresenter"));
     protected final PanelDefinition panelPresenterPanelDefinition = new PanelDefinitionImpl();
-    protected final ContextDefinition perspectiveContextDefinition = new ContextDefinitionImpl( new DefaultPlaceRequest( "Perspective Context" ) );
+    protected final ContextDefinition perspectiveContextDefinition = new ContextDefinitionImpl(new DefaultPlaceRequest("Perspective Context"));
+    @Mock
+    protected PerspectiveManager mockPerspectiveManager;
+    @Mock
+    protected ActivityManager mockActivityManager;
+    @Mock
+    protected View mockPartView;
+    @Mock
+    protected WorkbenchPartPresenter mockPartPresenter;
+    @Mock
+    protected ContextActivity perspectiveContextActivity;
 
     /**
      * The individual test classes that extend this base class implement this method by returning the implementation of
@@ -68,11 +72,12 @@ public abstract class AbstractWorkbenchPanelPresenterTest {
 
     @Before
     public void setUp() {
-        when( mockPerspectiveManager.getLivePerspectiveDefinition() ).thenReturn( panelManagerPerspectiveDefinition );
-        panelManagerPerspectiveDefinition.setContextDefinition( perspectiveContextDefinition );
-        when( mockActivityManager.getActivity( ContextActivity.class, perspectiveContextDefinition.getPlace() ) ).thenReturn( perspectiveContextActivity );
-        when( mockPartView.getPresenter() ).thenReturn( mockPartPresenter );
-        when( mockPartPresenter.getDefinition() ).thenReturn( partPresenterPartDefinition );
+        when(mockPerspectiveManager.getLivePerspectiveDefinition()).thenReturn(panelManagerPerspectiveDefinition);
+        panelManagerPerspectiveDefinition.setContextDefinition(perspectiveContextDefinition);
+        when(mockActivityManager.getActivity(ContextActivity.class,
+                                             perspectiveContextDefinition.getPlace())).thenReturn(perspectiveContextActivity);
+        when(mockPartView.getPresenter()).thenReturn(mockPartPresenter);
+        when(mockPartPresenter.getDefinition()).thenReturn(partPresenterPartDefinition);
     }
 
     @Test
@@ -80,14 +85,15 @@ public abstract class AbstractWorkbenchPanelPresenterTest {
         WorkbenchPanelPresenter panelPresenter = getPresenterToTest();
 
         try {
-            panelPresenter.addPart( mockPartPresenter );
-        } catch ( UnsupportedOperationException e ) {
+            panelPresenter.addPart(mockPartPresenter);
+        } catch (UnsupportedOperationException e) {
             // it's okay if the panel doesn't support parts
             return;
         }
 
-        assertSame( panelPresenter.getDefinition(), mockPartPresenter.getDefinition().getParentPanel() );
-        assertTrue( panelPresenter.getDefinition().getParts().contains( mockPartPresenter.getDefinition() ) );
+        assertSame(panelPresenter.getDefinition(),
+                   mockPartPresenter.getDefinition().getParentPanel());
+        assertTrue(panelPresenter.getDefinition().getParts().contains(mockPartPresenter.getDefinition()));
     }
 
     @Test
@@ -95,16 +101,16 @@ public abstract class AbstractWorkbenchPanelPresenterTest {
         WorkbenchPanelPresenter panelPresenter = getPresenterToTest();
 
         try {
-            panelPresenter.addPart( mockPartPresenter );
-        } catch ( UnsupportedOperationException e ) {
+            panelPresenter.addPart(mockPartPresenter);
+        } catch (UnsupportedOperationException e) {
             // it's okay if the panel doesn't support parts
             return;
         }
 
-        panelPresenter.removePart( mockPartPresenter.getDefinition() );
+        panelPresenter.removePart(mockPartPresenter.getDefinition());
 
-        assertNull( mockPartPresenter.getDefinition().getParentPanel() );
-        assertFalse( panelPresenter.getDefinition().getParts().contains( mockPartPresenter.getDefinition() ) );
+        assertNull(mockPartPresenter.getDefinition().getParentPanel());
+        assertFalse(panelPresenter.getDefinition().getParts().contains(mockPartPresenter.getDefinition()));
     }
 
     /**
@@ -115,22 +121,24 @@ public abstract class AbstractWorkbenchPanelPresenterTest {
     public void addingPartThatIsAlreadyInPanelDefShouldNotChangePanelDef() throws Exception {
         WorkbenchPanelPresenter panelPresenter = getPresenterToTest();
 
-        panelPresenter.getDefinition().addPart( partPresenterPartDefinition );
-        assertEquals( 1, panelPresenter.getDefinition().getParts().size() );
+        panelPresenter.getDefinition().addPart(partPresenterPartDefinition);
+        assertEquals(1,
+                     panelPresenter.getDefinition().getParts().size());
 
         try {
-            panelPresenter.addPart( mockPartPresenter );
-        } catch ( UnsupportedOperationException e ) {
+            panelPresenter.addPart(mockPartPresenter);
+        } catch (UnsupportedOperationException e) {
             // it's okay if the panel doesn't support parts
             return;
         }
 
         // the rest of the add operation should have happened
-        assertSame( panelPresenter.getDefinition(), mockPartPresenter.getDefinition().getParentPanel() );
-        assertTrue( panelPresenter.getDefinition().getParts().contains( mockPartPresenter.getDefinition() ) );
+        assertSame(panelPresenter.getDefinition(),
+                   mockPartPresenter.getDefinition().getParentPanel());
+        assertTrue(panelPresenter.getDefinition().getParts().contains(mockPartPresenter.getDefinition()));
 
         // there should still only be 1 part
-        assertEquals( 1, panelPresenter.getDefinition().getParts().size() );
+        assertEquals(1,
+                     panelPresenter.getDefinition().getParts().size());
     }
-
 }

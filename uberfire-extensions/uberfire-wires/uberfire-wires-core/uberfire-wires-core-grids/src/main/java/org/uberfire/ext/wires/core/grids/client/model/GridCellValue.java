@@ -28,5 +28,4 @@ public interface GridCellValue<T> {
      * @return
      */
     T getValue();
-
 }

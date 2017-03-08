@@ -23,9 +23,9 @@ public class ShapeDragPreviewEvent {
     private double x;
     private double y;
 
-    public ShapeDragPreviewEvent( final WiresBaseShape shape,
-                                  final double x,
-                                  final double y ) {
+    public ShapeDragPreviewEvent(final WiresBaseShape shape,
+                                 final double x,
+                                 final double y) {
         this.shape = shape;
         this.x = x;
         this.y = y;

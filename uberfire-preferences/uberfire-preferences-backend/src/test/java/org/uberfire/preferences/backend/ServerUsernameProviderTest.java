@@ -34,27 +34,29 @@ public class ServerUsernameProviderTest {
 
     @Before
     public void setup() {
-        sessionInfo = spy( new SessionInfoMock() );
-        serverUsernameProvider = new ServerUsernameProvider( sessionInfo );
+        sessionInfo = spy(new SessionInfoMock());
+        serverUsernameProvider = new ServerUsernameProvider(sessionInfo);
     }
 
     @Test
     public void testLoggedUserName() {
         final String username = serverUsernameProvider.get();
 
-        verify( sessionInfo ).getIdentity();
+        verify(sessionInfo).getIdentity();
 
-        assertEquals( sessionInfo.getIdentity().getIdentifier(), username );
+        assertEquals(sessionInfo.getIdentity().getIdentifier(),
+                     username);
     }
 
     @Test
     public void testNotLoggedUserName() {
-        doThrow( new ContextNotActiveException() ).when( sessionInfo ).getIdentity();
+        doThrow(new ContextNotActiveException()).when(sessionInfo).getIdentity();
 
         final String username = serverUsernameProvider.get();
 
-        verify( sessionInfo ).getIdentity();
+        verify(sessionInfo).getIdentity();
 
-        assertEquals( "not-logged-user", username );
+        assertEquals("not-logged-user",
+                     username);
     }
 }

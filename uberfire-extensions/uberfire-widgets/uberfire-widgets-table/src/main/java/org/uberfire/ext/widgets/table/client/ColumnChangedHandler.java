@@ -17,6 +17,8 @@
 package org.uberfire.ext.widgets.table.client;
 
 public interface ColumnChangedHandler {
+
     void beforeColumnChanged();
+
     void afterColumnChanged();
 }

@@ -16,18 +16,16 @@
 
 package org.uberfire.client;
 
+import javax.annotation.PostConstruct;
+
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.uberfire.client.resources.WebAppResource;
 
-import javax.annotation.PostConstruct;
-
 @EntryPoint
 public class DocksEntryPoint {
-
 
     @PostConstruct
     public void init() {
         WebAppResource.INSTANCE.CSS().ensureInjected();
     }
-
 }

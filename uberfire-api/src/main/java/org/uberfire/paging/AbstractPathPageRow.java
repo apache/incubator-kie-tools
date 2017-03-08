@@ -30,17 +30,16 @@ public abstract class AbstractPathPageRow
         super();
     }
 
-    public AbstractPathPageRow( final Path path ) {
+    public AbstractPathPageRow(final Path path) {
         super();
         this.path = path;
     }
 
-    public int compareTo( final AbstractPathPageRow other ) {
-        return path.compareTo( other.path );
+    public int compareTo(final AbstractPathPageRow other) {
+        return path.compareTo(other.path);
     }
 
     public Path getPath() {
         return path;
     }
-
 }

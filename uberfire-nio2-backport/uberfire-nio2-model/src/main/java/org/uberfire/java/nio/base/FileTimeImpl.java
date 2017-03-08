@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.uberfire.java.nio.file.attribute.FileTime;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 public class FileTimeImpl implements FileTime {
 
@@ -29,14 +29,16 @@ public class FileTimeImpl implements FileTime {
     public FileTimeImpl() {
     }
 
-    public FileTimeImpl( final long lastModified ) {
+    public FileTimeImpl(final long lastModified) {
         this.lastModified = lastModified;
     }
 
     @Override
-    public long to( final TimeUnit unit ) {
-        checkNotNull( "unit", unit );
-        return unit.convert( lastModified, TimeUnit.MILLISECONDS );
+    public long to(final TimeUnit unit) {
+        checkNotNull("unit",
+                     unit);
+        return unit.convert(lastModified,
+                            TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -45,11 +47,11 @@ public class FileTimeImpl implements FileTime {
     }
 
     @Override
-    public int compareTo( final FileTime o ) {
-        checkNotNull( "o", o );
+    public int compareTo(final FileTime o) {
+        checkNotNull("o",
+                     o);
         final long thisVal = this.toMillis();
         final long anotherVal = o.toMillis();
-        return ( thisVal < anotherVal ? -1 : ( thisVal == anotherVal ? 0 : 1 ) );
+        return (thisVal < anotherVal ? -1 : (thisVal == anotherVal ? 0 : 1));
     }
-
 }

@@ -18,21 +18,25 @@ package org.uberfire.security.impl.authz;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.Permission;
-import static org.uberfire.security.authz.AuthorizationResult.*;
+
+import static org.uberfire.security.authz.AuthorizationResult.ACCESS_ABSTAIN;
+import static org.uberfire.security.authz.AuthorizationResult.ACCESS_DENIED;
+import static org.uberfire.security.authz.AuthorizationResult.ACCESS_GRANTED;
 
 /**
  * An implementation where the permission's name is formatted using dots. For instance:
- *
+ * <p>
  * <ul>
- *     <li><b>resource.view</b> => View all resources</li>
- *     <li><b>resource.view.r1</b> => View only r1</li>
+ * <li><b>resource.view</b> => View all resources</li>
+ * <li><b>resource.view.r1</b> => View only r1</li>
  * </ul>
  * The {@code implies(Permission other)} implementation is based on the simple fact that one permission implies
  * another just if its name starts with the another's name. This very simple mechanism can be applied to most of
  * the resources that require authorization control, like for instance, workbench perspectives, a file system, etc.
  */
 @Portable
-public class DotNamedPermission implements Permission, Comparable<Permission> {
+public class DotNamedPermission implements Permission,
+                                           Comparable<Permission> {
 
     private String name;
     private AuthorizationResult result;
@@ -42,19 +46,21 @@ public class DotNamedPermission implements Permission, Comparable<Permission> {
     }
 
     public DotNamedPermission(String name) {
-        this(name, ACCESS_ABSTAIN);
+        this(name,
+             ACCESS_ABSTAIN);
     }
 
-    public DotNamedPermission(String name, Boolean granted) {
+    public DotNamedPermission(String name,
+                              Boolean granted) {
         this.name = name;
         result = granted == null ? ACCESS_ABSTAIN : (granted ? ACCESS_GRANTED : ACCESS_DENIED);
     }
 
-    public DotNamedPermission(String name, AuthorizationResult result) {
+    public DotNamedPermission(String name,
+                              AuthorizationResult result) {
         this.name = name;
         this.result = result;
     }
-
 
     protected void _enableImmutability() {
         _immutable = true;
@@ -110,7 +116,8 @@ public class DotNamedPermission implements Permission, Comparable<Permission> {
         if (lastDot != otherLastDot) {
             return false;
         }
-        return other.getName().substring(0, lastDot).equals(name);
+        return other.getName().substring(0,
+                                         lastDot).equals(name);
     }
 
     @Override
@@ -167,7 +174,8 @@ public class DotNamedPermission implements Permission, Comparable<Permission> {
 
     @Override
     public Permission clone() {
-        return new DotNamedPermission(name, result);
+        return new DotNamedPermission(name,
+                                      result);
     }
 
     public String toString() {

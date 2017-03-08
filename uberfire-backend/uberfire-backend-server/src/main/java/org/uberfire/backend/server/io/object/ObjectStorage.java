@@ -27,35 +27,35 @@ public interface ObjectStorage {
      * Initialize the object storage.
      * @param rootPath The root path where is going to create the file system
      */
-    void init( String rootPath );
+    void init(String rootPath);
 
     /**
      * Checks if a path exists into the object storage.
      * @param path the path to the stored object.
      * @return true if exists that path into the storage else false.
      */
-    boolean exists( String path );
+    boolean exists(String path);
 
     /**
      * Read the content of the path given
      * @param path The path where the content is stored
      * @return The content of the file unmarshalled
      */
-    <T> T read( String path );
+    <T> T read(String path);
 
     /**
      * Write an object into the object storage. That object is marshelled into JSON.
      * @param path The path where the object is going to be written
      * @param value The object itself
      */
-    <T> void write( String path,
-                    T value );
+    <T> void write(String path,
+                   T value);
 
     /**
      * Delete a path from the object storage if exists. That path contains the object stored.
      * @param path The path to delete
      */
-    void delete( String path );
+    void delete(String path);
 
     /**
      * Return a path based on the filesystem that is implemented for storage
@@ -63,6 +63,6 @@ public interface ObjectStorage {
      * @param path additional strings to be joined to form the path string
      * @return the path object that represents the path.
      */
-    Path getPath( String first,
-                  String... path );
+    Path getPath(String first,
+                 String... path);
 }

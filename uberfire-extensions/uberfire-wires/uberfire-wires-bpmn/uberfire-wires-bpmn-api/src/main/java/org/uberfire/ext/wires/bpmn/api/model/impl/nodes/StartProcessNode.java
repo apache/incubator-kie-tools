@@ -35,29 +35,29 @@ import org.uberfire.ext.wires.bpmn.beliefs.graph.impl.GraphNodeImpl;
 public class StartProcessNode extends GraphNodeImpl<Content, BpmnEdge> implements BpmnGraphNode {
 
     private Set<Role> roles = new HashSet<Role>() {{
-        add( new DefaultRoleImpl( "all" ) );
-        add( new DefaultRoleImpl( "Startevents_all" ) );
-        add( new DefaultRoleImpl( "sequence_start" ) );
-        add( new DefaultRoleImpl( "to_task_event" ) );
-        add( new DefaultRoleImpl( "from_task_event" ) );
-        add( new DefaultRoleImpl( "fromtoall" ) );
-        add( new DefaultRoleImpl( "StartEventsMorph" ) );
+        add(new DefaultRoleImpl("all"));
+        add(new DefaultRoleImpl("Startevents_all"));
+        add(new DefaultRoleImpl("sequence_start"));
+        add(new DefaultRoleImpl("to_task_event"));
+        add(new DefaultRoleImpl("from_task_event"));
+        add(new DefaultRoleImpl("fromtoall"));
+        add(new DefaultRoleImpl("StartEventsMorph"));
     }};
 
     private Set<Property> properties = new HashSet<Property>();
 
     public StartProcessNode() {
-        setContent( new DefaultContentImpl( "StartNoneEvent",
-                                            "StartNoneEvent",
-                                            "Untyped start event.",
-                                            roles,
-                                            properties ) );
+        setContent(new DefaultContentImpl("StartNoneEvent",
+                                          "StartNoneEvent",
+                                          "Untyped start event.",
+                                          roles,
+                                          properties));
     }
 
     @Override
     public StartProcessNode copy() {
         final StartProcessNode copy = new StartProcessNode();
-        copy.setContent( this.getContent().copy() );
+        copy.setContent(this.getContent().copy());
         return copy;
     }
 
@@ -68,5 +68,4 @@ public class StartProcessNode extends GraphNodeImpl<Content, BpmnEdge> implement
                 ", properties=" + properties +
                 '}';
     }
-
 }

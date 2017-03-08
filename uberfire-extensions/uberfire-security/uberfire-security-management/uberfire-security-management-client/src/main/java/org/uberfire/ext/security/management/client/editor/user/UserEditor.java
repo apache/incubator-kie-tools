@@ -22,7 +22,6 @@ import org.uberfire.ext.security.management.client.editor.Editor;
 /**
  * <p>A user editor.</p>
  * Note:Add roles sub-editor when they're supported in the future.
- * 
  * @since 0.8.0
  */
 public interface UserEditor extends Editor<User, User> {
@@ -31,20 +30,19 @@ public interface UserEditor extends Editor<User, User> {
      * The leaf value user's identifier.
      */
     String identifier();
-    
+
     /**
      * The editor for the user's attributes.
      */
     UserAttributesEditor attributesEditor();
 
     /**
-     * The explorer for the user's groups. It's considered an editor as it allows removing assigned groups from the user instance. 
+     * The explorer for the user's groups. It's considered an editor as it allows removing assigned groups from the user instance.
      */
     UserAssignedGroupsExplorer groupsExplorer();
 
     /**
-     * The explorer for the user's roles. It's considered an editor as it allows removing assigned roles from the user instance. 
+     * The explorer for the user's roles. It's considered an editor as it allows removing assigned roles from the user instance.
      */
     UserAssignedRolesExplorer rolesExplorer();
-
 }

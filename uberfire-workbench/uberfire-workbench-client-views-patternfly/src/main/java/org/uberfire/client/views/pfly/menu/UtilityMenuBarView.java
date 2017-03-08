@@ -45,27 +45,29 @@ public class UtilityMenuBarView extends UnorderedList implements UtilityMenuBarP
 
     @PostConstruct
     public void setup() {
-        addStyleName( Styles.NAV );
-        addStyleName( Styles.NAVBAR_NAV );
-        addStyleName( "navbar-utility" );
+        addStyleName(Styles.NAV);
+        addStyleName(Styles.NAVBAR_NAV);
+        addStyleName("navbar-utility");
     }
 
     @Override
-    public void addMenus( final Menus menus ) {
-        menus.accept( new AuthFilterMenuVisitor( authzManager, identity, new DropdownMenuVisitor( this ) ) );
+    public void addMenus(final Menus menus) {
+        menus.accept(new AuthFilterMenuVisitor(authzManager,
+                                               identity,
+                                               new DropdownMenuVisitor(this)));
     }
 
     @Override
-    public void addMenuItem( final MenuPosition position,
-                             final Widget menuContent ) {
-        switch ( position ) {
+    public void addMenuItem(final MenuPosition position,
+                            final Widget menuContent) {
+        switch (position) {
             case LEFT:
-                this.insert( menuContent, 0 );
+                this.insert(menuContent,
+                            0);
                 break;
             case RIGHT:
-                this.add( menuContent );
+                this.add(menuContent);
                 break;
         }
     }
-
 }

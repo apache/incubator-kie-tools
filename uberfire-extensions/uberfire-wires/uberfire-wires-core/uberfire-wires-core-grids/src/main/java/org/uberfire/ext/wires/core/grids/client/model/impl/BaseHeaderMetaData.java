@@ -25,17 +25,17 @@ public class BaseHeaderMetaData implements GridColumn.HeaderMetaData {
     private String columnTitle;
     private String columnGroup;
 
-    public BaseHeaderMetaData( final String columnTitle ) {
-        this( columnTitle,
-              DEFAULT_COLUMN_GROUP );
+    public BaseHeaderMetaData(final String columnTitle) {
+        this(columnTitle,
+             DEFAULT_COLUMN_GROUP);
     }
 
-    public BaseHeaderMetaData( final String columnTitle,
-                               final String columnGroup ) {
-        this.columnTitle = PortablePreconditions.checkNotNull( "columnTitle",
-                                                               columnTitle );
-        this.columnGroup = PortablePreconditions.checkNotNull( "columnGroup",
-                                                               columnGroup );
+    public BaseHeaderMetaData(final String columnTitle,
+                              final String columnGroup) {
+        this.columnTitle = PortablePreconditions.checkNotNull("columnTitle",
+                                                              columnTitle);
+        this.columnGroup = PortablePreconditions.checkNotNull("columnGroup",
+                                                              columnGroup);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class BaseHeaderMetaData implements GridColumn.HeaderMetaData {
     }
 
     @Override
-    public void setTitle( final String columnTitle ) {
+    public void setTitle(final String columnTitle) {
         this.columnTitle = columnTitle;
     }
 
@@ -54,26 +54,25 @@ public class BaseHeaderMetaData implements GridColumn.HeaderMetaData {
     }
 
     @Override
-    public void setColumnGroup( final String columnGroup ) {
+    public void setColumnGroup(final String columnGroup) {
         this.columnGroup = columnGroup;
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof BaseHeaderMetaData ) ) {
+        if (!(o instanceof BaseHeaderMetaData)) {
             return false;
         }
 
         BaseHeaderMetaData that = (BaseHeaderMetaData) o;
 
-        if ( !columnTitle.equals( that.columnTitle ) ) {
+        if (!columnTitle.equals(that.columnTitle)) {
             return false;
         }
-        return columnGroup.equals( that.columnGroup );
-
+        return columnGroup.equals(that.columnGroup);
     }
 
     @Override

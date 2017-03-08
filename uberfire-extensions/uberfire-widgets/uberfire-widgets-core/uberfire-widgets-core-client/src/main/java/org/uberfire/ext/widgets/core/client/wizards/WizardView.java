@@ -37,55 +37,54 @@ public interface WizardView
      * The title for the Wizard
      * @param title
      */
-    void setTitle( final String title );
+    void setTitle(final String title);
 
     /**
      * The individual page titles
      * @param pages
      */
-    void setPageTitles( final List<WizardPage> pages );
+    void setPageTitles(final List<WizardPage> pages);
 
     /**
      * Select a page
      * @param page
      */
-    void selectPage( final int page );
+    void selectPage(final int page);
 
     /**
      * Set the Widget to display in the body panel of the generic Wizard
      * @param w
      */
-    void setBodyWidget( final Widget w );
+    void setBodyWidget(final Widget w);
 
     /**
      * Set the body panel preferred height
      * @param height
      */
-    void setPreferredHeight( final int height );
+    void setPreferredHeight(final int height);
 
     /**
      * Set the body panel preferred width
      * @param width
      */
-    void setPreferredWidth( final int width );
+    void setPreferredWidth(final int width);
 
     /**
      * The state (completed, not completed) of a page has changed.
      * @param pageIndex
      * @param isComplete
      */
-    void setPageCompletionState( final int pageIndex,
-                                 final boolean isComplete );
+    void setPageCompletionState(final int pageIndex,
+                                final boolean isComplete);
 
     /**
      * The state (completed, not completed) of the whole Wizard has changed
      * @param isComplete
      */
-    void setCompletionStatus( final boolean isComplete );
+    void setCompletionStatus(final boolean isComplete);
 
     /**
      * Hide the Wizard
      */
     void hide();
-
 }

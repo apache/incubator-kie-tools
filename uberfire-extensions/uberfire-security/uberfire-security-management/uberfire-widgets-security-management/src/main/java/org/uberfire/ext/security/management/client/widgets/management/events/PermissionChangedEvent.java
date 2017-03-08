@@ -28,7 +28,9 @@ public class PermissionChangedEvent extends ContextualEvent implements UberFireE
     private Permission permission;
     private boolean granted;
 
-    public PermissionChangedEvent(ACLEditor aclEditor, Permission permission, boolean granted) {
+    public PermissionChangedEvent(ACLEditor aclEditor,
+                                  Permission permission,
+                                  boolean granted) {
         super(aclEditor);
         this.permission = permission;
         this.granted = granted;

@@ -29,5 +29,4 @@ public interface Results {
     List<Result> getMessages(final ResultType type);
 
     boolean contains(final ResultType type);
-
 }

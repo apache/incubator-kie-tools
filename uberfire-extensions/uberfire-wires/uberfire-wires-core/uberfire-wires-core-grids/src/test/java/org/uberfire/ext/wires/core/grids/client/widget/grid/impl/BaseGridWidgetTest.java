@@ -57,84 +57,83 @@ public class BaseGridWidgetTest {
     @Before
     public void setup() {
         this.model = new BaseGridData();
-        final BaseGridWidget wrapped = new BaseGridWidget( model,
-                                                           selectionManager,
-                                                           pinnedModeManager,
-                                                           renderer ) {
+        final BaseGridWidget wrapped = new BaseGridWidget(model,
+                                                          selectionManager,
+                                                          pinnedModeManager,
+                                                          renderer) {
             @Override
             CellSelectionManager getCellSelectionManager() {
                 return cellSelectionManager;
             }
         };
-        gridWidget = spy( wrapped );
+        gridWidget = spy(wrapped);
     }
 
     @Test
     public void selectCellMouseClick() {
-        final Point2D cp = new Point2D( 10,
-                                        20 );
-        gridWidget.selectCell( cp,
-                               true,
-                               false );
+        final Point2D cp = new Point2D(10,
+                                       20);
+        gridWidget.selectCell(cp,
+                              true,
+                              false);
 
-        final ArgumentCaptor<Point2D> pointArgumentCaptor = ArgumentCaptor.forClass( Point2D.class );
+        final ArgumentCaptor<Point2D> pointArgumentCaptor = ArgumentCaptor.forClass(Point2D.class);
 
-        verify( cellSelectionManager,
-                times( 1 ) ).selectCell( pointArgumentCaptor.capture(),
-                                         eq( true ),
-                                         eq( false ) );
+        verify(cellSelectionManager,
+               times(1)).selectCell(pointArgumentCaptor.capture(),
+                                    eq(true),
+                                    eq(false));
         final Point2D point = pointArgumentCaptor.getValue();
-        assertEquals( cp,
-                      point );
+        assertEquals(cp,
+                     point);
     }
 
     @Test
     public void selectCellKeyboardNavigation() {
-        gridWidget.selectCell( 0,
-                               1,
-                               true,
-                               false );
-        verify( cellSelectionManager,
-                times( 1 ) ).selectCell( eq( 0 ),
-                                         eq( 1 ),
-                                         eq( true ),
-                                         eq( false ) );
+        gridWidget.selectCell(0,
+                              1,
+                              true,
+                              false);
+        verify(cellSelectionManager,
+               times(1)).selectCell(eq(0),
+                                    eq(1),
+                                    eq(true),
+                                    eq(false));
     }
 
     @Test
     public void adjustSelection() {
-        gridWidget.adjustSelection( SelectionExtension.LEFT,
-                                    false );
+        gridWidget.adjustSelection(SelectionExtension.LEFT,
+                                   false);
 
-        verify( cellSelectionManager,
-                times( 1 ) ).adjustSelection( eq( SelectionExtension.LEFT ),
-                                              eq( false ) );
+        verify(cellSelectionManager,
+               times(1)).adjustSelection(eq(SelectionExtension.LEFT),
+                                         eq(false));
     }
 
     @Test
     public void startEditingCellMouseClick() {
-        final Point2D cp = new Point2D( 10,
-                                        20 );
+        final Point2D cp = new Point2D(10,
+                                       20);
 
-        gridWidget.startEditingCell( cp );
+        gridWidget.startEditingCell(cp);
 
-        final ArgumentCaptor<Point2D> pointArgumentCaptor = ArgumentCaptor.forClass( Point2D.class );
+        final ArgumentCaptor<Point2D> pointArgumentCaptor = ArgumentCaptor.forClass(Point2D.class);
 
-        verify( cellSelectionManager,
-                times( 1 ) ).startEditingCell( pointArgumentCaptor.capture() );
+        verify(cellSelectionManager,
+               times(1)).startEditingCell(pointArgumentCaptor.capture());
         final Point2D point = pointArgumentCaptor.getValue();
-        assertEquals( cp,
-                      point );
+        assertEquals(cp,
+                     point);
     }
 
     @Test
     public void startEditingCellKeyboardNavigation() {
-        gridWidget.startEditingCell( 0,
-                                     1 );
+        gridWidget.startEditingCell(0,
+                                    1);
 
-        verify( cellSelectionManager,
-                times( 1 ) ).startEditingCell( eq( 0 ),
-                                               eq( 1 ) );
+        verify(cellSelectionManager,
+               times(1)).startEditingCell(eq(0),
+                                          eq(1));
     }
-
 }

@@ -31,5 +31,5 @@ public interface MetaProperty {
 
     void setAsSearchable();
 
-    void addType( final Class<?> aClass );
+    void addType(final Class<?> aClass);
 }

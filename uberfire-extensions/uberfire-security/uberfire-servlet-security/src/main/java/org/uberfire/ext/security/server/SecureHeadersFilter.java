@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * HSTS servlet filter
  * For a detailed explanation please take a look at <a href="http://aerogear.org/docs/guides/aerogear-security/">http://aerogear.org/docs/guides/aerogear-security/</a>
- * <p/>
+ * <p>
  * Note: This implementation has been borrowed from Aerogear Security.
  */
 public class SecureHeadersFilter implements Filter {
@@ -41,9 +41,55 @@ public class SecureHeadersFilter implements Filter {
 
     private static SecureHeadersConfig config;
 
+    public static void applyHeaders(final ServletRequest request,
+                                    final HttpServletResponse response) {
+        if (config != null) {
+            addLocation(response);
+            addFrameOptions(response);
+            addXSSOptions(response);
+
+            if (request.getScheme().equals("https")) {
+                addStrictTransportSecurity(response);
+            }
+        }
+    }
+
+    private static void addStrictTransportSecurity(HttpServletResponse response) {
+        if (config.hasMaxAge() && empty(response.getHeader(STRICT_TRANSPORT_SECURITY))) {
+            response.addHeader(STRICT_TRANSPORT_SECURITY,
+                               config.getMaxAge());
+        }
+    }
+
+    private static void addFrameOptions(HttpServletResponse response) {
+        if (config.hasFrameOptions() && empty(response.getHeader(X_FRAME_OPTIONS))) {
+            response.addHeader(X_FRAME_OPTIONS,
+                               config.getFrameOptions());
+        }
+    }
+
+    private static void addLocation(HttpServletResponse response) {
+        if (config.hasLocation() && empty(response.getHeader(LOCATION))) {
+            response.addHeader(LOCATION,
+                               config.getLocation());
+            response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+        }
+    }
+
+    private static void addXSSOptions(HttpServletResponse response) {
+        if (config.hasXSSOptions() && empty(response.getHeader(X_XSS_OPTIONS))) {
+            response.addHeader(X_XSS_OPTIONS,
+                               config.getXssOptions());
+        }
+    }
+
+    private static boolean empty(final String content) {
+        return content == null || content.trim().isEmpty();
+    }
+
     @Override
-    public void init( final FilterConfig filterConfig ) throws ServletException {
-        config = new SecureHeadersConfig( filterConfig );
+    public void init(final FilterConfig filterConfig) throws ServletException {
+        config = new SecureHeadersConfig(filterConfig);
     }
 
     @Override
@@ -51,58 +97,17 @@ public class SecureHeadersFilter implements Filter {
     }
 
     @Override
-    public void doFilter( final ServletRequest servletRequest,
-                          final ServletResponse servletResponse,
-                          final FilterChain chain ) throws IOException, ServletException {
+    public void doFilter(final ServletRequest servletRequest,
+                         final ServletResponse servletResponse,
+                         final FilterChain chain) throws IOException, ServletException {
 
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
 
-        applyHeaders( request, response );
+        applyHeaders(request,
+                     response);
 
-        chain.doFilter( request, response );
+        chain.doFilter(request,
+                       response);
     }
-
-    public static void applyHeaders( final ServletRequest request,
-                                     final HttpServletResponse response ) {
-        if ( config != null ) {
-            addLocation( response );
-            addFrameOptions( response );
-            addXSSOptions( response );
-
-            if ( request.getScheme().equals( "https" ) ) {
-                addStrictTransportSecurity( response );
-            }
-        }
-    }
-
-    private static void addStrictTransportSecurity( HttpServletResponse response ) {
-        if ( config.hasMaxAge() && empty( response.getHeader( STRICT_TRANSPORT_SECURITY ) ) ) {
-            response.addHeader( STRICT_TRANSPORT_SECURITY, config.getMaxAge() );
-        }
-    }
-
-    private static void addFrameOptions( HttpServletResponse response ) {
-        if ( config.hasFrameOptions() && empty( response.getHeader( X_FRAME_OPTIONS ) ) ) {
-            response.addHeader( X_FRAME_OPTIONS, config.getFrameOptions() );
-        }
-    }
-
-    private static void addLocation( HttpServletResponse response ) {
-        if ( config.hasLocation() && empty( response.getHeader( LOCATION ) ) ) {
-            response.addHeader( LOCATION, config.getLocation() );
-            response.setStatus( HttpServletResponse.SC_MOVED_PERMANENTLY );
-        }
-    }
-
-    private static void addXSSOptions( HttpServletResponse response ) {
-        if ( config.hasXSSOptions() && empty( response.getHeader( X_XSS_OPTIONS ) ) ) {
-            response.addHeader( X_XSS_OPTIONS, config.getXssOptions() );
-        }
-    }
-
-    private static boolean empty( final String content ) {
-        return content == null || content.trim().isEmpty();
-    }
-
 }

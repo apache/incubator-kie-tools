@@ -20,23 +20,37 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * <p>Supported features for the User System Management services.</p>
- * <p>The backend and UI features for users management available are based on these capability statuses. 
+ * <p>The backend and UI features for users management available are based on these capability statuses.
  * If a capability is not supported by the current service provider implementation class, it will be not available from the user interface neither the backend method calls.</p>
- * 
  * @since 0.8.0
  */
 @Portable
 public enum Capability {
-    
+
     // USERS features.
-    CAN_SEARCH_USERS, CAN_ADD_USER, CAN_UPDATE_USER, CAN_READ_USER, CAN_DELETE_USER, 
-    CAN_MANAGE_ATTRIBUTES, CAN_ASSIGN_GROUPS, CAN_ASSIGN_ROLES, CAN_CHANGE_PASSWORD,
-    
+    CAN_SEARCH_USERS,
+    CAN_ADD_USER,
+    CAN_UPDATE_USER,
+    CAN_READ_USER,
+    CAN_DELETE_USER,
+    CAN_MANAGE_ATTRIBUTES,
+    CAN_ASSIGN_GROUPS,
+    CAN_ASSIGN_ROLES,
+    CAN_CHANGE_PASSWORD,
+
     // GROUPS features.
-    CAN_SEARCH_GROUPS, CAN_ADD_GROUP, CAN_UPDATE_GROUP, CAN_READ_GROUP, CAN_DELETE_GROUP,
-    
+    CAN_SEARCH_GROUPS,
+    CAN_ADD_GROUP,
+    CAN_UPDATE_GROUP,
+    CAN_READ_GROUP,
+    CAN_DELETE_GROUP,
+
     // ROLES features.
-    CAN_SEARCH_ROLES, CAN_ADD_ROLE, CAN_UPDATE_ROLE, CAN_READ_ROLE, CAN_DELETE_ROLE;
+    CAN_SEARCH_ROLES,
+    CAN_ADD_ROLE,
+    CAN_UPDATE_ROLE,
+    CAN_READ_ROLE,
+    CAN_DELETE_ROLE;
 
     Capability() {
     }

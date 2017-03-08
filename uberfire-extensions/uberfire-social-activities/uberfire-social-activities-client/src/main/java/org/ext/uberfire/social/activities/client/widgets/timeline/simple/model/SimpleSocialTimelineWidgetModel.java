@@ -41,45 +41,44 @@ public class SimpleSocialTimelineWidgetModel {
     private List<ClientResourceType> resourceTypes;
     private ParameterizedCommand<LinkCommandParams> linkCommand;
 
-    public SimpleSocialTimelineWidgetModel( SocialEventType socialEventType,
-                                            SocialPredicate<SocialActivitiesEvent> predicate,
-                                            PlaceManager placeManager,
-                                            SocialPaged socialPaged ) {
+    public SimpleSocialTimelineWidgetModel(SocialEventType socialEventType,
+                                           SocialPredicate<SocialActivitiesEvent> predicate,
+                                           PlaceManager placeManager,
+                                           SocialPaged socialPaged) {
         this.socialEventType = socialEventType;
         this.predicate = predicate;
         this.placeManager = placeManager;
         this.socialPaged = socialPaged;
     }
 
-    public SimpleSocialTimelineWidgetModel( SocialUser socialUser,
-                                            SocialPredicate<SocialActivitiesEvent> predicate,
-                                            PlaceManager placeManager,
-                                            SocialPaged socialPaged ) {
+    public SimpleSocialTimelineWidgetModel(SocialUser socialUser,
+                                           SocialPredicate<SocialActivitiesEvent> predicate,
+                                           PlaceManager placeManager,
+                                           SocialPaged socialPaged) {
         this.socialUser = socialUser;
         this.predicate = predicate;
         this.placeManager = placeManager;
         this.socialPaged = socialPaged;
     }
 
-    public SimpleSocialTimelineWidgetModel withPagination( Previous less,
-                                                           Next more ) {
+    public SimpleSocialTimelineWidgetModel withPagination(Previous less,
+                                                          Next more) {
         this.less = less;
         this.more = more;
         return this;
     }
 
-    public SimpleSocialTimelineWidgetModel withLinkCommand( ParameterizedCommand<LinkCommandParams> linkCommand ) {
+    public SimpleSocialTimelineWidgetModel withLinkCommand(ParameterizedCommand<LinkCommandParams> linkCommand) {
         this.linkCommand = linkCommand;
         return this;
     }
 
-
-    public SimpleSocialTimelineWidgetModel withIcons(List<ClientResourceType> resourceTypes ) {
+    public SimpleSocialTimelineWidgetModel withIcons(List<ClientResourceType> resourceTypes) {
         this.resourceTypes = resourceTypes;
         return this;
     }
 
-    public SimpleSocialTimelineWidgetModel withOnlyMorePagination( Next more ) {
+    public SimpleSocialTimelineWidgetModel withOnlyMorePagination(Next more) {
         this.more = more;
         return this;
     }
@@ -116,7 +115,7 @@ public class SimpleSocialTimelineWidgetModel {
         return more;
     }
 
-    public void updateSocialPaged( SocialPaged socialPaged ) {
+    public void updateSocialPaged(SocialPaged socialPaged) {
         this.socialPaged = socialPaged;
     }
 
@@ -125,15 +124,14 @@ public class SimpleSocialTimelineWidgetModel {
     }
 
     public ParameterizedCommand<LinkCommandParams> getLinkCommand() {
-        if(linkCommand==null){
+        if (linkCommand == null) {
             return new ParameterizedCommand<LinkCommandParams>() {
                 @Override
-                public void execute( LinkCommandParams parameters ) {
+                public void execute(LinkCommandParams parameters) {
 
                 }
             };
         }
         return linkCommand;
     }
-
 }

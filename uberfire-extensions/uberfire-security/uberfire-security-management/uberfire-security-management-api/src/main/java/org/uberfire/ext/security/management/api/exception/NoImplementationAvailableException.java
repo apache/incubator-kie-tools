@@ -20,7 +20,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * <p>Exception for user system management when the service provider implementation class is not available.</p>
- *
  * @since 0.8.0
  */
 @Portable

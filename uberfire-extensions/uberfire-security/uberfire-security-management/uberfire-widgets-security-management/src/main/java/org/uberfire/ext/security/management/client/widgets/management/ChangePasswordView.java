@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.security.management.client.widgets.management;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -31,11 +33,8 @@ import org.gwtbootstrap3.client.ui.form.validator.Validator;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.mvp.Command;
 
-import javax.enterprise.context.Dependent;
-
 /**
  * <p>View implementation for changing a user's password.</p>
- *           
  * @since 0.8.0
  */
 @Dependent
@@ -43,20 +42,14 @@ public class ChangePasswordView extends Composite
         implements
         ChangePassword.View {
 
-    interface ChangePasswordViewBinder
-            extends
-            UiBinder<FlowPanel, ChangePasswordView> {
-
-    }
-
     private static ChangePasswordViewBinder uiBinder = GWT.create(ChangePasswordViewBinder.class);
-
+    private final BaseModal modal = new BaseModal();
     @UiField
     FlowPanel mainPanel;
-    
+
     @UiField
     Form changePasswordForm;
-    
+
     @UiField
     FormGroup newPasswordFormGroup;
 
@@ -68,26 +61,30 @@ public class ChangePasswordView extends Composite
 
     @UiField
     Input repeatNewPasswordBox;
-    
+
     @UiField
     Button clearButton;
 
     @UiField
     Button updateButton;
-
-    private final BaseModal modal = new BaseModal();
+    private final Command callback = new Command() {
+        @Override
+        public void execute() {
+            clear();
+        }
+    };
     private ChangePassword presenter;
 
     @Override
     public void init(final ChangePassword presenter) {
         this.presenter = presenter;
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
         modal.setBody(this);
     }
 
     @Override
     public ChangePassword.View configure(final Validator<String> newPasswordBoxValidator,
-                                    final Validator<String> repeatNewPasswordBoxValidator) {
+                                         final Validator<String> repeatNewPasswordBoxValidator) {
         newPasswordBox.addValidator(newPasswordBoxValidator);
         repeatNewPasswordBox.addValidator(repeatNewPasswordBoxValidator);
         return this;
@@ -112,32 +109,32 @@ public class ChangePasswordView extends Composite
         updateButton.state().reset();
         return this;
     }
-    
+
     private void showModal() {
         modal.show();
     }
 
-    @UiHandler( "clearButton" )
-    public void onClear( final ClickEvent event ) {
+    @UiHandler("clearButton")
+    public void onClear(final ClickEvent event) {
         clear();
     }
 
-    @UiHandler( "updateButton" )
-    public void onUpdate( final ClickEvent event ) {
+    @UiHandler("updateButton")
+    public void onUpdate(final ClickEvent event) {
         updateButton.state().loading();
         final boolean isValid = changePasswordForm.validate();
-        if (isValid && presenter.validatePasswordsMatch(newPasswordBox.getText(), repeatNewPasswordBox.getText())) {
-            presenter.onUpdatePassword(newPasswordBox.getValue(), callback);
+        if (isValid && presenter.validatePasswordsMatch(newPasswordBox.getText(),
+                                                        repeatNewPasswordBox.getText())) {
+            presenter.onUpdatePassword(newPasswordBox.getValue(),
+                                       callback);
         } else {
             updateButton.state().reset();
         }
     }
 
-    private final Command callback = new Command() {
-        @Override
-        public void execute() {
-            clear();
-        }
-    };
+    interface ChangePasswordViewBinder
+            extends
+            UiBinder<FlowPanel, ChangePasswordView> {
 
+    }
 }

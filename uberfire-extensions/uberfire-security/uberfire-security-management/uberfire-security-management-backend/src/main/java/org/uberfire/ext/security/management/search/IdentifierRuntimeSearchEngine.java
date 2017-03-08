@@ -16,32 +16,37 @@
 
 package org.uberfire.ext.security.management.search;
 
-import org.uberfire.ext.security.management.api.AbstractEntityManager;
-
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.uberfire.ext.security.management.api.AbstractEntityManager;
+
 /**
  * <p>Default runtime search engine implementation for collections of users.</p>
- * 
  * @since 0.8.0
  */
 public abstract class IdentifierRuntimeSearchEngine<T> extends AbstractRuntimeSearchEngine<T> {
 
-    public AbstractEntityManager.SearchResponse<T> searchByIdentifiers(Collection<String> entityIdentifiers, AbstractEntityManager.SearchRequest request) {
-        if (entityIdentifiers == null || request == null) return null;
+    public AbstractEntityManager.SearchResponse<T> searchByIdentifiers(Collection<String> entityIdentifiers,
+                                                                       AbstractEntityManager.SearchRequest request) {
+        if (entityIdentifiers == null || request == null) {
+            return null;
+        }
 
         // First page must be 1.
-        if (request.getPage() <= 0) throw new RuntimeException("First page must be 1.");
+        if (request.getPage() <= 0) {
+            throw new RuntimeException("First page must be 1.");
+        }
 
         // Search elements using the given pattern  & check the returning elements are not considered roles on UF.
         final String pattern = request.getSearchPattern();
         final boolean isPatternEmpty = isEmpty(pattern);
         Collection<String> result = isPatternEmpty ? entityIdentifiers : new LinkedList<String>();
         if (!isPatternEmpty) {
-            for (String id: entityIdentifiers) {
-                if ( !isConstrained(request, id) && id.contains(pattern) ) {
+            for (String id : entityIdentifiers) {
+                if (!isConstrained(request,
+                                   id) && id.contains(pattern)) {
                     result.add(id);
                 }
             }
@@ -50,13 +55,15 @@ public abstract class IdentifierRuntimeSearchEngine<T> extends AbstractRuntimeSe
         // Create the entities from the identifiers sublist.
         List<T> resultEntities = new LinkedList<T>();
         for (final String id : result) {
-            if (!isConstrained(request, id)) {
+            if (!isConstrained(request,
+                               id)) {
                 final T entity = createEntity(id);
                 resultEntities.add(entity);
             }
         }
 
-        return createResponse(resultEntities, request);
+        return createResponse(resultEntities,
+                              request);
     }
 
     protected abstract T createEntity(String identifier);

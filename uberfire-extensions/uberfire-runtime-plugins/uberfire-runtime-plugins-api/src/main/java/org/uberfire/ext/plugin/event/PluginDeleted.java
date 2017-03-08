@@ -25,9 +25,10 @@ import org.uberfire.rpc.SessionInfo;
 @Portable
 public class PluginDeleted extends BasePluginEvent {
 
-    public PluginDeleted( @MapsTo("plugin") Plugin plugin,
-                          @MapsTo("sessionInfo") SessionInfo sessionInfo ) {
-        super( plugin, sessionInfo );
+    public PluginDeleted(@MapsTo("plugin") Plugin plugin,
+                         @MapsTo("sessionInfo") SessionInfo sessionInfo) {
+        super(plugin,
+              sessionInfo);
     }
 
     public String getPluginName() {

@@ -42,7 +42,7 @@ public class SecurityManagementPerspective {
 
     @Perspective
     public PerspectiveDefinition getPerspective() {
-        if ( perspective == null ) {
+        if (perspective == null) {
             return createPerspectiveDefinition();
         }
 
@@ -50,26 +50,27 @@ public class SecurityManagementPerspective {
     }
 
     @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
+    public void onStartup(final PlaceRequest placeRequest) {
         perspective = createPerspectiveDefinition();
-        configurePerspective( placeRequest );
+        configurePerspective(placeRequest);
     }
 
     PerspectiveDefinition createPerspectiveDefinition() {
-        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        perspective.setName( UsersManagementWorkbenchConstants.INSTANCE.securityManagement() );
+        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        perspective.setName(UsersManagementWorkbenchConstants.INSTANCE.securityManagement());
 
         return perspective;
     }
 
-    void configurePerspective( final PlaceRequest placeRequest ) {
-        perspective.getRoot().addPart( SecurityManagementHomeScreen.SCREEN_ID );
+    void configurePerspective(final PlaceRequest placeRequest) {
+        perspective.getRoot().addPart(SecurityManagementHomeScreen.SCREEN_ID);
 
-        final PanelDefinition west = new PanelDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
-        west.setWidth( 400 );
-        west.setMinWidth( 400 );
-        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( SecurityExplorerScreen.SCREEN_ID,
-                                                                       placeRequest.getParameters() ) ) );
-        perspective.getRoot().insertChild( CompassPosition.WEST, west );
+        final PanelDefinition west = new PanelDefinitionImpl(StaticWorkbenchPanelPresenter.class.getName());
+        west.setWidth(400);
+        west.setMinWidth(400);
+        west.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(SecurityExplorerScreen.SCREEN_ID,
+                                                                    placeRequest.getParameters())));
+        perspective.getRoot().insertChild(CompassPosition.WEST,
+                                          west);
     }
 }

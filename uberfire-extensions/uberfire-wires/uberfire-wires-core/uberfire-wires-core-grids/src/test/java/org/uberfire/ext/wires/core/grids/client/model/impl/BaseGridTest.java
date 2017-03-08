@@ -28,48 +28,48 @@ import static org.junit.Assert.*;
 
 public abstract class BaseGridTest {
 
-    public void assertGridIndexes( final GridData data,
-                                   final boolean[] expectedRowMergeStates,
-                                   final boolean[] expectedRowCollapseStates,
-                                   final Expected[][] expectedCellStates ) {
-        if ( data.getRowCount() != expectedRowMergeStates.length ) {
-            fail( "Size of parameter 'expectedRowMergeStates' differs to expected row count." );
+    public void assertGridIndexes(final GridData data,
+                                  final boolean[] expectedRowMergeStates,
+                                  final boolean[] expectedRowCollapseStates,
+                                  final Expected[][] expectedCellStates) {
+        if (data.getRowCount() != expectedRowMergeStates.length) {
+            fail("Size of parameter 'expectedRowMergeStates' differs to expected row count.");
         }
-        if ( data.getRowCount() != expectedRowCollapseStates.length ) {
-            fail( "Size of parameter 'expectedRowCollapseStates' differs to expected row count." );
+        if (data.getRowCount() != expectedRowCollapseStates.length) {
+            fail("Size of parameter 'expectedRowCollapseStates' differs to expected row count.");
         }
-        if ( data.getRowCount() != expectedCellStates.length ) {
-            fail( "Size of parameter 'expectedCellStates' differs to expected row count." );
+        if (data.getRowCount() != expectedCellStates.length) {
+            fail("Size of parameter 'expectedCellStates' differs to expected row count.");
         }
-        for ( int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++ ) {
-            final GridRow row = data.getRow( rowIndex );
-            assertEquals( "Row[" + rowIndex + "] actual isMerged() differs to expected.",
-                          expectedRowMergeStates[ rowIndex ],
-                          row.isMerged() );
-            assertEquals( "Row[" + rowIndex + "] actual isCollapsed() differs to expected.",
-                          expectedRowCollapseStates[ rowIndex ],
-                          row.isCollapsed() );
+        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
+            final GridRow row = data.getRow(rowIndex);
+            assertEquals("Row[" + rowIndex + "] actual isMerged() differs to expected.",
+                         expectedRowMergeStates[rowIndex],
+                         row.isMerged());
+            assertEquals("Row[" + rowIndex + "] actual isCollapsed() differs to expected.",
+                         expectedRowCollapseStates[rowIndex],
+                         row.isCollapsed());
 
-            if ( data.getColumnCount() != expectedCellStates[ rowIndex ].length ) {
-                fail( "Size of parameter 'expectedCellStates[" + rowIndex + "]' differs to expected column count." );
+            if (data.getColumnCount() != expectedCellStates[rowIndex].length) {
+                fail("Size of parameter 'expectedCellStates[" + rowIndex + "]' differs to expected column count.");
             }
 
-            for ( int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++ ) {
-                final GridCell cell = data.getCell( rowIndex,
-                                                    columnIndex );
-                if ( cell == null ) {
-                    assertNull( "Cell[" + columnIndex + ", " + rowIndex + "] was expected to be null.",
-                                expectedCellStates[ rowIndex ][ columnIndex ].value );
+            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+                final GridCell cell = data.getCell(rowIndex,
+                                                   columnIndex);
+                if (cell == null) {
+                    assertNull("Cell[" + columnIndex + ", " + rowIndex + "] was expected to be null.",
+                               expectedCellStates[rowIndex][columnIndex].value);
                 } else {
-                    assertEquals( "Cell[" + columnIndex + ", " + rowIndex + "] actual isMerged() differs to expected.",
-                                  expectedCellStates[ rowIndex ][ columnIndex ].isMerged,
-                                  cell.isMerged() );
-                    assertEquals( "Cell[" + columnIndex + ", " + rowIndex + "] actual getMergedCellCount() differs to expected.",
-                                  expectedCellStates[ rowIndex ][ columnIndex ].mergedCellCount,
-                                  cell.getMergedCellCount() );
-                    assertEquals( "Cell[" + columnIndex + ", " + rowIndex + "] actual getValue() differs to expected.",
-                                  expectedCellStates[ rowIndex ][ columnIndex ].value,
-                                  cell.getValue().getValue() );
+                    assertEquals("Cell[" + columnIndex + ", " + rowIndex + "] actual isMerged() differs to expected.",
+                                 expectedCellStates[rowIndex][columnIndex].isMerged,
+                                 cell.isMerged());
+                    assertEquals("Cell[" + columnIndex + ", " + rowIndex + "] actual getMergedCellCount() differs to expected.",
+                                 expectedCellStates[rowIndex][columnIndex].mergedCellCount,
+                                 cell.getMergedCellCount());
+                    assertEquals("Cell[" + columnIndex + ", " + rowIndex + "] actual getValue() differs to expected.",
+                                 expectedCellStates[rowIndex][columnIndex].value,
+                                 cell.getValue().getValue());
                 }
             }
         }
@@ -77,61 +77,56 @@ public abstract class BaseGridTest {
 
     public static class Expected {
 
-        public static Expected build( final Object value ) {
-            return new Expected( value );
-        }
-
-        public static Expected build( final boolean isMerged,
-                                      final int mergedCellCount,
-                                      final Object value ) {
-            return new Expected( isMerged,
-                                 mergedCellCount,
-                                 value );
-        }
-
         private boolean isMerged;
         private int mergedCellCount;
         private Object value;
-
-        private Expected( final boolean isMerged,
-                          final int mergedCellCount,
-                          final Object value ) {
+        private Expected(final boolean isMerged,
+                         final int mergedCellCount,
+                         final Object value) {
             this.isMerged = isMerged;
             this.mergedCellCount = mergedCellCount;
             this.value = value;
         }
-
-        private Expected( final Object value ) {
+        private Expected(final Object value) {
             this.value = value;
         }
 
+        public static Expected build(final Object value) {
+            return new Expected(value);
+        }
+
+        public static Expected build(final boolean isMerged,
+                                     final int mergedCellCount,
+                                     final Object value) {
+            return new Expected(isMerged,
+                                mergedCellCount,
+                                value);
+        }
     }
 
     public static class MockMergableGridColumn<T> extends BaseGridColumn<T> {
 
-        public MockMergableGridColumn( final String title,
-                                       final double width ) {
-            super( new BaseHeaderMetaData( title ),
-                   new MockMergableGridColumnRenderer<T>(),
-                   width );
+        public MockMergableGridColumn(final String title,
+                                      final double width) {
+            super(new BaseHeaderMetaData(title),
+                  new MockMergableGridColumnRenderer<T>(),
+                  width);
         }
 
         @Override
-        public void edit( final GridCell<T> cell,
-                          final GridBodyCellRenderContext context,
-                          final Callback<GridCellValue<T>> callback ) {
+        public void edit(final GridCell<T> cell,
+                         final GridBodyCellRenderContext context,
+                         final Callback<GridCellValue<T>> callback) {
             //Do nothing
         }
-
     }
 
     public static class MockMergableGridColumnRenderer<T> extends BaseGridColumnRenderer<T> {
 
         @Override
-        public Group renderCell( final GridCell<T> cell,
-                                 final GridBodyCellRenderContext context ) {
+        public Group renderCell(final GridCell<T> cell,
+                                final GridBodyCellRenderContext context) {
             return null;
         }
     }
-
 }

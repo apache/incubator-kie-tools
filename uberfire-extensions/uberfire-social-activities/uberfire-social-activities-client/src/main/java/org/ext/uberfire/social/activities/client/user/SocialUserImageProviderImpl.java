@@ -30,23 +30,27 @@ public class SocialUserImageProviderImpl implements SocialUserImageProvider {
     @Inject
     Instance<SocialUserImageRepositoryAPI> imageRepository;
 
-
     @Override
-    public Image getImageForSocialUser( final SocialUser socialUser, final ImageSize imageSize ) {
-        if ( imageRepository.isUnsatisfied() ) {
-            return createDefaultImage( socialUser, imageSize );
+    public Image getImageForSocialUser(final SocialUser socialUser,
+                                       final ImageSize imageSize) {
+        if (imageRepository.isUnsatisfied()) {
+            return createDefaultImage(socialUser,
+                                      imageSize);
         } else {
-            final String url = imageRepository.get().imageUrlForSocialUser( socialUser, imageSize );
-            if ( url == null ) {
-                return createDefaultImage( socialUser, imageSize );
+            final String url = imageRepository.get().imageUrlForSocialUser(socialUser,
+                                                                           imageSize);
+            if (url == null) {
+                return createDefaultImage(socialUser,
+                                          imageSize);
             } else {
-                return new Image( url );
+                return new Image(url);
             }
         }
     }
 
-    private Image createDefaultImage( final SocialUser socialUser, final ImageSize imageSize ) {
-        return GravatarBuilder.generate( socialUser, imageSize );
+    private Image createDefaultImage(final SocialUser socialUser,
+                                     final ImageSize imageSize) {
+        return GravatarBuilder.generate(socialUser,
+                                        imageSize);
     }
-
 }

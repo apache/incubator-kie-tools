@@ -41,15 +41,15 @@ public class DefaultPinnedModeManager implements GridPinnedModeManager {
 
     private PinnedContext context = null;
 
-    public DefaultPinnedModeManager( final GridLayer gridLayer ) {
-        this.gridLayer = PortablePreconditions.checkNotNull( "gridLayer",
-                                                             gridLayer );
+    public DefaultPinnedModeManager(final GridLayer gridLayer) {
+        this.gridLayer = PortablePreconditions.checkNotNull("gridLayer",
+                                                            gridLayer);
     }
 
     @Override
-    public void enterPinnedMode( final GridWidget gridWidget,
-                                 final Command onStartCommand ) {
-        if ( context != null ) {
+    public void enterPinnedMode(final GridWidget gridWidget,
+                                final Command onStartCommand) {
+        if (context != null) {
             return;
         }
         final Transform transform = gridWidget.getViewport().getTransform();
@@ -57,78 +57,78 @@ public class DefaultPinnedModeManager implements GridPinnedModeManager {
         final double translateY = transform.getTranslateY();
         final double scaleX = transform.getScaleX();
         final double scaleY = transform.getScaleY();
-        final PinnedContext newState = new PinnedContext( gridWidget,
-                                                          translateX,
-                                                          translateY,
-                                                          scaleX,
-                                                          scaleY );
+        final PinnedContext newState = new PinnedContext(gridWidget,
+                                                         translateX,
+                                                         translateY,
+                                                         scaleX,
+                                                         scaleY);
 
-        final Set<GridWidget> gridWidgetsToFadeFromView = new HashSet<>( gridLayer.getGridWidgets() );
-        gridWidgetsToFadeFromView.remove( gridWidget );
+        final Set<GridWidget> gridWidgetsToFadeFromView = new HashSet<>(gridLayer.getGridWidgets());
+        gridWidgetsToFadeFromView.remove(gridWidget);
         final Set<IPrimitive<?>> gridWidgetConnectorsToFadeFromView = gridLayer.getGridWidgetConnectors();
 
-        doEnterPinnedMode( () -> {
-                               context = newState;
-                               onStartCommand.execute();
-                               enableGridTransformMediator( gridWidget );
-                           },
-                           gridWidget,
-                           gridWidgetsToFadeFromView,
-                           gridWidgetConnectorsToFadeFromView );
+        doEnterPinnedMode(() -> {
+                              context = newState;
+                              onStartCommand.execute();
+                              enableGridTransformMediator(gridWidget);
+                          },
+                          gridWidget,
+                          gridWidgetsToFadeFromView,
+                          gridWidgetConnectorsToFadeFromView);
     }
 
-    protected void doEnterPinnedMode( final Command onStartCommand,
-                                      final GridWidget gridWidget,
-                                      final Set<GridWidget> gridWidgetsToFadeFromView,
-                                      final Set<IPrimitive<?>> gridWidgetConnectorsToFadeFromView ) {
-        final GridWidgetEnterPinnedModeAnimation enterAnimation = new GridWidgetEnterPinnedModeAnimation( gridWidget,
-                                                                                                          gridWidgetsToFadeFromView,
-                                                                                                          gridWidgetConnectorsToFadeFromView,
-                                                                                                          onStartCommand );
+    protected void doEnterPinnedMode(final Command onStartCommand,
+                                     final GridWidget gridWidget,
+                                     final Set<GridWidget> gridWidgetsToFadeFromView,
+                                     final Set<IPrimitive<?>> gridWidgetConnectorsToFadeFromView) {
+        final GridWidgetEnterPinnedModeAnimation enterAnimation = new GridWidgetEnterPinnedModeAnimation(gridWidget,
+                                                                                                         gridWidgetsToFadeFromView,
+                                                                                                         gridWidgetConnectorsToFadeFromView,
+                                                                                                         onStartCommand);
         enterAnimation.run();
     }
 
     @Override
-    public void exitPinnedMode( final Command onCompleteCommand ) {
-        if ( context == null ) {
+    public void exitPinnedMode(final Command onCompleteCommand) {
+        if (context == null) {
             return;
         }
 
-        final Set<GridWidget> gridWidgetsToFadeIntoView = new HashSet<>( gridLayer.getGridWidgets() );
-        gridWidgetsToFadeIntoView.remove( context.getGridWidget() );
+        final Set<GridWidget> gridWidgetsToFadeIntoView = new HashSet<>(gridLayer.getGridWidgets());
+        gridWidgetsToFadeIntoView.remove(context.getGridWidget());
         final Set<IPrimitive<?>> gridWidgetConnectorsToFadeIntoView = gridLayer.getGridWidgetConnectors();
 
-        doExitPinnedMode( () -> {
-                              context = null;
-                              onCompleteCommand.execute();
-                              enableDefaultTransformMediator();
-                          },
-                          gridWidgetsToFadeIntoView,
-                          gridWidgetConnectorsToFadeIntoView );
+        doExitPinnedMode(() -> {
+                             context = null;
+                             onCompleteCommand.execute();
+                             enableDefaultTransformMediator();
+                         },
+                         gridWidgetsToFadeIntoView,
+                         gridWidgetConnectorsToFadeIntoView);
     }
 
-    protected void doExitPinnedMode( final Command onCompleteCommand,
-                                     final Set<GridWidget> gridWidgetsToFadeIntoView,
-                                     final Set<IPrimitive<?>> gridWidgetConnectorsToFadeIntoView ) {
-        final GridWidgetExitPinnedModeAnimation exitAnimation = new GridWidgetExitPinnedModeAnimation( context,
-                                                                                                       gridWidgetsToFadeIntoView,
-                                                                                                       gridWidgetConnectorsToFadeIntoView,
-                                                                                                       onCompleteCommand );
+    protected void doExitPinnedMode(final Command onCompleteCommand,
+                                    final Set<GridWidget> gridWidgetsToFadeIntoView,
+                                    final Set<IPrimitive<?>> gridWidgetConnectorsToFadeIntoView) {
+        final GridWidgetExitPinnedModeAnimation exitAnimation = new GridWidgetExitPinnedModeAnimation(context,
+                                                                                                      gridWidgetsToFadeIntoView,
+                                                                                                      gridWidgetConnectorsToFadeIntoView,
+                                                                                                      onCompleteCommand);
         exitAnimation.run();
     }
 
-    private void enableGridTransformMediator( final GridWidget gridWidget ) {
-        for ( IMediator mediator : getMediators() ) {
-            if ( mediator instanceof RestrictedMousePanMediator ) {
-                ( (RestrictedMousePanMediator) mediator ).setTransformMediator( new GridTransformMediator( gridWidget ) );
+    private void enableGridTransformMediator(final GridWidget gridWidget) {
+        for (IMediator mediator : getMediators()) {
+            if (mediator instanceof RestrictedMousePanMediator) {
+                ((RestrictedMousePanMediator) mediator).setTransformMediator(new GridTransformMediator(gridWidget));
             }
         }
     }
 
     private void enableDefaultTransformMediator() {
-        for ( IMediator mediator : getMediators() ) {
-            if ( mediator instanceof RestrictedMousePanMediator ) {
-                ( (RestrictedMousePanMediator) mediator ).setTransformMediator( getDefaultTransformMediator() );
+        for (IMediator mediator : getMediators()) {
+            if (mediator instanceof RestrictedMousePanMediator) {
+                ((RestrictedMousePanMediator) mediator).setTransformMediator(getDefaultTransformMediator());
             }
         }
     }
@@ -140,14 +140,14 @@ public class DefaultPinnedModeManager implements GridPinnedModeManager {
     }
 
     @Override
-    public void updatePinnedContext( final GridWidget gridWidget ) throws IllegalStateException {
-        if ( context == null ) {
-            throw new IllegalStateException( "'pinned' mode has not been entered." );
+    public void updatePinnedContext(final GridWidget gridWidget) throws IllegalStateException {
+        if (context == null) {
+            throw new IllegalStateException("'pinned' mode has not been entered.");
         }
 
-        for ( IMediator mediator : gridLayer.getViewport().getMediators() ) {
-            if ( mediator instanceof RestrictedMousePanMediator ) {
-                ( (RestrictedMousePanMediator) mediator ).setTransformMediator( new GridTransformMediator( gridWidget ) );
+        for (IMediator mediator : gridLayer.getViewport().getMediators()) {
+            if (mediator instanceof RestrictedMousePanMediator) {
+                ((RestrictedMousePanMediator) mediator).setTransformMediator(new GridTransformMediator(gridWidget));
             }
         }
 
@@ -156,11 +156,11 @@ public class DefaultPinnedModeManager implements GridPinnedModeManager {
         final double scaleY = context.getScaleY();
         final double translateX = transform.getTranslateX() * scaleX;
         final double translateY = transform.getTranslateY() * scaleY;
-        context = new PinnedContext( gridWidget,
-                                     translateX,
-                                     translateY,
-                                     context.getScaleX(),
-                                     context.getScaleY() );
+        context = new PinnedContext(gridWidget,
+                                    translateX,
+                                    translateY,
+                                    context.getScaleX(),
+                                    context.getScaleY());
     }
 
     @Override
@@ -177,5 +177,4 @@ public class DefaultPinnedModeManager implements GridPinnedModeManager {
     public TransformMediator getDefaultTransformMediator() {
         return gridLayer.getDefaultTransformMediator();
     }
-
 }

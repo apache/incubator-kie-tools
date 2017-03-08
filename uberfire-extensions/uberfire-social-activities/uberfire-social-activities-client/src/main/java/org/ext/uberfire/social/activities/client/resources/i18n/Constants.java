@@ -54,5 +54,4 @@ public interface Constants extends Messages {
     String Followers();
 
     String AllUsers();
-
 }

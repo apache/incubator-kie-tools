@@ -16,9 +16,8 @@
 
 package org.uberfire.workbench.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 import jsinterop.annotations.JsType;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 @JsType
 @Portable

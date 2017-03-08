@@ -16,14 +16,14 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
-import static org.fest.assertions.api.Assertions.*;
-
 import java.net.URI;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
+
+import static org.fest.assertions.api.Assertions.assertThat;
 
 public class JGitFileSystemProviderAsDefaultTest extends AbstractTestInfra {
 
@@ -36,7 +36,8 @@ public class JGitFileSystemProviderAsDefaultTest extends AbstractTestInfra {
     public void testGetPath() {
         final URI newRepo = URI.create("default://default-new-get-repo-name");
 
-        FileSystem fs = provider.newFileSystem(newRepo, EMPTY_ENV);
+        FileSystem fs = provider.newFileSystem(newRepo,
+                                               EMPTY_ENV);
 
         final Path path = provider.getPath(URI.create("default://master@default-new-get-repo-name/home"));
 
@@ -58,7 +59,8 @@ public class JGitFileSystemProviderAsDefaultTest extends AbstractTestInfra {
     public void testGetComplexPath() {
         final URI newRepo = URI.create("default://default-new-complex-get-repo-name");
 
-        FileSystem fs = provider.newFileSystem(newRepo, EMPTY_ENV);
+        FileSystem fs = provider.newFileSystem(newRepo,
+                                               EMPTY_ENV);
 
         final Path path = provider.getPath(URI.create("default://origin/master@default-new-complex-get-repo-name/home"));
 

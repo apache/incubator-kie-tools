@@ -23,19 +23,18 @@ import org.uberfire.ext.metadata.backend.lucene.LuceneConfig;
 import org.uberfire.ext.metadata.backend.lucene.fields.FieldFactory;
 import org.uberfire.ext.metadata.engine.MetaModelStore;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class LuceneIndexEngineTest {
 
     @Test
     public void testDisposableRegistry() {
-        final LuceneConfig config = new LuceneConfig( mock( MetaModelStore.class ),
-                                                      mock( FieldFactory.class ),
-                                                      mock( LuceneIndexFactory.class ),
-                                                      mock( Analyzer.class ) );
+        final LuceneConfig config = new LuceneConfig(mock(MetaModelStore.class),
+                                                     mock(FieldFactory.class),
+                                                     mock(LuceneIndexFactory.class),
+                                                     mock(Analyzer.class));
 
-        assertTrue( PriorityDisposableRegistry.getDisposables().contains( config ) );
+        assertTrue(PriorityDisposableRegistry.getDisposables().contains(config));
     }
-
 }

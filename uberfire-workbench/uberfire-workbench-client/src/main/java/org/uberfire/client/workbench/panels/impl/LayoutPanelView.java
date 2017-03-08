@@ -15,24 +15,21 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
+import java.util.Collection;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.LayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.client.workbench.LayoutSelection;
-import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.support.PartManager;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
-
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.Widget;
-
-import java.util.Collection;
 
 /**
  * A simple {@link LayoutPanel} presenter. Can be used for both perspectives and panels. Does not support drag-and-drop.
@@ -58,14 +55,16 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
     }
 
     @Override
-    public void addPanel(PanelDefinition panel, WorkbenchPanelView view, Position position) {
+    public void addPanel(PanelDefinition panel,
+                         WorkbenchPanelView view,
+                         Position position) {
         // invoked when this presenter manages a perspective itself (is root)
         layout.add(view);
     }
 
     @Override
-    public boolean removePanel( WorkbenchPanelView<?> child ) {
-        return layout.remove( child );
+    public boolean removePanel(WorkbenchPanelView<?> child) {
+        return layout.remove(child);
     }
 
     @Override
@@ -74,7 +73,7 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
     }
 
     @Override
-    public void init( final LayoutPanelPresenter presenter ) {
+    public void init(final LayoutPanelPresenter presenter) {
         this.presenter = presenter;
     }
 
@@ -84,22 +83,24 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
     }
 
     @Override
-    public void addPart( final WorkbenchPartPresenter.View view ) {
+    public void addPart(final WorkbenchPartPresenter.View view) {
         // invoked when this presenter panels within perspectives (not root)
         PartDefinition part = view.getPresenter().getDefinition();
-        if(!partManager.hasPart(part))
-            partManager.registerPart(part, view.getWrappedWidget().asWidget());
+        if (!partManager.hasPart(part)) {
+            partManager.registerPart(part,
+                                     view.getWrappedWidget().asWidget());
+        }
     }
 
     @Override
-    public boolean removePart( final PartDefinition part ) {
+    public boolean removePart(final PartDefinition part) {
         partManager.removePart(part);
         layout.clear(); // only supports a single part
         return true;
     }
 
     @Override
-    public boolean selectPart( final PartDefinition part ) {
+    public boolean selectPart(final PartDefinition part) {
         layout.clear(); // TODO (hbraun): Is this necessary?
         layout.add(partManager.selectPart(part));
         return true;
@@ -109,13 +110,14 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
     public Collection<PartDefinition> getParts() {
         return partManager.getParts();
     }
+
     @Override
     public Widget getPartDropRegion() {
         return null;
     }
 
     @Override
-    public void setFocus( boolean hasFocus ) {
+    public void setFocus(boolean hasFocus) {
     }
 
     @Override
@@ -124,28 +126,29 @@ public class LayoutPanelView implements WorkbenchPanelView<LayoutPanelPresenter>
     }
 
     @Override
-    public void changeTitle( final PartDefinition part,
-                             final String title,
-                             final IsWidget titleDecoration ) {
+    public void changeTitle(final PartDefinition part,
+                            final String title,
+                            final IsWidget titleDecoration) {
         // noop
     }
 
     @Override
-    public void setElementId( String elementId ) {
-        if ( elementId == null ) {
-            asWidget().getElement().removeAttribute( "id" );
+    public void setElementId(String elementId) {
+        if (elementId == null) {
+            asWidget().getElement().removeAttribute("id");
         } else {
-            asWidget().getElement().setAttribute( "id", elementId );
+            asWidget().getElement().setAttribute("id",
+                                                 elementId);
         }
     }
 
     @Override
     public void maximize() {
-        layoutSelection.get().maximize( asWidget() );
+        layoutSelection.get().maximize(asWidget());
     }
 
     @Override
     public void unmaximize() {
-        layoutSelection.get().unmaximize( asWidget() );
+        layoutSelection.get().unmaximize(asWidget());
     }
 }

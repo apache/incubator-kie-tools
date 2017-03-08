@@ -22,13 +22,15 @@ public class FileAlreadyExistsException extends FileSystemException {
         super();
     }
 
-    public FileAlreadyExistsException( String file ) {
-        super( file );
+    public FileAlreadyExistsException(String file) {
+        super(file);
     }
 
-    public FileAlreadyExistsException( String file,
-                                       String other,
-                                       String reason ) {
-        super( file, other, reason );
+    public FileAlreadyExistsException(String file,
+                                      String other,
+                                      String reason) {
+        super(file,
+              other,
+              reason);
     }
 }

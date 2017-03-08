@@ -16,18 +16,17 @@
 
 package org.uberfire.ext.security.management.tomcat;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.uberfire.ext.security.management.UberfireRoleManager;
 import org.uberfire.ext.security.management.api.GroupManager;
 import org.uberfire.ext.security.management.api.UserManager;
 import org.uberfire.ext.security.management.service.AbstractUserManagementService;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 /**
  * <p>The Tomcat management service beans.</p>
- * 
  * @since 0.8.0
  */
 @Dependent
@@ -40,7 +39,7 @@ public class TomcatUserManagementService extends AbstractUserManagementService {
     @Inject
     public TomcatUserManagementService(final TomcatUserManager userManager,
                                        final TomcatGroupManager groupManager,
-                                       final @Named( "uberfireRoleManager" ) UberfireRoleManager roleManager) {
+                                       final @Named("uberfireRoleManager") UberfireRoleManager roleManager) {
         super(roleManager);
         this.userManager = userManager;
         this.groupManager = groupManager;
@@ -55,5 +54,4 @@ public class TomcatUserManagementService extends AbstractUserManagementService {
     public GroupManager groups() {
         return groupManager;
     }
-
 }

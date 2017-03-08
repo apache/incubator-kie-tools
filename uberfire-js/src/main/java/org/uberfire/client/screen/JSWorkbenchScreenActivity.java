@@ -18,6 +18,9 @@ package org.uberfire.client.screen;
 
 import javax.enterprise.inject.Alternative;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.mvp.PlaceRequest;
@@ -28,10 +31,6 @@ import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.IsWidget;
-
 @Alternative
 public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
 
@@ -41,19 +40,19 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
 
     private JSNativeScreen nativePlugin;
 
-    public JSWorkbenchScreenActivity( final JSNativeScreen nativePlugin,
-                                      final PlaceManager placeManager ) {
+    public JSWorkbenchScreenActivity(final JSNativeScreen nativePlugin,
+                                     final PlaceManager placeManager) {
         this.nativePlugin = nativePlugin;
         this.placeManager = placeManager;
     }
 
     @Override
-    public void onStartup( PlaceRequest place ) {
+    public void onStartup(PlaceRequest place) {
         this.place = place;
-        nativePlugin.onStartup( place );
+        nativePlugin.onStartup(place);
     }
 
-    public void setNativePlugin( JSNativeScreen nativePlugin ) {
+    public void setNativePlugin(JSNativeScreen nativePlugin) {
         this.nativePlugin = nativePlugin;
     }
 
@@ -119,7 +118,7 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
 
     @Override
     public IsWidget getWidget() {
-        return new HTML( nativePlugin.getElement().getInnerHTML() );
+        return new HTML(nativePlugin.getElement().getInnerHTML());
     }
 
     @Override
@@ -134,17 +133,17 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
 
     @Override
     public void onOpen() {
-        Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
-                if ( nativePlugin.getType() != null && nativePlugin.getType().equalsIgnoreCase( "angularjs" ) ) {
+                if (nativePlugin.getType() != null && nativePlugin.getType().equalsIgnoreCase("angularjs")) {
                     bind();
                 }
 
                 nativePlugin.onOpen();
-                placeManager.executeOnOpenCallback( place );
+                placeManager.executeOnOpenCallback(place);
             }
-        } );
+        });
     }
 
     // Alias registerPlugin with a global JS function.
@@ -178,5 +177,4 @@ public class JSWorkbenchScreenActivity implements WorkbenchScreenActivity {
     public int preferredWidth() {
         return -1;
     }
-    
 }

@@ -30,20 +30,19 @@ import org.uberfire.ext.wires.shared.preferences.bean.MyInnerPreference;
 public class MyInnerPreferenceCustomFormView implements IsElement,
                                                         MyInnerPreferenceCustomForm.View {
 
-    private MyInnerPreferenceCustomForm presenter;
-
     @Inject
     @DataField("text")
     TextInput text;
+    private MyInnerPreferenceCustomForm presenter;
 
     @Override
-    public void init( final MyInnerPreferenceCustomForm presenter ) {
+    public void init(final MyInnerPreferenceCustomForm presenter) {
         this.presenter = presenter;
 
-        text.setValue( presenter.getPreference().getText() );
+        text.setValue(presenter.getPreference().getText());
     }
 
-    public void updatePreference( final MyInnerPreference preference ) {
-        preference.setText( text.getValue() );
+    public void updatePreference(final MyInnerPreference preference) {
+        preference.setText(text.getValue());
     }
 }

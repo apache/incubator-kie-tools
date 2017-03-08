@@ -16,9 +16,6 @@
 
 package org.uberfire.ext.metadata.backend.lucene.index.directory;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkCondition;
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-
 import java.io.File;
 import java.util.Collections;
 import java.util.Map;
@@ -34,6 +31,9 @@ import org.uberfire.ext.metadata.backend.lucene.index.LuceneIndexFactory;
 import org.uberfire.ext.metadata.backend.lucene.model.KClusterImpl;
 import org.uberfire.ext.metadata.model.KCluster;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkCondition;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+
 public class DirectoryFactory implements LuceneIndexFactory {
 
     private static final String REPOSITORIES_ROOT_DIR = ".index";
@@ -42,71 +42,78 @@ public class DirectoryFactory implements LuceneIndexFactory {
     private final DirectoryType type;
     private final Analyzer analyzer;
 
-    public DirectoryFactory( final DirectoryType type,
-                             final Analyzer analyzer ) {
+    public DirectoryFactory(final DirectoryType type,
+                            final Analyzer analyzer) {
         this.analyzer = analyzer;
         this.type = type;
         final File[] files = defaultHostingDir().listFiles();
-        if ( files != null && files.length > 0 ) {
-            for ( final File file : files ) {
-                if ( file.isDirectory() ) {
-                    final KCluster cluster = new KClusterImpl( file.getName() );
-                    clusters.put( cluster, type.newIndex( cluster, newConfig( analyzer ) ) );
+        if (files != null && files.length > 0) {
+            for (final File file : files) {
+                if (file.isDirectory()) {
+                    final KCluster cluster = new KClusterImpl(file.getName());
+                    clusters.put(cluster,
+                                 type.newIndex(cluster,
+                                               newConfig(analyzer)));
                 }
             }
         }
     }
 
-    private IndexWriterConfig newConfig( final Analyzer analyzer ) {
-        final IndexWriterConfig config = new IndexWriterConfig( analyzer );
+    public static File defaultHostingDir() {
+        final String value = System.getProperty("org.uberfire.metadata.index.dir");
+        if (value == null || value.trim().isEmpty()) {
+            return new File(REPOSITORIES_ROOT_DIR);
+        } else {
+            return new File(value.trim(),
+                            REPOSITORIES_ROOT_DIR);
+        }
+    }
+
+    private IndexWriterConfig newConfig(final Analyzer analyzer) {
+        final IndexWriterConfig config = new IndexWriterConfig(analyzer);
         final Codec codec = new Lucene53Codec() {
             @Override
-            public PostingsFormat getPostingsFormatForField( String field ) {
-                if ( field.equals( "id" ) ) {
-                    return PostingsFormat.forName( "Memory" );
+            public PostingsFormat getPostingsFormatForField(String field) {
+                if (field.equals("id")) {
+                    return PostingsFormat.forName("Memory");
                 } else {
-                    return PostingsFormat.forName( "Lucene50" );
+                    return PostingsFormat.forName("Lucene50");
                 }
             }
         };
-        config.setCodec( codec );
+        config.setCodec(codec);
 
         return config;
     }
 
     @Override
-    public LuceneIndex newCluster( final KCluster kcluster ) {
-        checkCondition( "Cluster already exists", !clusters.containsKey( checkNotNull( "kcluster", kcluster ) ) );
+    public LuceneIndex newCluster(final KCluster kcluster) {
+        checkCondition("Cluster already exists",
+                       !clusters.containsKey(checkNotNull("kcluster",
+                                                          kcluster)));
 
-        final LuceneIndex newIndex = type.newIndex( kcluster, newConfig( analyzer ) );
-        clusters.put( kcluster, newIndex );
+        final LuceneIndex newIndex = type.newIndex(kcluster,
+                                                   newConfig(analyzer));
+        clusters.put(kcluster,
+                     newIndex);
 
         return newIndex;
     }
 
     @Override
-    public void remove( KCluster cluster ) {
-        clusters.remove( cluster );
+    public void remove(KCluster cluster) {
+        clusters.remove(cluster);
     }
 
     @Override
     public Map<? extends KCluster, ? extends LuceneIndex> getIndexes() {
-        return Collections.unmodifiableMap( clusters );
+        return Collections.unmodifiableMap(clusters);
     }
 
     @Override
     public synchronized void dispose() {
-        for ( final LuceneIndex luceneIndex : clusters.values() ) {
+        for (final LuceneIndex luceneIndex : clusters.values()) {
             luceneIndex.dispose();
-        }
-    }
-
-    public static File defaultHostingDir() {
-        final String value = System.getProperty( "org.uberfire.metadata.index.dir" );
-        if ( value == null || value.trim().isEmpty() ) {
-            return new File( REPOSITORIES_ROOT_DIR );
-        } else {
-            return new File( value.trim(), REPOSITORIES_ROOT_DIR );
         }
     }
 }

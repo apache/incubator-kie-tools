@@ -31,8 +31,7 @@ public interface BaseEditorView
 
     EditorTitle getTitleWidget();
 
-    void refreshTitle( final String value );
+    void refreshTitle(final String value);
 
     boolean confirmClose();
-
 }

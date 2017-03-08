@@ -39,7 +39,7 @@ public interface Menus {
      * their descendants). The menu items will be visited via an pre-order traversal (parents are visited before their
      * children). Top-level menu items are visited in the same order as they are returned from {@link #getItems()}.
      */
-    public void accept( MenuVisitor visitor );
+    public void accept(MenuVisitor visitor);
 
     /**
      * Defines the order on what these menus will be inserted.

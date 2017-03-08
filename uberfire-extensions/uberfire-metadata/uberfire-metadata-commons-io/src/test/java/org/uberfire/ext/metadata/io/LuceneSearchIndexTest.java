@@ -39,148 +39,147 @@ public class LuceneSearchIndexTest extends BaseIndexTest {
 
     @Override
     protected String[] getRepositoryNames() {
-        return new String[]{ this.getClass().getSimpleName() + "_1", this.getClass().getSimpleName() + "_2" };
+        return new String[]{this.getClass().getSimpleName() + "_1", this.getClass().getSimpleName() + "_2"};
     }
 
     @Test
     public void testClusterSegments() throws IOException, InterruptedException {
-        setupCountDown( 2 );
+        setupCountDown(2);
         //Add test files
-        final Path path1 = getBasePath( this.getClass().getSimpleName() + "_1" ).resolve( "indexedFile1.txt" );
-        ioService().write( path1,
-                           "content1" );
-        final Path path2 = getBasePath( this.getClass().getSimpleName() + "_2" ).resolve( "indexedFile2.txt" );
-        ioService().write( path2,
-                           "content2" );
+        final Path path1 = getBasePath(this.getClass().getSimpleName() + "_1").resolve("indexedFile1.txt");
+        ioService().write(path1,
+                          "content1");
+        final Path path2 = getBasePath(this.getClass().getSimpleName() + "_2").resolve("indexedFile2.txt");
+        ioService().write(path2,
+                          "content2");
 
         //Setup ClusterSegments
         final ClusterSegment cs1 = new ClusterSegment() {
             @Override
             public String getClusterId() {
-                return ( (FileSystemId) getBasePath( LuceneSearchIndexTest.this.getClass().getSimpleName() + "_1" ).getFileSystem() ).id();
+                return ((FileSystemId) getBasePath(LuceneSearchIndexTest.this.getClass().getSimpleName() + "_1").getFileSystem()).id();
             }
 
             @Override
             public String[] segmentIds() {
-                return new String[]{ ( (SegmentedPath) getBasePath( LuceneSearchIndexTest.this.getClass().getSimpleName() + "_1" ) ).getSegmentId() };
+                return new String[]{((SegmentedPath) getBasePath(LuceneSearchIndexTest.this.getClass().getSimpleName() + "_1")).getSegmentId()};
             }
         };
         final ClusterSegment cs2 = new ClusterSegment() {
             @Override
             public String getClusterId() {
-                return ( (FileSystemId) getBasePath( LuceneSearchIndexTest.this.getClass().getSimpleName() + "_2" ).getFileSystem() ).id();
+                return ((FileSystemId) getBasePath(LuceneSearchIndexTest.this.getClass().getSimpleName() + "_2").getFileSystem()).id();
             }
 
             @Override
             public String[] segmentIds() {
-                return new String[]{ ( (SegmentedPath) getBasePath( LuceneSearchIndexTest.this.getClass().getSimpleName() + "_2" ) ).getSegmentId() };
+                return new String[]{((SegmentedPath) getBasePath(LuceneSearchIndexTest.this.getClass().getSimpleName() + "_2")).getSegmentId()};
             }
         };
 
-        waitForCountDown( 5000 );
+        waitForCountDown(5000);
 
         final Map<String, Object> attributes = new HashMap<String, Object>() {{
-            put( "filename",
-                 "*.txt" );
+            put("filename",
+                "*.txt");
         }};
 
         //Attribute Search
         {
-            final int hits = config.getSearchIndex().searchByAttrsHits( attributes );
-            final List<KObject> results = config.getSearchIndex().searchByAttrs( attributes,
-                                                                                 new IOSearchService.NoOpFilter() );
-            assertEquals( 0,
-                          hits );
-            assertEquals( 0,
-                          results.size() );
+            final int hits = config.getSearchIndex().searchByAttrsHits(attributes);
+            final List<KObject> results = config.getSearchIndex().searchByAttrs(attributes,
+                                                                                new IOSearchService.NoOpFilter());
+            assertEquals(0,
+                         hits);
+            assertEquals(0,
+                         results.size());
         }
 
         {
-            final int hits = config.getSearchIndex().searchByAttrsHits( attributes,
-                                                                        cs1 );
-            final List<KObject> results = config.getSearchIndex().searchByAttrs( attributes,
-                                                                                 new IOSearchService.NoOpFilter(),
-                                                                                 cs1 );
-            assertEquals( 1,
-                          hits );
-            assertEquals( 1,
-                          results.size() );
+            final int hits = config.getSearchIndex().searchByAttrsHits(attributes,
+                                                                       cs1);
+            final List<KObject> results = config.getSearchIndex().searchByAttrs(attributes,
+                                                                                new IOSearchService.NoOpFilter(),
+                                                                                cs1);
+            assertEquals(1,
+                         hits);
+            assertEquals(1,
+                         results.size());
         }
 
         {
-            final int hits = config.getSearchIndex().searchByAttrsHits( attributes,
-                                                                        cs2 );
-            final List<KObject> results = config.getSearchIndex().searchByAttrs( attributes,
-                                                                                 new IOSearchService.NoOpFilter(),
-                                                                                 cs2 );
-            assertEquals( 1,
-                          hits );
-            assertEquals( 1,
-                          results.size() );
+            final int hits = config.getSearchIndex().searchByAttrsHits(attributes,
+                                                                       cs2);
+            final List<KObject> results = config.getSearchIndex().searchByAttrs(attributes,
+                                                                                new IOSearchService.NoOpFilter(),
+                                                                                cs2);
+            assertEquals(1,
+                         hits);
+            assertEquals(1,
+                         results.size());
         }
 
         {
-            final int hits = config.getSearchIndex().searchByAttrsHits( attributes,
-                                                                        cs1,
-                                                                        cs2 );
-            final List<KObject> results = config.getSearchIndex().searchByAttrs( attributes,
-                                                                                 new IOSearchService.NoOpFilter(),
-                                                                                 cs1,
-                                                                                 cs2 );
-            assertEquals( 2,
-                          hits );
-            assertEquals( 2,
-                          results.size() );
+            final int hits = config.getSearchIndex().searchByAttrsHits(attributes,
+                                                                       cs1,
+                                                                       cs2);
+            final List<KObject> results = config.getSearchIndex().searchByAttrs(attributes,
+                                                                                new IOSearchService.NoOpFilter(),
+                                                                                cs1,
+                                                                                cs2);
+            assertEquals(2,
+                         hits);
+            assertEquals(2,
+                         results.size());
         }
 
         //Full Text Search
         {
-            final int hits = config.getSearchIndex().fullTextSearchHits( "*indexed*" );
-            final List<KObject> results = config.getSearchIndex().fullTextSearch( "*indexed*",
-                                                                                  new IOSearchService.NoOpFilter() );
-            assertEquals( 0,
-                          hits );
-            assertEquals( 0,
-                          results.size() );
+            final int hits = config.getSearchIndex().fullTextSearchHits("*indexed*");
+            final List<KObject> results = config.getSearchIndex().fullTextSearch("*indexed*",
+                                                                                 new IOSearchService.NoOpFilter());
+            assertEquals(0,
+                         hits);
+            assertEquals(0,
+                         results.size());
         }
 
         {
-            final int hits = config.getSearchIndex().fullTextSearchHits( "*indexed*",
-                                                                         cs1 );
-            final List<KObject> results = config.getSearchIndex().fullTextSearch( "*indexed*",
-                                                                                  new IOSearchService.NoOpFilter(),
-                                                                                  cs1 );
-            assertEquals( 1,
-                          hits );
-            assertEquals( 1,
-                          results.size() );
+            final int hits = config.getSearchIndex().fullTextSearchHits("*indexed*",
+                                                                        cs1);
+            final List<KObject> results = config.getSearchIndex().fullTextSearch("*indexed*",
+                                                                                 new IOSearchService.NoOpFilter(),
+                                                                                 cs1);
+            assertEquals(1,
+                         hits);
+            assertEquals(1,
+                         results.size());
         }
 
         {
-            final int hits = config.getSearchIndex().fullTextSearchHits( "*indexed*",
-                                                                         cs2 );
-            final List<KObject> results = config.getSearchIndex().fullTextSearch( "*indexed*",
-                                                                                  new IOSearchService.NoOpFilter(),
-                                                                                  cs2 );
-            assertEquals( 1,
-                          hits );
-            assertEquals( 1,
-                          results.size() );
+            final int hits = config.getSearchIndex().fullTextSearchHits("*indexed*",
+                                                                        cs2);
+            final List<KObject> results = config.getSearchIndex().fullTextSearch("*indexed*",
+                                                                                 new IOSearchService.NoOpFilter(),
+                                                                                 cs2);
+            assertEquals(1,
+                         hits);
+            assertEquals(1,
+                         results.size());
         }
 
         {
-            final int hits = config.getSearchIndex().fullTextSearchHits( "*indexed*",
-                                                                         cs1,
-                                                                         cs2 );
-            final List<KObject> results = config.getSearchIndex().fullTextSearch( "*indexed*",
-                                                                                  new IOSearchService.NoOpFilter(),
-                                                                                  cs1,
-                                                                                  cs2 );
-            assertEquals( 2,
-                          hits );
-            assertEquals( 2,
-                          results.size() );
+            final int hits = config.getSearchIndex().fullTextSearchHits("*indexed*",
+                                                                        cs1,
+                                                                        cs2);
+            final List<KObject> results = config.getSearchIndex().fullTextSearch("*indexed*",
+                                                                                 new IOSearchService.NoOpFilter(),
+                                                                                 cs1,
+                                                                                 cs2);
+            assertEquals(2,
+                         hits);
+            assertEquals(2,
+                         results.size());
         }
     }
-
 }

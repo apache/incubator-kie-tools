@@ -18,17 +18,16 @@ package org.uberfire.wbtest.client.headfoot;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.api.ActivatedBy;
 import org.uberfire.client.workbench.Footer;
 
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
-
 @ApplicationScoped
-@ActivatedBy( HeaderFooterActivator.class )
+@ActivatedBy(HeaderFooterActivator.class)
 public class TopFooter implements Footer {
 
-    private final Label label = new Label( "This is the top footer (order=10)" );
+    private final Label label = new Label("This is the top footer (order=10)");
 
     @Override
     public String getId() {
@@ -44,5 +43,4 @@ public class TopFooter implements Footer {
     public Widget asWidget() {
         return label;
     }
-
 }

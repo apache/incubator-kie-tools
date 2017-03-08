@@ -16,7 +16,7 @@
 
 package org.uberfire.client.events;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 public class YouTubeVideo {
 
@@ -28,15 +28,21 @@ public class YouTubeVideo {
     }
 
     public YouTubeVideo(final String url) {
-        this.url = checkNotNull("url", url);
+        this.url = checkNotNull("url",
+                                url);
         this.name = null;
         this.description = null;
     }
 
-    public YouTubeVideo(final String name, final String description, final String url) {
-        this.name = checkNotNull("name", name);
-        this.description = checkNotNull("description", description);
-        this.url = checkNotNull("url", url);
+    public YouTubeVideo(final String name,
+                        final String description,
+                        final String url) {
+        this.name = checkNotNull("name",
+                                 name);
+        this.description = checkNotNull("description",
+                                        description);
+        this.url = checkNotNull("url",
+                                url);
     }
 
     public String getURL() {

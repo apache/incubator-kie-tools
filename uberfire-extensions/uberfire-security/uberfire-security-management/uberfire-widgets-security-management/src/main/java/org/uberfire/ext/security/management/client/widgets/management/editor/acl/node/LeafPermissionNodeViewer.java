@@ -30,20 +30,8 @@ import org.uberfire.security.client.authz.tree.PermissionNode;
 @Dependent
 public class LeafPermissionNodeViewer extends BasePermissionNodeViewer {
 
-    public interface View extends UberView<LeafPermissionNodeViewer> {
-
-        void setNodeName(String name);
-
-        void setNodeFullName(String name);
-
-        void permissionGranted(String permission);
-
-        void permissionDenied(String permission);
-    }
-
     View view;
     PermissionNode permissionNode;
-
     @Inject
     public LeafPermissionNodeViewer(View view) {
         this.view = view;
@@ -51,7 +39,7 @@ public class LeafPermissionNodeViewer extends BasePermissionNodeViewer {
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
@@ -91,5 +79,16 @@ public class LeafPermissionNodeViewer extends BasePermissionNodeViewer {
                 view.permissionDenied(denied);
             }
         }
+    }
+
+    public interface View extends UberView<LeafPermissionNodeViewer> {
+
+        void setNodeName(String name);
+
+        void setNodeFullName(String name);
+
+        void permissionGranted(String permission);
+
+        void permissionDenied(String permission);
     }
 }

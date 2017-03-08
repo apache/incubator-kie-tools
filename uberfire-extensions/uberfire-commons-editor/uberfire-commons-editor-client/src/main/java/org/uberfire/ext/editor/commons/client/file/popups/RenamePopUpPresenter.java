@@ -30,95 +30,91 @@ import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class RenamePopUpPresenter {
 
     private String originalFileName;
-
-    public interface View extends UberElement<RenamePopUpPresenter> {
-
-        void show();
-
-        void hide();
-
-        void handleDuplicatedFileName();
-
-        void handleInvalidFileName();
-
-        void setOriginalFileName( String fileName );
-    }
-
     private Path path;
-
     private Validator validator;
-
     private CommandWithFileNameAndCommitMessage command;
-
     private ToggleCommentPresenter toggleCommentPresenter;
-
     private View view;
 
-    public void show( final Path path,
-                      final Validator validator,
-                      final CommandWithFileNameAndCommitMessage command,
-                      final String originalFileName ) {
-        this.validator = checkNotNull( "validator", validator );
-        this.path = checkNotNull( "path", path );
-        this.command = checkNotNull( "command", command );
-        this.originalFileName = originalFileName;
-
-        view.setOriginalFileName( originalFileName );
-        view.show();
-    }
-
-    public void show( final Path path,
-                      final CommandWithFileNameAndCommitMessage copyPopupCommand,
-                      final String originalFileName ) {
-        show( path, defaultValidator(), copyPopupCommand, originalFileName );
-    }
-
-    public void show( final Path path,
-                      final Validator validator,
-                      final CommandWithFileNameAndCommitMessage command ) {
-        show( path, validator, command, "" );
-    }
-
-    public void show( final Path path,
-                      final CommandWithFileNameAndCommitMessage renamePopupCommand ) {
-        show( path, defaultValidator(), renamePopupCommand, "" );
-    }
-
     @Inject
-    public RenamePopUpPresenter( View view,
-                                 ToggleCommentPresenter toggleCommentPresenter ) {
+    public RenamePopUpPresenter(View view,
+                                ToggleCommentPresenter toggleCommentPresenter) {
         this.view = view;
         this.toggleCommentPresenter = toggleCommentPresenter;
     }
 
+    public void show(final Path path,
+                     final Validator validator,
+                     final CommandWithFileNameAndCommitMessage command,
+                     final String originalFileName) {
+        this.validator = checkNotNull("validator",
+                                      validator);
+        this.path = checkNotNull("path",
+                                 path);
+        this.command = checkNotNull("command",
+                                    command);
+        this.originalFileName = originalFileName;
+
+        view.setOriginalFileName(originalFileName);
+        view.show();
+    }
+
+    public void show(final Path path,
+                     final CommandWithFileNameAndCommitMessage copyPopupCommand,
+                     final String originalFileName) {
+        show(path,
+             defaultValidator(),
+             copyPopupCommand,
+             originalFileName);
+    }
+
+    public void show(final Path path,
+                     final Validator validator,
+                     final CommandWithFileNameAndCommitMessage command) {
+        show(path,
+             validator,
+             command,
+             "");
+    }
+
+    public void show(final Path path,
+                     final CommandWithFileNameAndCommitMessage renamePopupCommand) {
+        show(path,
+             defaultValidator(),
+             renamePopupCommand,
+             "");
+    }
+
     @PostConstruct
     public void setup() {
-        view.init( this );
+        view.init(this);
     }
 
-    public void rename( final String newName ) {
-        final String extension = extension( path.getFileName() );
+    public void rename(final String newName) {
+        final String extension = extension(path.getFileName());
         final String fileName = newName + extension;
 
-        validator.validate( fileName, validatorCallback( toggleCommentPresenter.getComment(), newName ) );
+        validator.validate(fileName,
+                           validatorCallback(toggleCommentPresenter.getComment(),
+                                             newName));
     }
 
-    private String extension( final String fileName ) {
-        return fileName.lastIndexOf( "." ) > 0 ? fileName.substring( fileName.lastIndexOf( "." ) ) : "";
+    private String extension(final String fileName) {
+        return fileName.lastIndexOf(".") > 0 ? fileName.substring(fileName.lastIndexOf(".")) : "";
     }
 
-    private ValidatorWithReasonCallback validatorCallback( final String comment,
-                                                           final String baseFileName ) {
+    private ValidatorWithReasonCallback validatorCallback(final String comment,
+                                                          final String baseFileName) {
         return new ValidatorWithReasonCallback() {
             @Override
-            public void onFailure( final String reason ) {
-                if ( ValidationErrorReason.DUPLICATED_NAME.name().equals( reason ) ) {
+            public void onFailure(final String reason) {
+                if (ValidationErrorReason.DUPLICATED_NAME.name().equals(reason)) {
                     view.handleDuplicatedFileName();
                 } else {
                     view.handleInvalidFileName();
@@ -127,7 +123,8 @@ public class RenamePopUpPresenter {
 
             @Override
             public void onSuccess() {
-                command.execute( new FileNameAndCommitMessage( baseFileName, comment ) );
+                command.execute(new FileNameAndCommitMessage(baseFileName,
+                                                             comment));
             }
 
             @Override
@@ -152,8 +149,8 @@ public class RenamePopUpPresenter {
     private Validator defaultValidator() {
         return new Validator() {
             @Override
-            public void validate( final String value,
-                                  final ValidatorCallback callback ) {
+            public void validate(final String value,
+                                 final ValidatorCallback callback) {
                 callback.onSuccess();
             }
         };
@@ -169,5 +166,18 @@ public class RenamePopUpPresenter {
 
     CommandWithFileNameAndCommitMessage getCommand() {
         return command;
+    }
+
+    public interface View extends UberElement<RenamePopUpPresenter> {
+
+        void show();
+
+        void hide();
+
+        void handleDuplicatedFileName();
+
+        void handleInvalidFileName();
+
+        void setOriginalFileName(String fileName);
     }
 }

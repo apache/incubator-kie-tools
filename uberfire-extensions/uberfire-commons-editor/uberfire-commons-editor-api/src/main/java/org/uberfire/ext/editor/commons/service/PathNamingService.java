@@ -29,8 +29,8 @@ public interface PathNamingService {
      * @param targetFileName New file name
      * @return Path for the new file
      */
-    Path buildTargetPath( Path originalPath,
-                          String targetFileName );
+    Path buildTargetPath(Path originalPath,
+                         String targetFileName);
 
     /**
      * Creates a path to a file or directory in another parent directory, keeping the original file extension (if applicable).
@@ -39,14 +39,14 @@ public interface PathNamingService {
      * @param targetFileName New file name
      * @return Path for the new file
      */
-    Path buildTargetPath( Path originalPath,
-                          Path targetParentDirectory,
-                          String targetFileName );
+    Path buildTargetPath(Path originalPath,
+                         Path targetParentDirectory,
+                         String targetFileName);
 
     /**
      * Returns the extension of the passed file name.
      * @param fileName File name with extension
      * @return The file name extension
      */
-    String getExtension( final String fileName );
+    String getExtension(final String fileName);
 }

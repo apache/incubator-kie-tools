@@ -16,6 +16,12 @@
 
 package org.uberfire.ext.security.management.service;
 
+import java.util.Collection;
+import java.util.Set;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.Group;
 import org.slf4j.Logger;
@@ -28,12 +34,6 @@ import org.uberfire.ext.security.management.api.exception.SecurityManagementExce
 import org.uberfire.ext.security.management.api.service.GroupManagerService;
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.Collection;
-import java.util.Set;
-
 /**
  * <p>The UberFire service implementation for GroupsManager API.</p>
  */
@@ -42,17 +42,17 @@ import java.util.Set;
 public class GroupManagerServiceImpl implements GroupManagerService {
 
     private static final Logger LOG = LoggerFactory.getLogger(GroupManagerServiceImpl.class);
-    
+
     @Inject
     private BackendUserSystemManager userSystemManager;
-    
+
     private GroupManager service;
-    
+
     @PostConstruct
     public void init() {
         service = userSystemManager.groups();
     }
-    
+
     private GroupManager getService() throws SecurityManagementException {
         if (service == null) {
             throw new NoImplementationAvailableException();
@@ -69,12 +69,12 @@ public class GroupManagerServiceImpl implements GroupManagerService {
 
         // Constraint registered UF roles as not allowed for searching.
         final Set<String> registeredRoleNames = SecurityManagementUtils.getRegisteredRoleNames();
-        if ( request.getConstrainedIdentifiers() == null ) {
+        if (request.getConstrainedIdentifiers() == null) {
             request.setConstrainedIdentifiers(registeredRoleNames);
         } else {
             request.getConstrainedIdentifiers().addAll(registeredRoleNames);
         }
-        
+
         // Delegate the search to the specific provider.
         return serviceImpl.search(request);
     }
@@ -90,7 +90,7 @@ public class GroupManagerServiceImpl implements GroupManagerService {
         final String name = group.getName();
         if (isConstrained(name)) {
             throw new IllegalArgumentException("Group with name '" + name + "' cannot be created, " +
-                    "as it is a constrained value (it is a role or the admin group");
+                                                       "as it is a constrained value (it is a role or the admin group");
         }
         final GroupManager serviceImpl = getService();
         return serviceImpl.create(group);
@@ -101,7 +101,7 @@ public class GroupManagerServiceImpl implements GroupManagerService {
         final String name = group.getName();
         if (isConstrained(name)) {
             throw new IllegalArgumentException("Group with name '" + name + "' cannot be updated, " +
-                    "as it is a constrained value (it is a role or the admin group");
+                                                       "as it is a constrained value (it is a role or the admin group");
         }
         final GroupManager serviceImpl = getService();
         return serviceImpl.update(group);
@@ -109,10 +109,10 @@ public class GroupManagerServiceImpl implements GroupManagerService {
 
     @Override
     public void delete(String... identifiers) throws SecurityManagementException {
-        for (final String name : identifiers)  {
+        for (final String name : identifiers) {
             if (isConstrained(name)) {
                 throw new IllegalArgumentException("Group with name '" + name + "' cannot be deleted, " +
-                        "as it is a constrained value (it is a role or the admin group");
+                                                           "as it is a constrained value (it is a role or the admin group");
             }
         }
         final GroupManager serviceImpl = getService();
@@ -123,20 +123,21 @@ public class GroupManagerServiceImpl implements GroupManagerService {
     public GroupManagerSettings getSettings() {
         final GroupManager serviceImpl = getService();
         final GroupManagerSettings settings = serviceImpl.getSettings();
-        if ( null != settings ) {
+        if (null != settings) {
             settings.setConstrainedGroups(SecurityManagementUtils.getRegisteredRoleNames());
         }
         return settings;
     }
 
     @Override
-    public void assignUsers(String name, Collection<String> users) throws SecurityManagementException {
+    public void assignUsers(String name,
+                            Collection<String> users) throws SecurityManagementException {
         final GroupManager serviceImpl = getService();
-        serviceImpl.assignUsers(name, users);
+        serviceImpl.assignUsers(name,
+                                users);
     }
 
     protected boolean isConstrained(final String name) {
         return SecurityManagementUtils.getRegisteredRoleNames().contains(name);
     }
-
 }

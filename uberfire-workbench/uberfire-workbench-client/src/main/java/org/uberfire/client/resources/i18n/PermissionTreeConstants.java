@@ -19,8 +19,8 @@ package org.uberfire.client.resources.i18n;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
 
-public interface PermissionTreeConstants extends Messages, PermissionTreeI18n {
+public interface PermissionTreeConstants extends Messages,
+                                                 PermissionTreeI18n {
 
     PermissionTreeConstants INSTANCE = GWT.create(PermissionTreeConstants.class);
-
 }

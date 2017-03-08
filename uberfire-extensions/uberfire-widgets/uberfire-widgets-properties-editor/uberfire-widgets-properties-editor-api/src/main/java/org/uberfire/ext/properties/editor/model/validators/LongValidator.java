@@ -22,11 +22,11 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class LongValidator implements PropertyFieldValidator {
 
     @Override
-    public boolean validate( Object value ) {
+    public boolean validate(Object value) {
         try {
-            Long.parseLong( value.toString() );
+            Long.parseLong(value.toString());
             return true;
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             return false;
         }
     }

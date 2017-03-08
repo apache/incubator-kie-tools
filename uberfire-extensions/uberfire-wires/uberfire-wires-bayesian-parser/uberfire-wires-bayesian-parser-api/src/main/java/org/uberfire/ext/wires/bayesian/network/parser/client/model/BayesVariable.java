@@ -25,13 +25,12 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class BayesVariable implements Serializable {
 
     private static final long serialVersionUID = -6018017577352463589L;
-
+    double[][] probabilities;
+    double[][] position;
     private String name;
     private int id;
-    double[][] probabilities;
     private List<String> outcomes;
     private String type;
-    double[][] position;
     private List<String> given;
     private List<BayesVariable> incomingNodes;
 
@@ -39,15 +38,22 @@ public class BayesVariable implements Serializable {
 
     }
 
-    public BayesVariable(String name, int id, List<String> outcomes, double[][] probabilities) {
+    public BayesVariable(String name,
+                         int id,
+                         List<String> outcomes,
+                         double[][] probabilities) {
         this.name = name;
         this.id = id;
         this.probabilities = probabilities;
         this.outcomes = outcomes;
     }
 
-    public BayesVariable(String name, int id, List<String> outcomes, double[][] probabilities, List<String> given,
-            double[][] position) {
+    public BayesVariable(String name,
+                         int id,
+                         List<String> outcomes,
+                         double[][] probabilities,
+                         List<String> given,
+                         double[][] position) {
         this.name = name;
         this.id = id;
         this.probabilities = probabilities;
@@ -60,12 +66,24 @@ public class BayesVariable implements Serializable {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public double[][] getProbabilities() {
         return probabilities;
+    }
+
+    public void setProbabilities(double[][] probabilities) {
+        this.probabilities = probabilities;
     }
 
     public String getType() {
@@ -82,18 +100,6 @@ public class BayesVariable implements Serializable {
 
     public void setPosition(double[][] position) {
         this.position = position;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setProbabilities(double[][] probabilities) {
-        this.probabilities = probabilities;
     }
 
     public List<String> getOutcomes() {
@@ -119,5 +125,4 @@ public class BayesVariable implements Serializable {
     public void setIncomingNodes(List<BayesVariable> incomingNodes) {
         this.incomingNodes = incomingNodes;
     }
-
 }

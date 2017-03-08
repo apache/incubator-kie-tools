@@ -34,10 +34,10 @@ public class GroupingToggle extends Group {
 
     private static final double PADDING = 8;
 
-    private final Text toggle = new Text( "",
-                                          TOGGLE_FONT_FAMILY,
-                                          TOGGLE_FONT_SIZE ) {{
-        setFillColor( ColorName.GRAY );
+    private final Text toggle = new Text("",
+                                         TOGGLE_FONT_FAMILY,
+                                         TOGGLE_FONT_SIZE) {{
+        setFillColor(ColorName.GRAY);
     }};
 
     /**
@@ -47,13 +47,13 @@ public class GroupingToggle extends Group {
      * @param isGrouped true is the cell is collapsed.
      */
     @SuppressWarnings("unused")
-    public GroupingToggle( final double cellWidth,
-                           final double cellHeight,
-                           final boolean isGrouped ) {
-        toggle.setText( isGrouped ? TOGGLE_ICON_EXPAND : TOGGLE_ICON_COLLAPSE );
-        toggle.setX( cellWidth - TOGGLE_FONT_SIZE - PADDING );
-        toggle.setY( TOGGLE_FONT_SIZE + PADDING );
-        add( toggle );
+    public GroupingToggle(final double cellWidth,
+                          final double cellHeight,
+                          final boolean isGrouped) {
+        toggle.setText(isGrouped ? TOGGLE_ICON_EXPAND : TOGGLE_ICON_COLLAPSE);
+        toggle.setX(cellWidth - TOGGLE_FONT_SIZE - PADDING);
+        toggle.setY(TOGGLE_FONT_SIZE + PADDING);
+        add(toggle);
     }
 
     /**
@@ -65,17 +65,16 @@ public class GroupingToggle extends Group {
      * @return true if the cell coordinate is on the hot-spot.
      */
     @SuppressWarnings("unused")
-    public static boolean onHotSpot( final double cellX,
-                                     final double cellY,
-                                     final double cellWidth,
-                                     final double cellHeight ) {
+    public static boolean onHotSpot(final double cellX,
+                                    final double cellY,
+                                    final double cellWidth,
+                                    final double cellHeight) {
         final double offsetX = cellWidth - TOGGLE_FONT_SIZE - PADDING;
-        if ( cellX - offsetX > 0 && cellX - offsetX < TOGGLE_FONT_SIZE ) {
-            if ( cellY > PADDING && cellY < PADDING + TOGGLE_FONT_SIZE ) {
+        if (cellX - offsetX > 0 && cellX - offsetX < TOGGLE_FONT_SIZE) {
+            if (cellY > PADDING && cellY < PADDING + TOGGLE_FONT_SIZE) {
                 return true;
             }
         }
         return false;
     }
-
 }

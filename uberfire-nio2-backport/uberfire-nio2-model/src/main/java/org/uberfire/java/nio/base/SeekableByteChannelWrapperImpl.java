@@ -21,7 +21,7 @@ import java.nio.ByteBuffer;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.channels.SeekableByteChannel;
 
-import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.Preconditions.checkNotNull;
 
 /**
  *
@@ -31,8 +31,9 @@ public class SeekableByteChannelWrapperImpl
 
     private final SeekableByteChannel channel;
 
-    public SeekableByteChannelWrapperImpl( final SeekableByteChannel channel ) {
-        this.channel = checkNotNull( "channel", channel );
+    public SeekableByteChannelWrapperImpl(final SeekableByteChannel channel) {
+        this.channel = checkNotNull("channel",
+                                    channel);
     }
 
     @Override
@@ -41,8 +42,8 @@ public class SeekableByteChannelWrapperImpl
     }
 
     @Override
-    public SeekableByteChannel position( final long newPosition ) throws IOException {
-        return channel.position( newPosition );
+    public SeekableByteChannel position(final long newPosition) throws IOException {
+        return channel.position(newPosition);
     }
 
     @Override
@@ -51,18 +52,18 @@ public class SeekableByteChannelWrapperImpl
     }
 
     @Override
-    public SeekableByteChannel truncate( final long size ) throws IOException {
-        return channel.truncate( size );
+    public SeekableByteChannel truncate(final long size) throws IOException {
+        return channel.truncate(size);
     }
 
     @Override
-    public int read( final ByteBuffer dst ) throws java.io.IOException {
-        return channel.read( dst );
+    public int read(final ByteBuffer dst) throws java.io.IOException {
+        return channel.read(dst);
     }
 
     @Override
-    public int write( final ByteBuffer src ) throws java.io.IOException {
-        return channel.write( src );
+    public int write(final ByteBuffer src) throws java.io.IOException {
+        return channel.write(src);
     }
 
     @Override

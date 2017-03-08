@@ -33,14 +33,14 @@ import org.uberfire.java.nio.file.FileSystem;
 
 public class SocialTimelineCacheInstancePersistence extends SocialTimelineCachePersistence {
 
-    public SocialTimelineCacheInstancePersistence( final Gson gson,
-                                                   final Type gsonCollectionType,
-                                                   final IOService ioService,
-                                                   final SocialEventTypeRepositoryAPI socialEventTypeRepository,
-                                                   final SocialUserPersistenceAPI socialUserService,
-                                                   final SocialUserServicesExtendedBackEndImpl userServicesBackend,
-                                                   final FileSystem fileSystem,
-                                                   final SocialSecurityConstraintsManager socialSecurityConstraintsManager ) {
+    public SocialTimelineCacheInstancePersistence(final Gson gson,
+                                                  final Type gsonCollectionType,
+                                                  final IOService ioService,
+                                                  final SocialEventTypeRepositoryAPI socialEventTypeRepository,
+                                                  final SocialUserPersistenceAPI socialUserService,
+                                                  final SocialUserServicesExtendedBackEndImpl userServicesBackend,
+                                                  final FileSystem fileSystem,
+                                                  final SocialSecurityConstraintsManager socialSecurityConstraintsManager) {
         this.gsonCollectionType = gsonCollectionType;
         this.gson = gson;
         this.ioService = ioService;
@@ -49,35 +49,37 @@ public class SocialTimelineCacheInstancePersistence extends SocialTimelineCacheP
         this.userServicesBackend = userServicesBackend;
         this.fileSystem = fileSystem;
         this.socialSecurityConstraintsManager = socialSecurityConstraintsManager;
-        PriorityDisposableRegistry.register( this );
+        PriorityDisposableRegistry.register(this);
     }
 
     @Override
-    public void persist( SocialActivitiesEvent event ) {
-        SocialEventType type = findType( event );
-        List<SocialActivitiesEvent> typeEvents = typeEventsFreshEvents.get( type );
-        if ( typeEvents == null ) {
+    public void persist(SocialActivitiesEvent event) {
+        SocialEventType type = findType(event);
+        List<SocialActivitiesEvent> typeEvents = typeEventsFreshEvents.get(type);
+        if (typeEvents == null) {
             typeEvents = new ArrayList<SocialActivitiesEvent>();
         }
-        typeEvents.add( event );
-        typeEventsFreshEvents.put( type, typeEvents );
-        cacheControl( event );
+        typeEvents.add(event);
+        typeEventsFreshEvents.put(type,
+                                  typeEvents);
+        cacheControl(event);
     }
 
-    SocialEventType findType( SocialActivitiesEvent event ) {
-        return socialEventTypeRepository.findType( event.getType() );
+    SocialEventType findType(SocialActivitiesEvent event) {
+        return socialEventTypeRepository.findType(event.getType());
     }
 
     @Override
-    public void persist( SocialUser user,
-                         SocialActivitiesEvent event ) {
-        List<SocialActivitiesEvent> userEvents = userEventsTimelineFreshEvents.get( user.getUserName() );
-        if ( userEvents == null ) {
+    public void persist(SocialUser user,
+                        SocialActivitiesEvent event) {
+        List<SocialActivitiesEvent> userEvents = userEventsTimelineFreshEvents.get(user.getUserName());
+        if (userEvents == null) {
             userEvents = new ArrayList<SocialActivitiesEvent>();
         }
-        userEvents.add( event );
-        userEventsTimelineFreshEvents.put( user.getUserName(), userEvents );
-        cacheControl( user );
+        userEvents.add(event);
+        userEventsTimelineFreshEvents.put(user.getUserName(),
+                                          userEvents);
+        cacheControl(user);
     }
 
     @Override
@@ -86,27 +88,27 @@ public class SocialTimelineCacheInstancePersistence extends SocialTimelineCacheP
         saveAllUserTimelines();
     }
 
-    void cacheControl( SocialUser user ) {
-        SocialCacheControl socialCacheControl = userEventsCacheControl.get( user.getUserName() );
-        if ( socialCacheControl == null ) {
+    void cacheControl(SocialUser user) {
+        SocialCacheControl socialCacheControl = userEventsCacheControl.get(user.getUserName());
+        if (socialCacheControl == null) {
             socialCacheControl = new SocialCacheControl();
-            userEventsCacheControl.put( user.getUserName(), socialCacheControl );
+            userEventsCacheControl.put(user.getUserName(),
+                                       socialCacheControl);
         }
         socialCacheControl.registerNewEvent();
-        if ( socialCacheControl.needToPersist() ) {
-            storeTimeLineInFile( user );
+        if (socialCacheControl.needToPersist()) {
+            storeTimeLineInFile(user);
 
             socialCacheControl.reset();
-
         }
     }
 
-    void cacheControl( SocialActivitiesEvent event ) {
-        SocialEventType type = findType( event );
-        SocialCacheControl socialCacheControl = typeEventsCacheControl.get( type );
+    void cacheControl(SocialActivitiesEvent event) {
+        SocialEventType type = findType(event);
+        SocialCacheControl socialCacheControl = typeEventsCacheControl.get(type);
         socialCacheControl.registerNewEvent();
-        if ( socialCacheControl.needToPersist() ) {
-            storeTimeLineInFile( type );
+        if (socialCacheControl.needToPersist()) {
+            storeTimeLineInFile(type);
             socialCacheControl.reset();
         }
     }

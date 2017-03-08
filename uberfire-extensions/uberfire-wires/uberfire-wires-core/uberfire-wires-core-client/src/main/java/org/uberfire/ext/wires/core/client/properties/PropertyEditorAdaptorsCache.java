@@ -18,7 +18,6 @@ package org.uberfire.ext.wires.core.client.properties;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -49,11 +48,10 @@ public class PropertyEditorAdaptorsCache {
 
     private Set<PropertyEditorAdaptor> getAvailableAdaptors() {
         final Set<PropertyEditorAdaptor> factories = new HashSet<PropertyEditorAdaptor>();
-        final Collection<SyncBeanDef<PropertyEditorAdaptor>> factoryBeans = iocManager.lookupBeans( PropertyEditorAdaptor.class );
-        for ( SyncBeanDef<PropertyEditorAdaptor> factoryBean : factoryBeans ) {
-            factories.add( factoryBean.getInstance() );
+        final Collection<SyncBeanDef<PropertyEditorAdaptor>> factoryBeans = iocManager.lookupBeans(PropertyEditorAdaptor.class);
+        for (SyncBeanDef<PropertyEditorAdaptor> factoryBean : factoryBeans) {
+            factories.add(factoryBean.getInstance());
         }
         return factories;
     }
-
 }

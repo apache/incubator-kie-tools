@@ -32,20 +32,19 @@ import org.uberfire.ext.wires.bpmn.beliefs.graph.impl.GraphNodeImpl;
 public class TestDummyNode extends GraphNodeImpl<Content, BpmnEdge> implements BpmnGraphNode {
 
     public TestDummyNode() {
-        setContent( new DefaultContentImpl( "dummy",
-                                            "dummy",
-                                            "dummy",
-                                            new HashSet<Role>() {{
-                                                add( new DefaultRoleImpl( "dummy" ) );
-                                            }},
-                                            Collections.EMPTY_SET ) );
+        setContent(new DefaultContentImpl("dummy",
+                                          "dummy",
+                                          "dummy",
+                                          new HashSet<Role>() {{
+                                              add(new DefaultRoleImpl("dummy"));
+                                          }},
+                                          Collections.EMPTY_SET));
     }
 
     @Override
     public TestDummyNode copy() {
         final TestDummyNode copy = new TestDummyNode();
-        copy.setContent( this.getContent().copy() );
+        copy.setContent(this.getContent().copy());
         return copy;
     }
-
 }

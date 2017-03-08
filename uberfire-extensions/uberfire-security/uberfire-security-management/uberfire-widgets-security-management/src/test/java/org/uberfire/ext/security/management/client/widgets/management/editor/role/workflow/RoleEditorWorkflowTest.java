@@ -52,18 +52,28 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class RoleEditorWorkflowTest extends AbstractSecurityManagementTest {
 
-
-    @Mock Caller<AuthorizationService> authorizationService;
-    @Mock EventSourceMock<OnErrorEvent> errorEvent;
-    @Mock ConfirmBox confirmBox;
-    @Mock LoadingBox loadingBox;
-    @Mock EventSourceMock<SaveRoleEvent> saveRoleEvent;
-    @Mock RoleEditor roleEditor;
-    @Mock RoleEditorDriver roleEditorDriver;
-    @Mock EntityWorkflowView view;
-    @Mock ACLSettings aclSettings;
-    @Mock PerspectiveActivity homePerspective;
-    @Mock Role role;
+    @Mock
+    Caller<AuthorizationService> authorizationService;
+    @Mock
+    EventSourceMock<OnErrorEvent> errorEvent;
+    @Mock
+    ConfirmBox confirmBox;
+    @Mock
+    LoadingBox loadingBox;
+    @Mock
+    EventSourceMock<SaveRoleEvent> saveRoleEvent;
+    @Mock
+    RoleEditor roleEditor;
+    @Mock
+    RoleEditorDriver roleEditorDriver;
+    @Mock
+    EntityWorkflowView view;
+    @Mock
+    ACLSettings aclSettings;
+    @Mock
+    PerspectiveActivity homePerspective;
+    @Mock
+    Role role;
 
     PermissionManager permissionManager;
     PermissionCollection permissionCollection;
@@ -91,8 +101,17 @@ public class RoleEditorWorkflowTest extends AbstractSecurityManagementTest {
         when(view.showNotification(anyString())).thenReturn(view);
         when(rolesManagerService.get(anyString())).thenReturn(role);
 
-        tested = spy(new RoleEditorWorkflow(userSystemManager, authorizationService, permissionManager, errorEvent,
-                workbenchNotification, saveRoleEvent, confirmBox, roleEditor, roleEditorDriver, loadingBox, view));
+        tested = spy(new RoleEditorWorkflow(userSystemManager,
+                                            authorizationService,
+                                            permissionManager,
+                                            errorEvent,
+                                            workbenchNotification,
+                                            saveRoleEvent,
+                                            confirmBox,
+                                            roleEditor,
+                                            roleEditorDriver,
+                                            loadingBox,
+                                            view));
     }
 
     @Test
@@ -101,17 +120,26 @@ public class RoleEditorWorkflowTest extends AbstractSecurityManagementTest {
         tested.clear();
         assertNull(tested.role);
         verify(roleEditor).clear();
-        verify(roleEditor, never()).show(any(Role.class));
-        verify(view, atLeastOnce()).clearNotification();
-        verify(view, never()).setCancelButtonVisible(true);
-        verify(view, never()).setCallback(any(EntityWorkflowView.Callback.class));
-        verify(view, never()).setSaveButtonText(anyString());
-        verify(view, never()).setWidget(any(IsWidget.class));
-        verify(view, never()).setSaveButtonVisible(anyBoolean());
-        verify(view, never()).setSaveButtonEnabled(anyBoolean());
-        verify(view, never()).showNotification(anyString());
+        verify(roleEditor,
+               never()).show(any(Role.class));
+        verify(view,
+               atLeastOnce()).clearNotification();
+        verify(view,
+               never()).setCancelButtonVisible(true);
+        verify(view,
+               never()).setCallback(any(EntityWorkflowView.Callback.class));
+        verify(view,
+               never()).setSaveButtonText(anyString());
+        verify(view,
+               never()).setWidget(any(IsWidget.class));
+        verify(view,
+               never()).setSaveButtonVisible(anyBoolean());
+        verify(view,
+               never()).setSaveButtonEnabled(anyBoolean());
+        verify(view,
+               never()).showNotification(anyString());
     }
-    
+
     @Test
     public void testShow() {
         final String name = "role1";
@@ -122,9 +150,11 @@ public class RoleEditorWorkflowTest extends AbstractSecurityManagementTest {
         verify(view).setWidget(any(IsWidget.class));
         verify(view).setSaveButtonVisible(false);
         verify(view).setSaveButtonEnabled(false);
-        verify(view, never()).showNotification(anyString());
+        verify(view,
+               never()).showNotification(anyString());
         verify(view).clearNotification();
-        verify(roleEditorDriver).edit(role, roleEditor);
+        verify(roleEditorDriver).edit(role,
+                                      roleEditor);
         verify(roleEditor).clear();
     }
 
@@ -135,17 +165,22 @@ public class RoleEditorWorkflowTest extends AbstractSecurityManagementTest {
         tested.showError(error);
         verify(errorEvent).fire(any(OnErrorEvent.class));
     }
-    
+
     @Test
     public void testHomePerspectiveGranted() {
-        permissionCollection.add(permissionManager.createPermission(homePerspective, PerspectiveAction.READ, true));
+        permissionCollection.add(permissionManager.createPermission(homePerspective,
+                                                                    PerspectiveAction.READ,
+                                                                    true));
         tested.edit();
-        verify(tested, never()).showNotification(anyString());
+        verify(tested,
+               never()).showNotification(anyString());
     }
 
     @Test
     public void testHomePerspectiveDenied() {
-        permissionCollection.add(permissionManager.createPermission(homePerspective, PerspectiveAction.READ, false));
+        permissionCollection.add(permissionManager.createPermission(homePerspective,
+                                                                    PerspectiveAction.READ,
+                                                                    false));
         tested.edit();
         verify(tested).showNotification(anyString());
     }

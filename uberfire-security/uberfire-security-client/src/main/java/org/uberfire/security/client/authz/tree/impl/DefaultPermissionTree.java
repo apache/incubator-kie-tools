@@ -34,7 +34,9 @@ public class DefaultPermissionTree implements PermissionTree {
     private List<PermissionNode> rootNodes;
     private PermissionCollection permissions;
 
-    public DefaultPermissionTree(PermissionManager permissionManager, List<PermissionNode> rootNodes, PermissionCollection permissions) {
+    public DefaultPermissionTree(PermissionManager permissionManager,
+                                 List<PermissionNode> rootNodes,
+                                 PermissionCollection permissions) {
         this.permissionManager = permissionManager;
         this.rootNodes = rootNodes;
         this.permissions = permissions;
@@ -89,18 +91,23 @@ public class DefaultPermissionTree implements PermissionTree {
 
     public void accept(PermissionTreeVisitor visitor) {
         for (PermissionNode rootNode : rootNodes) {
-            this.accept(visitor, rootNode);
+            this.accept(visitor,
+                        rootNode);
         }
     }
 
-    public void accept(PermissionTreeVisitor visitor, PermissionNode node) {
+    public void accept(PermissionTreeVisitor visitor,
+                       PermissionNode node) {
         visitor.visit(node);
-        node.expand(children -> accept(visitor, children));
+        node.expand(children -> accept(visitor,
+                                       children));
     }
 
-    public void accept(PermissionTreeVisitor visitor, List<PermissionNode> children) {
+    public void accept(PermissionTreeVisitor visitor,
+                       List<PermissionNode> children) {
         for (PermissionNode child : children) {
-            accept(visitor, child);
+            accept(visitor,
+                   child);
         }
     }
 }

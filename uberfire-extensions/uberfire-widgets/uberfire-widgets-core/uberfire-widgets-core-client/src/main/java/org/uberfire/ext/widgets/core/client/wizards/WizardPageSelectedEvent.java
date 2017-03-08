@@ -22,12 +22,11 @@ public class WizardPageSelectedEvent {
 
     private final WizardPage selectedPage;
 
-    public WizardPageSelectedEvent( final WizardPage selectedPage ) {
+    public WizardPageSelectedEvent(final WizardPage selectedPage) {
         this.selectedPage = selectedPage;
     }
 
     public WizardPage getSelectedPage() {
         return selectedPage;
     }
-
 }

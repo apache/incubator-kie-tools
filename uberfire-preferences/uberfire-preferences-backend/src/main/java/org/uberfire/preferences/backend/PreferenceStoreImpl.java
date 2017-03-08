@@ -50,33 +50,33 @@ public class PreferenceStoreImpl implements PreferenceStore {
     protected PreferenceStoreImpl() {
     }
 
-    PreferenceStoreImpl( final PreferenceStorage storage,
-                         final PreferenceScopeFactory scopeFactory,
-                         final PreferenceScopeResolutionStrategy defaultScopeResolutionStrategy ) {
+    PreferenceStoreImpl(final PreferenceStorage storage,
+                        final PreferenceScopeFactory scopeFactory,
+                        final PreferenceScopeResolutionStrategy defaultScopeResolutionStrategy) {
         this.storage = storage;
         this.scopeFactory = scopeFactory;
         this.defaultScopeResolutionStrategy = defaultScopeResolutionStrategy;
     }
 
     @Inject
-    public PreferenceStoreImpl( final PreferenceStorage storage,
-                                final PreferenceScopeFactory scopeFactory,
-                                @Customizable final PreferenceScopeResolutionStrategy defaultScopeResolutionStrategy,
-                                final Instance<PreferenceScopeResolutionStrategy> preferenceScopeResolutionStrategy,
-                                final InjectionPoint ip ) {
+    public PreferenceStoreImpl(final PreferenceStorage storage,
+                               final PreferenceScopeFactory scopeFactory,
+                               @Customizable final PreferenceScopeResolutionStrategy defaultScopeResolutionStrategy,
+                               final Instance<PreferenceScopeResolutionStrategy> preferenceScopeResolutionStrategy,
+                               final InjectionPoint ip) {
         this.storage = storage;
         this.scopeFactory = scopeFactory;
 
-        if ( preferenceScopeResolutionStrategy.isUnsatisfied() ) {
-            if ( ip != null ) {
+        if (preferenceScopeResolutionStrategy.isUnsatisfied()) {
+            if (ip != null) {
                 String componentKey = null;
-                Annotation annotation = ip.getAnnotated().getAnnotation( ComponentKey.class );
-                if ( annotation != null ) {
-                    componentKey = ( (ComponentKey) annotation ).value();
+                Annotation annotation = ip.getAnnotated().getAnnotation(ComponentKey.class);
+                if (annotation != null) {
+                    componentKey = ((ComponentKey) annotation).value();
                 }
 
-                this.defaultScopeResolutionStrategy = new DefaultPreferenceScopeResolutionStrategy( scopeFactory,
-                                                                                                    componentKey );
+                this.defaultScopeResolutionStrategy = new DefaultPreferenceScopeResolutionStrategy(scopeFactory,
+                                                                                                   componentKey);
             } else {
                 this.defaultScopeResolutionStrategy = defaultScopeResolutionStrategy;
             }
@@ -96,228 +96,274 @@ public class PreferenceStoreImpl implements PreferenceStore {
     }
 
     @Override
-    public <T> void put( final PreferenceScope scope,
-                         final String key,
-                         final T value ) {
-        storage.write( scope, key, value );
+    public <T> void put(final PreferenceScope scope,
+                        final String key,
+                        final T value) {
+        storage.write(scope,
+                      key,
+                      value);
     }
 
     @Override
-    public <T> void put( final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                         final String key,
-                         final T value ) {
-        put( scopeResolutionStrategyInfo.defaultScope(), key, value );
+    public <T> void put(final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                        final String key,
+                        final T value) {
+        put(scopeResolutionStrategyInfo.defaultScope(),
+            key,
+            value);
     }
 
     @Override
-    public <T> void put( final String key,
-                         final T value ) {
-        put( defaultScopeResolutionStrategy.getInfo(), key, value );
+    public <T> void put(final String key,
+                        final T value) {
+        put(defaultScopeResolutionStrategy.getInfo(),
+            key,
+            value);
     }
 
     @Override
-    public <T> void put( final PreferenceScope scope,
-                         final Map<String, T> valueByKey ) {
-        valueByKey.forEach( ( key, value ) -> put( scope, key, value ) );
+    public <T> void put(final PreferenceScope scope,
+                        final Map<String, T> valueByKey) {
+        valueByKey.forEach((key, value) -> put(scope,
+                                               key,
+                                               value));
     }
 
     @Override
-    public <T> void put( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                         final Map<String, T> valueByKey ) {
-        put( scopeResolutionStrategyInfo.defaultScope(), valueByKey );
+    public <T> void put(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                        final Map<String, T> valueByKey) {
+        put(scopeResolutionStrategyInfo.defaultScope(),
+            valueByKey);
     }
 
     @Override
-    public <T> void put( final Map<String, T> valueByKey ) {
-        put( defaultScopeResolutionStrategy.getInfo(), valueByKey );
+    public <T> void put(final Map<String, T> valueByKey) {
+        put(defaultScopeResolutionStrategy.getInfo(),
+            valueByKey);
     }
 
     @Override
-    public <T> void putIfAbsent( final PreferenceScope scope,
-                                 final String key,
-                                 final T value ) {
-        if ( !storage.exists( scope, key ) ) {
-            put( scope, key, value );
+    public <T> void putIfAbsent(final PreferenceScope scope,
+                                final String key,
+                                final T value) {
+        if (!storage.exists(scope,
+                            key)) {
+            put(scope,
+                key,
+                value);
         }
     }
 
     @Override
-    public <T> void putIfAbsent( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                                 final String key,
-                                 final T value ) {
-        putIfAbsent( scopeResolutionStrategyInfo.defaultScope(), key, value );
+    public <T> void putIfAbsent(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                                final String key,
+                                final T value) {
+        putIfAbsent(scopeResolutionStrategyInfo.defaultScope(),
+                    key,
+                    value);
     }
 
     @Override
-    public <T> void putIfAbsent( final String key,
-                                 final T value ) {
-        putIfAbsent( defaultScopeResolutionStrategy.getInfo(), key, value );
+    public <T> void putIfAbsent(final String key,
+                                final T value) {
+        putIfAbsent(defaultScopeResolutionStrategy.getInfo(),
+                    key,
+                    value);
     }
 
     @Override
-    public <T> void putIfAbsent( final PreferenceScope scope,
-                                 final Map<String, T> valueByKey ) {
-        valueByKey.forEach( ( key, value ) -> putIfAbsent( scope, key, value ) );
+    public <T> void putIfAbsent(final PreferenceScope scope,
+                                final Map<String, T> valueByKey) {
+        valueByKey.forEach((key, value) -> putIfAbsent(scope,
+                                                       key,
+                                                       value));
     }
 
     @Override
-    public <T> void putIfAbsent( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                                 final Map<String, T> valueByKey ) {
-        putIfAbsent( scopeResolutionStrategyInfo.defaultScope(), valueByKey );
+    public <T> void putIfAbsent(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                                final Map<String, T> valueByKey) {
+        putIfAbsent(scopeResolutionStrategyInfo.defaultScope(),
+                    valueByKey);
     }
 
     @Override
-    public <T> void putIfAbsent( final Map<String, T> valueByKey ) {
-        putIfAbsent( defaultScopeResolutionStrategy.getInfo(), valueByKey );
+    public <T> void putIfAbsent(final Map<String, T> valueByKey) {
+        putIfAbsent(defaultScopeResolutionStrategy.getInfo(),
+                    valueByKey);
     }
 
     @Override
-    public <T> T get( final PreferenceScope scope,
-                      final String key ) {
-        return storage.read( scope, key );
+    public <T> T get(final PreferenceScope scope,
+                     final String key) {
+        return storage.read(scope,
+                            key);
     }
 
     @Override
-    public <T> T get( final PreferenceScope scope,
-                      final String key,
-                      final T defaultValue ) {
-        T value = get( scope, key );
+    public <T> T get(final PreferenceScope scope,
+                     final String key,
+                     final T defaultValue) {
+        T value = get(scope,
+                      key);
         return value != null ? value : defaultValue;
     }
 
     @Override
-    public <T> T get( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                      final String key ) {
-        return storage.read( scopeResolutionStrategyInfo, key );
+    public <T> T get(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                     final String key) {
+        return storage.read(scopeResolutionStrategyInfo,
+                            key);
     }
 
     @Override
-    public <T> T get( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                      final String key,
-                      final T defaultValue ) {
-        T value = get( scopeResolutionStrategyInfo, key );
+    public <T> T get(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                     final String key,
+                     final T defaultValue) {
+        T value = get(scopeResolutionStrategyInfo,
+                      key);
         return value != null ? value : defaultValue;
     }
 
     @Override
-    public <T> T get( final String key ) {
-        return get( defaultScopeResolutionStrategy.getInfo(), key );
+    public <T> T get(final String key) {
+        return get(defaultScopeResolutionStrategy.getInfo(),
+                   key);
     }
 
     @Override
-    public <T> T get( final String key,
-                      final T defaultValue ) {
-        return get( defaultScopeResolutionStrategy.getInfo(), key, defaultValue );
+    public <T> T get(final String key,
+                     final T defaultValue) {
+        return get(defaultScopeResolutionStrategy.getInfo(),
+                   key,
+                   defaultValue);
     }
 
     @Override
-    public <T> PreferenceScopedValue<T> getScoped( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                                                   final String key ) {
-        return storage.readWithScope( scopeResolutionStrategyInfo, key );
+    public <T> PreferenceScopedValue<T> getScoped(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                                                  final String key) {
+        return storage.readWithScope(scopeResolutionStrategyInfo,
+                                     key);
     }
 
     @Override
-    public <T> PreferenceScopedValue<T> getScoped( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                                                   final String key,
-                                                   final T defaultValue ) {
-        PreferenceScopedValue<T> value = getScoped( scopeResolutionStrategyInfo, key );
-        return value != null ? value : new PreferenceScopedValue<>( defaultValue, null );
+    public <T> PreferenceScopedValue<T> getScoped(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                                                  final String key,
+                                                  final T defaultValue) {
+        PreferenceScopedValue<T> value = getScoped(scopeResolutionStrategyInfo,
+                                                   key);
+        return value != null ? value : new PreferenceScopedValue<>(defaultValue,
+                                                                   null);
     }
 
     @Override
-    public <T> PreferenceScopedValue<T> getScoped( final String key ) {
-        return getScoped( defaultScopeResolutionStrategy.getInfo(), key );
+    public <T> PreferenceScopedValue<T> getScoped(final String key) {
+        return getScoped(defaultScopeResolutionStrategy.getInfo(),
+                         key);
     }
 
     @Override
-    public <T> PreferenceScopedValue<T> getScoped( final String key,
-                                                   final T defaultValue ) {
-        return getScoped( defaultScopeResolutionStrategy.getInfo(), key, defaultValue );
+    public <T> PreferenceScopedValue<T> getScoped(final String key,
+                                                  final T defaultValue) {
+        return getScoped(defaultScopeResolutionStrategy.getInfo(),
+                         key,
+                         defaultValue);
     }
 
     @Override
-    public Map<String, Object> search( final PreferenceScope scope,
-                                       final Collection<String> keys ) {
-        if ( keys == null ) {
-            return all( scope );
+    public Map<String, Object> search(final PreferenceScope scope,
+                                      final Collection<String> keys) {
+        if (keys == null) {
+            return all(scope);
         }
 
         Map<String, Object> map = new HashMap<>();
-        keys.forEach( key -> map.put( key, storage.read( scope, key ) ) );
+        keys.forEach(key -> map.put(key,
+                                    storage.read(scope,
+                                                 key)));
 
         return map;
     }
 
     @Override
-    public Map<String, Object> search( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                                       final Collection<String> keys ) {
-        if ( keys == null ) {
-            return all( scopeResolutionStrategyInfo );
+    public Map<String, Object> search(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                                      final Collection<String> keys) {
+        if (keys == null) {
+            return all(scopeResolutionStrategyInfo);
         }
 
         Map<String, Object> map = new HashMap<>();
-        keys.forEach( key -> map.put( key, storage.read( scopeResolutionStrategyInfo, key ) ) );
+        keys.forEach(key -> map.put(key,
+                                    storage.read(scopeResolutionStrategyInfo,
+                                                 key)));
 
         return map;
     }
 
     @Override
-    public Map<String, Object> search( final Collection<String> keys ) {
-        return search( defaultScopeResolutionStrategy.getInfo(), keys );
+    public Map<String, Object> search(final Collection<String> keys) {
+        return search(defaultScopeResolutionStrategy.getInfo(),
+                      keys);
     }
 
     @Override
-    public Map<String, PreferenceScopedValue<Object>> searchScoped( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                                                                    final Collection<String> keys ) {
-        if ( keys == null ) {
-            return allScoped( scopeResolutionStrategyInfo );
+    public Map<String, PreferenceScopedValue<Object>> searchScoped(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                                                                   final Collection<String> keys) {
+        if (keys == null) {
+            return allScoped(scopeResolutionStrategyInfo);
         }
 
         Map<String, PreferenceScopedValue<Object>> map = new HashMap<>();
-        keys.forEach( key -> map.put( key, storage.readWithScope( scopeResolutionStrategyInfo, key ) ) );
+        keys.forEach(key -> map.put(key,
+                                    storage.readWithScope(scopeResolutionStrategyInfo,
+                                                          key)));
 
         return map;
     }
 
     @Override
-    public Map<String, PreferenceScopedValue<Object>> searchScoped( final Collection<String> keys ) {
-        return searchScoped( defaultScopeResolutionStrategy.getInfo(), keys );
+    public Map<String, PreferenceScopedValue<Object>> searchScoped(final Collection<String> keys) {
+        return searchScoped(defaultScopeResolutionStrategy.getInfo(),
+                            keys);
     }
 
     @Override
-    public Map<String, Object> all( final PreferenceScope scope ) {
-        return search( scope, storage.allKeys( scope ) );
+    public Map<String, Object> all(final PreferenceScope scope) {
+        return search(scope,
+                      storage.allKeys(scope));
     }
 
     @Override
-    public Map<String, Object> all( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo ) {
-        return search( storage.allKeys( scopeResolutionStrategyInfo.order() ) );
+    public Map<String, Object> all(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo) {
+        return search(storage.allKeys(scopeResolutionStrategyInfo.order()));
     }
 
     @Override
     public Map<String, Object> all() {
-        return all( defaultScopeResolutionStrategy.getInfo() );
+        return all(defaultScopeResolutionStrategy.getInfo());
     }
 
     @Override
-    public Map<String, PreferenceScopedValue<Object>> allScoped( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo ) {
-        return searchScoped( scopeResolutionStrategyInfo, storage.allKeys( scopeResolutionStrategyInfo.order() ) );
+    public Map<String, PreferenceScopedValue<Object>> allScoped(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo) {
+        return searchScoped(scopeResolutionStrategyInfo,
+                            storage.allKeys(scopeResolutionStrategyInfo.order()));
     }
 
     @Override
     public Map<String, PreferenceScopedValue<Object>> allScoped() {
-        return allScoped( defaultScopeResolutionStrategy.getInfo() );
+        return allScoped(defaultScopeResolutionStrategy.getInfo());
     }
 
     @Override
-    public void remove( final PreferenceScope scope,
-                        final String key ) {
-        storage.delete( scope, key );
+    public void remove(final PreferenceScope scope,
+                       final String key) {
+        storage.delete(scope,
+                       key);
     }
 
     @Override
-    public void remove( final List<PreferenceScope> scopes,
-                        final String key ) {
-        scopes.forEach( scope -> remove( scope, key ) );
+    public void remove(final List<PreferenceScope> scopes,
+                       final String key) {
+        scopes.forEach(scope -> remove(scope,
+                                       key));
     }
 }

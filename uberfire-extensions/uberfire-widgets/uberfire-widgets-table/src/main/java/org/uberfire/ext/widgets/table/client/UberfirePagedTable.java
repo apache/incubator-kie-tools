@@ -26,77 +26,75 @@ import org.gwtbootstrap3.client.ui.ListBox;
 public class UberfirePagedTable<T>
         extends UberfireSimpleTable<T> {
 
-    interface Binder
-            extends
-            UiBinder<Widget, UberfirePagedTable> {
-
-    }
-
     public static final int DEFAULT_PAGE_SIZE = 10;
-
-    private static Binder uiBinder = GWT.create( Binder.class );
-
-    private int pageSize = 0;
-
-    private AbstractDataProvider<T> dataProvider;
-
+    private static Binder uiBinder = GWT.create(Binder.class);
     @UiField
     public UberfireSimplePager pager;
-
     @UiField
     public ListBox pageSizesSelector;
-
     protected boolean showPageSizesSelector = false;
+    private int pageSize = 0;
+    private AbstractDataProvider<T> dataProvider;
 
     public UberfirePagedTable() {
-        this( DEFAULT_PAGE_SIZE );
+        this(DEFAULT_PAGE_SIZE);
     }
 
-    public UberfirePagedTable( final int pageSize ) {
-        this( pageSize, null );
+    public UberfirePagedTable(final int pageSize) {
+        this(pageSize,
+             null);
     }
 
-    public UberfirePagedTable( final int pageSize,
-                               final ProvidesKey<T> providesKey ) {
-        this( pageSize, providesKey, false );
+    public UberfirePagedTable(final int pageSize,
+                              final ProvidesKey<T> providesKey) {
+        this(pageSize,
+             providesKey,
+             false);
     }
 
-    public UberfirePagedTable( final int pageSize,
-                               final ProvidesKey<T> providesKey,
-                               final boolean showPageSizesSelector ) {
+    public UberfirePagedTable(final int pageSize,
+                              final ProvidesKey<T> providesKey,
+                              final boolean showPageSizesSelector) {
 
-        this( pageSize, providesKey, showPageSizesSelector, false, false );
+        this(pageSize,
+             providesKey,
+             showPageSizesSelector,
+             false,
+             false);
     }
 
-    public UberfirePagedTable( final int pageSize,
-                               final ProvidesKey<T> providesKey,
-                               final boolean showPageSizesSelector,
-                               final boolean showFFButton,
-                               final boolean showLButton ) {
-        super( providesKey );
+    public UberfirePagedTable(final int pageSize,
+                              final ProvidesKey<T> providesKey,
+                              final boolean showPageSizesSelector,
+                              final boolean showFFButton,
+                              final boolean showLButton) {
+        super(providesKey);
         this.showPageSizesSelector = showPageSizesSelector;
         this.pageSize = pageSize;
-        this.dataGrid.setPageSize( pageSize );
-        PagedTableHelper.setSelectedValue( pageSizesSelector, String.valueOf( pageSize ) );
-        this.pager.setDisplay( dataGrid );
-        this.pageSizesSelector.setVisible( this.showPageSizesSelector );
-        setShowFastFordwardPagerButton( showFFButton );
-        setShowLastPagerButton( showLButton );
-        createPageSizesListBox( 5, 20, 5 );
+        this.dataGrid.setPageSize(pageSize);
+        PagedTableHelper.setSelectedValue(pageSizesSelector,
+                                          String.valueOf(pageSize));
+        this.pager.setDisplay(dataGrid);
+        this.pageSizesSelector.setVisible(this.showPageSizesSelector);
+        setShowFastFordwardPagerButton(showFFButton);
+        setShowLastPagerButton(showLButton);
+        createPageSizesListBox(5,
+                               20,
+                               5);
     }
 
     @Override
     protected Widget makeWidget() {
-        return uiBinder.createAndBindUi( this );
-    }
-
-    public void setDataProvider( final AbstractDataProvider<T> dataProvider ) {
-        this.dataProvider = dataProvider;
-        this.dataProvider.addDataDisplay( this );
+        return uiBinder.createAndBindUi(this);
     }
 
     public AbstractDataProvider<T> getDataProvider() {
         return dataProvider;
+    }
+
+    public void setDataProvider(final AbstractDataProvider<T> dataProvider) {
+        this.dataProvider = dataProvider;
+        this.dataProvider.addDataDisplay(this);
     }
 
     public int getPageSize() {
@@ -107,32 +105,37 @@ public class UberfirePagedTable<T>
         return this.pager.getPageStart();
     }
 
-    public void createPageSizesListBox( int minPageSize,
-                                        int maxPageSize,
-                                        int incPageSize ) {
+    public void createPageSizesListBox(int minPageSize,
+                                       int maxPageSize,
+                                       int incPageSize) {
         pageSizesSelector.clear();
-        PagedTableHelper.setSelectIndexOnPageSizesSelector( minPageSize, maxPageSize, incPageSize, pageSizesSelector,
-                                                            pageSize );
-        pageSizesSelector.addChangeHandler( event -> loadPageSizePreferences() );
+        PagedTableHelper.setSelectIndexOnPageSizesSelector(minPageSize,
+                                                           maxPageSize,
+                                                           incPageSize,
+                                                           pageSizesSelector,
+                                                           pageSize);
+        pageSizesSelector.addChangeHandler(event -> loadPageSizePreferences());
 
         loadPageSizePreferences();
-
     }
 
     public final void loadPageSizePreferences() {
-        this.dataGrid.setPageSize( pageSize );
-        this.pager.setPageSize( pageSize );
-        this.dataGrid.setHeight( ( ( pageSize == 0 ? 1 : pageSize ) * 30 + 10 ) + "px" );
+        this.dataGrid.setPageSize(pageSize);
+        this.pager.setPageSize(pageSize);
+        this.dataGrid.setHeight(((pageSize == 0 ? 1 : pageSize) * 30 + 10) + "px");
     }
 
-
-    public void setShowLastPagerButton( boolean showLastPagerButton ) {
-        this.pager.setShowLastPageButton( showLastPagerButton );
+    public void setShowLastPagerButton(boolean showLastPagerButton) {
+        this.pager.setShowLastPageButton(showLastPagerButton);
     }
 
-    public void setShowFastFordwardPagerButton( boolean showFastFordwardPagerButton ) {
-        this.pager.setShowFastFordwardPageButton( showFastFordwardPagerButton );
+    public void setShowFastFordwardPagerButton(boolean showFastFordwardPagerButton) {
+        this.pager.setShowFastFordwardPageButton(showFastFordwardPagerButton);
     }
 
+    interface Binder
+            extends
+            UiBinder<Widget, UberfirePagedTable> {
 
+    }
 }

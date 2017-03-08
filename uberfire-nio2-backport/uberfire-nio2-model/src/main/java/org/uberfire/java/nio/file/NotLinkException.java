@@ -26,7 +26,11 @@ public class NotLinkException extends FileSystemException {
         super(file);
     }
 
-    public NotLinkException(String file, String other, String reason) {
-        super(file, other, reason);
+    public NotLinkException(String file,
+                            String other,
+                            String reason) {
+        super(file,
+              other,
+              reason);
     }
 }

@@ -34,19 +34,22 @@ public class AdminTool {
     public AdminTool() {
     }
 
-
-    public AdminTool( final String title,
-                      final String iconCss,
-                      final String category,
-                      final Command onClickCommand ) {
-        this( title, iconCss, category, onClickCommand, null );
+    public AdminTool(final String title,
+                     final String iconCss,
+                     final String category,
+                     final Command onClickCommand) {
+        this(title,
+             iconCss,
+             category,
+             onClickCommand,
+             null);
     }
 
-    public AdminTool( final String title,
-                      final String iconCss,
-                      final String category,
-                      final Command onClickCommand,
-                      final ParameterizedCommand<ParameterizedCommand<Integer>> counterCommand ) {
+    public AdminTool(final String title,
+                     final String iconCss,
+                     final String category,
+                     final Command onClickCommand,
+                     final ParameterizedCommand<ParameterizedCommand<Integer>> counterCommand) {
         this.title = title;
         this.iconCss = iconCss;
         this.category = category;
@@ -74,7 +77,7 @@ public class AdminTool {
         return this.counterCommand != null;
     }
 
-    public void fetchCounter( ParameterizedCommand<Integer> callback ) {
-        counterCommand.execute( callback );
+    public void fetchCounter(ParameterizedCommand<Integer> callback) {
+        counterCommand.execute(callback);
     }
 }

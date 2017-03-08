@@ -30,11 +30,10 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 public class ACLViewerView extends Composite
         implements ACLViewer.View {
 
-    private ACLViewer presenter;
-
     @Inject
     @DataField("container")
     Container container;
+    private ACLViewer presenter;
 
     @Override
     public void init(ACLViewer presenter) {

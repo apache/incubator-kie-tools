@@ -33,37 +33,34 @@ public class ActivityNotFoundView extends SimplePanel
         implements
         ActivityNotFoundPresenter.View {
 
+    private static ActivityNotFoundViewBinder uiBinder = GWT.create(ActivityNotFoundViewBinder.class);
+    @UiField
+    public Label requestedPlaceIdentifierLabel;
+    private ActivityNotFoundPresenter presenter;
+
+    @PostConstruct
+    public void init() {
+        setWidget(uiBinder.createAndBindUi(this));
+    }
+
+    @Override
+    public void init(final ActivityNotFoundPresenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void setRequestedPlaceIdentifier(String identifier) {
+        requestedPlaceIdentifierLabel.setText(identifier);
+    }
+
+    @UiHandler("okButton")
+    public void onClickOkButton(final ClickEvent event) {
+        presenter.close();
+    }
+
     interface ActivityNotFoundViewBinder
             extends
             UiBinder<Widget, ActivityNotFoundView> {
 
     }
-
-    private static ActivityNotFoundViewBinder uiBinder = GWT.create( ActivityNotFoundViewBinder.class );
-
-    private ActivityNotFoundPresenter presenter;
-
-    @UiField
-    public Label requestedPlaceIdentifierLabel;
-
-    @PostConstruct
-    public void init() {
-        setWidget( uiBinder.createAndBindUi( this ) );
-    }
-
-    @Override
-    public void init( final ActivityNotFoundPresenter presenter ) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public void setRequestedPlaceIdentifier( String identifier ) {
-        requestedPlaceIdentifierLabel.setText( identifier );
-    }
-
-    @UiHandler("okButton")
-    public void onClickOkButton( final ClickEvent event ) {
-        presenter.close();
-    }
-
 }

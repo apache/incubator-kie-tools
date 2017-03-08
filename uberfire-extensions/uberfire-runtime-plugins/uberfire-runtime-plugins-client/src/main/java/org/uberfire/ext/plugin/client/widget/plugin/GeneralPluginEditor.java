@@ -49,190 +49,160 @@ import org.uberfire.mvp.ParameterizedCommand;
 @Dependent
 public class GeneralPluginEditor extends Composite implements RequiresResize {
 
-    interface ViewBinder
-            extends
-            UiBinder<Widget, GeneralPluginEditor> {
-
-    }
-
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
     @UiField
     FlowPanel content;
-
     @UiField
     VerticalSplit verticalSplit;
-
     @UiField
     HorizontalSplit leftHorizontalSplit;
-
     @UiField
     HorizontalSplit rightHorizontalSplit;
-
     @UiField
     FlowPanel leftArea;
-
     @UiField
     FlowPanel leftTopArea;
-
     @UiField
     FlowPanel leftTopContent;
-
     @UiField
     FlowPanel leftBottomArea;
-
     @UiField
     FlowPanel leftBottomContent;
-
     @UiField
     FlowPanel rightArea;
-
     @UiField
     FlowPanel rightTopArea;
-
     @UiField
     FlowPanel rightTopContent;
-
     @UiField
     FlowPanel rightBottomArea;
-
     @UiField
     NavPills lifecycleHolder;
-
     @UiField
     Button lifecycle;
-
     @UiField
     DropDownMenu lifecycles;
-
     @UiField
     FlowPanel rightBottomContent;
-
     @Inject
     private MediaLibraryWidget mediaLibraryWidget;
-
     @Inject
     private AceEditor templateEditor;
-
     @Inject
     private AceEditor cssEditor;
-
     @Inject
     private AceEditor jsEditor;
-
-    private Map<CodeType, String> codeMap = new HashMap<CodeType, String>();
-    private CodeType currentElement = null;
-    private PluginContent pluginContent;
-
     final Command editorResizing = new Command() {
         @Override
         public void execute() {
             templateEditor.redisplay();
             cssEditor.redisplay();
 
-            Double editorHeight = 100 - ( ( (double) lifecycleHolder.getOffsetHeight() / leftBottomArea.getOffsetHeight() ) * 100 );
-            if ( Double.isNaN( editorHeight ) || editorHeight.doubleValue() <= 0d ) {
+            Double editorHeight = 100 - (((double) lifecycleHolder.getOffsetHeight() / leftBottomArea.getOffsetHeight()) * 100);
+            if (Double.isNaN(editorHeight) || editorHeight.doubleValue() <= 0d) {
                 return;
             }
-            jsEditor.setHeight( editorHeight + "%" );
+            jsEditor.setHeight(editorHeight + "%");
             jsEditor.redisplay();
         }
     };
-
+    private Map<CodeType, String> codeMap = new HashMap<CodeType, String>();
+    private CodeType currentElement = null;
     final ParameterizedCommand<CodeType> codeChange = new ParameterizedCommand<CodeType>() {
         @Override
-        public void execute( final CodeType parameter ) {
-            codeMap.put( currentElement,
-                         jsEditor.getText() );
+        public void execute(final CodeType parameter) {
+            codeMap.put(currentElement,
+                        jsEditor.getText());
             currentElement = parameter;
-            final String content = codeMap.get( currentElement );
-            if ( content != null ) {
-                jsEditor.setText( content );
+            final String content = codeMap.get(currentElement);
+            if (content != null) {
+                jsEditor.setText(content);
             } else {
-                jsEditor.setText( "" );
+                jsEditor.setText("");
             }
             jsEditor.setFocus();
         }
     };
+    private PluginContent pluginContent;
 
     @PostConstruct
     public void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
-        rightBottomContent.add( mediaLibraryWidget );
+        rightBottomContent.add(mediaLibraryWidget);
 
-        verticalSplit.init( leftArea,
-                            rightArea,
-                            content,
-                            editorResizing );
-        leftHorizontalSplit.init( leftTopArea,
-                                  leftBottomArea,
+        verticalSplit.init(leftArea,
+                           rightArea,
+                           content,
+                           editorResizing);
+        leftHorizontalSplit.init(leftTopArea,
+                                 leftBottomArea,
+                                 content,
+                                 editorResizing);
+        rightHorizontalSplit.init(rightTopArea,
+                                  rightBottomArea,
                                   content,
-                                  editorResizing );
-        rightHorizontalSplit.init( rightTopArea,
-                                   rightBottomArea,
-                                   content,
-                                   editorResizing );
+                                  editorResizing);
 
-        setupEditor( templateEditor,
-                     leftTopContent );
-        setupEditor( cssEditor,
-                     rightTopContent );
-        setupEditor( jsEditor,
-                     leftBottomContent );
+        setupEditor(templateEditor,
+                    leftTopContent);
+        setupEditor(cssEditor,
+                    rightTopContent);
+        setupEditor(jsEditor,
+                    leftBottomContent);
 
         templateEditor.startEditor();
-        templateEditor.setMode( AceEditorMode.HTML );
-        templateEditor.setTheme( AceEditorTheme.CHROME );
+        templateEditor.setMode(AceEditorMode.HTML);
+        templateEditor.setTheme(AceEditorTheme.CHROME);
 
         cssEditor.startEditor();
-        cssEditor.setMode( AceEditorMode.CSS );
-        cssEditor.setTheme( AceEditorTheme.CHROME );
+        cssEditor.setMode(AceEditorMode.CSS);
+        cssEditor.setTheme(AceEditorTheme.CHROME);
 
         jsEditor.startEditor();
-        jsEditor.setMode( AceEditorMode.JAVASCRIPT );
-        jsEditor.setTheme( AceEditorTheme.CHROME );
+        jsEditor.setMode(AceEditorMode.JAVASCRIPT);
+        jsEditor.setTheme(AceEditorTheme.CHROME);
     }
 
-    public void setup( final CodeElement... elements ) {
-        lifecycle.setIcon( elements[ 0 ].getIcon() );
-        lifecycle.setText( elements[ 0 ].toString() );
-        currentElement = elements[ 0 ].getType();
+    public void setup(final CodeElement... elements) {
+        lifecycle.setIcon(elements[0].getIcon());
+        lifecycle.setText(elements[0].toString());
+        currentElement = elements[0].getType();
 
-        for ( final CodeElement element : elements ) {
-            element.addNav( lifecycles,
-                            lifecycle,
-                            codeChange );
+        for (final CodeElement element : elements) {
+            element.addNav(lifecycles,
+                           lifecycle,
+                           codeChange);
         }
     }
 
-    public void setupContent( final PluginContent pluginContent,
-                              final ParameterizedCommand<Media> onMediaDelete ) {
+    public void setupContent(final PluginContent pluginContent,
+                             final ParameterizedCommand<Media> onMediaDelete) {
 
         codeMap.clear();
 
-        for ( final Map.Entry<CodeType, String> entry : pluginContent.getCodeMap().entrySet() ) {
-            codeMap.put( entry.getKey(),
-                         entry.getValue() );
+        for (final Map.Entry<CodeType, String> entry : pluginContent.getCodeMap().entrySet()) {
+            codeMap.put(entry.getKey(),
+                        entry.getValue());
         }
 
-        jsEditor.setText( codeMap.get( currentElement ) );
-        templateEditor.setText( pluginContent.getTemplate() );
-        cssEditor.setText( pluginContent.getCss() );
+        jsEditor.setText(codeMap.get(currentElement));
+        templateEditor.setText(pluginContent.getTemplate());
+        cssEditor.setText(pluginContent.getCss());
 
-        mediaLibraryWidget.setup( pluginContent.getName(),
-                                  pluginContent.getMediaLibrary(),
-                                  onMediaDelete );
+        mediaLibraryWidget.setup(pluginContent.getName(),
+                                 pluginContent.getMediaLibrary(),
+                                 onMediaDelete);
 
         this.pluginContent = pluginContent;
     }
 
-    private void setupEditor( final AceEditor editor,
-                              final FlowPanel content ) {
-        editor.setWidth( "100%" );
-        editor.setHeight( "100%" );
+    private void setupEditor(final AceEditor editor,
+                             final FlowPanel content) {
+        editor.setWidth("100%");
+        editor.setHeight("100%");
 
-        content.add( editor );
+        content.add(editor);
     }
 
     public PluginContent getContent() {
@@ -244,7 +214,8 @@ public class GeneralPluginEditor extends Composite implements RequiresResize {
     }
 
     public Map<CodeType, String> getCodeMap() {
-        codeMap.put( currentElement, jsEditor.getText() );
+        codeMap.put(currentElement,
+                    jsEditor.getText());
         return codeMap;
     }
 
@@ -258,11 +229,15 @@ public class GeneralPluginEditor extends Composite implements RequiresResize {
 
     @Override
     public void onResize() {
-        getParent().getElement().getStyle().setBackgroundColor( "#F6F6F6" );
-        content.getElement().getStyle().setTop( 60, Style.Unit.PX );
-        verticalSplit.getElement().getStyle().setLeft( leftArea.getOffsetWidth() - 3, Style.Unit.PX );
-        leftHorizontalSplit.getElement().getStyle().setTop( leftTopArea.getOffsetHeight() - 6, Style.Unit.PX );
-        rightHorizontalSplit.getElement().getStyle().setTop( rightTopArea.getOffsetHeight() - 6, Style.Unit.PX );
+        getParent().getElement().getStyle().setBackgroundColor("#F6F6F6");
+        content.getElement().getStyle().setTop(60,
+                                               Style.Unit.PX);
+        verticalSplit.getElement().getStyle().setLeft(leftArea.getOffsetWidth() - 3,
+                                                      Style.Unit.PX);
+        leftHorizontalSplit.getElement().getStyle().setTop(leftTopArea.getOffsetHeight() - 6,
+                                                           Style.Unit.PX);
+        rightHorizontalSplit.getElement().getStyle().setTop(rightTopArea.getOffsetHeight() - 6,
+                                                            Style.Unit.PX);
         editorResizing.execute();
     }
 
@@ -272,5 +247,11 @@ public class GeneralPluginEditor extends Composite implements RequiresResize {
 
     public void onClose() {
         mediaLibraryWidget.updateMediaOnClose();
+    }
+
+    interface ViewBinder
+            extends
+            UiBinder<Widget, GeneralPluginEditor> {
+
     }
 }

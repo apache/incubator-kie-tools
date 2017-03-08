@@ -23,7 +23,7 @@ public class AbstractConcurrentOperationEvent implements UberFireEvent {
 
     private ObservablePath path;
 
-    public AbstractConcurrentOperationEvent( final ObservablePath path ) {
+    public AbstractConcurrentOperationEvent(final ObservablePath path) {
         this.path = path;
     }
 
@@ -32,18 +32,17 @@ public class AbstractConcurrentOperationEvent implements UberFireEvent {
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof AbstractConcurrentOperationEvent ) ) {
+        if (!(o instanceof AbstractConcurrentOperationEvent)) {
             return false;
         }
 
         final AbstractConcurrentOperationEvent that = (AbstractConcurrentOperationEvent) o;
 
-        return !( getPath() != null ? !getPath().equals( that.getPath() ) : that.getPath() != null );
-
+        return !(getPath() != null ? !getPath().equals(that.getPath()) : that.getPath() != null);
     }
 
     @Override

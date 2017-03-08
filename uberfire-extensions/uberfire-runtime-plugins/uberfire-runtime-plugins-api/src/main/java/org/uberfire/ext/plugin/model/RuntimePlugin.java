@@ -25,8 +25,8 @@ public class RuntimePlugin {
     private String style;
     private String script;
 
-    public RuntimePlugin( @MapsTo("style") final String style,
-                          @MapsTo("script") final String script ) {
+    public RuntimePlugin(@MapsTo("style") final String style,
+                         @MapsTo("script") final String script) {
         this.style = style;
         this.script = script;
     }
@@ -40,20 +40,20 @@ public class RuntimePlugin {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof RuntimePlugin ) ) {
+        if (!(o instanceof RuntimePlugin)) {
             return false;
         }
 
         RuntimePlugin that = (RuntimePlugin) o;
 
-        if ( script != null ? !script.equals( that.script ) : that.script != null ) {
+        if (script != null ? !script.equals(that.script) : that.script != null) {
             return false;
         }
-        if ( style != null ? !style.equals( that.style ) : that.style != null ) {
+        if (style != null ? !style.equals(that.style) : that.style != null) {
             return false;
         }
 
@@ -64,7 +64,7 @@ public class RuntimePlugin {
     public int hashCode() {
         int result = style != null ? style.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( script != null ? script.hashCode() : 0 );
+        result = 31 * result + (script != null ? script.hashCode() : 0);
         result = ~~result;
         return result;
     }

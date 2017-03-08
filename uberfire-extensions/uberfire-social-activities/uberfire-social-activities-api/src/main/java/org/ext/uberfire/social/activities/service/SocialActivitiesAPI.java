@@ -15,11 +15,11 @@
 
 package org.ext.uberfire.social.activities.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
+import org.jboss.errai.bus.server.annotations.Remote;
 
 @Remote
 public interface SocialActivitiesAPI {
 
-    void register( SocialActivitiesEvent event );
+    void register(SocialActivitiesEvent event);
 }

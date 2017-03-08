@@ -39,16 +39,16 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.events.YouTubeVideo;
 
 @Dependent
-@WorkbenchScreen( identifier = "YouTubeVideos" )
+@WorkbenchScreen(identifier = "YouTubeVideos")
 public class VideoListScreen {
 
     private static final List<YouTubeVideo> VIDEOS = new LinkedList<YouTubeVideo>() {{
-        add( new YouTubeVideo( "Quick Tour",
-                "A quick tour that shows UberFire cool features.",
-                "http://www.youtube.com/embed/xnmSR62_4Us?rel=0" ) );
-        add( new YouTubeVideo( "Sample App",
-                "Here a good example of an application build on top of UberFire.",
-                "http://www.youtube.com/embed/Y3LX4E9OKcs?rel=0" ) );
+        add(new YouTubeVideo("Quick Tour",
+                             "A quick tour that shows UberFire cool features.",
+                             "http://www.youtube.com/embed/xnmSR62_4Us?rel=0"));
+        add(new YouTubeVideo("Sample App",
+                             "Here a good example of an application build on top of UberFire.",
+                             "http://www.youtube.com/embed/Y3LX4E9OKcs?rel=0"));
     }};
 
     @Inject
@@ -63,24 +63,27 @@ public class VideoListScreen {
     public IsWidget getView() {
         final FlowPanel widgets = new FlowPanel();
 
-        widgets.getElement().getStyle().setPadding( 15, Style.Unit.PX );
+        widgets.getElement().getStyle().setPadding(15,
+                                                   Style.Unit.PX);
 
-        for ( final YouTubeVideo video : VIDEOS ) {
+        for (final YouTubeVideo video : VIDEOS) {
 
-            final Heading h3 = new Heading( HeadingSize.H3, video.getName() );
-            final Paragraph p = new Paragraph( video.getDescription() );
-            final Button play = new Button( "Play", new ClickHandler() {
-                @Override
-                public void onClick( final ClickEvent e ) {
-                    event.fire( video );
-                }
-            } );
-            play.setIcon( IconType.YOUTUBE_PLAY );
-            play.setSize( ButtonSize.SMALL );
+            final Heading h3 = new Heading(HeadingSize.H3,
+                                           video.getName());
+            final Paragraph p = new Paragraph(video.getDescription());
+            final Button play = new Button("Play",
+                                           new ClickHandler() {
+                                               @Override
+                                               public void onClick(final ClickEvent e) {
+                                                   event.fire(video);
+                                               }
+                                           });
+            play.setIcon(IconType.YOUTUBE_PLAY);
+            play.setSize(ButtonSize.SMALL);
 
-            widgets.add( h3 );
-            widgets.add( p );
-            widgets.add( play );
+            widgets.add(h3);
+            widgets.add(p);
+            widgets.add(play);
         }
 
         return widgets;

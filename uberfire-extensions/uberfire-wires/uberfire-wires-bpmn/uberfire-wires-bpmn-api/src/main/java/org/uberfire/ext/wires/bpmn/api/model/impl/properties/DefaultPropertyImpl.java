@@ -30,20 +30,20 @@ public class DefaultPropertyImpl implements Property {
     private boolean isReadOnly;
     private boolean isOptional;
 
-    public DefaultPropertyImpl( @MapsTo("id") final String id,
-                                @MapsTo("type") final Type type,
-                                @MapsTo("caption") final String caption,
-                                @MapsTo("description") final String description,
-                                @MapsTo("isReadOnly") final boolean isReadOnly,
-                                @MapsTo("isOptional") final boolean isOptional ) {
-        this.id = PortablePreconditions.checkNotNull( "id",
-                                                      id );
-        this.type = PortablePreconditions.checkNotNull( "type",
-                                                        type );
-        this.caption = PortablePreconditions.checkNotNull( "caption",
-                                                           caption );
-        this.description = PortablePreconditions.checkNotNull( "description",
-                                                               description );
+    public DefaultPropertyImpl(@MapsTo("id") final String id,
+                               @MapsTo("type") final Type type,
+                               @MapsTo("caption") final String caption,
+                               @MapsTo("description") final String description,
+                               @MapsTo("isReadOnly") final boolean isReadOnly,
+                               @MapsTo("isOptional") final boolean isOptional) {
+        this.id = PortablePreconditions.checkNotNull("id",
+                                                     id);
+        this.type = PortablePreconditions.checkNotNull("type",
+                                                       type);
+        this.caption = PortablePreconditions.checkNotNull("caption",
+                                                          caption);
+        this.description = PortablePreconditions.checkNotNull("description",
+                                                              description);
         this.isReadOnly = isReadOnly;
         this.isOptional = isOptional;
     }
@@ -80,41 +80,41 @@ public class DefaultPropertyImpl implements Property {
 
     @Override
     public Property copy() {
-        return new DefaultPropertyImpl( this.id,
-                                        this.type,
-                                        this.caption,
-                                        this.description,
-                                        this.isReadOnly,
-                                        this.isOptional );
+        return new DefaultPropertyImpl(this.id,
+                                       this.type,
+                                       this.caption,
+                                       this.description,
+                                       this.isReadOnly,
+                                       this.isOptional);
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof DefaultPropertyImpl ) ) {
+        if (!(o instanceof DefaultPropertyImpl)) {
             return false;
         }
 
         DefaultPropertyImpl that = (DefaultPropertyImpl) o;
 
-        if ( isOptional != that.isOptional ) {
+        if (isOptional != that.isOptional) {
             return false;
         }
-        if ( isReadOnly != that.isReadOnly ) {
+        if (isReadOnly != that.isReadOnly) {
             return false;
         }
-        if ( !caption.equals( that.caption ) ) {
+        if (!caption.equals(that.caption)) {
             return false;
         }
-        if ( !description.equals( that.description ) ) {
+        if (!description.equals(that.description)) {
             return false;
         }
-        if ( !id.equals( that.id ) ) {
+        if (!id.equals(that.id)) {
             return false;
         }
-        if ( !type.equals( that.type ) ) {
+        if (!type.equals(that.type)) {
             return false;
         }
 
@@ -131,9 +131,9 @@ public class DefaultPropertyImpl implements Property {
         result = ~~result;
         result = 31 * result + description.hashCode();
         result = ~~result;
-        result = 31 * result + ( isReadOnly ? 1 : 0 );
+        result = 31 * result + (isReadOnly ? 1 : 0);
         result = ~~result;
-        result = 31 * result + ( isOptional ? 1 : 0 );
+        result = 31 * result + (isOptional ? 1 : 0);
         result = ~~result;
         return result;
     }
@@ -149,5 +149,4 @@ public class DefaultPropertyImpl implements Property {
                 ", isOptional=" + isOptional +
                 '}';
     }
-
 }

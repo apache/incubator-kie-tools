@@ -22,7 +22,7 @@ public class ComponentRemovedEvent {
 
     private LayoutComponent layoutComponent;
 
-    public ComponentRemovedEvent( LayoutComponent layoutComponent ) {
+    public ComponentRemovedEvent(LayoutComponent layoutComponent) {
 
         this.layoutComponent = layoutComponent;
     }

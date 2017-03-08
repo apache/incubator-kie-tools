@@ -48,46 +48,49 @@ public class GeneralPluginEditorTest {
 
     @Before
     public void setup() {
-        generalPluginEditor.leftBottomArea = mock( FlowPanel.class );
+        generalPluginEditor.leftBottomArea = mock(FlowPanel.class);
     }
 
     @Test
     public void editorResizingNaNTest() {
-        doReturn( 0 ).when( generalPluginEditor.leftBottomArea ).getOffsetHeight();
-        doReturn( 0 ).when( lifecycleHolder ).getOffsetHeight();
+        doReturn(0).when(generalPluginEditor.leftBottomArea).getOffsetHeight();
+        doReturn(0).when(lifecycleHolder).getOffsetHeight();
 
         generalPluginEditor.editorResizing.execute();
 
-        verify( jsEditor, never() ).setHeight( any( String.class ) );
+        verify(jsEditor,
+               never()).setHeight(any(String.class));
     }
 
     @Test
     public void editorResizingWithNegativeHeightTest() {
-        doReturn( 1 ).when( generalPluginEditor.leftBottomArea ).getOffsetHeight();
-        doReturn( 2 ).when( lifecycleHolder ).getOffsetHeight();
+        doReturn(1).when(generalPluginEditor.leftBottomArea).getOffsetHeight();
+        doReturn(2).when(lifecycleHolder).getOffsetHeight();
 
         generalPluginEditor.editorResizing.execute();
 
-        verify( jsEditor, never() ).setHeight( any( String.class ) );
+        verify(jsEditor,
+               never()).setHeight(any(String.class));
     }
 
     @Test
     public void editorResizingWithZeroHeightTest() {
-        doReturn( 1 ).when( generalPluginEditor.leftBottomArea ).getOffsetHeight();
-        doReturn( 1 ).when( lifecycleHolder ).getOffsetHeight();
+        doReturn(1).when(generalPluginEditor.leftBottomArea).getOffsetHeight();
+        doReturn(1).when(lifecycleHolder).getOffsetHeight();
 
         generalPluginEditor.editorResizing.execute();
 
-        verify( jsEditor, never() ).setHeight( any( String.class ) );
+        verify(jsEditor,
+               never()).setHeight(any(String.class));
     }
 
     @Test
     public void editorResizingWithPositiveHeightTest() {
-        doReturn( 1 ).when( generalPluginEditor.leftBottomArea ).getOffsetHeight();
-        doReturn( 0 ).when( lifecycleHolder ).getOffsetHeight();
+        doReturn(1).when(generalPluginEditor.leftBottomArea).getOffsetHeight();
+        doReturn(0).when(lifecycleHolder).getOffsetHeight();
 
         generalPluginEditor.editorResizing.execute();
 
-        verify( jsEditor ).setHeight( any( String.class ) );
+        verify(jsEditor).setHeight(any(String.class));
     }
 }

@@ -26,56 +26,56 @@ import org.gwtbootstrap3.client.ui.Modal;
 import org.gwtbootstrap3.client.ui.ModalFooter;
 import org.uberfire.mvp.Command;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * A Modal Footer with OK and Cancel buttons
  */
 public class ModalFooterReOpenIgnoreButtons extends ModalFooter {
 
-    private static ModalFooterReOpenIgnoreButtonsBinder uiBinder = GWT.create( ModalFooterReOpenIgnoreButtonsBinder.class );
+    private static ModalFooterReOpenIgnoreButtonsBinder uiBinder = GWT.create(ModalFooterReOpenIgnoreButtonsBinder.class);
 
     private final Command actionCommand;
     private final Command ignoreCommand;
     private final Modal panel;
-
-    interface ModalFooterReOpenIgnoreButtonsBinder
-            extends
-            UiBinder<Widget, ModalFooterReOpenIgnoreButtons> {
-
-    }
-
     @UiField
     Button actionButton;
-
     @UiField
     Button ignoreButton;
 
-    public ModalFooterReOpenIgnoreButtons( final Modal panel,
-                                           final Command actionCommand,
-                                           final Command ignoreCommand,
-                                           final String buttonText ) {
-        this.actionCommand = checkNotNull( "actionCommand", actionCommand );
-        this.ignoreCommand = checkNotNull( "ignoreCommand", ignoreCommand );
-        this.panel = checkNotNull( "panel", panel );
-        add( uiBinder.createAndBindUi( this ) );
-        this.actionButton.setText( buttonText );
+    public ModalFooterReOpenIgnoreButtons(final Modal panel,
+                                          final Command actionCommand,
+                                          final Command ignoreCommand,
+                                          final String buttonText) {
+        this.actionCommand = checkNotNull("actionCommand",
+                                          actionCommand);
+        this.ignoreCommand = checkNotNull("ignoreCommand",
+                                          ignoreCommand);
+        this.panel = checkNotNull("panel",
+                                  panel);
+        add(uiBinder.createAndBindUi(this));
+        this.actionButton.setText(buttonText);
     }
 
     @UiHandler("actionButton")
-    public void onActionButtonClick( final ClickEvent e ) {
-        if ( actionCommand != null ) {
+    public void onActionButtonClick(final ClickEvent e) {
+        if (actionCommand != null) {
             actionCommand.execute();
         }
         panel.hide();
     }
 
     @UiHandler("ignoreButton")
-    public void onIgnoreButtonClick( final ClickEvent e ) {
-        if ( ignoreCommand != null ) {
+    public void onIgnoreButtonClick(final ClickEvent e) {
+        if (ignoreCommand != null) {
             ignoreCommand.execute();
         }
         panel.hide();
     }
 
+    interface ModalFooterReOpenIgnoreButtonsBinder
+            extends
+            UiBinder<Widget, ModalFooterReOpenIgnoreButtons> {
+
+    }
 }

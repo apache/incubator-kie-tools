@@ -29,17 +29,17 @@ public class StringType implements Property.Type {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof StringType ) ) {
+        if (!(o instanceof StringType)) {
             return false;
         }
 
         StringType that = (StringType) o;
 
-        if ( !name.equals( that.name ) ) {
+        if (!name.equals(that.name)) {
             return false;
         }
 
@@ -57,5 +57,4 @@ public class StringType implements Property.Type {
                 "name='" + name + '\'' +
                 '}';
     }
-
 }

@@ -40,72 +40,71 @@ public class WiresFixedTextPropertyEditorAdaptor implements PropertyEditorAdapto
     private static final String ATTRIBUTES = "Attributes";
 
     @Override
-    public boolean supports( final WiresBaseShape shape ) {
+    public boolean supports(final WiresBaseShape shape) {
         return shape instanceof WiresFixedText;
     }
 
     @Override
-    public List<PropertyEditorCategory> getProperties( final WiresBaseShape shape ) {
-        if ( !supports( shape ) ) {
+    public List<PropertyEditorCategory> getProperties(final WiresBaseShape shape) {
+        if (!supports(shape)) {
             return Collections.emptyList();
         }
         final WiresFixedText w = (WiresFixedText) shape;
-        final PropertyEditorFieldInfo fieldInfo1 = new PropertyEditorFieldInfo( "Text",
-                                                                                String.valueOf( w.getText() ),
-                                                                                PropertyEditorType.TEXT ) {
+        final PropertyEditorFieldInfo fieldInfo1 = new PropertyEditorFieldInfo("Text",
+                                                                               String.valueOf(w.getText()),
+                                                                               PropertyEditorType.TEXT) {
             @Override
-            public void setCurrentStringValue( final String currentStringValue ) {
-                super.setCurrentStringValue( currentStringValue );
-                w.setText( currentStringValue );
+            public void setCurrentStringValue(final String currentStringValue) {
+                super.setCurrentStringValue(currentStringValue);
+                w.setText(currentStringValue);
                 w.getLayer().batch();
             }
         };
 
-        final PropertyEditorFieldInfo fieldInfo2 = new WiresComboPropertyEditorFieldInfo( "Text Align",
-                                                                                          w.getTextAlign().getValue(),
-                                                                                          getTextAlignValues() ) {
+        final PropertyEditorFieldInfo fieldInfo2 = new WiresComboPropertyEditorFieldInfo("Text Align",
+                                                                                         w.getTextAlign().getValue(),
+                                                                                         getTextAlignValues()) {
             @Override
-            public void setCurrentStringValue( final String currentStringValue ) {
-                super.setCurrentStringValue( currentStringValue );
-                w.setTextAlign( TextAlign.lookup( currentStringValue ) );
-                w.getLayer().batch();
-            }
-
-        };
-
-        final PropertyEditorFieldInfo fieldInfo3 = new PropertyEditorFieldInfo( "Stroke colour",
-                                                                                String.valueOf( w.getStrokeColour() ),
-                                                                                PropertyEditorType.TEXT ) {
-            @Override
-            public void setCurrentStringValue( final String currentStringValue ) {
-                super.setCurrentStringValue( currentStringValue );
-                w.setStrokeColour( currentStringValue );
+            public void setCurrentStringValue(final String currentStringValue) {
+                super.setCurrentStringValue(currentStringValue);
+                w.setTextAlign(TextAlign.lookup(currentStringValue));
                 w.getLayer().batch();
             }
         };
 
-        final PropertyEditorFieldInfo fieldInfo4 = new PropertyEditorFieldInfo( "Fill colour",
-                                                                                String.valueOf( w.getFillColour() ),
-                                                                                PropertyEditorType.TEXT ) {
+        final PropertyEditorFieldInfo fieldInfo3 = new PropertyEditorFieldInfo("Stroke colour",
+                                                                               String.valueOf(w.getStrokeColour()),
+                                                                               PropertyEditorType.TEXT) {
             @Override
-            public void setCurrentStringValue( final String currentStringValue ) {
-                super.setCurrentStringValue( currentStringValue );
-                w.setFillColour( currentStringValue );
+            public void setCurrentStringValue(final String currentStringValue) {
+                super.setCurrentStringValue(currentStringValue);
+                w.setStrokeColour(currentStringValue);
                 w.getLayer().batch();
             }
         };
 
-        final PropertyEditorFieldInfo fieldInfo5 = new WiresComboPropertyEditorFieldInfo( "Font size",
-                                                                                          String.valueOf( w.getFontSize() ),
-                                                                                          getFontSizeValues() ) {
+        final PropertyEditorFieldInfo fieldInfo4 = new PropertyEditorFieldInfo("Fill colour",
+                                                                               String.valueOf(w.getFillColour()),
+                                                                               PropertyEditorType.TEXT) {
             @Override
-            public void setCurrentStringValue( final String currentStringValue ) {
-                super.setCurrentStringValue( currentStringValue );
+            public void setCurrentStringValue(final String currentStringValue) {
+                super.setCurrentStringValue(currentStringValue);
+                w.setFillColour(currentStringValue);
+                w.getLayer().batch();
+            }
+        };
+
+        final PropertyEditorFieldInfo fieldInfo5 = new WiresComboPropertyEditorFieldInfo("Font size",
+                                                                                         String.valueOf(w.getFontSize()),
+                                                                                         getFontSizeValues()) {
+            @Override
+            public void setCurrentStringValue(final String currentStringValue) {
+                super.setCurrentStringValue(currentStringValue);
                 try {
-                    final double fontSize = Double.parseDouble( currentStringValue );
-                    w.setFontSize( fontSize );
+                    final double fontSize = Double.parseDouble(currentStringValue);
+                    w.setFontSize(fontSize);
                     w.getLayer().batch();
-                } catch ( NumberFormatException e ) {
+                } catch (NumberFormatException e) {
                     //Swallow
                 }
             }
@@ -118,29 +117,28 @@ public class WiresFixedTextPropertyEditorAdaptor implements PropertyEditorAdapto
         fieldInfo4.getValidators().clear();
         fieldInfo5.getValidators().clear();
 
-        fieldInfo3.getValidators().add( new CssHexColourValidator() );
-        fieldInfo4.getValidators().add( new CssHexColourValidator() );
+        fieldInfo3.getValidators().add(new CssHexColourValidator());
+        fieldInfo4.getValidators().add(new CssHexColourValidator());
 
-        final PropertyEditorCategory attributes = new PropertyEditorCategory( ATTRIBUTES )
-                .withField( fieldInfo1 )
-                .withField( fieldInfo2 )
-                .withField( fieldInfo3 )
-                .withField( fieldInfo4 )
-                .withField( fieldInfo5 );
+        final PropertyEditorCategory attributes = new PropertyEditorCategory(ATTRIBUTES)
+                .withField(fieldInfo1)
+                .withField(fieldInfo2)
+                .withField(fieldInfo3)
+                .withField(fieldInfo4)
+                .withField(fieldInfo5);
 
-        return Lists.newArrayList( attributes );
+        return Lists.newArrayList(attributes);
     }
 
     private List<String> getTextAlignValues() {
         final List<String> values = new ArrayList<String>();
-        for ( TextAlign ta : TextAlign.values() ) {
-            values.add( ta.getValue() );
+        for (TextAlign ta : TextAlign.values()) {
+            values.add(ta.getValue());
         }
         return values;
     }
 
     private List<String> getFontSizeValues() {
-        return Arrays.asList( new String[]{ "15", "20", "25", "30", "35", "40", "45", "50" } );
+        return Arrays.asList(new String[]{"15", "20", "25", "30", "35", "40", "45", "50"});
     }
-
 }

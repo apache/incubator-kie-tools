@@ -38,20 +38,20 @@ public class LuceneConfig implements MetadataConfig {
     private final LuceneSearchIndex searchIndex;
     private final LuceneIndexEngine indexEngine;
 
-    public LuceneConfig( final MetaModelStore metaModelStore,
-                         final FieldFactory fieldFactory,
-                         final LuceneIndexFactory indexFactory,
-                         final Analyzer analyzer ) {
+    public LuceneConfig(final MetaModelStore metaModelStore,
+                        final FieldFactory fieldFactory,
+                        final LuceneIndexFactory indexFactory,
+                        final Analyzer analyzer) {
         this.metaModelStore = metaModelStore;
         this.fieldFactory = fieldFactory;
-        this.indexManager = new LuceneIndexManager( indexFactory );
+        this.indexManager = new LuceneIndexManager(indexFactory);
         this.analyzer = analyzer;
-        this.searchIndex = new LuceneSearchIndex( this.indexManager,
-                                                  this.analyzer );
-        this.indexEngine = new LuceneIndexEngine( this.fieldFactory,
-                                                  this.metaModelStore,
-                                                  this.indexManager );
-        PriorityDisposableRegistry.register( this );
+        this.searchIndex = new LuceneSearchIndex(this.indexManager,
+                                                 this.analyzer);
+        this.indexEngine = new LuceneIndexEngine(this.fieldFactory,
+                                                 this.metaModelStore,
+                                                 this.indexManager);
+        PriorityDisposableRegistry.register(this);
     }
 
     @Override

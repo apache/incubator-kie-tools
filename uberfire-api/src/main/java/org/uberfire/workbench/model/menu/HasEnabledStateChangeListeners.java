@@ -28,5 +28,5 @@ public interface HasEnabledStateChangeListeners {
      * Called when the enabled state of a Widget changes
      * @param listener
      */
-    void addEnabledStateChangeListener( final EnabledStateChangeListener listener );
+    void addEnabledStateChangeListener(final EnabledStateChangeListener listener);
 }

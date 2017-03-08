@@ -33,477 +33,602 @@ public class GridCellSelectionsTransformationTest extends BaseGridTest {
     @Test
     public void testTransformationVerticalRightExtent() {
         final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>( "col1",
-                                                                           100 );
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>( "col2",
-                                                                           100 );
-        final GridColumn<String> gc3 = new MockMergableGridColumn<String>( "col3",
-                                                                           100 );
-        data.appendColumn( gc1 );
-        data.appendColumn( gc2 );
-        data.appendColumn( gc3 );
+        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
+                                                                          100);
+        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
+                                                                          100);
+        final GridColumn<String> gc3 = new MockMergableGridColumn<String>("col3",
+                                                                          100);
+        data.appendColumn(gc1);
+        data.appendColumn(gc2);
+        data.appendColumn(gc3);
 
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
 
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 2 ) ) );
-        assertEquals( 0,
-                      data.getSelectedCells().size() );
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               2)));
+        assertEquals(0,
+                     data.getSelectedCells().size());
 
-        final SelectionsTransformer transformer = new DefaultSelectionsTransformer( data,
-                                                                                    data.getColumns() );
+        final SelectionsTransformer transformer = new DefaultSelectionsTransformer(data,
+                                                                                   data.getColumns());
         final List<SelectedRange> selectedRanges1 = transformer.transformToSelectedRanges();
-        assertEquals( 0,
-                      selectedRanges1.size() );
+        assertEquals(0,
+                     selectedRanges1.size());
 
         // - - x
         // x x x
         // - - x
-        data.selectCell( 1,
-                         0 );
-        data.selectCell( 1,
-                         1 );
-        data.selectCell( 1,
-                         2 );
-        data.selectCell( 0,
-                         2 );
-        data.selectCell( 2,
-                         2 );
+        data.selectCell(1,
+                        0);
+        data.selectCell(1,
+                        1);
+        data.selectCell(1,
+                        2);
+        data.selectCell(0,
+                        2);
+        data.selectCell(2,
+                        2);
 
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 1 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 2 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 0 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 1 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 1 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 2 ) ) );
-        assertEquals( 5,
-                      data.getSelectedCells().size() );
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               1)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                              2)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                              0)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                              1)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                              2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               1)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                              2)));
+        assertEquals(5,
+                     data.getSelectedCells().size());
 
         final List<SelectedRange> selectedRanges2 = transformer.transformToSelectedRanges();
-        assertEquals( 2,
-                      selectedRanges2.size() );
+        assertEquals(2,
+                     selectedRanges2.size());
     }
 
     @Test
     public void testTransformationPlusSign() {
         final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>( "col1",
-                                                                           100 );
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>( "col2",
-                                                                           100 );
-        final GridColumn<String> gc3 = new MockMergableGridColumn<String>( "col3",
-                                                                           100 );
-        data.appendColumn( gc1 );
-        data.appendColumn( gc2 );
-        data.appendColumn( gc3 );
+        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
+                                                                          100);
+        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
+                                                                          100);
+        final GridColumn<String> gc3 = new MockMergableGridColumn<String>("col3",
+                                                                          100);
+        data.appendColumn(gc1);
+        data.appendColumn(gc2);
+        data.appendColumn(gc3);
 
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
 
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 2 ) ) );
-        assertEquals( 0,
-                      data.getSelectedCells().size() );
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               2)));
+        assertEquals(0,
+                     data.getSelectedCells().size());
 
-        final SelectionsTransformer transformer = new DefaultSelectionsTransformer( data,
-                                                                                    data.getColumns() );
+        final SelectionsTransformer transformer = new DefaultSelectionsTransformer(data,
+                                                                                   data.getColumns());
         final List<SelectedRange> selectedRanges1 = transformer.transformToSelectedRanges();
-        assertEquals( 0,
-                      selectedRanges1.size() );
+        assertEquals(0,
+                     selectedRanges1.size());
 
         // - x -
         // x x x
         // - x -
-        data.selectCell( 1,
-                         0 );
-        data.selectCell( 1,
-                         1 );
-        data.selectCell( 1,
-                         2 );
-        data.selectCell( 0,
-                         1 );
-        data.selectCell( 2,
-                         1 );
+        data.selectCell(1,
+                        0);
+        data.selectCell(1,
+                        1);
+        data.selectCell(1,
+                        2);
+        data.selectCell(0,
+                        1);
+        data.selectCell(2,
+                        1);
 
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 0 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 2 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 0 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 1 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 0 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 2 ) ) );
-        assertEquals( 5,
-                      data.getSelectedCells().size() );
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               0)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                              1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               2)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                              0)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                              1)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                              2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               0)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                              1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               2)));
+        assertEquals(5,
+                     data.getSelectedCells().size());
 
         final List<SelectedRange> selectedRanges2 = transformer.transformToSelectedRanges();
-        assertEquals( 3,
-                      selectedRanges2.size() );
+        assertEquals(3,
+                     selectedRanges2.size());
     }
 
     @Test
     public void testTransformationColumnSubsetVerticalRightExtent() {
         final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>( "col1",
-                                                                           100 );
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>( "col2",
-                                                                           100 );
-        final GridColumn<String> gc3 = new MockMergableGridColumn<String>( "col3",
-                                                                           100 );
-        data.appendColumn( gc1 );
-        data.appendColumn( gc2 );
-        data.appendColumn( gc3 );
+        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
+                                                                          100);
+        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
+                                                                          100);
+        final GridColumn<String> gc3 = new MockMergableGridColumn<String>("col3",
+                                                                          100);
+        data.appendColumn(gc1);
+        data.appendColumn(gc2);
+        data.appendColumn(gc3);
 
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
 
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 2 ) ) );
-        assertEquals( 0,
-                      data.getSelectedCells().size() );
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               2)));
+        assertEquals(0,
+                     data.getSelectedCells().size());
 
-        final SelectionsTransformer transformer1 = new DefaultSelectionsTransformer( data,
-                                                                                     data.getColumns() );
+        final SelectionsTransformer transformer1 = new DefaultSelectionsTransformer(data,
+                                                                                    data.getColumns());
         final List<SelectedRange> selectedRanges1 = transformer1.transformToSelectedRanges();
-        assertEquals( 0,
-                      selectedRanges1.size() );
+        assertEquals(0,
+                     selectedRanges1.size());
 
         // - - x
         // x x x
         // - - x
-        data.selectCell( 1,
-                         0 );
-        data.selectCell( 1,
-                         1 );
-        data.selectCell( 1,
-                         2 );
-        data.selectCell( 0,
-                         2 );
-        data.selectCell( 2,
-                         2 );
+        data.selectCell(1,
+                        0);
+        data.selectCell(1,
+                        1);
+        data.selectCell(1,
+                        2);
+        data.selectCell(0,
+                        2);
+        data.selectCell(2,
+                        2);
 
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 1 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 2 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 0 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 1 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 1 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 2 ) ) );
-        assertEquals( 5,
-                      data.getSelectedCells().size() );
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               1)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                              2)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                              0)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                              1)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                              2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               1)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                              2)));
+        assertEquals(5,
+                     data.getSelectedCells().size());
 
         final List<GridColumn<?>> columns = new ArrayList<GridColumn<?>>() {{
-            add( gc1 );
-            add( gc2 );
+            add(gc1);
+            add(gc2);
         }};
-        final SelectionsTransformer transformer2 = new FloatingSelectionsTransformer( data,
-                                                                                      columns );
+        final SelectionsTransformer transformer2 = new FloatingSelectionsTransformer(data,
+                                                                                     columns);
         final List<SelectedRange> selectedRanges2 = transformer2.transformToSelectedRanges();
-        assertEquals( 1,
-                      selectedRanges2.size() );
+        assertEquals(1,
+                     selectedRanges2.size());
     }
 
     @Test
     public void testTransformationColumnSubsetPlusSign() {
         final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>( "col1",
-                                                                           100 );
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>( "col2",
-                                                                           100 );
-        final GridColumn<String> gc3 = new MockMergableGridColumn<String>( "col3",
-                                                                           100 );
-        data.appendColumn( gc1 );
-        data.appendColumn( gc2 );
-        data.appendColumn( gc3 );
+        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
+                                                                          100);
+        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
+                                                                          100);
+        final GridColumn<String> gc3 = new MockMergableGridColumn<String>("col3",
+                                                                          100);
+        data.appendColumn(gc1);
+        data.appendColumn(gc2);
+        data.appendColumn(gc3);
 
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
 
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 2 ) ) );
-        assertEquals( 0,
-                      data.getSelectedCells().size() );
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               2)));
+        assertEquals(0,
+                     data.getSelectedCells().size());
 
-        final SelectionsTransformer transformer1 = new DefaultSelectionsTransformer( data,
-                                                                                     data.getColumns() );
+        final SelectionsTransformer transformer1 = new DefaultSelectionsTransformer(data,
+                                                                                    data.getColumns());
         final List<SelectedRange> selectedRanges1 = transformer1.transformToSelectedRanges();
-        assertEquals( 0,
-                      selectedRanges1.size() );
+        assertEquals(0,
+                     selectedRanges1.size());
 
         // - x -
         // x x x
         // - x -
-        data.selectCell( 1,
-                         0 );
-        data.selectCell( 1,
-                         1 );
-        data.selectCell( 1,
-                         2 );
-        data.selectCell( 0,
-                         1 );
-        data.selectCell( 2,
-                         1 );
+        data.selectCell(1,
+                        0);
+        data.selectCell(1,
+                        1);
+        data.selectCell(1,
+                        2);
+        data.selectCell(0,
+                        1);
+        data.selectCell(2,
+                        1);
 
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 0 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 2 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 0 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 1 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 0 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 2 ) ) );
-        assertEquals( 5,
-                      data.getSelectedCells().size() );
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               0)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                              1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               2)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                              0)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                              1)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                              2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               0)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                              1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               2)));
+        assertEquals(5,
+                     data.getSelectedCells().size());
 
         final List<GridColumn<?>> columns = new ArrayList<GridColumn<?>>() {{
-            add( gc1 );
-            add( gc3 );
+            add(gc1);
+            add(gc3);
         }};
-        final SelectionsTransformer transformer2 = new FloatingSelectionsTransformer( data,
-                                                                                      columns );
+        final SelectionsTransformer transformer2 = new FloatingSelectionsTransformer(data,
+                                                                                     columns);
         final List<SelectedRange> selectedRanges2 = transformer2.transformToSelectedRanges();
-        assertEquals( 1,
-                      selectedRanges2.size() );
+        assertEquals(1,
+                     selectedRanges2.size());
     }
 
     @Test
     public void testTransformationSplitRows() {
         final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>( "col1",
-                                                                           100 );
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>( "col2",
-                                                                           100 );
-        final GridColumn<String> gc3 = new MockMergableGridColumn<String>( "col3",
-                                                                           100 );
-        data.appendColumn( gc1 );
-        data.appendColumn( gc2 );
-        data.appendColumn( gc3 );
+        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
+                                                                          100);
+        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
+                                                                          100);
+        final GridColumn<String> gc3 = new MockMergableGridColumn<String>("col3",
+                                                                          100);
+        data.appendColumn(gc1);
+        data.appendColumn(gc2);
+        data.appendColumn(gc3);
 
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
 
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 2 ) ) );
-        assertEquals( 0,
-                      data.getSelectedCells().size() );
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               2)));
+        assertEquals(0,
+                     data.getSelectedCells().size());
 
-        final SelectionsTransformer transformer = new DefaultSelectionsTransformer( data,
-                                                                                    data.getColumns() );
+        final SelectionsTransformer transformer = new DefaultSelectionsTransformer(data,
+                                                                                   data.getColumns());
         final List<SelectedRange> selectedRanges1 = transformer.transformToSelectedRanges();
-        assertEquals( 0,
-                      selectedRanges1.size() );
+        assertEquals(0,
+                     selectedRanges1.size());
 
         // x x x
         // - - -
         // x x x
-        data.selectCell( 0,
-                         0 );
-        data.selectCell( 0,
-                         1 );
-        data.selectCell( 0,
-                         2 );
-        data.selectCell( 2,
-                         0 );
-        data.selectCell( 2,
-                         1 );
-        data.selectCell( 2,
-                         2 );
+        data.selectCell(0,
+                        0);
+        data.selectCell(0,
+                        1);
+        data.selectCell(0,
+                        2);
+        data.selectCell(2,
+                        0);
+        data.selectCell(2,
+                        1);
+        data.selectCell(2,
+                        2);
 
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 0 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 1 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 2 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 0 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 1 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 2 ) ) );
-        assertEquals( 6,
-                      data.getSelectedCells().size() );
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                              0)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                              1)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                              2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               2)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                              0)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                              1)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                              2)));
+        assertEquals(6,
+                     data.getSelectedCells().size());
 
         final List<SelectedRange> selectedRanges2 = transformer.transformToSelectedRanges();
-        assertEquals( 2,
-                      selectedRanges2.size() );
+        assertEquals(2,
+                     selectedRanges2.size());
     }
 
     @Test
     public void testTransformationNeighbours() {
         final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>( "col1",
-                                                                           100 );
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>( "col2",
-                                                                           100 );
-        final GridColumn<String> gc3 = new MockMergableGridColumn<String>( "col3",
-                                                                           100 );
-        data.appendColumn( gc1 );
-        data.appendColumn( gc2 );
-        data.appendColumn( gc3 );
+        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
+                                                                          100);
+        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
+                                                                          100);
+        final GridColumn<String> gc3 = new MockMergableGridColumn<String>("col3",
+                                                                          100);
+        data.appendColumn(gc1);
+        data.appendColumn(gc2);
+        data.appendColumn(gc3);
 
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
 
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 2 ) ) );
-        assertEquals( 0,
-                      data.getSelectedCells().size() );
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               2)));
+        assertEquals(0,
+                     data.getSelectedCells().size());
 
-        final SelectionsTransformer transformer = new DefaultSelectionsTransformer( data,
-                                                                                    data.getColumns() );
+        final SelectionsTransformer transformer = new DefaultSelectionsTransformer(data,
+                                                                                   data.getColumns());
         final List<SelectedRange> selectedRanges1 = transformer.transformToSelectedRanges();
-        assertEquals( 0,
-                      selectedRanges1.size() );
+        assertEquals(0,
+                     selectedRanges1.size());
 
         // x - x
         // x - x
         // - x -
-        data.selectCell( 0,
-                         0 );
-        data.selectCell( 0,
-                         2 );
-        data.selectCell( 1,
-                         0 );
-        data.selectCell( 1,
-                         2 );
-        data.selectCell( 2,
-                         1 );
+        data.selectCell(0,
+                        0);
+        data.selectCell(0,
+                        2);
+        data.selectCell(1,
+                        0);
+        data.selectCell(1,
+                        2);
+        data.selectCell(2,
+                        1);
 
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 1 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 2 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 1 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 0 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 2 ) ) );
-        assertEquals( 5,
-                      data.getSelectedCells().size() );
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                              0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               1)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                              2)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                              0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               1)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                              2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               0)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                              1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               2)));
+        assertEquals(5,
+                     data.getSelectedCells().size());
 
         final List<SelectedRange> selectedRanges2 = transformer.transformToSelectedRanges();
-        assertEquals( 3,
-                      selectedRanges2.size() );
+        assertEquals(3,
+                     selectedRanges2.size());
     }
 
     @Test
     public void testTransformationDiagonalCross() {
         final GridData data = new BaseGridData();
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>( "col1",
-                                                                           100 );
-        final GridColumn<String> gc2 = new MockMergableGridColumn<String>( "col2",
-                                                                           100 );
-        final GridColumn<String> gc3 = new MockMergableGridColumn<String>( "col3",
-                                                                           100 );
-        data.appendColumn( gc1 );
-        data.appendColumn( gc2 );
-        data.appendColumn( gc3 );
+        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
+                                                                          100);
+        final GridColumn<String> gc2 = new MockMergableGridColumn<String>("col2",
+                                                                          100);
+        final GridColumn<String> gc3 = new MockMergableGridColumn<String>("col3",
+                                                                          100);
+        data.appendColumn(gc1);
+        data.appendColumn(gc2);
+        data.appendColumn(gc3);
 
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
 
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 2 ) ) );
-        assertEquals( 0,
-                      data.getSelectedCells().size() );
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               2)));
+        assertEquals(0,
+                     data.getSelectedCells().size());
 
-        final SelectionsTransformer transformer = new DefaultSelectionsTransformer( data,
-                                                                                    data.getColumns() );
+        final SelectionsTransformer transformer = new DefaultSelectionsTransformer(data,
+                                                                                   data.getColumns());
         final List<SelectedRange> selectedRanges1 = transformer.transformToSelectedRanges();
-        assertEquals( 0,
-                      selectedRanges1.size() );
+        assertEquals(0,
+                     selectedRanges1.size());
 
         // x - x
         // - x -
         // x - x
-        data.selectCell( 0,
-                         0 );
-        data.selectCell( 0,
-                         2 );
-        data.selectCell( 1,
-                         1 );
-        data.selectCell( 2,
-                         0 );
-        data.selectCell( 2,
-                         2 );
+        data.selectCell(0,
+                        0);
+        data.selectCell(0,
+                        2);
+        data.selectCell(1,
+                        1);
+        data.selectCell(2,
+                        0);
+        data.selectCell(2,
+                        2);
 
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 1 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 0, 2 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 0 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 1 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 1, 2 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 0 ) ) );
-        assertFalse( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 1 ) ) );
-        assertTrue( data.getSelectedCells().contains( new GridData.SelectedCell( 2, 2 ) ) );
-        assertEquals( 5,
-                      data.getSelectedCells().size() );
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                              0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                               1)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(0,
+                                                                              2)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               0)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                              1)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(1,
+                                                                               2)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                              0)));
+        assertFalse(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                               1)));
+        assertTrue(data.getSelectedCells().contains(new GridData.SelectedCell(2,
+                                                                              2)));
+        assertEquals(5,
+                     data.getSelectedCells().size());
 
         final List<SelectedRange> selectedRanges2 = transformer.transformToSelectedRanges();
-        assertEquals( 5,
-                      selectedRanges2.size() );
+        assertEquals(5,
+                     selectedRanges2.size());
     }
-
 }

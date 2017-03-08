@@ -22,7 +22,7 @@ public class WorkspaceImpl implements Workspace {
 
     private final String name;
 
-    public WorkspaceImpl( String name ) {
+    public WorkspaceImpl(String name) {
         this.name = name;
     }
 
@@ -32,12 +32,12 @@ public class WorkspaceImpl implements Workspace {
     }
 
     @Override
-    public boolean equals( final Object obj ) {
-        if ( obj instanceof WorkspaceImpl ) {
-            return this.getName() == ( (WorkspaceImpl) obj ).getName() ||
-                    this.getName().equals( ( (WorkspaceImpl) obj ).getName() );
+    public boolean equals(final Object obj) {
+        if (obj instanceof WorkspaceImpl) {
+            return this.getName() == ((WorkspaceImpl) obj).getName() ||
+                    this.getName().equals(((WorkspaceImpl) obj).getName());
         } else {
-            return super.equals( obj );
+            return super.equals(obj);
         }
     }
 

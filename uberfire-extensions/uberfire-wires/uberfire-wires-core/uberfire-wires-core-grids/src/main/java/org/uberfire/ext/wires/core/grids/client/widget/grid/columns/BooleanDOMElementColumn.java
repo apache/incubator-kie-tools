@@ -33,22 +33,22 @@ public class BooleanDOMElementColumn extends BaseGridColumn<Boolean> implements 
 
     private CheckBoxDOMElementFactory factory;
 
-    public BooleanDOMElementColumn( final GridColumn.HeaderMetaData headerMetaData,
-                                    final CheckBoxDOMElementFactory factory,
-                                    final double width ) {
-        this( new ArrayList<HeaderMetaData>() {{
-                  add( headerMetaData );
-              }},
-              factory,
-              width );
+    public BooleanDOMElementColumn(final GridColumn.HeaderMetaData headerMetaData,
+                                   final CheckBoxDOMElementFactory factory,
+                                   final double width) {
+        this(new ArrayList<HeaderMetaData>() {{
+                 add(headerMetaData);
+             }},
+             factory,
+             width);
     }
 
-    public BooleanDOMElementColumn( final List<GridColumn.HeaderMetaData> headerMetaData,
-                                    final CheckBoxDOMElementFactory factory,
-                                    final double width ) {
-        super( headerMetaData,
-               new BooleanColumnDOMElementRenderer( factory ),
-               width );
+    public BooleanDOMElementColumn(final List<GridColumn.HeaderMetaData> headerMetaData,
+                                   final CheckBoxDOMElementFactory factory,
+                                   final double width) {
+        super(headerMetaData,
+              new BooleanColumnDOMElementRenderer(factory),
+              width);
         this.factory = factory;
     }
 
@@ -68,10 +68,9 @@ public class BooleanDOMElementColumn extends BaseGridColumn<Boolean> implements 
     }
 
     @Override
-    public void edit( final GridCell<Boolean> cell,
-                      final GridBodyCellRenderContext context,
-                      final Callback<GridCellValue<Boolean>> callback ) {
-        callback.callback( new BaseGridCellValue<>( !cell.getValue().getValue() ) );
+    public void edit(final GridCell<Boolean> cell,
+                     final GridBodyCellRenderContext context,
+                     final Callback<GridCellValue<Boolean>> callback) {
+        callback.callback(new BaseGridCellValue<>(!cell.getValue().getValue()));
     }
-
 }

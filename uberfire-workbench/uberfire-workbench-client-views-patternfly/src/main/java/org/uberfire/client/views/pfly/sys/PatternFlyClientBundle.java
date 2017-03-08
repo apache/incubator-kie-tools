@@ -22,9 +22,8 @@ import com.google.gwt.resources.client.TextResource;
 
 public interface PatternFlyClientBundle extends ClientBundle {
 
-    PatternFlyClientBundle INSTANCE = GWT.create( PatternFlyClientBundle.class );
+    PatternFlyClientBundle INSTANCE = GWT.create(PatternFlyClientBundle.class);
 
     @Source("org/uberfire/client/views/static/prettify/bin/prettify.min.js")
     TextResource prettify();
-
 }

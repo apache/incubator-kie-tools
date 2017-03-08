@@ -27,8 +27,8 @@ public class GetFormParamsEvent {
     public GetFormParamsEvent() {
     }
 
-    public GetFormParamsEvent( String action,
-                               Map<String, Object> params ) {
+    public GetFormParamsEvent(String action,
+                              Map<String, Object> params) {
         this.action = action;
         this.params = params;
     }
@@ -40,5 +40,4 @@ public class GetFormParamsEvent {
     public String getAction() {
         return action;
     }
-
 }

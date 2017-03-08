@@ -29,21 +29,21 @@ public class GenerationException extends Exception {
     }
 
     public GenerationException(final String msg) {
-        super( msg );
+        super(msg);
     }
 
     public GenerationException(final String msg,
-            final String origin) {
-        super( origin + ": " + msg );
+                               final String origin) {
+        super(origin + ": " + msg);
     }
 
     public GenerationException(Throwable t) {
-        super( t );
+        super(t);
     }
 
     public GenerationException(String message,
-            Throwable cause) {
-        super( message, cause );
+                               Throwable cause) {
+        super(message,
+              cause);
     }
-
 }

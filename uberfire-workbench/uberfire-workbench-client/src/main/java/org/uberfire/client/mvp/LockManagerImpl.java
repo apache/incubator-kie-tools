@@ -84,20 +84,20 @@ public class LockManagerImpl implements LockManager {
     private Timer reloadTimer;
 
     @Override
-    public void init( final LockTarget lockTarget ) {
+    public void init(final LockTarget lockTarget) {
         this.lockTarget = lockTarget;
 
         final ParameterizedCommand<LockInfo> command = new ParameterizedCommand<LockInfo>() {
 
             @Override
-            public void execute( final LockInfo lockInfo ) {
-                if ( !lockRequestPending && !unlockRequestPending ) {
-                    updateLockInfo( lockInfo );
+            public void execute(final LockInfo lockInfo) {
+                if (!lockRequestPending && !unlockRequestPending) {
+                    updateLockInfo(lockInfo);
                 }
             }
         };
-        lockService.retrieveLockInfo( lockTarget.getPath(),
-                                      command );
+        lockService.retrieveLockInfo(lockTarget.getPath(),
+                                     command);
     }
 
     @Override
@@ -109,79 +109,79 @@ public class LockManagerImpl implements LockManager {
 
     @Override
     public void acquireLockOnDemand() {
-        if ( lockTarget == null ) {
+        if (lockTarget == null) {
             return;
         }
 
         final Widget widget = getLockTargetWidget();
         final Element element = widget.getElement();
-        acquireLockOnDemand( element );
+        acquireLockOnDemand(element);
 
-        widget.addAttachHandler( new AttachEvent.Handler() {
+        widget.addAttachHandler(new AttachEvent.Handler() {
 
             @Override
-            public void onAttachOrDetach( AttachEvent event ) {
+            public void onAttachOrDetach(AttachEvent event) {
                 // Handle widget reattachment/reparenting
-                if ( event.isAttached() ) {
-                    acquireLockOnDemand( element );
+                if (event.isAttached()) {
+                    acquireLockOnDemand(element);
                 }
             }
-        } );
+        });
     }
 
-    public EventListener acquireLockOnDemand( final Element element ) {
-        Event.sinkEvents( element,
-                          lockDemandDetector.getLockDemandEventTypes() );
+    public EventListener acquireLockOnDemand(final Element element) {
+        Event.sinkEvents(element,
+                         lockDemandDetector.getLockDemandEventTypes());
 
         EventListener lockDemandListener = new EventListener() {
 
             @Override
-            public void onBrowserEvent( Event event ) {
-                if ( isLockedByCurrentUser() ) {
+            public void onBrowserEvent(Event event) {
+                if (isLockedByCurrentUser()) {
                     return;
                 }
 
-                if ( lockDemandDetector.isLockRequired( event ) ) {
+                if (lockDemandDetector.isLockRequired(event)) {
                     acquireLock();
                 }
             }
         };
 
-        Event.setEventListener( element,
-                                lockDemandListener );
+        Event.setEventListener(element,
+                               lockDemandListener);
 
         return lockDemandListener;
     }
 
     @Override
     public void acquireLock() {
-        if ( lockTarget == null ) {
+        if (lockTarget == null) {
             return;
         }
-        if ( isLockedByCurrentUser() ) {
+        if (isLockedByCurrentUser()) {
             fireChangeTitleEvent();
             return;
         }
 
-        if ( lockInfo.isLocked() ) {
-            handleLockFailure( lockInfo );
-        } else if ( !lockRequestPending ) {
+        if (lockInfo.isLocked()) {
+            handleLockFailure(lockInfo);
+        } else if (!lockRequestPending) {
             lockRequestPending = true;
             final ParameterizedCommand<LockResult> command = new ParameterizedCommand<LockResult>() {
 
                 @Override
-                public void execute( final LockResult result ) {
-                    if ( result.isSuccess() ) {
-                        updateLockInfo( result.getLockInfo() );
+                public void execute(final LockResult result) {
+                    if (result.isSuccess()) {
+                        updateLockInfo(result.getLockInfo());
                         releaseLockOnClose();
                     } else {
-                        handleLockFailure( result.getLockInfo() );
+                        handleLockFailure(result.getLockInfo());
                     }
                     lockRequestPending = false;
                 }
             };
-            lockService.acquireLock( lockTarget.getPath(),
-                                     command );
+            lockService.acquireLock(lockTarget.getPath(),
+                                    command);
         }
     }
 
@@ -194,25 +194,25 @@ public class LockManagerImpl implements LockManager {
                 releaseLockInternal();
             }
         };
-        if ( lockSyncComplete ) {
+        if (lockSyncComplete) {
             releaseLock.run();
         } else {
-            syncCompleteRunnables.add( releaseLock );
+            syncCompleteRunnables.add(releaseLock);
         }
     }
 
     private void releaseLockInternal() {
-        if ( isLockedByCurrentUser() && !unlockRequestPending ) {
+        if (isLockedByCurrentUser() && !unlockRequestPending) {
             unlockRequestPending = true;
 
             ParameterizedCommand<LockResult> command = new ParameterizedCommand<LockResult>() {
 
                 @Override
-                public void execute( final LockResult result ) {
-                    updateLockInfo( result.getLockInfo() );
+                public void execute(final LockResult result) {
+                    updateLockInfo(result.getLockInfo());
 
-                    if ( result.isSuccess() ) {
-                        if ( closeHandler != null ) {
+                    if (result.isSuccess()) {
+                        if (closeHandler != null) {
                             closeHandler.removeHandler();
                         }
                     }
@@ -220,38 +220,38 @@ public class LockManagerImpl implements LockManager {
                     unlockRequestPending = false;
                 }
             };
-            lockService.releaseLock( lockTarget.getPath(),
-                                     command );
+            lockService.releaseLock(lockTarget.getPath(),
+                                    command);
         }
     }
 
     private void releaseLockOnClose() {
-        closeHandler = Window.addWindowClosingHandler( new ClosingHandler() {
+        closeHandler = Window.addWindowClosingHandler(new ClosingHandler() {
             @Override
-            public void onWindowClosing( ClosingEvent event ) {
+            public void onWindowClosing(ClosingEvent event) {
                 releaseLock();
             }
-        } );
+        });
     }
 
-    private void handleLockFailure( final LockInfo lockInfo ) {
+    private void handleLockFailure(final LockInfo lockInfo) {
 
-        if ( lockInfo != null ) {
-            updateLockInfo( lockInfo );
-            lockNotification.fire( new NotificationEvent( WorkbenchConstants.INSTANCE.lockedMessage( lockInfo.lockedBy() ),
-                                                          NotificationEvent.NotificationType.INFO,
-                                                          true,
-                                                          lockTarget.getPlace(),
-                                                          20 ) );
+        if (lockInfo != null) {
+            updateLockInfo(lockInfo);
+            lockNotification.fire(new NotificationEvent(WorkbenchConstants.INSTANCE.lockedMessage(lockInfo.lockedBy()),
+                                                        NotificationEvent.NotificationType.INFO,
+                                                        true,
+                                                        lockTarget.getPlace(),
+                                                        20));
         } else {
-            lockNotification.fire( new NotificationEvent( WorkbenchConstants.INSTANCE.lockError(),
-                                                          NotificationEvent.NotificationType.ERROR,
-                                                          true,
-                                                          lockTarget.getPlace(),
-                                                          20 ) );
+            lockNotification.fire(new NotificationEvent(WorkbenchConstants.INSTANCE.lockError(),
+                                                        NotificationEvent.NotificationType.ERROR,
+                                                        true,
+                                                        lockTarget.getPlace(),
+                                                        20));
         }
         // Delay reloading slightly in case we're dealing with a flood of events
-        if ( reloadTimer == null ) {
+        if (reloadTimer == null) {
             reloadTimer = new Timer() {
 
                 public void run() {
@@ -260,8 +260,8 @@ public class LockManagerImpl implements LockManager {
             };
         }
 
-        if ( !reloadTimer.isRunning() ) {
-            reloadTimer.schedule( 250 );
+        if (!reloadTimer.isRunning()) {
+            reloadTimer.schedule(250);
         }
     }
 
@@ -270,47 +270,47 @@ public class LockManagerImpl implements LockManager {
     }
 
     private boolean isLockedByCurrentUser() {
-        return lockInfo.isLocked() && lockInfo.lockedBy().equals( user.getIdentifier() );
+        return lockInfo.isLocked() && lockInfo.lockedBy().equals(user.getIdentifier());
     }
 
-    private void updateLockInfo( @Observes LockInfo lockInfo ) {
-        if ( lockTarget != null && lockInfo.getFile().equals( lockTarget.getPath() ) ) {
+    private void updateLockInfo(@Observes LockInfo lockInfo) {
+        if (lockTarget != null && lockInfo.getFile().equals(lockTarget.getPath())) {
             this.lockInfo = lockInfo;
             this.lockSyncComplete = true;
 
             fireChangeTitleEvent();
             fireUpdatedLockStatusEvent();
 
-            for ( Runnable runnable : syncCompleteRunnables ) {
+            for (Runnable runnable : syncCompleteRunnables) {
                 runnable.run();
             }
             syncCompleteRunnables.clear();
         }
     }
 
-    void onResourceAdded( @Observes ResourceAddedEvent res ) {
-        if ( lockTarget != null && res.getPath().equals( lockTarget.getPath() ) ) {
+    void onResourceAdded(@Observes ResourceAddedEvent res) {
+        if (lockTarget != null && res.getPath().equals(lockTarget.getPath())) {
             releaseLock();
         }
     }
 
-    void onResourceUpdated( @Observes ResourceUpdatedEvent res ) {
-        if ( lockTarget != null && res.getPath().equals( lockTarget.getPath() ) ) {
-            if ( !res.getSessionInfo().getIdentity().equals( user ) ) {
+    void onResourceUpdated(@Observes ResourceUpdatedEvent res) {
+        if (lockTarget != null && res.getPath().equals(lockTarget.getPath())) {
+            if (!res.getSessionInfo().getIdentity().equals(user)) {
                 reload();
             }
             releaseLock();
         }
     }
 
-    void onSaveInProgress( @Observes SaveInProgressEvent evt ) {
-        if ( lockTarget != null && evt.getPath().equals( lockTarget.getPath() ) ) {
+    void onSaveInProgress(@Observes SaveInProgressEvent evt) {
+        if (lockTarget != null && evt.getPath().equals(lockTarget.getPath())) {
             releaseLock();
         }
     }
 
-    void onLockRequired( @Observes LockRequiredEvent event ) {
-        if ( lockTarget != null && isVisible() && !isLockedByCurrentUser() ) {
+    void onLockRequired(@Observes LockRequiredEvent event) {
+        if (lockTarget != null && isVisible() && !isLockedByCurrentUser()) {
             acquireLock();
         }
     }
@@ -336,8 +336,8 @@ public class LockManagerImpl implements LockManager {
 
     private Widget getLockTargetWidget() {
         final IsWidget isWidget = lockTarget.getWidget();
-        if ( isWidget instanceof Widget ) {
-            return ( (Widget) isWidget );
+        if (isWidget instanceof Widget) {
+            return ((Widget) isWidget);
         }
         return isWidget.asWidget();
     }
@@ -351,26 +351,25 @@ public class LockManagerImpl implements LockManager {
     }
 
     protected void fireChangeTitleEvent() {
-        changeTitleEvent.fire( LockTitleWidgetEvent.create( lockTarget,
-                                                            lockInfo,
-                                                            user ) );
+        changeTitleEvent.fire(LockTitleWidgetEvent.create(lockTarget,
+                                                          lockInfo,
+                                                          user));
     }
 
     protected void fireUpdatedLockStatusEvent() {
-        if ( isVisible() ) {
-            updatedLockStatusEvent.fire( new UpdatedLockStatusEvent( lockInfo.getFile(),
-                                                                     lockInfo.isLocked(),
-                                                                     isLockedByCurrentUser() ) );
+        if (isVisible()) {
+            updatedLockStatusEvent.fire(new UpdatedLockStatusEvent(lockInfo.getFile(),
+                                                                   lockInfo.isLocked(),
+                                                                   isLockedByCurrentUser()));
         }
     }
 
     private boolean isVisible() {
         final Widget widget = getLockTargetWidget();
         final Element element = widget.getElement();
-        boolean visible = UIObject.isVisible( element ) &&
-                ( element.getAbsoluteLeft() != 0 ) && ( element.getAbsoluteTop() != 0 );
+        boolean visible = UIObject.isVisible(element) &&
+                (element.getAbsoluteLeft() != 0) && (element.getAbsoluteTop() != 0);
 
         return visible;
     }
-
 }

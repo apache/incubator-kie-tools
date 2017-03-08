@@ -34,7 +34,6 @@ public interface PermissionType {
     /**
      * Checks if the given permission name is supported by this type. That means basically that
      * such name does follow a specific nomenclature for the formatting of its permission names.
-     *
      * @param name The permission name to check
      * @return true is such permission is supported or false otherwise.
      */
@@ -42,42 +41,43 @@ public interface PermissionType {
 
     /**
      * Creates a permission instance.
-     *
      * @param name The name of the permission to create.
      * @param granted true=granted, false=denied
      * @return A permission instance
      */
-    Permission createPermission(String name, boolean granted);
+    Permission createPermission(String name,
+                                boolean granted);
 
     /**
      * Creates a permission instance representing a "global" action that can be applied to any resource instance
      * (for instance, "edit an invoice") or an action that is not related to any specific instance (for instance,
      * "create a new invoice")
-     *
      * @param resourceType The resource type
      * @param action The action to check. If null then an "access" permission is created.
      * The term access refers to the ability to reach, read, view ... the resource, depending on the resource type.
      * @return A permission instance
      */
-    Permission createPermission(ResourceType resourceType, ResourceAction action, boolean granted);
+    Permission createPermission(ResourceType resourceType,
+                                ResourceAction action,
+                                boolean granted);
 
     /**
      * Creates a permission instance representing an action on a given resource..
-     *
      * @param resource The resource instance
      * @param action The action to check. If null then an "access" permission is created.
      * The term access refers to the ability to reach, read, view ... the resource, depending on the resource type.
      * @return A permission instance
      */
-    Permission createPermission(Resource resource, ResourceAction action, boolean granted);
+    Permission createPermission(Resource resource,
+                                ResourceAction action,
+                                boolean granted);
 
     /**
      * Given a permission it tries to determine what is the resource the permission refers to.
-     *
+     * <p>
      * <p>The resolution mechanism works only if the permission instance was created by a previous call
      * to {@link #createPermission(Resource, ResourceAction, boolean)}. In such case the identifier of the
      * {@link Resource} instance is the value returned.</p>
-     *
      * @param permission The permission which resource id. has to be inferred.
      * @return A resource id. or null if it can bot be inferred.
      */

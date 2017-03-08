@@ -21,7 +21,7 @@ public interface GraphNode<C, T extends Edge> {
 
     public int getId();
 
-    public void setId( int id );
+    public void setId(int id);
 
     public List<T> getInEdges();
 
@@ -29,6 +29,5 @@ public interface GraphNode<C, T extends Edge> {
 
     public C getContent();
 
-    public void setContent( C content );
-
+    public void setContent(C content);
 }

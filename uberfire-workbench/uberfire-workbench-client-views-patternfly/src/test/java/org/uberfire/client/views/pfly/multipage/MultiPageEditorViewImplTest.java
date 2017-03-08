@@ -48,9 +48,11 @@ public class MultiPageEditorViewImplTest {
     @Test
     public void testAddPage() {
         final Page page = mock(Page.class);
-        when(page.getLabel()).thenReturn("label1", "label2");
+        when(page.getLabel()).thenReturn("label1",
+                                         "label2");
         when(page.getView()).thenReturn(mock(PageView.class));
-        when(contentPane.isActive()).thenReturn(false, true);
+        when(contentPane.isActive()).thenReturn(false,
+                                                true);
 
         multiPageEditorView.addPage(page);
 
@@ -59,5 +61,4 @@ public class MultiPageEditorViewImplTest {
         verify(dropDownTabListItem).showTab(false);
         verify(dropDownTabListItem).setActive(true);
     }
-
 }

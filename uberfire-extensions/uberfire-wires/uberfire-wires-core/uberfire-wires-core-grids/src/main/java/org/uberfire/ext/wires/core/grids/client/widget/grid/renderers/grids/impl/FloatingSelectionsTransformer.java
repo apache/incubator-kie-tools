@@ -25,15 +25,14 @@ import org.uberfire.ext.wires.core.grids.client.model.GridData;
  */
 public class FloatingSelectionsTransformer extends DefaultSelectionsTransformer {
 
-    public FloatingSelectionsTransformer( final GridData model,
-                                          final List<GridColumn<?>> columns ) {
-        super( model,
-               columns );
+    public FloatingSelectionsTransformer(final GridData model,
+                                         final List<GridColumn<?>> columns) {
+        super(model,
+              columns);
     }
 
     @Override
     protected List<GridColumn<?>> getApplicableColumns() {
         return columns;
     }
-
 }

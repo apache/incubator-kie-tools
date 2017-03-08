@@ -30,49 +30,50 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.server.util.FileServletUtil;
 
-import static java.lang.String.*;
+import static java.lang.String.format;
 
 public class FileDownloadServlet
         extends BaseFilteredServlet {
 
-    private static final Logger logger = LoggerFactory.getLogger( FileDownloadServlet.class );
+    private static final Logger logger = LoggerFactory.getLogger(FileDownloadServlet.class);
 
     @Inject
     @Named("ioStrategy")
     private IOService ioService;
 
     @Override
-    protected void doGet( HttpServletRequest request,
-                          HttpServletResponse response )
+    protected void doGet(HttpServletRequest request,
+                         HttpServletResponse response)
             throws ServletException, IOException {
 
         try {
 
             //See https://bugzilla.redhat.com/show_bug.cgi?id=1202926
-            final String encodedPath = FileServletUtil.encodeFileNamePart( request.getParameter( "path" ) );
-            final URI uri = new URI( encodedPath );
+            final String encodedPath = FileServletUtil.encodeFileNamePart(request.getParameter("path"));
+            final URI uri = new URI(encodedPath);
 
-            if ( !validateAccess( uri, response ) ) {
+            if (!validateAccess(uri,
+                                response)) {
                 return;
             }
 
-            final Path path = ioService.get( uri );
+            final Path path = ioService.get(uri);
 
-            byte[] bytes = ioService.readAllBytes( path );
+            byte[] bytes = ioService.readAllBytes(path);
 
-            response.setHeader( "Content-Disposition",
-                                format( "attachment; filename=\"%s\";", path.getFileName().toString() ) );
+            response.setHeader("Content-Disposition",
+                               format("attachment; filename=\"%s\";",
+                                      path.getFileName().toString()));
 
-            response.setContentType( "application/octet-stream" );
+            response.setContentType("application/octet-stream");
 
             response.getOutputStream().write(
                     bytes,
                     0,
-                    bytes.length );
-
-        } catch ( final Exception e ) {
-            logger.error( "Failed to download a file.", e );
+                    bytes.length);
+        } catch (final Exception e) {
+            logger.error("Failed to download a file.",
+                         e);
         }
-
     }
 }

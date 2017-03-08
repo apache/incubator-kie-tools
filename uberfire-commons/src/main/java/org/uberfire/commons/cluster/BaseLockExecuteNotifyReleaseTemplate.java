@@ -23,11 +23,13 @@ import java.util.concurrent.RunnableFuture;
 import org.uberfire.commons.message.MessageType;
 
 abstract class BaseLockExecuteNotifyReleaseTemplate<V> {
-    // default timeout 30 sec
-    public static final int TIMEOUT = Integer.parseInt(System.getProperty("org.uberfire.cluster.timeout", "30000"));
 
-    public V execute( final ClusterService clusterService,
-                      final RunnableFuture<V> task ) {
+    // default timeout 30 sec
+    public static final int TIMEOUT = Integer.parseInt(System.getProperty("org.uberfire.cluster.timeout",
+                                                                          "30000"));
+
+    public V execute(final ClusterService clusterService,
+                     final RunnableFuture<V> task) {
         try {
             clusterService.lock();
 
@@ -35,27 +37,27 @@ abstract class BaseLockExecuteNotifyReleaseTemplate<V> {
 
             final V result = task.get();
 
-            sendMessage( clusterService );
+            sendMessage(clusterService);
 
             return result;
-        } catch ( final ExecutionException e ) {
-            throwException( e.getCause() );
-        } catch ( final Exception e ) {
-            throwException( e );
+        } catch (final ExecutionException e) {
+            throwException(e.getCause());
+        } catch (final Exception e) {
+            throwException(e);
         } finally {
             clusterService.unlock();
         }
         return null;
     }
 
-    private void throwException( final Throwable e ) {
-        if ( e instanceof RuntimeException ) {
+    private void throwException(final Throwable e) {
+        if (e instanceof RuntimeException) {
             throw (RuntimeException) e;
         }
-        throw new RuntimeException( e );
+        throw new RuntimeException(e);
     }
 
-    abstract void sendMessage( final ClusterService clusterService );
+    abstract void sendMessage(final ClusterService clusterService);
 
     public abstract MessageType getMessageType();
 

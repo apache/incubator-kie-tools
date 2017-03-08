@@ -38,19 +38,19 @@ public class CoordinateUtilities {
      * @param point The Canvas/DOM MouseEvent coordinate.
      * @return A coordinate relative to the GridWidget (in un-transformed coordinate space).
      */
-    public static Point2D convertDOMToGridCoordinate( final GridWidget view,
-                                                      final Point2D point ) {
+    public static Point2D convertDOMToGridCoordinate(final GridWidget view,
+                                                     final Point2D point) {
         Transform transform = view.getViewport().getTransform();
-        if ( transform == null ) {
-            view.getViewport().setTransform( transform = new Transform() );
+        if (transform == null) {
+            view.getViewport().setTransform(transform = new Transform());
         }
 
         transform = transform.copy().getInverse();
-        final Point2D p = new Point2D( point.getX(),
-                                       point.getY() );
-        transform.transform( p,
-                             p );
-        return p.add( view.getLocation().mul( -1.0 ) );
+        final Point2D p = new Point2D(point.getX(),
+                                      point.getY());
+        transform.transform(p,
+                            p);
+        return p.add(view.getLocation().mul(-1.0));
     }
 
     /**
@@ -60,17 +60,17 @@ public class CoordinateUtilities {
      * @param cy y-coordinate relative to the GridWidget.
      * @return The row index or null if the coordinate did not map to a cell.
      */
-    public static Integer getUiRowIndex( final GridWidget gridWidget,
-                                         final double cy ) {
+    public static Integer getUiRowIndex(final GridWidget gridWidget,
+                                        final double cy) {
         final Group header = gridWidget.getHeader();
         final GridData gridModel = gridWidget.getModel();
         final GridRenderer renderer = gridWidget.getRenderer();
-        final double headerMaxY = ( header == null ? renderer.getHeaderHeight() : renderer.getHeaderHeight() + header.getY() );
+        final double headerMaxY = (header == null ? renderer.getHeaderHeight() : renderer.getHeaderHeight() + header.getY());
 
-        if ( cy < headerMaxY || cy > gridWidget.getHeight() ) {
+        if (cy < headerMaxY || cy > gridWidget.getHeight()) {
             return null;
         }
-        if ( gridModel.getRowCount() == 0 ) {
+        if (gridModel.getRowCount() == 0) {
             return null;
         }
 
@@ -78,11 +78,11 @@ public class CoordinateUtilities {
         GridRow row;
         int uiRowIndex = 0;
         double offsetY = cy - renderer.getHeaderHeight();
-        while ( ( row = gridModel.getRow( uiRowIndex ) ).getHeight() < offsetY ) {
+        while ((row = gridModel.getRow(uiRowIndex)).getHeight() < offsetY) {
             offsetY = offsetY - row.getHeight();
             uiRowIndex++;
         }
-        if ( uiRowIndex < 0 || uiRowIndex > gridModel.getRowCount() - 1 ) {
+        if (uiRowIndex < 0 || uiRowIndex > gridModel.getRowCount() - 1) {
             return null;
         }
 
@@ -96,28 +96,27 @@ public class CoordinateUtilities {
      * @param cx x-coordinate relative to the GridWidget.
      * @return The column index or null if the coordinate did not map to a cell.
      */
-    public static Integer getUiColumnIndex( final GridWidget gridWidget,
-                                            final double cx ) {
+    public static Integer getUiColumnIndex(final GridWidget gridWidget,
+                                           final double cx) {
         final GridData gridModel = gridWidget.getModel();
         final BaseGridRendererHelper rendererHelper = gridWidget.getRendererHelper();
 
-        if ( cx < 0 || cx > gridWidget.getWidth() ) {
+        if (cx < 0 || cx > gridWidget.getWidth()) {
             return null;
         }
 
         //Get column index
-        final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation( cx );
+        final BaseGridRendererHelper.ColumnInformation ci = rendererHelper.getColumnInformation(cx);
         final GridColumn<?> column = ci.getColumn();
         final int uiColumnIndex = ci.getUiColumnIndex();
 
-        if ( column == null ) {
+        if (column == null) {
             return null;
         }
-        if ( uiColumnIndex < 0 || uiColumnIndex > gridModel.getColumnCount() - 1 ) {
+        if (uiColumnIndex < 0 || uiColumnIndex > gridModel.getColumnCount() - 1) {
             return null;
         }
 
         return uiColumnIndex;
     }
-
 }

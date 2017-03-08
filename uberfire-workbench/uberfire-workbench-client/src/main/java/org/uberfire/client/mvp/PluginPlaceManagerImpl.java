@@ -16,10 +16,10 @@
 package org.uberfire.client.mvp;
 
 import java.util.Collection;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.HasWidgets;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
 import org.jboss.errai.ioc.client.api.Shared;
@@ -34,8 +34,6 @@ import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
-
-import com.google.gwt.user.client.ui.HasWidgets;
 
 /**
  * This {@link PlaceManager} implementation is active for plugins only, to
@@ -63,131 +61,130 @@ public class PluginPlaceManagerImpl implements PlaceManager {
     @SuppressWarnings("unused")
     @Inject
     private ObservablePath path;
-    
+
     // Avoid pruning by aggressive reachability analysis in Errai
     @SuppressWarnings("unused")
     @Inject
     private LockManager lockManager;
-    
+
     private void fail() {
-        throw new RuntimeException( "Invalid use of standard PlaceManager in plugin. " + 
-                "Use @Inject @" + Shared.class.getName() + " " + 
-                PlaceManager.class.getName() + " instead!" );
+        throw new RuntimeException("Invalid use of standard PlaceManager in plugin. " +
+                                           "Use @Inject @" + Shared.class.getName() + " " +
+                                           PlaceManager.class.getName() + " instead!");
     }
 
     @Override
-    public void goTo( final String identifier,
-                      final PanelDefinition panel ) {
+    public void goTo(final String identifier,
+                     final PanelDefinition panel) {
 
         fail();
     }
 
     @Override
-    public void goTo( final String identifier ) {
+    public void goTo(final String identifier) {
 
         fail();
     }
 
     @Override
-    public void goTo( PlaceRequest place ) {
+    public void goTo(PlaceRequest place) {
 
         fail();
     }
 
     @Override
-    public void goTo( final Path path,
-                      final PanelDefinition panel ) {
+    public void goTo(final Path path,
+                     final PanelDefinition panel) {
 
-        fail();
-
-    }
-
-    @Override
-    public void goTo( final Path path ) {
         fail();
     }
 
     @Override
-    public void goTo( final Path path,
-                      final PlaceRequest placeRequest,
-                      final PanelDefinition panel ) {
+    public void goTo(final Path path) {
         fail();
     }
 
     @Override
-    public void goTo( final Path path,
-                      final PlaceRequest placeRequest ) {
+    public void goTo(final Path path,
+                     final PlaceRequest placeRequest,
+                     final PanelDefinition panel) {
         fail();
     }
 
     @Override
-    public void goTo( final PlaceRequest place,
-                      final PanelDefinition panel ) {
+    public void goTo(final Path path,
+                     final PlaceRequest placeRequest) {
         fail();
     }
 
     @Override
-    public void goTo( PlaceRequest place,
-                      HasWidgets addTo ) {
+    public void goTo(final PlaceRequest place,
+                     final PanelDefinition panel) {
         fail();
     }
 
     @Override
-    public void goTo( PlaceRequest place,
-                      HTMLElement addTo ) {
+    public void goTo(PlaceRequest place,
+                     HasWidgets addTo) {
         fail();
     }
 
     @Override
-    public void goTo( final PartDefinition part,
-                      final PanelDefinition panel ) {
+    public void goTo(PlaceRequest place,
+                     HTMLElement addTo) {
         fail();
     }
 
     @Override
-    public Activity getActivity( final PlaceRequest place ) {
+    public void goTo(final PartDefinition part,
+                     final PanelDefinition panel) {
         fail();
-
-        return null;
     }
 
     @Override
-    public PlaceStatus getStatus( String id ) {
+    public Activity getActivity(final PlaceRequest place) {
         fail();
 
         return null;
     }
 
     @Override
-    public PlaceStatus getStatus( final PlaceRequest place ) {
+    public PlaceStatus getStatus(String id) {
         fail();
 
         return null;
     }
 
     @Override
-    public void closePlace( final String id ) {
+    public PlaceStatus getStatus(final PlaceRequest place) {
+        fail();
+
+        return null;
+    }
+
+    @Override
+    public void closePlace(final String id) {
         fail();
     }
 
     @Override
-    public void closePlace( final PlaceRequest placeToClose ) {
+    public void closePlace(final PlaceRequest placeToClose) {
         fail();
     }
 
     @Override
-    public void tryClosePlace( final PlaceRequest placeToClose,
-                               final Command onAfterClose ) {
+    public void tryClosePlace(final PlaceRequest placeToClose,
+                              final Command onAfterClose) {
         fail();
     }
 
     @Override
-    public void forceClosePlace( final String id ) {
+    public void forceClosePlace(final String id) {
         fail();
     }
 
     @Override
-    public void forceClosePlace( final PlaceRequest placeToClose ) {
+    public void forceClosePlace(final PlaceRequest placeToClose) {
         fail();
     }
 
@@ -208,13 +205,13 @@ public class PluginPlaceManagerImpl implements PlaceManager {
     }
 
     @Override
-    public void registerOnOpenCallback( final PlaceRequest place,
-                                        final Command command ) {
+    public void registerOnOpenCallback(final PlaceRequest place,
+                                       final Command command) {
         fail();
     }
 
     @Override
-    public void unregisterOnOpenCallback( final PlaceRequest place ) {
+    public void unregisterOnOpenCallback(final PlaceRequest place) {
         fail();
     }
 
@@ -225,15 +222,14 @@ public class PluginPlaceManagerImpl implements PlaceManager {
     }
 
     @Override
-    public Command getOpenCallback( PlaceRequest place ) {
+    public Command getOpenCallback(PlaceRequest place) {
         fail();
         return null;
     }
 
     @Override
-    public Collection<PathPlaceRequest> getActivitiesForResourceType( ResourceTypeDefinition type ) {
+    public Collection<PathPlaceRequest> getActivitiesForResourceType(ResourceTypeDefinition type) {
         fail();
         return null;
     }
-
 }

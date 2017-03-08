@@ -16,46 +16,54 @@
 
 package org.uberfire.ext.security.management.api.validation;
 
-import org.jboss.errai.security.shared.api.identity.User;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.Path;
-import javax.validation.metadata.ConstraintDescriptor;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import javax.validation.ConstraintViolation;
+import javax.validation.Path;
+import javax.validation.metadata.ConstraintDescriptor;
+
+import org.jboss.errai.security.shared.api.identity.User;
 
 /**
  * <p>The base validator class for a User entity based on JSR303 Bean Validations.</p>
  * <p>Current validations:</p>
  * <ul>
- *     <li>User identifier (username) is mandatory</li>
+ * <li>User identifier (username) is mandatory</li>
  * </ul>
  * <p>This provides validation logic for both backend and client sides, but you have to provide an instantiable class that provides the error message descriptions for each validation error supported.</p>
  * @since 0.8.0
  */
 public abstract class UserValidator implements EntityValidator<User> {
-    
+
     public static final String KEY_NAME_NOT_EMPTY = "nameNotEmpty";
-    
+
     @Override
     public Set<ConstraintViolation<User>> validate(final User entity) {
-        if (entity == null) return null;
+        if (entity == null) {
+            return null;
+        }
         final String id = entity.getIdentifier();
         Set<ConstraintViolation<User>> result = new HashSet<ConstraintViolation<User>>(1);
         // Validate user name not empty.
         if (id == null || id.trim().length() == 0) {
             final String msg = getMessage(KEY_NAME_NOT_EMPTY);
-            result.add(createViolation(entity, "identifier", msg));
+            result.add(createViolation(entity,
+                                       "identifier",
+                                       msg));
         }
         return result;
     }
-    
+
     public abstract String getMessage(final String key);
-    
-    private ConstraintViolation<User> createViolation(final User user, final String attribute, final String message) {
-        if (user == null) return null;
-        
+
+    private ConstraintViolation<User> createViolation(final User user,
+                                                      final String attribute,
+                                                      final String message) {
+        if (user == null) {
+            return null;
+        }
+
         return new ConstraintViolation<User>() {
             @Override
             public String getMessage() {
@@ -125,5 +133,4 @@ public abstract class UserValidator implements EntityValidator<User> {
             }
         };
     }
-    
 }

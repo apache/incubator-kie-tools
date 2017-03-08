@@ -29,5 +29,4 @@ public interface ContainmentRule extends RuleById {
      * @return
      */
     Set<Role> getPermittedRoles();
-
 }

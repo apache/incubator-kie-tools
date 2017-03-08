@@ -23,57 +23,61 @@ public enum PropertyFormType {
 
     TEXT {
         @Override
-        public Object fromString( final String stringValue ) {
+        public Object fromString(final String stringValue) {
             return stringValue;
         }
 
         @Override
-        public String toString( final Object realValue ) {
-            return String.valueOf( realValue );
+        public String toString(final Object realValue) {
+            return String.valueOf(realValue);
         }
-    }, BOOLEAN {
+    },
+    BOOLEAN {
         @Override
-        public Object fromString( final String stringValue ) {
-            return Boolean.valueOf( stringValue );
-        }
-
-        @Override
-        public String toString( final Object realValue ) {
-            return String.valueOf( realValue );
-        }
-    }, NATURAL_NUMBER {
-        @Override
-        public Object fromString( final String stringValue ) {
-            return Integer.parseInt( stringValue );
+        public Object fromString(final String stringValue) {
+            return Boolean.valueOf(stringValue);
         }
 
         @Override
-        public String toString( final Object realValue ) {
-            return String.valueOf( realValue );
+        public String toString(final Object realValue) {
+            return String.valueOf(realValue);
         }
-    }, SECRET_TEXT {
+    },
+    NATURAL_NUMBER {
         @Override
-        public Object fromString( final String stringValue ) {
+        public Object fromString(final String stringValue) {
+            return Integer.parseInt(stringValue);
+        }
+
+        @Override
+        public String toString(final Object realValue) {
+            return String.valueOf(realValue);
+        }
+    },
+    SECRET_TEXT {
+        @Override
+        public Object fromString(final String stringValue) {
             return stringValue;
         }
 
         @Override
-        public String toString( final Object realValue ) {
-            return String.valueOf( realValue );
+        public String toString(final Object realValue) {
+            return String.valueOf(realValue);
         }
-    }, COLOR {
+    },
+    COLOR {
         @Override
-        public Object fromString( final String stringValue ) {
+        public Object fromString(final String stringValue) {
             return stringValue;
         }
 
         @Override
-        public String toString( final Object realValue ) {
-            return String.valueOf( realValue );
+        public String toString(final Object realValue) {
+            return String.valueOf(realValue);
         }
     };
 
-    public abstract Object fromString( String stringValue );
+    public abstract Object fromString(String stringValue);
 
-    public abstract String toString( Object realValue );
+    public abstract String toString(Object realValue);
 }

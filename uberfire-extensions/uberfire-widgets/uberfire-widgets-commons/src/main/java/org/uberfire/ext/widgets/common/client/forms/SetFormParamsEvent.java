@@ -27,8 +27,8 @@ public class SetFormParamsEvent {
     public SetFormParamsEvent() {
     }
 
-    public SetFormParamsEvent( Map<String, String> params,
-                               boolean readOnly ) {
+    public SetFormParamsEvent(Map<String, String> params,
+                              boolean readOnly) {
         this.params = params;
         this.readOnly = readOnly;
     }
@@ -40,5 +40,4 @@ public class SetFormParamsEvent {
     public boolean isReadOnly() {
         return readOnly;
     }
-
 }

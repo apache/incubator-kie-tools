@@ -17,26 +17,26 @@ package org.uberfire.ext.wires.core.trees.client.layout.treelayout;
 
 /**
  * Represents a tree to be used by the {@link TreeLayout}.
- * <p/>
+ * <p>
  * The TreeForTreeLayout interface is designed to best match the implemented
  * layout algorithm and to ensure the algorithm's time complexity promises in
  * all possible cases. However in most situation a client must not deal with all
  * details of this interface and can directly use the
  * {@link AbstractTreeForTreeLayout} to implement this
  * interface.
- * <p/>
+ * <p>
  * Also see <a href="package-summary.html">this overview</a>.
  * @param <TreeNode> <p/>
- * <p/>
+ * <p>
  * Adapted from https://code.google.com/p/treelayout/ to be available to GWT clients
- * <p/>
+ * <p>
  * @author Udo Borkowski (ub@abego.org)
  */
 public interface TreeForTreeLayout<TreeNode> {
 
     /**
      * Returns the the root of the tree.
-     * <p/>
+     * <p>
      * Time Complexity: O(1)
      * @return the root of the tree
      */
@@ -44,59 +44,58 @@ public interface TreeForTreeLayout<TreeNode> {
 
     /**
      * Tells if a node is a leaf in the tree.
-     * <p/>
+     * <p>
      * Time Complexity: O(1)
      * @param node
      * @return true iff node is a leaf in the tree, i.e. has no children.
      */
-    boolean isLeaf( TreeNode node );
+    boolean isLeaf(TreeNode node);
 
     /**
      * Tells if a node is a child of a given parentNode.
-     * <p/>
+     * <p>
      * Time Complexity: O(1)
      * @param node
      * @param parentNode
      * @return true iff the node is a child of the given parentNode
      */
-    boolean isChildOfParent( TreeNode node,
-                             TreeNode parentNode );
+    boolean isChildOfParent(TreeNode node,
+                            TreeNode parentNode);
 
     /**
      * Returns the children of a parent node.
-     * <p/>
+     * <p>
      * Time Complexity: O(1)
      * @param parentNode [!isLeaf(parentNode)]
      * @return the children of the given parentNode, from first to last
      */
-    Iterable<TreeNode> getChildren( TreeNode parentNode );
+    Iterable<TreeNode> getChildren(TreeNode parentNode);
 
     /**
      * Returns the children of a parent node, in reverse order.
-     * <p/>
+     * <p>
      * Time Complexity: O(1)
      * @param parentNode [!isLeaf(parentNode)]
      * @return the children of given parentNode, from last to first
      */
-    Iterable<TreeNode> getChildrenReverse( TreeNode parentNode );
+    Iterable<TreeNode> getChildrenReverse(TreeNode parentNode);
 
     /**
      * Returns the first child of a parent node.
-     * <p/>
+     * <p>
      * Time Complexity: O(1)
      * @param parentNode [!isLeaf(parentNode)]
      * @return the first child of the parentNode
      */
-    TreeNode getFirstChild( TreeNode parentNode );
+    TreeNode getFirstChild(TreeNode parentNode);
 
     /**
      * Returns the last child of a parent node.
-     * <p/>
-     * <p/>
+     * <p>
+     * <p>
      * Time Complexity: O(1)
      * @param parentNode [!isLeaf(parentNode)]
      * @return the last child of the parentNode
      */
-    TreeNode getLastChild( TreeNode parentNode );
-
+    TreeNode getLastChild(TreeNode parentNode);
 }

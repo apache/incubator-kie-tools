@@ -50,7 +50,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
  */
 public abstract class BaseDOMElement<T, W extends Widget> {
 
-    private static final NumberFormat FORMAT = NumberFormat.getFormat( "0.0" );
+    private static final NumberFormat FORMAT = NumberFormat.getFormat("0.0");
 
     protected final W widget;
     protected final SimplePanel widgetContainer = new SimplePanel();
@@ -61,114 +61,110 @@ public abstract class BaseDOMElement<T, W extends Widget> {
 
     protected GridBodyCellRenderContext context;
 
-    public BaseDOMElement( final W widget,
-                           final GridLayer gridLayer,
-                           final GridWidget gridWidget ) {
+    public BaseDOMElement(final W widget,
+                          final GridLayer gridLayer,
+                          final GridWidget gridWidget) {
         this.widget = widget;
         this.gridLayer = gridLayer;
         this.gridWidget = gridWidget;
         this.domElementContainer = gridLayer.getDomElementContainer();
 
         final Style style = widgetContainer.getElement().getStyle();
-        style.setPosition( Style.Position.ABSOLUTE );
+        style.setPosition(Style.Position.ABSOLUTE);
 
         //MouseEvents over absolutely positioned elements do not bubble through the DOM.
         //Consequentially Event Handlers on GridLayer do not receive notification of MouseMove
         //Events used during column resizing. Therefore we manually bubble events to GridLayer.
-        widgetContainer.addDomHandler( new MouseDownHandler() {
-                                           @Override
-                                           public void onMouseDown( final MouseDownEvent event ) {
-                                               gridLayer.onNodeMouseDown( new NodeMouseDownEvent( event ) {
+        widgetContainer.addDomHandler(new MouseDownHandler() {
+                                          @Override
+                                          public void onMouseDown(final MouseDownEvent event) {
+                                              gridLayer.onNodeMouseDown(new NodeMouseDownEvent(event) {
 
-                                                   @Override
-                                                   public int getX() {
-                                                       //Adjust the x-coordinate (relative to the DOM Element) to be relative to the GridCanvas.
-                                                       return super.getX() + widgetContainer.getElement().getOffsetLeft();
-                                                   }
+                                                  @Override
+                                                  public int getX() {
+                                                      //Adjust the x-coordinate (relative to the DOM Element) to be relative to the GridCanvas.
+                                                      return super.getX() + widgetContainer.getElement().getOffsetLeft();
+                                                  }
 
-                                                   @Override
-                                                   public int getY() {
-                                                       //Adjust the y-coordinate (relative to the DOM Element) to be relative to the GridCanvas.
-                                                       return super.getY() + widgetContainer.getElement().getOffsetTop();
-                                                   }
+                                                  @Override
+                                                  public int getY() {
+                                                      //Adjust the y-coordinate (relative to the DOM Element) to be relative to the GridCanvas.
+                                                      return super.getY() + widgetContainer.getElement().getOffsetTop();
+                                                  }
+                                              });
+                                          }
+                                      },
+                                      MouseDownEvent.getType());
+        widgetContainer.addDomHandler(new MouseMoveHandler() {
+                                          @Override
+                                          public void onMouseMove(final MouseMoveEvent event) {
+                                              //The DOM Element changes the Cursor, so set to the state determined by the MouseEvent Handlers on GridLayer
+                                              style.setCursor(gridLayer.getGridWidgetHandlersState().getCursor());
 
-                                               } );
-                                           }
-                                       },
-                                       MouseDownEvent.getType() );
-        widgetContainer.addDomHandler( new MouseMoveHandler() {
-                                           @Override
-                                           public void onMouseMove( final MouseMoveEvent event ) {
-                                               //The DOM Element changes the Cursor, so set to the state determined by the MouseEvent Handlers on GridLayer
-                                               style.setCursor( gridLayer.getGridWidgetHandlersState().getCursor() );
+                                              gridLayer.onNodeMouseMove(new NodeMouseMoveEvent(event) {
 
-                                               gridLayer.onNodeMouseMove( new NodeMouseMoveEvent( event ) {
+                                                  @Override
+                                                  public int getX() {
+                                                      //Adjust the x-coordinate (relative to the DOM Element) to be relative to the GridCanvas.
+                                                      return super.getX() + widgetContainer.getElement().getOffsetLeft();
+                                                  }
 
-                                                   @Override
-                                                   public int getX() {
-                                                       //Adjust the x-coordinate (relative to the DOM Element) to be relative to the GridCanvas.
-                                                       return super.getX() + widgetContainer.getElement().getOffsetLeft();
-                                                   }
+                                                  @Override
+                                                  public int getY() {
+                                                      //Adjust the y-coordinate (relative to the DOM Element) to be relative to the GridCanvas.
+                                                      return super.getY() + widgetContainer.getElement().getOffsetTop();
+                                                  }
+                                              });
+                                          }
+                                      },
+                                      MouseMoveEvent.getType());
+        widgetContainer.addDomHandler(new MouseUpHandler() {
+                                          @Override
+                                          public void onMouseUp(final MouseUpEvent event) {
+                                              gridLayer.onNodeMouseUp(new NodeMouseUpEvent(event) {
 
-                                                   @Override
-                                                   public int getY() {
-                                                       //Adjust the y-coordinate (relative to the DOM Element) to be relative to the GridCanvas.
-                                                       return super.getY() + widgetContainer.getElement().getOffsetTop();
-                                                   }
+                                                  @Override
+                                                  public int getX() {
+                                                      //Adjust the x-coordinate (relative to the DOM Element) to be relative to the GridCanvas.
+                                                      return super.getX() + widgetContainer.getElement().getOffsetLeft();
+                                                  }
 
-                                               } );
-                                           }
-                                       },
-                                       MouseMoveEvent.getType() );
-        widgetContainer.addDomHandler( new MouseUpHandler() {
-                                           @Override
-                                           public void onMouseUp( final MouseUpEvent event ) {
-                                               gridLayer.onNodeMouseUp( new NodeMouseUpEvent( event ) {
+                                                  @Override
+                                                  public int getY() {
+                                                      //Adjust the y-coordinate (relative to the DOM Element) to be relative to the GridCanvas.
+                                                      return super.getY() + widgetContainer.getElement().getOffsetTop();
+                                                  }
+                                              });
+                                          }
+                                      },
+                                      MouseUpEvent.getType());
+        widgetContainer.addDomHandler(new ClickHandler() {
+                                          @Override
+                                          public void onClick(final ClickEvent event) {
+                                              gridWidget.onNodeMouseClick(new NodeMouseClickEvent(event) {
 
-                                                   @Override
-                                                   public int getX() {
-                                                       //Adjust the x-coordinate (relative to the DOM Element) to be relative to the GridCanvas.
-                                                       return super.getX() + widgetContainer.getElement().getOffsetLeft();
-                                                   }
+                                                  @Override
+                                                  public int getX() {
+                                                      //Adjust the x-coordinate (relative to the DOM Element) to be relative to the GridCanvas.
+                                                      return super.getX() + widgetContainer.getElement().getOffsetLeft();
+                                                  }
 
-                                                   @Override
-                                                   public int getY() {
-                                                       //Adjust the y-coordinate (relative to the DOM Element) to be relative to the GridCanvas.
-                                                       return super.getY() + widgetContainer.getElement().getOffsetTop();
-                                                   }
-
-                                               } );
-                                           }
-                                       },
-                                       MouseUpEvent.getType() );
-        widgetContainer.addDomHandler( new ClickHandler() {
-                                           @Override
-                                           public void onClick( final ClickEvent event ) {
-                                               gridWidget.onNodeMouseClick( new NodeMouseClickEvent( event ) {
-
-                                                   @Override
-                                                   public int getX() {
-                                                       //Adjust the x-coordinate (relative to the DOM Element) to be relative to the GridCanvas.
-                                                       return super.getX() + widgetContainer.getElement().getOffsetLeft();
-                                                   }
-
-                                                   @Override
-                                                   public int getY() {
-                                                       //Adjust the y-coordinate (relative to the DOM Element) to be relative to the GridCanvas.
-                                                       return super.getY() + widgetContainer.getElement().getOffsetTop();
-                                                   }
-
-                                               } );
-                                           }
-                                       },
-                                       ClickEvent.getType() );
+                                                  @Override
+                                                  public int getY() {
+                                                      //Adjust the y-coordinate (relative to the DOM Element) to be relative to the GridCanvas.
+                                                      return super.getY() + widgetContainer.getElement().getOffsetTop();
+                                                  }
+                                              });
+                                          }
+                                      },
+                                      ClickEvent.getType());
     }
 
     /**
      * Set the Cell context this DOMElement is representing.
      * @param context
      */
-    public void setContext( final GridBodyCellRenderContext context ) {
+    public void setContext(final GridBodyCellRenderContext context) {
         this.context = context;
     }
 
@@ -176,13 +172,13 @@ public abstract class BaseDOMElement<T, W extends Widget> {
      * Initialise the DOMElement for the given cell and render context.
      * @param context The render context for the cell.
      */
-    public abstract void initialise( final GridBodyCellRenderContext context );
+    public abstract void initialise(final GridBodyCellRenderContext context);
 
     /**
      * Flush the state of the GWT Widget to the underlying GridWidget.
      * @param value The cell value requiring a DOMElement.
      */
-    public abstract void flush( final T value );
+    public abstract void flush(final T value);
 
     /**
      * Get a GWT Widget for the DOMElement.
@@ -204,7 +200,7 @@ public abstract class BaseDOMElement<T, W extends Widget> {
      * Transform the DOMElement based on the render context, such as scale and position.
      * @param context
      */
-    protected void transform( final GridBodyCellRenderContext context ) {
+    protected void transform(final GridBodyCellRenderContext context) {
         final Transform transform = context.getTransform();
         final double width = context.getCellWidth();
         final double height = context.getCellHeight();
@@ -212,20 +208,20 @@ public abstract class BaseDOMElement<T, W extends Widget> {
         final Style style = widgetContainer.getElement().getStyle();
 
         //Copy across GridWidget's opacity to DOMElements
-        style.setOpacity( gridWidget.getAlpha() );
+        style.setOpacity(gridWidget.getAlpha());
 
         //Reposition and transform the DOM Element
-        style.setLeft( ( context.getAbsoluteCellX() * transform.getScaleX() ) + transform.getTranslateX(),
-                       Style.Unit.PX );
-        style.setTop( ( context.getAbsoluteCellY() * transform.getScaleY() ) + transform.getTranslateY(),
-                      Style.Unit.PX );
-        style.setWidth( width,
-                        Style.Unit.PX );
-        style.setHeight( height,
-                         Style.Unit.PX );
+        style.setLeft((context.getAbsoluteCellX() * transform.getScaleX()) + transform.getTranslateX(),
+                      Style.Unit.PX);
+        style.setTop((context.getAbsoluteCellY() * transform.getScaleY()) + transform.getTranslateY(),
+                     Style.Unit.PX);
+        style.setWidth(width,
+                       Style.Unit.PX);
+        style.setHeight(height,
+                        Style.Unit.PX);
 
         //If the DOMElement overlaps a fixed header clip content
-        style.clearProperty( "clip" );
+        style.clearProperty("clip");
         final double top = context.getAbsoluteCellY() + transform.getTranslateY();
         final double left = context.getAbsoluteCellX() + transform.getTranslateX();
         final boolean isFloating = context.isFloating();
@@ -238,50 +234,50 @@ public abstract class BaseDOMElement<T, W extends Widget> {
         final Group header = gridWidget.getHeader();
         final double clipMinY = context.getClipMinY() + transform.getTranslateY();
         final double clipMinX = context.getClipMinX() + transform.getTranslateX();
-        if ( header != null ) {
-            if ( top < clipMinY ) {
+        if (header != null) {
+            if (top < clipMinY) {
                 ct = clipMinY - top;
                 clip = true;
             }
         }
-        if ( !isFloating && left < clipMinX ) {
+        if (!isFloating && left < clipMinX) {
             cl = clipMinX - left;
             clip = true;
         }
-        if ( clip ) {
-            style.setProperty( "clip",
-                               "rect(" + (int) ct + "px," + (int) cr + "px," + (int) cb + "px," + (int) cl + "px)" );
+        if (clip) {
+            style.setProperty("clip",
+                              "rect(" + (int) ct + "px," + (int) cr + "px," + (int) cb + "px," + (int) cl + "px)");
         }
 
         // --- Workaround for BS2 ---
-        style.setProperty( "WebkitBoxSizing",
-                           "border-box" );
-        style.setProperty( "MozBoxSizing",
-                           "border-box" );
-        style.setProperty( "boxSizing",
-                           "border-box" );
-        style.setProperty( "lineHeight",
-                           "normal" );
+        style.setProperty("WebkitBoxSizing",
+                          "border-box");
+        style.setProperty("MozBoxSizing",
+                          "border-box");
+        style.setProperty("boxSizing",
+                          "border-box");
+        style.setProperty("lineHeight",
+                          "normal");
         // --- End workaround ---
 
-        if ( MathUtilities.isOne( transform.getScaleX() ) && MathUtilities.isOne( transform.getScaleY() ) ) {
-            style.clearProperty( "WebkitTransform" );
-            style.clearProperty( "MozTransform" );
-            style.clearProperty( "Transform" );
-            style.clearProperty( "MsTransform" );
+        if (MathUtilities.isOne(transform.getScaleX()) && MathUtilities.isOne(transform.getScaleY())) {
+            style.clearProperty("WebkitTransform");
+            style.clearProperty("MozTransform");
+            style.clearProperty("Transform");
+            style.clearProperty("MsTransform");
             return;
         }
 
-        final String scale = "scale(" + FORMAT.format( transform.getScaleX() ) + ", " + FORMAT.format( transform.getScaleY() ) + ")";
-        final String translate = "translate(" + FORMAT.format( ( ( width - width * transform.getScaleX() ) / -2.0 ) ) + "px, " + FORMAT.format( ( ( height - height * transform.getScaleY() ) / -2.0 ) ) + "px)";
-        style.setProperty( "WebkitTransform",
-                           translate + " " + scale );
-        style.setProperty( "MozTransform",
-                           translate + " " + scale );
-        style.setProperty( "Transform",
-                           translate + " " + scale );
-        style.setProperty( "MsTransform",
-                           translate + " " + scale );
+        final String scale = "scale(" + FORMAT.format(transform.getScaleX()) + ", " + FORMAT.format(transform.getScaleY()) + ")";
+        final String translate = "translate(" + FORMAT.format(((width - width * transform.getScaleX()) / -2.0)) + "px, " + FORMAT.format(((height - height * transform.getScaleY()) / -2.0)) + "px)";
+        style.setProperty("WebkitTransform",
+                          translate + " " + scale);
+        style.setProperty("MozTransform",
+                          translate + " " + scale);
+        style.setProperty("Transform",
+                          translate + " " + scale);
+        style.setProperty("MsTransform",
+                          translate + " " + scale);
     }
 
     /**
@@ -289,22 +285,22 @@ public abstract class BaseDOMElement<T, W extends Widget> {
      */
     public void attach() {
         final Iterator<Widget> itr = domElementContainer.iterator();
-        while ( itr.hasNext() ) {
-            if ( itr.next().equals( widgetContainer ) ) {
+        while (itr.hasNext()) {
+            if (itr.next().equals(widgetContainer)) {
                 return;
             }
         }
         //When an Element is detached it's Position configuration is cleared, so reset it
         final Style style = widgetContainer.getElement().getStyle();
-        style.setPosition( Style.Position.ABSOLUTE );
-        style.setProperty( "WebkitUserSelect",
-                           "none" );
-        style.setProperty( "MozUserSelect",
-                           "none" );
-        style.setProperty( "MsUserSelect",
-                           "none" );
+        style.setPosition(Style.Position.ABSOLUTE);
+        style.setProperty("WebkitUserSelect",
+                          "none");
+        style.setProperty("MozUserSelect",
+                          "none");
+        style.setProperty("MsUserSelect",
+                          "none");
 
-        domElementContainer.add( widgetContainer );
+        domElementContainer.add(widgetContainer);
     }
 
     /**
@@ -312,12 +308,11 @@ public abstract class BaseDOMElement<T, W extends Widget> {
      */
     public void detach() {
         final Iterator<Widget> itr = domElementContainer.iterator();
-        while ( itr.hasNext() ) {
-            if ( itr.next().equals( widgetContainer ) ) {
+        while (itr.hasNext()) {
+            if (itr.next().equals(widgetContainer)) {
                 itr.remove();
                 return;
             }
         }
     }
-
 }

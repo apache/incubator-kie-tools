@@ -39,7 +39,7 @@ import org.uberfire.backend.server.cdi.model.WorkspaceImpl;
 @ApplicationScoped
 public class WorkspaceManager {
 
-    private Logger logger = LoggerFactory.getLogger( WorkspaceManager.class );
+    private Logger logger = LoggerFactory.getLogger(WorkspaceManager.class);
     private WorkspaceManagerPreferences preferences;
     private ConcurrentHashMap<Workspace, Cache<String, Object>> workspaces;
 
@@ -47,7 +47,7 @@ public class WorkspaceManager {
     }
 
     @Inject
-    public WorkspaceManager( WorkspaceManagerPreferences workspaceManagerPreferences ) {
+    public WorkspaceManager(WorkspaceManagerPreferences workspaceManagerPreferences) {
         this.preferences = workspaceManagerPreferences;
     }
 
@@ -61,25 +61,27 @@ public class WorkspaceManager {
      * @param name The name of the workspace.
      * @return The existent or the new workspace.
      */
-    public Workspace getOrCreateWorkspace( String name ) {
-        Workspace workspace = new WorkspaceImpl( name );
-        workspaces.computeIfAbsent( new WorkspaceImpl( name ), w -> this.createCache() );
-        return this.getWorkspace( name );
+    public Workspace getOrCreateWorkspace(String name) {
+        Workspace workspace = new WorkspaceImpl(name);
+        workspaces.computeIfAbsent(new WorkspaceImpl(name),
+                                   w -> this.createCache());
+        return this.getWorkspace(name);
     }
 
     protected synchronized Cache<String, Object> createCache() {
         preferences.load();
         final Cache<String, Object> cache = CacheBuilder.newBuilder()
-                .maximumSize( preferences.getCacheMaximumSize() )
-                .expireAfterAccess( preferences.getCacheExpirationTime(), TimeUnit.valueOf( preferences.getCacheExpirationUnit() ) )
-                .removalListener( removalNotification -> {
-                    if ( logger.isDebugEnabled() ) {
-                        logger.debug( "[{},{}] {}",
-                                      removalNotification.getKey().toString(),
-                                      removalNotification.getValue().toString(),
-                                      removalNotification.getCause().toString() );
+                .maximumSize(preferences.getCacheMaximumSize())
+                .expireAfterAccess(preferences.getCacheExpirationTime(),
+                                   TimeUnit.valueOf(preferences.getCacheExpirationUnit()))
+                .removalListener(removalNotification -> {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("[{},{}] {}",
+                                     removalNotification.getKey().toString(),
+                                     removalNotification.getValue().toString(),
+                                     removalNotification.getCause().toString());
                     }
-                } )
+                })
                 .build();
         return cache;
     }
@@ -89,13 +91,14 @@ public class WorkspaceManager {
      * @param name Workspace name
      * @return The workspace object
      */
-    public Workspace getWorkspace( String name ) {
+    public Workspace getWorkspace(String name) {
         Optional<Workspace> optionalWorkspace = this.workspaces.keySet()
                 .stream()
-                .filter( w -> w.equals( new WorkspaceImpl( name ) ) )
+                .filter(w -> w.equals(new WorkspaceImpl(name)))
                 .findAny();
         return optionalWorkspace
-                .orElseThrow( () -> new NoSuchElementException( String.format( "Workspace <<%s>> not found", name ) ) );
+                .orElseThrow(() -> new NoSuchElementException(String.format("Workspace <<%s>> not found",
+                                                                            name)));
     }
 
     /**
@@ -104,9 +107,9 @@ public class WorkspaceManager {
      * @param beanName The bean name for that workspace.
      * @return the bean instance
      */
-    public <T> T getBean( Workspace workspace,
-                          String beanName ) {
-        return (T) this.workspaces.get( workspace ).getIfPresent( beanName );
+    public <T> T getBean(Workspace workspace,
+                         String beanName) {
+        return (T) this.workspaces.get(workspace).getIfPresent(beanName);
     }
 
     /**
@@ -115,13 +118,16 @@ public class WorkspaceManager {
      * @param beanName The bean name
      * @param instance The bean instance
      */
-    public <T> void putBean( Workspace workspace,
-                             String beanName,
-                             T instance ) {
+    public <T> void putBean(Workspace workspace,
+                            String beanName,
+                            T instance) {
         try {
-            this.workspaces.get( workspace ).get( beanName, () -> instance );
-        } catch ( ExecutionException e ) {
-            logger.error( "An error ocurred trying to store bean <<{}>>", instance.getClass().getSimpleName(), e );
+            this.workspaces.get(workspace).get(beanName,
+                                               () -> instance);
+        } catch (ExecutionException e) {
+            logger.error("An error ocurred trying to store bean <<{}>>",
+                         instance.getClass().getSimpleName(),
+                         e);
         }
     }
 
@@ -129,8 +135,8 @@ public class WorkspaceManager {
      * Deletes a workspace and its beans
      * @param workspace the workspace to delete
      */
-    public void delete( final Workspace workspace ) {
-        this.workspaces.remove( workspace );
+    public void delete(final Workspace workspace) {
+        this.workspaces.remove(workspace);
     }
 
     /**
@@ -146,7 +152,7 @@ public class WorkspaceManager {
      * @param workspace The workspace to count beans
      * @return The number of beans for a workspace
      */
-    public long getBeansCount( final Workspace workspace ) {
-        return this.workspaces.get( workspace ).size();
+    public long getBeansCount(final Workspace workspace) {
+        return this.workspaces.get(workspace).size();
     }
 }

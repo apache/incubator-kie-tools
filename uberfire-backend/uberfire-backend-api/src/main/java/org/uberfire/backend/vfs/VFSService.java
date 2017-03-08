@@ -33,73 +33,73 @@ import org.uberfire.java.nio.file.ProviderNotFoundException;
 @Remote
 public interface VFSService {
 
-    Path get( String uri );
+    Path get(String uri);
 
-    DirectoryStream<Path> newDirectoryStream( final Path dir )
+    DirectoryStream<Path> newDirectoryStream(final Path dir)
             throws IllegalArgumentException, NotDirectoryException, IOException;
 
-    DirectoryStream<Path> newDirectoryStream( final Path dir,
-                                              final DirectoryStream.Filter<Path> filter )
+    DirectoryStream<Path> newDirectoryStream(final Path dir,
+                                             final DirectoryStream.Filter<Path> filter)
             throws IllegalArgumentException, NotDirectoryException, IOException;
 
-    Path createDirectory( final Path dir )
+    Path createDirectory(final Path dir)
             throws IllegalArgumentException, UnsupportedOperationException,
             FileAlreadyExistsException, IOException;
 
-    Path createDirectories( final Path dir )
+    Path createDirectories(final Path dir)
             throws UnsupportedOperationException, FileAlreadyExistsException,
             IOException;
 
-    Path createDirectory( final Path dir,
-                          final Map<String, ?> attrs )
+    Path createDirectory(final Path dir,
+                         final Map<String, ?> attrs)
             throws IllegalArgumentException, UnsupportedOperationException,
             FileAlreadyExistsException, IOException;
 
-    Path createDirectories( final Path dir,
-                            final Map<String, ?> attrs )
+    Path createDirectories(final Path dir,
+                           final Map<String, ?> attrs)
             throws UnsupportedOperationException, FileAlreadyExistsException,
             IOException;
 
     @InterceptedCall(VFSCacheInterceptor.class)
-    Map<String, Object> readAttributes( final Path path )
+    Map<String, Object> readAttributes(final Path path)
             throws UnsupportedOperationException, IllegalArgumentException, IOException;
 
-    void setAttributes( final Path path,
-                        final Map<String, Object> attrs )
+    void setAttributes(final Path path,
+                       final Map<String, Object> attrs)
             throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException;
 
-    void delete( final Path path )
+    void delete(final Path path)
             throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException;
 
-    boolean deleteIfExists( final Path path )
+    boolean deleteIfExists(final Path path)
             throws IllegalArgumentException, DirectoryNotEmptyException, IOException;
 
-    Path copy( final Path source,
-               final Path target )
+    Path copy(final Path source,
+              final Path target)
             throws UnsupportedOperationException, FileAlreadyExistsException,
             DirectoryNotEmptyException, IOException;
 
-    Path move( final Path source,
-               final Path target )
+    Path move(final Path source,
+              final Path target)
             throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException;
 
-    String readAllString( final Path path )
+    String readAllString(final Path path)
             throws IllegalArgumentException, NoSuchFileException, IOException;
 
-    Path write( final Path path,
-                final String content )
+    Path write(final Path path,
+               final String content)
             throws IllegalArgumentException, IOException, UnsupportedOperationException;
 
-    Path write( final Path path,
-                final String content,
-                final Map<String, ?> attrs )
+    Path write(final Path path,
+               final String content,
+               final Map<String, ?> attrs)
             throws IllegalArgumentException, IOException, UnsupportedOperationException;
 
-    boolean isRegularFile( final String uri );
+    boolean isRegularFile(final String uri);
 
-    boolean isRegularFile( final Path path );
+    boolean isRegularFile(final Path path);
 
-    boolean isDirectory( final String uri );
+    boolean isDirectory(final String uri);
 
-    boolean isDirectory( final Path path );
+    boolean isDirectory(final Path path);
 }

@@ -29,9 +29,9 @@ public interface SupportsCopy {
      * @param comment Comment for the copy operation
      * @return The path to the new file.
      */
-    Path copy( final Path path,
-               final String newName,
-               final String comment );
+    Path copy(final Path path,
+              final String newName,
+              final String comment);
 
     /**
      * Copies a file or directory to a specific target directory, with a new name.
@@ -41,8 +41,8 @@ public interface SupportsCopy {
      * @param comment Comment for the copy operation
      * @return The path to the new file.
      */
-    Path copy( final Path path,
-               final String newName,
-               final Path targetDirectory,
-               final String comment );
+    Path copy(final Path path,
+              final String newName,
+              final Path targetDirectory,
+              final String comment);
 }

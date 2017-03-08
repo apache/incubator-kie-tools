@@ -28,12 +28,20 @@ import org.uberfire.security.impl.authz.ResourceCheckImpl;
  */
 public class ActivityCheck<C extends ActivityCheck> extends ResourceCheckImpl<C> {
 
-    public ActivityCheck(AuthorizationManager authorizationManager, Resource resource, User user) {
-        super(authorizationManager, resource, user);
+    public ActivityCheck(AuthorizationManager authorizationManager,
+                         Resource resource,
+                         User user) {
+        super(authorizationManager,
+              resource,
+              user);
     }
 
-    public ActivityCheck(AuthorizationManager authorizationManager, ResourceType resourceType, User user) {
-        super(authorizationManager, resourceType, user);
+    public ActivityCheck(AuthorizationManager authorizationManager,
+                         ResourceType resourceType,
+                         User user) {
+        super(authorizationManager,
+              resourceType,
+              user);
     }
 
     public ActivityCheck read() {

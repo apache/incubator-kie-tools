@@ -37,42 +37,42 @@ public class WiresRectanglePropertyEditorAdaptor implements PropertyEditorAdapto
     private static final String ATTRIBUTES = "Attributes";
 
     @Override
-    public boolean supports( final WiresBaseShape shape ) {
+    public boolean supports(final WiresBaseShape shape) {
         return shape instanceof WiresRectangle;
     }
 
     @Override
-    public List<PropertyEditorCategory> getProperties( final WiresBaseShape shape ) {
-        if ( !supports( shape ) ) {
+    public List<PropertyEditorCategory> getProperties(final WiresBaseShape shape) {
+        if (!supports(shape)) {
             return Collections.emptyList();
         }
         final WiresRectangle w = (WiresRectangle) shape;
-        final PropertyEditorFieldInfo fieldInfo1 = new PropertyEditorFieldInfo( "Width",
-                                                                                String.valueOf( w.getWidth() ),
-                                                                                PropertyEditorType.NATURAL_NUMBER ) {
+        final PropertyEditorFieldInfo fieldInfo1 = new PropertyEditorFieldInfo("Width",
+                                                                               String.valueOf(w.getWidth()),
+                                                                               PropertyEditorType.NATURAL_NUMBER) {
             @Override
-            public void setCurrentStringValue( final String currentStringValue ) {
-                super.setCurrentStringValue( currentStringValue );
+            public void setCurrentStringValue(final String currentStringValue) {
+                super.setCurrentStringValue(currentStringValue);
                 try {
-                    final double width = Double.parseDouble( currentStringValue );
-                    w.setWidth( width );
+                    final double width = Double.parseDouble(currentStringValue);
+                    w.setWidth(width);
                     w.getLayer().batch();
-                } catch ( NumberFormatException e ) {
+                } catch (NumberFormatException e) {
                     //Swallow
                 }
             }
         };
-        final PropertyEditorFieldInfo fieldInfo2 = new PropertyEditorFieldInfo( "Height",
-                                                                                String.valueOf( w.getHeight() ),
-                                                                                PropertyEditorType.NATURAL_NUMBER ) {
+        final PropertyEditorFieldInfo fieldInfo2 = new PropertyEditorFieldInfo("Height",
+                                                                               String.valueOf(w.getHeight()),
+                                                                               PropertyEditorType.NATURAL_NUMBER) {
             @Override
-            public void setCurrentStringValue( final String currentStringValue ) {
-                super.setCurrentStringValue( currentStringValue );
+            public void setCurrentStringValue(final String currentStringValue) {
+                super.setCurrentStringValue(currentStringValue);
                 try {
-                    final double height = Double.parseDouble( currentStringValue );
-                    w.setHeight( height );
+                    final double height = Double.parseDouble(currentStringValue);
+                    w.setHeight(height);
                     w.getLayer().batch();
-                } catch ( NumberFormatException e ) {
+                } catch (NumberFormatException e) {
                     //Swallow
                 }
             }
@@ -81,12 +81,11 @@ public class WiresRectanglePropertyEditorAdaptor implements PropertyEditorAdapto
         //Setup Validators
         fieldInfo1.getValidators().clear();
         fieldInfo2.getValidators().clear();
-        fieldInfo1.getValidators().add( new DoubleValidator() );
-        fieldInfo2.getValidators().add( new DoubleValidator() );
+        fieldInfo1.getValidators().add(new DoubleValidator());
+        fieldInfo2.getValidators().add(new DoubleValidator());
 
-        PropertyEditorCategory attributes = new PropertyEditorCategory( ATTRIBUTES ).withField( fieldInfo1 ).withField( fieldInfo2 );
+        PropertyEditorCategory attributes = new PropertyEditorCategory(ATTRIBUTES).withField(fieldInfo1).withField(fieldInfo2);
 
-        return Lists.newArrayList( attributes );
+        return Lists.newArrayList(attributes);
     }
-
 }

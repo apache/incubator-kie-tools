@@ -37,7 +37,7 @@ public class TitledTextCell extends AbstractSafeHtmlCell<TitledTextCell.TitledTe
      * {@link TitledTextSafeHtmlRenderer} to render its text.
      */
     public TitledTextCell() {
-        super( TitledTextSafeHtmlRenderer.getInstance() );
+        super(TitledTextSafeHtmlRenderer.getInstance());
     }
 
     /**
@@ -45,16 +45,16 @@ public class TitledTextCell extends AbstractSafeHtmlCell<TitledTextCell.TitledTe
      * render its text.
      * @param renderer a {@link SafeHtmlRenderer SafeHtmlRenderer<String>} instance
      */
-    public TitledTextCell( final SafeHtmlRenderer<TitledText> renderer ) {
-        super( renderer );
+    public TitledTextCell(final SafeHtmlRenderer<TitledText> renderer) {
+        super(renderer);
     }
 
     @Override
-    public void render( Context context,
-                        SafeHtml value,
-                        SafeHtmlBuilder sb ) {
-        if ( value != null ) {
-            sb.append( value );
+    public void render(Context context,
+                       SafeHtml value,
+                       SafeHtmlBuilder sb) {
+        if (value != null) {
+            sb.append(value);
         }
     }
 
@@ -68,8 +68,8 @@ public class TitledTextCell extends AbstractSafeHtmlCell<TitledTextCell.TitledTe
         private String title;
         private String description;
 
-        public TitledText( String title,
-                           String description ) {
+        public TitledText(String title,
+                          String description) {
             this.title = title;
             this.description = description;
         }
@@ -82,10 +82,9 @@ public class TitledTextCell extends AbstractSafeHtmlCell<TitledTextCell.TitledTe
             return description;
         }
 
-        public int compareTo( TitledText o ) {
-            return title.compareTo( o.title );
+        public int compareTo(TitledText o) {
+            return title.compareTo(o.title);
         }
-
     }
 
     /**
@@ -98,38 +97,36 @@ public class TitledTextCell extends AbstractSafeHtmlCell<TitledTextCell.TitledTe
         // Singleton
         private static TitledTextSafeHtmlRenderer instance;
 
+        private TitledTextSafeHtmlRenderer() {
+        }
+
         public static TitledTextSafeHtmlRenderer getInstance() {
-            if ( instance == null ) {
+            if (instance == null) {
                 instance = new TitledTextSafeHtmlRenderer();
             }
             return instance;
         }
 
-        private TitledTextSafeHtmlRenderer() {
-        }
+        public SafeHtml render(TitledText object) {
+            boolean bHasDescription = object.description != null && !"".equals(object.description);
 
-        public SafeHtml render( TitledText object ) {
-            boolean bHasDescription = object.description != null && !"".equals( object.description );
-
-            if ( bHasDescription ) {
+            if (bHasDescription) {
                 String html = "<div class='" + css.titleTextCellContainer() + "'>";
                 html = html + "<div>" + object.title + "</div>";
                 html = html + "<div class='" + css.titleTextCellDescription() + "'>" + object.description + "</div>";
                 html = html + "</div>";
-                return SafeHtmlUtils.fromTrustedString( html );
+                return SafeHtmlUtils.fromTrustedString(html);
             } else {
                 String html = "<div class='" + css.titleTextCellContainer() + "'>";
                 html = html + "<div>" + object.title + "</div>";
                 html = html + "</div>";
-                return SafeHtmlUtils.fromTrustedString( html );
+                return SafeHtmlUtils.fromTrustedString(html);
             }
         }
 
-        public void render( TitledText object,
-                            SafeHtmlBuilder builder ) {
-            builder.append( render( object ) );
+        public void render(TitledText object,
+                           SafeHtmlBuilder builder) {
+            builder.append(render(object));
         }
-
     }
-
 }

@@ -24,8 +24,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 public class KeyboardOperationEditCell extends BaseKeyboardOperation {
 
-    public KeyboardOperationEditCell( final GridLayer gridLayer ) {
-        super( gridLayer );
+    public KeyboardOperationEditCell(final GridLayer gridLayer) {
+        super(gridLayer);
     }
 
     @Override
@@ -35,22 +35,21 @@ public class KeyboardOperationEditCell extends BaseKeyboardOperation {
 
     @Override
     @SuppressWarnings("unused")
-    public boolean perform( final GridWidget gridWidget,
-                            final boolean isShiftKeyDown,
-                            final boolean isControlKeyDown ) {
-        editCell( gridWidget );
+    public boolean perform(final GridWidget gridWidget,
+                           final boolean isShiftKeyDown,
+                           final boolean isControlKeyDown) {
+        editCell(gridWidget);
         return false;
     }
 
-    protected void editCell( final GridWidget gridWidget ) {
+    protected void editCell(final GridWidget gridWidget) {
         final GridData gridModel = gridWidget.getModel();
         final GridData.SelectedCell origin = gridModel.getSelectedCellsOrigin();
-        if ( origin == null ) {
+        if (origin == null) {
             return;
         }
-        gridWidget.startEditingCell( origin.getRowIndex(),
-                                     ColumnIndexUtilities.findUiColumnIndex( gridModel.getColumns(),
-                                                                             origin.getColumnIndex() ) );
+        gridWidget.startEditingCell(origin.getRowIndex(),
+                                    ColumnIndexUtilities.findUiColumnIndex(gridModel.getColumns(),
+                                                                           origin.getColumnIndex()));
     }
-
 }

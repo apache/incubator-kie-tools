@@ -26,19 +26,23 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.Rang
  */
 public class BaseGridCell<T> implements GridCell<T> {
 
+    protected GridCellValue<T> value;
     private int collapseLevel = 0;
     private int mergedCellCount = 1;
     private CellSelectionStrategy selectionManager = RangeSelectionStrategy.INSTANCE;
 
-    protected GridCellValue<T> value;
-
-    public BaseGridCell( final GridCellValue<T> value ) {
+    public BaseGridCell(final GridCellValue<T> value) {
         this.value = value;
     }
 
     @Override
     public GridCellValue<T> getValue() {
         return value;
+    }
+
+    //This is not part of the GridCell interface as we don't want to expose this for general use
+    void setValue(final GridCellValue<T> value) {
+        this.value = value;
     }
 
     @Override
@@ -49,6 +53,11 @@ public class BaseGridCell<T> implements GridCell<T> {
     @Override
     public int getMergedCellCount() {
         return mergedCellCount;
+    }
+
+    //This is not part of the GridCell interface as we don't want to expose this for general use
+    void setMergedCellCount(final int mergedCellCount) {
+        this.mergedCellCount = mergedCellCount;
     }
 
     @Override
@@ -78,32 +87,22 @@ public class BaseGridCell<T> implements GridCell<T> {
     }
 
     @Override
-    public void setSelectionManager( final CellSelectionStrategy selectionManager ) {
+    public void setSelectionManager(final CellSelectionStrategy selectionManager) {
         this.selectionManager = selectionManager;
     }
 
-    //This is not part of the GridCell interface as we don't want to expose this for general use
-    void setValue( final GridCellValue<T> value ) {
-        this.value = value;
-    }
-
-    //This is not part of the GridCell interface as we don't want to expose this for general use
-    void setMergedCellCount( final int mergedCellCount ) {
-        this.mergedCellCount = mergedCellCount;
-    }
-
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof BaseGridCell ) ) {
+        if (!(o instanceof BaseGridCell)) {
             return false;
         }
 
         BaseGridCell<?> that = (BaseGridCell<?>) o;
 
-        return !( value != null ? !value.equals( that.value ) : that.value != null );
+        return !(value != null ? !value.equals(that.value) : that.value != null);
     }
 
     @Override
@@ -111,5 +110,4 @@ public class BaseGridCell<T> implements GridCell<T> {
         int result = value != null ? value.hashCode() : 0;
         return result;
     }
-
 }

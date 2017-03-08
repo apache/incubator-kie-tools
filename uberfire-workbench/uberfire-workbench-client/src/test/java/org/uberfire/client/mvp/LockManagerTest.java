@@ -16,16 +16,17 @@
 
 package org.uberfire.client.mvp;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.lang.reflect.Field;
 
+import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.EventListener;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockito;
+import com.google.gwtmockito.GwtMockitoTestRunner;
+import com.google.gwtmockito.fakes.FakeProvider;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Before;
@@ -50,15 +51,9 @@ import org.uberfire.rpc.impl.SessionInfoImpl;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.events.ResourceUpdatedEvent;
 
-import com.google.gwt.event.logical.shared.AttachEvent;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.EventListener;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwtmockito.GwtMock;
-import com.google.gwtmockito.GwtMockito;
-import com.google.gwtmockito.GwtMockitoTestRunner;
-import com.google.gwtmockito.fakes.FakeProvider;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 @SuppressWarnings("unchecked")
@@ -102,14 +97,14 @@ public class LockManagerTest {
     public void setup() throws Exception {
         mockTimer();
 
-        GwtMockito.useProviderForType( WorkbenchResources.class,
-                                       new FakeProvider<WorkbenchResources>() {
+        GwtMockito.useProviderForType(WorkbenchResources.class,
+                                      new FakeProvider<WorkbenchResources>() {
 
-                                           @Override
-                                           public WorkbenchResources getFake( Class<?> type ) {
-                                               return null;
-                                           }
-                                       } );
+                                          @Override
+                                          public WorkbenchResources getFake(Class<?> type) {
+                                              return null;
+                                          }
+                                      });
 
         final Runnable reloadRunnable = new Runnable() {
 
@@ -127,22 +122,23 @@ public class LockManagerTest {
             }
         };
 
-        target = new LockTarget( path,
-                                 widget,
-                                 new DefaultPlaceRequest( "mockPlace" ),
-                                 titleProvider,
-                                 reloadRunnable );
+        target = new LockTarget(path,
+                                widget,
+                                new DefaultPlaceRequest("mockPlace"),
+                                titleProvider,
+                                reloadRunnable);
 
-        lockManager.init( target );
+        lockManager.init(target);
 
-        when( user.getIdentifier() ).thenReturn( "mockedUser" );
-        when( lockDemandDetector.isLockRequired( any( Event.class ) ) ).thenReturn( true );
+        when(user.getIdentifier()).thenReturn("mockedUser");
+        when(lockDemandDetector.isLockRequired(any(Event.class))).thenReturn(true);
     }
 
     @Test
     public void updateLockInfoOnInit() {
-        verify( lockService, times( 1 ) ).retrieveLockInfo( any( Path.class ),
-                                                            any( ParameterizedCommand.class ) );
+        verify(lockService,
+               times(1)).retrieveLockInfo(any(Path.class),
+                                          any(ParameterizedCommand.class));
     }
 
     @Test
@@ -151,8 +147,9 @@ public class LockManagerTest {
 
         simulateLockDemand();
 
-        verify( lockService, times( 1 ) ).acquireLock( any( Path.class ),
-                                                       any( ParameterizedCommand.class ) );
+        verify(lockService,
+               times(1)).acquireLock(any(Path.class),
+                                     any(ParameterizedCommand.class));
     }
 
     @Test
@@ -161,12 +158,14 @@ public class LockManagerTest {
 
         simulateLockFailure();
         simulateLockDemand();
-        verify( lockService, times( 1 ) ).acquireLock( any( Path.class ),
-                                                       any( ParameterizedCommand.class ) );
+        verify(lockService,
+               times(1)).acquireLock(any(Path.class),
+                                     any(ParameterizedCommand.class));
 
         simulateLockDemand();
-        verify( lockService, times( 1 ) ).acquireLock( any( Path.class ),
-                                                       any( ParameterizedCommand.class ) );
+        verify(lockService,
+               times(1)).acquireLock(any(Path.class),
+                                     any(ParameterizedCommand.class));
     }
 
     @Test
@@ -176,7 +175,8 @@ public class LockManagerTest {
         simulateLockFailure();
         simulateLockDemand();
 
-        verify( lockNotification, times( 1 ) ).fire( any( NotificationEvent.class ) );
+        verify(lockNotification,
+               times(1)).fire(any(NotificationEvent.class));
     }
 
     @Test
@@ -186,39 +186,47 @@ public class LockManagerTest {
         simulateLockError();
         simulateLockDemand();
 
-        verify( lockNotification, times( 1 ) ).fire( any( NotificationEvent.class ) );
+        verify(lockNotification,
+               times(1)).fire(any(NotificationEvent.class));
     }
 
     @Test
     public void reloadOnLockFailure() throws Exception {
         lockManager.acquireLockOnDemand();
 
-        assertEquals( 0, reloads );
+        assertEquals(0,
+                     reloads);
 
         simulateLockFailure();
         simulateLockDemand();
 
-        assertEquals( 1, reloads );
+        assertEquals(1,
+                     reloads);
     }
 
     @Test
     public void updateTitleOnFocus() {
-        verify( changeTitleEvent, never() ).fire( any( ChangeTitleWidgetEvent.class ) );
+        verify(changeTitleEvent,
+               never()).fire(any(ChangeTitleWidgetEvent.class));
         lockManager.onFocus();
-        verify( changeTitleEvent, times( 1 ) ).fire( any( ChangeTitleWidgetEvent.class ) );
+        verify(changeTitleEvent,
+               times(1)).fire(any(ChangeTitleWidgetEvent.class));
     }
 
     @Test
     public void handleWindowReparenting() {
         lockManager.acquireLockOnDemand();
-        verify( lockDemandDetector, times( 1 ) ).getLockDemandEventTypes();
+        verify(lockDemandDetector,
+               times(1)).getLockDemandEventTypes();
 
-        final ArgumentCaptor<AttachEvent.Handler> handlerCaptor = ArgumentCaptor.forClass( AttachEvent.Handler.class );
-        verify( widget, times( 1 ) ).addAttachHandler( handlerCaptor.capture() );
+        final ArgumentCaptor<AttachEvent.Handler> handlerCaptor = ArgumentCaptor.forClass(AttachEvent.Handler.class);
+        verify(widget,
+               times(1)).addAttachHandler(handlerCaptor.capture());
 
-        handlerCaptor.getValue().onAttachOrDetach( new AttachEvent( true ) {
-        } );
-        verify( lockDemandDetector, times( 2 ) ).getLockDemandEventTypes();
+        handlerCaptor.getValue().onAttachOrDetach(new AttachEvent(true) {
+        });
+        verify(lockDemandDetector,
+               times(2)).getLockDemandEventTypes();
     }
 
     @Test
@@ -228,10 +236,11 @@ public class LockManagerTest {
         simulateLockSuccess();
         simulateLockDemand();
 
-        lockManager.onSaveInProgress( new SaveInProgressEvent( path ) );
+        lockManager.onSaveInProgress(new SaveInProgressEvent(path));
 
-        verify( lockService, times( 1 ) ).releaseLock( any( Path.class ),
-                                                       any( ParameterizedCommand.class ) );
+        verify(lockService,
+               times(1)).releaseLock(any(Path.class),
+                                     any(ParameterizedCommand.class));
     }
 
     @Test
@@ -240,27 +249,30 @@ public class LockManagerTest {
         simulateLockSuccess();
         simulateLockDemand();
 
-        lockManager.onResourceUpdated( new ResourceUpdatedEvent( path,
-                                                                 "",
-                                                                 new SessionInfoImpl( user ) ) );
+        lockManager.onResourceUpdated(new ResourceUpdatedEvent(path,
+                                                               "",
+                                                               new SessionInfoImpl(user)));
 
-        verify( lockService, times( 1 ) ).releaseLock( any( Path.class ),
-                                                       any( ParameterizedCommand.class ) );
+        verify(lockService,
+               times(1)).releaseLock(any(Path.class),
+                                     any(ParameterizedCommand.class));
     }
 
     @Test
     public void reloadEditorOnUpdateFromDifferentUser() {
-        lockManager.onResourceUpdated( new ResourceUpdatedEvent( path,
-                                                                 "",
-                                                                 new SessionInfoImpl( user ) ) );
+        lockManager.onResourceUpdated(new ResourceUpdatedEvent(path,
+                                                               "",
+                                                               new SessionInfoImpl(user)));
 
-        assertEquals( 0, reloads );
+        assertEquals(0,
+                     reloads);
 
-        lockManager.onResourceUpdated( new ResourceUpdatedEvent( path,
-                                                                 "",
-                                                                 new SessionInfoImpl( new UserImpl( "differentUser" ) ) ) );
+        lockManager.onResourceUpdated(new ResourceUpdatedEvent(path,
+                                                               "",
+                                                               new SessionInfoImpl(new UserImpl("differentUser"))));
 
-        assertEquals( 1, reloads );
+        assertEquals(1,
+                     reloads);
     }
 
     @Test
@@ -269,12 +281,13 @@ public class LockManagerTest {
         simulateLockFailure();
         simulateLockDemand();
 
-        lockManager.onResourceUpdated( new ResourceUpdatedEvent( path,
-                                                                 "",
-                                                                 new SessionInfoImpl( user ) ) );
+        lockManager.onResourceUpdated(new ResourceUpdatedEvent(path,
+                                                               "",
+                                                               new SessionInfoImpl(user)));
 
-        verify( lockService, never() ).releaseLock( any( Path.class ),
-                                                    any( ParameterizedCommand.class ) );
+        verify(lockService,
+               never()).releaseLock(any(Path.class),
+                                    any(ParameterizedCommand.class));
     }
 
     @Test
@@ -285,17 +298,18 @@ public class LockManagerTest {
         simulateLockDemand();
         simulateLockDemand();
 
-        verify( lockService, times( 1 ) ).acquireLock( any( Path.class ),
-                                                       any( ParameterizedCommand.class ) );
+        verify(lockService,
+               times(1)).acquireLock(any(Path.class),
+                                     any(ParameterizedCommand.class));
     }
 
     @Test
     public void acquireLock() {
         lockManager.acquireLock();
 
-        verify( lockService,
-                times( 1 ) ).acquireLock( any( Path.class ),
-                                          any( ParameterizedCommand.class ) );
+        verify(lockService,
+               times(1)).acquireLock(any(Path.class),
+                                     any(ParameterizedCommand.class));
     }
 
     @Test
@@ -305,9 +319,9 @@ public class LockManagerTest {
         lockManager.acquireLock();
         lockManager.acquireLock();
 
-        verify( lockService,
-                times( 1 ) ).acquireLock( any( Path.class ),
-                                          any( ParameterizedCommand.class ) );
+        verify(lockService,
+               times(1)).acquireLock(any(Path.class),
+                                     any(ParameterizedCommand.class));
     }
 
     @Test
@@ -317,9 +331,9 @@ public class LockManagerTest {
         lockManager.acquireLock();
         lockManager.acquireLock();
 
-        verify( lockService,
-                times( 1 ) ).acquireLock( any( Path.class ),
-                                          any( ParameterizedCommand.class ) );
+        verify(lockService,
+               times(1)).acquireLock(any(Path.class),
+                                     any(ParameterizedCommand.class));
     }
 
     @Test
@@ -328,74 +342,75 @@ public class LockManagerTest {
 
         lockManager.acquireLock();
 
-        verify( changeTitleEvent,
-                times( 1 ) ).fire( any( ChangeTitleWidgetEvent.class ) );
+        verify(changeTitleEvent,
+               times(1)).fire(any(ChangeTitleWidgetEvent.class));
 
         lockManager.acquireLock();
 
-        verify( changeTitleEvent,
-                times( 2 ) ).fire( any( ChangeTitleWidgetEvent.class ) );
+        verify(changeTitleEvent,
+               times(2)).fire(any(ChangeTitleWidgetEvent.class));
     }
 
     private void simulateLockDemand() {
-        EventListener listener = lockManager.acquireLockOnDemand( widget.getElement() );
-        listener.onBrowserEvent( event );
+        EventListener listener = lockManager.acquireLockOnDemand(widget.getElement());
+        listener.onBrowserEvent(event);
     }
 
     private void simulateLockFailure() {
-        doAnswer( new Answer<Object>() {
+        doAnswer(new Answer<Object>() {
 
             @Override
-            public Object answer( InvocationOnMock invocation ) throws Throwable {
+            public Object answer(InvocationOnMock invocation) throws Throwable {
                 final Object[] args = invocation.getArguments();
-                LockInfo lockInfo = new LockInfo( true,
-                                                  "somebody",
-                                                  path );
-                final LockResult failed = LockResult.failed( lockInfo );
-                ( (ParameterizedCommand<LockResult>) args[ 1 ] ).execute( failed );
+                LockInfo lockInfo = new LockInfo(true,
+                                                 "somebody",
+                                                 path);
+                final LockResult failed = LockResult.failed(lockInfo);
+                ((ParameterizedCommand<LockResult>) args[1]).execute(failed);
                 return null;
             }
-        } ).when( lockService ).acquireLock( any( Path.class ),
-                                             any( ParameterizedCommand.class ) );
+        }).when(lockService).acquireLock(any(Path.class),
+                                         any(ParameterizedCommand.class));
     }
 
     private void simulateLockSuccess() {
-        doAnswer( new Answer<Object>() {
+        doAnswer(new Answer<Object>() {
 
             @Override
-            public Object answer( InvocationOnMock invocation ) throws Throwable {
+            public Object answer(InvocationOnMock invocation) throws Throwable {
                 final Object[] args = invocation.getArguments();
-                final LockResult acquired = LockResult.acquired( path, user.getIdentifier() );
-                ( (ParameterizedCommand<LockResult>) args[ 1 ] ).execute( acquired );
+                final LockResult acquired = LockResult.acquired(path,
+                                                                user.getIdentifier());
+                ((ParameterizedCommand<LockResult>) args[1]).execute(acquired);
                 return null;
             }
-        } ).when( lockService ).acquireLock( any( Path.class ),
-                                             any( ParameterizedCommand.class ) );
+        }).when(lockService).acquireLock(any(Path.class),
+                                         any(ParameterizedCommand.class));
     }
 
     private void simulateLockError() {
-        doAnswer( new Answer<Object>() {
+        doAnswer(new Answer<Object>() {
 
             @Override
-            public Object answer( InvocationOnMock invocation ) throws Throwable {
+            public Object answer(InvocationOnMock invocation) throws Throwable {
                 final Object[] args = invocation.getArguments();
                 final LockResult acquired = LockResult.error();
-                ( (ParameterizedCommand<LockResult>) args[ 1 ] ).execute( acquired );
+                ((ParameterizedCommand<LockResult>) args[1]).execute(acquired);
                 return null;
             }
-        } ).when( lockService ).acquireLock( any( Path.class ),
-                                             any( ParameterizedCommand.class ) );
+        }).when(lockService).acquireLock(any(Path.class),
+                                         any(ParameterizedCommand.class));
     }
 
     private void simulateLockNoResponse() {
-        doAnswer( new Answer<Object>() {
+        doAnswer(new Answer<Object>() {
 
             @Override
-            public Object answer( InvocationOnMock invocation ) throws Throwable {
+            public Object answer(InvocationOnMock invocation) throws Throwable {
                 return null;
             }
-        } ).when( lockService ).acquireLock( any( Path.class ),
-                                             any( ParameterizedCommand.class ) );
+        }).when(lockService).acquireLock(any(Path.class),
+                                         any(ParameterizedCommand.class));
     }
 
     private void mockTimer() throws Exception {
@@ -407,15 +422,13 @@ public class LockManagerTest {
             }
 
             @Override
-            public void schedule( int delayMillis ) {
+            public void schedule(int delayMillis) {
                 run();
             }
         };
-        final Field reloadTimer = LockManagerImpl.class.getDeclaredField( "reloadTimer" );
-        reloadTimer.setAccessible( true );
-        reloadTimer.set( lockManager,
-                         mockTimer );
-
+        final Field reloadTimer = LockManagerImpl.class.getDeclaredField("reloadTimer");
+        reloadTimer.setAccessible(true);
+        reloadTimer.set(lockManager,
+                        mockTimer);
     }
-
 }

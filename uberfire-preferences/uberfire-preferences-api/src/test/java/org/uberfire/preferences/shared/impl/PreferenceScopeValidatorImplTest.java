@@ -18,12 +18,12 @@ package org.uberfire.preferences.shared.impl;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.preferences.shared.PreferenceScopeFactory;
 import org.uberfire.preferences.shared.impl.exception.InvalidPreferenceScopeException;
-import org.uberfire.mocks.SessionInfoMock;
 
 import static org.junit.Assert.*;
-import static org.uberfire.preferences.shared.impl.DefaultPreferenceScopesForTests.*;
+import static org.uberfire.preferences.shared.impl.DefaultPreferenceScopesForTests.userEntireApplicationScope;
 
 public class PreferenceScopeValidatorImplTest {
 
@@ -31,44 +31,52 @@ public class PreferenceScopeValidatorImplTest {
 
     @Before
     public void setup() {
-        final SessionInfoMock sessionInfo = new SessionInfoMock( "my-user" );
-        final DefaultPreferenceScopeTypes scopeTypes = new DefaultPreferenceScopeTypes( new UsernameProviderMock( sessionInfo ) );
-        final PreferenceScopeFactory scopeFactory = new PreferenceScopeFactoryImpl( scopeTypes );
-        final DefaultPreferenceScopeResolutionStrategy scopeResolutionStrategy = new DefaultPreferenceScopeResolutionStrategy( scopeFactory, null );
+        final SessionInfoMock sessionInfo = new SessionInfoMock("my-user");
+        final DefaultPreferenceScopeTypes scopeTypes = new DefaultPreferenceScopeTypes(new UsernameProviderMock(sessionInfo));
+        final PreferenceScopeFactory scopeFactory = new PreferenceScopeFactoryImpl(scopeTypes);
+        final DefaultPreferenceScopeResolutionStrategy scopeResolutionStrategy = new DefaultPreferenceScopeResolutionStrategy(scopeFactory,
+                                                                                                                              null);
 
-        validator = new PreferenceScopeValidatorImpl( scopeTypes, scopeResolutionStrategy );
+        validator = new PreferenceScopeValidatorImpl(scopeTypes,
+                                                     scopeResolutionStrategy);
     }
 
     @Test(expected = InvalidPreferenceScopeException.class)
     public void validateNullScopeTest() {
-        validator.validate( null );
+        validator.validate(null);
     }
 
     @Test(expected = InvalidPreferenceScopeException.class)
     public void validateScopeWithInvalidTypeTest() {
-        validator.validate( new PreferenceScopeImpl( "invalidType", null, null ) );
+        validator.validate(new PreferenceScopeImpl("invalidType",
+                                                   null,
+                                                   null));
     }
 
     @Test(expected = InvalidPreferenceScopeException.class)
     public void validateScopeWithTypeThatRequiresKeyWithoutKeyTest() {
-        validator.validate( new PreferenceScopeImpl( DefaultScopes.COMPONENT.type(), null, null ) );
+        validator.validate(new PreferenceScopeImpl(DefaultScopes.COMPONENT.type(),
+                                                   null,
+                                                   null));
     }
 
     @Test(expected = InvalidPreferenceScopeException.class)
     public void validateScopeWithValidScopeButNotInTheOrderTest() {
-        validator.validate( new PreferenceScopeImpl( DefaultScopes.USER.type(), null, null ) );
+        validator.validate(new PreferenceScopeImpl(DefaultScopes.USER.type(),
+                                                   null,
+                                                   null));
     }
 
     @Test
     public void validateValidScopeTest() {
-        validator.validate( userEntireApplicationScope );
+        validator.validate(userEntireApplicationScope);
     }
 
     @Test
     public void isEmptyTest() {
-        assertTrue( validator.isEmpty( null ) );
-        assertTrue( validator.isEmpty( "" ) );
-        assertTrue( validator.isEmpty( "  " ) );
-        assertFalse( validator.isEmpty( "anyString" ) );
+        assertTrue(validator.isEmpty(null));
+        assertTrue(validator.isEmpty(""));
+        assertTrue(validator.isEmpty("  "));
+        assertFalse(validator.isEmpty("anyString"));
     }
 }

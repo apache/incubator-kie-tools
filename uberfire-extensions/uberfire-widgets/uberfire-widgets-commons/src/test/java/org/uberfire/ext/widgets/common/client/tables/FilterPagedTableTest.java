@@ -64,18 +64,21 @@ public class FilterPagedTableTest {
 
         final YesNoCancelPopup yesNoCancelPopup = mock(YesNoCancelPopup.class);
         filterPagedTable = spy(new FilterPagedTable(mock(MultiGridPreferencesStore.class)));
-        doReturn(yesNoCancelPopup).when(filterPagedTable).getYesNoCancelPopup(anyString(), anyString());
+        doReturn(yesNoCancelPopup).when(filterPagedTable).getYesNoCancelPopup(anyString(),
+                                                                              anyString());
         filterPagedTable.makeWidget();
 
-        filterPagedTable.addTab(mock(PagedTable.class), "", mock(Command.class));
+        filterPagedTable.addTab(mock(PagedTable.class),
+                                "",
+                                mock(Command.class));
 
         clickHandler.onClick(new ClickEvent() {
         });
 
         verify(yesNoCancelPopup).show();
-        verify(filterPagedTable, never()).removeTab(anyInt());
-        verify(filterPagedTable, never()).removeTab(anyString());
+        verify(filterPagedTable,
+               never()).removeTab(anyInt());
+        verify(filterPagedTable,
+               never()).removeTab(anyString());
     }
-
-
 }

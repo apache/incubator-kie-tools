@@ -22,9 +22,9 @@ import org.junit.runner.RunWith;
 import org.uberfire.workbench.model.PartDefinition;
 
 import static org.jgroups.util.Util.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class PartManagerTest {
 
     private PartManager partManager;
@@ -33,9 +33,12 @@ public class PartManagerTest {
     public void getPartsShouldReturnCurrentWidgets() {
         partManager = new PartManager();
 
-        partManager.registerPart( mock( PartDefinition.class ), mock( Widget.class ) );
-        partManager.registerPart( mock( PartDefinition.class ), mock( Widget.class ) );
+        partManager.registerPart(mock(PartDefinition.class),
+                                 mock(Widget.class));
+        partManager.registerPart(mock(PartDefinition.class),
+                                 mock(Widget.class));
 
-        assertEquals( 2, partManager.getParts().size() );
+        assertEquals(2,
+                     partManager.getParts().size());
     }
 }

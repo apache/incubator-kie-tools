@@ -32,59 +32,111 @@ import org.uberfire.java.nio.base.FileDiff;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
 
-import static org.fest.assertions.api.Assertions.*;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.commit;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.createBranch;
 
 public class JGitFileSystemProviderDiffTest extends AbstractTestInfra {
 
-    private Logger logger = LoggerFactory.getLogger( JGitFileSystemProviderDiffTest.class );
+    private Logger logger = LoggerFactory.getLogger(JGitFileSystemProviderDiffTest.class);
 
     @Test
     public void testDiffsBetweenBranches() throws IOException {
 
         final File parentFolder = createTempDirectory();
 
-        final File gitSource = new File( parentFolder, "repo.git" );
-        final Git origin = JGitUtil.newRepository( gitSource, true );
+        final File gitSource = new File(parentFolder,
+                                        "repo.git");
+        final Git origin = JGitUtil.newRepository(gitSource,
+                                                  true);
         final Repository gitRepo = origin.getRepository();
 
-        commit( origin, "master", "name", "name@example.com", "master-1", null, null, false, new HashMap<String, File>() {{
-            put( "file1.txt", tempFile( "temp1\ntemp1\ntemp3\nmiddle\nmoremiddle\nmoremiddle\nmoremiddle\nother\n" ) );
-        }} );
+        commit(origin,
+               "master",
+               "name",
+               "name@example.com",
+               "master-1",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {{
+                   put("file1.txt",
+                       tempFile("temp1\ntemp1\ntemp3\nmiddle\nmoremiddle\nmoremiddle\nmoremiddle\nother\n"));
+               }});
 
-        createBranch( origin, "master", "develop" );
+        createBranch(origin,
+                     "master",
+                     "develop");
 
-        commit( origin, "develop", "name", "name@example.com", "develop-1", null, null, false, new HashMap<String, File>() {{
-            put( "file1.txt", tempFile( "temp1\ntemp2\nmiddle\nmoremiddle\nmoremiddle\nmoremiddle\n" ) );
-        }} );
+        commit(origin,
+               "develop",
+               "name",
+               "name@example.com",
+               "develop-1",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {{
+                   put("file1.txt",
+                       tempFile("temp1\ntemp2\nmiddle\nmoremiddle\nmoremiddle\nmoremiddle\n"));
+               }});
 
-        commit( origin, "develop", "name", "name@example.com", "develop-2", null, null, false, new HashMap<String, File>() {{
-            put( "file3.txt", tempFile( "temp3" ) );
-        }} );
+        commit(origin,
+               "develop",
+               "name",
+               "name@example.com",
+               "develop-2",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {{
+                   put("file3.txt",
+                       tempFile("temp3"));
+               }});
 
-        commit( origin, "develop", "name", "name@example.com", "develop-3", null, null, false, new HashMap<String, File>() {{
-            put( "file4.txt", tempFile( "temp4" ) );
-        }} );
+        commit(origin,
+               "develop",
+               "name",
+               "name@example.com",
+               "develop-3",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {{
+                   put("file4.txt",
+                       tempFile("temp4"));
+               }});
 
-        commit( origin, "develop", "name", "name@example.com", "develop-4", null, null, false, new HashMap<String, File>() {{
-            put( "file5.txt", tempFile( "temp5" ) );
-        }} );
+        commit(origin,
+               "develop",
+               "name",
+               "name@example.com",
+               "develop-4",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {{
+                   put("file5.txt",
+                       tempFile("temp5"));
+               }});
 
-        final URI newRepo = URI.create( "git://diff-repo" );
+        final URI newRepo = URI.create("git://diff-repo");
 
         final Map<String, Object> env = new HashMap<String, Object>() {{
-            put( JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME, origin.getRepository().getDirectory().toString() );
+            put(JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
+                origin.getRepository().getDirectory().toString());
         }};
 
-        provider.newFileSystem( newRepo, env );
+        provider.newFileSystem(newRepo,
+                               env);
 
-        final Path path = provider.getPath( newRepo );
-        final List<FileDiff> diffs = (List<FileDiff>) provider.readAttributes( path, "diff:master,develop" ).get( "diff" );
+        final Path path = provider.getPath(newRepo);
+        final List<FileDiff> diffs = (List<FileDiff>) provider.readAttributes(path,
+                                                                              "diff:master,develop").get("diff");
 
-        diffs.forEach( elem -> logger.info( elem.toString() ) );
+        diffs.forEach(elem -> logger.info(elem.toString()));
 
-        assertThat( diffs.size() ).isEqualTo( 5 );
-
+        assertThat(diffs.size()).isEqualTo(5);
     }
 
     @Test
@@ -92,35 +144,58 @@ public class JGitFileSystemProviderDiffTest extends AbstractTestInfra {
 
         final File parentFolder = createTempDirectory();
 
-        final File gitSource = new File( parentFolder, "repo.git" );
-        final Git origin = JGitUtil.newRepository( gitSource, true );
+        final File gitSource = new File(parentFolder,
+                                        "repo.git");
+        final Git origin = JGitUtil.newRepository(gitSource,
+                                                  true);
         final Repository gitRepo = origin.getRepository();
 
-        commit( origin, "master", "name", "name@example.com", "master-1", null, null, false, new HashMap<String, File>() {{
-            put( "file1.txt", tempFile( "temp1\ntemp1\ntemp3\nmiddle\nmoremiddle\nmoremiddle\nmoremiddle\nother\n" ) );
-        }} );
+        commit(origin,
+               "master",
+               "name",
+               "name@example.com",
+               "master-1",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {{
+                   put("file1.txt",
+                       tempFile("temp1\ntemp1\ntemp3\nmiddle\nmoremiddle\nmoremiddle\nmoremiddle\nother\n"));
+               }});
 
-        commit( origin, "master", "name", "name@example.com", "develop-1", null, null, false, new HashMap<String, File>() {{
-            put( "file1.txt", tempFile( "temp1\ntemp2\nmiddle\nmoremiddle\nmoremiddle\nmoremiddle\n" ) );
-        }} );
+        commit(origin,
+               "master",
+               "name",
+               "name@example.com",
+               "develop-1",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {{
+                   put("file1.txt",
+                       tempFile("temp1\ntemp2\nmiddle\nmoremiddle\nmoremiddle\nmoremiddle\n"));
+               }});
 
-        createBranch( origin, "master", "develop" );
+        createBranch(origin,
+                     "master",
+                     "develop");
 
-        final URI newRepo = URI.create( "git://diff-repo" );
+        final URI newRepo = URI.create("git://diff-repo");
 
         final Map<String, Object> env = new HashMap<String, Object>() {{
-            put( JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME, origin.getRepository().getDirectory().toString() );
+            put(JGitFileSystemProvider.GIT_ENV_KEY_DEFAULT_REMOTE_NAME,
+                origin.getRepository().getDirectory().toString());
         }};
 
-        provider.newFileSystem( newRepo, env );
+        provider.newFileSystem(newRepo,
+                               env);
 
-        final Path path = provider.getPath( newRepo );
-        final List<FileDiff> diffs = (List<FileDiff>) provider.readAttributes( path, "diff:master,develop" ).get( "diff" );
+        final Path path = provider.getPath(newRepo);
+        final List<FileDiff> diffs = (List<FileDiff>) provider.readAttributes(path,
+                                                                              "diff:master,develop").get("diff");
 
-        diffs.forEach( elem -> logger.info( elem.toString() ) );
+        diffs.forEach(elem -> logger.info(elem.toString()));
 
-        assertThat( diffs.size() ).isEqualTo( 0 );
-
+        assertThat(diffs.size()).isEqualTo(0);
     }
-
 }

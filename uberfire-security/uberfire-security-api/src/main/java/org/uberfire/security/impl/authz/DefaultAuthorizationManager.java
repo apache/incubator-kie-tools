@@ -32,8 +32,8 @@ import org.uberfire.security.authz.PermissionManager;
 import org.uberfire.security.authz.ResourceCheck;
 import org.uberfire.security.authz.VotingStrategy;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-import static org.uberfire.plugin.PluginUtil.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.plugin.PluginUtil.ensureIterable;
 
 @ApplicationScoped
 public class DefaultAuthorizationManager implements AuthorizationManager {
@@ -48,37 +48,63 @@ public class DefaultAuthorizationManager implements AuthorizationManager {
         this.permissionManager = permissionManager;
     }
 
-    public boolean authorize(Resource resource, User user) {
-        return authorize(resource, null, user, null);
+    public boolean authorize(Resource resource,
+                             User user) {
+        return authorize(resource,
+                         null,
+                         user,
+                         null);
     }
 
     @Override
-    public boolean authorize(Resource resource, ResourceAction action, User user) {
-        return authorize(resource, action, user, null);
+    public boolean authorize(Resource resource,
+                             ResourceAction action,
+                             User user) {
+        return authorize(resource,
+                         action,
+                         user,
+                         null);
     }
 
     @Override
-    public boolean authorize(ResourceType resourceType, ResourceAction action, User user) {
-        return authorize(resourceType, action, user, null);
+    public boolean authorize(ResourceType resourceType,
+                             ResourceAction action,
+                             User user) {
+        return authorize(resourceType,
+                         action,
+                         user,
+                         null);
     }
 
     @Override
-    public boolean authorize(Resource resource, User user, VotingStrategy votingStrategy) {
-        return authorize(resource, null, user, votingStrategy);
+    public boolean authorize(Resource resource,
+                             User user,
+                             VotingStrategy votingStrategy) {
+        return authorize(resource,
+                         null,
+                         user,
+                         votingStrategy);
     }
 
     @Override
-    public boolean authorize(Resource resource, ResourceAction action, User user, VotingStrategy votingStrategy) {
-        checkNotNull("resource", resource);
-        checkNotNull("subject", user);
+    public boolean authorize(Resource resource,
+                             ResourceAction action,
+                             User user,
+                             VotingStrategy votingStrategy) {
+        checkNotNull("resource",
+                     resource);
+        checkNotNull("subject",
+                     user);
 
         // A resource may depend on others
         List<Resource> deps = resource.getDependencies();
         if (deps != null && !deps.isEmpty()) {
 
             // One dep is accessible
-            for (Resource dep : ensureIterable ( deps ) ) {
-                boolean itemAccess = authorize(dep, action, user);
+            for (Resource dep : ensureIterable(deps)) {
+                boolean itemAccess = authorize(dep,
+                                               action,
+                                               user);
                 if (itemAccess) {
                     return true;
                 }
@@ -88,70 +114,120 @@ public class DefaultAuthorizationManager implements AuthorizationManager {
         }
 
         // Ask the permission manager about the given action
-        Permission p = permissionManager.createPermission(resource, action, true);
-        return authorize(p, user, votingStrategy);
+        Permission p = permissionManager.createPermission(resource,
+                                                          action,
+                                                          true);
+        return authorize(p,
+                         user,
+                         votingStrategy);
     }
 
     @Override
-    public boolean authorize(ResourceType resourceType, ResourceAction action, User user, VotingStrategy votingStrategy) {
+    public boolean authorize(ResourceType resourceType,
+                             ResourceAction action,
+                             User user,
+                             VotingStrategy votingStrategy) {
         // Ask the permission manager about the given action
-        Permission p = permissionManager.createPermission(resourceType, action, true);
-        return authorize(p, user, votingStrategy);
+        Permission p = permissionManager.createPermission(resourceType,
+                                                          action,
+                                                          true);
+        return authorize(p,
+                         user,
+                         votingStrategy);
     }
 
     @Override
-    public boolean authorize(String permission, User user) {
-        return authorize(permission, user, null);
+    public boolean authorize(String permission,
+                             User user) {
+        return authorize(permission,
+                         user,
+                         null);
     }
 
     @Override
-    public boolean authorize(Permission permission, User user) {
-        return authorize(permission, user, null);
+    public boolean authorize(Permission permission,
+                             User user) {
+        return authorize(permission,
+                         user,
+                         null);
     }
 
     @Override
-    public boolean authorize(String permission, User user, VotingStrategy votingStrategy) {
-        Permission p = permissionManager.createPermission(permission, true);
-        return authorize(p, user, votingStrategy);
+    public boolean authorize(String permission,
+                             User user,
+                             VotingStrategy votingStrategy) {
+        Permission p = permissionManager.createPermission(permission,
+                                                          true);
+        return authorize(p,
+                         user,
+                         votingStrategy);
     }
 
     @Override
-    public boolean authorize(Permission permission, User user, VotingStrategy votingStrategy) {
+    public boolean authorize(Permission permission,
+                             User user,
+                             VotingStrategy votingStrategy) {
 
         // If granted or abstain the return true. Reasons to abstain:
         // - no security policy defined
         // - no explicit permissions assigned
-        AuthorizationResult result = permissionManager.checkPermission(permission, user, votingStrategy);
+        AuthorizationResult result = permissionManager.checkPermission(permission,
+                                                                       user,
+                                                                       votingStrategy);
         return !AuthorizationResult.ACCESS_DENIED.equals(result);
     }
 
     @Override
-    public ResourceCheck check(Resource target, User user) {
-        return check(target, user, null);
+    public ResourceCheck check(Resource target,
+                               User user) {
+        return check(target,
+                     user,
+                     null);
     }
 
     @Override
-    public ResourceCheck check(Resource target, User user, VotingStrategy votingStrategy) {
-        return new ResourceCheckImpl(this, target, user, votingStrategy);
+    public ResourceCheck check(Resource target,
+                               User user,
+                               VotingStrategy votingStrategy) {
+        return new ResourceCheckImpl(this,
+                                     target,
+                                     user,
+                                     votingStrategy);
     }
 
     @Override
-    public ResourceCheck check(ResourceType target, User user) {
-        return check(target, user, null);
+    public ResourceCheck check(ResourceType target,
+                               User user) {
+        return check(target,
+                     user,
+                     null);
     }
 
     @Override
-    public ResourceCheck check(ResourceType target, User user, VotingStrategy votingStrategy) {
-        return new ResourceCheckImpl(this, target, user, votingStrategy);
+    public ResourceCheck check(ResourceType target,
+                               User user,
+                               VotingStrategy votingStrategy) {
+        return new ResourceCheckImpl(this,
+                                     target,
+                                     user,
+                                     votingStrategy);
     }
 
     @Override
-    public PermissionCheck check(String permission, User user) {
-        return check(permission, user, null);
+    public PermissionCheck check(String permission,
+                                 User user) {
+        return check(permission,
+                     user,
+                     null);
     }
 
     @Override
-    public PermissionCheck check(String permission, User user, VotingStrategy votingStrategy) {
-        return new PermissionCheckImpl(permissionManager, permission, user, votingStrategy);
+    public PermissionCheck check(String permission,
+                                 User user,
+                                 VotingStrategy votingStrategy) {
+        return new PermissionCheckImpl(permissionManager,
+                                       permission,
+                                       user,
+                                       votingStrategy);
     }
 }

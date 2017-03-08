@@ -87,127 +87,126 @@ public class GridCellSelectorMouseClickHandlerTest {
 
     @Before
     public void setup() {
-        when( gridWidget.getViewport() ).thenReturn( viewport );
-        when( gridWidget.getModel() ).thenReturn( uiModel );
-        when( gridWidget.getRenderer() ).thenReturn( renderer );
-        when( gridWidget.getRendererHelper() ).thenReturn( helper );
-        when( gridWidget.getLayer() ).thenReturn( layer );
-        when( gridWidget.getHeader() ).thenReturn( header );
-        when( gridWidget.getHeight() ).thenReturn( 128.0 );
-        when( gridWidget.getLocation() ).thenReturn( new Point2D( 100,
-                                                                  100 ) );
-        when( renderer.getHeaderHeight() ).thenReturn( 64.0 );
-        when( renderer.getHeaderRowHeight() ).thenReturn( 32.0 );
-        when( uiModel.getHeaderRowCount() ).thenReturn( 2 );
-        when( uiModel.getColumnCount() ).thenReturn( 1 );
-        when( uiModel.getColumns() ).thenReturn( new ArrayList<GridColumn<?>>() {{
-            add( uiColumn );
-        }} );
-        when( uiModel.getRowCount() ).thenReturn( 1 );
-        when( uiModel.getRow( eq( 0 ) ) ).thenReturn( uiRow );
-        when( uiRow.getHeight() ).thenReturn( 64.0 );
-        when( uiCell.getSelectionManager() ).thenReturn( cellSelectionStrategy );
+        when(gridWidget.getViewport()).thenReturn(viewport);
+        when(gridWidget.getModel()).thenReturn(uiModel);
+        when(gridWidget.getRenderer()).thenReturn(renderer);
+        when(gridWidget.getRendererHelper()).thenReturn(helper);
+        when(gridWidget.getLayer()).thenReturn(layer);
+        when(gridWidget.getHeader()).thenReturn(header);
+        when(gridWidget.getHeight()).thenReturn(128.0);
+        when(gridWidget.getLocation()).thenReturn(new Point2D(100,
+                                                              100));
+        when(renderer.getHeaderHeight()).thenReturn(64.0);
+        when(renderer.getHeaderRowHeight()).thenReturn(32.0);
+        when(uiModel.getHeaderRowCount()).thenReturn(2);
+        when(uiModel.getColumnCount()).thenReturn(1);
+        when(uiModel.getColumns()).thenReturn(new ArrayList<GridColumn<?>>() {{
+            add(uiColumn);
+        }});
+        when(uiModel.getRowCount()).thenReturn(1);
+        when(uiModel.getRow(eq(0))).thenReturn(uiRow);
+        when(uiRow.getHeight()).thenReturn(64.0);
+        when(uiCell.getSelectionManager()).thenReturn(cellSelectionStrategy);
 
-        final GridCellSelectorMouseClickHandler wrapped = new GridCellSelectorMouseClickHandler( gridWidget,
-                                                                                                 selectionManager,
-                                                                                                 renderer );
-        handler = spy( wrapped );
+        final GridCellSelectorMouseClickHandler wrapped = new GridCellSelectorMouseClickHandler(gridWidget,
+                                                                                                selectionManager,
+                                                                                                renderer);
+        handler = spy(wrapped);
     }
 
     @Test
     public void skipInvisibleGrid() {
-        when( gridWidget.isVisible() ).thenReturn( false );
+        when(gridWidget.isVisible()).thenReturn(false);
 
-        handler.onNodeMouseClick( event );
+        handler.onNodeMouseClick(event);
 
-        verify( handler,
-                never() ).handleBodyCellClick( any( NodeMouseClickEvent.class ) );
+        verify(handler,
+               never()).handleBodyCellClick(any(NodeMouseClickEvent.class));
     }
 
     @Test
     public void basicCheckForBodyHandlerWithinBodyBounds() {
-        when( gridWidget.isVisible() ).thenReturn( true );
+        when(gridWidget.isVisible()).thenReturn(true);
 
-        when( event.getX() ).thenReturn( 100 );
-        when( event.getY() ).thenReturn( 200 );
+        when(event.getX()).thenReturn(100);
+        when(event.getY()).thenReturn(200);
 
-        final BaseGridRendererHelper.ColumnInformation ci = new BaseGridRendererHelper.ColumnInformation( uiColumn,
-                                                                                                          0,
-                                                                                                          0 );
-        when( helper.getColumnInformation( any( Double.class ) ) ).thenReturn( ci );
+        final BaseGridRendererHelper.ColumnInformation ci = new BaseGridRendererHelper.ColumnInformation(uiColumn,
+                                                                                                         0,
+                                                                                                         0);
+        when(helper.getColumnInformation(any(Double.class))).thenReturn(ci);
 
-        handler.onNodeMouseClick( event );
+        handler.onNodeMouseClick(event);
 
-        verify( handler,
-                times( 1 ) ).handleBodyCellClick( any( NodeMouseClickEvent.class ) );
-        verify( gridWidget,
-                times( 1 ) ).selectCell( any( Point2D.class ),
-                                         eq( false ),
-                                         eq( false ) );
+        verify(handler,
+               times(1)).handleBodyCellClick(any(NodeMouseClickEvent.class));
+        verify(gridWidget,
+               times(1)).selectCell(any(Point2D.class),
+                                    eq(false),
+                                    eq(false));
     }
 
     @Test
     public void basicCheckForBodyHandlerOutsideBodyBounds() {
-        when( gridWidget.isVisible() ).thenReturn( true );
+        when(gridWidget.isVisible()).thenReturn(true);
 
-        when( event.getX() ).thenReturn( 100 );
-        when( event.getY() ).thenReturn( 120 );
+        when(event.getX()).thenReturn(100);
+        when(event.getY()).thenReturn(120);
 
-        final BaseGridRendererHelper.ColumnInformation ci = new BaseGridRendererHelper.ColumnInformation( uiColumn,
-                                                                                                          0,
-                                                                                                          0 );
-        when( helper.getColumnInformation( any( Double.class ) ) ).thenReturn( ci );
+        final BaseGridRendererHelper.ColumnInformation ci = new BaseGridRendererHelper.ColumnInformation(uiColumn,
+                                                                                                         0,
+                                                                                                         0);
+        when(helper.getColumnInformation(any(Double.class))).thenReturn(ci);
 
-        handler.onNodeMouseClick( event );
+        handler.onNodeMouseClick(event);
 
-        verify( handler,
-                times( 1 ) ).handleBodyCellClick( any( NodeMouseClickEvent.class ) );
-        verify( uiModel,
-                never() ).getCell( any( Integer.class ),
-                                   any( Integer.class ) );
+        verify(handler,
+               times(1)).handleBodyCellClick(any(NodeMouseClickEvent.class));
+        verify(uiModel,
+               never()).getCell(any(Integer.class),
+                                any(Integer.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void selectSingleCell() {
-        when( gridWidget.isVisible() ).thenReturn( true );
+        when(gridWidget.isVisible()).thenReturn(true);
 
-        when( event.getX() ).thenReturn( 100 );
-        when( event.getY() ).thenReturn( 200 );
+        when(event.getX()).thenReturn(100);
+        when(event.getY()).thenReturn(200);
 
-        when( uiModel.getCell( any( Integer.class ),
-                               any( Integer.class ) ) ).thenReturn( uiCell );
-        final BaseGridRendererHelper.ColumnInformation ci = new BaseGridRendererHelper.ColumnInformation( uiColumn,
-                                                                                                          0,
-                                                                                                          0 );
-        when( helper.getColumnInformation( any( Double.class ) ) ).thenReturn( ci );
+        when(uiModel.getCell(any(Integer.class),
+                             any(Integer.class))).thenReturn(uiCell);
+        final BaseGridRendererHelper.ColumnInformation ci = new BaseGridRendererHelper.ColumnInformation(uiColumn,
+                                                                                                         0,
+                                                                                                         0);
+        when(helper.getColumnInformation(any(Double.class))).thenReturn(ci);
 
-        final BaseGridRendererHelper.RenderingInformation ri = new BaseGridRendererHelper.RenderingInformation( mock( Bounds.class ),
-                                                                                                                new ArrayList<GridColumn<?>>() {{
-                                                                                                                    add( uiColumn );
-                                                                                                                }},
-                                                                                                                mock( BaseGridRendererHelper.RenderingBlockInformation.class ),
-                                                                                                                mock( BaseGridRendererHelper.RenderingBlockInformation.class ),
-                                                                                                                0,
-                                                                                                                1,
-                                                                                                                new ArrayList<Double>() {{
-                                                                                                                    add( 64.0 );
-                                                                                                                }},
-                                                                                                                false,
-                                                                                                                false,
-                                                                                                                0,
-                                                                                                                2,
-                                                                                                                0 );
-        when( helper.getRenderingInformation() ).thenReturn( ri );
+        final BaseGridRendererHelper.RenderingInformation ri = new BaseGridRendererHelper.RenderingInformation(mock(Bounds.class),
+                                                                                                               new ArrayList<GridColumn<?>>() {{
+                                                                                                                   add(uiColumn);
+                                                                                                               }},
+                                                                                                               mock(BaseGridRendererHelper.RenderingBlockInformation.class),
+                                                                                                               mock(BaseGridRendererHelper.RenderingBlockInformation.class),
+                                                                                                               0,
+                                                                                                               1,
+                                                                                                               new ArrayList<Double>() {{
+                                                                                                                   add(64.0);
+                                                                                                               }},
+                                                                                                               false,
+                                                                                                               false,
+                                                                                                               0,
+                                                                                                               2,
+                                                                                                               0);
+        when(helper.getRenderingInformation()).thenReturn(ri);
 
-        handler.onNodeMouseClick( event );
+        handler.onNodeMouseClick(event);
 
-        verify( handler,
-                times( 1 ) ).handleBodyCellClick( any( NodeMouseClickEvent.class ) );
-        verify( gridWidget,
-                times( 1 ) ).selectCell( any( Point2D.class ),
-                                         eq( false ),
-                                         eq( false ) );
+        verify(handler,
+               times(1)).handleBodyCellClick(any(NodeMouseClickEvent.class));
+        verify(gridWidget,
+               times(1)).selectCell(any(Point2D.class),
+                                    eq(false),
+                                    eq(false));
     }
-
 }

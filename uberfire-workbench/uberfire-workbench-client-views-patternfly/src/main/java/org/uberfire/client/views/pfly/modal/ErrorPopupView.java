@@ -35,14 +35,14 @@ public class ErrorPopupView extends Composite implements ErrorPopupPresenter.Vie
     private Instance<Bs3Modal> modalFactory;
 
     @Override
-    public void showMessage( final String msg,
-                             final Command afterShow,
-                             final Command afterClose ) {
+    public void showMessage(final String msg,
+                            final Command afterShow,
+                            final Command afterClose) {
 
         final Bs3Modal modal = modalFactory.get();
-        modal.setModalTitle( "Error" );
-        modal.setContent( new HTML( SafeHtmlUtils.fromString( msg ) ) );
-        modal.show( afterShow, afterClose );
+        modal.setModalTitle("Error");
+        modal.setContent(new HTML(SafeHtmlUtils.fromString(msg)));
+        modal.show(afterShow,
+                   afterClose);
     }
-
 }

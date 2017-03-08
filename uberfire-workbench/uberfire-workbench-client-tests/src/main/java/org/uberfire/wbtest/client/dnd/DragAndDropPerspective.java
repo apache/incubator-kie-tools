@@ -35,31 +35,32 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 public class DragAndDropPerspective extends AbstractTestPerspectiveActivity {
 
     @Inject
-    public DragAndDropPerspective( PlaceManager placeManager ) {
-        super( placeManager );
+    public DragAndDropPerspective(PlaceManager placeManager) {
+        super(placeManager);
     }
 
     @Override
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
-        PerspectiveDefinition pd = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        pd.getRoot().setElementId( "DragAndDropPerspective-list" );
-        pd.getRoot().addPart( DragAndDropScreen.class.getName() + "?debugId=1" );
-        pd.getRoot().addPart( DragAndDropScreen.class.getName() + "?debugId=2" );
+        PerspectiveDefinition pd = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        pd.getRoot().setElementId("DragAndDropPerspective-list");
+        pd.getRoot().addPart(DragAndDropScreen.class.getName() + "?debugId=1");
+        pd.getRoot().addPart(DragAndDropScreen.class.getName() + "?debugId=2");
 
-        PanelDefinitionImpl tabPanel = new PanelDefinitionImpl( MultiTabWorkbenchPanelPresenter.class.getName() );
-        tabPanel.setElementId( "DragAndDropPerspective-tab" );
-        tabPanel.setWidth( 300 );
-        tabPanel.addPart( DragAndDropScreen.class.getName() + "?debugId=3" );
-        tabPanel.addPart( DragAndDropScreen.class.getName() + "?debugId=4" );
-        pd.getRoot().appendChild( CompassPosition.WEST, tabPanel );
+        PanelDefinitionImpl tabPanel = new PanelDefinitionImpl(MultiTabWorkbenchPanelPresenter.class.getName());
+        tabPanel.setElementId("DragAndDropPerspective-tab");
+        tabPanel.setWidth(300);
+        tabPanel.addPart(DragAndDropScreen.class.getName() + "?debugId=3");
+        tabPanel.addPart(DragAndDropScreen.class.getName() + "?debugId=4");
+        pd.getRoot().appendChild(CompassPosition.WEST,
+                                 tabPanel);
 
-        PanelDefinitionImpl simplePanel = new PanelDefinitionImpl( SimpleDnDWorkbenchPanelPresenter.class.getName() );
-        simplePanel.setWidth( 175 );
-        simplePanel.setElementId( "DragAndDropPerspective-simple" );
-        simplePanel.addPart( DragAndDropScreen.class.getName() + "?debugId=5" );
-        pd.getRoot().appendChild( CompassPosition.EAST, simplePanel );
+        PanelDefinitionImpl simplePanel = new PanelDefinitionImpl(SimpleDnDWorkbenchPanelPresenter.class.getName());
+        simplePanel.setWidth(175);
+        simplePanel.setElementId("DragAndDropPerspective-simple");
+        simplePanel.addPart(DragAndDropScreen.class.getName() + "?debugId=5");
+        pd.getRoot().appendChild(CompassPosition.EAST,
+                                 simplePanel);
 
         return pd;
     }
-
 }

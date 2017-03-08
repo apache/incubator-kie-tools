@@ -33,7 +33,7 @@ public abstract class AbstractBaseFactory<T extends Shape<T>> implements ShapeFa
     public ShapeGlyph getGlyph() {
         final T shape = makeShape();
         final Group group = new Group();
-        group.add( shape );
+        group.add(shape);
 
         return new ShapeGlyph() {
             @Override
@@ -54,12 +54,12 @@ public abstract class AbstractBaseFactory<T extends Shape<T>> implements ShapeFa
     }
 
     @Override
-    public ShapeDragProxy getDragProxy( final @SuppressWarnings("unused") FactoryHelper helper,
-                                        final ShapeDragProxyPreviewCallback dragPreviewCallback,
-                                        final ShapeDragProxyCompleteCallback dragEndCallBack ) {
+    public ShapeDragProxy getDragProxy(final @SuppressWarnings("unused") FactoryHelper helper,
+                                       final ShapeDragProxyPreviewCallback dragPreviewCallback,
+                                       final ShapeDragProxyCompleteCallback dragEndCallBack) {
         final T shape = makeShape();
         final Group group = new Group();
-        group.add( shape );
+        group.add(shape);
 
         return new ShapeDragProxy() {
             @Override
@@ -68,17 +68,17 @@ public abstract class AbstractBaseFactory<T extends Shape<T>> implements ShapeFa
             }
 
             @Override
-            public void onDragPreview( final double x,
-                                       final double y ) {
-                dragPreviewCallback.callback( x,
-                                              y );
+            public void onDragPreview(final double x,
+                                      final double y) {
+                dragPreviewCallback.callback(x,
+                                             y);
             }
 
             @Override
-            public void onDragComplete( final double x,
-                                        final double y ) {
-                dragEndCallBack.callback( x,
-                                          y );
+            public void onDragComplete(final double x,
+                                       final double y) {
+                dragEndCallBack.callback(x,
+                                         y);
             }
 
             @Override
@@ -90,7 +90,6 @@ public abstract class AbstractBaseFactory<T extends Shape<T>> implements ShapeFa
             public double getHeight() {
                 return AbstractBaseFactory.this.getHeight();
             }
-
         };
     }
 
@@ -99,5 +98,4 @@ public abstract class AbstractBaseFactory<T extends Shape<T>> implements ShapeFa
     protected abstract double getWidth();
 
     protected abstract double getHeight();
-
 }

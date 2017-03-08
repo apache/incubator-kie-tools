@@ -30,16 +30,16 @@ import org.uberfire.rpc.SessionInfo;
 public class SessionInfoMarshalller extends AbstractNullableMarshaller<SessionInfo> {
 
     @Override
-    public SessionInfo doNotNullDemarshall( final EJValue ejValue,
-                                            final MarshallingSession marshallingSession ) {
+    public SessionInfo doNotNullDemarshall(final EJValue ejValue,
+                                           final MarshallingSession marshallingSession) {
 
-        return new SessionInfoImpl( ejValue.isObject().get( "id" ).isString().stringValue(),
-                                    new UserImpl( ejValue.isObject().get( "identityId" ).isString().stringValue() ) );
+        return new SessionInfoImpl(ejValue.isObject().get("id").isString().stringValue(),
+                                   new UserImpl(ejValue.isObject().get("identityId").isString().stringValue()));
     }
 
     @Override
-    public String doNotNullMarshall( final SessionInfo sessionInfo,
-                                     final MarshallingSession marshallingSession ) {
+    public String doNotNullMarshall(final SessionInfo sessionInfo,
+                                    final MarshallingSession marshallingSession) {
         return "{\"" + SerializationParts.ENCODED_TYPE + "\":\"" + SessionInfo.class.getName() + "\"," +
                 "\"" + SerializationParts.OBJECT_ID + "\":\"" + sessionInfo.hashCode() + "\"," +
                 "\"" + "id" + "\":\"" + sessionInfo.getId() + "\"," +
@@ -48,6 +48,6 @@ public class SessionInfoMarshalller extends AbstractNullableMarshaller<SessionIn
 
     @Override
     public SessionInfo[] getEmptyArray() {
-        return new SessionInfo[ 0 ];
+        return new SessionInfo[0];
     }
 }

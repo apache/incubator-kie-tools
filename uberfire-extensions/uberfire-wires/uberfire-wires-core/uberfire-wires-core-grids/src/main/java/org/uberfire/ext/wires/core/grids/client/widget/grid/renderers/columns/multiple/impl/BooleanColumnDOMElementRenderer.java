@@ -25,31 +25,30 @@ import org.uberfire.ext.wires.core.grids.client.widget.dom.multiple.impl.CheckBo
 
 public class BooleanColumnDOMElementRenderer extends BaseGridColumnMultipleDOMElementRenderer<Boolean, CheckBox, CheckBoxDOMElement> {
 
-    public BooleanColumnDOMElementRenderer( final CheckBoxDOMElementFactory factory ) {
-        super( factory );
+    public BooleanColumnDOMElementRenderer(final CheckBoxDOMElementFactory factory) {
+        super(factory);
     }
 
     @Override
-    public Group renderCell( final GridCell<Boolean> cell,
-                             final GridBodyCellRenderContext context ) {
-        if ( cell == null || cell.getValue() == null ) {
+    public Group renderCell(final GridCell<Boolean> cell,
+                            final GridBodyCellRenderContext context) {
+        if (cell == null || cell.getValue() == null) {
             return null;
         }
         final Group g = new Group();
-        factory.attachDomElement( context,
-                                  new Callback<CheckBoxDOMElement>() {
-                                      @Override
-                                      public void callback( final CheckBoxDOMElement e ) {
-                                          e.getWidget().setValue( cell.getValue().getValue() );
-                                      }
-                                  },
-                                  new Callback<CheckBoxDOMElement>() {
-                                      @Override
-                                      public void callback( final CheckBoxDOMElement result ) {
-                                          //Do nothing
-                                      }
-                                  } );
+        factory.attachDomElement(context,
+                                 new Callback<CheckBoxDOMElement>() {
+                                     @Override
+                                     public void callback(final CheckBoxDOMElement e) {
+                                         e.getWidget().setValue(cell.getValue().getValue());
+                                     }
+                                 },
+                                 new Callback<CheckBoxDOMElement>() {
+                                     @Override
+                                     public void callback(final CheckBoxDOMElement result) {
+                                         //Do nothing
+                                     }
+                                 });
         return g;
     }
-
 }

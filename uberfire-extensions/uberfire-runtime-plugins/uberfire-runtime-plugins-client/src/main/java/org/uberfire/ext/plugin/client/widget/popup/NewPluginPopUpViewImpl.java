@@ -33,23 +33,26 @@ import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class NewPluginPopUpViewImpl extends BaseModal implements NewPluginPopUpView {
 
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    @UiField
+    TextBox name;
+    @UiField
+    HelpBlock nameHelpInline;
+    @UiField
+    FormGroup nameGroup;
     private NewPluginPopUpView.Presenter presenter;
-
+    private final Command cancelCommand = new Command() {
+        @Override
+        public void execute() {
+            presenter.onCancel();
+        }
+    };
     private PluginType type;
-
-    interface ViewBinder
-            extends
-            UiBinder<Widget, NewPluginPopUpViewImpl> {
-
-    }
-
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
     private final Command okCommand = new Command() {
         @Override
         public void execute() {
@@ -57,74 +60,60 @@ public class NewPluginPopUpViewImpl extends BaseModal implements NewPluginPopUpV
         }
     };
 
-    private final Command cancelCommand = new Command() {
-        @Override
-        public void execute() {
-            presenter.onCancel();
-        }
-    };
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons(okCommand,
+                                                                                     cancelCommand);
 
-    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand,
-                                                                                      cancelCommand );
-
-    @UiField
-    TextBox name;
-
-    @UiField
-    HelpBlock nameHelpInline;
-
-    @UiField
-    FormGroup nameGroup;
-
-    public void init( NewPluginPopUpView.Presenter presenter ) {
+    public void init(NewPluginPopUpView.Presenter presenter) {
         this.presenter = presenter;
 
-        footer.enableOkButton( true );
+        footer.enableOkButton(true);
 
-        add( new ModalBody() {{
-            add( uiBinder.createAndBindUi( NewPluginPopUpViewImpl.this ) );
-        }} );
-        add( footer );
+        add(new ModalBody() {{
+            add(uiBinder.createAndBindUi(NewPluginPopUpViewImpl.this));
+        }});
+        add(footer);
     }
 
-    public void show( final PluginType type ) {
-        this.type = checkNotNull( "type", type );
+    public void show(final PluginType type) {
+        this.type = checkNotNull("type",
+                                 type);
 
-        name.setText( "" );
-        nameHelpInline.setText( "" );
-        nameGroup.setValidationState( ValidationState.NONE );
+        name.setText("");
+        nameHelpInline.setText("");
+        nameGroup.setValidationState(ValidationState.NONE);
 
-        switch ( this.type ) {
+        switch (this.type) {
             case PERSPECTIVE:
-                setTitle( CommonConstants.INSTANCE.NewPerspectivePopUpTitle() );
+                setTitle(CommonConstants.INSTANCE.NewPerspectivePopUpTitle());
                 break;
             case PERSPECTIVE_LAYOUT:
-                setTitle( CommonConstants.INSTANCE.NewPerspectiveLayoutPopUpTitle() );
+                setTitle(CommonConstants.INSTANCE.NewPerspectiveLayoutPopUpTitle());
                 break;
             case SCREEN:
-                setTitle( CommonConstants.INSTANCE.NewScreenPopUpTitle() );
+                setTitle(CommonConstants.INSTANCE.NewScreenPopUpTitle());
                 break;
             case EDITOR:
-                setTitle( CommonConstants.INSTANCE.NewEditorPopUpTitle() );
+                setTitle(CommonConstants.INSTANCE.NewEditorPopUpTitle());
                 break;
             case SPLASH:
-                setTitle( CommonConstants.INSTANCE.NewSplashScreenPopUpTitle() );
+                setTitle(CommonConstants.INSTANCE.NewSplashScreenPopUpTitle());
                 break;
             case DYNAMIC_MENU:
-                setTitle( CommonConstants.INSTANCE.NewDynamicMenuPopUpTitle() );
+                setTitle(CommonConstants.INSTANCE.NewDynamicMenuPopUpTitle());
                 break;
         }
         super.show();
     }
 
     private void onOKButtonClick() {
-        presenter.onOK( name.getText(), type );
+        presenter.onOK(name.getText(),
+                       type);
     }
 
     @Override
-    public void handleNameValidationError( String errorMessage ) {
-        nameGroup.setValidationState( ValidationState.ERROR );
-        nameHelpInline.setText( errorMessage );
+    public void handleNameValidationError(String errorMessage) {
+        nameGroup.setValidationState(ValidationState.ERROR);
+        nameHelpInline.setText(errorMessage);
     }
 
     public String emptyName() {
@@ -137,5 +126,11 @@ public class NewPluginPopUpViewImpl extends BaseModal implements NewPluginPopUpV
 
     public String duplicatedName() {
         return "Plugin name already exists.";
+    }
+
+    interface ViewBinder
+            extends
+            UiBinder<Widget, NewPluginPopUpViewImpl> {
+
     }
 }

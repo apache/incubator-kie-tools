@@ -26,33 +26,34 @@ import org.uberfire.ext.preferences.client.admin.page.AdminTool;
 
 public class AdminPageCategoryPresenter {
 
-    public interface View extends UberElement<AdminPageCategoryPresenter> {
-
-        void add( AdminPageItemPresenter.View rootItemView );
-    }
-
     private final View view;
-
     private final ManagedInstance<AdminPageItemPresenter> adminPageItemPresenterProvider;
 
     @Inject
-    public AdminPageCategoryPresenter( final View view,
-                                       final ManagedInstance<AdminPageItemPresenter> adminPageItemPresenterProvider ) {
+    public AdminPageCategoryPresenter(final View view,
+                                      final ManagedInstance<AdminPageItemPresenter> adminPageItemPresenterProvider) {
         this.view = view;
         this.adminPageItemPresenterProvider = adminPageItemPresenterProvider;
     }
 
-    public void setup( final List<AdminTool> adminTools,
-                       final String screen,
-                       final String perspectiveIdentifierToGoBackTo ) {
-        adminTools.forEach( adminTool -> {
+    public void setup(final List<AdminTool> adminTools,
+                      final String screen,
+                      final String perspectiveIdentifierToGoBackTo) {
+        adminTools.forEach(adminTool -> {
             final AdminPageItemPresenter itemPresenter = adminPageItemPresenterProvider.get();
-            itemPresenter.setup( adminTool, screen, perspectiveIdentifierToGoBackTo );
-            view.add( itemPresenter.getView() );
-        } );
+            itemPresenter.setup(adminTool,
+                                screen,
+                                perspectiveIdentifierToGoBackTo);
+            view.add(itemPresenter.getView());
+        });
     }
 
     public View getView() {
         return view;
+    }
+
+    public interface View extends UberElement<AdminPageCategoryPresenter> {
+
+        void add(AdminPageItemPresenter.View rootItemView);
     }
 }

@@ -45,27 +45,36 @@ public class ProjectTreeProvider implements PermissionTreeProvider {
     private PermissionManager permissionManager;
     private List<Resource> projectList;
 
-    public ProjectTreeProvider(PermissionManager permissionManager, List<Resource> projectList) {
+    public ProjectTreeProvider(PermissionManager permissionManager,
+                               List<Resource> projectList) {
         this.permissionManager = permissionManager;
         this.projectList = projectList;
     }
 
     @Override
     public PermissionNode buildRootNode() {
-        PermissionResourceNode rootNode = new PermissionResourceNode("Project", this);
+        PermissionResourceNode rootNode = new PermissionResourceNode("Project",
+                                                                     this);
         rootNode.setNodeName("Projects");
-        rootNode.addPermission(newPermission(PROJECT_CREATE), "Create");
-        rootNode.addPermission(newPermission(PROJECT_READ), "Read");
-        rootNode.addPermission(newPermission(PROJECT_EDIT), "Edit");
-        rootNode.addPermission(newPermission(PROJECT_DELETE), "Delete");
+        rootNode.addPermission(newPermission(PROJECT_CREATE),
+                               "Create");
+        rootNode.addPermission(newPermission(PROJECT_READ),
+                               "Read");
+        rootNode.addPermission(newPermission(PROJECT_EDIT),
+                               "Edit");
+        rootNode.addPermission(newPermission(PROJECT_DELETE),
+                               "Delete");
         return rootNode;
     }
 
     @Override
-    public void loadChildren(PermissionNode parent, LoadOptions options, LoadCallback callback) {
+    public void loadChildren(PermissionNode parent,
+                             LoadOptions options,
+                             LoadCallback callback) {
         if (parent.getNodeName().equals("Projects")) {
             List<PermissionNode> nodes = getAllProjects().stream()
-                    .filter(p -> match(p, options))
+                    .filter(p -> match(p,
+                                       options))
                     .map(this::toProjectNode)
                     .collect(Collectors.toList());
 
@@ -74,14 +83,20 @@ public class ProjectTreeProvider implements PermissionTreeProvider {
     }
 
     private Permission newPermission(ResourceAction action) {
-        return permissionManager.createPermission(PROJECT_TYPE, action, true);
+        return permissionManager.createPermission(PROJECT_TYPE,
+                                                  action,
+                                                  true);
     }
 
-    private Permission newPermission(Resource resource, ResourceAction action) {
-        return permissionManager.createPermission(resource, action, true);
+    private Permission newPermission(Resource resource,
+                                     ResourceAction action) {
+        return permissionManager.createPermission(resource,
+                                                  action,
+                                                  true);
     }
 
-    private boolean match(Resource project, LoadOptions options) {
+    private boolean match(Resource project,
+                          LoadOptions options) {
         Collection<String> includedIds = options.getResourceIds();
 
         if (includedIds == null || includedIds.isEmpty()) {
@@ -98,9 +113,15 @@ public class ProjectTreeProvider implements PermissionTreeProvider {
     private PermissionNode toProjectNode(Resource project) {
         PermissionLeafNode node = new PermissionLeafNode();
         node.setNodeName(project.getIdentifier());
-        node.addPermission(newPermission(project, PROJECT_READ), "Read");
-        node.addPermission(newPermission(project, PROJECT_EDIT), "Edit");
-        node.addPermission(newPermission(project, PROJECT_DELETE), "Delete");
+        node.addPermission(newPermission(project,
+                                         PROJECT_READ),
+                           "Read");
+        node.addPermission(newPermission(project,
+                                         PROJECT_EDIT),
+                           "Edit");
+        node.addPermission(newPermission(project,
+                                         PROJECT_DELETE),
+                           "Delete");
         return node;
     }
 

@@ -22,34 +22,35 @@ import java.net.URI;
 import org.junit.Test;
 import org.uberfire.java.nio.base.GeneralPathImpl;
 import org.uberfire.java.nio.file.Path;
-import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
-import org.uberfire.java.nio.fs.file.SimpleWindowsFileStore;
-import org.uberfire.java.nio.fs.file.SimpleWindowsFileSystem;
 
-import static org.fest.assertions.api.Assertions.*;
-import static org.uberfire.java.nio.fs.file.SimpleFileSystemProvider.OSType.*;
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.uberfire.java.nio.fs.file.SimpleFileSystemProvider.OSType.WINDOWS;
 
 public class SimpleFileSystemProviderWindowsTest {
 
-    final File[]                   roots      = new File[]{ new File( "c:\\" ), new File( "a:\\" ) };
-    final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider( roots, WINDOWS );
+    final File[] roots = new File[]{new File("c:\\"), new File("a:\\")};
+    final SimpleFileSystemProvider fsProvider = new SimpleFileSystemProvider(roots,
+                                                                             WINDOWS);
 
     @Test
     public void simpleStateTest() {
-        assertThat( fsProvider ).isNotNull();
-        assertThat( fsProvider.getScheme() ).isNotEmpty().isEqualTo( "file" );
+        assertThat(fsProvider).isNotNull();
+        assertThat(fsProvider.getScheme()).isNotEmpty().isEqualTo("file");
 
-        final Path path = GeneralPathImpl.create( fsProvider.getFileSystem( URI.create( "file:///" ) ), "c:\\path\\to\\file.txt", false );
+        final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")),
+                                                 "c:\\path\\to\\file.txt",
+                                                 false);
 
-        assertThat( path.getFileSystem() ).isNotNull().isInstanceOf( SimpleWindowsFileSystem.class );
+        assertThat(path.getFileSystem()).isNotNull().isInstanceOf(SimpleWindowsFileSystem.class);
     }
 
     @Test
     public void checkGetFileStore() {
-        final Path path = GeneralPathImpl.create( fsProvider.getFileSystem( URI.create( "file:///" ) ), "c:\\path\\to\\file.txt", false );
+        final Path path = GeneralPathImpl.create(fsProvider.getFileSystem(URI.create("file:///")),
+                                                 "c:\\path\\to\\file.txt",
+                                                 false);
 
-        assertThat( fsProvider.getFileStore( path ) ).isNotNull().isInstanceOf( SimpleWindowsFileStore.class );
-        assertThat( fsProvider.getFileStore( path ).name() ).isNotNull().isEqualTo( "c:\\" );
+        assertThat(fsProvider.getFileStore(path)).isNotNull().isInstanceOf(SimpleWindowsFileStore.class);
+        assertThat(fsProvider.getFileStore(path).name()).isNotNull().isEqualTo("c:\\");
     }
-
 }

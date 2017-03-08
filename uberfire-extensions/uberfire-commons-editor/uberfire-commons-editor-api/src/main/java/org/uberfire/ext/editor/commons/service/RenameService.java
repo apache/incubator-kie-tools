@@ -33,14 +33,14 @@ public interface RenameService extends SupportsRename {
      * @param newName Path's new name.
      * @param comment Comment about the renaming.
      */
-    void renameIfExists( final Collection<Path> paths,
-                         final String newName,
-                         final String comment );
+    void renameIfExists(final Collection<Path> paths,
+                        final String newName,
+                        final String comment);
 
     /**
      * Verifies if a path can be renamed.
      * @param path Path to be verified.
      * @return true if there is a restriction and the path cannot be renamed, and false otherwise.
      */
-    boolean hasRestriction( Path path );
+    boolean hasRestriction(Path path);
 }

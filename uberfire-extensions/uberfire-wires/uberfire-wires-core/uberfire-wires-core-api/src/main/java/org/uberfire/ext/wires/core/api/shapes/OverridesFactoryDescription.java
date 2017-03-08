@@ -27,5 +27,4 @@ public interface OverridesFactoryDescription {
      * @return
      */
     String getDescription();
-
 }

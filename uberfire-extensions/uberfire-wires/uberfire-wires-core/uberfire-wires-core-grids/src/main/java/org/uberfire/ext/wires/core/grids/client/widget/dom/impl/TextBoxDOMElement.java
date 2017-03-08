@@ -29,68 +29,66 @@ public class TextBoxDOMElement extends BaseDOMElement<String, TextBox> {
 
     private static final int HEIGHT = 16;
 
-    public TextBoxDOMElement( final TextBox widget,
-                              final GridLayer gridLayer,
-                              final GridWidget gridWidget ) {
-        super( widget,
-               gridLayer,
-               gridWidget );
+    public TextBoxDOMElement(final TextBox widget,
+                             final GridLayer gridLayer,
+                             final GridWidget gridWidget) {
+        super(widget,
+              gridLayer,
+              gridWidget);
         final Style style = widget.getElement().getStyle();
-        style.setWidth( 100,
-                        Style.Unit.PCT );
-        style.setHeight( HEIGHT,
-                         Style.Unit.PX );
-        style.setPaddingLeft( 2,
-                              Style.Unit.PX );
-        style.setPaddingRight( 2,
-                               Style.Unit.PX );
-        style.setFontSize( 10,
-                           Style.Unit.PX );
+        style.setWidth(100,
+                       Style.Unit.PCT);
+        style.setHeight(HEIGHT,
+                        Style.Unit.PX);
+        style.setPaddingLeft(2,
+                             Style.Unit.PX);
+        style.setPaddingRight(2,
+                              Style.Unit.PX);
+        style.setFontSize(10,
+                          Style.Unit.PX);
 
         // --- Workaround for BS2 ---
-        style.setPosition( Style.Position.RELATIVE );
-        style.setPaddingTop( 0,
-                             Style.Unit.PX );
-        style.setPaddingBottom( 0,
-                                Style.Unit.PX );
-        style.setProperty( "WebkitBoxSizing",
-                           "border-box" );
-        style.setProperty( "MozBoxSizing",
-                           "border-box" );
-        style.setProperty( "boxSizing",
-                           "border-box" );
-        style.setProperty( "lineHeight",
-                           "normal" );
+        style.setPosition(Style.Position.RELATIVE);
+        style.setPaddingTop(0,
+                            Style.Unit.PX);
+        style.setPaddingBottom(0,
+                               Style.Unit.PX);
+        style.setProperty("WebkitBoxSizing",
+                          "border-box");
+        style.setProperty("MozBoxSizing",
+                          "border-box");
+        style.setProperty("boxSizing",
+                          "border-box");
+        style.setProperty("lineHeight",
+                          "normal");
         // --- End workaround ---
 
-        getContainer().getElement().getStyle().setPaddingLeft( 5,
-                                                               Style.Unit.PX );
-        getContainer().getElement().getStyle().setPaddingRight( 5,
-                                                                Style.Unit.PX );
-        getContainer().setWidget( widget );
+        getContainer().getElement().getStyle().setPaddingLeft(5,
+                                                              Style.Unit.PX);
+        getContainer().getElement().getStyle().setPaddingRight(5,
+                                                               Style.Unit.PX);
+        getContainer().setWidget(widget);
     }
 
     @Override
-    public void initialise( final GridBodyCellRenderContext context ) {
+    public void initialise(final GridBodyCellRenderContext context) {
         final Style style = widget.getElement().getStyle();
-        style.setMarginTop( ( context.getCellHeight() - HEIGHT ) / 2,
-                            Style.Unit.PX );
-        transform( context );
+        style.setMarginTop((context.getCellHeight() - HEIGHT) / 2,
+                           Style.Unit.PX);
+        transform(context);
     }
 
     @Override
-    public void flush( final String value ) {
+    public void flush(final String value) {
         final int rowIndex = context.getRowIndex();
         final int columnIndex = context.getColumnIndex();
-        if ( value == null || value.trim().isEmpty() ) {
-            gridWidget.getModel().deleteCell( rowIndex,
-                                              columnIndex );
-
+        if (value == null || value.trim().isEmpty()) {
+            gridWidget.getModel().deleteCell(rowIndex,
+                                             columnIndex);
         } else {
-            gridWidget.getModel().setCell( rowIndex,
-                                           columnIndex,
-                                           new BaseGridCellValue<String>( value ) );
+            gridWidget.getModel().setCell(rowIndex,
+                                          columnIndex,
+                                          new BaseGridCellValue<String>(value));
         }
     }
-
 }

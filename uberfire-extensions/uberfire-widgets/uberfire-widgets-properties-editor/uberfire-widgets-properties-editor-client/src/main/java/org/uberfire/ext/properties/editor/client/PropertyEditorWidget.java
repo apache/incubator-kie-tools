@@ -16,6 +16,11 @@
 
 package org.uberfire.ext.properties.editor.client;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import javax.annotation.PostConstruct;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -31,69 +36,61 @@ import org.gwtbootstrap3.client.ui.PanelGroup;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class PropertyEditorWidget extends Composite {
 
+    private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
     @UiField
     PanelGroup propertyMenu;
-
     PropertyEditorEvent originalEvent;
-
     @UiField
     InputGroup filterGroup;
-
     @UiField
     TextBox filterBox;
-
     @UiField
     Button reload;
-
     List<String> expandedCategories = new ArrayList<>();
+
+    public PropertyEditorWidget() {
+        initWidget(uiBinder.createAndBindUi(this));
+    }
 
     @PostConstruct
     public void init() {
-        propertyMenu.setId( DOM.createUniqueId() );
+        propertyMenu.setId(DOM.createUniqueId());
     }
 
-    public void handle( PropertyEditorEvent event ) {
-        if ( PropertyEditorHelper.validade( event ) ) {
+    public void handle(PropertyEditorEvent event) {
+        if (PropertyEditorHelper.validade(event)) {
             this.originalEvent = event;
-            this.filterBox.setText( "" );
-            PropertyEditorHelper.extractEditorFrom( this, propertyMenu, event );
+            this.filterBox.setText("");
+            PropertyEditorHelper.extractEditorFrom(this,
+                                                   propertyMenu,
+                                                   event);
         }
     }
 
-    @UiHandler( "reload" )
-    void onReload( ClickEvent e ) {
-        this.filterBox.setText( "" );
-        PropertyEditorHelper.extractEditorFrom( this, propertyMenu, originalEvent, "" );
+    @UiHandler("reload")
+    void onReload(ClickEvent e) {
+        this.filterBox.setText("");
+        PropertyEditorHelper.extractEditorFrom(this,
+                                               propertyMenu,
+                                               originalEvent,
+                                               "");
     }
 
-    @UiHandler( "filterBox" )
-    public void onKeyUp( KeyUpEvent e ) {
-        if ( originalEvent != null ) {
+    @UiHandler("filterBox")
+    public void onKeyUp(KeyUpEvent e) {
+        if (originalEvent != null) {
             propertyMenu.clear();
-            PropertyEditorHelper.extractEditorFrom( this, propertyMenu, originalEvent, filterBox.getText() );
+            PropertyEditorHelper.extractEditorFrom(this,
+                                                   propertyMenu,
+                                                   originalEvent,
+                                                   filterBox.getText());
         }
-
     }
 
-    public PropertyEditorWidget() {
-        initWidget( uiBinder.createAndBindUi( this ) );
-    }
-
-    interface MyUiBinder extends UiBinder<Widget, PropertyEditorWidget> {
-
-    }
-
-    private static MyUiBinder uiBinder = GWT.create( MyUiBinder.class );
-
-    public void setFilterGroupVisible( boolean visible ) {
-        filterGroup.setVisible( visible );
+    public void setFilterGroupVisible(boolean visible) {
+        filterGroup.setVisible(visible);
     }
 
     public PanelGroup getPropertyMenu() {
@@ -103,34 +100,38 @@ public class PropertyEditorWidget extends Composite {
     /**
      * Bootstrap nows supports more than
      * one panel expanded, so this method is
-     * @deprecated replaced by addExpandedCategory( String categoriesToExpand)
+     * @deprecated replaced by getExpandedCategories()
      */
-    @Deprecated
-    public void setLastOpenAccordionGroupTitle( String categoryToExpand ) {
-        this.expandedCategories.add( categoryToExpand );
+    public String getLastOpenAccordionGroupTitle() {
+        if (expandedCategories.isEmpty()) {
+            return "";
+        }
+        return expandedCategories.get(expandedCategories.size() - 1);
     }
 
     /**
      * Bootstrap nows supports more than
      * one panel expanded, so this method is
-     * @deprecated replaced by getExpandedCategories()
+     * @deprecated replaced by addExpandedCategory( String categoriesToExpand)
      */
-    public String getLastOpenAccordionGroupTitle() {
-        if ( expandedCategories.isEmpty() ) {
-            return "";
-        }
-        return expandedCategories.get( expandedCategories.size() - 1 );
+    @Deprecated
+    public void setLastOpenAccordionGroupTitle(String categoryToExpand) {
+        this.expandedCategories.add(categoryToExpand);
     }
 
-    public void addExpandedCategory( String... categoriesToExpand ) {
-        this.expandedCategories.addAll( Arrays.asList( categoriesToExpand ) );
+    public void addExpandedCategory(String... categoriesToExpand) {
+        this.expandedCategories.addAll(Arrays.asList(categoriesToExpand));
     }
 
     public List<String> getExpandedCategories() {
         return expandedCategories;
     }
 
-    protected void collapseCategory( String categoryToCollapse ) {
-        this.expandedCategories.remove( categoryToCollapse );
+    protected void collapseCategory(String categoryToCollapse) {
+        this.expandedCategories.remove(categoryToCollapse);
+    }
+
+    interface MyUiBinder extends UiBinder<Widget, PropertyEditorWidget> {
+
     }
 }

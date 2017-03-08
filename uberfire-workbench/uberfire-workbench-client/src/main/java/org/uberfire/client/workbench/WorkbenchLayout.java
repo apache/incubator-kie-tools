@@ -44,7 +44,6 @@ public interface WorkbenchLayout {
     /**
      * Will be invoked by the {@link org.uberfire.client.workbench.Workbench}
      * when the discovery of header and footer elements is completed.
-     *
      * @see {@link #setHeaderContents(java.util.List)}
      * @see {@link #setFooterContents(java.util.List)}
      */
@@ -62,7 +61,8 @@ public interface WorkbenchLayout {
      * @param width
      * @param height
      */
-    void resizeTo(int width, int height);
+    void resizeTo(int width,
+                  int height);
 
     /**
      * Makes the given widget fill the entire space normally dedicated to the perspective container. Has no effect if
@@ -71,10 +71,9 @@ public interface WorkbenchLayout {
      * <b>Important:</b> this feature is used by panels to maximize themselves. You should not pass a WorkbenchPanelView
      * to this method yourself; instead, you should use the panel's own API to maximize it. You are free to use this method
      * to maximize your own widgets that are not workbench panels.
-     *
      * @param w the Widget to maximize.
      */
-    void maximize( Widget w );
+    void maximize(Widget w);
 
     /**
      * Restores a previously maximized widget to its original size and position. Has no effect if the given widget is
@@ -83,15 +82,15 @@ public interface WorkbenchLayout {
      * <b>Important:</b> this feature is used by panels to unmaximize themselves. You should not pass a WorkbenchPanelView
      * to this method yourself; instead, you should use the panel's own API to unmaximize it. You are free to use this method
      * to unmaximize your own widgets that have previously been passed to {@link #maximize(Widget)}.
-     *
      * @param w the Widget to restore to its original size and location.
      */
-    void unmaximize( Widget w );
+    void unmaximize(Widget w);
 
     /**
      * Will insert the implementations of Header and Footer in the Workbench
      * @see {@link #setHeaderContents(java.util.List)}
      * @see {@link #setFooterContents(java.util.List)}
      */
-    void setMarginWidgets( boolean isStandaloneMode, Set<String> headersToKeep );
+    void setMarginWidgets(boolean isStandaloneMode,
+                          Set<String> headersToKeep);
 }

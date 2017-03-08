@@ -37,24 +37,25 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 public class MultiPanelPerspective extends AbstractTestPerspectiveActivity {
 
     @Inject
-    public MultiPanelPerspective( PlaceManager placeManager ) {
-        super( placeManager );
+    public MultiPanelPerspective(PlaceManager placeManager) {
+        super(placeManager);
     }
 
     @Override
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
-        PerspectiveDefinition def = new PerspectiveDefinitionImpl( MultiTabWorkbenchPanelPresenter.class.getName() );
-        def.getRoot().addPart( ResizeTestScreenActivity.class.getName() );
+        PerspectiveDefinition def = new PerspectiveDefinitionImpl(MultiTabWorkbenchPanelPresenter.class.getName());
+        def.getRoot().addPart(ResizeTestScreenActivity.class.getName());
 
-        PanelDefinition southPanel = new PanelDefinitionImpl( MultiTabWorkbenchPanelPresenter.class.getName() );
-        southPanel.addPart( DragAndDropScreen.class.getName() );
-        def.getRoot().appendChild( CompassPosition.SOUTH, southPanel );
+        PanelDefinition southPanel = new PanelDefinitionImpl(MultiTabWorkbenchPanelPresenter.class.getName());
+        southPanel.addPart(DragAndDropScreen.class.getName());
+        def.getRoot().appendChild(CompassPosition.SOUTH,
+                                  southPanel);
 
-        PanelDefinition eastPanel = new PanelDefinitionImpl( MultiTabWorkbenchPanelPresenter.class.getName() );
-        eastPanel.addPart( NestingScreen.class.getName() );
-        def.getRoot().appendChild( CompassPosition.EAST, eastPanel );
+        PanelDefinition eastPanel = new PanelDefinitionImpl(MultiTabWorkbenchPanelPresenter.class.getName());
+        eastPanel.addPart(NestingScreen.class.getName());
+        def.getRoot().appendChild(CompassPosition.EAST,
+                                  eastPanel);
 
         return def;
     }
-
 }

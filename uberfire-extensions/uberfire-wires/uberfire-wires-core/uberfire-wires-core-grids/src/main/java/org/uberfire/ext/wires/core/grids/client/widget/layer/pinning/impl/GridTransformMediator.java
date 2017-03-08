@@ -28,13 +28,13 @@ public class GridTransformMediator implements TransformMediator {
 
     private final GridWidget gridWidget;
 
-    public GridTransformMediator( final GridWidget gridWidget ) {
+    public GridTransformMediator(final GridWidget gridWidget) {
         this.gridWidget = gridWidget;
     }
 
     @Override
-    public Transform adjust( final Transform transform,
-                             final Bounds visibleBounds ) {
+    public Transform adjust(final Transform transform,
+                            final Bounds visibleBounds) {
         Transform newTransform = transform.copy();
 
         final double minX = gridWidget.getX();
@@ -53,34 +53,33 @@ public class GridTransformMediator implements TransformMediator {
         final double visibleBoundsWidth = visibleBounds.getWidth();
         final double visibleBoundsHeight = visibleBounds.getHeight();
 
-        if ( gridWidth <= visibleBoundsWidth ) {
-            newTransform = newTransform.translate( -scaledTranslateX - minX,
-                                                   0 );
+        if (gridWidth <= visibleBoundsWidth) {
+            newTransform = newTransform.translate(-scaledTranslateX - minX,
+                                                  0);
         } else {
-            if ( -scaledTranslateX < minX ) {
-                newTransform = newTransform.translate( -scaledTranslateX - minX,
-                                                       0 );
+            if (-scaledTranslateX < minX) {
+                newTransform = newTransform.translate(-scaledTranslateX - minX,
+                                                      0);
             }
-            if ( -scaledTranslateX + visibleBoundsWidth > maxX ) {
-                newTransform = newTransform.translate( -scaledTranslateX + visibleBoundsWidth - maxX,
-                                                       0 );
+            if (-scaledTranslateX + visibleBoundsWidth > maxX) {
+                newTransform = newTransform.translate(-scaledTranslateX + visibleBoundsWidth - maxX,
+                                                      0);
             }
         }
-        if ( gridHeight <= visibleBoundsHeight ) {
-            newTransform = newTransform.translate( 0,
-                                                   -scaledTranslateY - minY );
+        if (gridHeight <= visibleBoundsHeight) {
+            newTransform = newTransform.translate(0,
+                                                  -scaledTranslateY - minY);
         } else {
-            if ( -scaledTranslateY < minY ) {
-                newTransform = newTransform.translate( 0,
-                                                       -scaledTranslateY - minY );
+            if (-scaledTranslateY < minY) {
+                newTransform = newTransform.translate(0,
+                                                      -scaledTranslateY - minY);
             }
-            if ( -scaledTranslateY + visibleBoundsHeight > maxY ) {
-                newTransform = newTransform.translate( 0,
-                                                       -scaledTranslateY + visibleBoundsHeight - maxY );
+            if (-scaledTranslateY + visibleBoundsHeight > maxY) {
+                newTransform = newTransform.translate(0,
+                                                      -scaledTranslateY + visibleBoundsHeight - maxY);
             }
         }
 
         return newTransform;
     }
-
 }

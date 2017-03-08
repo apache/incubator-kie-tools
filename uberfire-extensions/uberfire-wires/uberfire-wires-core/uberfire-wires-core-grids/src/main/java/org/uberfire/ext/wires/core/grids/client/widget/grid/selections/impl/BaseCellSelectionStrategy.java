@@ -24,13 +24,12 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.CellSelec
 
 public abstract class BaseCellSelectionStrategy implements CellSelectionStrategy {
 
-    protected boolean hasSelectionChanged( final List<GridData.SelectedCell> currentSelections,
-                                           final List<GridData.SelectedCell> originalSelections ) {
-        final List<GridData.SelectedCell> cloneCurrentSelections = new ArrayList<GridData.SelectedCell>( currentSelections );
-        final List<GridData.SelectedCell> cloneOriginalSelections = new ArrayList<GridData.SelectedCell>( originalSelections );
-        cloneCurrentSelections.removeAll( originalSelections );
-        cloneOriginalSelections.removeAll( currentSelections );
+    protected boolean hasSelectionChanged(final List<GridData.SelectedCell> currentSelections,
+                                          final List<GridData.SelectedCell> originalSelections) {
+        final List<GridData.SelectedCell> cloneCurrentSelections = new ArrayList<GridData.SelectedCell>(currentSelections);
+        final List<GridData.SelectedCell> cloneOriginalSelections = new ArrayList<GridData.SelectedCell>(originalSelections);
+        cloneCurrentSelections.removeAll(originalSelections);
+        cloneOriginalSelections.removeAll(currentSelections);
         return cloneCurrentSelections.size() > 0 || cloneOriginalSelections.size() > 0;
     }
-
 }

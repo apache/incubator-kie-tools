@@ -39,7 +39,7 @@ public interface PerspectiveDefinition {
      * Set the name of the Perspective.
      * @param name The name of the Perspective.
      */
-    public void setName( final String name );
+    public void setName(final String name);
 
     /**
      * Get the root Panel for this Perspective. The root Panel contains all
@@ -48,11 +48,11 @@ public interface PerspectiveDefinition {
      */
     public PanelDefinition getRoot();
 
-    void setContextDefinition( final ContextDefinition contextDefinition );
-
     ContextDefinition getContextDefinition();
+
+    void setContextDefinition(final ContextDefinition contextDefinition);
 
     ContextDisplayMode getContextDisplayMode();
 
-    void setContextDisplayMode( final ContextDisplayMode contextDisplayMode );
+    void setContextDisplayMode(final ContextDisplayMode contextDisplayMode);
 }

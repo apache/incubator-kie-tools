@@ -16,24 +16,27 @@
 
 package org.uberfire.backend.server.plugins;
 
-import org.jboss.errai.bus.server.api.RpcContext;
-
 import javax.servlet.ServletContext;
+
+import org.jboss.errai.bus.server.api.RpcContext;
 
 public class PluginUtils {
 
     public static String getRealPath(final String path) {
-        return getRealPath(RpcContext.getServletRequest().getServletContext(), path);
+        return getRealPath(RpcContext.getServletRequest().getServletContext(),
+                           path);
     }
 
-    public static String getRealPath(final ServletContext servletContext, final String path) {
+    public static String getRealPath(final ServletContext servletContext,
+                                     final String path) {
         final String realPath = servletContext.getRealPath(path);
         if (realPath == null) {
             return null;
         } else {
-            return realPath.replaceAll("\\\\", "/").replaceAll(" ", "%20");
+            return realPath.replaceAll("\\\\",
+                                       "/").replaceAll(" ",
+                                                       "%20");
         }
     }
-
 }
 

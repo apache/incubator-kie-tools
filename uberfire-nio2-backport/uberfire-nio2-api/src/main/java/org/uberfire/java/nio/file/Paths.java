@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 
 import org.uberfire.java.nio.file.api.FileSystemProviders;
 
-import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.Preconditions.checkNotNull;
 
 /**
  * Back port of JSR-203 from Java Platform, Standard Edition 7.
@@ -36,9 +36,11 @@ public final class Paths {
      * @throws IllegalArgumentException
      * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/file/Paths.html#get(java.lang.String, java.lang.String...)">JDK JavaDoc</a>
      */
-    public static Path get(final String first, final String... more)
+    public static Path get(final String first,
+                           final String... more)
             throws IllegalArgumentException {
-        checkNotNull("first", first);
+        checkNotNull("first",
+                     first);
 
         if (first.trim().length() == 0) {
             return FileSystems.getDefault().getPath(first);
@@ -60,7 +62,8 @@ public final class Paths {
             return get(uri);
         }
 
-        return FileSystems.getDefault().getPath(first, more);
+        return FileSystems.getDefault().getPath(first,
+                                                more);
     }
 
     /**
@@ -71,7 +74,8 @@ public final class Paths {
      */
     public static Path get(final URI uri)
             throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
-        checkNotNull("uri", uri);
+        checkNotNull("uri",
+                     uri);
 
         return FileSystemProviders.resolveProvider(uri).getPath(uri);
     }

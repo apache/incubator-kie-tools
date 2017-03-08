@@ -32,16 +32,17 @@ public class ClientUsernameProviderTest {
 
     @Before
     public void setup() {
-        sessionInfo = spy( new SessionInfoMock() );
-        serverUsernameProvider = new ClientUsernameProvider( sessionInfo );
+        sessionInfo = spy(new SessionInfoMock());
+        serverUsernameProvider = new ClientUsernameProvider(sessionInfo);
     }
 
     @Test
     public void testLoggedUserName() {
         final String username = serverUsernameProvider.get();
 
-        verify( sessionInfo ).getIdentity();
+        verify(sessionInfo).getIdentity();
 
-        assertEquals( sessionInfo.getIdentity().getIdentifier(), username );
+        assertEquals(sessionInfo.getIdentity().getIdentifier(),
+                     username);
     }
 }

@@ -52,68 +52,80 @@ public class RenamePopUpPresenterTest {
 
     @Before
     public void init() throws Exception {
-        presenter = new RenamePopUpPresenter( view, toggleCommentPresenter );
+        presenter = new RenamePopUpPresenter(view,
+                                             toggleCommentPresenter);
     }
 
     @Test
     public void testSetup() throws Exception {
         presenter.setup();
 
-        verify( view ).init( presenter );
+        verify(view).init(presenter);
     }
 
     @Test
     public void testShow() throws Exception {
-        presenter.show( path, validator, command );
+        presenter.show(path,
+                       validator,
+                       command);
 
-        assertNotNull( presenter.getPath() );
-        assertNotNull( presenter.getValidator() );
-        assertNotNull( presenter.getCommand() );
-        verify( view ).show();
-        verify( view ).setOriginalFileName( "" );
+        assertNotNull(presenter.getPath());
+        assertNotNull(presenter.getValidator());
+        assertNotNull(presenter.getCommand());
+        verify(view).show();
+        verify(view).setOriginalFileName("");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testShowMissingPath() throws Exception {
-        presenter.show( null, validator, command );
+        presenter.show(null,
+                       validator,
+                       command);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testShowMissingValidator() throws Exception {
-        presenter.show( path, null, command );
+        presenter.show(path,
+                       null,
+                       command);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testShowMissingCommand() throws Exception {
-        presenter.show( path, validator, null );
+        presenter.show(path,
+                       validator,
+                       null);
     }
 
     @Test
     public void testShowWithDefaultValidator() throws Exception {
-        presenter.show( path, command );
+        presenter.show(path,
+                       command);
 
-        assertNotNull( presenter.getPath() );
-        assertNotNull( presenter.getValidator() );
-        assertNotNull( presenter.getCommand() );
-        verify( view ).show();
-        verify( view ).setOriginalFileName( "" );
+        assertNotNull(presenter.getPath());
+        assertNotNull(presenter.getValidator());
+        assertNotNull(presenter.getCommand());
+        verify(view).show();
+        verify(view).setOriginalFileName("");
     }
 
     @Test
     public void testCancel() throws Exception {
         presenter.cancel();
 
-        verify( view ).hide();
+        verify(view).hide();
     }
 
     @Test
     public void testRename() throws Exception {
-        when( path.getFileName() ).thenReturn( "file.plugin" );
-        presenter.show( path, validator, command );
+        when(path.getFileName()).thenReturn("file.plugin");
+        presenter.show(path,
+                       validator,
+                       command);
 
-        presenter.rename( "newFile" );
+        presenter.rename("newFile");
 
-        verify( validator ).validate( eq( "newFile.plugin" ), any( ValidatorWithReasonCallback.class ) );
+        verify(validator).validate(eq("newFile.plugin"),
+                                   any(ValidatorWithReasonCallback.class));
     }
-
 }

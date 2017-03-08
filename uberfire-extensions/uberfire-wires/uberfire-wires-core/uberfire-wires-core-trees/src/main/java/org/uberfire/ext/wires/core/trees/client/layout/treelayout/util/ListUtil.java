@@ -19,9 +19,9 @@ import java.util.List;
 
 /**
  * Util (general purpose) methods dealing with {@link List}.
- * <p/>
+ * <p>
  * Adapted from https://code.google.com/p/treelayout/ to be available to GWT clients
- * <p/>
+ * <p>
  * @author Udo Borkowski (ub@abego.org)
  */
 public class ListUtil {
@@ -31,8 +31,7 @@ public class ListUtil {
      * @param list [!list.isEmpty()]
      * @return the last element of the list
      */
-    public static <T> T getLast( List<T> list ) {
-        return list.get( list.size() - 1 );
+    public static <T> T getLast(List<T> list) {
+        return list.get(list.size() - 1);
     }
-
 }

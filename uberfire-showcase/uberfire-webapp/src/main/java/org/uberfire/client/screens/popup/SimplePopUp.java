@@ -36,23 +36,20 @@ import org.uberfire.mvp.PlaceRequest;
 public class SimplePopUp {
 
     public static final String SCREEN_ID = "MyTestPopUp";
-
+    private final VerticalPanel view = new VerticalPanel();
     @Inject
     private PlaceManager placeManager;
-
     private PlaceRequest place;
-
-    private final VerticalPanel view = new VerticalPanel();
     private Paragraph p;
 
     @PostConstruct
     public void setup() {
         p = new Paragraph("Cool PopUp!");
-        view.add( p );
+        view.add(p);
     }
 
     @OnStartup
-    public void onStartup( final PlaceRequest place ) {
+    public void onStartup(final PlaceRequest place) {
         this.place = place;
     }
 
@@ -65,5 +62,4 @@ public class SimplePopUp {
     public Widget getView() {
         return view;
     }
-
 }

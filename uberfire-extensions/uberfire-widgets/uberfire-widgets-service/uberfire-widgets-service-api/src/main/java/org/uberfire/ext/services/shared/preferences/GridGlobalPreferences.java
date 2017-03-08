@@ -17,44 +17,47 @@ package org.uberfire.ext.services.shared.preferences;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class GridGlobalPreferences {
-  private static int DEFAULT_PAGE_SIZE=10;
 
-  private String key;
-  private List<String> initialColumns = new ArrayList<String>();
-  private List<String> bannedColumns = new ArrayList<String>();
-  private int pageSize =DEFAULT_PAGE_SIZE;
+    private static int DEFAULT_PAGE_SIZE = 10;
 
-  public GridGlobalPreferences() {
-  }
+    private String key;
+    private List<String> initialColumns = new ArrayList<String>();
+    private List<String> bannedColumns = new ArrayList<String>();
+    private int pageSize = DEFAULT_PAGE_SIZE;
 
-  public GridGlobalPreferences(String key, List<String> initialColumns, List<String> bannedColumns) {
-    this.key = key;
-    this.initialColumns = initialColumns;
-    this.bannedColumns = bannedColumns;
-  }
+    public GridGlobalPreferences() {
+    }
 
-  public String getKey() {
-    return key;
-  }
+    public GridGlobalPreferences(String key,
+                                 List<String> initialColumns,
+                                 List<String> bannedColumns) {
+        this.key = key;
+        this.initialColumns = initialColumns;
+        this.bannedColumns = bannedColumns;
+    }
 
-  public List<String> getInitialColumns() {
-    return initialColumns;
-  }
+    public String getKey() {
+        return key;
+    }
 
-  public List<String> getBannedColumns() {
-    return bannedColumns;
-  }
+    public List<String> getInitialColumns() {
+        return initialColumns;
+    }
 
-  public void setPageSize( int pageSize ) {
-    this.pageSize = pageSize;
-  }
+    public List<String> getBannedColumns() {
+        return bannedColumns;
+    }
 
-  public int getPageSize(){
-    return this.pageSize;
-  }
+    public int getPageSize() {
+        return this.pageSize;
+    }
 
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
 }

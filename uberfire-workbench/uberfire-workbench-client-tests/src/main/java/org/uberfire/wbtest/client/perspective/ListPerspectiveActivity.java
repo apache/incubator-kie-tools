@@ -33,22 +33,23 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
  * A perspective with a root panel of type MultiListWorkbenchPanelPresenter.
  */
 @Dependent
-@Named( "org.uberfire.wbtest.client.perspective.ListPerspectiveActivity" )
+@Named("org.uberfire.wbtest.client.perspective.ListPerspectiveActivity")
 public class ListPerspectiveActivity extends AbstractTestPerspectiveActivity {
 
     @Inject
-    public ListPerspectiveActivity( PlaceManager placeManager ) {
-        super( placeManager );
+    public ListPerspectiveActivity(PlaceManager placeManager) {
+        super(placeManager);
     }
 
     @Override
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
-        PerspectiveDefinition pdef = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        pdef.setName( "ListPerspectiveActivity" );
+        PerspectiveDefinition pdef = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        pdef.setName("ListPerspectiveActivity");
 
-        DefaultPlaceRequest destintationPlace = new DefaultPlaceRequest( ResizeTestScreenActivity.class.getName() );
-        destintationPlace.addParameter( "debugId", "listPerspectiveDefault" );
-        pdef.getRoot().addPart( new PartDefinitionImpl( destintationPlace ) );
+        DefaultPlaceRequest destintationPlace = new DefaultPlaceRequest(ResizeTestScreenActivity.class.getName());
+        destintationPlace.addParameter("debugId",
+                                       "listPerspectiveDefault");
+        pdef.getRoot().addPart(new PartDefinitionImpl(destintationPlace));
         return pdef;
     }
 }

@@ -24,8 +24,7 @@ public interface MagnetManager {
 
     void hideAllMagnets();
 
-    Magnet getMagnet( final WiresShape shapeActive,
-                      final double cx,
-                      final double cy );
-
+    Magnet getMagnet(final WiresShape shapeActive,
+                     final double cx,
+                     final double cy);
 }

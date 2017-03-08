@@ -28,10 +28,10 @@ public class IocTestingUtilsTest {
 
     @Test
     public void mockIocManagerTest() {
-        iocManager = mock( SyncBeanManager.class );
-        IocTestingUtils.mockIocManager( iocManager );
+        iocManager = mock(SyncBeanManager.class);
+        IocTestingUtils.mockIocManager(iocManager);
 
-        assertNotNull( iocManager.lookupBean( Object.class ).getInstance() );
-        assertNotNull( iocManager.lookupBean( Object.class ).newInstance() );
+        assertNotNull(iocManager.lookupBean(Object.class).getInstance());
+        assertNotNull(iocManager.lookupBean(Object.class).newInstance());
     }
 }

@@ -30,68 +30,68 @@ import org.uberfire.ext.wires.core.api.magnets.MagnetManager;
 public class ConnectibleControlPoint extends DefaultControlPoint {
 
     private static final int MAGNET_ATTRACTION = 30;
-
-    private Magnet boundMagnet;
-
     private final HasControlPoints shape;
     private final MagnetManager magnetManager;
+    private Magnet boundMagnet;
 
-    public ConnectibleControlPoint( final double x,
-                                    final double y,
-                                    final HasControlPoints shape,
-                                    final MagnetManager magnetManager,
-                                    final ControlPointMoveHandler cpMoveHandler ) {
-        super( x,
-               y,
-               cpMoveHandler );
+    public ConnectibleControlPoint(final double x,
+                                   final double y,
+                                   final HasControlPoints shape,
+                                   final MagnetManager magnetManager,
+                                   final ControlPointMoveHandler cpMoveHandler) {
+        super(x,
+              y,
+              cpMoveHandler);
         this.shape = shape;
         this.magnetManager = magnetManager;
     }
 
     @Override
-    protected void setupHandlers( final ControlPointMoveHandler handler ) {
-        addNodeDragMoveHandler( new NodeDragMoveHandler() {
+    protected void setupHandlers(final ControlPointMoveHandler handler) {
+        addNodeDragMoveHandler(new NodeDragMoveHandler() {
 
             @Override
-            public void onNodeDragMove( final NodeDragMoveEvent nodeDragMoveEvent ) {
-                handler.onMove( ConnectibleControlPoint.this.getX(),
-                                ConnectibleControlPoint.this.getY() );
+            public void onNodeDragMove(final NodeDragMoveEvent nodeDragMoveEvent) {
+                handler.onMove(ConnectibleControlPoint.this.getX(),
+                               ConnectibleControlPoint.this.getY());
 
-                if ( boundMagnet != null ) {
-                    boundMagnet.detachControlPoint( ConnectibleControlPoint.this );
+                if (boundMagnet != null) {
+                    boundMagnet.detachControlPoint(ConnectibleControlPoint.this);
                 }
 
-                boundMagnet = magnetManager.getMagnet( shape,
-                                                       ConnectibleControlPoint.this.getX(),
-                                                       ConnectibleControlPoint.this.getY() );
+                boundMagnet = magnetManager.getMagnet(shape,
+                                                      ConnectibleControlPoint.this.getX(),
+                                                      ConnectibleControlPoint.this.getY());
 
                 getLayer().batch();
             }
-        } );
+        });
 
-        addNodeDragEndHandler( new NodeDragEndHandler() {
+        addNodeDragEndHandler(new NodeDragEndHandler() {
 
             @Override
-            public void onNodeDragEnd( final NodeDragEndEvent nodeDragEndEvent ) {
-                if ( boundMagnet != null ) {
+            public void onNodeDragEnd(final NodeDragEndEvent nodeDragEndEvent) {
+                if (boundMagnet != null) {
                     double deltaX = getX() - boundMagnet.getX();
                     double deltaY = getY() - boundMagnet.getY();
-                    double distance = Math.sqrt( Math.pow( deltaX, 2 ) + Math.pow( deltaY, 2 ) );
-                    if ( distance < MAGNET_ATTRACTION ) {
-                        boundMagnet.attachControlPoint( ConnectibleControlPoint.this );
+                    double distance = Math.sqrt(Math.pow(deltaX,
+                                                         2) + Math.pow(deltaY,
+                                                                       2));
+                    if (distance < MAGNET_ATTRACTION) {
+                        boundMagnet.attachControlPoint(ConnectibleControlPoint.this);
                         final double x = boundMagnet.getX();
                         final double y = boundMagnet.getY();
-                        setX( x );
-                        setY( y );
-                        handler.onMove( x,
-                                        y );
+                        setX(x);
+                        setY(y);
+                        handler.onMove(x,
+                                       y);
                     }
                 }
                 magnetManager.hideAllMagnets();
 
                 getLayer().batch();
             }
-        } );
+        });
     }
 
     public Magnet getBoundMagnet() {
@@ -102,5 +102,4 @@ public class ConnectibleControlPoint extends DefaultControlPoint {
     public String toString() {
         return "ConnectibleControlPoint{" + "id=" + getId() + "}";
     }
-
 }

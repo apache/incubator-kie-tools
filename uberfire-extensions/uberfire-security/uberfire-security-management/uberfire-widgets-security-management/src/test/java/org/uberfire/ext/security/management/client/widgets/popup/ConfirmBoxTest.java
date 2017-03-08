@@ -27,8 +27,9 @@ import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConfirmBoxTest {
-    
-    @Mock ConfirmBox.View view;
+
+    @Mock
+    ConfirmBox.View view;
     private ConfirmBox presenter;
 
     @Before
@@ -41,8 +42,13 @@ public class ConfirmBoxTest {
         final String title = "title";
         final String message = "message";
         final Command yesCommand = mock(Command.class);
-        presenter.show(title, message, yesCommand);
-        verify(view, times(1)).show(title, message, yesCommand);
+        presenter.show(title,
+                       message,
+                       yesCommand);
+        verify(view,
+               times(1)).show(title,
+                              message,
+                              yesCommand);
     }
 
     @Test
@@ -51,8 +57,15 @@ public class ConfirmBoxTest {
         final String message = "message";
         final Command yesCommand = mock(Command.class);
         final Command noCommand = mock(Command.class);
-        presenter.show(title, message, yesCommand, noCommand);
-        verify(view, times(1)).show(title, message, yesCommand, noCommand);
+        presenter.show(title,
+                       message,
+                       yesCommand,
+                       noCommand);
+        verify(view,
+               times(1)).show(title,
+                              message,
+                              yesCommand,
+                              noCommand);
     }
 
     @Test
@@ -62,10 +75,18 @@ public class ConfirmBoxTest {
         final Command yesCommand = mock(Command.class);
         final Command noCommand = mock(Command.class);
         final Command cancelCommand = mock(Command.class);
-        presenter.show(title, message, yesCommand, noCommand, cancelCommand);
-        verify(view, times(1)).show(title, message, yesCommand, noCommand, cancelCommand);
+        presenter.show(title,
+                       message,
+                       yesCommand,
+                       noCommand,
+                       cancelCommand);
+        verify(view,
+               times(1)).show(title,
+                              message,
+                              yesCommand,
+                              noCommand,
+                              cancelCommand);
     }
-
 
     @Test
     public void testAllCommands() throws Exception {
@@ -74,8 +95,16 @@ public class ConfirmBoxTest {
         final Command yesCommand = mock(Command.class);
         final Command noCommand = mock(Command.class);
         final Command cancelCommand = mock(Command.class);
-        presenter.show(title, message, yesCommand, noCommand, cancelCommand);
-        verify(view, times(1)).show(title, message, yesCommand, noCommand, cancelCommand);
+        presenter.show(title,
+                       message,
+                       yesCommand,
+                       noCommand,
+                       cancelCommand);
+        verify(view,
+               times(1)).show(title,
+                              message,
+                              yesCommand,
+                              noCommand,
+                              cancelCommand);
     }
-    
 }

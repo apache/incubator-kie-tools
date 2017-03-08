@@ -16,28 +16,32 @@
 
 package org.uberfire.ext.security.management.search;
 
-import org.uberfire.ext.security.management.api.AbstractEntityManager;
-import org.uberfire.ext.security.management.impl.SearchResponseImpl;
-
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.uberfire.ext.security.management.api.AbstractEntityManager;
+import org.uberfire.ext.security.management.impl.SearchResponseImpl;
+
 /**
  * <p>Base runtime search engine implementation for collections of entities.</p>
- * 
  * @since 0.8.0
  */
 public abstract class AbstractRuntimeSearchEngine<T> implements RuntimeSearchEngine<T> {
 
     @Override
-    public AbstractEntityManager.SearchResponse<T> search(Collection<T> entities, AbstractEntityManager.SearchRequest request) {
-        if (entities == null || request == null) return null;
+    public AbstractEntityManager.SearchResponse<T> search(Collection<T> entities,
+                                                          AbstractEntityManager.SearchRequest request) {
+        if (entities == null || request == null) {
+            return null;
+        }
 
         // First page must be 1.
-        if (request.getPage() <= 0) throw new RuntimeException("First page must be 1.");
-        
+        if (request.getPage() <= 0) {
+            throw new RuntimeException("First page must be 1.");
+        }
+
         // Search elements using the given pattern & check the returning elements are not considered roles on UF.
         final String pattern = request.getSearchPattern();
         final boolean isPatternEmpty = isEmpty(pattern);
@@ -45,19 +49,21 @@ public abstract class AbstractRuntimeSearchEngine<T> implements RuntimeSearchEng
         if (!isPatternEmpty) {
             for (T entity : entities) {
                 final String id = getIdentifier(entity);
-                if ( !isConstrained(request, id) && id.contains(pattern) ) {
+                if (!isConstrained(request,
+                                   id) && id.contains(pattern)) {
                     result.add(entity);
                 }
-
             }
         }
 
-        return createResponse(result, request);
+        return createResponse(result,
+                              request);
     }
 
-    protected boolean isConstrained(AbstractEntityManager.SearchRequest request, String name) {
+    protected boolean isConstrained(AbstractEntityManager.SearchRequest request,
+                                    String name) {
         final Set<String> constrainedIdentifiers = request.getConstrainedIdentifiers();
-        if ( null != constrainedIdentifiers ) {
+        if (null != constrainedIdentifiers) {
             for (final String id : constrainedIdentifiers) {
                 if (id.equals(name)) {
                     return true;
@@ -67,9 +73,10 @@ public abstract class AbstractRuntimeSearchEngine<T> implements RuntimeSearchEng
         return false;
     }
 
-    public AbstractEntityManager.SearchResponse<T> createResponse(Collection<T> entities, AbstractEntityManager.SearchRequest request) {
+    public AbstractEntityManager.SearchResponse<T> createResponse(Collection<T> entities,
+                                                                  AbstractEntityManager.SearchRequest request) {
         List<T> result = new LinkedList<T>(entities);
-        
+
         // Apply pagination.
         final int total = result.size();
         // First page is 1.
@@ -78,18 +85,21 @@ public abstract class AbstractRuntimeSearchEngine<T> implements RuntimeSearchEng
         final int startPos = page * pageSize;
         final int endPos = startPos + pageSize > total ? total : startPos + pageSize;
         if (result.size() >= startPos) {
-            result = result.subList(startPos, endPos);
+            result = result.subList(startPos,
+                                    endPos);
         }
 
         // Return the paginated response.
-        return new SearchResponseImpl<T>(result, page + 1, pageSize, total, total > endPos);
+        return new SearchResponseImpl<T>(result,
+                                         page + 1,
+                                         pageSize,
+                                         total,
+                                         total > endPos);
     }
-        
-    
+
     protected abstract String getIdentifier(T entity);
-    
+
     protected boolean isEmpty(String str) {
         return str == null || str.trim().length() == 0;
     }
-
 }

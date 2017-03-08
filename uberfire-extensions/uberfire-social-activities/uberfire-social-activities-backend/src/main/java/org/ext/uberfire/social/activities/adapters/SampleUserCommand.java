@@ -27,14 +27,16 @@ import org.ext.uberfire.social.activities.service.SocialCommandUserFilter;
 public class SampleUserCommand implements SocialCommandUserFilter {
 
     @Override
-    public List<SocialActivitiesEvent> execute( String parameterValue,
-                                                List<SocialActivitiesEvent> events ) {
+    public List<SocialActivitiesEvent> execute(String parameterValue,
+                                               List<SocialActivitiesEvent> events) {
         List<SocialActivitiesEvent> newList = new ArrayList<SocialActivitiesEvent>();
-        for ( SocialActivitiesEvent event : events ) {
+        for (SocialActivitiesEvent event : events) {
             String name = event.getSocialUser().getUserName();
-            SocialUser socialUser = new SocialUser( name.toUpperCase() );
-            SocialActivitiesEvent socialEvent = new SocialActivitiesEvent( socialUser, event.getType(), event.getTimestamp() );
-            newList.add( socialEvent );
+            SocialUser socialUser = new SocialUser(name.toUpperCase());
+            SocialActivitiesEvent socialEvent = new SocialActivitiesEvent(socialUser,
+                                                                          event.getType(),
+                                                                          event.getTimestamp());
+            newList.add(socialEvent);
         }
         return newList;
     }

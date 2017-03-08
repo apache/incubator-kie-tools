@@ -20,7 +20,7 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
 
 @EntryPoint
-@Bundle( "resources/i18n/PreferencesConstants.properties" )
+@Bundle("resources/i18n/PreferencesConstants.properties")
 public class PreferencesEntryPoint {
 
 }

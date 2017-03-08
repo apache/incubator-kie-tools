@@ -50,9 +50,9 @@ public interface PreferenceStore {
      * @param value The value of the preference, could be null.
      * @param <T> Type of the preference value.
      */
-    <T> void put( PreferenceScope scope,
-                  String key,
-                  T value );
+    <T> void put(PreferenceScope scope,
+                 String key,
+                 T value);
 
     /**
      * Stores a preference inside the default scope (see {@link PreferenceScopeResolutionStrategyInfo#defaultScope() defaultScope}.
@@ -62,9 +62,9 @@ public interface PreferenceStore {
      * @param value The value of the preference, could be null.
      * @param <T> Type of the preference value.
      */
-    <T> void put( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                  String key,
-                  T value );
+    <T> void put(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                 String key,
+                 T value);
 
     /**
      * Stores a preference inside the default scope (see {@link PreferenceScopeResolutionStrategyInfo#defaultScope() defaultScope}.
@@ -72,8 +72,8 @@ public interface PreferenceStore {
      * @param value The value of the preference, could be null.
      * @param <T> Type of the preference value.
      */
-    <T> void put( String key,
-                  T value );
+    <T> void put(String key,
+                 T value);
 
     /**
      * Stores several preferences inside a specific scope.
@@ -81,8 +81,8 @@ public interface PreferenceStore {
      * @param valueByKey Map that contains a preference value (can be null) for each preference key (must not be null).
      * @param <T> Type of the preference values.
      */
-    <T> void put( PreferenceScope scope,
-                  Map<String, T> valueByKey );
+    <T> void put(PreferenceScope scope,
+                 Map<String, T> valueByKey);
 
     /**
      * Stores several preferences inside the default scope (see {@link PreferenceScopeResolutionStrategyInfo#defaultScope() defaultScope}.
@@ -90,15 +90,15 @@ public interface PreferenceStore {
      * @param valueByKey Map that contains a preference value (can be null) for each preference key (must not be null).
      * @param <T> Type of the preference values.
      */
-    <T> void put( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                  Map<String, T> valueByKey );
+    <T> void put(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                 Map<String, T> valueByKey);
 
     /**
      * Stores several preferences inside the default scope (see {@link PreferenceScopeResolutionStrategyInfo#defaultScope() defaultScope}.
      * @param valueByKey Map that contains a preference value (can be null) for each preference key (must not be null).
      * @param <T> Type of the preference values.
      */
-    <T> void put( Map<String, T> valueByKey );
+    <T> void put(Map<String, T> valueByKey);
 
     /**
      * Stores a preference inside a specific scope, if it is not already defined in that scope.
@@ -107,9 +107,9 @@ public interface PreferenceStore {
      * @param value The value of the preference, could be null.
      * @param <T> Type of the preference value.
      */
-    <T> void putIfAbsent( PreferenceScope scope,
-                          String key,
-                          T value );
+    <T> void putIfAbsent(PreferenceScope scope,
+                         String key,
+                         T value);
 
     /**
      * Stores a preference inside the default scope (see {@link PreferenceScopeResolutionStrategyInfo#defaultScope() defaultScope},
@@ -120,9 +120,9 @@ public interface PreferenceStore {
      * @param value The value of the preference, could be null.
      * @param <T> Type of the preference value.
      */
-    <T> void putIfAbsent( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                          String key,
-                          T value );
+    <T> void putIfAbsent(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                         String key,
+                         T value);
 
     /**
      * Stores a preference inside the default scope (see {@link PreferenceScopeResolutionStrategyInfo#defaultScope() defaultScope},
@@ -131,8 +131,8 @@ public interface PreferenceStore {
      * @param value The value of the preference, could be null.
      * @param <T> Type of the preference value.
      */
-    <T> void putIfAbsent( String key,
-                          T value );
+    <T> void putIfAbsent(String key,
+                         T value);
 
     /**
      * Stores several preferences inside a specific scope, if they are not already defined in that scope.
@@ -140,8 +140,8 @@ public interface PreferenceStore {
      * @param valueByKey Map that contains a preference value (can be null) for each preference key (must not be null).
      * @param <T> Type of the preference values.
      */
-    <T> void putIfAbsent( PreferenceScope scope,
-                          Map<String, T> valueByKey );
+    <T> void putIfAbsent(PreferenceScope scope,
+                         Map<String, T> valueByKey);
 
     /**
      * Stores several preferences inside the default scope (see {@link PreferenceScopeResolutionStrategyInfo#defaultScope() defaultScope},
@@ -150,15 +150,15 @@ public interface PreferenceStore {
      * @param valueByKey Map that contains a preference value (can be null) for each preference key (must not be null).
      * @param <T> Type of the preference values.
      */
-    <T> void putIfAbsent( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                          Map<String, T> valueByKey );
+    <T> void putIfAbsent(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                         Map<String, T> valueByKey);
 
     /**
      * Stores several preferences inside the default scope (see {@link PreferenceScopeResolutionStrategyInfo#defaultScope() defaultScope}.
      * @param valueByKey Map that contains a preference value (can be null) for each preference key (must not be null).
      * @param <T> Type of the preference values.
      */
-    <T> void putIfAbsent( Map<String, T> valueByKey );
+    <T> void putIfAbsent(Map<String, T> valueByKey);
 
     /**
      * Retrieves a preference value from a specific scope.
@@ -167,8 +167,8 @@ public interface PreferenceStore {
      * @param <T> Type of the preference value.
      * @return The preference value (or null, if it does not exist).
      */
-    <T> T get( PreferenceScope scope,
-               String key );
+    <T> T get(PreferenceScope scope,
+              String key);
 
     /**
      * Retrieves a preference value from a specific scope.
@@ -178,9 +178,9 @@ public interface PreferenceStore {
      * @param <T> Type of the preference value.
      * @return The preference value (or defaultValue, if it does not exist).
      */
-    <T> T get( PreferenceScope scope,
-               String key,
-               T defaultValue );
+    <T> T get(PreferenceScope scope,
+              String key,
+              T defaultValue);
 
     /**
      * Retrieves a preference value from the first scope of the scopeResolutionStrategy order that
@@ -191,8 +191,8 @@ public interface PreferenceStore {
      * @param <T> Type of the preference value.
      * @return The preference value (or null, if it does not exist).
      */
-    <T> T get( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-               String key );
+    <T> T get(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+              String key);
 
     /**
      * Retrieves a preference value from the first scope of the scopeResolutionStrategy order that
@@ -204,9 +204,9 @@ public interface PreferenceStore {
      * @param <T> Type of the preference value.
      * @return The preference value (or null, if it does not exist).
      */
-    <T> T get( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-               String key,
-               T defaultValue );
+    <T> T get(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+              String key,
+              T defaultValue);
 
     /**
      * Retrieves a preference value from the first scope of the default scope resolution strategy order that
@@ -215,7 +215,7 @@ public interface PreferenceStore {
      * @param <T> Type of the preference value.
      * @return The preference value (or null, if it does not exist).
      */
-    <T> T get( String key );
+    <T> T get(String key);
 
     /**
      * Retrieves a preference value from the first scope of the default scope resolution strategy order that
@@ -225,8 +225,8 @@ public interface PreferenceStore {
      * @param <T> Type of the preference value.
      * @return The preference value (or null, if it does not exist).
      */
-    <T> T get( String key,
-               T defaultValue );
+    <T> T get(String key,
+              T defaultValue);
 
     /**
      * Retrieves a scoped preference value from the first scope of the scopeResolutionStrategy order that
@@ -238,8 +238,8 @@ public interface PreferenceStore {
      * @return A preference scoped value, which contains the preference value and its scope (or null,
      * if the preference does not exist).
      */
-    <T> PreferenceScopedValue<T> getScoped( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                                            String key );
+    <T> PreferenceScopedValue<T> getScoped(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                                           String key);
 
     /**
      * Retrieves a scoped preference value from the first scope of the scopeResolutionStrategy order that
@@ -252,9 +252,9 @@ public interface PreferenceStore {
      * @return A preference scoped value, which contains the preference value and its scope (or defaultValue,
      * if the preference does not exist in any scope).
      */
-    <T> PreferenceScopedValue<T> getScoped( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                                            String key,
-                                            T defaultValue );
+    <T> PreferenceScopedValue<T> getScoped(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                                           String key,
+                                           T defaultValue);
 
     /**
      * Retrieves a preference value from the first scope of the default scope resolution strategy order that
@@ -264,7 +264,7 @@ public interface PreferenceStore {
      * @return A preference scoped value, which contains the preference value and its scope (or null,
      * if the preference does not exist).
      */
-    <T> PreferenceScopedValue<T> getScoped( String key );
+    <T> PreferenceScopedValue<T> getScoped(String key);
 
     /**
      * Retrieves a preference value from the first scope of the default scope resolution strategy order that
@@ -275,8 +275,8 @@ public interface PreferenceStore {
      * @return A preference scoped value, which contains the preference value and its scope (or defaultValue,
      * if the preference does not exist in any scope).
      */
-    <T> PreferenceScopedValue<T> getScoped( String key,
-                                            T defaultValue );
+    <T> PreferenceScopedValue<T> getScoped(String key,
+                                           T defaultValue);
 
     /**
      * Retrieves several preferences, which keys were passed, from a specific scope.
@@ -284,8 +284,8 @@ public interface PreferenceStore {
      * @param keys Preference keys to search. If null, all keys in that scope will be searched.
      * @return A Map containing all passed preference keys and its values (or null, if a preference does not exist).
      */
-    Map<String, Object> search( PreferenceScope scope,
-                                Collection<String> keys );
+    Map<String, Object> search(PreferenceScope scope,
+                               Collection<String> keys);
 
     /**
      * Retrieves several preferences, which keys were passed. Each one from the first scope of the
@@ -295,8 +295,8 @@ public interface PreferenceStore {
      * @param keys Preference keys to search. If null, all keys in that scope resolution strategy will be searched.
      * @return A Map containing all passed preference keys and its values (or null, if a preference does not exist).
      */
-    Map<String, Object> search( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                                Collection<String> keys );
+    Map<String, Object> search(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                               Collection<String> keys);
 
     /**
      * Retrieves several preferences, which keys were passed. Each one from the first scope of the
@@ -305,7 +305,7 @@ public interface PreferenceStore {
      * searched.
      * @return A Map containing all passed preference keys and its values (or null, if a preference does not exist).
      */
-    Map<String, Object> search( Collection<String> keys );
+    Map<String, Object> search(Collection<String> keys);
 
     /**
      * Retrieves several scoped preferences, which keys were passed. Each one from the first scope of the
@@ -316,8 +316,8 @@ public interface PreferenceStore {
      * @return A Map containing all passed preference keys and its preference scoped value, which contains the
      * preference value and its scope (or null, if the preference does not exist in any scope).
      */
-    Map<String, PreferenceScopedValue<Object>> searchScoped( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                                                             Collection<String> keys );
+    Map<String, PreferenceScopedValue<Object>> searchScoped(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                                                            Collection<String> keys);
 
     /**
      * Retrieves several scoped preferences, which keys were passed. Each one from the first scope of the
@@ -326,14 +326,14 @@ public interface PreferenceStore {
      * @return A Map containing all passed preference keys and its preference scoped value, which contains the
      * preference value and its scope (or null, if the preference does not exist in any scope).
      */
-    Map<String, PreferenceScopedValue<Object>> searchScoped( Collection<String> keys );
+    Map<String, PreferenceScopedValue<Object>> searchScoped(Collection<String> keys);
 
     /**
      * Retrieves all defined preferences from a specific scope.
      * @param scope Scope in which the preferences values will be searched. Must not be null.
      * @return A Map containing all preference keys and its values.
      */
-    Map<String, Object> all( PreferenceScope scope );
+    Map<String, Object> all(PreferenceScope scope);
 
     /**
      * Retrieves all defined preferences. Each one from the first scope of the scopeResolutionStrategy order
@@ -342,7 +342,7 @@ public interface PreferenceStore {
      * scopes will be searched. Must not be null.
      * @return A Map containing all preference keys and its values.
      */
-    Map<String, Object> all( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo );
+    Map<String, Object> all(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo);
 
     /**
      * Retrieves all defined preferences. Each one from the first scope of the default scope resolution strategy order
@@ -359,7 +359,7 @@ public interface PreferenceStore {
      * @return A Map containing all preferences keys and its preference scoped value, which contains the
      * preference value and its scope.
      */
-    Map<String, PreferenceScopedValue<Object>> allScoped( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo );
+    Map<String, PreferenceScopedValue<Object>> allScoped(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo);
 
     /**
      * Retrieves all defined preferences. Each one from the first scope of the default scope resolution strategy order
@@ -374,14 +374,14 @@ public interface PreferenceStore {
      * @param scope Scope in which the preference will be removed. Must not be null.
      * @param key Key of the preference that should be removed. Must not be null.
      */
-    void remove( PreferenceScope scope,
-                 String key );
+    void remove(PreferenceScope scope,
+                String key);
 
     /**
      * Removes a preference from a list of scopes.
      * @param scopes Scopes from which the preference will be removed. Must not be null.
      * @param key Key of the preference that will be removed. Must not be null.
      */
-    void remove( List<PreferenceScope> scopes,
-                 String key );
+    void remove(List<PreferenceScope> scopes,
+                String key);
 }

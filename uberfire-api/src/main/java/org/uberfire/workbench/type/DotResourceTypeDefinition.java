@@ -51,7 +51,7 @@ public class DotResourceTypeDefinition implements ResourceTypeDefinition {
     }
 
     @Override
-    public boolean accept( final Path path ) {
-        return path.getFileName().startsWith( getPrefix() );
+    public boolean accept(final Path path) {
+        return path.getFileName().startsWith(getPrefix());
     }
 }

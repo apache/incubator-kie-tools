@@ -16,11 +16,6 @@
 
 package org.uberfire.io.impl;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.java.nio.file.StandardOpenOption.CREATE_NEW;
-import static org.uberfire.java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
-import static org.uberfire.java.nio.file.StandardOpenOption.WRITE;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStream;
@@ -68,125 +63,131 @@ import org.uberfire.java.nio.file.StandardOpenOption;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 import org.uberfire.java.nio.file.attribute.FileTime;
 
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.java.nio.file.StandardOpenOption.CREATE_NEW;
+import static org.uberfire.java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
+import static org.uberfire.java.nio.file.StandardOpenOption.WRITE;
+
 public abstract class AbstractIOService implements IOServiceIdentifiable,
                                                    IOServiceLockable {
 
-    private static final Logger logger = LoggerFactory.getLogger( AbstractIOService.class );
-
     protected static final String DEFAULT_SERVICE_NAME = "default";
-
-    private static final Set<StandardOpenOption> CREATE_NEW_FILE_OPTIONS = EnumSet.of( CREATE_NEW, WRITE );
-
-    protected static final Charset UTF_8 = Charset.forName( "UTF-8" );
-
+    protected static final Charset UTF_8 = Charset.forName("UTF-8");
+    private static final Logger logger = LoggerFactory.getLogger(AbstractIOService.class);
+    private static final Set<StandardOpenOption> CREATE_NEW_FILE_OPTIONS = EnumSet.of(CREATE_NEW,
+                                                                                      WRITE);
     protected final IOWatchService ioWatchService;
-    protected final Set<FileSystem> fileSystems = Collections.newSetFromMap( new ConcurrentHashMap<FileSystem, Boolean>() );
-
+    protected final Set<FileSystem> fileSystems = Collections.newSetFromMap(new ConcurrentHashMap<FileSystem, Boolean>());
+    private final BatchLockControl batchLockControl = new BatchLockControl();
     protected NewFileSystemListener newFileSystemListener = null;
     protected boolean isDisposed = false;
     private String id;
 
-    private final BatchLockControl batchLockControl = new BatchLockControl();
-
     public AbstractIOService() {
         this.id = DEFAULT_SERVICE_NAME;
         ioWatchService = null;
-        PriorityDisposableRegistry.register( this );
+        PriorityDisposableRegistry.register(this);
     }
 
-    public AbstractIOService( final String id ) {
+    public AbstractIOService(final String id) {
         this.id = id;
         ioWatchService = null;
-        PriorityDisposableRegistry.register( this );
+        PriorityDisposableRegistry.register(this);
     }
 
-    public AbstractIOService( final IOWatchService watchService ) {
+    public AbstractIOService(final IOWatchService watchService) {
         this.id = DEFAULT_SERVICE_NAME;
         ioWatchService = watchService;
-        PriorityDisposableRegistry.register( this );
+        PriorityDisposableRegistry.register(this);
     }
 
-    public AbstractIOService( final String id,
-                              final IOWatchService watchService ) {
+    public AbstractIOService(final String id,
+                             final IOWatchService watchService) {
         this.id = id;
         ioWatchService = watchService;
-        PriorityDisposableRegistry.register( this );
+        PriorityDisposableRegistry.register(this);
     }
 
     @Override
-    public void startBatch( FileSystem fs ) {
-        batchProcess( new FileSystem[]{ fs } );
+    public void startBatch(FileSystem fs) {
+        batchProcess(new FileSystem[]{fs});
     }
 
     @Override
-    public void startBatch( FileSystem fs,
-                            final Option... options ) {
-        batchProcess( new FileSystem[]{ fs }, options );
+    public void startBatch(FileSystem fs,
+                           final Option... options) {
+        batchProcess(new FileSystem[]{fs},
+                     options);
     }
 
     @Override
-    public void startBatch( final FileSystem... fs ) {
-        batchProcess( fs );
+    public void startBatch(final FileSystem... fs) {
+        batchProcess(fs);
     }
 
     @Override
-    public void startBatch( FileSystem[] fs,
-                            final Option... options ) {
-        batchProcess( fs, options );
+    public void startBatch(FileSystem[] fs,
+                           final Option... options) {
+        batchProcess(fs,
+                     options);
     }
 
-    private void batchProcess( final FileSystem[] fs,
-                               final Option... options ) {
-        startBatchProcess( fs );
-        if ( !fileSystems.isEmpty() ) {
+    private void batchProcess(final FileSystem[] fs,
+                              final Option... options) {
+        startBatchProcess(fs);
+        if (!fileSystems.isEmpty()) {
             cleanupClosedFileSystems();
-            setOptionsOnFileSystems( fs, options );
+            setOptionsOnFileSystems(fs,
+                                    options);
         }
     }
 
-    private void setOptionsOnFileSystems( FileSystem[] fss,
-                                          Option[] options ) {
-        if ( options != null && options.length == 1 ) {
-            for ( FileSystem fs : fss ) {
-                setAttribute( getFirstRootDirectory( fs ), FileSystemState.FILE_SYSTEM_STATE_ATTR, options[ 0 ] );
+    private void setOptionsOnFileSystems(FileSystem[] fss,
+                                         Option[] options) {
+        if (options != null && options.length == 1) {
+            for (FileSystem fs : fss) {
+                setAttribute(getFirstRootDirectory(fs),
+                             FileSystemState.FILE_SYSTEM_STATE_ATTR,
+                             options[0]);
             }
         }
     }
 
-    private void startBatchProcess( final FileSystem... fileSystems ) {
-        batchLockControl.lock( fileSystems );
-        for ( final FileSystem fs : fileSystems ) {
-            setBatchModeOn( fs );
+    private void startBatchProcess(final FileSystem... fileSystems) {
+        batchLockControl.lock(fileSystems);
+        for (final FileSystem fs : fileSystems) {
+            setBatchModeOn(fs);
         }
     }
 
     @Override
     public void endBatch() {
-        if ( !batchLockControl.isLocked() ) {
-            throw new RuntimeException( "There is no batch process." );
+        if (!batchLockControl.isLocked()) {
+            throw new RuntimeException("There is no batch process.");
         }
 
-        if ( batchLockControl.getHoldCount() > 1 ) {
+        if (batchLockControl.getHoldCount() > 1) {
             batchLockControl.unlock();
             return;
         }
 
         try {
             cleanUpAndUnsetBatchModeOnFileSystems();
-        } catch ( Exception e ) {
-            throw new RuntimeException( "Exception cleaning and unsetting batch mode on FS.", e );
+        } catch (Exception e) {
+            throw new RuntimeException("Exception cleaning and unsetting batch mode on FS.",
+                                       e);
         } finally {
             batchLockControl.unlock();
         }
     }
 
     private void cleanUpAndUnsetBatchModeOnFileSystems() {
-        if ( !fileSystems.isEmpty() ) {
+        if (!fileSystems.isEmpty()) {
             cleanupClosedFileSystems();
         }
 
-        for ( final FileSystem fs : fileSystems ) {
-            unsetBatchModeOn( fs );
+        for (final FileSystem fs : fileSystems) {
+            unsetBatchModeOn(fs);
         }
     }
 
@@ -197,40 +198,48 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
 
     private void cleanupClosedFileSystems() {
         final ArrayList<FileSystem> removeList = new ArrayList<FileSystem>();
-        for ( final FileSystem fileSystem : fileSystems ) {
-            if ( !fileSystem.isOpen() ) {
-                removeList.add( fileSystem );
+        for (final FileSystem fileSystem : fileSystems) {
+            if (!fileSystem.isOpen()) {
+                removeList.add(fileSystem);
             }
         }
 
-        fileSystems.removeAll( removeList );
+        fileSystems.removeAll(removeList);
     }
 
-    private void setBatchModeOn( FileSystem fs ) {
-        Files.setAttribute( getFirstRootDirectory( fs ), FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.BATCH );
+    private void setBatchModeOn(FileSystem fs) {
+        Files.setAttribute(getFirstRootDirectory(fs),
+                           FileSystemState.FILE_SYSTEM_STATE_ATTR,
+                           FileSystemState.BATCH);
     }
 
-    private Path getFirstRootDirectory( FileSystem fs ) {
-        checkNotNull( "fs", fs );
-        Iterable<Path> rootDirectories = checkNotNull( "fs.getRootDirectories()", fs.getRootDirectories() );
-        Iterator<Path> iterator = checkNotNull( "fs.getRootDirectories().iterator()", rootDirectories.iterator() );
+    private Path getFirstRootDirectory(FileSystem fs) {
+        checkNotNull("fs",
+                     fs);
+        Iterable<Path> rootDirectories = checkNotNull("fs.getRootDirectories()",
+                                                      fs.getRootDirectories());
+        Iterator<Path> iterator = checkNotNull("fs.getRootDirectories().iterator()",
+                                               rootDirectories.iterator());
         return iterator.next();
     }
 
-    void unsetBatchModeOn( FileSystem fs ) {
-        Files.setAttribute( getFirstRootDirectory( fs ), FileSystemState.FILE_SYSTEM_STATE_ATTR, FileSystemState.NORMAL );
+    void unsetBatchModeOn(FileSystem fs) {
+        Files.setAttribute(getFirstRootDirectory(fs),
+                           FileSystemState.FILE_SYSTEM_STATE_ATTR,
+                           FileSystemState.NORMAL);
     }
 
     @Override
-    public Path get( final String first,
-                     final String... more ) throws IllegalArgumentException {
-        return Paths.get( first, more );
+    public Path get(final String first,
+                    final String... more) throws IllegalArgumentException {
+        return Paths.get(first,
+                         more);
     }
 
     @Override
-    public Path get( final URI uri )
+    public Path get(final URI uri)
             throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
-        return Paths.get( uri );
+        return Paths.get(uri);
     }
 
     @Override
@@ -239,345 +248,397 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
     }
 
     @Override
-    public FileSystem getFileSystem( final URI uri ) {
+    public FileSystem getFileSystem(final URI uri) {
         try {
-            return registerFS( FileSystems.getFileSystem( uri ) );
-        } catch ( final Exception ex ) {
-            logger.error( "Failed to register filesystem " + uri + " with DEFAULT_FS_TYPE. Returning null.", ex );
+            return registerFS(FileSystems.getFileSystem(uri));
+        } catch (final Exception ex) {
+            logger.error("Failed to register filesystem " + uri + " with DEFAULT_FS_TYPE. Returning null.",
+                         ex);
             return null;
         }
     }
 
     @Override
-    public FileSystem newFileSystem( final URI uri,
-                                     final Map<String, ?> env ) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, IOException, SecurityException {
+    public FileSystem newFileSystem(final URI uri,
+                                    final Map<String, ?> env) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, IOException, SecurityException {
         try {
-            final FileSystem fs = FileSystems.newFileSystem( uri, env );
-            return registerFS( fs );
-        } catch ( final FileSystemAlreadyExistsException ex ) {
-            registerFS( FileSystems.getFileSystem( uri ) );
+            final FileSystem fs = FileSystems.newFileSystem(uri,
+                                                            env);
+            return registerFS(fs);
+        } catch (final FileSystemAlreadyExistsException ex) {
+            registerFS(FileSystems.getFileSystem(uri));
             throw ex;
         }
     }
 
     @Override
-    public void onNewFileSystem( final NewFileSystemListener listener ) {
+    public void onNewFileSystem(final NewFileSystemListener listener) {
         this.newFileSystemListener = listener;
     }
 
-    private FileSystem registerFS( final FileSystem fs ) {
-        if ( fs == null ) {
+    private FileSystem registerFS(final FileSystem fs) {
+        if (fs == null) {
             return fs;
         }
 
-        if ( ioWatchService != null && !ioWatchService.hasWatchService( fs ) ) {
-            ioWatchService.addWatchService( fs, fs.newWatchService() );
+        if (ioWatchService != null && !ioWatchService.hasWatchService(fs)) {
+            ioWatchService.addWatchService(fs,
+                                           fs.newWatchService());
         }
 
-        fileSystems.add( fs );
+        fileSystems.add(fs);
 
         return fs;
     }
 
     @Override
-    public InputStream newInputStream( final Path path,
-                                       final OpenOption... options )
+    public InputStream newInputStream(final Path path,
+                                      final OpenOption... options)
             throws IllegalArgumentException, NoSuchFileException, UnsupportedOperationException,
             IOException, SecurityException {
-        return Files.newInputStream( path, options );
+        return Files.newInputStream(path,
+                                    options);
     }
 
     @Override
-    public DirectoryStream<Path> newDirectoryStream( final Path dir )
+    public DirectoryStream<Path> newDirectoryStream(final Path dir)
             throws IllegalArgumentException, NotDirectoryException, IOException, SecurityException {
-        return Files.newDirectoryStream( dir );
+        return Files.newDirectoryStream(dir);
     }
 
     @Override
-    public DirectoryStream<Path> newDirectoryStream( final Path dir,
-                                                     final DirectoryStream.Filter<Path> filter )
+    public DirectoryStream<Path> newDirectoryStream(final Path dir,
+                                                    final DirectoryStream.Filter<Path> filter)
             throws IllegalArgumentException, NotDirectoryException, IOException, SecurityException {
-        return Files.newDirectoryStream( dir, filter );
+        return Files.newDirectoryStream(dir,
+                                        filter);
     }
 
     @Override
-    public OutputStream newOutputStream( final Path path,
-                                         final OpenOption... options )
+    public OutputStream newOutputStream(final Path path,
+                                        final OpenOption... options)
             throws IllegalArgumentException, UnsupportedOperationException,
             IOException, SecurityException {
-        return Files.newOutputStream( path, options );
+        return Files.newOutputStream(path,
+                                     options);
     }
 
     @Override
-    public SeekableByteChannel newByteChannel( final Path path,
-                                               final OpenOption... options )
+    public SeekableByteChannel newByteChannel(final Path path,
+                                              final OpenOption... options)
             throws IllegalArgumentException, UnsupportedOperationException,
             FileAlreadyExistsException, IOException, SecurityException {
-        return Files.newByteChannel( path, options );
+        return Files.newByteChannel(path,
+                                    options);
     }
 
     @Override
-    public Path createDirectory( final Path dir,
-                                 final Map<String, ?> attrs ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        return createDirectory( dir, convert( attrs ) );
+    public Path createDirectory(final Path dir,
+                                final Map<String, ?> attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+        return createDirectory(dir,
+                               convert(attrs));
     }
 
     @Override
-    public Path createDirectories( final Path dir,
-                                   final Map<String, ?> attrs ) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        return createDirectories( dir, convert( attrs ) );
+    public Path createDirectories(final Path dir,
+                                  final Map<String, ?> attrs) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+        return createDirectories(dir,
+                                 convert(attrs));
     }
 
     @Override
-    public Path createTempFile( final String prefix,
-                                final String suffix,
-                                final FileAttribute<?>... attrs )
+    public Path createTempFile(final String prefix,
+                               final String suffix,
+                               final FileAttribute<?>... attrs)
             throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        return Files.createTempFile( prefix, suffix, attrs );
+        return Files.createTempFile(prefix,
+                                    suffix,
+                                    attrs);
     }
 
     @Override
-    public Path createTempFile( final Path dir,
-                                final String prefix,
-                                final String suffix,
-                                final FileAttribute<?>... attrs )
+    public Path createTempFile(final Path dir,
+                               final String prefix,
+                               final String suffix,
+                               final FileAttribute<?>... attrs)
             throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        return Files.createTempFile( dir, prefix, suffix, attrs );
+        return Files.createTempFile(dir,
+                                    prefix,
+                                    suffix,
+                                    attrs);
     }
 
     @Override
-    public Path createTempDirectory( final String prefix,
-                                     final FileAttribute<?>... attrs )
+    public Path createTempDirectory(final String prefix,
+                                    final FileAttribute<?>... attrs)
             throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        return Files.createTempDirectory( prefix, attrs );
+        return Files.createTempDirectory(prefix,
+                                         attrs);
     }
 
     @Override
-    public Path createTempDirectory( final Path dir,
-                                     final String prefix,
-                                     final FileAttribute<?>... attrs )
+    public Path createTempDirectory(final Path dir,
+                                    final String prefix,
+                                    final FileAttribute<?>... attrs)
             throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        return Files.createTempDirectory( dir, prefix, attrs );
+        return Files.createTempDirectory(dir,
+                                         prefix,
+                                         attrs);
     }
 
     @Override
-    public FileTime getLastModifiedTime( final Path path )
+    public FileTime getLastModifiedTime(final Path path)
             throws IllegalArgumentException, IOException, SecurityException {
-        return Files.getLastModifiedTime( path );
+        return Files.getLastModifiedTime(path);
     }
 
     @Override
-    public Map<String, Object> readAttributes( final Path path )
+    public Map<String, Object> readAttributes(final Path path)
             throws UnsupportedOperationException, NoSuchFileException, IllegalArgumentException,
             IOException, SecurityException {
-        return readAttributes( path, "*" );
+        return readAttributes(path,
+                              "*");
     }
 
     @Override
-    public Path setAttribute( final Path path,
-                              final String attribute,
-                              final Object value )
+    public Path setAttribute(final Path path,
+                             final String attribute,
+                             final Object value)
             throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
-        Files.setAttribute( path, attribute, value );
+        Files.setAttribute(path,
+                           attribute,
+                           value);
         return path;
     }
 
     @Override
-    public Path setAttributes( final Path path,
-                               final Map<String, Object> attrs )
+    public Path setAttributes(final Path path,
+                              final Map<String, Object> attrs)
             throws UnsupportedOperationException, IllegalArgumentException,
             ClassCastException, IOException, SecurityException {
-        return setAttributes( path, convert( attrs ) );
+        return setAttributes(path,
+                             convert(attrs));
     }
 
     @Override
-    public long size( final Path path )
+    public long size(final Path path)
             throws IllegalArgumentException, IOException, SecurityException {
-        return Files.size( path );
+        return Files.size(path);
     }
 
     @Override
-    public boolean exists( final Path path )
+    public boolean exists(final Path path)
             throws IllegalArgumentException, SecurityException {
-        return Files.exists( path );
+        return Files.exists(path);
     }
 
     @Override
-    public boolean notExists( final Path path )
+    public boolean notExists(final Path path)
             throws IllegalArgumentException, SecurityException {
-        return Files.notExists( path );
+        return Files.notExists(path);
     }
 
     @Override
-    public boolean isSameFile( final Path path,
-                               final Path path2 )
+    public boolean isSameFile(final Path path,
+                              final Path path2)
             throws IllegalArgumentException, IOException, SecurityException {
-        return Files.isSameFile( path, path2 );
+        return Files.isSameFile(path,
+                                path2);
     }
 
     @Override
-    public Path createFile( final Path path,
-                            final FileAttribute<?>... attrs )
+    public Path createFile(final Path path,
+                           final FileAttribute<?>... attrs)
             throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException,
             IOException, SecurityException {
         try {
-            newByteChannel( path, CREATE_NEW_FILE_OPTIONS, attrs ).close();
-        } catch ( java.io.IOException e ) {
-            throw new IOException( e );
+            newByteChannel(path,
+                           CREATE_NEW_FILE_OPTIONS,
+                           attrs).close();
+        } catch (java.io.IOException e) {
+            throw new IOException(e);
         }
 
         return path;
     }
 
     @Override
-    public BufferedReader newBufferedReader( final Path path,
-                                             final Charset cs )
+    public BufferedReader newBufferedReader(final Path path,
+                                            final Charset cs)
             throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
-        return Files.newBufferedReader( path, cs );
+        return Files.newBufferedReader(path,
+                                       cs);
     }
 
     @Override
-    public long copy( final Path source,
-                      final OutputStream out )
+    public long copy(final Path source,
+                     final OutputStream out)
             throws IOException, SecurityException {
-        return Files.copy( source, out );
+        return Files.copy(source,
+                          out);
     }
 
     @Override
-    public byte[] readAllBytes( final Path path )
+    public byte[] readAllBytes(final Path path)
             throws IOException, OutOfMemoryError, SecurityException {
-        return Files.readAllBytes( path );
+        return Files.readAllBytes(path);
     }
 
     @Override
-    public List<String> readAllLines( final Path path )
+    public List<String> readAllLines(final Path path)
             throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
-        return readAllLines( path, UTF_8 );
+        return readAllLines(path,
+                            UTF_8);
     }
 
     @Override
-    public List<String> readAllLines( final Path path,
-                                      final Charset cs )
+    public List<String> readAllLines(final Path path,
+                                     final Charset cs)
             throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
-        return Files.readAllLines( path, cs );
+        return Files.readAllLines(path,
+                                  cs);
     }
 
     @Override
-    public String readAllString( final Path path,
-                                 final Charset cs ) throws IllegalArgumentException, NoSuchFileException, IOException {
-        final byte[] result = Files.readAllBytes( path );
-        if ( result == null || result.length == 0 ) {
+    public String readAllString(final Path path,
+                                final Charset cs) throws IllegalArgumentException, NoSuchFileException, IOException {
+        final byte[] result = Files.readAllBytes(path);
+        if (result == null || result.length == 0) {
             return "";
         }
-        return new String( result, cs );
+        return new String(result,
+                          cs);
     }
 
     @Override
-    public String readAllString( final Path path )
+    public String readAllString(final Path path)
             throws IllegalArgumentException, NoSuchFileException, IOException {
-        return readAllString( path, UTF_8 );
+        return readAllString(path,
+                             UTF_8);
     }
 
     @Override
-    public BufferedWriter newBufferedWriter( final Path path,
-                                             final Charset cs,
-                                             final OpenOption... options )
+    public BufferedWriter newBufferedWriter(final Path path,
+                                            final Charset cs,
+                                            final OpenOption... options)
             throws IllegalArgumentException, IOException, UnsupportedOperationException, SecurityException {
-        return Files.newBufferedWriter( path, cs, options );
+        return Files.newBufferedWriter(path,
+                                       cs,
+                                       options);
     }
 
     @Override
-    public long copy( final InputStream in,
-                      final Path target,
-                      final CopyOption... options )
+    public long copy(final InputStream in,
+                     final Path target,
+                     final CopyOption... options)
             throws IOException, FileAlreadyExistsException, DirectoryNotEmptyException, UnsupportedOperationException, SecurityException {
-        return Files.copy( in, target, options );
+        return Files.copy(in,
+                          target,
+                          options);
     }
 
     @Override
-    public Path write( final Path path,
-                       final byte[] bytes,
-                       final OpenOption... options )
+    public Path write(final Path path,
+                      final byte[] bytes,
+                      final OpenOption... options)
             throws IOException, UnsupportedOperationException, SecurityException {
-        return write( path, bytes, new HashSet<OpenOption>( Arrays.asList( options ) ) );
+        return write(path,
+                     bytes,
+                     new HashSet<OpenOption>(Arrays.asList(options)));
     }
 
     @Override
-    public Path write( final Path path,
-                       final Iterable<? extends CharSequence> lines,
-                       final Charset cs,
-                       final OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException, SecurityException {
-        return write( path, toByteArray( lines, cs ), new HashSet<OpenOption>( Arrays.asList( options ) ) );
+    public Path write(final Path path,
+                      final Iterable<? extends CharSequence> lines,
+                      final Charset cs,
+                      final OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException, SecurityException {
+        return write(path,
+                     toByteArray(lines,
+                                 cs),
+                     new HashSet<OpenOption>(Arrays.asList(options)));
     }
 
-    private byte[] toByteArray( final Iterable<? extends CharSequence> lines,
-                                final Charset cs ) {
+    private byte[] toByteArray(final Iterable<? extends CharSequence> lines,
+                               final Charset cs) {
         final StringBuilder sb = new StringBuilder();
-        for ( final CharSequence line : lines ) {
-            sb.append( line.toString() );
+        for (final CharSequence line : lines) {
+            sb.append(line.toString());
         }
         return sb.toString().getBytes();
     }
 
     @Override
-    public Path write( final Path path,
-                       final String content,
-                       final Charset cs,
-                       final OpenOption... options )
+    public Path write(final Path path,
+                      final String content,
+                      final Charset cs,
+                      final OpenOption... options)
             throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return write( path, content.getBytes( cs ), new HashSet<OpenOption>( Arrays.asList( options ) ) );
+        return write(path,
+                     content.getBytes(cs),
+                     new HashSet<OpenOption>(Arrays.asList(options)));
     }
 
     @Override
-    public Path write( final Path path,
-                       final String content,
-                       final OpenOption... options )
+    public Path write(final Path path,
+                      final String content,
+                      final OpenOption... options)
             throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return write( path, content, UTF_8, options );
+        return write(path,
+                     content,
+                     UTF_8,
+                     options);
     }
 
     @Override
-    public Path write( final Path path,
-                       final String content,
-                       final Map<String, ?> attrs,
-                       final OpenOption... options )
+    public Path write(final Path path,
+                      final String content,
+                      final Map<String, ?> attrs,
+                      final OpenOption... options)
             throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return write( path, content, UTF_8, attrs, options );
+        return write(path,
+                     content,
+                     UTF_8,
+                     attrs,
+                     options);
     }
 
     @Override
-    public Path write( final Path path,
-                       final String content,
-                       final Charset cs,
-                       final Map<String, ?> attrs,
-                       final OpenOption... options )
+    public Path write(final Path path,
+                      final String content,
+                      final Charset cs,
+                      final Map<String, ?> attrs,
+                      final OpenOption... options)
             throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return write( path, content, cs, new HashSet<OpenOption>( Arrays.asList( options ) ), convert( attrs ) );
+        return write(path,
+                     content,
+                     cs,
+                     new HashSet<OpenOption>(Arrays.asList(options)),
+                     convert(attrs));
     }
 
     @Override
     public void dispose() {
         isDisposed = true;
-        for ( final FileSystem fileSystem : getFileSystems() ) {
+        for (final FileSystem fileSystem : getFileSystems()) {
             try {
                 fileSystem.dispose();
-            } catch ( final Exception ignored ) {
+            } catch (final Exception ignored) {
             }
         }
     }
 
     @Override
-    public FileAttribute<?>[] convert( final Map<String, ?> attrs ) {
+    public FileAttribute<?>[] convert(final Map<String, ?> attrs) {
 
-        if ( attrs == null || attrs.size() == 0 ) {
-            return new FileAttribute<?>[ 0 ];
+        if (attrs == null || attrs.size() == 0) {
+            return new FileAttribute<?>[0];
         }
 
-        final FileAttribute<?>[] attrsArray = new FileAttribute<?>[ attrs.size() ];
+        final FileAttribute<?>[] attrsArray = new FileAttribute<?>[attrs.size()];
 
         int i = 0;
-        for ( final Map.Entry<String, ?> attr : attrs.entrySet() ) {
-            attrsArray[ i++ ] = new FileAttribute<Object>() {
+        for (final Map.Entry<String, ?> attr : attrs.entrySet()) {
+            attrsArray[i++] = new FileAttribute<Object>() {
                 @Override
                 public String name() {
                     return attr.getKey();
@@ -594,58 +655,73 @@ public abstract class AbstractIOService implements IOServiceIdentifiable,
     }
 
     @Override
-    public Path write( final Path path,
-                       final byte[] bytes,
-                       final Map<String, ?> attrs,
-                       final OpenOption... options ) throws IOException, UnsupportedOperationException, SecurityException {
-        return write( path, bytes, new HashSet<OpenOption>( Arrays.asList( options ) ), convert( attrs ) );
+    public Path write(final Path path,
+                      final byte[] bytes,
+                      final Map<String, ?> attrs,
+                      final OpenOption... options) throws IOException, UnsupportedOperationException, SecurityException {
+        return write(path,
+                     bytes,
+                     new HashSet<OpenOption>(Arrays.asList(options)),
+                     convert(attrs));
     }
 
     @Override
-    public Path write( final Path path,
-                       final String content,
-                       final Set<? extends OpenOption> options,
-                       final FileAttribute<?>... attrs )
+    public Path write(final Path path,
+                      final String content,
+                      final Set<? extends OpenOption> options,
+                      final FileAttribute<?>... attrs)
             throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        return write( path, content, UTF_8, options, attrs );
+        return write(path,
+                     content,
+                     UTF_8,
+                     options,
+                     attrs);
     }
 
     @Override
-    public Path write( final Path path,
-                       final String content,
-                       final Charset cs,
-                       final Set<? extends OpenOption> options,
-                       final FileAttribute<?>... attrs )
+    public Path write(final Path path,
+                      final String content,
+                      final Charset cs,
+                      final Set<? extends OpenOption> options,
+                      final FileAttribute<?>... attrs)
             throws IllegalArgumentException, IOException, UnsupportedOperationException {
 
-        return write( path, content.getBytes( cs ), options, attrs );
+        return write(path,
+                     content.getBytes(cs),
+                     options,
+                     attrs);
     }
 
     @Override
-    public Path write( final Path path,
-                       final byte[] bytes,
-                       final Set<? extends OpenOption> options,
-                       final FileAttribute<?>... attrs ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+    public Path write(final Path path,
+                      final byte[] bytes,
+                      final Set<? extends OpenOption> options,
+                      final FileAttribute<?>... attrs) throws IllegalArgumentException, IOException, UnsupportedOperationException {
         SeekableByteChannel byteChannel;
         try {
-            byteChannel = newByteChannel( path, buildOptions( options ), attrs );
-        } catch ( final FileAlreadyExistsException ex ) {
-            ( (AbstractPath) path ).clearCache();
-            byteChannel = newByteChannel( path, buildOptions( options, TRUNCATE_EXISTING ), attrs );
+            byteChannel = newByteChannel(path,
+                                         buildOptions(options),
+                                         attrs);
+        } catch (final FileAlreadyExistsException ex) {
+            ((AbstractPath) path).clearCache();
+            byteChannel = newByteChannel(path,
+                                         buildOptions(options,
+                                                      TRUNCATE_EXISTING),
+                                         attrs);
         }
 
         try {
-            byteChannel.write( ByteBuffer.wrap( bytes ) );
+            byteChannel.write(ByteBuffer.wrap(bytes));
             byteChannel.close();
-        } catch ( final java.io.IOException e ) {
-            throw new IOException( e );
+        } catch (final java.io.IOException e) {
+            throw new IOException(e);
         }
 
         return path;
     }
 
-    protected abstract Set<? extends OpenOption> buildOptions( final Set<? extends OpenOption> options,
-                                                               final OpenOption... other );
+    protected abstract Set<? extends OpenOption> buildOptions(final Set<? extends OpenOption> options,
+                                                              final OpenOption... other);
 
     @Override
     public String getId() {

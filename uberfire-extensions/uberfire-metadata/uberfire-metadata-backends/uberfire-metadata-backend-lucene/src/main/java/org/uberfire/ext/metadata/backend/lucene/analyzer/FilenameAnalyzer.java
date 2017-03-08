@@ -27,10 +27,11 @@ public class FilenameAnalyzer extends Analyzer {
     }
 
     @Override
-    protected TokenStreamComponents createComponents( String fieldName ) {
+    protected TokenStreamComponents createComponents(String fieldName) {
         final LowerCaseTokenizer src = new LowerCaseTokenizer();
         final TokenStream tok = new LowerCaseFilter(src);
 
-        return new TokenStreamComponents(src, tok);
+        return new TokenStreamComponents(src,
+                                         tok);
     }
 }

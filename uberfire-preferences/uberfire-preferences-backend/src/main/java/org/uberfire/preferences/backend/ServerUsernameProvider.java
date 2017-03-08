@@ -31,7 +31,7 @@ public class ServerUsernameProvider implements UsernameProvider {
     }
 
     @Inject
-    public ServerUsernameProvider( final SessionInfo sessionInfo ) {
+    public ServerUsernameProvider(final SessionInfo sessionInfo) {
         this.sessionInfo = sessionInfo;
     }
 
@@ -39,7 +39,7 @@ public class ServerUsernameProvider implements UsernameProvider {
     public String get() {
         try {
             return sessionInfo.getIdentity().getIdentifier();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             return "not-logged-user";
         }
     }

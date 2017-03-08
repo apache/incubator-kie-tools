@@ -30,16 +30,15 @@ public class UserServicesImpl {
     @Inject
     private UserServicesBackendImpl userServicesBackend;
 
-    public Path buildPath( final String serviceType ) {
-        return userServicesBackend.buildPath( authService.getUser().getIdentifier(),
-                                              serviceType );
+    public Path buildPath(final String serviceType) {
+        return userServicesBackend.buildPath(authService.getUser().getIdentifier(),
+                                             serviceType);
     }
 
-    public Path buildPath( final String serviceType,
-                           final String relativePath ) {
-        return userServicesBackend.buildPath( authService.getUser().getIdentifier(),
-                                              serviceType,
-                                              relativePath );
+    public Path buildPath(final String serviceType,
+                          final String relativePath) {
+        return userServicesBackend.buildPath(authService.getUser().getIdentifier(),
+                                             serviceType,
+                                             relativePath);
     }
-
 }

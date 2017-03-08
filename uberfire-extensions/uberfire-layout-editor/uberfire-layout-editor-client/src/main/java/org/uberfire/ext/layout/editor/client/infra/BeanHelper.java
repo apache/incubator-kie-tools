@@ -20,7 +20,7 @@ import org.jboss.errai.ioc.client.container.IOC;
 
 public class BeanHelper {
 
-    public static void destroy( Object o ) {
-        IOC.getBeanManager().destroyBean( o );
+    public static void destroy(Object o) {
+        IOC.getBeanManager().destroyBean(o);
     }
 }

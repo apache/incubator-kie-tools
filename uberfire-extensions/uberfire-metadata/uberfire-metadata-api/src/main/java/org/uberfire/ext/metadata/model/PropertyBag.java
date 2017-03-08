@@ -19,5 +19,4 @@ package org.uberfire.ext.metadata.model;
 interface PropertyBag {
 
     Iterable<KProperty<?>> getProperties();
-
 }

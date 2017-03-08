@@ -52,173 +52,139 @@ import org.uberfire.workbench.model.menu.MenuPosition;
 @ApplicationScoped
 public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarPresenter.View {
 
-    public interface WorkbenchMenuNavBarView {
-
-        void clear();
-
-        void addMenuItem( String id,
-                          String label,
-                          String parentId,
-                          Command command,
-                          MenuPosition position );
-
-        void addCustomMenuItem( Widget menu,
-                                MenuPosition position );
-
-        void addGroupMenuItem( String id,
-                               String label,
-                               MenuPosition position );
-
-        void selectMenuItem( String id );
-
-        void addContextMenuItem( String menuItemId,
-                                 String id,
-                                 String label,
-                                 String parentId,
-                                 Command command,
-                                 MenuPosition position );
-
-        void addContextGroupMenuItem( String menuItemId,
-                                      String id,
-                                      String label,
-                                      MenuPosition position );
-
-        void clearContextMenu();
-
-        void enableMenuItem( String menuItemId,
-                             boolean enabled );
-
-        void enableContextMenuItem( String menuItemId,
-                                    boolean enabled );
-
-    }
-
-    @Inject
-    private Instance<MainBrand> menuBarBrand;
-
-    private final Navbar navBar = GWT.create( Navbar.class );
-
-    private final NavbarHeader navbarHeader = GWT.create( NavbarHeader.class );
-
-    private final NavbarCollapse navbarCollapse = GWT.create( NavbarCollapse.class );
-
+    private final Navbar navBar = GWT.create(Navbar.class);
+    private final NavbarHeader navbarHeader = GWT.create(NavbarHeader.class);
+    private final NavbarCollapse navbarCollapse = GWT.create(NavbarCollapse.class);
     @Inject
     WorkbenchMenuCompactNavBarView workbenchMenuCompactNavBarView;
-
     @Inject
     WorkbenchMenuStandardNavBarView workbenchMenuStandardNavBarView;
-
-    private Collapse navBarCollapse = GWT.create( Collapse.class );
-
+    @Inject
+    private Instance<MainBrand> menuBarBrand;
+    private Collapse navBarCollapse = GWT.create(Collapse.class);
     @Inject
     private UtilityMenuBarView utilityMenuBarView;
 
     @PostConstruct
     protected void setup() {
-        navBar.setType( NavbarType.INVERSE );
-        navBar.addStyleName( "navbar-pf" );
+        navBar.setType(NavbarType.INVERSE);
+        navBar.addStyleName("navbar-pf");
 
         try {
-            final NavbarBrand brand = GWT.create( NavbarBrand.class );
-            brand.add( menuBarBrand.get() );
-            navbarHeader.add( brand );
-        } catch ( IOCResolutionException e ) {
+            final NavbarBrand brand = GWT.create(NavbarBrand.class);
+            brand.add(menuBarBrand.get());
+            navbarHeader.add(brand);
+        } catch (IOCResolutionException e) {
             // app didn't provide a branded header bean
         }
-        navBar.add( navbarHeader );
+        navBar.add(navbarHeader);
 
         setupNavBarCollapse();
 
-        navbarCollapse.add( workbenchMenuCompactNavBarView );
-        navbarCollapse.add( navBarCollapse );
-        navbarCollapse.add( utilityMenuBarView );
+        navbarCollapse.add(workbenchMenuCompactNavBarView);
+        navbarCollapse.add(navBarCollapse);
+        navbarCollapse.add(utilityMenuBarView);
 
-        navBar.add( navbarCollapse );
+        navBar.add(navbarCollapse);
 
         setupToggle();
 
-        initWidget( navBar );
+        initWidget(navBar);
 
         expand();
     }
 
     protected void setupToggle() {
-        final Button btnToggle = GWT.create( Button.class );
-        btnToggle.removeStyleName( "btn-default" );
-        btnToggle.addStyleName( Styles.NAVBAR_TOGGLE );
-        btnToggle.setDataToggle( Toggle.COLLAPSE );
-        btnToggle.setDataTargetWidget( navbarCollapse );
-        btnToggle.add( createToggleBar() );
-        btnToggle.add( createToggleBar() );
-        btnToggle.add( createToggleBar() );
-        navbarHeader.add( btnToggle );
+        final Button btnToggle = GWT.create(Button.class);
+        btnToggle.removeStyleName("btn-default");
+        btnToggle.addStyleName(Styles.NAVBAR_TOGGLE);
+        btnToggle.setDataToggle(Toggle.COLLAPSE);
+        btnToggle.setDataTargetWidget(navbarCollapse);
+        btnToggle.add(createToggleBar());
+        btnToggle.add(createToggleBar());
+        btnToggle.add(createToggleBar());
+        navbarHeader.add(btnToggle);
     }
 
-    private Span createToggleBar(){
-        final Span span = GWT.create( Span.class );
+    private Span createToggleBar() {
+        final Span span = GWT.create(Span.class);
         span.addStyleName("icon-bar");
         return span;
     }
 
     protected void setupNavBarCollapse() {
-        workbenchMenuCompactNavBarView.addStyleName( "hidden" );
-        navBarCollapse.addShowHandler( new ShowHandler() {
+        workbenchMenuCompactNavBarView.addStyleName("hidden");
+        navBarCollapse.addShowHandler(new ShowHandler() {
             @Override
-            public void onShow( ShowEvent showEvent ) {
-                workbenchMenuCompactNavBarView.removeStyleName( "show" );
-                workbenchMenuCompactNavBarView.addStyleName( "hidden" );
-                navbarHeader.removeStyleName( Styles.PULL_LEFT );
-                workbenchMenuStandardNavBarView.removeStyleName( "hidden" );
-                workbenchMenuStandardNavBarView.addStyleName( "show" );
+            public void onShow(ShowEvent showEvent) {
+                workbenchMenuCompactNavBarView.removeStyleName("show");
+                workbenchMenuCompactNavBarView.addStyleName("hidden");
+                navbarHeader.removeStyleName(Styles.PULL_LEFT);
+                workbenchMenuStandardNavBarView.removeStyleName("hidden");
+                workbenchMenuStandardNavBarView.addStyleName("show");
             }
-        } );
-        navBarCollapse.addShownHandler( new ShownHandler() {
+        });
+        navBarCollapse.addShownHandler(new ShownHandler() {
             @Override
-            public void onShown( ShownEvent event ) {
-                navBar.removeStyleName( "uf-navbar-compact" );
+            public void onShown(ShownEvent event) {
+                navBar.removeStyleName("uf-navbar-compact");
             }
-        } );
+        });
 
-        navBarCollapse.addHiddenHandler( new HiddenHandler() {
+        navBarCollapse.addHiddenHandler(new HiddenHandler() {
             @Override
-            public void onHidden( HiddenEvent event ) {
-                workbenchMenuStandardNavBarView.removeStyleName( "show" );
-                workbenchMenuStandardNavBarView.addStyleName( "hidden" );
+            public void onHidden(HiddenEvent event) {
+                workbenchMenuStandardNavBarView.removeStyleName("show");
+                workbenchMenuStandardNavBarView.addStyleName("hidden");
 
-                navbarHeader.addStyleName( Styles.PULL_LEFT );
-                workbenchMenuCompactNavBarView.removeStyleName( "hidden" );
-                workbenchMenuCompactNavBarView.addStyleName( "show" );
-                navBar.addStyleName( "uf-navbar-compact" );
-                navBarCollapse.removeStyleName( Styles.IN );
+                navbarHeader.addStyleName(Styles.PULL_LEFT);
+                workbenchMenuCompactNavBarView.removeStyleName("hidden");
+                workbenchMenuCompactNavBarView.addStyleName("show");
+                navBar.addStyleName("uf-navbar-compact");
+                navBarCollapse.removeStyleName(Styles.IN);
             }
-        } );
-        navBarCollapse.addStyleName( Styles.IN );
-        navBarCollapse.add( workbenchMenuStandardNavBarView );
+        });
+        navBarCollapse.addStyleName(Styles.IN);
+        navBarCollapse.add(workbenchMenuStandardNavBarView);
     }
 
     @Override
-    public void addMenuItem( final String id,
-                             final String label,
-                             final String parentId,
-                             final Command command,
-                             final MenuPosition position ) {
-        workbenchMenuStandardNavBarView.addMenuItem( id, label, parentId, command, position );
-        workbenchMenuCompactNavBarView.addMenuItem( id, label, parentId, command, position );
+    public void addMenuItem(final String id,
+                            final String label,
+                            final String parentId,
+                            final Command command,
+                            final MenuPosition position) {
+        workbenchMenuStandardNavBarView.addMenuItem(id,
+                                                    label,
+                                                    parentId,
+                                                    command,
+                                                    position);
+        workbenchMenuCompactNavBarView.addMenuItem(id,
+                                                   label,
+                                                   parentId,
+                                                   command,
+                                                   position);
     }
 
     @Override
-    public void addCustomMenuItem( final Widget menu,
-                                   final MenuPosition position ) {
-        workbenchMenuStandardNavBarView.addCustomMenuItem( menu, position );
-        workbenchMenuCompactNavBarView.addCustomMenuItem( menu, position );
+    public void addCustomMenuItem(final Widget menu,
+                                  final MenuPosition position) {
+        workbenchMenuStandardNavBarView.addCustomMenuItem(menu,
+                                                          position);
+        workbenchMenuCompactNavBarView.addCustomMenuItem(menu,
+                                                         position);
     }
 
     @Override
-    public void addGroupMenuItem( final String id,
-                                  final String label,
-                                  final MenuPosition position ) {
-        workbenchMenuStandardNavBarView.addGroupMenuItem( id, label, position );
-        workbenchMenuCompactNavBarView.addGroupMenuItem( id, label, position );
+    public void addGroupMenuItem(final String id,
+                                 final String label,
+                                 final MenuPosition position) {
+        workbenchMenuStandardNavBarView.addGroupMenuItem(id,
+                                                         label,
+                                                         position);
+        workbenchMenuCompactNavBarView.addGroupMenuItem(id,
+                                                        label,
+                                                        position);
     }
 
     @Override
@@ -228,18 +194,34 @@ public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarP
             final String label,
             final String parentId,
             final Command command,
-            final MenuPosition position ) {
-        workbenchMenuStandardNavBarView.addContextMenuItem( menuItemId, id, label, parentId, command, position );
-        workbenchMenuCompactNavBarView.addContextMenuItem( menuItemId, id, label, parentId, command, position );
+            final MenuPosition position) {
+        workbenchMenuStandardNavBarView.addContextMenuItem(menuItemId,
+                                                           id,
+                                                           label,
+                                                           parentId,
+                                                           command,
+                                                           position);
+        workbenchMenuCompactNavBarView.addContextMenuItem(menuItemId,
+                                                          id,
+                                                          label,
+                                                          parentId,
+                                                          command,
+                                                          position);
     }
 
     @Override
-    public void addContextGroupMenuItem( final String menuItemId,
-                                         final String id,
-                                         final String label,
-                                         final MenuPosition position ) {
-        workbenchMenuStandardNavBarView.addContextGroupMenuItem( menuItemId, id, label, position );
-        workbenchMenuCompactNavBarView.addContextGroupMenuItem( menuItemId, id, label, position );
+    public void addContextGroupMenuItem(final String menuItemId,
+                                        final String id,
+                                        final String label,
+                                        final MenuPosition position) {
+        workbenchMenuStandardNavBarView.addContextGroupMenuItem(menuItemId,
+                                                                id,
+                                                                label,
+                                                                position);
+        workbenchMenuCompactNavBarView.addContextGroupMenuItem(menuItemId,
+                                                               id,
+                                                               label,
+                                                               position);
     }
 
     @Override
@@ -257,56 +239,99 @@ public class WorkbenchMenuBarView extends Composite implements WorkbenchMenuBarP
 
     @Override
     public void expand() {
-        if ( navBarCollapse.isHidden() ) {
+        if (navBarCollapse.isHidden()) {
             navBarCollapse.show();
         }
     }
 
     @Override
     public void collapse() {
-        if ( navBarCollapse.isShown() ) {
+        if (navBarCollapse.isShown()) {
             navBarCollapse.hide();
         }
     }
 
     @Override
-    public void selectMenuItem( final String id ) {
-        workbenchMenuCompactNavBarView.selectMenuItem( id );
-        workbenchMenuStandardNavBarView.selectMenuItem( id );
+    public void selectMenuItem(final String id) {
+        workbenchMenuCompactNavBarView.selectMenuItem(id);
+        workbenchMenuStandardNavBarView.selectMenuItem(id);
     }
 
     @Override
-    public void addCollapseHandler( final Command command ) {
-        navBarCollapse.addHideHandler( new HideHandler() {
+    public void addCollapseHandler(final Command command) {
+        navBarCollapse.addHideHandler(new HideHandler() {
             @Override
-            public void onHide( final HideEvent hideEvent ) {
+            public void onHide(final HideEvent hideEvent) {
                 command.execute();
             }
-        } );
+        });
     }
 
     @Override
-    public void addExpandHandler( final Command command ) {
-        navBarCollapse.addShowHandler( new ShowHandler() {
+    public void addExpandHandler(final Command command) {
+        navBarCollapse.addShowHandler(new ShowHandler() {
             @Override
-            public void onShow( final ShowEvent showEvent ) {
+            public void onShow(final ShowEvent showEvent) {
                 command.execute();
             }
-        } );
+        });
     }
 
     @Override
-    public void enableMenuItem( final String menuItemId,
-                                final boolean enabled ) {
-        workbenchMenuStandardNavBarView.enableMenuItem( menuItemId, enabled );
-        workbenchMenuCompactNavBarView.enableMenuItem( menuItemId, enabled );
+    public void enableMenuItem(final String menuItemId,
+                               final boolean enabled) {
+        workbenchMenuStandardNavBarView.enableMenuItem(menuItemId,
+                                                       enabled);
+        workbenchMenuCompactNavBarView.enableMenuItem(menuItemId,
+                                                      enabled);
     }
 
     @Override
-    public void enableContextMenuItem( final String menuItemId,
-                                       final boolean enabled ) {
-        workbenchMenuStandardNavBarView.enableContextMenuItem( menuItemId, enabled );
-        workbenchMenuCompactNavBarView.enableContextMenuItem( menuItemId, enabled );
+    public void enableContextMenuItem(final String menuItemId,
+                                      final boolean enabled) {
+        workbenchMenuStandardNavBarView.enableContextMenuItem(menuItemId,
+                                                              enabled);
+        workbenchMenuCompactNavBarView.enableContextMenuItem(menuItemId,
+                                                             enabled);
     }
 
+    public interface WorkbenchMenuNavBarView {
+
+        void clear();
+
+        void addMenuItem(String id,
+                         String label,
+                         String parentId,
+                         Command command,
+                         MenuPosition position);
+
+        void addCustomMenuItem(Widget menu,
+                               MenuPosition position);
+
+        void addGroupMenuItem(String id,
+                              String label,
+                              MenuPosition position);
+
+        void selectMenuItem(String id);
+
+        void addContextMenuItem(String menuItemId,
+                                String id,
+                                String label,
+                                String parentId,
+                                Command command,
+                                MenuPosition position);
+
+        void addContextGroupMenuItem(String menuItemId,
+                                     String id,
+                                     String label,
+                                     MenuPosition position);
+
+        void clearContextMenu();
+
+        void enableMenuItem(String menuItemId,
+                            boolean enabled);
+
+        void enableContextMenuItem(String menuItemId,
+                                   boolean enabled);
+    }
 }

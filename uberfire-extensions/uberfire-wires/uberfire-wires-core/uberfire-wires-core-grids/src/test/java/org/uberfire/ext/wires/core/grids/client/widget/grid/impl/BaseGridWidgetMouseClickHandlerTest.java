@@ -70,115 +70,114 @@ public class BaseGridWidgetMouseClickHandlerTest {
 
     @Before
     public void setup() {
-        when( gridWidget.getViewport() ).thenReturn( viewport );
-        when( gridWidget.getModel() ).thenReturn( uiModel );
-        when( gridWidget.getRendererHelper() ).thenReturn( helper );
-        when( gridWidget.getLayer() ).thenReturn( layer );
-        when( renderer.getHeaderHeight() ).thenReturn( 64.0 );
-        when( renderer.getHeaderRowHeight() ).thenReturn( 32.0 );
-        when( uiModel.getHeaderRowCount() ).thenReturn( 2 );
+        when(gridWidget.getViewport()).thenReturn(viewport);
+        when(gridWidget.getModel()).thenReturn(uiModel);
+        when(gridWidget.getRendererHelper()).thenReturn(helper);
+        when(gridWidget.getLayer()).thenReturn(layer);
+        when(renderer.getHeaderHeight()).thenReturn(64.0);
+        when(renderer.getHeaderRowHeight()).thenReturn(32.0);
+        when(uiModel.getHeaderRowCount()).thenReturn(2);
 
-        final BaseGridWidgetMouseClickHandler wrapped = new BaseGridWidgetMouseClickHandler( gridWidget,
-                                                                                             selectionManager,
-                                                                                             renderer );
-        handler = spy( wrapped );
+        final BaseGridWidgetMouseClickHandler wrapped = new BaseGridWidgetMouseClickHandler(gridWidget,
+                                                                                            selectionManager,
+                                                                                            renderer);
+        handler = spy(wrapped);
     }
 
     @Test
     public void skipInvisibleGrid() {
-        when( gridWidget.isVisible() ).thenReturn( false );
+        when(gridWidget.isVisible()).thenReturn(false);
 
-        handler.onNodeMouseClick( event );
+        handler.onNodeMouseClick(event);
 
-        verify( handler,
-                never() ).handleHeaderCellClick( any( NodeMouseClickEvent.class ) );
-        verify( handler,
-                never() ).handleBodyCellClick( any( NodeMouseClickEvent.class ) );
-        verify( selectionManager,
-                never() ).select( eq( gridWidget ) );
+        verify(handler,
+               never()).handleHeaderCellClick(any(NodeMouseClickEvent.class));
+        verify(handler,
+               never()).handleBodyCellClick(any(NodeMouseClickEvent.class));
+        verify(selectionManager,
+               never()).select(eq(gridWidget));
     }
 
     @Test
     public void selectVisibleGridHeaderNonLinkedColumn() {
-        when( gridWidget.isVisible() ).thenReturn( true );
+        when(gridWidget.isVisible()).thenReturn(true);
 
-        when( event.getX() ).thenReturn( 100 );
-        when( event.getY() ).thenReturn( 100 );
+        when(event.getX()).thenReturn(100);
+        when(event.getY()).thenReturn(100);
 
-        when( gridWidget.getLocation() ).thenReturn( new Point2D( 100,
-                                                                  100 ) );
-        when( uiColumn.isLinked() ).thenReturn( false );
+        when(gridWidget.getLocation()).thenReturn(new Point2D(100,
+                                                              100));
+        when(uiColumn.isLinked()).thenReturn(false);
 
-        final BaseGridRendererHelper.ColumnInformation ci = new BaseGridRendererHelper.ColumnInformation( uiColumn,
-                                                                                                          0,
-                                                                                                          0 );
-        when( helper.getColumnInformation( any( Double.class ) ) ).thenReturn( ci );
+        final BaseGridRendererHelper.ColumnInformation ci = new BaseGridRendererHelper.ColumnInformation(uiColumn,
+                                                                                                         0,
+                                                                                                         0);
+        when(helper.getColumnInformation(any(Double.class))).thenReturn(ci);
 
-        handler.onNodeMouseClick( event );
+        handler.onNodeMouseClick(event);
 
-        verify( handler,
-                times( 1 ) ).handleHeaderCellClick( any( NodeMouseClickEvent.class ) );
-        verify( handler,
-                times( 1 ) ).handleBodyCellClick( any( NodeMouseClickEvent.class ) );
-        verify( selectionManager,
-                times( 1 ) ).select( eq( gridWidget ) );
-        verify( selectionManager,
-                never() ).selectLinkedColumn( eq( uiColumn ) );
+        verify(handler,
+               times(1)).handleHeaderCellClick(any(NodeMouseClickEvent.class));
+        verify(handler,
+               times(1)).handleBodyCellClick(any(NodeMouseClickEvent.class));
+        verify(selectionManager,
+               times(1)).select(eq(gridWidget));
+        verify(selectionManager,
+               never()).selectLinkedColumn(eq(uiColumn));
     }
 
     @Test
     public void selectVisibleGridHeaderLinkedColumn() {
-        when( gridWidget.isVisible() ).thenReturn( true );
+        when(gridWidget.isVisible()).thenReturn(true);
 
-        when( event.getX() ).thenReturn( 100 );
-        when( event.getY() ).thenReturn( 100 );
+        when(event.getX()).thenReturn(100);
+        when(event.getY()).thenReturn(100);
 
-        when( gridWidget.getLocation() ).thenReturn( new Point2D( 100,
-                                                                  100 ) );
-        when( uiColumn.isLinked() ).thenReturn( true );
-        when( uiColumn.getLink() ).thenAnswer( invocation -> uiLinkedColumn );
+        when(gridWidget.getLocation()).thenReturn(new Point2D(100,
+                                                              100));
+        when(uiColumn.isLinked()).thenReturn(true);
+        when(uiColumn.getLink()).thenAnswer(invocation -> uiLinkedColumn);
 
-        final BaseGridRendererHelper.ColumnInformation ci = new BaseGridRendererHelper.ColumnInformation( uiColumn,
-                                                                                                          0,
-                                                                                                          0 );
-        when( helper.getColumnInformation( any( Double.class ) ) ).thenReturn( ci );
+        final BaseGridRendererHelper.ColumnInformation ci = new BaseGridRendererHelper.ColumnInformation(uiColumn,
+                                                                                                         0,
+                                                                                                         0);
+        when(helper.getColumnInformation(any(Double.class))).thenReturn(ci);
 
-        handler.onNodeMouseClick( event );
+        handler.onNodeMouseClick(event);
 
-        verify( handler,
-                times( 1 ) ).handleHeaderCellClick( any( NodeMouseClickEvent.class ) );
-        verify( handler,
-                never() ).handleBodyCellClick( any( NodeMouseClickEvent.class ) );
-        verify( selectionManager,
-                never() ).select( eq( gridWidget ) );
-        verify( selectionManager,
-                times( 1 ) ).selectLinkedColumn( eq( uiLinkedColumn ) );
+        verify(handler,
+               times(1)).handleHeaderCellClick(any(NodeMouseClickEvent.class));
+        verify(handler,
+               never()).handleBodyCellClick(any(NodeMouseClickEvent.class));
+        verify(selectionManager,
+               never()).select(eq(gridWidget));
+        verify(selectionManager,
+               times(1)).selectLinkedColumn(eq(uiLinkedColumn));
     }
 
     @Test
     public void selectVisibleGridBody() {
-        when( gridWidget.isVisible() ).thenReturn( true );
+        when(gridWidget.isVisible()).thenReturn(true);
 
-        when( event.getX() ).thenReturn( 100 );
-        when( event.getY() ).thenReturn( 200 );
+        when(event.getX()).thenReturn(100);
+        when(event.getY()).thenReturn(200);
 
-        when( gridWidget.getLocation() ).thenReturn( new Point2D( 100,
-                                                                  100 ) );
-        when( gridWidget.getHeight() ).thenReturn( 200.0 );
+        when(gridWidget.getLocation()).thenReturn(new Point2D(100,
+                                                              100));
+        when(gridWidget.getHeight()).thenReturn(200.0);
 
-        final BaseGridRendererHelper.ColumnInformation ci = new BaseGridRendererHelper.ColumnInformation( uiColumn,
-                                                                                                          0,
-                                                                                                          0 );
-        when( helper.getColumnInformation( any( Double.class ) ) ).thenReturn( ci );
+        final BaseGridRendererHelper.ColumnInformation ci = new BaseGridRendererHelper.ColumnInformation(uiColumn,
+                                                                                                         0,
+                                                                                                         0);
+        when(helper.getColumnInformation(any(Double.class))).thenReturn(ci);
 
-        handler.onNodeMouseClick( event );
+        handler.onNodeMouseClick(event);
 
-        verify( handler,
-                times( 1 ) ).handleHeaderCellClick( any( NodeMouseClickEvent.class ) );
-        verify( handler,
-                times( 1 ) ).handleBodyCellClick( any( NodeMouseClickEvent.class ) );
-        verify( selectionManager,
-                times( 1 ) ).select( eq( gridWidget ) );
+        verify(handler,
+               times(1)).handleHeaderCellClick(any(NodeMouseClickEvent.class));
+        verify(handler,
+               times(1)).handleBodyCellClick(any(NodeMouseClickEvent.class));
+        verify(selectionManager,
+               times(1)).select(eq(gridWidget));
     }
-
 }

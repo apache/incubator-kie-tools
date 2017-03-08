@@ -25,7 +25,10 @@ import java.lang.annotation.Target;
 public @interface ResourceCheck {
 
     String type() default "";
+
     String action() default "read";
+
     String onGranted() default "";
+
     String onDenied() default "";
 }

@@ -29,33 +29,34 @@ import java.net.URLEncoder;
  */
 public final class URIUtil {
 
-    public static String encode( final String content ) {
+    public static String encode(final String content) {
         try {
-            return URLEncoder.encode( content, "UTF-8" );
-        } catch ( UnsupportedEncodingException e ) {
+            return URLEncoder.encode(content,
+                                     "UTF-8");
+        } catch (UnsupportedEncodingException e) {
         }
         return null;
     }
 
-    public static String decode( final String content ) {
+    public static String decode(final String content) {
         try {
-            return URLDecoder.decode( content, "UTF-8" );
-        } catch ( UnsupportedEncodingException e ) {
+            return URLDecoder.decode(content,
+                                     "UTF-8");
+        } catch (UnsupportedEncodingException e) {
         }
         return null;
     }
 
-    public static String encodeQueryString( final String content ) {
-        return encode( content );
+    public static String encodeQueryString(final String content) {
+        return encode(content);
     }
 
-    public static boolean isValid( final String uri ) {
+    public static boolean isValid(final String uri) {
         try {
-            URI.create( uri );
+            URI.create(uri);
             return true;
-        } catch ( final Exception ignored ) {
+        } catch (final Exception ignored) {
         }
         return false;
     }
-
 }

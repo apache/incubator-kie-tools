@@ -19,7 +19,7 @@ package org.uberfire.ext.editor.commons.client.htmleditor;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class HtmlEditorPresenterTest {
@@ -30,34 +30,35 @@ public class HtmlEditorPresenterTest {
 
     @Before
     public void setup() {
-        view = mock( HtmlEditorPresenter.View.class );
-        doReturn( "content" ).when( view ).getContent();
-        doNothing().when( view ).setContent( anyString() );
-        doNothing().when( view ).load();
+        view = mock(HtmlEditorPresenter.View.class);
+        doReturn("content").when(view).getContent();
+        doNothing().when(view).setContent(anyString());
+        doNothing().when(view).load();
 
-        presenter = new HtmlEditorPresenter( view );
+        presenter = new HtmlEditorPresenter(view);
     }
 
     @Test
     public void loadTest() {
         presenter.load();
 
-        verify( view ).load();
+        verify(view).load();
     }
 
     @Test
     public void getContentTest() {
         String content = presenter.getContent();
 
-        assertEquals( "content", content );
-        verify( view ).getContent();
+        assertEquals("content",
+                     content);
+        verify(view).getContent();
     }
 
     @Test
     public void setContentTest() {
         String content = "content";
-        presenter.setContent( content );
+        presenter.setContent(content);
 
-        verify( view ).setContent( content );
+        verify(view).setContent(content);
     }
 }

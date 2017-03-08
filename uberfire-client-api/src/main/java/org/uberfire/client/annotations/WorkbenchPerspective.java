@@ -30,16 +30,16 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
  * There are two options for defining the arrangement of panels and parts within the perspective: either
  * programmatically build a {@link PerspectiveDefinition} object, or declare panel structure and content using Errai UI
  * templates. Note that you cannot mix the two approaches.
- *
+ * <p>
  * <h3>Programmatic Perspective Definition</h3>
  * To define the perspective layout programmatically, create a zero-argument method annotated with {@code @Perspective}
  * that returns a {@link PerspectiveDefinition}.
- *
+ * <p>
  * <h3>Templated Perspective Definition</h3>
  * To declare perspective layout using templates, make the class an Errai UI templated component, and then add the
  * {@link WorkbenchPanel} annotation to one or more of its {@code @DataField} widgets. This designates them as panel
  * containers and allows you to specify which parts should be added to them when the perspective launches.
- *
+ * <p>
  * <h3>Perspective Lifecycle</h3>
  * WorkbenchPerspectives receive the standard set of lifecycle calls for a Workbench component:
  * <ul>
@@ -56,7 +56,6 @@ public @interface WorkbenchPerspective {
 
     /**
      * The place ID to associate with this perspective.
-     *
      * @see PlaceRequest
      */
     String identifier();
@@ -69,17 +68,17 @@ public @interface WorkbenchPerspective {
     boolean isDefault() default false;
 
     /**
-	 * If true (the default), every time this perspective is displayed, it
-	 * should start fresh with the {@link PerspectiveDefinition} returned by the
-	 * method annotated with {@code @Perspective}. If false, the framework will
-	 * store the structure of the perspective (panel arrangements and part
-	 * placement as modified by the user opening and closing tabs, dragging
-	 * parts around, and resizing split panels) on the server individually for
-	 * each user, and use that stored definition in preference to the one
-	 * returned by the {@code @Perspective} method.
-	 */
+     * If true (the default), every time this perspective is displayed, it
+     * should start fresh with the {@link PerspectiveDefinition} returned by the
+     * method annotated with {@code @Perspective}. If false, the framework will
+     * store the structure of the perspective (panel arrangements and part
+     * placement as modified by the user opening and closing tabs, dragging
+     * parts around, and resizing split panels) on the server individually for
+     * each user, and use that stored definition in preference to the one
+     * returned by the {@code @Perspective} method.
+     */
     boolean isTransient() default true;
-    
+
     /**
      * Indicates that this perspective can be discovered and loaded at runtime.
      * This is useful when building plugins or extensions where the perspective

@@ -35,25 +35,27 @@ public class BooleanField extends AbstractField {
     Event<PropertyEditorChangeEvent> propertyEditorChangeEventEvent;
 
     @Override
-    public Widget widget( final PropertyEditorFieldInfo property ) {
-        final PropertyEditorCheckBox checkBox = GWT.create( PropertyEditorCheckBox.class );
+    public Widget widget(final PropertyEditorFieldInfo property) {
+        final PropertyEditorCheckBox checkBox = GWT.create(PropertyEditorCheckBox.class);
         checkBox.setValue(Boolean.parseBoolean(property.getCurrentStringValue()));
-        checkBox.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
+        checkBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
-            public void onValueChange( ValueChangeEvent<Boolean> event ) {
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
 
-                if ( validate( property, checkBox.getValue().toString() ) ) {
+                if (validate(property,
+                             checkBox.getValue().toString())) {
                     checkBox.clearOldValidationErrors();
-                    property.setCurrentStringValue( checkBox.getValue().toString() );
-                    propertyEditorChangeEventEvent.fire( new PropertyEditorChangeEvent( property, checkBox.getValue().toString() ) );
+                    property.setCurrentStringValue(checkBox.getValue().toString());
+                    propertyEditorChangeEventEvent.fire(new PropertyEditorChangeEvent(property,
+                                                                                      checkBox.getValue().toString()));
                 } else {
-                    checkBox.setValidationError( getValidatorErrorMessage( property, checkBox.getValue().toString() ) );
-                    checkBox.setValue( Boolean.valueOf( property.getCurrentStringValue() ) );
+                    checkBox.setValidationError(getValidatorErrorMessage(property,
+                                                                         checkBox.getValue().toString()));
+                    checkBox.setValue(Boolean.valueOf(property.getCurrentStringValue()));
                 }
             }
-        } );
+        });
 
         return checkBox;
     }
-
 }

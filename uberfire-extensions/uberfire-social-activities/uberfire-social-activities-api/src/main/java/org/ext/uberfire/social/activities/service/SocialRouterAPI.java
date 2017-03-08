@@ -17,7 +17,7 @@ package org.ext.uberfire.social.activities.service;
 
 public interface SocialRouterAPI {
 
-    SocialAdapter getSocialAdapterByPath( String pathInfo );
+    SocialAdapter getSocialAdapterByPath(String pathInfo);
 
-    SocialAdapter getSocialAdapter( String adapterName );
+    SocialAdapter getSocialAdapter(String adapterName);
 }

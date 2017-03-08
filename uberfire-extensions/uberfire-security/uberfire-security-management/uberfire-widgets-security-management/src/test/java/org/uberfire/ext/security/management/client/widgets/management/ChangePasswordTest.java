@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.security.management.client.widgets.management;
 
+import java.util.List;
+
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.EditorError;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -29,8 +31,6 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import java.util.List;
-
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -38,59 +38,80 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class ChangePasswordTest extends AbstractSecurityManagementTest {
 
-    @Mock EventSourceMock<ChangePasswordEvent> changePasswordEvent;
-    @Mock EventSourceMock<OnErrorEvent> onErrorEvent;
-    @Mock ChangePassword.View view;
+    @Mock
+    EventSourceMock<ChangePasswordEvent> changePasswordEvent;
+    @Mock
+    EventSourceMock<OnErrorEvent> onErrorEvent;
+    @Mock
+    ChangePassword.View view;
     private ChangePassword presenter;
 
     @Before
     public void setup() {
         super.setup();
-        presenter = new ChangePassword(userSystemManager, 
-                workbenchNotification, onErrorEvent, changePasswordEvent, view);
-        assertEquals(view.asWidget(), presenter.asWidget());
+        presenter = new ChangePassword(userSystemManager,
+                                       workbenchNotification,
+                                       onErrorEvent,
+                                       changePasswordEvent,
+                                       view);
+        assertEquals(view.asWidget(),
+                     presenter.asWidget());
     }
 
     @Test
     public void testClear() throws Exception {
         presenter.clear();
-        verify(view, times(1)).clear();
-        verify(view, times(0)).show(anyString());
-        verify(view, times(0)).hide();
+        verify(view,
+               times(1)).clear();
+        verify(view,
+               times(0)).show(anyString());
+        verify(view,
+               times(0)).hide();
         assertNull(presenter.username);
         assertNull(presenter.callback);
     }
-    
+
     @Test
     public void testShowError() throws Exception {
         String error = "error1";
         presenter.showError(error);
-        verify(view, times(0)).clear();
-        verify(view, times(0)).show(anyString());
-        verify(view, times(0)).hide();
-        verify(onErrorEvent, times(1)).fire(any(OnErrorEvent.class));
+        verify(view,
+               times(0)).clear();
+        verify(view,
+               times(0)).show(anyString());
+        verify(view,
+               times(0)).hide();
+        verify(onErrorEvent,
+               times(1)).fire(any(OnErrorEvent.class));
     }
-    
+
     @Test
     public void testShow() throws Exception {
         presenter.show("user1");
-        assertEquals(presenter.username, "user1");
-        verify(view, times(1)).clear();
-        verify(view, times(1)).show(anyString());
+        assertEquals(presenter.username,
+                     "user1");
+        verify(view,
+               times(1)).clear();
+        verify(view,
+               times(1)).show(anyString());
     }
 
     @Test
     public void testPasswordValidator() throws Exception {
-        List<EditorError> errors = presenter.passwordValidator.validate(mock(Editor.class), "password1");
+        List<EditorError> errors = presenter.passwordValidator.validate(mock(Editor.class),
+                                                                        "password1");
         assertTrue(errors.isEmpty());
-        errors = presenter.passwordValidator.validate(mock(Editor.class), "");
+        errors = presenter.passwordValidator.validate(mock(Editor.class),
+                                                      "");
         assertFalse(errors.isEmpty());
     }
-    
+
     @Test
     public void testValidatePasswordMatch() throws Exception {
-        assertTrue(presenter.validatePasswordsMatch("password1", "password1"));
-        assertFalse(presenter.validatePasswordsMatch("password1", "password2"));
+        assertTrue(presenter.validatePasswordsMatch("password1",
+                                                    "password1"));
+        assertFalse(presenter.validatePasswordsMatch("password1",
+                                                     "password2"));
     }
 
     @Test
@@ -100,13 +121,20 @@ public class ChangePasswordTest extends AbstractSecurityManagementTest {
         ChangePassword.ChangePasswordCallback changePasswordCallback = mock(ChangePassword.ChangePasswordCallback.class);
         presenter.username = "user";
         presenter.callback = changePasswordCallback;
-        presenter.onUpdatePassword(newPassw, callback);
-        verify(userManagerService, times(1)).changePassword(presenter.username, newPassw);
-        verify( changePasswordEvent, times( 1 ) ).fire(any(ChangePasswordEvent.class));
-        verify( workbenchNotification, times( 1 ) ).fire(any(NotificationEvent.class));
-        verify( callback, times( 1 ) ).execute();
-        verify( changePasswordCallback, times( 1 ) ).onPasswordUpdated();
-        verify(view, times(1)).hide();
+        presenter.onUpdatePassword(newPassw,
+                                   callback);
+        verify(userManagerService,
+               times(1)).changePassword(presenter.username,
+                                        newPassw);
+        verify(changePasswordEvent,
+               times(1)).fire(any(ChangePasswordEvent.class));
+        verify(workbenchNotification,
+               times(1)).fire(any(NotificationEvent.class));
+        verify(callback,
+               times(1)).execute();
+        verify(changePasswordCallback,
+               times(1)).onPasswordUpdated();
+        verify(view,
+               times(1)).hide();
     }
-    
 }

@@ -16,11 +16,7 @@
 
 package org.uberfire.client.mvp;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.plugin.PluginUtil.*;
-
 import java.util.Set;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -33,6 +29,9 @@ import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PerspectiveDefinition;
+
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.plugin.PluginUtil.ensureIterable;
 
 @ApplicationScoped
 public class PerspectiveManagerImpl implements PerspectiveManager {
@@ -51,18 +50,21 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
     private PerspectiveDefinition livePerspectiveDef;
 
     @Override
-    public void switchToPerspective( final PlaceRequest placeRequest,
-                                     final PerspectiveActivity activity,
-                                     final ParameterizedCommand<PerspectiveDefinition> doWhenFinished ) {
+    public void switchToPerspective(final PlaceRequest placeRequest,
+                                    final PerspectiveActivity activity,
+                                    final ParameterizedCommand<PerspectiveDefinition> doWhenFinished) {
 
         // switching perspectives is a chain of async operations. they're declared here
         // in reverse order (last to first):
 
-        NotifyOthersOfPerspectiveChangeCommand fourthOperation = new NotifyOthersOfPerspectiveChangeCommand( placeRequest, doWhenFinished );
+        NotifyOthersOfPerspectiveChangeCommand fourthOperation = new NotifyOthersOfPerspectiveChangeCommand(placeRequest,
+                                                                                                            doWhenFinished);
 
-        BuildPerspectiveFromDefinitionCommand thirdOperation = new BuildPerspectiveFromDefinitionCommand( activity, fourthOperation );
+        BuildPerspectiveFromDefinitionCommand thirdOperation = new BuildPerspectiveFromDefinitionCommand(activity,
+                                                                                                         fourthOperation);
 
-        FetchPerspectiveCommand secondOperation = new FetchPerspectiveCommand( activity, thirdOperation );
+        FetchPerspectiveCommand secondOperation = new FetchPerspectiveCommand(activity,
+                                                                              thirdOperation);
 
         secondOperation.execute();
     }
@@ -78,28 +80,31 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
     }
 
     @Override
-    public void savePerspectiveState( Command doWhenFinished ) {
-        if ( currentPerspective != null && !currentPerspective.isTransient() ) {
-            wbServices.save( currentPerspective.getIdentifier(), livePerspectiveDef, doWhenFinished );
+    public void savePerspectiveState(Command doWhenFinished) {
+        if (currentPerspective != null && !currentPerspective.isTransient()) {
+            wbServices.save(currentPerspective.getIdentifier(),
+                            livePerspectiveDef,
+                            doWhenFinished);
         } else {
             doWhenFinished.execute();
         }
     }
 
     @Override
-    public void loadPerspectiveStates( final ParameterizedCommand<Set<PerspectiveDefinition>> doWhenFinished ) {
-        wbServices.loadPerspectives( doWhenFinished );
+    public void loadPerspectiveStates(final ParameterizedCommand<Set<PerspectiveDefinition>> doWhenFinished) {
+        wbServices.loadPerspectives(doWhenFinished);
     }
 
     @Override
-    public void removePerspectiveState( final String perspectiveId,
-                                        final Command doWhenFinished ) {
-        wbServices.removePerspectiveState( perspectiveId, doWhenFinished );
+    public void removePerspectiveState(final String perspectiveId,
+                                       final Command doWhenFinished) {
+        wbServices.removePerspectiveState(perspectiveId,
+                                          doWhenFinished);
     }
 
     @Override
-    public void removePerspectiveStates( final Command doWhenFinished ) {
-        wbServices.removePerspectiveStates( doWhenFinished );
+    public void removePerspectiveStates(final Command doWhenFinished) {
+        wbServices.removePerspectiveStates(doWhenFinished);
     }
 
     /**
@@ -111,31 +116,33 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
         private final PerspectiveActivity perspective;
         private final ParameterizedCommand<PerspectiveDefinition> doAfterFetch;
 
-        public FetchPerspectiveCommand( PerspectiveActivity perspective,
-                                        ParameterizedCommand<PerspectiveDefinition> doAfterFetch ) {
-            this.perspective = checkNotNull( "perspective", perspective );
-            this.doAfterFetch = checkNotNull( "doAfterFetch", doAfterFetch );
+        public FetchPerspectiveCommand(PerspectiveActivity perspective,
+                                       ParameterizedCommand<PerspectiveDefinition> doAfterFetch) {
+            this.perspective = checkNotNull("perspective",
+                                            perspective);
+            this.doAfterFetch = checkNotNull("doAfterFetch",
+                                             doAfterFetch);
         }
 
         @Override
         public void execute() {
             currentPerspective = perspective;
-            if ( perspective.isTransient() ) {
+            if (perspective.isTransient()) {
                 //Transient Perspectives are not saved and hence cannot be loaded
-                doAfterFetch.execute( perspective.getDefaultPerspectiveLayout() );
-
+                doAfterFetch.execute(perspective.getDefaultPerspectiveLayout());
             } else {
 
-                wbServices.loadPerspective( perspective.getIdentifier(), new ParameterizedCommand<PerspectiveDefinition>() {
-                    @Override
-                    public void execute( final PerspectiveDefinition response ) {
-                        if ( response == null ) {
-                            doAfterFetch.execute( perspective.getDefaultPerspectiveLayout() );
-                        } else {
-                            doAfterFetch.execute( response );
-                        }
-                    }
-                } );
+                wbServices.loadPerspective(perspective.getIdentifier(),
+                                           new ParameterizedCommand<PerspectiveDefinition>() {
+                                               @Override
+                                               public void execute(final PerspectiveDefinition response) {
+                                                   if (response == null) {
+                                                       doAfterFetch.execute(perspective.getDefaultPerspectiveLayout());
+                                                   } else {
+                                                       doAfterFetch.execute(response);
+                                                   }
+                                               }
+                                           });
             }
         }
     }
@@ -148,36 +155,39 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
         private final ParameterizedCommand<PerspectiveDefinition> doWhenFinished;
         private final PerspectiveActivity activity;
 
-        public BuildPerspectiveFromDefinitionCommand( PerspectiveActivity activity,
-                                                      ParameterizedCommand<PerspectiveDefinition> doWhenFinished ) {
-            this.activity = checkNotNull( "activity", activity );
-            this.doWhenFinished = checkNotNull( "doWhenFinished", doWhenFinished );
+        public BuildPerspectiveFromDefinitionCommand(PerspectiveActivity activity,
+                                                     ParameterizedCommand<PerspectiveDefinition> doWhenFinished) {
+            this.activity = checkNotNull("activity",
+                                         activity);
+            this.doWhenFinished = checkNotNull("doWhenFinished",
+                                               doWhenFinished);
         }
 
         @Override
-        public void execute( PerspectiveDefinition perspectiveDef ) {
-            if ( livePerspectiveDef != null ) {
-                tearDownChildPanelsRecursively( livePerspectiveDef.getRoot() );
+        public void execute(PerspectiveDefinition perspectiveDef) {
+            if (livePerspectiveDef != null) {
+                tearDownChildPanelsRecursively(livePerspectiveDef.getRoot());
             }
             livePerspectiveDef = perspectiveDef;
-            panelManager.setRoot( activity, perspectiveDef.getRoot() );
-            setupPanelRecursively( perspectiveDef.getRoot() );
-            doWhenFinished.execute( perspectiveDef );
+            panelManager.setRoot(activity,
+                                 perspectiveDef.getRoot());
+            setupPanelRecursively(perspectiveDef.getRoot());
+            doWhenFinished.execute(perspectiveDef);
         }
 
-        private void tearDownChildPanelsRecursively( final PanelDefinition panel ) {
-            for ( PanelDefinition child : ensureIterable( panel.getChildren() ) ) {
-                tearDownChildPanelsRecursively( child );
-                panelManager.removeWorkbenchPanel( child );
+        private void tearDownChildPanelsRecursively(final PanelDefinition panel) {
+            for (PanelDefinition child : ensureIterable(panel.getChildren())) {
+                tearDownChildPanelsRecursively(child);
+                panelManager.removeWorkbenchPanel(child);
             }
         }
 
-        private void setupPanelRecursively( final PanelDefinition panel ) {
-            for ( PanelDefinition child : ensureIterable( panel.getChildren() ) ) {
-                final PanelDefinition target = panelManager.addWorkbenchPanel( panel,
-                                                                               child,
-                                                                               child.getPosition() );
-                setupPanelRecursively( target );
+        private void setupPanelRecursively(final PanelDefinition panel) {
+            for (PanelDefinition child : ensureIterable(panel.getChildren())) {
+                final PanelDefinition target = panelManager.addWorkbenchPanel(panel,
+                                                                              child,
+                                                                              child.getPosition());
+                setupPanelRecursively(target);
             }
         }
     }
@@ -187,16 +197,21 @@ public class PerspectiveManagerImpl implements PerspectiveManager {
         private final PlaceRequest placeRequest;
         private final ParameterizedCommand<PerspectiveDefinition> doWhenFinished;
 
-        public NotifyOthersOfPerspectiveChangeCommand( final PlaceRequest placeRequest,
-                                                       final ParameterizedCommand<PerspectiveDefinition> doWhenFinished ) {
-            this.placeRequest = checkNotNull( "placeRequest", placeRequest );
-            this.doWhenFinished = checkNotNull( "doWhenFinished", doWhenFinished );
+        public NotifyOthersOfPerspectiveChangeCommand(final PlaceRequest placeRequest,
+                                                      final ParameterizedCommand<PerspectiveDefinition> doWhenFinished) {
+            this.placeRequest = checkNotNull("placeRequest",
+                                             placeRequest);
+            this.doWhenFinished = checkNotNull("doWhenFinished",
+                                               doWhenFinished);
         }
 
         @Override
-        public void execute( PerspectiveDefinition perspectiveDef ) {
-            perspectiveChangeEvent.fire( new PerspectiveChange( placeRequest, perspectiveDef, currentPerspective.getMenus(), currentPerspective.getIdentifier() ) );
-            doWhenFinished.execute( perspectiveDef );
+        public void execute(PerspectiveDefinition perspectiveDef) {
+            perspectiveChangeEvent.fire(new PerspectiveChange(placeRequest,
+                                                              perspectiveDef,
+                                                              currentPerspective.getMenus(),
+                                                              currentPerspective.getIdentifier()));
+            doWhenFinished.execute(perspectiveDef);
         }
     }
 }

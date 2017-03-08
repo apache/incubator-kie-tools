@@ -16,6 +16,11 @@
 
 package org.uberfire.ext.plugin.client.perspective;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import org.uberfire.client.annotations.Perspective;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.workbench.docks.UberfireDock;
@@ -23,20 +28,13 @@ import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.docks.UberfireDockReadyEvent;
 import org.uberfire.client.workbench.docks.UberfireDocks;
 import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresenter;
-import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.PerspectiveDefinition;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 @ApplicationScoped
-@WorkbenchPerspective( identifier = "PlugInAuthoringPerspective" )
+@WorkbenchPerspective(identifier = "PlugInAuthoringPerspective")
 public class PlugInAuthoringPerspective {
-
 
     @Inject
     UberfireDocks uberfireDocks;
@@ -44,20 +42,19 @@ public class PlugInAuthoringPerspective {
 
     @PostConstruct
     public void setupDocks() {
-        dock = new UberfireDock( UberfireDockPosition.WEST, "ADJUST",
-                                 new DefaultPlaceRequest( "Plugins Explorer" ),
-                                 "PlugInAuthoringPerspective" ).withSize( 400 )
-                .withLabel( "Plugin Explorer" );
-        uberfireDocks.add( dock );
-
+        dock = new UberfireDock(UberfireDockPosition.WEST,
+                                "ADJUST",
+                                new DefaultPlaceRequest("Plugins Explorer"),
+                                "PlugInAuthoringPerspective").withSize(400)
+                .withLabel("Plugin Explorer");
+        uberfireDocks.add(dock);
     }
 
-    public void perspectiveChangeEvent( @Observes UberfireDockReadyEvent dockReadyEvent ) {
-        if ( dockReadyEvent.getCurrentPerspective().equals( "PlugInAuthoringPerspective" ) ) {
-            uberfireDocks.expand( dock );
+    public void perspectiveChangeEvent(@Observes UberfireDockReadyEvent dockReadyEvent) {
+        if (dockReadyEvent.getCurrentPerspective().equals("PlugInAuthoringPerspective")) {
+            uberfireDocks.expand(dock);
         }
     }
-
 
     @Perspective
     public PerspectiveDefinition getPerspective() {
@@ -66,9 +63,8 @@ public class PlugInAuthoringPerspective {
 
     private PerspectiveDefinition buildPerspective() {
         final PerspectiveDefinitionImpl perspective = new PerspectiveDefinitionImpl(
-                MultiListWorkbenchPanelPresenter.class.getName() );
-        perspective.setName( "Plugin Authoring" );
+                MultiListWorkbenchPanelPresenter.class.getName());
+        perspective.setName("Plugin Authoring");
         return perspective;
     }
-
 }

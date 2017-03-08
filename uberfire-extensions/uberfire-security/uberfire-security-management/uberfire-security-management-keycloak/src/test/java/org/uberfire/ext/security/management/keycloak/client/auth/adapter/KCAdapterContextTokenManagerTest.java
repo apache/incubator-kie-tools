@@ -16,6 +16,8 @@
  */
 package org.uberfire.ext.security.management.keycloak.client.auth.adapter;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,16 +26,16 @@ import org.keycloak.KeycloakSecurityContext;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.servlet.http.HttpServletRequest;
-
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KCAdapterContextTokenManagerTest {
-    
-    @Mock HttpServletRequest request;
-    @Mock KeycloakSecurityContext context;
-    
+
+    @Mock
+    HttpServletRequest request;
+    @Mock
+    KeycloakSecurityContext context;
+
     private KCAdapterContextTokenManager tested;
 
     @Before
@@ -47,13 +49,14 @@ public class KCAdapterContextTokenManagerTest {
     @Test
     public void testGetAccessTokenString() throws Exception {
         String s = this.tested.getAccessTokenString();
-        Assert.assertEquals("token1", s);
+        Assert.assertEquals("token1",
+                            s);
     }
 
     @Test
     public void testGetRealm() throws Exception {
         String s = this.tested.getRealm();
-        Assert.assertEquals("realm1", s);
+        Assert.assertEquals("realm1",
+                            s);
     }
-    
 }

@@ -34,51 +34,49 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 public class TreeHierarchyLeafItemView implements IsElement,
                                                   TreeHierarchyLeafItemPresenter.View {
 
-    private TreeHierarchyLeafItemPresenter presenter;
-
-    @Inject
-    private TranslationService translationService;
-
     @Inject
     @DataField("preference-tree-leaf-item-node")
     Div treeNode;
-
     @DataField("preference-tree-leaf-item-label")
     Element label = DOM.createLabel();
+    private TreeHierarchyLeafItemPresenter presenter;
+    @Inject
+    private TranslationService translationService;
 
     @Override
-    public void init( final TreeHierarchyLeafItemPresenter presenter ) {
+    public void init(final TreeHierarchyLeafItemPresenter presenter) {
         this.presenter = presenter;
 
-        treeNode.getStyle().setProperty( "padding-left", presenter.getLevel() * 27 + 24 + "px" );
+        treeNode.getStyle().setProperty("padding-left",
+                                        presenter.getLevel() * 27 + 24 + "px");
 
-        final String preferenceLabel = getPreferenceLabel( presenter.getHierarchyElement().getBundleKey() );
-        label.setInnerHTML( preferenceLabel );
+        final String preferenceLabel = getPreferenceLabel(presenter.getHierarchyElement().getBundleKey());
+        label.setInnerHTML(preferenceLabel);
     }
 
-    private String getPreferenceLabel( String bundleKey ) {
-        return translationService.format( bundleKey );
+    private String getPreferenceLabel(String bundleKey) {
+        return translationService.format(bundleKey);
     }
 
     @Override
     public void deselect() {
-        treeNode.getClassList().remove( "selected" );
+        treeNode.getClassList().remove("selected");
     }
 
     @EventHandler("preference-tree-leaf-item-label")
-    public void select( final ClickEvent event ) {
+    public void select(final ClickEvent event) {
         select();
     }
 
     @Override
     public void select() {
-        if ( !label.hasClassName( "selected" ) ) {
+        if (!label.hasClassName("selected")) {
             presenter.select();
         }
     }
 
     @Override
     public void selectElement() {
-        treeNode.getClassList().add( "selected" );
+        treeNode.getClassList().add("selected");
     }
 }

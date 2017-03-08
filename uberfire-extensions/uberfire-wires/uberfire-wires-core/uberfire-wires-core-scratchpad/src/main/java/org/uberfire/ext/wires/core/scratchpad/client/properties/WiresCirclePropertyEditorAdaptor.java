@@ -37,27 +37,27 @@ public class WiresCirclePropertyEditorAdaptor implements PropertyEditorAdaptor {
     private static final String ATTRIBUTES = "Attributes";
 
     @Override
-    public boolean supports( final WiresBaseShape shape ) {
+    public boolean supports(final WiresBaseShape shape) {
         return shape instanceof WiresCircle;
     }
 
     @Override
-    public List<PropertyEditorCategory> getProperties( final WiresBaseShape shape ) {
-        if ( !supports( shape ) ) {
+    public List<PropertyEditorCategory> getProperties(final WiresBaseShape shape) {
+        if (!supports(shape)) {
             return Collections.emptyList();
         }
         final WiresCircle w = (WiresCircle) shape;
-        final PropertyEditorFieldInfo fieldInfo1 = new PropertyEditorFieldInfo( "Radius",
-                                                                                String.valueOf( w.getRadius() ),
-                                                                                PropertyEditorType.NATURAL_NUMBER ) {
+        final PropertyEditorFieldInfo fieldInfo1 = new PropertyEditorFieldInfo("Radius",
+                                                                               String.valueOf(w.getRadius()),
+                                                                               PropertyEditorType.NATURAL_NUMBER) {
             @Override
-            public void setCurrentStringValue( final String currentStringValue ) {
-                super.setCurrentStringValue( currentStringValue );
+            public void setCurrentStringValue(final String currentStringValue) {
+                super.setCurrentStringValue(currentStringValue);
                 try {
-                    final double r = Double.parseDouble( currentStringValue );
-                    w.setRadius( r );
+                    final double r = Double.parseDouble(currentStringValue);
+                    w.setRadius(r);
                     w.getLayer().batch();
-                } catch ( NumberFormatException e ) {
+                } catch (NumberFormatException e) {
                     //Swallow
                 }
             }
@@ -65,11 +65,10 @@ public class WiresCirclePropertyEditorAdaptor implements PropertyEditorAdaptor {
 
         //Setup Validators
         fieldInfo1.getValidators().clear();
-        fieldInfo1.getValidators().add( new DoubleValidator() );
+        fieldInfo1.getValidators().add(new DoubleValidator());
 
-        final PropertyEditorCategory attributes = new PropertyEditorCategory( ATTRIBUTES ).withField( fieldInfo1 );
+        final PropertyEditorCategory attributes = new PropertyEditorCategory(ATTRIBUTES).withField(fieldInfo1);
 
-        return Lists.newArrayList( attributes );
+        return Lists.newArrayList(attributes);
     }
-
 }

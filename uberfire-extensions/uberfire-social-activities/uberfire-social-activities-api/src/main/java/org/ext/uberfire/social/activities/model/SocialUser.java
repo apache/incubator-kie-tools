@@ -39,15 +39,15 @@ public class SocialUser implements Serializable {
     public SocialUser() {
     }
 
-    public SocialUser( String username ) {
+    public SocialUser(String username) {
         this.userName = username;
         this.realName = "";
         this.email = "";
     }
 
-    public SocialUser( String username,
-                       List<String> followersName,
-                       List<String> followingName ) {
+    public SocialUser(String username,
+                      List<String> followersName,
+                      List<String> followingName) {
         this.userName = username;
         this.realName = "";
         this.email = "";
@@ -55,11 +55,11 @@ public class SocialUser implements Serializable {
         this.followingName = followingName;
     }
 
-    public SocialUser( String username,
-                       String realName,
-                       String email,
-                       List<String> followersName,
-                       List<String> followingName ) {
+    public SocialUser(String username,
+                      String realName,
+                      String email,
+                      List<String> followersName,
+                      List<String> followingName) {
         this.userName = username;
         this.realName = realName;
         this.email = email;
@@ -67,35 +67,35 @@ public class SocialUser implements Serializable {
         this.followingName = followingName;
     }
 
-    public void follow( SocialUser anotherUser ) {
-        if ( validate( anotherUser ) ) {
-            followingName.add( anotherUser.getUserName() );
-            anotherUser.addFollower( this );
+    public void follow(SocialUser anotherUser) {
+        if (validate(anotherUser)) {
+            followingName.add(anotherUser.getUserName());
+            anotherUser.addFollower(this);
         }
     }
 
-    private boolean validate( SocialUser anotherUser ) {
-        return !this.equals( anotherUser ) && !followingName.contains( anotherUser.getUserName() );
+    private boolean validate(SocialUser anotherUser) {
+        return !this.equals(anotherUser) && !followingName.contains(anotherUser.getUserName());
     }
 
-    public void unfollow( SocialUser anotherUser ) {
-        if ( !this.equals( anotherUser ) ) {
-            followingName.remove( anotherUser.getUserName() );
-            anotherUser.removeFollower( this );
+    public void unfollow(SocialUser anotherUser) {
+        if (!this.equals(anotherUser)) {
+            followingName.remove(anotherUser.getUserName());
+            anotherUser.removeFollower(this);
         }
     }
 
-    private void removeFollower( SocialUser socialUser ) {
-        followersName.remove( socialUser.getUserName() );
+    private void removeFollower(SocialUser socialUser) {
+        followersName.remove(socialUser.getUserName());
     }
 
-    private void addFollower( SocialUser socialUser ) {
-        this.followersName.add( socialUser.getUserName() );
+    private void addFollower(SocialUser socialUser) {
+        this.followersName.add(socialUser.getUserName());
     }
 
     public List<String> getFollowersName() {
 
-        if ( followersName == null ) {
+        if (followersName == null) {
             this.followersName = new ArrayList<String>();
         }
         return followersName;
@@ -106,7 +106,7 @@ public class SocialUser implements Serializable {
     }
 
     public List<String> getFollowingName() {
-        if ( followingName == null ) {
+        if (followingName == null) {
             this.followingName = new ArrayList<String>();
         }
         return followingName;
@@ -124,17 +124,17 @@ public class SocialUser implements Serializable {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof SocialUser ) ) {
+        if (!(o instanceof SocialUser)) {
             return false;
         }
 
         SocialUser that = (SocialUser) o;
 
-        if ( userName != null ? !userName.equals( that.userName ) : that.userName != null ) {
+        if (userName != null ? !userName.equals(that.userName) : that.userName != null) {
             return false;
         }
 
@@ -147,21 +147,21 @@ public class SocialUser implements Serializable {
     }
 
     public String getEmail() {
-        if ( email == null ) {
+        if (email == null) {
             return "";
         }
         return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getRealName() {
         return realName;
     }
 
-    public void setRealName( String realName ) {
+    public void setRealName(String realName) {
         this.realName = realName;
-    }
-
-    public void setEmail( String email ) {
-        this.email = email;
     }
 }

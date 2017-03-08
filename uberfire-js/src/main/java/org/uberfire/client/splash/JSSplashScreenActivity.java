@@ -15,11 +15,12 @@
  */
 package org.uberfire.client.splash;
 
+import javax.enterprise.inject.Alternative;
+
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
-
 import org.uberfire.client.mvp.SplashScreenActivity;
 import org.uberfire.client.workbench.widgets.splash.SplashView;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -28,21 +29,18 @@ import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.SplashScreenFilter;
 
-import javax.enterprise.inject.Alternative;
-
 @Alternative
 public class JSSplashScreenActivity implements SplashScreenActivity {
 
+    private final SplashView splash;
     private Boolean showAgain = Boolean.TRUE;
     private Boolean isEnabled = Boolean.TRUE;
     private SplashScreenFilter splashFilter;
-
     private JSNativeSplashScreen nativeSplashScreen;
     private PlaceRequest place;
-    private final SplashView splash;
 
-    public JSSplashScreenActivity( final JSNativeSplashScreen nativeSplashScreen,
-                                   final SplashView splashView ) {
+    public JSSplashScreenActivity(final JSNativeSplashScreen nativeSplashScreen,
+                                  final SplashView splashView) {
         this.nativeSplashScreen = nativeSplashScreen;
         this.splash = splashView;
         this.isEnabled = nativeSplashScreen.isEnabled();
@@ -50,23 +48,24 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
     }
 
     @Override
-    public void onStartup( final PlaceRequest place ) {
+    public void onStartup(final PlaceRequest place) {
         this.place = place;
 
-        nativeSplashScreen.getWbServices().loadSplashScreenFilter( getFilter().getName(), new ParameterizedCommand<SplashScreenFilter>() {
-            @Override
-            public void execute( final SplashScreenFilter response ) {
-                if ( response != null ) {
-                    splashFilter = response;
-                }
-                init();
-            }
-        } );
+        nativeSplashScreen.getWbServices().loadSplashScreenFilter(getFilter().getName(),
+                                                                  new ParameterizedCommand<SplashScreenFilter>() {
+                                                                      @Override
+                                                                      public void execute(final SplashScreenFilter response) {
+                                                                          if (response != null) {
+                                                                              splashFilter = response;
+                                                                          }
+                                                                          init();
+                                                                      }
+                                                                  });
 
-        nativeSplashScreen.onStartup( place );
+        nativeSplashScreen.onStartup(place);
     }
 
-    public void setNativeSplashScreen( JSNativeSplashScreen nativeSplashScreen ) {
+    public void setNativeSplashScreen(JSNativeSplashScreen nativeSplashScreen) {
         this.nativeSplashScreen = nativeSplashScreen;
     }
 
@@ -86,7 +85,7 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
     }
 
     public void init() {
-        if ( !splashFilter.displayNextTime() ) {
+        if (!splashFilter.displayNextTime()) {
             return;
         }
         forceShow();
@@ -99,7 +98,7 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
 
     @Override
     public IsWidget getWidget() {
-        return new HTML( nativeSplashScreen.getElement().getInnerHTML() );
+        return new HTML(nativeSplashScreen.getElement().getInnerHTML());
     }
 
     @Override
@@ -124,7 +123,7 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
 
     @Override
     public void closeIfOpen() {
-        if ( splash.isAttached() ) {
+        if (splash.isAttached()) {
             splash.hide();
             onClose();
         }
@@ -134,15 +133,16 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
     public void forceShow() {
         final IsWidget widget = getWidget();
 
-        splash.setContent( widget, getBodyHeight() );
-        splash.setTitle( getTitle() );
+        splash.setContent(widget,
+                          getBodyHeight());
+        splash.setTitle(getTitle());
         splash.show();
-        splash.addCloseHandler( new CloseHandler<SplashView>() {
+        splash.addCloseHandler(new CloseHandler<SplashView>() {
             @Override
-            public void onClose( final CloseEvent<SplashView> event ) {
+            public void onClose(final CloseEvent<SplashView> event) {
                 JSSplashScreenActivity.this.onClose();
             }
-        } );
+        });
     }
 
     @Override
@@ -157,12 +157,12 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
     }
 
     @Override
-    public Boolean intercept( final PlaceRequest intercepted ) {
-        if ( splashFilter == null ) {
+    public Boolean intercept(final PlaceRequest intercepted) {
+        if (splashFilter == null) {
             return false;
         }
-        for ( final String interceptPoint : splashFilter.getInterceptionPoints() ) {
-            if ( intercepted.getIdentifier().equals( interceptPoint ) ) {
+        for (final String interceptPoint : splashFilter.getInterceptionPoints()) {
+            if (intercepted.getIdentifier().equals(interceptPoint)) {
                 return true;
             }
         }
@@ -177,9 +177,9 @@ public class JSSplashScreenActivity implements SplashScreenActivity {
 
     private void saveState() {
         showAgain = splash.showAgain();
-        if ( showAgain != null ) {
-            splashFilter.setDisplayNextTime( showAgain );
-            nativeSplashScreen.getWbServices().save( splashFilter );
+        if (showAgain != null) {
+            splashFilter.setDisplayNextTime(showAgain);
+            nativeSplashScreen.getWbServices().save(splashFilter);
         }
     }
 }

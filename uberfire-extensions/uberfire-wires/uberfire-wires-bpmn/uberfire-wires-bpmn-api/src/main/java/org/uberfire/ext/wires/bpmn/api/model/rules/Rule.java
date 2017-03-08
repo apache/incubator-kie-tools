@@ -25,5 +25,4 @@ public interface Rule {
      * @return
      *//**/
     String getName();
-
 }

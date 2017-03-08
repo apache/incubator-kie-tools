@@ -16,6 +16,12 @@
 
 package org.uberfire.ext.security.management.client.screens.editor;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -40,14 +46,8 @@ import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-
 @Dependent
-@WorkbenchScreen(identifier = UserEditorScreen.SCREEN_ID )
+@WorkbenchScreen(identifier = UserEditorScreen.SCREEN_ID)
 public class UserEditorScreen {
 
     public static final String SCREEN_ID = "UserEditorScreen";
@@ -59,7 +59,6 @@ public class UserEditorScreen {
 
     @Inject
     Event<ChangeTitleWidgetEvent> changeTitleNotification;
-
 
     @Inject
     ErrorPopupPresenter errorPopupPresenter;
@@ -75,10 +74,9 @@ public class UserEditorScreen {
 
     @Inject
     UserCreationWorkflow userCreationWorkflow;
-
+    String userId;
     private String title = UsersManagementWorkbenchConstants.INSTANCE.userEditor();
     private PlaceRequest placeRequest;
-    String userId;
 
     @PostConstruct
     public void init() {
@@ -87,15 +85,17 @@ public class UserEditorScreen {
     @OnStartup
     public void onStartup(final PlaceRequest placeRequest) {
         this.placeRequest = placeRequest;
-        final String addUser = placeRequest.getParameter(ADD_USER, "false");
-        final String userId = placeRequest.getParameter(USER_ID, null);
+        final String addUser = placeRequest.getParameter(ADD_USER,
+                                                         "false");
+        final String userId = placeRequest.getParameter(USER_ID,
+                                                        null);
         if (Boolean.valueOf(addUser)) {
             create();
         } else {
             show(userId);
         }
     }
-    
+
     @OnOpen
     public void onOpen() {
 
@@ -128,35 +128,40 @@ public class UserEditorScreen {
     public IsWidget getWidget() {
         return baseScreen;
     }
-    
+
     @WorkbenchContextId
     public String getMyContextRef() {
         return "userEditorContext";
     }
 
     void onEditUserEvent(@Observes final OnEditEvent onEditEvent) {
-        if (checkEventContext(onEditEvent, userEditorWorkflow.getUserEditor())) {
+        if (checkEventContext(onEditEvent,
+                              userEditorWorkflow.getUserEditor())) {
             try {
                 User user = (User) onEditEvent.getInstance();
                 this.userId = user.getIdentifier();
                 changeTitleNotification.fire(new ChangeTitleWidgetEvent(placeRequest,
-                        new SafeHtmlBuilder()
-                                .appendEscaped(UsersManagementWorkbenchConstants.INSTANCE.editUser(user.getIdentifier()))
-                                .toSafeHtml().asString()));
-            } catch (ClassCastException e) { }
+                                                                        new SafeHtmlBuilder()
+                                                                                .appendEscaped(UsersManagementWorkbenchConstants.INSTANCE.editUser(user.getIdentifier()))
+                                                                                .toSafeHtml().asString()));
+            } catch (ClassCastException e) {
+            }
         }
     }
 
     void onShowUserEvent(@Observes final OnShowEvent onShowEvent) {
-        if (checkEventContext(onShowEvent, userEditorWorkflow.getUserEditor())) {
+        if (checkEventContext(onShowEvent,
+                              userEditorWorkflow.getUserEditor())) {
             try {
                 User user = (User) onShowEvent.getInstance();
                 this.userId = user.getIdentifier();
                 final String title = new SafeHtmlBuilder()
                         .appendEscaped(UsersManagementWorkbenchConstants.INSTANCE.showUser(user.getIdentifier()))
                         .toSafeHtml().asString();
-                changeTitleNotification.fire(new ChangeTitleWidgetEvent(placeRequest, title));
-            } catch (ClassCastException e) { }
+                changeTitleNotification.fire(new ChangeTitleWidgetEvent(placeRequest,
+                                                                        title));
+            } catch (ClassCastException e) {
+            }
         }
     }
 
@@ -167,7 +172,8 @@ public class UserEditorScreen {
         }
     }
 
-    private boolean checkEventContext(final ContextualEvent contextualEvent, final Object context) {
+    private boolean checkEventContext(final ContextualEvent contextualEvent,
+                                      final Object context) {
         return contextualEvent != null && contextualEvent.getContext() != null && contextualEvent.getContext().equals(context);
     }
 
@@ -178,5 +184,4 @@ public class UserEditorScreen {
     void showError(final String message) {
         errorPopupPresenter.showMessage(message);
     }
-    
 }

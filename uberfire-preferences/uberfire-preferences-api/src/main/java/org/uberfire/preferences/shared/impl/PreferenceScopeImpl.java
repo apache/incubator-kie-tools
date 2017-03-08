@@ -33,9 +33,9 @@ public class PreferenceScopeImpl implements PreferenceScope {
 
     private final PreferenceScope childScope;
 
-    public PreferenceScopeImpl( @MapsTo("type") final String type,
-                                @MapsTo("key") final String key,
-                                @MapsTo("childScope") final PreferenceScope childScope ) {
+    public PreferenceScopeImpl(@MapsTo("type") final String type,
+                               @MapsTo("key") final String key,
+                               @MapsTo("childScope") final PreferenceScope childScope) {
         this.type = type;
         this.key = key;
         this.childScope = childScope;
@@ -57,33 +57,32 @@ public class PreferenceScopeImpl implements PreferenceScope {
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         final PreferenceScopeImpl that = (PreferenceScopeImpl) o;
 
-        if ( type != null ? !type.equals( that.type ) : that.type != null ) {
+        if (type != null ? !type.equals(that.type) : that.type != null) {
             return false;
         }
-        if ( key != null ? !key.equals( that.key ) : that.key != null ) {
+        if (key != null ? !key.equals(that.key) : that.key != null) {
             return false;
         }
-        return !( childScope != null ? !childScope.equals( that.childScope ) : that.childScope != null );
-
+        return !(childScope != null ? !childScope.equals(that.childScope) : that.childScope != null);
     }
 
     @Override
     public int hashCode() {
         int result = type != null ? type.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( key != null ? key.hashCode() : 0 );
+        result = 31 * result + (key != null ? key.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( childScope != null ? childScope.hashCode() : 0 );
+        result = 31 * result + (childScope != null ? childScope.hashCode() : 0);
         result = ~~result;
         return result;
     }

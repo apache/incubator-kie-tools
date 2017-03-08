@@ -16,6 +16,9 @@
 
 package org.uberfire.ext.layout.editor.client.components.rows;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -23,45 +26,38 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.client.components.columns.ComponentColumn;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
-import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
-import static org.uberfire.ext.layout.editor.client.infra.HTML5DnDHelper.extractDndData;
 import static org.jboss.errai.common.client.dom.DOMUtil.addCSSClass;
-import static org.jboss.errai.common.client.dom.DOMUtil.removeCSSClass;
 import static org.jboss.errai.common.client.dom.DOMUtil.hasCSSClass;
+import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
+import static org.jboss.errai.common.client.dom.DOMUtil.removeCSSClass;
+import static org.uberfire.ext.layout.editor.client.infra.HTML5DnDHelper.extractDndData;
 
 @Dependent
 @Templated
 public class RowView
         implements UberElement<Row>,
-        Row.View, IsElement {
-
-    private Row presenter;
+                   Row.View,
+                   IsElement {
 
     @Inject
     @DataField
     Div upper;
-
     @Inject
     @DataField
     Div bottom;
-
     @Inject
     @DataField
     Div row;
-
     @Inject
     @DataField
     Div content;
-
     @Inject
-    @DataField( "mainrow" )
+    @DataField("mainrow")
     Div mainRow;
+    private Row presenter;
 
     @Override
-    public void init( Row presenter ) {
+    public void init(Row presenter) {
         this.presenter = presenter;
         setupEvents();
     }
@@ -72,103 +68,123 @@ public class RowView
     }
 
     private void setupBottomEvents() {
-        bottom.setOndragover( e -> {
-            if ( presenter.isDropEnable() ) {
+        bottom.setOndragover(e -> {
+            if (presenter.isDropEnable()) {
                 e.preventDefault();
-                addCSSClass( bottom, "rowDropPreview" );
+                addCSSClass(bottom,
+                            "rowDropPreview");
             }
-        } );
-        bottom.setOnmouseout( e -> {
-            if ( presenter.isDropEnable() ) {
+        });
+        bottom.setOnmouseout(e -> {
+            if (presenter.isDropEnable()) {
                 e.preventDefault();
-                removeCSSClass( bottom, "rowDropPreview" );
+                removeCSSClass(bottom,
+                               "rowDropPreview");
             }
-        } );
-        bottom.setOndrop( e -> {
-            if ( presenter.isDropEnable() ) {
+        });
+        bottom.setOndrop(e -> {
+            if (presenter.isDropEnable()) {
                 e.preventDefault();
-                removeCSSClass( bottom, "rowDropPreview" );
-                presenter.drop( extractDndData( e ), RowDrop.Orientation.AFTER );
+                removeCSSClass(bottom,
+                               "rowDropPreview");
+                presenter.drop(extractDndData(e),
+                               RowDrop.Orientation.AFTER);
             }
-        } );
-        bottom.setOndragleave( e -> {
-            if ( presenter.isDropEnable() ) {
+        });
+        bottom.setOndragleave(e -> {
+            if (presenter.isDropEnable()) {
                 e.preventDefault();
-                removeCSSClass( bottom, "rowDropPreview" );
+                removeCSSClass(bottom,
+                               "rowDropPreview");
             }
-        } );
+        });
     }
 
     private void setupUpperEvents() {
-        if ( presenter.isDropEnable() ) {
-            upper.setAttribute( "draggable", "true" );
+        if (presenter.isDropEnable()) {
+            upper.setAttribute("draggable",
+                               "true");
         }
-        upper.setOndragstart( event -> {
-            if ( presenter.isDropEnable() ) {
+        upper.setOndragstart(event -> {
+            if (presenter.isDropEnable()) {
                 presenter.dragStart();
-                addCSSClass( row, "rowDndPreview" );
-                removeCSSClass( upper, "rowMovePreview" );
-                removeCSSClass( bottom, "rowMovePreview" );
+                addCSSClass(row,
+                            "rowDndPreview");
+                removeCSSClass(upper,
+                               "rowMovePreview");
+                removeCSSClass(bottom,
+                               "rowMovePreview");
             }
-        } );
-        upper.setOndragend( event -> {
-            if ( presenter.isDropEnable() ) {
-                if ( hasCSSClass( row, "rowDndPreview" ) ) {
-                    removeCSSClass( row, "rowDndPreview" );
+        });
+        upper.setOndragend(event -> {
+            if (presenter.isDropEnable()) {
+                if (hasCSSClass(row,
+                                "rowDndPreview")) {
+                    removeCSSClass(row,
+                                   "rowDndPreview");
                 }
                 presenter.dragEndMove();
             }
-        } );
-        upper.setOndragover( e -> {
-            if ( presenter.isDropEnable() ) {
+        });
+        upper.setOndragover(e -> {
+            if (presenter.isDropEnable()) {
                 e.preventDefault();
-                addCSSClass( upper, "rowDropPreview" );
+                addCSSClass(upper,
+                            "rowDropPreview");
             }
-        } );
-        upper.setOnmouseout( e -> {
-            if ( presenter.isDropEnable() ) {
-                removeCSSClass( upper, "rowMovePreview" );
-                removeCSSClass( row, "rowMovePreview" );
-                removeCSSClass( bottom, "rowMovePreview" );
+        });
+        upper.setOnmouseout(e -> {
+            if (presenter.isDropEnable()) {
+                removeCSSClass(upper,
+                               "rowMovePreview");
+                removeCSSClass(row,
+                               "rowMovePreview");
+                removeCSSClass(bottom,
+                               "rowMovePreview");
 
                 e.preventDefault();
-                removeCSSClass( upper, "rowDropPreview" );
+                removeCSSClass(upper,
+                               "rowDropPreview");
             }
-        } );
-        upper.setOnmouseover( e -> {
-            if ( presenter.isDropEnable() ) {
+        });
+        upper.setOnmouseover(e -> {
+            if (presenter.isDropEnable()) {
                 e.preventDefault();
-                addCSSClass( upper, "rowMovePreview" );
-                addCSSClass( row, "rowMovePreview" );
-                addCSSClass( bottom, "rowMovePreview" );
+                addCSSClass(upper,
+                            "rowMovePreview");
+                addCSSClass(row,
+                            "rowMovePreview");
+                addCSSClass(bottom,
+                            "rowMovePreview");
             }
-        } );
-        upper.setOndragleave( e -> {
-            if ( presenter.isDropEnable() ) {
+        });
+        upper.setOndragleave(e -> {
+            if (presenter.isDropEnable()) {
                 e.preventDefault();
-                removeCSSClass( upper, "rowDropPreview" );
+                removeCSSClass(upper,
+                               "rowDropPreview");
             }
-        } );
-        upper.setOndrop( e -> {
-            if ( presenter.isDropEnable() ) {
+        });
+        upper.setOndrop(e -> {
+            if (presenter.isDropEnable()) {
                 e.preventDefault();
-                removeCSSClass( upper, "rowDropPreview" );
-                presenter.drop( extractDndData( e ), RowDrop.Orientation.BEFORE );
+                removeCSSClass(upper,
+                               "rowDropPreview");
+                presenter.drop(extractDndData(e),
+                               RowDrop.Orientation.BEFORE);
             }
-        } );
+        });
     }
 
     @Override
-    public void addColumn( UberElement<ComponentColumn> view ) {
-        content.appendChild( view.getElement() );
+    public void addColumn(UberElement<ComponentColumn> view) {
+        content.appendChild(view.getElement());
     }
 
     @Override
     public void clear() {
-        removeAllChildren( content );
+        removeAllChildren(content);
     }
-
-
 }
 
 

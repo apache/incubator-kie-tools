@@ -28,9 +28,9 @@ public class GridHeaderRenderContext {
     private final List<GridColumn<?>> blockColumns;
     private final boolean isSelectionLayer;
 
-    public GridHeaderRenderContext( final List<GridColumn<?>> allColumns,
-                                    final List<GridColumn<?>> blockColumns,
-                                    final boolean isSelectionLayer ) {
+    public GridHeaderRenderContext(final List<GridColumn<?>> allColumns,
+                                   final List<GridColumn<?>> blockColumns,
+                                   final boolean isSelectionLayer) {
         this.allColumns = allColumns;
         this.blockColumns = blockColumns;
         this.isSelectionLayer = isSelectionLayer;
@@ -59,5 +59,4 @@ public class GridHeaderRenderContext {
     public boolean isSelectionLayer() {
         return isSelectionLayer;
     }
-
 }

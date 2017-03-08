@@ -18,8 +18,9 @@ package org.uberfire.security.crypt;
 
 public interface CryptProvider {
 
-    String encrypt(final String content, final Object salt);
+    String encrypt(final String content,
+                   final Object salt);
 
-    String decrypt(final String content, final Object salt);
-
+    String decrypt(final String content,
+                   final Object salt);
 }

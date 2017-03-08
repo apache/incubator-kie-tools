@@ -44,12 +44,12 @@ public abstract class BaseGroup extends Composite {
 
     @PostConstruct
     public void init() {
-        panel = new FocusableLienzoPanel( ShapeFactoryUtil.WIDTH_PANEL,
-                                          ShapesUtils.calculateHeight( ShapesUtils.getNumberOfShapesInCategory( getCategory(),
-                                                                                                                factoriesCache.getShapeFactories() ) ) );
+        panel = new FocusableLienzoPanel(ShapeFactoryUtil.WIDTH_PANEL,
+                                         ShapesUtils.calculateHeight(ShapesUtils.getNumberOfShapesInCategory(getCategory(),
+                                                                                                             factoriesCache.getShapeFactories())));
         layer = new Layer();
-        panel.getScene().add( layer );
-        initWidget( panel );
+        panel.getScene().add(layer);
+        initWidget(panel);
 
         drawStencils();
     }
@@ -60,24 +60,23 @@ public abstract class BaseGroup extends Composite {
         //Get PaletteShape for each Factory
         final Category category = getCategory();
         final List<PaletteShape> shapes = new ArrayList<PaletteShape>();
-        for ( ShapeFactory factory : factoriesCache.getShapeFactories() ) {
-            if ( factory.getCategory().equals( category ) ) {
-                shapes.add( stencilBuilder.build( panel,
-                                                  new StringFactoryHelper( factory.getShapeDescription() ),
-                                                  factory ) );
+        for (ShapeFactory factory : factoriesCache.getShapeFactories()) {
+            if (factory.getCategory().equals(category)) {
+                shapes.add(stencilBuilder.build(panel,
+                                                new StringFactoryHelper(factory.getShapeDescription()),
+                                                factory));
             }
         }
 
         //Add PaletteShapes to the UI
         int shapeCount = 1;
-        for ( PaletteShape shape : shapes ) {
-            shape.setX( PaletteLayoutUtilities.getX( shapeCount ) );
-            shape.setY( PaletteLayoutUtilities.getY( shapeCount ) );
-            layer.add( shape );
+        for (PaletteShape shape : shapes) {
+            shape.setX(PaletteLayoutUtilities.getX(shapeCount));
+            shape.setY(PaletteLayoutUtilities.getY(shapeCount));
+            layer.add(shape);
             shapeCount++;
         }
 
         layer.batch();
     }
-
 }

@@ -47,17 +47,17 @@ public class PreferenceScopeResolutionStrategyProducer {
 
     @Produces
     @Customizable
-    public PreferenceScopeResolutionStrategy preferenceScopeResolutionStrategyProducer( final InjectionPoint ip ) {
-        if ( this.preferenceScopeResolutionStrategy.isUnsatisfied() ) {
+    public PreferenceScopeResolutionStrategy preferenceScopeResolutionStrategyProducer(final InjectionPoint ip) {
+        if (this.preferenceScopeResolutionStrategy.isUnsatisfied()) {
             String componentKey = null;
-            Annotation annotation = ip.getAnnotated().getAnnotation( ComponentKey.class );
-            if ( annotation != null ) {
-                componentKey = ( (ComponentKey) annotation ).value();
+            Annotation annotation = ip.getAnnotated().getAnnotation(ComponentKey.class);
+            if (annotation != null) {
+                componentKey = ((ComponentKey) annotation).value();
             }
 
-            if ( defaultPreferenceScopeResolutionStrategy == null ) {
-                defaultPreferenceScopeResolutionStrategy = new DefaultPreferenceScopeResolutionStrategy( scopeFactory,
-                                                                                                         componentKey );
+            if (defaultPreferenceScopeResolutionStrategy == null) {
+                defaultPreferenceScopeResolutionStrategy = new DefaultPreferenceScopeResolutionStrategy(scopeFactory,
+                                                                                                        componentKey);
             }
 
             return defaultPreferenceScopeResolutionStrategy;

@@ -20,40 +20,41 @@ import java.util.Collection;
 
 import com.google.gwt.core.client.GWT;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 
 public class SocialBundleHelper {
 
-    public static String getItemDescription( final String key ) {
-        Collection<SyncBeanDef<SocialBundleService>> socialBundleServices = IOC.getBeanManager().lookupBeans( SocialBundleService.class );
+    public static String getItemDescription(final String key) {
+        Collection<SyncBeanDef<SocialBundleService>> socialBundleServices = IOC.getBeanManager().lookupBeans(SocialBundleService.class);
         String value = null;
 
-        for ( SyncBeanDef<SocialBundleService> serviceBean : socialBundleServices ) {
+        for (SyncBeanDef<SocialBundleService> serviceBean : socialBundleServices) {
             SocialBundleService service = serviceBean.getInstance();
             try {
-                value = getTranslationFromService( key, value, service );
-            } catch ( DuplicatedTranslationException e ) {
-                GWT.log( e.getMessage() );
+                value = getTranslationFromService(key,
+                                                  value,
+                                                  service);
+            } catch (DuplicatedTranslationException e) {
+                GWT.log(e.getMessage());
                 break;
             }
-            IOC.getBeanManager().destroyBean( serviceBean );
+            IOC.getBeanManager().destroyBean(serviceBean);
         }
 
         return value != null ? value : key;
     }
 
-    static String getTranslationFromService( final String key,
-                                             final String currentValue,
-                                             final SocialBundleService service ) throws DuplicatedTranslationException {
-        final String translation = service.getTranslation( key );
+    static String getTranslationFromService(final String key,
+                                            final String currentValue,
+                                            final SocialBundleService service) throws DuplicatedTranslationException {
+        final String translation = service.getTranslation(key);
         String value;
 
-        if ( translation != null ) {
-            if ( currentValue == null ) {
+        if (translation != null) {
+            if (currentValue == null) {
                 value = translation;
             } else {
-                throw new DuplicatedTranslationException( key );
+                throw new DuplicatedTranslationException(key);
             }
         } else {
             value = currentValue;

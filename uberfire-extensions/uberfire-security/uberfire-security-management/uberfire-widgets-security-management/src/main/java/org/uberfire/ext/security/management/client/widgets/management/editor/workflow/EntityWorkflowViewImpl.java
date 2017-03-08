@@ -16,6 +16,9 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.workflow;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -29,41 +32,26 @@ import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.client.ui.html.Text;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-
 @Dependent
 public class EntityWorkflowViewImpl extends Composite implements EntityWorkflowView {
 
-    interface UserEditorWorkflowViewBinder
-            extends
-            UiBinder<Widget, EntityWorkflowViewImpl> {
-
-    }
-
     private static UserEditorWorkflowViewBinder uiBinder = GWT.create(UserEditorWorkflowViewBinder.class);
-
     @UiField
     Alert notifications;
-
     @UiField
     Text notificationLabel;
-    
     @UiField
     Column content;
-    
     @UiField
     Button saveButton;
-
     @UiField
     Button cancelButton;
-
     private Callback callback;
-    
+
     @PostConstruct
     public void init() {
         // Bind this view and initialize the widget.
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
@@ -118,18 +106,23 @@ public class EntityWorkflowViewImpl extends Composite implements EntityWorkflowV
         return this;
     }
 
-    @UiHandler( "saveButton" )
-    public void onEditButtonClick( final ClickEvent event ) {
+    @UiHandler("saveButton")
+    public void onEditButtonClick(final ClickEvent event) {
         if (callback != null) {
             callback.onSave();
         }
     }
 
-    @UiHandler( "cancelButton" )
-    public void onDeleteButtonClick( final ClickEvent event ) {
+    @UiHandler("cancelButton")
+    public void onDeleteButtonClick(final ClickEvent event) {
         if (callback != null) {
             callback.onCancel();
         }
     }
 
+    interface UserEditorWorkflowViewBinder
+            extends
+            UiBinder<Widget, EntityWorkflowViewImpl> {
+
+    }
 }

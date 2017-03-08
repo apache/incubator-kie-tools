@@ -49,116 +49,157 @@ import static org.junit.Assert.*;
 public class DotFileAttrViewTest {
 
     protected static final List<File> tempFiles = new ArrayList<File>();
-
+    protected static IOService ioService = null;
     private static boolean created = false;
+
+    @AfterClass
+    @BeforeClass
+    public static void cleanup() {
+        for (final File tempFile : tempFiles) {
+            FileUtils.deleteQuietly(tempFile);
+        }
+    }
+
+    public static File createTempDirectory()
+            throws IOException {
+        final File temp = File.createTempFile("temp",
+                                              Long.toString(System.nanoTime()));
+        if (!(temp.delete())) {
+            throw new IOException("Could not delete temp file: " + temp.getAbsolutePath());
+        }
+
+        if (!(temp.mkdir())) {
+            throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
+        }
+
+        tempFiles.add(temp);
+
+        return temp;
+    }
 
     @Test
     public void testDotFileAttrAccess() throws IOException {
-        final URI newRepo = URI.create( "git://" + new Date().getTime() + "-repo-test" );
-        ioService().newFileSystem( newRepo, new HashMap<String, Object>() );
+        final URI newRepo = URI.create("git://" + new Date().getTime() + "-repo-test");
+        ioService().newFileSystem(newRepo,
+                                  new HashMap<String, Object>());
 
-        final Path dir = ioService().get( newRepo );
-        final Path file = dir.resolve( "myFile.txt" );
+        final Path dir = ioService().get(newRepo);
+        final Path file = dir.resolve("myFile.txt");
 
-        ioService().write( file, "mycontent", Collections.<OpenOption>emptySet() );
-
-        {
-            final DublinCoreView view = ioService().getFileAttributeView( file, DublinCoreView.class );
-
-            assertNotNull( view );
-
-            assertNotNull( view.readAttributes() );
-
-            assertNotNull( view.readAttributes().languages() );
-
-            assertEquals( 0, view.readAttributes().languages().size() );
-        }
-
-        ioService().write( file, "mycontent", Collections.<OpenOption>emptySet(), new FileAttribute<Object>() {
-                               @Override
-                               public String name() {
-                                   return "dcore.creator";
-                               }
-
-                               @Override
-                               public Object value() {
-                                   return "some user name here";
-                               }
-                           }, new FileAttribute<Object>() {
-                               @Override
-                               public String name() {
-                                   return "dcore.language[0]";
-                               }
-
-                               @Override
-                               public Object value() {
-                                   return "en";
-                               }
-                           }, new FileAttribute<Object>() {
-                               @Override
-                               public String name() {
-                                   return "dcore.language[1]";
-                               }
-
-                               @Override
-                               public Object value() {
-                                   return "pt-BR";
-                               }
-                           }
-                         );
+        ioService().write(file,
+                          "mycontent",
+                          Collections.<OpenOption>emptySet());
 
         {
-            final DublinCoreView view = ioService().getFileAttributeView( file, DublinCoreView.class );
+            final DublinCoreView view = ioService().getFileAttributeView(file,
+                                                                         DublinCoreView.class);
 
-            assertNotNull( view );
+            assertNotNull(view);
 
-            assertNotNull( view.readAttributes() );
+            assertNotNull(view.readAttributes());
 
-            assertNotNull( view.readAttributes().languages() );
+            assertNotNull(view.readAttributes().languages());
 
-            assertEquals( 2, view.readAttributes().languages().size() );
-
-            assertTrue( view.readAttributes().languages().contains( "pt-BR" ) );
-
-            assertTrue( view.readAttributes().languages().contains( "en" ) );
-
-            assertEquals( 1, view.readAttributes().creators().size() );
-
-            assertTrue( view.readAttributes().creators().contains( "some user name here" ) );
+            assertEquals(0,
+                         view.readAttributes().languages().size());
         }
 
-        final Path dotFile = file.getParent().resolve( ".myFile.txt" );
-        assertTrue( Files.exists( dotFile ) );
+        ioService().write(file,
+                          "mycontent",
+                          Collections.<OpenOption>emptySet(),
+                          new FileAttribute<Object>() {
+                              @Override
+                              public String name() {
+                                  return "dcore.creator";
+                              }
 
-        final VersionAttributeView attrs = Files.getFileAttributeView( dotFile, VersionAttributeView.class );
-        assertEquals( 1, attrs.readAttributes().history().records().size() );
+                              @Override
+                              public Object value() {
+                                  return "some user name here";
+                              }
+                          },
+                          new FileAttribute<Object>() {
+                              @Override
+                              public String name() {
+                                  return "dcore.language[0]";
+                              }
 
-        final Map<String, Object> result = Files.readAttributes( dotFile, "*" );
-        assertNotNull( result );
+                              @Override
+                              public Object value() {
+                                  return "en";
+                              }
+                          },
+                          new FileAttribute<Object>() {
+                              @Override
+                              public String name() {
+                                  return "dcore.language[1]";
+                              }
+
+                              @Override
+                              public Object value() {
+                                  return "pt-BR";
+                              }
+                          }
+        );
+
+        {
+            final DublinCoreView view = ioService().getFileAttributeView(file,
+                                                                         DublinCoreView.class);
+
+            assertNotNull(view);
+
+            assertNotNull(view.readAttributes());
+
+            assertNotNull(view.readAttributes().languages());
+
+            assertEquals(2,
+                         view.readAttributes().languages().size());
+
+            assertTrue(view.readAttributes().languages().contains("pt-BR"));
+
+            assertTrue(view.readAttributes().languages().contains("en"));
+
+            assertEquals(1,
+                         view.readAttributes().creators().size());
+
+            assertTrue(view.readAttributes().creators().contains("some user name here"));
+        }
+
+        final Path dotFile = file.getParent().resolve(".myFile.txt");
+        assertTrue(Files.exists(dotFile));
+
+        final VersionAttributeView attrs = Files.getFileAttributeView(dotFile,
+                                                                      VersionAttributeView.class);
+        assertEquals(1,
+                     attrs.readAttributes().history().records().size());
+
+        final Map<String, Object> result = Files.readAttributes(dotFile,
+                                                                "*");
+        assertNotNull(result);
     }
 
-    protected static IOService ioService = null;
-
     public IOService ioService() {
-        if ( ioService == null ) {
+        if (ioService == null) {
             ioService = new IOServiceDotFileImpl();
-            assertTrue( PriorityDisposableRegistry.getDisposables().contains( ioService ) );
+            assertTrue(PriorityDisposableRegistry.getDisposables().contains(ioService));
         }
         return ioService;
     }
 
     @Before
     public void setup() throws IOException {
-        if ( !created ) {
+        if (!created) {
             final String path = createTempDirectory().getAbsolutePath();
-            System.setProperty( "org.uberfire.nio.git.dir", path );
-            System.out.println( ".niogit: " + path );
+            System.setProperty("org.uberfire.nio.git.dir",
+                               path);
+            System.out.println(".niogit: " + path);
 
-            final URI newRepo = URI.create( "git://repo-test" );
+            final URI newRepo = URI.create("git://repo-test");
 
             try {
-                ioService().newFileSystem( newRepo, new HashMap<String, Object>() );
-            } catch ( final Exception ex ) {
+                ioService().newFileSystem(newRepo,
+                                          new HashMap<String, Object>());
+            } catch (final Exception ex) {
             } finally {
                 created = true;
             }
@@ -170,29 +211,4 @@ public class DotFileAttrViewTest {
         // dispose the IOService or it will badly influence the tests executed after
         ioService.dispose();
     }
-
-    @AfterClass
-    @BeforeClass
-    public static void cleanup() {
-        for ( final File tempFile : tempFiles ) {
-            FileUtils.deleteQuietly( tempFile );
-        }
-    }
-
-    public static File createTempDirectory()
-            throws IOException {
-        final File temp = File.createTempFile( "temp", Long.toString( System.nanoTime() ) );
-        if ( !( temp.delete() ) ) {
-            throw new IOException( "Could not delete temp file: " + temp.getAbsolutePath() );
-        }
-
-        if ( !( temp.mkdir() ) ) {
-            throw new IOException( "Could not create temp directory: " + temp.getAbsolutePath() );
-        }
-
-        tempFiles.add( temp );
-
-        return temp;
-    }
-
 }

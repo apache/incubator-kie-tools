@@ -32,23 +32,25 @@ import org.uberfire.ext.widgets.common.client.colorpicker.dialog.DialogClosedHan
 
 public class PropertyEditorColorPicker extends AbstractPropertyEditorWidget {
 
-    interface MyUiBinder extends UiBinder<Widget, PropertyEditorColorPicker> {}
-    private static MyUiBinder uiBinder = GWT.create( MyUiBinder.class );
-
+    private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
     @UiField
     InputGroupAddon icon;
-
     @UiField
     TextBox colorTextBox;
 
     public PropertyEditorColorPicker() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
         icon.addDomHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                openColorPickerDialog();
-            }
-        }, ClickEvent.getType());
+                               public void onClick(ClickEvent event) {
+                                   openColorPickerDialog();
+                               }
+                           },
+                           ClickEvent.getType());
+    }
+
+    public String getValue() {
+        return colorTextBox.getValue();
     }
 
     public void setValue(String value) {
@@ -57,11 +59,7 @@ public class PropertyEditorColorPicker extends AbstractPropertyEditorWidget {
         }
     }
 
-    public String getValue() {
-        return colorTextBox.getValue();
-    }
-
-    public void addChangeHandler(ValueChangeHandler<String> changeHandler ) {
+    public void addChangeHandler(ValueChangeHandler<String> changeHandler) {
         colorTextBox.addValueChangeHandler(changeHandler);
     }
 
@@ -69,15 +67,21 @@ public class PropertyEditorColorPicker extends AbstractPropertyEditorWidget {
         final ColorPickerDialog dlg = new ColorPickerDialog();
         dlg.getElement().getStyle().setZIndex(9999);
         String color = getValue();
-        if (ColorValidator.isValid(color)) dlg.setColor(color);
+        if (ColorValidator.isValid(color)) {
+            dlg.setColor(color);
+        }
         dlg.addDialogClosedHandler(new DialogClosedHandler() {
             public void dialogClosed(DialogClosedEvent event) {
                 if (!event.isCanceled()) {
-                    colorTextBox.setValue(dlg.getColor().toUpperCase(), true);
+                    colorTextBox.setValue(dlg.getColor().toUpperCase(),
+                                          true);
                 }
             }
         });
         dlg.showRelativeTo(icon);
     }
 
+    interface MyUiBinder extends UiBinder<Widget, PropertyEditorColorPicker> {
+
+    }
 }

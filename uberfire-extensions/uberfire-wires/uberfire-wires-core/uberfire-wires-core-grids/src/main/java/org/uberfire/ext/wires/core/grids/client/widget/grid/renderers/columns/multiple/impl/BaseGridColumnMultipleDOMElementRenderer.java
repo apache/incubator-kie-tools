@@ -26,9 +26,9 @@ public abstract class BaseGridColumnMultipleDOMElementRenderer<T, W extends Widg
 
     protected final MultipleDOMElementFactory<W, E> factory;
 
-    public BaseGridColumnMultipleDOMElementRenderer( final MultipleDOMElementFactory<W, E> factory ) {
-        this.factory = PortablePreconditions.checkNotNull( "factory",
-                                                           factory );
+    public BaseGridColumnMultipleDOMElementRenderer(final MultipleDOMElementFactory<W, E> factory) {
+        this.factory = PortablePreconditions.checkNotNull("factory",
+                                                          factory);
     }
 
     @Override
@@ -45,5 +45,4 @@ public abstract class BaseGridColumnMultipleDOMElementRenderer<T, W extends Widg
     public void freeUnusedResources() {
         factory.freeUnusedResources();
     }
-
 }

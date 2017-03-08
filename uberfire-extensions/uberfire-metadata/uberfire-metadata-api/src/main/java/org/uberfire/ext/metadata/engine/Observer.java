@@ -24,18 +24,17 @@ public interface Observer {
      * Information message
      * @param message
      */
-    void information( final String message );
+    void information(final String message);
 
     /**
      * Warning message
      * @param message
      */
-    void warning( final String message );
+    void warning(final String message);
 
     /**
      * Error message
      * @param message
      */
-    void error( final String message );
-
+    void error(final String message);
 }

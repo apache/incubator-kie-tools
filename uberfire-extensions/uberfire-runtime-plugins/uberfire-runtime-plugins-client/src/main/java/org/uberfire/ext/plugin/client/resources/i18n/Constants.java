@@ -31,5 +31,4 @@ public class Constants {
 
     @TranslationKey(defaultValue = "")
     public static final String EditHTMLView_HtmlPlaceHolder = "EditHTMLView.HtmlPlaceHolder";
-
 }

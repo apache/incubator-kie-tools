@@ -30,7 +30,6 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class PermissionSwitchTest {
 
-
     @Mock
     PermissionSwitch.View view;
 
@@ -43,19 +42,27 @@ public class PermissionSwitchTest {
     public void setup() {
         presenter = new PermissionSwitch(view);
     }
-    
+
     @Test
     public void testInit() {
-        presenter.init("On", "Off", true, 0);
+        presenter.init("On",
+                       "Off",
+                       true,
+                       0);
         when(view.isOn()).thenReturn(true);
 
-        verify(view).init("On", "Off", true);
+        verify(view).init("On",
+                          "Off",
+                          true);
         assertTrue(presenter.isOn());
     }
 
     @Test
     public void testChange() {
-        presenter.init("On", "Off", true, 0);
+        presenter.init("On",
+                       "Off",
+                       true,
+                       0);
         presenter.setOnChange(onChange);
         when(view.isOn()).thenReturn(false);
 

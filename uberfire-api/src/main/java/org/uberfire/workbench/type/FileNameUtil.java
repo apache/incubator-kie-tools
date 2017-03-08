@@ -19,33 +19,32 @@ import org.uberfire.backend.vfs.Path;
 
 public final class FileNameUtil {
 
-    public static String removeExtension( final Path path,
-                                          final ResourceTypeDefinition type ) {
-        if ( path == null ) {
+    public static String removeExtension(final Path path,
+                                         final ResourceTypeDefinition type) {
+        if (path == null) {
             return null;
         }
         final String fileName = path.getFileName();
-        if ( type == null ) {
+        if (type == null) {
             return fileName;
         }
-        final int index = indexOfExtension( type,
-                                            fileName );
-        if ( index == -1 ) {
+        final int index = indexOfExtension(type,
+                                           fileName);
+        if (index == -1) {
             return fileName;
         } else {
-            return fileName.substring( 0,
-                                       index );
+            return fileName.substring(0,
+                                      index);
         }
     }
 
-    private static int indexOfExtension( final ResourceTypeDefinition type,
-                                         final String fileName ) {
-        if ( fileName == null ) {
+    private static int indexOfExtension(final ResourceTypeDefinition type,
+                                        final String fileName) {
+        if (fileName == null) {
             return -1;
         }
-        final String suffix = ( type.getSuffix() == null ? "" : type.getSuffix() );
-        final int extensionPos = fileName.lastIndexOf( "." + suffix );
+        final String suffix = (type.getSuffix() == null ? "" : type.getSuffix());
+        final int extensionPos = fileName.lastIndexOf("." + suffix);
         return extensionPos;
     }
-
 }

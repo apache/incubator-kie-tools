@@ -27,10 +27,11 @@ public class Plugin extends Activity {
     public Plugin() {
     }
 
-    public Plugin( final String name,
-                   final PluginType type,
-                   final Path path ) {
-        super( name, type );
+    public Plugin(final String name,
+                  final PluginType type,
+                  final Path path) {
+        super(name,
+              type);
         this.path = path;
     }
 
@@ -39,20 +40,20 @@ public class Plugin extends Activity {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof Plugin ) ) {
+        if (!(o instanceof Plugin)) {
             return false;
         }
-        if ( !super.equals( o ) ) {
+        if (!super.equals(o)) {
             return false;
         }
 
         Plugin plugin = (Plugin) o;
 
-        if ( path != null ? !path.equals( plugin.path ) : plugin.path != null ) {
+        if (path != null ? !path.equals(plugin.path) : plugin.path != null) {
             return false;
         }
 
@@ -63,7 +64,7 @@ public class Plugin extends Activity {
     public int hashCode() {
         int result = super.hashCode();
         result = ~~result;
-        result = 31 * result + ( path != null ? path.hashCode() : 0 );
+        result = 31 * result + (path != null ? path.hashCode() : 0);
         result = ~~result;
         return result;
     }

@@ -38,85 +38,105 @@ public class DropdownMenuVisitor extends BaseMenuVisitor {
 
     protected final HasMenuItems hasMenuItems;
 
-    public DropdownMenuVisitor( final HasMenuItems hasMenuItems ) {
+    public DropdownMenuVisitor(final HasMenuItems hasMenuItems) {
         this.hasMenuItems = hasMenuItems;
     }
 
     @Override
-    public boolean visitEnter( final MenuGroup menuGroup ) {
-        buildMenuGroup( menuGroup, this.hasMenuItems );
+    public boolean visitEnter(final MenuGroup menuGroup) {
+        buildMenuGroup(menuGroup,
+                       this.hasMenuItems);
         return true;
     }
 
-    protected Widget buildMenuGroup( final MenuGroup menuGroup, final HasMenuItems hasMenuItems ) {
+    protected Widget buildMenuGroup(final MenuGroup menuGroup,
+                                    final HasMenuItems hasMenuItems) {
         final DropDownHeader group = new DropDownHeader();
-        group.setText( menuGroup.getCaption() );
-        hasMenuItems.addMenuItem( menuGroup.getPosition(), group );
+        group.setText(menuGroup.getCaption());
+        hasMenuItems.addMenuItem(menuGroup.getPosition(),
+                                 group);
         return group;
     }
 
     @Override
-    public void visit( final MenuCustom<?> menuCustom ) {
-        final IsWidget customMenuItem = ( (IsWidget) menuCustom.build() ).asWidget();
-        if ( customMenuItem instanceof AnchorListItem ) {
+    public void visit(final MenuCustom<?> menuCustom) {
+        final IsWidget customMenuItem = ((IsWidget) menuCustom.build()).asWidget();
+        if (customMenuItem instanceof AnchorListItem) {
             final AnchorListItem view = (AnchorListItem) customMenuItem;
-            setupEnableDisable( menuCustom, view );
-            this.hasMenuItems.addMenuItem( menuCustom.getPosition(), view );
+            setupEnableDisable(menuCustom,
+                               view);
+            this.hasMenuItems.addMenuItem(menuCustom.getPosition(),
+                                          view);
         } else {
-            buildMenuCustom( menuCustom, this.hasMenuItems );
+            buildMenuCustom(menuCustom,
+                            this.hasMenuItems);
         }
     }
 
-    protected Widget buildMenuCustom( final MenuCustom<?> menuCustom, final HasMenuItems hasMenuItems ) {
-        return createListItem( menuCustom, hasMenuItems );
+    protected Widget buildMenuCustom(final MenuCustom<?> menuCustom,
+                                     final HasMenuItems hasMenuItems) {
+        return createListItem(menuCustom,
+                              hasMenuItems);
     }
 
     @Override
-    public void visit( final MenuItemCommand menuItemCommand ) {
-        buildMenuCommand( menuItemCommand, this.hasMenuItems );
+    public void visit(final MenuItemCommand menuItemCommand) {
+        buildMenuCommand(menuItemCommand,
+                         this.hasMenuItems);
     }
 
-    protected Widget buildMenuCommand( final MenuItemCommand menuItemCommand, final HasMenuItems hasMenuItems ) {
-        final AnchorListItem item = createListItem( menuItemCommand, hasMenuItems );
-        item.addClickHandler( new ClickHandler() {
+    protected Widget buildMenuCommand(final MenuItemCommand menuItemCommand,
+                                      final HasMenuItems hasMenuItems) {
+        final AnchorListItem item = createListItem(menuItemCommand,
+                                                   hasMenuItems);
+        item.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 menuItemCommand.getCommand().execute();
             }
-        } );
+        });
         return item;
     }
 
     @Override
-    public void visit( final MenuItemPerspective menuItemPerspective ) {
-        buildMenuPerspective( menuItemPerspective, this.hasMenuItems );
+    public void visit(final MenuItemPerspective menuItemPerspective) {
+        buildMenuPerspective(menuItemPerspective,
+                             this.hasMenuItems);
     }
 
-    protected Widget buildMenuPerspective( final MenuItemPerspective menuItemPerspective, final HasMenuItems hasMenuItems ) {
-        final AnchorListItem item = createListItem( menuItemPerspective, hasMenuItems );
-        item.addClickHandler( new ClickHandler() {
+    protected Widget buildMenuPerspective(final MenuItemPerspective menuItemPerspective,
+                                          final HasMenuItems hasMenuItems) {
+        final AnchorListItem item = createListItem(menuItemPerspective,
+                                                   hasMenuItems);
+        item.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
-                IOC.getBeanManager().lookupBean( PlaceManager.class ).getInstance().goTo( menuItemPerspective.getPlaceRequest() );
+            public void onClick(ClickEvent event) {
+                IOC.getBeanManager().lookupBean(PlaceManager.class).getInstance().goTo(menuItemPerspective.getPlaceRequest());
             }
-        } );
+        });
         return item;
     }
 
     @Override
-    public void visit( final MenuItemPlain menuItemPlain ) {
-        buildMenuPlain( menuItemPlain, this.hasMenuItems );
+    public void visit(final MenuItemPlain menuItemPlain) {
+        buildMenuPlain(menuItemPlain,
+                       this.hasMenuItems);
     }
 
-    protected Widget buildMenuPlain( final MenuItemPlain menuItemPlain, final HasMenuItems hasMenuItems ) {
-        return createListItem( menuItemPlain, hasMenuItems );
+    protected Widget buildMenuPlain(final MenuItemPlain menuItemPlain,
+                                    final HasMenuItems hasMenuItems) {
+        return createListItem(menuItemPlain,
+                              hasMenuItems);
     }
 
-    protected AnchorListItem createListItem( final MenuItem menuItem, final HasMenuItems hasMenuItems ) {
-        final AnchorListItem option = GWT.create( AnchorListItem.class );
-        option.setText( menuItem.getCaption() );
-        setupEnableDisable( menuItem, option );
-        hasMenuItems.addMenuItem( menuItem.getPosition(), option );
+    protected AnchorListItem createListItem(final MenuItem menuItem,
+                                            final HasMenuItems hasMenuItems) {
+        final AnchorListItem option = GWT.create(AnchorListItem.class);
+        option.setText(menuItem.getCaption());
+        setupEnableDisable(menuItem,
+                           option);
+        hasMenuItems.addMenuItem(menuItem.getPosition(),
+                                 option);
         return option;
     }
 
@@ -127,13 +147,14 @@ public class DropdownMenuVisitor extends BaseMenuVisitor {
      * future changes.
      * @param view the widget that provides a view of the given model.
      */
-    protected void setupEnableDisable( final MenuItem model, final AnchorListItem view ) {
-        view.setEnabled( model.isEnabled() );
-        model.addEnabledStateChangeListener( new EnabledStateChangeListener() {
+    protected void setupEnableDisable(final MenuItem model,
+                                      final AnchorListItem view) {
+        view.setEnabled(model.isEnabled());
+        model.addEnabledStateChangeListener(new EnabledStateChangeListener() {
             @Override
-            public void enabledStateChanged( final boolean enabled ) {
-                view.setEnabled( enabled );
+            public void enabledStateChanged(final boolean enabled) {
+                view.setEnabled(enabled);
             }
-        } );
+        });
     }
 }

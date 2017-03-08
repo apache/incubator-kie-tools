@@ -17,6 +17,5 @@
 package org.uberfire.ext.security.management;
 
 public abstract class AbstractManager {
-    
-    
+
 }

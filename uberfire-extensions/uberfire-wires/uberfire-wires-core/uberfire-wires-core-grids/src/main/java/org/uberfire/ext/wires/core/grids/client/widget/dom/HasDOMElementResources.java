@@ -27,5 +27,4 @@ public interface HasDOMElementResources {
      * invoked at the end of the render phase if the column is not visible.
      */
     void destroyResources();
-
 }

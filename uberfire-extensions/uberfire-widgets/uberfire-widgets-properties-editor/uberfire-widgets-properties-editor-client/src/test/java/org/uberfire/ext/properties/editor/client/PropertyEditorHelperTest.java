@@ -35,63 +35,78 @@ import org.uberfire.ext.properties.editor.model.PropertyEditorType;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
-@WithClassesToStub( Heading.class )
+@RunWith(GwtMockitoTestRunner.class)
+@WithClassesToStub(Heading.class)
 public class PropertyEditorHelperTest {
 
-    @Test( expected = PropertyEditorHelper.NullEventException.class )
+    @Test(expected = PropertyEditorHelper.NullEventException.class)
     public void validateNullEventTest() {
-        PropertyEditorHelper.validade( null );
+        PropertyEditorHelper.validade(null);
     }
 
-    @Test( expected = PropertyEditorHelper.NoPropertiesException.class )
+    @Test(expected = PropertyEditorHelper.NoPropertiesException.class)
     public void validateEventWithNoPropertiesTest() {
-        PropertyEditorEvent event = new PropertyEditorEvent( "id", new ArrayList<PropertyEditorCategory>() );
-        PropertyEditorHelper.validade( event );
+        PropertyEditorEvent event = new PropertyEditorEvent("id",
+                                                            new ArrayList<PropertyEditorCategory>());
+        PropertyEditorHelper.validade(event);
     }
 
     @Test
     public void validateEventTest() {
         ArrayList<PropertyEditorCategory> properties = new ArrayList<PropertyEditorCategory>();
-        properties.add( new PropertyEditorCategory( "Category" ) );
-        PropertyEditorEvent event = new PropertyEditorEvent( "id", properties );
-        assertTrue( PropertyEditorHelper.validade( event ) );
+        properties.add(new PropertyEditorCategory("Category"));
+        PropertyEditorEvent event = new PropertyEditorEvent("id",
+                                                            properties);
+        assertTrue(PropertyEditorHelper.validade(event));
     }
 
     @Test
     public void isAMatchOfEmptyFilterTest() {
         PropertyEditorFieldInfo field = new PropertyEditorFieldInfo();
-        assertTrue( PropertyEditorHelper.isAMatchOfFilter( "", field ) );
+        assertTrue(PropertyEditorHelper.isAMatchOfFilter("",
+                                                         field));
     }
 
     @Test
     public void isAMatchOfFilterTest() {
-        PropertyEditorFieldInfo field = new PropertyEditorFieldInfo( "label", PropertyEditorType.TEXT );
-        assertTrue( PropertyEditorHelper.isAMatchOfFilter( "l", field ) );
-        assertTrue( PropertyEditorHelper.isAMatchOfFilter( "label", field ) );
-        assertTrue( PropertyEditorHelper.isAMatchOfFilter( "LABEL", field ) );
-        assertTrue( PropertyEditorHelper.isAMatchOfFilter( "abel", field ) );
-        assertFalse( PropertyEditorHelper.isAMatchOfFilter( "LABELL", field ) );
-        assertFalse( PropertyEditorHelper.isAMatchOfFilter( "LASBELL", field ) );
-        assertFalse( PropertyEditorHelper.isAMatchOfFilter( "p", field ) );
+        PropertyEditorFieldInfo field = new PropertyEditorFieldInfo("label",
+                                                                    PropertyEditorType.TEXT);
+        assertTrue(PropertyEditorHelper.isAMatchOfFilter("l",
+                                                         field));
+        assertTrue(PropertyEditorHelper.isAMatchOfFilter("label",
+                                                         field));
+        assertTrue(PropertyEditorHelper.isAMatchOfFilter("LABEL",
+                                                         field));
+        assertTrue(PropertyEditorHelper.isAMatchOfFilter("abel",
+                                                         field));
+        assertFalse(PropertyEditorHelper.isAMatchOfFilter("LABELL",
+                                                          field));
+        assertFalse(PropertyEditorHelper.isAMatchOfFilter("LASBELL",
+                                                          field));
+        assertFalse(PropertyEditorHelper.isAMatchOfFilter("p",
+                                                          field));
     }
 
     @Test
     public void createLabelTest() {
-        PropertyEditorFieldInfo field = new PropertyEditorFieldInfo( "label", PropertyEditorType.TEXT );
-        PropertyEditorItemLabel label = PropertyEditorHelper.createLabel( field );
-        verify( label ).setText( "label" );
+        PropertyEditorFieldInfo field = new PropertyEditorFieldInfo("label",
+                                                                    PropertyEditorType.TEXT);
+        PropertyEditorItemLabel label = PropertyEditorHelper.createLabel(field);
+        verify(label).setText("label");
     }
 
     @Test
     public void createCategoryWithNoFields() {
-        PropertyEditorWidget propertyEditorWidget = GWT.create( PropertyEditorWidget.class );
-        PanelGroup propertyMenu = GWT.create( PanelGroup.class );
+        PropertyEditorWidget propertyEditorWidget = GWT.create(PropertyEditorWidget.class);
+        PanelGroup propertyMenu = GWT.create(PanelGroup.class);
 
-        PropertyEditorCategory category = new PropertyEditorCategory( "1" );
-        PropertyEditorHelper.createCategory( propertyEditorWidget, propertyMenu, category, "" );
+        PropertyEditorCategory category = new PropertyEditorCategory("1");
+        PropertyEditorHelper.createCategory(propertyEditorWidget,
+                                            propertyMenu,
+                                            category,
+                                            "");
 
-        verify( propertyMenu, never() ).add( any( Widget.class ) );
+        verify(propertyMenu,
+               never()).add(any(Widget.class));
     }
-
 }

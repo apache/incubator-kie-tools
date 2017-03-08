@@ -35,5 +35,4 @@ public class ScreenPluginResourceTypeDefinition extends BasePluginResourceTypeDe
     public String getSuffix() {
         return "/" + PluginType.SCREEN.toString().toLowerCase() + ".plugin";
     }
-
 }

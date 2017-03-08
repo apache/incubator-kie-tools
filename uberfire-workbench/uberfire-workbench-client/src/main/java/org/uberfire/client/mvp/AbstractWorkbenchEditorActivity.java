@@ -15,8 +15,6 @@
  */
 package org.uberfire.client.mvp;
 
-import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.FRAMEWORK_PESSIMISTIC;
-
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
@@ -27,6 +25,8 @@ import org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy;
 import org.uberfire.client.mvp.LockTarget.TitleProvider;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
+
+import static org.uberfire.client.annotations.WorkbenchEditor.LockingStrategy.FRAMEWORK_PESSIMISTIC;
 
 /**
  * Implementation of behaviour common to all workbench editor activities. Concrete implementations are typically not
@@ -40,8 +40,8 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
 
     protected ObservablePath path;
 
-    public AbstractWorkbenchEditorActivity( final PlaceManager placeManager ) {
-        super( placeManager );
+    public AbstractWorkbenchEditorActivity(final PlaceManager placeManager) {
+        super(placeManager);
     }
 
     /**
@@ -49,72 +49,71 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
      * {@link #onStartup(ObservablePath, PlaceRequest)}. Non-path place requests are handed up to the super impl.
      */
     @Override
-    public final void onStartup( final PlaceRequest place ) {
+    public final void onStartup(final PlaceRequest place) {
         final Path path = place.getPath();
-        if ( path != null ) {
-            if ( path instanceof ObservablePath ) {
-                onStartup( (ObservablePath) path,
-                           place );
-            } else if ( this.isDynamic() ) {
-                onStartup( path,
-                           place );
+        if (path != null) {
+            if (path instanceof ObservablePath) {
+                onStartup((ObservablePath) path,
+                          place);
+            } else if (this.isDynamic()) {
+                onStartup(path,
+                          place);
             }
-        }
-        else {
-            super.onStartup( place );
+        } else {
+            super.onStartup(place);
         }
     }
-    
-    void onStartup( final Path path,
-                    final PlaceRequest place ) {
 
-        onStartup( new PathPlaceRequest( path ).getPath(),
-                   place );
+    void onStartup(final Path path,
+                   final PlaceRequest place) {
+
+        onStartup(new PathPlaceRequest(path).getPath(),
+                  place);
     }
-    
+
     @Override
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        super.onStartup( place );
+    public void onStartup(final ObservablePath path,
+                          final PlaceRequest place) {
+        super.onStartup(place);
         this.path = path;
 
-        if ( getLockingStrategy() == FRAMEWORK_PESSIMISTIC ) {
+        if (getLockingStrategy() == FRAMEWORK_PESSIMISTIC) {
             setupDefaultPessimisticLockManager();
         }
     }
 
     protected void setupDefaultPessimisticLockManager() {
-        if ( lockManager == null ) {
+        if (lockManager == null) {
 
             lockManager = lockManagerProvider.get();
 
             final Runnable reloadRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    onStartup( path,
-                               getPlace() );
+                    onStartup(path,
+                              getPlace());
                 }
             };
             final TitleProvider titleProvider = new TitleProvider() {
                 @Override
                 public String getTitle() {
                     AbstractWorkbenchEditorActivity activity = AbstractWorkbenchEditorActivity.this;
-                    return ( activity.open ) ? activity.getTitle() : "";
+                    return (activity.open) ? activity.getTitle() : "";
                 }
             };
 
-            lockManager.init( new LockTarget( path,
-                                              getWidget(),
-                                              getPlace(),
-                                              titleProvider,
-                                              reloadRunnable ) );
+            lockManager.init(new LockTarget(path,
+                                            getWidget(),
+                                            getPlace(),
+                                            titleProvider,
+                                            reloadRunnable));
         }
     }
 
     @Override
     public void onOpen() {
         super.onOpen();
-        if ( assertFrameworkLockingStrategy() ) {
+        if (assertFrameworkLockingStrategy()) {
             lockManager.acquireLockOnDemand();
         }
     }
@@ -131,9 +130,9 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
 
     @Override
     public void onClose() {
-        if ( assertFrameworkLockingStrategy() ) {
+        if (assertFrameworkLockingStrategy()) {
             lockManager.releaseLock();
-            lockManagerProvider.destroy( lockManager );
+            lockManagerProvider.destroy(lockManager);
         }
         super.onClose();
     }
@@ -141,8 +140,8 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
     @Override
     public void onFocus() {
         super.onFocus();
-        if ( path != null ) {
-            if ( assertFrameworkLockingStrategy() ) {
+        if (path != null) {
+            if (assertFrameworkLockingStrategy()) {
                 lockManager.onFocus();
             }
         }
@@ -160,5 +159,4 @@ public abstract class AbstractWorkbenchEditorActivity extends AbstractWorkbenchA
     protected LockingStrategy getLockingStrategy() {
         return LockingStrategy.FRAMEWORK_PESSIMISTIC;
     }
-
 }

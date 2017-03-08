@@ -38,12 +38,11 @@ public class WiresGridsDemoPerspective {
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
-        perspective.setName( WIRES );
+        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        perspective.setName(WIRES);
 
-        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( WIRES_CANVAS_SCREEN ) ) );
+        perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest(WIRES_CANVAS_SCREEN)));
 
         return perspective;
     }
-
 }

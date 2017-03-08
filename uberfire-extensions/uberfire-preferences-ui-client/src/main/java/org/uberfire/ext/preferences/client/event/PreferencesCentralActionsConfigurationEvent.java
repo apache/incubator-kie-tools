@@ -22,8 +22,8 @@ public class PreferencesCentralActionsConfigurationEvent {
 
     private String perspectiveIdentifierToGoBackTo;
 
-    public PreferencesCentralActionsConfigurationEvent( final String adminPageScreenToGoBack,
-                                                        final String perspectiveIdentifierToGoBackTo ) {
+    public PreferencesCentralActionsConfigurationEvent(final String adminPageScreenToGoBack,
+                                                       final String perspectiveIdentifierToGoBackTo) {
         this.adminPageScreenToGoBack = adminPageScreenToGoBack;
         this.perspectiveIdentifierToGoBackTo = perspectiveIdentifierToGoBackTo;
     }

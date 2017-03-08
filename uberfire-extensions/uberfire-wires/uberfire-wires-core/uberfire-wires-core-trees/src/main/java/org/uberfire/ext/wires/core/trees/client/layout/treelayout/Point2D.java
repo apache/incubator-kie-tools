@@ -28,8 +28,8 @@ public class Point2D {
     protected Point2D() {
     }
 
-    public void setLocation( final double x,
-                             final double y ) {
+    public void setLocation(final double x,
+                            final double y) {
         this.x = x;
         this.y = y;
     }
@@ -41,5 +41,4 @@ public class Point2D {
     public double getY() {
         return y;
     }
-
 }

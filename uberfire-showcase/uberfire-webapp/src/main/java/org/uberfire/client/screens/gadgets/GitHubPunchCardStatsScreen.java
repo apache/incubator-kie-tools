@@ -23,7 +23,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
 @ApplicationScoped
-@WorkbenchScreen( identifier = "GitHubCommitDaysStats" )
+@WorkbenchScreen(identifier = "GitHubCommitDaysStats")
 public class GitHubPunchCardStatsScreen extends AbstractGitHubStatsScreen {
 
     @WorkbenchPartTitle
@@ -31,28 +31,28 @@ public class GitHubPunchCardStatsScreen extends AbstractGitHubStatsScreen {
         return "Uberfire GitHub Commits per Day";
     }
 
-    public void setGraph( final JavaScriptObject graph ) {
+    public void setGraph(final JavaScriptObject graph) {
         this.graph = graph;
         onResize();
     }
 
-    public native JavaScriptObject generateGraph( final String id )/*-{
+    public native JavaScriptObject generateGraph(final String id)/*-{
         var that = this;
 
         $wnd.d3.json("https://api.github.com/repos/uberfire/uberfire/stats/punch_card", function (error, json_data) {
             var data = $wnd.d3.nest()
-                .key(function (d) {
-                    return d[0];
-                })
-                .rollup(function (leaves) {
-                    return $wnd.d3.sum(leaves, function (d) {
-                        return d[2];
+                    .key(function (d) {
+                        return d[0];
+                    })
+                    .rollup(function (leaves) {
+                        return $wnd.d3.sum(leaves, function (d) {
+                            return d[2];
+                        });
+                    })
+                    .entries(json_data)
+                    .map(function (d) {
+                        return [d.key, d.values];
                     });
-                })
-                .entries(json_data)
-                .map(function (d) {
-                    return [d.key, d.values];
-                });
 
             var graph = $wnd.c3.generate({
                 bindto: '#' + id,

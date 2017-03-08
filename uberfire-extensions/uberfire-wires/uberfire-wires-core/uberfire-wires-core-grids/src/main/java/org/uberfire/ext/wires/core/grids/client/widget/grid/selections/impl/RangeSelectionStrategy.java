@@ -28,43 +28,41 @@ public class RangeSelectionStrategy extends BaseCellSelectionStrategy {
     public static CellSelectionStrategy INSTANCE = new RangeSelectionStrategy();
 
     @Override
-    public boolean handleSelection( final GridData model,
-                                    final int uiRowIndex,
-                                    final int uiColumnIndex,
-                                    final boolean isShiftKeyDown,
-                                    final boolean isControlKeyDown ) {
+    public boolean handleSelection(final GridData model,
+                                   final int uiRowIndex,
+                                   final int uiColumnIndex,
+                                   final boolean isShiftKeyDown,
+                                   final boolean isControlKeyDown) {
         //Remember origin which is required if we're selecting a range with the shift-key pressed
         final GridData.SelectedCell selectedCellsOrigin = model.getSelectedCellsOrigin();
-        final List<GridData.SelectedCell> originalSelections = new ArrayList<GridData.SelectedCell>( model.getSelectedCells() );
+        final List<GridData.SelectedCell> originalSelections = new ArrayList<GridData.SelectedCell>(model.getSelectedCells());
 
         //If the Control Key is pressed add additional cells to the selection
-        if ( !isControlKeyDown ) {
+        if (!isControlKeyDown) {
             model.clearSelections();
         }
 
-        if ( isShiftKeyDown ) {
-            if ( selectedCellsOrigin == null ) {
-                model.selectCell( uiRowIndex,
-                                  uiColumnIndex );
+        if (isShiftKeyDown) {
+            if (selectedCellsOrigin == null) {
+                model.selectCell(uiRowIndex,
+                                 uiColumnIndex);
             } else {
                 final int uiOriginRowIndex = selectedCellsOrigin.getRowIndex();
-                final int uiOriginColumnIndex = ColumnIndexUtilities.findUiColumnIndex( model.getColumns(),
-                                                                                        selectedCellsOrigin.getColumnIndex() );
-                model.selectCell( uiOriginRowIndex,
-                                  uiOriginColumnIndex );
-                model.selectCells( ( uiRowIndex > uiOriginRowIndex ? uiOriginRowIndex : uiRowIndex ),
-                                   ( uiColumnIndex > uiOriginColumnIndex ? uiOriginColumnIndex : uiColumnIndex ),
-                                   Math.abs( uiColumnIndex - uiOriginColumnIndex ) + 1,
-                                   Math.abs( uiRowIndex - uiOriginRowIndex ) + 1 );
+                final int uiOriginColumnIndex = ColumnIndexUtilities.findUiColumnIndex(model.getColumns(),
+                                                                                       selectedCellsOrigin.getColumnIndex());
+                model.selectCell(uiOriginRowIndex,
+                                 uiOriginColumnIndex);
+                model.selectCells((uiRowIndex > uiOriginRowIndex ? uiOriginRowIndex : uiRowIndex),
+                                  (uiColumnIndex > uiOriginColumnIndex ? uiOriginColumnIndex : uiColumnIndex),
+                                  Math.abs(uiColumnIndex - uiOriginColumnIndex) + 1,
+                                  Math.abs(uiRowIndex - uiOriginRowIndex) + 1);
             }
-
         } else {
-            model.selectCell( uiRowIndex,
-                              uiColumnIndex );
+            model.selectCell(uiRowIndex,
+                             uiColumnIndex);
         }
 
-        return hasSelectionChanged( model.getSelectedCells(),
-                                    originalSelections );
+        return hasSelectionChanged(model.getSelectedCells(),
+                                   originalSelections);
     }
-
 }

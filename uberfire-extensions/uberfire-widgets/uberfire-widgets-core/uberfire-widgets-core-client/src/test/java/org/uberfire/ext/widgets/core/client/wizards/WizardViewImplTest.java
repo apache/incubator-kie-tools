@@ -43,13 +43,14 @@ public class WizardViewImplTest {
     @Test
     public void testSetCompletionStatusTrue() {
         view.setCompletionStatus(true);
-        verify(view.footer, times(1)).enableFinishButton(true);
+        verify(view.footer,
+               times(1)).enableFinishButton(true);
     }
 
     @Test
     public void testSetCompletionStatusFalse() {
         view.setCompletionStatus(false);
-        verify(view.footer, times(1)).enableFinishButton(false);
+        verify(view.footer,
+               times(1)).enableFinishButton(false);
     }
-
 }

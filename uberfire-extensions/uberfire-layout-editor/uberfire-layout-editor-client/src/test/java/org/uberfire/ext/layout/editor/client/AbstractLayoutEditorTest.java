@@ -16,6 +16,13 @@
 
 package org.uberfire.ext.layout.editor.client;
 
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.Before;
@@ -36,18 +43,9 @@ import org.uberfire.ext.layout.editor.client.infra.LayoutDragComponentHelper;
 import org.uberfire.ext.layout.editor.client.infra.UniqueIDGenerator;
 import org.uberfire.mocks.EventSourceMock;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.util.TypeLiteral;
-import java.lang.annotation.Annotation;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
+import static org.mockito.Mockito.*;
 
-import static org.mockito.Mockito.mock;
-
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public abstract class AbstractLayoutEditorTest {
 
     public static final String SAMPLE_FULL_LAYOUT = "org/uberfire/ext/layout/editor/client/sampleFullLayout.txt";
@@ -74,122 +72,124 @@ public abstract class AbstractLayoutEditorTest {
 
     @Mock
     protected ComponentDropEventMock componentDropEventMock;
-
-    public static class ComponentDropEventMock extends EventSourceMock<ComponentDropEvent> {
-
-    }
-
     @Mock
     protected ComponentRemovedEventMock componentRemoveEventMock;
-
-    public static class ComponentRemovedEventMock extends EventSourceMock<ComponentRemovedEvent> {
-
-    }
-
-    protected EmptyDropRow emptyDropRow = new EmptyDropRow( mock( EmptyDropRow.View.class ), helper );
-
+    protected EmptyDropRow emptyDropRow = new EmptyDropRow(mock(EmptyDropRow.View.class),
+                                                           helper);
     protected DnDManager dnDManager = new DnDManager();
     protected Container container;
-
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public Container createContainer() {
-        return new Container( view, rowInstance, emptyDropRowInstance, componentDropEventMock ) {
+        return new Container(view,
+                             rowInstance,
+                             emptyDropRowInstance,
+                             componentDropEventMock) {
             private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
 
             @Override
             protected EmptyDropRow createInstanceEmptyDropRow() {
-                emptyDropRow.setId( idGenerator.createRowID( "container" ) );
+                emptyDropRow.setId(idGenerator.createRowID("container"));
                 return emptyDropRow;
             }
 
             @Override
             protected Row createInstanceRow() {
                 Row row = rowProducer();
-                row.setId( idGenerator.createRowID( "container" ) );
+                row.setId(idGenerator.createRowID("container"));
                 return row;
             }
 
             @Override
-            protected void destroy( Object o ) {
+            protected void destroy(Object o) {
             }
         };
     }
 
     private Row rowProducer() {
-        return new Row( mock( Row.View.class ), null, null, dnDManager, helper, componentDropEventMock,
-                        componentRemoveEventMock ) {
+        return new Row(mock(Row.View.class),
+                       null,
+                       null,
+                       dnDManager,
+                       helper,
+                       componentDropEventMock,
+                       componentRemoveEventMock) {
             private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
 
             @Override
             protected ComponentColumn createComponentColumnInstance() {
 
-                ComponentColumn componentColumn = new ComponentColumn( mock( ComponentColumn.View.class ), dnDManager,
-                                                                       helper, mock( Event.class ) ) {
+                ComponentColumn componentColumn = new ComponentColumn(mock(ComponentColumn.View.class),
+                                                                      dnDManager,
+                                                                      helper,
+                                                                      mock(Event.class)) {
                     @Override
                     protected boolean hasConfiguration() {
                         return false;
                     }
                 };
-                componentColumn.setId( idGenerator.createColumnID( getId() ) );
+                componentColumn.setId(idGenerator.createColumnID(getId()));
                 return componentColumn;
             }
 
             @Override
             protected ColumnWithComponents createColumnWithComponentsInstance() {
                 ColumnWithComponents columnWithComponents = new ColumnWithComponents(
-                        mock( ColumnWithComponents.View.class ), null, dnDManager, helper,
-                        mock( Event.class ) ) {
+                        mock(ColumnWithComponents.View.class),
+                        null,
+                        dnDManager,
+                        helper,
+                        mock(Event.class)) {
                     @Override
                     protected Row createInstanceRow() {
                         return rowProducer();
                     }
 
                     @Override
-                    protected void destroy( Object o ) {
+                    protected void destroy(Object o) {
                     }
                 };
-                columnWithComponents.setId( idGenerator.createColumnID( getId() ) );
+                columnWithComponents.setId(idGenerator.createColumnID(getId()));
                 return columnWithComponents;
-
             }
 
             @Override
-            protected void destroy( Object o ) {
+            protected void destroy(Object o) {
             }
         };
     }
 
-    public LayoutTemplate getLayoutFromFileTemplate( String templateURL ) throws Exception {
+    public LayoutTemplate getLayoutFromFileTemplate(String templateURL) throws Exception {
         URL resource = getClass().getClassLoader()
-                .getResource( templateURL );
-        String layoutEditorModel = new String( Files.readAllBytes( Paths.get( resource.toURI() ) ) );
+                .getResource(templateURL);
+        String layoutEditorModel = new String(Files.readAllBytes(Paths.get(resource.toURI())));
 
-        LayoutTemplate layoutTemplate = gson.fromJson( layoutEditorModel, LayoutTemplate.class );
+        LayoutTemplate layoutTemplate = gson.fromJson(layoutEditorModel,
+                                                      LayoutTemplate.class);
 
         return layoutTemplate;
     }
 
-    public String convertLayoutToString( LayoutTemplate layoutTemplate ) {
-        String layoutContent = gson.toJson( layoutTemplate );
+    public String convertLayoutToString(LayoutTemplate layoutTemplate) {
+        String layoutContent = gson.toJson(layoutTemplate);
         return layoutContent;
     }
-
 
     protected int getRowsSizeFromContainer() {
         return container.getRows().size();
     }
 
-    protected List<Column> getColumns( Row row ) {
+    protected List<Column> getColumns(Row row) {
         return row.getColumns();
     }
 
-    protected Column getColumnByIndex( Row row, int index ) {
-        return row.getColumns().get( index );
+    protected Column getColumnByIndex(Row row,
+                                      int index) {
+        return row.getColumns().get(index);
     }
 
-    protected Row getRowByIndex( int index ) {
-        return container.getRows().get( index );
+    protected Row getRowByIndex(int index) {
+        return container.getRows().get(index);
     }
 
     @Before
@@ -198,13 +198,23 @@ public abstract class AbstractLayoutEditorTest {
         container.setup();
     }
 
-    protected LayoutTemplate loadLayout( String singleRowComponentLayout ) throws Exception {
-        LayoutTemplate layoutTemplate = getLayoutFromFileTemplate( singleRowComponentLayout );
-        container.load( layoutTemplate, "title", "subtitle" );
+    protected LayoutTemplate loadLayout(String singleRowComponentLayout) throws Exception {
+        LayoutTemplate layoutTemplate = getLayoutFromFileTemplate(singleRowComponentLayout);
+        container.load(layoutTemplate,
+                       "title",
+                       "subtitle");
         return layoutTemplate;
     }
 
-    protected List<Column> extractColumnsFrom( ColumnWithComponents columnWithComponents ) {
+    protected List<Column> extractColumnsFrom(ColumnWithComponents columnWithComponents) {
         return columnWithComponents.getRow().getColumns();
+    }
+
+    public static class ComponentDropEventMock extends EventSourceMock<ComponentDropEvent> {
+
+    }
+
+    public static class ComponentRemovedEventMock extends EventSourceMock<ComponentRemovedEvent> {
+
     }
 }

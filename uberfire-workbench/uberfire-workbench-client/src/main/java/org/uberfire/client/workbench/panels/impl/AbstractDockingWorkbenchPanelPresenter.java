@@ -16,12 +16,9 @@
 
 package org.uberfire.client.workbench.panels.impl;
 
-import static org.uberfire.client.util.Layouts.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import javax.inject.Inject;
 
 import org.uberfire.client.mvp.PerspectiveManager;
@@ -35,16 +32,23 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
+import static org.uberfire.client.util.Layouts.heightOrDefault;
+import static org.uberfire.client.util.Layouts.widthOrDefault;
+import static org.uberfire.client.util.Layouts.widthOrHeight;
+
 /**
  * Implements the behaviour for panel presenters that support adding child panels in {@link CompassPosition} positions.
  */
 public abstract class AbstractDockingWorkbenchPanelPresenter<P extends AbstractWorkbenchPanelPresenter<P>>
-extends AbstractWorkbenchPanelPresenter<P> implements DockingWorkbenchPanelPresenter {
+        extends AbstractWorkbenchPanelPresenter<P> implements DockingWorkbenchPanelPresenter {
 
-    public AbstractDockingWorkbenchPanelPresenter( WorkbenchPanelView<P> view,
-                                                   PerspectiveManager perspectiveManager ) {
-        super( view,
-               perspectiveManager );
+    @Inject
+    private PanelManager panelManager;
+
+    public AbstractDockingWorkbenchPanelPresenter(WorkbenchPanelView<P> view,
+                                                  PerspectiveManager perspectiveManager) {
+        super(view,
+              perspectiveManager);
     }
 
     /**
@@ -52,29 +56,34 @@ extends AbstractWorkbenchPanelPresenter<P> implements DockingWorkbenchPanelPrese
      * Otherwise behaves exactly like the superclass.
      */
     @Override
-    public void addPanel( WorkbenchPanelPresenter newChild,
-                          Position position ) {
-        if ( getParent() instanceof DockingWorkbenchPanelPresenter ) {
+    public void addPanel(WorkbenchPanelPresenter newChild,
+                         Position position) {
+        if (getParent() instanceof DockingWorkbenchPanelPresenter) {
             DockingWorkbenchPanelPresenter dockingParent = (DockingWorkbenchPanelPresenter) getParent();
-            if ( dockingParent.getPanels().get( position ) == this ) {
-                dockingParent.setChildSize( this,
-                                            widthOrDefault( newChild.getDefinition() ) + widthOrDefault( getDefinition() ),
-                                            heightOrDefault( newChild.getDefinition() ) + heightOrDefault( getDefinition() ) );
+            if (dockingParent.getPanels().get(position) == this) {
+                dockingParent.setChildSize(this,
+                                           widthOrDefault(newChild.getDefinition()) + widthOrDefault(getDefinition()),
+                                           heightOrDefault(newChild.getDefinition()) + heightOrDefault(getDefinition()));
             }
         }
-        WorkbenchPanelPresenter existingChild = getPanels().get( position );
-        if ( existingChild != null && newChild instanceof AbstractDockingWorkbenchPanelPresenter ) {
-            int existingChildSize = widthOrHeight( (CompassPosition) position, existingChild.getDefinition() );
-            int newChildSize = widthOrHeight( (CompassPosition) position, newChild.getDefinition() );
+        WorkbenchPanelPresenter existingChild = getPanels().get(position);
+        if (existingChild != null && newChild instanceof AbstractDockingWorkbenchPanelPresenter) {
+            int existingChildSize = widthOrHeight((CompassPosition) position,
+                                                  existingChild.getDefinition());
+            int newChildSize = widthOrHeight((CompassPosition) position,
+                                             newChild.getDefinition());
 
-            removePanel( existingChild );
-            super.addPanel( newChild, position );
-            newChild.addPanel( existingChild, position );
+            removePanel(existingChild);
+            super.addPanel(newChild,
+                           position);
+            newChild.addPanel(existingChild,
+                              position);
 
-            getPanelView().setChildSize( newChild.getPanelView(),
-                                         newChildSize + existingChildSize );
+            getPanelView().setChildSize(newChild.getPanelView(),
+                                        newChildSize + existingChildSize);
         } else {
-            super.addPanel( newChild, position );
+            super.addPanel(newChild,
+                           position);
         }
     }
 
@@ -84,33 +93,33 @@ extends AbstractWorkbenchPanelPresenter<P> implements DockingWorkbenchPanelPrese
      * super.removePanel().
      */
     @Override
-    public boolean removePanel( WorkbenchPanelPresenter child ) {
-        if ( child instanceof AbstractDockingWorkbenchPanelPresenter ) {
+    public boolean removePanel(WorkbenchPanelPresenter child) {
+        if (child instanceof AbstractDockingWorkbenchPanelPresenter) {
 
-            Position removedPosition = positionOf( child );
-            if ( removedPosition == null ) {
+            Position removedPosition = positionOf(child);
+            if (removedPosition == null) {
                 return false;
             }
 
             List<AbstractDockingWorkbenchPanelPresenter<?>> rescuedOrphans = new ArrayList<AbstractDockingWorkbenchPanelPresenter<?>>();
             AbstractDockingWorkbenchPanelPresenter<?> dockingChild = (AbstractDockingWorkbenchPanelPresenter<?>) child;
-            for ( Map.Entry<Position, WorkbenchPanelPresenter> entry : dockingChild.getPanels().entrySet() ) {
-                dockingChild.removeWithoutOrphanRescue( entry.getValue() );
-                rescuedOrphans.add( (AbstractDockingWorkbenchPanelPresenter<?>) entry.getValue() );
+            for (Map.Entry<Position, WorkbenchPanelPresenter> entry : dockingChild.getPanels().entrySet()) {
+                dockingChild.removeWithoutOrphanRescue(entry.getValue());
+                rescuedOrphans.add((AbstractDockingWorkbenchPanelPresenter<?>) entry.getValue());
                 // TODO multiple off-axis orphans need special treatment
                 // for example: if the NORTH panel has EAST and WEST children, we need to take the EAST one as a direct child
                 // to the NORTH of us, and reparent the other to the WEST of that one (or vice-versa)
                 // on the other hand, if there was only one EAST or WEST child, we can just stick it in as our new NORTH child
             }
-            super.removePanel( dockingChild );
-            for ( AbstractDockingWorkbenchPanelPresenter<?> rescued : rescuedOrphans ) {
-                addPanel( rescued, removedPosition );
+            super.removePanel(dockingChild);
+            for (AbstractDockingWorkbenchPanelPresenter<?> rescued : rescuedOrphans) {
+                addPanel(rescued,
+                         removedPosition);
             }
 
             return true;
-
         } else {
-            return super.removePanel( child );
+            return super.removePanel(child);
         }
     }
 
@@ -118,83 +127,81 @@ extends AbstractWorkbenchPanelPresenter<P> implements DockingWorkbenchPanelPrese
      * Removes the given child panel without modifying child attachments at all. This is used d
      * @param child
      */
-    private boolean removeWithoutOrphanRescue( WorkbenchPanelPresenter child ) {
-        return super.removePanel( child );
+    private boolean removeWithoutOrphanRescue(WorkbenchPanelPresenter child) {
+        return super.removePanel(child);
     }
 
     @Override
-    public boolean setChildSize( WorkbenchPanelPresenter child,
-                                 Integer pixelWidth,
-                                 Integer pixelHeight ) {
-        for ( Map.Entry<Position, WorkbenchPanelPresenter> e : getPanels().entrySet() ) {
-            if ( e.getValue() == child ) {
+    public boolean setChildSize(WorkbenchPanelPresenter child,
+                                Integer pixelWidth,
+                                Integer pixelHeight) {
+        for (Map.Entry<Position, WorkbenchPanelPresenter> e : getPanels().entrySet()) {
+            if (e.getValue() == child) {
                 int size;
                 // Position instance could come from a different script so we convert
                 // it to the local type here first in order for == to work.
-                CompassPosition cp = CompassPosition.valueOf( "" + e.getKey() );
-                if ( cp == CompassPosition.NORTH || cp == CompassPosition.SOUTH ) {
-                    if ( pixelHeight == null ) {
+                CompassPosition cp = CompassPosition.valueOf("" + e.getKey());
+                if (cp == CompassPosition.NORTH || cp == CompassPosition.SOUTH) {
+                    if (pixelHeight == null) {
                         return false;
                     }
-                    size = pixelHeight + nestedPanelHeights( child );
-                } else if ( cp == CompassPosition.EAST || cp == CompassPosition.WEST ) {
-                    if ( pixelWidth == null ) {
+                    size = pixelHeight + nestedPanelHeights(child);
+                } else if (cp == CompassPosition.EAST || cp == CompassPosition.WEST) {
+                    if (pixelWidth == null) {
                         return false;
                     }
-                    size = pixelWidth + nestedPanelWidths( child );
+                    size = pixelWidth + nestedPanelWidths(child);
                 } else {
-                    throw new AssertionError( "Unexpected child position: " + e.getKey() );
+                    throw new AssertionError("Unexpected child position: " + e.getKey());
                 }
 
-                getPanelView().setChildSize( child.getPanelView(), size );
+                getPanelView().setChildSize(child.getPanelView(),
+                                            size);
                 return true;
             }
         }
         return false;
     }
 
-    private int nestedPanelHeights( WorkbenchPanelPresenter child ) {
+    private int nestedPanelHeights(WorkbenchPanelPresenter child) {
         int totalHeight = 0;
-        WorkbenchPanelPresenter northChild = child.getPanels().get( CompassPosition.NORTH );
-        if ( northChild != null ) {
+        WorkbenchPanelPresenter northChild = child.getPanels().get(CompassPosition.NORTH);
+        if (northChild != null) {
             totalHeight += northChild.getDefinition().getHeight();
-            totalHeight += nestedPanelHeights( northChild );
+            totalHeight += nestedPanelHeights(northChild);
         }
-        WorkbenchPanelPresenter southChild = child.getPanels().get( CompassPosition.SOUTH );
-        if ( southChild != null ) {
+        WorkbenchPanelPresenter southChild = child.getPanels().get(CompassPosition.SOUTH);
+        if (southChild != null) {
             totalHeight += southChild.getDefinition().getHeight();
-            totalHeight += nestedPanelHeights( southChild );
+            totalHeight += nestedPanelHeights(southChild);
         }
         return totalHeight;
     }
 
-    private int nestedPanelWidths( WorkbenchPanelPresenter child ) {
+    private int nestedPanelWidths(WorkbenchPanelPresenter child) {
         int totalWidth = 0;
-        WorkbenchPanelPresenter westChild = child.getPanels().get( CompassPosition.WEST );
-        if ( westChild != null ) {
+        WorkbenchPanelPresenter westChild = child.getPanels().get(CompassPosition.WEST);
+        if (westChild != null) {
             totalWidth += westChild.getDefinition().getWidth();
-            totalWidth += nestedPanelWidths( westChild );
+            totalWidth += nestedPanelWidths(westChild);
         }
-        WorkbenchPanelPresenter eastChild = child.getPanels().get( CompassPosition.EAST );
-        if ( eastChild != null ) {
+        WorkbenchPanelPresenter eastChild = child.getPanels().get(CompassPosition.EAST);
+        if (eastChild != null) {
             totalWidth += eastChild.getDefinition().getWidth();
-            totalWidth += nestedPanelWidths( eastChild );
+            totalWidth += nestedPanelWidths(eastChild);
         }
         return totalWidth;
     }
 
-    @Inject
-    private PanelManager panelManager;
-
     @Override
-    public boolean removePart( PartDefinition part ) {
-        if ( super.removePart( part ) ) {
+    public boolean removePart(PartDefinition part) {
+        if (super.removePart(part)) {
             final PanelDefinition panelDef = getDefinition();
 
             // if we are not the root and we have become empty, we remove ourselves from the panel hierarchy,
             // preserving all child panels
-            if ( panelDef.getParts().isEmpty() && getParent() != null ) {
-                panelManager.removeWorkbenchPanel( this.getDefinition() );
+            if (panelDef.getParts().isEmpty() && getParent() != null) {
+                panelManager.removeWorkbenchPanel(this.getDefinition());
             }
             return true;
         }

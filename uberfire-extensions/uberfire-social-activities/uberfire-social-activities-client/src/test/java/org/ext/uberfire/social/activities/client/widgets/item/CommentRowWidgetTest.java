@@ -14,28 +14,28 @@
 */
 package org.ext.uberfire.social.activities.client.widgets.item;
 
+import java.util.Date;
+
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwtmockito.GwtMockito;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.fakes.FakeProvider;
-import org.gwtbootstrap3.client.ui.ImageAnchor;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.ext.uberfire.social.activities.client.user.SocialUserImageProvider;
 import org.ext.uberfire.social.activities.client.widgets.timeline.regular.model.UpdateItem;
 import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.ext.uberfire.social.activities.model.SocialUser;
 import org.ext.uberfire.social.activities.service.SocialUserImageRepositoryAPI;
-
-import java.util.Date;
+import org.gwtbootstrap3.client.ui.ImageAnchor;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class CommentRowWidgetTest {
 
     CommentRowWidget commentRow;
@@ -44,34 +44,36 @@ public class CommentRowWidgetTest {
 
     @Before
     public void setup() {
-        imageAnchorMock = mock( ImageAnchor.class );
-        GwtMockito.useProviderForType( ImageAnchor.class, new FakeProvider<ImageAnchor>() {
-            @Override
-            public ImageAnchor getFake( Class<?> aClass ) {
-                return imageAnchorMock;
-            }
-        } );
+        imageAnchorMock = mock(ImageAnchor.class);
+        GwtMockito.useProviderForType(ImageAnchor.class,
+                                      new FakeProvider<ImageAnchor>() {
+                                          @Override
+                                          public ImageAnchor getFake(Class<?> aClass) {
+                                              return imageAnchorMock;
+                                          }
+                                      });
 
         commentRow = new CommentRowWidget() {
             @Override
             SocialUserImageProvider getSocialUserImageProvider() {
-                final SocialUserImageProvider provider = mock( SocialUserImageProvider.class );
-                when( provider.getImageForSocialUser( any( SocialUser.class ), any(
-                        SocialUserImageRepositoryAPI.ImageSize.class ) ) ).thenReturn( mock( Image.class ) );
+                final SocialUserImageProvider provider = mock(SocialUserImageProvider.class);
+                when(provider.getImageForSocialUser(any(SocialUser.class),
+                                                    any(
+                                                            SocialUserImageRepositoryAPI.ImageSize.class))).thenReturn(mock(Image.class));
                 return provider;
             }
         };
-        commentRow.left = new FlowPanel( );
-        updateItem = new UpdateItem( new SocialActivitiesEvent( new SocialUser( "dora" ), "", new Date() ) );
-
+        commentRow.left = new FlowPanel();
+        updateItem = new UpdateItem(new SocialActivitiesEvent(new SocialUser("dora"),
+                                                              "",
+                                                              new Date()));
     }
 
     @Test
     public void testCreateThumbNailShouldHaveClickHandler() throws Exception {
 
-        commentRow.createThumbNail( updateItem );
+        commentRow.createThumbNail(updateItem);
 
-        verify( imageAnchorMock ).addClickHandler( any( ClickHandler.class ) );
+        verify(imageAnchorMock).addClickHandler(any(ClickHandler.class));
     }
-
 }

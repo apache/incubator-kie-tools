@@ -35,45 +35,61 @@ import org.uberfire.ext.security.management.client.widgets.management.events.Del
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class GroupEditorScreenTest {
 
-    @Mock PlaceManager placeManager;
-    @Mock EventSourceMock<ChangeTitleWidgetEvent> changeTitleNotification;
-    @Mock ErrorPopupPresenter errorPopupPresenter;
-    @Mock BaseScreen baseScreen;
-    @Mock ClientUserSystemManager clientUserSystemManager;
-    @Mock GroupEditorWorkflow groupViewerWorkflow;
-    @Mock GroupCreationWorkflow groupCreationWorkflow;
-    @Mock GroupEditor groupEditor;
-    @InjectMocks GroupEditorScreen tested;
+    @Mock
+    PlaceManager placeManager;
+    @Mock
+    EventSourceMock<ChangeTitleWidgetEvent> changeTitleNotification;
+    @Mock
+    ErrorPopupPresenter errorPopupPresenter;
+    @Mock
+    BaseScreen baseScreen;
+    @Mock
+    ClientUserSystemManager clientUserSystemManager;
+    @Mock
+    GroupEditorWorkflow groupViewerWorkflow;
+    @Mock
+    GroupCreationWorkflow groupCreationWorkflow;
+    @Mock
+    GroupEditor groupEditor;
+    @InjectMocks
+    GroupEditorScreen tested;
 
     @Before
     public void setup() {
         when(clientUserSystemManager.isUserCapabilityEnabled(any(Capability.class))).thenReturn(true);
     }
-    
+
     @Test
     public void testOnStartupAddingGroup() {
         final PlaceRequest placeRequest = mock(PlaceRequest.class);
-        when(placeRequest.getParameter(GroupEditorScreen.ADD_GROUP, "false")).thenReturn("true");
+        when(placeRequest.getParameter(GroupEditorScreen.ADD_GROUP,
+                                       "false")).thenReturn("true");
         tested.onStartup(placeRequest);
-        verify(baseScreen, times(1)).init(groupCreationWorkflow);
-        verify(groupCreationWorkflow, times(1)).create();
+        verify(baseScreen,
+               times(1)).init(groupCreationWorkflow);
+        verify(groupCreationWorkflow,
+               times(1)).create();
     }
 
     @Test
     public void testOnStartupShowingUser() {
         final PlaceRequest placeRequest = mock(PlaceRequest.class);
-        when(placeRequest.getParameter(GroupEditorScreen.ADD_GROUP, "false")).thenReturn("false");
-        when(placeRequest.getParameter(eq(GroupEditorScreen.GROUP_NAME), isNull(String.class))).thenReturn("group1");
+        when(placeRequest.getParameter(GroupEditorScreen.ADD_GROUP,
+                                       "false")).thenReturn("false");
+        when(placeRequest.getParameter(eq(GroupEditorScreen.GROUP_NAME),
+                                       isNull(String.class))).thenReturn("group1");
         tested.onStartup(placeRequest);
-        verify(baseScreen, times(1)).init(groupViewerWorkflow);
-        verify(groupViewerWorkflow, times(1)).show("group1");
+        verify(baseScreen,
+               times(1)).init(groupViewerWorkflow);
+        verify(groupViewerWorkflow,
+               times(1)).show("group1");
     }
 
     @Test
@@ -81,23 +97,26 @@ public class GroupEditorScreenTest {
         tested.groupName = "group1";
         tested.onClose();
         assertNull(tested.groupName);
-        verify(groupViewerWorkflow, times(1)).clear();
-        verify(groupCreationWorkflow, times(1)).clear();
+        verify(groupViewerWorkflow,
+               times(1)).clear();
+        verify(groupCreationWorkflow,
+               times(1)).clear();
     }
 
     @Test
     public void testShowError() {
         tested.showError("error");
-        verify(errorPopupPresenter, times(1)).showMessage("error");
+        verify(errorPopupPresenter,
+               times(1)).showMessage("error");
     }
-    
+
     @Test
     public void testOnGroupDeleted() {
         final DeleteGroupEvent deleteGroupEvent = mock(DeleteGroupEvent.class);
         when(deleteGroupEvent.getName()).thenReturn("group1");
         tested.groupName = "group1";
         tested.onGroupDeleted(deleteGroupEvent);
-        verify(placeManager, times(1)).closePlace(any(PlaceRequest.class));
+        verify(placeManager,
+               times(1)).closePlace(any(PlaceRequest.class));
     }
-    
 }

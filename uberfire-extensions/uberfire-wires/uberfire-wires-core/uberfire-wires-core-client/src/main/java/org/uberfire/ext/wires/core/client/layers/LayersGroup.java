@@ -42,37 +42,37 @@ public class LayersGroup extends Composite {
 
     @PostConstruct
     public void init() {
-        panel = new FocusableLienzoPanel( ShapeFactoryUtil.WIDTH_PANEL,
-                                          ShapeFactoryUtil.HEIGHT_PANEL );
-        super.initWidget( panel );
+        panel = new FocusableLienzoPanel(ShapeFactoryUtil.WIDTH_PANEL,
+                                         ShapeFactoryUtil.HEIGHT_PANEL);
+        super.initWidget(panel);
         layer = new Layer();
-        panel.getScene().add( layer );
+        panel.getScene().add(layer);
     }
 
-    public void addShape( final WiresBaseShape shape,
-                          final ShapeFactory factory ) {
-        final LayerShape stencil = stencilBuilder.build( shape,
-                                                         factory );
-        shapes.add( shape );
-        stencils.add( stencil );
+    public void addShape(final WiresBaseShape shape,
+                         final ShapeFactory factory) {
+        final LayerShape stencil = stencilBuilder.build(shape,
+                                                        factory);
+        shapes.add(shape);
+        stencils.add(stencil);
 
         //Add LayerShape to the UI
-        stencil.setX( 0 );
-        stencil.setY( ( ShapeFactoryUtil.HEIGHT_BOUNDING_LAYER + 5 ) * ( shapes.size() - 1 ) );
-        layer.add( stencil );
+        stencil.setX(0);
+        stencil.setY((ShapeFactoryUtil.HEIGHT_BOUNDING_LAYER + 5) * (shapes.size() - 1));
+        layer.add(stencil);
         layer.batch();
     }
 
-    public void deleteShape( final WiresBaseShape shape ) {
+    public void deleteShape(final WiresBaseShape shape) {
         //Remove from UI
-        final int index = shapes.indexOf( shape );
-        layer.remove( stencils.get( index ) );
-        shapes.remove( index );
-        stencils.remove( index );
+        final int index = shapes.indexOf(shape);
+        layer.remove(stencils.get(index));
+        shapes.remove(index);
+        stencils.remove(index);
 
         int shapeCount = 0;
-        for ( LayerShape stencil : stencils ) {
-            stencil.setY( ( ShapeFactoryUtil.HEIGHT_BOUNDING_LAYER + 5 ) * shapeCount );
+        for (LayerShape stencil : stencils) {
+            stencil.setY((ShapeFactoryUtil.HEIGHT_BOUNDING_LAYER + 5) * shapeCount);
             shapeCount++;
         }
         layer.batch();
@@ -84,5 +84,4 @@ public class LayersGroup extends Composite {
         layer.removeAll();
         layer.batch();
     }
-
 }

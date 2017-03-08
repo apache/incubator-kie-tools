@@ -22,8 +22,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.api.UserSystemManager;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * <p>Base test class for users/groups/roles manager based services.</p>
@@ -34,12 +33,13 @@ public abstract class BaseTest {
     @Mock
     protected UserSystemManager userSystemManager;
 
-    protected AbstractEntityManager.SearchRequest buildSearchRequestMock(String pattern, int page, int pageSize) {
+    protected AbstractEntityManager.SearchRequest buildSearchRequestMock(String pattern,
+                                                                         int page,
+                                                                         int pageSize) {
         AbstractEntityManager.SearchRequest request = mock(AbstractEntityManager.SearchRequest.class);
         when(request.getSearchPattern()).thenReturn(pattern);
         when(request.getPage()).thenReturn(page);
         when(request.getPageSize()).thenReturn(pageSize);
         return request;
     }
-
 }

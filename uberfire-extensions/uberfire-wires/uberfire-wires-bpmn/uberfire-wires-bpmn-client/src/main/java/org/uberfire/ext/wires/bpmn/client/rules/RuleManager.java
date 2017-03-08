@@ -30,7 +30,7 @@ public interface RuleManager {
      * Add a rule to the Rule Manager
      * @param rule
      */
-    void addRule( final Rule rule );
+    void addRule(final Rule rule);
 
     /**
      * Check whether adding the proposed Node to the target Process breaks any containment Rules
@@ -38,8 +38,8 @@ public interface RuleManager {
      * @param candidate Candidate node
      * @return
      */
-    Results checkContainment( final BpmnGraph target,
-                              final BpmnGraphNode candidate );
+    Results checkContainment(final BpmnGraph target,
+                             final BpmnGraphNode candidate);
 
     /**
      * Check whether adding the proposed Node to the target Process breaks any cardinality Rules
@@ -48,9 +48,9 @@ public interface RuleManager {
      * @param operation Is the candidate Node being added or removed
      * @return
      */
-    Results checkCardinality( final BpmnGraph target,
-                              final BpmnGraphNode candidate,
-                              final Operation operation );
+    Results checkCardinality(final BpmnGraph target,
+                             final BpmnGraphNode candidate,
+                             final Operation operation);
 
     /**
      * Check whether adding the proposed Edge to the target Process breaks any connection Rules
@@ -59,9 +59,9 @@ public interface RuleManager {
      * @param edge Candidate edge
      * @return Is the Edge being added or removed
      */
-    Results checkConnectionRules( final BpmnGraphNode outgoingNode,
-                                  final BpmnGraphNode incomingNode,
-                                  final BpmnEdge edge );
+    Results checkConnectionRules(final BpmnGraphNode outgoingNode,
+                                 final BpmnGraphNode incomingNode,
+                                 final BpmnEdge edge);
 
     /**
      * Check whether adding the proposed Edge to the target Process breaks any cardinality Rules
@@ -71,10 +71,10 @@ public interface RuleManager {
      * @param operation
      * @return Is the Edge being added or removed
      */
-    Results checkCardinality( final BpmnGraphNode outgoingNode,
-                              final BpmnGraphNode incomingNode,
-                              final BpmnEdge edge,
-                              final Operation operation );
+    Results checkCardinality(final BpmnGraphNode outgoingNode,
+                             final BpmnGraphNode incomingNode,
+                             final BpmnEdge edge,
+                             final Operation operation);
 
     /**
      * Rules are applied against an unmodified Graph to check whether the proposed mutated state is valid.
@@ -86,5 +86,4 @@ public interface RuleManager {
         ADD,
         DELETE
     }
-
 }

@@ -15,9 +15,9 @@
  */
 package org.uberfire.ext.metadata.engine;
 
-import org.uberfire.java.nio.file.Path;
 import org.uberfire.ext.metadata.model.KObject;
 import org.uberfire.ext.metadata.model.KObjectKey;
+import org.uberfire.java.nio.file.Path;
 
 public interface Indexer {
 
@@ -26,20 +26,19 @@ public interface Indexer {
      * @param path
      * @return
      */
-    boolean supportsPath( final Path path );
+    boolean supportsPath(final Path path);
 
     /**
      * Index file represented by Path into an index object
      * @param path
      * @return
      */
-    KObject toKObject( final Path path );
+    KObject toKObject(final Path path);
 
     /**
      * Index file represented by Path into an index key object
      * @param path
      * @return
      */
-    KObjectKey toKObjectKey( final Path path );
-
+    KObjectKey toKObjectKey(final Path path);
 }

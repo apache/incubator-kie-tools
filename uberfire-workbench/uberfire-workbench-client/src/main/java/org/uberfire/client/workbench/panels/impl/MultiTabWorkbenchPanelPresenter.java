@@ -32,10 +32,12 @@ import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 public class MultiTabWorkbenchPanelPresenter extends AbstractMultiPartWorkbenchPanelPresenter<MultiTabWorkbenchPanelPresenter> {
 
     @Inject
-    public MultiTabWorkbenchPanelPresenter( @Named("MultiTabWorkbenchPanelView") final WorkbenchPanelView<MultiTabWorkbenchPanelPresenter> view,
-                                            final ActivityManager activityManager,
-                                            final PerspectiveManager perspectiveManager ) {
-        super( view, activityManager, perspectiveManager );
+    public MultiTabWorkbenchPanelPresenter(@Named("MultiTabWorkbenchPanelView") final WorkbenchPanelView<MultiTabWorkbenchPanelPresenter> view,
+                                           final ActivityManager activityManager,
+                                           final PerspectiveManager perspectiveManager) {
+        super(view,
+              activityManager,
+              perspectiveManager);
     }
 
     @Override

@@ -21,38 +21,38 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
-
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 
 @JsType
 public class DefaultMenus implements Menus {
 
     private final List<MenuItem> menuItems;
     private final int order;
-    
+
     @JsIgnore
-    public DefaultMenus(List<MenuItem> menuItems, int order) {
+    public DefaultMenus(List<MenuItem> menuItems,
+                        int order) {
         this.menuItems = menuItems;
         this.order = order;
     }
-    
+
     @JsIgnore
     @Override
     public List<MenuItem> getItems() {
-        return Collections.unmodifiableList( menuItems );
+        return Collections.unmodifiableList(menuItems);
     }
 
     @Override
-    public void accept( MenuVisitor visitor ) {
-        if ( visitor.visitEnter( this ) ) {
-            for ( MenuItem item : menuItems ) {
-                item.accept( visitor );
+    public void accept(MenuVisitor visitor) {
+        if (visitor.visitEnter(this)) {
+            for (MenuItem item : menuItems) {
+                item.accept(visitor);
             }
-            visitor.visitLeave( this );
+            visitor.visitLeave(this);
         }
     }
 
@@ -62,9 +62,9 @@ public class DefaultMenus implements Menus {
         return new HashMap<Object, MenuItem>() {
 
             {
-                for ( final MenuItem menuItem : menuItems ) {
-                    put( menuItem,
-                         menuItem );
+                for (final MenuItem menuItem : menuItems) {
+                    put(menuItem,
+                        menuItem);
                 }
             }
         };

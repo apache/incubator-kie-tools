@@ -39,35 +39,21 @@ import org.uberfire.security.authz.PermissionCollection;
 /**
  * <p>The user editor presenter.</p>
  * <p>User's groups are edited using the UserAssignedGroupsExplorer editor component. So the UserAssignedGroupsEditor works with a dummy user instance.</p>
- * 
  * @since 0.8.0
  */
 @Dependent
-public class RoleEditor implements IsWidget, org.uberfire.ext.security.management.client.editor.role.RoleEditor {
+public class RoleEditor implements IsWidget,
+                                   org.uberfire.ext.security.management.client.editor.role.RoleEditor {
 
-    public interface View extends UberView<RoleEditor> {
-
-        View setRolename(String username);
-
-        View setEditButtonVisible(boolean isVisible);
-
-        View setACLSettings(IsWidget aclSettings);
-
-        View showACL(IsWidget aclViewer);
-
-        View editACL(IsWidget aclEditor);
-    }
-
+    public View view;
     ClientUserSystemManager userSystemManager;
     ACLSettings aclSettings;
     ACLViewer aclViewer;
     ACLEditor aclEditor;
     Event<OnEditEvent> onEditEvent;
     Event<OnShowEvent> onShowEvent;
-    public View view;
     Role role;
     boolean isEditMode;
-
     @Inject
     public RoleEditor(final ClientUserSystemManager userSystemManager,
                       final ACLSettings aclSettings,
@@ -76,7 +62,7 @@ public class RoleEditor implements IsWidget, org.uberfire.ext.security.managemen
                       final Event<OnEditEvent> onEditEvent,
                       final Event<OnShowEvent> onShowEvent,
                       final View view) {
-        
+
         this.userSystemManager = userSystemManager;
         this.aclSettings = aclSettings;
         this.aclViewer = aclViewer;
@@ -92,14 +78,14 @@ public class RoleEditor implements IsWidget, org.uberfire.ext.security.managemen
         view.setACLSettings(aclSettings);
     }
 
-    /*  ******************************************************************************************************
-                                     PUBLIC PRESENTER API 
-         ****************************************************************************************************** */
-    
     @Override
     public Widget asWidget() {
         return view.asWidget();
     }
+
+    /*  ******************************************************************************************************
+                                     PUBLIC PRESENTER API 
+         ****************************************************************************************************** */
 
     @Override
     public String name() {
@@ -134,7 +120,8 @@ public class RoleEditor implements IsWidget, org.uberfire.ext.security.managemen
         clear();
         this.isEditMode = false;
         open(role);
-        onShowEvent.fire(new OnShowEvent(RoleEditor.this, role));
+        onShowEvent.fire(new OnShowEvent(RoleEditor.this,
+                                         role));
     }
 
     @Override
@@ -160,28 +147,25 @@ public class RoleEditor implements IsWidget, org.uberfire.ext.security.managemen
     public void setViolations(final Set<ConstraintViolation<Role>> violations) {
         //  Currently no violations expected.
     }
-    
+
     public void clear() {
         isEditMode = false;
         role = null;
+    }
+
+    void onEdit() {
+        onEditEvent.fire(new OnEditEvent(RoleEditor.this,
+                                         role));
     }
     
     /*  ******************************************************************************************************
                                  VIEW CALLBACKS 
      ****************************************************************************************************** */
 
-    void onEdit() {
-        onEditEvent.fire(new OnEditEvent(RoleEditor.this, role));
-    }
-
-     /*  ******************************************************************************************************
-                                 PRIVATE METHODS AND VALIDATORS
-     ****************************************************************************************************** */
-    
     protected void open(final Role role) {
         assert role != null;
         this.role = role;
-        
+
         // Role name
         final String name = role.getName();
         view.setRolename(name);
@@ -199,5 +183,22 @@ public class RoleEditor implements IsWidget, org.uberfire.ext.security.managemen
             aclViewer.show(role);
             view.showACL(aclViewer);
         }
+    }
+
+     /*  ******************************************************************************************************
+                                 PRIVATE METHODS AND VALIDATORS
+     ****************************************************************************************************** */
+
+    public interface View extends UberView<RoleEditor> {
+
+        View setRolename(String username);
+
+        View setEditButtonVisible(boolean isVisible);
+
+        View setACLSettings(IsWidget aclSettings);
+
+        View showACL(IsWidget aclViewer);
+
+        View editACL(IsWidget aclEditor);
     }
 }

@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -61,43 +60,41 @@ public class PluginManager {
     /**
      * Initializes the {@link PluginJarProcessor} and
      * {@link PluginWatcher} based on the provided parameters.
-     *
      * @param contextRootDir the web application's context root directory, must not be
-     *                       null.
-     * @param pluginDir      the plugin directory, must not be null.
+     * null.
+     * @param pluginDir the plugin directory, must not be null.
      */
     public void init(final String contextRootDir,
                      final String pluginDir) {
         try {
             pluginJarProcessor.init(pluginDir,
-                    findPluginDeploymentDir(contextRootDir));
+                                    findPluginDeploymentDir(contextRootDir));
 
             pluginWatcher.start(pluginDir,
-                    executor,
-                    pluginJarProcessor);
+                                executor,
+                                pluginJarProcessor);
         } catch (Exception e) {
-            LOG.error("Failed to initialize " + PluginManager.class.getName(), e);
+            LOG.error("Failed to initialize " + PluginManager.class.getName(),
+                      e);
             throw new RuntimeException(e);
         }
     }
 
     /**
      * Finds the directory to deploy plugin contents to.
-     *
      * @param contextRootDir the web application's context root directory, must not be
-     *                       null.
+     * null.
      * @return the directory hosting the plugin's JS files or the provided
      * context root directory if not found.
      */
     String findPluginDeploymentDir(String contextRootDir) throws IOException {
         final Collection<File> gwtFiles = FileUtils.listFiles(new File(contextRootDir),
-                new String[]{"nocache.js"},
-                true);
+                                                              new String[]{"nocache.js"},
+                                                              true);
         if (!gwtFiles.isEmpty()) {
             final File gwtFile = gwtFiles.iterator().next();
             return gwtFile.getParentFile().getCanonicalPath();
         }
         return new File(contextRootDir).getCanonicalPath();
     }
-
 }

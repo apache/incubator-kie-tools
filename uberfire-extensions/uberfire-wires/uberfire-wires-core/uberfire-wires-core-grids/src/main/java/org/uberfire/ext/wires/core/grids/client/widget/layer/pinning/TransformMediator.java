@@ -30,7 +30,6 @@ public interface TransformMediator {
      * @param visibleBounds {@link Bounds} of the visible portion of the Viewport.
      * @return A new Transform.
      */
-    Transform adjust( final Transform transform,
-                      final Bounds visibleBounds );
-
+    Transform adjust(final Transform transform,
+                     final Bounds visibleBounds);
 }

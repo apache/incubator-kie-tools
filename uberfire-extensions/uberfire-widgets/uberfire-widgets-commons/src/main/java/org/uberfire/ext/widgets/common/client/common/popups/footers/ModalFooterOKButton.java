@@ -31,31 +31,30 @@ import org.uberfire.commons.validation.PortablePreconditions;
  */
 public class ModalFooterOKButton extends ModalFooter {
 
-    private static ModalFooterOKButtonBinder uiBinder = GWT.create( ModalFooterOKButtonBinder.class );
+    private static ModalFooterOKButtonBinder uiBinder = GWT.create(ModalFooterOKButtonBinder.class);
 
     private final Command okCommand;
+    @UiField
+    Button okButton;
+
+    public ModalFooterOKButton(final Command okCommand) {
+        this.okCommand = PortablePreconditions.checkNotNull("okCommand",
+                                                            okCommand);
+        add(uiBinder.createAndBindUi(this));
+    }
+
+    public void enableOkButton(final boolean enabled) {
+        okButton.setEnabled(enabled);
+    }
+
+    @UiHandler("okButton")
+    public void onOKButtonClick(final ClickEvent e) {
+        okCommand.execute();
+    }
 
     interface ModalFooterOKButtonBinder
             extends
             UiBinder<Widget, ModalFooterOKButton> {
 
-    }
-
-    @UiField
-    Button okButton;
-
-    public ModalFooterOKButton( final Command okCommand ) {
-        this.okCommand = PortablePreconditions.checkNotNull( "okCommand",
-                                                             okCommand );
-        add( uiBinder.createAndBindUi( this ) );
-    }
-
-    public void enableOkButton( final boolean enabled ) {
-        okButton.setEnabled( enabled );
-    }
-
-    @UiHandler("okButton")
-    public void onOKButtonClick( final ClickEvent e ) {
-        okCommand.execute();
     }
 }

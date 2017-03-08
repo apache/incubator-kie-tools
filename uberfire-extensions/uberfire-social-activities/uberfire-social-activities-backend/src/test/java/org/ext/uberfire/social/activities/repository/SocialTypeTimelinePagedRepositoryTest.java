@@ -15,20 +15,24 @@
 
 package org.ext.uberfire.social.activities.repository;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.ext.uberfire.social.activities.model.*;
+import java.util.Date;
+import java.util.List;
+
+import org.ext.uberfire.social.activities.model.DefaultTypes;
+import org.ext.uberfire.social.activities.model.PagedSocialQuery;
+import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
+import org.ext.uberfire.social.activities.model.SocialEventType;
+import org.ext.uberfire.social.activities.model.SocialPaged;
+import org.ext.uberfire.social.activities.model.SocialUser;
 import org.ext.uberfire.social.activities.persistence.SocialTimelineCacheInstancePersistenceUnitTestWrapper;
 import org.ext.uberfire.social.activities.security.SocialSecurityConstraintsManager;
 import org.ext.uberfire.social.activities.service.SocialAdapter;
 import org.ext.uberfire.social.activities.service.SocialCommandTypeFilter;
 import org.ext.uberfire.social.activities.service.SocialTimelinePersistenceAPI;
+import org.junit.Before;
+import org.junit.Test;
 
-import java.util.Date;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class SocialTypeTimelinePagedRepositoryTest {
@@ -42,12 +46,12 @@ public class SocialTypeTimelinePagedRepositoryTest {
     public void setUp() throws Exception {
         SocialSecurityConstraintsManager socialSecurityConstraintsManager = new SocialSecurityConstraintsManager() {
             @Override
-            public List<SocialActivitiesEvent> applyConstraints( List<SocialActivitiesEvent> events ) {
+            public List<SocialActivitiesEvent> applyConstraints(List<SocialActivitiesEvent> events) {
                 return events;
             }
         };
-        socialSecurityConstraintsManagerSpy = spy( socialSecurityConstraintsManager );
-        socialTimelinePersistenceFake = new SocialTimelineCacheInstancePersistenceUnitTestWrapper( socialSecurityConstraintsManagerSpy );
+        socialSecurityConstraintsManagerSpy = spy(socialSecurityConstraintsManager);
+        socialTimelinePersistenceFake = new SocialTimelineCacheInstancePersistenceUnitTestWrapper(socialSecurityConstraintsManagerSpy);
         repository = new SocialTypeTimelinePagedRepository() {
 
             @Override
@@ -56,7 +60,7 @@ public class SocialTypeTimelinePagedRepositoryTest {
             }
 
             @Override
-            SocialAdapter getSocialAdapter( String adapterName ) {
+            SocialAdapter getSocialAdapter(String adapterName) {
                 return new SocialAdapter() {
                     @Override
                     public Class eventToIntercept() {
@@ -69,12 +73,12 @@ public class SocialTypeTimelinePagedRepositoryTest {
                     }
 
                     @Override
-                    public boolean shouldInterceptThisEvent( Object event ) {
+                    public boolean shouldInterceptThisEvent(Object event) {
                         return false;
                     }
 
                     @Override
-                    public SocialActivitiesEvent toSocial( Object object ) {
+                    public SocialActivitiesEvent toSocial(Object object) {
                         return null;
                     }
 
@@ -95,88 +99,177 @@ public class SocialTypeTimelinePagedRepositoryTest {
     @Test
     public void fullReadTest() {
 
-        createFreshCacheEventsEvents( 3 );
+        createFreshCacheEventsEvents(3);
 
-        SocialPaged socialPaged = new SocialPaged( 5 );
+        SocialPaged socialPaged = new SocialPaged(5);
 
-        PagedSocialQuery query = repository.getEventTimeline( type.name(), socialPaged );
-        assertFreshEvents( query );
-        assertStoredEvent( "5", "0", 3, query.socialEvents() );
-        assertStoredEvent( "5", "1", 4, query.socialEvents() );
+        PagedSocialQuery query = repository.getEventTimeline(type.name(),
+                                                             socialPaged);
+        assertFreshEvents(query);
+        assertStoredEvent("5",
+                          "0",
+                          3,
+                          query.socialEvents());
+        assertStoredEvent("5",
+                          "1",
+                          4,
+                          query.socialEvents());
 
-        query = repository.getEventTimeline( type.name(), socialPaged );
+        query = repository.getEventTimeline(type.name(),
+                                            socialPaged);
         //file 5
-        assertStoredEvent( "5", "2", 0, query.socialEvents() );
-        assertStoredEvent( "5", "3", 1, query.socialEvents() );
-        assertStoredEvent( "5", "4", 2, query.socialEvents() );
+        assertStoredEvent("5",
+                          "2",
+                          0,
+                          query.socialEvents());
+        assertStoredEvent("5",
+                          "3",
+                          1,
+                          query.socialEvents());
+        assertStoredEvent("5",
+                          "4",
+                          2,
+                          query.socialEvents());
         //file 4
-        assertStoredEvent( "4", "0", 3, query.socialEvents() );
-        assertStoredEvent( "4", "1", 4, query.socialEvents() );
-        assertTrue( socialPaged.canIGoForward() );
-        query = repository.getEventTimeline( type.name(), socialPaged );
+        assertStoredEvent("4",
+                          "0",
+                          3,
+                          query.socialEvents());
+        assertStoredEvent("4",
+                          "1",
+                          4,
+                          query.socialEvents());
+        assertTrue(socialPaged.canIGoForward());
+        query = repository.getEventTimeline(type.name(),
+                                            socialPaged);
 
-        assertStoredEvent( "4", "2", 0, query.socialEvents() );
-        assertStoredEvent( "4", "3", 1, query.socialEvents() );
-        assertStoredEvent( "4", "4", 2, query.socialEvents() );
+        assertStoredEvent("4",
+                          "2",
+                          0,
+                          query.socialEvents());
+        assertStoredEvent("4",
+                          "3",
+                          1,
+                          query.socialEvents());
+        assertStoredEvent("4",
+                          "4",
+                          2,
+                          query.socialEvents());
         //file number 3
-        assertStoredEvent( "3", "0", 3, query.socialEvents() );
-        assertStoredEvent( "3", "1", 4, query.socialEvents() );
-        assertTrue( socialPaged.canIGoForward() );
+        assertStoredEvent("3",
+                          "0",
+                          3,
+                          query.socialEvents());
+        assertStoredEvent("3",
+                          "1",
+                          4,
+                          query.socialEvents());
+        assertTrue(socialPaged.canIGoForward());
 
-        query = repository.getEventTimeline( type.name(), socialPaged );
-        assertStoredEvent( "3", "2", 0, query.socialEvents() );
-        assertStoredEvent( "3", "3", 1, query.socialEvents() );
-        assertStoredEvent( "3", "4", 2, query.socialEvents() );
+        query = repository.getEventTimeline(type.name(),
+                                            socialPaged);
+        assertStoredEvent("3",
+                          "2",
+                          0,
+                          query.socialEvents());
+        assertStoredEvent("3",
+                          "3",
+                          1,
+                          query.socialEvents());
+        assertStoredEvent("3",
+                          "4",
+                          2,
+                          query.socialEvents());
 
-        assertStoredEvent( "2", "0", 3, query.socialEvents() );
-        assertStoredEvent( "2", "1", 4, query.socialEvents() );
+        assertStoredEvent("2",
+                          "0",
+                          3,
+                          query.socialEvents());
+        assertStoredEvent("2",
+                          "1",
+                          4,
+                          query.socialEvents());
 
-        query = repository.getEventTimeline( type.name(), socialPaged );
-        assertStoredEvent( "2", "2", 0, query.socialEvents() );
-        assertStoredEvent( "2", "3", 1, query.socialEvents() );
-        assertStoredEvent( "2", "4", 2, query.socialEvents() );
-        assertTrue( socialPaged.canIGoForward() );
+        query = repository.getEventTimeline(type.name(),
+                                            socialPaged);
+        assertStoredEvent("2",
+                          "2",
+                          0,
+                          query.socialEvents());
+        assertStoredEvent("2",
+                          "3",
+                          1,
+                          query.socialEvents());
+        assertStoredEvent("2",
+                          "4",
+                          2,
+                          query.socialEvents());
+        assertTrue(socialPaged.canIGoForward());
         //one is empty - error to read file
 
-        assertStoredEvent( "0", "0", 3, query.socialEvents() );
-        assertStoredEvent( "0", "1", 4, query.socialEvents() );
+        assertStoredEvent("0",
+                          "0",
+                          3,
+                          query.socialEvents());
+        assertStoredEvent("0",
+                          "1",
+                          4,
+                          query.socialEvents());
 
-        query = repository.getEventTimeline( type.name(), socialPaged );
-        assertStoredEvent( "0", "2", 0, query.socialEvents() );
-        assertStoredEvent( "0", "3", 1, query.socialEvents() );
-        assertStoredEvent( "0", "4", 2, query.socialEvents() );
-        assertTrue( query.socialEvents().size() == 3 );
-        assertTrue( !socialPaged.canIGoForward() );
+        query = repository.getEventTimeline(type.name(),
+                                            socialPaged);
+        assertStoredEvent("0",
+                          "2",
+                          0,
+                          query.socialEvents());
+        assertStoredEvent("0",
+                          "3",
+                          1,
+                          query.socialEvents());
+        assertStoredEvent("0",
+                          "4",
+                          2,
+                          query.socialEvents());
+        assertTrue(query.socialEvents().size() == 3);
+        assertTrue(!socialPaged.canIGoForward());
 
-        verify( socialSecurityConstraintsManagerSpy ).applyConstraints( any( List.class ) );
-
+        verify(socialSecurityConstraintsManagerSpy).applyConstraints(any(List.class));
     }
 
-    private void assertStoredEvent( String fileName,
-                                    String expected,
-                                    int index,
-                                    List<SocialActivitiesEvent> events ) {
-        SocialActivitiesEvent event = events.get( index );
-        assertEquals( fileName, event.getSocialUser().getUserName() );
-        assertEquals( expected, event.getAdditionalInfo()[0] );
+    private void assertStoredEvent(String fileName,
+                                   String expected,
+                                   int index,
+                                   List<SocialActivitiesEvent> events) {
+        SocialActivitiesEvent event = events.get(index);
+        assertEquals(fileName,
+                     event.getSocialUser().getUserName());
+        assertEquals(expected,
+                     event.getAdditionalInfo()[0]);
     }
 
-    private void assertFreshEvents( PagedSocialQuery query ) {
-        assertEquals( "2", query.socialEvents().get( 0 ).getAdditionalInfo()[0] );
-        assertEquals( "1", query.socialEvents().get( 1 ).getAdditionalInfo()[0] );
-        assertEquals( "0", query.socialEvents().get( 2 ).getAdditionalInfo()[0] );
+    private void assertFreshEvents(PagedSocialQuery query) {
+        assertEquals("2",
+                     query.socialEvents().get(0).getAdditionalInfo()[0]);
+        assertEquals("1",
+                     query.socialEvents().get(1).getAdditionalInfo()[0]);
+        assertEquals("0",
+                     query.socialEvents().get(2).getAdditionalInfo()[0]);
     }
 
-    private PagedSocialQuery queryAndAssertNumberOfEvents( int numberOfEvents,
-                                                           SocialPaged socialPaged ) {
-        PagedSocialQuery query = repository.getEventTimeline( type.name(), socialPaged );
-        assertEquals( numberOfEvents, query.socialEvents().size() );
+    private PagedSocialQuery queryAndAssertNumberOfEvents(int numberOfEvents,
+                                                          SocialPaged socialPaged) {
+        PagedSocialQuery query = repository.getEventTimeline(type.name(),
+                                                             socialPaged);
+        assertEquals(numberOfEvents,
+                     query.socialEvents().size());
         return query;
     }
 
-    private void createFreshCacheEventsEvents( int numberOfEvents ) {
-        for ( int i = 0; i < numberOfEvents; i++ ) {
-            socialTimelinePersistenceFake.persist( new SocialActivitiesEvent( new SocialUser( "fresh" ), DefaultTypes.DUMMY_EVENT, new Date() ).withAdicionalInfo( i + "" ) );
+    private void createFreshCacheEventsEvents(int numberOfEvents) {
+        for (int i = 0; i < numberOfEvents; i++) {
+            socialTimelinePersistenceFake.persist(new SocialActivitiesEvent(new SocialUser("fresh"),
+                                                                            DefaultTypes.DUMMY_EVENT,
+                                                                            new Date()).withAdicionalInfo(i + ""));
         }
     }
 }

@@ -16,11 +16,11 @@
 
 package org.uberfire.workbench.model.menu.impl;
 
-import static org.uberfire.plugin.PluginUtil.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.ResourceActionRef;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
@@ -29,31 +29,29 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.MenuVisitor;
 
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
+import static org.uberfire.plugin.PluginUtil.ensureIterable;
 
 @JsType
 public class DefaultMenuGroup implements MenuGroup {
 
     private final List<EnabledStateChangeListener> enabledStateChangeListeners = new ArrayList<EnabledStateChangeListener>();
-    private boolean isEnabled = true;
-
     private final List menuItems;
     private final String contributionPoint;
     private final String caption;
     private final MenuPosition position;
     private final int order;
+    private boolean isEnabled = true;
     private List<ResourceActionRef> resourceActionRefs;
     private List<String> permissionNames;
 
     @JsIgnore
-    public DefaultMenuGroup( List<MenuItem> menuItems,
-                             List<ResourceActionRef> resourceActionRefs,
-                             List<String> permissionNames,
-                             String contributionPoint,
-                             String caption,
-                             MenuPosition position,
-                             int order ) {
+    public DefaultMenuGroup(List<MenuItem> menuItems,
+                            List<ResourceActionRef> resourceActionRefs,
+                            List<String> permissionNames,
+                            String contributionPoint,
+                            String caption,
+                            MenuPosition position,
+                            int order) {
         this.menuItems = menuItems;
         this.resourceActionRefs = resourceActionRefs;
         this.permissionNames = permissionNames;
@@ -95,38 +93,37 @@ public class DefaultMenuGroup implements MenuGroup {
     }
 
     @Override
-    public void setEnabled( final boolean enabled ) {
+    public void setEnabled(final boolean enabled) {
         this.isEnabled = enabled;
-        notifyListeners( enabled );
+        notifyListeners(enabled);
     }
 
     @JsIgnore
     @Override
-    public void addEnabledStateChangeListener( final EnabledStateChangeListener listener ) {
-        enabledStateChangeListeners.add( listener );
+    public void addEnabledStateChangeListener(final EnabledStateChangeListener listener) {
+        enabledStateChangeListeners.add(listener);
     }
 
     @Override
-    public void accept( MenuVisitor visitor ) {
-        if ( visitor.visitEnter( this ) ) {
-            for ( MenuItem child : ensureIterable ( getItems() ) ) {
-                child.accept( visitor );
+    public void accept(MenuVisitor visitor) {
+        if (visitor.visitEnter(this)) {
+            for (MenuItem child : ensureIterable(getItems())) {
+                child.accept(visitor);
             }
-            visitor.visitLeave( this );
+            visitor.visitLeave(this);
         }
     }
 
-    private void notifyListeners( final boolean enabled ) {
-        for ( final EnabledStateChangeListener listener : enabledStateChangeListeners ) {
-            listener.enabledStateChanged( enabled );
+    private void notifyListeners(final boolean enabled) {
+        for (final EnabledStateChangeListener listener : enabledStateChangeListeners) {
+            listener.enabledStateChanged(enabled);
         }
     }
 
     @Override
     public String getIdentifier() {
-        if ( contributionPoint != null ) {
+        if (contributionPoint != null) {
             return getClass().getName() + "#" + contributionPoint + "#" + caption;
-
         }
         return getClass().getName() + "#" + caption;
     }

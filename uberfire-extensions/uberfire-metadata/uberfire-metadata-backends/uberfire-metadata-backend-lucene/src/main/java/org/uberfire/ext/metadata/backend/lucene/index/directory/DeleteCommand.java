@@ -18,6 +18,5 @@ package org.uberfire.ext.metadata.backend.lucene.index.directory;
 
 public interface DeleteCommand {
 
-    public void execute( org.apache.lucene.store.Directory directory );
-
+    public void execute(org.apache.lucene.store.Directory directory);
 }

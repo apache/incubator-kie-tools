@@ -36,20 +36,11 @@ import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
 public class RefreshSelectorMenuBuilder implements MenuFactory.CustomMenuBuilder {
 
-    public interface SupportsRefreshInterval {
-
-        void onUpdateRefreshInterval(boolean enableAutoRefresh, int newInterval);
-
-    }
-
     private final CommonConstants constants = CommonConstants.INSTANCE;
-
-    private SupportsRefreshInterval supportsRefreshInterval;
-
     private final DropDownMenu menuDropDownMenu = GWT.create(DropDownMenu.class);
     private final Button menuButton = GWT.create(Button.class);
     private final ButtonGroup buttonGroup = GWT.create(ButtonGroup.class);
-
+    private SupportsRefreshInterval supportsRefreshInterval;
     public RefreshSelectorMenuBuilder(final SupportsRefreshInterval supportsRefreshInterval) {
         this.supportsRefreshInterval = supportsRefreshInterval;
         setupMenuButton();
@@ -113,11 +104,11 @@ public class RefreshSelectorMenuBuilder implements MenuFactory.CustomMenuBuilder
             @Override
             public void onClick(ClickEvent event) {
                 oneMinuteRadioButton.setIcon(IconType.CHECK);
-                supportsRefreshInterval.onUpdateRefreshInterval(true, selectedRefreshTime);
+                supportsRefreshInterval.onUpdateRefreshInterval(true,
+                                                                selectedRefreshTime);
                 refreshDisableButton.setActive(false);
                 refreshDisableButton.setEnabled(true);
                 refreshDisableButton.setText(constants.Disable_autorefresh());
-
             }
         });
 
@@ -128,17 +119,28 @@ public class RefreshSelectorMenuBuilder implements MenuFactory.CustomMenuBuilder
         final AnchorListItem resetButton = new AnchorListItem(constants.Disable_autorefresh());
 
         if (configuredSeconds > 10) {
-            supportsRefreshInterval.onUpdateRefreshInterval(true, configuredSeconds);
+            supportsRefreshInterval.onUpdateRefreshInterval(true,
+                                                            configuredSeconds);
             resetButton.setEnabled(true);
         } else {
-            supportsRefreshInterval.onUpdateRefreshInterval(false, 0);
+            supportsRefreshInterval.onUpdateRefreshInterval(false,
+                                                            0);
             resetButton.setEnabled(false);
             resetButton.setText(constants.Autorefresh_Disabled());
         }
 
-        final AnchorListItem oneMinuteRadioButton = createTimeSelector(60, "1 " + constants.Minute(), configuredSeconds, resetButton);
-        final AnchorListItem fiveMinuteRadioButton = createTimeSelector(300, "5 " + constants.Minutes(), configuredSeconds, resetButton);
-        final AnchorListItem tenMinuteRadioButton = createTimeSelector(600, "10 " + constants.Minutes(), configuredSeconds, resetButton);
+        final AnchorListItem oneMinuteRadioButton = createTimeSelector(60,
+                                                                       "1 " + constants.Minute(),
+                                                                       configuredSeconds,
+                                                                       resetButton);
+        final AnchorListItem fiveMinuteRadioButton = createTimeSelector(300,
+                                                                        "5 " + constants.Minutes(),
+                                                                        configuredSeconds,
+                                                                        resetButton);
+        final AnchorListItem tenMinuteRadioButton = createTimeSelector(600,
+                                                                       "10 " + constants.Minutes(),
+                                                                       configuredSeconds,
+                                                                       resetButton);
 
         menuDropDownMenu.add(oneMinuteRadioButton);
         menuDropDownMenu.add(fiveMinuteRadioButton);
@@ -172,7 +174,8 @@ public class RefreshSelectorMenuBuilder implements MenuFactory.CustomMenuBuilder
 
             @Override
             public void onClick(ClickEvent event) {
-                supportsRefreshInterval.onUpdateRefreshInterval(false, 0);
+                supportsRefreshInterval.onUpdateRefreshInterval(false,
+                                                                0);
                 resetButton.setActive(false);
                 resetButton.setEnabled(false);
                 resetButton.setText(constants.Autorefresh_Disabled());
@@ -186,4 +189,9 @@ public class RefreshSelectorMenuBuilder implements MenuFactory.CustomMenuBuilder
         menuDropDownMenu.add(resetButton);
     }
 
+    public interface SupportsRefreshInterval {
+
+        void onUpdateRefreshInterval(boolean enableAutoRefresh,
+                                     int newInterval);
+    }
 }

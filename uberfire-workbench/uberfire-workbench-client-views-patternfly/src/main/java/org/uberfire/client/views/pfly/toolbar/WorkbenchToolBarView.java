@@ -15,25 +15,9 @@
  */
 package org.uberfire.client.views.pfly.toolbar;
 
-import static org.uberfire.plugin.PluginUtil.*;
-
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.enterprise.context.Dependent;
-
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.ButtonGroup;
-import org.gwtbootstrap3.client.ui.ButtonToolBar;
-import org.gwtbootstrap3.client.ui.Tooltip;
-import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.gwtbootstrap3.client.ui.constants.Placement;
-import org.uberfire.client.resources.i18n.WorkbenchConstants;
-import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
-import org.uberfire.client.workbench.widgets.toolbar.WorkbenchToolBarPresenter;
-import org.uberfire.workbench.model.toolbar.ToolBar;
-import org.uberfire.workbench.model.toolbar.ToolBarItem;
-import org.uberfire.workbench.model.toolbar.ToolBarTypeIcon;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.GWT;
@@ -48,6 +32,20 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.ButtonGroup;
+import org.gwtbootstrap3.client.ui.ButtonToolBar;
+import org.gwtbootstrap3.client.ui.Tooltip;
+import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtbootstrap3.client.ui.constants.Placement;
+import org.uberfire.client.resources.i18n.WorkbenchConstants;
+import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
+import org.uberfire.client.workbench.widgets.toolbar.WorkbenchToolBarPresenter;
+import org.uberfire.workbench.model.toolbar.ToolBar;
+import org.uberfire.workbench.model.toolbar.ToolBarItem;
+import org.uberfire.workbench.model.toolbar.ToolBarTypeIcon;
+
+import static org.uberfire.plugin.PluginUtil.ensureIterable;
 
 /**
  * The Tool Bar widget
@@ -57,14 +55,9 @@ public class WorkbenchToolBarView extends Composite
         implements
         WorkbenchToolBarPresenter.View {
 
-    interface WorkbenchToolBarViewBinder
-            extends
-            UiBinder<Panel, WorkbenchToolBarView> {
-
-    }
-
-    private static WorkbenchToolBarViewBinder uiBinder = GWT.create( WorkbenchToolBarViewBinder.class );
-
+    private static WorkbenchToolBarViewBinder uiBinder = GWT.create(WorkbenchToolBarViewBinder.class);
+    //Map of ToolBar to GWT Widgets used to represent them
+    private final Map<String, ButtonGroup> toolBarItemsMap = new HashMap<String, ButtonGroup>();
     @UiField
     public FlowPanel masterContainer;
 
@@ -85,63 +78,58 @@ public class WorkbenchToolBarView extends Composite
 
     private State state = State.EXPANDED;
 
-    enum State {
-        EXPANDED, COLLAPSED;
-    }
-
-    //Map of ToolBar to GWT Widgets used to represent them
-    private final Map<String, ButtonGroup> toolBarItemsMap = new HashMap<String, ButtonGroup>();
-
     public WorkbenchToolBarView() {
         PatternFlyBootstrapper.ensurejQueryIsAvailable();
-        initWidget( uiBinder.createAndBindUi( this ) );
-        tip.setTitle( WorkbenchConstants.INSTANCE.collapseToolbar() );
-        tip.setPlacement( Placement.LEFT );
-        tip.setWidget( viewControl );
-        simpleMargin.setVisible( false );
+        initWidget(uiBinder.createAndBindUi(this));
+        tip.setTitle(WorkbenchConstants.INSTANCE.collapseToolbar());
+        tip.setPlacement(Placement.LEFT);
+        tip.setWidget(viewControl);
+        simpleMargin.setVisible(false);
     }
 
     @Override
-    public void addToolBar( final ToolBar _toolBar ) {
+    public void addToolBar(final ToolBar _toolBar) {
 
         final ButtonGroup bgroup = new ButtonGroup();
 
-        if ( toolBarItemsMap.size() == 0 ) {
-            bgroup.getElement().getStyle().setPaddingLeft( 19, Style.Unit.PX );
+        if (toolBarItemsMap.size() == 0) {
+            bgroup.getElement().getStyle().setPaddingLeft(19,
+                                                          Style.Unit.PX);
         }
 
-        for ( final ToolBarItem item : ensureIterable ( _toolBar.getItems() ) ) {
+        for (final ToolBarItem item : ensureIterable(_toolBar.getItems())) {
             Button button = new Button();
-            button.setIcon( IconType.valueOf( ( (ToolBarTypeIcon) item.getIcon() ).getType().toString() ) );
-            button.setEnabled( item.isEnabled() );
-            button.addClickHandler( new ClickHandler() {
+            button.setIcon(IconType.valueOf(((ToolBarTypeIcon) item.getIcon()).getType().toString()));
+            button.setEnabled(item.isEnabled());
+            button.addClickHandler(new ClickHandler() {
                 @Override
-                public void onClick( final ClickEvent event ) {
+                public void onClick(final ClickEvent event) {
                     item.getCommand().execute();
                 }
-            } );
+            });
 
-            Tooltip tooltip = new Tooltip( button );
-            tooltip.setPlacement( Placement.BOTTOM );
-            bgroup.add( tooltip );
+            Tooltip tooltip = new Tooltip(button);
+            tooltip.setPlacement(Placement.BOTTOM);
+            bgroup.add(tooltip);
         }
 
-        toolBarItemsMap.put( _toolBar.getIdentifier(), bgroup );
+        toolBarItemsMap.put(_toolBar.getIdentifier(),
+                            bgroup);
 
-        toolBar.add( bgroup );
+        toolBar.add(bgroup);
     }
 
     /**
      * Remove a Tool Bar item from the view.
      */
     @Override
-    public void removeToolBar( final ToolBar _toolBar ) {
-        toolBar.remove( toolBarItemsMap.remove( _toolBar.getIdentifier() ) );
+    public void removeToolBar(final ToolBar _toolBar) {
+        toolBar.remove(toolBarItemsMap.remove(_toolBar.getIdentifier()));
     }
 
     @Override
     public int getHeight() {
-        if ( isExpanded() ) {
+        if (isExpanded()) {
             return getOffsetHeight();
         }
         return 0;
@@ -153,19 +141,19 @@ public class WorkbenchToolBarView extends Composite
 
     @Override
     public void hide() {
-        container.setVisible( false );
-        simpleMargin.setVisible( true );
+        container.setVisible(false);
+        simpleMargin.setVisible(true);
     }
 
     @Override
     public void show() {
-        container.setVisible( true );
-        simpleMargin.setVisible( false );
+        container.setVisible(true);
+        simpleMargin.setVisible(false);
     }
 
     @UiHandler("viewControl")
-    void handleClick( final ClickEvent e ) {
-        if ( isExpanded() ) {
+    void handleClick(final ClickEvent e) {
+        if (isExpanded()) {
             collapse();
         } else {
             expand();
@@ -177,32 +165,48 @@ public class WorkbenchToolBarView extends Composite
         container.getElement().getStyle().clearTop();
         container.getElement().getStyle().clearPosition();
         container.getElement().getStyle().clearZIndex();
-        masterContainer.add( container );
+        masterContainer.add(container);
 
-        tip.setTitle( WorkbenchConstants.INSTANCE.collapseToolbar() );
-        tip.setPlacement( Placement.LEFT );
-        tip.setWidget( viewControl );
+        tip.setTitle(WorkbenchConstants.INSTANCE.collapseToolbar());
+        tip.setPlacement(Placement.LEFT);
+        tip.setWidget(viewControl);
         tip.reconfigure();
 
-        new ExpandAnimation().animate( 8, getOffsetWidth() - 1, 500 );
+        new ExpandAnimation().animate(8,
+                                      getOffsetWidth() - 1,
+                                      500);
         state = State.EXPANDED;
     }
 
     private void collapse() {
-        new CollapseAnimation().animate( getOffsetWidth(), 8, 500 );
+        new CollapseAnimation().animate(getOffsetWidth(),
+                                        8,
+                                        500);
 
         container.removeFromParent();
-        container.getElement().getStyle().setTop( getAbsoluteTop(), Style.Unit.PX );
-        container.getElement().getStyle().setPosition( Style.Position.FIXED );
-        container.getElement().getStyle().setZIndex( Integer.MAX_VALUE );
-        RootPanel.get().add( container );
+        container.getElement().getStyle().setTop(getAbsoluteTop(),
+                                                 Style.Unit.PX);
+        container.getElement().getStyle().setPosition(Style.Position.FIXED);
+        container.getElement().getStyle().setZIndex(Integer.MAX_VALUE);
+        RootPanel.get().add(container);
 
-        tip.setTitle( WorkbenchConstants.INSTANCE.expandToolbar() );
-        tip.setPlacement( Placement.RIGHT );
-        tip.setWidget( viewControl );
+        tip.setTitle(WorkbenchConstants.INSTANCE.expandToolbar());
+        tip.setPlacement(Placement.RIGHT);
+        tip.setWidget(viewControl);
         tip.reconfigure();
 
         state = State.COLLAPSED;
+    }
+
+    enum State {
+        EXPANDED,
+        COLLAPSED;
+    }
+
+    interface WorkbenchToolBarViewBinder
+            extends
+            UiBinder<Panel, WorkbenchToolBarView> {
+
     }
 
     private class ExpandAnimation extends Animation {
@@ -219,25 +223,26 @@ public class WorkbenchToolBarView extends Composite
         }
 
         @Override
-        protected void onUpdate( double progress ) {
-            double delta = ( endSize - startSize ) * progress;
+        protected void onUpdate(double progress) {
+            double delta = (endSize - startSize) * progress;
             double newSize = startSize + delta;
 
-            double deltaLeft = ( endTabLeft - startTabLeft ) * progress;
+            double deltaLeft = (endTabLeft - startTabLeft) * progress;
             double newLeft = startTabLeft + deltaLeft;
 
-            toolBar.getElement().getStyle().setLeft( newLeft, Style.Unit.PX );
-            container.setWidth( newSize + "px" );
+            toolBar.getElement().getStyle().setLeft(newLeft,
+                                                    Style.Unit.PX);
+            container.setWidth(newSize + "px");
         }
 
-        void animate( int startSize,
-                      int endSize,
-                      int duration ) {
+        void animate(int startSize,
+                     int endSize,
+                     int duration) {
             this.startSize = startSize;
             this.endSize = endSize;
             this.startTabLeft = toolBar.getAbsoluteLeft();
             this.endTabLeft = 0;
-            run( duration );
+            run(duration);
         }
     }
 
@@ -248,24 +253,24 @@ public class WorkbenchToolBarView extends Composite
 
         @Override
         protected void onComplete() {
-            container.setWidth( null );
+            container.setWidth(null);
         }
 
         @Override
-        protected void onUpdate( double progress ) {
-            double delta = ( endSize - startSize ) * progress;
+        protected void onUpdate(double progress) {
+            double delta = (endSize - startSize) * progress;
             double newSize = startSize + delta;
-            toolBar.getElement().getStyle().setLeft( delta, Style.Unit.PX );
-            container.setWidth( newSize + "px" );
+            toolBar.getElement().getStyle().setLeft(delta,
+                                                    Style.Unit.PX);
+            container.setWidth(newSize + "px");
         }
 
-        void animate( int startSize,
-                      int endSize,
-                      int duration ) {
+        void animate(int startSize,
+                     int endSize,
+                     int duration) {
             this.startSize = startSize;
             this.endSize = endSize;
-            run( duration );
+            run(duration);
         }
     }
-
 }

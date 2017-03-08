@@ -16,40 +16,41 @@
 
 package org.uberfire.ext.security.management.api;
 
+import java.util.Collection;
+
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
-
-import java.util.Collection;
 
 /**
  * <p>The Users Manager.</p>
  * <p>The user manager provide additional methods to implement from the entity manager ones.</p>
- * 
  * @since 0.8.0
  */
 public interface UserManager extends AbstractEntityManager<User, UserManagerSettings> {
-    
+
     /**
      * <p>Assign a collection of groups to a user.</p>.
      * <p>All the groups given will be assigned to the user, the current existing assigned ones will be removed.</p>
-     * <p>It's important to note that the inherited <code>create</code> and <code>update</code> methods should not assign groups, this operations must be done in this method, 
+     * <p>It's important to note that the inherited <code>create</code> and <code>update</code> methods should not assign groups, this operations must be done in this method,
      * as it's easier for mapping with the capabilities approach.</p>
      * @param username The user identifier.
      * @param groups The collection of groups identifiers to assign.
      * @throws SecurityManagementException
      */
-    void assignGroups(String username, Collection<String> groups) throws SecurityManagementException;
+    void assignGroups(String username,
+                      Collection<String> groups) throws SecurityManagementException;
 
     /**
      * <p>Assign a collection of roles to a user.</p>.
      * <p>All the roles given will be assigned to the user, the current existing assigned ones will be removed.</p>
-     * <p>It's important to note that the inherited <code>create</code> and <code>update</code> methods should not assign roles, this operations must be done in this method, 
+     * <p>It's important to note that the inherited <code>create</code> and <code>update</code> methods should not assign roles, this operations must be done in this method,
      * as it's easier for mapping with the capabilities approach.</p>
      * @param username The user identifier.
      * @param roles The collection of roles identifiers to assign.
      * @throws SecurityManagementException
      */
-    void assignRoles(String username, Collection<String> roles) throws SecurityManagementException;
+    void assignRoles(String username,
+                     Collection<String> roles) throws SecurityManagementException;
 
     /**
      * <p>Changes the user's password.</p>
@@ -57,7 +58,8 @@ public interface UserManager extends AbstractEntityManager<User, UserManagerSett
      * @param newPassword The new password.
      * @throws SecurityManagementException
      */
-    void changePassword(String username, String newPassword) throws SecurityManagementException;
+    void changePassword(String username,
+                        String newPassword) throws SecurityManagementException;
 
     /**
      * <p>Description of a user attribute that is supported by the specific manager implementation.</p>

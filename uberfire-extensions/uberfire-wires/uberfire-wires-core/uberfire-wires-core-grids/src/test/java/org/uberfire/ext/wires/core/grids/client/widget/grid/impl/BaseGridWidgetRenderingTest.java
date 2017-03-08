@@ -94,10 +94,10 @@ public class BaseGridWidgetRenderingTest {
     @Before
     public void setup() {
         this.model = new BaseGridData();
-        final BaseGridWidget wrapped = new BaseGridWidget( model,
-                                                           selectionManager,
-                                                           pinnedModeManager,
-                                                           renderer ) {
+        final BaseGridWidget wrapped = new BaseGridWidget(model,
+                                                          selectionManager,
+                                                          pinnedModeManager,
+                                                          renderer) {
             @Override
             CellSelectionManager getCellSelectionManager() {
                 return BaseGridWidgetRenderingTest.this.cellSelectionManager;
@@ -108,7 +108,7 @@ public class BaseGridWidgetRenderingTest {
                 return BaseGridWidgetRenderingTest.this.rendererHelper;
             }
         };
-        gridWidget = spy( wrapped );
+        gridWidget = spy(wrapped);
 
         mockCanvas();
         mockHeader();
@@ -117,122 +117,121 @@ public class BaseGridWidgetRenderingTest {
     }
 
     private void mockCanvas() {
-        when( gridWidget.getLayer() ).thenReturn( gridLayer );
-        when( gridWidget.getViewport() ).thenReturn( viewport );
-        when( viewport.getTransform() ).thenReturn( transform );
+        when(gridWidget.getLayer()).thenReturn(gridLayer);
+        when(gridWidget.getViewport()).thenReturn(viewport);
+        when(viewport.getTransform()).thenReturn(transform);
     }
 
     @SuppressWarnings("unchecked")
     private void mockHeader() {
-        when( renderer.renderHeader( any( GridData.class ),
-                                     any( GridHeaderRenderContext.class ),
-                                     eq( rendererHelper ),
-                                     any( BaseGridRendererHelper.RenderingInformation.class ) ) ).thenReturn( header );
-        when( header.asNode() ).thenReturn( mock( Node.class ) );
+        when(renderer.renderHeader(any(GridData.class),
+                                   any(GridHeaderRenderContext.class),
+                                   eq(rendererHelper),
+                                   any(BaseGridRendererHelper.RenderingInformation.class))).thenReturn(header);
+        when(header.asNode()).thenReturn(mock(Node.class));
     }
 
     @SuppressWarnings("unchecked")
     private void mockBody() {
-        when( renderer.renderBody( any( GridData.class ),
-                                   any( GridBodyRenderContext.class ),
-                                   eq( rendererHelper ),
-                                   any( BaseGridRendererHelper.RenderingInformation.class ) ) ).thenReturn( body );
-        when( body.asNode() ).thenReturn( mock( Node.class ) );
+        when(renderer.renderBody(any(GridData.class),
+                                 any(GridBodyRenderContext.class),
+                                 eq(rendererHelper),
+                                 any(BaseGridRendererHelper.RenderingInformation.class))).thenReturn(body);
+        when(body.asNode()).thenReturn(mock(Node.class));
     }
 
     @SuppressWarnings("unchecked")
     private void mockBoundary() {
-        when( renderer.renderGridBoundary( any( Double.class ),
-                                           any( Double.class ) ) ).thenReturn( boundary );
-        when( boundary.asNode() ).thenReturn( mock( Node.class ) );
+        when(renderer.renderGridBoundary(any(Double.class),
+                                         any(Double.class))).thenReturn(boundary);
+        when(boundary.asNode()).thenReturn(mock(Node.class));
     }
 
     @Test
     public void renderingWithDOMElementColumnsAndRows() {
-        final BaseGridRendererHelper.RenderingInformation ri = makeRenderingInformation( new ArrayList<Double>() {{
-            add( ROW_HEIGHT );
-        }} );
-        when( rendererHelper.getRenderingInformation() ).thenReturn( ri );
+        final BaseGridRendererHelper.RenderingInformation ri = makeRenderingInformation(new ArrayList<Double>() {{
+            add(ROW_HEIGHT);
+        }});
+        when(rendererHelper.getRenderingInformation()).thenReturn(ri);
 
-        final BooleanDOMElementColumn column = spy( new BooleanDOMElementColumn( new BaseHeaderMetaData( "col1" ),
-                                                                                 new CheckBoxDOMElementFactory( gridLayer,
-                                                                                                                gridWidget ),
-                                                                                 100.0 ) );
+        final BooleanDOMElementColumn column = spy(new BooleanDOMElementColumn(new BaseHeaderMetaData("col1"),
+                                                                               new CheckBoxDOMElementFactory(gridLayer,
+                                                                                                             gridWidget),
+                                                                               100.0));
 
-        model.appendColumn( column );
-        model.appendRow( new BaseGridRow( ROW_HEIGHT ) );
+        model.appendColumn(column);
+        model.appendRow(new BaseGridRow(ROW_HEIGHT));
 
-        final Context2D context2D = mock( Context2D.class );
-        final BoundingBox boundingBox = mock( BoundingBox.class );
+        final Context2D context2D = mock(Context2D.class);
+        final BoundingBox boundingBox = mock(BoundingBox.class);
 
-        gridWidget.drawWithTransforms( context2D,
-                                       1.0,
-                                       boundingBox );
+        gridWidget.drawWithTransforms(context2D,
+                                      1.0,
+                                      boundingBox);
 
-        verify( column,
-                times( 1 ) ).initialiseResources();
-        verify( column,
-                times( 1 ) ).freeUnusedResources();
-        verify( gridWidget,
-                times( 1 ) ).drawHeader( eq( ri ),
-                                         eq( false ) );
-        verify( gridWidget,
-                times( 1 ) ).drawBody( eq( ri ),
-                                       eq( false ) );
+        verify(column,
+               times(1)).initialiseResources();
+        verify(column,
+               times(1)).freeUnusedResources();
+        verify(gridWidget,
+               times(1)).drawHeader(eq(ri),
+                                    eq(false));
+        verify(gridWidget,
+               times(1)).drawBody(eq(ri),
+                                  eq(false));
     }
 
     @Test
     public void renderingWithDOMElementColumnsAndWithoutRows() {
-        final BaseGridRendererHelper.RenderingInformation ri = makeRenderingInformation( Collections.emptyList() );
-        when( rendererHelper.getRenderingInformation() ).thenReturn( ri );
+        final BaseGridRendererHelper.RenderingInformation ri = makeRenderingInformation(Collections.emptyList());
+        when(rendererHelper.getRenderingInformation()).thenReturn(ri);
 
-        final BooleanDOMElementColumn column = spy( new BooleanDOMElementColumn( new BaseHeaderMetaData( "col1" ),
-                                                                                 new CheckBoxDOMElementFactory( gridLayer,
-                                                                                                                gridWidget ),
-                                                                                 100.0 ) );
+        final BooleanDOMElementColumn column = spy(new BooleanDOMElementColumn(new BaseHeaderMetaData("col1"),
+                                                                               new CheckBoxDOMElementFactory(gridLayer,
+                                                                                                             gridWidget),
+                                                                               100.0));
 
-        model.appendColumn( column );
+        model.appendColumn(column);
 
-        final Context2D context2D = mock( Context2D.class );
-        final BoundingBox boundingBox = mock( BoundingBox.class );
+        final Context2D context2D = mock(Context2D.class);
+        final BoundingBox boundingBox = mock(BoundingBox.class);
 
-        gridWidget.drawWithTransforms( context2D,
-                                       1.0,
-                                       boundingBox );
+        gridWidget.drawWithTransforms(context2D,
+                                      1.0,
+                                      boundingBox);
 
-        verify( column,
-                times( 1 ) ).initialiseResources();
-        verify( column,
-                times( 1 ) ).freeUnusedResources();
-        verify( gridWidget,
-                times( 1 ) ).drawHeader( eq( ri ),
-                                         eq( false ) );
-        verify( gridWidget,
-                never() ).drawBody( any( BaseGridRendererHelper.RenderingInformation.class ),
-                                    any( Boolean.class ) );
+        verify(column,
+               times(1)).initialiseResources();
+        verify(column,
+               times(1)).freeUnusedResources();
+        verify(gridWidget,
+               times(1)).drawHeader(eq(ri),
+                                    eq(false));
+        verify(gridWidget,
+               never()).drawBody(any(BaseGridRendererHelper.RenderingInformation.class),
+                                 any(Boolean.class));
     }
 
-    private BaseGridRendererHelper.RenderingInformation makeRenderingInformation( final List<Double> rowOffsets ) {
-        return new BaseGridRendererHelper.RenderingInformation( mock( Bounds.class ),
-                                                                model.getColumns(),
-                                                                new BaseGridRendererHelper.RenderingBlockInformation( model.getColumns(),
-                                                                                                                      0.0,
-                                                                                                                      0.0,
-                                                                                                                      0.0,
-                                                                                                                      100 ),
-                                                                new BaseGridRendererHelper.RenderingBlockInformation( Collections.emptyList(),
-                                                                                                                      0.0,
-                                                                                                                      0.0,
-                                                                                                                      0.0,
-                                                                                                                      0.0 ),
-                                                                0,
-                                                                rowOffsets.size() - 1,
-                                                                rowOffsets,
-                                                                false,
-                                                                false,
-                                                                0,
-                                                                2,
-                                                                0 );
+    private BaseGridRendererHelper.RenderingInformation makeRenderingInformation(final List<Double> rowOffsets) {
+        return new BaseGridRendererHelper.RenderingInformation(mock(Bounds.class),
+                                                               model.getColumns(),
+                                                               new BaseGridRendererHelper.RenderingBlockInformation(model.getColumns(),
+                                                                                                                    0.0,
+                                                                                                                    0.0,
+                                                                                                                    0.0,
+                                                                                                                    100),
+                                                               new BaseGridRendererHelper.RenderingBlockInformation(Collections.emptyList(),
+                                                                                                                    0.0,
+                                                                                                                    0.0,
+                                                                                                                    0.0,
+                                                                                                                    0.0),
+                                                               0,
+                                                               rowOffsets.size() - 1,
+                                                               rowOffsets,
+                                                               false,
+                                                               false,
+                                                               0,
+                                                               2,
+                                                               0);
     }
-
 }

@@ -24,9 +24,9 @@ import org.junit.Test;
 import org.uberfire.ext.preferences.client.event.HierarchyItemFormInitializationEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralPreSaveEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralUndoChangesEvent;
+import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.preferences.shared.bean.PreferenceHierarchyElement;
-import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 import static org.mockito.Mockito.*;
 
@@ -36,58 +36,61 @@ public class BasePreferenceFormTest {
 
     @Before
     public void setup() {
-        basePreferenceForm = spy( getBasePreferenceForm() );
+        basePreferenceForm = spy(getBasePreferenceForm());
         Map<String, String> params = new HashMap<>();
-        params.put( "id", "preference-id" );
-        basePreferenceForm.onStartup( new DefaultPlaceRequest( "preferenceForm", params ) );
+        params.put("id",
+                   "preference-id");
+        basePreferenceForm.onStartup(new DefaultPlaceRequest("preferenceForm",
+                                                             params));
     }
 
     @Test
     public void initIsCalledWhenFormIdIsRequested() {
-        final BasePreferencePortable preference = mock( BasePreferencePortable.class );
+        final BasePreferencePortable preference = mock(BasePreferencePortable.class);
         final PreferenceHierarchyElement hierarchyElement = new PreferenceHierarchyElement();
-        hierarchyElement.setId( "preference-id" );
-        hierarchyElement.setPortablePreference( preference );
+        hierarchyElement.setId("preference-id");
+        hierarchyElement.setPortablePreference(preference);
 
-        HierarchyItemFormInitializationEvent event = new HierarchyItemFormInitializationEvent( hierarchyElement );
-        basePreferenceForm.hierarchyItemFormInitializationEvent( event );
+        HierarchyItemFormInitializationEvent event = new HierarchyItemFormInitializationEvent(hierarchyElement);
+        basePreferenceForm.hierarchyItemFormInitializationEvent(event);
 
-        verify( basePreferenceForm ).init( preference );
+        verify(basePreferenceForm).init(preference);
     }
 
     @Test
     public void initIsNotCalledWhenDifferentFormIdIsRequested() {
-        final BasePreferencePortable preference = mock( BasePreferencePortable.class );
+        final BasePreferencePortable preference = mock(BasePreferencePortable.class);
         final PreferenceHierarchyElement hierarchyElement = new PreferenceHierarchyElement();
-        hierarchyElement.setId( "another-preference-id" );
-        hierarchyElement.setPortablePreference( preference );
+        hierarchyElement.setId("another-preference-id");
+        hierarchyElement.setPortablePreference(preference);
 
-        HierarchyItemFormInitializationEvent event = new HierarchyItemFormInitializationEvent( hierarchyElement );
-        basePreferenceForm.hierarchyItemFormInitializationEvent( event );
+        HierarchyItemFormInitializationEvent event = new HierarchyItemFormInitializationEvent(hierarchyElement);
+        basePreferenceForm.hierarchyItemFormInitializationEvent(event);
 
-        verify( basePreferenceForm, never() ).init( any( BasePreferencePortable.class ) );
+        verify(basePreferenceForm,
+               never()).init(any(BasePreferencePortable.class));
     }
 
     @Test
     public void beforeSaveIsCalledWhenPreSaveEventIsObserved() {
         PreferencesCentralPreSaveEvent event = new PreferencesCentralPreSaveEvent();
-        basePreferenceForm.preSaveEvent( event );
+        basePreferenceForm.preSaveEvent(event);
 
-        verify( basePreferenceForm ).beforeSave();
+        verify(basePreferenceForm).beforeSave();
     }
 
     @Test
     public void onUndoIsCalledWhenUndoEventIsObserved() {
         PreferencesCentralUndoChangesEvent event = new PreferencesCentralUndoChangesEvent();
-        basePreferenceForm.undoChangesEvent( event );
+        basePreferenceForm.undoChangesEvent(event);
 
-        verify( basePreferenceForm ).onUndo();
+        verify(basePreferenceForm).onUndo();
     }
 
     private BasePreferenceForm<Object> getBasePreferenceForm() {
         return new BasePreferenceForm<Object>() {
             @Override
-            public void init( final Object preference ) {
+            public void init(final Object preference) {
             }
 
             @Override

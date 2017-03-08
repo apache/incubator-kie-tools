@@ -27,33 +27,32 @@ import com.google.gwt.regexp.shared.RegExp;
 public class NumericTextBox extends AbstractRestrictedEntryTextBox {
 
     // A valid number
-    private static final RegExp VALID = RegExp.compile( "(^[-]?[0-9]*\\.?[0-9]*([eE][-+]?[0-9]*)?$)" );
+    private static final RegExp VALID = RegExp.compile("(^[-]?[0-9]*\\.?[0-9]*([eE][-+]?[0-9]*)?$)");
 
     public NumericTextBox() {
-        super( false );
+        super(false);
     }
 
     public NumericTextBox(final boolean allowEmptyValue) {
-        super( allowEmptyValue );
+        super(allowEmptyValue);
     }
 
     @Override
     public boolean isValidValue(String value,
                                 boolean isOnFocusLost) {
-        boolean isValid = VALID.test( value );
-        if ( !isValid ) {
+        boolean isValid = VALID.test(value);
+        if (!isValid) {
             return isValid;
         }
-        if ( !isOnFocusLost && "-".equals( value ) ) {
+        if (!isOnFocusLost && "-".equals(value)) {
             return true;
         }
         try {
             @SuppressWarnings("unused")
-            BigDecimal check = new BigDecimal( value );
-        } catch ( NumberFormatException nfe ) {
-            isValid = ("".equals( value ) && allowEmptyValue);
+            BigDecimal check = new BigDecimal(value);
+        } catch (NumberFormatException nfe) {
+            isValid = ("".equals(value) && allowEmptyValue);
         }
         return isValid;
     }
-
 }

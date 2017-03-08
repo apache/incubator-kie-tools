@@ -36,14 +36,22 @@ public class SecurityIntegrationFilter implements Filter {
 
     static final ThreadLocal<HttpServletRequest> requests = new ThreadLocal<HttpServletRequest>();
 
+    /**
+     * Returns the current servlet request that this thread is handling, or null if this thread is not currently handling
+     * a servlet request.
+     */
+    public static HttpServletRequest getRequest() {
+        return requests.get();
+    }
+
     @Override
-    public void init( FilterConfig filterConfig ) throws ServletException {
+    public void init(FilterConfig filterConfig) throws ServletException {
         MappingContextSingleton.get();
 
-        String commaSeparatedRoles = filterConfig.getInitParameter( PROBE_ROLES_INIT_PARAM );
-        if ( commaSeparatedRoles != null ) {
-            for ( final String role : Collections.unmodifiableList( Arrays.asList( commaSeparatedRoles.split( "," ) ) ) ) {
-                RoleRegistry.get().registerRole( role );
+        String commaSeparatedRoles = filterConfig.getInitParameter(PROBE_ROLES_INIT_PARAM);
+        if (commaSeparatedRoles != null) {
+            for (final String role : Collections.unmodifiableList(Arrays.asList(commaSeparatedRoles.split(",")))) {
+                RoleRegistry.get().registerRole(role);
             }
         }
     }
@@ -54,22 +62,15 @@ public class SecurityIntegrationFilter implements Filter {
     }
 
     @Override
-    public void doFilter( ServletRequest request,
-                          ServletResponse response,
-                          FilterChain chain ) throws IOException, ServletException {
-        requests.set( (HttpServletRequest) request );
+    public void doFilter(ServletRequest request,
+                         ServletResponse response,
+                         FilterChain chain) throws IOException, ServletException {
+        requests.set((HttpServletRequest) request);
         try {
-            chain.doFilter( request, response );
+            chain.doFilter(request,
+                           response);
         } finally {
             requests.remove();
         }
-    }
-
-    /**
-     * Returns the current servlet request that this thread is handling, or null if this thread is not currently handling
-     * a servlet request.
-     */
-    public static HttpServletRequest getRequest() {
-        return requests.get();
     }
 }

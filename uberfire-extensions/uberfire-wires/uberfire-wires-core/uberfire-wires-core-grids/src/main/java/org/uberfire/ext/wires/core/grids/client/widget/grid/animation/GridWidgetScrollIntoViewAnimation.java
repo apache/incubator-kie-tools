@@ -31,80 +31,79 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
  */
 public class GridWidgetScrollIntoViewAnimation extends TimedAnimation {
 
-    public GridWidgetScrollIntoViewAnimation( final GridWidget gridWidget,
-                                              final Command onStartCommand ) {
-        super( 500,
-               new IAnimationCallback() {
+    public GridWidgetScrollIntoViewAnimation(final GridWidget gridWidget,
+                                             final Command onStartCommand) {
+        super(500,
+              new IAnimationCallback() {
 
-                   private Point2D delta;
-                   private Point2D startTranslation;
-                   private AnimationTweener tweener = AnimationTweener.EASE_OUT;
+                  private Point2D delta;
+                  private Point2D startTranslation;
+                  private AnimationTweener tweener = AnimationTweener.EASE_OUT;
 
-                   @Override
-                   public void onStart( final IAnimation animation,
-                                        final IAnimationHandle handle ) {
-                       final Viewport vp = gridWidget.getViewport();
-                       if ( vp.getTransform() == null ) {
-                           vp.setTransform( new Transform() );
-                       }
-                       startTranslation = getViewportTranslation().mul( -1.0 );
+                  @Override
+                  public void onStart(final IAnimation animation,
+                                      final IAnimationHandle handle) {
+                      final Viewport vp = gridWidget.getViewport();
+                      if (vp.getTransform() == null) {
+                          vp.setTransform(new Transform());
+                      }
+                      startTranslation = getViewportTranslation().mul(-1.0);
 
-                       final Point2D endTranslation = new Point2D( gridWidget.getX(),
-                                                                   gridWidget.getY() ).mul( -1.0 );
+                      final Point2D endTranslation = new Point2D(gridWidget.getX(),
+                                                                 gridWidget.getY()).mul(-1.0);
 
-                       delta = new Point2D( endTranslation.getX() - startTranslation.getX(),
-                                            endTranslation.getY() - startTranslation.getY() );
+                      delta = new Point2D(endTranslation.getX() - startTranslation.getX(),
+                                          endTranslation.getY() - startTranslation.getY());
 
-                       onStartCommand.execute();
+                      onStartCommand.execute();
 
-                       gridWidget.getLayer().setListening( false );
-                       gridWidget.getLayer().batch();
-                   }
+                      gridWidget.getLayer().setListening(false);
+                      gridWidget.getLayer().batch();
+                  }
 
-                   @Override
-                   public void onFrame( final IAnimation animation,
-                                        final IAnimationHandle handle ) {
-                       final double pct = assertPct( animation.getPercent() );
-                       final Viewport vp = gridWidget.getViewport();
-                       final Transform transform = vp.getTransform();
-                       final double scaleX = transform.getScaleX();
-                       final double scaleY = transform.getScaleY();
-                       transform.reset();
+                  @Override
+                  public void onFrame(final IAnimation animation,
+                                      final IAnimationHandle handle) {
+                      final double pct = assertPct(animation.getPercent());
+                      final Viewport vp = gridWidget.getViewport();
+                      final Transform transform = vp.getTransform();
+                      final double scaleX = transform.getScaleX();
+                      final double scaleY = transform.getScaleY();
+                      transform.reset();
 
-                       final Point2D frameLocation = startTranslation.add( delta.mul( pct ) );
-                       transform.scale( scaleX,
-                                        scaleY ).translate( frameLocation.getX(),
-                                                            frameLocation.getY() );
+                      final Point2D frameLocation = startTranslation.add(delta.mul(pct));
+                      transform.scale(scaleX,
+                                      scaleY).translate(frameLocation.getX(),
+                                                        frameLocation.getY());
 
-                       gridWidget.getLayer().batch();
-                   }
+                      gridWidget.getLayer().batch();
+                  }
 
-                   @Override
-                   public void onClose( final IAnimation animation,
-                                        final IAnimationHandle handle ) {
-                       gridWidget.getLayer().setListening( true );
-                       gridWidget.getLayer().batch();
-                   }
+                  @Override
+                  public void onClose(final IAnimation animation,
+                                      final IAnimationHandle handle) {
+                      gridWidget.getLayer().setListening(true);
+                      gridWidget.getLayer().batch();
+                  }
 
-                   private Point2D getViewportTranslation() {
-                       final Viewport vp = gridWidget.getViewport();
-                       final Transform transform = vp.getTransform();
-                       final Transform t = transform.copy().getInverse();
-                       final Point2D p = new Point2D( t.getTranslateX(),
-                                                      t.getTranslateY() );
-                       return p;
-                   }
+                  private Point2D getViewportTranslation() {
+                      final Viewport vp = gridWidget.getViewport();
+                      final Transform transform = vp.getTransform();
+                      final Transform t = transform.copy().getInverse();
+                      final Point2D p = new Point2D(t.getTranslateX(),
+                                                    t.getTranslateY());
+                      return p;
+                  }
 
-                   private double assertPct( final double pct ) {
-                       if ( pct < 0 ) {
-                           return 0;
-                       }
-                       if ( pct > 1.0 ) {
-                           return 1.0;
-                       }
-                       return tweener.apply( pct );
-                   }
-               } );
+                  private double assertPct(final double pct) {
+                      if (pct < 0) {
+                          return 0;
+                      }
+                      if (pct > 1.0) {
+                          return 1.0;
+                      }
+                      return tweener.apply(pct);
+                  }
+              });
     }
-
 }

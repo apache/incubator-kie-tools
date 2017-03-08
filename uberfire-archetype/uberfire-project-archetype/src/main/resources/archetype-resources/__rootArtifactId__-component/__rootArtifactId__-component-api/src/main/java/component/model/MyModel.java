@@ -1,9 +1,9 @@
-#set( $symbol_pound = '#' )
-#set( $symbol_dollar = '$' )
-#set( $symbol_escape = '\' )
-package ${package}.component.model;
+#set($symbol_pound='#')
+        #set($symbol_dollar='$')
+        #set($symbol_escape='\' )
+        package ${package}.component.model;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
+        import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class MyModel {
@@ -13,7 +13,7 @@ public class MyModel {
     public MyModel() {
     }
 
-    public MyModel( String value ) {
+    public MyModel(String value) {
         this.value = value;
     }
 
@@ -21,7 +21,7 @@ public class MyModel {
         return value;
     }
 
-    public void setValue( String value ) {
+    public void setValue(String value) {
         this.value = value;
     }
 }

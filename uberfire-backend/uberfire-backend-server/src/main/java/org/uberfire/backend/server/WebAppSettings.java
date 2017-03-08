@@ -28,24 +28,50 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class WebAppSettings {
 
-    private String rootDir = null;
-    String separator = FileSystems.getDefault().getSeparator();
-
     private static WebAppSettings instance = null;
+    String separator = FileSystems.getDefault().getSeparator();
+    private String rootDir = null;
 
     private WebAppSettings() {
     }
 
     public static WebAppSettings get() {
-        if ( instance == null ) {
+        if (instance == null) {
             instance = new WebAppSettings();
         }
         return instance;
     }
 
     /**
+     * Format a directory according to the file system separator
+     */
+    protected String formatDirectory(String dir) {
+        String result = StringUtils.replace(dir,
+                                            "\\",
+                                            separator);
+        result = StringUtils.replace(result,
+                                     "/",
+                                     separator);
+
+        // Remove the latest separator
+        if (result.endsWith(separator)) {
+            result = result.substring(0,
+                                      dir.length() - 1);
+        }
+        return result;
+    }
+
+    /**
+     * Retrieve the webapp's root directory => The directory where the container deploys the WAR content.
+     * @return An absolute path.
+     */
+    public String getRootDir() {
+        return rootDir;
+    }
+
+    /**
      * Overwrites the webapp's root directory.
-     *
+     * <p>
      * <p>This method is only intended to be called at bootstrap time by the
      * {@link WebAppListener}. Changing the root directory may cause the webapp to severely fail.</p>
      */
@@ -57,35 +83,12 @@ public class WebAppSettings {
     }
 
     /**
-     * Format a directory according to the file system separator
-     */
-    protected String formatDirectory(String dir) {
-        String result = StringUtils.replace(dir, "\\", separator);
-        result = StringUtils.replace(result, "/", separator);
-
-        // Remove the latest separator
-        if (result.endsWith(separator)) {
-            result = result.substring(0, dir.length() - 1);
-        }
-        return result;
-    }
-
-    /**
-     * Retrieve the webapp's root directory => The directory where the container deploys the WAR content.
-     *
-     * @return An absolute path.
-     */
-    public String getRootDir() {
-        return rootDir;
-    }
-
-    /**
      * Calculate the absolute path of a directory placed under the the webapp's directory structure.
-     *
      * @param relativePath The relative path
      * @return An absolute path
      */
     public Path getAbsolutePath(String... relativePath) {
-        return rootDir != null ? Paths.get(rootDir, relativePath) : null;
+        return rootDir != null ? Paths.get(rootDir,
+                                           relativePath) : null;
     }
 }

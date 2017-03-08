@@ -42,10 +42,13 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.*;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.COPY;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.DELETE;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.RENAME;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.SAVE;
 
 @Dependent
-@WorkbenchEditor( identifier = "HtmlEditor", supportedTypes = HtmlResourceType.class )
+@WorkbenchEditor(identifier = "HtmlEditor", supportedTypes = HtmlResourceType.class)
 public class HtmlEditor extends BaseEditor {
 
     private HtmlResourceType htmlResourceType;
@@ -61,13 +64,13 @@ public class HtmlEditor extends BaseEditor {
     private Caller<CopyService> copyService;
 
     @Inject
-    public HtmlEditor( final HtmlResourceType htmlResourceType,
-                       final HtmlEditorPresenter editor,
-                       final Caller<VFSService> vfsServices,
-                       final Caller<DeleteService> deleteService,
-                       final Caller<RenameService> renameService,
-                       final Caller<CopyService> copyService ) {
-        super( editor.getView() );
+    public HtmlEditor(final HtmlResourceType htmlResourceType,
+                      final HtmlEditorPresenter editor,
+                      final Caller<VFSService> vfsServices,
+                      final Caller<DeleteService> deleteService,
+                      final Caller<RenameService> renameService,
+                      final Caller<CopyService> copyService) {
+        super(editor.getView());
         this.htmlResourceType = htmlResourceType;
         this.editor = editor;
         this.vfsServices = vfsServices;
@@ -82,32 +85,33 @@ public class HtmlEditor extends BaseEditor {
     }
 
     @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        init( path,
-              place,
-              htmlResourceType,
-              SAVE,
-              COPY,
-              RENAME,
-              DELETE );
+    public void onStartup(final ObservablePath path,
+                          final PlaceRequest place) {
+        init(path,
+             place,
+             htmlResourceType,
+             SAVE,
+             COPY,
+             RENAME,
+             DELETE);
     }
 
     @Override
     protected void loadContent() {
         baseView.hideBusyIndicator();
-        vfsServices.call( new RemoteCallback<String>() {
+        vfsServices.call(new RemoteCallback<String>() {
             @Override
-            public void callback( final String htmlContent ) {
-                editor.setContent( htmlContent );
+            public void callback(final String htmlContent) {
+                editor.setContent(htmlContent);
             }
-        } ).readAllString( versionRecordManager.getCurrentPath() );
+        }).readAllString(versionRecordManager.getCurrentPath());
     }
 
     @Override
     protected void save() {
         final String htmlContent = editor.getContent();
-        vfsServices.call( getSaveSuccessCallback( htmlContent.hashCode() ) ).write( versionRecordManager.getCurrentPath(), htmlContent );
+        vfsServices.call(getSaveSuccessCallback(htmlContent.hashCode())).write(versionRecordManager.getCurrentPath(),
+                                                                               htmlContent);
         concurrentUpdateSessionInfo = null;
     }
 

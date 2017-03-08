@@ -27,8 +27,7 @@ public interface MetaObject {
 
     Collection<MetaProperty> getProperties();
 
-    MetaProperty getProperty( final String name );
+    MetaProperty getProperty(final String name);
 
-    void addProperty( final MetaProperty metaProperty );
-
+    void addProperty(final MetaProperty metaProperty);
 }

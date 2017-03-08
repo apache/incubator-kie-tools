@@ -21,7 +21,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Set;
-
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -59,11 +58,9 @@ import org.slf4j.LoggerFactory;
  */
 public class LoginRedirectServlet extends HttpServlet {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginRedirectServlet.class);
-
     public static final String DISPLAY_AFTER_LOGIN_INIT_PARAM = "display-after-login";
     public static final String DISPLAY_WHEN_NOT_AUTH_INIT_PARAM = "display-when-not-authenticated";
-
+    private static final Logger logger = LoggerFactory.getLogger(LoginRedirectServlet.class);
     /**
      * URI of the GWT host page, relative to the servlet container root (so it starts with '/' and includes the context
      * path).
@@ -74,6 +71,34 @@ public class LoginRedirectServlet extends HttpServlet {
      * relative to the servlet container root (so it starts with '/' and does not include context path)
      */
     private String displayWhenNotAuthenticatedUri;
+
+    /**
+     * Extracts all parameters except the username and password into a URL-encoded query string. The string does not begin
+     * or end with a "&amp;".
+     */
+    @SuppressWarnings("unchecked")
+    private static String extractParameters(HttpServletRequest fromRequest) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            for (Map.Entry<String, String[]> param : (Set<Map.Entry<String, String[]>>) fromRequest.getParameterMap().entrySet()) {
+                String paramName = URLEncoder.encode(param.getKey(),
+                                                     "UTF-8");
+                if (paramName.equals("j_username") || paramName.equals("j_password")) {
+                    continue;
+                }
+                for (String value : param.getValue()) {
+                    if (sb.length() != 0) {
+                        sb.append("&");
+                    }
+                    sb.append(paramName).append("=").append(URLEncoder.encode(value,
+                                                                              "UTF-8"));
+                }
+            }
+            return sb.toString();
+        } catch (UnsupportedEncodingException e) {
+            throw new AssertionError("UTF-8 not supported on this JVM?");
+        }
+    }
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -92,12 +117,15 @@ public class LoginRedirectServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doPost(req, resp);
+    protected void doGet(HttpServletRequest req,
+                         HttpServletResponse resp) throws ServletException, IOException {
+        doPost(req,
+               resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req,
+                          HttpServletResponse resp) throws ServletException, IOException {
         // perform optional check and redirect in case no authenticated request is available
         if (displayWhenNotAuthenticatedUri != null && req.getUserPrincipal() == null) {
             logger.debug("No authorized user thus cleaning up session and redirecting to " + displayWhenNotAuthenticatedUri);
@@ -122,31 +150,4 @@ public class LoginRedirectServlet extends HttpServlet {
 
         resp.sendRedirect(redirectTarget.toString());
     }
-
-    /**
-     * Extracts all parameters except the username and password into a URL-encoded query string. The string does not begin
-     * or end with a "&amp;".
-     */
-    @SuppressWarnings("unchecked")
-    private static String extractParameters(HttpServletRequest fromRequest) {
-        try {
-            StringBuilder sb = new StringBuilder();
-            for (Map.Entry<String, String[]> param : (Set<Map.Entry<String,String[]>>) fromRequest.getParameterMap().entrySet()) {
-                String paramName = URLEncoder.encode(param.getKey(), "UTF-8");
-                if (paramName.equals("j_username") || paramName.equals("j_password")) {
-                    continue;
-                }
-                for (String value : param.getValue()) {
-                    if (sb.length() != 0) {
-                        sb.append("&");
-                    }
-                    sb.append(paramName).append("=").append(URLEncoder.encode(value, "UTF-8"));
-                }
-            }
-            return sb.toString();
-        } catch (UnsupportedEncodingException e) {
-            throw new AssertionError("UTF-8 not supported on this JVM?");
-        }
-    }
-
 }

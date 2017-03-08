@@ -24,9 +24,11 @@ import org.uberfire.mvp.Command;
  */
 public class ModalConfigurationContext extends ConfigurationContext {
 
-
-    public ModalConfigurationContext( LayoutComponent component, Command configurationFinish, Command configurationCanceled) {
-        super(component, configurationFinish, configurationCanceled);
+    public ModalConfigurationContext(LayoutComponent component,
+                                     Command configurationFinish,
+                                     Command configurationCanceled) {
+        super(component,
+              configurationFinish,
+              configurationCanceled);
     }
-
 }

@@ -46,18 +46,28 @@ public class SouthDockItemTest {
 
     private SouthDockItem southDockWithFontIcon, southDockWithImageIcon;
 
-
     @Before
     public void setup() {
-        dockWithFontIcon = new UberfireDock( UberfireDockPosition.EAST, "BRIEFCASE", placeRequest, "" ).withSize( 450 ).withLabel( "dock" );
-        dockWithImageIcon = new UberfireDock( UberfireDockPosition.EAST, imageResource, imageResourceFocused, placeRequest, "" ).withSize( 450 ).withLabel( "dock" );
+        dockWithFontIcon = new UberfireDock(UberfireDockPosition.EAST,
+                                            "BRIEFCASE",
+                                            placeRequest,
+                                            "").withSize(450).withLabel("dock");
+        dockWithImageIcon = new UberfireDock(UberfireDockPosition.EAST,
+                                             imageResource,
+                                             imageResourceFocused,
+                                             placeRequest,
+                                             "").withSize(450).withLabel("dock");
 
-        southDockWithFontIcon = spy( new SouthDockItem( dockWithFontIcon, emptyCommand, emptyCommand ) );
-        southDockWithImageIcon = spy( new SouthDockItem( dockWithImageIcon, emptyCommand, emptyCommand ) );
+        southDockWithFontIcon = spy(new SouthDockItem(dockWithFontIcon,
+                                                      emptyCommand,
+                                                      emptyCommand));
+        southDockWithImageIcon = spy(new SouthDockItem(dockWithImageIcon,
+                                                       emptyCommand,
+                                                       emptyCommand));
 
         emptyCommand = new ParameterizedCommand<String>() {
             @Override
-            public void execute( final String parameter ) {
+            public void execute(final String parameter) {
 
             }
         };
@@ -67,45 +77,57 @@ public class SouthDockItemTest {
     public void createSouthDockItemWithFontIconTest() {
         southDockWithFontIcon.createButton();
 
-        InOrder ordenatedVerification = inOrder( southDockWithFontIcon );
-        ordenatedVerification.verify( southDockWithFontIcon ).configureText( any( Button.class ), anyString() );
-        ordenatedVerification.verify( southDockWithFontIcon ).configureIcon( any( Button.class ), eq( (ImageResource) null ) );
-        ordenatedVerification.verify( southDockWithFontIcon, never() ).configureImageIcon( any( Button.class ), any( ImageResource.class ) );
+        InOrder ordenatedVerification = inOrder(southDockWithFontIcon);
+        ordenatedVerification.verify(southDockWithFontIcon).configureText(any(Button.class),
+                                                                          anyString());
+        ordenatedVerification.verify(southDockWithFontIcon).configureIcon(any(Button.class),
+                                                                          eq((ImageResource) null));
+        ordenatedVerification.verify(southDockWithFontIcon,
+                                     never()).configureImageIcon(any(Button.class),
+                                                                 any(ImageResource.class));
     }
 
     @Test
     public void selectSouthDockItemWithFontIconTest() {
         southDockWithFontIcon.select();
 
-        verify( southDockWithFontIcon, never() ).configureImageIcon( any( Button.class ), any( ImageResource.class ) );
+        verify(southDockWithFontIcon,
+               never()).configureImageIcon(any(Button.class),
+                                           any(ImageResource.class));
     }
 
     @Test
     public void deselectSouthDockItemWithFontIconTest() {
         southDockWithFontIcon.deselect();
 
-        verify( southDockWithFontIcon, never() ).configureImageIcon( any( Button.class ), any( ImageResource.class ) );
+        verify(southDockWithFontIcon,
+               never()).configureImageIcon(any(Button.class),
+                                           any(ImageResource.class));
     }
 
     @Test
     public void createSouthDockItemWithImageIconTest() {
         southDockWithImageIcon.createButton();
 
-        verify( southDockWithImageIcon ).configureIcon( any( Button.class ), eq( imageResource ) );
-        verify( southDockWithImageIcon ).configureImageIcon( any( Button.class ), eq( imageResource ) );
+        verify(southDockWithImageIcon).configureIcon(any(Button.class),
+                                                     eq(imageResource));
+        verify(southDockWithImageIcon).configureImageIcon(any(Button.class),
+                                                          eq(imageResource));
     }
 
     @Test
     public void selectSouthDockItemWithImageIconTest() {
         southDockWithImageIcon.select();
 
-        verify( southDockWithImageIcon ).configureImageIcon( any( Button.class ), eq( imageResourceFocused ) );
+        verify(southDockWithImageIcon).configureImageIcon(any(Button.class),
+                                                          eq(imageResourceFocused));
     }
 
     @Test
     public void deselectSouthDockItemWithImageIconTest() {
         southDockWithImageIcon.deselect();
 
-        verify( southDockWithImageIcon ).configureImageIcon( any( Button.class ), eq( imageResource ) );
+        verify(southDockWithImageIcon).configureImageIcon(any(Button.class),
+                                                          eq(imageResource));
     }
 }

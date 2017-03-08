@@ -22,7 +22,7 @@ public class DirectoryNotEmptyException extends FileSystemException {
         super();
     }
 
-    public DirectoryNotEmptyException( String dir ) {
-        super( dir );
+    public DirectoryNotEmptyException(String dir) {
+        super(dir);
     }
 }

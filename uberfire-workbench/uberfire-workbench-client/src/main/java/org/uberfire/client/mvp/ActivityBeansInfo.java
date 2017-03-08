@@ -31,55 +31,69 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 @ApplicationScoped
 public class ActivityBeansInfo {
 
+    private static Comparator<String> ALPHABETICAL_ORDER = new Comparator<String>() {
+        public int compare(String str1,
+                           String str2) {
+            int res = String.CASE_INSENSITIVE_ORDER.compare(str1,
+                                                            str2);
+            if (res == 0) {
+                res = str1.compareTo(str2);
+            }
+            return res;
+        }
+    };
+
     public List<String> getAvailableWorkbenchScreensIds() {
-        return lookupBeansId( WorkbenchScreenActivity.class );
+        return lookupBeansId(WorkbenchScreenActivity.class);
     }
 
     public List<String> getAvailablePerspectivesIds() {
-        return lookupBeansId( PerspectiveActivity.class );
+        return lookupBeansId(PerspectiveActivity.class);
     }
 
     public List<String> getAvailableSplashScreensIds() {
-        return lookupBeansId( SplashScreenActivity.class );
+        return lookupBeansId(SplashScreenActivity.class);
     }
 
     public List<String> getAvailableWorkbenchEditorsIds() {
-        return lookupBeansId( WorkbenchEditorActivity.class );
+        return lookupBeansId(WorkbenchEditorActivity.class);
     }
 
-    public void addActivityBean( List<String> activityBeans,
-                                 String newBean ) {
-        activityBeans.add( newBean );
-        Collections.sort( activityBeans, ALPHABETICAL_ORDER );
+    public void addActivityBean(List<String> activityBeans,
+                                String newBean) {
+        activityBeans.add(newBean);
+        Collections.sort(activityBeans,
+                         ALPHABETICAL_ORDER);
     }
 
-    private List<String> lookupBeansId( Class<?> activityClass ) {
-        final Collection<? extends IOCBeanDef<?>> screens = lookupBeans( activityClass );
+    private List<String> lookupBeansId(Class<?> activityClass) {
+        final Collection<? extends IOCBeanDef<?>> screens = lookupBeans(activityClass);
         List<String> result = new ArrayList<String>();
-        for ( final IOCBeanDef<?> beanDef : screens ) {
-            result.add( getId( beanDef ) );
+        for (final IOCBeanDef<?> beanDef : screens) {
+            result.add(getId(beanDef));
         }
-        Collections.sort( result, ALPHABETICAL_ORDER );
+        Collections.sort(result,
+                         ALPHABETICAL_ORDER);
         return result;
     }
 
-    public Collection<? extends IOCBeanDef<?>> lookupBeans( final Class<?> activityClass ) {
-        return getBeanManager().lookupBeans( activityClass );
+    public Collection<? extends IOCBeanDef<?>> lookupBeans(final Class<?> activityClass) {
+        return getBeanManager().lookupBeans(activityClass);
     }
 
-    public String getId( final IOCBeanDef<?> beanDef ) {
-        for ( final Annotation annotation : beanDef.getQualifiers() ) {
-            if ( isNamed( annotation ) ) {
-                return ( (Named) annotation ).value();
+    public String getId(final IOCBeanDef<?> beanDef) {
+        for (final Annotation annotation : beanDef.getQualifiers()) {
+            if (isNamed(annotation)) {
+                return ((Named) annotation).value();
             }
         }
-        if ( hasBeanName( beanDef ) ) {
+        if (hasBeanName(beanDef)) {
             return beanDef.getName();
         }
         return "";
     }
 
-    boolean isNamed( Annotation annotation ) {
+    boolean isNamed(Annotation annotation) {
         return annotation instanceof Named;
     }
 
@@ -87,18 +101,7 @@ public class ActivityBeansInfo {
         return IOC.getBeanManager();
     }
 
-    private boolean hasBeanName( IOCBeanDef<?> beanDef ) {
+    private boolean hasBeanName(IOCBeanDef<?> beanDef) {
         return beanDef.getName() != null && !beanDef.getName().isEmpty();
     }
-
-    private static Comparator<String> ALPHABETICAL_ORDER = new Comparator<String>() {
-        public int compare( String str1,
-                            String str2 ) {
-            int res = String.CASE_INSENSITIVE_ORDER.compare( str1, str2 );
-            if ( res == 0 ) {
-                res = str1.compareTo( str2 );
-            }
-            return res;
-        }
-    };
 }

@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.security.management.keycloak.client.auth;
 
+import javax.ws.rs.core.HttpHeaders;
+
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.spi.interception.ClientExecutionContext;
@@ -26,17 +28,16 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import javax.ws.rs.core.HttpHeaders;
-
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AuthenticationClientExecutionInterceptorTest {
 
-    @Mock TokenManager tokenManager;
+    @Mock
+    TokenManager tokenManager;
 
     private BearerAuthenticationInterceptor interceptor;
-    
+
     @Before
     public void setup() throws Exception {
         when(tokenManager.getAccessTokenString()).thenReturn("token1");
@@ -51,8 +52,10 @@ public class AuthenticationClientExecutionInterceptorTest {
         when(ctx.getRequest()).thenReturn(request);
         when(ctx.proceed()).thenReturn(response);
         ClientResponse response1 = this.interceptor.execute(ctx);
-        verify(request, times(1)).header(eq(HttpHeaders.AUTHORIZATION), eq("Bearer token1"));
-        Assert.assertEquals(response, response1);
+        verify(request,
+               times(1)).header(eq(HttpHeaders.AUTHORIZATION),
+                                eq("Bearer token1"));
+        Assert.assertEquals(response,
+                            response1);
     }
-        
 }

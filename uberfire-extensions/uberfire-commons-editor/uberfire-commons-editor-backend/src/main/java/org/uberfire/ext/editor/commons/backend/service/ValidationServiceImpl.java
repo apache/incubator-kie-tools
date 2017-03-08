@@ -30,7 +30,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.validation.FileNameValidator;
 import org.uberfire.ext.editor.commons.service.ValidationService;
 
-import static java.util.Collections.*;
+import static java.util.Collections.sort;
 
 @Service
 @ApplicationScoped
@@ -43,40 +43,39 @@ public class ValidationServiceImpl implements ValidationService {
 
     @PostConstruct
     public void configureValidators() {
-        for ( FileNameValidator fileNameValidator : fileNameValidatorBeans ) {
-            sortedValidators.add( fileNameValidator );
+        for (FileNameValidator fileNameValidator : fileNameValidatorBeans) {
+            sortedValidators.add(fileNameValidator);
         }
 
         //Sort ascending, so we can check which validator supports a particular case by priority
-        sort( sortedValidators,
-              new Comparator<FileNameValidator>() {
-                  @Override
-                  public int compare( final FileNameValidator o1,
-                                      final FileNameValidator o2 ) {
-                      return o2.getPriority() - o1.getPriority();
-                  }
-              } );
+        sort(sortedValidators,
+             new Comparator<FileNameValidator>() {
+                 @Override
+                 public int compare(final FileNameValidator o1,
+                                    final FileNameValidator o2) {
+                     return o2.getPriority() - o1.getPriority();
+                 }
+             });
     }
 
     @Override
-    public boolean isFileNameValid( final String fileName ) {
-        for ( final FileNameValidator fileNameValidator : sortedValidators ) {
-            if ( fileNameValidator.accept( fileName ) ) {
-                return fileNameValidator.isValid( fileName );
+    public boolean isFileNameValid(final String fileName) {
+        for (final FileNameValidator fileNameValidator : sortedValidators) {
+            if (fileNameValidator.accept(fileName)) {
+                return fileNameValidator.isValid(fileName);
             }
         }
         return false;
     }
 
     @Override
-    public boolean isFileNameValid( final Path path,
-                                    final String fileName ) {
-        for ( final FileNameValidator fileNameValidator : sortedValidators ) {
-            if ( fileNameValidator.accept( path ) ) {
-                return fileNameValidator.isValid( fileName );
+    public boolean isFileNameValid(final Path path,
+                                   final String fileName) {
+        for (final FileNameValidator fileNameValidator : sortedValidators) {
+            if (fileNameValidator.accept(path)) {
+                return fileNameValidator.isValid(fileName);
             }
         }
         return false;
     }
-
 }

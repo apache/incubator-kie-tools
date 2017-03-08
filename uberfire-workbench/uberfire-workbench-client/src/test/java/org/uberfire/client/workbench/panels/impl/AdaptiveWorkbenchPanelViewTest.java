@@ -15,31 +15,17 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.uberfire.client.workbench.panels.MaximizeToggleButtonPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
-import org.uberfire.workbench.model.PartDefinition;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.concurrent.atomic.AtomicLong;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class AdaptiveWorkbenchPanelViewTest extends AbstractSimpleWorkbenchPanelViewTest {
 
     @InjectMocks
@@ -52,10 +38,10 @@ public class AdaptiveWorkbenchPanelViewTest extends AbstractSimpleWorkbenchPanel
     public void setup() {
         super.setup();
 
-        presenter = mock( AdaptiveWorkbenchPanelPresenter.class );
+        presenter = mock(AdaptiveWorkbenchPanelPresenter.class);
 
         view.setup(); // PostConstruct
-        view.init( presenter );
+        view.init(presenter);
     }
 
     @Override
@@ -65,14 +51,16 @@ public class AdaptiveWorkbenchPanelViewTest extends AbstractSimpleWorkbenchPanel
 
     @Test
     public void couldHaveMoreThanOnePart() {
-        assertEquals( 0, listBar.getPartsSize() );
+        assertEquals(0,
+                     listBar.getPartsSize());
 
-        getViewToTest().addPart( mock( WorkbenchPartPresenter.View.class ) );
-        assertEquals( 1, listBar.getPartsSize() );
+        getViewToTest().addPart(mock(WorkbenchPartPresenter.View.class));
+        assertEquals(1,
+                     listBar.getPartsSize());
 
         //Second part
-        getViewToTest().addPart( mock( WorkbenchPartPresenter.View.class ) );
-        assertEquals( 2, listBar.getPartsSize() );
+        getViewToTest().addPart(mock(WorkbenchPartPresenter.View.class));
+        assertEquals(2,
+                     listBar.getPartsSize());
     }
-
 }

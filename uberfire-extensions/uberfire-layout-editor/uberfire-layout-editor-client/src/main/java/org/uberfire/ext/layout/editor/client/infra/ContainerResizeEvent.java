@@ -16,17 +16,20 @@
 
 package org.uberfire.ext.layout.editor.client.infra;
 
-
 public class ContainerResizeEvent {
 
     private int columnHashCode;
     private int rowHashCode;
     private Direction direction = Direction.LEFT;
 
-    public ContainerResizeEvent( int columnHashCode , int rowHashCode) {
+    public ContainerResizeEvent(int columnHashCode,
+                                int rowHashCode) {
 
         this.columnHashCode = columnHashCode;
         this.rowHashCode = rowHashCode;
+    }
+
+    public ContainerResizeEvent() {
     }
 
     public int getRowHashCode() {
@@ -47,19 +50,18 @@ public class ContainerResizeEvent {
         return this;
     }
 
-    public boolean isLeft(){
+    public boolean isLeft() {
         return direction == Direction.LEFT;
     }
-
-    private enum Direction {
-        LEFT, RIGHT;
-    }
-
 
     public Direction getDirection() {
         return direction;
     }
 
+    private enum Direction {
+        LEFT,
+        RIGHT;
+    }
 
-    public ContainerResizeEvent(){};
+    ;
 }

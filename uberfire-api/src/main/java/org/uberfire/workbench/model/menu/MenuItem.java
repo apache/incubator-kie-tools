@@ -18,22 +18,21 @@ package org.uberfire.workbench.model.menu;
 import java.util.Collections;
 import java.util.List;
 
+import jsinterop.annotations.JsType;
 import org.uberfire.security.authz.ResourceActionRef;
 import org.uberfire.security.authz.RuntimeFeatureResource;
-
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 
 /**
  * Meta-data for a Workbench MenuItem including permissions. The default is that
  * all users have permission to access a MenuItem and that it is enabled.
  */
 @JsType
-public interface MenuItem extends RuntimeFeatureResource, HasEnabledStateChangeListeners {
+public interface MenuItem extends RuntimeFeatureResource,
+                                  HasEnabledStateChangeListeners {
 
     boolean isEnabled();
 
-    void setEnabled( boolean enabled );
+    void setEnabled(boolean enabled);
 
     String getContributionPoint();
 
@@ -46,7 +45,7 @@ public interface MenuItem extends RuntimeFeatureResource, HasEnabledStateChangeL
     /**
      * Get the list of {@link ResourceActionRef} actions this menu item is
      * restricted to.
-     *
+     * <p>
      * <p>
      * The menu item will be available provided all the given actions are
      * authorized within the current context.
@@ -58,7 +57,7 @@ public interface MenuItem extends RuntimeFeatureResource, HasEnabledStateChangeL
 
     /**
      * Get the list of permission names this menu item is restricted to.
-     *
+     * <p>
      * <p>
      * The menu item will be available provided all the given permissions are
      * authorized within the current context.
@@ -72,5 +71,5 @@ public interface MenuItem extends RuntimeFeatureResource, HasEnabledStateChangeL
      * Causes the given {@link MenuVisitor} to visit this menu item and its
      * children.
      */
-    void accept( MenuVisitor visitor );
+    void accept(MenuVisitor visitor);
 }

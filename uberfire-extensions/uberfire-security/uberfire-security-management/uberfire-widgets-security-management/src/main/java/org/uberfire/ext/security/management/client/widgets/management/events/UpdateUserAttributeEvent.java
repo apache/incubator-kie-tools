@@ -16,18 +16,19 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.events;
 
-import org.uberfire.workbench.events.UberFireEvent;
-
 import java.util.Map;
+
+import org.uberfire.workbench.events.UberFireEvent;
 
 /**
  * <p>Event for a user attribute updated.</p>
  */
 public class UpdateUserAttributeEvent extends ContextualEvent implements UberFireEvent {
-    
+
     private final Map.Entry<String, String> attribute;
-    
-    public UpdateUserAttributeEvent(Object context, Map.Entry<String, String> attribute) {
+
+    public UpdateUserAttributeEvent(Object context,
+                                    Map.Entry<String, String> attribute) {
         super(context);
         this.attribute = attribute;
     }

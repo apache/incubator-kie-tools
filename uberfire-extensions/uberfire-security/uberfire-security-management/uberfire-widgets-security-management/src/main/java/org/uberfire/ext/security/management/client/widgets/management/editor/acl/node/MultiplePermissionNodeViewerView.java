@@ -37,27 +37,22 @@ import org.uberfire.ext.security.management.client.resources.i18n.SecurityManage
 public class MultiplePermissionNodeViewerView extends Composite
         implements MultiplePermissionNodeViewer.View {
 
-    private MultiplePermissionNodeViewer presenter;
-
     @Inject
     @DataField
     Anchor nodeAnchor;
-
     @Inject
     @DataField
     Div nodeAnchorPanel;
-
     @Inject
     @DataField
     FlowPanel nodePermissions;
-
     @Inject
     @DataField
     Div collapsePanel;
-
     @Inject
     @DataField
     FlowPanel nodeChildren;
+    private MultiplePermissionNodeViewer presenter;
 
     @Override
     public void init(MultiplePermissionNodeViewer presenter) {
@@ -90,73 +85,111 @@ public class MultiplePermissionNodeViewerView extends Composite
         nodeChildren.add(viewer);
     }
 
-    private Label createLabel(String text, String color) {
+    private Label createLabel(String text,
+                              String color) {
         Label l = new Label(text);
-        l.getElement().getStyle().setMarginLeft(3, Style.Unit.PX);
+        l.getElement().getStyle().setMarginLeft(3,
+                                                Style.Unit.PX);
         if (color != null) {
             l.getElement().getStyle().setColor(color);
         }
         return l;
     }
 
-    private void addPermissionMessage(String preffix, String permission, String inffix, String resource, String suffix, String color) {
+    private void addPermissionMessage(String preffix,
+                                      String permission,
+                                      String inffix,
+                                      String resource,
+                                      String suffix,
+                                      String color) {
         HorizontalPanel panel = new HorizontalPanel();
         if (preffix != null) {
-            Label l = createLabel(preffix, null);
+            Label l = createLabel(preffix,
+                                  null);
             panel.add(l);
         }
         if (permission != null) {
-            Label l = createLabel(permission, color);
+            Label l = createLabel(permission,
+                                  color);
             panel.add(l);
         }
         if (inffix != null) {
-            Label l = createLabel(inffix, null);
+            Label l = createLabel(inffix,
+                                  null);
             panel.add(l);
         }
         if (resource != null) {
-            Label l = createLabel(resource, null);
+            Label l = createLabel(resource,
+                                  null);
             panel.add(l);
         }
         if (suffix != null) {
-            Label l = createLabel(suffix, null);
+            Label l = createLabel(suffix,
+                                  null);
             panel.add(l);
         }
         nodePermissions.add(panel);
     }
 
     @Override
-    public void addAllItemsGrantedPermission(String permission, String resource) {
+    public void addAllItemsGrantedPermission(String permission,
+                                             String resource) {
         String can = SecurityManagementConstants.INSTANCE.can();
-        addPermissionMessage(can, permission, null, resource, null, "#00618a");
+        addPermissionMessage(can,
+                             permission,
+                             null,
+                             resource,
+                             null,
+                             "#00618a");
     }
 
     @Override
-    public void addAllItemsDeniedPermission(String permission, String resource) {
+    public void addAllItemsDeniedPermission(String permission,
+                                            String resource) {
         String cant = SecurityManagementConstants.INSTANCE.cant();
-        addPermissionMessage(cant, permission, null, resource, null, "#a30000");
+        addPermissionMessage(cant,
+                             permission,
+                             null,
+                             resource,
+                             null,
+                             "#a30000");
     }
 
     @Override
-    public void addItemsGrantedPermission(String permission, String resource) {
+    public void addItemsGrantedPermission(String permission,
+                                          String resource) {
         String can = SecurityManagementConstants.INSTANCE.can();
         String all = SecurityManagementConstants.INSTANCE.all();
         String but = SecurityManagementConstants.INSTANCE.but();
-        addPermissionMessage(can, permission, all, resource, but + ":", "#00618a");
+        addPermissionMessage(can,
+                             permission,
+                             all,
+                             resource,
+                             but + ":",
+                             "#00618a");
     }
 
     @Override
-    public void addItemsDeniedPermission(String permission, String resource) {
+    public void addItemsDeniedPermission(String permission,
+                                         String resource) {
         String canOnly = SecurityManagementConstants.INSTANCE.canOnly();
         String following = SecurityManagementConstants.INSTANCE.following();
-        addPermissionMessage(canOnly, permission, following, resource + ":", null, "#a30000");
+        addPermissionMessage(canOnly,
+                             permission,
+                             following,
+                             resource + ":",
+                             null,
+                             "#a30000");
     }
 
     @Override
     public void addItemException(String item) {
         HorizontalPanel panel = new HorizontalPanel();
-        Label l = createLabel("- " + item, null);
+        Label l = createLabel("- " + item,
+                              null);
         panel.add(l);
-        panel.getElement().getStyle().setMarginLeft(15, Style.Unit.PX);
+        panel.getElement().getStyle().setMarginLeft(15,
+                                                    Style.Unit.PX);
         nodePermissions.add(panel);
     }
 }

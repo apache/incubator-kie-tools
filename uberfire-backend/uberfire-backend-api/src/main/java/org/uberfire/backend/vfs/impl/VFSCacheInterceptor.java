@@ -23,10 +23,10 @@ import org.uberfire.backend.vfs.PathFactory;
 public class VFSCacheInterceptor implements RpcInterceptor {
 
     @Override
-    public void aroundInvoke( final RemoteCallContext context ) {
-        final Object o = context.getParameters()[ 0 ];
-        if ( o instanceof PathFactory.PathImpl && ( (PathFactory.PathImpl) o ).getAttributes().size() > 0 ) {
-            context.setResult( ( (PathFactory.PathImpl) o ).getAttributes() );
+    public void aroundInvoke(final RemoteCallContext context) {
+        final Object o = context.getParameters()[0];
+        if (o instanceof PathFactory.PathImpl && ((PathFactory.PathImpl) o).getAttributes().size() > 0) {
+            context.setResult(((PathFactory.PathImpl) o).getAttributes());
             return;
         }
 

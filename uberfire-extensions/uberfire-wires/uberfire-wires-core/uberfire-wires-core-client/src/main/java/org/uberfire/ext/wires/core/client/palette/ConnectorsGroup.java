@@ -27,5 +27,4 @@ public class ConnectorsGroup extends BaseGroup {
     public Category getCategory() {
         return ConnectorCategory.CATEGORY;
     }
-
 }

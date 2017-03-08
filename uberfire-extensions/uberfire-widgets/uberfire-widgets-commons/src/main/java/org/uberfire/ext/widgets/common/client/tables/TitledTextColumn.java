@@ -28,6 +28,6 @@ public abstract class TitledTextColumn<T> extends Column<T, TitledTextCell.Title
      * Construct a new TitledTextColumn.
      */
     public TitledTextColumn() {
-        super( new TitledTextCell() );
+        super(new TitledTextCell());
     }
 }

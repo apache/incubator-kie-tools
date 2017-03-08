@@ -27,42 +27,42 @@ import org.uberfire.workbench.model.menu.Menus;
 public abstract class BaseMenuVisitor implements MenuVisitor {
 
     @Override
-    public boolean visitEnter( Menus menus ) {
+    public boolean visitEnter(Menus menus) {
         return true;
     }
 
     @Override
-    public void visitLeave( Menus menus ) {
+    public void visitLeave(Menus menus) {
 
     }
 
     @Override
-    public boolean visitEnter( MenuGroup menuGroup ) {
+    public boolean visitEnter(MenuGroup menuGroup) {
         return true;
     }
 
     @Override
-    public void visitLeave( MenuGroup menuGroup ) {
+    public void visitLeave(MenuGroup menuGroup) {
 
     }
 
     @Override
-    public void visit( MenuItemPlain menuItemPlain ) {
+    public void visit(MenuItemPlain menuItemPlain) {
 
     }
 
     @Override
-    public void visit( MenuItemCommand menuItemCommand ) {
+    public void visit(MenuItemCommand menuItemCommand) {
 
     }
 
     @Override
-    public void visit( MenuItemPerspective menuItemPerspective ) {
+    public void visit(MenuItemPerspective menuItemPerspective) {
 
     }
 
     @Override
-    public void visit( MenuCustom<?> menuCustom ) {
+    public void visit(MenuCustom<?> menuCustom) {
 
     }
 }

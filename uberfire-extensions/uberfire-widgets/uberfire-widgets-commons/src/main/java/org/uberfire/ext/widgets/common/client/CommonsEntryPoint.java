@@ -30,5 +30,4 @@ public class CommonsEntryPoint {
         //Ensure CSS has been loaded
         CommonResources.INSTANCE.CSS().ensureInjected();
     }
-
 }

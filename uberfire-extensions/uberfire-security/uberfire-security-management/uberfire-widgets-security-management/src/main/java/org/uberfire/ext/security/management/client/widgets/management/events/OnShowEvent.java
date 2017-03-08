@@ -20,14 +20,14 @@ import org.uberfire.workbench.events.UberFireEvent;
 
 /**
  * <p>User ask for view mode.</p>
- * 
  * @since 0.8.0
  */
 public class OnShowEvent extends ContextualEvent implements UberFireEvent {
 
     private Object instance;
 
-    public OnShowEvent(Object context, Object instance) {
+    public OnShowEvent(Object context,
+                       Object instance) {
         super(context);
         this.instance = instance;
     }
@@ -40,5 +40,4 @@ public class OnShowEvent extends ContextualEvent implements UberFireEvent {
     public String toString() {
         return "OnShowEvent [context=" + getContext() + "]";
     }
-
 }

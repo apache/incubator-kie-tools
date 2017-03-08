@@ -16,13 +16,12 @@
 
 package org.uberfire.ext.security.management.search;
 
-import org.jboss.errai.security.shared.api.Role;
-
 import javax.enterprise.context.ApplicationScoped;
+
+import org.jboss.errai.security.shared.api.Role;
 
 /**
  * <p>Default runtime search engine implementation for collections of roles.</p>
- * 
  * @since 0.8.0
  */
 @ApplicationScoped

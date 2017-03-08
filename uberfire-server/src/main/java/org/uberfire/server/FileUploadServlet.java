@@ -46,66 +46,66 @@ public class FileUploadServlet
     private IOService ioService;
 
     @Override
-    protected void doPost( HttpServletRequest request,
-                           HttpServletResponse response ) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request,
+                          HttpServletResponse response) throws ServletException, IOException {
 
         try {
-            if ( request.getParameter( PARAM_PATH ) != null ) {
+            if (request.getParameter(PARAM_PATH) != null) {
 
                 //See https://bugzilla.redhat.com/show_bug.cgi?id=1202926
-                final String encodedPath = FileServletUtil.encodeFileNamePart( request.getParameter( PARAM_PATH ) );
-                final URI uri = new URI( encodedPath );
+                final String encodedPath = FileServletUtil.encodeFileNamePart(request.getParameter(PARAM_PATH));
+                final URI uri = new URI(encodedPath);
 
-                final FileItem fileItem = getFileItem( request );
+                final FileItem fileItem = getFileItem(request);
 
-                finalizeResponse( response, fileItem, uri );
-
-            } else if ( request.getParameter( PARAM_FOLDER ) != null ) {
+                finalizeResponse(response,
+                                 fileItem,
+                                 uri);
+            } else if (request.getParameter(PARAM_FOLDER) != null) {
 
                 //See https://bugzilla.redhat.com/show_bug.cgi?id=1202926
-                final String encodedFileName = FileServletUtil.encodeFileName( request.getParameter( PARAM_FILENAME ) );
-                final URI uri = new URI( request.getParameter( PARAM_FOLDER ) + "/" + encodedFileName );
+                final String encodedFileName = FileServletUtil.encodeFileName(request.getParameter(PARAM_FILENAME));
+                final URI uri = new URI(request.getParameter(PARAM_FOLDER) + "/" + encodedFileName);
 
-                final FileItem fileItem = getFileItem( request );
+                final FileItem fileItem = getFileItem(request);
 
-                finalizeResponse( response, fileItem, uri );
+                finalizeResponse(response,
+                                 fileItem,
+                                 uri);
             }
-
-        } catch ( FileUploadException e ) {
-            logError( e );
-            writeResponse( response,
-                           RESPONSE_FAIL );
-
-        } catch ( URISyntaxException e ) {
-            logError( e );
-            writeResponse( response,
-                           RESPONSE_FAIL );
+        } catch (FileUploadException e) {
+            logError(e);
+            writeResponse(response,
+                          RESPONSE_FAIL);
+        } catch (URISyntaxException e) {
+            logError(e);
+            writeResponse(response,
+                          RESPONSE_FAIL);
         }
     }
 
-    private void finalizeResponse( HttpServletResponse response,
-                                   FileItem fileItem,
-                                   URI uri ) throws IOException {
-        if ( !validateAccess( uri,
-                              response ) ) {
+    private void finalizeResponse(HttpServletResponse response,
+                                  FileItem fileItem,
+                                  URI uri) throws IOException {
+        if (!validateAccess(uri,
+                            response)) {
             return;
         }
 
-        final Path path = ioService.get( uri );
+        final Path path = ioService.get(uri);
 
-        writeFile( ioService,
-                   path,
-                   fileItem );
+        writeFile(ioService,
+                  path,
+                  fileItem);
 
-        writeResponse( response,
-                       RESPONSE_OK );
+        writeResponse(response,
+                      RESPONSE_OK);
     }
 
-    private String getExtension( final String originalFileName ) {
-        if ( originalFileName.contains( "." ) ) {
-            return "." + originalFileName.substring( originalFileName.lastIndexOf( '.' ) + 1 );
+    private String getExtension(final String originalFileName) {
+        if (originalFileName.contains(".")) {
+            return "." + originalFileName.substring(originalFileName.lastIndexOf('.') + 1);
         }
         return "";
     }
-
 }

@@ -27,7 +27,7 @@ public class InvalidDefaultPreference implements BasePreference<InvalidDefaultPr
     String text;
 
     @Override
-    public InvalidDefaultPreference defaultValue( final InvalidDefaultPreference defaultValue ) {
+    public InvalidDefaultPreference defaultValue(final InvalidDefaultPreference defaultValue) {
         return new InvalidDefaultPreference();
     }
 }

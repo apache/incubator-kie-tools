@@ -40,77 +40,105 @@ public class TriggerWidget extends PanelHeader {
     private final FlexTable table = new FlexTable();
     private final Icon caret;
 
-    public TriggerWidget( final String description ) {
-        this( description, true );
+    public TriggerWidget(final String description) {
+        this(description,
+             true);
     }
 
-    public TriggerWidget( final String description,
-                          final boolean isCaretDown ) {
-        getElement().getStyle().setCursor( Style.Cursor.POINTER );
-        caret = makeIcon( isCaretDown ? IconType.CARET_DOWN : IconType.CARET_UP, CommonConstants.INSTANCE.ClickToDisplay0( description ) );
-        table.setWidget( 0, 0, buildDescription( description ) );
-        table.setHTML( 0, 1, "&nbsp;&nbsp;" );
-        table.setWidget( 0, 2, caret );
-        insert( table, 0 );
+    public TriggerWidget(final String description,
+                         final boolean isCaretDown) {
+        getElement().getStyle().setCursor(Style.Cursor.POINTER);
+        caret = makeIcon(isCaretDown ? IconType.CARET_DOWN : IconType.CARET_UP,
+                         CommonConstants.INSTANCE.ClickToDisplay0(description));
+        table.setWidget(0,
+                        0,
+                        buildDescription(description));
+        table.setHTML(0,
+                      1,
+                      "&nbsp;&nbsp;");
+        table.setWidget(0,
+                        2,
+                        caret);
+        insert(table,
+               0);
     }
 
-    public TriggerWidget( final IsWidget icon,
-                          final String description ) {
-        this( icon, description, true );
+    public TriggerWidget(final IsWidget icon,
+                         final String description) {
+        this(icon,
+             description,
+             true);
     }
 
-    public TriggerWidget( final IsWidget icon,
-                          final String description,
-                          boolean isCaretDown ) {
-        getElement().getStyle().setCursor( Style.Cursor.POINTER );
-        caret = makeIcon( isCaretDown ? IconType.CARET_DOWN : IconType.CARET_UP, CommonConstants.INSTANCE.ClickToDisplay0( description ) );
-        if ( icon == null ) {
-            table.setWidget( 0, 0, buildDescription( description ) );
-            table.setHTML( 0, 1, "&nbsp;&nbsp;" );
-            table.setWidget( 0, 2, caret );
+    public TriggerWidget(final IsWidget icon,
+                         final String description,
+                         boolean isCaretDown) {
+        getElement().getStyle().setCursor(Style.Cursor.POINTER);
+        caret = makeIcon(isCaretDown ? IconType.CARET_DOWN : IconType.CARET_UP,
+                         CommonConstants.INSTANCE.ClickToDisplay0(description));
+        if (icon == null) {
+            table.setWidget(0,
+                            0,
+                            buildDescription(description));
+            table.setHTML(0,
+                          1,
+                          "&nbsp;&nbsp;");
+            table.setWidget(0,
+                            2,
+                            caret);
         } else {
-            table.setWidget( 0, 0, icon );
-            table.setHTML( 0, 1, "&nbsp;&nbsp;" );
-            table.setWidget( 0, 2, buildDescription( description ) );
-            table.setHTML( 0, 3, "&nbsp;&nbsp;" );
-            table.setWidget( 0, 4, caret );
+            table.setWidget(0,
+                            0,
+                            icon);
+            table.setHTML(0,
+                          1,
+                          "&nbsp;&nbsp;");
+            table.setWidget(0,
+                            2,
+                            buildDescription(description));
+            table.setHTML(0,
+                          3,
+                          "&nbsp;&nbsp;");
+            table.setWidget(0,
+                            4,
+                            caret);
         }
-        insert( table, 0 );
+        insert(table,
+               0);
     }
 
     @Override
-    public void setDataTargetWidget( final Widget widget ) {
-        super.setDataTargetWidget( widget );
-        if ( widget instanceof PanelCollapse ) {
+    public void setDataTargetWidget(final Widget widget) {
+        super.setDataTargetWidget(widget);
+        if (widget instanceof PanelCollapse) {
             final PanelCollapse collapse = (PanelCollapse) widget;
-            collapse.addShowHandler( new ShowHandler() {
+            collapse.addShowHandler(new ShowHandler() {
                 @Override
-                public void onShow( ShowEvent showEvent ) {
-                    caret.setType( IconType.CARET_UP );
+                public void onShow(ShowEvent showEvent) {
+                    caret.setType(IconType.CARET_UP);
                 }
-            } );
-            collapse.addHiddenHandler( new HiddenHandler() {
+            });
+            collapse.addHiddenHandler(new HiddenHandler() {
                 @Override
-                public void onHidden( HiddenEvent event ) {
-                    caret.setType( IconType.CARET_DOWN );
+                public void onHidden(HiddenEvent event) {
+                    caret.setType(IconType.CARET_DOWN);
                 }
-            } );
+            });
         }
     }
 
-    private Icon makeIcon( final IconType iconType,
-                           final String tooltip ) {
-        return new Icon( iconType ) {{
-            setTitle( tooltip );
+    private Icon makeIcon(final IconType iconType,
+                          final String tooltip) {
+        return new Icon(iconType) {{
+            setTitle(tooltip);
         }};
     }
 
-    private Widget buildDescription( final String caption ) {
-        return new AbstractTextWidget( Document.get().createSpanElement() ) {{
-            addStyleName( "text-uppercase" );
-            setTitle( CommonConstants.INSTANCE.ClickToDisplay0( caption ) );
-            setHTML( new Strong( caption ).getElement().getString() );
+    private Widget buildDescription(final String caption) {
+        return new AbstractTextWidget(Document.get().createSpanElement()) {{
+            addStyleName("text-uppercase");
+            setTitle(CommonConstants.INSTANCE.ClickToDisplay0(caption));
+            setHTML(new Strong(caption).getElement().getString());
         }};
     }
-
 }

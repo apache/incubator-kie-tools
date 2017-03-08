@@ -36,99 +36,88 @@ import org.uberfire.mvp.Command;
 public abstract class DefaultEditorFileUploadBase
         extends Composite {
 
-    interface DefaultEditorFileUploadBaseBinder
-            extends
-            UiBinder<Widget, DefaultEditorFileUploadBase> {
-
-    }
-
-    private static DefaultEditorFileUploadBaseBinder uiBinder = GWT.create( DefaultEditorFileUploadBaseBinder.class );
-
-    private Command successCallback;
-    private Command errorCallback;
-
-    private FileUploadFormEncoder formEncoder = new FileUploadFormEncoder();
-
+    private static DefaultEditorFileUploadBaseBinder uiBinder = GWT.create(DefaultEditorFileUploadBaseBinder.class);
     @UiField
     Form form;
-
     @UiField(provided = true)
     FileUpload fileUpload;
+    private Command successCallback;
+    private Command errorCallback;
+    private FileUploadFormEncoder formEncoder = new FileUploadFormEncoder();
 
     public DefaultEditorFileUploadBase() {
-        this( true );
+        this(true);
     }
 
-    public DefaultEditorFileUploadBase( boolean showUpload ) {
-        fileUpload = createFileUpload( showUpload );
+    public DefaultEditorFileUploadBase(boolean showUpload) {
+        fileUpload = createFileUpload(showUpload);
 
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
         initForm();
     }
 
     void initForm() {
-        form.setEncoding( FormPanel.ENCODING_MULTIPART );
-        form.setMethod( FormPanel.METHOD_POST );
+        form.setEncoding(FormPanel.ENCODING_MULTIPART);
+        form.setMethod(FormPanel.METHOD_POST);
 
-        formEncoder.addUtf8Charset( form );
+        formEncoder.addUtf8Charset(form);
 
         // Validation is not performed in a SubmitHandler as it fails to be invoked with GWT-Bootstrap3. See:-
         // - https://issues.jboss.org/browse/GUVNOR-2302 and
         // - the underlying cause https://github.com/gwtbootstrap3/gwtbootstrap3/issues/375
         // Validation is now performed prior to the form being submitted.
 
-        form.addSubmitCompleteHandler( new AbstractForm.SubmitCompleteHandler() {
+        form.addSubmitCompleteHandler(new AbstractForm.SubmitCompleteHandler() {
             @Override
-            public void onSubmitComplete( final AbstractForm.SubmitCompleteEvent event ) {
-                if ( "OK".equalsIgnoreCase( event.getResults() ) ) {
-                    Window.alert( CoreConstants.INSTANCE.UploadSuccess() );
-                    executeCallback( successCallback );
-
-                } else if ( "FAIL".equalsIgnoreCase( event.getResults() ) ) {
-                    Window.alert( CoreConstants.INSTANCE.UploadFail() );
-                    executeCallback( errorCallback );
+            public void onSubmitComplete(final AbstractForm.SubmitCompleteEvent event) {
+                if ("OK".equalsIgnoreCase(event.getResults())) {
+                    Window.alert(CoreConstants.INSTANCE.UploadSuccess());
+                    executeCallback(successCallback);
+                } else if ("FAIL".equalsIgnoreCase(event.getResults())) {
+                    Window.alert(CoreConstants.INSTANCE.UploadFail());
+                    executeCallback(errorCallback);
                 }
             }
-        } );
+        });
     }
 
-    private FileUpload createFileUpload( boolean showUpload ) {
-        return new FileUpload( new Command() {
+    private FileUpload createFileUpload(boolean showUpload) {
+        return new FileUpload(new Command() {
             @Override
             public void execute() {
-                form.setAction( GWT.getModuleBaseURL() + "defaulteditor/upload" + createParametersForURL() );
-                if ( isValid() ) {
+                form.setAction(GWT.getModuleBaseURL() + "defaulteditor/upload" + createParametersForURL());
+                if (isValid()) {
                     form.submit();
                 }
             }
-
-        }, showUpload );
+        },
+                              showUpload);
     }
 
     //Package protected to support overriding for tests
     boolean isValid() {
         String fileName = fileUpload.getFilename();
-        if ( isNullOrEmpty( fileName ) ) {
-            Window.alert( CoreConstants.INSTANCE.SelectFileToUpload() );
-            executeCallback( errorCallback );
+        if (isNullOrEmpty(fileName)) {
+            Window.alert(CoreConstants.INSTANCE.SelectFileToUpload());
+            executeCallback(errorCallback);
             return false;
         }
         return true;
     }
 
-    private boolean isNullOrEmpty( String fileName ) {
-        return fileName == null || "".equals( fileName );
+    private boolean isNullOrEmpty(String fileName) {
+        return fileName == null || "".equals(fileName);
     }
 
     private String createParametersForURL() {
         String parameters = "?";
         Map<String, String> map = getParameters();
         Iterator<String> iterator = map.keySet().iterator();
-        while ( iterator.hasNext() ) {
+        while (iterator.hasNext()) {
             String parameter = iterator.next();
-            parameters += parameter + "=" + map.get( parameter );
-            if ( iterator.hasNext() ) {
+            parameters += parameter + "=" + map.get(parameter);
+            if (iterator.hasNext()) {
                 parameters += "&";
             }
         }
@@ -137,8 +126,8 @@ public abstract class DefaultEditorFileUploadBase
 
     protected abstract Map<String, String> getParameters();
 
-    public void upload( final Command successCallback,
-                        final Command errorCallback ) {
+    public void upload(final Command successCallback,
+                       final Command errorCallback) {
         this.successCallback = successCallback;
         this.errorCallback = errorCallback;
         fileUpload.upload();
@@ -148,11 +137,16 @@ public abstract class DefaultEditorFileUploadBase
         return fileUpload.getFilename();
     }
 
-    private void executeCallback( final Command callback ) {
-        if ( callback == null ) {
+    private void executeCallback(final Command callback) {
+        if (callback == null) {
             return;
         }
         callback.execute();
     }
 
+    interface DefaultEditorFileUploadBaseBinder
+            extends
+            UiBinder<Widget, DefaultEditorFileUploadBase> {
+
+    }
 }

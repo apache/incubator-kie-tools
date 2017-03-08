@@ -22,16 +22,17 @@ import com.google.gwt.user.client.ui.RequiresResize;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import org.uberfire.client.workbench.widgets.multipage.PageView;
 
-public class PageViewImpl extends Composite implements PageView, RequiresResize {
+public class PageViewImpl extends Composite implements PageView,
+                                                       RequiresResize {
 
     private final PageImpl presenter;
     private final ScrollPanel sp = new ScrollPanel();
 
-    public PageViewImpl( PageImpl presenter,
-                         IsWidget widget ) {
+    public PageViewImpl(PageImpl presenter,
+                        IsWidget widget) {
         this.presenter = presenter;
-        sp.setWidget( widget );
-        initWidget( sp );
+        sp.setWidget(widget);
+        initWidget(sp);
     }
 
     public void onFocus() {

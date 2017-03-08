@@ -15,10 +15,9 @@
  */
 package org.uberfire.client.mvp;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.annotations.WorkbenchContext;
 import org.uberfire.workbench.model.PanelDefinition;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Implementation of behaviour common to all context activities. Concrete implementations are typically not written by
@@ -28,12 +27,12 @@ public abstract class AbstractWorkbenchContextActivity extends AbstractActivity 
 
     protected PanelDefinition panel;
 
-    public AbstractWorkbenchContextActivity( final PlaceManager placeManager ) {
-        super( placeManager );
+    public AbstractWorkbenchContextActivity(final PlaceManager placeManager) {
+        super(placeManager);
     }
 
     @Override
-    public void onAttach( final PanelDefinition panel ) {
+    public void onAttach(final PanelDefinition panel) {
         this.panel = panel;
     }
 

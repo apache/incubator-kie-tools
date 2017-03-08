@@ -46,38 +46,37 @@ public class LineFactory extends AbstractBaseFactory<Line> {
     }
 
     @Override
-    public WiresBaseShape getShape( final FactoryHelper helper ) {
-        return new WiresLine( makeShape() );
+    public WiresBaseShape getShape(final FactoryHelper helper) {
+        return new WiresLine(makeShape());
     }
 
     @Override
-    public boolean builds( final WiresBaseShape shapeType ) {
+    public boolean builds(final WiresBaseShape shapeType) {
         return shapeType instanceof WiresLine;
     }
 
     @Override
     protected Line makeShape() {
-        final Line line = new Line( 0 - ( SHAPE_SIZE_X / 2 ),
-                                    0 - ( SHAPE_SIZE_Y / 2 ),
-                                    SHAPE_SIZE_X / 2,
-                                    SHAPE_SIZE_Y / 2 );
-        line.setStrokeColor( ShapesUtils.RGB_STROKE_SHAPE )
-                .setStrokeWidth( ShapesUtils.RGB_STROKE_WIDTH_SHAPE )
-                .setFillColor( ShapesUtils.RGB_FILL_SHAPE )
-                .setLineCap( LineCap.ROUND )
-                .setStrokeWidth( 3 )
-                .setDraggable( false );
+        final Line line = new Line(0 - (SHAPE_SIZE_X / 2),
+                                   0 - (SHAPE_SIZE_Y / 2),
+                                   SHAPE_SIZE_X / 2,
+                                   SHAPE_SIZE_Y / 2);
+        line.setStrokeColor(ShapesUtils.RGB_STROKE_SHAPE)
+                .setStrokeWidth(ShapesUtils.RGB_STROKE_WIDTH_SHAPE)
+                .setFillColor(ShapesUtils.RGB_FILL_SHAPE)
+                .setLineCap(LineCap.ROUND)
+                .setStrokeWidth(3)
+                .setDraggable(false);
         return line;
     }
 
     @Override
     protected double getWidth() {
-        return SHAPE_SIZE_X + ( ShapesUtils.RGB_STROKE_WIDTH_SHAPE * 2 );
+        return SHAPE_SIZE_X + (ShapesUtils.RGB_STROKE_WIDTH_SHAPE * 2);
     }
 
     @Override
     protected double getHeight() {
-        return SHAPE_SIZE_Y + ( ShapesUtils.RGB_STROKE_WIDTH_SHAPE * 2 );
+        return SHAPE_SIZE_Y + (ShapesUtils.RGB_STROKE_WIDTH_SHAPE * 2);
     }
-
 }

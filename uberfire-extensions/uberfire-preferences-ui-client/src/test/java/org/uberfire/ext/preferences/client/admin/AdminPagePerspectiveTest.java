@@ -31,34 +31,39 @@ public class AdminPagePerspectiveTest {
 
     @Before
     public void setup() {
-        perspective = spy( new AdminPagePerspective() );
-        doNothing().when( perspective ).configurePerspective( any( PlaceRequest.class ) );
+        perspective = spy(new AdminPagePerspective());
+        doNothing().when(perspective).configurePerspective(any(PlaceRequest.class));
     }
 
     @Test
     public void getPerspectiveWithoutStartupTest() {
         final PerspectiveDefinition perspectiveDefinition = perspective.getPerspective();
 
-        verify( perspective ).createPerspectiveDefinition();
-        verify( perspective, never() ).configurePerspective( any( PlaceRequest.class ) );
+        verify(perspective).createPerspectiveDefinition();
+        verify(perspective,
+               never()).configurePerspective(any(PlaceRequest.class));
 
-        assertNotNull( perspectiveDefinition );
-        assertNotNull( perspectiveDefinition.getName() );
+        assertNotNull(perspectiveDefinition);
+        assertNotNull(perspectiveDefinition.getName());
     }
 
     @Test
     public void getPerspectiveWithStartupTest() {
-        this.perspective.onStartup( mock( PlaceRequest.class ) );
+        this.perspective.onStartup(mock(PlaceRequest.class));
 
-        verify( perspective, times( 1 ) ).createPerspectiveDefinition();
-        verify( perspective, times( 1 ) ).configurePerspective( any( PlaceRequest.class ) );
+        verify(perspective,
+               times(1)).createPerspectiveDefinition();
+        verify(perspective,
+               times(1)).configurePerspective(any(PlaceRequest.class));
 
         final PerspectiveDefinition perspectiveDefinition = perspective.getPerspective();
 
-        verify( perspective, times( 1 ) ).createPerspectiveDefinition();
-        verify( perspective, times( 1 ) ).configurePerspective( any( PlaceRequest.class ) );
+        verify(perspective,
+               times(1)).createPerspectiveDefinition();
+        verify(perspective,
+               times(1)).configurePerspective(any(PlaceRequest.class));
 
-        assertNotNull( perspectiveDefinition );
-        assertNotNull( perspectiveDefinition.getName() );
+        assertNotNull(perspectiveDefinition);
+        assertNotNull(perspectiveDefinition.getName());
     }
 }

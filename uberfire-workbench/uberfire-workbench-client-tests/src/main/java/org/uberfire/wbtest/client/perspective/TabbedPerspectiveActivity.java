@@ -33,7 +33,7 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
  * A perspective with a root panel of type MultiTabWorkbenchPanelPresenter.
  */
 @Dependent
-@Named( "org.uberfire.wbtest.client.perspective.TabbedPerspectiveActivity" )
+@Named("org.uberfire.wbtest.client.perspective.TabbedPerspectiveActivity")
 public class TabbedPerspectiveActivity extends AbstractTestPerspectiveActivity {
 
     /**
@@ -42,18 +42,19 @@ public class TabbedPerspectiveActivity extends AbstractTestPerspectiveActivity {
     public static final String TABBED_PANEL_ID = "tabbedPerspectiveDefault";
 
     @Inject
-    public TabbedPerspectiveActivity( PlaceManager placeManager ) {
-        super( placeManager );
+    public TabbedPerspectiveActivity(PlaceManager placeManager) {
+        super(placeManager);
     }
 
     @Override
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
-        PerspectiveDefinition pdef = new PerspectiveDefinitionImpl( MultiTabWorkbenchPanelPresenter.class.getName() );
-        pdef.setName( "TabbedPerspectiveActivity" );
+        PerspectiveDefinition pdef = new PerspectiveDefinitionImpl(MultiTabWorkbenchPanelPresenter.class.getName());
+        pdef.setName("TabbedPerspectiveActivity");
 
-        DefaultPlaceRequest destintationPlace = new DefaultPlaceRequest( ResizeTestScreenActivity.class.getName() );
-        destintationPlace.addParameter( "debugId", TABBED_PANEL_ID );
-        pdef.getRoot().addPart( new PartDefinitionImpl( destintationPlace ) );
+        DefaultPlaceRequest destintationPlace = new DefaultPlaceRequest(ResizeTestScreenActivity.class.getName());
+        destintationPlace.addParameter("debugId",
+                                       TABBED_PANEL_ID);
+        pdef.getRoot().addPart(new PartDefinitionImpl(destintationPlace));
         return pdef;
     }
 }

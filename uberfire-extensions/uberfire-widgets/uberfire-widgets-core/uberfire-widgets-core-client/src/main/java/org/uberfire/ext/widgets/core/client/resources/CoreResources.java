@@ -19,11 +19,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 
 public interface CoreResources
-    extends
-    ClientBundle {
+        extends
+        ClientBundle {
 
-    CoreResources INSTANCE = GWT.create( CoreResources.class );
+    CoreResources INSTANCE = GWT.create(CoreResources.class);
 
     CoreImages images();
-
 }

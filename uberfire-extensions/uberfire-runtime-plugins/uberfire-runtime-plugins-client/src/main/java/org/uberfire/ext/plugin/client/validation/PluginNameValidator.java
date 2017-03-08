@@ -37,73 +37,75 @@ import org.uberfire.ext.plugin.service.PluginServices;
 public class PluginNameValidator implements Validator {
 
     @Inject
+    Caller<PluginServices> pluginServices;
+    @Inject
     private PluginsInfo pluginsInfo;
-
     @Inject
     private DefaultFileNameValidator defaultFileNameValidator;
 
-    @Inject
-    Caller<PluginServices> pluginServices;
-
     @Override
-    public void validate( final String name,
-                          final ValidatorCallback callback ) {
-        validateName( name, new ValidatorWithReasonCallback() {
+    public void validate(final String name,
+                         final ValidatorCallback callback) {
+        validateName(name,
+                     new ValidatorWithReasonCallback() {
 
-            @Override
-            public void onFailure( final String reason ) {
-                if ( shouldGiveReasonOfValidationError( callback ) ) {
-                    ( (ValidatorWithReasonCallback) callback ).onFailure( reason );
-                } else {
-                    callback.onFailure();
-                }
-            }
+                         @Override
+                         public void onFailure(final String reason) {
+                             if (shouldGiveReasonOfValidationError(callback)) {
+                                 ((ValidatorWithReasonCallback) callback).onFailure(reason);
+                             } else {
+                                 callback.onFailure();
+                             }
+                         }
 
-            @Override
-            public void onSuccess() {
-                defaultFileNameValidator.validate( name, callback );
-            }
+                         @Override
+                         public void onSuccess() {
+                             defaultFileNameValidator.validate(name,
+                                                               callback);
+                         }
 
-            @Override
-            public void onFailure() {
-                callback.onFailure();
-            }
-        } );
+                         @Override
+                         public void onFailure() {
+                             callback.onFailure();
+                         }
+                     });
     }
 
-    private boolean shouldGiveReasonOfValidationError( final ValidatorCallback callback ) {
+    private boolean shouldGiveReasonOfValidationError(final ValidatorCallback callback) {
         return callback instanceof ValidatorWithReasonCallback;
     }
 
-    protected void validateName( final String name,
-                                 final ValidatorWithReasonCallback callback ) {
-        final String nameWithoutExtension = ( name.lastIndexOf( "." ) >= 0
-                ? name.substring( 0, name.lastIndexOf( "." ) ) : name );
+    protected void validateName(final String name,
+                                final ValidatorWithReasonCallback callback) {
+        final String nameWithoutExtension = (name.lastIndexOf(".") >= 0
+                ? name.substring(0,
+                                 name.lastIndexOf(".")) : name);
         final RuleValidator nameValidator = getNameValidator();
 
-        if ( !nameValidator.isValid( nameWithoutExtension ) ) {
-            callback.onFailure( nameValidator.getValidationError() );
+        if (!nameValidator.isValid(nameWithoutExtension)) {
+            callback.onFailure(nameValidator.getValidationError());
             return;
         }
 
-        pluginServices.call( new RemoteCallback<Collection<Plugin>>() {
+        pluginServices.call(new RemoteCallback<Collection<Plugin>>() {
             @Override
-            public void callback( final Collection<Plugin> plugins ) {
-                Set<Activity> activities = pluginsInfo.getAllPlugins( plugins );
+            public void callback(final Collection<Plugin> plugins) {
+                Set<Activity> activities = pluginsInfo.getAllPlugins(plugins);
 
-                for ( Activity activity : activities ) {
-                    if ( activity.getName().equalsIgnoreCase( nameWithoutExtension ) ) {
-                        callback.onFailure( ValidationErrorReason.DUPLICATED_NAME.name() );
+                for (Activity activity : activities) {
+                    if (activity.getName().equalsIgnoreCase(nameWithoutExtension)) {
+                        callback.onFailure(ValidationErrorReason.DUPLICATED_NAME.name());
                         return;
                     }
                 }
 
                 callback.onSuccess();
             }
-        } ).listPlugins();
+        }).listPlugins();
     }
 
     private RuleValidator getNameValidator() {
-        return NameValidator.createNameValidator( ValidationErrorReason.EMPTY_NAME.name(), ValidationErrorReason.INVALID_NAME.name() );
+        return NameValidator.createNameValidator(ValidationErrorReason.EMPTY_NAME.name(),
+                                                 ValidationErrorReason.INVALID_NAME.name());
     }
 }

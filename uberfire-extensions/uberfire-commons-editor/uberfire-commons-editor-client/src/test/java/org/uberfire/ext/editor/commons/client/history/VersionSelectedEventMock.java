@@ -28,31 +28,29 @@ public class VersionSelectedEventMock
 
     private Callback<VersionSelectedEvent> callback;
 
-    public VersionSelectedEventMock( Callback<VersionSelectedEvent> callback ) {
+    public VersionSelectedEventMock(Callback<VersionSelectedEvent> callback) {
         this.callback = callback;
-
     }
 
     @Override
-    public void fire( VersionSelectedEvent event ) {
-        callback.callback( event );
+    public void fire(VersionSelectedEvent event) {
+        callback.callback(event);
     }
 
     @Override
-    public Event<VersionSelectedEvent> select( Annotation... annotations ) {
+    public Event<VersionSelectedEvent> select(Annotation... annotations) {
         return null;
     }
 
     @Override
-    public <U extends VersionSelectedEvent> Event<U> select( Class<U> uClass,
-                                                             Annotation... annotations ) {
+    public <U extends VersionSelectedEvent> Event<U> select(Class<U> uClass,
+                                                            Annotation... annotations) {
         return null;
     }
 
     @Override
-    public <U extends VersionSelectedEvent> Event<U> select( TypeLiteral<U> subtype,
-                                                             Annotation... qualifiers ) {
+    public <U extends VersionSelectedEvent> Event<U> select(TypeLiteral<U> subtype,
+                                                            Annotation... qualifiers) {
         return null;
     }
-
 }

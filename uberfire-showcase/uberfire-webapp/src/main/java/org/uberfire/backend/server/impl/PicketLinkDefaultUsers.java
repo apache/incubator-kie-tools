@@ -39,8 +39,8 @@ public class PicketLinkDefaultUsers {
     /**
      * Creates example users so people can log in while trying out the app.
      */
-    public synchronized void create( @Observes PreAuthenticateEvent event ) {
-        if ( done ) {
+    public synchronized void create(@Observes PreAuthenticateEvent event) {
+        if (done) {
             return;
         }
 
@@ -49,33 +49,37 @@ public class PicketLinkDefaultUsers {
         final IdentityManager identityManager = partitionManager.createIdentityManager();
         final RelationshipManager relationshipManager = partitionManager.createRelationshipManager();
 
-        User admin = new User( "admin" );
+        User admin = new User("admin");
 
-        admin.setEmail( "john@doe.com" );
-        admin.setFirstName( "John" );
-        admin.setLastName( "Doe" );
+        admin.setEmail("john@doe.com");
+        admin.setFirstName("John");
+        admin.setLastName("Doe");
 
-        User nonAdmin = new User( "joe" );
+        User nonAdmin = new User("joe");
 
-        nonAdmin.setEmail( "joe@doe.com" );
-        nonAdmin.setFirstName( "Joe" );
-        nonAdmin.setLastName( "Doe" );
+        nonAdmin.setEmail("joe@doe.com");
+        nonAdmin.setFirstName("Joe");
+        nonAdmin.setLastName("Doe");
 
-        identityManager.add( admin );
-        identityManager.add( nonAdmin );
-        identityManager.updateCredential( admin, new Password( "admin" ) );
-        identityManager.updateCredential( nonAdmin, new Password( "joe" ) );
+        identityManager.add(admin);
+        identityManager.add(nonAdmin);
+        identityManager.updateCredential(admin,
+                                         new Password("admin"));
+        identityManager.updateCredential(nonAdmin,
+                                         new Password("joe"));
 
-        Role roleSimple = new Role( "simple" );
-        Role roleAdmin = new Role( "admin" );
+        Role roleSimple = new Role("simple");
+        Role roleAdmin = new Role("admin");
 
-        identityManager.add( roleSimple );
-        identityManager.add( roleAdmin );
+        identityManager.add(roleSimple);
+        identityManager.add(roleAdmin);
 
-        relationshipManager.add( new Grant( admin, roleSimple ) );
-        relationshipManager.add( new Grant( admin, roleAdmin ) );
+        relationshipManager.add(new Grant(admin,
+                                          roleSimple));
+        relationshipManager.add(new Grant(admin,
+                                          roleAdmin));
 
-        relationshipManager.add( new Grant( nonAdmin, roleSimple ) );
+        relationshipManager.add(new Grant(nonAdmin,
+                                          roleSimple));
     }
-
 }

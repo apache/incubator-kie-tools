@@ -31,23 +31,23 @@ import org.eclipse.jgit.transport.RefFilter;
 public class HiddenBranchRefFilter implements RefFilter {
 
     private static final String HIDDEN_BRANCH_REGEXP = "PR-\\d+-\\S+-\\S+";
-    private static Pattern pattern = Pattern.compile( HIDDEN_BRANCH_REGEXP );
-
-    @Override
-    public Map<String, Ref> filter( final Map<String, Ref> refs ) {
-        return refs.entrySet()
-                .stream()
-                .filter( ref -> !HiddenBranchRefFilter.isHidden( ref.getKey() ) )
-                .collect( Collectors.toMap( Map.Entry::getKey, Map.Entry::getValue ) );
-
-    }
+    private static Pattern pattern = Pattern.compile(HIDDEN_BRANCH_REGEXP);
 
     /**
      * Checks if a branch name matches the hidden branch regexp
      * @param branch the branch you want to check.
      * @return return if the branch is hidden or not
      */
-    public static boolean isHidden( String branch ) {
-        return pattern.matcher( branch ).matches();
+    public static boolean isHidden(String branch) {
+        return pattern.matcher(branch).matches();
+    }
+
+    @Override
+    public Map<String, Ref> filter(final Map<String, Ref> refs) {
+        return refs.entrySet()
+                .stream()
+                .filter(ref -> !HiddenBranchRefFilter.isHidden(ref.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                                          Map.Entry::getValue));
     }
 }

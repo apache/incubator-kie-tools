@@ -54,5 +54,4 @@ public class YouTubeScreen extends Composite {
     public void reloadContent(@Observes YouTubeVideo content) {
         iframe.setUrl(UriUtils.fromString(content.getURL()).asString());
     }
-
 }

@@ -16,7 +16,11 @@
 
 package org.uberfire.commons.lifecycle;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public final class PriorityDisposableRegistry {
 
@@ -26,13 +30,14 @@ public final class PriorityDisposableRegistry {
     private PriorityDisposableRegistry() {
     }
 
-    public static void register( final PriorityDisposable priorityDisposable ) {
-        disposables.add( priorityDisposable );
+    public static void register(final PriorityDisposable priorityDisposable) {
+        disposables.add(priorityDisposable);
     }
 
-    public static void register( final String refName,
-                                 final Object disposable ) {
-        registry.put( refName, disposable );
+    public static void register(final String refName,
+                                final Object disposable) {
+        registry.put(refName,
+                     disposable);
     }
 
     public static void clear() {
@@ -48,11 +53,11 @@ public final class PriorityDisposableRegistry {
         return registry;
     }
 
-    public static void unregister( final String refName ) {
-        registry.remove( refName );
+    public static void unregister(final String refName) {
+        registry.remove(refName);
     }
 
-    public static Object get( final String refName ) {
-        return registry.get( refName );
+    public static Object get(final String refName) {
+        return registry.get(refName);
     }
 }

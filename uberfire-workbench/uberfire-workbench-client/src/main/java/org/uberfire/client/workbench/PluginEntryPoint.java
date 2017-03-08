@@ -38,8 +38,7 @@ public class PluginEntryPoint {
 
     @Produces
     @ApplicationScoped
-    private SessionInfo currentSession(User identity) {  
-        return new SessionInfoImpl( identity );
+    private SessionInfo currentSession(User identity) {
+        return new SessionInfoImpl(identity);
     }
-
 }

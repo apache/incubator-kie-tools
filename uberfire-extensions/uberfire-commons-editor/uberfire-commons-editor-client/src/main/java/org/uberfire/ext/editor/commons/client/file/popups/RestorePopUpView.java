@@ -49,7 +49,7 @@ public class RestorePopUpView implements RestorePopUpPresenter.View,
     private BaseModal modal;
 
     @Override
-    public void init( RestorePopUpPresenter presenter ) {
+    public void init(RestorePopUpPresenter presenter) {
         this.presenter = presenter;
         modalSetup();
         setupComment();
@@ -67,21 +67,25 @@ public class RestorePopUpView implements RestorePopUpPresenter.View,
 
     private void modalSetup() {
         this.modal = new CommonModalBuilder()
-                .addHeader( translate( Constants.RestorePopUpView_ConfirmRestore ) )
-                .addBody( body )
-                .addFooter( footer() )
+                .addHeader(translate(Constants.RestorePopUpView_ConfirmRestore))
+                .addBody(body)
+                .addFooter(footer())
                 .build();
     }
 
     private ModalFooter footer() {
         GenericModalFooter footer = new GenericModalFooter();
-        footer.addButton( translate( Constants.RestorePopUpView_Cancel ), cancelCommand(), ButtonType.DEFAULT );
-        footer.addButton( translate( Constants.RestorePopUpView_Restore ), restoreCommand(), ButtonType.PRIMARY );
+        footer.addButton(translate(Constants.RestorePopUpView_Cancel),
+                         cancelCommand(),
+                         ButtonType.DEFAULT);
+        footer.addButton(translate(Constants.RestorePopUpView_Restore),
+                         restoreCommand(),
+                         ButtonType.PRIMARY);
         return footer;
     }
 
-    private String translate( final String key ) {
-        return translationService.format( key );
+    private String translate(final String key) {
+        return translationService.format(key);
     }
 
     private Command restoreCommand() {
@@ -93,7 +97,7 @@ public class RestorePopUpView implements RestorePopUpPresenter.View,
     }
 
     private void setupComment() {
-        body.appendChild( toggleCommentPresenter().getViewElement() );
+        body.appendChild(toggleCommentPresenter().getViewElement());
     }
 
     private ToggleCommentPresenter toggleCommentPresenter() {

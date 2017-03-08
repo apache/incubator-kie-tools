@@ -32,40 +32,39 @@ public class AddEdgeCommand implements Command {
     private BpmnGraphNode incomingNode;
     private BpmnEdge edge;
 
-    public AddEdgeCommand( final BpmnGraphNode outgoingNode,
-                           final BpmnGraphNode incomingNode,
-                           final BpmnEdge edge ) {
-        this.outgoingNode = PortablePreconditions.checkNotNull( "outgoingNode",
-                                                                outgoingNode );
-        this.incomingNode = PortablePreconditions.checkNotNull( "incomingNode",
-                                                                incomingNode );
-        this.edge = PortablePreconditions.checkNotNull( "edge",
-                                                        edge );
+    public AddEdgeCommand(final BpmnGraphNode outgoingNode,
+                          final BpmnGraphNode incomingNode,
+                          final BpmnEdge edge) {
+        this.outgoingNode = PortablePreconditions.checkNotNull("outgoingNode",
+                                                               outgoingNode);
+        this.incomingNode = PortablePreconditions.checkNotNull("incomingNode",
+                                                               incomingNode);
+        this.edge = PortablePreconditions.checkNotNull("edge",
+                                                       edge);
     }
 
     @Override
-    public Results apply( final RuleManager ruleManager ) {
+    public Results apply(final RuleManager ruleManager) {
         final Results results = new DefaultResultsImpl();
-        results.getMessages().addAll( ruleManager.checkConnectionRules( outgoingNode,
-                                                                        incomingNode,
-                                                                        edge ).getMessages() );
-        results.getMessages().addAll( ruleManager.checkCardinality( outgoingNode,
-                                                                    incomingNode,
-                                                                    edge,
-                                                                    RuleManager.Operation.ADD ).getMessages() );
-        if ( !results.contains( ResultType.ERROR ) ) {
-            outgoingNode.getOutEdges().add( edge );
-            incomingNode.getInEdges().add( edge );
+        results.getMessages().addAll(ruleManager.checkConnectionRules(outgoingNode,
+                                                                      incomingNode,
+                                                                      edge).getMessages());
+        results.getMessages().addAll(ruleManager.checkCardinality(outgoingNode,
+                                                                  incomingNode,
+                                                                  edge,
+                                                                  RuleManager.Operation.ADD).getMessages());
+        if (!results.contains(ResultType.ERROR)) {
+            outgoingNode.getOutEdges().add(edge);
+            incomingNode.getInEdges().add(edge);
         }
         return results;
     }
 
     @Override
-    public Results undo( final RuleManager ruleManager ) {
-        final Command undoCommand = new DeleteEdgeCommand( outgoingNode,
-                                                           incomingNode,
-                                                           edge );
-        return undoCommand.apply( ruleManager );
+    public Results undo(final RuleManager ruleManager) {
+        final Command undoCommand = new DeleteEdgeCommand(outgoingNode,
+                                                          incomingNode,
+                                                          edge);
+        return undoCommand.apply(ruleManager);
     }
-
 }

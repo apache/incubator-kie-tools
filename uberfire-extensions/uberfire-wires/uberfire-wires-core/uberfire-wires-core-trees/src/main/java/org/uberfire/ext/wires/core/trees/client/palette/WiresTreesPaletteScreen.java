@@ -38,36 +38,27 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 @WorkbenchScreen(identifier = "WiresTreesPaletteScreen")
 public class WiresTreesPaletteScreen extends Composite {
 
-    interface ViewBinder extends UiBinder<Widget, WiresTreesPaletteScreen> {
-
-    }
-
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
     @UiField
     SimplePanel categoryTreeNodes;
-
     @UiField
     PanelGroup accordion;
-
     @UiField
     PanelCollapse collapseOne;
-
     @UiField
     PanelHeader header;
-
     @Inject
     private TreeNodesGroup treeNodesGroup;
 
     @PostConstruct
     public void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
-        accordion.setId( DOM.createUniqueId() );
-        header.setDataParent( accordion.getId() );
-        header.setDataTargetWidget( collapseOne );
+        accordion.setId(DOM.createUniqueId());
+        header.setDataParent(accordion.getId());
+        header.setDataTargetWidget(collapseOne);
 
-        categoryTreeNodes.setWidget( treeNodesGroup );
+        categoryTreeNodes.setWidget(treeNodesGroup);
     }
 
     @WorkbenchPartTitle
@@ -81,4 +72,7 @@ public class WiresTreesPaletteScreen extends Composite {
         return this;
     }
 
+    interface ViewBinder extends UiBinder<Widget, WiresTreesPaletteScreen> {
+
+    }
 }

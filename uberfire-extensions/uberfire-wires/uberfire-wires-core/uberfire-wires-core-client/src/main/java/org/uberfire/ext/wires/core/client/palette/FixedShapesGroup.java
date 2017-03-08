@@ -27,5 +27,4 @@ public class FixedShapesGroup extends BaseGroup {
     public Category getCategory() {
         return FixedShapeCategory.CATEGORY;
     }
-
 }

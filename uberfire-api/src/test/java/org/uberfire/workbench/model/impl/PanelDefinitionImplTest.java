@@ -16,13 +16,13 @@
 
 package org.uberfire.workbench.model.impl;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.PartDefinition;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class PanelDefinitionImplTest {
 
@@ -37,86 +37,91 @@ public class PanelDefinitionImplTest {
         panelDefinition = new PanelDefinitionImpl();
         otherPanel = new PanelDefinitionImpl();
         parent = new PanelDefinitionImpl();
-        placeRequest = mock( PlaceRequest.class );
-        part = new PartDefinitionImpl( placeRequest );
+        placeRequest = mock(PlaceRequest.class);
+        part = new PartDefinitionImpl(placeRequest);
     }
 
-    @Test( expected = IllegalStateException.class )
+    @Test(expected = IllegalStateException.class)
     public void settingTwoDifferentParentsShouldThrowException() throws Exception {
-        panelDefinition.setParent( otherPanel );
-        panelDefinition.setParent( parent );
+        panelDefinition.setParent(otherPanel);
+        panelDefinition.setParent(parent);
     }
 
     @Test
     public void addPartTest() throws Exception {
-        assertFalse( panelDefinition.getParts().contains( part ) );
-        panelDefinition.addPart( part );
-        assertTrue( panelDefinition.getParts().contains( part ) );
+        assertFalse(panelDefinition.getParts().contains(part));
+        panelDefinition.addPart(part);
+        assertTrue(panelDefinition.getParts().contains(part));
     }
 
     @Test
     public void addPartToADifferentPanelChangePanel() throws Exception {
-        assertFalse( panelDefinition.getParts().contains( part ) );
-        panelDefinition.addPart( part );
-        assertTrue( panelDefinition.getParts().contains( part ) );
-        otherPanel.addPart( part );
-        assertTrue( otherPanel.getParts().contains( part ) );
-        assertEquals( otherPanel, part.getParentPanel() );
-        assertFalse( panelDefinition.getParts().contains( part ) );
+        assertFalse(panelDefinition.getParts().contains(part));
+        panelDefinition.addPart(part);
+        assertTrue(panelDefinition.getParts().contains(part));
+        otherPanel.addPart(part);
+        assertTrue(otherPanel.getParts().contains(part));
+        assertEquals(otherPanel,
+                     part.getParentPanel());
+        assertFalse(panelDefinition.getParts().contains(part));
     }
 
     @Test
     public void addPartTwiceShouldWork() throws Exception {
-        assertFalse( panelDefinition.getParts().contains( part ) );
-        panelDefinition.addPart( part );
-        panelDefinition.addPart( part );
-        assertTrue( panelDefinition.getParts().contains( part ) );
+        assertFalse(panelDefinition.getParts().contains(part));
+        panelDefinition.addPart(part);
+        panelDefinition.addPart(part);
+        assertTrue(panelDefinition.getParts().contains(part));
     }
 
     @Test
     public void partShouldNotBePresentAfterRemoval() throws Exception {
-        panelDefinition.addPart( part );
-        assertNotNull( part.getParentPanel() );
-        assertTrue( panelDefinition.getParts().contains( part ) );
-        panelDefinition.removePart( part );
-        assertNull( part.getParentPanel() );
-        assertFalse( panelDefinition.getParts().contains( part ) );
+        panelDefinition.addPart(part);
+        assertNotNull(part.getParentPanel());
+        assertTrue(panelDefinition.getParts().contains(part));
+        panelDefinition.removePart(part);
+        assertNull(part.getParentPanel());
+        assertFalse(panelDefinition.getParts().contains(part));
     }
 
     @Test
     public void removeNonexistentPartShouldDoNothingAndReturnFalse() throws Exception {
-        boolean result = panelDefinition.removePart( part );
-        assertEquals( false, result );
+        boolean result = panelDefinition.removePart(part);
+        assertEquals(false,
+                     result);
     }
 
     @Test
     public void widthShouldNotRevertOnceSet() throws Exception {
-        assertNull(panelDefinition.getWidth() );
-        panelDefinition.setWidth( 1234 );
-        panelDefinition.setWidth( null);
-        assertEquals( (Integer) 1234, panelDefinition.getWidth() );
+        assertNull(panelDefinition.getWidth());
+        panelDefinition.setWidth(1234);
+        panelDefinition.setWidth(null);
+        assertEquals((Integer) 1234,
+                     panelDefinition.getWidth());
     }
 
     @Test
     public void heightShouldNotRevertOnceSet() throws Exception {
-        assertNull( panelDefinition.getHeight() );
-        panelDefinition.setHeight( 1234 );
-        panelDefinition.setHeight( null );
-        assertEquals( (Integer) 1234, panelDefinition.getHeight() );
+        assertNull(panelDefinition.getHeight());
+        panelDefinition.setHeight(1234);
+        panelDefinition.setHeight(null);
+        assertEquals((Integer) 1234,
+                     panelDefinition.getHeight());
     }
 
     @Test
-    public void appendChildShouldAddPanelToChildren(){
-        panelDefinition.appendChild( otherPanel );
-        assertTrue( panelDefinition.getChildren().contains( otherPanel ) );
-        assertEquals( panelDefinition, otherPanel.getParent() );
+    public void appendChildShouldAddPanelToChildren() {
+        panelDefinition.appendChild(otherPanel);
+        assertTrue(panelDefinition.getChildren().contains(otherPanel));
+        assertEquals(panelDefinition,
+                     otherPanel.getParent());
     }
 
     @Test
-    public void appendChildToPanelTwiceShouldWork(){
-        panelDefinition.appendChild( otherPanel );
-        assertTrue( panelDefinition.getChildren().contains( otherPanel ) );
-        panelDefinition.appendChild( otherPanel );
-        assertTrue( panelDefinition.getChildren().contains( otherPanel ) );
+    public void appendChildToPanelTwiceShouldWork() {
+        panelDefinition.appendChild(otherPanel);
+        assertTrue(panelDefinition.getChildren().contains(otherPanel));
+        panelDefinition.appendChild(otherPanel);
+        assertTrue(panelDefinition.getChildren().contains(otherPanel));
     }
 }

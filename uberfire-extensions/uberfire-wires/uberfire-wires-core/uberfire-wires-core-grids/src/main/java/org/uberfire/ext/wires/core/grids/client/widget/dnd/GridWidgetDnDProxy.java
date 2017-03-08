@@ -24,23 +24,23 @@ import com.ait.lienzo.shared.core.types.ColorName;
  */
 public class GridWidgetDnDProxy extends Group {
 
-    private Rectangle r = new Rectangle( 0, 0 )
-            .setFillColor( ColorName.DARKGRAY )
-            .setListening( false )
-            .setAlpha( 0.5 );
+    private Rectangle r = new Rectangle(0,
+                                        0)
+            .setFillColor(ColorName.DARKGRAY)
+            .setListening(false)
+            .setAlpha(0.5);
 
     public GridWidgetDnDProxy() {
-        add( r );
+        add(r);
     }
 
-    public GridWidgetDnDProxy setWidth( final double width ) {
-        r.setWidth( width );
+    public GridWidgetDnDProxy setWidth(final double width) {
+        r.setWidth(width);
         return this;
     }
 
-    public GridWidgetDnDProxy setHeight( final double height ) {
-        r.setHeight( height );
+    public GridWidgetDnDProxy setHeight(final double height) {
+        r.setHeight(height);
         return this;
     }
-
 }

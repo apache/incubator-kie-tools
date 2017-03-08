@@ -57,39 +57,38 @@ public class BooleanDOMElementColumnTest {
 
     @Before
     public void setup() {
-        this.column = new BooleanDOMElementColumn( headerMetaData,
-                                                   factory,
-                                                   100 );
+        this.column = new BooleanDOMElementColumn(headerMetaData,
+                                                  factory,
+                                                  100);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void editTrueToFalse() {
-        final GridCell<Boolean> cell = new BaseGridCell<>( new BaseGridCellValue<>( true ) );
-        column.edit( cell,
-                     context,
-                     callback );
+        final GridCell<Boolean> cell = new BaseGridCell<>(new BaseGridCellValue<>(true));
+        column.edit(cell,
+                    context,
+                    callback);
 
-        verify( callback,
-                times( 1 ) ).callback( callbackArgumentCaptor.capture() );
+        verify(callback,
+               times(1)).callback(callbackArgumentCaptor.capture());
 
         final BaseGridCellValue<Boolean> callbackArgument = callbackArgumentCaptor.getValue();
-        assertFalse( callbackArgument.getValue() );
+        assertFalse(callbackArgument.getValue());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void editFalseToTrue() {
-        final GridCell<Boolean> cell = new BaseGridCell<>( new BaseGridCellValue<>( false ) );
-        column.edit( cell,
-                     context,
-                     callback );
+        final GridCell<Boolean> cell = new BaseGridCell<>(new BaseGridCellValue<>(false));
+        column.edit(cell,
+                    context,
+                    callback);
 
-        verify( callback,
-                times( 1 ) ).callback( callbackArgumentCaptor.capture() );
+        verify(callback,
+               times(1)).callback(callbackArgumentCaptor.capture());
 
         final BaseGridCellValue<Boolean> callbackArgument = callbackArgumentCaptor.getValue();
-        assertTrue( callbackArgument.getValue() );
+        assertTrue(callbackArgument.getValue());
     }
-
 }

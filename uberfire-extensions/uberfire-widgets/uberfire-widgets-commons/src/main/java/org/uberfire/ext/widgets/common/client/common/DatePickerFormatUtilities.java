@@ -26,53 +26,67 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 public class DatePickerFormatUtilities {
 
     private static final String DEFAULT = "dd-M-yyyy";
-
-    private static class Mapping {
-
-        private final String src;
-        private final String tgt;
-
-        Mapping( final String src,
-                 final String tgt ) {
-            this.src = src;
-            this.tgt = tgt;
-        }
-    }
-
     private static List<Mapping> mappings = new ArrayList<Mapping>() {{
-        add( new Mapping( "yyyy", "yyyy" ) );
-        add( new Mapping( "yy", "yy" ) );
-        add( new Mapping( "MMMM", "MM" ) );
-        add( new Mapping( "MMM", "M" ) );
-        add( new Mapping( "MM", "mm" ) );
-        add( new Mapping( "M", "m" ) );
-        add( new Mapping( "dd", "dd" ) );
-        add( new Mapping( "d", "d" ) );
-        add( new Mapping( "HH", "hh" ) );
-        add( new Mapping( "H", "h" ) );
-        add( new Mapping( "hh", "HH" ) );
-        add( new Mapping( "h", "H" ) );
-        add( new Mapping( "mm", "ii" ) );
-        add( new Mapping( "m", "i" ) );
-        add( new Mapping( "ss", "ss" ) );
-        add( new Mapping( "s", "s" ) );
-        add( new Mapping( "G", null ) );
-        add( new Mapping( "L", null ) );
-        add( new Mapping( "S", null ) );
-        add( new Mapping( "E", null ) );
-        add( new Mapping( "c", null ) );
-        add( new Mapping( "a", "p" ) );
-        add( new Mapping( "k", null ) );
-        add( new Mapping( "K", null ) );
-        add( new Mapping( "z", null ) );
-        add( new Mapping( "Z", null ) );
-        add( new Mapping( "v", null ) );
+        add(new Mapping("yyyy",
+                        "yyyy"));
+        add(new Mapping("yy",
+                        "yy"));
+        add(new Mapping("MMMM",
+                        "MM"));
+        add(new Mapping("MMM",
+                        "M"));
+        add(new Mapping("MM",
+                        "mm"));
+        add(new Mapping("M",
+                        "m"));
+        add(new Mapping("dd",
+                        "dd"));
+        add(new Mapping("d",
+                        "d"));
+        add(new Mapping("HH",
+                        "hh"));
+        add(new Mapping("H",
+                        "h"));
+        add(new Mapping("hh",
+                        "HH"));
+        add(new Mapping("h",
+                        "H"));
+        add(new Mapping("mm",
+                        "ii"));
+        add(new Mapping("m",
+                        "i"));
+        add(new Mapping("ss",
+                        "ss"));
+        add(new Mapping("s",
+                        "s"));
+        add(new Mapping("G",
+                        null));
+        add(new Mapping("L",
+                        null));
+        add(new Mapping("S",
+                        null));
+        add(new Mapping("E",
+                        null));
+        add(new Mapping("c",
+                        null));
+        add(new Mapping("a",
+                        "p"));
+        add(new Mapping("k",
+                        null));
+        add(new Mapping("K",
+                        null));
+        add(new Mapping("z",
+                        null));
+        add(new Mapping("Z",
+                        null));
+        add(new Mapping("v",
+                        null));
     }};
 
     /**
      * BS3's DateFormat constants:
      * @see org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.HasFormat
-     * <p/>
+     * <p>
      * The date format, combination of p, P, h, hh, i, ii, s, ss, d, dd, m, mm, M, MM, yy, yyyy.
      * p    meridian in lower case ('am' or 'pm') - according to locale file
      * P    meridian in upper case ('AM' or 'PM') - according to locale file
@@ -92,10 +106,10 @@ public class DatePickerFormatUtilities {
      * MM   full textual representation of a month, such as January or March
      * yy   two digit representation of a year
      * yyyy full numeric representation of a year, 4 digits
-     * <p/>
+     * <p>
      * GWT's DateFormat constants:
      * @see com.google.gwt.i18n.client.DateTimeFormat
-     * <p/>
+     * <p>
      * G	era designator	Text	AD
      * y	year	Number	1996
      * L	standalone month in year	Text or Number	July (or) 07
@@ -117,44 +131,55 @@ public class DatePickerFormatUtilities {
      * '	escape for text	Delimiter	'Date='
      * ''	single quote	Literal	'o''clock'
      **/
-    public static String convertToBS3DateFormat( final String gwtDateFormat ) {
-        if ( !isValidGWTDateFormat( gwtDateFormat ) ) {
+    public static String convertToBS3DateFormat(final String gwtDateFormat) {
+        if (!isValidGWTDateFormat(gwtDateFormat)) {
             return DEFAULT;
         }
-        
-        final StringBuilder src = new StringBuilder( gwtDateFormat );
+
+        final StringBuilder src = new StringBuilder(gwtDateFormat);
         final StringBuilder tgt = new StringBuilder();
         int idx = 0;
-        while ( idx < gwtDateFormat.length() ) {
+        while (idx < gwtDateFormat.length()) {
             boolean mapped = false;
-            for ( Mapping mapping : mappings ) {
-                if ( src.indexOf( mapping.src ) == 0 ) {
-                    if ( mapping.tgt != null ) {
-                        tgt.append( mapping.tgt );
+            for (Mapping mapping : mappings) {
+                if (src.indexOf(mapping.src) == 0) {
+                    if (mapping.tgt != null) {
+                        tgt.append(mapping.tgt);
                     }
-                    src.delete( 0, mapping.src.length() );
+                    src.delete(0,
+                               mapping.src.length());
                     idx = idx + mapping.src.length() - 1;
                     mapped = true;
                     break;
                 }
             }
-            if ( !mapped ) {
-                tgt.append( src.charAt( 0 ) );
-                src.deleteCharAt( 0 );
+            if (!mapped) {
+                tgt.append(src.charAt(0));
+                src.deleteCharAt(0);
             }
             idx++;
         }
         return tgt.toString();
     }
 
-    private static boolean isValidGWTDateFormat( final String gwtDateFormat ) {
+    private static boolean isValidGWTDateFormat(final String gwtDateFormat) {
         try {
-            DateTimeFormat.getFormat( gwtDateFormat );
-
-        } catch ( IllegalArgumentException iae ) {
+            DateTimeFormat.getFormat(gwtDateFormat);
+        } catch (IllegalArgumentException iae) {
             return false;
         }
         return true;
     }
 
+    private static class Mapping {
+
+        private final String src;
+        private final String tgt;
+
+        Mapping(final String src,
+                final String tgt) {
+            this.src = src;
+            this.tgt = tgt;
+        }
+    }
 }

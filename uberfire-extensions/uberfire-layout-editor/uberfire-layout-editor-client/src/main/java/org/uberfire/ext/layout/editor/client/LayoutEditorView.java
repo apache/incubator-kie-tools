@@ -16,6 +16,9 @@
 
 package org.uberfire.ext.layout.editor.client;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -24,21 +27,16 @@ import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.client.components.container.Container;
 import org.uberfire.ext.layout.editor.client.widgets.LayoutDragComponentGroupPresenter;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
-
 @Templated
 @Dependent
 public class LayoutEditorView
         implements UberElement<LayoutEditorPresenter>,
-        LayoutEditorPresenter.View, IsElement {
-
+                   LayoutEditorPresenter.View,
+                   IsElement {
 
     @Inject
     @DataField
     Div container;
-
 
     @Inject
     @DataField
@@ -47,24 +45,22 @@ public class LayoutEditorView
     private LayoutEditorPresenter presenter;
 
     @Override
-    public void init( LayoutEditorPresenter presenter ) {
+    public void init(LayoutEditorPresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setupContainer( UberElement<Container> container ) {
-        this.container.appendChild( container.getElement() );
+    public void setupContainer(UberElement<Container> container) {
+        this.container.appendChild(container.getElement());
     }
 
     @Override
-    public void addDraggableComponentGroup( UberElement<LayoutDragComponentGroupPresenter> group ) {
-        components.appendChild( group.getElement() );
+    public void addDraggableComponentGroup(UberElement<LayoutDragComponentGroupPresenter> group) {
+        components.appendChild(group.getElement());
     }
-
 
     @Override
-    public void removeDraggableComponentGroup( UberElement<LayoutDragComponentGroupPresenter> group ) {
-        components.removeChild( group.getElement() );
+    public void removeDraggableComponentGroup(UberElement<LayoutDragComponentGroupPresenter> group) {
+        components.removeChild(group.getElement());
     }
-
 }

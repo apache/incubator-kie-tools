@@ -46,70 +46,72 @@ public class FileInputButton extends Composite implements HasValueChangeHandlers
 
     public FileInputButton() {
         wrapper = new Span();
-        wrapper.addStyleName( Styles.BTN );
+        wrapper.addStyleName(Styles.BTN);
         upload = new FileUpload();
 
-        upload.addChangeHandler( new ChangeHandler() {
+        upload.addChangeHandler(new ChangeHandler() {
             @Override
-            public void onChange( ChangeEvent event ) {
+            public void onChange(ChangeEvent event) {
                 fireChanged();
             }
-        } );
+        });
 
-        wrapper.add( upload );
-        wrapper.addStyleName( "btn-file" );
-        initWidget( wrapper );
+        wrapper.add(upload);
+        wrapper.addStyleName("btn-file");
+        initWidget(wrapper);
     }
 
-    public void setMultiple( boolean multiple ) {
-        if ( multiple ) {
-            upload.getElement().setPropertyBoolean( "multiple", true );
+    public void setMultiple(boolean multiple) {
+        if (multiple) {
+            upload.getElement().setPropertyBoolean("multiple",
+                                                   true);
         }
     }
 
-    public void setType( final ButtonType additionalStyle ) {
-        if ( additionalStyle != null ) {
-            addStyleName( additionalStyle.getCssName() );
+    public void setType(final ButtonType additionalStyle) {
+        if (additionalStyle != null) {
+            addStyleName(additionalStyle.getCssName());
         }
     }
 
     @Override
-    public void addStyleName( final String additionalStyle ) {
-        if ( additionalStyle != null ) {
-            wrapper.addStyleName( additionalStyle );
-        }
-    }
-
-    public void setText( final String text ) {
-        if ( textSpan == null ) {
-            textSpan = new Span( text );
-            wrapper.add( textSpan );
-        } else {
-            textSpan.setText( text );
+    public void addStyleName(final String additionalStyle) {
+        if (additionalStyle != null) {
+            wrapper.addStyleName(additionalStyle);
         }
     }
 
     public String getText() {
-        if ( textSpan != null ) {
+        if (textSpan != null) {
             return textSpan.getText();
         }
         return "";
     }
 
-    public void setIcon( final IconType type ) {
-        if ( icon == null ) {
-            icon = new Icon( type );
-            wrapper.add( icon );
+    public void setText(final String text) {
+        if (textSpan == null) {
+            textSpan = new Span(text);
+            wrapper.add(textSpan);
         } else {
-            icon.setType( type );
+            textSpan.setText(text);
+        }
+    }
+
+    public void setIcon(final IconType type) {
+        if (icon == null) {
+            icon = new Icon(type);
+            wrapper.add(icon);
+        } else {
+            icon.setType(type);
         }
     }
 
     private void fireChanged() {
-        ValueChangeEvent.fire( this, getFiles( upload.getElement() ) );
+        ValueChangeEvent.fire(this,
+                              getFiles(upload.getElement()));
     }
 
-    private native JsArray<UploadFile> getFiles( Element el ) /*-{
+    private native JsArray<UploadFile> getFiles(Element el) /*-{
         if (el.files) {
             return el.files;
         } else {
@@ -118,9 +120,9 @@ public class FileInputButton extends Composite implements HasValueChangeHandlers
     }-*/;
 
     @Override
-    public HandlerRegistration addValueChangeHandler( final ValueChangeHandler<JsArray<UploadFile>> handler ) {
-        return super.addHandler( handler, ValueChangeEvent.getType() );
-
+    public HandlerRegistration addValueChangeHandler(final ValueChangeHandler<JsArray<UploadFile>> handler) {
+        return super.addHandler(handler,
+                                ValueChangeEvent.getType());
     }
 
     public static class UploadFile extends JavaScriptObject {

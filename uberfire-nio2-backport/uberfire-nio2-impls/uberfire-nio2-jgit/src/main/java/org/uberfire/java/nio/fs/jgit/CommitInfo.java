@@ -28,12 +28,12 @@ public class CommitInfo {
     private final TimeZone timeZone;
     private final Date when;
 
-    public CommitInfo( final String sessionId,
-                       final String name,
-                       final String email,
-                       final String message,
-                       final TimeZone timeZone,
-                       final Date when ) {
+    public CommitInfo(final String sessionId,
+                      final String name,
+                      final String email,
+                      final String message,
+                      final TimeZone timeZone,
+                      final Date when) {
         this.sessionId = sessionId;
         this.name = name;
         this.email = email;

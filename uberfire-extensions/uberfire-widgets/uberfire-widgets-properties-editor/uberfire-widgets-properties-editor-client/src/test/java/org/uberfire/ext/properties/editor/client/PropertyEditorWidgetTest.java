@@ -21,10 +21,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class PropertyEditorWidgetTest {
 
     PropertyEditorWidget propertyEditor;
@@ -36,15 +35,19 @@ public class PropertyEditorWidgetTest {
 
     @Test
     public void handleExpandedCategoriesTest() throws Exception {
-        assertTrue( propertyEditor.getExpandedCategories().isEmpty() );
+        assertTrue(propertyEditor.getExpandedCategories().isEmpty());
 
-        propertyEditor.addExpandedCategory( "CAT1", "CAT2" );
+        propertyEditor.addExpandedCategory("CAT1",
+                                           "CAT2");
 
-        assertEquals( 2, propertyEditor.getExpandedCategories().size() );
-        assertEquals( "CAT2", propertyEditor.getLastOpenAccordionGroupTitle() );
+        assertEquals(2,
+                     propertyEditor.getExpandedCategories().size());
+        assertEquals("CAT2",
+                     propertyEditor.getLastOpenAccordionGroupTitle());
 
-        propertyEditor.collapseCategory( "CAT2" );
+        propertyEditor.collapseCategory("CAT2");
 
-        assertEquals( 1, propertyEditor.getExpandedCategories().size() );
+        assertEquals(1,
+                     propertyEditor.getExpandedCategories().size());
     }
 }

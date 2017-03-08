@@ -16,9 +16,6 @@
 
 package org.uberfire.client.mvp;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,8 +25,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.commons.data.Pair;
+
+import static org.mockito.Mockito.*;
 
 @IsSplashScreen
 public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
@@ -39,32 +37,35 @@ public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
     private SplashScreenActivity splashScreenActivity;
     private Collection<SyncBeanDef<Activity>> availableActivities = new HashSet<SyncBeanDef<Activity>>();
     private List<ActivityAndMetaInfo> activitiesAndMetaInfo = new ArrayList<ActivityAndMetaInfo>();
-    private  Pair<Integer, List<String>> metaInfo;
+    private Pair<Integer, List<String>> metaInfo;
     private boolean mockSplashcreen = true;
 
     public ActivityBeansCacheUnitTestWrapper() {
-        mockDef = mock( SyncBeanDef.class );
+        mockDef = mock(SyncBeanDef.class);
         idMock = "mockDef1";
-        when( mockDef.getName() ).thenReturn( idMock );
-        when( mockDef.getBeanClass() ).thenReturn( this.getClass() );
-        availableActivities.add( mockDef );
+        when(mockDef.getName()).thenReturn(idMock);
+        when(mockDef.getBeanClass()).thenReturn(this.getClass());
+        availableActivities.add(mockDef);
     }
 
     public void mockSplashScreenBehaviour() {
         mockSplashcreen = true;
 
-        Set<Annotation> annotations = new HashSet<Annotation>( Arrays.asList( ActivityBeansCacheUnitTestWrapper.class.getAnnotations() ) );
-        when( mockDef.getQualifiers() ).thenReturn( annotations );
+        Set<Annotation> annotations = new HashSet<Annotation>(Arrays.asList(ActivityBeansCacheUnitTestWrapper.class.getAnnotations()));
+        when(mockDef.getQualifiers()).thenReturn(annotations);
 
-        splashScreenActivity = mock( AbstractSplashScreenActivity.class );
-        when( mockDef.getInstance() ).thenReturn( splashScreenActivity );
-
+        splashScreenActivity = mock(AbstractSplashScreenActivity.class);
+        when(mockDef.getInstance()).thenReturn(splashScreenActivity);
     }
 
-    public void createActivitiesAndMetaInfo( int priority1,
-                                             int priority2 ) {
-        activitiesAndMetaInfo.add( new ActivityAndMetaInfo( null, priority1, new ArrayList() ) );
-        activitiesAndMetaInfo.add( new ActivityAndMetaInfo( null, priority2, new ArrayList() ) );
+    public void createActivitiesAndMetaInfo(int priority1,
+                                            int priority2) {
+        activitiesAndMetaInfo.add(new ActivityAndMetaInfo(null,
+                                                          priority1,
+                                                          new ArrayList()));
+        activitiesAndMetaInfo.add(new ActivityAndMetaInfo(null,
+                                                          priority2,
+                                                          new ArrayList()));
     }
 
     @Override
@@ -85,28 +86,30 @@ public class ActivityBeansCacheUnitTestWrapper extends ActivityBeansCache {
     }
 
     public void duplicateActivity() {
-        SyncBeanDef duplicateMockDef = mock( SyncBeanDef.class );
-        when( duplicateMockDef.getName() ).thenReturn( idMock );
-        availableActivities.add( duplicateMockDef );
+        SyncBeanDef duplicateMockDef = mock(SyncBeanDef.class);
+        when(duplicateMockDef.getName()).thenReturn(idMock);
+        availableActivities.add(duplicateMockDef);
     }
 
     @Override
     List<ActivityAndMetaInfo> getResourceActivities() {
-        if(mockSplashcreen)  return activitiesAndMetaInfo;
+        if (mockSplashcreen) {
+            return activitiesAndMetaInfo;
+        }
 
         return super.getResourceActivities();
     }
 
     @Override
-    Pair<Integer, List<String>> generateActivityMetaInfo( SyncBeanDef<Activity> activityBean ) {
+    Pair<Integer, List<String>> generateActivityMetaInfo(SyncBeanDef<Activity> activityBean) {
         return metaInfo;
     }
 
     public void mockActivityBehaviour() {
-        mockSplashcreen=false;
+        mockSplashcreen = false;
 
         metaInfo = mock(Pair.class);
-        when( metaInfo.getK1() ).thenReturn( new Integer(1) );
-        when( metaInfo.getK2() ).thenReturn( new ArrayList<String>(  ) );
+        when(metaInfo.getK1()).thenReturn(new Integer(1));
+        when(metaInfo.getK2()).thenReturn(new ArrayList<String>());
     }
 }

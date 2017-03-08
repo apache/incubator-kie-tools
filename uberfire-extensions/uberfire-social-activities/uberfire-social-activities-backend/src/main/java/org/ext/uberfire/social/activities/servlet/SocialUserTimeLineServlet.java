@@ -43,25 +43,27 @@ public class SocialUserTimeLineServlet extends HttpServlet {
     SocialRouter socialRouter;
 
     @Override
-    protected void doGet( final HttpServletRequest request,
-                          final HttpServletResponse response ) throws ServletException,
+    protected void doGet(final HttpServletRequest request,
+                         final HttpServletResponse response) throws ServletException,
             IOException {
 
         try {
-            String userName = socialRouter.extractPath( request.getPathInfo() );
-            SocialUser socialUser = socialUserRepositoryAPI.findSocialUser( userName );
-            List<SocialActivitiesEvent> eventTimeline = timeLineRepositoryAPI.getLastUserTimeline( socialUser, request.getParameterMap() );
-            response.setContentType( "application/atom+xml" );
-            String url = "/social-user"+request.getPathInfo();
-            response.getWriter().println( createFeed( eventTimeline, url ) );
-        } catch ( Exception e ) {
+            String userName = socialRouter.extractPath(request.getPathInfo());
+            SocialUser socialUser = socialUserRepositoryAPI.findSocialUser(userName);
+            List<SocialActivitiesEvent> eventTimeline = timeLineRepositoryAPI.getLastUserTimeline(socialUser,
+                                                                                                  request.getParameterMap());
+            response.setContentType("application/atom+xml");
+            String url = "/social-user" + request.getPathInfo();
+            response.getWriter().println(createFeed(eventTimeline,
+                                                    url));
+        } catch (Exception e) {
 
         }
-
     }
 
-    private String createFeed( List<SocialActivitiesEvent> eventTimeline, String url ) {
-        return AtomSocialTimelineConverter.generate( eventTimeline, url );
+    private String createFeed(List<SocialActivitiesEvent> eventTimeline,
+                              String url) {
+        return AtomSocialTimelineConverter.generate(eventTimeline,
+                                                    url);
     }
-
 }

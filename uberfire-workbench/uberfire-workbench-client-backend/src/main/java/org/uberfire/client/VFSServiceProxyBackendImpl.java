@@ -33,14 +33,13 @@ public class VFSServiceProxyBackendImpl implements VFSServiceProxy {
     private Caller<VFSService> vfsService;
 
     @Override
-    public void get( final String path,
-                     final ParameterizedCommand<Path> parameterizedCommand ) {
-        vfsService.call( new RemoteCallback<Path>() {
+    public void get(final String path,
+                    final ParameterizedCommand<Path> parameterizedCommand) {
+        vfsService.call(new RemoteCallback<Path>() {
             @Override
-            public void callback( final Path o ) {
-                parameterizedCommand.execute( o );
+            public void callback(final Path o) {
+                parameterizedCommand.execute(o);
             }
-        } ).get( path );
-
+        }).get(path);
     }
 }

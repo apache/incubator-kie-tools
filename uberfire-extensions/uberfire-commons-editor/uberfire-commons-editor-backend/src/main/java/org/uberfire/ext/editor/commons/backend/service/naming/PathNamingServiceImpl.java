@@ -32,55 +32,55 @@ public class PathNamingServiceImpl implements PathNamingService {
     @Inject
     private Instance<ResourceTypeDefinition> resourceTypeDefinitions;
 
-    public Path buildTargetPath( Path originalPath,
-                                 String targetFileName ) {
-        final org.uberfire.java.nio.file.Path _originalPath = Paths.convert( originalPath );
+    public Path buildTargetPath(Path originalPath,
+                                String targetFileName) {
+        final org.uberfire.java.nio.file.Path _originalPath = Paths.convert(originalPath);
         String extension = "";
 
-        if ( !Files.isDirectory( _originalPath ) ) {
-            extension = getExtension( originalPath.getFileName() );
+        if (!Files.isDirectory(_originalPath)) {
+            extension = getExtension(originalPath.getFileName());
         }
 
-        return Paths.convert( _originalPath.resolveSibling( targetFileName + extension ) );
+        return Paths.convert(_originalPath.resolveSibling(targetFileName + extension));
     }
 
-    public Path buildTargetPath( Path originalPath,
-                                 Path targetParentDirectory,
-                                 String targetFileName ) {
-        final org.uberfire.java.nio.file.Path _originalPath = Paths.convert( originalPath );
-        final org.uberfire.java.nio.file.Path _targetParentDirectory = Paths.convert( targetParentDirectory );
+    public Path buildTargetPath(Path originalPath,
+                                Path targetParentDirectory,
+                                String targetFileName) {
+        final org.uberfire.java.nio.file.Path _originalPath = Paths.convert(originalPath);
+        final org.uberfire.java.nio.file.Path _targetParentDirectory = Paths.convert(targetParentDirectory);
         String extension = "";
 
-        if ( !Files.isDirectory( _originalPath ) ) {
-            extension = getExtension( originalPath.getFileName() );
+        if (!Files.isDirectory(_originalPath)) {
+            extension = getExtension(originalPath.getFileName());
         }
 
-        return Paths.convert( _targetParentDirectory.resolve( targetFileName + extension ) );
+        return Paths.convert(_targetParentDirectory.resolve(targetFileName + extension));
     }
 
-    public String getExtension( final String fileName ) {
-        String extension = getResourceTypeExtension( fileName );
+    public String getExtension(final String fileName) {
+        String extension = getResourceTypeExtension(fileName);
 
-        if ( extension == null ) {
+        if (extension == null) {
             extension = "";
-            final int extensionIndex = fileName.lastIndexOf( "." );
+            final int extensionIndex = fileName.lastIndexOf(".");
 
-            if ( extensionIndex >= 0 ) {
-                extension = fileName.substring( extensionIndex );
+            if (extensionIndex >= 0) {
+                extension = fileName.substring(extensionIndex);
             }
         }
 
         return extension;
     }
 
-    private String getResourceTypeExtension( String fileName ) {
+    private String getResourceTypeExtension(String fileName) {
         String extension = null;
 
-        for ( ResourceTypeDefinition resourceTypeDefinition : getResourceTypeDefinitions() ) {
-            if ( resourceTypeDefinition.getSuffix() != null ) {
+        for (ResourceTypeDefinition resourceTypeDefinition : getResourceTypeDefinitions()) {
+            if (resourceTypeDefinition.getSuffix() != null) {
                 String resourceTypeExtension = "." + resourceTypeDefinition.getSuffix();
-                if ( fileName.endsWith( resourceTypeExtension ) ) {
-                    if ( extension == null || resourceTypeExtension.length() > extension.length() ) {
+                if (fileName.endsWith(resourceTypeExtension)) {
+                    if (extension == null || resourceTypeExtension.length() > extension.length()) {
                         extension = resourceTypeExtension;
                     }
                 }

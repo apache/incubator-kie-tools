@@ -47,5 +47,4 @@ public interface ConnectionRule extends RuleByRole {
          */
         Role getEndRole();
     }
-
 }

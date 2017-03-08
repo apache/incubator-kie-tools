@@ -31,15 +31,15 @@ public class IocTestingUtils {
      * Mocks a SyncBeanManager to return a mocked bean when lookupBean is called.
      * @param iocManager
      */
-    public static void mockIocManager( SyncBeanManager iocManager ) {
-        doAnswer( invocationOnMock -> createSyncBeanDef( (Class<?>) invocationOnMock.getArguments()[0] ) )
-                .when( iocManager ).lookupBean( any( Class.class ) );
+    public static void mockIocManager(SyncBeanManager iocManager) {
+        doAnswer(invocationOnMock -> createSyncBeanDef((Class<?>) invocationOnMock.getArguments()[0]))
+                .when(iocManager).lookupBean(any(Class.class));
     }
 
-    private static <T> SyncBeanDef<T> createSyncBeanDef( Class<T> clazz ) {
-        final SyncBeanDef syncBeanDef = mock( SyncBeanDef.class );
-        doReturn( mock( clazz ) ).when( syncBeanDef ).getInstance();
-        doReturn( mock( clazz ) ).when( syncBeanDef ).newInstance();
+    private static <T> SyncBeanDef<T> createSyncBeanDef(Class<T> clazz) {
+        final SyncBeanDef syncBeanDef = mock(SyncBeanDef.class);
+        doReturn(mock(clazz)).when(syncBeanDef).getInstance();
+        doReturn(mock(clazz)).when(syncBeanDef).newInstance();
 
         return syncBeanDef;
     }

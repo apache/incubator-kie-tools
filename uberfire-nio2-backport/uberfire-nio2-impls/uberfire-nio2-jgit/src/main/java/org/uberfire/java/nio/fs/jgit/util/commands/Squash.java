@@ -48,7 +48,7 @@ import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
 import org.uberfire.java.nio.fs.jgit.util.exceptions.ConcurrentRefUpdateException;
 import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
 
-import static org.eclipse.jgit.lib.Constants.*;
+import static org.eclipse.jgit.lib.Constants.HEAD;
 
 /**
  * Implements the Git Squash command. It needs the repository were he is going to make the squash,
@@ -63,10 +63,10 @@ public class Squash extends GitCommand {
     private String squashedCommitMessage;
     private String startCommitString;
 
-    public Squash( final Git git,
-                   final String branch,
-                   final String startCommitString,
-                   final String squashedCommitMessage ) {
+    public Squash(final Git git,
+                  final String branch,
+                  final String startCommitString,
+                  final String squashedCommitMessage) {
         this.git = git;
         this.squashedCommitMessage = squashedCommitMessage;
         this.branch = branch;
@@ -76,43 +76,60 @@ public class Squash extends GitCommand {
     public Optional<Void> execute() {
 
         final Repository repo = this.git.getRepository();
-        this.isBare( repo );
-        this.checkIfCommitIsPresentAtBranch( this.git, this.branch, this.startCommitString );
-        final Git git = new Git( repo );
+        this.isBare(repo);
+        this.checkIfCommitIsPresentAtBranch(this.git,
+                                            this.branch,
+                                            this.startCommitString);
+        final Git git = new Git(repo);
 
-        ObjectId startCommitObjectId = this.getStartCommit( git, startCommitString );
+        ObjectId startCommitObjectId = this.getStartCommit(git,
+                                                           startCommitString);
 
-        RevWalk revWalk = new RevWalk( repo );
-        RevCommit startCommit = getRevCommit( startCommitObjectId, revWalk );
+        RevWalk revWalk = new RevWalk(repo);
+        RevCommit startCommit = getRevCommit(startCommitObjectId,
+                                             revWalk);
         RevCommit parent = startCommit;
-        if ( startCommit.getParentCount() > 0 ) {
-            parent = getRevCommit( startCommitObjectId, revWalk ).getParent( 0 );
+        if (startCommit.getParentCount() > 0) {
+            parent = getRevCommit(startCommitObjectId,
+                                  revWalk).getParent(0);
         }
 
-        Ref head = this.getHead( repo );
-        this.markStart( revWalk, parent, head );
+        Ref head = this.getHead(repo);
+        this.markStart(revWalk,
+                       parent,
+                       head);
 
-        revWalk.sort( RevSort.REVERSE );
+        revWalk.sort(RevSort.REVERSE);
 
         PersonIdent commitAuthor = null;
 
         Map<String, ObjectId> content = new HashMap<String, ObjectId>();
-        for ( RevCommit commit : revWalk ) {
+        for (RevCommit commit : revWalk) {
             commitAuthor = commit.getAuthorIdent();
-            content = collectPathAndObjectIdFromTree( repo, revWalk, commit );
+            content = collectPathAndObjectIdFromTree(repo,
+                                                     revWalk,
+                                                     commit);
         }
 
         revWalk.dispose();
 
         final ObjectInserter odi = repo.newObjectInserter();
 
-        final ObjectId indexTreeId = createTemporaryIndex( git, content, odi );
+        final ObjectId indexTreeId = createTemporaryIndex(git,
+                                                          content,
+                                                          odi);
 
-        final CommitBuilder commit = createCommit( parent, commitAuthor, indexTreeId, this.squashedCommitMessage );
+        final CommitBuilder commit = createCommit(parent,
+                                                  commitAuthor,
+                                                  indexTreeId,
+                                                  this.squashedCommitMessage);
 
-        final ObjectId commitId = insertCommitIntoRepositoryAndFlush( odi, commit );
+        final ObjectId commitId = insertCommitIntoRepositoryAndFlush(odi,
+                                                                     commit);
 
-        updateReferenceAndReleaseRevisionWalk( git, revWalk, commitId );
+        updateReferenceAndReleaseRevisionWalk(git,
+                                              revWalk,
+                                              commitId);
 
         return Optional.empty();
     }
@@ -124,23 +141,25 @@ public class Squash extends GitCommand {
      * @param startCommitString The commit it needs to find
      * @throws {@link GitException} when it cannot find the commit in that branch
      */
-    private void checkIfCommitIsPresentAtBranch( final Git git,
-                                                 final String branch,
-                                                 final String startCommitString ) {
+    private void checkIfCommitIsPresentAtBranch(final Git git,
+                                                final String branch,
+                                                final String startCommitString) {
 
         try {
-            final ObjectId id = JGitUtil.resolveObjectId( git, branch );
-            final Spliterator<RevCommit> log = git.log().add( id ).call().spliterator();
+            final ObjectId id = JGitUtil.resolveObjectId(git,
+                                                         branch);
+            final Spliterator<RevCommit> log = git.log().add(id).call().spliterator();
             final Optional<RevCommit> result =
-                    StreamSupport.stream( log, false )
-                            .filter( ( elem ) -> elem.getName().equals( startCommitString ) )
+                    StreamSupport.stream(log,
+                                         false)
+                            .filter((elem) -> elem.getName().equals(startCommitString))
                             .findFirst();
-            result.orElseThrow( () -> new GitException( "Commit is not present at branch " + branch ) );
-        } catch ( GitAPIException | MissingObjectException | IncorrectObjectTypeException e ) {
-            throw new GitException( "A problem occurred when trying to get commit list" +
-                                            "", e );
+            result.orElseThrow(() -> new GitException("Commit is not present at branch " + branch));
+        } catch (GitAPIException | MissingObjectException | IncorrectObjectTypeException e) {
+            throw new GitException("A problem occurred when trying to get commit list" +
+                                           "",
+                                   e);
         }
-
     }
 
     /**
@@ -151,15 +170,17 @@ public class Squash extends GitCommand {
      * @return the object id with the temporary index reference.
      * @throws {@link GitException} if cannot create temporary Index
      */
-    private ObjectId createTemporaryIndex( Git git,
-                                           Map<String, ObjectId> content,
-                                           ObjectInserter odi ) {
+    private ObjectId createTemporaryIndex(Git git,
+                                          Map<String, ObjectId> content,
+                                          ObjectInserter odi) {
         try {
-            DirCache index = JGitUtil.createTemporaryIndexForContent( git, content );
-            return index.writeTree( odi );
-        } catch ( IOException e ) {
+            DirCache index = JGitUtil.createTemporaryIndexForContent(git,
+                                                                     content);
+            return index.writeTree(odi);
+        } catch (IOException e) {
             String message = "Cannot create temporary index form content";
-            throw new GitException( message, e );
+            throw new GitException(message,
+                                   e);
         }
     }
 
@@ -172,31 +193,38 @@ public class Squash extends GitCommand {
      * @throws {@link JGitInternalException} if updating ref failed.
      * @throws {@link GitException} if cannot update the commit reference.
      */
-    private void updateReferenceAndReleaseRevisionWalk( Git git,
-                                                        RevWalk revWalk,
-                                                        ObjectId commitId ) {
+    private void updateReferenceAndReleaseRevisionWalk(Git git,
+                                                       RevWalk revWalk,
+                                                       ObjectId commitId) {
         try {
-            final RevCommit revCommit = getRevCommit( commitId, revWalk );
-            final RefUpdate ru = git.getRepository().updateRef( getBranch() );
-            ru.setExpectedOldObjectId( git.getRepository().resolve( HEAD ) );
-            ru.setNewObjectId( commitId );
-            ru.setRefLogMessage( "commit: " + revCommit.getShortMessage(), false );
+            final RevCommit revCommit = getRevCommit(commitId,
+                                                     revWalk);
+            final RefUpdate ru = git.getRepository().updateRef(getBranch());
+            ru.setExpectedOldObjectId(git.getRepository().resolve(HEAD));
+            ru.setNewObjectId(commitId);
+            ru.setRefLogMessage("commit: " + revCommit.getShortMessage(),
+                                false);
             final RefUpdate.Result rc = ru.forceUpdate();
-            switch ( rc ) {
+            switch (rc) {
                 case NEW:
                 case FORCED:
                 case FAST_FORWARD:
                     break;
                 case REJECTED:
                 case LOCK_FAILURE:
-                    throw new ConcurrentRefUpdateException( JGitText.get().couldNotLockHEAD, ru.getRef(), rc );
+                    throw new ConcurrentRefUpdateException(JGitText.get().couldNotLockHEAD,
+                                                           ru.getRef(),
+                                                           rc);
                 default:
-                    throw new JGitInternalException( MessageFormat.format( JGitText.get().updatingRefFailed, Constants.HEAD, commitId.toString(), rc ) );
+                    throw new JGitInternalException(MessageFormat.format(JGitText.get().updatingRefFailed,
+                                                                         Constants.HEAD,
+                                                                         commitId.toString(),
+                                                                         rc));
             }
-
-        } catch ( IOException e ) {
+        } catch (IOException e) {
             String message = "Cannot update commit reference";
-            throw new GitException( message, e );
+            throw new GitException(message,
+                                   e);
         } finally {
             revWalk.close();
         }
@@ -204,7 +232,6 @@ public class Squash extends GitCommand {
 
     private String getBranch() {
         return "refs/heads/" + this.branch;
-
     }
 
     /**
@@ -215,31 +242,34 @@ public class Squash extends GitCommand {
      * @return a Map where the key is the path and the values is the object id
      * @throws {@link GitException} if something wrong happens
      */
-    private Map<String, ObjectId> collectPathAndObjectIdFromTree( Repository repo,
-                                                                  RevWalk revWalk,
-                                                                  RevCommit commit ) {
+    private Map<String, ObjectId> collectPathAndObjectIdFromTree(Repository repo,
+                                                                 RevWalk revWalk,
+                                                                 RevCommit commit) {
 
         try {
             Map<String, ObjectId> content = new HashMap<String, ObjectId>();
 
-            RevTree tree = this.getRevTree( revWalk, commit );
-            TreeWalk treeWalk = new TreeWalk( repo );
-            treeWalk.addTree( tree );
-            treeWalk.setRecursive( false );
+            RevTree tree = this.getRevTree(revWalk,
+                                           commit);
+            TreeWalk treeWalk = new TreeWalk(repo);
+            treeWalk.addTree(tree);
+            treeWalk.setRecursive(false);
 
-            while ( treeWalk.next() ) {
-                if ( treeWalk.isSubtree() ) {
+            while (treeWalk.next()) {
+                if (treeWalk.isSubtree()) {
                     treeWalk.enterSubtree();
                 } else {
-                    ObjectId objectId = treeWalk.getObjectId( 0 );
-                    content.put( treeWalk.getPathString(), objectId );
+                    ObjectId objectId = treeWalk.getObjectId(0);
+                    content.put(treeWalk.getPathString(),
+                                objectId);
                 }
             }
 
             return content;
-        } catch ( IOException e ) {
+        } catch (IOException e) {
             String message = "Impossible to collect path and objectId from Tree";
-            throw new GitException( message, e );
+            throw new GitException(message,
+                                   e);
         }
     }
 
@@ -250,15 +280,17 @@ public class Squash extends GitCommand {
      * @param parent the parent commit.
      * @param head the HEAD reference of the repository.
      */
-    private void markStart( RevWalk revWalk,
-                            RevCommit parent,
-                            Ref head ) {
+    private void markStart(RevWalk revWalk,
+                           RevCommit parent,
+                           Ref head) {
         try {
-            revWalk.markStart( getRevCommit( head.getObjectId(), revWalk ) );
-            revWalk.markUninteresting( parent );
-        } catch ( IOException e ) {
+            revWalk.markStart(getRevCommit(head.getObjectId(),
+                                           revWalk));
+            revWalk.markUninteresting(parent);
+        } catch (IOException e) {
             String message = "Cannot mark start a revision tree";
-            throw new GitException( message, e );
+            throw new GitException(message,
+                                   e);
         }
     }
 
@@ -268,12 +300,13 @@ public class Squash extends GitCommand {
      * @return The HEAD Reference
      * @throws {@link GitException} if cannot get HEAD
      */
-    private Ref getHead( Repository repository ) {
+    private Ref getHead(Repository repository) {
         try {
-            return repository.getRef( HEAD );
-        } catch ( IOException e ) {
+            return repository.getRef(HEAD);
+        } catch (IOException e) {
             String message = "Cannot get HEAD from Repository";
-            throw new GitException( message, e );
+            throw new GitException(message,
+                                   e);
         }
     }
 
@@ -283,15 +316,17 @@ public class Squash extends GitCommand {
      * @param commit the commit to insert
      * @return Return the commit id inserted.
      */
-    private ObjectId insertCommitIntoRepositoryAndFlush( ObjectInserter odi,
-                                                         CommitBuilder commit ) {
+    private ObjectId insertCommitIntoRepositoryAndFlush(ObjectInserter odi,
+                                                        CommitBuilder commit) {
         try {
-            final ObjectId commitId = odi.insert( commit );
+            final ObjectId commitId = odi.insert(commit);
             odi.flush();
             return commitId;
-        } catch ( IOException e ) {
-            String message = String.format( "Cannot get insert commits into repository (TreeId = %s)", commit.getTreeId() );
-            throw new GitException( message, e );
+        } catch (IOException e) {
+            String message = String.format("Cannot get insert commits into repository (TreeId = %s)",
+                                           commit.getTreeId());
+            throw new GitException(message,
+                                   e);
         }
     }
 
@@ -303,19 +338,18 @@ public class Squash extends GitCommand {
      * @param squashedCommitMessage the message for the commit.
      * @return the with all the parameters applied.
      */
-    private CommitBuilder createCommit( RevCommit parent,
-                                        PersonIdent commitAuthor,
-                                        ObjectId indexTreeId,
-                                        String squashedCommitMessage ) {
+    private CommitBuilder createCommit(RevCommit parent,
+                                       PersonIdent commitAuthor,
+                                       ObjectId indexTreeId,
+                                       String squashedCommitMessage) {
         final CommitBuilder commit = new CommitBuilder();
-        commit.setAuthor( commitAuthor );
-        commit.setCommitter( commitAuthor );
-        commit.setEncoding( Constants.CHARACTER_ENCODING );
-        commit.setMessage( squashedCommitMessage );
-        commit.setParentId( parent.getId() );
-        commit.setTreeId( indexTreeId );
+        commit.setAuthor(commitAuthor);
+        commit.setCommitter(commitAuthor);
+        commit.setEncoding(Constants.CHARACTER_ENCODING);
+        commit.setMessage(squashedCommitMessage);
+        commit.setParentId(parent.getId());
+        commit.setTreeId(indexTreeId);
         return commit;
     }
-
 }
 

@@ -28,5 +28,4 @@ public class AppsEntryPoint {
     public void init() {
         WebAppResource.INSTANCE.CSS().ensureInjected();
     }
-
 }

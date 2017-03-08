@@ -29,21 +29,21 @@ public interface GridPinnedModeManager extends IsPinnedModeAware {
      * @param gridWidget GridWidget to "pin"
      * @param onStartCommand Command to execute on start of entry to "pinned" mode
      */
-    void enterPinnedMode( final GridWidget gridWidget,
-                          final Command onStartCommand );
+    void enterPinnedMode(final GridWidget gridWidget,
+                         final Command onStartCommand);
 
     /**
      * Exits "pinned" mode. This has no effect if a GridWidget is not already pinned.
      * @param onCompleteCommand Command to execute on completion of exiting "pinned" mode
      */
-    void exitPinnedMode( final Command onCompleteCommand );
+    void exitPinnedMode(final Command onCompleteCommand);
 
     /**
      * Updates the context to a different GridWidget and related translation.
      * @param gridWidget GridWidget to "pin"
      * @throws IllegalStateException If "pinned" mode has not been entered.
      */
-    void updatePinnedContext( final GridWidget gridWidget ) throws IllegalStateException;
+    void updatePinnedContext(final GridWidget gridWidget) throws IllegalStateException;
 
     /**
      * Returns the pinned Context, or null if no GridWidget is pinned.
@@ -68,11 +68,11 @@ public interface GridPinnedModeManager extends IsPinnedModeAware {
         private double scaleX;
         private double scaleY;
 
-        public PinnedContext( final GridWidget gridWidget,
-                              final double translateX,
-                              final double translateY,
-                              final double scaleX,
-                              final double scaleY ) {
+        public PinnedContext(final GridWidget gridWidget,
+                             final double translateX,
+                             final double translateY,
+                             final double scaleX,
+                             final double scaleY) {
             this.gridWidget = gridWidget;
             this.translateX = translateX;
             this.translateY = translateY;
@@ -100,5 +100,4 @@ public interface GridPinnedModeManager extends IsPinnedModeAware {
             return scaleY;
         }
     }
-
 }

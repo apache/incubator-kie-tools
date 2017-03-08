@@ -27,8 +27,8 @@ public class HtmlEditorLibraryLoaderTest {
 
     @Before
     public void setup() {
-        loader = spy( new HtmlEditorLibraryLoader() );
-        doNothing().when( loader ).injectScripts();
+        loader = spy(new HtmlEditorLibraryLoader());
+        doNothing().when(loader).injectScripts();
     }
 
     @Test
@@ -36,6 +36,7 @@ public class HtmlEditorLibraryLoaderTest {
         loader.ensureLibrariesAreAvailable();
         loader.ensureLibrariesAreAvailable();
 
-        verify( loader, times( 1 ) ).injectScripts();
+        verify(loader,
+               times(1)).injectScripts();
     }
 }

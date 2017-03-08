@@ -15,6 +15,7 @@
  */
 package org.uberfire.client.views.pfly.tab;
 
+import java.util.Collection;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -25,26 +26,24 @@ import org.uberfire.client.workbench.panels.impl.AbstractMultiPartWorkbenchPanel
 import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
 import org.uberfire.workbench.model.PartDefinition;
 
-import java.util.Collection;
-
 @Dependent
-@Named( "MultiTabWorkbenchPanelView" )
+@Named("MultiTabWorkbenchPanelView")
 public class MultiTabWorkbenchPanelView
         extends AbstractMultiPartWorkbenchPanelView<MultiTabWorkbenchPanelPresenter> {
 
     private UberTabPanel uberTabPanel;
 
     @Inject
-    public MultiTabWorkbenchPanelView( final UberTabPanel uberTabPanel ) {
+    public MultiTabWorkbenchPanelView(final UberTabPanel uberTabPanel) {
         this.uberTabPanel = uberTabPanel;
     }
 
     @Override
     protected MultiPartWidget setupWidget() {
-        uberTabPanel.addStyleName( "uf-multitab-panel" );
-        Layouts.setToFillParent( uberTabPanel );
-        addOnFocusHandler( uberTabPanel );
-        addSelectionHandler( uberTabPanel );
+        uberTabPanel.addStyleName("uf-multitab-panel");
+        Layouts.setToFillParent(uberTabPanel);
+        addOnFocusHandler(uberTabPanel);
+        addSelectionHandler(uberTabPanel);
 
         return uberTabPanel;
     }

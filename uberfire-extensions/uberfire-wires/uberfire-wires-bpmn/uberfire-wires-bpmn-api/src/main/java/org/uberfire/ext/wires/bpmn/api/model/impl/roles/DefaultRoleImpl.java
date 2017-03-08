@@ -25,9 +25,9 @@ public class DefaultRoleImpl implements Role {
 
     private String name;
 
-    public DefaultRoleImpl( @MapsTo("name") final String name ) {
-        this.name = PortablePreconditions.checkNotNull( "name",
-                                                        name );
+    public DefaultRoleImpl(@MapsTo("name") final String name) {
+        this.name = PortablePreconditions.checkNotNull("name",
+                                                       name);
     }
 
     @Override
@@ -37,21 +37,21 @@ public class DefaultRoleImpl implements Role {
 
     @Override
     public Role copy() {
-        return new DefaultRoleImpl( this.name );
+        return new DefaultRoleImpl(this.name);
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof DefaultRoleImpl ) ) {
+        if (!(o instanceof DefaultRoleImpl)) {
             return false;
         }
 
         DefaultRoleImpl that = (DefaultRoleImpl) o;
 
-        if ( !name.equals( that.name ) ) {
+        if (!name.equals(that.name)) {
             return false;
         }
 
@@ -69,5 +69,4 @@ public class DefaultRoleImpl implements Role {
                 "name='" + name + '\'' +
                 '}';
     }
-
 }

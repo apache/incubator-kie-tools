@@ -47,53 +47,62 @@ public class AdminPagePresenterTest {
 
     @Before
     public void setup() {
-        view = mock( AdminPagePresenter.View.class );
+        view = mock(AdminPagePresenter.View.class);
         adminPage = new AdminPageImpl();
-        categoryPresenterProvider = mock( ManagedInstance.class );
-        notification = mock( EventSourceMock.class );
+        categoryPresenterProvider = mock(ManagedInstance.class);
+        notification = mock(EventSourceMock.class);
 
-        presenter = spy( new AdminPagePresenter( view, adminPage, categoryPresenterProvider, notification ) );
+        presenter = spy(new AdminPagePresenter(view,
+                                               adminPage,
+                                               categoryPresenterProvider,
+                                               notification));
     }
 
     @Test
     public void onStartupWithScreenTest() {
-        doNothing().when( presenter ).init( anyString() );
+        doNothing().when(presenter).init(anyString());
 
         Map<String, String> params = new HashMap<>();
-        params.put( "screen", "my-screen" );
-        PlaceRequest placeRequest = new DefaultPlaceRequest( "AdminPagePresenter", params );
+        params.put("screen",
+                   "my-screen");
+        PlaceRequest placeRequest = new DefaultPlaceRequest("AdminPagePresenter",
+                                                            params);
 
-        presenter.onStartup( placeRequest );
+        presenter.onStartup(placeRequest);
 
-        verify( view ).init( presenter );
-        verify( notification, never() ).fire( any( NotificationEvent.class ) );
-        verify( presenter ).init( "my-screen" );
+        verify(view).init(presenter);
+        verify(notification,
+               never()).fire(any(NotificationEvent.class));
+        verify(presenter).init("my-screen");
     }
 
     @Test
     public void onStartupWithoutScreenTest() {
-        PlaceRequest placeRequest = new DefaultPlaceRequest( "AdminPagePresenter" );
+        PlaceRequest placeRequest = new DefaultPlaceRequest("AdminPagePresenter");
 
-        presenter.onStartup( placeRequest );
+        presenter.onStartup(placeRequest);
 
-        verify( view ).init( presenter );
-        verify( notification ).fire( any( NotificationEvent.class ) );
-        verify( presenter, never() ).init( anyString() );
+        verify(view).init(presenter);
+        verify(notification).fire(any(NotificationEvent.class));
+        verify(presenter,
+               never()).init(anyString());
     }
 
     @Test
     public void initWithNotAddedScreenTest() {
-        presenter.init( "not-added-screen" );
+        presenter.init("not-added-screen");
 
-        verify( notification ).fire( any( NotificationEvent.class ) );
+        verify(notification).fire(any(NotificationEvent.class));
     }
 
     @Test
     public void initWithAddedScreenTest() {
-        adminPage.addScreen( "added-screen", "Screen title" );
+        adminPage.addScreen("added-screen",
+                            "Screen title");
 
-        presenter.init( "added-screen" );
+        presenter.init("added-screen");
 
-        verify( notification, never() ).fire( any( NotificationEvent.class ) );
+        verify(notification,
+               never()).fire(any(NotificationEvent.class));
     }
 }

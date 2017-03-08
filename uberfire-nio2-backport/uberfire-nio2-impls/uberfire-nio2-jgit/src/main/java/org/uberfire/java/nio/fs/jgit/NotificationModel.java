@@ -25,10 +25,10 @@ public class NotificationModel {
     private final String userName;
     private final String message;
 
-    public NotificationModel( final ObjectId originalHead,
-                              final String sessionId,
-                              final String userName,
-                              final String message ) {
+    public NotificationModel(final ObjectId originalHead,
+                             final String sessionId,
+                             final String userName,
+                             final String message) {
         this.originalHead = originalHead;
         this.sessionId = sessionId;
         this.userName = userName;

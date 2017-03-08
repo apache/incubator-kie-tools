@@ -31,14 +31,20 @@ public class WorkbenchPartView
         extends SimpleLayoutPanel
         implements WorkbenchPartPresenter.View {
 
+    private final ScrollPanel sp = new ScrollPanel();
     private WorkbenchPartPresenter presenter;
 
-    private final ScrollPanel sp = new ScrollPanel();
+    public WorkbenchPartView() {
+        setWidget(sp);
+
+        // ScrollPanel creates an additional internal div that we need to style
+        sp.getElement().getFirstChildElement().setClassName("uf-scroll-panel");
+    }
 
     @Override
-    public void init( WorkbenchPartPresenter presenter ) {
+    public void init(WorkbenchPartPresenter presenter) {
         this.presenter = presenter;
-        Layouts.setToFillParent( this );
+        Layouts.setToFillParent(this);
     }
 
     @Override
@@ -47,19 +53,12 @@ public class WorkbenchPartView
     }
 
     @Override
-    public void setWrappedWidget( final IsWidget widget ) {
-        sp.setWidget( widget );
-    }
-
-    @Override
     public IsWidget getWrappedWidget() {
         return sp.getWidget();
     }
 
-    public WorkbenchPartView() {
-        setWidget( sp );
-
-        // ScrollPanel creates an additional internal div that we need to style
-        sp.getElement().getFirstChildElement().setClassName( "uf-scroll-panel" );
+    @Override
+    public void setWrappedWidget(final IsWidget widget) {
+        sp.setWidget(widget);
     }
 }

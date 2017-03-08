@@ -29,7 +29,7 @@ public interface PreferenceScopeFactory {
      * @return A new preference scope.
      * @throws InvalidPreferenceScopeException if the type passed is invalid, or if it requires a key.
      */
-    PreferenceScope createScope( String type ) throws InvalidPreferenceScopeException;
+    PreferenceScope createScope(String type) throws InvalidPreferenceScopeException;
 
     /**
      * Builds a new preference scope, that does not require a custom key, and has the passed child scope.
@@ -37,8 +37,8 @@ public interface PreferenceScopeFactory {
      * @return A new preference scope.
      * @throws InvalidPreferenceScopeException if the type passed is invalid, or if it requires a key.
      */
-    PreferenceScope createScope( String type,
-                                 PreferenceScope childScope ) throws InvalidPreferenceScopeException;
+    PreferenceScope createScope(String type,
+                                PreferenceScope childScope) throws InvalidPreferenceScopeException;
 
     /**
      * Builds a new preference scope, that requires a custom key.
@@ -48,8 +48,8 @@ public interface PreferenceScopeFactory {
      * @throws InvalidPreferenceScopeException if the type passed is invalid, or if it does not require
      * a key.
      */
-    PreferenceScope createScope( String type,
-                                 String key ) throws InvalidPreferenceScopeException;
+    PreferenceScope createScope(String type,
+                                String key) throws InvalidPreferenceScopeException;
 
     /**
      * Builds a new preference scope, that requires a custom key, and has the passed child scope.
@@ -60,9 +60,9 @@ public interface PreferenceScopeFactory {
      * @throws InvalidPreferenceScopeException if the type passed is invalid, or if it does not require
      * a key.
      */
-    PreferenceScope createScope( String type,
-                                 String key,
-                                 PreferenceScope childScope ) throws InvalidPreferenceScopeException;
+    PreferenceScope createScope(String type,
+                                String key,
+                                PreferenceScope childScope) throws InvalidPreferenceScopeException;
 
     /**
      * Builds a new preference scope, that contains the following ones as child scopes.
@@ -70,12 +70,12 @@ public interface PreferenceScopeFactory {
      * @return A new preference scope.
      * @throws InvalidPreferenceScopeException if any passed scope is invalid.
      */
-    PreferenceScope createScope( PreferenceScope... scopes ) throws InvalidPreferenceScopeException;
+    PreferenceScope createScope(PreferenceScope... scopes) throws InvalidPreferenceScopeException;
 
     /**
      * Clones the passed scope to a new instance.
      * @param scope Scope to be cloned. Must not be null.
      * @return New scope instance equal to the passed one.
      */
-    PreferenceScope cloneScope( PreferenceScope scope );
+    PreferenceScope cloneScope(PreferenceScope scope);
 }

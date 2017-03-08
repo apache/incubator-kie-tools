@@ -24,7 +24,7 @@ import javax.inject.Named;
 @Dependent
 @Named("SimpleWorkbenchPanelView")
 public class SimpleWorkbenchPanelView
-extends AbstractSimpleWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
+        extends AbstractSimpleWorkbenchPanelView<SimpleWorkbenchPanelPresenter> {
 
     @Override
     protected void setupListBar() {

@@ -35,6 +35,6 @@ public interface HasMenuItems extends IsWidget {
      * direct child, or should be an {@link AnchorListItem} which is a convenient shorthand for an Anchor
      * inside a ListItem.
      */
-    void addMenuItem( MenuPosition position, Widget menuContent );
-
+    void addMenuItem(MenuPosition position,
+                     Widget menuContent);
 }

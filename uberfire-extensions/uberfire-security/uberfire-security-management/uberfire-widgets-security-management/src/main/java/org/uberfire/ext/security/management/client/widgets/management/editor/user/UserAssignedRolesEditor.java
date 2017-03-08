@@ -16,6 +16,11 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.user;
 
+import java.util.Set;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -26,14 +31,8 @@ import org.uberfire.ext.security.management.client.widgets.management.editor.Ass
 import org.uberfire.ext.security.management.client.widgets.management.events.OnUpdateUserRolesEvent;
 import org.uberfire.ext.security.management.client.widgets.management.explorer.RolesExplorer;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.Set;
-
 /**
  * <p>Presenter class for user's assigned roles editor.</p>
- *
  * @since 0.8.0
  */
 @Dependent
@@ -46,10 +45,11 @@ public class UserAssignedRolesEditor extends UserAssignedEntitiesEditor<Role> im
                                    final RolesExplorer rolesExplorer,
                                    final @AssignedEntitiesModalEditor AssignedEntitiesEditor<UserAssignedRolesEditor> view,
                                    final Event<OnUpdateUserRolesEvent> updateUserRolesEvent) {
-        super(userSystemManager, rolesExplorer, view);
+        super(userSystemManager,
+              rolesExplorer,
+              view);
         this.updateUserRolesEvent = updateUserRolesEvent;
     }
-
 
     @Override
     public Widget asWidget() {
@@ -93,7 +93,7 @@ public class UserAssignedRolesEditor extends UserAssignedEntitiesEditor<Role> im
         }
 
         // Delegate the recently updated assigned roles for the user.
-        updateUserRolesEvent.fire(new OnUpdateUserRolesEvent(UserAssignedRolesEditor.this, selectedEntities));
+        updateUserRolesEvent.fire(new OnUpdateUserRolesEvent(UserAssignedRolesEditor.this,
+                                                             selectedEntities));
     }
-    
 }

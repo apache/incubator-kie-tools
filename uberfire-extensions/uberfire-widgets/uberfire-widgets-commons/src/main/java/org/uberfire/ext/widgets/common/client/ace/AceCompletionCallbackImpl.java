@@ -25,23 +25,24 @@ import com.google.gwt.core.client.JsArray;
  * callback.
  */
 class AceCompletionCallbackImpl implements AceCompletionCallback {
-	private JavaScriptObject jsCallback;
-	
-	public AceCompletionCallbackImpl(JavaScriptObject jsCallback) {
-		this.jsCallback = jsCallback;
-	}
-	
-	@Override
-	public void invokeWithCompletions(AceCompletion[] proposals) {
-		JsArray<JavaScriptObject> jsProposals = JavaScriptObject.createArray().cast();
-		for (AceCompletion proposal : proposals) {
-			jsProposals.push(proposal.toJsObject());
-		}
-		doInvokeWithCompletions(jsProposals);
-	}
-	
-	private native void doInvokeWithCompletions(JsArray<JavaScriptObject> jsProposals) /*-{
-		var callback = this.@org.uberfire.ext.widgets.common.client.ace.AceCompletionCallbackImpl::jsCallback;
-		callback(null, jsProposals);
-	}-*/;
+
+    private JavaScriptObject jsCallback;
+
+    public AceCompletionCallbackImpl(JavaScriptObject jsCallback) {
+        this.jsCallback = jsCallback;
+    }
+
+    @Override
+    public void invokeWithCompletions(AceCompletion[] proposals) {
+        JsArray<JavaScriptObject> jsProposals = JavaScriptObject.createArray().cast();
+        for (AceCompletion proposal : proposals) {
+            jsProposals.push(proposal.toJsObject());
+        }
+        doInvokeWithCompletions(jsProposals);
+    }
+
+    private native void doInvokeWithCompletions(JsArray<JavaScriptObject> jsProposals) /*-{
+        var callback = this.@org.uberfire.ext.widgets.common.client.ace.AceCompletionCallbackImpl::jsCallback;
+        callback(null, jsProposals);
+    }-*/;
 }

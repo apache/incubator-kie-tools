@@ -23,12 +23,14 @@ public class RowDrop {
 
     private final LayoutComponent component;
     private final String rowId;
-    private String originRowOldColumnId;
     private final Orientation orientation;
+    private String originRowOldColumnId;
     private Type type;
     private Column oldColumn;
 
-    public RowDrop( LayoutComponent component, String rowId, Orientation orientation ) {
+    public RowDrop(LayoutComponent component,
+                   String rowId,
+                   Orientation orientation) {
         this.component = component;
         this.rowId = rowId;
         this.orientation = orientation;
@@ -59,18 +61,21 @@ public class RowDrop {
         return type == Type.NEW;
     }
 
-    public enum Orientation {
-        BEFORE, AFTER
-    }
-
-    public enum Type {
-        NEW, FROM_MOVE
-    }
-
-    public RowDrop fromMove( String originRowOldColumnId, Column oldColumn ) {
+    public RowDrop fromMove(String originRowOldColumnId,
+                            Column oldColumn) {
         this.oldColumn = oldColumn;
         this.type = Type.FROM_MOVE;
         this.originRowOldColumnId = originRowOldColumnId;
         return this;
+    }
+
+    public enum Orientation {
+        BEFORE,
+        AFTER
+    }
+
+    public enum Type {
+        NEW,
+        FROM_MOVE
     }
 }

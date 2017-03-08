@@ -25,9 +25,9 @@ public interface ClusterService extends MessageService,
                                         LockService,
                                         PriorityDisposable {
 
-    void addMessageHandlerResolver( final MessageHandlerResolver resolver );
+    void addMessageHandlerResolver(final MessageHandlerResolver resolver);
 
-    void onStart( Runnable runnable );
+    void onStart(Runnable runnable);
 
     int getHoldCount();
 }

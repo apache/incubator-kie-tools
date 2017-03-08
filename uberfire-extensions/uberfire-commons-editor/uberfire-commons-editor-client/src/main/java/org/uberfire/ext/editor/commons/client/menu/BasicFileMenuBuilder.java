@@ -29,52 +29,52 @@ public interface BasicFileMenuBuilder extends HasLockSyncMenuStateHelper {
 
     Menus build();
 
-    BasicFileMenuBuilder addSave( final MenuItem menuItem );
+    BasicFileMenuBuilder addSave(final MenuItem menuItem);
 
-    BasicFileMenuBuilder addSave( final Command command );
+    BasicFileMenuBuilder addSave(final Command command);
 
-    BasicFileMenuBuilder addDelete( final Path path,
-                                    final Caller<? extends SupportsDelete> deleteCaller );
+    BasicFileMenuBuilder addDelete(final Path path,
+                                   final Caller<? extends SupportsDelete> deleteCaller);
 
-    BasicFileMenuBuilder addDelete( final PathProvider provider,
-                                    final Caller<? extends SupportsDelete> deleteCaller );
+    BasicFileMenuBuilder addDelete(final PathProvider provider,
+                                   final Caller<? extends SupportsDelete> deleteCaller);
 
-    BasicFileMenuBuilder addDelete( final Command command );
+    BasicFileMenuBuilder addDelete(final Command command);
 
-    BasicFileMenuBuilder addRename( final Command command );
+    BasicFileMenuBuilder addRename(final Command command);
 
-    BasicFileMenuBuilder addRename( final Path path,
-                                    final Caller<? extends SupportsRename> renameCaller );
+    BasicFileMenuBuilder addRename(final Path path,
+                                   final Caller<? extends SupportsRename> renameCaller);
 
-    BasicFileMenuBuilder addRename( final Path path,
-                                    final Validator validator,
-                                    final Caller<? extends SupportsRename> renameCaller );
+    BasicFileMenuBuilder addRename(final Path path,
+                                   final Validator validator,
+                                   final Caller<? extends SupportsRename> renameCaller);
 
-    BasicFileMenuBuilder addRename( final PathProvider provider,
-                                    final Validator validator,
-                                    final Caller<? extends SupportsRename> renameCaller );
+    BasicFileMenuBuilder addRename(final PathProvider provider,
+                                   final Validator validator,
+                                   final Caller<? extends SupportsRename> renameCaller);
 
-    BasicFileMenuBuilder addCopy( final Command command );
+    BasicFileMenuBuilder addCopy(final Command command);
 
-    BasicFileMenuBuilder addCopy( final Path path,
-                                  final Caller<? extends SupportsCopy> copyCaller );
+    BasicFileMenuBuilder addCopy(final Path path,
+                                 final Caller<? extends SupportsCopy> copyCaller);
 
-    BasicFileMenuBuilder addCopy( final Path path,
-                                  final Validator validator,
-                                  final Caller<? extends SupportsCopy> copyCaller );
+    BasicFileMenuBuilder addCopy(final Path path,
+                                 final Validator validator,
+                                 final Caller<? extends SupportsCopy> copyCaller);
 
-    BasicFileMenuBuilder addCopy( final PathProvider provider,
-                                  final Validator validator,
-                                  final Caller<? extends SupportsCopy> copyCaller );
+    BasicFileMenuBuilder addCopy(final PathProvider provider,
+                                 final Validator validator,
+                                 final Caller<? extends SupportsCopy> copyCaller);
 
-    BasicFileMenuBuilder addValidate( final Command command );
+    BasicFileMenuBuilder addValidate(final Command command);
 
-    BasicFileMenuBuilder addRestoreVersion( final Path path );
+    BasicFileMenuBuilder addRestoreVersion(final Path path);
 
-    BasicFileMenuBuilder addCommand( final String caption,
-                                     final Command command );
+    BasicFileMenuBuilder addCommand(final String caption,
+                                    final Command command);
 
-    BasicFileMenuBuilder addNewTopLevelMenu( final MenuItem menu );
+    BasicFileMenuBuilder addNewTopLevelMenu(final MenuItem menu);
 
     /**
      * A provider of Paths, when the {@link Path} needs to be ascertained at runtime at the point of execution.
@@ -89,7 +89,5 @@ public interface BasicFileMenuBuilder extends HasLockSyncMenuStateHelper {
          * @return A {@link Path} corresponding to the {@link MenuItem}
          */
         Path getPath();
-
     }
-
 }

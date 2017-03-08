@@ -29,9 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.authz.AuthorizationPolicyStorage;
 import org.uberfire.backend.events.AuthorizationPolicyDeployedEvent;
+import org.uberfire.backend.server.WebAppListener;
 import org.uberfire.backend.server.WebAppSettings;
 import org.uberfire.backend.server.security.RoleRegistry;
-import org.uberfire.backend.server.WebAppListener;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.security.authz.AuthorizationPolicy;
 import org.uberfire.security.authz.PermissionManager;
@@ -40,12 +40,12 @@ import org.uberfire.security.impl.authz.AuthorizationPolicyBuilder;
 /**
  * An Uberfire's startup bean that scans the classpath looking for an authorization policy to deploy (a file named
  * <i>security-policy.properties</i>).</p>
- *
+ * <p>
  * <p>If located, the policy file is loaded and passed along the {@link AuthorizationPolicyStorage}. The deployment
  * process is only executed once, so if a policy instance has been already stored then the deployment is left out.
  * The {@link AuthorizationPolicyMarshaller} class is used to read and convert the entries defined at
  * the <i>security-policy.properties</i> file into an {@link AuthorizationPolicy} instance.</p>
- *
+ * <p>
  * <p>It is also possible to split the policy into multiple files. The
  * <i>security-policy.properties</i> file is always mandatory as it serves as a marker file. Alongside that file,
  * several <i>security-module-?.properties</i> files can be created. The split mechanism allows either for the
@@ -86,7 +86,9 @@ public class AuthorizationPolicyDeployer {
 
     public Path getPolicyDir() {
         String rootDir = WebAppSettings.get().getRootDir();
-        return Paths.get(rootDir, "WEB-INF", "classes");
+        return Paths.get(rootDir,
+                         "WEB-INF",
+                         "classes");
     }
 
     public void deployPolicy(Path policyDir) {
@@ -103,14 +105,12 @@ public class AuthorizationPolicyDeployer {
                 }
                 // Notify the interested parties
                 deployedEvent.fire(new AuthorizationPolicyDeployedEvent(policy));
-            }
-            else {
+            } else {
                 logger.info("Security policy active");
             }
             // Set the active policy
             permissionManager.setAuthorizationPolicy(policy);
-        }
-        else {
+        } else {
             logger.info("Security policy not defined");
         }
     }
@@ -121,10 +121,11 @@ public class AuthorizationPolicyDeployer {
         if (policyDir != null) {
             try {
                 NonEscapedProperties properties = readPolicyProperties(policyDir);
-                marshaller.read(builder, properties);
-            }
-            catch (IOException e) {
-                logger.warn("Error loading security policy files", e);
+                marshaller.read(builder,
+                                properties);
+            } catch (IOException e) {
+                logger.warn("Error loading security policy files",
+                            e);
             }
         }
         return builder.build();
@@ -132,7 +133,6 @@ public class AuthorizationPolicyDeployer {
 
     /**
      * Put all the policy files together into a single properties instance.
-     *
      * @param policyDir The source directory where to read the policy files from.
      * @return An {@link NonEscapedProperties} instance containing all the properties read from the policy files found
      * @throws IOException When an IO error occurs reading any of the policy files
@@ -141,22 +141,24 @@ public class AuthorizationPolicyDeployer {
         NonEscapedProperties properties = new NonEscapedProperties();
         Files.list(policyDir)
                 .filter(this::isPolicyFile)
-                .forEach(path -> loadPolicyFile(properties, path));
+                .forEach(path -> loadPolicyFile(properties,
+                                                path));
 
         return properties;
     }
 
     public boolean isPolicyFile(Path p) {
-        String fileName = p.getName(p.getNameCount()-1).toString();
+        String fileName = p.getName(p.getNameCount() - 1).toString();
         return fileName.equals("security-policy.properties") || fileName.startsWith("security-module-");
     }
 
-    public void loadPolicyFile(NonEscapedProperties properties, Path path) {
+    public void loadPolicyFile(NonEscapedProperties properties,
+                               Path path) {
         try {
             properties.load(path);
-        }
-        catch (IOException e) {
-            logger.error("Security policy file load error: " + path, e);
+        } catch (IOException e) {
+            logger.error("Security policy file load error: " + path,
+                         e);
         }
     }
 }

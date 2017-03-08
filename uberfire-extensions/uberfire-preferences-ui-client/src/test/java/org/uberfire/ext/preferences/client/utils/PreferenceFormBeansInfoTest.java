@@ -45,37 +45,40 @@ public class PreferenceFormBeansInfoTest {
 
     @Before
     public void setup() {
-        syncBeanManager = mock( SyncBeanManager.class );
+        syncBeanManager = mock(SyncBeanManager.class);
         activityBeansInfo = new ActivityBeansInfo() {
             @Override
             public SyncBeanManager getBeanManager() {
                 return syncBeanManager;
             }
         };
-        preferenceFormBeansInfo = new PreferenceFormBeansInfo( activityBeansInfo );
-        when( syncBeanManager.lookupBeans( WorkbenchScreenActivity.class ) )
-                .thenReturn( generateBeansList() );
+        preferenceFormBeansInfo = new PreferenceFormBeansInfo(activityBeansInfo);
+        when(syncBeanManager.lookupBeans(WorkbenchScreenActivity.class))
+                .thenReturn(generateBeansList());
     }
 
     @Test
     public void getPreferenceFormForTest() {
-        assertEquals( "MyPreference1Form", preferenceFormBeansInfo.getPreferenceFormFor( "MyPreference1" ) );
-        assertEquals( "MyPreference2Form", preferenceFormBeansInfo.getPreferenceFormFor( "MyPreference2" ) );
-        assertEquals( "MyPreference3Form", preferenceFormBeansInfo.getPreferenceFormFor( "MyPreference3" ) );
+        assertEquals("MyPreference1Form",
+                     preferenceFormBeansInfo.getPreferenceFormFor("MyPreference1"));
+        assertEquals("MyPreference2Form",
+                     preferenceFormBeansInfo.getPreferenceFormFor("MyPreference2"));
+        assertEquals("MyPreference3Form",
+                     preferenceFormBeansInfo.getPreferenceFormFor("MyPreference3"));
     }
 
     private Collection<SyncBeanDef<WorkbenchScreenActivity>> generateBeansList() {
         Collection<SyncBeanDef<WorkbenchScreenActivity>> beans = new ArrayList<SyncBeanDef<WorkbenchScreenActivity>>();
 
-        beans.add( generateBeanDef( null ) );
-        beans.add( generateBeanDef( "MyPreference1" ) );
-        beans.add( generateBeanDef( "MyPreference2" ) );
-        beans.add( generateBeanDef( "MyPreference3" ) );
+        beans.add(generateBeanDef(null));
+        beans.add(generateBeanDef("MyPreference1"));
+        beans.add(generateBeanDef("MyPreference2"));
+        beans.add(generateBeanDef("MyPreference3"));
 
         return beans;
     }
 
-    private SyncBeanDef<WorkbenchScreenActivity> generateBeanDef( final String preferenceIdentifier ) {
+    private SyncBeanDef<WorkbenchScreenActivity> generateBeanDef(final String preferenceIdentifier) {
         return new SyncBeanDef<WorkbenchScreenActivity>() {
             @Override
             public Class<WorkbenchScreenActivity> getType() {
@@ -106,8 +109,8 @@ public class PreferenceFormBeansInfoTest {
             public Set<Annotation> getQualifiers() {
                 final HashSet<Annotation> annotations = new HashSet<Annotation>();
 
-                if ( preferenceIdentifier != null ) {
-                    annotations.add( new PreferenceForm() {
+                if (preferenceIdentifier != null) {
+                    annotations.add(new PreferenceForm() {
                         @Override
                         public Class<? extends Annotation> annotationType() {
                             return PreferenceForm.class;
@@ -117,9 +120,9 @@ public class PreferenceFormBeansInfoTest {
                         public String value() {
                             return preferenceIdentifier;
                         }
-                    } );
+                    });
 
-                    annotations.add( new Named() {
+                    annotations.add(new Named() {
                         @Override
                         public Class<? extends Annotation> annotationType() {
                             return Named.class;
@@ -129,20 +132,20 @@ public class PreferenceFormBeansInfoTest {
                         public String value() {
                             return preferenceIdentifier + "Form";
                         }
-                    } );
+                    });
                 }
 
                 return annotations;
             }
 
             @Override
-            public boolean matches( Set<Annotation> annotations ) {
+            public boolean matches(Set<Annotation> annotations) {
                 return false;
             }
 
             @Override
             public String getName() {
-                if ( preferenceIdentifier != null ) {
+                if (preferenceIdentifier != null) {
                     return preferenceIdentifier + "Form";
                 } else {
                     return null;
@@ -155,8 +158,8 @@ public class PreferenceFormBeansInfoTest {
             }
 
             @Override
-            public boolean isAssignableTo( Class<?> type ) {
-                return WorkbenchScreenActivity.class.equals( type );
+            public boolean isAssignableTo(Class<?> type) {
+                return WorkbenchScreenActivity.class.equals(type);
             }
         };
     }

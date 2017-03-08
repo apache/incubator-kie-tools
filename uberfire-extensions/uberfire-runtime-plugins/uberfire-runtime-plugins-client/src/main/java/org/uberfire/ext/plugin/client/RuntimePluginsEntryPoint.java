@@ -32,27 +32,30 @@ import org.jboss.errai.ui.shared.api.annotations.Bundle;
 import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityManager;
 import org.uberfire.client.mvp.PerspectiveActivity;
+import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.PopupActivity;
 import org.uberfire.client.mvp.SplashScreenActivity;
 import org.uberfire.client.mvp.WorkbenchEditorActivity;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
+import org.uberfire.client.workbench.Workbench;
+import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 import org.uberfire.ext.plugin.client.resources.WebAppResource;
 import org.uberfire.ext.plugin.model.DynamicMenu;
 import org.uberfire.ext.plugin.model.DynamicMenuItem;
 import org.uberfire.ext.plugin.model.RuntimePlugin;
 import org.uberfire.ext.plugin.service.PluginServices;
-import org.uberfire.client.mvp.PlaceManager;
-import org.uberfire.client.workbench.Workbench;
-import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.menu.MenuFactory;
 
-import static org.uberfire.workbench.model.ActivityResourceType.*;
-import static com.google.gwt.core.client.ScriptInjector.*;
+import static com.google.gwt.core.client.ScriptInjector.TOP_WINDOW;
+import static org.uberfire.workbench.model.ActivityResourceType.EDITOR;
+import static org.uberfire.workbench.model.ActivityResourceType.PERSPECTIVE;
+import static org.uberfire.workbench.model.ActivityResourceType.POPUP;
+import static org.uberfire.workbench.model.ActivityResourceType.SCREEN;
 
 @EntryPoint
-@Bundle( "resources/i18n/Constants.properties" )
+@Bundle("resources/i18n/Constants.properties")
 @EnabledByProperty(value = "uberfire.plugin.mode.active", negated = true)
 public class RuntimePluginsEntryPoint {
 
@@ -77,61 +80,64 @@ public class RuntimePluginsEntryPoint {
     @PostConstruct
     public void init() {
         WebAppResource.INSTANCE.CSS().ensureInjected();
-        workbench.addStartupBlocker( RuntimePluginsEntryPoint.class );
+        workbench.addStartupBlocker(RuntimePluginsEntryPoint.class);
     }
 
     @AfterInitialization
     public void setup() {
-        pluginServices.call( new RemoteCallback<Collection<RuntimePlugin>>() {
+        pluginServices.call(new RemoteCallback<Collection<RuntimePlugin>>() {
             @Override
-            public void callback( Collection<RuntimePlugin> response ) {
-                for ( final RuntimePlugin plugin : response ) {
-                    ScriptInjector.fromString( plugin.getScript() ).setWindow( TOP_WINDOW ).inject();
-                    StyleInjector.inject( plugin.getStyle(), true );
+            public void callback(Collection<RuntimePlugin> response) {
+                for (final RuntimePlugin plugin : response) {
+                    ScriptInjector.fromString(plugin.getScript()).setWindow(TOP_WINDOW).inject();
+                    StyleInjector.inject(plugin.getStyle(),
+                                         true);
                 }
-                pluginServices.call( new RemoteCallback<Collection<DynamicMenu>>() {
+                pluginServices.call(new RemoteCallback<Collection<DynamicMenu>>() {
                     @Override
-                    public void callback( Collection<DynamicMenu> response ) {
-                        for ( final DynamicMenu menu : response ) {
-                            if ( !menu.getMenuItems().isEmpty() ) {
-                                MenuFactory.SubMenusBuilder<MenuFactory.SubMenuBuilder<MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder>>> dynamicMenu = MenuFactory.newTopLevelMenu( menu.getName() ).orderAll( 100 ).menus();
-                                for ( final DynamicMenuItem dynamicMenuItem : menu.getMenuItems() ) {
+                    public void callback(Collection<DynamicMenu> response) {
+                        for (final DynamicMenu menu : response) {
+                            if (!menu.getMenuItems().isEmpty()) {
+                                MenuFactory.SubMenusBuilder<MenuFactory.SubMenuBuilder<MenuFactory.TopLevelMenusBuilder<MenuFactory.MenuBuilder>>> dynamicMenu = MenuFactory.newTopLevelMenu(menu.getName()).orderAll(100).menus();
+                                for (final DynamicMenuItem dynamicMenuItem : menu.getMenuItems()) {
 
                                     String activityId = dynamicMenuItem.getActivityId();
-                                    ResourceType resourceType = getResourceType( activityId );
+                                    ResourceType resourceType = getResourceType(activityId);
 
-                                    dynamicMenu.menu( dynamicMenuItem.getMenuLabel() )
-                                        .withPermission( activityId, resourceType )
-                                        .respondsWith( () -> placeManager.goTo( activityId ) )
-                                        .endMenu();
+                                    dynamicMenu.menu(dynamicMenuItem.getMenuLabel())
+                                            .withPermission(activityId,
+                                                            resourceType)
+                                            .respondsWith(() -> placeManager.goTo(activityId))
+                                            .endMenu();
                                 }
-                                menubar.addMenus( dynamicMenu.endMenus().endMenu().build() );
+                                menubar.addMenus(dynamicMenu.endMenus().endMenu().build());
                             }
                         }
-                        workbench.removeStartupBlocker( RuntimePluginsEntryPoint.class );
+                        workbench.removeStartupBlocker(RuntimePluginsEntryPoint.class);
                     }
-                } ).listDynamicMenus();
+                }).listDynamicMenus();
             }
-        } ).listRuntimePlugins();
+        }).listRuntimePlugins();
     }
 
-    public ResourceType getResourceType( String activityId ) {
+    public ResourceType getResourceType(String activityId) {
 
-        Activity activity = activityManager.getActivity(new DefaultPlaceRequest(activityId), false);
+        Activity activity = activityManager.getActivity(new DefaultPlaceRequest(activityId),
+                                                        false);
         if (activity != null) {
-            if( activity instanceof PerspectiveActivity){
+            if (activity instanceof PerspectiveActivity) {
                 return PERSPECTIVE;
             }
-            if( activity instanceof WorkbenchScreenActivity) {
+            if (activity instanceof WorkbenchScreenActivity) {
                 return SCREEN;
             }
-            if( activity instanceof WorkbenchEditorActivity) {
+            if (activity instanceof WorkbenchEditorActivity) {
                 return EDITOR;
             }
-            if( activity instanceof SplashScreenActivity) {
+            if (activity instanceof SplashScreenActivity) {
                 return EDITOR;
             }
-            if( activity instanceof PopupActivity) {
+            if (activity instanceof PopupActivity) {
                 return POPUP;
             }
         }

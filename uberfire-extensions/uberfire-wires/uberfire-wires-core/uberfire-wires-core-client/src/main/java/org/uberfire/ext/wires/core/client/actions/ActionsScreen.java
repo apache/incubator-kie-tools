@@ -39,12 +39,9 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 @WorkbenchScreen(identifier = "WiresActionsScreen")
 public class ActionsScreen extends Composite {
 
-    interface ViewBinder extends UiBinder<Widget, ActionsScreen> {
-
-    }
-
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    @UiField
+    public SimplePanel actions;
     @UiField
     PanelGroup accordion;
 
@@ -53,22 +50,18 @@ public class ActionsScreen extends Composite {
 
     @UiField
     PanelCollapse collapseActions;
-
-    @UiField
-    public SimplePanel actions;
-
     @Inject
     private SyncBeanManager iocManager;
 
     @PostConstruct
     public void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
-        accordion.setId( DOM.createUniqueId() );
-        headerActions.setDataParent( accordion.getId() );
-        headerActions.setDataTargetWidget( collapseActions );
-        
-        actions.add( iocManager.lookupBean( ActionsGroup.class ).getInstance() );
+        accordion.setId(DOM.createUniqueId());
+        headerActions.setDataParent(accordion.getId());
+        headerActions.setDataTargetWidget(collapseActions);
+
+        actions.add(iocManager.lookupBean(ActionsGroup.class).getInstance());
     }
 
     @WorkbenchPartTitle
@@ -82,4 +75,7 @@ public class ActionsScreen extends Composite {
         return this;
     }
 
+    interface ViewBinder extends UiBinder<Widget, ActionsScreen> {
+
+    }
 }

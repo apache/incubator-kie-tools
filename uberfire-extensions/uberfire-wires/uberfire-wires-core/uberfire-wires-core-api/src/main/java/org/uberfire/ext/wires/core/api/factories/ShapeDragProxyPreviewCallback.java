@@ -25,7 +25,6 @@ public interface ShapeDragProxyPreviewCallback {
      * @param x
      * @param y
      */
-    void callback( final double x,
-                   final double y );
-
+    void callback(final double x,
+                  final double y);
 }

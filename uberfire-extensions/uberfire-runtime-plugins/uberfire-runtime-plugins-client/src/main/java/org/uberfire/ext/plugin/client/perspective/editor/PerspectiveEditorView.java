@@ -33,6 +33,26 @@ public class PerspectiveEditorView
         implements UberView<PerspectiveEditorPresenter>,
                    PerspectiveEditorPresenter.View {
 
+    private static PerspectiveEditorViewBinder uiBinder = GWT.create(PerspectiveEditorViewBinder.class);
+    @UiField
+    FlowPanel layoutEditor;
+    private PerspectiveEditorPresenter presenter;
+
+    @PostConstruct
+    public void setup() {
+        initWidget(uiBinder.createAndBindUi(this));
+    }
+
+    @Override
+    public void init(final PerspectiveEditorPresenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void setupLayoutEditor(Widget widget) {
+        this.layoutEditor.add(widget);
+    }
+
     interface ViewBinder
             extends
             UiBinder<Widget, PerspectiveEditorView> {
@@ -43,27 +63,5 @@ public class PerspectiveEditorView
             extends
             UiBinder<Widget, PerspectiveEditorView> {
 
-    }
-
-    private static PerspectiveEditorViewBinder uiBinder = GWT.create( PerspectiveEditorViewBinder.class );
-
-    @UiField
-    FlowPanel layoutEditor;
-
-    private PerspectiveEditorPresenter presenter;
-
-    @PostConstruct
-    public void setup() {
-        initWidget( uiBinder.createAndBindUi( this ) );
-    }
-
-    @Override
-    public void init( final PerspectiveEditorPresenter presenter ) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public void setupLayoutEditor( Widget widget ) {
-        this.layoutEditor.add( widget );
     }
 }

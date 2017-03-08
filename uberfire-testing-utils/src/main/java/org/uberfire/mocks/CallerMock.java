@@ -28,34 +28,33 @@ public class CallerMock<T> implements Caller<T> {
     private RemoteCallback successCallBack;
     private ErrorCallback errorCallBack;
 
-    public CallerMock( T t ) {
-        callerProxy = (T) CallerProxy.newInstance( t );
+    public CallerMock(T t) {
+        callerProxy = (T) CallerProxy.newInstance(t);
     }
 
     @Override
     public T call() {
-        final CallerProxy localProxy = ( (CallerProxy) Proxy.getInvocationHandler( callerProxy ) );
-        localProxy.setSuccessCallBack( null );
-        localProxy.setErrorCallBack( null );
+        final CallerProxy localProxy = ((CallerProxy) Proxy.getInvocationHandler(callerProxy));
+        localProxy.setSuccessCallBack(null);
+        localProxy.setErrorCallBack(null);
         return callerProxy;
     }
 
     @Override
-    public T call( RemoteCallback<?> remoteCallback ) {
-        final CallerProxy localProxy = ( (CallerProxy) Proxy.getInvocationHandler( callerProxy ) );
-        localProxy.setSuccessCallBack( (RemoteCallback<Object>) remoteCallback );
-        localProxy.setErrorCallBack( null );
+    public T call(RemoteCallback<?> remoteCallback) {
+        final CallerProxy localProxy = ((CallerProxy) Proxy.getInvocationHandler(callerProxy));
+        localProxy.setSuccessCallBack((RemoteCallback<Object>) remoteCallback);
+        localProxy.setErrorCallBack(null);
         return callerProxy;
     }
 
     @Override
-    public T call( RemoteCallback<?> remoteCallback,
-                   ErrorCallback<?> errorCallback ) {
-        final CallerProxy localProxy = ( (CallerProxy) Proxy.getInvocationHandler( callerProxy ) );
-        localProxy.setSuccessCallBack( (RemoteCallback<Object>) remoteCallback );
-        localProxy.setErrorCallBack( (ErrorCallback<Object>) errorCallback );
+    public T call(RemoteCallback<?> remoteCallback,
+                  ErrorCallback<?> errorCallback) {
+        final CallerProxy localProxy = ((CallerProxy) Proxy.getInvocationHandler(callerProxy));
+        localProxy.setSuccessCallBack((RemoteCallback<Object>) remoteCallback);
+        localProxy.setErrorCallBack((ErrorCallback<Object>) errorCallback);
 
         return callerProxy;
     }
-
 }

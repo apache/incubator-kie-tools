@@ -17,5 +17,8 @@
 package org.uberfire.java.nio.file;
 
 public enum FileVisitResult {
-    CONTINUE, TERMINATE, SKIP_SUBTREE, SKIP_SIBLINGS;
+    CONTINUE,
+    TERMINATE,
+    SKIP_SUBTREE,
+    SKIP_SIBLINGS;
 }

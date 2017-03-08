@@ -15,9 +15,6 @@
  */
 package org.uberfire.workbench.model.impl;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-import static org.uberfire.workbench.model.ContextDisplayMode.SHOW;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -25,6 +22,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
@@ -34,8 +33,8 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import static org.uberfire.workbench.model.ContextDisplayMode.SHOW;
 
 /**
  * Default implementation of PanelDefinition
@@ -44,17 +43,13 @@ import jsinterop.annotations.JsType;
 @JsType
 public class PanelDefinitionImpl implements PanelDefinition {
 
-    private Integer height = null;
-    private Integer width = null;
-
-    private Integer minHeight = null;
-    private Integer minWidth = null;
-
     private final Set<PartDefinition> parts = new LinkedHashSet<PartDefinition>();
-
     //Ideally this should be a Set but the order of insertion is important
     private final List<PanelDefinition> children = new ArrayList<PanelDefinition>();
-
+    private Integer height = null;
+    private Integer width = null;
+    private Integer minHeight = null;
+    private Integer minWidth = null;
     private String elementId;
     private Position position;
     private String panelType;
@@ -65,19 +60,12 @@ public class PanelDefinitionImpl implements PanelDefinition {
 
     @JsIgnore
     public PanelDefinitionImpl() {
-        this( "org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter" );
+        this("org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter");
     }
 
     @JsIgnore
-    public PanelDefinitionImpl( final String type ) {
+    public PanelDefinitionImpl(final String type) {
         this.panelType = type;
-    }
-
-    public void setParent( PanelDefinition parent ) {
-        if ( this.parent != null && parent != null ) {
-            throw new IllegalStateException( "Can't change parent: this panel still belongs to " + this.parent );
-        }
-        this.parent = parent;
     }
 
     @Override
@@ -85,9 +73,11 @@ public class PanelDefinitionImpl implements PanelDefinition {
         return parent;
     }
 
-    @Override
-    public void setElementId( String id ) {
-        elementId = id;
+    public void setParent(PanelDefinition parent) {
+        if (this.parent != null && parent != null) {
+            throw new IllegalStateException("Can't change parent: this panel still belongs to " + this.parent);
+        }
+        this.parent = parent;
     }
 
     @Override
@@ -96,25 +86,30 @@ public class PanelDefinitionImpl implements PanelDefinition {
     }
 
     @Override
-    public void addPart( final PartDefinition part ) {
-        if ( part.getParentPanel() != null ) {
-            part.getParentPanel().removePart( part );
-        }
-        this.parts.add( part );
-        part.setParentPanel( this );
+    public void setElementId(String id) {
+        elementId = id;
     }
 
     @Override
-    public PartDefinition addPart( String partSpec ) {
-        PartDefinition pd = new PartDefinitionImpl( DefaultPlaceRequest.parse( partSpec ) );
-        addPart( pd );
+    public void addPart(final PartDefinition part) {
+        if (part.getParentPanel() != null) {
+            part.getParentPanel().removePart(part);
+        }
+        this.parts.add(part);
+        part.setParentPanel(this);
+    }
+
+    @Override
+    public PartDefinition addPart(String partSpec) {
+        PartDefinition pd = new PartDefinitionImpl(DefaultPlaceRequest.parse(partSpec));
+        addPart(pd);
         return pd;
     }
 
     @Override
-    public boolean removePart( PartDefinition part ) {
-        if ( this.parts.remove( part ) ) {
-            part.setParentPanel( null );
+    public boolean removePart(PartDefinition part) {
+        if (this.parts.remove(part)) {
+            part.setParentPanel(null);
             return true;
         }
         return false;
@@ -129,81 +124,80 @@ public class PanelDefinitionImpl implements PanelDefinition {
     @Override
     @JsIgnore
     public List<PanelDefinition> getChildren() {
-        return Collections.unmodifiableList( new ArrayList<PanelDefinition>( children ) );
+        return Collections.unmodifiableList(new ArrayList<PanelDefinition>(children));
     }
 
     @Override
-    public void insertChild( final Position position,
-                             final PanelDefinition panel ) {
-        if ( panel == null ) {
+    public void insertChild(final Position position,
+                            final PanelDefinition panel) {
+        if (panel == null) {
             return;
         }
-        if ( children.contains( panel ) ) {
+        if (children.contains(panel)) {
             return;
         }
 
         // parent wiring
-        ((PanelDefinitionImpl)panel).setParent(this);
+        ((PanelDefinitionImpl) panel).setParent(this);
 
-        checkPosition( position );
-        panel.setPosition( position );
-        final PanelDefinition existingChild = getChild( position );
-        if ( existingChild == null ) {
-            children.add( panel );
-
+        checkPosition(position);
+        panel.setPosition(position);
+        final PanelDefinition existingChild = getChild(position);
+        if (existingChild == null) {
+            children.add(panel);
         } else {
-            removeChild( position );
-            children.add( panel );
-            panel.insertChild( position,
-                               existingChild );
+            removeChild(position);
+            children.add(panel);
+            panel.insertChild(position,
+                              existingChild);
         }
     }
 
     @Override
-    public void appendChild( final Position position,
-                             final PanelDefinition panel ) {
+    public void appendChild(final Position position,
+                            final PanelDefinition panel) {
 
-        if ( panel == null ) {
+        if (panel == null) {
             return;
         }
-        if ( children.contains( panel ) ) {
+        if (children.contains(panel)) {
             return;
         }
-        checkPosition( position );
-        panel.setPosition( position );
-        final PanelDefinition existingChild = getChild( position );
-        if ( existingChild == null ) {
+        checkPosition(position);
+        panel.setPosition(position);
+        final PanelDefinition existingChild = getChild(position);
+        if (existingChild == null) {
 
             // parent wiring
-            ((PanelDefinitionImpl)panel).setParent(this);
+            ((PanelDefinitionImpl) panel).setParent(this);
 
-            children.add( panel );
+            children.add(panel);
         } else {
-            existingChild.appendChild( position,
-                                       panel );
+            existingChild.appendChild(position,
+                                      panel);
         }
     }
 
     @Override
-    public void appendChild( final PanelDefinition panel ) {
+    public void appendChild(final PanelDefinition panel) {
 
-        if ( panel == null ) {
+        if (panel == null) {
             return;
         }
-        if ( children.contains( panel ) ) {
+        if (children.contains(panel)) {
             return;
         }
 
         // parent wiring
-        ((PanelDefinitionImpl)panel).setParent(this);
+        ((PanelDefinitionImpl) panel).setParent(this);
 
-        children.add( panel );
+        children.add(panel);
     }
 
     @Override
-    public PanelDefinition getChild( final Position position ) {
-        for ( PanelDefinition child : children ) {
-            if ( child.getPosition() == position ) {
+    public PanelDefinition getChild(final Position position) {
+        for (PanelDefinition child : children) {
+            if (child.getPosition() == position) {
                 return child;
             }
         }
@@ -211,13 +205,13 @@ public class PanelDefinitionImpl implements PanelDefinition {
     }
 
     @Override
-    public void removeChild( final Position position ) {
+    public void removeChild(final Position position) {
         Iterator<PanelDefinition> itr = children.iterator();
-        while ( itr.hasNext() ) {
+        while (itr.hasNext()) {
             final PanelDefinition child = itr.next();
-            if ( child.getPosition() == position ) {
+            if (child.getPosition() == position) {
                 // parent wiring
-                ((PanelDefinitionImpl)child).setParent(null);
+                ((PanelDefinitionImpl) child).setParent(null);
 
                 itr.remove();
             }
@@ -229,7 +223,7 @@ public class PanelDefinitionImpl implements PanelDefinition {
         return isRoot;
     }
 
-    public void setRoot( boolean isRoot ) {
+    public void setRoot(boolean isRoot) {
         this.isRoot = isRoot;
     }
 
@@ -239,8 +233,9 @@ public class PanelDefinitionImpl implements PanelDefinition {
     }
 
     @Override
-    public void setPanelType( String fqcn ) {
-        this.panelType = checkNotNull( "fqcn", fqcn );
+    public void setPanelType(String fqcn) {
+        this.panelType = checkNotNull("fqcn",
+                                      fqcn);
     }
 
     @Override
@@ -251,8 +246,8 @@ public class PanelDefinitionImpl implements PanelDefinition {
 
     @Override
     @JsIgnore
-    public void setHeight( Integer height ) {
-        if ( height != null ) {
+    public void setHeight(Integer height) {
+        if (height != null) {
             this.height = height;
         }
     }
@@ -265,8 +260,8 @@ public class PanelDefinitionImpl implements PanelDefinition {
 
     @Override
     @JsIgnore
-    public void setWidth( Integer width ) {
-        if ( width != null ) {
+    public void setWidth(Integer width) {
+        if (width != null) {
             this.width = width;
         }
     }
@@ -279,7 +274,7 @@ public class PanelDefinitionImpl implements PanelDefinition {
 
     @Override
     @JsIgnore
-    public final void setMinHeight( Integer minHeight ) {
+    public final void setMinHeight(Integer minHeight) {
         this.minHeight = minHeight;
     }
 
@@ -291,7 +286,7 @@ public class PanelDefinitionImpl implements PanelDefinition {
 
     @Override
     @JsIgnore
-    public final void setMinWidth( Integer minWidth ) {
+    public final void setMinWidth(Integer minWidth) {
         this.minWidth = minWidth;
     }
 
@@ -301,7 +296,7 @@ public class PanelDefinitionImpl implements PanelDefinition {
     }
 
     @Override
-    public void setPosition( final Position position ) {
+    public void setPosition(final Position position) {
         this.position = position;
     }
 
@@ -311,13 +306,13 @@ public class PanelDefinitionImpl implements PanelDefinition {
     }
 
     @Override
-    public void setContextDefinition( final ContextDefinition contextDefinition ) {
-        this.contextDefinition = contextDefinition;
+    public ContextDefinition getContextDefinition() {
+        return contextDefinition;
     }
 
     @Override
-    public ContextDefinition getContextDefinition() {
-        return contextDefinition;
+    public void setContextDefinition(final ContextDefinition contextDefinition) {
+        this.contextDefinition = contextDefinition;
     }
 
     @Override
@@ -326,22 +321,21 @@ public class PanelDefinitionImpl implements PanelDefinition {
     }
 
     @Override
-    public void setContextDisplayMode( final ContextDisplayMode contextDisplayMode ) {
+    public void setContextDisplayMode(final ContextDisplayMode contextDisplayMode) {
         this.contextDisplayMode = contextDisplayMode;
     }
 
-    private void checkPosition( final Position position ) {
-        if ( position == CompassPosition.ROOT || position == CompassPosition.SELF || position == CompassPosition.NONE ) {
-            throw new IllegalArgumentException( "Position must be NORTH, SOUTH, EAST or WEST" );
+    private void checkPosition(final Position position) {
+        if (position == CompassPosition.ROOT || position == CompassPosition.SELF || position == CompassPosition.NONE) {
+            throw new IllegalArgumentException("Position must be NORTH, SOUTH, EAST or WEST");
         }
     }
 
     @Override
     public String toString() {
         String fullName = getClass().getName();
-        String simpleName = fullName.substring( fullName.lastIndexOf( '.' ) + 1 );
+        String simpleName = fullName.substring(fullName.lastIndexOf('.') + 1);
         return simpleName + " [id=" + elementId + ", parts=" + parts + ", children=" + children + ", panelType=" + panelType
                 + ", contextDefinition=" + contextDefinition + ", contextDisplayMode=" + contextDisplayMode + "]";
     }
-
 }

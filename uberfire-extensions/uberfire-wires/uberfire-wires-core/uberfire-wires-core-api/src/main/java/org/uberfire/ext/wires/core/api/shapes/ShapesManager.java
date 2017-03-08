@@ -29,18 +29,17 @@ public interface ShapesManager {
      * Add a Shape to the Canvas
      * @param shape
      */
-    void addShape( final WiresBaseShape shape );
+    void addShape(final WiresBaseShape shape);
 
     /**
      * Delete a Shape from the Canvas. Implementations may prompt the User for confirmation.
      * @param shape
      */
-    void deleteShape( final WiresBaseShape shape );
+    void deleteShape(final WiresBaseShape shape);
 
     /**
      * Forcefully delete a Shape from the Canvas. This allows deletion of Shapes without prompting the User for confirmation.
      * @param shape
      */
-    void forceDeleteShape( final WiresBaseShape shape );
-
+    void forceDeleteShape(final WiresBaseShape shape);
 }

@@ -20,14 +20,14 @@ import org.uberfire.workbench.events.UberFireEvent;
 
 /**
  * <p>A user wants to remove an assigned role from a user.</p>
- * 
  * @since 0.8.0
  */
 public class OnRemoveUserRoleEvent extends ContextualEvent implements UberFireEvent {
-    
+
     private final String name;
 
-    public OnRemoveUserRoleEvent(Object context, String name) {
+    public OnRemoveUserRoleEvent(Object context,
+                                 String name) {
         super(context);
         this.name = name;
     }

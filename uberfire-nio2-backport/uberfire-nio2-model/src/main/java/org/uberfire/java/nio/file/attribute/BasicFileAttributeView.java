@@ -22,7 +22,7 @@ public interface BasicFileAttributeView extends FileAttributeView {
 
     <T extends BasicFileAttributes> T readAttributes() throws IOException;
 
-    void setTimes( final FileTime lastModifiedTime,
-                   final FileTime lastAccessTime,
-                   final FileTime createTime ) throws IOException;
+    void setTimes(final FileTime lastModifiedTime,
+                  final FileTime lastAccessTime,
+                  final FileTime createTime) throws IOException;
 }

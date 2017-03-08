@@ -28,9 +28,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.*;
@@ -48,13 +45,17 @@ public class LiveSearchDropDownTest {
     @Spy
     LiveSearchService searchService = new LiveSearchService() {
 
-        public void search(String p, int max, LiveSearchCallback c) {
+        public void search(String p,
+                           int max,
+                           LiveSearchCallback c) {
             switch (p) {
                 case "a":
                     c.afterSearch(Collections.singletonList("a"));
                     break;
                 case "b":
-                    c.afterSearch(Arrays.asList("a", "b", "c"));
+                    c.afterSearch(Arrays.asList("a",
+                                                "b",
+                                                "c"));
                     break;
                 default:
                     c.afterSearch(Collections.emptyList());
@@ -72,7 +73,7 @@ public class LiveSearchDropDownTest {
     LiveSearchDropDown presenter;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         presenter = spy(new LiveSearchDropDown(view));
         presenter.setOnChange(onChangeCommand);
         presenter.setSearchService(searchService);
@@ -91,7 +92,8 @@ public class LiveSearchDropDownTest {
         presenter.setSearchHint("a");
         presenter.setSelectorHint("b");
 
-        assertEquals(presenter.getMaxItems(), 10);
+        assertEquals(presenter.getMaxItems(),
+                     10);
 
         verify(view).setWidth(200);
         verify(view).setSearchHint("a");
@@ -111,13 +113,16 @@ public class LiveSearchDropDownTest {
     public void testSearch() {
         presenter.search("a");
 
-        assertEquals(presenter.getLastSearch(), "a");
+        assertEquals(presenter.getLastSearch(),
+                     "a");
 
         verify(view).clearItems();
         verify(view).addItem("a");
         verify(view).searchFinished();
 
-        verify(searchService).search(eq("a"), anyInt(), any());
+        verify(searchService).search(eq("a"),
+                                     anyInt(),
+                                     any());
     }
 
     @Test
@@ -127,14 +132,17 @@ public class LiveSearchDropDownTest {
         presenter.setMaxItems(15);
         presenter.search("");
 
-        assertEquals(presenter.getLastSearch(), "");
+        assertEquals(presenter.getLastSearch(),
+                     "");
 
         verify(view).searchInProgress("s");
         verify(view).clearItems();
         verify(view).noItems("n");
         verify(view).searchFinished();
 
-        verify(searchService).search(eq(""), eq(15), any());
+        verify(searchService).search(eq(""),
+                                     eq(15),
+                                     any());
     }
 
     @Test
@@ -146,7 +154,9 @@ public class LiveSearchDropDownTest {
         verify(view).addItem("a");
         verify(view).searchFinished();
 
-        verify(searchService).search(eq("a"), anyInt(), any());
+        verify(searchService).search(eq("a"),
+                                     anyInt(),
+                                     any());
     }
 
     @Test
@@ -159,16 +169,26 @@ public class LiveSearchDropDownTest {
         presenter.search("");
 
         assertTrue(presenter.isSearchCacheEnabled());
-        assertEquals(presenter.getLastSearch(), "");
+        assertEquals(presenter.getLastSearch(),
+                     "");
 
-        verify(view, times(2)).searchInProgress(anyString());
-        verify(searchService).search(eq("a"), anyInt(), any());
-        verify(searchService).search(eq(""), anyInt(), any());
-        verify(view, times(2)).searchFinished();
+        verify(view,
+               times(2)).searchInProgress(anyString());
+        verify(searchService).search(eq("a"),
+                                     anyInt(),
+                                     any());
+        verify(searchService).search(eq(""),
+                                     anyInt(),
+                                     any());
+        verify(view,
+               times(2)).searchFinished();
 
-        verify(view, times(6)).clearItems();
-        verify(view, times(3)).addItem("a");
-        verify(view, times(3)).noItems(anyString());
+        verify(view,
+               times(6)).clearItems();
+        verify(view,
+               times(3)).addItem("a");
+        verify(view,
+               times(3)).noItems(anyString());
     }
 
     @Test
@@ -183,16 +203,28 @@ public class LiveSearchDropDownTest {
         presenter.search("");
 
         assertFalse(presenter.isSearchCacheEnabled());
-        assertEquals(presenter.getLastSearch(), "");
+        assertEquals(presenter.getLastSearch(),
+                     "");
 
-        verify(view, times(6)).searchInProgress(anyString());
-        verify(searchService, times(3)).search(eq("a"), anyInt(), any());
-        verify(searchService, times(3)).search(eq(""), anyInt(), any());
-        verify(view, times(6)).searchFinished();
+        verify(view,
+               times(6)).searchInProgress(anyString());
+        verify(searchService,
+               times(3)).search(eq("a"),
+                                anyInt(),
+                                any());
+        verify(searchService,
+               times(3)).search(eq(""),
+                                anyInt(),
+                                any());
+        verify(view,
+               times(6)).searchFinished();
 
-        verify(view, times(6)).clearItems();
-        verify(view, times(3)).addItem("a");
-        verify(view, times(3)).noItems(anyString());
+        verify(view,
+               times(6)).clearItems();
+        verify(view,
+               times(3)).addItem("a");
+        verify(view,
+               times(3)).noItems(anyString());
     }
 
     @Test
@@ -203,17 +235,22 @@ public class LiveSearchDropDownTest {
         verify(presenter).showItemList(itemListCaptor.capture());
 
         List itemList = itemListCaptor.getValue();
-        assertEquals(itemList.size(), 3);
-        assertEquals(itemList.get(0), "a");
-        assertEquals(itemList.get(1), "b");
-        assertEquals(itemList.get(2), "c");
+        assertEquals(itemList.size(),
+                     3);
+        assertEquals(itemList.get(0),
+                     "a");
+        assertEquals(itemList.get(1),
+                     "b");
+        assertEquals(itemList.get(2),
+                     "c");
     }
 
     @Test
     public void testItemSelected() {
         presenter.onItemSelected("a");
 
-        assertEquals(presenter.getSelectedItem(), "a");
+        assertEquals(presenter.getSelectedItem(),
+                     "a");
         verify(view).setDropDownText("a");
         verify(onChangeCommand).execute();
     }

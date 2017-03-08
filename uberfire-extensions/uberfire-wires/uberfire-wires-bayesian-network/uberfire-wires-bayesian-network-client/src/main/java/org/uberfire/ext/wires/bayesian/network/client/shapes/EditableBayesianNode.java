@@ -30,99 +30,96 @@ import org.uberfire.ext.wires.core.client.util.ShapesUtils;
 public class EditableBayesianNode extends WiresBaseShape implements OverridesFactoryDescription {
 
     private static final int BOUNDARY_SIZE = 10;
-
+    private final Rectangle rectangle;
+    private final Rectangle bounding;
+    private final BayesVariable variable;
     private Rectangle header;
     private Text textHeader;
     private Map<Text, List<Rectangle>> porcentualBars;
 
-    private final Rectangle rectangle;
-    private final Rectangle bounding;
-
-    private final BayesVariable variable;
-
     public EditableBayesianNode() {
-        this( 0,
-              0,
-              0,
-              0,
-              "" );
+        this(0,
+             0,
+             0,
+             0,
+             "");
     }
 
-    public EditableBayesianNode( final Rectangle shape ) {
-        this( shape.getWidth(),
-              shape.getHeight(),
-              shape.getX(),
-              shape.getY(),
-              BayesianUtils.getNodeColors()[ 0 ][ 0 ] );
+    public EditableBayesianNode(final Rectangle shape) {
+        this(shape.getWidth(),
+             shape.getHeight(),
+             shape.getX(),
+             shape.getY(),
+             BayesianUtils.getNodeColors()[0][0]);
     }
 
-    public EditableBayesianNode( final double width,
-                                 final double height,
-                                 final double positionXNode,
-                                 final double positionYNode,
-                                 final String fillColor ) {
-        this( width,
-              height,
-              positionXNode,
-              positionYNode,
-              fillColor,
-              new BayesVariable() );
+    public EditableBayesianNode(final double width,
+                                final double height,
+                                final double positionXNode,
+                                final double positionYNode,
+                                final String fillColor) {
+        this(width,
+             height,
+             positionXNode,
+             positionYNode,
+             fillColor,
+             new BayesVariable());
     }
 
-    public EditableBayesianNode( final double width,
-                                 final double height,
-                                 final double positionXNode,
-                                 final double positionYNode,
-                                 final String fillColor,
-                                 final BayesVariable variable ) {
+    public EditableBayesianNode(final double width,
+                                final double height,
+                                final double positionXNode,
+                                final double positionYNode,
+                                final String fillColor,
+                                final BayesVariable variable) {
         this.variable = variable;
 
-        rectangle = new Rectangle( width,
-                                   height );
-        rectangle.setStrokeColor( ShapesUtils.RGB_STROKE_SHAPE );
-        rectangle.setStrokeWidth( ShapesUtils.RGB_STROKE_WIDTH_SHAPE );
-        rectangle.setFillColor( fillColor );
+        rectangle = new Rectangle(width,
+                                  height);
+        rectangle.setStrokeColor(ShapesUtils.RGB_STROKE_SHAPE);
+        rectangle.setStrokeWidth(ShapesUtils.RGB_STROKE_WIDTH_SHAPE);
+        rectangle.setFillColor(fillColor);
 
-        bounding = new Rectangle( width + BOUNDARY_SIZE,
-                                  height + BOUNDARY_SIZE,
-                                  rectangle.getCornerRadius() );
-        bounding.setX( getX() - ( BOUNDARY_SIZE / 2 ) );
-        bounding.setY( getY() - ( BOUNDARY_SIZE / 2 ) );
-        bounding.setStrokeWidth( BOUNDARY_SIZE );
-        bounding.setAlpha( 0.1 );
+        bounding = new Rectangle(width + BOUNDARY_SIZE,
+                                 height + BOUNDARY_SIZE,
+                                 rectangle.getCornerRadius());
+        bounding.setX(getX() - (BOUNDARY_SIZE / 2));
+        bounding.setY(getY() - (BOUNDARY_SIZE / 2));
+        bounding.setStrokeWidth(BOUNDARY_SIZE);
+        bounding.setAlpha(0.1);
 
-        add( rectangle );
+        add(rectangle);
 
-        setX( positionXNode );
-        setY( positionYNode );
+        setX(positionXNode);
+        setY(positionYNode);
 
         this.porcentualBars = Maps.newHashMap();
     }
 
     @Override
-    public void setSelected( final boolean isSelected ) {
-        if ( isSelected ) {
-            add( bounding );
+    public void setSelected(final boolean isSelected) {
+        if (isSelected) {
+            add(bounding);
         } else {
-            remove( bounding );
+            remove(bounding);
         }
     }
 
     @Override
-    public boolean contains( double cx,
-                             double cy ) {
+    public boolean contains(double cx,
+                            double cy) {
         //We don't have any ControlPoints so no need to worry about whether we contain a given point
         return false;
     }
 
     public void buildNode() {
-        add( this.header );
-        add( this.textHeader );
-        for ( Map.Entry<Text, List<Rectangle>> porcenualBar : this.porcentualBars.entrySet() ) {
-            for ( Rectangle rec : porcenualBar.getValue() ) {
-                add( rec );
+        add(this.header);
+        add(this.textHeader);
+        for (Map.Entry<Text, List<Rectangle>> porcenualBar : this.porcentualBars.entrySet()) {
+            for (Rectangle rec : porcenualBar.getValue()) {
+                add(rec);
             }
-            add( porcenualBar.getKey() );
+            add(porcenualBar.getKey());
         }
     }
 
@@ -134,7 +131,7 @@ public class EditableBayesianNode extends WiresBaseShape implements OverridesFac
         return header;
     }
 
-    public void setHeader( final Rectangle header ) {
+    public void setHeader(final Rectangle header) {
         this.header = header;
     }
 
@@ -142,7 +139,7 @@ public class EditableBayesianNode extends WiresBaseShape implements OverridesFac
         return textHeader;
     }
 
-    public void setTextHeader( final Text textHeader ) {
+    public void setTextHeader(final Text textHeader) {
         this.textHeader = textHeader;
     }
 
@@ -150,7 +147,7 @@ public class EditableBayesianNode extends WiresBaseShape implements OverridesFac
         return porcentualBars;
     }
 
-    public void setPorcentualBars( final Map<Text, List<Rectangle>> porcentualBars ) {
+    public void setPorcentualBars(final Map<Text, List<Rectangle>> porcentualBars) {
         this.porcentualBars = porcentualBars;
     }
 

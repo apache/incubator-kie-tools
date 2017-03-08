@@ -34,5 +34,4 @@ public class SaveRoleEvent implements UberFireEvent {
     public String toString() {
         return "SaveRoleEvent [name=" + name + "]";
     }
-
 }

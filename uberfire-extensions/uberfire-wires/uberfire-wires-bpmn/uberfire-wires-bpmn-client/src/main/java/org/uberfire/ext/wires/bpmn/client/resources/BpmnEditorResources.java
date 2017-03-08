@@ -24,11 +24,10 @@ public interface BpmnEditorResources
         extends
         ClientBundle {
 
-    BpmnEditorResources INSTANCE = GWT.create( BpmnEditorResources.class );
+    BpmnEditorResources INSTANCE = GWT.create(BpmnEditorResources.class);
 
     @Source("css/bpmn.css")
     BpmnEditorCss css();
 
     BpmnEditorImageResources images();
-
 }

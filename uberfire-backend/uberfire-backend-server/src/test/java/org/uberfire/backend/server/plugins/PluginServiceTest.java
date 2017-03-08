@@ -15,13 +15,13 @@
  */
 package org.uberfire.backend.server.plugins;
 
+import javax.servlet.ServletContext;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.plugins.engine.PluginManager;
-
-import javax.servlet.ServletContext;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
@@ -32,7 +32,6 @@ public class PluginServiceTest {
     @Mock
     PluginManager pluginManager;
 
-
     PluginService pluginService;
 
     @Test
@@ -42,8 +41,8 @@ public class PluginServiceTest {
 
         pluginService.init(mock(ServletContext.class));
 
-        verify(pluginManager).init(path, path);
-
+        verify(pluginManager).init(path,
+                                   path);
     }
 
     @Test
@@ -53,14 +52,16 @@ public class PluginServiceTest {
 
         pluginService.init(mock(ServletContext.class));
 
-        verify(pluginManager, never()).init(anyString(), anyString());
-
+        verify(pluginManager,
+               never()).init(anyString(),
+                             anyString());
     }
 
     private PluginService createPluginsService(final String validPath) {
         return new PluginService(pluginManager) {
             @Override
-            String getPlugins(ServletContext servletContext, String plugins) {
+            String getPlugins(ServletContext servletContext,
+                              String plugins) {
                 return validPath;
             }
 
@@ -70,5 +71,4 @@ public class PluginServiceTest {
             }
         };
     }
-
 }

@@ -9,8 +9,15 @@ public class SocialTimelineCacheClusterPersistenceTest {
 
     @Test
     public void testDisposableRegistry() {
-        final SocialTimelineCacheClusterPersistence object = new SocialTimelineCacheClusterPersistence( null, null, null, null, null, null, null, null, null );
-        assertTrue( PriorityDisposableRegistry.getDisposables().contains( object ) );
+        final SocialTimelineCacheClusterPersistence object = new SocialTimelineCacheClusterPersistence(null,
+                                                                                                       null,
+                                                                                                       null,
+                                                                                                       null,
+                                                                                                       null,
+                                                                                                       null,
+                                                                                                       null,
+                                                                                                       null,
+                                                                                                       null);
+        assertTrue(PriorityDisposableRegistry.getDisposables().contains(object));
     }
-
 }

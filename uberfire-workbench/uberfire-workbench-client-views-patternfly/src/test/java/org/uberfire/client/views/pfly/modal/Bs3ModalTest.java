@@ -42,5 +42,4 @@ public class Bs3ModalTest {
         verify(modal).setId(anyString());
         verify(modal).setRemoveOnHide(true);
     }
-
 }

@@ -30,19 +30,19 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
  * A perspective with a root panel of type StaticWorkbenchPanelPresenter.
  */
 @Dependent
-@Named( "org.uberfire.wbtest.client.resize.OverflowStaticPerspective" )
+@Named("org.uberfire.wbtest.client.resize.OverflowStaticPerspective")
 public class OverflowStaticPerspective extends AbstractTestPerspectiveActivity {
 
     @Inject
-    public OverflowStaticPerspective( PlaceManager placeManager ) {
-        super( placeManager );
+    public OverflowStaticPerspective(PlaceManager placeManager) {
+        super(placeManager);
     }
 
     @Override
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
-        PerspectiveDefinition pdef = new PerspectiveDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
-        pdef.setName( "OverflowStaticPerspective" );
-        pdef.getRoot().addPart( OverflowTestScreen.class.getName() );
+        PerspectiveDefinition pdef = new PerspectiveDefinitionImpl(StaticWorkbenchPanelPresenter.class.getName());
+        pdef.setName("OverflowStaticPerspective");
+        pdef.getRoot().addPart(OverflowTestScreen.class.getName());
         return pdef;
     }
 }

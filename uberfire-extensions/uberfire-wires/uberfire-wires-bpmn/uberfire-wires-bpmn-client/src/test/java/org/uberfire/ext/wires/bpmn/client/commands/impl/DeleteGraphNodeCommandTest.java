@@ -32,7 +32,8 @@ import org.uberfire.ext.wires.bpmn.client.commands.Results;
 import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
 import org.uberfire.ext.wires.bpmn.client.rules.impl.DefaultRuleManagerImpl;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 public class DeleteGraphNodeCommandTest extends AbstractBaseRuleTest {
 
@@ -43,28 +44,28 @@ public class DeleteGraphNodeCommandTest extends AbstractBaseRuleTest {
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
         //Set a minimum of 1 node
-        ruleManager.addRule( new CardinalityRuleImpl( "Start Node Cardinality Rule",
-                                                      new DefaultRoleImpl( "sequence_start" ),
-                                                      1,
-                                                      1,
-                                                      Collections.EMPTY_SET,
-                                                      Collections.EMPTY_SET ) );
+        ruleManager.addRule(new CardinalityRuleImpl("Start Node Cardinality Rule",
+                                                    new DefaultRoleImpl("sequence_start"),
+                                                    1,
+                                                    1,
+                                                    Collections.EMPTY_SET,
+                                                    Collections.EMPTY_SET));
 
-        process.addNode( node );
+        process.addNode(node);
 
         final CommandManager commandManager = new DefaultCommandManagerImpl();
-        final Results results = commandManager.execute( ruleManager,
-                                                        new DeleteGraphNodeCommand( process,
-                                                                                    node ) );
+        final Results results = commandManager.execute(ruleManager,
+                                                       new DeleteGraphNodeCommand(process,
+                                                                                  node));
 
-        assertNotNull( results );
-        assertEquals( 1,
-                      results.getMessages().size() );
+        assertNotNull(results);
+        assertEquals(1,
+                     results.getMessages().size());
 
-        assertEquals( 1,
-                      process.size() );
-        assertEquals( node,
-                      process.getNode( node.getId() ) );
+        assertEquals(1,
+                     process.size());
+        assertEquals(node,
+                     process.getNode(node.getId()));
     }
 
     @Test
@@ -74,28 +75,28 @@ public class DeleteGraphNodeCommandTest extends AbstractBaseRuleTest {
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
         //Set a minimum of 1 node
-        ruleManager.addRule( new CardinalityRuleImpl( "End Node Cardinality Rule",
-                                                      new DefaultRoleImpl( "sequence_end" ),
-                                                      1,
-                                                      1,
-                                                      Collections.EMPTY_SET,
-                                                      Collections.EMPTY_SET ) );
+        ruleManager.addRule(new CardinalityRuleImpl("End Node Cardinality Rule",
+                                                    new DefaultRoleImpl("sequence_end"),
+                                                    1,
+                                                    1,
+                                                    Collections.EMPTY_SET,
+                                                    Collections.EMPTY_SET));
 
-        process.addNode( node );
+        process.addNode(node);
 
         final CommandManager commandManager = new DefaultCommandManagerImpl();
-        final Results results = commandManager.execute( ruleManager,
-                                                        new DeleteGraphNodeCommand( process,
-                                                                                    node ) );
+        final Results results = commandManager.execute(ruleManager,
+                                                       new DeleteGraphNodeCommand(process,
+                                                                                  node));
 
-        assertNotNull( results );
-        assertEquals( 1,
-                      results.getMessages().size() );
+        assertNotNull(results);
+        assertEquals(1,
+                     results.getMessages().size());
 
-        assertEquals( 1,
-                      process.size() );
-        assertEquals( node,
-                      process.getNode( node.getId() ) );
+        assertEquals(1,
+                     process.size());
+        assertEquals(node,
+                     process.getNode(node.getId()));
     }
 
     @Test
@@ -104,23 +105,22 @@ public class DeleteGraphNodeCommandTest extends AbstractBaseRuleTest {
         final BpmnGraphNode node = new TestDummyNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : getContainmentRules() ) {
-            ruleManager.addRule( rule );
+        for (Rule rule : getContainmentRules()) {
+            ruleManager.addRule(rule);
         }
 
-        process.addNode( node );
+        process.addNode(node);
 
         final CommandManager commandManager = new DefaultCommandManagerImpl();
-        final Results results = commandManager.execute( ruleManager,
-                                                        new DeleteGraphNodeCommand( process,
-                                                                                    node ) );
+        final Results results = commandManager.execute(ruleManager,
+                                                       new DeleteGraphNodeCommand(process,
+                                                                                  node));
 
-        assertNotNull( results );
-        assertEquals( 0,
-                      results.getMessages().size() );
+        assertNotNull(results);
+        assertEquals(0,
+                     results.getMessages().size());
 
-        assertEquals( 0,
-                      process.size() );
+        assertEquals(0,
+                     process.size());
     }
-
 }

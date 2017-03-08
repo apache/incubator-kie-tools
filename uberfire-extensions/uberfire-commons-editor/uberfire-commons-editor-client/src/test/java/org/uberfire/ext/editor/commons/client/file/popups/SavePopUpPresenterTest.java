@@ -55,71 +55,79 @@ public class SavePopUpPresenterTest {
 
     @Before
     public void init() throws Exception {
-        presenter = new SavePopUpPresenter( view, saveInProgressEvent, toggleCommentPresenter );
+        presenter = new SavePopUpPresenter(view,
+                                           saveInProgressEvent,
+                                           toggleCommentPresenter);
     }
 
     @Test
     public void testSetup() throws Exception {
         presenter.setup();
-        verify( view ).init( presenter );
+        verify(view).init(presenter);
     }
 
     @Test
     public void testShowWithoutPath() throws Exception {
-        presenter.show( command );
+        presenter.show(command);
 
-        verify( view ).show();
-        assertEquals( command, presenter.getCommand() );
+        verify(view).show();
+        assertEquals(command,
+                     presenter.getCommand());
     }
 
     @Test
     public void testShowWithAPathThatIsVersioned() throws Exception {
         final Path versionedPath = getVersionedPath();
 
-        presenter.show( versionedPath, command );
+        presenter.show(versionedPath,
+                       command);
 
-        verify( view ).show();
-        verifyNoMoreInteractions( saveInProgressEvent );
+        verify(view).show();
+        verifyNoMoreInteractions(saveInProgressEvent);
     }
 
     @Test
     public void testShowWithAPathThatIsNotVersioned() throws Exception {
-        presenter.show( path, command );
+        presenter.show(path,
+                       command);
 
-        verifyNoMoreInteractions( view );
-        verify( command ).execute( "" );
-        verify( saveInProgressEvent ).fire( new SaveInProgressEvent( any( Path.class ) ) );
+        verifyNoMoreInteractions(view);
+        verify(command).execute("");
+        verify(saveInProgressEvent).fire(new SaveInProgressEvent(any(Path.class)));
     }
 
     @Test
     public void testSaveWithCommand() throws Exception {
-        when( toggleCommentPresenter.getComment() ).thenReturn( "test" );
+        when(toggleCommentPresenter.getComment()).thenReturn("test");
 
-        presenter.show( command );
+        presenter.show(command);
         presenter.save();
 
-        verify( command ).execute( "test" );
-        verify( view ).hide();
+        verify(command).execute("test");
+        verify(view).hide();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSaveWithoutCommand() throws Exception {
-        presenter.show( null );
+        presenter.show(null);
         presenter.save();
     }
 
     private Path getVersionedPath() {
-        return PathFactory.newPath( "fileName", "uri", new HashMap<String, Object>() {
-            {
-                put( PathFactory.VERSION_PROPERTY, true );
-            }
-        } );
+        return PathFactory.newPath("fileName",
+                                   "uri",
+                                   new HashMap<String, Object>() {
+                                       {
+                                           put(PathFactory.VERSION_PROPERTY,
+                                               true);
+                                       }
+                                   });
     }
 
     @Test
     public void cancel() throws Exception {
         presenter.cancel();
 
-        verify( view ).hide();
+        verify(view).hide();
     }
 }

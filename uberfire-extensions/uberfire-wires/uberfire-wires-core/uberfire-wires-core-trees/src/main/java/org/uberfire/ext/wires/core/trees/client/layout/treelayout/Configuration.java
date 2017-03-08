@@ -17,12 +17,12 @@ package org.uberfire.ext.wires.core.trees.client.layout.treelayout;
 
 /**
  * Used to configure the tree layout algorithm.
- * <p/>
+ * <p>
  * Also see <a href="package-summary.html">this overview</a>.
  * @param <TreeNode> <p/>
- * <p/>
+ * <p>
  * Adapted from https://code.google.com/p/treelayout/ to be available to GWT clients
- * <p/>
+ * <p>
  * @author Udo Borkowski (ub@abego.org)
  */
 public interface Configuration<TreeNode> {
@@ -31,21 +31,11 @@ public interface Configuration<TreeNode> {
     // rootLocation
 
     /**
-     * Identifies the sides of a rectangle (top, left, ...)
-     */
-    public enum Location {
-        Top, Left, Bottom, Right
-    }
-
-    // ------------------------------------------------------------------------
-    // alignmentInLevel
-
-    /**
      * Returns the position of the root node in the diagram.
-     * <p/>
+     * <p>
      * By default the root of the tree is located at the top of the diagram.
      * However one may also put it at the left, right or bottom of the diagram.
-     * <p/>
+     * <p>
      * <table border="1">
      * <tr>
      * <th>Top (Default)</th>
@@ -64,13 +54,8 @@ public interface Configuration<TreeNode> {
      */
     Location getRootLocation();
 
-    /**
-     * Possible alignments of a node within a level (centered, towards or away
-     * from root)
-     */
-    public enum AlignmentInLevel {
-        Center, TowardsRoot, AwayFromRoot
-    }
+    // ------------------------------------------------------------------------
+    // alignmentInLevel
 
     /**
      * Returns the alignment of "smaller" nodes within a level.
@@ -122,32 +107,52 @@ public interface Configuration<TreeNode> {
      */
     AlignmentInLevel getAlignmentInLevel();
 
-    // ------------------------------------------------------------------------
-    // gapBetweenLevels/Nodes
-
     /**
      * Returns the size of the gap between subsequent levels.
-     * <p/>
+     * <p>
      * <img src="doc-files/gapBetweenLevels.png">
      * @param nextLevel [nextLevel > 0]
      * @return the size of the gap between level (nextLevel-1) and nextLevel
-     *         [result >= 0]
+     * [result >= 0]
      */
-    double getGapBetweenLevels( int nextLevel );
+    double getGapBetweenLevels(int nextLevel);
 
     /**
      * Returns the size of the minimal gap of nodes within a level.
-     * <p/>
+     * <p>
      * In the layout there will be a gap of at least the returned size between
      * both given nodes.
-     * <p/>
+     * <p>
      * <img src="doc-files/gapBetweenNodes.png">
-     * <p/>
+     * <p>
      * node1 and node2 are at the same level and are placed next to each other.
      * @param node1
      * @param node2
      * @return the minimal size of the gap between node1 and node2 [result >= 0]
      */
-    double getGapBetweenNodes( TreeNode node1,
-                               TreeNode node2 );
+    double getGapBetweenNodes(TreeNode node1,
+                              TreeNode node2);
+
+    // ------------------------------------------------------------------------
+    // gapBetweenLevels/Nodes
+
+    /**
+     * Identifies the sides of a rectangle (top, left, ...)
+     */
+    public enum Location {
+        Top,
+        Left,
+        Bottom,
+        Right
+    }
+
+    /**
+     * Possible alignments of a node within a level (centered, towards or away
+     * from root)
+     */
+    public enum AlignmentInLevel {
+        Center,
+        TowardsRoot,
+        AwayFromRoot
+    }
 }

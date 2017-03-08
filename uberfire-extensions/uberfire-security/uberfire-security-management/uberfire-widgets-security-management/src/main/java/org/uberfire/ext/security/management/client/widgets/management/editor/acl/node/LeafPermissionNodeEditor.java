@@ -31,23 +31,13 @@ import org.uberfire.security.client.authz.tree.PermissionNode;
 @Dependent
 public class LeafPermissionNodeEditor extends BasePermissionNodeEditor {
 
-    public interface View extends UberView<LeafPermissionNodeEditor> {
-
-        void setNodeName(String name);
-
-        void setNodePanelWidth(int width);
-
-        void setNodeFullName(String name);
-
-        void addPermission(PermissionSwitchToogle permissionSwitch);
-    }
-
     View view;
     PermissionWidgetFactory widgetFactory;
     Event<PermissionChangedEvent> permissionChangedEvent;
-
     @Inject
-    public LeafPermissionNodeEditor(View view, PermissionWidgetFactory widgetFactory, Event<PermissionChangedEvent> permissionChangedEvent) {
+    public LeafPermissionNodeEditor(View view,
+                                    PermissionWidgetFactory widgetFactory,
+                                    Event<PermissionChangedEvent> permissionChangedEvent) {
         this.view = view;
         this.widgetFactory = widgetFactory;
         this.permissionChangedEvent = permissionChangedEvent;
@@ -55,7 +45,7 @@ public class LeafPermissionNodeEditor extends BasePermissionNodeEditor {
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
@@ -87,17 +77,24 @@ public class LeafPermissionNodeEditor extends BasePermissionNodeEditor {
             PermissionSwitchToogle switchToogle = null;
             if (parentEditor == null || parentEditor.getPermissionNode().getPermissionList().isEmpty()) {
                 PermissionSwitch permissionSwitch = widgetFactory.createSwitch();
-                permissionSwitch.init(grantName, denyName, granted, 0);
+                permissionSwitch.init(grantName,
+                                      denyName,
+                                      granted,
+                                      0);
                 switchToogle = permissionSwitch;
-            }
-            else {
+            } else {
                 PermissionExceptionSwitch permissionSwitch = widgetFactory.createExceptionSwitch();
                 boolean isException = parentEditor.isAnException(permission);
-                permissionSwitch.init(grantName, denyName, granted, isException);
+                permissionSwitch.init(grantName,
+                                      denyName,
+                                      granted,
+                                      isException);
                 switchToogle = permissionSwitch;
             }
-            initPermissionSwitchToogle(switchToogle, permission);
-            super.registerPermissionSwitch(permission, switchToogle);
+            initPermissionSwitchToogle(switchToogle,
+                                       permission);
+            super.registerPermissionSwitch(permission,
+                                           switchToogle);
         }
 
         // Update the switches status according to the inter-dependencies between their permissions
@@ -109,24 +106,31 @@ public class LeafPermissionNodeEditor extends BasePermissionNodeEditor {
         }
     }
 
-    private void initPermissionSwitchToogle(PermissionSwitchToogle permissionSwitch, Permission permission) {
+    private void initPermissionSwitchToogle(PermissionSwitchToogle permissionSwitch,
+                                            Permission permission) {
         permissionSwitch.setOnChange(() -> {
             permission.setResult(permissionSwitch.isOn() ? AuthorizationResult.ACCESS_GRANTED : AuthorizationResult.ACCESS_DENIED);
 
             // Notify the change
-            super.onPermissionChanged(permission, permissionSwitch.isOn());
-            permissionChangedEvent.fire(new PermissionChangedEvent(getACLEditor(), permission, permissionSwitch.isOn()));
+            super.onPermissionChanged(permission,
+                                      permissionSwitch.isOn());
+            permissionChangedEvent.fire(new PermissionChangedEvent(getACLEditor(),
+                                                                   permission,
+                                                                   permissionSwitch.isOn()));
         });
     }
 
     @Override
-    protected void notifyPermissionChange(Permission permission, boolean on) {
-        super.notifyPermissionChange(permission, on);
+    protected void notifyPermissionChange(Permission permission,
+                                          boolean on) {
+        super.notifyPermissionChange(permission,
+                                     on);
         this.updateExceptionFlags();
     }
 
     @Override
-    public void onParentPermissionChanged(Permission permission, boolean on) {
+    public void onParentPermissionChanged(Permission permission,
+                                          boolean on) {
         this.updateExceptionFlags();
     }
 
@@ -145,5 +149,16 @@ public class LeafPermissionNodeEditor extends BasePermissionNodeEditor {
     protected void onNodePanelWidthChanged() {
         int width = getNodePanelWidth();
         view.setNodePanelWidth(width);
+    }
+
+    public interface View extends UberView<LeafPermissionNodeEditor> {
+
+        void setNodeName(String name);
+
+        void setNodePanelWidth(int width);
+
+        void setNodeFullName(String name);
+
+        void addPermission(PermissionSwitchToogle permissionSwitch);
     }
 }

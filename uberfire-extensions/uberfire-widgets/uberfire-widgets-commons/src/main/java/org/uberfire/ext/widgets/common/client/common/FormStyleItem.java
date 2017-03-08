@@ -28,34 +28,24 @@ import org.gwtbootstrap3.client.ui.FormLabel;
 
 public class FormStyleItem extends Composite {
 
+    private static FormStyleLayoutBinder uiBinder = GWT.create(FormStyleLayoutBinder.class);
     @UiField
     FormGroup formGroup;
-
     @UiField
     FlowPanel group;
-
     @UiField
     FormLabel label;
-
     int index = -1;
 
-    interface FormStyleLayoutBinder
-            extends
-            UiBinder<Widget, FormStyleItem> {
-
-    }
-
-    private static FormStyleLayoutBinder uiBinder = GWT.create( FormStyleLayoutBinder.class );
-
     public FormStyleItem() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
-    public void setup( final String labelText,
-                       final IsWidget field,
-                       final int index ) {
-        label.setText( labelText );
-        group.add( field );
+    public void setup(final String labelText,
+                      final IsWidget field,
+                      final int index) {
+        label.setText(labelText);
+        group.add(field);
         this.index = index;
     }
 
@@ -69,5 +59,11 @@ public class FormStyleItem extends Composite {
 
     public int getIndex() {
         return this.index;
+    }
+
+    interface FormStyleLayoutBinder
+            extends
+            UiBinder<Widget, FormStyleItem> {
+
     }
 }

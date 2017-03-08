@@ -25,9 +25,9 @@ public class Directory {
 
     private org.apache.lucene.store.Directory directory;
 
-    public Directory( final org.apache.lucene.store.Directory directory,
-                      final DeleteCommand command,
-                      final boolean fresh ) {
+    public Directory(final org.apache.lucene.store.Directory directory,
+                     final DeleteCommand command,
+                     final boolean fresh) {
         this.directory = directory;
         this.command = command;
         this.fresh = fresh;
@@ -40,8 +40,8 @@ public class Directory {
     public void close() {
         try {
             directory.close();
-        } catch ( final IOException e ) {
-            throw new org.uberfire.java.nio.IOException( e );
+        } catch (final IOException e) {
+            throw new org.uberfire.java.nio.IOException(e);
         }
     }
 
@@ -50,6 +50,6 @@ public class Directory {
     }
 
     public void delete() {
-        command.execute( directory );
+        command.execute(directory);
     }
 }

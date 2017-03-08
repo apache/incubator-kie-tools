@@ -16,16 +16,15 @@
 
 package org.uberfire.ext.security.management.api.validation;
 
-import org.jboss.errai.security.shared.api.Role;
-
-import javax.validation.ConstraintViolation;
 import java.util.HashSet;
 import java.util.Set;
+import javax.validation.ConstraintViolation;
+
+import org.jboss.errai.security.shared.api.Role;
 
 /**
  * <p>The base validator class for a Role entity based on JSR303 Bean Validations.</p>
  * <p>This provides validation logic for both backend and client sides, but you have to provide an instantiable class that provides the error message descriptions for each validation error supported.</p>
- * 
  * @since 0.8.0
  */
 public abstract class RoleValidator implements EntityValidator<Role> {

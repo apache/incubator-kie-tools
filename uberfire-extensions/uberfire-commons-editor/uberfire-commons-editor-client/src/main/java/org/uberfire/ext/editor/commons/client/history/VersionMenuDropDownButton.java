@@ -44,9 +44,9 @@ public class VersionMenuDropDownButton
     }
 
     @Inject
-    public VersionMenuDropDownButton( VersionMenuDropDownButtonView view ) {
+    public VersionMenuDropDownButton(VersionMenuDropDownButtonView view) {
         this.view = view;
-        view.setPresenter( this );
+        view.setPresenter(this);
     }
 
     @Override
@@ -54,8 +54,8 @@ public class VersionMenuDropDownButton
         return view.asWidget();
     }
 
-    public void setItems( List<VersionRecord> versions ) {
-        if ( this.versions == null || ( versions.size() > this.versions.size() ) ) {
+    public void setItems(List<VersionRecord> versions) {
+        if (this.versions == null || (versions.size() > this.versions.size())) {
             this.versions = versions;
         }
         updateTitle();
@@ -64,41 +64,45 @@ public class VersionMenuDropDownButton
     @Override
     public void onMenuOpening() {
 
-        PortablePreconditions.checkNotNull( "version", version );
-        PortablePreconditions.checkNotNull( "versions", versions );
+        PortablePreconditions.checkNotNull("version",
+                                           version);
+        PortablePreconditions.checkNotNull("versions",
+                                           versions);
 
         view.clear();
 
         boolean currentHasBeenAdded = false;
         int versionIndex = versions.size();
 
-        ArrayList<VersionRecord> reversedList = new ArrayList<VersionRecord>( versions );
-        Collections.reverse( reversedList );
+        ArrayList<VersionRecord> reversedList = new ArrayList<VersionRecord>(versions);
+        Collections.reverse(reversedList);
         int versionsDisplayed = 0;
 
-        for ( final VersionRecord versionRecord : reversedList ) {
+        for (final VersionRecord versionRecord : reversedList) {
 
-            boolean isSelected = isSelected( versionRecord );
+            boolean isSelected = isSelected(versionRecord);
 
-            if ( isSelected ) {
+            if (isSelected) {
                 currentHasBeenAdded = true;
             }
 
-            if ( versionIndex > ( versions.size() - 7 ) || versions.size() <= 7 ) {
+            if (versionIndex > (versions.size() - 7) || versions.size() <= 7) {
 
-                view.addLabel( versionRecord, isSelected, versionIndex );
-
+                view.addLabel(versionRecord,
+                              isSelected,
+                              versionIndex);
             } else {
 
-                if ( !currentHasBeenAdded ) {
-                    view.addLabel( getCurrentVersionRecord(), true, getCurrentVersionIndex() );
+                if (!currentHasBeenAdded) {
+                    view.addLabel(getCurrentVersionRecord(),
+                                  true,
+                                  getCurrentVersionIndex());
                     versionsDisplayed++;
                 }
 
-                addShowMoreLabel( versionsDisplayed );
+                addShowMoreLabel(versionsDisplayed);
 
                 break;
-
             }
 
             versionIndex--;
@@ -113,18 +117,18 @@ public class VersionMenuDropDownButton
     }
 
     private void updateTitle() {
-        if ( versions != null && version != null ) {
-            if ( !versions.isEmpty() && version.equals( versions.get( versions.size() - 1 ).id() ) ) {
+        if (versions != null && version != null) {
+            if (!versions.isEmpty() && version.equals(versions.get(versions.size() - 1).id())) {
                 view.setTextToLatest();
             } else {
-                view.setTextToVersion( getCurrentVersionIndex() );
+                view.setTextToVersion(getCurrentVersionIndex());
             }
         }
     }
 
     private VersionRecord getCurrentVersionRecord() {
-        for ( VersionRecord versionRecord : versions ) {
-            if ( versionRecord.id().equals( version ) ) {
+        for (VersionRecord versionRecord : versions) {
+            if (versionRecord.id().equals(version)) {
                 return versionRecord;
             }
         }
@@ -132,19 +136,19 @@ public class VersionMenuDropDownButton
     }
 
     private int getCurrentVersionIndex() {
-        for ( int i = 0; i < versions.size(); i++ ) {
-            if ( versions.get( i ).id().equals( version ) ) {
+        for (int i = 0; i < versions.size(); i++) {
+            if (versions.get(i).id().equals(version)) {
                 return i + 1;
             }
         }
         return -1;
     }
 
-    private boolean isSelected( VersionRecord versionRecord ) {
-        return versionRecord.id().equals( version );
+    private boolean isSelected(VersionRecord versionRecord) {
+        return versionRecord.id().equals(version);
     }
 
-    private void addShowMoreLabel( int versionIndex ) {
+    private void addShowMoreLabel(int versionIndex) {
         view.addViewAllLabel(
                 versions.size() - versionIndex,
                 new Command() {
@@ -152,26 +156,26 @@ public class VersionMenuDropDownButton
                     public void execute() {
                         showMore.execute();
                     }
-                } );
+                });
     }
 
-    public void addSelectionCallback( Callback<VersionRecord> selectionCallback ) {
+    public void addSelectionCallback(Callback<VersionRecord> selectionCallback) {
         this.selectionCallback = selectionCallback;
     }
 
-    public void setShowMoreCommand( Command showMore ) {
+    public void setShowMoreCommand(Command showMore) {
         this.showMore = showMore;
     }
 
-    public void setVersion( String version ) {
+    public void setVersion(String version) {
         this.version = version;
         updateTitle();
     }
 
     @Override
-    public void onVersionRecordSelected( VersionRecord result ) {
-        if ( selectionCallback != null ) {
-            selectionCallback.callback( result );
+    public void onVersionRecordSelected(VersionRecord result) {
+        if (selectionCallback != null) {
+            selectionCallback.callback(result);
         }
     }
 
@@ -181,8 +185,7 @@ public class VersionMenuDropDownButton
     }
 
     @Override
-    public void setEnabled( boolean enabled ) {
-        view.setEnabled( enabled );
+    public void setEnabled(boolean enabled) {
+        view.setEnabled(enabled);
     }
-
 }

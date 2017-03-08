@@ -27,5 +27,4 @@ public interface RealmsResource {
 
     @Path("/admin/realms/{realm}")
     RealmResource realm(@PathParam("realm") String realm);
-
 }

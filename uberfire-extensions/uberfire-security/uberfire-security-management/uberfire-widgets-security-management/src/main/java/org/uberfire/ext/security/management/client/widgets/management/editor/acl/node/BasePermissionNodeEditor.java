@@ -30,13 +30,13 @@ public abstract class BasePermissionNodeEditor implements PermissionNodeEditor {
 
     protected ACLEditor aclEditor = null;
     protected PermissionNode permissionNode;
-    private PermissionNodeEditor parentEditor = null;
-    private List<PermissionNodeEditor> childEditorList = new ArrayList<>();
     protected Map<Permission, PermissionSwitchToogle> permissionSwitchMap = new HashMap<>();
     protected int width = 240;
     protected int leftMargin = 0;
     protected int treeLevel = 0;
     protected int padding = 15;
+    private PermissionNodeEditor parentEditor = null;
+    private List<PermissionNodeEditor> childEditorList = new ArrayList<>();
 
     @Override
     public ACLEditor getACLEditor() {
@@ -134,36 +134,39 @@ public abstract class BasePermissionNodeEditor implements PermissionNodeEditor {
 
     @Override
     public int getNodePanelWidth() {
-        return width - leftMargin - (treeLevel*padding);
+        return width - leftMargin - (treeLevel * padding);
     }
 
     /**
      * Invoked when any of the parent permissions of a permission editor changes.
-     *
+     * <p>
      * <p>By default, it does nothing as it is up to each subclass to provide its own implementation.</p>
-     *
+     * <p>
      * <p>Only leaf or intermediate nodes are invoked.</p>
      */
     @Override
-    public void onParentPermissionChanged(Permission permission, boolean on) {
+    public void onParentPermissionChanged(Permission permission,
+                                          boolean on) {
 
     }
 
     /**
      * Invoked when any of the permissions of a child editor changes.
-     *
+     * <p>
      * <p>By default, it does nothing as it is up to each subclass to provide its own implementation.</p>
-     *
+     * <p>
      * <p>This method is never invoked on leaf nodes.</p>
      */
     @Override
-    public void onChildPermissionChanged(PermissionNodeEditor childEditor, Permission permission, boolean on) {
+    public void onChildPermissionChanged(PermissionNodeEditor childEditor,
+                                         Permission permission,
+                                         boolean on) {
 
     }
 
     /**
      * Invoked when the width of a node editor panel changes.
-     *
+     * <p>
      * <p>By default, it  does nothing as it is up to each subclass to provide its own implementation.</p>
      */
     protected void onNodePanelWidthChanged() {
@@ -172,36 +175,40 @@ public abstract class BasePermissionNodeEditor implements PermissionNodeEditor {
 
     /**
      * Invoked when a permission toogle switch changes its value.
-     *
      * @param permission The changing permission
      * @param on The switch status
      */
-    protected void onPermissionChanged(Permission permission, boolean on) {
-        notifyPermissionChange(permission, on);
+    protected void onPermissionChanged(Permission permission,
+                                       boolean on) {
+        notifyPermissionChange(permission,
+                               on);
         processPermissionDependencies(permission);
     }
 
     /**
      * Invoked when a permission toogle switch changes its value.
-     *
      * @param permission The changing permission
      * @param on The switch status
      */
-    protected void notifyPermissionChange(Permission permission, boolean on) {
+    protected void notifyPermissionChange(Permission permission,
+                                          boolean on) {
         // Notify the parent editor
         if (parentEditor != null) {
-            parentEditor.onChildPermissionChanged(this, permission, on);
+            parentEditor.onChildPermissionChanged(this,
+                                                  permission,
+                                                  on);
         }
         // Notify the children editors
         for (PermissionNodeEditor child : getChildEditors()) {
-            child.onParentPermissionChanged(permission, on);
+            child.onParentPermissionChanged(permission,
+                                            on);
         }
     }
 
     /**
      * Make sure all the permission switch controls are updated according the inter-dependencies
      * declared between them.
-     *
+     * <p>
      * <p>For instance, given an update & delete permissions that depends on a read permission,
      * if the read permission is turned off then the update & delete permission switches are
      * turned off as well.</p>
@@ -214,7 +221,6 @@ public abstract class BasePermissionNodeEditor implements PermissionNodeEditor {
 
     /**
      * Updates any permission switch which has a dependency with the given permission.
-     *
      * @param permission The permission which dependencies needs to be revisited.
      */
     protected void processPermissionDependencies(Permission permission) {
@@ -230,7 +236,8 @@ public abstract class BasePermissionNodeEditor implements PermissionNodeEditor {
                     depSwitch.setEnabled(false);
 
                     // Notify the dependant switch change
-                    this.notifyPermissionChange(dep, false);
+                    this.notifyPermissionChange(dep,
+                                                false);
                 } else {
                     depSwitch.setEnabled(true);
                 }
@@ -240,11 +247,12 @@ public abstract class BasePermissionNodeEditor implements PermissionNodeEditor {
 
     /**
      * Links the given switch widget with the specified permission instance.
-     *
      * @param permission The permission
      * @param permissionSwitch The switch widget related
      */
-    protected void registerPermissionSwitch(Permission permission, PermissionSwitchToogle permissionSwitch) {
-        permissionSwitchMap.put(permission, permissionSwitch);
+    protected void registerPermissionSwitch(Permission permission,
+                                            PermissionSwitchToogle permissionSwitch) {
+        permissionSwitchMap.put(permission,
+                                permissionSwitch);
     }
 }

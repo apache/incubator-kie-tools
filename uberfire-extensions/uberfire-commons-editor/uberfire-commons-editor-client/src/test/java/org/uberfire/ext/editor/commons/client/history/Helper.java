@@ -16,10 +16,9 @@
 
 package org.uberfire.ext.editor.commons.client.history;
 
-import java.lang.String;import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.java.nio.base.version.VersionRecord;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class Helper {
 
@@ -29,5 +28,4 @@ public class Helper {
         when(versionRecord.uri()).thenReturn("hehe//" + version);
         return versionRecord;
     }
-
 }

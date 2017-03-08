@@ -19,24 +19,29 @@ package org.uberfire.mocks;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class ConstantsAnswerMockTest {
 
     @Test
     public void callMethodWithStringReturnTypeTest() {
-        MockInterface mockedInterface = mock( MockInterface.class, new ConstantsAnswerMock() );
+        MockInterface mockedInterface = mock(MockInterface.class,
+                                             new ConstantsAnswerMock());
 
-        assertEquals( "stringMethod", mockedInterface.stringMethod() );
+        assertEquals("stringMethod",
+                     mockedInterface.stringMethod());
     }
 
     @Test
     public void callMethodWithOtherReturnTypesTest() {
-        MockInterface mockedInterface = mock( MockInterface.class, new ConstantsAnswerMock() );
+        MockInterface mockedInterface = mock(MockInterface.class,
+                                             new ConstantsAnswerMock());
 
-        assertEquals( 0, mockedInterface.intMethod() );
-        assertEquals( false, mockedInterface.booleanMethod() );
-        assertNull( mockedInterface.objectMethod() );
+        assertEquals(0,
+                     mockedInterface.intMethod());
+        assertEquals(false,
+                     mockedInterface.booleanMethod());
+        assertNull(mockedInterface.objectMethod());
     }
 
     interface MockInterface {

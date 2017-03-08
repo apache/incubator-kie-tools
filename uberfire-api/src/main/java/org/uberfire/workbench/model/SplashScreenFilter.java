@@ -30,14 +30,13 @@ public interface SplashScreenFilter {
 
     String getName();
 
-    void setName( final String name );
+    void setName(final String name);
 
     boolean displayNextTime();
 
-    void setDisplayNextTime( final boolean value );
+    void setDisplayNextTime(final boolean value);
 
     Collection<String> getInterceptionPoints();
 
-    void setInterceptionPoints( final Collection<String> places );
-
+    void setInterceptionPoints(final Collection<String> places);
 }

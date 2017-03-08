@@ -26,7 +26,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.widgets.common.client.dropdown.LiveSearchDropDown;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PriorityDropDownTest {
@@ -39,17 +38,28 @@ public class PriorityDropDownTest {
     @Before
     public void setup() {
         priorityDropDown = new PriorityDropDown(searchDropDown);
-        priorityDropDown.priorityItemList = Arrays.asList("5", "4", "3", "2", "1");
+        priorityDropDown.priorityItemList = Arrays.asList("5",
+                                                          "4",
+                                                          "3",
+                                                          "2",
+                                                          "1");
     }
-    
+
     @Test
     public void testResolvePriority() {
-        assertEquals(priorityDropDown.getPriorityName(-10), "1");
-        assertEquals(priorityDropDown.getPriorityName(-5), "2");
-        assertEquals(priorityDropDown.getPriorityName(-1), "2");
-        assertEquals(priorityDropDown.getPriorityName(0), "3");
-        assertEquals(priorityDropDown.getPriorityName(1), "4");
-        assertEquals(priorityDropDown.getPriorityName(5), "4");
-        assertEquals(priorityDropDown.getPriorityName(6), "5");
+        assertEquals(priorityDropDown.getPriorityName(-10),
+                     "1");
+        assertEquals(priorityDropDown.getPriorityName(-5),
+                     "2");
+        assertEquals(priorityDropDown.getPriorityName(-1),
+                     "2");
+        assertEquals(priorityDropDown.getPriorityName(0),
+                     "3");
+        assertEquals(priorityDropDown.getPriorityName(1),
+                     "4");
+        assertEquals(priorityDropDown.getPriorityName(5),
+                     "4");
+        assertEquals(priorityDropDown.getPriorityName(6),
+                     "5");
     }
 }

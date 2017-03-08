@@ -28,8 +28,8 @@ import java.util.TreeMap;
 /**
  * A {@link TreeMap} implementation that mimics the behaviour of the JDK's {@link Properties} class
  * preventing the '/' or ':' chars from being escaped.
-* */
-public class NonEscapedProperties extends TreeMap<String,String> {
+ */
+public class NonEscapedProperties extends TreeMap<String, String> {
 
     private static final long serialVersionUID = 1L;
 
@@ -54,7 +54,8 @@ public class NonEscapedProperties extends TreeMap<String,String> {
         }
     }
 
-    public void store(Writer writer, String... comments) throws IOException {
+    public void store(Writer writer,
+                      String... comments) throws IOException {
         StringBuilder out = new StringBuilder();
         if (comments != null) {
             for (String comment : comments) {
@@ -62,7 +63,7 @@ public class NonEscapedProperties extends TreeMap<String,String> {
             }
             out.append("\n");
         }
-        this.forEach((key,value) -> {
+        this.forEach((key, value) -> {
             out.append(key).append("=").append(value).append("\n");
         });
 
@@ -76,10 +77,12 @@ public class NonEscapedProperties extends TreeMap<String,String> {
             if (!_line.isEmpty() && !_line.startsWith("#")) {
                 String[] tokens = _line.split("=");
                 if (tokens.length == 1) {
-                    super.put(tokens[0], "");
+                    super.put(tokens[0],
+                              "");
                 }
                 if (tokens.length == 2) {
-                    super.put(tokens[0], tokens[1]);
+                    super.put(tokens[0],
+                              tokens[1]);
                 }
             }
         }

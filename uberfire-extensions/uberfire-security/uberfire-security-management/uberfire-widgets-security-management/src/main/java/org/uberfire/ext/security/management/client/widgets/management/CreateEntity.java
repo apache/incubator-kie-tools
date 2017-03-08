@@ -16,29 +16,23 @@
 
 package org.uberfire.ext.security.management.client.widgets.management;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-
 public class CreateEntity implements IsWidget {
-
-    public interface View extends UberView<CreateEntity> {
-        void show(final String legend, String placeholder);
-        void setValidationState(ValidationState state);
-        void clear();
-    }
 
     public View view;
     ClientUserSystemManager userSystemManager;
     String identifier;
-
     @Inject
-    public CreateEntity(final ClientUserSystemManager userSystemManager, final View view) {
+    public CreateEntity(final ClientUserSystemManager userSystemManager,
+                        final View view) {
         this.userSystemManager = userSystemManager;
         this.view = view;
     }
@@ -47,26 +41,28 @@ public class CreateEntity implements IsWidget {
     public void init() {
         view.init(this);
     }
-    
+
     void onEntityIdentifierChanged(final String value) {
         setNoneValidationState();
         this.identifier = value;
     }
-    
+
     @Override
     public Widget asWidget() {
         return view.asWidget();
     }
 
-    public void show(final String legend, String placeholder) {
+    public void show(final String legend,
+                     String placeholder) {
         clear();
-        view.show(legend, placeholder);
+        view.show(legend,
+                  placeholder);
     }
-    
+
     public void setErrorState() {
         setErrorValidationState();
     }
-    
+
     public String getEntityIdentifier() {
         if (identifier != null && identifier.trim().length() > 0) {
             setNoneValidationState();
@@ -86,9 +82,18 @@ public class CreateEntity implements IsWidget {
     private void setNoneValidationState() {
         view.setValidationState(ValidationState.NONE);
     }
-    
+
     private void setErrorValidationState() {
         view.setValidationState(ValidationState.ERROR);
     }
-    
+
+    public interface View extends UberView<CreateEntity> {
+
+        void show(final String legend,
+                  String placeholder);
+
+        void setValidationState(ValidationState state);
+
+        void clear();
+    }
 }

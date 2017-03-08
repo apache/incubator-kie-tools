@@ -16,6 +16,8 @@
 
 package org.uberfire.client.menu;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.uberfire.workbench.model.menu.MenuFactory;
@@ -23,13 +25,11 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
-import javax.enterprise.context.ApplicationScoped;
-
 @ApplicationScoped
 public class CustomSplashHelp implements MenuFactory.CustomMenuBuilder {
 
     @Override
-    public void push( MenuFactory.CustomMenuBuilder element ) {
+    public void push(MenuFactory.CustomMenuBuilder element) {
 
     }
 
@@ -39,7 +39,7 @@ public class CustomSplashHelp implements MenuFactory.CustomMenuBuilder {
 
             @Override
             public IsWidget build() {
-                return IOC.getBeanManager().lookupBean( SplashScreenMenuPresenter.class ).getInstance();
+                return IOC.getBeanManager().lookupBean(SplashScreenMenuPresenter.class).getInstance();
             }
 
             @Override

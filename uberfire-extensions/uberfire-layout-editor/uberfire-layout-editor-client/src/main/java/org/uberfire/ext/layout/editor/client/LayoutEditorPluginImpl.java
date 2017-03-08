@@ -16,6 +16,9 @@
 
 package org.uberfire.ext.layout.editor.client;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -32,9 +35,6 @@ import org.uberfire.ext.plugin.model.LayoutEditorModel;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.mvp.ParameterizedCommand;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
@@ -62,12 +62,14 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
     private ParameterizedCommand<LayoutEditorModel> loadCallBack;
 
     @Override
-    public void init( String layoutName, LayoutDragComponentGroup layoutDragComponentGroup,
-                      String emptyTitleText, String emptySubTitleText ) {
+    public void init(String layoutName,
+                     LayoutDragComponentGroup layoutDragComponentGroup,
+                     String emptyTitleText,
+                     String emptySubTitleText) {
         this.pluginName = layoutName;
         this.emptyTitleText = emptyTitleText;
         this.emptySubTitleText = emptySubTitleText;
-        layoutEditorPresenter.addDraggableComponentGroup( layoutDragComponentGroup );
+        layoutEditorPresenter.addDraggableComponentGroup(layoutDragComponentGroup);
     }
 
     @Override
@@ -78,18 +80,21 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
     @Override
     public Widget asWidget() {
         final UberElement<LayoutEditorPresenter> view = layoutEditorPresenter.getView();
-        return ElementWrapperWidget.getWidget( view.getElement() );
+        return ElementWrapperWidget.getWidget(view.getElement());
     }
 
     @Override
-    public void loadLayout( LayoutTemplate layoutTemplate ) {
-        layoutEditorPresenter.loadLayout( layoutTemplate, emptyTitleText, emptySubTitleText );
+    public void loadLayout(LayoutTemplate layoutTemplate) {
+        layoutEditorPresenter.loadLayout(layoutTemplate,
+                                         emptyTitleText,
+                                         emptySubTitleText);
     }
 
     @Override
-    public void loadDefaultLayout( String layoutName ) {
-        layoutEditorPresenter.loadEmptyLayout( layoutName, emptyTitleText, emptySubTitleText );
-
+    public void loadDefaultLayout(String layoutName) {
+        layoutEditorPresenter.loadEmptyLayout(layoutName,
+                                              emptyTitleText,
+                                              emptySubTitleText);
     }
 
     @Override
@@ -99,99 +104,121 @@ public class LayoutEditorPluginImpl implements LayoutEditorPlugin {
 
     private LayoutTemplate getLayoutEditor() {
         LayoutTemplate layout = layoutEditorPresenter.getLayout();
-        layout.setName( pluginName );
+        layout.setName(pluginName);
         return layout;
     }
 
     @Override
-    public void addLayoutProperty( String key, String value ) {
-        layoutEditorPresenter.addLayoutProperty( key, value );
+    public void addLayoutProperty(String key,
+                                  String value) {
+        layoutEditorPresenter.addLayoutProperty(key,
+                                                value);
     }
 
     @Override
-    public String getLayoutProperty( String key ) {
-        return layoutEditorPresenter.getLayoutProperty( key );
+    public String getLayoutProperty(String key) {
+        return layoutEditorPresenter.getLayoutProperty(key);
     }
 
     @Override
-    public void load( final PluginType pluginType,
-                      final Path currentPath,
-                      final ParameterizedCommand<LayoutEditorModel> loadCallBack ) {
+    public void load(final PluginType pluginType,
+                     final Path currentPath,
+                     final ParameterizedCommand<LayoutEditorModel> loadCallBack) {
 
         this.pluginType = pluginType;
         this.currentPath = currentPath;
         this.loadCallBack = loadCallBack;
-        pluginServices.call( new RemoteCallback<LayoutEditorModel>() {
+        pluginServices.call(new RemoteCallback<LayoutEditorModel>() {
 
             @Override
-            public void callback( final LayoutEditorModel model ) {
+            public void callback(final LayoutEditorModel model) {
 
-                layoutServices.call( new RemoteCallback<LayoutTemplate>() {
+                layoutServices.call(new RemoteCallback<LayoutTemplate>() {
 
                     @Override
-                    public void callback( final LayoutTemplate layoutTemplate ) {
-                        if ( layoutTemplate != null ) {
-                            layoutEditorPresenter.loadLayout( layoutTemplate, emptyTitleText, emptySubTitleText );
-                            loadCallBack.execute( getLayoutContent( currentPath, model.getLayoutEditorModel() ) );
+                    public void callback(final LayoutTemplate layoutTemplate) {
+                        if (layoutTemplate != null) {
+                            layoutEditorPresenter.loadLayout(layoutTemplate,
+                                                             emptyTitleText,
+                                                             emptySubTitleText);
+                            loadCallBack.execute(getLayoutContent(currentPath,
+                                                                  model.getLayoutEditorModel()));
                         } else {
                             layoutEditorPresenter
-                                    .loadEmptyLayout( pluginName, emptyTitleText, emptySubTitleText );
+                                    .loadEmptyLayout(pluginName,
+                                                     emptyTitleText,
+                                                     emptySubTitleText);
                             ;
                         }
-
                     }
-                } ).convertLayoutFromString( model.getLayoutEditorModel() );
-
+                }).convertLayoutFromString(model.getLayoutEditorModel());
             }
-        } ).getLayoutEditor( currentPath, pluginType );
+        }).getLayoutEditor(currentPath,
+                           pluginType);
     }
 
     @Override
-    public void save( final Path path, final RemoteCallback<Path> saveSuccessCallback ) {
+    public void save(final Path path,
+                     final RemoteCallback<Path> saveSuccessCallback) {
 
-        layoutServices.call( new RemoteCallback<String>() {
+        layoutServices.call(new RemoteCallback<String>() {
 
             @Override
-            public void callback( final String model ) {
-                savePlugin( model, path, saveSuccessCallback );
+            public void callback(final String model) {
+                savePlugin(model,
+                           path,
+                           saveSuccessCallback);
             }
-        } ).convertLayoutToString( getLayoutEditor() );
-
+        }).convertLayoutToString(getLayoutEditor());
     }
 
-    private void savePlugin( final String model, final Path path, final RemoteCallback<Path> saveSuccessCallback ) {
-        savePopUpPresenter.show( path, new ParameterizedCommand<String>() {
+    private void savePlugin(final String model,
+                            final Path path,
+                            final RemoteCallback<Path> saveSuccessCallback) {
+        savePopUpPresenter.show(path,
+                                new ParameterizedCommand<String>() {
 
-            @Override
-            public void execute( final String commitMessage ) {
-                pluginServices.call( saveSuccessCallback ).saveLayout(
-                        getLayoutContent( path, model ),
-                        commitMessage );
-            }
-        } );
+                                    @Override
+                                    public void execute(final String commitMessage) {
+                                        pluginServices.call(saveSuccessCallback).saveLayout(
+                                                getLayoutContent(path,
+                                                                 model),
+                                                commitMessage);
+                                    }
+                                });
     }
 
-    private LayoutEditorModel getLayoutContent( Path currentPath, String model ) {
-        return new LayoutEditorModel( pluginName, pluginType, currentPath, model );
-    }
-
-    @Override
-    public void addDraggableComponentGroup( LayoutDragComponentGroup group ) {
-        layoutEditorPresenter.addDraggableComponentGroup( group );
-    }
-
-    @Override
-    public void addDraggableComponentToGroup( String groupId, String componentId, LayoutDragComponent component ) {
-        layoutEditorPresenter.addDraggableComponentToGroup( groupId, componentId, component );
+    private LayoutEditorModel getLayoutContent(Path currentPath,
+                                               String model) {
+        return new LayoutEditorModel(pluginName,
+                                     pluginType,
+                                     currentPath,
+                                     model);
     }
 
     @Override
-    public void removeDraggableComponentGroup( String groupId ) {
-        layoutEditorPresenter.removeDraggableGroup( groupId );
+    public void addDraggableComponentGroup(LayoutDragComponentGroup group) {
+        layoutEditorPresenter.addDraggableComponentGroup(group);
     }
 
     @Override
-    public void removeDraggableGroupComponent( String groupId, String componentId ) {
-        layoutEditorPresenter.removeDraggableComponentFromGroup( groupId, componentId );
+    public void addDraggableComponentToGroup(String groupId,
+                                             String componentId,
+                                             LayoutDragComponent component) {
+        layoutEditorPresenter.addDraggableComponentToGroup(groupId,
+                                                           componentId,
+                                                           component);
+    }
+
+    @Override
+    public void removeDraggableComponentGroup(String groupId) {
+        layoutEditorPresenter.removeDraggableGroup(groupId);
+    }
+
+    @Override
+    public void removeDraggableGroupComponent(String groupId,
+                                              String componentId) {
+        layoutEditorPresenter.removeDraggableComponentFromGroup(groupId,
+                                                                componentId);
     }
 }

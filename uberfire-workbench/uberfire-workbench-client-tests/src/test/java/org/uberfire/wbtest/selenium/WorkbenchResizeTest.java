@@ -16,8 +16,6 @@
 
 package org.uberfire.wbtest.selenium;
 
-import static org.junit.Assert.*;
-
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -34,74 +32,103 @@ import org.uberfire.wbtest.client.perspective.TabbedPerspectiveActivity;
 import org.uberfire.wbtest.client.resize.ResizeTestScreenActivity;
 import org.uberfire.workbench.model.CompassPosition;
 
+import static org.junit.Assert.*;
 
 public class WorkbenchResizeTest extends AbstractSeleniumTest {
 
     @Test
     public void testDefaultPerspectiveSize() throws Exception {
-        driver.get( baseUrl + "#" + ResizeTestScreenActivity.class.getName() + "?debugId=addedInDefaultPerspective" );
-        ResizeWidgetWrapper widgetWrapper = new ResizeWidgetWrapper( driver, "addedInDefaultPerspective" );
-        assertEquals( new Dimension( WINDOW_WIDTH, 20 ), widgetWrapper.getReportedSize() );
-        assertEquals( new Dimension( WINDOW_WIDTH, 20 ), widgetWrapper.getActualSize() );
+        driver.get(baseUrl + "#" + ResizeTestScreenActivity.class.getName() + "?debugId=addedInDefaultPerspective");
+        ResizeWidgetWrapper widgetWrapper = new ResizeWidgetWrapper(driver,
+                                                                    "addedInDefaultPerspective");
+        assertEquals(new Dimension(WINDOW_WIDTH,
+                                   20),
+                     widgetWrapper.getReportedSize());
+        assertEquals(new Dimension(WINDOW_WIDTH,
+                                   20),
+                     widgetWrapper.getActualSize());
     }
 
     @Test
     public void testSimplePerspectiveSize() throws Exception {
-        driver.get( baseUrl + "#" + SimplePerspectiveActivity.class.getName() );
+        driver.get(baseUrl + "#" + SimplePerspectiveActivity.class.getName());
 
-        ResizeWidgetWrapper widgetWrapper = new ResizeWidgetWrapper( driver, "simplePerspectiveDefault" );
-        assertEquals( new Dimension( WINDOW_WIDTH, 20 ), widgetWrapper.getReportedSize() );
-        assertEquals( new Dimension( WINDOW_WIDTH, 20 ), widgetWrapper.getActualSize() );
+        ResizeWidgetWrapper widgetWrapper = new ResizeWidgetWrapper(driver,
+                                                                    "simplePerspectiveDefault");
+        assertEquals(new Dimension(WINDOW_WIDTH,
+                                   20),
+                     widgetWrapper.getReportedSize());
+        assertEquals(new Dimension(WINDOW_WIDTH,
+                                   20),
+                     widgetWrapper.getActualSize());
     }
 
     @Test
     public void testListPerspectiveSize() throws Exception {
-        driver.get( baseUrl + "#" + ListPerspectiveActivity.class.getName() );
+        driver.get(baseUrl + "#" + ListPerspectiveActivity.class.getName());
 
-        ResizeWidgetWrapper widgetWrapper = new ResizeWidgetWrapper( driver, "listPerspectiveDefault" );
-        assertEquals( new Dimension( WINDOW_WIDTH, 20 ), widgetWrapper.getReportedSize() );
-        assertEquals( new Dimension( WINDOW_WIDTH, 20 ), widgetWrapper.getActualSize() );
+        ResizeWidgetWrapper widgetWrapper = new ResizeWidgetWrapper(driver,
+                                                                    "listPerspectiveDefault");
+        assertEquals(new Dimension(WINDOW_WIDTH,
+                                   20),
+                     widgetWrapper.getReportedSize());
+        assertEquals(new Dimension(WINDOW_WIDTH,
+                                   20),
+                     widgetWrapper.getActualSize());
     }
 
     @Test
     public void testListPerspectiveSizeWithNestedPanels() throws Exception {
-        driver.get( baseUrl + "#" + ListPerspectiveActivity.class.getName() );
-        ResizeWidgetWrapper widgetWrapper = new ResizeWidgetWrapper( driver, "listPerspectiveDefault" );
+        driver.get(baseUrl + "#" + ListPerspectiveActivity.class.getName());
+        ResizeWidgetWrapper widgetWrapper = new ResizeWidgetWrapper(driver,
+                                                                    "listPerspectiveDefault");
 
-        TopHeaderWrapper topHeaderWrapper = new TopHeaderWrapper( driver );
-        topHeaderWrapper.addPanelToRoot( CompassPosition.WEST,
-                                         MultiListWorkbenchPanelPresenter.class,
-                                         ResizeTestScreenActivity.class,
-                                         "id", "resize1" );
+        TopHeaderWrapper topHeaderWrapper = new TopHeaderWrapper(driver);
+        topHeaderWrapper.addPanelToRoot(CompassPosition.WEST,
+                                        MultiListWorkbenchPanelPresenter.class,
+                                        ResizeTestScreenActivity.class,
+                                        "id",
+                                        "resize1");
 
         Dimension sizeAfterWestPanelAdded = widgetWrapper.getActualSize();
-        topHeaderWrapper.addPanelToRoot( CompassPosition.EAST,
-                                         MultiListWorkbenchPanelPresenter.class,
-                                         ResizeTestScreenActivity.class,
-                                         "id", "resize2" );
+        topHeaderWrapper.addPanelToRoot(CompassPosition.EAST,
+                                        MultiListWorkbenchPanelPresenter.class,
+                                        ResizeTestScreenActivity.class,
+                                        "id",
+                                        "resize2");
 
         Dimension sizeAfterBothPanelsAdded = widgetWrapper.getActualSize();
 
-        assertTrue( sizeAfterWestPanelAdded.width < WINDOW_WIDTH );
-        assertTrue( sizeAfterBothPanelsAdded.width < sizeAfterWestPanelAdded.width );
+        assertTrue(sizeAfterWestPanelAdded.width < WINDOW_WIDTH);
+        assertTrue(sizeAfterBothPanelsAdded.width < sizeAfterWestPanelAdded.width);
     }
 
     @Test
     public void testTabbedPerspectiveSize() throws Exception {
-        driver.get( baseUrl + "#" + TabbedPerspectiveActivity.class.getName() );
+        driver.get(baseUrl + "#" + TabbedPerspectiveActivity.class.getName());
 
-        ResizeWidgetWrapper widgetWrapper = new ResizeWidgetWrapper( driver, "tabbedPerspectiveDefault" );
-        assertEquals( new Dimension( WINDOW_WIDTH, 20 ), widgetWrapper.getReportedSize() );
-        assertEquals( new Dimension( WINDOW_WIDTH, 20 ), widgetWrapper.getActualSize() );
+        ResizeWidgetWrapper widgetWrapper = new ResizeWidgetWrapper(driver,
+                                                                    "tabbedPerspectiveDefault");
+        assertEquals(new Dimension(WINDOW_WIDTH,
+                                   20),
+                     widgetWrapper.getReportedSize());
+        assertEquals(new Dimension(WINDOW_WIDTH,
+                                   20),
+                     widgetWrapper.getActualSize());
     }
 
     @Test
     public void testStaticPerspectiveSize() throws Exception {
-        driver.get( baseUrl + "#" + StaticPerspectiveActivity.class.getName() );
+        driver.get(baseUrl + "#" + StaticPerspectiveActivity.class.getName());
 
-        ResizeWidgetWrapper widgetWrapper = new ResizeWidgetWrapper( driver, "staticPerspectiveDefault" );
-        assertEquals( new Dimension( WINDOW_WIDTH, 20 ), widgetWrapper.getReportedSize() );
-        assertEquals( new Dimension( WINDOW_WIDTH, 20 ), widgetWrapper.getActualSize() );
+        ResizeWidgetWrapper widgetWrapper = new ResizeWidgetWrapper(driver,
+                                                                    "staticPerspectiveDefault");
+        assertEquals(new Dimension(WINDOW_WIDTH,
+                                   20),
+                     widgetWrapper.getReportedSize());
+        assertEquals(new Dimension(WINDOW_WIDTH,
+                                   20),
+                     widgetWrapper.getActualSize());
     }
 
     /**
@@ -115,7 +142,7 @@ public class WorkbenchResizeTest extends AbstractSeleniumTest {
      */
     @Test
     public void ensureEmptyFooterIsNotAttachedToPage() throws Exception {
-        driver.get( baseUrl + "?" + HeaderFooterActivator.DISABLE_PARAM + "=true" );
+        driver.get(baseUrl + "?" + HeaderFooterActivator.DISABLE_PARAM + "=true");
         skipUncaughtExceptionCheck = true;
 
         // the above is a full refresh of the app, so we have to wait for the bootstrap to finish
@@ -123,12 +150,12 @@ public class WorkbenchResizeTest extends AbstractSeleniumTest {
 
         // since we aren't expecting to find anything and the above line has already proven we're on the right page,
         // a short timeout is safe here.
-        driver.manage().timeouts().implicitlyWait( 1, TimeUnit.SECONDS );
-        List<WebElement> footers = driver.findElements( By.id( "gwt-debug-workbenchFooterPanel" ) );
-        assertTrue( footers.isEmpty() );
+        driver.manage().timeouts().implicitlyWait(1,
+                                                  TimeUnit.SECONDS);
+        List<WebElement> footers = driver.findElements(By.id("gwt-debug-workbenchFooterPanel"));
+        assertTrue(footers.isEmpty());
 
-        List<WebElement> headers = driver.findElements( By.id( "gwt-debug-workbenchHeaderPanel" ) );
-        assertTrue( headers.isEmpty() );
+        List<WebElement> headers = driver.findElements(By.id("gwt-debug-workbenchHeaderPanel"));
+        assertTrue(headers.isEmpty());
     }
-
 }

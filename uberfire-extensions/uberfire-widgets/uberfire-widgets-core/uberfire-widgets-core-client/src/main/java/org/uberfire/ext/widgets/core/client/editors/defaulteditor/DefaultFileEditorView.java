@@ -32,17 +32,9 @@ public class DefaultFileEditorView
         extends Composite
         implements DefaultFileEditorPresenter.View {
 
-    interface DefaultFileEditorViewBinder
-            extends
-            UiBinder<Container, DefaultFileEditorView> {
-
-    }
-
     private static DefaultFileEditorViewBinder uiBinder = GWT.create(DefaultFileEditorViewBinder.class);
-
     @UiField
     DefaultEditorFileUpload fileUpload;
-
     @UiField
     Button downloadButton;
 
@@ -61,4 +53,9 @@ public class DefaultFileEditorView
         fileUpload.download();
     }
 
+    interface DefaultFileEditorViewBinder
+            extends
+            UiBinder<Container, DefaultFileEditorView> {
+
+    }
 }

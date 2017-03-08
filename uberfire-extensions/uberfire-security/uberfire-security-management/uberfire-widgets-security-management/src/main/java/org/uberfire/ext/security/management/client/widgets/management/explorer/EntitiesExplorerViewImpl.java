@@ -45,67 +45,50 @@ public class EntitiesExplorerViewImpl extends Composite
         implements
         EntitiesExplorerView {
 
-    interface EntitiesExplorerViewImplBinder
-            extends
-            UiBinder<FlowPanel, EntitiesExplorerViewImpl> {
-
-    }
-
-    private static EntitiesExplorerViewImplBinder uiBinder = GWT.create( EntitiesExplorerViewImplBinder.class );
-
+    private static EntitiesExplorerViewImplBinder uiBinder = GWT.create(EntitiesExplorerViewImplBinder.class);
     @UiField
     FlowPanel mainPanel;
-    
     @UiField
     org.gwtbootstrap3.client.ui.Label mainLabel;
-    
     @UiField
     Container mainContainer;
-    
     @UiField
     Heading heading;
-    
     @UiField
     Row searchRow;
-
     @UiField
     TextBox searchBox;
-    
     @UiField
     Button searchButton;
-
     @UiField
     Button clearSearchButton;
-    
     @UiField
     Button createButton;
-    
     @UiField
     Button refreshButton;
-
     @UiField(provided = true)
     EntitiesList.View entitiesListView;
-    
     private String entityType;
     private EntitiesExplorerView.ViewContext context;
     private EntitiesExplorerView.ViewCallback callback;
-    
+
     @PostConstruct
     public void init() {
-        
+
     }
 
     @Override
-    public EntitiesExplorerView configure(final String entityType, final EntitiesList.View entitiesListView) {
+    public EntitiesExplorerView configure(final String entityType,
+                                          final EntitiesList.View entitiesListView) {
         this.entitiesListView = entitiesListView;
         this.entityType = entityType;
-        
-        initWidget( uiBinder.createAndBindUi( this ) );
+
+        initWidget(uiBinder.createAndBindUi(this));
         searchBox.addKeyDownHandler(new KeyDownHandler() {
 
             @Override
             public void onKeyDown(KeyDownEvent event) {
-                if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
                     doSearch(searchBox.getText());
                 }
             }
@@ -113,17 +96,19 @@ public class EntitiesExplorerViewImpl extends Composite
         searchButton.addClickHandler(e -> doSearch(searchBox.getText()));
 
         clearSearchButton.addDomHandler(new ClickHandler() {
-            @Override
-            public void onClick(final ClickEvent clickEvent) {
-                doSearch("");
-            }
-        }, ClickEvent.getType());
+                                            @Override
+                                            public void onClick(final ClickEvent clickEvent) {
+                                                doSearch("");
+                                            }
+                                        },
+                                        ClickEvent.getType());
         clearSearch();
         return this;
     }
 
     @Override
-    public EntitiesExplorerView show(ViewContext context, ViewCallback callback) {
+    public EntitiesExplorerView show(ViewContext context,
+                                     ViewCallback callback) {
         // Clear current view.
         clear();
 
@@ -142,13 +127,15 @@ public class EntitiesExplorerViewImpl extends Composite
         }
 
         // Configure titles and texts using the title for the entity type.
-        final String searchForEntities = getTitleWithEntityType(UsersManagementWidgetsConstants.INSTANCE.searchFor(), true);
+        final String searchForEntities = getTitleWithEntityType(UsersManagementWidgetsConstants.INSTANCE.searchFor(),
+                                                                true);
         searchButton.setTitle(searchForEntities);
         return this;
     }
 
     @Override
-    public EntitiesExplorerView showMessage(final LabelType labelType, final String message) {
+    public EntitiesExplorerView showMessage(final LabelType labelType,
+                                            final String message) {
         clear();
         mainLabel.setText(message);
         mainLabel.setType(labelType);
@@ -160,7 +147,8 @@ public class EntitiesExplorerViewImpl extends Composite
 
     @Override
     public EntitiesExplorerView clearSearch() {
-        final String allEntitiesHeader  = getTitleWithEntityType(UsersManagementWidgetsConstants.INSTANCE.all(), true);
+        final String allEntitiesHeader = getTitleWithEntityType(UsersManagementWidgetsConstants.INSTANCE.all(),
+                                                                true);
         heading.setText(allEntitiesHeader);
         searchBox.setText("");
         searchBox.setPlaceholder(allEntitiesHeader);
@@ -168,7 +156,7 @@ public class EntitiesExplorerViewImpl extends Composite
         return this;
     }
 
-    @Override    
+    @Override
     public EntitiesExplorerView clear() {
         searchRow.setVisible(false);
         createButton.setVisible(false);
@@ -176,15 +164,18 @@ public class EntitiesExplorerViewImpl extends Composite
         callback = null;
         return this;
     }
-    
+
     void doSearch(final String pattern) {
         final String pEsc = SafeHtmlUtils.htmlEscape(pattern);
         heading.setText(UsersManagementWidgetsConstants.INSTANCE.searchResultsFor() + " " + pEsc);
         clearSearchButton.setEnabled(true);
-        if (callback != null) callback.onSearch(pattern);
+        if (callback != null) {
+            callback.onSearch(pattern);
+        }
     }
-    
-    private String getTitleWithEntityType(final String text, final boolean plural) {
+
+    private String getTitleWithEntityType(final String text,
+                                          final boolean plural) {
         final String t = entityType != null ? plural ? entityType + "s" : entityType : null;
         if (t != null) {
             return text + " " + t;
@@ -192,7 +183,7 @@ public class EntitiesExplorerViewImpl extends Composite
             return text;
         }
     }
-    
+
     @UiHandler("createButton")
     public void onCreateButtonClick(final ClickEvent event) {
         if (callback != null) {
@@ -205,5 +196,11 @@ public class EntitiesExplorerViewImpl extends Composite
         if (callback != null) {
             callback.onRefresh();
         }
+    }
+
+    interface EntitiesExplorerViewImplBinder
+            extends
+            UiBinder<FlowPanel, EntitiesExplorerViewImpl> {
+
     }
 }

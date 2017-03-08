@@ -51,7 +51,7 @@ public class AnyResourceTypeDefinition implements ResourceTypeDefinition {
     }
 
     @Override
-    public boolean accept( final Path path ) {
+    public boolean accept(final Path path) {
         return true;
     }
 }

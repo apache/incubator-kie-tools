@@ -26,36 +26,36 @@ public interface SocialTimelinePersistenceAPI extends PriorityDisposable {
 
     void setup();
 
-    List<SocialActivitiesEvent> getLastEvents( SocialEventType type );
+    List<SocialActivitiesEvent> getLastEvents(SocialEventType type);
 
-    List<SocialActivitiesEvent> getTimeline( SocialEventType type,
-                                             String timelineFile );
+    List<SocialActivitiesEvent> getTimeline(SocialEventType type,
+                                            String timelineFile);
 
-    List<SocialActivitiesEvent> getLastEvents( SocialUser user );
+    List<SocialActivitiesEvent> getLastEvents(SocialUser user);
 
-    List<SocialActivitiesEvent> getRecentEvents( SocialUser user );
+    List<SocialActivitiesEvent> getRecentEvents(SocialUser user);
 
-    void persist( SocialActivitiesEvent event );
+    void persist(SocialActivitiesEvent event);
 
-    void persist( SocialUser user,
-                  SocialActivitiesEvent event );
+    void persist(SocialUser user,
+                 SocialActivitiesEvent event);
 
-    Integer numberOfPages( SocialEventType type );
+    Integer numberOfPages(SocialEventType type);
 
-    List<SocialActivitiesEvent> getTimeline( SocialUser socialUser,
-                                             String timelineFile );
+    List<SocialActivitiesEvent> getTimeline(SocialUser socialUser,
+                                            String timelineFile);
 
-    List<SocialActivitiesEvent> getRecentEvents( SocialEventType type );
+    List<SocialActivitiesEvent> getRecentEvents(SocialEventType type);
 
-    Integer getUserMostRecentFileIndex( SocialUser user );
+    Integer getUserMostRecentFileIndex(SocialUser user);
 
-    Integer getTypeMostRecentFileIndex( SocialEventType type );
+    Integer getTypeMostRecentFileIndex(SocialEventType type);
 
     void saveAllEvents();
 
-    Integer getNumberOfEventsOnFile( SocialEventType type,
-                                     String file );
+    Integer getNumberOfEventsOnFile(SocialEventType type,
+                                    String file);
 
-    Integer getNumberOfEventsOnFile( SocialUser socialUser,
-                                     String file );
+    Integer getNumberOfEventsOnFile(SocialUser socialUser,
+                                    String file);
 }

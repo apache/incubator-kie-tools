@@ -26,7 +26,7 @@ import java.util.HashMap;
 
 import org.junit.Test;
 
-import static java.net.Authenticator.*;
+import static java.net.Authenticator.requestPasswordAuthentication;
 import static org.junit.Assert.*;
 
 public class JGitFileSystemProviderHttpProxyTest {
@@ -36,24 +36,30 @@ public class JGitFileSystemProviderHttpProxyTest {
         final String userName = "user";
         final String passw = "passwd";
 
-        final JGitFileSystemProvider provider = new JGitFileSystemProvider( new HashMap<String, String>() {{
-            put( "http.proxyUser", "user" );
-            put( "http.proxyPassword", "passwd" );
-            put( "org.uberfire.nio.git.daemon.enabled", "false" );
-            put( "org.uberfire.nio.git.ssh.enabled", "false" );
-        }} );
+        final JGitFileSystemProvider provider = new JGitFileSystemProvider(new HashMap<String, String>() {{
+            put("http.proxyUser",
+                "user");
+            put("http.proxyPassword",
+                "passwd");
+            put("org.uberfire.nio.git.daemon.enabled",
+                "false");
+            put("org.uberfire.nio.git.ssh.enabled",
+                "false");
+        }});
 
-        final PasswordAuthentication passwdAuth = requestPasswordAuthentication( "localhost",
-                                                                                 InetAddress.getLocalHost(),
-                                                                                 8080,
-                                                                                 "http",
-                                                                                 "xxx",
-                                                                                 "http",
-                                                                                 new URL( "http://localhost" ),
-                                                                                 Authenticator.RequestorType.PROXY );
+        final PasswordAuthentication passwdAuth = requestPasswordAuthentication("localhost",
+                                                                                InetAddress.getLocalHost(),
+                                                                                8080,
+                                                                                "http",
+                                                                                "xxx",
+                                                                                "http",
+                                                                                new URL("http://localhost"),
+                                                                                Authenticator.RequestorType.PROXY);
 
-        assertEquals( userName, passwdAuth.getUserName() );
-        assertEquals( passw, new String( passwdAuth.getPassword() ) );
+        assertEquals(userName,
+                     passwdAuth.getUserName());
+        assertEquals(passw,
+                     new String(passwdAuth.getPassword()));
 
         provider.dispose();
     }
@@ -63,59 +69,67 @@ public class JGitFileSystemProviderHttpProxyTest {
         final String userName = "user";
         final String passw = "passwd";
 
-        final JGitFileSystemProvider provider = new JGitFileSystemProvider( new HashMap<String, String>() {{
-            put( "https.proxyUser", "user" );
-            put( "https.proxyPassword", "passwd" );
-            put( "org.uberfire.nio.git.daemon.enabled", "false" );
-            put( "org.uberfire.nio.git.ssh.enabled", "false" );
-        }} );
+        final JGitFileSystemProvider provider = new JGitFileSystemProvider(new HashMap<String, String>() {{
+            put("https.proxyUser",
+                "user");
+            put("https.proxyPassword",
+                "passwd");
+            put("org.uberfire.nio.git.daemon.enabled",
+                "false");
+            put("org.uberfire.nio.git.ssh.enabled",
+                "false");
+        }});
 
-        final PasswordAuthentication passwdAuth = requestPasswordAuthentication( "localhost",
-                                                                                 InetAddress.getLocalHost(),
-                                                                                 8080,
-                                                                                 "https",
-                                                                                 "xxx",
-                                                                                 "https",
-                                                                                 new URL( "https://localhost" ),
-                                                                                 Authenticator.RequestorType.PROXY );
+        final PasswordAuthentication passwdAuth = requestPasswordAuthentication("localhost",
+                                                                                InetAddress.getLocalHost(),
+                                                                                8080,
+                                                                                "https",
+                                                                                "xxx",
+                                                                                "https",
+                                                                                new URL("https://localhost"),
+                                                                                Authenticator.RequestorType.PROXY);
 
-        assertEquals( userName, passwdAuth.getUserName() );
-        assertEquals( passw, new String( passwdAuth.getPassword() ) );
+        assertEquals(userName,
+                     passwdAuth.getUserName());
+        assertEquals(passw,
+                     new String(passwdAuth.getPassword()));
 
         provider.dispose();
     }
 
     @Test
     public void testNoProxyInfo() throws MalformedURLException, UnknownHostException {
-        final JGitFileSystemProvider provider = new JGitFileSystemProvider( new HashMap<String, String>() {{
-            put( "org.uberfire.nio.git.daemon.enabled", "false" );
-            put( "org.uberfire.nio.git.ssh.enabled", "false" );
-        }} );
+        final JGitFileSystemProvider provider = new JGitFileSystemProvider(new HashMap<String, String>() {{
+            put("org.uberfire.nio.git.daemon.enabled",
+                "false");
+            put("org.uberfire.nio.git.ssh.enabled",
+                "false");
+        }});
 
         {
-            final PasswordAuthentication passwdAuth = requestPasswordAuthentication( "localhost",
-                                                                                     InetAddress.getLocalHost(),
-                                                                                     8080,
-                                                                                     "https",
-                                                                                     "xxx",
-                                                                                     "https",
-                                                                                     new URL( "https://localhost" ),
-                                                                                     Authenticator.RequestorType.PROXY );
+            final PasswordAuthentication passwdAuth = requestPasswordAuthentication("localhost",
+                                                                                    InetAddress.getLocalHost(),
+                                                                                    8080,
+                                                                                    "https",
+                                                                                    "xxx",
+                                                                                    "https",
+                                                                                    new URL("https://localhost"),
+                                                                                    Authenticator.RequestorType.PROXY);
 
-            assertNull( passwdAuth );
+            assertNull(passwdAuth);
         }
 
         {
-            final PasswordAuthentication passwdAuth = requestPasswordAuthentication( "localhost",
-                                                                                     InetAddress.getLocalHost(),
-                                                                                     8080,
-                                                                                     "http",
-                                                                                     "xxx",
-                                                                                     "http",
-                                                                                     new URL( "http://localhost" ),
-                                                                                     Authenticator.RequestorType.PROXY );
+            final PasswordAuthentication passwdAuth = requestPasswordAuthentication("localhost",
+                                                                                    InetAddress.getLocalHost(),
+                                                                                    8080,
+                                                                                    "http",
+                                                                                    "xxx",
+                                                                                    "http",
+                                                                                    new URL("http://localhost"),
+                                                                                    Authenticator.RequestorType.PROXY);
 
-            assertNull( passwdAuth );
+            assertNull(passwdAuth);
         }
 
         provider.dispose();

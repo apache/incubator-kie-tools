@@ -23,8 +23,8 @@ public interface AppsPersistenceAPI {
 
     public Directory getRootDirectory();
 
-    Directory createDirectory( Directory parentDirectory,
-                               String parameter );
+    Directory createDirectory(Directory parentDirectory,
+                              String parameter);
 
-    Boolean deleteDirectory( String uri );
+    Boolean deleteDirectory(String uri);
 }

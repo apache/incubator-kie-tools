@@ -23,8 +23,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 public class KeyboardOperationSelectTopLeftCell extends BaseKeyboardOperation {
 
-    public KeyboardOperationSelectTopLeftCell( final GridLayer gridLayer ) {
-        super( gridLayer );
+    public KeyboardOperationSelectTopLeftCell(final GridLayer gridLayer) {
+        super(gridLayer);
     }
 
     @Override
@@ -34,25 +34,24 @@ public class KeyboardOperationSelectTopLeftCell extends BaseKeyboardOperation {
 
     @Override
     @SuppressWarnings("unused")
-    public boolean perform( final GridWidget gridWidget,
-                            final boolean isShiftKeyDown,
-                            final boolean isControlKeyDown ) {
-        final boolean redraw = selectTopLeftCell( gridWidget );
-        scrollSelectedCellIntoView( gridWidget );
+    public boolean perform(final GridWidget gridWidget,
+                           final boolean isShiftKeyDown,
+                           final boolean isControlKeyDown) {
+        final boolean redraw = selectTopLeftCell(gridWidget);
+        scrollSelectedCellIntoView(gridWidget);
         return redraw;
     }
 
-    protected boolean selectTopLeftCell( final GridWidget gridWidget ) {
+    protected boolean selectTopLeftCell(final GridWidget gridWidget) {
         final GridData gridModel = gridWidget.getModel();
         final int rowCount = gridModel.getRowCount();
         final int columnCount = gridModel.getColumnCount();
-        if ( rowCount == 0 || columnCount == 0 ) {
+        if (rowCount == 0 || columnCount == 0) {
             return false;
         }
-        return gridWidget.selectCell( 0,
-                                      0,
-                                      false,
-                                      false );
+        return gridWidget.selectCell(0,
+                                     0,
+                                     false,
+                                     false);
     }
-
 }

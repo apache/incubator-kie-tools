@@ -41,89 +41,99 @@ public class Tree extends Composite implements HasSelectionHandlers<TreeItem>,
     private TreeItem curSelection = null;
 
     public Tree() {
-        initWidget( container );
-        container.setStylePrimaryName( TreeNavigatorResources.INSTANCE.css().tree() );
+        initWidget(container);
+        container.setStylePrimaryName(TreeNavigatorResources.INSTANCE.css().tree());
     }
 
     @Override
-    public HandlerRegistration addOpenHandler( final OpenHandler<TreeItem> handler ) {
-        return addHandler( handler, OpenEvent.getType() );
+    public HandlerRegistration addOpenHandler(final OpenHandler<TreeItem> handler) {
+        return addHandler(handler,
+                          OpenEvent.getType());
     }
 
     @Override
-    public HandlerRegistration addCloseHandler( final CloseHandler<TreeItem> handler ) {
-        return addHandler( handler, CloseEvent.getType() );
+    public HandlerRegistration addCloseHandler(final CloseHandler<TreeItem> handler) {
+        return addHandler(handler,
+                          CloseEvent.getType());
     }
 
     @Override
-    public HandlerRegistration addSelectionHandler( final SelectionHandler<TreeItem> handler ) {
-        return addHandler( handler, SelectionEvent.getType() );
+    public HandlerRegistration addSelectionHandler(final SelectionHandler<TreeItem> handler) {
+        return addHandler(handler,
+                          SelectionEvent.getType());
     }
 
     public void clear() {
         container.clear();
     }
 
-    void fireStateChanged( final TreeItem item,
-                           final TreeItem.State state ) {
-        if ( state.equals( TreeItem.State.OPEN ) ) {
-            OpenEvent.fire( this, item );
+    void fireStateChanged(final TreeItem item,
+                          final TreeItem.State state) {
+        if (state.equals(TreeItem.State.OPEN)) {
+            OpenEvent.fire(this,
+                           item);
         } else {
-            CloseEvent.fire( this, item );
+            CloseEvent.fire(this,
+                            item);
         }
-        onSelection( item, true );
+        onSelection(item,
+                    true);
     }
 
-    public void setSelectedItem( final TreeItem item ) {
-        onSelection( item, true );
-    }
-
-    public void setSelectedItem( final TreeItem item,
-                                 final boolean fireEvents ) {
-        onSelection( item, fireEvents );
+    public void setSelectedItem(final TreeItem item,
+                                final boolean fireEvents) {
+        onSelection(item,
+                    fireEvents);
     }
 
     public TreeItem getSelectedItem() {
         return curSelection;
     }
 
-    void onSelection( final TreeItem item,
-                      final boolean fireEvents ) {
-        if ( curSelection != null ) {
-            curSelection.setSelected( false );
+    public void setSelectedItem(final TreeItem item) {
+        onSelection(item,
+                    true);
+    }
+
+    void onSelection(final TreeItem item,
+                     final boolean fireEvents) {
+        if (curSelection != null) {
+            curSelection.setSelected(false);
         }
         curSelection = item;
 
-        if ( curSelection != null ) {
+        if (curSelection != null) {
             // Select the item and fire the selection event.
-            curSelection.setSelected( true );
-            if ( fireEvents ) {
-                SelectionEvent.fire( this, curSelection );
+            curSelection.setSelected(true);
+            if (fireEvents) {
+                SelectionEvent.fire(this,
+                                    curSelection);
             }
         }
     }
 
-    public TreeItem addItem( final TreeItem.Type type,
-                             final String value ) {
-        final TreeItem item = new TreeItem( type, value );
-        return addItem( item );
+    public TreeItem addItem(final TreeItem.Type type,
+                            final String value) {
+        final TreeItem item = new TreeItem(type,
+                                           value);
+        return addItem(item);
     }
 
-    public TreeItem addItem( final TreeItem item ) {
-        container.add( item );
-        item.setTree( this );
+    public TreeItem addItem(final TreeItem item) {
+        container.add(item);
+        item.setTree(this);
         return item;
     }
 
-    public void removeItem( final TreeItem treeItem ) {
-        container.remove( treeItem );
+    public void removeItem(final TreeItem treeItem) {
+        container.remove(treeItem);
     }
 
     public Iterable<TreeItem> getItems() {
         return new Iterable<TreeItem>() {
             @Override
             public Iterator<TreeItem> iterator() {
-                return new TreeItem.TreeItemIterator( container );
+                return new TreeItem.TreeItemIterator(container);
             }
         };
     }

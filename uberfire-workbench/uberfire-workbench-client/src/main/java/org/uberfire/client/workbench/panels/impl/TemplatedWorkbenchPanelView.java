@@ -17,22 +17,21 @@
 package org.uberfire.client.workbench.panels.impl;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.IdentityHashMap;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
-import org.jboss.errai.ui.shared.TemplateUtil;
 import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.mvp.TemplatedActivity;
 import org.uberfire.client.workbench.LayoutSelection;
-import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
 import org.uberfire.commons.validation.PortablePreconditions;
@@ -41,11 +40,6 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.Widget;
-
 import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
 
 /**
@@ -53,7 +47,6 @@ import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
  * identified by a {@link NamedPosition}.
  * <p>
  * This view does not support having parts added to it directly, so it also does not support drag-and-drop of parts.
- *
  * @see TemplatedWorkbenchPanelPresenter
  * @see WorkbenchPanel
  */
@@ -61,41 +54,38 @@ import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
 @Named("TemplatedWorkbenchPanelView")
 public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<TemplatedWorkbenchPanelPresenter> {
 
-    private TemplatedWorkbenchPanelPresenter presenter;
-
-    private TemplatedActivity activity;
-
-    private String elementId;
-
     private final IdentityHashMap<WorkbenchPanelView<?>, NamedPosition> childPanelPositions = new IdentityHashMap<WorkbenchPanelView<?>, NamedPosition>();
-
+    private TemplatedWorkbenchPanelPresenter presenter;
+    private TemplatedActivity activity;
+    private String elementId;
     @Inject
     private LayoutSelection layoutSelection;
 
     @Override
-    public void init( TemplatedWorkbenchPanelPresenter presenter ) {
+    public void init(TemplatedWorkbenchPanelPresenter presenter) {
         this.presenter = presenter;
     }
 
-    public void setActivity( TemplatedActivity activity) {
-        this.activity = PortablePreconditions.checkNotNull( "activity", activity );
+    public void setActivity(TemplatedActivity activity) {
+        this.activity = PortablePreconditions.checkNotNull("activity",
+                                                           activity);
 
         // ensure the new activity's widget gets its ID set
-        setElementId( elementId );
+        setElementId(elementId);
     }
 
     @Override
     public Widget asWidget() {
-        if ( activity == null ) {
+        if (activity == null) {
             return null;
         }
-        return ElementWrapperWidget.getWidget( activity.getRootElement() );
+        return ElementWrapperWidget.getWidget(activity.getRootElement());
     }
 
     @Override
     public void onResize() {
         Widget root = asWidget();
-        if ( root instanceof RequiresResize ) {
+        if (root instanceof RequiresResize) {
             ((RequiresResize) root).onResize();
         }
     }
@@ -106,40 +96,42 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
     }
 
     @Override
-    public void addPanel( PanelDefinition panel,
-                          WorkbenchPanelView<?> view,
-                          Position p ) {
+    public void addPanel(PanelDefinition panel,
+                         WorkbenchPanelView<?> view,
+                         Position p) {
         NamedPosition position = (NamedPosition) p;
-        HTMLElement panelContainer = activity.resolvePosition( position );
+        HTMLElement panelContainer = activity.resolvePosition(position);
 
-        if ( panelContainer.hasChildNodes() )  {
-            GWT.log("----> "  + panelContainer.getInnerHTML());
-            throw new IllegalStateException( "Child position " + position + " is already occupied" );
+        if (panelContainer.hasChildNodes()) {
+            GWT.log("----> " + panelContainer.getInnerHTML());
+            throw new IllegalStateException("Child position " + position + " is already occupied");
         }
 
-        DOMUtil.appendWidgetToElement(panelContainer, view.asWidget());
-        childPanelPositions.put(view, position);
+        DOMUtil.appendWidgetToElement(panelContainer,
+                                      view.asWidget());
+        childPanelPositions.put(view,
+                                position);
     }
 
     @Override
-    public boolean removePanel( WorkbenchPanelView<?> child ) {
-        NamedPosition removedFromPosition = childPanelPositions.remove( child );
-        if ( removedFromPosition == null ) {
+    public boolean removePanel(WorkbenchPanelView<?> child) {
+        NamedPosition removedFromPosition = childPanelPositions.remove(child);
+        if (removedFromPosition == null) {
             return false;
         }
 
-        HTMLElement panelContainer = activity.resolvePosition( removedFromPosition );
-        removeAllChildren( panelContainer );
+        HTMLElement panelContainer = activity.resolvePosition(removedFromPosition);
+        removeAllChildren(panelContainer);
         return true;
     }
 
     @Override
-    public void setFocus( boolean hasFocus ) {
+    public void setFocus(boolean hasFocus) {
         // not important since this panel can't hold parts
     }
 
     @Override
-    public void addPart( View view ) {
+    public void addPart(View view) {
         throw new UnsupportedOperationException("This view doesn't support parts");
     }
 
@@ -149,19 +141,19 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
     }
 
     @Override
-    public void changeTitle( PartDefinition part,
-                             String title,
-                             IsWidget titleDecoration ) {
+    public void changeTitle(PartDefinition part,
+                            String title,
+                            IsWidget titleDecoration) {
         throw new UnsupportedOperationException("This view doesn't support parts");
     }
 
     @Override
-    public boolean selectPart( PartDefinition part ) {
+    public boolean selectPart(PartDefinition part) {
         throw new UnsupportedOperationException("This view doesn't support parts");
     }
 
     @Override
-    public boolean removePart( PartDefinition part ) {
+    public boolean removePart(PartDefinition part) {
         throw new UnsupportedOperationException("This view doesn't support parts");
     }
 
@@ -177,25 +169,26 @@ public class TemplatedWorkbenchPanelView implements WorkbenchPanelView<Templated
      * purposes.
      */
     @Override
-    public void setElementId( String elementId ) {
+    public void setElementId(String elementId) {
         this.elementId = elementId;
 
         // this call may come in before the activity has been set; if so, the stored ID will be applied to the
         // element when the activity is set.
-        if ( asWidget() != null ) {
-            if ( elementId != null ) {
-                asWidget().getElement().setAttribute( "id", elementId );
+        if (asWidget() != null) {
+            if (elementId != null) {
+                asWidget().getElement().setAttribute("id",
+                                                     elementId);
             }
         }
     }
 
     @Override
     public void maximize() {
-        layoutSelection.get().maximize( asWidget() );
+        layoutSelection.get().maximize(asWidget());
     }
 
     @Override
     public void unmaximize() {
-        layoutSelection.get().unmaximize( asWidget() );
+        layoutSelection.get().unmaximize(asWidget());
     }
 }

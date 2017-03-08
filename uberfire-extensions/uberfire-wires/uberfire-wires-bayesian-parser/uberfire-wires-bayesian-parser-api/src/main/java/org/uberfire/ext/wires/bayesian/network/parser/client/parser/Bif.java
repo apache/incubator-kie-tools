@@ -18,9 +18,8 @@ package org.uberfire.ext.wires.bayesian.network.parser.client.parser;
 
 import java.io.Serializable;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 @XStreamAlias("BIF")
 @Portable
@@ -38,5 +37,4 @@ public class Bif implements Serializable {
     public void setNetwork(Network network) {
         this.network = network;
     }
-
 }

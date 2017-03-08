@@ -20,27 +20,28 @@ import org.uberfire.util.URIUtil;
 
 public class FileServletUtil {
 
-    public static String encodeFileNamePart( String path ) {
+    public static String encodeFileNamePart(String path) {
         //encode the file name part for a given path in the vfs uri format.
-        if ( path == null ) {
+        if (path == null) {
             return null;
         } else {
-            int index = path.lastIndexOf( '/' );
-            StringBuilder builder = new StringBuilder(  );
-            if ( index >= 0 ) {
-                builder.append( path.substring( 0, index + 1 ) );
-                if ( index < path.length() -1 ) {
-                    builder.append( encodeFileName( path.substring( index+1, path.length() ) ) );
+            int index = path.lastIndexOf('/');
+            StringBuilder builder = new StringBuilder();
+            if (index >= 0) {
+                builder.append(path.substring(0,
+                                              index + 1));
+                if (index < path.length() - 1) {
+                    builder.append(encodeFileName(path.substring(index + 1,
+                                                                 path.length())));
                 }
             } else {
-                builder.append( path );
+                builder.append(path);
             }
             return builder.toString();
         }
     }
 
-    public static String encodeFileName( String fileName ) {
-        return URIUtil.encode( fileName );
+    public static String encodeFileName(String fileName) {
+        return URIUtil.encode(fileName);
     }
-
 }

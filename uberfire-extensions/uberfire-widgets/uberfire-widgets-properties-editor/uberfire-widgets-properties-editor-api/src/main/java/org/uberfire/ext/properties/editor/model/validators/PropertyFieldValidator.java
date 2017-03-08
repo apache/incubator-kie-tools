@@ -26,12 +26,11 @@ public interface PropertyFieldValidator {
      * @param value
      * @return
      */
-    public boolean validate( Object value );
+    public boolean validate(Object value);
 
     /**
      * Error message used in property editor.
      * @return
      */
     public String getValidatorErrorMessage();
-
 }

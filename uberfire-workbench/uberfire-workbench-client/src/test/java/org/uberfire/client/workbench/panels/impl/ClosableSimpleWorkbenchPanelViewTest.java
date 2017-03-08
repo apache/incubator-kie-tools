@@ -26,7 +26,7 @@ import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class ClosableSimpleWorkbenchPanelViewTest extends AbstractSimpleWorkbenchPanelViewTest {
 
     @InjectMocks
@@ -39,10 +39,10 @@ public class ClosableSimpleWorkbenchPanelViewTest extends AbstractSimpleWorkbenc
     public void setup() {
         super.setup();
 
-        presenter = mock( ClosableSimpleWorkbenchPanelPresenter.class );
+        presenter = mock(ClosableSimpleWorkbenchPanelPresenter.class);
 
         view.setup(); // PostConstruct
-        view.init( presenter );
+        view.init(presenter);
     }
 
     @Override
@@ -52,27 +52,31 @@ public class ClosableSimpleWorkbenchPanelViewTest extends AbstractSimpleWorkbenc
 
     @Test
     public void shouldAddPresenterOnInit() {
-        assertEquals( presenter, view.getPresenter() );
+        assertEquals(presenter,
+                     view.getPresenter());
     }
 
     @Test
     public void shouldEnableCloseParts() {
-        verify( listBar, never() ).disableClosePart();
-        verify( listBar ).enableClosePart();
+        verify(listBar,
+               never()).disableClosePart();
+        verify(listBar).enableClosePart();
     }
 
     @Test(expected = RuntimeException.class)
     public void shouldOnlyHaveOnePart() {
-        assertEquals( 0, listBar.getPartsSize() );
+        assertEquals(0,
+                     listBar.getPartsSize());
 
-        getViewToTest().addPart( mock( WorkbenchPartPresenter.View.class ) );
-        verify( listBar ).addPart( any( WorkbenchPartPresenter.View.class ) );
-        assertEquals( 1, listBar.getPartsSize() );
+        getViewToTest().addPart(mock(WorkbenchPartPresenter.View.class));
+        verify(listBar).addPart(any(WorkbenchPartPresenter.View.class));
+        assertEquals(1,
+                     listBar.getPartsSize());
 
         //Second part add is a leak should throw exception
-        getViewToTest().addPart( mock( WorkbenchPartPresenter.View.class ) );
-        verify( listBar ).addPart( any( WorkbenchPartPresenter.View.class ) );
-        assertEquals( 1, listBar.getPartsSize() );
+        getViewToTest().addPart(mock(WorkbenchPartPresenter.View.class));
+        verify(listBar).addPart(any(WorkbenchPartPresenter.View.class));
+        assertEquals(1,
+                     listBar.getPartsSize());
     }
-
 }

@@ -49,7 +49,6 @@ import org.uberfire.workbench.events.NotificationEvent;
 /**
  * <p>The workflow for editing a role.</p>
  * <p>It links the editor & sub-editors components with the editor driver and the remote user services.</p>
- * 
  * @since 0.9.0
  */
 @Dependent
@@ -70,8 +69,17 @@ public class RoleEditorWorkflow extends BaseRoleEditorWorkflow {
                               final LoadingBox loadingBox,
                               final EntityWorkflowView view) {
 
-        super(userSystemManager, authorizationService, permissionManager, errorEvent, workbenchNotification,
-                saveUserEvent, confirmBox, roleEditor, roleEditorDriver, loadingBox, view);
+        super(userSystemManager,
+              authorizationService,
+              permissionManager,
+              errorEvent,
+              workbenchNotification,
+              saveUserEvent,
+              confirmBox,
+              roleEditor,
+              roleEditorDriver,
+              loadingBox,
+              view);
     }
 
     public void show(final String roleName) {
@@ -89,39 +97,45 @@ public class RoleEditorWorkflow extends BaseRoleEditorWorkflow {
     }
 
     void onEditRoleEvent(@Observes final OnEditEvent onEditEvent) {
-        if (checkEventContext(onEditEvent, roleEditor)) {
+        if (checkEventContext(onEditEvent,
+                              roleEditor)) {
             edit();
         }
     }
 
     void onHomePerspectiveChangedEvent(@Observes final HomePerspectiveChangedEvent event) {
-        if (checkEventContext(event, roleEditor.getAclSettings())) {
+        if (checkEventContext(event,
+                              roleEditor.getAclSettings())) {
             selectedHomePerspective = event.getPerspective();
             checkStatus();
         }
     }
 
     void onPriorityChangedEvent(@Observes final PriorityChangedEvent event) {
-        if (checkEventContext(event, roleEditor.getAclSettings())) {
+        if (checkEventContext(event,
+                              roleEditor.getAclSettings())) {
             checkStatus();
         }
     }
 
     void onPermissionChangedEvent(@Observes final PermissionChangedEvent event) {
-        if (checkEventContext(event, roleEditor.getAclEditor())) {
+        if (checkEventContext(event,
+                              roleEditor.getAclEditor())) {
             checkStatus();
         }
     }
 
     void onPermissionAddedEvent(@Observes final PermissionNodeAddedEvent event) {
-        if (checkEventContext(event, roleEditor.getAclEditor())) {
+        if (checkEventContext(event,
+                              roleEditor.getAclEditor())) {
             setDirty(true);
             checkStatus();
         }
     }
 
     void onPermissionRemovedEvent(@Observes final PermissionNodeRemovedEvent event) {
-        if (checkEventContext(event, roleEditor.getAclEditor())) {
+        if (checkEventContext(event,
+                              roleEditor.getAclEditor())) {
             checkStatus();
         }
     }
@@ -141,7 +155,9 @@ public class RoleEditorWorkflow extends BaseRoleEditorWorkflow {
             return false;
         }
         PermissionCollection permissionCollection = roleEditor.permissions();
-        Permission p = permissionManager.createPermission(perspectiveActivity, PerspectiveAction.READ, false);
+        Permission p = permissionManager.createPermission(perspectiveActivity,
+                                                          PerspectiveAction.READ,
+                                                          false);
         Permission existing = permissionCollection.get(p.getName());
         if (existing != null) {
             return existing.getResult().equals(AuthorizationResult.ACCESS_DENIED);

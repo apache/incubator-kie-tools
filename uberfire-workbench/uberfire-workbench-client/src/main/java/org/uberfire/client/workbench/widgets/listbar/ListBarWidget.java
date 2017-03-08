@@ -42,13 +42,11 @@ public interface ListBarWidget extends MultiPartWidget {
 
     /**
      * Enable this list bar's to support drag and drop.
-     *
      */
     public void enableDnd();
 
     /**
      * Disable this list bar's to support drag and drop.
-     *
      */
     public void disableDnd();
 
@@ -64,13 +62,11 @@ public interface ListBarWidget extends MultiPartWidget {
 
     /**
      * Enable support to close parts.
-     *
      */
     void enableClosePart();
 
     /**
      * Disable support to close parts.
-     *
      */
     void disableClosePart();
 }

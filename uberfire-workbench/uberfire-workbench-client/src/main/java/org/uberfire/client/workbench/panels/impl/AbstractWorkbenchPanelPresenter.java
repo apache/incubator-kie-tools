@@ -15,14 +15,12 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
-import static org.uberfire.debug.Debug.objectId;
-
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import javax.annotation.PostConstruct;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
@@ -32,7 +30,7 @@ import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
 import org.uberfire.workbench.model.Position;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import static org.uberfire.debug.Debug.objectId;
 
 /**
  * Basic implementation of common functionality in a panel presenter.
@@ -42,14 +40,14 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenchPanelPresenter<P>> implements WorkbenchPanelPresenter {
 
-    private WorkbenchPanelPresenter parent;
-    private final WorkbenchPanelView<P> view;
     protected final PerspectiveManager perspectiveManager;
-    private PanelDefinition definition;
     protected final Map<Position, WorkbenchPanelPresenter> childPanels = new LinkedHashMap<Position, WorkbenchPanelPresenter>();
+    private final WorkbenchPanelView<P> view;
+    private WorkbenchPanelPresenter parent;
+    private PanelDefinition definition;
 
-    public AbstractWorkbenchPanelPresenter( final WorkbenchPanelView<P> view,
-                                            final PerspectiveManager perspectiveManager ) {
+    public AbstractWorkbenchPanelPresenter(final WorkbenchPanelView<P> view,
+                                           final PerspectiveManager perspectiveManager) {
         this.view = view;
         this.perspectiveManager = perspectiveManager;
     }
@@ -61,7 +59,7 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
 
     @PostConstruct
     void init() {
-        getPanelView().init( this.asPresenterType() );
+        getPanelView().init(this.asPresenterType());
     }
 
     @Override
@@ -70,13 +68,19 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
     }
 
     @Override
-    public void setParent( WorkbenchPanelPresenter parent ) {
+    public void setParent(WorkbenchPanelPresenter parent) {
         this.parent = parent;
     }
 
     @Override
     public PanelDefinition getDefinition() {
         return definition;
+    }
+
+    @Override
+    public void setDefinition(final PanelDefinition definition) {
+        this.definition = definition;
+        view.setElementId(definition.getElementId());
     }
 
     /**
@@ -88,19 +92,14 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
         return getClass().getName();
     }
 
-    @Override
-    public void setDefinition( final PanelDefinition definition ) {
-        this.definition = definition;
-        view.setElementId( definition.getElementId() );
-    }
-
     /**
      * Calls {@link #addPart(org.uberfire.client.workbench.part.WorkbenchPartPresenter, String)}. Subclasses can
      * take advantage of this by only overriding the 2-arg version.
      */
     @Override
-    public void addPart( final WorkbenchPartPresenter part ) {
-        addPart( part, null );
+    public void addPart(final WorkbenchPartPresenter part) {
+        addPart(part,
+                null);
     }
 
     /**
@@ -108,21 +107,21 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
      * Subclasses that care about context id's will override this method.
      */
     @Override
-    public void addPart( final WorkbenchPartPresenter part,
-                         final String contextId ) {
+    public void addPart(final WorkbenchPartPresenter part,
+                        final String contextId) {
 
         // special case: when new perspectives are being built up based on definitions,
         // our definition will already say it contains the given part! We should not try to add it again.
-        if ( !definition.getParts().contains( part.getDefinition() ) ) {
-            definition.addPart( part.getDefinition() );
+        if (!definition.getParts().contains(part.getDefinition())) {
+            definition.addPart(part.getDefinition());
         }
-        getPanelView().addPart( part.getPartView() );
+        getPanelView().addPart(part.getPartView());
     }
 
     @Override
-    public boolean removePart( final PartDefinition part ) {
-        view.removePart( part );
-        return definition.removePart( part );
+    public boolean removePart(final PartDefinition part) {
+        view.removePart(part);
+        return definition.removePart(part);
     }
 
     /**
@@ -132,38 +131,42 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
      * strategy.
      */
     @Override
-    public void addPanel( final WorkbenchPanelPresenter child,
-                          final Position position ) {
-        if ( childPanels.containsKey( position ) ) {
-            throw new IllegalStateException( "This panel already has a " + position + " child" );
+    public void addPanel(final WorkbenchPanelPresenter child,
+                         final Position position) {
+        if (childPanels.containsKey(position)) {
+            throw new IllegalStateException("This panel already has a " + position + " child");
         }
-        definition.insertChild( position, child.getDefinition() );
-        getPanelView().addPanel( child.getDefinition(), child.getPanelView(), position );
-        childPanels.put( position, child );
-        child.setParent( this );
+        definition.insertChild(position,
+                               child.getDefinition());
+        getPanelView().addPanel(child.getDefinition(),
+                                child.getPanelView(),
+                                position);
+        childPanels.put(position,
+                        child);
+        child.setParent(this);
     }
 
     @Override
-    public boolean removePanel( WorkbenchPanelPresenter child ) {
-        Position position = positionOf( child );
-        if ( position == null ) {
+    public boolean removePanel(WorkbenchPanelPresenter child) {
+        Position position = positionOf(child);
+        if (position == null) {
             return false;
         }
-        getPanelView().removePanel( child.getPanelView() );
-        definition.removeChild( position );
-        childPanels.remove( position );
-        child.setParent( null );
+        getPanelView().removePanel(child.getPanelView());
+        definition.removeChild(position);
+        childPanels.remove(position);
+        child.setParent(null);
         return true;
     }
 
     @Override
     public Map<Position, WorkbenchPanelPresenter> getPanels() {
-        return Collections.unmodifiableMap( childPanels );
+        return Collections.unmodifiableMap(childPanels);
     }
 
-    protected Position positionOf( WorkbenchPanelPresenter child ) {
-        for ( Map.Entry<Position, WorkbenchPanelPresenter> entry : childPanels.entrySet() ) {
-            if ( child == entry.getValue() ) {
+    protected Position positionOf(WorkbenchPanelPresenter child) {
+        for (Map.Entry<Position, WorkbenchPanelPresenter> entry : childPanels.entrySet()) {
+            if (child == entry.getValue()) {
                 return entry.getKey();
             }
         }
@@ -171,28 +174,30 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
     }
 
     @Override
-    public void changeTitle( final PartDefinition part,
-                             final String title,
-                             final IsWidget titleDecorator ) {
-        getPanelView().changeTitle( part, title, titleDecorator );
+    public void changeTitle(final PartDefinition part,
+                            final String title,
+                            final IsWidget titleDecorator) {
+        getPanelView().changeTitle(part,
+                                   title,
+                                   titleDecorator);
     }
 
     @Override
-    public void setFocus( final boolean hasFocus ) {
-        view.setFocus( hasFocus );
+    public void setFocus(final boolean hasFocus) {
+        view.setFocus(hasFocus);
     }
 
     @Override
-    public boolean selectPart( final PartDefinition part ) {
-        if ( !contains( part ) ) {
+    public boolean selectPart(final PartDefinition part) {
+        if (!contains(part)) {
             return false;
         }
-        view.selectPart( part );
+        view.selectPart(part);
         return true;
     }
 
-    private boolean contains( final PartDefinition part ) {
-        return definition.getParts().contains( part );
+    private boolean contains(final PartDefinition part) {
+        return definition.getParts().contains(part);
     }
 
     @Override
@@ -211,25 +216,25 @@ public abstract class AbstractWorkbenchPanelPresenter<P extends AbstractWorkbenc
     }
 
     @Override
-    public void onResize( final int width,
-                          final int height ) {
-        if ( width != 0 ) {
-            getDefinition().setWidth( width );
+    public void onResize(final int width,
+                         final int height) {
+        if (width != 0) {
+            getDefinition().setWidth(width);
         }
 
-        if ( height != 0 ) {
-            getDefinition().setHeight( height );
+        if (height != 0) {
+            getDefinition().setHeight(height);
         }
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder( getClass().getName() );
-        sb.append( objectId( this ) );
-        if ( getDefinition() == null ) {
-            sb.append( " (no definition)" );
+        StringBuilder sb = new StringBuilder(getClass().getName());
+        sb.append(objectId(this));
+        if (getDefinition() == null) {
+            sb.append(" (no definition)");
         } else {
-            sb.append( " id=" ).append( getDefinition().getElementId() );
+            sb.append(" id=").append(getDefinition().getElementId());
         }
 
         return sb.toString();

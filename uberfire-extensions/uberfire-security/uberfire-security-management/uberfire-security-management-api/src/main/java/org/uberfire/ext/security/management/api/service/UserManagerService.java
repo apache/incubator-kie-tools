@@ -20,7 +20,6 @@ import org.uberfire.ext.security.management.api.UserManager;
 
 /**
  * <p>Remote service API for the Users Manager.</p>
- *
  * @since 0.8.0
  */
 @Remote

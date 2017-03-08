@@ -28,5 +28,5 @@ public interface PathOperationRestriction {
      * @param path Path related to the restriction.
      * @return Message related to the restriction.
      */
-    String getMessage( Path path );
+    String getMessage(Path path);
 }

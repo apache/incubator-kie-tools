@@ -32,33 +32,31 @@ public class TreeHierarchyStructureView implements IsElement,
                                                    TreeHierarchyStructurePresenter.View {
 
     private final TranslationService translationService;
-
-    private TreeHierarchyStructurePresenter presenter;
-
     @Inject
     @DataField("preference-tree")
     Div tree;
+    private TreeHierarchyStructurePresenter presenter;
 
     @Inject
-    public TreeHierarchyStructureView( final TranslationService translationService ) {
+    public TreeHierarchyStructureView(final TranslationService translationService) {
         this.translationService = translationService;
     }
 
     @Override
-    public void init( final TreeHierarchyStructurePresenter presenter ) {
+    public void init(final TreeHierarchyStructurePresenter presenter) {
         this.presenter = presenter;
 
-        tree.setInnerHTML( "" );
-        tree.appendChild( ( (IsElement) presenter.getHierarchyItem().getView() ).getElement() );
+        tree.setInnerHTML("");
+        tree.appendChild(((IsElement) presenter.getHierarchyItem().getView()).getElement());
     }
 
     @Override
-    public String getTranslation( final String key ) {
-        return translationService.format( key );
+    public String getTranslation(final String key) {
+        return translationService.format(key);
     }
 
     @Override
     public String getSaveSuccessMessage() {
-        return translationService.format( Constants.TreeHierarchyStructureView_SaveSuccess );
+        return translationService.format(Constants.TreeHierarchyStructureView_SaveSuccess);
     }
 }

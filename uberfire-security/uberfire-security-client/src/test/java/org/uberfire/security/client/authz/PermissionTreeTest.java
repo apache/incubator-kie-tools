@@ -17,7 +17,6 @@ package org.uberfire.security.client.authz;
 
 import java.util.Arrays;
 import java.util.List;
-
 import javax.enterprise.inject.Instance;
 
 import org.jboss.errai.security.shared.api.RoleImpl;
@@ -32,9 +31,9 @@ import org.uberfire.security.authz.AuthorizationResult;
 import org.uberfire.security.authz.Permission;
 import org.uberfire.security.authz.PermissionManager;
 import org.uberfire.security.client.authz.tree.PermissionNode;
-import org.uberfire.security.client.authz.tree.PermissionTreeProvider;
 import org.uberfire.security.client.authz.tree.PermissionTree;
 import org.uberfire.security.client.authz.tree.PermissionTreeFactory;
+import org.uberfire.security.client.authz.tree.PermissionTreeProvider;
 import org.uberfire.security.client.authz.tree.PermissionTreeVisitor;
 import org.uberfire.security.client.authz.tree.impl.DefaultPermissionTreeFactory;
 import org.uberfire.security.client.authz.tree.impl.PermissionLeafNode;
@@ -69,27 +68,44 @@ public class PermissionTreeTest {
         when(projectB.getResourceType()).thenReturn(ProjectTreeProvider.PROJECT_TYPE);
 
         permissionManager = new DefaultPermissionManager();
-        projectProvider = new ProjectTreeProvider(permissionManager, Arrays.asList(projectA, projectB));
+        projectProvider = new ProjectTreeProvider(permissionManager,
+                                                  Arrays.asList(projectA,
+                                                                projectB));
         generalTreeProvider = new GeneralTreeProvider(permissionManager);
-        permissionTreeFactory = new DefaultPermissionTreeFactory(permissionManager, Arrays.asList(generalTreeProvider, projectProvider));
+        permissionTreeFactory = new DefaultPermissionTreeFactory(permissionManager,
+                                                                 Arrays.asList(generalTreeProvider,
+                                                                               projectProvider));
 
         permissionManager.setAuthorizationPolicy(
                 permissionManager.newAuthorizationPolicy()
                         .role("admin")
-                        .permission("project.create", true)
-                        .permission("project.read", false)
-                        .permission("project.read.p1", true)
-                        .permission("project.edit", true)
-                        .permission("project.edit.p1", false)
-                        .permission("project.delete", true)
-                        .permission("project.delete.p1", false)
-                        .permission("general.categoryB", false)
-                        .permission("general.categoryB.setting8", false)
-                        .permission("general.categoryB.setting9", true)
-                        .permission("general.categoryB.setting10", true)
+                        .permission("project.create",
+                                    true)
+                        .permission("project.read",
+                                    false)
+                        .permission("project.read.p1",
+                                    true)
+                        .permission("project.edit",
+                                    true)
+                        .permission("project.edit.p1",
+                                    false)
+                        .permission("project.delete",
+                                    true)
+                        .permission("project.delete.p1",
+                                    false)
+                        .permission("general.categoryB",
+                                    false)
+                        .permission("general.categoryB.setting8",
+                                    false)
+                        .permission("general.categoryB.setting9",
+                                    true)
+                        .permission("general.categoryB.setting10",
+                                    true)
                         .role("manager")
-                        .permission("project.create", false)
-                        .permission("project.read", true)
+                        .permission("project.create",
+                                    false)
+                        .permission("project.read",
+                                    true)
                         .build());
     }
 
@@ -97,28 +113,40 @@ public class PermissionTreeTest {
     public void testProjectNodeInitialization() {
         PermissionTree tree = permissionTreeFactory.createPermissionTree();
         List<PermissionNode> rootNodes = tree.getRootNodes();
-        assertEquals(rootNodes.size(), 2);
+        assertEquals(rootNodes.size(),
+                     2);
 
         PermissionNode rootNode = rootNodes.get(1);
-        assertEquals(rootNode.getNodeName(), "Projects");
-        assertEquals(rootNode.getPermissionList().size(), 4);
+        assertEquals(rootNode.getNodeName(),
+                     "Projects");
+        assertEquals(rootNode.getPermissionList().size(),
+                     4);
         assertTrue(rootNode instanceof PermissionResourceNode);
-        assertEquals(rootNode.getLevel(), 0);
+        assertEquals(rootNode.getLevel(),
+                     0);
 
         rootNode.expand(children -> {
-            assertEquals(children.size(), 2);
+            assertEquals(children.size(),
+                         2);
             PermissionNode projectNode = children.get(0);
-            assertEquals(projectNode.getNodeName(), "p1");
+            assertEquals(projectNode.getNodeName(),
+                         "p1");
             assertTrue(projectNode instanceof PermissionLeafNode);
-            assertEquals(projectNode.getPermissionList().size(), 3);
-            assertEquals(projectNode.getLevel(), 1);
-            assertEquals(rootNode.impliesName(projectNode).size(), 3);
+            assertEquals(projectNode.getPermissionList().size(),
+                         3);
+            assertEquals(projectNode.getLevel(),
+                         1);
+            assertEquals(rootNode.impliesName(projectNode).size(),
+                         3);
 
             projectNode = children.get(1);
-            assertEquals(projectNode.getNodeName(), "p2");
+            assertEquals(projectNode.getNodeName(),
+                         "p2");
             assertTrue(projectNode instanceof PermissionLeafNode);
-            assertEquals(projectNode.getPermissionList().size(), 3);
-            assertEquals(rootNode.impliesName(projectNode).size(), 3);
+            assertEquals(projectNode.getPermissionList().size(),
+                         3);
+            assertEquals(rootNode.impliesName(projectNode).size(),
+                         3);
         });
     }
 
@@ -126,22 +154,35 @@ public class PermissionTreeTest {
     public void testProjectsLoading() {
         PermissionTree tree = permissionTreeFactory.createPermissionTree(new RoleImpl("admin"));
         PermissionNode rootNode = tree.getRootNodes().get(1);
-        assertEquals(rootNode.getPermissionList().get(0).getResult(), AuthorizationResult.ACCESS_GRANTED);
-        assertEquals(rootNode.getPermissionList().get(1).getResult(), AuthorizationResult.ACCESS_DENIED);
-        assertEquals(rootNode.getPermissionList().get(2).getResult(), AuthorizationResult.ACCESS_GRANTED);
-        assertEquals(rootNode.getPermissionList().get(3).getResult(), AuthorizationResult.ACCESS_GRANTED);
+        assertEquals(rootNode.getPermissionList().get(0).getResult(),
+                     AuthorizationResult.ACCESS_GRANTED);
+        assertEquals(rootNode.getPermissionList().get(1).getResult(),
+                     AuthorizationResult.ACCESS_DENIED);
+        assertEquals(rootNode.getPermissionList().get(2).getResult(),
+                     AuthorizationResult.ACCESS_GRANTED);
+        assertEquals(rootNode.getPermissionList().get(3).getResult(),
+                     AuthorizationResult.ACCESS_GRANTED);
 
         rootNode.expand(children -> {
-            assertEquals(children.size(), 1);
+            assertEquals(children.size(),
+                         1);
             PermissionNode projectNode = children.get(0);
-            assertEquals(projectNode.getNodeName(), "p1");
-            assertEquals(projectNode.getPermissionList().size(), 3);
-            assertEquals(projectNode.getPermissionList().get(0).getName(), "project.read.p1");
-            assertEquals(projectNode.getPermissionList().get(1).getName(), "project.edit.p1");
-            assertEquals(projectNode.getPermissionList().get(2).getName(), "project.delete.p1");
-            assertEquals(projectNode.getPermissionList().get(0).getResult(), AuthorizationResult.ACCESS_GRANTED);
-            assertEquals(projectNode.getPermissionList().get(1).getResult(), AuthorizationResult.ACCESS_DENIED);
-            assertEquals(projectNode.getPermissionList().get(2).getResult(), AuthorizationResult.ACCESS_DENIED);
+            assertEquals(projectNode.getNodeName(),
+                         "p1");
+            assertEquals(projectNode.getPermissionList().size(),
+                         3);
+            assertEquals(projectNode.getPermissionList().get(0).getName(),
+                         "project.read.p1");
+            assertEquals(projectNode.getPermissionList().get(1).getName(),
+                         "project.edit.p1");
+            assertEquals(projectNode.getPermissionList().get(2).getName(),
+                         "project.delete.p1");
+            assertEquals(projectNode.getPermissionList().get(0).getResult(),
+                         AuthorizationResult.ACCESS_GRANTED);
+            assertEquals(projectNode.getPermissionList().get(1).getResult(),
+                         AuthorizationResult.ACCESS_DENIED);
+            assertEquals(projectNode.getPermissionList().get(2).getResult(),
+                         AuthorizationResult.ACCESS_DENIED);
         });
     }
 
@@ -152,7 +193,8 @@ public class PermissionTreeTest {
         tree.accept(visitor);
 
         ArgumentCaptor<PermissionNode> argumentCaptor = ArgumentCaptor.forClass(PermissionNode.class);
-        verify(visitor, times(15)).visit(argumentCaptor.capture());
+        verify(visitor,
+               times(15)).visit(argumentCaptor.capture());
 
         boolean projectsVisited = false;
         boolean p1Visited = false;
@@ -163,13 +205,20 @@ public class PermissionTreeTest {
                 projectsVisited = true;
             } else if ("p1".equals(name)) {
                 p1Visited = true;
-                assertEquals(permissionNode.getPermissionList().size(), 3);
-                assertEquals(permissionNode.getPermissionList().get(0).getName(), "project.read.p1");
-                assertEquals(permissionNode.getPermissionList().get(1).getName(), "project.edit.p1");
-                assertEquals(permissionNode.getPermissionList().get(2).getName(), "project.delete.p1");
-                assertEquals(permissionNode.getPermissionList().get(0).getResult(), AuthorizationResult.ACCESS_GRANTED);
-                assertEquals(permissionNode.getPermissionList().get(1).getResult(), AuthorizationResult.ACCESS_DENIED);
-                assertEquals(permissionNode.getPermissionList().get(2).getResult(), AuthorizationResult.ACCESS_DENIED);
+                assertEquals(permissionNode.getPermissionList().size(),
+                             3);
+                assertEquals(permissionNode.getPermissionList().get(0).getName(),
+                             "project.read.p1");
+                assertEquals(permissionNode.getPermissionList().get(1).getName(),
+                             "project.edit.p1");
+                assertEquals(permissionNode.getPermissionList().get(2).getName(),
+                             "project.delete.p1");
+                assertEquals(permissionNode.getPermissionList().get(0).getResult(),
+                             AuthorizationResult.ACCESS_GRANTED);
+                assertEquals(permissionNode.getPermissionList().get(1).getResult(),
+                             AuthorizationResult.ACCESS_DENIED);
+                assertEquals(permissionNode.getPermissionList().get(2).getResult(),
+                             AuthorizationResult.ACCESS_DENIED);
             } else if ("p2".equals(name)) {
                 p2Visited = true;
             }
@@ -186,15 +235,18 @@ public class PermissionTreeTest {
         tree.accept(visitor);
 
         ArgumentCaptor<PermissionNode> argumentCaptor = ArgumentCaptor.forClass(PermissionNode.class);
-        verify(visitor, times(15)).visit(argumentCaptor.capture());
+        verify(visitor,
+               times(15)).visit(argumentCaptor.capture());
 
         for (PermissionNode node : argumentCaptor.getAllValues()) {
 
             // setting8 must be initialized to false according to its parent
             if (node.getNodeName().equals("Setting 8")) {
-                assertEquals(node.getPermissionList().size(), 1);
+                assertEquals(node.getPermissionList().size(),
+                             1);
                 Permission p = node.getPermissionList().get(0);
-                assertEquals(p.getResult(), AuthorizationResult.ACCESS_DENIED);
+                assertEquals(p.getResult(),
+                             AuthorizationResult.ACCESS_DENIED);
             }
         }
     }

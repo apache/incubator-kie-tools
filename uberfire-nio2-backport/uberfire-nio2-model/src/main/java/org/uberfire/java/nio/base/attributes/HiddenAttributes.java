@@ -27,5 +27,4 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 public interface HiddenAttributes extends BasicFileAttributes {
 
     boolean isHidden();
-
 }

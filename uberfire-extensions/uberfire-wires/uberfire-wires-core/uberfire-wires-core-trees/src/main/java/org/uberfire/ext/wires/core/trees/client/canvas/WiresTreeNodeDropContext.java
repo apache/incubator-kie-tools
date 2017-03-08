@@ -28,8 +28,7 @@ public class WiresTreeNodeDropContext implements ShapeDropContext<WiresBaseTreeN
     }
 
     @Override
-    public void setContext( final WiresBaseTreeNode context ) {
+    public void setContext(final WiresBaseTreeNode context) {
         this.context = context;
     }
-
 }

@@ -20,7 +20,7 @@ public class Mood {
 
     private final String text;
 
-    public Mood( String text ) {
+    public Mood(String text) {
         this.text = text;
     }
 

@@ -24,6 +24,7 @@ import org.uberfire.ext.layout.editor.client.infra.DndDataJSONConverter;
 public interface LayoutDragComponent {
 
     public static final String FORMAT = "text";
+    static DndDataJSONConverter converter = new DndDataJSONConverter();
 
     String getDragComponentTitle();
 
@@ -33,7 +34,6 @@ public interface LayoutDragComponent {
      * Notice this is just a widget preview, so not all the component features need to be available at
      * preview time. Just a widget that gives the user an idea of how the final component might look like.
      * </p>
-     *
      * @param ctx The context for the component being rendered
      */
     IsWidget getPreviewWidget(RenderingContext ctx);
@@ -41,10 +41,7 @@ public interface LayoutDragComponent {
     /**
      * The widget that display and provides all the component features.
      * This is the widget during the layout rendering process.
-     *
      * @param ctx The context for the component being rendered
      */
     IsWidget getShowWidget(RenderingContext ctx);
-
-    static DndDataJSONConverter converter = new DndDataJSONConverter();
 }

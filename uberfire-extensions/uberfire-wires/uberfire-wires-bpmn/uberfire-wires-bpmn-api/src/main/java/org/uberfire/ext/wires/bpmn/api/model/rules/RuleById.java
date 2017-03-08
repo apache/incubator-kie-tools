@@ -25,5 +25,4 @@ public interface RuleById extends Rule {
      * @return
      */
     String getId();
-
 }

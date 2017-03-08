@@ -25,9 +25,9 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.Gri
 public class IntegerColumnRenderer extends BaseGridColumnRenderer<Integer> {
 
     @Override
-    public Group renderCell( final GridCell<Integer> cell,
-                             final GridBodyCellRenderContext context ) {
-        if ( cell == null || cell.getValue() == null ) {
+    public Group renderCell(final GridCell<Integer> cell,
+                            final GridBodyCellRenderContext context) {
+        if (cell == null || cell.getValue() == null) {
             return null;
         }
 
@@ -36,12 +36,11 @@ public class IntegerColumnRenderer extends BaseGridColumnRenderer<Integer> {
 
         final Group g = new Group();
         final Text t = theme.getBodyText()
-                .setText( Integer.toString( cell.getValue().getValue() ) )
-                .setListening( false )
-                .setX( context.getCellWidth() / 2 )
-                .setY( context.getCellHeight() / 2 );
-        g.add( t );
+                .setText(Integer.toString(cell.getValue().getValue()))
+                .setListening(false)
+                .setX(context.getCellWidth() / 2)
+                .setY(context.getCellHeight() / 2);
+        g.add(t);
         return g;
     }
-
 }

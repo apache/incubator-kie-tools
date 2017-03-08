@@ -28,10 +28,10 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
  */
 public class CheckBoxDOMElementFactory extends BaseDOMElementFactory<Boolean, CheckBox, CheckBoxDOMElement> {
 
-    public CheckBoxDOMElementFactory( final GridLayer gridLayer,
-                                      final GridWidget gridWidget ) {
-        super( gridLayer,
-               gridWidget );
+    public CheckBoxDOMElementFactory(final GridLayer gridLayer,
+                                     final GridWidget gridWidget) {
+        super(gridLayer,
+              gridWidget);
     }
 
     @Override
@@ -40,21 +40,20 @@ public class CheckBoxDOMElementFactory extends BaseDOMElementFactory<Boolean, Ch
     }
 
     @Override
-    public CheckBoxDOMElement createDomElement( final GridLayer gridLayer,
-                                                final GridWidget gridWidget,
-                                                final GridBodyCellRenderContext context ) {
+    public CheckBoxDOMElement createDomElement(final GridLayer gridLayer,
+                                               final GridWidget gridWidget,
+                                               final GridBodyCellRenderContext context) {
         final CheckBox widget = createWidget();
-        final CheckBoxDOMElement e = new CheckBoxDOMElement( widget,
-                                                             gridLayer,
-                                                             gridWidget );
-        widget.addClickHandler( new ClickHandler() {
+        final CheckBoxDOMElement e = new CheckBoxDOMElement(widget,
+                                                            gridLayer,
+                                                            gridWidget);
+        widget.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( final ClickEvent event ) {
-                e.flush( widget.getValue() );
+            public void onClick(final ClickEvent event) {
+                e.flush(widget.getValue());
                 gridLayer.batch();
             }
-        } );
+        });
         return e;
     }
-
 }

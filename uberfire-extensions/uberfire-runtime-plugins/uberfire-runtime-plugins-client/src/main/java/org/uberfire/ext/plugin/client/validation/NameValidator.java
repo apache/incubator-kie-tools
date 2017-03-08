@@ -27,36 +27,39 @@ public class NameValidator extends RuleValidator {
 
     private String error;
 
-    private NameValidator( String emptyError,
-                           String invalidError ) {
+    private NameValidator(String emptyError,
+                          String invalidError) {
         this.emptyError = emptyError;
         this.invalidError = invalidError;
     }
 
-    public static NameValidator createNameValidator( String emptyError,
-                                                     String invalidError ) {
-        return new NameValidator( emptyError, invalidError );
+    public static NameValidator createNameValidator(String emptyError,
+                                                    String invalidError) {
+        return new NameValidator(emptyError,
+                                 invalidError);
     }
 
     public static NameValidator tagNameValidator() {
-        return new NameValidator( CommonConstants.INSTANCE.EmptyTagName(), CommonConstants.INSTANCE.InvalidTagName() );
+        return new NameValidator(CommonConstants.INSTANCE.EmptyTagName(),
+                                 CommonConstants.INSTANCE.InvalidTagName());
     }
 
     public static NameValidator parameterNameValidator() {
-        return new NameValidator( CommonConstants.INSTANCE.EmptyParameterName(), CommonConstants.INSTANCE.InvalidParameterName() );
+        return new NameValidator(CommonConstants.INSTANCE.EmptyParameterName(),
+                                 CommonConstants.INSTANCE.InvalidParameterName());
     }
 
     public String getValidationError() {
         return error;
     }
 
-    public boolean isValid( String dirName ) {
-        if ( dirName == null || dirName.trim().isEmpty() ) {
+    public boolean isValid(String dirName) {
+        if (dirName == null || dirName.trim().isEmpty()) {
             this.error = this.emptyError;
             return Boolean.FALSE;
         }
 
-        if ( !dirName.matches( VALID_DIR_REGEX ) ) {
+        if (!dirName.matches(VALID_DIR_REGEX)) {
             this.error = this.invalidError;
             return Boolean.FALSE;
         }

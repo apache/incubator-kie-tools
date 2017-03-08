@@ -29,8 +29,8 @@ public class PageRequest {
     protected int startRowIndex = 0;
     protected Integer pageSize = null; // null returns all pages
 
-    public PageRequest( @MapsTo("startRowIndex") int startRowIndex,
-                        @MapsTo("pageSize") Integer pageSize ) {
+    public PageRequest(@MapsTo("startRowIndex") int startRowIndex,
+                       @MapsTo("pageSize") Integer pageSize) {
         this.startRowIndex = startRowIndex;
         this.pageSize = pageSize;
     }
@@ -43,16 +43,15 @@ public class PageRequest {
         return pageSize;
     }
 
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
+
     public int getStartRowIndex() {
         return startRowIndex;
     }
 
-    public void setPageSize( Integer pageSize ) {
-        this.pageSize = pageSize;
-    }
-
-    public void setStartRowIndex( int startRowIndex ) {
+    public void setStartRowIndex(int startRowIndex) {
         this.startRowIndex = startRowIndex;
     }
-
 }

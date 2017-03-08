@@ -22,6 +22,6 @@ import javax.enterprise.context.Dependent;
  */
 @Dependent
 public class SimpleDnDWorkbenchPanelView
-extends AbstractSimpleWorkbenchPanelView<SimpleDnDWorkbenchPanelPresenter> {
+        extends AbstractSimpleWorkbenchPanelView<SimpleDnDWorkbenchPanelPresenter> {
 
 }

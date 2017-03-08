@@ -21,12 +21,21 @@ import com.google.gwt.user.client.ui.HTML;
 
 public class ClickableLabel extends HTML {
 
-    public ClickableLabel( String text,
-                           ClickHandler event,
-                           boolean enabled ) {
+    public ClickableLabel(String text,
+                          ClickHandler event,
+                          boolean enabled) {
         super(doText(text,
-                enabled));
-        if (enabled) this.addClickHandler(event);
+                     enabled));
+        if (enabled) {
+            this.addClickHandler(event);
+        }
+    }
+
+    public ClickableLabel(String text,
+                          ClickHandler event) {
+        this(text,
+             event,
+             true);
     }
 
     private static String doText(String text,
@@ -36,12 +45,5 @@ public class ClickableLabel extends HTML {
         } else {
             return "<div class='form-field'>" + text + "</div>";
         }
-    }
-
-    public ClickableLabel( String text,
-                           ClickHandler event ) {
-        this(text,
-                event,
-                true);
     }
 }

@@ -22,13 +22,15 @@ public class NoSuchFileException extends FileSystemException {
         super();
     }
 
-    public NoSuchFileException( String file ) {
-        super( file );
+    public NoSuchFileException(String file) {
+        super(file);
     }
 
-    public NoSuchFileException( String file,
-                                String other,
-                                String reason ) {
-        super( file, other, reason );
+    public NoSuchFileException(String file,
+                               String other,
+                               String reason) {
+        super(file,
+              other,
+              reason);
     }
 }

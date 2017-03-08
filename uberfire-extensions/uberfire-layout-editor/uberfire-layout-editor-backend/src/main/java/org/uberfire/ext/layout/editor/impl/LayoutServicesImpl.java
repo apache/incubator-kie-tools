@@ -16,14 +16,14 @@
 
 package org.uberfire.ext.layout.editor.impl;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.uberfire.ext.layout.editor.api.LayoutServices;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
 
 @Service
 @ApplicationScoped
@@ -37,31 +37,29 @@ public class LayoutServicesImpl implements LayoutServices {
     }
 
     @Override
-    public String convertLayoutToString( LayoutTemplate layoutTemplate ) {
-        String layoutContent = gson.toJson( layoutTemplate );
+    public String convertLayoutToString(LayoutTemplate layoutTemplate) {
+        String layoutContent = gson.toJson(layoutTemplate);
         return layoutContent;
     }
 
     @Override
-    public LayoutTemplate convertLayoutFromString( String layoutEditorModel ) {
+    public LayoutTemplate convertLayoutFromString(String layoutEditorModel) {
         try {
-            if ( needsUpgrade( layoutEditorModel ) ) {
-                throw new RuntimeException( "not yet supported" );
+            if (needsUpgrade(layoutEditorModel)) {
+                throw new RuntimeException("not yet supported");
 //                return LayoutUpgradeTool.convert( layoutEditorModel );
             } else {
-                LayoutTemplate layoutTemplate = gson.fromJson( layoutEditorModel, LayoutTemplate.class );
+                LayoutTemplate layoutTemplate = gson.fromJson(layoutEditorModel,
+                                                              LayoutTemplate.class);
                 return layoutTemplate;
             }
-
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             return new LayoutTemplate();
         }
     }
 
-    private boolean needsUpgrade( String layoutEditorModel ) {
+    private boolean needsUpgrade(String layoutEditorModel) {
         //return !version1( layoutEditorModel );
         return false;
     }
-
-
 }

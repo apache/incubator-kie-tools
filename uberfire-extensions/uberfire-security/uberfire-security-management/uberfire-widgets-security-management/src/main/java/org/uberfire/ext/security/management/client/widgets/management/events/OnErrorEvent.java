@@ -20,7 +20,6 @@ import org.uberfire.workbench.events.UberFireEvent;
 
 /**
  * An error to be handled from a given context.
- * 
  * @since 0.8.0
  */
 public class OnErrorEvent extends ContextualEvent implements UberFireEvent {
@@ -32,12 +31,14 @@ public class OnErrorEvent extends ContextualEvent implements UberFireEvent {
         super(context);
     }
 
-    public OnErrorEvent(Object context, Throwable cause) {
+    public OnErrorEvent(Object context,
+                        Throwable cause) {
         super(context);
         this.cause = cause;
     }
 
-    public OnErrorEvent(Object context, String message) {
+    public OnErrorEvent(Object context,
+                        String message) {
         super(context);
         this.message = message;
     }
@@ -54,5 +55,4 @@ public class OnErrorEvent extends ContextualEvent implements UberFireEvent {
     public String toString() {
         return "ErrorEvent [context=" + getContext() + "]";
     }
-
 }

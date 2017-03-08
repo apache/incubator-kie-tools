@@ -22,13 +22,12 @@ import org.uberfire.mvp.PlaceRequest;
  */
 public class SelectPlaceEvent extends AbstractPlaceEvent {
 
-    public SelectPlaceEvent( final PlaceRequest place ) {
-        super( place );
+    public SelectPlaceEvent(final PlaceRequest place) {
+        super(place);
     }
 
     @Override
     public String toString() {
         return "SelectPlaceEvent [place=" + getPlace() + "]";
     }
-
 }

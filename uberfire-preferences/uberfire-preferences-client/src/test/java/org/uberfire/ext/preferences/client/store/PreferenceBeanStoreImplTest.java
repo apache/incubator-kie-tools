@@ -22,105 +22,113 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.mocks.CallerMock;
+import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.preferences.shared.PropertyFormType;
 import org.uberfire.preferences.shared.bean.BasePreference;
 import org.uberfire.preferences.shared.bean.BasePreferencePortable;
 import org.uberfire.preferences.shared.bean.PreferenceBeanServerStore;
-import org.uberfire.mocks.CallerMock;
-import org.uberfire.mvp.Command;
-import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.mockito.Mockito.*;
 
 public class PreferenceBeanStoreImplTest {
 
-    private PreferenceBeanServerStore store;
-    private CallerMock<PreferenceBeanServerStore> storeCaller;
-
-    private PreferenceBeanStoreImpl preferenceBeanStoreImpl;
-
-    private final Command successCommand = spy( new Command() {
+    private final Command successCommand = spy(new Command() {
         @Override
         public void execute() {
         }
-    } );
-
-    private final ParameterizedCommand<MyPreferencePortable> successParameterizedCommand = spy( new ParameterizedCommand<MyPreferencePortable>() {
+    });
+    private final ParameterizedCommand<MyPreferencePortable> successParameterizedCommand = spy(new ParameterizedCommand<MyPreferencePortable>() {
         @Override
-        public void execute( final MyPreferencePortable parameter ) {
+        public void execute(final MyPreferencePortable parameter) {
         }
-    } );
-
-    private final ParameterizedCommand<Throwable> errorParameterizedCommand = spy( new ParameterizedCommand<Throwable>() {
+    });
+    private final ParameterizedCommand<Throwable> errorParameterizedCommand = spy(new ParameterizedCommand<Throwable>() {
         @Override
-        public void execute( final Throwable parameter ) {
+        public void execute(final Throwable parameter) {
         }
-    } );
+    });
+    private PreferenceBeanServerStore store;
+    private CallerMock<PreferenceBeanServerStore> storeCaller;
+    private PreferenceBeanStoreImpl preferenceBeanStoreImpl;
 
     @Before
     public void setup() {
-        store = mock( PreferenceBeanServerStore.class );
-        storeCaller = new CallerMock<>( store );
+        store = mock(PreferenceBeanServerStore.class);
+        storeCaller = new CallerMock<>(store);
 
-        preferenceBeanStoreImpl = new PreferenceBeanStoreImpl( storeCaller );
+        preferenceBeanStoreImpl = new PreferenceBeanStoreImpl(storeCaller);
     }
 
     @Test
     public void loadSuccessfullyTest() {
-        preferenceBeanStoreImpl.load( new MyPreferencePortable(), successParameterizedCommand, errorParameterizedCommand );
+        preferenceBeanStoreImpl.load(new MyPreferencePortable(),
+                                     successParameterizedCommand,
+                                     errorParameterizedCommand);
 
-        verify( store ).load( any( MyPreferencePortable.class ) );
-        verify( successParameterizedCommand ).execute( any( MyPreferencePortable.class ) );
+        verify(store).load(any(MyPreferencePortable.class));
+        verify(successParameterizedCommand).execute(any(MyPreferencePortable.class));
     }
 
     @Test
     public void loadWithErrorTest() {
-        doThrow( new RuntimeException( "error" ) ).when( store ).load( any( BasePreferencePortable.class ) );
+        doThrow(new RuntimeException("error")).when(store).load(any(BasePreferencePortable.class));
 
-        preferenceBeanStoreImpl.load( new MyPreferencePortable(), successParameterizedCommand, errorParameterizedCommand );
+        preferenceBeanStoreImpl.load(new MyPreferencePortable(),
+                                     successParameterizedCommand,
+                                     errorParameterizedCommand);
 
-        verify( store ).load( any( MyPreferencePortable.class ) );
-        verify( errorParameterizedCommand ).execute( any( Throwable.class ) );
+        verify(store).load(any(MyPreferencePortable.class));
+        verify(errorParameterizedCommand).execute(any(Throwable.class));
     }
 
     @Test
     public void saveSuccessfullyTest() {
-        preferenceBeanStoreImpl.save( new MyPreferencePortable(), successCommand, errorParameterizedCommand );
+        preferenceBeanStoreImpl.save(new MyPreferencePortable(),
+                                     successCommand,
+                                     errorParameterizedCommand);
 
-        verify( store ).save( any( MyPreferencePortable.class ) );
-        verify( successCommand ).execute();
+        verify(store).save(any(MyPreferencePortable.class));
+        verify(successCommand).execute();
     }
 
     @Test
     public void saveWithErrorTest() {
-        doThrow( new RuntimeException( "error" ) ).when( store ).save( any( BasePreferencePortable.class ) );
+        doThrow(new RuntimeException("error")).when(store).save(any(BasePreferencePortable.class));
 
-        preferenceBeanStoreImpl.save( new MyPreferencePortable(), successCommand, errorParameterizedCommand );
+        preferenceBeanStoreImpl.save(new MyPreferencePortable(),
+                                     successCommand,
+                                     errorParameterizedCommand);
 
-        verify( store ).save( any( MyPreferencePortable.class ) );
-        verify( errorParameterizedCommand ).execute( any( Throwable.class ) );
+        verify(store).save(any(MyPreferencePortable.class));
+        verify(errorParameterizedCommand).execute(any(Throwable.class));
     }
 
     @Test
     public void saveCollectionSuccessfullyTest() {
         Collection<BasePreferencePortable<? extends BasePreference<?>>> preferences = new ArrayList<>();
-        preferences.add( new MyPreferencePortable() );
-        preferenceBeanStoreImpl.save( preferences, successCommand, errorParameterizedCommand );
+        preferences.add(new MyPreferencePortable());
+        preferenceBeanStoreImpl.save(preferences,
+                                     successCommand,
+                                     errorParameterizedCommand);
 
-        verify( store ).save( preferences );
-        verify( successCommand ).execute();
+        verify(store).save(preferences);
+        verify(successCommand).execute();
     }
 
     @Test
     public void saveCollectionWithErrorTest() {
-        doThrow( new RuntimeException( "error" ) ).when( store ).save( anyCollection() );
+        doThrow(new RuntimeException("error")).when(store).save(anyCollection());
 
         Collection<BasePreferencePortable<? extends BasePreference<?>>> preferences = new ArrayList<>();
-        preferences.add( new MyPreferencePortable() );
-        preferenceBeanStoreImpl.save( preferences, successCommand, errorParameterizedCommand );
+        preferences.add(new MyPreferencePortable());
+        preferenceBeanStoreImpl.save(preferences,
+                                     successCommand,
+                                     errorParameterizedCommand);
 
-        verify( store ).save( preferences );
-        verify( errorParameterizedCommand ).execute( any( Throwable.class ) );
+        verify(store).save(preferences);
+        verify(errorParameterizedCommand).execute(any(Throwable.class));
     }
 
     class MyPreference implements BasePreference<MyPreference> {
@@ -141,7 +149,7 @@ public class PreferenceBeanStoreImplTest {
 
         @Override
         public String[] parents() {
-            return new String[ 0 ];
+            return new String[0];
         }
 
         @Override
@@ -150,13 +158,13 @@ public class PreferenceBeanStoreImplTest {
         }
 
         @Override
-        public void set( final String property,
-                         final Object value ) {
+        public void set(final String property,
+                        final Object value) {
 
         }
 
         @Override
-        public Object get( final String property ) {
+        public Object get(final String property) {
             return null;
         }
 

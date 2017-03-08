@@ -28,20 +28,19 @@ public interface LuceneIndex extends Index {
 
     public static final String CUSTOM_FIELD_FILENAME = "filename";
 
-    void indexDocument( final String id,
-                        final Document doc );
+    void indexDocument(final String id,
+                       final Document doc);
 
-    boolean deleteIfExists( final String... ids );
+    boolean deleteIfExists(final String... ids);
 
-    void rename( final String sourceId,
-                 final Document doc );
+    void rename(final String sourceId,
+                final Document doc);
 
     IndexReader nrtReader();
 
-    void nrtRelease( final IndexReader searcher );
+    void nrtRelease(final IndexReader searcher);
 
     IndexSearcher nrtSearcher();
 
-    void nrtRelease( final IndexSearcher searcher );
-
+    void nrtRelease(final IndexSearcher searcher);
 }

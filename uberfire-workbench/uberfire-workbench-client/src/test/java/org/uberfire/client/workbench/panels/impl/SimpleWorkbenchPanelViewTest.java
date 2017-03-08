@@ -30,7 +30,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class SimpleWorkbenchPanelViewTest extends AbstractSimpleWorkbenchPanelViewTest {
 
     @InjectMocks
@@ -43,10 +43,10 @@ public class SimpleWorkbenchPanelViewTest extends AbstractSimpleWorkbenchPanelVi
     public void setup() {
         super.setup();
 
-        presenter = mock( SimpleWorkbenchPanelPresenter.class );
+        presenter = mock(SimpleWorkbenchPanelPresenter.class);
 
         view.setup(); // PostConstruct
-        view.init( presenter );
+        view.init(presenter);
     }
 
     @Override
@@ -56,61 +56,71 @@ public class SimpleWorkbenchPanelViewTest extends AbstractSimpleWorkbenchPanelVi
 
     @Test
     public void shouldAddPresenterOnInit() {
-        assertEquals( presenter, view.getPresenter() );
+        assertEquals(presenter,
+                     view.getPresenter());
     }
 
     @Test
     public void shouldSetupDragAndDropOnListBar() {
-        verify( listBar ).setDndManager( eq( dndManager ) );
-        verify( listBar ).disableDnd();
-        verify( listBar ).addSelectionHandler( any( SelectionHandler.class ) );
-        verify( listBar ).addSelectionHandler( any( SelectionHandler.class ) );
-        verify( listBar ).addOnFocusHandler( any( Command.class ) );
+        verify(listBar).setDndManager(eq(dndManager));
+        verify(listBar).disableDnd();
+        verify(listBar).addSelectionHandler(any(SelectionHandler.class));
+        verify(listBar).addSelectionHandler(any(SelectionHandler.class));
+        verify(listBar).addOnFocusHandler(any(Command.class));
     }
 
     @Test
     public void shouldPropagateResizeWhenAttached() {
 
-        view.forceAttachedState( true );
-        view.setPixelSize( 10, 10 );
+        view.forceAttachedState(true);
+        view.setPixelSize(10,
+                          10);
         view.onResize();
 
         // unfortunately, setPixelSize() doesn't have any side effects during unit tests so we can't verify the arguments
-        verify( presenter ).onResize( any( Integer.class ), any( Integer.class ) );
+        verify(presenter).onResize(any(Integer.class),
+                                   any(Integer.class));
 
-        verify( topLevelWidget ).onResize();
+        verify(topLevelWidget).onResize();
     }
 
     @Test
     public void shouldNotPropagateResizeWhenNotAttached() {
 
-        view.forceAttachedState( false );
-        view.setPixelSize( 10, 10 );
+        view.forceAttachedState(false);
+        view.setPixelSize(10,
+                          10);
         view.onResize();
 
         // unfortunately, setPixelSize() doesn't have any side effects during unit tests so we can't verify the arguments
-        verify( presenter, never() ).onResize( any( Integer.class ), any( Integer.class ) );
+        verify(presenter,
+               never()).onResize(any(Integer.class),
+                                 any(Integer.class));
 
-        verify( topLevelWidget ).onResize();
+        verify(topLevelWidget).onResize();
     }
 
     @Test
     public void shouldDisableCloseParts() {
-        verify( listBar ).disableClosePart();
-        verify( listBar, never() ).enableClosePart();
+        verify(listBar).disableClosePart();
+        verify(listBar,
+               never()).enableClosePart();
     }
 
     @Test(expected = RuntimeException.class)
     public void shouldOnlyHaveOnePart() {
-        assertEquals( 0, listBar.getPartsSize() );
+        assertEquals(0,
+                     listBar.getPartsSize());
 
-        getViewToTest().addPart( mock( WorkbenchPartPresenter.View.class ) );
-        verify( listBar ).addPart( any( WorkbenchPartPresenter.View.class ) );
-        assertEquals( 1, listBar.getPartsSize() );
+        getViewToTest().addPart(mock(WorkbenchPartPresenter.View.class));
+        verify(listBar).addPart(any(WorkbenchPartPresenter.View.class));
+        assertEquals(1,
+                     listBar.getPartsSize());
 
         //Second part add is a leak should throw exception
-        getViewToTest().addPart( mock( WorkbenchPartPresenter.View.class ) );
-        verify( listBar ).addPart( any( WorkbenchPartPresenter.View.class ) );
-        assertEquals( 1, listBar.getPartsSize() );
+        getViewToTest().addPart(mock(WorkbenchPartPresenter.View.class));
+        verify(listBar).addPart(any(WorkbenchPartPresenter.View.class));
+        assertEquals(1,
+                     listBar.getPartsSize());
     }
 }

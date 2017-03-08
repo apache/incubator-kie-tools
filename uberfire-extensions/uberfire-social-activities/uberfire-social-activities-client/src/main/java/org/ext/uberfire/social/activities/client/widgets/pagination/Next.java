@@ -14,11 +14,11 @@
 */
 package org.ext.uberfire.social.activities.client.widgets.pagination;
 
+import org.ext.uberfire.social.activities.client.resources.i18n.Constants;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.ListItem;
 import org.gwtbootstrap3.client.ui.html.Span;
 import org.gwtbootstrap3.client.ui.html.Text;
-import org.ext.uberfire.social.activities.client.resources.i18n.Constants;
 
 /**
  * PatternFly pager next link style
@@ -30,17 +30,17 @@ public class Next extends ListItem {
     private final Span nextIcon = new Span();
 
     public Next() {
-        nextIcon.addStyleName( "i" );
-        nextIcon.addStyleName( "fa" );
-        nextIcon.addStyleName( "fa-angle-right" );
+        nextIcon.addStyleName("i");
+        nextIcon.addStyleName("fa");
+        nextIcon.addStyleName("fa-angle-right");
         setText(Constants.INSTANCE.Next());
-        add( nextAnchor );
-        addStyleName( "next" );
+        add(nextAnchor);
+        addStyleName("next");
     }
 
-    public void setText( final String text ) {
+    public void setText(final String text) {
         nextAnchor.clear();
-        nextAnchor.add( new Text( text ) );
-        nextAnchor.add( nextIcon );
+        nextAnchor.add(new Text(text));
+        nextAnchor.add(nextIcon);
     }
 }

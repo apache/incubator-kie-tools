@@ -40,11 +40,15 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class MultiListWorkbenchPanelViewTest extends AbstractDockingWorkbenchPanelViewTest {
 
-    @Mock ListBarWidget listBar;
-    @Mock MaximizeToggleButtonPresenter maximizeButton;
-    @Mock MultiListWorkbenchPanelPresenter presenter;
+    @Mock
+    ListBarWidget listBar;
+    @Mock
+    MaximizeToggleButtonPresenter maximizeButton;
+    @Mock
+    MultiListWorkbenchPanelPresenter presenter;
 
-    @InjectMocks MultiListWorkbenchPanelView view;
+    @InjectMocks
+    MultiListWorkbenchPanelView view;
 
     @Override
     protected AbstractDockingWorkbenchPanelView<?> getViewToTest() {
@@ -53,56 +57,61 @@ public class MultiListWorkbenchPanelViewTest extends AbstractDockingWorkbenchPan
 
     @Before
     public void setup() {
-        when( listBar.getMaximizeButton() ).thenReturn( maximizeButton );
+        when(listBar.getMaximizeButton()).thenReturn(maximizeButton);
 
         final AtomicLong parts = new AtomicLong();
-        doAnswer( new Answer() {
+        doAnswer(new Answer() {
             @Override
-            public Object answer( InvocationOnMock invocation ) throws Throwable {
+            public Object answer(InvocationOnMock invocation) throws Throwable {
                 parts.incrementAndGet();
                 return null;
             }
-        } ).when( listBar ).addPart( any( WorkbenchPartPresenter.View.class ) );
+        }).when(listBar).addPart(any(WorkbenchPartPresenter.View.class));
 
-        when( listBar.getPartsSize() ).thenAnswer( new Answer<Integer>() {
+        when(listBar.getPartsSize()).thenAnswer(new Answer<Integer>() {
             @Override
-            public Integer answer( InvocationOnMock invocation ) throws Throwable {
+            public Integer answer(InvocationOnMock invocation) throws Throwable {
                 return parts.intValue();
             }
-        } );
+        });
     }
 
     @Test
     public void setupWidget() {
         view.setupWidget();
 
-        verify( listBar ).addSelectionHandler( any(SelectionHandler.class) );
-        verify( listBar ).addOnFocusHandler( any(Command.class) );
+        verify(listBar).addSelectionHandler(any(SelectionHandler.class));
+        verify(listBar).addOnFocusHandler(any(Command.class));
 
-        verify( maximizeButton ).setVisible( true );
-        verify( maximizeButton ).setMaximizeCommand( any( Command.class ) );
-        verify( maximizeButton ).setUnmaximizeCommand( any( Command.class ) );
+        verify(maximizeButton).setVisible(true);
+        verify(maximizeButton).setMaximizeCommand(any(Command.class));
+        verify(maximizeButton).setUnmaximizeCommand(any(Command.class));
     }
 
     @Test
     public void shouldPropagateOnResize() {
         view.onResize();
         RequiresResize viewChild = (RequiresResize) view.getWidget();
-        verify( viewChild, times( 1 ) ).onResize();
+        verify(viewChild,
+               times(1)).onResize();
     }
 
     @Test
     public void shouldAddMultipleParts() {
-        assertEquals( 0, listBar.getPartsSize() );
-        verify( listBar, never() ).disableClosePart();
+        assertEquals(0,
+                     listBar.getPartsSize());
+        verify(listBar,
+               never()).disableClosePart();
 
         //Add multiple parts
-        view.addPart( mock( WorkbenchPartPresenter.View.class ) );
-        verify( listBar ).addPart( any( WorkbenchPartPresenter.View.class ) );
+        view.addPart(mock(WorkbenchPartPresenter.View.class));
+        verify(listBar).addPart(any(WorkbenchPartPresenter.View.class));
 
-        view.addPart( mock( WorkbenchPartPresenter.View.class ) );
-        verify( listBar, times( 2 ) ).addPart( any( WorkbenchPartPresenter.View.class ) );
+        view.addPart(mock(WorkbenchPartPresenter.View.class));
+        verify(listBar,
+               times(2)).addPart(any(WorkbenchPartPresenter.View.class));
 
-        assertEquals( 2, listBar.getPartsSize() );
+        assertEquals(2,
+                     listBar.getPartsSize());
     }
 }

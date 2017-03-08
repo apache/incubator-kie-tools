@@ -23,8 +23,8 @@ import java.util.ServiceConfigurationError;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.api.FileSystemProviders;
 
-import static java.util.Collections.*;
-import static org.uberfire.commons.validation.Preconditions.*;
+import static java.util.Collections.emptyMap;
+import static org.uberfire.commons.validation.Preconditions.checkNotNull;
 
 /**
  * Back port of JSR-203 from Java Platform, Standard Edition 7.
@@ -33,16 +33,6 @@ import static org.uberfire.commons.validation.Preconditions.*;
 public final class FileSystems {
 
     private FileSystems() {
-    }
-
-    // for lazy init
-    private static class DefaultFileSystemHolder {
-
-        static final FileSystem defaultFileSystem = getDefaultFileSystem();
-
-        private static FileSystem getDefaultFileSystem() {
-            return FileSystemProviders.getDefaultProvider().getFileSystem(URI.create("default:///"));
-        }
     }
 
     /**
@@ -61,7 +51,8 @@ public final class FileSystems {
      */
     public static FileSystem getFileSystem(final URI uri)
             throws IllegalArgumentException, FileSystemNotFoundException, ProviderNotFoundException, SecurityException {
-        checkNotNull("uri", uri);
+        checkNotNull("uri",
+                     uri);
 
         return FileSystemProviders.resolveProvider(uri).getFileSystem(uri);
     }
@@ -74,13 +65,18 @@ public final class FileSystems {
      * @throws SecurityException
      * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystems.html#newFileSystem(java.net.URI, java.util.Map)">Original JavaDoc</a>
      */
-    public static FileSystem newFileSystem(final URI uri, final Map<String, ?> env)
+    public static FileSystem newFileSystem(final URI uri,
+                                           final Map<String, ?> env)
             throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException,
             IOException, SecurityException {
-        checkNotNull("uri", uri);
-        checkNotNull("env", env);
+        checkNotNull("uri",
+                     uri);
+        checkNotNull("env",
+                     env);
 
-        return newFileSystem(uri, env, null);
+        return newFileSystem(uri,
+                             env,
+                             null);
     }
 
     /**
@@ -91,12 +87,16 @@ public final class FileSystems {
      * @throws SecurityException
      * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystems.html#newFileSystem(java.nio.file.Path, java.lang.ClassLoader)">Original JavaDoc</a>
      */
-    public static FileSystem newFileSystem(final Path path, final ClassLoader loader)
+    public static FileSystem newFileSystem(final Path path,
+                                           final ClassLoader loader)
             throws IllegalArgumentException, ProviderNotFoundException, ServiceConfigurationError, IOException, SecurityException {
-        checkNotNull("path", path);
+        checkNotNull("path",
+                     path);
 
         final Map<String, ?> env = emptyMap();
-        return newFileSystem(path.toUri(), env, null);
+        return newFileSystem(path.toUri(),
+                             env,
+                             null);
     }
 
     /**
@@ -108,12 +108,27 @@ public final class FileSystems {
      * @throws SecurityException
      * @see <a href="http://docs.oracle.com/javase/7/docs/api/java/nio/file/FileSystems.html#newFileSystem(java.net.URI, java.util.Map, java.lang.ClassLoader)">Original JavaDoc</a>
      */
-    public static FileSystem newFileSystem(final URI uri, final Map<String, ?> env, final ClassLoader loader)
+    public static FileSystem newFileSystem(final URI uri,
+                                           final Map<String, ?> env,
+                                           final ClassLoader loader)
             throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException,
             ServiceConfigurationError, IOException, SecurityException {
-        checkNotNull("uri", uri);
-        checkNotNull("env", env);
+        checkNotNull("uri",
+                     uri);
+        checkNotNull("env",
+                     env);
 
-        return FileSystemProviders.resolveProvider(uri).newFileSystem(uri, env);
+        return FileSystemProviders.resolveProvider(uri).newFileSystem(uri,
+                                                                      env);
+    }
+
+    // for lazy init
+    private static class DefaultFileSystemHolder {
+
+        static final FileSystem defaultFileSystem = getDefaultFileSystem();
+
+        private static FileSystem getDefaultFileSystem() {
+            return FileSystemProviders.getDefaultProvider().getFileSystem(URI.create("default:///"));
+        }
     }
 }

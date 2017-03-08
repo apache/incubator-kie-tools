@@ -1,21 +1,18 @@
-#set( $symbol_pound = '#' )
-#set( $symbol_dollar = '$' )
-#set( $symbol_escape = '\' )
-package ${package}.client.screens;
+#set($symbol_pound='#')
+        #set($symbol_dollar='$')
+        #set($symbol_escape='\' )
+        package ${package}.client.screens;
 
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.UberElement;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
+        import org.uberfire.client.annotations.WorkbenchPartTitle;
+        import org.uberfire.client.annotations.WorkbenchPartView;
+        import org.uberfire.client.annotations.WorkbenchScreen;
+        import org.uberfire.client.mvp.UberElement;
+        import javax.enterprise.context.Dependent;
+        import javax.inject.Inject;
 
 @Dependent
-@WorkbenchScreen( identifier = "HelloWorldScreen" )
+@WorkbenchScreen(identifier = "HelloWorldScreen")
 public class HelloWorldUberfirePresenter {
-
-    public interface View extends UberElement<HelloWorldUberfirePresenter> {
-    }
 
     @Inject
     private View view;
@@ -30,4 +27,7 @@ public class HelloWorldUberfirePresenter {
         return view;
     }
 
+    public interface View extends UberElement<HelloWorldUberfirePresenter> {
+
+    }
 }

@@ -20,7 +20,6 @@ import org.jboss.errai.ioc.client.container.BeanActivator;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.uberfire.client.workbench.events.ApplicationReadyEvent;
 
-
 /**
  * CDI beans that implement Header are automatically discovered and added to the top of the Workbench screen. They stick
  * to the top of the viewport even when the main content area is scrolled up and down.

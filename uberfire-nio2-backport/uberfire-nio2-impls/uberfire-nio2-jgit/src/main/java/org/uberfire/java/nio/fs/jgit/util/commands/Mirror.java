@@ -21,7 +21,8 @@ import java.util.Optional;
 
 import org.eclipse.jgit.transport.CredentialsProvider;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 public class Mirror extends Clone {
 
@@ -29,16 +30,20 @@ public class Mirror extends Clone {
     private final String source;
     private final CredentialsProvider credentialsProvider;
 
-    public Mirror( File directory,
-                   String origin,
-                   CredentialsProvider credentialsProvider ) {
-        this.parentFolder = checkNotNull( "directory", directory );
-        this.source = checkNotEmpty( "origin", origin );
+    public Mirror(File directory,
+                  String origin,
+                  CredentialsProvider credentialsProvider) {
+        this.parentFolder = checkNotNull("directory",
+                                         directory);
+        this.source = checkNotEmpty("origin",
+                                    origin);
         this.credentialsProvider = credentialsProvider;
     }
 
     @Override
     public <T> Optional<T> execute() {
-        return this.clone( parentFolder, source, credentialsProvider );
+        return this.clone(parentFolder,
+                          source,
+                          credentialsProvider);
     }
 }

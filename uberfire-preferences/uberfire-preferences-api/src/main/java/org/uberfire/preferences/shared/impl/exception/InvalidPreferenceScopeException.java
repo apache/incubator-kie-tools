@@ -29,7 +29,7 @@ public class InvalidPreferenceScopeException extends RuntimeException {
     public InvalidPreferenceScopeException() {
     }
 
-    public InvalidPreferenceScopeException( @MapsTo("message") final String message ) {
-        super( message );
+    public InvalidPreferenceScopeException(@MapsTo("message") final String message) {
+        super(message);
     }
 }

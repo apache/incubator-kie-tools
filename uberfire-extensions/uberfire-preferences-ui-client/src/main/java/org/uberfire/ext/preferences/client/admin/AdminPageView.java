@@ -22,7 +22,6 @@ import javax.inject.Named;
 
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Heading;
-import org.jboss.errai.common.client.dom.Label;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -40,7 +39,7 @@ public class AdminPageView implements IsElement,
     Div content;
 
     @Inject
-    @Named( "h1" )
+    @Named("h1")
     @DataField("admin-page-title")
     Heading title;
 
@@ -50,31 +49,32 @@ public class AdminPageView implements IsElement,
     private TranslationService translationService;
 
     @Override
-    public void init( final AdminPagePresenter presenter ) {
+    public void init(final AdminPagePresenter presenter) {
         this.presenter = presenter;
-        title.setTextContent( getTitle() );
+        title.setTextContent(getTitle());
     }
 
     @Override
-    public void add( final AdminPageCategoryPresenter.View categoryView ) {
-        content.appendChild( categoryView.getElement() );
+    public void add(final AdminPageCategoryPresenter.View categoryView) {
+        content.appendChild(categoryView.getElement());
     }
 
     @Override
     public String getTitle() {
         final String screen = presenter.getScreen();
-        final String title = presenter.getAdminPage().getScreenTitle( screen );
+        final String title = presenter.getAdminPage().getScreenTitle(screen);
 
         return title;
     }
 
     @Override
     public String getNoScreenParameterError() {
-        return translationService.format( Constants.AdminPagePresenter_NoScreenParameterError );
+        return translationService.format(Constants.AdminPagePresenter_NoScreenParameterError);
     }
 
     @Override
-    public String getNoScreenFoundError( final String screen ) {
-        return translationService.format( Constants.AdminPagePresenter_NoScreenFoundError, screen );
+    public String getNoScreenFoundError(final String screen) {
+        return translationService.format(Constants.AdminPagePresenter_NoScreenFoundError,
+                                         screen);
     }
 }

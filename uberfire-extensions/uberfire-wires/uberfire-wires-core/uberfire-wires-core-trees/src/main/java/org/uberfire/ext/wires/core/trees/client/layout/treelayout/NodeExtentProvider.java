@@ -17,12 +17,12 @@ package org.uberfire.ext.wires.core.trees.client.layout.treelayout;
 
 /**
  * Provides the extent (width and height) of a tree node.
- * <p/>
+ * <p>
  * Also see <a href="package-summary.html">this overview</a>.
  * @param <TreeNode> <p/>
- * <p/>
+ * <p>
  * Adapted from https://code.google.com/p/treelayout/ to be available to GWT clients
- * <p/>
+ * <p>
  * @author Udo Borkowski (ub@abego.org)
  */
 public interface NodeExtentProvider<TreeNode> {
@@ -32,12 +32,12 @@ public interface NodeExtentProvider<TreeNode> {
      * @param treeNode
      * @return [result >= 0]
      */
-    double getWidth( TreeNode treeNode );
+    double getWidth(TreeNode treeNode);
 
     /**
      * Returns the height of the given treeNode.
      * @param treeNode
      * @return [result >= 0]
      */
-    double getHeight( TreeNode treeNode );
+    double getHeight(TreeNode treeNode);
 }

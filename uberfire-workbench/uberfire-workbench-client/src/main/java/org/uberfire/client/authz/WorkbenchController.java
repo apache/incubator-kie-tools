@@ -25,7 +25,7 @@ import org.uberfire.client.mvp.WorkbenchScreenActivity;
 /**
  * An interface for checking access to workbench resources (perspectives, screens, editors, ...)
  * using a fluent styled API.
- *
+ * <p>
  * <p>Example usage:</p>
  * <pre>
  * {@code Button deleteButton;
@@ -51,21 +51,18 @@ public interface WorkbenchController {
 
     /**
      * Creates a brand new instance for checking global popup screen actions.
-     *
      * @return A handler for dealing with the perspective check API.
      */
     ActivityCheck popupScreens();
 
     /**
      * Creates a brand new instance for checking global splash screen actions.
-     *
      * @return A handler for dealing with the perspective check API.
      */
     ActivityCheck splashScreens();
 
     /**
      * Creates a brand new instance for checking global perspective actions actions.
-     *
      * @return A handler for dealing with the perspective check API.
      */
     ActivityCheck editors();

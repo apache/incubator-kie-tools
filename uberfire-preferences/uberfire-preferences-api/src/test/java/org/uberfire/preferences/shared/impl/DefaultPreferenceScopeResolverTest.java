@@ -21,8 +21,15 @@ import org.junit.Test;
 import org.uberfire.preferences.shared.impl.exception.InvalidPreferenceScopeException;
 
 import static org.junit.Assert.*;
-import static org.uberfire.preferences.shared.impl.DefaultPreferenceScopesForTests.*;
-
+import static org.uberfire.preferences.shared.impl.DefaultPreferenceScopesForTests.allUsersComponentScope;
+import static org.uberfire.preferences.shared.impl.DefaultPreferenceScopesForTests.allUsersEntireApplicationScope;
+import static org.uberfire.preferences.shared.impl.DefaultPreferenceScopesForTests.allUsersScopeType;
+import static org.uberfire.preferences.shared.impl.DefaultPreferenceScopesForTests.componentScopeType;
+import static org.uberfire.preferences.shared.impl.DefaultPreferenceScopesForTests.defaultOrder;
+import static org.uberfire.preferences.shared.impl.DefaultPreferenceScopesForTests.entireApplicationScopeType;
+import static org.uberfire.preferences.shared.impl.DefaultPreferenceScopesForTests.userComponentScope;
+import static org.uberfire.preferences.shared.impl.DefaultPreferenceScopesForTests.userEntireApplicationScope;
+import static org.uberfire.preferences.shared.impl.DefaultPreferenceScopesForTests.userScopeType;
 
 public class DefaultPreferenceScopeResolverTest {
 
@@ -30,25 +37,37 @@ public class DefaultPreferenceScopeResolverTest {
 
     @Before
     public void setup() {
-        scopeResolver = new DefaultPreferenceScopeResolver( defaultOrder );
+        scopeResolver = new DefaultPreferenceScopeResolver(defaultOrder);
     }
 
     @Test
     public void resolveValidScopesTest() {
-        assertEquals( userEntireApplicationScope, scopeResolver.resolve( userScopeType ) );
-        assertEquals( allUsersComponentScope, scopeResolver.resolve( componentScopeType ) );
-        assertEquals( allUsersEntireApplicationScope, scopeResolver.resolve( allUsersScopeType ) );
-        assertEquals( allUsersEntireApplicationScope, scopeResolver.resolve( entireApplicationScopeType ) );
+        assertEquals(userEntireApplicationScope,
+                     scopeResolver.resolve(userScopeType));
+        assertEquals(allUsersComponentScope,
+                     scopeResolver.resolve(componentScopeType));
+        assertEquals(allUsersEntireApplicationScope,
+                     scopeResolver.resolve(allUsersScopeType));
+        assertEquals(allUsersEntireApplicationScope,
+                     scopeResolver.resolve(entireApplicationScopeType));
 
-        assertEquals( userComponentScope, scopeResolver.resolve( userScopeType, componentScopeType ) );
-        assertEquals( userEntireApplicationScope, scopeResolver.resolve( userScopeType, entireApplicationScopeType ) );
-        assertEquals( allUsersComponentScope, scopeResolver.resolve( allUsersScopeType, componentScopeType ) );
-        assertEquals( allUsersEntireApplicationScope, scopeResolver.resolve( allUsersScopeType, entireApplicationScopeType ) );
+        assertEquals(userComponentScope,
+                     scopeResolver.resolve(userScopeType,
+                                           componentScopeType));
+        assertEquals(userEntireApplicationScope,
+                     scopeResolver.resolve(userScopeType,
+                                           entireApplicationScopeType));
+        assertEquals(allUsersComponentScope,
+                     scopeResolver.resolve(allUsersScopeType,
+                                           componentScopeType));
+        assertEquals(allUsersEntireApplicationScope,
+                     scopeResolver.resolve(allUsersScopeType,
+                                           entireApplicationScopeType));
     }
 
     @Test(expected = InvalidPreferenceScopeException.class)
     public void tryResolveWithInvalidScopeTypeTest() {
-        scopeResolver.resolve( "invalidScopeType" );
+        scopeResolver.resolve("invalidScopeType");
     }
 
     @Test(expected = InvalidPreferenceScopeException.class)
@@ -58,6 +77,8 @@ public class DefaultPreferenceScopeResolverTest {
 
     @Test(expected = InvalidPreferenceScopeException.class)
     public void tryResolveWithThreeScopeTypesTest() {
-        scopeResolver.resolve( userScopeType, componentScopeType, entireApplicationScopeType );
+        scopeResolver.resolve(userScopeType,
+                              componentScopeType,
+                              entireApplicationScopeType);
     }
 }

@@ -24,358 +24,489 @@ public class GridRowsUnmergedTest extends BaseGridTest {
 
     @Test
     public void testRemoveRow() {
-        final GridData data = new BaseGridData( false );
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>( "col1",
-                                                                           100 );
-        data.appendColumn( gc1 );
+        final GridData data = new BaseGridData(false);
+        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
+                                                                          100);
+        data.appendColumn(gc1);
 
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
 
-        for ( int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++ ) {
-            for ( int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++ ) {
-                final String value = ( rowIndex > 0 && rowIndex < 4 ? "b" : "a" );
-                data.setCell( rowIndex,
-                              columnIndex,
-                              new BaseGridCellValue<String>( value ) );
+        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+                final String value = (rowIndex > 0 && rowIndex < 4 ? "b" : "a");
+                data.setCell(rowIndex,
+                             columnIndex,
+                             new BaseGridCellValue<String>(value));
             }
         }
 
-        assertGridIndexes( data,
-                           new boolean[]{ false, false, false, false, false },
-                           new boolean[]{ false, false, false, false, false },
-                           new Expected[][]{
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "b" ) },
-                                   { Expected.build( false, 1, "b" ) },
-                                   { Expected.build( false, 1, "b" ) },
-                                   { Expected.build( false, 1, "a" ) }
-                           } );
+        assertGridIndexes(data,
+                          new boolean[]{false, false, false, false, false},
+                          new boolean[]{false, false, false, false, false},
+                          new Expected[][]{
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")}
+                          });
 
-        data.deleteRow( 2 );
+        data.deleteRow(2);
 
-        assertGridIndexes( data,
-                           new boolean[]{ false, false, false, false },
-                           new boolean[]{ false, false, false, false },
-                           new Expected[][]{
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "b" ) },
-                                   { Expected.build( false, 1, "b" ) },
-                                   { Expected.build( false, 1, "a" ) }
-                           } );
+        assertGridIndexes(data,
+                          new boolean[]{false, false, false, false},
+                          new boolean[]{false, false, false, false},
+                          new Expected[][]{
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")}
+                          });
     }
 
     @Test
     public void testAppendRow() {
-        final GridData data = new BaseGridData( false );
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>( "col1",
-                                                                           100 );
-        data.appendColumn( gc1 );
+        final GridData data = new BaseGridData(false);
+        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
+                                                                          100);
+        data.appendColumn(gc1);
 
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
 
-        for ( int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++ ) {
-            for ( int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++ ) {
-                final String value = ( rowIndex < 2 ? "a" : "b" );
-                data.setCell( rowIndex,
-                              columnIndex,
-                              new BaseGridCellValue<String>( value ) );
+        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+                final String value = (rowIndex < 2 ? "a" : "b");
+                data.setCell(rowIndex,
+                             columnIndex,
+                             new BaseGridCellValue<String>(value));
             }
         }
 
-        assertGridIndexes( data,
-                           new boolean[]{ false, false, false, false },
-                           new boolean[]{ false, false, false, false },
-                           new Expected[][]{
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "b" ) },
-                                   { Expected.build( false, 1, "b" ) }
-                           } );
+        assertGridIndexes(data,
+                          new boolean[]{false, false, false, false},
+                          new boolean[]{false, false, false, false},
+                          new Expected[][]{
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")}
+                          });
 
-        data.appendRow( new BaseGridRow() );
+        data.appendRow(new BaseGridRow());
 
-        assertGridIndexes( data,
-                           new boolean[]{ false, false, false, false, false },
-                           new boolean[]{ false, false, false, false, false },
-                           new Expected[][]{
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "b" ) },
-                                   { Expected.build( false, 1, "b" ) },
-                                   { Expected.build( false, 1, null ) }
-                           } );
+        assertGridIndexes(data,
+                          new boolean[]{false, false, false, false, false},
+                          new boolean[]{false, false, false, false, false},
+                          new Expected[][]{
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  null)}
+                          });
     }
 
     @Test
     public void testInsertRowAtZeroIndex() {
-        final GridData data = new BaseGridData( false );
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>( "col1",
-                                                                           100 );
-        data.appendColumn( gc1 );
+        final GridData data = new BaseGridData(false);
+        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
+                                                                          100);
+        data.appendColumn(gc1);
 
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
 
-        for ( int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++ ) {
-            for ( int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++ ) {
-                final String value = ( rowIndex < 2 ? "a" : "b" );
-                data.setCell( rowIndex,
-                              columnIndex,
-                              new BaseGridCellValue<String>( value ) );
+        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+                final String value = (rowIndex < 2 ? "a" : "b");
+                data.setCell(rowIndex,
+                             columnIndex,
+                             new BaseGridCellValue<String>(value));
             }
         }
 
-        assertGridIndexes( data,
-                           new boolean[]{ false, false, false, false },
-                           new boolean[]{ false, false, false, false },
-                           new Expected[][]{
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "b" ) },
-                                   { Expected.build( false, 1, "b" ) }
-                           } );
+        assertGridIndexes(data,
+                          new boolean[]{false, false, false, false},
+                          new boolean[]{false, false, false, false},
+                          new Expected[][]{
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")}
+                          });
 
-        data.insertRow( 0,
-                        new BaseGridRow() );
+        data.insertRow(0,
+                       new BaseGridRow());
 
-        assertGridIndexes( data,
-                           new boolean[]{ false, false, false, false, false },
-                           new boolean[]{ false, false, false, false, false },
-                           new Expected[][]{
-                                   { Expected.build( false, 1, null ) },
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "b" ) },
-                                   { Expected.build( false, 1, "b" ) }
-                           } );
+        assertGridIndexes(data,
+                          new boolean[]{false, false, false, false, false},
+                          new boolean[]{false, false, false, false, false},
+                          new Expected[][]{
+                                  {Expected.build(false,
+                                                  1,
+                                                  null)},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")}
+                          });
     }
 
     @Test
     public void testInsertRowAtStartEndBlock() {
-        final GridData data = new BaseGridData( false );
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>( "col1",
-                                                                           100 );
-        data.appendColumn( gc1 );
+        final GridData data = new BaseGridData(false);
+        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
+                                                                          100);
+        data.appendColumn(gc1);
 
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
 
-        for ( int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++ ) {
-            for ( int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++ ) {
-                final String value = ( rowIndex < 2 ? "a" : "b" );
-                data.setCell( rowIndex,
-                              columnIndex,
-                              new BaseGridCellValue<String>( value ) );
+        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+                final String value = (rowIndex < 2 ? "a" : "b");
+                data.setCell(rowIndex,
+                             columnIndex,
+                             new BaseGridCellValue<String>(value));
             }
         }
 
-        assertGridIndexes( data,
-                           new boolean[]{ false, false, false, false },
-                           new boolean[]{ false, false, false, false },
-                           new Expected[][]{
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "b" ) },
-                                   { Expected.build( false, 1, "b" ) }
-                           } );
+        assertGridIndexes(data,
+                          new boolean[]{false, false, false, false},
+                          new boolean[]{false, false, false, false},
+                          new Expected[][]{
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")}
+                          });
 
-        data.insertRow( 2,
-                        new BaseGridRow() );
+        data.insertRow(2,
+                       new BaseGridRow());
 
-        assertGridIndexes( data,
-                           new boolean[]{ false, false, false, false, false },
-                           new boolean[]{ false, false, false, false, false },
-                           new Expected[][]{
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, null ) },
-                                   { Expected.build( false, 1, "b" ) },
-                                   { Expected.build( false, 1, "b" ) }
-                           } );
+        assertGridIndexes(data,
+                          new boolean[]{false, false, false, false, false},
+                          new boolean[]{false, false, false, false, false},
+                          new Expected[][]{
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  null)},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")}
+                          });
     }
 
     @Test
     public void testInsertRowAtMidBlock() {
-        final GridData data = new BaseGridData( false );
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>( "col1",
-                                                                           100 );
-        data.appendColumn( gc1 );
+        final GridData data = new BaseGridData(false);
+        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
+                                                                          100);
+        data.appendColumn(gc1);
 
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
 
-        for ( int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++ ) {
-            for ( int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++ ) {
-                data.setCell( rowIndex,
-                              columnIndex,
-                              new BaseGridCellValue<String>( "a" ) );
+        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+                data.setCell(rowIndex,
+                             columnIndex,
+                             new BaseGridCellValue<String>("a"));
             }
         }
 
-        assertGridIndexes( data,
-                           new boolean[]{ false, false, false, false },
-                           new boolean[]{ false, false, false, false },
-                           new Expected[][]{
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "a" ) }
-                           } );
+        assertGridIndexes(data,
+                          new boolean[]{false, false, false, false},
+                          new boolean[]{false, false, false, false},
+                          new Expected[][]{
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")}
+                          });
 
-        data.insertRow( 2,
-                        new BaseGridRow() );
+        data.insertRow(2,
+                       new BaseGridRow());
 
-        assertGridIndexes( data,
-                           new boolean[]{ false, false, false, false, false },
-                           new boolean[]{ false, false, false, false, false },
-                           new Expected[][]{
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, null ) },
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "a" ) }
-                           } );
+        assertGridIndexes(data,
+                          new boolean[]{false, false, false, false, false},
+                          new boolean[]{false, false, false, false, false},
+                          new Expected[][]{
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  null)},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")}
+                          });
     }
 
     @Test
     public void testDeleteRowAtZeroIndex() {
-        final GridData data = new BaseGridData( false );
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>( "col1",
-                                                                           100 );
-        data.appendColumn( gc1 );
+        final GridData data = new BaseGridData(false);
+        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
+                                                                          100);
+        data.appendColumn(gc1);
 
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
 
-        for ( int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++ ) {
-            for ( int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++ ) {
-                final String value = ( rowIndex < 2 ? "a" : "b" );
-                data.setCell( rowIndex,
-                              columnIndex,
-                              new BaseGridCellValue<String>( value ) );
+        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+                final String value = (rowIndex < 2 ? "a" : "b");
+                data.setCell(rowIndex,
+                             columnIndex,
+                             new BaseGridCellValue<String>(value));
             }
         }
 
-        assertGridIndexes( data,
-                           new boolean[]{ false, false, false, false },
-                           new boolean[]{ false, false, false, false },
-                           new Expected[][]{
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "b" ) },
-                                   { Expected.build( false, 1, "b" ) }
-                           } );
+        assertGridIndexes(data,
+                          new boolean[]{false, false, false, false},
+                          new boolean[]{false, false, false, false},
+                          new Expected[][]{
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")}
+                          });
 
-        data.deleteRow( 0 );
+        data.deleteRow(0);
 
-        assertGridIndexes( data,
-                           new boolean[]{ false, false, false },
-                           new boolean[]{ false, false, false },
-                           new Expected[][]{
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "b" ) },
-                                   { Expected.build( false, 1, "b" ) }
-                           } );
+        assertGridIndexes(data,
+                          new boolean[]{false, false, false},
+                          new boolean[]{false, false, false},
+                          new Expected[][]{
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")}
+                          });
     }
 
     @Test
     public void testDeleteRowAtStartEndBlock() {
-        final GridData data = new BaseGridData( false );
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>( "col1",
-                                                                           100 );
-        data.appendColumn( gc1 );
+        final GridData data = new BaseGridData(false);
+        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
+                                                                          100);
+        data.appendColumn(gc1);
 
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
 
-        for ( int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++ ) {
-            for ( int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++ ) {
-                final String value = ( rowIndex < 2 ? "a" : "b" );
-                data.setCell( rowIndex,
-                              columnIndex,
-                              new BaseGridCellValue<String>( value ) );
+        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+                final String value = (rowIndex < 2 ? "a" : "b");
+                data.setCell(rowIndex,
+                             columnIndex,
+                             new BaseGridCellValue<String>(value));
             }
         }
 
-        assertGridIndexes( data,
-                           new boolean[]{ false, false, false, false },
-                           new boolean[]{ false, false, false, false },
-                           new Expected[][]{
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "b" ) },
-                                   { Expected.build( false, 1, "b" ) }
-                           } );
+        assertGridIndexes(data,
+                          new boolean[]{false, false, false, false},
+                          new boolean[]{false, false, false, false},
+                          new Expected[][]{
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")}
+                          });
 
-        data.deleteRow( 2 );
+        data.deleteRow(2);
 
-        assertGridIndexes( data,
-                           new boolean[]{ false, false, false },
-                           new boolean[]{ false, false, false },
-                           new Expected[][]{
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "b" ) }
-                           } );
+        assertGridIndexes(data,
+                          new boolean[]{false, false, false},
+                          new boolean[]{false, false, false},
+                          new Expected[][]{
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "b")}
+                          });
     }
 
     @Test
     public void testDeleteRowAtMidBlock() {
-        final GridData data = new BaseGridData( false );
-        final GridColumn<String> gc1 = new MockMergableGridColumn<String>( "col1",
-                                                                           100 );
-        data.appendColumn( gc1 );
+        final GridData data = new BaseGridData(false);
+        final GridColumn<String> gc1 = new MockMergableGridColumn<String>("col1",
+                                                                          100);
+        data.appendColumn(gc1);
 
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
-        data.appendRow( new BaseGridRow() );
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
+        data.appendRow(new BaseGridRow());
 
-        for ( int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++ ) {
-            for ( int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++ ) {
-                data.setCell( rowIndex,
-                              columnIndex,
-                              new BaseGridCellValue<String>( "a" ) );
+        for (int rowIndex = 0; rowIndex < data.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < data.getColumnCount(); columnIndex++) {
+                data.setCell(rowIndex,
+                             columnIndex,
+                             new BaseGridCellValue<String>("a"));
             }
         }
 
-        assertGridIndexes( data,
-                           new boolean[]{ false, false, false, false },
-                           new boolean[]{ false, false, false, false },
-                           new Expected[][]{
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "a" ) }
-                           } );
+        assertGridIndexes(data,
+                          new boolean[]{false, false, false, false},
+                          new boolean[]{false, false, false, false},
+                          new Expected[][]{
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")}
+                          });
 
-        data.deleteRow( 2 );
+        data.deleteRow(2);
 
-        assertGridIndexes( data,
-                           new boolean[]{ false, false, false },
-                           new boolean[]{ false, false, false },
-                           new Expected[][]{
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "a" ) },
-                                   { Expected.build( false, 1, "a" ) }
-                           } );
+        assertGridIndexes(data,
+                          new boolean[]{false, false, false},
+                          new boolean[]{false, false, false},
+                          new Expected[][]{
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")},
+                                  {Expected.build(false,
+                                                  1,
+                                                  "a")}
+                          });
     }
-
 }

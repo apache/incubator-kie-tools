@@ -44,7 +44,7 @@ public class NullMetaModelStore implements MetaModelStore {
         }
 
         @Override
-        public MetaProperty getProperty( String name ) {
+        public MetaProperty getProperty(String name) {
             return new MetaProperty() {
                 @Override
                 public String getName() {
@@ -67,28 +67,28 @@ public class NullMetaModelStore implements MetaModelStore {
                 }
 
                 @Override
-                public void addType( Class<?> aClass ) {
+                public void addType(Class<?> aClass) {
 
                 }
             };
         }
 
         @Override
-        public void addProperty( MetaProperty metaProperty ) {
+        public void addProperty(MetaProperty metaProperty) {
 
         }
     };
 
     @Override
-    public void add( final MetaObject metaObject ) {
+    public void add(final MetaObject metaObject) {
     }
 
     @Override
-    public void update( final MetaObject metaObject ) {
+    public void update(final MetaObject metaObject) {
     }
 
     @Override
-    public MetaObject getMetaObject( final String type ) {
+    public MetaObject getMetaObject(final String type) {
         return EMPTY;
     }
 

@@ -21,7 +21,8 @@ import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 public final class PathFactory {
 
@@ -31,82 +32,94 @@ public final class PathFactory {
     private PathFactory() {
     }
 
-    public static Path newPath( final String fileName,
-                                final String uri ) {
-        return new PathImpl( checkNotEmpty( "fileName", fileName ), checkNotEmpty( "uri", uri ) );
+    public static Path newPath(final String fileName,
+                               final String uri) {
+        return new PathImpl(checkNotEmpty("fileName",
+                                          fileName),
+                            checkNotEmpty("uri",
+                                          uri));
     }
 
-    public static Path newPathBasedOn( final String fileName,
-                                       final String uri,
-                                       final Path path ) {
-        return new PathImpl( checkNotEmpty( "fileName", fileName ), checkNotEmpty( "uri", uri ), checkNotNull( "path", path ) );
+    public static Path newPathBasedOn(final String fileName,
+                                      final String uri,
+                                      final Path path) {
+        return new PathImpl(checkNotEmpty("fileName",
+                                          fileName),
+                            checkNotEmpty("uri",
+                                          uri),
+                            checkNotNull("path",
+                                         path));
     }
 
-    public static Path newPath( final String fileName,
-                                final String uri,
-                                final Map<String, Object> attrs ) {
-        return new PathImpl( checkNotEmpty( "fileName", fileName ), checkNotEmpty( "uri", uri ), attrs );
+    public static Path newPath(final String fileName,
+                               final String uri,
+                               final Map<String, Object> attrs) {
+        return new PathImpl(checkNotEmpty("fileName",
+                                          fileName),
+                            checkNotEmpty("uri",
+                                          uri),
+                            attrs);
     }
-    
-    public static Path newLock( final Path path ) {
+
+    public static Path newLock(final Path path) {
         Path lockPath = newLockPath(path);
-        return PathFactory.newPath( path.getFileName() + LOCK_FILE_EXTENSION,
-                                    lockPath.toURI() + LOCK_FILE_EXTENSION );
+        return PathFactory.newPath(path.getFileName() + LOCK_FILE_EXTENSION,
+                                   lockPath.toURI() + LOCK_FILE_EXTENSION);
     }
 
     /**
-     * Returns a path of a lock for the provided file. 
-     * 
+     * Returns a path of a lock for the provided file.
+     * <p>
      * Examples:
-     * 
+     * <p>
      * <pre>
      * default://master@repo/some/path/to/file.txt =>
      * default://locks@system/repo/master/some/path/to/file.txt.ulock
-     * 
+     *
      * file:\\master@repo\some\path\to\file.txt =>
      * file:\\locks@system\repo\master\some\path\to\file.txt.ulock
      * </pre>
-     * 
-     * @param path
-     *            the path of a file for which a lock should be created, must not be null.
+     * @param path the path of a file for which a lock should be created, must not be null.
      * @return the lock path
      */
-    public static Path newLockPath( final Path path) {
-        checkNotNull( "path", path );
+    public static Path newLockPath(final Path path) {
+        checkNotNull("path",
+                     path);
 
-        final String systemUri = path.toURI().replaceFirst( "(/|\\\\)([^/&^\\\\]*)@([^/&^\\\\]*)",
-                                                            "$1locks@system$1$3$1$2" );
+        final String systemUri = path.toURI().replaceFirst("(/|\\\\)([^/&^\\\\]*)@([^/&^\\\\]*)",
+                                                           "$1locks@system$1$3$1$2");
 
-        return PathFactory.newPath( "/", 
-                                    systemUri);
+        return PathFactory.newPath("/",
+                                   systemUri);
     }
-    
+
     /**
      * Returns the path of the locked file for the provided lock.
-     * 
+     * <p>
      * Examples:
-     * 
+     * <p>
      * <pre>
      * default://locks@system/repo/master/some/path/to/file.txt.ulock =>
      * default://master@repo/some/path/to/file.txt
-     * 
+     *
      * file:\\locks@system\repo\master\some\path\to\file.txt.ulock =>
      * file:\\master@repo\some\path\to\file.txt
      * </pre>
-     * 
-     * @param lockPath
-     *            the path of a lock, must not be null.
+     * @param lockPath the path of a lock, must not be null.
      * @return the locked path.
      */
-    public static Path fromLock( final Path lockPath ) {
-        checkNotNull( "path", lockPath );
+    public static Path fromLock(final Path lockPath) {
+        checkNotNull("path",
+                     lockPath);
 
-        final String uri = lockPath.toURI().replaceFirst( "locks@system(/|\\\\)([^/&^\\\\]*)(/|\\\\)([^/&^\\\\]*)",
-                                                          "$4@$2" );
+        final String uri = lockPath.toURI().replaceFirst("locks@system(/|\\\\)([^/&^\\\\]*)(/|\\\\)([^/&^\\\\]*)",
+                                                         "$4@$2");
 
-        return PathFactory.newPath( lockPath.getFileName().replace( LOCK_FILE_EXTENSION, "" ),
-                                    uri.replace( LOCK_FILE_EXTENSION, "" ) );
-    }        
+        return PathFactory.newPath(lockPath.getFileName().replace(LOCK_FILE_EXTENSION,
+                                                                  ""),
+                                   uri.replace(LOCK_FILE_EXTENSION,
+                                               ""));
+    }
 
     @Portable
     public static class PathImpl implements Path,
@@ -120,37 +133,39 @@ public final class PathFactory {
         public PathImpl() {
         }
 
-        private PathImpl( final String fileName,
-                          final String uri ) {
-            this( fileName, uri, (Map<String, Object>) null );
+        private PathImpl(final String fileName,
+                         final String uri) {
+            this(fileName,
+                 uri,
+                 (Map<String, Object>) null);
         }
 
-        private PathImpl( final String fileName,
-                          final String uri,
-                          final Map<String, Object> attrs ) {
+        private PathImpl(final String fileName,
+                         final String uri,
+                         final Map<String, Object> attrs) {
             this.fileName = fileName;
             this.uri = uri;
-            if ( attrs == null ) {
+            if (attrs == null) {
                 this.attributes = new HashMap<String, Object>();
             } else {
-                if ( attrs.containsKey( VERSION_PROPERTY ) ) {
-                    hasVersionSupport = (Boolean) attrs.remove( VERSION_PROPERTY );
+                if (attrs.containsKey(VERSION_PROPERTY)) {
+                    hasVersionSupport = (Boolean) attrs.remove(VERSION_PROPERTY);
                 }
-                if ( attrs.size() > 0 ) {
-                    this.attributes = new HashMap<String, Object>( attrs );
+                if (attrs.size() > 0) {
+                    this.attributes = new HashMap<String, Object>(attrs);
                 } else {
                     this.attributes = new HashMap<String, Object>();
                 }
             }
         }
 
-        private PathImpl( final String fileName,
-                          final String uri,
-                          final Path path ) {
+        private PathImpl(final String fileName,
+                         final String uri,
+                         final Path path) {
             this.fileName = fileName;
             this.uri = uri;
-            if ( path instanceof PathImpl ) {
-                this.hasVersionSupport = ( (PathImpl) path ).hasVersionSupport;
+            if (path instanceof PathImpl) {
+                this.hasVersionSupport = ((PathImpl) path).hasVersionSupport;
             }
         }
 
@@ -169,22 +184,22 @@ public final class PathFactory {
         }
 
         @Override
-        public int compareTo( final Path another ) {
-            return this.uri.compareTo( another.toURI() );
+        public int compareTo(final Path another) {
+            return this.uri.compareTo(another.toURI());
         }
 
         @Override
-        public boolean equals( Object o ) {
-            if ( this == o ) {
+        public boolean equals(Object o) {
+            if (this == o) {
                 return true;
             }
-            if ( !( o instanceof Path ) ) {
+            if (!(o instanceof Path)) {
                 return false;
             }
 
             final Path path = (Path) o;
 
-            return uri.equals( path.toURI() );
+            return uri.equals(path.toURI());
         }
 
         @Override

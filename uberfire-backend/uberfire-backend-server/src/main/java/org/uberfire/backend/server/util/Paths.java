@@ -26,60 +26,67 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.java.nio.file.Files;
 
-import static org.uberfire.backend.vfs.PathFactory.*;
+import static org.uberfire.backend.vfs.PathFactory.newPath;
 
 public final class Paths {
 
     private static Map<org.uberfire.java.nio.file.FileSystem, FileSystem> cache = new HashMap<org.uberfire.java.nio.file.FileSystem, FileSystem>();
 
-    public static Path convert( final org.uberfire.java.nio.file.Path path ) {
-        if ( path == null ) {
+    public static Path convert(final org.uberfire.java.nio.file.Path path) {
+        if (path == null) {
             return null;
         }
 
-        if ( path.getFileName() == null ) {
-            return newPath( "/", path.toUri().toString(), new HashMap<String, Object>( 1 ) {{
-                put( PathFactory.VERSION_PROPERTY, path.getFileSystem().supportedFileAttributeViews().contains( "version" ) );
-            }} );
+        if (path.getFileName() == null) {
+            return newPath("/",
+                           path.toUri().toString(),
+                           new HashMap<String, Object>(1) {{
+                               put(PathFactory.VERSION_PROPERTY,
+                                   path.getFileSystem().supportedFileAttributeViews().contains("version"));
+                           }});
         }
 
-        return newPath( path.getFileName().toString(), path.toUri().toString(), new HashMap<String, Object>( 1 ) {{
-            put( PathFactory.VERSION_PROPERTY, path.getFileSystem().supportedFileAttributeViews().contains( "version" ) );
-        }} );
+        return newPath(path.getFileName().toString(),
+                       path.toUri().toString(),
+                       new HashMap<String, Object>(1) {{
+                           put(PathFactory.VERSION_PROPERTY,
+                               path.getFileSystem().supportedFileAttributeViews().contains("version"));
+                       }});
     }
 
-    public static org.uberfire.java.nio.file.Path convert( final Path path ) {
-        if ( path == null ) {
+    public static org.uberfire.java.nio.file.Path convert(final Path path) {
+        if (path == null) {
             return null;
         }
 
-        return org.uberfire.java.nio.file.Paths.get( URI.create( path.toURI() ) );
+        return org.uberfire.java.nio.file.Paths.get(URI.create(path.toURI()));
     }
 
-    public static FileSystem convert( final org.uberfire.java.nio.file.FileSystem fs ) {
-        if ( !cache.containsKey( fs ) ) {
+    public static FileSystem convert(final org.uberfire.java.nio.file.FileSystem fs) {
+        if (!cache.containsKey(fs)) {
             final Map<String, String> roots = new HashMap<String, String>();
-            for ( final org.uberfire.java.nio.file.Path root : fs.getRootDirectories() ) {
-                roots.put( root.toUri().toString(), root.getFileName() == null ? "/" : root.getFileName().toString() );
+            for (final org.uberfire.java.nio.file.Path root : fs.getRootDirectories()) {
+                roots.put(root.toUri().toString(),
+                          root.getFileName() == null ? "/" : root.getFileName().toString());
             }
-            cache.put( fs, FileSystemFactory.newFS( roots, fs.supportedFileAttributeViews() ) );
+            cache.put(fs,
+                      FileSystemFactory.newFS(roots,
+                                              fs.supportedFileAttributeViews()));
         }
 
-        return cache.get( fs );
+        return cache.get(fs);
     }
-    
+
     public static String readLockedBy(final Path path) {
-        org.uberfire.java.nio.file.Path lock = convert( PathFactory.newLock( path ) );
-        if (!Files.exists( lock )) {
+        org.uberfire.java.nio.file.Path lock = convert(PathFactory.newLock(path));
+        if (!Files.exists(lock)) {
             return null;
+        } else {
+            return new String(Files.readAllBytes(lock));
         }
-        else {
-            return new String( Files.readAllBytes( lock ));
-        }
-    }
-    
-    public static boolean isLock( final Path path ) {
-        return path.toURI().endsWith( PathFactory.LOCK_FILE_EXTENSION );
     }
 
+    public static boolean isLock(final Path path) {
+        return path.toURI().endsWith(PathFactory.LOCK_FILE_EXTENSION);
+    }
 }

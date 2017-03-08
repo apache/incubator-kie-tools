@@ -26,7 +26,7 @@ import javax.inject.Qualifier;
  * Internal annotation used to qualify fallback implementations, that will be used when the user
  * does not provide another (default) implementation.
  */
-@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD })
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier
 public @interface FallbackImplementation {

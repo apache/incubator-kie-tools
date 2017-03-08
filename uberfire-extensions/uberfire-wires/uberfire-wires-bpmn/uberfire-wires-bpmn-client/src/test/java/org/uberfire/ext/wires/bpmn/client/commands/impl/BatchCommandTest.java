@@ -17,12 +17,12 @@ package org.uberfire.ext.wires.bpmn.client.commands.impl;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnEdge;
 import org.uberfire.ext.wires.bpmn.api.model.impl.edges.BpmnEdgeImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.EndProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.ProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.StartProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.roles.DefaultRoleImpl;
-import org.uberfire.ext.wires.bpmn.api.model.BpmnEdge;
 import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
 import org.uberfire.ext.wires.bpmn.client.AbstractBaseRuleTest;
 import org.uberfire.ext.wires.bpmn.client.TestDummyNode;
@@ -32,7 +32,8 @@ import org.uberfire.ext.wires.bpmn.client.commands.Results;
 import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
 import org.uberfire.ext.wires.bpmn.client.rules.impl.DefaultRuleManagerImpl;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 public class BatchCommandTest extends AbstractBaseRuleTest {
 
@@ -59,61 +60,61 @@ public class BatchCommandTest extends AbstractBaseRuleTest {
         node3 = new EndProcessNode();
         commandManager = new DefaultCommandManagerImpl();
 
-        for ( Rule rule : getConnectionRules() ) {
-            ruleManager.addRule( rule );
+        for (Rule rule : getConnectionRules()) {
+            ruleManager.addRule(rule);
         }
-        for ( Rule rule : getCardinalityRules() ) {
-            ruleManager.addRule( rule );
+        for (Rule rule : getCardinalityRules()) {
+            ruleManager.addRule(rule);
         }
 
         //Add StartProcessNode
-        final Results results1 = commandManager.execute( ruleManager,
-                                                         new AddGraphNodeCommand( process,
-                                                                                  node1 ) );
+        final Results results1 = commandManager.execute(ruleManager,
+                                                        new AddGraphNodeCommand(process,
+                                                                                node1));
 
-        assertNotNull( results1 );
-        assertEquals( 0,
-                      results1.getMessages().size() );
+        assertNotNull(results1);
+        assertEquals(0,
+                     results1.getMessages().size());
 
         //Add TestDummyNode
-        final Results results2 = commandManager.execute( ruleManager,
-                                                         new AddGraphNodeCommand( process,
-                                                                                  node2 ) );
+        final Results results2 = commandManager.execute(ruleManager,
+                                                        new AddGraphNodeCommand(process,
+                                                                                node2));
 
-        assertNotNull( results2 );
-        assertEquals( 0,
-                      results2.getMessages().size() );
+        assertNotNull(results2);
+        assertEquals(0,
+                     results2.getMessages().size());
 
         //Add EndProcessNode
-        final Results results3 = commandManager.execute( ruleManager,
-                                                         new AddGraphNodeCommand( process,
-                                                                                  node3 ) );
+        final Results results3 = commandManager.execute(ruleManager,
+                                                        new AddGraphNodeCommand(process,
+                                                                                node3));
 
-        assertNotNull( results3 );
-        assertEquals( 0,
-                      results3.getMessages().size() );
+        assertNotNull(results3);
+        assertEquals(0,
+                     results3.getMessages().size());
 
         //Add Edge between StartNode and DummyNode1
-        e1 = new BpmnEdgeImpl( new DefaultRoleImpl( "general_edge" ) );
-        final Results results4 = commandManager.execute( ruleManager,
-                                                         new AddEdgeCommand( node1,
-                                                                             node2,
-                                                                             e1 ) );
+        e1 = new BpmnEdgeImpl(new DefaultRoleImpl("general_edge"));
+        final Results results4 = commandManager.execute(ruleManager,
+                                                        new AddEdgeCommand(node1,
+                                                                           node2,
+                                                                           e1));
 
-        assertNotNull( results4 );
-        assertEquals( 0,
-                      results4.getMessages().size() );
+        assertNotNull(results4);
+        assertEquals(0,
+                     results4.getMessages().size());
 
         //Add Edge between DummyNode2 and EndNode
-        e2 = new BpmnEdgeImpl( new DefaultRoleImpl( "general_edge" ) );
-        final Results results5 = commandManager.execute( ruleManager,
-                                                         new AddEdgeCommand( node2,
-                                                                             node3,
-                                                                             e2 ) );
+        e2 = new BpmnEdgeImpl(new DefaultRoleImpl("general_edge"));
+        final Results results5 = commandManager.execute(ruleManager,
+                                                        new AddEdgeCommand(node2,
+                                                                           node3,
+                                                                           e2));
 
-        assertNotNull( results5 );
-        assertEquals( 0,
-                      results5.getMessages().size() );
+        assertNotNull(results5);
+        assertEquals(0,
+                     results5.getMessages().size());
     }
 
     @Test
@@ -121,52 +122,52 @@ public class BatchCommandTest extends AbstractBaseRuleTest {
         // Add two more TestDummyNodes and related Edges to the existing graph. This is valid.
         final TestDummyNode testNode1 = new TestDummyNode();
         final TestDummyNode testNode2 = new TestDummyNode();
-        final BpmnEdge testEdge1 = new BpmnEdgeImpl( new DefaultRoleImpl( "general_edge" ) );
-        final BpmnEdge testEdge2 = new BpmnEdgeImpl( new DefaultRoleImpl( "general_edge" ) );
-        final AddGraphNodeCommand testCmd1 = new AddGraphNodeCommand( process,
-                                                                      testNode1 );
-        final AddGraphNodeCommand testCmd2 = new AddGraphNodeCommand( process,
-                                                                      testNode2 );
-        final AddEdgeCommand testCmd3 = new AddEdgeCommand( node2,
-                                                            testNode1,
-                                                            testEdge1 );
-        final AddEdgeCommand testCmd4 = new AddEdgeCommand( testNode1,
-                                                            testNode2,
-                                                            testEdge2 );
-        final Results results1 = commandManager.execute( ruleManager,
-                                                         new BatchCommand( testCmd1,
-                                                                           testCmd2,
-                                                                           testCmd3,
-                                                                           testCmd4 ) );
+        final BpmnEdge testEdge1 = new BpmnEdgeImpl(new DefaultRoleImpl("general_edge"));
+        final BpmnEdge testEdge2 = new BpmnEdgeImpl(new DefaultRoleImpl("general_edge"));
+        final AddGraphNodeCommand testCmd1 = new AddGraphNodeCommand(process,
+                                                                     testNode1);
+        final AddGraphNodeCommand testCmd2 = new AddGraphNodeCommand(process,
+                                                                     testNode2);
+        final AddEdgeCommand testCmd3 = new AddEdgeCommand(node2,
+                                                           testNode1,
+                                                           testEdge1);
+        final AddEdgeCommand testCmd4 = new AddEdgeCommand(testNode1,
+                                                           testNode2,
+                                                           testEdge2);
+        final Results results1 = commandManager.execute(ruleManager,
+                                                        new BatchCommand(testCmd1,
+                                                                         testCmd2,
+                                                                         testCmd3,
+                                                                         testCmd4));
 
-        assertNotNull( results1 );
-        assertEquals( 0,
-                      results1.getMessages().size() );
+        assertNotNull(results1);
+        assertEquals(0,
+                     results1.getMessages().size());
 
-        assertEquals( 5,
-                      process.size() );
-        assertProcessContainsNodes( process,
-                                    testNode1,
-                                    testNode2 );
-        assertEquals( 2,
-                      node2.getOutEdges().size() );
-        assertNodeContainsOutgoingEdges( node2,
-                                         e2,
-                                         testEdge1 );
+        assertEquals(5,
+                     process.size());
+        assertProcessContainsNodes(process,
+                                   testNode1,
+                                   testNode2);
+        assertEquals(2,
+                     node2.getOutEdges().size());
+        assertNodeContainsOutgoingEdges(node2,
+                                        e2,
+                                        testEdge1);
 
-        assertEquals( 1,
-                      testNode1.getInEdges().size() );
-        assertNodeContainsIncomingEdges( testNode1,
-                                         testEdge1 );
-        assertEquals( 1,
-                      testNode1.getOutEdges().size() );
-        assertNodeContainsOutgoingEdges( testNode1,
-                                         testEdge2 );
+        assertEquals(1,
+                     testNode1.getInEdges().size());
+        assertNodeContainsIncomingEdges(testNode1,
+                                        testEdge1);
+        assertEquals(1,
+                     testNode1.getOutEdges().size());
+        assertNodeContainsOutgoingEdges(testNode1,
+                                        testEdge2);
 
-        assertEquals( 1,
-                      testNode2.getInEdges().size() );
-        assertNodeContainsIncomingEdges( testNode2,
-                                         testEdge2 );
+        assertEquals(1,
+                     testNode2.getInEdges().size());
+        assertNodeContainsIncomingEdges(testNode2,
+                                        testEdge2);
     }
 
     @Test
@@ -175,46 +176,46 @@ public class BatchCommandTest extends AbstractBaseRuleTest {
         // This is invalid as a Process can only contain one EndProcessNode and hence the batch should fail.
         final TestDummyNode testNode1 = new TestDummyNode();
         final EndProcessNode testNode2 = new EndProcessNode();
-        final BpmnEdge testEdge1 = new BpmnEdgeImpl( new DefaultRoleImpl( "general_edge" ) );
-        final BpmnEdge testEdge2 = new BpmnEdgeImpl( new DefaultRoleImpl( "general_edge" ) );
-        final AddGraphNodeCommand testCmd1 = new AddGraphNodeCommand( process,
-                                                                      testNode1 );
-        final AddGraphNodeCommand testCmd2 = new AddGraphNodeCommand( process,
-                                                                      testNode2 );
-        final AddEdgeCommand testCmd3 = new AddEdgeCommand( node2,
-                                                            testNode1,
-                                                            testEdge1 );
-        final AddEdgeCommand testCmd4 = new AddEdgeCommand( testNode1,
-                                                            testNode2,
-                                                            testEdge2 );
-        final Results results1 = commandManager.execute( ruleManager,
-                                                         new BatchCommand( testCmd1,
-                                                                           testCmd2,
-                                                                           testCmd3,
-                                                                           testCmd4 ) );
+        final BpmnEdge testEdge1 = new BpmnEdgeImpl(new DefaultRoleImpl("general_edge"));
+        final BpmnEdge testEdge2 = new BpmnEdgeImpl(new DefaultRoleImpl("general_edge"));
+        final AddGraphNodeCommand testCmd1 = new AddGraphNodeCommand(process,
+                                                                     testNode1);
+        final AddGraphNodeCommand testCmd2 = new AddGraphNodeCommand(process,
+                                                                     testNode2);
+        final AddEdgeCommand testCmd3 = new AddEdgeCommand(node2,
+                                                           testNode1,
+                                                           testEdge1);
+        final AddEdgeCommand testCmd4 = new AddEdgeCommand(testNode1,
+                                                           testNode2,
+                                                           testEdge2);
+        final Results results1 = commandManager.execute(ruleManager,
+                                                        new BatchCommand(testCmd1,
+                                                                         testCmd2,
+                                                                         testCmd3,
+                                                                         testCmd4));
 
-        assertNotNull( results1 );
-        assertEquals( 1,
-                      results1.getMessages().size() );
-        assertEquals( 1,
-                      results1.getMessages( ResultType.ERROR ).size() );
+        assertNotNull(results1);
+        assertEquals(1,
+                     results1.getMessages().size());
+        assertEquals(1,
+                     results1.getMessages(ResultType.ERROR).size());
 
-        assertEquals( 3,
-                      process.size() );
-        assertProcessNotContainsNodes( process,
-                                       testNode1,
-                                       testNode2 );
-        assertEquals( 1,
-                      node2.getOutEdges().size() );
-        assertNodeContainsOutgoingEdges( node2,
-                                         e2 );
+        assertEquals(3,
+                     process.size());
+        assertProcessNotContainsNodes(process,
+                                      testNode1,
+                                      testNode2);
+        assertEquals(1,
+                     node2.getOutEdges().size());
+        assertNodeContainsOutgoingEdges(node2,
+                                        e2);
 
-        assertEquals( 0,
-                      testNode1.getInEdges().size() );
-        assertEquals( 0,
-                      testNode1.getOutEdges().size() );
-        assertEquals( 0,
-                      testNode2.getInEdges().size() );
+        assertEquals(0,
+                     testNode1.getInEdges().size());
+        assertEquals(0,
+                     testNode1.getOutEdges().size());
+        assertEquals(0,
+                     testNode2.getInEdges().size());
     }
 
     @Test
@@ -223,35 +224,34 @@ public class BatchCommandTest extends AbstractBaseRuleTest {
         // to the existing StartProcessNode. This is invalid as a StartProcessNode can only contain one outgoing Edge
         // and hence the batch should fail.
         final TestDummyNode testNode1 = new TestDummyNode();
-        final BpmnEdge testEdge1 = new BpmnEdgeImpl( new DefaultRoleImpl( "general_edge" ) );
-        final AddGraphNodeCommand testCmd1 = new AddGraphNodeCommand( process,
-                                                                      testNode1 );
-        final AddEdgeCommand testCmd2 = new AddEdgeCommand( node1,
-                                                            testNode1,
-                                                            testEdge1 );
-        final Results results1 = commandManager.execute( ruleManager,
-                                                         new BatchCommand( testCmd1,
-                                                                           testCmd2 ) );
+        final BpmnEdge testEdge1 = new BpmnEdgeImpl(new DefaultRoleImpl("general_edge"));
+        final AddGraphNodeCommand testCmd1 = new AddGraphNodeCommand(process,
+                                                                     testNode1);
+        final AddEdgeCommand testCmd2 = new AddEdgeCommand(node1,
+                                                           testNode1,
+                                                           testEdge1);
+        final Results results1 = commandManager.execute(ruleManager,
+                                                        new BatchCommand(testCmd1,
+                                                                         testCmd2));
 
-        assertNotNull( results1 );
-        assertEquals( 1,
-                      results1.getMessages().size() );
-        assertEquals( 1,
-                      results1.getMessages( ResultType.ERROR ).size() );
+        assertNotNull(results1);
+        assertEquals(1,
+                     results1.getMessages().size());
+        assertEquals(1,
+                     results1.getMessages(ResultType.ERROR).size());
 
-        assertEquals( 3,
-                      process.size() );
-        assertProcessNotContainsNodes( process,
-                                       testNode1 );
-        assertEquals( 1,
-                      node2.getOutEdges().size() );
-        assertNodeContainsOutgoingEdges( node2,
-                                         e2 );
+        assertEquals(3,
+                     process.size());
+        assertProcessNotContainsNodes(process,
+                                      testNode1);
+        assertEquals(1,
+                     node2.getOutEdges().size());
+        assertNodeContainsOutgoingEdges(node2,
+                                        e2);
 
-        assertEquals( 0,
-                      testNode1.getInEdges().size() );
-        assertEquals( 0,
-                      testNode1.getOutEdges().size() );
+        assertEquals(0,
+                     testNode1.getInEdges().size());
+        assertEquals(0,
+                     testNode1.getOutEdges().size());
     }
-
 }

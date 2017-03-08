@@ -32,9 +32,9 @@ public class PaletteShape extends Group implements Serializable {
      * Add a bounding Rectangle to the PaletteShape.
      * @param bounding If null this parameter is ignored
      */
-    public void setBounding( final Rectangle bounding ) {
-        if ( bounding != null ) {
-            add( bounding );
+    public void setBounding(final Rectangle bounding) {
+        if (bounding != null) {
+            add(bounding);
         }
     }
 
@@ -42,9 +42,9 @@ public class PaletteShape extends Group implements Serializable {
      * Add a Group to the PaletteShape.
      * @param group If null this parameter is ignored
      */
-    public void setGroup( final Group group ) {
-        if ( group != null ) {
-            add( group );
+    public void setGroup(final Group group) {
+        if (group != null) {
+            add(group);
         }
     }
 
@@ -52,10 +52,9 @@ public class PaletteShape extends Group implements Serializable {
      * Add Text to the PaletteShape.
      * @param description If null this parameter is ignored
      */
-    public void setDescription( final Text description ) {
-        if ( description != null ) {
-            add( description );
+    public void setDescription(final Text description) {
+        if (description != null) {
+            add(description);
         }
     }
-
 }

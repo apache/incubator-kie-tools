@@ -28,20 +28,20 @@ public class ListGraphStore<T extends GraphNode> implements GraphStore<T> {
     private List<T> nodes = new ArrayList<T>();
 
     @Override
-    public T addNode( T node ) {
-        nodes.add( node );
-        node.setId( nodes.size() );
+    public T addNode(T node) {
+        nodes.add(node);
+        node.setId(nodes.size());
         return node;
     }
 
     @Override
-    public T removeNode( int id ) {
-        throw new UnsupportedOperationException( "ListGraphStore is additive only." );
+    public T removeNode(int id) {
+        throw new UnsupportedOperationException("ListGraphStore is additive only.");
     }
 
     @Override
-    public T getNode( int id ) {
-        return nodes.get( id );
+    public T getNode(int id) {
+        return nodes.get(id);
     }
 
     @Override

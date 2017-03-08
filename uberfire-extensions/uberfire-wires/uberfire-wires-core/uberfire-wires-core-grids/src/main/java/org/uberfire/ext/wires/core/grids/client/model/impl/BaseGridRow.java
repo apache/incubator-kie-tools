@@ -37,17 +37,17 @@ public class BaseGridRow implements GridRow {
     private int collapseLevel = 0;
 
     public BaseGridRow() {
-        this( 20 );
+        this(20);
     }
 
-    public BaseGridRow( final double height ) {
+    public BaseGridRow(final double height) {
         this.height = height;
-        this.heights.push( height );
+        this.heights.push(height);
     }
 
     @Override
     public Map<Integer, GridCell<?>> getCells() {
-        return Collections.unmodifiableMap( cells );
+        return Collections.unmodifiableMap(cells);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class BaseGridRow implements GridRow {
     }
 
     @Override
-    public void setHeight( final double height ) {
+    public void setHeight(final double height) {
         this.height = height;
     }
 
@@ -78,20 +78,20 @@ public class BaseGridRow implements GridRow {
     @Override
     public void collapse() {
         collapseLevel++;
-        heights.push( height );
-        for ( GridCell<?> cell : cells.values() ) {
+        heights.push(height);
+        for (GridCell<?> cell : cells.values()) {
             cell.collapse();
         }
     }
 
     @Override
     public void expand() {
-        if ( collapseLevel == 0 ) {
+        if (collapseLevel == 0) {
             return;
         }
         collapseLevel--;
         height = heights.pop();
-        for ( GridCell<?> cell : cells.values() ) {
+        for (GridCell<?> cell : cells.values()) {
             cell.expand();
         }
     }
@@ -102,32 +102,31 @@ public class BaseGridRow implements GridRow {
         hasMergedCells = false;
         height = heights.firstElement();
         heights.clear();
-        heights.push( height );
-        for ( GridCell<?> cell : cells.values() ) {
+        heights.push(height);
+        for (GridCell<?> cell : cells.values()) {
             cell.reset();
         }
     }
 
     //This is not part of the GridCell interface as we don't want to expose this for general use
     @SuppressWarnings("unchecked")
-    void setCell( final int columnIndex,
-                  final GridCellValue value ) {
-        if ( !cells.containsKey( columnIndex ) ) {
-            cells.put( columnIndex,
-                       new BaseGridCell( value ) );
+    void setCell(final int columnIndex,
+                 final GridCellValue value) {
+        if (!cells.containsKey(columnIndex)) {
+            cells.put(columnIndex,
+                      new BaseGridCell(value));
         } else {
-            ( (BaseGridCell) cells.get( columnIndex ) ).setValue( value );
+            ((BaseGridCell) cells.get(columnIndex)).setValue(value);
         }
     }
 
     //This is not part of the GridCell interface as we don't want to expose this for general use
-    void deleteCell( final int columnIndex ) {
-        cells.remove( columnIndex );
+    void deleteCell(final int columnIndex) {
+        cells.remove(columnIndex);
     }
 
     //This is not part of the GridCell interface as we don't want to expose this for general use
-    void setHasMergedCells( final boolean hasMergedCells ) {
+    void setHasMergedCells(final boolean hasMergedCells) {
         this.hasMergedCells = hasMergedCells;
     }
-
 }

@@ -29,17 +29,17 @@ public abstract class BaseEditorViewImpl
 
     @Override
     public void alertReadOnly() {
-        Window.alert( CommonConstants.INSTANCE.CantSaveReadOnly() );
+        Window.alert(CommonConstants.INSTANCE.CantSaveReadOnly());
     }
 
     @Override
     public void showLoading() {
-        showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        showBusyIndicator(CommonConstants.INSTANCE.Loading());
     }
 
     @Override
     public void showSaving() {
-        showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+        showBusyIndicator(CommonConstants.INSTANCE.Saving());
     }
 
     @Override
@@ -48,13 +48,13 @@ public abstract class BaseEditorViewImpl
     }
 
     @Override
-    public void refreshTitle( final String value ) {
-        title.setText( value );
+    public void refreshTitle(final String value) {
+        title.setText(value);
     }
 
     @Override
-    public void showBusyIndicator( String message ) {
-        BusyPopup.showMessage( message );
+    public void showBusyIndicator(String message) {
+        BusyPopup.showMessage(message);
     }
 
     @Override
@@ -64,6 +64,6 @@ public abstract class BaseEditorViewImpl
 
     @Override
     public boolean confirmClose() {
-        return Window.confirm( CommonConstants.INSTANCE.DiscardUnsavedData() );
+        return Window.confirm(CommonConstants.INSTANCE.DiscardUnsavedData());
     }
 }

@@ -18,59 +18,59 @@ package org.uberfire.ext.editor.commons.backend.validation;
 
 import java.io.File;
 import java.io.IOException;
-
 import javax.lang.model.SourceVersion;
+
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class ValidationUtils {
 
-    private static final char[] ILLEGAL_CHARACTERS = { '/', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', ':' };
+    private static final char[] ILLEGAL_CHARACTERS = {'/', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', ':'};
 
-    public static boolean isFileName( final String value ) {
+    public static boolean isFileName(final String value) {
         //Null check
-        if ( StringUtils.isBlank( value ) ) {
+        if (StringUtils.isBlank(value)) {
             return false;
         }
 
         //Prefix and suffix "." causes issues
-        if ( value.startsWith( "." ) || value.endsWith( "." ) ) {
+        if (value.startsWith(".") || value.endsWith(".")) {
             return false;
         }
 
         //Illegal character check
-        for ( Character c : ILLEGAL_CHARACTERS ) {
-            if ( value.contains( c.toString() ) ) {
+        for (Character c : ILLEGAL_CHARACTERS) {
+            if (value.contains(c.toString())) {
                 return false;
             }
         }
 
-        final File f = new File( value );
+        final File f = new File(value);
         try {
             f.getCanonicalPath();
             return true;
-        } catch ( IOException e ) {
+        } catch (IOException e) {
             return false;
         }
     }
 
-    public static boolean isJavaIdentifier( final String value ) {
-        if ( StringUtils.isBlank( value ) ) {
+    public static boolean isJavaIdentifier(final String value) {
+        if (StringUtils.isBlank(value)) {
             return false;
         }
-        if ( !SourceVersion.isIdentifier( value ) || SourceVersion.isKeyword( value ) ) {
+        if (!SourceVersion.isIdentifier(value) || SourceVersion.isKeyword(value)) {
             return false;
         }
-        for ( int i = 0; i < value.length(); i++ ) {
-            if ( !CharUtils.isAsciiPrintable( value.charAt( i ) ) ) {
+        for (int i = 0; i < value.length(); i++) {
+            if (!CharUtils.isAsciiPrintable(value.charAt(i))) {
                 return false;
             }
         }
         return true;
     }
 
-    public static boolean isArtifactIdentifier( final String value ) {
+    public static boolean isArtifactIdentifier(final String value) {
         // See org.apache.maven.model.validation.DefaultModelValidator.java::ID_REGEX
-        return value != null && value.matches( "[A-Za-z0-9_\\-.]+" );
+        return value != null && value.matches("[A-Za-z0-9_\\-.]+");
     }
 }

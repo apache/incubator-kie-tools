@@ -16,6 +16,12 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.group;
 
+import java.util.Set;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
@@ -26,15 +32,8 @@ import org.uberfire.ext.security.management.client.widgets.management.explorer.E
 import org.uberfire.ext.security.management.client.widgets.management.explorer.UsersExplorer;
 import org.uberfire.mvp.Command;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.Set;
-
 /**
  * <p>Presenter class for assign users to a new group.</p>
- * 
  * @since 0.8.0
  */
 @Dependent
@@ -43,32 +42,44 @@ public class GroupUsersAssignment implements IsWidget {
     AssignedEntitiesEditor<GroupUsersAssignment> view;
     UsersExplorer usersExplorer;
     Event<AddUsersToGroupEvent> addUsersToGroupEvent;
+    final Command saveEditorCallback = new Command() {
+        @Override
+        public void execute() {
+            hide();
+            // Fire the assign selection event.
+            final Set<String> selectedUsers = usersExplorer.getSelectedEntities();
+            // Delegate the recently updated assigned groups for the user.
+            addUsersToGroupEvent.fire(new AddUsersToGroupEvent(GroupUsersAssignment.this,
+                                                               selectedUsers));
+        }
+    };
 
     @Inject
-    public GroupUsersAssignment(@AssignedEntitiesInlineEditor final AssignedEntitiesEditor<GroupUsersAssignment> view, 
-                                final UsersExplorer usersExplorer, 
+    public GroupUsersAssignment(@AssignedEntitiesInlineEditor final AssignedEntitiesEditor<GroupUsersAssignment> view,
+                                final UsersExplorer usersExplorer,
                                 final Event<AddUsersToGroupEvent> addUsersToGroupEvent) {
         this.view = view;
         this.usersExplorer = usersExplorer;
         this.addUsersToGroupEvent = addUsersToGroupEvent;
     }
 
+    /*  ******************************************************************************************************
+                                 PUBLIC PRESENTER API 
+     ****************************************************************************************************** */
+
     @Override
     public Widget asWidget() {
         return view.asWidget();
     }
 
-    /*  ******************************************************************************************************
-                                 PUBLIC PRESENTER API 
-     ****************************************************************************************************** */
-    
     @PostConstruct
     public void init() {
         view.init(this);
         view.configure(usersExplorer.view);
-        view.configureSave(UsersManagementWidgetsConstants.INSTANCE.addUsersToGroup(), saveEditorCallback);
+        view.configureSave(UsersManagementWidgetsConstants.INSTANCE.addUsersToGroup(),
+                           saveEditorCallback);
     }
-    
+
     public void show(final String header) {
         // Clear current view.
         clear();
@@ -81,29 +92,17 @@ public class GroupUsersAssignment implements IsWidget {
         view.hide();
     }
     
-    public void clear() {
-        usersExplorer.clear();
-    }
-    
 
      /*  ******************************************************************************************************
                                      PRIVATE METHODS FOR INTERNAL PRESENTER LOGIC 
          ****************************************************************************************************** */
 
-    final Command saveEditorCallback = new Command() {
-        @Override
-        public void execute() {
-            hide();
-            // Fire the assign selection event.
-            final Set<String> selectedUsers= usersExplorer.getSelectedEntities();
-            // Delegate the recently updated assigned groups for the user.
-            addUsersToGroupEvent.fire(new AddUsersToGroupEvent(GroupUsersAssignment.this, selectedUsers));
-        }
-    };
-    
+    public void clear() {
+        usersExplorer.clear();
+    }
+
     private void showUsersModal() {
         usersExplorer.show(new ExplorerViewContext() {
-
 
             @Override
             public boolean canCreate() {
@@ -131,5 +130,4 @@ public class GroupUsersAssignment implements IsWidget {
             }
         });
     }
-    
 }

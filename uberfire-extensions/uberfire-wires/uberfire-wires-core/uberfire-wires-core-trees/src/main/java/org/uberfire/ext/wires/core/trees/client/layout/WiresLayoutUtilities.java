@@ -35,33 +35,33 @@ public class WiresLayoutUtilities {
      * @param layout Layout information
      * @return The bounds of the layout
      */
-    public static Rectangle2D getLayoutBounds( final Map<WiresBaseShape, Point2D> layout ) {
+    public static Rectangle2D getLayoutBounds(final Map<WiresBaseShape, Point2D> layout) {
         double minX = 0;
         double maxX = 0;
         double minY = 0;
         double maxY = 0;
-        for ( Map.Entry<WiresBaseShape, Point2D> e : layout.entrySet() ) {
+        for (Map.Entry<WiresBaseShape, Point2D> e : layout.entrySet()) {
             final double ax = e.getValue().getX();
             final double ay = e.getValue().getY();
-            if ( ax < minX ) {
+            if (ax < minX) {
                 minX = ax;
             }
-            if ( ax > maxX ) {
+            if (ax > maxX) {
                 maxX = ax;
             }
-            if ( ay < minY ) {
+            if (ay < minY) {
                 minY = ay;
             }
-            if ( ay > maxY ) {
+            if (ay > maxY) {
                 maxY = ay;
             }
         }
         final double width = maxX - minX;
         final double height = maxY - minY;
-        final Rectangle2D bounds = new Rectangle2D( minX,
-                                                    minY,
-                                                    width,
-                                                    height );
+        final Rectangle2D bounds = new Rectangle2D(minX,
+                                                   minY,
+                                                   width,
+                                                   height);
         return bounds;
     }
 
@@ -72,20 +72,20 @@ public class WiresLayoutUtilities {
      * @param layoutBounds The bounds of the Layout
      * @return The bounds of the Canvas including padding to contain the Layout.
      */
-    public static Rectangle2D getCanvasBounds( final Rectangle2D layoutBounds ) {
+    public static Rectangle2D getCanvasBounds(final Rectangle2D layoutBounds) {
         double canvasWidth = layoutBounds.getWidth() + PADDING * 2;
         double canvasHeight = layoutBounds.getHeight() + PADDING * 2;
-        if ( canvasWidth < WiresCanvas.DEFAULT_SIZE_WIDTH ) {
+        if (canvasWidth < WiresCanvas.DEFAULT_SIZE_WIDTH) {
             canvasWidth = WiresCanvas.DEFAULT_SIZE_WIDTH;
         }
-        if ( canvasHeight < WiresCanvas.DEFAULT_SIZE_HEIGHT ) {
+        if (canvasHeight < WiresCanvas.DEFAULT_SIZE_HEIGHT) {
             canvasHeight = WiresCanvas.DEFAULT_SIZE_HEIGHT;
         }
 
-        return new Rectangle2D( 0,
-                                0,
-                                canvasWidth,
-                                canvasHeight );
+        return new Rectangle2D(0,
+                               0,
+                               canvasWidth,
+                               canvasHeight);
     }
 
     /**
@@ -93,17 +93,17 @@ public class WiresLayoutUtilities {
      * @param layout Layout information
      * @return Canvas bounds
      */
-    public static Rectangle2D alignLayoutInCanvas( final Map<WiresBaseShape, Point2D> layout ) {
-        final Rectangle2D layoutBounds = getLayoutBounds( layout );
-        final Rectangle2D canvasBounds = getCanvasBounds( layoutBounds );
-        for ( Map.Entry<WiresBaseShape, Point2D> e : layout.entrySet() ) {
+    public static Rectangle2D alignLayoutInCanvas(final Map<WiresBaseShape, Point2D> layout) {
+        final Rectangle2D layoutBounds = getLayoutBounds(layout);
+        final Rectangle2D canvasBounds = getCanvasBounds(layoutBounds);
+        for (Map.Entry<WiresBaseShape, Point2D> e : layout.entrySet()) {
             double ax = e.getValue().getX();
             double ay = e.getValue().getY();
 
-            ax = ax + ( ( canvasBounds.getWidth() - layoutBounds.getWidth() ) / 2 );
+            ax = ax + ((canvasBounds.getWidth() - layoutBounds.getWidth()) / 2);
             ay = ay + PADDING;
-            e.setValue( new Point2D( ax,
-                                     ay ) );
+            e.setValue(new Point2D(ax,
+                                   ay));
         }
         return canvasBounds;
     }
@@ -113,11 +113,10 @@ public class WiresLayoutUtilities {
      * @param canvasBounds Bounds of the Canvas
      * @param viewport Viewport to be re-sized
      */
-    public static void resizeViewPort( final Rectangle2D canvasBounds,
-                                       final Viewport viewport ) {
-        viewport.setPixelSize( (int) canvasBounds.getWidth(),
-                               (int) canvasBounds.getHeight() );
+    public static void resizeViewPort(final Rectangle2D canvasBounds,
+                                      final Viewport viewport) {
+        viewport.setPixelSize((int) canvasBounds.getWidth(),
+                              (int) canvasBounds.getHeight());
         viewport.draw();
     }
-
 }

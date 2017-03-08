@@ -23,7 +23,7 @@ import java.util.Set;
  * <p>Just override methods of your interest. By default, they delegate to the parent context.</p>
  */
 public class ExplorerViewContext implements EntitiesExplorerView.ViewContext {
-    
+
     private EntitiesExplorerView.ViewContext parent;
 
     public ExplorerViewContext() {

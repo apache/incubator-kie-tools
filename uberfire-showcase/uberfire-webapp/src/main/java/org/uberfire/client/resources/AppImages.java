@@ -28,5 +28,4 @@ public interface AppImages
 
     @Source("images/uf.png")
     ImageResource ufBrandLogo();
-
 }

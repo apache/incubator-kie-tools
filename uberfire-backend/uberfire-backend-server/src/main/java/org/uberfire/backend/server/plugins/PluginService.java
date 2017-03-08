@@ -15,16 +15,16 @@
  */
 package org.uberfire.backend.server.plugins;
 
-import org.jboss.errai.bus.server.annotations.Service;
-import org.uberfire.backend.server.plugins.engine.PluginManager;
-import org.uberfire.commons.services.cdi.Startup;
-import org.uberfire.commons.services.cdi.StartupType;
-
+import java.io.File;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.ServletContext;
-import java.io.File;
+
+import org.jboss.errai.bus.server.annotations.Service;
+import org.uberfire.backend.server.plugins.engine.PluginManager;
+import org.uberfire.commons.services.cdi.Startup;
+import org.uberfire.commons.services.cdi.StartupType;
 
 /**
  * Provides an Errai RPC endpoint to serve JavaScript runtime plugins (authored
@@ -59,11 +59,6 @@ public class PluginService {
         this.pluginManager = pluginManager;
     }
 
-    @PostConstruct
-    private void startUp() {
-        instance = this;
-    }
-
     public static PluginService getInstance() {
         if (instance == null) {
             throw new IllegalStateException(PluginService.class.getName() + " was not initialized on startup");
@@ -71,21 +66,30 @@ public class PluginService {
         return instance;
     }
 
+    @PostConstruct
+    private void startUp() {
+        instance = this;
+    }
+
     public void init(final ServletContext servletContext) {
         final String contextRootDir = getContextRootDir(servletContext);
-        final String pluginDir = getPlugins(servletContext, "plugins");
+        final String pluginDir = getPlugins(servletContext,
+                                            "plugins");
         if (contextRootDir != null && pluginDir != null) {
-            pluginManager.init(contextRootDir, pluginDir);
+            pluginManager.init(contextRootDir,
+                               pluginDir);
         }
     }
 
-    String getPlugins(ServletContext servletContext, String plugins) {
-        return PluginUtils.getRealPath(servletContext, plugins);
+    String getPlugins(ServletContext servletContext,
+                      String plugins) {
+        return PluginUtils.getRealPath(servletContext,
+                                       plugins);
     }
 
     String getContextRootDir(ServletContext servletContext) {
-        return getPlugins(servletContext, File.separator);
+        return getPlugins(servletContext,
+                          File.separator);
     }
-
 }
 

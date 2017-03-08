@@ -29,9 +29,9 @@ public interface WorkbenchMenuBar extends HasMenus {
 
     void collapse();
 
-    void addCollapseHandler( Command command );
+    void addCollapseHandler(Command command);
 
-    void addExpandHandler( Command command );
+    void addExpandHandler(Command command);
 
     boolean isUseExpandedMode();
 

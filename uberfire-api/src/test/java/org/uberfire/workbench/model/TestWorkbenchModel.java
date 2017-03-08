@@ -16,25 +16,23 @@
 
 package org.uberfire.workbench.model;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 
+import static org.junit.Assert.*;
+
 /**
- *  Test panel hierarchy constraints.
+ * Test panel hierarchy constraints.
  */
 public class TestWorkbenchModel {
-
 
     @Test
     public void testPanelHierarchyInsert() {
         PerspectiveDefinition perspective = new PerspectiveDefinitionImpl("what.ever.panel.PresenterClass");
         perspective.setName("perspective");
-
 
         PanelDefinition westPanel = new PanelDefinitionImpl("what.ever.panel.PresenterClass");
         PanelDefinition eastPanel = new PanelDefinitionImpl("what.ever.panel.PresenterClass");
@@ -42,8 +40,10 @@ public class TestWorkbenchModel {
         PartDefinition part1 = new PartDefinitionImpl(new DefaultPlaceRequest("one"));
         PartDefinition part2 = new PartDefinitionImpl(new DefaultPlaceRequest("two"));
 
-        perspective.getRoot().insertChild(CompassPosition.WEST, westPanel);
-        perspective.getRoot().insertChild(CompassPosition.EAST, eastPanel);
+        perspective.getRoot().insertChild(CompassPosition.WEST,
+                                          westPanel);
+        perspective.getRoot().insertChild(CompassPosition.EAST,
+                                          eastPanel);
 
         westPanel.addPart(part1);
         eastPanel.addPart(part2);
@@ -62,15 +62,16 @@ public class TestWorkbenchModel {
         PerspectiveDefinition perspective = new PerspectiveDefinitionImpl("what.ever.panel.PresenterClass");
         perspective.setName("perspective");
 
-
         PanelDefinition westPanel = new PanelDefinitionImpl("what.ever.panel.PresenterClass");
         PanelDefinition eastPanel = new PanelDefinitionImpl("what.ever.panel.PresenterClass");
 
         PartDefinition part1 = new PartDefinitionImpl(new DefaultPlaceRequest("one"));
         PartDefinition part2 = new PartDefinitionImpl(new DefaultPlaceRequest("two"));
 
-        perspective.getRoot().appendChild(CompassPosition.WEST, westPanel);
-        perspective.getRoot().appendChild(CompassPosition.EAST, eastPanel);
+        perspective.getRoot().appendChild(CompassPosition.WEST,
+                                          westPanel);
+        perspective.getRoot().appendChild(CompassPosition.EAST,
+                                          eastPanel);
 
         westPanel.addPart(part1);
         eastPanel.addPart(part2);
@@ -89,7 +90,7 @@ public class TestWorkbenchModel {
      * part of a hierarchy. There might be two reasons for this: Either the implicit parent/child wiring is broken
      * or the explicit perspective setup is not yet completed.
      */
-    @Test(expected=IllegalStateException.class)
+    @Test(expected = IllegalStateException.class)
     public void testDetachedPanels() {
         PanelDefinition westPanel = new PanelDefinitionImpl("what.ever.panel.PresenterClass");
         PartDefinition part1 = new PartDefinitionImpl(new DefaultPlaceRequest("one"));
@@ -99,6 +100,5 @@ public class TestWorkbenchModel {
         assertTrue(part1.getParentPanel() == westPanel);
         westPanel.getParent(); // does blow up
     }
-
 }
 

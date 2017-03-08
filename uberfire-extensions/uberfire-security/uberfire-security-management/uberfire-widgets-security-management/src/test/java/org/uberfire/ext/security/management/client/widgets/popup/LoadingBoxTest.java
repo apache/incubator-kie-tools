@@ -23,13 +23,13 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class LoadingBoxTest {
-    
-    @Mock LoadingBox.View view;
+
+    @Mock
+    LoadingBox.View view;
     private LoadingBox presenter;
 
     @Before
@@ -40,13 +40,14 @@ public class LoadingBoxTest {
     @Test
     public void testShow() throws Exception {
         presenter.show();
-        verify(view, times(1)).show(anyString());
+        verify(view,
+               times(1)).show(anyString());
     }
-    
+
     @Test
     public void testHide() throws Exception {
         presenter.hide();
-        verify(view, times(1)).close();
+        verify(view,
+               times(1)).close();
     }
-    
 }

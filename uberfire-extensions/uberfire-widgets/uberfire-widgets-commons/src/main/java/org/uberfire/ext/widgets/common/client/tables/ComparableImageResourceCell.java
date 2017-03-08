@@ -15,19 +15,19 @@
  */
 package org.uberfire.ext.widgets.common.client.tables;
 
-
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 
 public class ComparableImageResourceCell extends AbstractCell<ComparableImageResource> {
+
     @Override
     public void render(Context context,
                        ComparableImageResource value,
                        SafeHtmlBuilder sb) {
         if (value != null) {
             // The template will sanitize the URI.
-        	sb.append(SafeHtmlUtils.fromTrustedString(value.getImageHTML()));
-          }
+            sb.append(SafeHtmlUtils.fromTrustedString(value.getImageHTML()));
+        }
     }
 }

@@ -32,7 +32,7 @@ import org.uberfire.workbench.model.PerspectiveDefinition;
  * perspective, and switching between perspectives. This includes a sequence of asynchronous operations such as fetching
  * any stored definition the current user has for the new perspective, and saving the definition when the user has
  * modified it (for example, by dragging and dropping components, launching new activities, and so on).
- * <p/>
+ * <p>
  * Structurally, the PerspectiveManager performs actions at the request of the {@link PlaceManager}, and it accomplishes
  * these actions by delegating to the {@link PanelManager} and {@link WorkbenchServicesProxy}.
  */
@@ -58,12 +58,12 @@ public interface PerspectiveManager {
      * @see WorkbenchPerspective#isTransient()
      * @see PerspectiveActivity#isTransient()
      */
-    void savePerspectiveState( final Command doWhenFinished );
+    void savePerspectiveState(final Command doWhenFinished);
 
     /**
      * This method should only be invoked by PlaceManager. To launch a perspective within an UberFire app, pass a
      * PlaceRequest for that perspective to {@link PlaceManager#goTo(org.uberfire.mvp.PlaceRequest)}.
-     * <p/>
+     * <p>
      * Closes all current panels in the PanelManager (they must have already had their parts removed), then builds up
      * the new panel arrangement based on the {@link PerspectiveDefinition} associated with the given perspective
      * activity. If the given perspective is transient, its default perspective definition will always be used.
@@ -72,33 +72,32 @@ public interface PerspectiveManager {
      * @param placeRequest the placeRequest that originated the perspective to switch to. Must not be null.
      * @param perspective the perspective to switch to. Must not be null.
      * @param doWhenFinished The command to execute once the new perspective's panels have been created. Must not be null.
-     * <p/>
+     * <p>
      * When the callback is invoked, the panels will be set up in their correct positions, but no parts will
      * have been added.
      */
-    void switchToPerspective( final PlaceRequest placeRequest,
-                              final PerspectiveActivity perspective,
-                              final ParameterizedCommand<PerspectiveDefinition> doWhenFinished );
+    void switchToPerspective(final PlaceRequest placeRequest,
+                             final PerspectiveActivity perspective,
+                             final ParameterizedCommand<PerspectiveDefinition> doWhenFinished);
 
     /**
      * Retrieves the definitions of all the persisted perspectives.
      * @param doWhenFinished The command to execute once the perspective definitions are retrieved.
      */
-    void loadPerspectiveStates( final ParameterizedCommand<Set<PerspectiveDefinition>> doWhenFinished );
+    void loadPerspectiveStates(final ParameterizedCommand<Set<PerspectiveDefinition>> doWhenFinished);
 
     /**
      * This method removes any persisted definition for the given perspective. Subsequent requests for a previously
      * persisted perspective should load the Perspective definition from the applicable object.
      * @param doWhenFinished The command to execute once the perspective state have been removed. Must not be null.
      */
-    void removePerspectiveState( final String perspectiveId,
-                                 final Command doWhenFinished );
+    void removePerspectiveState(final String perspectiveId,
+                                final Command doWhenFinished);
 
     /**
      * This method removes all persisted Perspective definitions. Subsequent requests for previously persisted
      * perspectives should load the Perspective definition from the applicable object.
      * @param doWhenFinished The command to execute once the perspective states have been removed. Must not be null.
      */
-    void removePerspectiveStates( final Command doWhenFinished );
-
+    void removePerspectiveStates(final Command doWhenFinished);
 }

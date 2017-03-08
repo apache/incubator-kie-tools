@@ -30,11 +30,10 @@ public class LuceneConfigTest {
 
     @Test
     public void testDisposableRegistry() {
-        final LuceneIndexEngine indexEngine = new LuceneIndexEngine( mock( FieldFactory.class ),
-                                                                     mock( MetaModelStore.class ),
-                                                                     mock( LuceneIndexManager.class ) );
+        final LuceneIndexEngine indexEngine = new LuceneIndexEngine(mock(FieldFactory.class),
+                                                                    mock(MetaModelStore.class),
+                                                                    mock(LuceneIndexManager.class));
 
-        assertTrue( PriorityDisposableRegistry.getDisposables().contains( indexEngine ) );
+        assertTrue(PriorityDisposableRegistry.getDisposables().contains(indexEngine));
     }
-
 }

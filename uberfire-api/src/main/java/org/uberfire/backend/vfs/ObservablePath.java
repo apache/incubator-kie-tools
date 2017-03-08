@@ -24,24 +24,24 @@ import org.uberfire.rpc.SessionInfo;
 public interface ObservablePath extends Path,
                                         Disposable {
 
-    void onRename( final Command command );
+    void onRename(final Command command);
 
-    void onDelete( final Command command );
+    void onDelete(final Command command);
 
-    void onUpdate( final Command command );
+    void onUpdate(final Command command);
 
-    void onCopy( final Command command );
+    void onCopy(final Command command);
 
-    void onConcurrentRename( final ParameterizedCommand<OnConcurrentRenameEvent> command );
+    void onConcurrentRename(final ParameterizedCommand<OnConcurrentRenameEvent> command);
 
-    void onConcurrentDelete( final ParameterizedCommand<OnConcurrentDelete> command );
+    void onConcurrentDelete(final ParameterizedCommand<OnConcurrentDelete> command);
 
-    void onConcurrentUpdate( final ParameterizedCommand<OnConcurrentUpdateEvent> command );
+    void onConcurrentUpdate(final ParameterizedCommand<OnConcurrentUpdateEvent> command);
 
-    void onConcurrentCopy( final ParameterizedCommand<OnConcurrentCopyEvent> command );
+    void onConcurrentCopy(final ParameterizedCommand<OnConcurrentCopyEvent> command);
 
-    ObservablePath wrap( final Path path );
-    
+    ObservablePath wrap(final Path path);
+
     Path getOriginal();
 
     public interface OnConcurrentUpdateEvent extends SessionInfo {

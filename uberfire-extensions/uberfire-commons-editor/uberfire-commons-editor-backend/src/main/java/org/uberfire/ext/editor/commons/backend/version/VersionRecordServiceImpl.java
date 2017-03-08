@@ -34,7 +34,7 @@ import org.uberfire.java.nio.file.Path;
 public class VersionRecordServiceImpl
         implements VersionRecordService {
 
-    private IOService   ioService;
+    private IOService ioService;
     private VersionUtil util;
 
     public VersionRecordServiceImpl() {
@@ -55,7 +55,8 @@ public class VersionRecordServiceImpl
         final List<VersionRecord> result = loadVersionRecords(util.getDotFilePath(path));
 
         for (final VersionRecord record : records) {
-            if (doesNotContainID(record.id(), result)) {
+            if (doesNotContainID(record.id(),
+                                 result)) {
                 result.add(record);
             }
         }
@@ -90,7 +91,8 @@ public class VersionRecordServiceImpl
                                          record.uri());
     }
 
-    private boolean doesNotContainID(String id, List<VersionRecord> records) {
+    private boolean doesNotContainID(String id,
+                                     List<VersionRecord> records) {
         for (VersionRecord record : records) {
             if (record.id().equals(id)) {
                 return false;
@@ -102,7 +104,8 @@ public class VersionRecordServiceImpl
     @Override
     public VersionRecord loadRecord(Path path) throws URISyntaxException {
 
-        for (VersionRecord record : loadVersionRecords(util.getPath(path, "master"))) {
+        for (VersionRecord record : loadVersionRecords(util.getPath(path,
+                                                                    "master"))) {
             String version = util.getVersion(path);
             if ("master".equals(version)) {
                 // Return first record when looking for master
@@ -119,17 +122,20 @@ public class VersionRecordServiceImpl
             implements Comparator<VersionRecord> {
 
         @Override
-        public int compare(VersionRecord left, VersionRecord right) {
+        public int compare(VersionRecord left,
+                           VersionRecord right) {
             int compareTo = left.date().compareTo(right.date());
 
             if (compareTo == 0) {
-                return compareUri(right.uri(), left.uri());
+                return compareUri(right.uri(),
+                                  left.uri());
             } else {
                 return compareTo;
             }
         }
 
-        private int compareUri(String rightUri, String leftUri) {
+        private int compareUri(String rightUri,
+                               String leftUri) {
             Iterator<Character> right = getReversedIterator(rightUri);
             Iterator<Character> left = getReversedIterator(leftUri);
 

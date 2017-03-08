@@ -36,7 +36,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-@WithClassesToStub({ CommonConstants.class, ObservablePath.class })
+@WithClassesToStub({CommonConstants.class, ObservablePath.class})
 public class RestorePopUpPresenterTest {
 
     @Mock
@@ -67,12 +67,12 @@ public class RestorePopUpPresenterTest {
 
     @Before
     public void init() throws Exception {
-        presenter = new RestorePopUpPresenter( view,
-                                               busyIndicatorView,
-                                               versionService,
-                                               restoreEvent,
-                                               restoreUtil,
-                                               toggleCommentPresenter ) {
+        presenter = new RestorePopUpPresenter(view,
+                                              busyIndicatorView,
+                                              versionService,
+                                              restoreEvent,
+                                              restoreUtil,
+                                              toggleCommentPresenter) {
         };
     }
 
@@ -80,34 +80,36 @@ public class RestorePopUpPresenterTest {
     public void testSetup() throws Exception {
         presenter.setup();
 
-        verify( view ).init( presenter );
+        verify(view).init(presenter);
     }
 
     @Test
     public void testRestore() throws Exception {
-        when( toggleCommentPresenter.getComment() ).thenReturn( "test" );
+        when(toggleCommentPresenter.getComment()).thenReturn("test");
         presenter.command = commandMock;
 
         presenter.restore();
 
-        verify( commandMock ).execute( "test" );
-        verify( view ).hide();
+        verify(commandMock).execute("test");
+        verify(view).hide();
     }
 
     @Test
     public void testShow() throws Exception {
-        presenter = spy( presenter );
+        presenter = spy(presenter);
 
-        presenter.show( path, "uri" );
+        presenter.show(path,
+                       "uri");
 
-        verify( view ).show();
-        verify( presenter ).restoreCommand( path, "uri" );
+        verify(view).show();
+        verify(presenter).restoreCommand(path,
+                                         "uri");
     }
 
     @Test
     public void testCancel() throws Exception {
         presenter.cancel();
 
-        verify( view ).hide();
+        verify(view).hide();
     }
 }

@@ -33,15 +33,34 @@ public class DefaultPreferenceScopesForTests {
     public static final String componentScopeKey = "my-component";
     public static final String userScopeKey = "my-user";
 
-    public static final PreferenceScopeImpl allUsersScope = new PreferenceScopeImpl( allUsersScopeType, allUsersScopeKey, null );
-    public static final PreferenceScopeImpl entireApplicationScope = new PreferenceScopeImpl( entireApplicationScopeType, entireApplicationScopeKey, null );
-    public static final PreferenceScopeImpl componentScope = new PreferenceScopeImpl( componentScopeType, componentScopeKey, null );
-    public static final PreferenceScopeImpl userScope = new PreferenceScopeImpl( userScopeType, userScopeKey, null );
+    public static final PreferenceScopeImpl allUsersScope = new PreferenceScopeImpl(allUsersScopeType,
+                                                                                    allUsersScopeKey,
+                                                                                    null);
+    public static final PreferenceScopeImpl entireApplicationScope = new PreferenceScopeImpl(entireApplicationScopeType,
+                                                                                             entireApplicationScopeKey,
+                                                                                             null);
+    public static final PreferenceScopeImpl componentScope = new PreferenceScopeImpl(componentScopeType,
+                                                                                     componentScopeKey,
+                                                                                     null);
+    public static final PreferenceScopeImpl userScope = new PreferenceScopeImpl(userScopeType,
+                                                                                userScopeKey,
+                                                                                null);
 
-    public static final PreferenceScopeImpl userComponentScope = new PreferenceScopeImpl( userScopeType, userScopeKey, componentScope );
-    public static final PreferenceScopeImpl userEntireApplicationScope = new PreferenceScopeImpl( userScopeType, userScopeKey, entireApplicationScope );
-    public static final PreferenceScopeImpl allUsersComponentScope = new PreferenceScopeImpl( allUsersScopeType, allUsersScopeKey, componentScope );
-    public static final PreferenceScopeImpl allUsersEntireApplicationScope = new PreferenceScopeImpl( allUsersScopeType, allUsersScopeKey, entireApplicationScope );
+    public static final PreferenceScopeImpl userComponentScope = new PreferenceScopeImpl(userScopeType,
+                                                                                         userScopeKey,
+                                                                                         componentScope);
+    public static final PreferenceScopeImpl userEntireApplicationScope = new PreferenceScopeImpl(userScopeType,
+                                                                                                 userScopeKey,
+                                                                                                 entireApplicationScope);
+    public static final PreferenceScopeImpl allUsersComponentScope = new PreferenceScopeImpl(allUsersScopeType,
+                                                                                             allUsersScopeKey,
+                                                                                             componentScope);
+    public static final PreferenceScopeImpl allUsersEntireApplicationScope = new PreferenceScopeImpl(allUsersScopeType,
+                                                                                                     allUsersScopeKey,
+                                                                                                     entireApplicationScope);
 
-    public static final List<PreferenceScope> defaultOrder = Arrays.asList(userComponentScope, userEntireApplicationScope, allUsersComponentScope, allUsersEntireApplicationScope );
+    public static final List<PreferenceScope> defaultOrder = Arrays.asList(userComponentScope,
+                                                                           userEntireApplicationScope,
+                                                                           allUsersComponentScope,
+                                                                           allUsersEntireApplicationScope);
 }

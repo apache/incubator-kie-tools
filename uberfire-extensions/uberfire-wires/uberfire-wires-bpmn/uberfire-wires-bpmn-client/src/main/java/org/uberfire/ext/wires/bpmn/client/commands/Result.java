@@ -31,5 +31,4 @@ public interface Result {
      * @return
      */
     String getMessage();
-
 }

@@ -32,32 +32,35 @@ public class FileSystemSyncTest {
 
     @Test
     public void testFileSystemToCheckProxyIssuesWithExtraInterfaces() {
-        final FileSystem mockedFS = mock( FileSystem.class );
-        final FileSystem mockedFSId = mock( FileSystem.class, withSettings().extraInterfaces( FileSystemId.class ) );
+        final FileSystem mockedFS = mock(FileSystem.class);
+        final FileSystem mockedFSId = mock(FileSystem.class,
+                                           withSettings().extraInterfaces(FileSystemId.class));
 
-        final Path rootPath = mock( Path.class );
+        final Path rootPath = mock(Path.class);
 
-        when( mockedFS.getRootDirectories() ).thenReturn( Arrays.asList( rootPath ) );
-        when( mockedFSId.getRootDirectories() ).thenReturn( Arrays.asList( rootPath ) );
+        when(mockedFS.getRootDirectories()).thenReturn(Arrays.asList(rootPath));
+        when(mockedFSId.getRootDirectories()).thenReturn(Arrays.asList(rootPath));
 
-        when( rootPath.getFileSystem() ).thenReturn( mockedFSId );
-        when( rootPath.toUri() ).thenReturn( URI.create( "jgit://myrepo" ) );
+        when(rootPath.getFileSystem()).thenReturn(mockedFSId);
+        when(rootPath.toUri()).thenReturn(URI.create("jgit://myrepo"));
 
-        when( ( (FileSystemId) mockedFSId ).id() ).thenReturn( "my-fsid" );
+        when(((FileSystemId) mockedFSId).id()).thenReturn("my-fsid");
 
         {
-            final FileSystemSyncLock<String> fileSystemSyncLock = new FileSystemSyncLock<String>( "serviceId", mockedFS );
+            final FileSystemSyncLock<String> fileSystemSyncLock = new FileSystemSyncLock<String>("serviceId",
+                                                                                                 mockedFS);
             final Map<String, String> content = fileSystemSyncLock.buildContent();
 
-            assertEquals( "my-fsid", content.get( "fs_id" ) );
+            assertEquals("my-fsid",
+                         content.get("fs_id"));
         }
         {
-            final FileSystemSyncNonLock<String> fileSystemSyncNonLock = new FileSystemSyncNonLock<String>( "serviceId", mockedFS );
+            final FileSystemSyncNonLock<String> fileSystemSyncNonLock = new FileSystemSyncNonLock<String>("serviceId",
+                                                                                                          mockedFS);
             final Map<String, String> content = fileSystemSyncNonLock.buildContent();
 
-            assertEquals( "my-fsid", content.get( "fs_id" ) );
+            assertEquals("my-fsid",
+                         content.get("fs_id"));
         }
-
     }
-
 }

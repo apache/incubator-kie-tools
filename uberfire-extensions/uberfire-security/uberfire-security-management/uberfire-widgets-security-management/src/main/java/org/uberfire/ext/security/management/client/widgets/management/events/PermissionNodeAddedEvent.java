@@ -28,7 +28,9 @@ public class PermissionNodeAddedEvent extends ContextualEvent implements UberFir
     private PermissionNode childNode;
     private PermissionNode parentNode;
 
-    public PermissionNodeAddedEvent(ACLEditor aclEditor, PermissionNode parentNode, PermissionNode childNode) {
+    public PermissionNodeAddedEvent(ACLEditor aclEditor,
+                                    PermissionNode parentNode,
+                                    PermissionNode childNode) {
         super(aclEditor);
         this.parentNode = parentNode;
         this.childNode = childNode;

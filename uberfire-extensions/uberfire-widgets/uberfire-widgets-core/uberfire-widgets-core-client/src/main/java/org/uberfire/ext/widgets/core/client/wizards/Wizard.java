@@ -41,13 +41,13 @@ public interface Wizard {
      * @param pageNumber The index of of the page
      * @return
      */
-    Widget getPageWidget( int pageNumber );
+    Widget getPageWidget(int pageNumber);
 
     /**
      * A page has been selected from the UI
      * @param pageNumber
      */
-    void pageSelected( final int pageNumber );
+    void pageSelected(final int pageNumber);
 
     /**
      * Provide a title
@@ -74,7 +74,7 @@ public interface Wizard {
      * Password as necessary.
      * @param callback True if the page is complete
      */
-    void isComplete( Callback<Boolean> callback );
+    void isComplete(Callback<Boolean> callback);
 
     /**
      * The Wizard has been completed
@@ -85,5 +85,4 @@ public interface Wizard {
      * The Wizard has been closed
      */
     void close();
-
 }

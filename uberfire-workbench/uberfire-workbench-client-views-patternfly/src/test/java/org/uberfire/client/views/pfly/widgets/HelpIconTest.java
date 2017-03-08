@@ -43,21 +43,22 @@ public class HelpIconTest {
 
     @Before
     public void setUp() {
-        this.helpIcon = new HelpIcon( icon, panel, popover );
+        this.helpIcon = new HelpIcon(icon,
+                                     panel,
+                                     popover);
     }
 
     @Test
     public void setHelpContent() {
-        helpIcon.setHelpContent( "testContent" );
+        helpIcon.setHelpContent("testContent");
 
-        verify( popover ).setContent( "testContent" );
+        verify(popover).setContent("testContent");
     }
 
     @Test
     public void setHelpTitle() {
-        helpIcon.setHelpTitle( "testTitle" );
+        helpIcon.setHelpTitle("testTitle");
 
-        verify( popover ).setTitle( "testTitle" );
+        verify(popover).setTitle("testTitle");
     }
-
 }

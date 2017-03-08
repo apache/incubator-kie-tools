@@ -16,6 +16,17 @@
 
 package org.uberfire.backend.server.plugins;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,13 +40,6 @@ import org.uberfire.java.nio.file.DirectoryStream;
 import org.uberfire.java.nio.file.Files;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.Paths;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import java.net.URI;
-import java.util.*;
 
 @Service
 @ApplicationScoped
@@ -53,12 +57,14 @@ public class RuntimePluginServiceImpl implements RuntimePluginService {
 
     @Override
     public Collection<String> listFrameworksContent() {
-        return directoryContent("frameworks", "*.js");
+        return directoryContent("frameworks",
+                                "*.js");
     }
 
     @Override
     public Collection<String> listPluginsContent() {
-        return directoryContent("plugins", "*.js");
+        return directoryContent("plugins",
+                                "*.js");
     }
 
     @Override
@@ -72,7 +78,7 @@ public class RuntimePluginServiceImpl implements RuntimePluginService {
         String realPath = PluginUtils.getRealPath("plugins");
         if (realPath == null) {
             LOGGER.info("Not fetching template content for " + url + " because getRealPath() is"
-                    + " returning null. (This app is probably deployed in an unexploded .war)");
+                                + " returning null. (This app is probably deployed in an unexploded .war)");
             return "";
         }
         final Path template;
@@ -97,7 +103,7 @@ public class RuntimePluginServiceImpl implements RuntimePluginService {
         String realPath = PluginUtils.getRealPath(directory);
         if (realPath == null) {
             LOGGER.info("Not listing directory content for " + directory + "/" + glob +
-                    " because getRealPath() is returning null. (This app is probably deployed in an unexploded .war)");
+                                " because getRealPath() is returning null. (This app is probably deployed in an unexploded .war)");
             return Collections.emptyList();
         }
         final Collection<String> result = new ArrayList<String>();
@@ -105,7 +111,8 @@ public class RuntimePluginServiceImpl implements RuntimePluginService {
         final Path pluginsRootPath = Paths.get(URI.create("file://" + realPath));
 
         if (Files.isDirectory(pluginsRootPath)) {
-            final DirectoryStream<Path> stream = Files.newDirectoryStream(pluginsRootPath, glob);
+            final DirectoryStream<Path> stream = Files.newDirectoryStream(pluginsRootPath,
+                                                                          glob);
 
             for (final Path activeJS : stream) {
                 result.add(new String(Files.readAllBytes(activeJS)));
@@ -122,7 +129,6 @@ public class RuntimePluginServiceImpl implements RuntimePluginService {
 
             return runtimePlugin.
                     map(p -> p.getPluginContent()).orElse("");
-
         }
         return "";
     }
@@ -135,5 +141,4 @@ public class RuntimePluginServiceImpl implements RuntimePluginService {
 
         return runtimePlugins;
     }
-
 }

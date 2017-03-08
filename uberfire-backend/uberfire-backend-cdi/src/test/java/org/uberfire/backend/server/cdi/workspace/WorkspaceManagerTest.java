@@ -26,7 +26,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.cdi.workspace.Workspace;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WorkspaceManagerTest {
@@ -38,56 +38,71 @@ public class WorkspaceManagerTest {
 
     @Before
     public void setUp() {
-        when( preferences.getCacheExpirationTime() ).thenReturn( 10 );
-        when( preferences.getCacheExpirationUnit() ).thenReturn( "MINUTES" );
-        when( preferences.getCacheMaximumSize() ).thenReturn( 3 );
+        when(preferences.getCacheExpirationTime()).thenReturn(10);
+        when(preferences.getCacheExpirationUnit()).thenReturn("MINUTES");
+        when(preferences.getCacheMaximumSize()).thenReturn(3);
 
-        this.workspaceManager = new WorkspaceManager( preferences );
+        this.workspaceManager = new WorkspaceManager(preferences);
         this.workspaceManager.initialize();
     }
 
     @Test(expected = NoSuchElementException.class)
     public void testWorkspaceNotFound() {
-        this.workspaceManager.getWorkspace( "none" );
+        this.workspaceManager.getWorkspace("none");
     }
 
     @Test
     public void testCreateWorkspace() {
-        final Workspace workspace = this.workspaceManager.getOrCreateWorkspace( "hendrix" );
-        assertEquals( "hendrix", workspace.getName() );
+        final Workspace workspace = this.workspaceManager.getOrCreateWorkspace("hendrix");
+        assertEquals("hendrix",
+                     workspace.getName());
     }
 
     @Test
     public void testWorkspaceCount() {
-        this.workspaceManager.getOrCreateWorkspace( "hendrix" );
-        assertEquals( 1, this.workspaceManager.getWorkspaceCount() );
+        this.workspaceManager.getOrCreateWorkspace("hendrix");
+        assertEquals(1,
+                     this.workspaceManager.getWorkspaceCount());
     }
 
     @Test
     public void testDeleteWorkspace() {
-        final Workspace workspace = this.workspaceManager.getOrCreateWorkspace( "hendrix" );
-        assertEquals( 1, this.workspaceManager.getWorkspaceCount() );
-        this.workspaceManager.delete( workspace );
-        assertEquals( 0, this.workspaceManager.getWorkspaceCount() );
+        final Workspace workspace = this.workspaceManager.getOrCreateWorkspace("hendrix");
+        assertEquals(1,
+                     this.workspaceManager.getWorkspaceCount());
+        this.workspaceManager.delete(workspace);
+        assertEquals(0,
+                     this.workspaceManager.getWorkspaceCount());
     }
 
     @Test
     public void testStoreBeansWithCacheSizeEviction() {
-        final Workspace workspace = this.workspaceManager.getOrCreateWorkspace( "hendrix" );
+        final Workspace workspace = this.workspaceManager.getOrCreateWorkspace("hendrix");
 
-        this.workspaceManager.putBean( workspace, "a", new Object() );
-        this.workspaceManager.putBean( workspace, "b", new Object() );
-        this.workspaceManager.putBean( workspace, "c", new Object() );
-        this.workspaceManager.putBean( workspace, "d", new Object() );
-        this.workspaceManager.putBean( workspace, "e", new Object() );
+        this.workspaceManager.putBean(workspace,
+                                      "a",
+                                      new Object());
+        this.workspaceManager.putBean(workspace,
+                                      "b",
+                                      new Object());
+        this.workspaceManager.putBean(workspace,
+                                      "c",
+                                      new Object());
+        this.workspaceManager.putBean(workspace,
+                                      "d",
+                                      new Object());
+        this.workspaceManager.putBean(workspace,
+                                      "e",
+                                      new Object());
 
-        assertEquals( 3, this.workspaceManager.getBeansCount( workspace ) );
+        assertEquals(3,
+                     this.workspaceManager.getBeansCount(workspace));
     }
 
     @Test
     public void testGetBeanDoesNotExists() {
-        final Workspace workspace = this.workspaceManager.getOrCreateWorkspace( "hendrix" );
-        assertNull( this.workspaceManager.getBean( workspace, "a" ) );
+        final Workspace workspace = this.workspaceManager.getOrCreateWorkspace("hendrix");
+        assertNull(this.workspaceManager.getBean(workspace,
+                                                 "a"));
     }
-
 }

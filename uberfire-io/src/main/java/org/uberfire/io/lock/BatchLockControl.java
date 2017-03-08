@@ -22,9 +22,9 @@ import org.uberfire.java.nio.file.FileSystem;
 
 public class BatchLockControl {
 
-    private ReentrantLock lock = new ReentrantLock( true );
+    private ReentrantLock lock = new ReentrantLock(true);
 
-    public void lock( final FileSystem... fileSystems ) {
+    public void lock(final FileSystem... fileSystems) {
         lock.lock();
     }
 

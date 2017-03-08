@@ -20,6 +20,5 @@ package org.uberfire.ext.wires.core.api.containers;
  */
 public interface RequiresContainerManager {
 
-    void setContainerManager( final ContainerManager containerManager );
-
+    void setContainerManager(final ContainerManager containerManager);
 }

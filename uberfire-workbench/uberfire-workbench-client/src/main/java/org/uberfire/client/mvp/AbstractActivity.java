@@ -15,9 +15,9 @@
  */
 package org.uberfire.client.mvp;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-
 import org.uberfire.mvp.PlaceRequest;
+
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Implementation of behaviour common to all activity types.
@@ -32,7 +32,7 @@ public abstract class AbstractActivity implements Activity {
 
     protected boolean open = false;
 
-    public AbstractActivity( final PlaceManager placeManager ) {
+    public AbstractActivity(final PlaceManager placeManager) {
         this.placeManager = placeManager;
     }
 
@@ -41,8 +41,9 @@ public abstract class AbstractActivity implements Activity {
      * override this one.
      */
     @Override
-    public void onStartup( PlaceRequest place ) {
-        this.place = checkNotNull( "place", place );
+    public void onStartup(PlaceRequest place) {
+        this.place = checkNotNull("place",
+                                  place);
     }
 
     /**
@@ -51,14 +52,14 @@ public abstract class AbstractActivity implements Activity {
      */
     @Override
     public void onOpen() {
-        if ( this.place == null ) {
-            throw new IllegalStateException( "Activity " + this + " has not been started" );
+        if (this.place == null) {
+            throw new IllegalStateException("Activity " + this + " has not been started");
         }
-        if ( open ) {
-            throw new IllegalStateException( "Activity " + this + " already open" );
+        if (open) {
+            throw new IllegalStateException("Activity " + this + " already open");
         }
         open = true;
-        placeManager.executeOnOpenCallback( this.place );
+        placeManager.executeOnOpenCallback(this.place);
     }
 
     /**
@@ -67,8 +68,8 @@ public abstract class AbstractActivity implements Activity {
      */
     @Override
     public void onClose() {
-        if ( !open ) {
-            throw new IllegalStateException( "Activity " + this + " not open" );
+        if (!open) {
+            throw new IllegalStateException("Activity " + this + " not open");
         }
         open = false;
     }
@@ -79,11 +80,11 @@ public abstract class AbstractActivity implements Activity {
      */
     @Override
     public void onShutdown() {
-        if ( this.place == null ) {
-            throw new IllegalStateException( "Activity " + this + " has not been started" );
+        if (this.place == null) {
+            throw new IllegalStateException("Activity " + this + " has not been started");
         }
-        if ( open ) {
-            throw new IllegalStateException( "Activity " + this + " is open" );
+        if (open) {
+            throw new IllegalStateException("Activity " + this + " is open");
         }
         this.place = null;
     }
@@ -95,7 +96,6 @@ public abstract class AbstractActivity implements Activity {
 
     @Override
     public String toString() {
-        return getClass().getName() + ( place == null ? " (not started)" : " for " + place );
+        return getClass().getName() + (place == null ? " (not started)" : " for " + place);
     }
-    
 }

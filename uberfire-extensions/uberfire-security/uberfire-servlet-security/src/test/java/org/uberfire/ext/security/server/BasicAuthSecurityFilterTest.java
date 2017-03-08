@@ -16,8 +16,6 @@
 
 package org.uberfire.ext.security.server;
 
-import java.util.Calendar;
-
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,25 +26,22 @@ import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.uberfire.ext.security.server.CacheHeadersFilter.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BasicAuthSecurityFilterTest {
 
     @Mock
     private HttpServletRequest request;
-    
+
     @Mock
     private HttpServletResponse response;
-    
+
     @Mock
     private FilterChain chain;
 
@@ -55,11 +50,12 @@ public class BasicAuthSecurityFilterTest {
 
     @Mock
     private HttpSession httpSession;
-    
+
     @Test
     public void testIndependentSessionInvalidated() throws Exception {
 
-        SessionProvider sessionProvider = new SessionProvider(httpSession, 1);
+        SessionProvider sessionProvider = new SessionProvider(httpSession,
+                                                              1);
 
         when(authenticationService.getUser()).thenReturn(new UserImpl("testUser"));
         when(request.getSession(anyBoolean())).then(new Answer<HttpSession>() {
@@ -71,9 +67,12 @@ public class BasicAuthSecurityFilterTest {
 
         final BasicAuthSecurityFilter filter = new BasicAuthSecurityFilter();
         filter.authenticationService = authenticationService;
-        filter.doFilter(request, response, chain);
+        filter.doFilter(request,
+                        response,
+                        chain);
 
-        verify(httpSession, times(1)).invalidate();
+        verify(httpSession,
+               times(1)).invalidate();
     }
 
     @Test
@@ -91,30 +90,38 @@ public class BasicAuthSecurityFilterTest {
 
         final BasicAuthSecurityFilter filter = new BasicAuthSecurityFilter();
         filter.authenticationService = authenticationService;
-        filter.doFilter(request, response, chain);
+        filter.doFilter(request,
+                        response,
+                        chain);
 
-        verify(httpSession, never()).invalidate();
+        verify(httpSession,
+               never()).invalidate();
     }
-    
+
     @Test
     public void testEmptyPassword() throws Exception {
-    	 
-    	 String username = "fakeUser";
-    	 String password = "";
-    	 
-    	 String authData = username + ":" + password;
-    	 String authEncoded = Base64.encodeBase64String(authData.getBytes());
-    	 
-         when(request.getHeader( "Authorization" )).thenReturn("Basic " + authEncoded);
 
-         final BasicAuthSecurityFilter filter = new BasicAuthSecurityFilter();
-         filter.authenticationService = authenticationService;
-         filter.doFilter(request, response, chain);
+        String username = "fakeUser";
+        String password = "";
 
-         verify(authenticationService, times(1)).login(username, password);
+        String authData = username + ":" + password;
+        String authEncoded = Base64.encodeBase64String(authData.getBytes());
+
+        when(request.getHeader("Authorization")).thenReturn("Basic " + authEncoded);
+
+        final BasicAuthSecurityFilter filter = new BasicAuthSecurityFilter();
+        filter.authenticationService = authenticationService;
+        filter.doFilter(request,
+                        response,
+                        chain);
+
+        verify(authenticationService,
+               times(1)).login(username,
+                               password);
     }
 
     private class SessionProvider {
+
         private int counter = 0;
         private HttpSession httpSession;
 
@@ -122,7 +129,8 @@ public class BasicAuthSecurityFilterTest {
             this.httpSession = httpSession;
         }
 
-        public SessionProvider(HttpSession httpSession, int counter) {
+        public SessionProvider(HttpSession httpSession,
+                               int counter) {
             this.httpSession = httpSession;
             this.counter = counter;
         }
@@ -135,5 +143,4 @@ public class BasicAuthSecurityFilterTest {
             return null;
         }
     }
-
 }

@@ -16,6 +16,10 @@
 
 package org.uberfire.ext.security.management.wildfly.cli;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jboss.errai.security.shared.api.Group;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,46 +31,45 @@ import org.uberfire.ext.security.management.api.UserSystemManager;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.wildfly.properties.WildflyGroupPropertiesManager;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * <p>Groups manager service provider implementation for JBoss Wildfly.</p>
  * <p>It wraps the Wildfly groups manager based on properties file, but instead of the need to specify the path for the properties files, its absolute path discovery is automatically handled by using to the administration API for the server.</p>
- * 
  * @since 0.8.0
  */
-public class WildflyGroupPropertiesCLIManager extends BaseWildflyCLIManager implements GroupManager, ContextualManager {
+public class WildflyGroupPropertiesCLIManager extends BaseWildflyCLIManager implements GroupManager,
+                                                                                       ContextualManager {
 
     private static final Logger LOG = LoggerFactory.getLogger(WildflyGroupPropertiesCLIManager.class);
     protected WildflyGroupPropertiesManager groupsPropertiesManager;
-    
+
     public WildflyGroupPropertiesCLIManager() {
-        this( new ConfigProperties( System.getProperties() ) );
+        this(new ConfigProperties(System.getProperties()));
     }
 
     public WildflyGroupPropertiesCLIManager(final Map<String, String> gitPrefs) {
-        this( new ConfigProperties( gitPrefs ) );
+        this(new ConfigProperties(gitPrefs));
     }
 
     public WildflyGroupPropertiesCLIManager(final ConfigProperties gitPrefs) {
-        loadConfig( gitPrefs );
+        loadConfig(gitPrefs);
     }
 
-    protected  String getGroupsPropertiesFilePath() throws Exception {
+    protected String getGroupsPropertiesFilePath() throws Exception {
         return super.getPropertiesFilePath("authorization");
     }
-    
-    private void init()  {
+
+    private void init() {
         try {
             final String groupsFilePath = getGroupsPropertiesFilePath();
             final Map<String, String> arguments = new HashMap<String, String>(2);
-            arguments.put("org.uberfire.ext.security.management.wildfly.properties.realm", realm);
-            arguments.put("org.uberfire.ext.security.management.wildfly.properties.groups-file-path", groupsFilePath);
+            arguments.put("org.uberfire.ext.security.management.wildfly.properties.realm",
+                          realm);
+            arguments.put("org.uberfire.ext.security.management.wildfly.properties.groups-file-path",
+                          groupsFilePath);
             this.groupsPropertiesManager = new WildflyGroupPropertiesManager(arguments);
         } catch (Exception e) {
-            LOG.error("Cannot find groups properties file using the configuration present in the server instance.", e);
+            LOG.error("Cannot find groups properties file using the configuration present in the server instance.",
+                      e);
         }
     }
 
@@ -112,8 +115,9 @@ public class WildflyGroupPropertiesCLIManager extends BaseWildflyCLIManager impl
     }
 
     @Override
-    public void assignUsers(String name, Collection<String> users) throws SecurityManagementException {
-        groupsPropertiesManager.assignUsers(name, users);
+    public void assignUsers(String name,
+                            Collection<String> users) throws SecurityManagementException {
+        groupsPropertiesManager.assignUsers(name,
+                                            users);
     }
-
 }

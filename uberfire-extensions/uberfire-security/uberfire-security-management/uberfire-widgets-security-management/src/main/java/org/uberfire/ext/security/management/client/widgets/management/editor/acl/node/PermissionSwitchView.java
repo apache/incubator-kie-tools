@@ -50,7 +50,9 @@ public class PermissionSwitchView extends Composite
     }
 
     @Override
-    public void init(String textOn, String textOff, boolean on) {
+    public void init(String textOn,
+                     String textOff,
+                     boolean on) {
         switchControl = new ToggleSwitch();
         switchControl.setAnimate(true);
         switchControl.setSize(SizeType.SMALL);
@@ -65,13 +67,15 @@ public class PermissionSwitchView extends Composite
 
     @Override
     public void showExceptionsCount(int n) {
-        badge.getStyle().setProperty("display", "table-cell");
+        badge.getStyle().setProperty("display",
+                                     "table-cell");
         badge.setTextContent(Integer.toString(n));
     }
 
     @Override
     public void hideExceptionsCount() {
-        badge.getStyle().setProperty("display", "none");
+        badge.getStyle().setProperty("display",
+                                     "none");
     }
 
     @Override

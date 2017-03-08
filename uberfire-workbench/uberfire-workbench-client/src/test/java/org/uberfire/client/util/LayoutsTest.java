@@ -15,15 +15,14 @@
  */
 package org.uberfire.client.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.workbench.model.PanelDefinition;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class LayoutsTest {
@@ -33,31 +32,31 @@ public class LayoutsTest {
 
     @Test
     public void widthOrDefault() {
-        when( panelDef.getWidthAsInt() ).thenReturn( 42  );
-        Integer width = Layouts.widthOrDefault( panelDef );
-        
-        assertEquals( 42,
-                      width.intValue() );
-        
-        when( panelDef.getWidthAsInt() ).thenReturn( -1 );
-        width = Layouts.widthOrDefault( panelDef );
-        
-        assertEquals( Layouts.DEFAULT_CHILD_SIZE,
-                      width.intValue() );
+        when(panelDef.getWidthAsInt()).thenReturn(42);
+        Integer width = Layouts.widthOrDefault(panelDef);
+
+        assertEquals(42,
+                     width.intValue());
+
+        when(panelDef.getWidthAsInt()).thenReturn(-1);
+        width = Layouts.widthOrDefault(panelDef);
+
+        assertEquals(Layouts.DEFAULT_CHILD_SIZE,
+                     width.intValue());
     }
-    
+
     @Test
     public void heightOrDefault() {
-        when( panelDef.getHeightAsInt() ).thenReturn( 42 );
-        Integer height = Layouts.heightOrDefault( panelDef );
-        
-        assertEquals( 42,
-                      height.intValue() );
-        
-        when( panelDef.getHeightAsInt() ).thenReturn( -1 );
-        height = Layouts.heightOrDefault( panelDef );
-        
-        assertEquals( Layouts.DEFAULT_CHILD_SIZE,
-                      height.intValue() );
+        when(panelDef.getHeightAsInt()).thenReturn(42);
+        Integer height = Layouts.heightOrDefault(panelDef);
+
+        assertEquals(42,
+                     height.intValue());
+
+        when(panelDef.getHeightAsInt()).thenReturn(-1);
+        height = Layouts.heightOrDefault(panelDef);
+
+        assertEquals(Layouts.DEFAULT_CHILD_SIZE,
+                     height.intValue());
     }
 }

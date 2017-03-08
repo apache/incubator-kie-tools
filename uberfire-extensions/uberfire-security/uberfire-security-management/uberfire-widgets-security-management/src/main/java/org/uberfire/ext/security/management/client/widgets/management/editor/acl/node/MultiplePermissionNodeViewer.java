@@ -32,42 +32,21 @@ import org.uberfire.security.client.authz.tree.PermissionNode;
 @Dependent
 public class MultiplePermissionNodeViewer extends BasePermissionNodeViewer {
 
-    public interface View extends UberView<MultiplePermissionNodeViewer> {
-
-        void setNodeName(String name);
-
-        void setNodeFullName(String name);
-
-        void addChildViewer(PermissionNodeViewer viewer);
-
-        void setPermissionsVisible(boolean enabled);
-
-        void addAllItemsGrantedPermission(String permission, String resource);
-
-        void addAllItemsDeniedPermission(String permission, String resource);
-
-        void addItemsGrantedPermission(String permission, String resource);
-
-        void addItemsDeniedPermission(String permission, String resource);
-
-        void addItemException(String item);
-    }
-
     View view;
     PermissionWidgetFactory widgetFactory;
     PermissionNode permissionNode;
     List<PermissionNode> overwriteList = new ArrayList<>();
     List<PermissionNodeViewer> childViewerList = new ArrayList<>();
-
     @Inject
-    public MultiplePermissionNodeViewer(View view, PermissionWidgetFactory widgetFactory) {
+    public MultiplePermissionNodeViewer(View view,
+                                        PermissionWidgetFactory widgetFactory) {
         this.view = view;
         this.widgetFactory = widgetFactory;
     }
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
@@ -116,8 +95,7 @@ public class MultiplePermissionNodeViewer extends BasePermissionNodeViewer {
             List<Permission> implied = permissionNode.impliesName(child);
             if (hasResources() && !implied.isEmpty()) {
                 overwriteList.add(child);
-            }
-            else {
+            } else {
                 registerChild(child);
             }
         }
@@ -125,7 +103,7 @@ public class MultiplePermissionNodeViewer extends BasePermissionNodeViewer {
 
     protected void registerChild(PermissionNode child) {
         PermissionNodeViewer nodeViewer = widgetFactory.createViewer(child);
-        nodeViewer.setTreeLevel(getTreeLevel()+1);
+        nodeViewer.setTreeLevel(getTreeLevel() + 1);
         childViewerList.add(nodeViewer);
         view.addChildViewer(nodeViewer);
         nodeViewer.show(child);
@@ -160,21 +138,22 @@ public class MultiplePermissionNodeViewer extends BasePermissionNodeViewer {
 
                     if (AuthorizationResult.ACCESS_GRANTED.equals(permission.getResult())) {
                         // Can read all "items"
-                        view.addAllItemsGrantedPermission(permissionGrantName, resourceName);
-                    }
-                    else {
+                        view.addAllItemsGrantedPermission(permissionGrantName,
+                                                          resourceName);
+                    } else {
                         // Can't read any "items"
-                        view.addAllItemsDeniedPermission(permissionGrantName, resourceName);
+                        view.addAllItemsDeniedPermission(permissionGrantName,
+                                                         resourceName);
                     }
-                }
-                else {
+                } else {
                     if (AuthorizationResult.ACCESS_GRANTED.equals(permission.getResult())) {
                         // Can read all "items" but: a, b, ...
-                        view.addItemsGrantedPermission(permissionGrantName, resourceName);
-                    }
-                    else {
+                        view.addItemsGrantedPermission(permissionGrantName,
+                                                       resourceName);
+                    } else {
                         // Can only read the following "items": a, b, ...
-                        view.addItemsDeniedPermission(permissionGrantName, resourceName);
+                        view.addItemsDeniedPermission(permissionGrantName,
+                                                      resourceName);
                     }
                     // The items added as exceptions
                     for (PermissionNode overwrite : overwrites) {
@@ -184,5 +163,30 @@ public class MultiplePermissionNodeViewer extends BasePermissionNodeViewer {
                 }
             }
         }
+    }
+
+    public interface View extends UberView<MultiplePermissionNodeViewer> {
+
+        void setNodeName(String name);
+
+        void setNodeFullName(String name);
+
+        void addChildViewer(PermissionNodeViewer viewer);
+
+        void setPermissionsVisible(boolean enabled);
+
+        void addAllItemsGrantedPermission(String permission,
+                                          String resource);
+
+        void addAllItemsDeniedPermission(String permission,
+                                         String resource);
+
+        void addItemsGrantedPermission(String permission,
+                                       String resource);
+
+        void addItemsDeniedPermission(String permission,
+                                      String resource);
+
+        void addItemException(String item);
     }
 }

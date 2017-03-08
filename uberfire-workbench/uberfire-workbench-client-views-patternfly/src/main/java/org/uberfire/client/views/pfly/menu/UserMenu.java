@@ -36,31 +36,26 @@ import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
  * Provides the menu that appears in the top right corner of the screen. Shows the current user's name.
  */
 @Dependent
-public class UserMenu implements MenuFactory.CustomMenuBuilder, HasMenus {
-
-    public interface UserMenuView extends HasMenuItems {
-
-        void setUserName( String userName );
-
-    }
+public class UserMenu implements MenuFactory.CustomMenuBuilder,
+                                 HasMenus {
 
     @Inject
     private UserMenuView userMenuView;
-
     @Inject
     private User user;
-
     @Inject
     private AuthorizationManager authzManager;
 
     @PostConstruct
     protected void setup() {
-        userMenuView.setUserName( formattedUsername() );
+        userMenuView.setUserName(formattedUsername());
     }
 
     @Override
-    public void addMenus( final Menus menus ) {
-        menus.accept( new AuthFilterMenuVisitor( authzManager, user, new DropdownMenuVisitor( userMenuView ) ) );
+    public void addMenus(final Menus menus) {
+        menus.accept(new AuthFilterMenuVisitor(authzManager,
+                                               user,
+                                               new DropdownMenuVisitor(userMenuView)));
     }
 
     /**
@@ -68,17 +63,17 @@ public class UserMenu implements MenuFactory.CustomMenuBuilder, HasMenus {
      */
     private String formattedUsername() {
         final StringBuilder sb = new StringBuilder();
-        if ( user.getProperty( StandardUserProperties.FIRST_NAME ) != null ) {
-            sb.append( user.getProperty( StandardUserProperties.FIRST_NAME ) );
+        if (user.getProperty(StandardUserProperties.FIRST_NAME) != null) {
+            sb.append(user.getProperty(StandardUserProperties.FIRST_NAME));
         }
-        if ( user.getProperty( StandardUserProperties.LAST_NAME ) != null ) {
-            if( sb.length() > 0 ) {
-                sb.append( " " );
+        if (user.getProperty(StandardUserProperties.LAST_NAME) != null) {
+            if (sb.length() > 0) {
+                sb.append(" ");
             }
-            sb.append( user.getProperty( StandardUserProperties.LAST_NAME ) );
+            sb.append(user.getProperty(StandardUserProperties.LAST_NAME));
         }
-        if ( sb.length() == 0 ) {
-            sb.append( user.getIdentifier() );
+        if (sb.length() == 0) {
+            sb.append(user.getIdentifier());
         }
         return sb.toString();
     }
@@ -88,7 +83,7 @@ public class UserMenu implements MenuFactory.CustomMenuBuilder, HasMenus {
     }
 
     @Override
-    public void push( MenuFactory.CustomMenuBuilder element ) {
+    public void push(MenuFactory.CustomMenuBuilder element) {
 
     }
 
@@ -108,4 +103,8 @@ public class UserMenu implements MenuFactory.CustomMenuBuilder, HasMenus {
         };
     }
 
+    public interface UserMenuView extends HasMenuItems {
+
+        void setUserName(String userName);
+    }
 }

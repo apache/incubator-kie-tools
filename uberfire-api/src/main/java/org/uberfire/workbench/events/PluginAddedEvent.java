@@ -25,5 +25,4 @@ public class PluginAddedEvent extends PluginEvent {
     public PluginAddedEvent(@MapsTo("name") String name) {
         super(name);
     }
-    
 }

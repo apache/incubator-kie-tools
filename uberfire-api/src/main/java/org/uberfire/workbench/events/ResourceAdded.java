@@ -25,7 +25,7 @@ public class ResourceAdded implements UberFireEvent,
 
     private String message;
 
-    public ResourceAdded( @MapsTo("message") final String message ) {
+    public ResourceAdded(@MapsTo("message") final String message) {
         this.message = message;
     }
 

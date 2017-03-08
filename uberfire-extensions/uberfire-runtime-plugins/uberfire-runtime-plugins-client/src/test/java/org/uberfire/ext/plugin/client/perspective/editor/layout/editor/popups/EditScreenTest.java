@@ -39,7 +39,7 @@ import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-@WithClassesToStub({ Text.class })
+@WithClassesToStub({Text.class})
 public class EditScreenTest {
 
     private EditScreenFake editScreen;
@@ -52,22 +52,23 @@ public class EditScreenTest {
 
     @Before
     public void setup() {
-        GwtMockito.useProviderForType( SimpleEventBus.class, new FakeProvider() {
-            @Override
-            public Object getFake( Class aClass ) {
-                return simpleEventBus;
-            }
-        } );
+        GwtMockito.useProviderForType(SimpleEventBus.class,
+                                      new FakeProvider() {
+                                          @Override
+                                          public Object getFake(Class aClass) {
+                                              return simpleEventBus;
+                                          }
+                                      });
 
-        ctx = mock( ModalConfigurationContext.class );
-        editScreen = spy( new EditScreenFake( ctx ) );
+        ctx = mock(ModalConfigurationContext.class);
+        editScreen = spy(new EditScreenFake(ctx));
 
-        when( editScreen.addHiddenHandler( Mockito.any( ModalHiddenHandler.class ) ) ).thenAnswer( new Answer() {
-            public Object answer( InvocationOnMock aInvocation ) throws Throwable {
-                modalHiddenHandler = (ModalHiddenHandler) aInvocation.getArguments()[ 0 ];
+        when(editScreen.addHiddenHandler(Mockito.any(ModalHiddenHandler.class))).thenAnswer(new Answer() {
+            public Object answer(InvocationOnMock aInvocation) throws Throwable {
+                modalHiddenHandler = (ModalHiddenHandler) aInvocation.getArguments()[0];
                 return null;
             }
-        } );
+        });
 
         editScreen.realAddHiddenHandler();
     }
@@ -75,37 +76,51 @@ public class EditScreenTest {
     @Test
     public void okButtonClickHandlerTest() {
         editScreen.okButton();
-        verify( editScreen ).hide();
+        verify(editScreen).hide();
 
-        modalHiddenHandler.onHidden( new ModalHiddenEvent( editScreen, new Event() {
-        } ) );
-        verify( editScreen.getConfigContext(), never() ).configurationCancelled();
-        verify( editScreen.getConfigContext() ).configurationFinished();
+        modalHiddenHandler.onHidden(new ModalHiddenEvent(editScreen,
+                                                         new Event() {
+                                                         }));
+        verify(editScreen.getConfigContext(),
+               never()).configurationCancelled();
+        verify(editScreen.getConfigContext()).configurationFinished();
     }
 
     @Test
     public void cancelButtonClickHandlerTest() {
         editScreen.cancelButton();
-        verify( editScreen ).hide();
+        verify(editScreen).hide();
 
-        modalHiddenHandler.onHidden( new ModalHiddenEvent( editScreen, new Event() {
-        } ) );
-        verify( editScreen.getConfigContext() ).configurationCancelled();
-        verify( editScreen.getConfigContext(), never() ).configurationFinished();
+        modalHiddenHandler.onHidden(new ModalHiddenEvent(editScreen,
+                                                         new Event() {
+                                                         }));
+        verify(editScreen.getConfigContext()).configurationCancelled();
+        verify(editScreen.getConfigContext(),
+               never()).configurationFinished();
     }
 
     @Test
     public void closeButtonClickHandlerTest() {
-        modalHiddenHandler.onHidden( new ModalHiddenEvent( editScreen, new Event() {
-        } ) );
-        verify( editScreen.getConfigContext() ).configurationCancelled();
-        verify( editScreen.getConfigContext(), never() ).configurationFinished();
+        modalHiddenHandler.onHidden(new ModalHiddenEvent(editScreen,
+                                                         new Event() {
+                                                         }));
+        verify(editScreen.getConfigContext()).configurationCancelled();
+        verify(editScreen.getConfigContext(),
+               never()).configurationFinished();
+    }
+
+    private List<String> getScreensId() {
+        List<String> availableWorkbenchScreensIds = new ArrayList<String>();
+        availableWorkbenchScreensIds.add("screen");
+
+        return availableWorkbenchScreensIds;
     }
 
     private class EditScreenFake extends EditScreen {
 
-        public EditScreenFake( ModalConfigurationContext ctx ) {
-            super( ctx, getScreensId() );
+        public EditScreenFake(ModalConfigurationContext ctx) {
+            super(ctx,
+                  getScreensId());
         }
 
         public void realAddHiddenHandler() {
@@ -115,12 +130,5 @@ public class EditScreenTest {
         @Override
         public void addHiddenHandler() {
         }
-    }
-
-    private List<String> getScreensId() {
-        List<String> availableWorkbenchScreensIds = new ArrayList<String>();
-        availableWorkbenchScreensIds.add( "screen" );
-
-        return availableWorkbenchScreensIds;
     }
 }

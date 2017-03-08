@@ -27,57 +27,55 @@ public class RowSelectionStrategy extends BaseCellSelectionStrategy {
     public static CellSelectionStrategy INSTANCE = new RowSelectionStrategy();
 
     @Override
-    public boolean handleSelection( final GridData model,
-                                    final int uiRowIndex,
-                                    final int uiColumnIndex,
-                                    final boolean isShiftKeyDown,
-                                    final boolean isControlKeyDown ) {
+    public boolean handleSelection(final GridData model,
+                                   final int uiRowIndex,
+                                   final int uiColumnIndex,
+                                   final boolean isShiftKeyDown,
+                                   final boolean isControlKeyDown) {
         //Remember origin which is required if we're selecting a range with the shift-key pressed
         final GridData.SelectedCell selectedCellsOrigin = model.getSelectedCellsOrigin();
-        final List<GridData.SelectedCell> originalSelections = new ArrayList<GridData.SelectedCell>( model.getSelectedCells() );
+        final List<GridData.SelectedCell> originalSelections = new ArrayList<GridData.SelectedCell>(model.getSelectedCells());
 
         //If the Control Key is pressed add additional cells to the selection
-        if ( !isControlKeyDown ) {
+        if (!isControlKeyDown) {
             model.clearSelections();
         }
 
-        if ( isShiftKeyDown ) {
-            if ( selectedCellsOrigin == null ) {
-                selectRow( model,
-                           uiRowIndex );
+        if (isShiftKeyDown) {
+            if (selectedCellsOrigin == null) {
+                selectRow(model,
+                          uiRowIndex);
             } else {
-                model.selectCell( selectedCellsOrigin.getRowIndex(),
-                                  selectedCellsOrigin.getColumnIndex() );
+                model.selectCell(selectedCellsOrigin.getRowIndex(),
+                                 selectedCellsOrigin.getColumnIndex());
                 final int uiOriginRowIndex = selectedCellsOrigin.getRowIndex();
-                selectRows( model,
-                            ( uiRowIndex > uiOriginRowIndex ? uiOriginRowIndex : uiRowIndex ),
-                            Math.abs( uiRowIndex - uiOriginRowIndex ) + 1 );
+                selectRows(model,
+                           (uiRowIndex > uiOriginRowIndex ? uiOriginRowIndex : uiRowIndex),
+                           Math.abs(uiRowIndex - uiOriginRowIndex) + 1);
             }
-
         } else {
-            selectRow( model,
-                       uiRowIndex );
+            selectRow(model,
+                      uiRowIndex);
         }
 
-        return hasSelectionChanged( model.getSelectedCells(),
-                                    originalSelections );
+        return hasSelectionChanged(model.getSelectedCells(),
+                                   originalSelections);
     }
 
-    private void selectRow( final GridData model,
-                            final int uiRowIndex ) {
-        model.selectCells( uiRowIndex,
-                           0,
-                           model.getColumnCount(),
-                           1 );
+    private void selectRow(final GridData model,
+                           final int uiRowIndex) {
+        model.selectCells(uiRowIndex,
+                          0,
+                          model.getColumnCount(),
+                          1);
     }
 
-    private void selectRows( final GridData model,
-                             final int uiRowIndex,
-                             final int height ) {
-        model.selectCells( uiRowIndex,
-                           0,
-                           model.getColumnCount(),
-                           height );
+    private void selectRows(final GridData model,
+                            final int uiRowIndex,
+                            final int height) {
+        model.selectCells(uiRowIndex,
+                          0,
+                          model.getColumnCount(),
+                          height);
     }
-
 }

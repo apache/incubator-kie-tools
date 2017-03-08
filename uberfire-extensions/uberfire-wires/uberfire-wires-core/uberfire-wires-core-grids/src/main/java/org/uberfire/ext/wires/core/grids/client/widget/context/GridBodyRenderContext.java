@@ -40,18 +40,18 @@ public class GridBodyRenderContext {
     private final GridRenderer renderer;
     private final SelectionsTransformer transformer;
 
-    public GridBodyRenderContext( final double absoluteGridX,
-                                  final double absoluteGridY,
-                                  final double absoluteColumnOffsetX,
-                                  final double clipMinY,
-                                  final double clipMinX,
-                                  final int minVisibleRowIndex,
-                                  final int maxVisibleRowIndex,
-                                  final List<GridColumn<?>> blockColumns,
-                                  final boolean isSelectionLayer,
-                                  final Transform transform,
-                                  final GridRenderer renderer,
-                                  final SelectionsTransformer transformer ) {
+    public GridBodyRenderContext(final double absoluteGridX,
+                                 final double absoluteGridY,
+                                 final double absoluteColumnOffsetX,
+                                 final double clipMinY,
+                                 final double clipMinX,
+                                 final int minVisibleRowIndex,
+                                 final int maxVisibleRowIndex,
+                                 final List<GridColumn<?>> blockColumns,
+                                 final boolean isSelectionLayer,
+                                 final Transform transform,
+                                 final GridRenderer renderer,
+                                 final SelectionsTransformer transformer) {
         this.absoluteGridX = absoluteGridX;
         this.absoluteGridY = absoluteGridY;
         this.absoluteColumnOffsetX = absoluteColumnOffsetX;
@@ -163,5 +163,4 @@ public class GridBodyRenderContext {
     public SelectionsTransformer getTransformer() {
         return transformer;
     }
-
 }

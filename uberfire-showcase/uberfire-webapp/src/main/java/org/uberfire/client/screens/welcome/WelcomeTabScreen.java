@@ -32,5 +32,4 @@ public class WelcomeTabScreen extends Composite {
     public String getTitle() {
         return "Welcome Tab 2";
     }
-
 }

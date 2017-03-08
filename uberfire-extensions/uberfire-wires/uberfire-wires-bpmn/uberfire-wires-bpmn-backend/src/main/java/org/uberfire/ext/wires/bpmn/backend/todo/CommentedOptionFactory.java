@@ -26,17 +26,16 @@ import org.uberfire.rpc.SessionInfo;
  */
 public class CommentedOptionFactory {
 
-    public static CommentedOption makeCommentedOption( final User identity,
-                                                       final SessionInfo sessionInfo,
-                                                       final String commitMessage ) {
+    public static CommentedOption makeCommentedOption(final User identity,
+                                                      final SessionInfo sessionInfo,
+                                                      final String commitMessage) {
         final String name = identity.getIdentifier();
         final Date when = new Date();
-        final CommentedOption co = new CommentedOption( sessionInfo.getId(),
-                                                        name,
-                                                        null,
-                                                        commitMessage,
-                                                        when );
+        final CommentedOption co = new CommentedOption(sessionInfo.getId(),
+                                                       name,
+                                                       null,
+                                                       commitMessage,
+                                                       when);
         return co;
     }
-
 }

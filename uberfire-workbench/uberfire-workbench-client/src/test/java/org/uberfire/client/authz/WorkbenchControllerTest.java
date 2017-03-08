@@ -60,7 +60,9 @@ public class WorkbenchControllerTest {
                 .granted(onGranted)
                 .denied(onDenied);
 
-        verify(authorizationManager).authorize(perspectiveActivity, PerspectiveAction.UPDATE, user);
+        verify(authorizationManager).authorize(perspectiveActivity,
+                                               PerspectiveAction.UPDATE,
+                                               user);
     }
 
     @Test
@@ -69,6 +71,8 @@ public class WorkbenchControllerTest {
                 .granted(onGranted)
                 .denied(onDenied);
 
-        verify(authorizationManager).authorize(perspectiveActivity, PerspectiveAction.DELETE, user);
+        verify(authorizationManager).authorize(perspectiveActivity,
+                                               PerspectiveAction.DELETE,
+                                               user);
     }
 }

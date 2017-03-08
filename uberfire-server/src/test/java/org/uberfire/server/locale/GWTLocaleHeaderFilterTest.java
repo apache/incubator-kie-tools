@@ -40,17 +40,21 @@ public class GWTLocaleHeaderFilterTest {
 
         final Writer sw = new StringWriter();
 
-        final HttpServletRequest req = mock( HttpServletRequest.class );
-        final HttpServletResponse resp = mock( HttpServletResponse.class );
-        final FilterChain chain = mock( FilterChain.class );
+        final HttpServletRequest req = mock(HttpServletRequest.class);
+        final HttpServletResponse resp = mock(HttpServletResponse.class);
+        final FilterChain chain = mock(FilterChain.class);
 
-        when( req.getLocale() ).thenReturn( Locale.US );
+        when(req.getLocale()).thenReturn(Locale.US);
 
-        when( resp.getWriter() ).thenReturn( new PrintWriter( sw ) );
+        when(resp.getWriter()).thenReturn(new PrintWriter(sw));
 
-        localeHeaderFilter.doFilter( req, resp, chain );
+        localeHeaderFilter.doFilter(req,
+                                    resp,
+                                    chain);
 
-        assertEquals( new Scanner( getClass().getResourceAsStream( "/expected-sample.html" ), "UTF-8" ).useDelimiter( "\\A" ).next(), sw.toString() );
+        assertEquals(new Scanner(getClass().getResourceAsStream("/expected-sample.html"),
+                                 "UTF-8").useDelimiter("\\A").next(),
+                     sw.toString());
     }
 
     @Test
@@ -59,17 +63,21 @@ public class GWTLocaleHeaderFilterTest {
 
         final Writer sw = new StringWriter();
 
-        final HttpServletRequest req = mock( HttpServletRequest.class );
-        final HttpServletResponse resp = mock( HttpServletResponse.class );
-        final FilterChain chain = mock( FilterChain.class );
+        final HttpServletRequest req = mock(HttpServletRequest.class);
+        final HttpServletResponse resp = mock(HttpServletResponse.class);
+        final FilterChain chain = mock(FilterChain.class);
 
-        when( req.getParameter( "locale" ) ).thenReturn( "ja" );
+        when(req.getParameter("locale")).thenReturn("ja");
 
-        when( resp.getWriter() ).thenReturn( new PrintWriter( sw ) );
+        when(resp.getWriter()).thenReturn(new PrintWriter(sw));
 
-        localeHeaderFilter.doFilter( req, resp, chain );
+        localeHeaderFilter.doFilter(req,
+                                    resp,
+                                    chain);
 
-        assertEquals( new Scanner( getClass().getResourceAsStream( "/expected-2-sample.html" ), "UTF-8" ).useDelimiter( "\\A" ).next(), sw.toString() );
+        assertEquals(new Scanner(getClass().getResourceAsStream("/expected-2-sample.html"),
+                                 "UTF-8").useDelimiter("\\A").next(),
+                     sw.toString());
     }
 
     @Test
@@ -78,17 +86,21 @@ public class GWTLocaleHeaderFilterTest {
 
         final Writer sw = new StringWriter();
 
-        final HttpServletRequest req = mock( HttpServletRequest.class );
-        final HttpServletResponse resp = mock( HttpServletResponse.class );
-        final FilterChain chain = mock( FilterChain.class );
+        final HttpServletRequest req = mock(HttpServletRequest.class);
+        final HttpServletResponse resp = mock(HttpServletResponse.class);
+        final FilterChain chain = mock(FilterChain.class);
 
-        when( req.getParameter( "locale" ) ).thenReturn( "ja_JP" );
+        when(req.getParameter("locale")).thenReturn("ja_JP");
 
-        when( resp.getWriter() ).thenReturn( new PrintWriter( sw ) );
+        when(resp.getWriter()).thenReturn(new PrintWriter(sw));
 
-        localeHeaderFilter.doFilter( req, resp, chain );
+        localeHeaderFilter.doFilter(req,
+                                    resp,
+                                    chain);
 
-        assertEquals( new Scanner( getClass().getResourceAsStream( "/expected-3-sample.html" ), "UTF-8" ).useDelimiter( "\\A" ).next(), sw.toString() );
+        assertEquals(new Scanner(getClass().getResourceAsStream("/expected-3-sample.html"),
+                                 "UTF-8").useDelimiter("\\A").next(),
+                     sw.toString());
     }
 
     @Test
@@ -97,28 +109,33 @@ public class GWTLocaleHeaderFilterTest {
 
         final Writer sw = new StringWriter();
 
-        final HttpServletRequest req = mock( HttpServletRequest.class );
-        final HttpServletResponse resp = mock( HttpServletResponse.class );
-        final FilterChain chain = mock( FilterChain.class );
+        final HttpServletRequest req = mock(HttpServletRequest.class);
+        final HttpServletResponse resp = mock(HttpServletResponse.class);
+        final FilterChain chain = mock(FilterChain.class);
 
-        when( req.getParameter( "locale" ) ).thenReturn( "xxx_xxx" );
-        when( req.getLocale() ).thenReturn( Locale.US );
+        when(req.getParameter("locale")).thenReturn("xxx_xxx");
+        when(req.getLocale()).thenReturn(Locale.US);
 
-        when( resp.getWriter() ).thenReturn( new PrintWriter( sw ) );
+        when(resp.getWriter()).thenReturn(new PrintWriter(sw));
 
-        localeHeaderFilter.doFilter( req, resp, chain );
+        localeHeaderFilter.doFilter(req,
+                                    resp,
+                                    chain);
 
-        assertEquals( new Scanner( getClass().getResourceAsStream( "/expected-4-sample.html" ), "UTF-8" ).useDelimiter( "\\A" ).next(), sw.toString() );
+        assertEquals(new Scanner(getClass().getResourceAsStream("/expected-4-sample.html"),
+                                 "UTF-8").useDelimiter("\\A").next(),
+                     sw.toString());
     }
 
     private GWTLocaleHeaderFilter getFilter() {
         return new GWTLocaleHeaderFilter() {
-            protected CharResponseWrapper getWrapper( final HttpServletResponse response ) {
-                final CharResponseWrapper wrapper = new CharResponseWrapper( response );
-                final String text = new Scanner( getClass().getResourceAsStream( "/sample.html" ), "UTF-8" ).useDelimiter( "\\A" ).next();
+            protected CharResponseWrapper getWrapper(final HttpServletResponse response) {
+                final CharResponseWrapper wrapper = new CharResponseWrapper(response);
+                final String text = new Scanner(getClass().getResourceAsStream("/sample.html"),
+                                                "UTF-8").useDelimiter("\\A").next();
                 try {
-                    wrapper.getOutputStream().write( text.getBytes() );
-                } catch ( final IOException ignored ) {
+                    wrapper.getOutputStream().write(text.getBytes());
+                } catch (final IOException ignored) {
                 }
                 return wrapper;
             }

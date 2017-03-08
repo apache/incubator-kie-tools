@@ -28,8 +28,6 @@ import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 import org.uberfire.client.workbench.panels.impl.TemplatedWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
-import org.uberfire.client.workbench.pmgr.nswe.part.WorkbenchPartPresenterDefault;
-import org.uberfire.client.workbench.pmgr.unanchored.part.UnanchoredWorkbenchPartPresenter;
 import org.uberfire.client.workbench.widgets.dnd.CompassDropController;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.PartDefinition;
@@ -46,54 +44,53 @@ public class DefaultBeanFactory
     protected SyncBeanManager iocManager;
 
     @Override
-    public WorkbenchPartPresenter newWorkbenchPart( final Menus menus,
-                                                    final String title,
-                                                    final IsWidget titleDecoration,
-                                                    final PartDefinition definition,
-                                                    final Class<? extends WorkbenchPartPresenter> partType ) {
-        final WorkbenchPartPresenter part = iocManager.lookupBean( partType ).getInstance();
+    public WorkbenchPartPresenter newWorkbenchPart(final Menus menus,
+                                                   final String title,
+                                                   final IsWidget titleDecoration,
+                                                   final PartDefinition definition,
+                                                   final Class<? extends WorkbenchPartPresenter> partType) {
+        final WorkbenchPartPresenter part = iocManager.lookupBean(partType).getInstance();
 
-        part.setTitle( title );
-        part.setMenus( menus );
-        part.setTitleDecoration( titleDecoration );
-        part.setDefinition( definition );
+        part.setTitle(title);
+        part.setMenus(menus);
+        part.setTitleDecoration(titleDecoration);
+        part.setDefinition(definition);
 
         return part;
     }
 
     @Override
-    public WorkbenchPanelPresenter newRootPanel( PerspectiveActivity activity,
-                                                 PanelDefinition root ) {
-        WorkbenchPanelPresenter panel = newWorkbenchPanel( root );
-        if ( panel instanceof TemplatedWorkbenchPanelPresenter ) {
-            ( (TemplatedWorkbenchPanelPresenter) panel ).setActivity( (TemplatedActivity) activity );
+    public WorkbenchPanelPresenter newRootPanel(PerspectiveActivity activity,
+                                                PanelDefinition root) {
+        WorkbenchPanelPresenter panel = newWorkbenchPanel(root);
+        if (panel instanceof TemplatedWorkbenchPanelPresenter) {
+            ((TemplatedWorkbenchPanelPresenter) panel).setActivity((TemplatedActivity) activity);
         }
         return panel;
     }
 
     @Override
-    public WorkbenchPanelPresenter newWorkbenchPanel( final PanelDefinition definition ) {
-        Collection<SyncBeanDef<WorkbenchPanelPresenter>> beans = iocManager.lookupBeans( WorkbenchPanelPresenter.class );
-        for ( SyncBeanDef<WorkbenchPanelPresenter> bean : beans ) {
-            if ( bean.getBeanClass().getName().equals( definition.getPanelType() ) ) {
+    public WorkbenchPanelPresenter newWorkbenchPanel(final PanelDefinition definition) {
+        Collection<SyncBeanDef<WorkbenchPanelPresenter>> beans = iocManager.lookupBeans(WorkbenchPanelPresenter.class);
+        for (SyncBeanDef<WorkbenchPanelPresenter> bean : beans) {
+            if (bean.getBeanClass().getName().equals(definition.getPanelType())) {
                 final WorkbenchPanelPresenter panel = bean.getInstance();
-                panel.setDefinition( definition );
+                panel.setDefinition(definition);
                 return panel;
             }
         }
-        throw new IllegalArgumentException( "Unknown panel type: " + definition.getPanelType() );
+        throw new IllegalArgumentException("Unknown panel type: " + definition.getPanelType());
     }
 
     @Override
-    public CompassDropController newDropController( final WorkbenchPanelView<?> view ) {
-        final CompassDropController dropController = iocManager.lookupBean( CompassDropController.class ).getInstance();
-        dropController.setup( view );
+    public CompassDropController newDropController(final WorkbenchPanelView<?> view) {
+        final CompassDropController dropController = iocManager.lookupBean(CompassDropController.class).getInstance();
+        dropController.setup(view);
         return dropController;
     }
 
     @Override
-    public void destroy( final Object o ) {
-        iocManager.destroyBean( o );
+    public void destroy(final Object o) {
+        iocManager.destroyBean(o);
     }
-
 }

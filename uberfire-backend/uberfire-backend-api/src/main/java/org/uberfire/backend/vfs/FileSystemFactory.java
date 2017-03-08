@@ -24,8 +24,8 @@ import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-import static org.uberfire.backend.vfs.PathFactory.*;
+import static org.uberfire.backend.vfs.PathFactory.newPath;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  *
@@ -36,30 +36,34 @@ public final class FileSystemFactory {
 
     }
 
-    public static FileSystem newFS( final Map<String, String> roots,
-                                    final Set<String> supportedViews ) {
-        return new FileSystemImpl( roots, supportedViews );
+    public static FileSystem newFS(final Map<String, String> roots,
+                                   final Set<String> supportedViews) {
+        return new FileSystemImpl(roots,
+                                  supportedViews);
     }
 
     @Portable
     public static class FileSystemImpl implements FileSystem {
 
-        private List<Path>  rootDirectories = null;
-        private Set<String> supportedViews  = null;
+        private List<Path> rootDirectories = null;
+        private Set<String> supportedViews = null;
 
         public FileSystemImpl() {
         }
 
-        public FileSystemImpl( final Map<String, String> roots,
-                               final Set<String> supportedViews ) {
-            checkNotNull( "roots", roots );
+        public FileSystemImpl(final Map<String, String> roots,
+                              final Set<String> supportedViews) {
+            checkNotNull("roots",
+                         roots);
 
-            this.rootDirectories = new ArrayList<Path>( roots.size() );
+            this.rootDirectories = new ArrayList<Path>(roots.size());
 
-            for ( final Map.Entry<String, String> entry : roots.entrySet() ) {
-                this.rootDirectories.add( newPath( entry.getValue(), entry.getKey() ) );
+            for (final Map.Entry<String, String> entry : roots.entrySet()) {
+                this.rootDirectories.add(newPath(entry.getValue(),
+                                                 entry.getKey()));
             }
-            this.supportedViews = new HashSet<String>( checkNotNull( "supportedViews", supportedViews ) );
+            this.supportedViews = new HashSet<String>(checkNotNull("supportedViews",
+                                                                   supportedViews));
         }
 
         @Override
@@ -75,13 +79,12 @@ public final class FileSystemFactory {
         @Override
         public String toString() {
             final StringBuilder sb = new StringBuilder();
-            if ( rootDirectories != null ) {
-                for ( final Path rootDirectory : rootDirectories ) {
-                    sb.append( rootDirectory.toString() );
+            if (rootDirectories != null) {
+                for (final Path rootDirectory : rootDirectories) {
+                    sb.append(rootDirectory.toString());
                 }
             }
             return sb.toString();
         }
     }
-
 }

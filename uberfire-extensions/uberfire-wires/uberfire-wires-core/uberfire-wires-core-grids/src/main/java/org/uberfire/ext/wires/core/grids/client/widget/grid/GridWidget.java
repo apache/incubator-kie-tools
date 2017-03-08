@@ -49,7 +49,7 @@ public interface GridWidget extends IPrimitive<Group>,
      * Returns the Rendered used to render the Widget.
      * @param renderer
      */
-    void setRenderer( final GridRenderer renderer );
+    void setRenderer(final GridRenderer renderer);
 
     /**
      * Returns helper for rendering the Widget.
@@ -106,10 +106,10 @@ public interface GridWidget extends IPrimitive<Group>,
      * @param cellHeight Height of the containing cell.
      * @return true if the cell coordinate is on the hot-spot.
      */
-    boolean onGroupingToggle( final double cellX,
-                              final double cellY,
-                              final double cellWidth,
-                              final double cellHeight );
+    boolean onGroupingToggle(final double cellX,
+                             final double cellY,
+                             final double cellWidth,
+                             final double cellHeight);
 
     /**
      * Checks whether a canvas coordinate is within the "drag handle" for the GridWidget.
@@ -119,8 +119,7 @@ public interface GridWidget extends IPrimitive<Group>,
      * @return true if the event is within the drag handle.
      */
     @SuppressWarnings("unused")
-    default boolean onDragHandle( final INodeXYEvent event ) {
+    default boolean onDragHandle(final INodeXYEvent event) {
         return false;
     }
-
 }

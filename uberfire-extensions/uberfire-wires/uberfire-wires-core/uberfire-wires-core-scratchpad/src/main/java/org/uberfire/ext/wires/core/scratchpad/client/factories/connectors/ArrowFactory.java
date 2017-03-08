@@ -52,30 +52,30 @@ public class ArrowFactory extends AbstractBaseFactory<Arrow> {
     }
 
     @Override
-    public WiresBaseShape getShape( final FactoryHelper helper ) {
-        return new WiresArrow( makeShape() );
+    public WiresBaseShape getShape(final FactoryHelper helper) {
+        return new WiresArrow(makeShape());
     }
 
     @Override
-    public boolean builds( final WiresBaseShape shapeType ) {
+    public boolean builds(final WiresBaseShape shapeType) {
         return shapeType instanceof WiresArrow;
     }
 
     @Override
     protected Arrow makeShape() {
-        final Arrow arrow = new Arrow( new Point2D( 0 - ( SHAPE_SIZE_X / 2 ),
-                                                    0 - ( SHAPE_SIZE_Y / 2 ) ),
-                                       new Point2D( SHAPE_SIZE_X / 2,
-                                                    SHAPE_SIZE_Y / 2 ),
-                                       BASE_WIDTH,
-                                       HEAD_WIDTH,
-                                       ARROW_ANGLE,
-                                       BASE_ANGLE,
-                                       ArrowType.AT_END );
-        arrow.setStrokeColor( ShapesUtils.RGB_STROKE_SHAPE )
-                .setStrokeWidth( 1 )
-                .setFillColor( "#ffff00" )
-                .setDraggable( false );
+        final Arrow arrow = new Arrow(new Point2D(0 - (SHAPE_SIZE_X / 2),
+                                                  0 - (SHAPE_SIZE_Y / 2)),
+                                      new Point2D(SHAPE_SIZE_X / 2,
+                                                  SHAPE_SIZE_Y / 2),
+                                      BASE_WIDTH,
+                                      HEAD_WIDTH,
+                                      ARROW_ANGLE,
+                                      BASE_ANGLE,
+                                      ArrowType.AT_END);
+        arrow.setStrokeColor(ShapesUtils.RGB_STROKE_SHAPE)
+                .setStrokeWidth(1)
+                .setFillColor("#ffff00")
+                .setDraggable(false);
         return arrow;
     }
 

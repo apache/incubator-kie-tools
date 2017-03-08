@@ -29,31 +29,31 @@ public abstract class AbstractBaseTest {
 
     @After
     public void cleanup() throws java.io.IOException {
-        for ( final File file : cleanupList ) {
-            FileUtils.deleteDirectory( file );
+        for (final File file : cleanupList) {
+            FileUtils.deleteDirectory(file);
         }
     }
 
     protected Path newTempDir() {
-        return newTempDir( null );
+        return newTempDir(null);
     }
 
-    protected Path newTempDir( final Path parent ) {
+    protected Path newTempDir(final Path parent) {
         final Path dir;
-        if ( parent == null ) {
-            dir = Files.createTempDirectory( "temp" );
+        if (parent == null) {
+            dir = Files.createTempDirectory("temp");
         } else {
-            dir = Files.createTempDirectory( parent, "temp" );
+            dir = Files.createTempDirectory(parent,
+                                            "temp");
         }
 
-        cleanupList.add( dir.toFile() );
+        cleanupList.add(dir.toFile());
         return dir;
     }
 
     protected Path newDirToClean() {
-        final Path dir = Paths.get( "temp" + System.currentTimeMillis() );
-        cleanupList.add( dir.toFile() );
+        final Path dir = Paths.get("temp" + System.currentTimeMillis());
+        cleanupList.add(dir.toFile());
         return dir;
     }
-
 }

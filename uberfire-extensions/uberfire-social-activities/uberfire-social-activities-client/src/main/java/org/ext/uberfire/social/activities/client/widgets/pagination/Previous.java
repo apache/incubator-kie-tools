@@ -14,11 +14,11 @@
 */
 package org.ext.uberfire.social.activities.client.widgets.pagination;
 
+import org.ext.uberfire.social.activities.client.resources.i18n.Constants;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.ListItem;
 import org.gwtbootstrap3.client.ui.html.Span;
 import org.gwtbootstrap3.client.ui.html.Text;
-import org.ext.uberfire.social.activities.client.resources.i18n.Constants;
 
 /**
  * PatternFly pager previous link style
@@ -30,17 +30,17 @@ public class Previous extends ListItem {
     private final Span previousIcon = new Span();
 
     public Previous() {
-        add( previousAnchor );
-        previousIcon.addStyleName( "i" );
-        previousIcon.addStyleName( "fa" );
-        previousIcon.addStyleName( "fa-angle-left" );
+        add(previousAnchor);
+        previousIcon.addStyleName("i");
+        previousIcon.addStyleName("fa");
+        previousIcon.addStyleName("fa-angle-left");
         setText(Constants.INSTANCE.Previous());
-        addStyleName( "previous" );
+        addStyleName("previous");
     }
 
-    public void setText( final String text ) {
+    public void setText(final String text) {
         previousAnchor.clear();
-        previousAnchor.add( previousIcon );
-        previousAnchor.add( new Text( text ) );
+        previousAnchor.add(previousIcon);
+        previousAnchor.add(new Text(text));
     }
 }

@@ -43,7 +43,10 @@ import org.uberfire.security.client.authz.tree.impl.PermissionLeafNode;
 import org.uberfire.security.client.authz.tree.impl.PermissionResourceNode;
 import org.uberfire.workbench.model.ActivityResourceType;
 
-import static org.uberfire.client.authz.PerspectiveAction.*;
+import static org.uberfire.client.authz.PerspectiveAction.CREATE;
+import static org.uberfire.client.authz.PerspectiveAction.DELETE;
+import static org.uberfire.client.authz.PerspectiveAction.READ;
+import static org.uberfire.client.authz.PerspectiveAction.UPDATE;
 
 @ApplicationScoped
 public class PerspectiveTreeProvider implements PermissionTreeProvider {
@@ -55,14 +58,16 @@ public class PerspectiveTreeProvider implements PermissionTreeProvider {
     private String resourceName = null;
     private String rootNodeName = null;
     private int rootNodePosition = 0;
-    private Map<String,String> perspectiveNameMap = new HashMap<>();
+    private Map<String, String> perspectiveNameMap = new HashMap<>();
     private Set<String> perspectiveIdsExcluded = new HashSet<>();
 
     public PerspectiveTreeProvider() {
     }
 
     @Inject
-    public PerspectiveTreeProvider(SyncBeanManager iocManager, PermissionManager permissionManager, PermissionTreeI18n i18n) {
+    public PerspectiveTreeProvider(SyncBeanManager iocManager,
+                                   PermissionManager permissionManager,
+                                   PermissionTreeI18n i18n) {
         this.iocManager = iocManager;
         this.permissionManager = permissionManager;
         this.i18n = i18n;
@@ -112,7 +117,8 @@ public class PerspectiveTreeProvider implements PermissionTreeProvider {
 
     @Override
     public PermissionNode buildRootNode() {
-        PermissionResourceNode rootNode = new PermissionResourceNode(resourceName, this);
+        PermissionResourceNode rootNode = new PermissionResourceNode(resourceName,
+                                                                     this);
         rootNode.setNodeName(rootNodeName);
         rootNode.setNodeFullName(i18n.perspectivesNodeHelp());
         rootNode.setPositionInTree(rootNodePosition);
@@ -122,29 +128,42 @@ public class PerspectiveTreeProvider implements PermissionTreeProvider {
         Permission deletePermission = newPermission(DELETE);
         Permission createPermission = newPermission(CREATE);
 
-        rootNode.addPermission(readPermission, i18n.perspectiveRead());
-        rootNode.addPermission(updatePermission, i18n.perspectiveUpdate());
-        rootNode.addPermission(deletePermission, i18n.perspectiveDelete());
-        rootNode.addPermission(createPermission, i18n.perspectiveCreate());
+        rootNode.addPermission(readPermission,
+                               i18n.perspectiveRead());
+        rootNode.addPermission(updatePermission,
+                               i18n.perspectiveUpdate());
+        rootNode.addPermission(deletePermission,
+                               i18n.perspectiveDelete());
+        rootNode.addPermission(createPermission,
+                               i18n.perspectiveCreate());
 
-        rootNode.addDependencies(readPermission, updatePermission, deletePermission);
+        rootNode.addDependencies(readPermission,
+                                 updatePermission,
+                                 deletePermission);
 
         return rootNode;
     }
 
     @Override
-    public void loadChildren(PermissionNode parent, LoadOptions options, LoadCallback callback) {
+    public void loadChildren(PermissionNode parent,
+                             LoadOptions options,
+                             LoadCallback callback) {
         if (parent.getNodeName().equals(rootNodeName)) {
             callback.afterLoad(buildPerspectiveNodes(options));
         }
     }
 
     private Permission newPermission(ResourceAction action) {
-        return permissionManager.createPermission(ActivityResourceType.PERSPECTIVE, action, true);
+        return permissionManager.createPermission(ActivityResourceType.PERSPECTIVE,
+                                                  action,
+                                                  true);
     }
 
-    private Permission newPermission(Resource resource, ResourceAction action) {
-        return permissionManager.createPermission(resource, action, true);
+    private Permission newPermission(Resource resource,
+                                     ResourceAction action) {
+        return permissionManager.createPermission(resource,
+                                                  action,
+                                                  true);
     }
 
     private List<PermissionNode> buildPerspectiveNodes(LoadOptions options) {
@@ -152,13 +171,15 @@ public class PerspectiveTreeProvider implements PermissionTreeProvider {
         List<PermissionNode> nodes = new ArrayList<>();
         for (SyncBeanDef<PerspectiveActivity> beanDef : iocManager.lookupBeans(PerspectiveActivity.class)) {
             PerspectiveActivity p = beanDef.getInstance();
-            if (match(p, options)) {
+            if (match(p,
+                      options)) {
                 nodes.add(toPerspectiveNode(p));
             }
         }
 
         int max = options.getMaxNodes();
-        return max > 0 && max < nodes.size() ? nodes.subList(0, max) : nodes;
+        return max > 0 && max < nodes.size() ? nodes.subList(0,
+                                                             max) : nodes;
     }
 
     private PermissionNode toPerspectiveNode(PerspectiveActivity p) {
@@ -168,16 +189,24 @@ public class PerspectiveTreeProvider implements PermissionTreeProvider {
         PermissionLeafNode node = new PermissionLeafNode();
         node.setNodeName(name);
 
-        Permission readPermission = newPermission(p, READ);
-        node.addPermission(readPermission, i18n.perspectiveRead());
+        Permission readPermission = newPermission(p,
+                                                  READ);
+        node.addPermission(readPermission,
+                           i18n.perspectiveRead());
 
         // Only runtime created perspectives can be modified
         if (!(p instanceof AbstractWorkbenchPerspectiveActivity)) {
-            Permission updatePermission = newPermission(p, UPDATE);
-            Permission deletePermission = newPermission(p, DELETE);
-            node.addPermission(updatePermission, i18n.perspectiveUpdate());
-            node.addPermission(deletePermission, i18n.perspectiveDelete());
-            node.addDependencies(readPermission, updatePermission, deletePermission);
+            Permission updatePermission = newPermission(p,
+                                                        UPDATE);
+            Permission deletePermission = newPermission(p,
+                                                        DELETE);
+            node.addPermission(updatePermission,
+                               i18n.perspectiveUpdate());
+            node.addPermission(deletePermission,
+                               i18n.perspectiveDelete());
+            node.addDependencies(readPermission,
+                                 updatePermission,
+                                 deletePermission);
         }
         return node;
     }
@@ -187,14 +216,17 @@ public class PerspectiveTreeProvider implements PermissionTreeProvider {
             return perspectiveNameMap.get(perspectiveId);
         }
         int lastDot = perspectiveId.lastIndexOf(".");
-        return lastDot != -1 ? perspectiveId.substring(lastDot+1) : perspectiveId;
+        return lastDot != -1 ? perspectiveId.substring(lastDot + 1) : perspectiveId;
     }
 
-    public void setPerspectiveName(String perspectiveId, String name) {
-        perspectiveNameMap.put(perspectiveId, name);
+    public void setPerspectiveName(String perspectiveId,
+                                   String name) {
+        perspectiveNameMap.put(perspectiveId,
+                               name);
     }
 
-    private boolean match(Resource r, LoadOptions options) {
+    private boolean match(Resource r,
+                          LoadOptions options) {
         String namePattern = options.getNodeNamePattern();
         Collection<String> includedIds = options.getResourceIds();
 

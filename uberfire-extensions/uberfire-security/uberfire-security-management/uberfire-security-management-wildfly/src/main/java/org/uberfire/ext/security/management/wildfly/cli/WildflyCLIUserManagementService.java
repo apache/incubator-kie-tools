@@ -16,18 +16,17 @@
 
 package org.uberfire.ext.security.management.wildfly.cli;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.uberfire.ext.security.management.UberfireRoleManager;
 import org.uberfire.ext.security.management.api.GroupManager;
 import org.uberfire.ext.security.management.api.UserManager;
 import org.uberfire.ext.security.management.service.AbstractUserManagementService;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 /**
  * <p>The Wildfly/EAP management service beans for the CLI approach.</p>
- * 
  * @since 0.8.0
  */
 @Dependent
@@ -39,13 +38,13 @@ public class WildflyCLIUserManagementService extends AbstractUserManagementServi
 
     @Inject
     public WildflyCLIUserManagementService(final WildflyUserPropertiesCLIManager userManager,
-                                        final WildflyGroupPropertiesCLIManager groupManager,
-                                        final UberfireRoleManager roleManager) {
+                                           final WildflyGroupPropertiesCLIManager groupManager,
+                                           final UberfireRoleManager roleManager) {
         super(roleManager);
         this.userManager = userManager;
         this.groupManager = groupManager;
     }
-    
+
     @Override
     public UserManager users() {
         return userManager;
@@ -55,5 +54,4 @@ public class WildflyCLIUserManagementService extends AbstractUserManagementServi
     public GroupManager groups() {
         return groupManager;
     }
-
 }

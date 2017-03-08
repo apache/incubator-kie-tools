@@ -16,30 +16,17 @@
 
 package org.uberfire.ext.security.management.client.widgets.popup;
 
-import org.uberfire.mvp.Command;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.uberfire.mvp.Command;
+
 /**
  * <p>A confirmation box presenter.</p>
- *
  * @since 0.8.0
  */
 @Dependent
 public class ConfirmBox {
-
-    public interface View {
-
-        void show(final String title, final String message, final org.uberfire.mvp.Command yesCommand,
-                         final org.uberfire.mvp.Command noCommand, final org.uberfire.mvp.Command cancelCommand);
-
-        void show(final String title, final String message, final org.uberfire.mvp.Command yesCommand,
-                  final org.uberfire.mvp.Command noCommand);
-
-        void show(final String title, final String message, final org.uberfire.mvp.Command yesCommand);
-
-    }
 
     View view;
 
@@ -48,17 +35,51 @@ public class ConfirmBox {
         this.view = view;
     }
 
-    public void show(final String title, final String message, final org.uberfire.mvp.Command yesCommand) {
-        view.show(title, message, yesCommand);
+    public void show(final String title,
+                     final String message,
+                     final org.uberfire.mvp.Command yesCommand) {
+        view.show(title,
+                  message,
+                  yesCommand);
     }
 
-    public void show(final String title, final String message, final org.uberfire.mvp.Command yesCommand, Command noCancelCommand) {
-        view.show(title, message, yesCommand, noCancelCommand);
+    public void show(final String title,
+                     final String message,
+                     final org.uberfire.mvp.Command yesCommand,
+                     Command noCancelCommand) {
+        view.show(title,
+                  message,
+                  yesCommand,
+                  noCancelCommand);
     }
-    
-    public void show(final String title, final String message, final org.uberfire.mvp.Command yesCommand,
-              final org.uberfire.mvp.Command noCommand, final org.uberfire.mvp.Command cancelCommand) {
-        view.show(title, message, yesCommand, noCommand, cancelCommand);
-        
+
+    public void show(final String title,
+                     final String message,
+                     final org.uberfire.mvp.Command yesCommand,
+                     final org.uberfire.mvp.Command noCommand,
+                     final org.uberfire.mvp.Command cancelCommand) {
+        view.show(title,
+                  message,
+                  yesCommand,
+                  noCommand,
+                  cancelCommand);
+    }
+
+    public interface View {
+
+        void show(final String title,
+                  final String message,
+                  final org.uberfire.mvp.Command yesCommand,
+                  final org.uberfire.mvp.Command noCommand,
+                  final org.uberfire.mvp.Command cancelCommand);
+
+        void show(final String title,
+                  final String message,
+                  final org.uberfire.mvp.Command yesCommand,
+                  final org.uberfire.mvp.Command noCommand);
+
+        void show(final String title,
+                  final String message,
+                  final org.uberfire.mvp.Command yesCommand);
     }
 }

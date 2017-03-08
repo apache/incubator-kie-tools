@@ -19,20 +19,20 @@ import com.google.gwt.user.client.ui.Image;
 
 public class ComparableImageResource implements Comparable<ComparableImageResource> {
 
-    private final String        format;
+    private final String format;
     private final Image imageResource;
 
     public ComparableImageResource(String format,
-                           Image imageResource) {
+                                   Image imageResource) {
         this.format = format;
         this.imageResource = imageResource;
     }
 
     public String getImageHTML() {
-    	return this.imageResource.toString();
+        return this.imageResource.toString();
     }
-    
+
     public int compareTo(ComparableImageResource o) {
-        return format.compareTo( o.format );
+        return format.compareTo(o.format);
     }
 }

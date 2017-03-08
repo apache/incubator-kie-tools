@@ -29,17 +29,16 @@ public class IndexersFactory {
 
     private static final List<Indexer> indexers = new ArrayList<Indexer>();
 
-    public static void addIndexer( final Indexer indexer ) {
-        indexers.add( PortablePreconditions.checkNotNull( "indexer",
-                                                          indexer ) );
+    public static void addIndexer(final Indexer indexer) {
+        indexers.add(PortablePreconditions.checkNotNull("indexer",
+                                                        indexer));
     }
 
     public static List<Indexer> getIndexers() {
-        return Collections.unmodifiableList( indexers );
+        return Collections.unmodifiableList(indexers);
     }
 
     public static void clear() {
         indexers.clear();
     }
-
 }

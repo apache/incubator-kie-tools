@@ -40,18 +40,17 @@ public class BpmnPerspective {
     }
 
     private PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinitionImpl perspective = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        perspective.setName( BpmnEditorConstants.INSTANCE.bpmnPerspectiveTitle() );
+        final PerspectiveDefinitionImpl perspective = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        perspective.setName(BpmnEditorConstants.INSTANCE.bpmnPerspectiveTitle());
 
-        final PanelDefinition west = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
-        west.setWidth( 300 );
-        west.setMinWidth( 200 );
-        west.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "BPMN Explorer" ) ) );
+        final PanelDefinition west = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        west.setWidth(300);
+        west.setMinWidth(200);
+        west.addPart(new PartDefinitionImpl(new DefaultPlaceRequest("BPMN Explorer")));
 
-        perspective.getRoot().insertChild( CompassPosition.WEST,
-                                           west );
+        perspective.getRoot().insertChild(CompassPosition.WEST,
+                                          west);
 
         return perspective;
     }
-
 }

@@ -16,16 +16,16 @@
 
 package org.uberfire.client.workbench.panels.support;
 
-import com.google.gwt.user.client.ui.Widget;
-import org.uberfire.client.workbench.panels.impl.LayoutPanelView;
-import org.uberfire.commons.data.Pair;
-import org.uberfire.workbench.model.PartDefinition;
-
-import javax.enterprise.context.ApplicationScoped;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+
+import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.workbench.panels.impl.LayoutPanelView;
+import org.uberfire.commons.data.Pair;
+import org.uberfire.workbench.model.PartDefinition;
 
 /**
  * Manages part instances on behalf of {@link LayoutPanelView}.
@@ -42,26 +42,28 @@ public class PartManager {
     }
 
     public boolean hasActivePart() {
-        return activePart!=null;
+        return activePart != null;
     }
 
-    public void registerPart(PartDefinition partDef, Widget w)
-    {
-        if(widgets.containsKey(partDef))
-            throw new IllegalArgumentException("Part already registered: "+ partDef.getPlace().getIdentifier());
+    public void registerPart(PartDefinition partDef,
+                             Widget w) {
+        if (widgets.containsKey(partDef)) {
+            throw new IllegalArgumentException("Part already registered: " + partDef.getPlace().getIdentifier());
+        }
 
-        widgets.put(partDef, w);
+        widgets.put(partDef,
+                    w);
     }
 
-    public void removePart(PartDefinition partDef)
-    {
+    public void removePart(PartDefinition partDef) {
         /*
         TODO (hbraun): revisit panel managers with single parts
         if(partDef.equals(activePart.getK1()))
             throw new IllegalArgumentException("Cannot remove active part: "+ partDef.getPlace().getIdentifier());
             */
-        if(partDef.equals(activePart))
+        if (partDef.equals(activePart)) {
             activePart = null;
+        }
 
         widgets.remove(partDef);
     }
@@ -72,21 +74,21 @@ public class PartManager {
     }
 
     public Collection<PartDefinition> getParts() {
-        return Collections.unmodifiableSet( widgets.keySet() );
+        return Collections.unmodifiableSet(widgets.keySet());
     }
 
-    public boolean hasPart(PartDefinition partDef)
-    {
+    public boolean hasPart(PartDefinition partDef) {
         return widgets.containsKey(partDef);
     }
 
-    public Widget selectPart(PartDefinition partDef)
-    {
-        if(!hasPart(partDef))
-            throw new IllegalArgumentException("Unknown part: "+ partDef.getPlace().getIdentifier());
+    public Widget selectPart(PartDefinition partDef) {
+        if (!hasPart(partDef)) {
+            throw new IllegalArgumentException("Unknown part: " + partDef.getPlace().getIdentifier());
+        }
 
         final Widget w = widgets.get(partDef);
-        activePart = new Pair<PartDefinition, Widget>(partDef, w);
+        activePart = new Pair<PartDefinition, Widget>(partDef,
+                                                      w);
 
         return activePart.getK2();
     }

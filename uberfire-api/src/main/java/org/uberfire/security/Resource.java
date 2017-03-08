@@ -43,29 +43,26 @@ public interface Resource {
 
     /**
      * A list of dependent resources.
-     *
+     * <p>
      * <p>
      * The dependency list is used for instance to determine if a user can
      * access a given resource. Should the access to all its dependencies is
      * denied, it is denied for this instance as well.
      * </p>
-     *
      * @return A list of resources, never null.
      */
     default List<Resource> getDependencies() {
         return Collections.emptyList();
     }
-    
+
     /**
      * Check if this resource is of the provided type. The type name is used
      * here so this method can be used on instances from external (GWT-compiled)
      * scripts (enum equals and instanceof doesn't work across script boundaries).
-     * 
-     * @param typeName
-     *           the resource type's name
+     * @param typeName the resource type's name
      * @return true if the resource has the provided type, otherwise false.
      */
-    default boolean isType( String typeName ) {
-        return getResourceType().getName().equalsIgnoreCase( typeName );
+    default boolean isType(String typeName) {
+        return getResourceType().getName().equalsIgnoreCase(typeName);
     }
 }

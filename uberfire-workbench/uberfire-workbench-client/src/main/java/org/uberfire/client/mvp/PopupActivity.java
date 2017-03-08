@@ -29,5 +29,4 @@ public interface PopupActivity extends Activity {
     boolean onMayClose();
 
     WorkbenchPopupSize getSize();
-
 }

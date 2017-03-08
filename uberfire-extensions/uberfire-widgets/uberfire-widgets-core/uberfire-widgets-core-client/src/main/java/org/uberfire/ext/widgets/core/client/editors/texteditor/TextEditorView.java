@@ -19,8 +19,6 @@ package org.uberfire.ext.widgets.core.client.editors.texteditor;
 import javax.annotation.PostConstruct;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -29,7 +27,6 @@ import com.google.gwt.user.client.ui.ResizeLayoutPanel;
 import org.uberfire.ext.widgets.common.client.ace.AceEditor;
 import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
 import org.uberfire.ext.widgets.common.client.ace.AceEditorTheme;
-import org.uberfire.ext.widgets.common.client.common.ResizableTextArea;
 
 /**
  * A Text editor
@@ -39,32 +36,24 @@ public class TextEditorView extends Composite
         RequiresResize,
         TextEditorPresenter.View {
 
-    interface TextEditorViewBinder
-            extends
-            UiBinder<ResizeLayoutPanel, TextEditorView> {
-
-    }
-
-    private static TextEditorViewBinder uiBinder = GWT.create( TextEditorViewBinder.class );
-
+    private static TextEditorViewBinder uiBinder = GWT.create(TextEditorViewBinder.class);
     @UiField
     public AceEditor editor;
-
     private boolean isDirty = false;
 
     @PostConstruct
     public void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
         editor.startEditor();
-        editor.setTheme( AceEditorTheme.CHROME );
+        editor.setTheme(AceEditorTheme.CHROME);
     }
 
     @Override
-    public void setContent( final String content,
-                            final AceEditorMode mode) {
-        editor.setMode( mode);
-        editor.setText( content );
+    public void setContent(final String content,
+                           final AceEditorMode mode) {
+        editor.setMode(mode);
+        editor.setText(content);
         editor.redisplay();
     }
 
@@ -84,22 +73,27 @@ public class TextEditorView extends Composite
     }
 
     @Override
-    public void setReadOnly( final boolean isReadOnly ) {
-        editor.setReadOnly( isReadOnly );
+    public void setDirty(boolean dirty) {
+        isDirty = dirty;
     }
 
     @Override
-    public void setDirty( boolean dirty ) {
-        isDirty = dirty;
+    public void setReadOnly(final boolean isReadOnly) {
+        editor.setReadOnly(isReadOnly);
     }
 
     @Override
     public void onResize() {
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();
-        setPixelSize( width,
-                      height );
+        setPixelSize(width,
+                     height);
         editor.onResize();
     }
 
+    interface TextEditorViewBinder
+            extends
+            UiBinder<ResizeLayoutPanel, TextEditorView> {
+
+    }
 }

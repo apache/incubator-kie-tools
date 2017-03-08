@@ -23,10 +23,9 @@ import org.uberfire.ext.metadata.model.KCluster;
 
 public interface LuceneIndexFactory extends Disposable {
 
-    LuceneIndex newCluster( KCluster kcluster );
+    LuceneIndex newCluster(KCluster kcluster);
 
-    void remove( KCluster cluster );
+    void remove(KCluster cluster);
 
     Map<? extends KCluster, ? extends LuceneIndex> getIndexes();
-
 }

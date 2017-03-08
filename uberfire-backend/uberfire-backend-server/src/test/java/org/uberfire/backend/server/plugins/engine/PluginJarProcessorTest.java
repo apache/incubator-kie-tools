@@ -15,6 +15,13 @@
  */
 package org.uberfire.backend.server.plugins.engine;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,13 +33,6 @@ import org.uberfire.backend.server.plugins.processors.HTMLPluginProcessor;
 import org.uberfire.backend.server.plugins.processors.UFJSPluginProcessor;
 import org.uberfire.workbench.events.PluginReloadedEvent;
 
-import javax.enterprise.event.Event;
-import javax.enterprise.inject.Instance;
-import java.io.File;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -40,6 +40,7 @@ public class PluginJarProcessorTest extends AbstractPluginsTest {
 
     @Mock
     Instance<PluginProcessor> pluginProcessors;
+    PluginJarProcessor pluginJarProcessor;
     @Mock
     private Event<PluginReloadedEvent> pluginsReloadedEvent;
     @Mock
@@ -49,39 +50,44 @@ public class PluginJarProcessorTest extends AbstractPluginsTest {
     @Mock
     private UFJSPluginProcessor ufjsPluginProcessor;
 
-    PluginJarProcessor pluginJarProcessor;
-
     @Before
     public void setup() {
         super.setup();
         List<PluginProcessor> pluginProcessorsList = Arrays.asList(gwtScriptPluginProcessor,
-                htmlPluginProcessor, ufjsPluginProcessor);
+                                                                   htmlPluginProcessor,
+                                                                   ufjsPluginProcessor);
         when(this.pluginProcessors.iterator()).thenReturn(pluginProcessorsList.iterator());
-        pluginJarProcessor = spy(new PluginJarProcessor(pluginProcessors, pluginsReloadedEvent) {
+        pluginJarProcessor = spy(new PluginJarProcessor(pluginProcessors,
+                                                        pluginsReloadedEvent) {
             @Override
             List<String> extractFilesFromPluginsJar(String jarFileName) {
-                return Arrays.asList("dora.html", "dora.txt");
+                return Arrays.asList("dora.html",
+                                     "dora.txt");
             }
         });
     }
 
     @Test
     public void initLoadsDeployedPlugins() throws Exception {
-        pluginJarProcessor.init(pluginDir, pluginDeploymentDir);
+        pluginJarProcessor.init(pluginDir,
+                                pluginDeploymentDir);
         verify(pluginJarProcessor).loadPlugins();
     }
 
     @Test
     public void reloadClearsPluginRegistry() throws Exception {
-        pluginJarProcessor.init(pluginDir, pluginDeploymentDir);
+        pluginJarProcessor.init(pluginDir,
+                                pluginDeploymentDir);
         pluginJarProcessor.reload();
 
-        verify(pluginJarProcessor, times(2)).removeAllPlugins();
+        verify(pluginJarProcessor,
+               times(2)).removeAllPlugins();
     }
 
     @Test
     public void reloadFiresPluginsReloadedEvent() throws Exception {
-        pluginJarProcessor.init(pluginDir, pluginDeploymentDir);
+        pluginJarProcessor.init(pluginDir,
+                                pluginDeploymentDir);
         pluginJarProcessor.reload();
 
         verify(pluginsReloadedEvent).fire(any(PluginReloadedEvent.class));
@@ -94,10 +100,12 @@ public class PluginJarProcessorTest extends AbstractPluginsTest {
 
         when(htmlPluginProcessor.shouldProcess("dora.html")).thenReturn(true);
 
-        pluginJarProcessor.loadPlugins(path, true);
+        pluginJarProcessor.loadPlugins(path,
+                                       true);
 
-        verify(htmlPluginProcessor, times(1)).process(eq("dora.html"), any(), eq(true));
-
+        verify(htmlPluginProcessor,
+               times(1)).process(eq("dora.html"),
+                                 any(),
+                                 eq(true));
     }
-
 }

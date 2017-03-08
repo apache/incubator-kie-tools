@@ -21,7 +21,8 @@ import javax.enterprise.inject.Alternative;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.rpc.SessionInfo;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Alternative
 public class SessionInfoImpl implements SessionInfo {
@@ -32,14 +33,17 @@ public class SessionInfoImpl implements SessionInfo {
     public SessionInfoImpl() {
     }
 
-    public SessionInfoImpl( final String id,
-                            final User identity ) {
-        this.id = checkNotEmpty( "id", id );
-        this.identity = checkNotNull( "identity", identity );
+    public SessionInfoImpl(final String id,
+                           final User identity) {
+        this.id = checkNotEmpty("id",
+                                id);
+        this.identity = checkNotNull("identity",
+                                     identity);
     }
 
-    public SessionInfoImpl( final User identity ) {
-        this.identity = checkNotNull( "identity", identity );
+    public SessionInfoImpl(final User identity) {
+        this.identity = checkNotNull("identity",
+                                     identity);
     }
 
     @Override
@@ -47,7 +51,7 @@ public class SessionInfoImpl implements SessionInfo {
         return id;
     }
 
-    public void setId( final String id ) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -57,22 +61,21 @@ public class SessionInfoImpl implements SessionInfo {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof SessionInfo ) ) {
+        if (!(o instanceof SessionInfo)) {
             return false;
         }
 
         SessionInfo that = (SessionInfo) o;
 
-        if ( !getId().equals( that.getId() ) ) {
+        if (!getId().equals(that.getId())) {
             return false;
         }
 
-        return getIdentity().getIdentifier().equals( that.getIdentity().getIdentifier() );
-
+        return getIdentity().getIdentifier().equals(that.getIdentity().getIdentifier());
     }
 
     @Override
@@ -86,5 +89,4 @@ public class SessionInfoImpl implements SessionInfo {
     public String toString() {
         return "SessionInfoImpl [id=" + id + ", identity=" + identity + "]";
     }
-
 }

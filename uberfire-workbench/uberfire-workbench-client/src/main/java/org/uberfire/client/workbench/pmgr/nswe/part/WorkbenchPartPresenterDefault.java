@@ -27,7 +27,7 @@ import org.uberfire.client.workbench.part.AbstractWorkbenchPartPresenter;
 public class WorkbenchPartPresenterDefault extends AbstractWorkbenchPartPresenter {
 
     @Inject
-    public WorkbenchPartPresenterDefault( final WorkbenchPartView view ) {
-        super( view );
+    public WorkbenchPartPresenterDefault(final WorkbenchPartView view) {
+        super(view);
     }
 }

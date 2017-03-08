@@ -23,12 +23,15 @@ import org.uberfire.mvp.ParameterizedCommand;
 
 public interface VFSLockServiceProxy {
 
-    void acquireLock( final Path path, final ParameterizedCommand<LockResult> parameterizedCommand );
+    void acquireLock(final Path path,
+                     final ParameterizedCommand<LockResult> parameterizedCommand);
 
-    void releaseLock( final Path path, final ParameterizedCommand<LockResult> parameterizedCommand );
-    
-    void forceReleaseLock( final Path path, final ParameterizedCommand<LockResult> parameterizedCommand );
-    
-    void retrieveLockInfo( final Path path, final ParameterizedCommand<LockInfo> parameterizedCommand );
-    
+    void releaseLock(final Path path,
+                     final ParameterizedCommand<LockResult> parameterizedCommand);
+
+    void forceReleaseLock(final Path path,
+                          final ParameterizedCommand<LockResult> parameterizedCommand);
+
+    void retrieveLockInfo(final Path path,
+                          final ParameterizedCommand<LockInfo> parameterizedCommand);
 }

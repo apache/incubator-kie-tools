@@ -22,20 +22,20 @@ import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
 public abstract class RuleValidator {
 
-    public abstract boolean isValid( String value );
+    public abstract boolean isValid(String value);
 
     public abstract String getValidationError();
 
-    public boolean validateFieldInline( String value,
-                                        FormGroup field,
-                                        HelpBlock help ) {
-        if ( !isValid( value ) ) {
-            field.setValidationState( ValidationState.ERROR );
-            help.setText( getValidationError() );
+    public boolean validateFieldInline(String value,
+                                       FormGroup field,
+                                       HelpBlock help) {
+        if (!isValid(value)) {
+            field.setValidationState(ValidationState.ERROR);
+            help.setText(getValidationError());
             return false;
         } else {
-            field.setValidationState( ValidationState.NONE );
-            help.setText( "" );
+            field.setValidationState(ValidationState.NONE);
+            help.setText("");
             return true;
         }
     }

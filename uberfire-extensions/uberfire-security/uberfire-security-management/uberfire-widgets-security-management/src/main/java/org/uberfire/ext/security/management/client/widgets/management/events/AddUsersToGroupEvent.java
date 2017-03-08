@@ -16,9 +16,9 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.events;
 
-import org.uberfire.workbench.events.UberFireEvent;
-
 import java.util.Set;
+
+import org.uberfire.workbench.events.UberFireEvent;
 
 /**
  * <p>Event for assigning a collection of users to a given group.</p>
@@ -27,7 +27,8 @@ public class AddUsersToGroupEvent extends ContextualEvent implements UberFireEve
 
     private Set<String> users;
 
-    public AddUsersToGroupEvent(Object context, Set<String> users) {
+    public AddUsersToGroupEvent(Object context,
+                                Set<String> users) {
         super(context);
         this.users = users;
     }

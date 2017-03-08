@@ -17,16 +17,14 @@
 package org.uberfire.client.exporter;
 
 import java.util.Collection;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 
-import com.google.gwt.user.client.Window;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.uberfire.workbench.events.UberfireJSAPIReadyEvent;
-
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 @EntryPoint
 public class UberfireJSAPIExporter {
@@ -36,14 +34,13 @@ public class UberfireJSAPIExporter {
 
     @AfterInitialization
     public void export() {
-        Collection<SyncBeanDef<UberfireJSExporter>> jsAPIs = IOC.getBeanManager().lookupBeans( UberfireJSExporter.class );
-        for ( SyncBeanDef<UberfireJSExporter> bean : jsAPIs ) {
+        Collection<SyncBeanDef<UberfireJSExporter>> jsAPIs = IOC.getBeanManager().lookupBeans(UberfireJSExporter.class);
+        for (SyncBeanDef<UberfireJSExporter> bean : jsAPIs) {
             UberfireJSExporter jsAPI = bean.getInstance();
             jsAPI.export();
         }
-        if ( !jsAPIs.isEmpty() ) {
-            jsapiReadyEvent.fire( new UberfireJSAPIReadyEvent() );
+        if (!jsAPIs.isEmpty()) {
+            jsapiReadyEvent.fire(new UberfireJSAPIReadyEvent());
         }
     }
-
 }

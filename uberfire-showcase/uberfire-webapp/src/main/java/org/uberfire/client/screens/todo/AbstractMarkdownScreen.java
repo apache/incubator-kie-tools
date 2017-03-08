@@ -42,6 +42,10 @@ public abstract class AbstractMarkdownScreen extends Composite {
     @Inject
     protected Caller<VFSService> vfsServices;
 
+    public static native String parseMarkdown(String content)/*-{
+        return $wnd.marked(content);
+    }-*/;
+
     @PostConstruct
     public void init() {
         vfsServices.call(new RemoteCallback<Path>() {
@@ -57,15 +61,17 @@ public abstract class AbstractMarkdownScreen extends Composite {
                                 setContent(parseMarkdown(response));
                             } catch (Exception e) {
                                 setContent(EMPTY);
-                                GWT.log("Error parsing markdown content", e);
+                                GWT.log("Error parsing markdown content",
+                                        e);
                             }
                         }
                     }
                 }).readAllString(o);
             }
         }).get(getMarkdownFileURI());
-        markdown.getElement().getStyle().setPadding( 15, Style.Unit.PX );
-        initWidget( markdown );
+        markdown.getElement().getStyle().setPadding(15,
+                                                    Style.Unit.PX);
+        initWidget(markdown);
     }
 
     @WorkbenchPartView
@@ -83,9 +89,4 @@ public abstract class AbstractMarkdownScreen extends Composite {
     protected void setContent(final String content) {
         this.markdown.setHTML(content);
     }
-
-    public static native String parseMarkdown(String content)/*-{
-        return $wnd.marked(content);
-    }-*/;
-
 }

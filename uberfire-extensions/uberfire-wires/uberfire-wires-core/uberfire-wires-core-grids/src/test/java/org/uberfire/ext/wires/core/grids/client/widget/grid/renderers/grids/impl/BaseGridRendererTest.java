@@ -42,7 +42,7 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.imp
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@WithClassesToStub({ Text.class })
+@WithClassesToStub({Text.class})
 @RunWith(LienzoMockitoTestRunner.class)
 public class BaseGridRendererTest {
 
@@ -73,86 +73,85 @@ public class BaseGridRendererTest {
 
     @Before
     public void setup() {
-        final BaseGridRenderer wrapped = new BaseGridRenderer( theme );
-        this.renderer = spy( wrapped );
+        final BaseGridRenderer wrapped = new BaseGridRenderer(theme);
+        this.renderer = spy(wrapped);
 
-        this.column = new StringPopupColumn( new BaseHeaderMetaData( "title" ),
-                                             columnRenderer,
-                                             100.0 );
+        this.column = new StringPopupColumn(new BaseHeaderMetaData("title"),
+                                            columnRenderer,
+                                            100.0);
 
         this.model = new BaseGridData();
-        this.model.appendColumn( column );
-        this.model.appendRow( new BaseGridRow() );
-        this.model.appendRow( new BaseGridRow() );
-        this.model.appendRow( new BaseGridRow() );
+        this.model.appendColumn(column);
+        this.model.appendRow(new BaseGridRow());
+        this.model.appendRow(new BaseGridRow());
+        this.model.appendRow(new BaseGridRow());
 
-        this.selectionsTransformer = new DefaultSelectionsTransformer( model,
-                                                                       Collections.singletonList( column ) );
+        this.selectionsTransformer = new DefaultSelectionsTransformer(model,
+                                                                      Collections.singletonList(column));
 
-        when( context.getBlockColumns() ).thenReturn( Collections.singletonList( column ) );
-        when( context.getTransformer() ).thenReturn( selectionsTransformer );
+        when(context.getBlockColumns()).thenReturn(Collections.singletonList(column));
+        when(context.getTransformer()).thenReturn(selectionsTransformer);
     }
 
     @Test
     public void checkSelectedCellsClippedByHeader() {
-        checkRenderedSelectedCells( 0,
-                                    0,
-                                    1,
-                                    3,
-                                    1,
-                                    2 );
+        checkRenderedSelectedCells(0,
+                                   0,
+                                   1,
+                                   3,
+                                   1,
+                                   2);
     }
 
     @Test
     public void checkSelectedCellsNotClippedByHeader() {
-        checkRenderedSelectedCells( 0,
-                                    0,
-                                    1,
-                                    3,
-                                    0,
-                                    2 );
+        checkRenderedSelectedCells(0,
+                                   0,
+                                   1,
+                                   3,
+                                   0,
+                                   2);
     }
 
-    private void checkRenderedSelectedCells( final int selectionRowIndex,
-                                             final int selectionColumnIndex,
-                                             final int selectionColumnCount,
-                                             final int selectionRowCount,
-                                             final int minVisibleRowIndex,
-                                             final int maxVisibleRowIndex ) {
-        this.model.selectCells( selectionRowIndex,
-                                selectionColumnIndex,
-                                selectionColumnCount,
-                                selectionRowCount );
-        when( context.getMinVisibleRowIndex() ).thenReturn( minVisibleRowIndex );
-        when( context.getMaxVisibleRowIndex() ).thenReturn( maxVisibleRowIndex );
+    private void checkRenderedSelectedCells(final int selectionRowIndex,
+                                            final int selectionColumnIndex,
+                                            final int selectionColumnCount,
+                                            final int selectionRowCount,
+                                            final int minVisibleRowIndex,
+                                            final int maxVisibleRowIndex) {
+        this.model.selectCells(selectionRowIndex,
+                               selectionColumnIndex,
+                               selectionColumnCount,
+                               selectionRowCount);
+        when(context.getMinVisibleRowIndex()).thenReturn(minVisibleRowIndex);
+        when(context.getMaxVisibleRowIndex()).thenReturn(maxVisibleRowIndex);
 
-        renderer.renderSelectedCells( model,
-                                      context,
-                                      rendererHelper );
+        renderer.renderSelectedCells(model,
+                                     context,
+                                     rendererHelper);
 
-        verify( renderer,
-                times( 1 ) ).renderSelectedRange( eq( model ),
-                                                  columnsCaptor.capture(),
-                                                  eq( selectionColumnIndex ),
-                                                  selectedRangeCaptor.capture() );
+        verify(renderer,
+               times(1)).renderSelectedRange(eq(model),
+                                             columnsCaptor.capture(),
+                                             eq(selectionColumnIndex),
+                                             selectedRangeCaptor.capture());
 
         final List<GridColumn<?>> columns = columnsCaptor.getValue();
-        assertNotNull( columns );
-        assertEquals( 1,
-                      columns.size() );
-        assertEquals( column,
-                      columns.get( 0 ) );
+        assertNotNull(columns);
+        assertEquals(1,
+                     columns.size());
+        assertEquals(column,
+                     columns.get(0));
 
         final SelectedRange selectedRange = selectedRangeCaptor.getValue();
-        assertNotNull( selectedRange );
-        assertEquals( selectionColumnIndex,
-                      selectedRange.getUiColumnIndex() );
-        assertEquals( minVisibleRowIndex,
-                      selectedRange.getUiRowIndex() );
-        assertEquals( selectionColumnCount,
-                      selectedRange.getWidth() );
-        assertEquals( maxVisibleRowIndex - minVisibleRowIndex + 1,
-                      selectedRange.getHeight() );
+        assertNotNull(selectedRange);
+        assertEquals(selectionColumnIndex,
+                     selectedRange.getUiColumnIndex());
+        assertEquals(minVisibleRowIndex,
+                     selectedRange.getUiRowIndex());
+        assertEquals(selectionColumnCount,
+                     selectedRange.getWidth());
+        assertEquals(maxVisibleRowIndex - minVisibleRowIndex + 1,
+                     selectedRange.getHeight());
     }
-
 }

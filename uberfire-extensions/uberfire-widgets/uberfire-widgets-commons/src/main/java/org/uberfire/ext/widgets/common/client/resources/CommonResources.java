@@ -19,14 +19,13 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 
 public interface CommonResources
-    extends
-    ClientBundle {
+        extends
+        ClientBundle {
 
-    CommonResources INSTANCE = GWT.create( CommonResources.class );
+    CommonResources INSTANCE = GWT.create(CommonResources.class);
 
     @Source("css/common.css")
     CommonCss CSS();
 
     CommonImages images();
-
 }

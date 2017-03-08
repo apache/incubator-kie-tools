@@ -40,5 +40,4 @@ public interface WiresGridsDemoConstants {
 
     @TranslationKey(defaultValue = "")
     String GridWidget4_Selector_Caption = "GridWidget4.SelectorCaption";
-
 }

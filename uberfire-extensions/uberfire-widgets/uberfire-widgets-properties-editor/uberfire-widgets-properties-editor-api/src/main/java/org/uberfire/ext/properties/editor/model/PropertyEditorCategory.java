@@ -20,7 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Portable
 /**
@@ -34,26 +35,31 @@ public class PropertyEditorCategory {
     private List<PropertyEditorFieldInfo> fields = new ArrayList<PropertyEditorFieldInfo>();
     private String idEvent;
 
-    public PropertyEditorCategory(){
+    public PropertyEditorCategory() {
 
     }
+
     public PropertyEditorCategory(String name) {
-        this.name = checkNotNull( "name", name );
+        this.name = checkNotNull("name",
+                                 name);
     }
 
-    public PropertyEditorCategory( String name,
-                                   int priority ) {
-        this.name = checkNotNull( "name", name );
-        this.priority = checkNotNull( "name", priority );
+    public PropertyEditorCategory(String name,
+                                  int priority) {
+        this.name = checkNotNull("name",
+                                 name);
+        this.priority = checkNotNull("name",
+                                     priority);
     }
 
     /**
      * Add a field to a PropertyEditorCategory
      */
-    public PropertyEditorCategory withField( PropertyEditorFieldInfo field ) {
-        checkNotNull( "field", field );
-        field.setPropertyEditorCategory( this );
-        fields.add( field );
+    public PropertyEditorCategory withField(PropertyEditorFieldInfo field) {
+        checkNotNull("field",
+                     field);
+        field.setPropertyEditorCategory(this);
+        fields.add(field);
         return this;
     }
 
@@ -73,7 +79,7 @@ public class PropertyEditorCategory {
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + priority;
-        result = 31 * result + ( fields != null ? fields.hashCode() : 0 );
+        result = 31 * result + (fields != null ? fields.hashCode() : 0);
         return result;
     }
 
@@ -81,12 +87,12 @@ public class PropertyEditorCategory {
         return idEvent;
     }
 
-    public void setIdEvent( String idEvent ) {
+    public void setIdEvent(String idEvent) {
         this.idEvent = idEvent;
     }
 
     public void undo() {
-        fields.forEach( field -> field.undo() );
+        fields.forEach(field -> field.undo());
     }
 
     @Override
@@ -98,5 +104,4 @@ public class PropertyEditorCategory {
                 ", idEvent=" + idEvent +
                 '}';
     }
-
 }

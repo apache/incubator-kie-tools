@@ -19,24 +19,32 @@ package org.uberfire.java.nio.base;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.uberfire.java.nio.base.AbstractBasicFileAttributeView.*;
+import static org.uberfire.java.nio.base.AbstractBasicFileAttributeView.CREATION_TIME;
+import static org.uberfire.java.nio.base.AbstractBasicFileAttributeView.FILE_KEY;
+import static org.uberfire.java.nio.base.AbstractBasicFileAttributeView.IS_DIRECTORY;
+import static org.uberfire.java.nio.base.AbstractBasicFileAttributeView.IS_OTHER;
+import static org.uberfire.java.nio.base.AbstractBasicFileAttributeView.IS_REGULAR_FILE;
+import static org.uberfire.java.nio.base.AbstractBasicFileAttributeView.IS_SYMBOLIC_LINK;
+import static org.uberfire.java.nio.base.AbstractBasicFileAttributeView.LAST_ACCESS_TIME;
+import static org.uberfire.java.nio.base.AbstractBasicFileAttributeView.LAST_MODIFIED_TIME;
+import static org.uberfire.java.nio.base.AbstractBasicFileAttributeView.SIZE;
 
 public class BasicFileAttributesUtil {
 
-    public static Map<String, Object> cleanup( final Map<String, Object> _attrs ) {
-        final Map<String, Object> attrs = new HashMap<String, Object>( _attrs );
+    public static Map<String, Object> cleanup(final Map<String, Object> _attrs) {
+        final Map<String, Object> attrs = new HashMap<String, Object>(_attrs);
 
-        for ( final String key : _attrs.keySet() ) {
-            if ( key.startsWith( IS_REGULAR_FILE ) || key.startsWith( IS_DIRECTORY ) ||
-                    key.startsWith( IS_SYMBOLIC_LINK ) || key.startsWith( SIZE ) ||
-                    key.startsWith( FILE_KEY ) || key.startsWith( IS_OTHER ) ||
-                    key.startsWith( LAST_MODIFIED_TIME ) || key.startsWith( LAST_ACCESS_TIME ) ||
-                    key.startsWith( CREATION_TIME ) ) {
-                attrs.put( key, null );
+        for (final String key : _attrs.keySet()) {
+            if (key.startsWith(IS_REGULAR_FILE) || key.startsWith(IS_DIRECTORY) ||
+                    key.startsWith(IS_SYMBOLIC_LINK) || key.startsWith(SIZE) ||
+                    key.startsWith(FILE_KEY) || key.startsWith(IS_OTHER) ||
+                    key.startsWith(LAST_MODIFIED_TIME) || key.startsWith(LAST_ACCESS_TIME) ||
+                    key.startsWith(CREATION_TIME)) {
+                attrs.put(key,
+                          null);
             }
         }
 
         return attrs;
     }
-
 }

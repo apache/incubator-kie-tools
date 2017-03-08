@@ -42,9 +42,9 @@ public interface DOMElementFactory<W, E> extends HasDOMElementResources {
      * @param context The render context of the cell.
      * @return
      */
-    E createDomElement( final GridLayer gridLayer,
-                        final GridWidget gridWidget,
-                        final GridBodyCellRenderContext context );
+    E createDomElement(final GridLayer gridLayer,
+                       final GridWidget gridWidget,
+                       final GridBodyCellRenderContext context);
 
     /**
      * Initialises a DOMElement for a cell and attach it to the GWT container.
@@ -52,8 +52,7 @@ public interface DOMElementFactory<W, E> extends HasDOMElementResources {
      * @param onCreation A callback that is invoked after the cell has been initialised, allowing content etc to be pre-set
      * @param onDisplay A callback that is invoked after the cell has been attached to the DOM and displayed.
      */
-    void attachDomElement( final GridBodyCellRenderContext context,
-                           final Callback<E> onCreation,
-                           final Callback<E> onDisplay );
-
+    void attachDomElement(final GridBodyCellRenderContext context,
+                          final Callback<E> onCreation,
+                          final Callback<E> onDisplay);
 }

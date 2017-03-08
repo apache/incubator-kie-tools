@@ -23,8 +23,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 public class KeyboardOperationSelectBottomRightCell extends BaseKeyboardOperation {
 
-    public KeyboardOperationSelectBottomRightCell( final GridLayer gridLayer ) {
-        super( gridLayer );
+    public KeyboardOperationSelectBottomRightCell(final GridLayer gridLayer) {
+        super(gridLayer);
     }
 
     @Override
@@ -34,25 +34,24 @@ public class KeyboardOperationSelectBottomRightCell extends BaseKeyboardOperatio
 
     @Override
     @SuppressWarnings("unused")
-    public boolean perform( final GridWidget gridWidget,
-                            final boolean isShiftKeyDown,
-                            final boolean isControlKeyDown ) {
-        final boolean redraw = selectBottomRightCell( gridWidget );
-        scrollSelectedCellIntoView( gridWidget );
+    public boolean perform(final GridWidget gridWidget,
+                           final boolean isShiftKeyDown,
+                           final boolean isControlKeyDown) {
+        final boolean redraw = selectBottomRightCell(gridWidget);
+        scrollSelectedCellIntoView(gridWidget);
         return redraw;
     }
 
-    protected boolean selectBottomRightCell( final GridWidget gridWidget ) {
+    protected boolean selectBottomRightCell(final GridWidget gridWidget) {
         final GridData gridModel = gridWidget.getModel();
         final int rowCount = gridModel.getRowCount();
         final int columnCount = gridModel.getColumnCount();
-        if ( rowCount == 0 || columnCount == 0 ) {
+        if (rowCount == 0 || columnCount == 0) {
             return false;
         }
-        return gridWidget.selectCell( rowCount - 1,
-                                      columnCount - 1,
-                                      false,
-                                      false );
+        return gridWidget.selectCell(rowCount - 1,
+                                     columnCount - 1,
+                                     false,
+                                     false);
     }
-
 }

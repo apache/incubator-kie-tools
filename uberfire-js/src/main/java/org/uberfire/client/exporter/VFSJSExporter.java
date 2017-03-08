@@ -25,19 +25,18 @@ import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
 
-
 @ApplicationScoped
-public class VFSJSExporter  implements UberfireJSExporter{
+public class VFSJSExporter implements UberfireJSExporter {
 
     @Inject
     Caller<VFSService> vfsServices;
 
     @Override
     public void export() {
-        publish( this );
+        publish(this);
     }
 
-    private native void publish( VFSJSExporter js )/*-{
+    private native void publish(VFSJSExporter js)/*-{
         $wnd.$vfs_write = function (uri, content, callback) {
             js.@org.uberfire.client.exporter.VFSJSExporter::write(Ljava/lang/String;Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(uri, content, callback)
         }
@@ -46,44 +45,43 @@ public class VFSJSExporter  implements UberfireJSExporter{
         }
     }-*/;
 
+    public void write(final String uri,
+                      final String content,
+                      final JavaScriptObject callback) {
 
-
-    public void write( final String uri,
-                       final String content,
-                       final JavaScriptObject callback ) {
-
-        vfsServices.call( new RemoteCallback<Path>() {
+        vfsServices.call(new RemoteCallback<Path>() {
             @Override
-            public void callback( final Path path ) {
-                vfsServices.call( new RemoteCallback<Path>() {
+            public void callback(final Path path) {
+                vfsServices.call(new RemoteCallback<Path>() {
                     @Override
-                    public void callback( final Path response ) {
-                        executeNativeCallback( callback, true );
+                    public void callback(final Path response) {
+                        executeNativeCallback(callback,
+                                              true);
                     }
-                } ).write( path, content );
+                }).write(path,
+                         content);
             }
-        } ).get( uri );
-
+        }).get(uri);
     }
 
-    public void readAllString( final String uri,
-                               final JavaScriptObject callback ) {
-        vfsServices.call( new RemoteCallback<Path>() {
+    public void readAllString(final String uri,
+                              final JavaScriptObject callback) {
+        vfsServices.call(new RemoteCallback<Path>() {
             @Override
-            public void callback( final Path o ) {
-                vfsServices.call( new RemoteCallback<String>() {
+            public void callback(final Path o) {
+                vfsServices.call(new RemoteCallback<String>() {
                     @Override
-                    public void callback( final String response ) {
-                        executeNativeCallback( callback, response );
+                    public void callback(final String response) {
+                        executeNativeCallback(callback,
+                                              response);
                     }
-                } ).readAllString( o );
+                }).readAllString(o);
             }
-        } ).get( uri );
+        }).get(uri);
     }
 
-    private native void executeNativeCallback( JavaScriptObject callback,
-                                               Object param ) /*-{
+    private native void executeNativeCallback(JavaScriptObject callback,
+                                              Object param) /*-{
         callback(param);
     }-*/;
-
 }

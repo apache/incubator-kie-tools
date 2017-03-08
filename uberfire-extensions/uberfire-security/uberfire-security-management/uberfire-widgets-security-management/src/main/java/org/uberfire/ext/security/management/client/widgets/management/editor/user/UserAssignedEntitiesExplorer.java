@@ -16,6 +16,12 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.user;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.validation.ConstraintViolation;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -25,29 +31,21 @@ import org.uberfire.ext.security.management.client.widgets.management.editor.Ass
 import org.uberfire.ext.security.management.client.widgets.management.list.EntitiesList;
 import org.uberfire.ext.security.management.client.widgets.management.list.EntitiesPagedList;
 import org.uberfire.ext.security.management.client.widgets.popup.ConfirmBox;
-import org.uberfire.mvp.Command;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.validation.ConstraintViolation;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 /**
  * <p>Base presenter class for user's assigned entities explorer widget.</p>
  * <p>It's considered an Editor due to it allows removing assigned user's entities.</p>
- * 
  * @since 0.8.0
  */
 public abstract class UserAssignedEntitiesExplorer<T> implements IsWidget {
 
     protected final static int PAGE_SIZE = 5;
-
+    public AssignedEntitiesExplorer view;
+    protected Set<T> entities = new LinkedHashSet<T>();
+    protected boolean isEditMode;
     ClientUserSystemManager userSystemManager;
     ConfirmBox confirmBox;
     EntitiesPagedList<T> entitiesList;
-    public AssignedEntitiesExplorer view;
-
     @Inject
     public UserAssignedEntitiesExplorer(final ClientUserSystemManager userSystemManager,
                                         final ConfirmBox confirmBox,
@@ -58,9 +56,6 @@ public abstract class UserAssignedEntitiesExplorer<T> implements IsWidget {
         this.entitiesList = entitiesList;
         this.view = view;
     }
-
-    protected Set<T> entities = new LinkedHashSet<T>(); 
-    protected boolean isEditMode;
 
     @Override
     public Widget asWidget() {
@@ -76,7 +71,7 @@ public abstract class UserAssignedEntitiesExplorer<T> implements IsWidget {
     protected abstract String getEntityId(final T entity);
 
     protected abstract String getEntityName(final T entity);
-    
+
     protected abstract String getEnsureRemoveText();
 
     protected abstract boolean canAssignEntities();
@@ -93,7 +88,8 @@ public abstract class UserAssignedEntitiesExplorer<T> implements IsWidget {
     public void init() {
         entitiesList.setPageSize(PAGE_SIZE);
         entitiesList.setEmptyEntitiesText(getEmptyText());
-        view.configure(getTitle(), entitiesList.view);
+        view.configure(getTitle(),
+                       entitiesList.view);
     }
 
     public void show(final User user) {
@@ -132,7 +128,7 @@ public abstract class UserAssignedEntitiesExplorer<T> implements IsWidget {
     /*  ******************************************************************************************************
                                  OTHER METHODS AND VALIDATORS
      ****************************************************************************************************** */
-    
+
     protected EntitiesList.Callback<T> getCallback() {
         return new EntitiesList.Callback<T>() {
             @Override
@@ -178,27 +174,30 @@ public abstract class UserAssignedEntitiesExplorer<T> implements IsWidget {
             @Override
             public void onRemoveEntity(final String identifier) {
                 if (identifier != null) {
-                    confirmBox.show(UsersManagementWidgetsConstants.INSTANCE.confirmAction(), UserAssignedEntitiesExplorer.this.getEnsureRemoveText(),
-                            () -> removeEntity(identifier),
-                            () -> {});
+                    confirmBox.show(UsersManagementWidgetsConstants.INSTANCE.confirmAction(),
+                                    UserAssignedEntitiesExplorer.this.getEnsureRemoveText(),
+                                    () -> removeEntity(identifier),
+                                    () -> {
+                                    });
                 }
             }
 
             @Override
-            public void onSelectEntity(final String identifier, final boolean isSelected) {
+            public void onSelectEntity(final String identifier,
+                                       final boolean isSelected) {
                 // Entity selection not available for the explorer widget.
             }
 
             @Override
-            public void onChangePage(final int currentPage, final int goToPage) {
+            public void onChangePage(final int currentPage,
+                                     final int goToPage) {
                 // Do nothing by default, let the entitiesList paginate.
             }
         };
     }
-    
+
     protected void open(final User user) {
         assert user != null;
         doShow();
     }
-
 }

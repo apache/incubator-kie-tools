@@ -20,8 +20,7 @@ package org.uberfire.ext.widgets.common.client.common;
  */
 public interface HasBusyIndicator {
 
-    void showBusyIndicator( final String message );
+    void showBusyIndicator(final String message);
 
     void hideBusyIndicator();
-
 }

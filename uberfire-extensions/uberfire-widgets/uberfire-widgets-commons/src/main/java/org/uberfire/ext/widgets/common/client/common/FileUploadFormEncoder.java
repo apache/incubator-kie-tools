@@ -16,10 +16,9 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import org.gwtbootstrap3.client.ui.Form;
-
 import com.google.gwt.dom.client.FormElement;
 import com.google.gwt.user.client.ui.Hidden;
+import org.gwtbootstrap3.client.ui.Form;
 
 public class FileUploadFormEncoder {
 
@@ -27,15 +26,14 @@ public class FileUploadFormEncoder {
      * Sets the encoding of the provided form to UTF-8, see
      * https://code.google.com/p/google-web-toolkit/issues/detail?id=4682 for
      * details.
-     * 
      * @param form
      */
-    public void addUtf8Charset( final Form form ) {
-        FormElement.as( form.getElement() ).setAcceptCharset( "UTF-8" );
+    public void addUtf8Charset(final Form form) {
+        FormElement.as(form.getElement()).setAcceptCharset("UTF-8");
 
         final Hidden field = new Hidden();
-        field.setName( "utf8char" );
-        field.setValue( "\u8482" );
-        form.add( field );
+        field.setName("utf8char");
+        field.setValue("\u8482");
+        form.add(field);
     }
 }

@@ -27,8 +27,8 @@ public class Activity {
     public Activity() {
     }
 
-    public Activity( final String name,
-                     final PluginType type ) {
+    public Activity(final String name,
+                    final PluginType type) {
         this.name = name;
         this.type = type;
     }
@@ -42,15 +42,15 @@ public class Activity {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof Activity ) ) {
+        if (!(o instanceof Activity)) {
             return false;
         }
 
-        return name.equals( ( (Activity) o ).name );
+        return name.equals(((Activity) o).name);
     }
 
     @Override

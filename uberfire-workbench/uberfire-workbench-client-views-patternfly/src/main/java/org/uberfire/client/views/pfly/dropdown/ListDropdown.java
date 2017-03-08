@@ -38,46 +38,46 @@ public class ListDropdown extends DropDown {
     protected boolean hideOnSingleElement = true;
 
     public ListDropdown() {
-        super.add( button );
-        super.add( dropDownMenu );
-        button.setType( ButtonType.LINK );
-        this.addStyleName( "uf-list-dropdown" );
+        super.add(button);
+        super.add(dropDownMenu);
+        button.setType(ButtonType.LINK);
+        this.addStyleName("uf-list-dropdown");
     }
 
     @Override
-    public void add( final Widget child ) {
-        if ( child instanceof ListItem ) {
-            dropDownMenu.add( child );
+    public void add(final Widget child) {
+        if (child instanceof ListItem) {
+            dropDownMenu.add(child);
             addCaretToText();
         }
     }
 
-    public void setText( final Widget text ) {
-        removeChildWidgets( button );
-        button.add( text );
+    public void setText(final Widget text) {
+        removeChildWidgets(button);
+        button.add(text);
         addCaretToText();
     }
 
     @Override
-    public boolean remove( final Widget w ) {
-        final boolean remove = dropDownMenu.remove( w );
+    public boolean remove(final Widget w) {
+        final boolean remove = dropDownMenu.remove(w);
         addCaretToText();
         return remove;
     }
 
-    public void setHideOnSingleElement( boolean hide ) {
+    public void setHideOnSingleElement(boolean hide) {
         this.hideOnSingleElement = hide;
     }
 
     @Override
     public void clear() {
-        removeChildWidgets( button );
-        removeChildWidgets( dropDownMenu );
+        removeChildWidgets(button);
+        removeChildWidgets(dropDownMenu);
     }
 
-    private void removeChildWidgets( final ComplexPanel panel ) {
+    private void removeChildWidgets(final ComplexPanel panel) {
         final Iterator<Widget> iterator = panel.iterator();
-        while ( iterator.hasNext() ) {
+        while (iterator.hasNext()) {
             iterator.next();
             iterator.remove();
         }
@@ -87,23 +87,22 @@ public class ListDropdown extends DropDown {
      * Checks whether or not caret should be added/removed
      */
     protected void addCaretToText() {
-        if( hideOnSingleElement && dropDownMenu.getWidgetCount() == 1 ){
-            button.setToggleCaret( false );
-            button.setDataToggle( null );
-            this.removeStyleName( "open" );
-            toggleStyles( true );
-        } else if ( ( dropDownMenu.getWidgetCount() > 1 || hideOnSingleElement == false && dropDownMenu.getWidgetCount() == 1 ) ) {
-            button.setToggleCaret( true );
-            button.setDataToggle( Toggle.DROPDOWN );
-            button.setDataTargetWidget( this );
-            toggleStyles( false );
+        if (hideOnSingleElement && dropDownMenu.getWidgetCount() == 1) {
+            button.setToggleCaret(false);
+            button.setDataToggle(null);
+            this.removeStyleName("open");
+            toggleStyles(true);
+        } else if ((dropDownMenu.getWidgetCount() > 1 || hideOnSingleElement == false && dropDownMenu.getWidgetCount() == 1)) {
+            button.setToggleCaret(true);
+            button.setDataToggle(Toggle.DROPDOWN);
+            button.setDataTargetWidget(this);
+            toggleStyles(false);
         }
     }
 
-    private void toggleStyles( boolean single ) {
-        this.removeStyleName( "uf-list-dropdown-single" );
-        this.removeStyleName( "uf-list-dropdown-multi" );
-        this.addStyleName( single ? "uf-list-dropdown-single" : "uf-list-dropdown-multi" );
+    private void toggleStyles(boolean single) {
+        this.removeStyleName("uf-list-dropdown-single");
+        this.removeStyleName("uf-list-dropdown-multi");
+        this.addStyleName(single ? "uf-list-dropdown-single" : "uf-list-dropdown-multi");
     }
-
 }

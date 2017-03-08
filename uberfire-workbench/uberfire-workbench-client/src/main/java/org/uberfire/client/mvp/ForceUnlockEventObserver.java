@@ -40,18 +40,18 @@ public class ForceUnlockEventObserver {
     private ErrorPopupPresenter errorPopupPresenter;
 
     @SuppressWarnings("unused")
-    private void onForceUnlock( @Observes final ForceUnlockEvent e ) {
+    private void onForceUnlock(@Observes final ForceUnlockEvent e) {
         final ParameterizedCommand<LockResult> cmd = new ParameterizedCommand<LockResult>() {
 
             @Override
-            public void execute( LockResult result ) {
-                if ( !result.isSuccess() && result.getLockInfo().isLocked() ) {
-                    errorPopupPresenter.showMessage( "Failed to release lock for " + e.getPath()
-                                                                                      .getFileName() );
+            public void execute(LockResult result) {
+                if (!result.isSuccess() && result.getLockInfo().isLocked()) {
+                    errorPopupPresenter.showMessage("Failed to release lock for " + e.getPath()
+                            .getFileName());
                 }
             }
         };
-        lockService.forceReleaseLock( e.getPath(), 
-                                      cmd );
+        lockService.forceReleaseLock(e.getPath(),
+                                     cmd);
     }
 }

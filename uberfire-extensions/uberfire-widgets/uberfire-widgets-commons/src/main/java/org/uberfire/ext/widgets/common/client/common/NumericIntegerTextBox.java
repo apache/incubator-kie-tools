@@ -23,30 +23,30 @@ import com.google.gwt.regexp.shared.RegExp;
 public class NumericIntegerTextBox extends AbstractRestrictedEntryTextBox {
 
     // A valid integer
-    private static final RegExp VALID = RegExp.compile( "(^[-]?\\d*$)" );
+    private static final RegExp VALID = RegExp.compile("(^[-]?\\d*$)");
 
     public NumericIntegerTextBox() {
-        super( false );
+        super(false);
     }
 
     public NumericIntegerTextBox(final boolean allowEmptyValue) {
-        super( allowEmptyValue );
+        super(allowEmptyValue);
     }
 
     @Override
     public boolean isValidValue(String value,
                                 boolean isOnFocusLost) {
-        boolean isValid = VALID.test( value );
-        if ( !isValid ) {
+        boolean isValid = VALID.test(value);
+        if (!isValid) {
             return isValid;
         }
-        if ( !isOnFocusLost && "-".equals( value ) ) {
+        if (!isOnFocusLost && "-".equals(value)) {
             return true;
         }
         try {
-            Integer.parseInt( value );
-        } catch ( NumberFormatException nfe ) {
-            isValid = ("".equals( value ) && allowEmptyValue);
+            Integer.parseInt(value);
+        } catch (NumberFormatException nfe) {
+            isValid = ("".equals(value) && allowEmptyValue);
         }
         return isValid;
     }
@@ -55,5 +55,4 @@ public class NumericIntegerTextBox extends AbstractRestrictedEntryTextBox {
     protected String makeValidValue(String value) {
         return "0";
     }
-
 }

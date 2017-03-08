@@ -16,15 +16,13 @@
 
 package org.uberfire.client.mvp;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
-
+import com.google.gwt.user.client.ui.IsWidget;
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.PlaceRequest;
 
-import com.google.gwt.user.client.ui.IsWidget;
-
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Holds information about the target of a lock.
@@ -32,31 +30,28 @@ import jsinterop.annotations.JsType;
 @JsType
 public class LockTarget {
 
-    @JsType
-    public interface TitleProvider {
-
-        String getTitle();
-
-    }
-
     private final Path path;
     private final IsWidget isWidget;
     private final PlaceRequest place;
     private final TitleProvider titleProvider;
     private final Runnable reloadRunnable;
-
     @JsIgnore
-    public LockTarget( Path path,
-                       IsWidget isWidget,
-                       PlaceRequest place,
-                       TitleProvider titleProvider,
-                       Runnable reloadRunnable ) {
+    public LockTarget(Path path,
+                      IsWidget isWidget,
+                      PlaceRequest place,
+                      TitleProvider titleProvider,
+                      Runnable reloadRunnable) {
 
-        checkNotNull( "path", path );
-        checkNotNull( "isWidget", isWidget );
-        checkNotNull( "place", place );
-        checkNotNull( "titleProvider", titleProvider );
-        checkNotNull( "reloadRunnable", reloadRunnable );
+        checkNotNull("path",
+                     path);
+        checkNotNull("isWidget",
+                     isWidget);
+        checkNotNull("place",
+                     place);
+        checkNotNull("titleProvider",
+                     titleProvider);
+        checkNotNull("reloadRunnable",
+                     reloadRunnable);
 
         this.path = path;
         this.isWidget = isWidget;
@@ -87,4 +82,9 @@ public class LockTarget {
         return reloadRunnable;
     }
 
+    @JsType
+    public interface TitleProvider {
+
+        String getTitle();
+    }
 }

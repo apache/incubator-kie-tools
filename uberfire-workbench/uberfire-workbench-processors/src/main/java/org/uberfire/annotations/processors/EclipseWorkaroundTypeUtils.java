@@ -17,7 +17,6 @@
 package org.uberfire.annotations.processors;
 
 import java.util.List;
-
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
@@ -38,63 +37,73 @@ public class EclipseWorkaroundTypeUtils implements Types {
 
     private final Types realImpl;
 
-    public EclipseWorkaroundTypeUtils( Types realImpl ) {
+    public EclipseWorkaroundTypeUtils(Types realImpl) {
         this.realImpl = realImpl;
     }
 
     @Override
-    public Element asElement( TypeMirror arg0 ) {
-        return realImpl.asElement( arg0 );
+    public Element asElement(TypeMirror arg0) {
+        return realImpl.asElement(arg0);
     }
 
     @Override
-    public TypeMirror asMemberOf( DeclaredType arg0, Element arg1 ) {
-        return realImpl.asMemberOf( arg0, arg1 );
+    public TypeMirror asMemberOf(DeclaredType arg0,
+                                 Element arg1) {
+        return realImpl.asMemberOf(arg0,
+                                   arg1);
     }
 
     @Override
-    public TypeElement boxedClass( PrimitiveType arg0 ) {
-        return realImpl.boxedClass( arg0 );
+    public TypeElement boxedClass(PrimitiveType arg0) {
+        return realImpl.boxedClass(arg0);
     }
 
     @Override
-    public TypeMirror capture( TypeMirror arg0 ) {
-        return realImpl.capture( arg0 );
+    public TypeMirror capture(TypeMirror arg0) {
+        return realImpl.capture(arg0);
     }
 
     @Override
-    public boolean contains( TypeMirror arg0, TypeMirror arg1 ) {
-        return realImpl.contains( arg0, arg1 );
+    public boolean contains(TypeMirror arg0,
+                            TypeMirror arg1) {
+        return realImpl.contains(arg0,
+                                 arg1);
     }
 
     @Override
-    public List<? extends TypeMirror> directSupertypes( TypeMirror arg0 ) {
-        return realImpl.directSupertypes( arg0 );
+    public List<? extends TypeMirror> directSupertypes(TypeMirror arg0) {
+        return realImpl.directSupertypes(arg0);
     }
 
     @Override
-    public TypeMirror erasure( TypeMirror arg0 ) {
-        return realImpl.erasure( arg0 );
+    public TypeMirror erasure(TypeMirror arg0) {
+        return realImpl.erasure(arg0);
     }
 
     @Override
-    public ArrayType getArrayType( TypeMirror arg0 ) {
-        return realImpl.getArrayType( arg0 );
+    public ArrayType getArrayType(TypeMirror arg0) {
+        return realImpl.getArrayType(arg0);
     }
 
     @Override
-    public DeclaredType getDeclaredType( DeclaredType arg0, TypeElement arg1, TypeMirror... arg2 ) {
-        return realImpl.getDeclaredType( arg0, arg1, arg2 );
+    public DeclaredType getDeclaredType(DeclaredType arg0,
+                                        TypeElement arg1,
+                                        TypeMirror... arg2) {
+        return realImpl.getDeclaredType(arg0,
+                                        arg1,
+                                        arg2);
     }
 
     @Override
-    public DeclaredType getDeclaredType( TypeElement arg0, TypeMirror... arg1 ) {
-        return realImpl.getDeclaredType( arg0, arg1 );
+    public DeclaredType getDeclaredType(TypeElement arg0,
+                                        TypeMirror... arg1) {
+        return realImpl.getDeclaredType(arg0,
+                                        arg1);
     }
 
     @Override
-    public NoType getNoType( TypeKind arg0 ) {
-        return realImpl.getNoType( arg0 );
+    public NoType getNoType(TypeKind arg0) {
+        return realImpl.getNoType(arg0);
     }
 
     @Override
@@ -103,39 +112,47 @@ public class EclipseWorkaroundTypeUtils implements Types {
     }
 
     @Override
-    public PrimitiveType getPrimitiveType( TypeKind arg0 ) {
-        return realImpl.getPrimitiveType( arg0 );
+    public PrimitiveType getPrimitiveType(TypeKind arg0) {
+        return realImpl.getPrimitiveType(arg0);
     }
 
     @Override
-    public WildcardType getWildcardType( TypeMirror arg0, TypeMirror arg1 ) {
-        return realImpl.getWildcardType( arg0, arg1 );
+    public WildcardType getWildcardType(TypeMirror arg0,
+                                        TypeMirror arg1) {
+        return realImpl.getWildcardType(arg0,
+                                        arg1);
     }
 
     @Override
-    public boolean isAssignable( TypeMirror arg0, TypeMirror arg1 ) {
-        return (arg0.getKind() == TypeKind.VOID && arg1.getKind() == TypeKind.VOID) || realImpl.isAssignable( arg0, arg1 );
+    public boolean isAssignable(TypeMirror arg0,
+                                TypeMirror arg1) {
+        return (arg0.getKind() == TypeKind.VOID && arg1.getKind() == TypeKind.VOID) || realImpl.isAssignable(arg0,
+                                                                                                             arg1);
     }
 
     @Override
-    public boolean isSameType( TypeMirror arg0, TypeMirror arg1 ) {
-        return realImpl.isSameType( arg0, arg1 );
+    public boolean isSameType(TypeMirror arg0,
+                              TypeMirror arg1) {
+        return realImpl.isSameType(arg0,
+                                   arg1);
     }
 
     @Override
-    public boolean isSubsignature( ExecutableType arg0, ExecutableType arg1 ) {
-        return realImpl.isSubsignature( arg0, arg1 );
+    public boolean isSubsignature(ExecutableType arg0,
+                                  ExecutableType arg1) {
+        return realImpl.isSubsignature(arg0,
+                                       arg1);
     }
 
     @Override
-    public boolean isSubtype( TypeMirror arg0, TypeMirror arg1 ) {
-        return realImpl.isSubtype( arg0, arg1 );
+    public boolean isSubtype(TypeMirror arg0,
+                             TypeMirror arg1) {
+        return realImpl.isSubtype(arg0,
+                                  arg1);
     }
 
     @Override
-    public PrimitiveType unboxedType( TypeMirror arg0 ) {
-        return realImpl.unboxedType( arg0 );
+    public PrimitiveType unboxedType(TypeMirror arg0) {
+        return realImpl.unboxedType(arg0);
     }
-
-
 }

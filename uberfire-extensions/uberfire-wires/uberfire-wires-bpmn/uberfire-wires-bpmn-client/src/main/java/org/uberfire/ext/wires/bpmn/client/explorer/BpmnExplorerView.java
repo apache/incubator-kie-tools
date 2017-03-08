@@ -22,6 +22,5 @@ import org.uberfire.client.mvp.UberView;
 
 public interface BpmnExplorerView extends UberView<BpmnExplorerPresenter> {
 
-    void setContent( final List<Path> files );
-
+    void setContent(final List<Path> files);
 }

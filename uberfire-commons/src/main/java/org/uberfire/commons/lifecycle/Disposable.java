@@ -22,5 +22,4 @@ package org.uberfire.commons.lifecycle;
 public interface Disposable {
 
     void dispose();
-
 }

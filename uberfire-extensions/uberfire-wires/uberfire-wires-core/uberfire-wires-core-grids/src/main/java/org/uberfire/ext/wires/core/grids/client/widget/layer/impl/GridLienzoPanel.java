@@ -48,16 +48,16 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
             }
         };
 
-        domElementContainer.add( lienzoPanel );
-        add( domElementContainer );
+        domElementContainer.add(lienzoPanel);
+        add(domElementContainer);
 
         setupDefaultHandlers();
     }
 
-    public GridLienzoPanel( final int width,
-                            final int height ) {
-        this.lienzoPanel = new LienzoPanel( width,
-                                            height ) {
+    public GridLienzoPanel(final int width,
+                           final int height) {
+        this.lienzoPanel = new LienzoPanel(width,
+                                           height) {
             @Override
             public void onResize() {
                 // Do nothing. Resize is handled by AttachHandler. LienzoPanel calls onResize() in
@@ -66,63 +66,62 @@ public class GridLienzoPanel extends FocusPanel implements RequiresResize,
                 // have been attached. Should redraw require children to be attached errors arise.
             }
         };
-        this.domElementContainer.setPixelSize( width,
-                                               height );
+        this.domElementContainer.setPixelSize(width,
+                                              height);
 
-        domElementContainer.add( lienzoPanel );
-        add( domElementContainer );
+        domElementContainer.add(lienzoPanel);
+        add(domElementContainer);
 
         setupDefaultHandlers();
     }
 
     private void setupDefaultHandlers() {
         //Prevent DOMElements scrolling into view when they receive the focus
-        domElementContainer.addDomHandler( new ScrollHandler() {
+        domElementContainer.addDomHandler(new ScrollHandler() {
 
-                                               @Override
-                                               public void onScroll( final ScrollEvent scrollEvent ) {
-                                                   domElementContainer.getElement().setScrollTop( 0 );
-                                                   domElementContainer.getElement().setScrollLeft( 0 );
-                                               }
-                                           },
-                                           ScrollEvent.getType() );
-        addAttachHandler( new AttachEvent.Handler() {
+                                              @Override
+                                              public void onScroll(final ScrollEvent scrollEvent) {
+                                                  domElementContainer.getElement().setScrollTop(0);
+                                                  domElementContainer.getElement().setScrollLeft(0);
+                                              }
+                                          },
+                                          ScrollEvent.getType());
+        addAttachHandler(new AttachEvent.Handler() {
             @Override
-            public void onAttachOrDetach( final AttachEvent event ) {
-                if ( event.isAttached() ) {
+            public void onAttachOrDetach(final AttachEvent event) {
+                if (event.isAttached()) {
                     onResize();
                 }
             }
-        } );
-        addMouseDownHandler( ( e ) -> setFocus( true ) );
+        });
+        addMouseDownHandler((e) -> setFocus(true));
     }
 
     @Override
     public void onResize() {
-        Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
                 final Element e = getElement().getParentElement();
                 final int width = e.getOffsetWidth();
                 final int height = e.getOffsetHeight();
-                if ( width > 0 && height > 0 ) {
-                    domElementContainer.setPixelSize( width,
-                                                      height );
-                    lienzoPanel.setPixelSize( width,
-                                              height );
+                if (width > 0 && height > 0) {
+                    domElementContainer.setPixelSize(width,
+                                                     height);
+                    lienzoPanel.setPixelSize(width,
+                                             height);
                 }
             }
-        } );
+        });
     }
 
-    public LienzoPanel add( final DefaultGridLayer layer ) {
-        layer.setDomElementContainer( domElementContainer );
-        lienzoPanel.add( layer );
+    public LienzoPanel add(final DefaultGridLayer layer) {
+        layer.setDomElementContainer(domElementContainer);
+        lienzoPanel.add(layer);
         return lienzoPanel;
     }
 
     public final Viewport getViewport() {
         return lienzoPanel.getViewport();
     }
-
 }

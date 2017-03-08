@@ -23,12 +23,11 @@ public class RenderBayesianNetworkEvent {
 
     private List<EditableBayesianNode> bayesianNodes;
 
-    public RenderBayesianNetworkEvent( final List<EditableBayesianNode> bayesianNodes ) {
+    public RenderBayesianNetworkEvent(final List<EditableBayesianNode> bayesianNodes) {
         this.bayesianNodes = bayesianNodes;
     }
 
     public List<EditableBayesianNode> getBayesianNodes() {
         return bayesianNodes;
     }
-
 }

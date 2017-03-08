@@ -26,7 +26,7 @@ import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class UserMenuTest {
 
     @Mock
@@ -42,36 +42,36 @@ public class UserMenuTest {
     private UserMenu userMenu;
 
     @Test
-    public void testUserNameWithId(){
+    public void testUserNameWithId() {
         final String userName = "mock";
-        when( user.getIdentifier() ).thenReturn( userName );
+        when(user.getIdentifier()).thenReturn(userName);
         userMenu.setup();
-        verify( userMenuView ).setUserName( userName );
+        verify(userMenuView).setUserName(userName);
     }
 
     @Test
-    public void testUserNameUsingFirstAndLastName(){
+    public void testUserNameUsingFirstAndLastName() {
         final String firstName = "Mock";
         final String lastName = "Test";
-        when( user.getProperty( User.StandardUserProperties.FIRST_NAME ) ).thenReturn( firstName );
-        when( user.getProperty( User.StandardUserProperties.LAST_NAME ) ).thenReturn( lastName );
+        when(user.getProperty(User.StandardUserProperties.FIRST_NAME)).thenReturn(firstName);
+        when(user.getProperty(User.StandardUserProperties.LAST_NAME)).thenReturn(lastName);
         userMenu.setup();
-        verify( userMenuView ).setUserName( firstName + " " + lastName );
+        verify(userMenuView).setUserName(firstName + " " + lastName);
     }
 
     @Test
-    public void testUserNameUsingFirstName(){
+    public void testUserNameUsingFirstName() {
         final String firstName = "Mock";
-        when( user.getProperty( User.StandardUserProperties.FIRST_NAME ) ).thenReturn( firstName );
+        when(user.getProperty(User.StandardUserProperties.FIRST_NAME)).thenReturn(firstName);
         userMenu.setup();
-        verify( userMenuView ).setUserName( firstName );
+        verify(userMenuView).setUserName(firstName);
     }
 
     @Test
-    public void testUserNameUsingLastName(){
+    public void testUserNameUsingLastName() {
         final String lastName = "Test";
-        when( user.getProperty( User.StandardUserProperties.LAST_NAME ) ).thenReturn( lastName );
+        when(user.getProperty(User.StandardUserProperties.LAST_NAME)).thenReturn(lastName);
         userMenu.setup();
-        verify( userMenuView ).setUserName( lastName );
+        verify(userMenuView).setUserName(lastName);
     }
 }

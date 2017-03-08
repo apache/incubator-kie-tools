@@ -30,32 +30,30 @@ import org.uberfire.ext.wires.bpmn.api.model.impl.BpmnEditorContent;
 public class BpmnEditorViewImpl extends BaseEditorViewImpl
         implements BpmnEditorView {
 
-    interface ViewBinder
-            extends
-            UiBinder<Widget, BpmnEditorViewImpl> {
-
-    }
-
-    final private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
+    final private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
     @UiField
     Label label;
-
     private BpmnEditorPresenter presenter;
 
     @PostConstruct
     public void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
-    public void init( final BpmnEditorPresenter presenter ) {
+    public void init(final BpmnEditorPresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setContent( final BpmnEditorContent content,
-                            final boolean isReadOnly ) {
-        label.setText( content.getProcess().toString() );
+    public void setContent(final BpmnEditorContent content,
+                           final boolean isReadOnly) {
+        label.setText(content.getProcess().toString());
+    }
+
+    interface ViewBinder
+            extends
+            UiBinder<Widget, BpmnEditorViewImpl> {
+
     }
 }

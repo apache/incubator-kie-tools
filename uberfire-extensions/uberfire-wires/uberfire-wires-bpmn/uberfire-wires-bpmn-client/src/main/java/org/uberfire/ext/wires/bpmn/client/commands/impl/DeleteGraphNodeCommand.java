@@ -31,43 +31,42 @@ public class DeleteGraphNodeCommand implements Command {
     private BpmnGraph target;
     private BpmnGraphNode candidate;
 
-    public DeleteGraphNodeCommand( final BpmnGraph target,
-                                   final BpmnGraphNode candidate ) {
-        this.target = PortablePreconditions.checkNotNull( "target",
-                                                          target );
-        this.candidate = PortablePreconditions.checkNotNull( "candidate",
-                                                             candidate );
+    public DeleteGraphNodeCommand(final BpmnGraph target,
+                                  final BpmnGraphNode candidate) {
+        this.target = PortablePreconditions.checkNotNull("target",
+                                                         target);
+        this.candidate = PortablePreconditions.checkNotNull("candidate",
+                                                            candidate);
     }
 
     @Override
-    public Results apply( final RuleManager ruleManager ) {
+    public Results apply(final RuleManager ruleManager) {
         final Results results = new DefaultResultsImpl();
         boolean isNodeInGraph = false;
-        for ( BpmnGraphNode node : target ) {
-            if ( node.equals( candidate ) ) {
+        for (BpmnGraphNode node : target) {
+            if (node.equals(candidate)) {
                 isNodeInGraph = true;
                 break;
             }
         }
-        if ( isNodeInGraph ) {
-            results.getMessages().addAll( ruleManager.checkCardinality( target,
-                                                                        candidate,
-                                                                        RuleManager.Operation.DELETE ).getMessages() );
-            if ( !results.contains( ResultType.ERROR ) ) {
-                target.removeNode( candidate.getId() );
+        if (isNodeInGraph) {
+            results.getMessages().addAll(ruleManager.checkCardinality(target,
+                                                                      candidate,
+                                                                      RuleManager.Operation.DELETE).getMessages());
+            if (!results.contains(ResultType.ERROR)) {
+                target.removeNode(candidate.getId());
             }
         } else {
-            results.addMessage( new DefaultResultImpl( ResultType.WARNING,
-                                                       "GraphNode was not present in Graph and hence was not deleted." ) );
+            results.addMessage(new DefaultResultImpl(ResultType.WARNING,
+                                                     "GraphNode was not present in Graph and hence was not deleted."));
         }
         return results;
     }
 
     @Override
-    public Results undo( final RuleManager ruleManager ) {
-        final Command undoCommand = new AddGraphNodeCommand( target,
-                                                             candidate );
-        return undoCommand.apply( ruleManager );
+    public Results undo(final RuleManager ruleManager) {
+        final Command undoCommand = new AddGraphNodeCommand(target,
+                                                            candidate);
+        return undoCommand.apply(ruleManager);
     }
-
 }

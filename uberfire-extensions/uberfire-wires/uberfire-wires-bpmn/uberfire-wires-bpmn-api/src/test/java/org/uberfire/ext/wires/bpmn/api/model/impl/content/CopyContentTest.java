@@ -26,42 +26,40 @@ import org.uberfire.ext.wires.bpmn.api.model.impl.roles.DefaultRoleImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.types.StringType;
 
 import static junit.framework.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class CopyContentTest {
 
     @Test
     public void testCopyContent() {
-        final Content content = new DefaultContentImpl( "id",
-                                                        "title",
-                                                        "description",
-                                                        new HashSet<Role>() {{
-                                                            add( new DefaultRoleImpl( "a-role" ) );
-                                                        }},
-                                                        new HashSet<Property>() {{
-                                                            add( new DefaultPropertyImpl( "id",
-                                                                                          new StringType(),
-                                                                                          "caption",
-                                                                                          "description",
-                                                                                          true,
-                                                                                          true ) );
-                                                        }}
+        final Content content = new DefaultContentImpl("id",
+                                                       "title",
+                                                       "description",
+                                                       new HashSet<Role>() {{
+                                                           add(new DefaultRoleImpl("a-role"));
+                                                       }},
+                                                       new HashSet<Property>() {{
+                                                           add(new DefaultPropertyImpl("id",
+                                                                                       new StringType(),
+                                                                                       "caption",
+                                                                                       "description",
+                                                                                       true,
+                                                                                       true));
+                                                       }}
         );
         final Content copy = content.copy();
 
-        assertNotNull( copy );
-        assertFalse( content == copy );
-        assertEquals( content.getId(),
-                      copy.getId() );
-        assertEquals( content.getTitle(),
-                      copy.getTitle() );
-        assertEquals( content.getDescription(),
-                      copy.getDescription() );
-        assertEquals( content.getRoles(),
-                      copy.getRoles() );
-        assertEquals( content.getProperties(),
-                      copy.getProperties() );
+        assertNotNull(copy);
+        assertFalse(content == copy);
+        assertEquals(content.getId(),
+                     copy.getId());
+        assertEquals(content.getTitle(),
+                     copy.getTitle());
+        assertEquals(content.getDescription(),
+                     copy.getDescription());
+        assertEquals(content.getRoles(),
+                     copy.getRoles());
+        assertEquals(content.getProperties(),
+                     copy.getProperties());
     }
-
 }

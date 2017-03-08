@@ -38,17 +38,10 @@ public interface WiresGridsDemoView extends IsWidget,
                                             RequiresResize {
 
     /**
-     * Presenter definition.
-     */
-    interface Presenter extends GridSelectionManager {
-
-    }
-
-    /**
      * Adds a GridWidget to the View.
      * @param gridWidget
      */
-    void add( final GridWidget gridWidget );
+    void add(final GridWidget gridWidget);
 
     /**
      * Refreshes the View reflecting changes to any associated GridWidget.
@@ -74,7 +67,7 @@ public interface WiresGridsDemoView extends IsWidget,
      * @param handler
      * @return
      */
-    HandlerRegistration addZoomChangeHandler( final ChangeHandler handler );
+    HandlerRegistration addZoomChangeHandler(final ChangeHandler handler);
 
     /**
      * Gets the selected Zoom level from the View.
@@ -84,17 +77,16 @@ public interface WiresGridsDemoView extends IsWidget,
 
     /**
      * Sets the Zoom level of the View.
-     * @param zoom
-     *         An int based percentage, where for example 100 represents 100%. Must be positive.
+     * @param zoom An int based percentage, where for example 100 represents 100%. Must be positive.
      */
-    void setZoom( final int zoom );
+    void setZoom(final int zoom);
 
     /**
      * Adds a handler for when the Theme associated with View rendering is changed.
      * @param handler
      * @return
      */
-    HandlerRegistration addThemeChangeHandler( final ChangeHandler handler );
+    HandlerRegistration addThemeChangeHandler(final ChangeHandler handler);
 
     /**
      * Gets the selected Theme from the View.
@@ -107,27 +99,32 @@ public interface WiresGridsDemoView extends IsWidget,
      * @param handler
      * @return
      */
-    HandlerRegistration addMergedStateValueChangeHandler( final ValueChangeHandler<Boolean> handler );
+    HandlerRegistration addMergedStateValueChangeHandler(final ValueChangeHandler<Boolean> handler);
 
     /**
      * Sets the merged state of the View.
      * @param isMerged
      */
-    void setMergedState( final boolean isMerged );
+    void setMergedState(final boolean isMerged);
 
     /**
      * Adds a handler for when the User, interacting with the View, requests a row to be appended.
      * @param handler
      * @return
      */
-    HandlerRegistration addAppendRowClickHandler( final ClickHandler handler );
+    HandlerRegistration addAppendRowClickHandler(final ClickHandler handler);
 
     /**
      * Adds a handler for when the User, interacting with the View, requests a row to be deleted.
-     * @param handler
-     *         The handler. Cannot be null.
+     * @param handler The handler. Cannot be null.
      * @return A registration for the handler.
      */
-    HandlerRegistration addDeleteRowClickHandler( final ClickHandler handler );
+    HandlerRegistration addDeleteRowClickHandler(final ClickHandler handler);
 
+    /**
+     * Presenter definition.
+     */
+    interface Presenter extends GridSelectionManager {
+
+    }
 }

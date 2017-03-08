@@ -16,6 +16,11 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.user;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -33,35 +38,34 @@ import org.uberfire.ext.security.management.client.widgets.management.list.Roles
 import org.uberfire.ext.security.management.client.widgets.popup.ConfirmBox;
 import org.uberfire.mocks.EventSourceMock;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.anySet;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class UserAssignedRolesExplorerTest {
 
-    @Mock ClientUserSystemManager userSystemManager;
-    @Mock EventSourceMock<OnRemoveUserRoleEvent> removeUserRoleEventEvent;
-    @Mock ConfirmBox confirmBox;
-    @Mock RolesList rolesList;
-    @Mock AssignedEntitiesExplorer view;
-
+    @Mock
+    ClientUserSystemManager userSystemManager;
+    @Mock
+    EventSourceMock<OnRemoveUserRoleEvent> removeUserRoleEventEvent;
+    @Mock
+    ConfirmBox confirmBox;
+    @Mock
+    RolesList rolesList;
+    @Mock
+    AssignedEntitiesExplorer view;
+    @Mock
+    User user;
     private UserAssignedRolesExplorer tested;
-    @Mock User user;
 
     @Before
     public void setup() {
         Map<String, String> userAttributes = new HashMap<String, String>(1);
-        userAttributes.put("attr1", "value1");
+        userAttributes.put("attr1",
+                           "value1");
         when(user.getIdentifier()).thenReturn("user1");
         when(user.getProperties()).thenReturn(userAttributes);
         final Set<Role> roles = new HashSet<Role>();
@@ -76,24 +80,37 @@ public class UserAssignedRolesExplorerTest {
                 return _role;
             }
         }).when(userSystemManager).createRole(anyString());
-        tested = new UserAssignedRolesExplorer(userSystemManager, confirmBox, rolesList, view, removeUserRoleEventEvent);
+        tested = new UserAssignedRolesExplorer(userSystemManager,
+                                               confirmBox,
+                                               rolesList,
+                                               view,
+                                               removeUserRoleEventEvent);
     }
 
     @Test
     public void testInit() {
         tested.init();
-        verify(rolesList, times(1)).setPageSize(anyInt());
-        verify(rolesList, times(1)).setEmptyEntitiesText(anyString());
-        verify(view, times(1)).configure(anyString(), any(EntitiesList.View.class));
-        verify(view, times(0)).clear();
+        verify(rolesList,
+               times(1)).setPageSize(anyInt());
+        verify(rolesList,
+               times(1)).setEmptyEntitiesText(anyString());
+        verify(view,
+               times(1)).configure(anyString(),
+                                   any(EntitiesList.View.class));
+        verify(view,
+               times(0)).clear();
     }
 
     @Test
     public void testClear() {
         tested.clear();
-        verify(view, times(0)).configure(anyString(), any(EntitiesList.View.class));
-        verify(view, times(1)).clear();
-        verify(rolesList, times(1)).clear();
+        verify(view,
+               times(0)).configure(anyString(),
+                                   any(EntitiesList.View.class));
+        verify(view,
+               times(1)).clear();
+        verify(rolesList,
+               times(1)).clear();
         assertTrue(tested.entities.isEmpty());
         assertFalse(tested.isEditMode);
     }
@@ -103,12 +120,17 @@ public class UserAssignedRolesExplorerTest {
         tested.show(user);
         assertFalse(tested.isEditMode);
         assertTrue(tested.entities.size() == 1);
-        verify(view, times(0)).configure(anyString(), any(EntitiesList.View.class));
-        verify(view, times(1)).clear();
-        verify(rolesList, times(1)).clear();
-        verify(rolesList, times(1)).show(anySet(), any(EntitiesList.Callback.class));
+        verify(view,
+               times(0)).configure(anyString(),
+                                   any(EntitiesList.View.class));
+        verify(view,
+               times(1)).clear();
+        verify(rolesList,
+               times(1)).clear();
+        verify(rolesList,
+               times(1)).show(anySet(),
+                              any(EntitiesList.Callback.class));
     }
-
 
     @Test
     public void testRemoveRole() {
@@ -118,11 +140,17 @@ public class UserAssignedRolesExplorerTest {
         tested.removeEntity("role1");
         assertFalse(tested.isEditMode);
         assertTrue(tested.entities.size() == 0);
-        verify(rolesList, times(1)).show(anySet(), any(EntitiesList.Callback.class));
-        verify(removeUserRoleEventEvent, times(1)).fire(any(OnRemoveUserRoleEvent.class));
-        verify(view, times(0)).configure(anyString(), any(EntitiesList.View.class));
-        verify(view, times(0)).clear();
-        verify(rolesList, times(0)).clear();
+        verify(rolesList,
+               times(1)).show(anySet(),
+                              any(EntitiesList.Callback.class));
+        verify(removeUserRoleEventEvent,
+               times(1)).fire(any(OnRemoveUserRoleEvent.class));
+        verify(view,
+               times(0)).configure(anyString(),
+                                   any(EntitiesList.View.class));
+        verify(view,
+               times(0)).clear();
+        verify(rolesList,
+               times(0)).clear();
     }
-
 }

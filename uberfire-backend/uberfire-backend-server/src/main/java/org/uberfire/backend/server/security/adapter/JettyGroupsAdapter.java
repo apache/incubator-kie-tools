@@ -26,7 +26,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
-import javax.security.auth.Subject;
 
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.GroupImpl;
@@ -61,20 +60,23 @@ public class JettyGroupsAdapter implements GroupsAdapter {
                         String[] groups = groupsStr.split(",");
 
                         for (String group : groups) {
-                            userGroups.add( new GroupImpl( group ) );
+                            userGroups.add(new GroupImpl(group));
                         }
                     }
 
-                    groupsByUser.put(userName, userGroups);
+                    groupsByUser.put(userName,
+                                     userGroups);
                 }
             } catch (IOException e) {
-                logger.warn("Unable to load jetty-groups.properties file due to {}", e.getMessage());
+                logger.warn("Unable to load jetty-groups.properties file due to {}",
+                            e.getMessage());
             }
         }
     }
 
     @Override
-    public List<Group> getGroups(String principalName, final Object subject) {
+    public List<Group> getGroups(String principalName,
+                                 final Object subject) {
         if (groupsByUser == null || !groupsByUser.containsKey(principalName)) {
             return Collections.emptyList();
         }

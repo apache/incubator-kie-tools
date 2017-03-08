@@ -18,17 +18,25 @@
 
 package org.uberfire.client.workbench;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
 import com.google.common.collect.Maps;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.HeaderPanel;
+import com.google.gwt.user.client.ui.RequiresResize;
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.jboss.errai.ui.client.local.api.IsElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,42 +45,28 @@ import org.uberfire.client.workbench.docks.UberfireDocksContainer;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchPickupDragController;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
-@WithClassesToStub( DockLayoutPanel.class )
+@RunWith(GwtMockitoTestRunner.class)
+@WithClassesToStub(DockLayoutPanel.class)
 public class WorkbenchLayoutImplTest {
-
-    private WorkbenchLayoutImpl workbenchLayout;
-
-    private Widget widget;
-
-    @Mock
-    private SyncBeanManager iocManager;
-
-    @Mock
-    private HeaderPanel root;
-
-    @Mock
-    private Div headerPanel;
-
-    @Mock
-    private Div footerPanel;
-
-    @Mock
-    private WorkbenchDragAndDropManager dndManager;
 
     @Mock
     UberfireDocksContainer uberfireDocksContainer;
-
     @Mock
     WorkbenchPickupDragController dragController;
-
+    private WorkbenchLayoutImpl workbenchLayout;
+    private Widget widget;
+    @Mock
+    private SyncBeanManager iocManager;
+    @Mock
+    private HeaderPanel root;
+    @Mock
+    private Div headerPanel;
+    @Mock
+    private Div footerPanel;
+    @Mock
+    private WorkbenchDragAndDropManager dndManager;
     private Header header1;
 
     private Header header2;
@@ -83,66 +77,76 @@ public class WorkbenchLayoutImplTest {
 
     @Before
     public void setup() {
-        workbenchLayout = new WorkbenchLayoutImpl( iocManager, root, dndManager, uberfireDocksContainer,
-                                                   dragController, headerPanel, footerPanel ) {
+        workbenchLayout = new WorkbenchLayoutImpl(iocManager,
+                                                  root,
+                                                  dndManager,
+                                                  uberfireDocksContainer,
+                                                  dragController,
+                                                  headerPanel,
+                                                  footerPanel) {
             @Override
-            ElementWrapperWidget<?> createWidgetFrom( HTMLElement h ) {
-                return mock( ElementWrapperWidget.class );
+            ElementWrapperWidget<?> createWidgetFrom(HTMLElement h) {
+                return mock(ElementWrapperWidget.class);
             }
         };
-        widget = mock( Widget.class, withSettings().extraInterfaces( RequiresResize.class ) );
-        final Element element = mock( Element.class );
-        when( element.getStyle() ).thenReturn( mock( Style.class ) );
-        when( widget.getElement() ).thenReturn( element );
+        widget = mock(Widget.class,
+                      withSettings().extraInterfaces(RequiresResize.class));
+        final Element element = mock(Element.class);
+        when(element.getStyle()).thenReturn(mock(Style.class));
+        when(widget.getElement()).thenReturn(element);
 
-        header1 = mock( Header.class );
-        header2 = mock( Header.class );
+        header1 = mock(Header.class);
+        header2 = mock(Header.class);
 
-        footer1 = mock( Footer.class );
-        footer2 = mock( Footer.class );
+        footer1 = mock(Footer.class);
+        footer2 = mock(Footer.class);
     }
 
     @Test
     public void testMaximize() {
-        workbenchLayout.maximize( widget );
+        workbenchLayout.maximize(widget);
 
-        verify( widget ).addStyleName( WorkbenchLayoutImpl.UF_MAXIMIZED_PANEL );
+        verify(widget).addStyleName(WorkbenchLayoutImpl.UF_MAXIMIZED_PANEL);
 
-        verify( ( ( RequiresResize ) widget ), never() ).onResize();
+        verify(((RequiresResize) widget),
+               never()).onResize();
     }
 
     @Test
     public void testExpandAnimation() {
-        final WorkbenchLayoutImpl.ExpandAnimation expandAnimation = new WorkbenchLayoutImpl.ExpandAnimation( widget,
-                                                                                                             Maps.<Widget, WorkbenchLayoutImpl.OriginalStyleInfo>newHashMap(),
-                                                                                                             mock( SimpleLayoutPanel.class ) );
+        final WorkbenchLayoutImpl.ExpandAnimation expandAnimation = new WorkbenchLayoutImpl.ExpandAnimation(widget,
+                                                                                                            Maps.<Widget, WorkbenchLayoutImpl.OriginalStyleInfo>newHashMap(),
+                                                                                                            mock(SimpleLayoutPanel.class));
 
         expandAnimation.onComplete();
 
-        verify( ( ( RequiresResize ) widget ) ).onResize();
+        verify(((RequiresResize) widget)).onResize();
     }
 
     @Test
     public void testUnMaximize() {
-        workbenchLayout.maximize( widget );
-        workbenchLayout.unmaximize( widget );
+        workbenchLayout.maximize(widget);
+        workbenchLayout.unmaximize(widget);
 
-        verify( widget ).addStyleName( WorkbenchLayoutImpl.UF_MAXIMIZED_PANEL );
-        verify( widget ).removeStyleName( WorkbenchLayoutImpl.UF_MAXIMIZED_PANEL );
+        verify(widget).addStyleName(WorkbenchLayoutImpl.UF_MAXIMIZED_PANEL);
+        verify(widget).removeStyleName(WorkbenchLayoutImpl.UF_MAXIMIZED_PANEL);
 
-        verify( ( ( RequiresResize ) widget ), never() ).onResize();
+        verify(((RequiresResize) widget),
+               never()).onResize();
     }
 
     @Test
     public void testCollapseAnimation() {
         final HashMap<Widget, WorkbenchLayoutImpl.OriginalStyleInfo> maximizedWidgetOriginalStyles = Maps.newHashMap();
-        maximizedWidgetOriginalStyles.put( widget, new WorkbenchLayoutImpl.OriginalStyleInfo( widget ) );
+        maximizedWidgetOriginalStyles.put(widget,
+                                          new WorkbenchLayoutImpl.OriginalStyleInfo(widget));
         final WorkbenchLayoutImpl.CollapseAnimation collapseAnimation = new WorkbenchLayoutImpl.CollapseAnimation(
-                widget, maximizedWidgetOriginalStyles );
+                widget,
+                maximizedWidgetOriginalStyles);
 
         collapseAnimation.onComplete();
 
-        verify( ( ( RequiresResize ) widget ) ).onResize();
+        verify(((RequiresResize) widget)).onResize();
     }
 
     @Test
@@ -150,11 +154,12 @@ public class WorkbenchLayoutImplTest {
 
         Div headerPanel = workbenchLayout.getHeaderPanel();
 
-        workbenchLayout.setHeaderContents( new ArrayList<>() );
+        workbenchLayout.setHeaderContents(new ArrayList<>());
 
-        verify( headerPanel, never() ).appendChild( any() );
-        verify( root, never() ).setHeaderWidget( any() );
-
+        verify(headerPanel,
+               never()).appendChild(any());
+        verify(root,
+               never()).setHeaderWidget(any());
     }
 
     @Test
@@ -162,13 +167,14 @@ public class WorkbenchLayoutImplTest {
 
         Div headerPanel = workbenchLayout.getHeaderPanel();
 
-        List<Header> headers = Arrays.asList( header1, header2 );
+        List<Header> headers = Arrays.asList(header1,
+                                             header2);
 
-        workbenchLayout.setHeaderContents( headers );
+        workbenchLayout.setHeaderContents(headers);
 
-        verify( headerPanel, times( 2 ) ).appendChild( any() );
-        verify( root ).setHeaderWidget( any() );
-
+        verify(headerPanel,
+               times(2)).appendChild(any());
+        verify(root).setHeaderWidget(any());
     }
 
     @Test
@@ -176,11 +182,12 @@ public class WorkbenchLayoutImplTest {
 
         Div footerPanel = workbenchLayout.getFooterPanel();
 
-        workbenchLayout.setFooterContents( new ArrayList<>() );
+        workbenchLayout.setFooterContents(new ArrayList<>());
 
-        verify( footerPanel, never() ).appendChild( any() );
-        verify( root, never() ).setFooterWidget( any() );
-
+        verify(footerPanel,
+               never()).appendChild(any());
+        verify(root,
+               never()).setFooterWidget(any());
     }
 
     @Test
@@ -188,13 +195,13 @@ public class WorkbenchLayoutImplTest {
 
         Div footerPanel = workbenchLayout.getFooterPanel();
 
-        List<Footer> footers = Arrays.asList( footer1, footer2 );
+        List<Footer> footers = Arrays.asList(footer1,
+                                             footer2);
 
-        workbenchLayout.setFooterContents( footers );
+        workbenchLayout.setFooterContents(footers);
 
-        verify( footerPanel, times( 2 ) ).appendChild( any() );
-        verify( root ).setFooterWidget( any() );
-
+        verify(footerPanel,
+               times(2)).appendChild(any());
+        verify(root).setFooterWidget(any());
     }
-
 }

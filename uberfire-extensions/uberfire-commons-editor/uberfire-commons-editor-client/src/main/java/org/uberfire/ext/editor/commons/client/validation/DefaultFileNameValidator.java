@@ -32,18 +32,17 @@ public class DefaultFileNameValidator implements Validator {
     private Caller<ValidationService> validationService;
 
     @Override
-    public void validate( final String value,
-                          final ValidatorCallback callback ) {
-        validationService.call( new RemoteCallback<Boolean>() {
+    public void validate(final String value,
+                         final ValidatorCallback callback) {
+        validationService.call(new RemoteCallback<Boolean>() {
             @Override
-            public void callback( final Boolean response ) {
-                if ( Boolean.TRUE.equals( response ) ) {
+            public void callback(final Boolean response) {
+                if (Boolean.TRUE.equals(response)) {
                     callback.onSuccess();
                 } else {
                     callback.onFailure();
                 }
             }
-        } ).isFileNameValid( value );
+        }).isFileNameValid(value);
     }
-
 }

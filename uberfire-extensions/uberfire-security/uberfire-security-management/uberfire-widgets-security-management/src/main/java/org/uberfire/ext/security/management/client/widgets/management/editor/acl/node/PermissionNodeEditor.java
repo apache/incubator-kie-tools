@@ -55,9 +55,12 @@ public interface PermissionNodeEditor extends IsWidget {
 
     void clearChildEditors();
 
-    void onParentPermissionChanged(Permission permission, boolean on);
+    void onParentPermissionChanged(Permission permission,
+                                   boolean on);
 
-    void onChildPermissionChanged(PermissionNodeEditor childEditor, Permission permission, boolean on);
+    void onChildPermissionChanged(PermissionNodeEditor childEditor,
+                                  Permission permission,
+                                  boolean on);
 
     boolean isAnException(Permission permission);
 

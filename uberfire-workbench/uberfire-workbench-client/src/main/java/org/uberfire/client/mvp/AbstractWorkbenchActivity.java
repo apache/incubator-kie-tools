@@ -15,13 +15,12 @@
  */
 package org.uberfire.client.mvp;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * Implementation of behaviour common to all workbench editors and screens.
@@ -31,8 +30,8 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public abstract class AbstractWorkbenchActivity extends AbstractActivity implements WorkbenchActivity {
 
-    public AbstractWorkbenchActivity( final PlaceManager placeManager ) {
-        super( placeManager );
+    public AbstractWorkbenchActivity(final PlaceManager placeManager) {
+        super(placeManager);
     }
 
     @Override
@@ -87,5 +86,4 @@ public abstract class AbstractWorkbenchActivity extends AbstractActivity impleme
     public String contextId() {
         return null;
     }
-
 }

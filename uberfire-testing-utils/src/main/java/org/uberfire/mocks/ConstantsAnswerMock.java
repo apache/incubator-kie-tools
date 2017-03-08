@@ -19,7 +19,7 @@ package org.uberfire.mocks;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import static org.mockito.Mockito.RETURNS_DEFAULTS;
+import static org.mockito.Mockito.*;
 
 public class ConstantsAnswerMock implements Answer {
 
@@ -30,11 +30,11 @@ public class ConstantsAnswerMock implements Answer {
      * @throws Throwable
      */
     @Override
-    public Object answer( final InvocationOnMock invocation ) throws Throwable {
-        if ( String.class.equals( invocation.getMethod().getReturnType() ) ) {
+    public Object answer(final InvocationOnMock invocation) throws Throwable {
+        if (String.class.equals(invocation.getMethod().getReturnType())) {
             return invocation.getMethod().getName();
         } else {
-            return RETURNS_DEFAULTS.answer( invocation );
+            return RETURNS_DEFAULTS.answer(invocation);
         }
     }
 }

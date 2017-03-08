@@ -30,12 +30,9 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPane
  * for example to handle "in cell" editing; when a DOMElement is required to "edit" the cell but not when the cell
  * is rendered ordinarily. This implementation keeps a single DOMElement that is detached from the GWT container
  * when not needed.
- * @param <T>
- *         The data-type of the cell
- * @param <W>
- *         The Widget to be wrapped by the DOMElement.
- * @param <E>
- *         The DOMElement type that this Factory generates.
+ * @param <T> The data-type of the cell
+ * @param <W> The Widget to be wrapped by the DOMElement.
+ * @param <E> The DOMElement type that this Factory generates.
  */
 public abstract class BaseSingletonDOMElementFactory<T, W extends Widget, E extends BaseDOMElement<T, W>> implements SingletonDOMElementFactory<W, E> {
 
@@ -46,32 +43,32 @@ public abstract class BaseSingletonDOMElementFactory<T, W extends Widget, E exte
     protected W widget;
     protected E e;
 
-    public BaseSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
-                                           final GridLayer gridLayer,
-                                           final GridWidget gridWidget ) {
+    public BaseSingletonDOMElementFactory(final GridLienzoPanel gridPanel,
+                                          final GridLayer gridLayer,
+                                          final GridWidget gridWidget) {
         this.gridPanel = gridPanel;
         this.gridLayer = gridLayer;
         this.gridWidget = gridWidget;
     }
 
     @Override
-    public void attachDomElement( final GridBodyCellRenderContext context,
-                                  final Callback<E> onCreation,
-                                  final Callback<E> onDisplay ) {
-        gridLayer.batch( new GridLayerRedrawManager.PrioritizedCommand( Integer.MAX_VALUE ) {
+    public void attachDomElement(final GridBodyCellRenderContext context,
+                                 final Callback<E> onCreation,
+                                 final Callback<E> onDisplay) {
+        gridLayer.batch(new GridLayerRedrawManager.PrioritizedCommand(Integer.MAX_VALUE) {
             @Override
             public void execute() {
-                final E domElement = createDomElement( gridLayer,
-                                                       gridWidget,
-                                                       context );
-                domElement.setContext( context );
-                domElement.initialise( context );
-                onCreation.callback( domElement );
+                final E domElement = createDomElement(gridLayer,
+                                                      gridWidget,
+                                                      context);
+                domElement.setContext(context);
+                domElement.initialise(context);
+                onCreation.callback(domElement);
 
                 domElement.attach();
-                onDisplay.callback( domElement );
+                onDisplay.callback(domElement);
             }
-        } );
+        });
     }
 
     @Override
@@ -81,9 +78,9 @@ public abstract class BaseSingletonDOMElementFactory<T, W extends Widget, E exte
 
     @Override
     public void flush() {
-        if ( e != null ) {
-            if ( widget != null ) {
-                e.flush( getValue() );
+        if (e != null) {
+            if (widget != null) {
+                e.flush(getValue());
             }
             e.detach();
             widget = null;
@@ -92,5 +89,4 @@ public abstract class BaseSingletonDOMElementFactory<T, W extends Widget, E exte
     }
 
     protected abstract T getValue();
-
 }

@@ -26,14 +26,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public class BaseScreenView extends Composite implements BaseScreen {
 
-    interface BaseScreenViewBinder
-            extends
-            UiBinder<FlowPanel, BaseScreenView> {
-
-    }
-
-    private static BaseScreenViewBinder uiBinder = GWT.create( BaseScreenViewBinder.class );
-
+    private static BaseScreenViewBinder uiBinder = GWT.create(BaseScreenViewBinder.class);
     @UiField
     FlowPanel mainPanel;
 
@@ -43,12 +36,18 @@ public class BaseScreenView extends Composite implements BaseScreen {
     }
 
     private void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
     public void init(IsWidget explorerWidget) {
         mainPanel.clear();
         mainPanel.add(explorerWidget);
+    }
+
+    interface BaseScreenViewBinder
+            extends
+            UiBinder<FlowPanel, BaseScreenView> {
+
     }
 }

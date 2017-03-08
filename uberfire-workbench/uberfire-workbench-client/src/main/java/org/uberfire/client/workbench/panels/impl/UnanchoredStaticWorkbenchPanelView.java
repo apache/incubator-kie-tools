@@ -15,6 +15,14 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -28,19 +36,11 @@ import org.uberfire.client.workbench.part.WorkbenchPartPresenter.View;
 import org.uberfire.client.workbench.widgets.panel.StaticFocusedResizePanel;
 import org.uberfire.workbench.model.PartDefinition;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-
 /**
  * The view component of {@link UnanchoredStaticWorkbenchPanelPresenter}.
  */
 @Dependent
-@Named( "UnanchoredStaticWorkbenchPanelView" )
+@Named("UnanchoredStaticWorkbenchPanelView")
 public class UnanchoredStaticWorkbenchPanelView
         extends AbstractWorkbenchPanelView<UnanchoredStaticWorkbenchPanelPresenter> {
 
@@ -53,25 +53,25 @@ public class UnanchoredStaticWorkbenchPanelView
     @PostConstruct
     void postConstruct() {
 
-        panel.addFocusHandler( new FocusHandler() {
+        panel.addFocusHandler(new FocusHandler() {
             @Override
-            public void onFocus( final FocusEvent event ) {
-                panelManager.onPanelFocus( presenter.getDefinition() );
+            public void onFocus(final FocusEvent event) {
+                panelManager.onPanelFocus(presenter.getDefinition());
             }
-        } );
+        });
 
         //When a tab is selected ensure content is resized and set focus
-        panel.addSelectionHandler( new SelectionHandler<PartDefinition>() {
+        panel.addSelectionHandler(new SelectionHandler<PartDefinition>() {
             @Override
-            public void onSelection( final SelectionEvent<PartDefinition> event ) {
+            public void onSelection(final SelectionEvent<PartDefinition> event) {
                 panelManager.onPartLostFocus();
-                panelManager.onPartFocus( event.getSelectedItem() );
+                panelManager.onPartFocus(event.getSelectedItem());
             }
-        } );
+        });
 
-        Layouts.setToFillParent( panel );
+        Layouts.setToFillParent(panel);
 
-        initWidget( panel );
+        initWidget(panel);
     }
 
     // override is for unit test: super.getWidget() returns a new mock every time
@@ -85,7 +85,7 @@ public class UnanchoredStaticWorkbenchPanelView
     }
 
     @Override
-    public void init( final UnanchoredStaticWorkbenchPanelPresenter presenter ) {
+    public void init(final UnanchoredStaticWorkbenchPanelPresenter presenter) {
         this.presenter = presenter;
     }
 
@@ -95,34 +95,34 @@ public class UnanchoredStaticWorkbenchPanelView
     }
 
     @Override
-    public void addPart( final WorkbenchPartPresenter.View view ) {
-        if ( panel.getPartView() == null ) {
-            panel.setPart( view );
+    public void addPart(final WorkbenchPartPresenter.View view) {
+        if (panel.getPartView() == null) {
+            panel.setPart(view);
             onResize();
         } else {
-            throw new RuntimeException( "Uberfire Panel Invalid State: This panel support only one part." );
+            throw new RuntimeException("Uberfire Panel Invalid State: This panel support only one part.");
         }
     }
 
     @Override
-    public void changeTitle( final PartDefinition part,
-                             final String title,
-                             final IsWidget titleDecoration ) {
+    public void changeTitle(final PartDefinition part,
+                            final String title,
+                            final IsWidget titleDecoration) {
     }
 
     @Override
-    public boolean selectPart( final PartDefinition part ) {
+    public boolean selectPart(final PartDefinition part) {
         PartDefinition currentPartDefinition = getCurrentPartDefinition();
-        if ( currentPartDefinition != null && currentPartDefinition.equals( part ) ) {
+        if (currentPartDefinition != null && currentPartDefinition.equals(part)) {
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean removePart( final PartDefinition part ) {
+    public boolean removePart(final PartDefinition part) {
         PartDefinition currentPartDefinition = getCurrentPartDefinition();
-        if ( currentPartDefinition != null && currentPartDefinition.equals( part ) ) {
+        if (currentPartDefinition != null && currentPartDefinition.equals(part)) {
             panel.clear();
             return true;
         }
@@ -130,24 +130,25 @@ public class UnanchoredStaticWorkbenchPanelView
     }
 
     @Override
-    public void setFocus( boolean hasFocus ) {
-        panel.setFocus( hasFocus );
+    public void setFocus(boolean hasFocus) {
+        panel.setFocus(hasFocus);
     }
 
     @Override
     public void onResize() {
-        presenter.onResize( getOffsetWidth(), getOffsetHeight() );
+        presenter.onResize(getOffsetWidth(),
+                           getOffsetHeight());
         super.onResize();
     }
 
     PartDefinition getCurrentPartDefinition() {
         View partView = panel.getPartView();
-        if ( partView == null ) {
+        if (partView == null) {
             return null;
         }
 
         WorkbenchPartPresenter presenter = partView.getPresenter();
-        if ( presenter == null ) {
+        if (presenter == null) {
             return null;
         }
 
@@ -157,9 +158,9 @@ public class UnanchoredStaticWorkbenchPanelView
     @Override
     public Collection<PartDefinition> getParts() {
         PartDefinition currentPartDefinition = getCurrentPartDefinition();
-        if ( currentPartDefinition == null ) {
+        if (currentPartDefinition == null) {
             return new ArrayList<>();
         }
-        return Arrays.asList( currentPartDefinition );
+        return Arrays.asList(currentPartDefinition);
     }
 }

@@ -22,7 +22,7 @@ import com.google.gwt.core.client.ScriptInjector;
 import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 import org.uberfire.ext.widgets.common.client.resources.HtmlEditorResources;
 
-import static com.google.gwt.core.client.ScriptInjector.*;
+import static com.google.gwt.core.client.ScriptInjector.TOP_WINDOW;
 
 @ApplicationScoped
 public class HtmlEditorLibraryLoader {
@@ -30,18 +30,18 @@ public class HtmlEditorLibraryLoader {
     private boolean scriptsAreLoaded = false;
 
     public void ensureLibrariesAreAvailable() {
-        if ( !scriptsAreLoaded ) {
+        if (!scriptsAreLoaded) {
             injectScripts();
             scriptsAreLoaded = true;
         }
     }
 
     void injectScripts() {
-        ScriptInjector.fromString( HtmlEditorResources.INSTANCE.wysihtml().getText() ).setWindow( TOP_WINDOW ).inject();
-        ScriptInjector.fromString( HtmlEditorResources.INSTANCE.wysihtmlAllCommands().getText() ).setWindow( TOP_WINDOW ).inject();
-        ScriptInjector.fromString( HtmlEditorResources.INSTANCE.wysihtmlTableEditing().getText() ).setWindow( TOP_WINDOW ).inject();
-        ScriptInjector.fromString( HtmlEditorResources.INSTANCE.wysihtmlToolbar().getText() ).setWindow( TOP_WINDOW ).inject();
-        ScriptInjector.fromString( HtmlEditorResources.INSTANCE.parserRules().getText() ).setWindow( TOP_WINDOW ).inject();
+        ScriptInjector.fromString(HtmlEditorResources.INSTANCE.wysihtml().getText()).setWindow(TOP_WINDOW).inject();
+        ScriptInjector.fromString(HtmlEditorResources.INSTANCE.wysihtmlAllCommands().getText()).setWindow(TOP_WINDOW).inject();
+        ScriptInjector.fromString(HtmlEditorResources.INSTANCE.wysihtmlTableEditing().getText()).setWindow(TOP_WINDOW).inject();
+        ScriptInjector.fromString(HtmlEditorResources.INSTANCE.wysihtmlToolbar().getText()).setWindow(TOP_WINDOW).inject();
+        ScriptInjector.fromString(HtmlEditorResources.INSTANCE.parserRules().getText()).setWindow(TOP_WINDOW).inject();
         PatternFlyBootstrapper.ensurejQueryIsAvailable();
     }
 }

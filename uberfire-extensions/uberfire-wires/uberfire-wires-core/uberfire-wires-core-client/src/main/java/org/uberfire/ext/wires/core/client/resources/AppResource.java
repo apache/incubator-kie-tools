@@ -23,8 +23,7 @@ public interface AppResource
         extends
         ClientBundle {
 
-    AppResource INSTANCE = GWT.create( AppResource.class );
+    AppResource INSTANCE = GWT.create(AppResource.class);
 
     AppImages images();
-
 }

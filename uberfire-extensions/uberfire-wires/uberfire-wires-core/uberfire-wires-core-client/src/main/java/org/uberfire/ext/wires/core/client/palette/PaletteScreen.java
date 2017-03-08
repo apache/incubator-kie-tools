@@ -38,81 +38,60 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 @WorkbenchScreen(identifier = "WiresPaletteScreen")
 public class PaletteScreen extends Composite {
 
-    interface ViewBinder extends UiBinder<Widget, PaletteScreen> {
-
-    }
-
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
     @UiField
     public SimplePanel categoryShapes;
-
     @UiField
     public SimplePanel categoryFixedShapes;
-
     @UiField
     public SimplePanel categoryConnectors;
-
     @UiField
     public SimplePanel categoryContainers;
-
     @UiField
     public PanelGroup accordion;
-
     @UiField
     public PanelHeader headerCategoryShapes;
-
     @UiField
     public PanelCollapse collapseCategoryShapes;
-
     @UiField
     public PanelHeader headerCategoryFixedShapes;
-
     @UiField
     public PanelCollapse collapseCategoryFixedShapes;
-
     @UiField
     public PanelHeader headerCategoryConnectors;
-
     @UiField
     public PanelCollapse collapseCategoryConnectors;
-
     @UiField
     public PanelHeader headerCategoryContainers;
-
     @UiField
     public PanelCollapse collapseCategoryContainers;
-
     @Inject
     private ShapesGroup shapesGroup;
-
     @Inject
     private FixedShapesGroup fixedShapesGroup;
-
     @Inject
     private ConnectorsGroup connectorsGroup;
-
     @Inject
     private ContainersGroup containersGroup;
 
     @PostConstruct
     public void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
-        accordion.setId( DOM.createUniqueId() );
-        headerCategoryShapes.setDataParent( accordion.getId() );
-        headerCategoryShapes.setDataTargetWidget( collapseCategoryShapes );
-        headerCategoryFixedShapes.setDataParent( accordion.getId() );
-        headerCategoryFixedShapes.setDataTargetWidget( collapseCategoryFixedShapes );
-        headerCategoryConnectors.setDataParent( accordion.getId() );
-        headerCategoryConnectors.setDataTargetWidget( collapseCategoryConnectors );
-        headerCategoryContainers.setDataParent( accordion.getId() );
-        headerCategoryContainers.setDataTargetWidget( collapseCategoryContainers );
+        accordion.setId(DOM.createUniqueId());
+        headerCategoryShapes.setDataParent(accordion.getId());
+        headerCategoryShapes.setDataTargetWidget(collapseCategoryShapes);
+        headerCategoryFixedShapes.setDataParent(accordion.getId());
+        headerCategoryFixedShapes.setDataTargetWidget(collapseCategoryFixedShapes);
+        headerCategoryConnectors.setDataParent(accordion.getId());
+        headerCategoryConnectors.setDataTargetWidget(collapseCategoryConnectors);
+        headerCategoryContainers.setDataParent(accordion.getId());
+        headerCategoryContainers.setDataTargetWidget(collapseCategoryContainers);
 
-        categoryShapes.setWidget( shapesGroup );
-        categoryFixedShapes.setWidget( fixedShapesGroup );
-        categoryConnectors.setWidget( connectorsGroup );
-        categoryContainers.setWidget( containersGroup );
+        categoryShapes.setWidget(shapesGroup);
+        categoryFixedShapes.setWidget(fixedShapesGroup);
+        categoryConnectors.setWidget(connectorsGroup);
+        categoryContainers.setWidget(containersGroup);
     }
 
     @WorkbenchPartTitle
@@ -126,4 +105,7 @@ public class PaletteScreen extends Composite {
         return this;
     }
 
+    interface ViewBinder extends UiBinder<Widget, PaletteScreen> {
+
+    }
 }

@@ -35,93 +35,95 @@ import org.uberfire.ext.metadata.model.KCluster;
 import org.uberfire.ext.metadata.model.KObjectKey;
 import org.uberfire.ext.metadata.search.ClusterSegment;
 
-import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.Preconditions.checkNotNull;
 
 public class LuceneIndexManager implements IndexManager {
 
     private final LuceneIndexFactory factory;
     private final Map<KCluster, LuceneIndex> indexes = new ConcurrentHashMap<KCluster, LuceneIndex>();
 
-    public LuceneIndexManager( final LuceneIndexFactory factory ) {
-        this.factory = checkNotNull( "factory", factory );
-        this.indexes.putAll( factory.getIndexes() );
+    public LuceneIndexManager(final LuceneIndexFactory factory) {
+        this.factory = checkNotNull("factory",
+                                    factory);
+        this.indexes.putAll(factory.getIndexes());
     }
 
     @Override
-    public boolean contains( final KCluster cluster ) {
-        return indexes.containsKey( cluster );
+    public boolean contains(final KCluster cluster) {
+        return indexes.containsKey(cluster);
     }
 
     @Override
-    public synchronized LuceneIndex indexOf( final KObjectKey object ) {
-        final KCluster kcluster = kcluster( object );
-        final LuceneIndex currentSetup = indexes.get( kcluster );
-        if ( currentSetup != null ) {
+    public synchronized LuceneIndex indexOf(final KObjectKey object) {
+        final KCluster kcluster = kcluster(object);
+        final LuceneIndex currentSetup = indexes.get(kcluster);
+        if (currentSetup != null) {
             return currentSetup;
         }
 
-        final LuceneIndex index = factory.newCluster( kcluster );
-        indexes.put( kcluster, index );
+        final LuceneIndex index = factory.newCluster(kcluster);
+        indexes.put(kcluster,
+                    index);
         return index;
     }
 
     @Override
-    public KCluster kcluster( final KObjectKey object ) {
-        return new KClusterImpl( object.getClusterId() );
+    public KCluster kcluster(final KObjectKey object) {
+        return new KClusterImpl(object.getClusterId());
     }
 
     @Override
-    public void delete( KCluster cluster ) {
-        final LuceneIndex setup = indexes.remove( cluster );
-        factory.remove( cluster );
-        if ( setup != null ) {
+    public void delete(KCluster cluster) {
+        final LuceneIndex setup = indexes.remove(cluster);
+        factory.remove(cluster);
+        if (setup != null) {
             setup.delete();
         }
     }
 
     @Override
     public void dispose() {
-        for ( final LuceneIndex index : indexes.values() ) {
+        for (final LuceneIndex index : indexes.values()) {
             index.dispose();
         }
         factory.dispose();
     }
 
     @Override
-    public Index get( KCluster cluster ) {
-        return indexes.get( cluster );
+    public Index get(KCluster cluster) {
+        return indexes.get(cluster);
     }
 
-    public IndexSearcher getIndexSearcher( final ClusterSegment... clusterSegments ) {
+    public IndexSearcher getIndexSearcher(final ClusterSegment... clusterSegments) {
         final Set<KCluster> clusters;
-        if ( clusterSegments == null || clusterSegments.length == 0 ) {
-            clusters = new HashSet<KCluster>( indexes.keySet() );
+        if (clusterSegments == null || clusterSegments.length == 0) {
+            clusters = new HashSet<KCluster>(indexes.keySet());
         } else {
-            clusters = new HashSet<KCluster>( clusterSegments.length );
-            for ( final ClusterSegment clusterSegment : clusterSegments ) {
-                clusters.add( new KClusterImpl( clusterSegment.getClusterId() ) );
+            clusters = new HashSet<KCluster>(clusterSegments.length);
+            for (final ClusterSegment clusterSegment : clusterSegments) {
+                clusters.add(new KClusterImpl(clusterSegment.getClusterId()));
             }
         }
 
-        final Collection<IndexReader> readers = new ArrayList<IndexReader>( clusters.size() );
-        for ( final KCluster cluster : clusters ) {
-            final LuceneIndex index = indexes.get( cluster );
-            readers.add( index.nrtReader() );
+        final Collection<IndexReader> readers = new ArrayList<IndexReader>(clusters.size());
+        for (final KCluster cluster : clusters) {
+            final LuceneIndex index = indexes.get(cluster);
+            readers.add(index.nrtReader());
         }
 
         try {
-            return new SearcherFactory().newSearcher( new MultiReader( readers.toArray( new IndexReader[ readers.size() ] ) ), null );
-        } catch ( IOException e ) {
-            throw new RuntimeException( e );
+            return new SearcherFactory().newSearcher(new MultiReader(readers.toArray(new IndexReader[readers.size()])),
+                                                     null);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public void release( final IndexSearcher index ) {
+    public void release(final IndexSearcher index) {
         try {
             index.getIndexReader().close();
-        } catch ( IOException e ) {
-            throw new RuntimeException( e );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
-
 }

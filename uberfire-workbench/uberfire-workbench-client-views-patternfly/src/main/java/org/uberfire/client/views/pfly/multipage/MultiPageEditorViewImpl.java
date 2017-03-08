@@ -36,47 +36,47 @@ public class MultiPageEditorViewImpl extends ResizeTabPanel implements MultiPage
     public void init() {
         super.init();
 
-        this.addShowHandler( new TabShowHandler() {
+        this.addShowHandler(new TabShowHandler() {
 
             @Override
-            public void onShow( TabShowEvent e ) {
+            public void onShow(TabShowEvent e) {
                 onResize();
-                final TabPanelEntry tabPanelEntry = MultiPageEditorViewImpl.this.findEntryForTabWidget( e.getTab() );
-                final PageViewImpl page = (PageViewImpl) tabPanelEntry.getContentPane().getWidget( 0 );
+                final TabPanelEntry tabPanelEntry = MultiPageEditorViewImpl.this.findEntryForTabWidget(e.getTab());
+                final PageViewImpl page = (PageViewImpl) tabPanelEntry.getContentPane().getWidget(0);
                 page.onFocus();
             }
-        } );
+        });
 
-        this.addShownHandler( new TabShownHandler() {
+        this.addShownHandler(new TabShownHandler() {
 
             @Override
-            public void onShown( TabShownEvent e ) {
+            public void onShown(TabShownEvent e) {
                 onResize();
-                final TabPanelEntry tabPanelEntry = MultiPageEditorViewImpl.this.findEntryForTabWidget( e.getTab() );
-                final PageViewImpl page = (PageViewImpl) tabPanelEntry.getContentPane().getWidget( 0 );
+                final TabPanelEntry tabPanelEntry = MultiPageEditorViewImpl.this.findEntryForTabWidget(e.getTab());
+                final PageViewImpl page = (PageViewImpl) tabPanelEntry.getContentPane().getWidget(0);
                 page.onLostFocus();
             }
-        } );
+        });
 
-        this.tabBar.addStyleName( "nav-tabs-pf" );
-        this.addStyleName( "uf-multi-page-editor" );
+        this.tabBar.addStyleName("nav-tabs-pf");
+        this.addStyleName("uf-multi-page-editor");
     }
 
-    public void addPage( final Page page ) {
-        final TabPanelEntry tab = new TabPanelEntry( page.getLabel(), page.getView().asWidget() );
-        this.addItem( tab );
-        if ( this.getActiveTab() == null ) {
+    public void addPage(final Page page) {
+        final TabPanelEntry tab = new TabPanelEntry(page.getLabel(),
+                                                    page.getView().asWidget());
+        this.addItem(tab);
+        if (this.getActiveTab() == null) {
             tab.showTab();
             tab.setActive(true);
         }
     }
 
-    public void selectPage( int index ) {
-        this.selectTabIndex( index );
+    public void selectPage(int index) {
+        this.selectTabIndex(index);
     }
 
     public int selectedPage() {
         return this.getSelectedTabIndex();
     }
-
 }

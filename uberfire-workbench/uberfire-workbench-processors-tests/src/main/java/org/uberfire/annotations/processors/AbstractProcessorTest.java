@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.processing.Processor;
 import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
@@ -44,76 +45,49 @@ public abstract class AbstractProcessorTest {
     private static final String SOURCE_FILETYPE = ".java";
 
     /**
-     * Container for miscfeatures results.
-     */
-    public class Result {
-
-        private String expectedCode;
-        private String actualCode;
-
-        public String getExpectedCode() {
-            return expectedCode;
-        }
-
-        public void setExpectedCode( final String expectedCode ) {
-            this.expectedCode = expectedCode;
-        }
-
-        public String getActualCode() {
-            return actualCode;
-        }
-
-        public void setActualCode( final String actualCode ) {
-            this.actualCode = actualCode;
-        }
-    }
-
-    /**
      * Compile a unit of source code with the specified annotation processor
      * @param annotationProcessor
      * @param compilationUnits
      * @return
      */
-    public List<Diagnostic<? extends JavaFileObject>> compile( final Processor annotationProcessor,
-                                                               final String... compilationUnits ) {
+    public List<Diagnostic<? extends JavaFileObject>> compile(final Processor annotationProcessor,
+                                                              final String... compilationUnits) {
 
         final DiagnosticCollector<JavaFileObject> diagnosticListener = new DiagnosticCollector<JavaFileObject>();
 
         try {
 
             final JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-            final StandardJavaFileManager fileManager = compiler.getStandardFileManager( diagnosticListener,
-                    null,
-                    null );
+            final StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnosticListener,
+                                                                                        null,
+                                                                                        null);
 
-            String[] convertedCompilationUnits = convertCompilationUnitToFilePaths( compilationUnits );
+            String[] convertedCompilationUnits = convertCompilationUnitToFilePaths(compilationUnits);
             final Iterable<? extends JavaFileObject> compilationUnitsJavaObjects =
-                    fileManager.getJavaFileObjects( convertedCompilationUnits );
+                    fileManager.getJavaFileObjects(convertedCompilationUnits);
 
             //Compile with provide annotation processor
-            final CompilationTask task = compiler.getTask( null,
-                                                           fileManager,
-                                                           diagnosticListener,
-                                                           null,
-                                                           null,
-                                                           compilationUnitsJavaObjects );
-            task.setProcessors( Arrays.asList( annotationProcessor ) );
+            final CompilationTask task = compiler.getTask(null,
+                                                          fileManager,
+                                                          diagnosticListener,
+                                                          null,
+                                                          null,
+                                                          compilationUnitsJavaObjects);
+            task.setProcessors(Arrays.asList(annotationProcessor));
             task.call();
             fileManager.close();
-
-        } catch ( IOException ioe ) {
-            fail( ioe.getMessage() );
+        } catch (IOException ioe) {
+            fail(ioe.getMessage());
         }
-
-        return diagnosticListener.getDiagnostics();
+        return diagnosticListener.getDiagnostics().stream().filter(p -> p.getKind() != Kind.NOTE).collect(Collectors.toList());
     }
 
-    private String[] convertCompilationUnitToFilePaths( String[] compilationUnits ) {
+    private String[] convertCompilationUnitToFilePaths(String[] compilationUnits) {
         List<String> convertedCompilationUnits = new ArrayList<String>();
-        for ( String compilationUnit : compilationUnits ) {
-            convertedCompilationUnits.add( this.getClass().getResource( "/" + compilationUnit + SOURCE_FILETYPE ).getPath() );
+        for (String compilationUnit : compilationUnits) {
+            convertedCompilationUnits.add(this.getClass().getResource("/" + compilationUnit + SOURCE_FILETYPE).getPath());
         }
-        return convertedCompilationUnits.toArray( new String[ convertedCompilationUnits.size() ] );
+        return convertedCompilationUnits.toArray(new String[convertedCompilationUnits.size()]);
     }
 
     /**
@@ -122,49 +96,49 @@ public abstract class AbstractProcessorTest {
      * @return
      * @throws FileNotFoundException
      */
-    public String getExpectedSourceCode( final String compilationUnit ) throws FileNotFoundException {
+    public String getExpectedSourceCode(final String compilationUnit) throws FileNotFoundException {
         StringBuilder sb = new StringBuilder();
         try {
-            final String path = this.getClass().getResource( "/" + compilationUnit ).getPath();
-            final FileReader fr = new FileReader( path );
-            final BufferedReader input = new BufferedReader( fr );
+            final String path = this.getClass().getResource("/" + compilationUnit).getPath();
+            final FileReader fr = new FileReader(path);
+            final BufferedReader input = new BufferedReader(fr);
             try {
                 String line = null;
-                while ( ( line = input.readLine() ) != null ) {
-                    sb.append( line );
-                    sb.append( System.getProperty( "line.separator" ) );
+                while ((line = input.readLine()) != null) {
+                    sb.append(line);
+                    sb.append(System.getProperty("line.separator"));
                 }
             } finally {
                 input.close();
             }
-        } catch ( FileNotFoundException fnfe ) {
+        } catch (FileNotFoundException fnfe) {
             throw fnfe;
-        } catch ( IOException ioe ) {
-            fail( ioe.getMessage() );
+        } catch (IOException ioe) {
+            fail(ioe.getMessage());
         }
         return sb.toString();
-
     }
 
     /**
      * Assert that compilation was successful
      * @param diagnostics
      */
-    public void assertSuccessfulCompilation( final List<Diagnostic<? extends JavaFileObject>> diagnostics ) {
-        assertFalse( diagnostics.toString(), hasErrors( diagnostics ) );
+    public void assertSuccessfulCompilation(final List<Diagnostic<? extends JavaFileObject>> diagnostics) {
+        assertFalse(diagnostics.toString(),
+                    hasErrors(diagnostics));
     }
 
     /**
      * Assert that compilation failed
      * @param diagnostics
      */
-    public void assertFailedCompilation( final List<Diagnostic<? extends JavaFileObject>> diagnostics ) {
-        assertTrue( hasErrors( diagnostics ) );
+    public void assertFailedCompilation(final List<Diagnostic<? extends JavaFileObject>> diagnostics) {
+        assertTrue(hasErrors(diagnostics));
     }
 
-    private boolean hasErrors( final List<Diagnostic<? extends JavaFileObject>> diagnostics ) {
-        for ( Diagnostic<? extends JavaFileObject> diagnostic : diagnostics ) {
-            if ( diagnostic.getKind().equals( Kind.ERROR ) ) {
+    private boolean hasErrors(final List<Diagnostic<? extends JavaFileObject>> diagnostics) {
+        for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics) {
+            if (diagnostic.getKind().equals(Kind.ERROR)) {
                 return true;
             }
         }
@@ -174,44 +148,42 @@ public abstract class AbstractProcessorTest {
     /**
      * Assert that the given error message is contained in the compilation
      * diagnostics.
-     *
-     * @param diagnostics
-     *          the list of diagnostic messages from the compiler. Must not be null.
-     * @param kind
-     *          the kind of message to search for, or null to search messages of
-     *          any kind.
-     * @param line
-     *          the line number that must be attached to the message, or
-     *          {@link Diagnostic#NOPOS} if line number is not important.
-     * @param col
-     *          the column number that must be attached to the message, or
-     *          {@link Diagnostic#NOPOS} if column number is not important.
-     * @param message
-     *          the message to search for. If any otherwise matching message in
-     *          the given list contains this string, the assertion passes. Must not be null.
+     * @param diagnostics the list of diagnostic messages from the compiler. Must not be null.
+     * @param kind the kind of message to search for, or null to search messages of
+     * any kind.
+     * @param line the line number that must be attached to the message, or
+     * {@link Diagnostic#NOPOS} if line number is not important.
+     * @param col the column number that must be attached to the message, or
+     * {@link Diagnostic#NOPOS} if column number is not important.
+     * @param message the message to search for. If any otherwise matching message in
+     * the given list contains this string, the assertion passes. Must not be null.
      */
-    public void assertCompilationMessage(List<Diagnostic<? extends JavaFileObject>> diagnostics, Kind kind, long line, long col, final String message) {
-      StringBuilder sb = new StringBuilder(100);
-      for (Diagnostic<? extends JavaFileObject> msg : diagnostics) {
-        sb.append(msg.getKind())
-          .append(" ")
-          .append(msg.getLineNumber())
-          .append(":")
-          .append(msg.getColumnNumber())
-          .append(": ")
-          .append(msg.getMessage(null))
-          .append("\n");
-        if ( (kind == null || msg.getKind().equals(kind))
-                && (line == Diagnostic.NOPOS || msg.getLineNumber() == line)
-                && (col == Diagnostic.NOPOS || msg.getColumnNumber() == col)
-                && msg.getMessage(null).contains(message)) {
-          return;
+    public void assertCompilationMessage(List<Diagnostic<? extends JavaFileObject>> diagnostics,
+                                         Kind kind,
+                                         long line,
+                                         long col,
+                                         final String message) {
+        StringBuilder sb = new StringBuilder(100);
+        for (Diagnostic<? extends JavaFileObject> msg : diagnostics) {
+            sb.append(msg.getKind())
+                    .append(" ")
+                    .append(msg.getLineNumber())
+                    .append(":")
+                    .append(msg.getColumnNumber())
+                    .append(": ")
+                    .append(msg.getMessage(null))
+                    .append("\n");
+            if ((kind == null || msg.getKind().equals(kind))
+                    && (line == Diagnostic.NOPOS || msg.getLineNumber() == line)
+                    && (col == Diagnostic.NOPOS || msg.getColumnNumber() == col)
+                    && msg.getMessage(null).contains(message)) {
+                return;
+            }
         }
-      }
 
-      fail("Compiler diagnostics did not contain " + kind + " message " + line + ":" + col + ": " + message + "\n" +
-              "Dump of all " + diagnostics.size() + " actual messages:\n" +
-              sb);
+        fail("Compiler diagnostics did not contain " + kind + " message " + line + ":" + col + ": " + message + "\n" +
+                     "Dump of all " + diagnostics.size() + " actual messages:\n" +
+                     sb);
     }
 
     /**
@@ -238,7 +210,37 @@ public abstract class AbstractProcessorTest {
         }
 
         // ensure the error message was preserved so the user has a hope of tracking down the problem!
-        List<Diagnostic<? extends JavaFileObject>> messages = compile( processorUnderTest, "org/uberfire/annotations/processors/AnnotatedWithEverything" );
-        assertCompilationMessage( messages, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "Failing for testing purposes" );
+        List<Diagnostic<? extends JavaFileObject>> messages = compile(processorUnderTest,
+                                                                      "org/uberfire/annotations/processors/AnnotatedWithEverything");
+        assertCompilationMessage(messages,
+                                 Kind.ERROR,
+                                 Diagnostic.NOPOS,
+                                 Diagnostic.NOPOS,
+                                 "Failing for testing purposes");
+    }
+
+    /**
+     * Container for miscfeatures results.
+     */
+    public class Result {
+
+        private String expectedCode;
+        private String actualCode;
+
+        public String getExpectedCode() {
+            return expectedCode;
+        }
+
+        public void setExpectedCode(final String expectedCode) {
+            this.expectedCode = expectedCode;
+        }
+
+        public String getActualCode() {
+            return actualCode;
+        }
+
+        public void setActualCode(final String actualCode) {
+            this.actualCode = actualCode;
+        }
     }
 }

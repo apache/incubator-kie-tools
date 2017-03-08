@@ -35,65 +35,70 @@ public abstract class SocialPageRepository {
     @Inject
     CommandTimelineFilter commandTimelineFilter;
 
-    protected void checkIfICanGoForward( SocialPaged socialPaged,
-                                         List<SocialActivitiesEvent> events ) {
-        controlForward( socialPaged, events );
+    protected void checkIfICanGoForward(SocialPaged socialPaged,
+                                        List<SocialActivitiesEvent> events) {
+        controlForward(socialPaged,
+                       events);
     }
 
-    private void controlForward( SocialPaged socialPaged,
-                                 List<SocialActivitiesEvent> events ) {
-        if ( noMoreEvents( socialPaged, events ) ) {
-            socialPaged.setCanIGoForward( false );
+    private void controlForward(SocialPaged socialPaged,
+                                List<SocialActivitiesEvent> events) {
+        if (noMoreEvents(socialPaged,
+                         events)) {
+            socialPaged.setCanIGoForward(false);
         } else {
-            socialPaged.setCanIGoForward( true );
+            socialPaged.setCanIGoForward(true);
         }
     }
 
-    private boolean noMoreEvents( SocialPaged socialPaged,
-                                  List<SocialActivitiesEvent> events ) {
+    private boolean noMoreEvents(SocialPaged socialPaged,
+                                 List<SocialActivitiesEvent> events) {
         return socialPaged.isLastEventFromLastFile() || events.size() < socialPaged.getPageSize();
     }
 
-    protected boolean thereIsMoreFilesToRead( String fileName ) {
-        return fileName.equalsIgnoreCase( "" ) || !fileName.equals( "-1" );
+    protected boolean thereIsMoreFilesToRead(String fileName) {
+        return fileName.equalsIgnoreCase("") || !fileName.equals("-1");
     }
 
-    void addEvents( SocialPaged socialPaged,
+    void addEvents(SocialPaged socialPaged,
+                   List<SocialActivitiesEvent> events,
+                   List<SocialActivitiesEvent> timeline) {
+        for (int i = socialPaged.lastFileIndex(); i < timeline.size(); i++) {
+            events.add(timeline.get(i));
+            socialPaged.updateLastFileIndex();
+            if (foundEnoughtEvents(socialPaged,
+                                   events)) {
+                break;
+            }
+        }
+    }
+
+    protected boolean foundEnoughtEvents(SocialPaged socialPaged,
+                                         List<SocialActivitiesEvent> events) {
+        return (events.size() >= socialPaged.getPageSize());
+    }
+
+    void readEvents(SocialPaged socialPaged,
                     List<SocialActivitiesEvent> events,
-                    List<SocialActivitiesEvent> timeline ) {
-        for ( int i = socialPaged.lastFileIndex(); i < timeline.size(); i++ ) {
-            events.add( timeline.get( i ) );
+                    List<SocialActivitiesEvent> timeline) {
+        for (int i = 0; i < timeline.size(); i++) {
+            events.add(timeline.get(i));
             socialPaged.updateLastFileIndex();
-            if ( foundEnoughtEvents( socialPaged, events ) ) {
+            if (foundEnoughtEvents(socialPaged,
+                                   events)) {
                 break;
             }
         }
     }
 
-    protected boolean foundEnoughtEvents( SocialPaged socialPaged,
-                                          List<SocialActivitiesEvent> events ) {
-        return ( events.size() >= socialPaged.getPageSize() );
-    }
-
-    void readEvents( SocialPaged socialPaged,
-                     List<SocialActivitiesEvent> events,
-                     List<SocialActivitiesEvent> timeline ) {
-        for ( int i = 0; i < timeline.size(); i++ ) {
-            events.add( timeline.get( i ) );
-            socialPaged.updateLastFileIndex();
-            if ( foundEnoughtEvents( socialPaged, events ) ) {
-                break;
-            }
-        }
-    }
-
-    void searchEvents( SocialPaged socialPaged,
-                       List<SocialActivitiesEvent> events,
-                       List<SocialActivitiesEvent> freshEvents ) {
-        for ( int i = socialPaged.freshIndex(); i < freshEvents.size(); i++ ) {
-            events.add( freshEvents.get( i ) );
+    void searchEvents(SocialPaged socialPaged,
+                      List<SocialActivitiesEvent> events,
+                      List<SocialActivitiesEvent> freshEvents) {
+        for (int i = socialPaged.freshIndex(); i < freshEvents.size(); i++) {
+            events.add(freshEvents.get(i));
             socialPaged.updateFreshIndex();
-            if ( foundEnoughtEvents( socialPaged, events ) ) {
+            if (foundEnoughtEvents(socialPaged,
+                                   events)) {
                 break;
             }
         }
@@ -103,49 +108,52 @@ public abstract class SocialPageRepository {
         return socialTimelinePersistenceAPI;
     }
 
-    boolean shouldExecuteAdapters( Map commandsMap,
-                                   List<SocialActivitiesEvent> events ) {
+    boolean shouldExecuteAdapters(Map commandsMap,
+                                  List<SocialActivitiesEvent> events) {
         return !events.isEmpty() && commandsMap.size() > 0;
     }
 
-    void sortListByDate( List<SocialActivitiesEvent> socialActivitiesEvents ) {
-        Collections.sort( socialActivitiesEvents, new Comparator<SocialActivitiesEvent>() {
-            @Override
-            public int compare( SocialActivitiesEvent o1,
-                                SocialActivitiesEvent o2 ) {
-                return o1.getTimestamp().compareTo( o2.getTimestamp() );
-            }
-        } );
+    void sortListByDate(List<SocialActivitiesEvent> socialActivitiesEvents) {
+        Collections.sort(socialActivitiesEvents,
+                         new Comparator<SocialActivitiesEvent>() {
+                             @Override
+                             public int compare(SocialActivitiesEvent o1,
+                                                SocialActivitiesEvent o2) {
+                                 return o1.getTimestamp().compareTo(o2.getTimestamp());
+                             }
+                         });
     }
 
-    List<SocialActivitiesEvent> filterTimelineWithAdapters( Map commandsMap,
-                                                            List<SocialActivitiesEvent> userEvents ) {
-        if ( userEvents == null ) {
+    List<SocialActivitiesEvent> filterTimelineWithAdapters(Map commandsMap,
+                                                           List<SocialActivitiesEvent> userEvents) {
+        if (userEvents == null) {
             userEvents = new ArrayList<SocialActivitiesEvent>();
         }
-        if ( shouldExecuteAdapters( commandsMap, userEvents ) ) {
-            userEvents = commandTimelineFilter.executeUserCommandsOn( userEvents, commandsMap );
+        if (shouldExecuteAdapters(commandsMap,
+                                  userEvents)) {
+            userEvents = commandTimelineFilter.executeUserCommandsOn(userEvents,
+                                                                     commandsMap);
         }
         return userEvents;
     }
 
-    SocialPaged setupQueryDirection( SocialPaged socialPaged ) {
-        if ( socialPaged.isBackward() ) {
+    SocialPaged setupQueryDirection(SocialPaged socialPaged) {
+        if (socialPaged.isBackward()) {
             socialPaged = socialPaged.goBackToLastQuery();
         }
-        socialPaged.setLastQuery( new SocialPaged( socialPaged ) );
+        socialPaged.setLastQuery(new SocialPaged(socialPaged));
         return socialPaged;
     }
 
-    List<SocialActivitiesEvent> filterList( SocialPredicate<SocialActivitiesEvent> predicate,
-                                                    List<SocialActivitiesEvent> freshEvents ) {
-        if ( predicate == null ) {
+    List<SocialActivitiesEvent> filterList(SocialPredicate<SocialActivitiesEvent> predicate,
+                                           List<SocialActivitiesEvent> freshEvents) {
+        if (predicate == null) {
             return freshEvents;
         }
         List<SocialActivitiesEvent> filteredList = new ArrayList<SocialActivitiesEvent>();
-        for ( SocialActivitiesEvent socialActivitiesEvent : freshEvents ) {
-            if ( predicate.test( socialActivitiesEvent ) ) {
-                filteredList.add( socialActivitiesEvent );
+        for (SocialActivitiesEvent socialActivitiesEvent : freshEvents) {
+            if (predicate.test(socialActivitiesEvent)) {
+                filteredList.add(socialActivitiesEvent);
             }
         }
         return filteredList;

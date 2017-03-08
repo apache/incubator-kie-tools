@@ -24,7 +24,7 @@ public class StringFactoryHelper implements FactoryHelper<String> {
 
     private String context;
 
-    public StringFactoryHelper( final String context ) {
+    public StringFactoryHelper(final String context) {
         this.context = context;
     }
 
@@ -34,8 +34,7 @@ public class StringFactoryHelper implements FactoryHelper<String> {
     }
 
     @Override
-    public void setContext( final String context ) {
+    public void setContext(final String context) {
         this.context = context;
     }
-
 }

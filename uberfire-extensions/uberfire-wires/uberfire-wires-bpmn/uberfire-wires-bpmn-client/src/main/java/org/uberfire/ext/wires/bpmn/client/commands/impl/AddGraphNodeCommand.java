@@ -31,33 +31,32 @@ public class AddGraphNodeCommand implements Command {
     private BpmnGraph target;
     private BpmnGraphNode candidate;
 
-    public AddGraphNodeCommand( final BpmnGraph target,
-                                final BpmnGraphNode candidate ) {
-        this.target = PortablePreconditions.checkNotNull( "target",
-                                                          target );
-        this.candidate = PortablePreconditions.checkNotNull( "candidate",
-                                                             candidate );
+    public AddGraphNodeCommand(final BpmnGraph target,
+                               final BpmnGraphNode candidate) {
+        this.target = PortablePreconditions.checkNotNull("target",
+                                                         target);
+        this.candidate = PortablePreconditions.checkNotNull("candidate",
+                                                            candidate);
     }
 
     @Override
-    public Results apply( final RuleManager ruleManager ) {
+    public Results apply(final RuleManager ruleManager) {
         final Results results = new DefaultResultsImpl();
-        results.getMessages().addAll( ruleManager.checkContainment( target,
-                                                                    candidate ).getMessages() );
-        results.getMessages().addAll( ruleManager.checkCardinality( target,
-                                                                    candidate,
-                                                                    RuleManager.Operation.ADD ).getMessages() );
-        if ( !results.contains( ResultType.ERROR ) ) {
-            target.addNode( candidate );
+        results.getMessages().addAll(ruleManager.checkContainment(target,
+                                                                  candidate).getMessages());
+        results.getMessages().addAll(ruleManager.checkCardinality(target,
+                                                                  candidate,
+                                                                  RuleManager.Operation.ADD).getMessages());
+        if (!results.contains(ResultType.ERROR)) {
+            target.addNode(candidate);
         }
         return results;
     }
 
     @Override
-    public Results undo( final RuleManager ruleManager ) {
-        final Command undoCommand = new DeleteGraphNodeCommand( target,
-                                                                candidate );
-        return undoCommand.apply( ruleManager );
+    public Results undo(final RuleManager ruleManager) {
+        final Command undoCommand = new DeleteGraphNodeCommand(target,
+                                                               candidate);
+        return undoCommand.apply(ruleManager);
     }
-
 }

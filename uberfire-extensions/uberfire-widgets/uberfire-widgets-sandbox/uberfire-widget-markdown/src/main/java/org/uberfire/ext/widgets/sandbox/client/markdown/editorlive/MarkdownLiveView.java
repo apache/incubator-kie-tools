@@ -31,31 +31,30 @@ public class MarkdownLiveView extends Composite
         RequiresResize,
         MarkdownLivePresenter.View {
 
-    interface MarkdownViewBinder
-            extends
-            UiBinder<ResizeLayoutPanel, MarkdownLiveView> {
-
-    }
-
-    private static MarkdownViewBinder uiBinder = GWT.create( MarkdownViewBinder.class );
-
+    private static MarkdownViewBinder uiBinder = GWT.create(MarkdownViewBinder.class);
     @UiField
     protected Markdown markdown;
 
     @PostConstruct
     public void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
-    public void setContent( final String content ) {
-        markdown.setContent( content );
+    public void setContent(final String content) {
+        markdown.setContent(content);
     }
 
     @Override
     public void onResize() {
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();
-        setPixelSize( width, height );
+        setPixelSize(width,
+                     height);
     }
 
+    interface MarkdownViewBinder
+            extends
+            UiBinder<ResizeLayoutPanel, MarkdownLiveView> {
+
+    }
 }

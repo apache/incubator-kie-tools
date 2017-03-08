@@ -22,18 +22,20 @@ import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.rpc.SessionInfo;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
 
 @Portable
 public class PluginRenamed extends BasePluginEvent {
 
     private String oldPluginName;
 
-    public PluginRenamed( @MapsTo("oldPluginName") final String oldPluginName,
-                          @MapsTo("plugin") final Plugin plugin,
-                          @MapsTo("sessionInfo") final SessionInfo sessionInfo ) {
-        super( plugin, sessionInfo );
-        this.oldPluginName = checkNotEmpty( "oldPluginName", oldPluginName );
+    public PluginRenamed(@MapsTo("oldPluginName") final String oldPluginName,
+                         @MapsTo("plugin") final Plugin plugin,
+                         @MapsTo("sessionInfo") final SessionInfo sessionInfo) {
+        super(plugin,
+              sessionInfo);
+        this.oldPluginName = checkNotEmpty("oldPluginName",
+                                           oldPluginName);
     }
 
     public String getOldPluginName() {

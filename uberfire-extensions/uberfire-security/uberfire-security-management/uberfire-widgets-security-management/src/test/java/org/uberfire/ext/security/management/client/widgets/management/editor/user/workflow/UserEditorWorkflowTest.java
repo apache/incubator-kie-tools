@@ -16,6 +16,9 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.user.workflow;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.security.shared.api.Group;
@@ -35,37 +38,57 @@ import org.uberfire.ext.security.management.client.widgets.management.editor.use
 import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserAttributesEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.user.UserEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.workflow.EntityWorkflowView;
-import org.uberfire.ext.security.management.client.widgets.management.events.*;
+import org.uberfire.ext.security.management.client.widgets.management.events.CreateUserAttributeEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.DeleteUserAttributeEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.DeleteUserEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.OnChangePasswordEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.OnDeleteEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.OnEditEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.OnErrorEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.OnRemoveUserGroupEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.OnUpdateUserGroupsEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.SaveUserEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.UpdateUserAttributeEvent;
 import org.uberfire.ext.security.management.client.widgets.popup.ConfirmBox;
 import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class UserEditorWorkflowTest extends AbstractSecurityManagementTest  {
+public class UserEditorWorkflowTest extends AbstractSecurityManagementTest {
 
-    @Mock EventSourceMock<OnErrorEvent> errorEvent;
-    @Mock EventSourceMock<DeleteUserEvent> deleteUserEvent;
-    @Mock EventSourceMock<SaveUserEvent> saveUserEvent;
-    @Mock ConfirmBox confirmBox;
-    @Mock UserEditor userEditor;
-    @Mock ACLViewer aclViewer;
-    @Mock UserEditorDriver userEditorDriver;
-    @Mock ChangePassword changePassword;
-    @Mock LoadingBox loadingBox;
-    @Mock EntityWorkflowView view;
-    
+    @Mock
+    EventSourceMock<OnErrorEvent> errorEvent;
+    @Mock
+    EventSourceMock<DeleteUserEvent> deleteUserEvent;
+    @Mock
+    EventSourceMock<SaveUserEvent> saveUserEvent;
+    @Mock
+    ConfirmBox confirmBox;
+    @Mock
+    UserEditor userEditor;
+    @Mock
+    ACLViewer aclViewer;
+    @Mock
+    UserEditorDriver userEditorDriver;
+    @Mock
+    ChangePassword changePassword;
+    @Mock
+    LoadingBox loadingBox;
+    @Mock
+    EntityWorkflowView view;
+    @Mock
+    UserAttributesEditor userAttributesEditor;
+    @Mock
+    UserAssignedGroupsExplorer userAssignedGroupsExplorer;
+    @Mock
+    UserAssignedGroupsEditor userAssignedGroupsEditor;
+    @Mock
+    User user;
     private UserEditorWorkflow tested;
-    @Mock UserAttributesEditor userAttributesEditor;
-    @Mock UserAssignedGroupsExplorer userAssignedGroupsExplorer;
-    @Mock UserAssignedGroupsEditor userAssignedGroupsEditor;
-    @Mock User user;
-    
+
     @Before
     public void setup() {
         super.setup();
@@ -79,27 +102,48 @@ public class UserEditorWorkflowTest extends AbstractSecurityManagementTest  {
         groups.add(group1);
         when(user.getIdentifier()).thenReturn("user1");
         when(user.getGroups()).thenReturn(groups);
-        tested = new UserEditorWorkflow(userSystemManager, errorEvent, workbenchNotification, deleteUserEvent, saveUserEvent,
-                confirmBox, userEditor, userEditorDriver, changePassword, loadingBox, view);
+        tested = new UserEditorWorkflow(userSystemManager,
+                                        errorEvent,
+                                        workbenchNotification,
+                                        deleteUserEvent,
+                                        saveUserEvent,
+                                        confirmBox,
+                                        userEditor,
+                                        userEditorDriver,
+                                        changePassword,
+                                        loadingBox,
+                                        view);
     }
-    
+
     @Test
     public void testOnEditUserEvent() {
         final OnEditEvent onEditEvent = mock(OnEditEvent.class);
         when(onEditEvent.getContext()).thenReturn(userEditor);
         tested.user = user;
         tested.onEditUserEvent(onEditEvent);
-        verify(userEditorDriver, times(1)).edit(user, userEditor);
-        verify(view, times(1)).setCancelButtonVisible(true);
-        verify(view, times(0)).setCallback(any(EntityWorkflowView.Callback.class));
-        verify(view, times(0)).setSaveButtonText(anyString());
-        verify(view, times(0)).setWidget(any(IsWidget.class));
-        verify(view, times(1)).setSaveButtonVisible(true);
-        verify(view, times(1)).setSaveButtonEnabled(false);
-        verify(view, times(0)).showNotification(anyString());
-        verify(view, times(0)).clearNotification();
-        verify(loadingBox, times(0)).show();
-        verify(loadingBox, times(0)).hide();
+        verify(userEditorDriver,
+               times(1)).edit(user,
+                              userEditor);
+        verify(view,
+               times(1)).setCancelButtonVisible(true);
+        verify(view,
+               times(0)).setCallback(any(EntityWorkflowView.Callback.class));
+        verify(view,
+               times(0)).setSaveButtonText(anyString());
+        verify(view,
+               times(0)).setWidget(any(IsWidget.class));
+        verify(view,
+               times(1)).setSaveButtonVisible(true);
+        verify(view,
+               times(1)).setSaveButtonEnabled(false);
+        verify(view,
+               times(0)).showNotification(anyString());
+        verify(view,
+               times(0)).clearNotification();
+        verify(loadingBox,
+               times(0)).show();
+        verify(loadingBox,
+               times(0)).hide();
     }
 
     @Test
@@ -114,10 +158,18 @@ public class UserEditorWorkflowTest extends AbstractSecurityManagementTest  {
                 callback.execute();
                 return null;
             }
-        }).when(confirmBox).show(anyString(), anyString(), any(), any());
+        }).when(confirmBox).show(anyString(),
+                                 anyString(),
+                                 any(),
+                                 any());
         tested.onDeleteUserEvent(onDeleteEvent);
-        verify(confirmBox, times(1)).show(anyString(), anyString(), any(), any());
-        verify(userManagerService, times(1)).delete(anyString());
+        verify(confirmBox,
+               times(1)).show(anyString(),
+                              anyString(),
+                              any(),
+                              any());
+        verify(userManagerService,
+               times(1)).delete(anyString());
     }
 
     @Test
@@ -126,7 +178,9 @@ public class UserEditorWorkflowTest extends AbstractSecurityManagementTest  {
         when(onChangePasswordEvent.getContext()).thenReturn(userEditor);
         tested.user = user;
         tested.onChangeUserPasswordEvent(onChangePasswordEvent);
-        verify(changePassword, times(1)).show(anyString(), any(ChangePassword.ChangePasswordCallback.class));
+        verify(changePassword,
+               times(1)).show(anyString(),
+                              any(ChangePassword.ChangePasswordCallback.class));
     }
 
     @Test
@@ -174,11 +228,10 @@ public class UserEditorWorkflowTest extends AbstractSecurityManagementTest  {
         assertSetDirty();
     }
 
-    
     private void assertSetDirty() {
-        verify(view, times(1)).setSaveButtonEnabled(true);
-        verify(view, times(1)).showNotification(anyString());
+        verify(view,
+               times(1)).setSaveButtonEnabled(true);
+        verify(view,
+               times(1)).showNotification(anyString());
     }
-
-    
 }

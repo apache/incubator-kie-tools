@@ -74,43 +74,14 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.workbench.model.menu.MenuFactory.*;
+import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelCustomMenu;
+import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelMenu;
 
 /**
  * GWT's Entry-point for Uberfire-showcase
  */
 @EntryPoint
 public class ShowcaseEntryPoint {
-
-    @Inject
-    private SyncBeanManager manager;
-
-    @Inject
-    private WorkbenchMenuBar menubar;
-
-    @Inject
-    private UserMenu userMenu;
-
-    @Inject
-    private User user;
-
-    @Inject
-    private UtilityMenuBar utilityMenu;
-
-    @Inject
-    private PlaceManager placeManager;
-
-    @Inject
-    private ActivityManager activityManager;
-
-    @Inject
-    private Caller<AuthenticationService> authService;
-
-    @Inject
-    private SearchMenuBuilder searchMenuBuilder;
-
-    @Inject
-    private ErrorPopupView errorPopupView;
 
     private static final Set<String> menuItemsToRemove = Sets.newHashSet(
             "IFrameScreen",
@@ -123,6 +94,60 @@ public class ShowcaseEntryPoint {
             "chartPopulator",
             "welcome"
     );
+    @Inject
+    private SyncBeanManager manager;
+    @Inject
+    private WorkbenchMenuBar menubar;
+    @Inject
+    private UserMenu userMenu;
+    @Inject
+    private User user;
+    @Inject
+    private UtilityMenuBar utilityMenu;
+    @Inject
+    private PlaceManager placeManager;
+    @Inject
+    private ActivityManager activityManager;
+    @Inject
+    private Caller<AuthenticationService> authService;
+    @Inject
+    private SearchMenuBuilder searchMenuBuilder;
+    @Inject
+    private ErrorPopupView errorPopupView;
+
+    public static List<MenuItem> getScreens() {
+        final List<MenuItem> screens = new ArrayList<>();
+        final List<String> names = new ArrayList<>();
+
+        for (final IOCBeanDef<WorkbenchScreenActivity> _menuItem : IOC.getBeanManager().lookupBeans(WorkbenchScreenActivity.class)) {
+            final String name;
+            if (!_menuItem.getBeanClass().equals(PerspectiveEditorScreenActivity.class)) {
+                if (_menuItem.getBeanClass().equals(JSWorkbenchScreenActivity.class)) {
+                    name = _menuItem.getName();
+                } else {
+                    name = IOC.getBeanManager().lookupBean(_menuItem.getBeanClass()).getName();
+                }
+
+                if (!menuItemsToRemove.contains(name)) {
+                    names.add(name);
+                }
+            }
+        }
+
+        Collections.sort(names);
+
+        final PlaceManager placeManager = IOC.getBeanManager().lookupBean(PlaceManager.class).getInstance();
+        for (final String name : names) {
+            final MenuItem item = MenuFactory.newSimpleItem(name)
+                    .identifier("screen.read." + name)
+                    .respondsWith(() -> {
+                        placeManager.goTo(new DefaultPlaceRequest(name));
+                    }).endMenu().build().getItems().get(0);
+            screens.add(item);
+        }
+
+        return screens;
+    }
 
     @AfterInitialization
     public void startApp() {
@@ -179,43 +204,11 @@ public class ShowcaseEntryPoint {
                         .respondsWith(() -> placeManager.goTo(new DefaultPlaceRequest(SimplePopUp.SCREEN_ID)))
                         .endMenu()
                         .newTopLevelMenu("Error Popup")
-                        .respondsWith(() -> errorPopupView.showMessage("Something went wrong!", Commands.DO_NOTHING, Commands.DO_NOTHING))
+                        .respondsWith(() -> errorPopupView.showMessage("Something went wrong!",
+                                                                       Commands.DO_NOTHING,
+                                                                       Commands.DO_NOTHING))
                         .endMenu()
                         .build());
-    }
-
-    public static List<MenuItem> getScreens() {
-        final List<MenuItem> screens = new ArrayList<>();
-        final List<String> names = new ArrayList<>();
-
-        for (final IOCBeanDef<WorkbenchScreenActivity> _menuItem : IOC.getBeanManager().lookupBeans(WorkbenchScreenActivity.class)) {
-            final String name;
-            if(!_menuItem.getBeanClass().equals(PerspectiveEditorScreenActivity.class)){
-                if (_menuItem.getBeanClass().equals(JSWorkbenchScreenActivity.class)) {
-                    name = _menuItem.getName();
-                } else {
-                    name = IOC.getBeanManager().lookupBean(_menuItem.getBeanClass()).getName();
-                }
-
-                if (!menuItemsToRemove.contains(name)) {
-                    names.add(name);
-                }
-            }
-        }
-
-        Collections.sort(names);
-
-        final PlaceManager placeManager = IOC.getBeanManager().lookupBean(PlaceManager.class).getInstance();
-        for (final String name : names) {
-            final MenuItem item = MenuFactory.newSimpleItem(name)
-                    .identifier("screen.read." + name)
-                    .respondsWith(() -> {
-                        placeManager.goTo(new DefaultPlaceRequest(name));
-                    }).endMenu().build().getItems().get(0);
-            screens.add(item);
-        }
-
-        return screens;
     }
 
     private List<MenuItem> getPerspectives() {
@@ -267,15 +260,14 @@ public class ShowcaseEntryPoint {
         //Sort Perspective Providers so they're always in the same sequence!
         List<PerspectiveActivity> sortedActivities = new ArrayList<PerspectiveActivity>(activities);
         Collections.sort(sortedActivities,
-                new Comparator<PerspectiveActivity>() {
+                         new Comparator<PerspectiveActivity>() {
 
-                    @Override
-                    public int compare(PerspectiveActivity o1,
-                                       PerspectiveActivity o2) {
-                        return o1.getName().compareTo(o2.getName());
-                    }
-
-                });
+                             @Override
+                             public int compare(PerspectiveActivity o1,
+                                                PerspectiveActivity o2) {
+                                 return o1.getName().compareTo(o2.getName());
+                             }
+                         });
 
         return sortedActivities;
     }
@@ -311,7 +303,8 @@ public class ShowcaseEntryPoint {
             @Override
             public Widget asWidget() {
                 final Image image = new Image(AppResource.INSTANCE.images().ufBrandLogo());
-                image.getElement().setAttribute("height", "10");
+                image.getElement().setAttribute("height",
+                                                "10");
                 return image;
             }
         };
@@ -321,22 +314,24 @@ public class ShowcaseEntryPoint {
         String title = "Plugin available";
         String message = "Plugin " + pluginEvent.getName() +
                 " has been installed. \n A reload is required to activate it.";
-        createPluginModal(title, message);
+        createPluginModal(title,
+                          message);
     }
 
     private void onPluginUpdated(@Observes PluginUpdatedEvent pluginEvent) {
         String title = "Plugin updated";
         String message = "Plugin " + pluginEvent.getName() +
                 " has been updated. \n A reload is required to activate it.";
-        createPluginModal(title, message);
+        createPluginModal(title,
+                          message);
     }
 
-    private void createPluginModal(String title, String message) {
+    private void createPluginModal(String title,
+                                   String message) {
         Bs3Modal modal = GWT.create(Bs3Modal.class);
         modal.setContent(new Text(message));
         modal.setTitle(title);
         modal.addHiddenHandler(evt -> Window.Location.reload());
         modal.show();
     }
-
 }

@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.ToggleSwitch;
-import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.ColorType;
 import org.gwtbootstrap3.extras.toggleswitch.client.ui.base.constants.SizeType;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -51,7 +50,8 @@ public class PermissionExceptionSwitchView extends Composite
     }
 
     @Override
-    public void init(String textOn, String textOff) {
+    public void init(String textOn,
+                     String textOff) {
         switchControl = new ToggleSwitch();
         switchControl.setAnimate(true);
         switchControl.setSize(SizeType.MINI);
@@ -64,9 +64,11 @@ public class PermissionExceptionSwitchView extends Composite
     @Override
     public void setExceptionEnabled(boolean enabled) {
         if (enabled) {
-            badge.getStyle().setProperty("display", "table-cell");
+            badge.getStyle().setProperty("display",
+                                         "table-cell");
         } else {
-            badge.getStyle().setProperty("display", "none");
+            badge.getStyle().setProperty("display",
+                                         "none");
         }
     }
 

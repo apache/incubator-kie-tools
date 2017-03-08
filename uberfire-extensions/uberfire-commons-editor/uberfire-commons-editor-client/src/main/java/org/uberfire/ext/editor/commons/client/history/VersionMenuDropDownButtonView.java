@@ -25,9 +25,24 @@ public interface VersionMenuDropDownButtonView
         extends IsWidget,
                 HasEnabled {
 
+    void setPresenter(final Presenter presenter);
+
+    void clear();
+
+    void setTextToLatest();
+
+    void setTextToVersion(final int versionIndex);
+
+    void addLabel(final VersionRecord versionRecord,
+                  final boolean isSelected,
+                  final int versionIndex);
+
+    void addViewAllLabel(final int index,
+                         final Command command);
+
     interface Presenter {
 
-        void onVersionRecordSelected( VersionRecord result );
+        void onVersionRecordSelected(VersionRecord result);
 
         void onMenuOpening();
 
@@ -37,22 +52,5 @@ public interface VersionMenuDropDownButtonView
          * which it was originally initialised for.
          */
         void resetVersions();
-
     }
-
-    void setPresenter( final Presenter presenter );
-
-    void clear();
-
-    void setTextToLatest();
-
-    void setTextToVersion( final int versionIndex );
-
-    void addLabel( final VersionRecord versionRecord,
-                   final boolean isSelected,
-                   final int versionIndex );
-
-    void addViewAllLabel( final int index,
-                          final Command command );
-
 }

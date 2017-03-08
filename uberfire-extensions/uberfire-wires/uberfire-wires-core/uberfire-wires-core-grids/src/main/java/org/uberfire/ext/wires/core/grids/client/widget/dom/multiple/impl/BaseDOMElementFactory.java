@@ -44,33 +44,33 @@ public abstract class BaseDOMElementFactory<T, W extends Widget, E extends BaseD
 
     private int consumed = 0;
 
-    public BaseDOMElementFactory( final GridLayer gridLayer,
-                                  final GridWidget gridWidget ) {
+    public BaseDOMElementFactory(final GridLayer gridLayer,
+                                 final GridWidget gridWidget) {
         this.gridLayer = gridLayer;
         this.gridWidget = gridWidget;
     }
 
     @Override
-    public void attachDomElement( final GridBodyCellRenderContext context,
-                                  final Callback<E> onCreation,
-                                  final Callback<E> onDisplay ) {
+    public void attachDomElement(final GridBodyCellRenderContext context,
+                                 final Callback<E> onCreation,
+                                 final Callback<E> onDisplay) {
         E domElement;
-        if ( consumed + 1 > domElements.size() ) {
-            domElement = createDomElement( gridLayer,
-                                           gridWidget,
-                                           context );
-            domElements.add( domElement );
+        if (consumed + 1 > domElements.size()) {
+            domElement = createDomElement(gridLayer,
+                                          gridWidget,
+                                          context);
+            domElements.add(domElement);
         } else {
-            domElement = domElements.get( consumed );
+            domElement = domElements.get(consumed);
         }
         consumed++;
 
-        domElement.setContext( context );
-        domElement.initialise( context );
-        onCreation.callback( domElement );
+        domElement.setContext(context);
+        domElement.initialise(context);
+        onCreation.callback(domElement);
 
         domElement.attach();
-        onDisplay.callback( domElement );
+        onDisplay.callback(domElement);
     }
 
     @Override
@@ -80,7 +80,7 @@ public abstract class BaseDOMElementFactory<T, W extends Widget, E extends BaseD
 
     @Override
     public void destroyResources() {
-        for ( E domElement : domElements ) {
+        for (E domElement : domElements) {
             domElement.detach();
         }
         domElements.clear();
@@ -90,14 +90,13 @@ public abstract class BaseDOMElementFactory<T, W extends Widget, E extends BaseD
     @Override
     public void freeUnusedResources() {
         final List<E> freedDomElements = new ArrayList<E>();
-        for ( int i = consumed; i < domElements.size(); i++ ) {
-            final E domElement = domElements.get( i );
+        for (int i = consumed; i < domElements.size(); i++) {
+            final E domElement = domElements.get(i);
             domElement.detach();
-            freedDomElements.add( domElement );
+            freedDomElements.add(domElement);
         }
-        for ( E domElement : freedDomElements ) {
-            domElements.remove( domElement );
+        for (E domElement : freedDomElements) {
+            domElements.remove(domElement);
         }
     }
-
 }

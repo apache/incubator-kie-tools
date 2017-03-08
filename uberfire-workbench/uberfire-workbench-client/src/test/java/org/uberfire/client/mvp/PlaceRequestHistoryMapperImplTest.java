@@ -16,19 +16,15 @@
 
 package org.uberfire.client.mvp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
 import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
-
 import javax.enterprise.context.Dependent;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ioc.client.QualifierUtil;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
@@ -44,7 +40,7 @@ import org.uberfire.client.util.MockIOCBeanDef;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.junit.Assert.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class PlaceRequestHistoryMapperImplTest {
@@ -55,25 +51,24 @@ public class PlaceRequestHistoryMapperImplTest {
     public static void setupBeans() {
         ((SyncBeanManagerImpl) IOC.getBeanManager()).reset();
 
-        IOC.getBeanManager().registerBean( new MockIOCBeanDef<ObservablePath, ObservablePathImpl>( new ObservablePathImpl(),
-                                                                                                   ObservablePath.class,
-                                                                                                   Dependent.class,
-                                                                                                   new HashSet<Annotation>( Arrays.asList( QualifierUtil.DEFAULT_QUALIFIERS ) ),
-                                                                                                   null,
-                                                                                                   true ) );
+        IOC.getBeanManager().registerBean(new MockIOCBeanDef<ObservablePath, ObservablePathImpl>(new ObservablePathImpl(),
+                                                                                                 ObservablePath.class,
+                                                                                                 Dependent.class,
+                                                                                                 new HashSet<Annotation>(Arrays.asList(QualifierUtil.DEFAULT_QUALIFIERS)),
+                                                                                                 null,
+                                                                                                 true));
     }
-
-
 
     @Before
     public void setup() {
         placeRequestHistoryMapper = new PlaceRequestHistoryMapperImpl() {
             @Override
-            String urlDecode( String value ) {
+            String urlDecode(String value) {
                 try {
-                    return URLDecoder.decode( value, "UTF-8" );
-                } catch ( UnsupportedEncodingException e ) {
-                    throw new RuntimeException( e );
+                    return URLDecoder.decode(value,
+                                             "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
                 }
             }
         };
@@ -82,44 +77,54 @@ public class PlaceRequestHistoryMapperImplTest {
     @Test
     public void createPlaceRequest() throws Exception {
         String url = " http://127.0.0.1:8888/org.uberfire.UberfireShowcase/out.16590-4829.erraiBus?z=12&clientId=16590-4829";
-        PlaceRequest placeRequest = placeRequestHistoryMapper.getPlaceRequest( url );
-        assertEquals( url.substring( 0, url.indexOf( "?" ) ), placeRequest.getIdentifier() );
+        PlaceRequest placeRequest = placeRequestHistoryMapper.getPlaceRequest(url);
+        assertEquals(url.substring(0,
+                                   url.indexOf("?")),
+                     placeRequest.getIdentifier());
 
         Map<String, String> parameters = placeRequest.getParameters();
 
-        assertFalse( parameters.isEmpty() );
-        assertTrue( parameters.containsKey( "z" ) );
-        assertTrue( parameters.containsKey( "clientId" ) );
-        assertEquals( "12", parameters.get( "z" ) );
-        assertEquals( "16590-4829", parameters.get( "clientId" ) );
+        assertFalse(parameters.isEmpty());
+        assertTrue(parameters.containsKey("z"));
+        assertTrue(parameters.containsKey("clientId"));
+        assertEquals("12",
+                     parameters.get("z"));
+        assertEquals("16590-4829",
+                     parameters.get("clientId"));
     }
 
     @Test
     public void createPathPlaceRequest() throws Exception {
-        final Path path = PathFactory.newPath( "file", "default://master@repo/path/to/file" );
-        final PlaceRequest placeRequestOriginal = new PathPlaceRequest( path );
+        final Path path = PathFactory.newPath("file",
+                                              "default://master@repo/path/to/file");
+        final PlaceRequest placeRequestOriginal = new PathPlaceRequest(path);
 
-        PlaceRequest placeRequest = placeRequestHistoryMapper.getPlaceRequest( placeRequestOriginal.getFullIdentifier() );
-        assertEquals( placeRequestOriginal.getFullIdentifier(), placeRequest.getFullIdentifier() );
+        PlaceRequest placeRequest = placeRequestHistoryMapper.getPlaceRequest(placeRequestOriginal.getFullIdentifier());
+        assertEquals(placeRequestOriginal.getFullIdentifier(),
+                     placeRequest.getFullIdentifier());
 
-        assertTrue( placeRequest.getParameters().isEmpty() );
+        assertTrue(placeRequest.getParameters().isEmpty());
     }
 
     @Test
     public void createPathPlaceRequestWithSpaces() throws Exception {
-        final Path path = PathFactory.newPath( "Dummy rule.drl", "default://master@uf-playground/mortgages/src/main/resources/org/mortgages/Dummy%20rule.drl" );
-        final PlaceRequest placeRequestOriginal = new PathPlaceRequest( path );
+        final Path path = PathFactory.newPath("Dummy rule.drl",
+                                              "default://master@uf-playground/mortgages/src/main/resources/org/mortgages/Dummy%20rule.drl");
+        final PlaceRequest placeRequestOriginal = new PathPlaceRequest(path);
 
-        PlaceRequest placeRequest = placeRequestHistoryMapper.getPlaceRequest( placeRequestOriginal.getFullIdentifier() );
-        assertEquals( placeRequestOriginal.getFullIdentifier(), placeRequest.getFullIdentifier() );
+        PlaceRequest placeRequest = placeRequestHistoryMapper.getPlaceRequest(placeRequestOriginal.getFullIdentifier());
+        assertEquals(placeRequestOriginal.getFullIdentifier(),
+                     placeRequest.getFullIdentifier());
 
-        assertTrue( placeRequest.getParameters().isEmpty() );
+        assertTrue(placeRequest.getParameters().isEmpty());
     }
 
     @Test
     public void identifierAndParametersShouldBeUrlDecoded() throws Exception {
-        PlaceRequest placeRequest = placeRequestHistoryMapper.getPlaceRequest( "place%20id?par%26am%201=value%201" );
-        assertEquals( "place id", placeRequest.getIdentifier() );
-        assertEquals( placeRequest.getParameters().get( "par&am 1" ), "value 1" );
+        PlaceRequest placeRequest = placeRequestHistoryMapper.getPlaceRequest("place%20id?par%26am%201=value%201");
+        assertEquals("place id",
+                     placeRequest.getIdentifier());
+        assertEquals(placeRequest.getParameters().get("par&am 1"),
+                     "value 1");
     }
 }

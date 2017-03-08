@@ -26,47 +26,47 @@ import org.uberfire.java.nio.file.Path;
 public class PathResolverImpl
         implements PathResolver {
 
-        private VersionRecordService versionLoader;
-        private VersionUtil          util;
+    private VersionRecordService versionLoader;
+    private VersionUtil util;
 
-        public PathResolverImpl() {
-        }
+    public PathResolverImpl() {
+    }
 
-        @Inject
-        public PathResolverImpl(VersionRecordService versionLoader,
-                                VersionUtil util) {
-                this.util = util;
-                this.versionLoader = versionLoader;
-        }
+    @Inject
+    public PathResolverImpl(VersionRecordService versionLoader,
+                            VersionUtil util) {
+        this.util = util;
+        this.versionLoader = versionLoader;
+    }
 
-        @Override
-        public Path resolveMainFilePath(Path path) throws URISyntaxException {
+    @Override
+    public Path resolveMainFilePath(Path path) throws URISyntaxException {
 
-                if (isDotFile(path)) {
-                        Path mainPath = getMainPath(path);
+        if (isDotFile(path)) {
+            Path mainPath = getMainPath(path);
 
-                        VersionRecord currentMainRecord = versionLoader.loadRecord(path);
-                        List<VersionRecord> versionRecords = versionLoader.loadVersionRecords(mainPath);
+            VersionRecord currentMainRecord = versionLoader.loadRecord(path);
+            List<VersionRecord> versionRecords = versionLoader.loadVersionRecords(mainPath);
 
-                        for (VersionRecord versionRecord : versionRecords) {
-                                if (versionRecord.date().compareTo(currentMainRecord.date()) >= 0) {
-                                        return util.getPath(mainPath, versionRecord.id());
-                                }
-                        }
-
-                        return mainPath;
-                } else {
-
-                        return path;
+            for (VersionRecord versionRecord : versionRecords) {
+                if (versionRecord.date().compareTo(currentMainRecord.date()) >= 0) {
+                    return util.getPath(mainPath,
+                                        versionRecord.id());
                 }
-        }
+            }
 
-        private Path getMainPath(Path path) {
-                return path.resolveSibling(util.getFileName(path).substring(1));
-        }
+            return mainPath;
+        } else {
 
-        public boolean isDotFile(Path path) {
-                return util.getFileName(path).startsWith(".");
+            return path;
         }
+    }
 
+    private Path getMainPath(Path path) {
+        return path.resolveSibling(util.getFileName(path).substring(1));
+    }
+
+    public boolean isDotFile(Path path) {
+        return util.getFileName(path).startsWith(".");
+    }
 }

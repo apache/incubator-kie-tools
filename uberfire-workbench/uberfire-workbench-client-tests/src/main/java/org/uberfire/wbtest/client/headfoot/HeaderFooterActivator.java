@@ -18,9 +18,8 @@ package org.uberfire.wbtest.client.headfoot;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.errai.ioc.client.container.BeanActivator;
-
 import com.google.gwt.user.client.Window.Location;
+import org.jboss.errai.ioc.client.container.BeanActivator;
 
 /**
  * Bean activator that disables the header and footer beans if the request contains the parameter
@@ -33,11 +32,10 @@ public class HeaderFooterActivator implements BeanActivator {
 
     @Override
     public boolean isActivated() {
-        String disabled = Location.getParameter( DISABLE_PARAM );
-        if ( disabled == null ) {
+        String disabled = Location.getParameter(DISABLE_PARAM);
+        if (disabled == null) {
             return true;
         }
-        return !Boolean.valueOf( disabled );
+        return !Boolean.valueOf(disabled);
     }
-
 }

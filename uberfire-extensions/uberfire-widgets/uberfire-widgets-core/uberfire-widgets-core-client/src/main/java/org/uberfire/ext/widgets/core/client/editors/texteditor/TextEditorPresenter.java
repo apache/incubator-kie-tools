@@ -31,48 +31,28 @@ import org.uberfire.lifecycle.OnStartup;
 
 public abstract class TextEditorPresenter {
 
-    public interface View
-            extends
-            IsWidget {
-
-        void setContent( final String content,
-                         final AceEditorMode mode );
-
-        String getContent();
-
-        void setFocus();
-
-        void setDirty( final boolean dirty );
-
-        boolean isDirty();
-
-        void setReadOnly( final boolean isReadOnly );
-    }
-
     @Inject
     public View view;
-
+    protected Path path;
     @Inject
     private Caller<VFSService> vfsServices;
 
-    protected Path path;
-
     @OnStartup
-    public void onStartup( final ObservablePath path ) {
+    public void onStartup(final ObservablePath path) {
         this.path = path;
-        vfsServices.call( new RemoteCallback<String>() {
+        vfsServices.call(new RemoteCallback<String>() {
             @Override
-            public void callback( String response ) {
-                if ( response == null ) {
-                    view.setContent( CoreConstants.INSTANCE.EmptyEntry(),
-                                     getAceEditorMode() );
+            public void callback(String response) {
+                if (response == null) {
+                    view.setContent(CoreConstants.INSTANCE.EmptyEntry(),
+                                    getAceEditorMode());
                 } else {
-                    view.setContent( response,
-                                     getAceEditorMode() );
+                    view.setContent(response,
+                                    getAceEditorMode());
                 }
                 onAfterViewLoaded();
             }
-        } ).readAllString( path );
+        }).readAllString(path);
     }
 
     /**
@@ -105,4 +85,21 @@ public abstract class TextEditorPresenter {
         return view;
     }
 
+    public interface View
+            extends
+            IsWidget {
+
+        void setContent(final String content,
+                        final AceEditorMode mode);
+
+        String getContent();
+
+        void setFocus();
+
+        boolean isDirty();
+
+        void setDirty(final boolean dirty);
+
+        void setReadOnly(final boolean isReadOnly);
+    }
 }

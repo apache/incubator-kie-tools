@@ -45,9 +45,9 @@ public interface GridColumn<T> {
      * @param context
      * @param callback
      */
-    default void edit( final GridCell<T> cell,
-                       final GridBodyCellRenderContext context,
-                       final Callback<GridCellValue<T>> callback ) {
+    default void edit(final GridCell<T> cell,
+                      final GridBodyCellRenderContext context,
+                      final Callback<GridCellValue<T>> callback) {
     }
 
     /**
@@ -60,7 +60,7 @@ public interface GridColumn<T> {
      * Sets the columns width
      * @param width
      */
-    void setWidth( final double width );
+    void setWidth(final double width);
 
     /**
      * Returns a flag indicating this column is linked to another
@@ -78,7 +78,7 @@ public interface GridColumn<T> {
      * Sets the column to which this column is linked
      * @param link
      */
-    void setLink( final GridColumn<?> link );
+    void setLink(final GridColumn<?> link);
 
     /**
      * Returns the logical index to which this column relates. Columns may be re-ordered and therefore, to
@@ -92,7 +92,7 @@ public interface GridColumn<T> {
      * Sets the logical index of the column, to support indirection of columns' access to row data.
      * @param index
      */
-    void setIndex( final int index );
+    void setIndex(final int index);
 
     /**
      * Returns a flag indicating whether a column can be re-sized.
@@ -104,7 +104,7 @@ public interface GridColumn<T> {
      * Sets whether the column can be re-sized.
      * @param isResizable true if the column can be re-sized.
      */
-    void setResizable( final boolean isResizable );
+    void setResizable(final boolean isResizable);
 
     /**
      * Returns a flag indicating whether a column can be moved.
@@ -116,7 +116,7 @@ public interface GridColumn<T> {
      * Sets whether the column can be moved.
      * @param isMovable true if the column can be moved.
      */
-    void setMovable( final boolean isMovable );
+    void setMovable(final boolean isMovable);
 
     /**
      * Returns a flag indicating whether a column is capable of floating on the left-hand side of the table when clipped horizontally.
@@ -128,7 +128,7 @@ public interface GridColumn<T> {
      * Sets whether the column is capable of floating on the left-hand side of the table when clipped horizontally.
      * @param isFloatable true if the column can be floated.
      */
-    void setFloatable( final boolean isFloatable );
+    void setFloatable(final boolean isFloatable);
 
     /**
      * Returns a flag indicating whether a column is visible.
@@ -140,7 +140,7 @@ public interface GridColumn<T> {
      * Sets whether the column is visible.
      * @param isVisible true if the column is visible.
      */
-    void setVisible( final boolean isVisible );
+    void setVisible(final boolean isVisible);
 
     /**
      * Returns the minimum width to which the column can be re-sized
@@ -152,7 +152,7 @@ public interface GridColumn<T> {
      * Sets the minimum width to which the column can be re-sized
      * @param minimumWidth Minimum width, or null if no minimum width
      */
-    void setMinimumWidth( final Double minimumWidth );
+    void setMinimumWidth(final Double minimumWidth);
 
     /**
      * Returns the maximum width to which the column can be re-sized
@@ -164,7 +164,7 @@ public interface GridColumn<T> {
      * Sets the maximum width to which the column can be re-sized
      * @param maximumWidth Maximum width, or null if no minimum width
      */
-    void setMaximumWidth( final Double maximumWidth );
+    void setMaximumWidth(final Double maximumWidth);
 
     /**
      * MetaData for the column's header
@@ -181,7 +181,7 @@ public interface GridColumn<T> {
          * Sets the identifier for a group of Columns. Columns in one group cannot be moved to another group.
          * @The group identifier. It should not be null.
          */
-        void setColumnGroup( final String columnGroup );
+        void setColumnGroup(final String columnGroup);
 
         /**
          * Returns the column's title
@@ -193,8 +193,6 @@ public interface GridColumn<T> {
          * Sets the column's title
          * @param title
          */
-        void setTitle( final String title );
-
+        void setTitle(final String title);
     }
-
 }

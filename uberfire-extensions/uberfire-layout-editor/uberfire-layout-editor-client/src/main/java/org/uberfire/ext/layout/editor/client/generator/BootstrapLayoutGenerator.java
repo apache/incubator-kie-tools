@@ -38,12 +38,12 @@ public class BootstrapLayoutGenerator extends AbstractLayoutGenerator {
     @Override
     public ComplexPanel getLayoutContainer() {
         Container mainPanel = new Container();
-        mainPanel.getElement().setId( "mainContainer" );
+        mainPanel.getElement().setId("mainContainer");
         return mainPanel;
     }
 
     @Override
-    public LayoutDragComponent getLayoutDragComponent( LayoutComponent layoutComponent ) {
-        return dragTypeHelper.lookupDragTypeBean( layoutComponent.getDragTypeName() );
+    public LayoutDragComponent getLayoutDragComponent(LayoutComponent layoutComponent) {
+        return dragTypeHelper.lookupDragTypeBean(layoutComponent.getDragTypeName());
     }
 }

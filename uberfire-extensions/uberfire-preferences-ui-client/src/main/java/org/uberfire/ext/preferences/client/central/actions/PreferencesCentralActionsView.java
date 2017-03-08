@@ -33,40 +33,37 @@ import org.uberfire.ext.preferences.client.resources.i18n.Constants;
 public class PreferencesCentralActionsView implements IsElement,
                                                       PreferencesCentralActionsScreen.View {
 
-    private TranslationService translationService;
-
-    private PreferencesCentralActionsScreen presenter;
-
     @Inject
     @DataField("preference-actions-save")
     Button saveButton;
-
     @Inject
     @DataField("preference-actions-cancel")
     Button cancelButton;
+    private TranslationService translationService;
+    private PreferencesCentralActionsScreen presenter;
 
     @Inject
-    public PreferencesCentralActionsView( final TranslationService translationService ) {
+    public PreferencesCentralActionsView(final TranslationService translationService) {
         this.translationService = translationService;
     }
 
     @Override
-    public void init( final PreferencesCentralActionsScreen presenter ) {
+    public void init(final PreferencesCentralActionsScreen presenter) {
         this.presenter = presenter;
     }
 
     @EventHandler("preference-actions-save")
-    public void save( ClickEvent event ) {
+    public void save(ClickEvent event) {
         presenter.fireSaveEvent();
     }
 
     @EventHandler("preference-actions-cancel")
-    public void undo( ClickEvent event ) {
+    public void undo(ClickEvent event) {
         presenter.fireCancelEvent();
     }
 
     @Override
     public String getChangesUndoneMessage() {
-        return translationService.format( Constants.PreferencesCentralActionsView_ChangesUndone );
+        return translationService.format(Constants.PreferencesCentralActionsView_ChangesUndone);
     }
 }

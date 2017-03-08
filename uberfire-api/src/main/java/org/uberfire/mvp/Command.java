@@ -26,5 +26,4 @@ import jsinterop.annotations.JsType;
 public interface Command {
 
     public void execute();
-
 }

@@ -37,44 +37,47 @@ public class UserServicesBackendImpl {
     @Named("systemFS")
     private FileSystem fileSystem;
 
-    public Path buildPath( final String _userName,
-                           final String serviceType ) {
+    public Path buildPath(final String _userName,
+                          final String serviceType) {
 
-        final String resultUserName = TextUtil.normalizeUserName( _userName );
+        final String resultUserName = TextUtil.normalizeUserName(_userName);
 
-        return fileSystem.getPath( resultUserName + "-uf-user", serviceType );
+        return fileSystem.getPath(resultUserName + "-uf-user",
+                                  serviceType);
     }
 
-    public Path buildPath( final String _userName,
-                           final String serviceType,
-                           final String relativePath ) {
+    public Path buildPath(final String _userName,
+                          final String serviceType,
+                          final String relativePath) {
 
-        final String resultUserName = TextUtil.normalizeUserName( _userName );
+        final String resultUserName = TextUtil.normalizeUserName(_userName);
 
-        if ( relativePath != null && !"".equals( relativePath ) ) {
-            return fileSystem.getPath( resultUserName + "-uf-user", serviceType, relativePath );
+        if (relativePath != null && !"".equals(relativePath)) {
+            return fileSystem.getPath(resultUserName + "-uf-user",
+                                      serviceType,
+                                      relativePath);
         } else {
-            return fileSystem.getPath( resultUserName + "-uf-user", serviceType );
+            return fileSystem.getPath(resultUserName + "-uf-user",
+                                      serviceType);
         }
     }
 
-    public Collection<Path> getAllUsersData( final String serviceType,
-                                             final String relativePath ) {
+    public Collection<Path> getAllUsersData(final String serviceType,
+                                            final String relativePath) {
         final Collection<Path> result = new ArrayList<Path>();
 
-        for ( final Path path : fileSystem.getRootDirectories() ) {
+        for (final Path path : fileSystem.getRootDirectories()) {
             final Path _path;
-            if ( relativePath != null && !"".equals( relativePath ) ) {
-                _path = path.resolve( serviceType ).resolve( relativePath );
+            if (relativePath != null && !"".equals(relativePath)) {
+                _path = path.resolve(serviceType).resolve(relativePath);
             } else {
-                _path = path.resolve( serviceType );
+                _path = path.resolve(serviceType);
             }
-            if ( ioService.exists( _path ) ) {
-                result.add( _path );
+            if (ioService.exists(_path)) {
+                result.add(_path);
             }
         }
 
         return result;
     }
-
 }

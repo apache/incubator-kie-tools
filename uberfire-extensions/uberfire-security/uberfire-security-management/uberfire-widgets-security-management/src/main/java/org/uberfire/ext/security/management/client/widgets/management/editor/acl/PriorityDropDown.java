@@ -31,44 +31,8 @@ import org.uberfire.mvp.Command;
 @Dependent
 public class PriorityDropDown implements IsWidget {
 
-    private enum Priority {
-
-        VERY_HIGH(10),
-        HIGH(5),
-        NORMAL(0),
-        LOW(-5),
-        VERY_LOW(-10);
-
-        int ordinal = 0;
-
-        private static Priority[] _typeArray = values();
-
-        public static Priority get(int idx) {
-            return _typeArray[idx];
-        }
-
-        Priority(int ordinal) {
-            this.ordinal = ordinal;
-        }
-
-        public int getOrdinal() {
-            return ordinal;
-        }
-
-        public int getIndex() {
-            for (int i = 0; i < _typeArray.length; i++) {
-                Priority item = _typeArray[i];
-                if (this.equals(item)) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-    }
-
     LiveSearchDropDown liveSearchDropDown;
     List<String> priorityItemList;
-
     @Inject
     public PriorityDropDown(LiveSearchDropDown liveSearchDropDown) {
         this.liveSearchDropDown = liveSearchDropDown;
@@ -140,5 +104,39 @@ public class PriorityDropDown implements IsWidget {
             return Priority.HIGH;
         }
         return Priority.VERY_HIGH;
+    }
+
+    private enum Priority {
+
+        VERY_HIGH(10),
+        HIGH(5),
+        NORMAL(0),
+        LOW(-5),
+        VERY_LOW(-10);
+
+        private static Priority[] _typeArray = values();
+        int ordinal = 0;
+
+        Priority(int ordinal) {
+            this.ordinal = ordinal;
+        }
+
+        public static Priority get(int idx) {
+            return _typeArray[idx];
+        }
+
+        public int getOrdinal() {
+            return ordinal;
+        }
+
+        public int getIndex() {
+            for (int i = 0; i < _typeArray.length; i++) {
+                Priority item = _typeArray[i];
+                if (this.equals(item)) {
+                    return i;
+                }
+            }
+            return -1;
+        }
     }
 }

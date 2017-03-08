@@ -34,27 +34,30 @@ public class NameValidatorTest {
 
     @Before
     public void setup() {
-        nameValidator = NameValidator.createNameValidator( EMPTY_ERROR_MESSAGE, INVALID_ERROR_MESSAGE );
+        nameValidator = NameValidator.createNameValidator(EMPTY_ERROR_MESSAGE,
+                                                          INVALID_ERROR_MESSAGE);
     }
 
     @Test
     public void emptyNameTest() {
-        nameValidator.isValid( EMPTY_NAME );
+        nameValidator.isValid(EMPTY_NAME);
 
-        assertEquals( EMPTY_ERROR_MESSAGE, nameValidator.getValidationError() );
+        assertEquals(EMPTY_ERROR_MESSAGE,
+                     nameValidator.getValidationError());
     }
 
     @Test
     public void invalidNameTest() {
-        nameValidator.isValid( INVALID_NAME );
+        nameValidator.isValid(INVALID_NAME);
 
-        assertEquals( INVALID_ERROR_MESSAGE, nameValidator.getValidationError() );
+        assertEquals(INVALID_ERROR_MESSAGE,
+                     nameValidator.getValidationError());
     }
 
     @Test
     public void validNameTest() {
-        nameValidator.isValid( VALID_NAME );
+        nameValidator.isValid(VALID_NAME);
 
-        assertNull( nameValidator.getValidationError() );
+        assertNull(nameValidator.getValidationError());
     }
 }

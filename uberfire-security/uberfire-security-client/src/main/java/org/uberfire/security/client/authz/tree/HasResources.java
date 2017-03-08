@@ -22,7 +22,6 @@ public interface HasResources {
 
     /**
      * Retrieves the name of the resource (if any) this node is handling.
-     *
      * @return The name to display in the UI. If null then a generic resource name will be used such as "Item" or "Instance".
      */
     default String getResourceName() {

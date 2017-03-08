@@ -15,6 +15,10 @@
  */
 package org.uberfire.client.mvp;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.IsWidget;
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPerspective;
 import org.uberfire.client.annotations.WorkbenchScreen;
@@ -23,12 +27,6 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
-
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.IsWidget;
-
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 
 /**
  * WorkbenchActivity and its subinterfaces define the interface between UberFire framework behaviour and
@@ -58,12 +56,10 @@ public interface WorkbenchActivity extends ContextSensitiveActivity {
      * <p>
      * The activity can cancel the close operation by returning {@code false} from this method. This is most often used
      * for implementing a "save before closing" workflow.
-     *
+     * @return true if the activity is ready to be closed; false if it should remain open.
      * @see PlaceManager#closeAllPlaces()
      * @see PlaceManager#closePlace(PlaceRequest)
      * @see PlaceManager#closePlace(String)
-     *
-     * @return true if the activity is ready to be closed; false if it should remain open.
      */
     boolean onMayClose();
 
@@ -79,9 +75,8 @@ public interface WorkbenchActivity extends ContextSensitiveActivity {
      * declares a default position that is not supported by the root panel the application uses, the application's root
      * panel could throw a ClassCastException when the framework attempts to create the child panel at the given
      * position.
-     *
      * @return the Position to add a new child panel to the root that accommodates this activity's view, or null if this
-     *         activity's view should be added directly to the root panel.
+     * activity's view should be added directly to the root panel.
      */
     Position getDefaultPosition();
 
@@ -89,7 +84,6 @@ public interface WorkbenchActivity extends ContextSensitiveActivity {
      * Returns the PlaceRequest for the perspective that this activity should always be displayed in. When the
      * PlaceManager is asked to go to this activity, it will switching to the owning perspective first, and then show
      * this activity in it.
-     *
      * @return the owning perspective's place request, or null if this activity can appear in any perspective.
      */
     PlaceRequest getOwningPlace();
@@ -97,7 +91,6 @@ public interface WorkbenchActivity extends ContextSensitiveActivity {
     /**
      * Invoked by the UberFire framework when this activity is the current activity in the current panel. Activities may
      * choose to make their UI more prominent, or begin refreshing their data more aggressively when they are focused.
-     *
      * @see #onLostFocus()
      * @see PanelManager#onPartFocus(org.uberfire.workbench.model.PartDefinition)
      */
@@ -106,7 +99,6 @@ public interface WorkbenchActivity extends ContextSensitiveActivity {
     /**
      * Invoked by the UberFire framework when this activity is no longer the current activity in the current panel.
      * Typically undoes changes made in the corresponding {@link #onFocus()} call.
-     *
      * @see #onLostFocus()
      * @see PanelManager#onPartFocus(org.uberfire.workbench.model.PartDefinition)
      */
@@ -116,15 +108,15 @@ public interface WorkbenchActivity extends ContextSensitiveActivity {
 
     @JsIgnore
     IsWidget getTitleDecoration();
-    
+
     default Element getTitleDecorationElement() {
         IsWidget titleDecoration = getTitleDecoration();
-        return (titleDecoration == null) ? null : titleDecoration.asWidget().getElement(); 
+        return (titleDecoration == null) ? null : titleDecoration.asWidget().getElement();
     }
 
     @JsIgnore
     IsWidget getWidget();
-    
+
     default Element getWidgetElement() {
         IsWidget widget = getWidget();
         return (widget == null) ? null : widget.asWidget().getElement();
@@ -140,9 +132,8 @@ public interface WorkbenchActivity extends ContextSensitiveActivity {
      * Returns the amount of space that should be allocated to this activity if a new Workbench Panel is created when
      * first displaying it. Has no effect when the activity is added to a pre-existing panel, including the case where
      * the activity is added to a panel as part of a default perspective layout.
-     *
      * @return the height, in pixels, that should be allocated for a new panel created to house this activity. -1 (default)
-     *         means no particular height is preferred, and the framework can choose a default height.
+     * means no particular height is preferred, and the framework can choose a default height.
      */
     default int preferredHeight() {
         return -1;
@@ -152,12 +143,10 @@ public interface WorkbenchActivity extends ContextSensitiveActivity {
      * Returns the amount of space that should be allocated to this activity if a new Workbench Panel is created when
      * first displaying it. Has no effect when the activity is added to a pre-existing panel, including the case where
      * the activity is added to a panel as part of a default perspective layout.
-     *
      * @return the width, in pixels, that should be allocated for a new panel created to house this activity. -1 (default)
-     *         means no particular width is preferred, and the framework can choose a default width.
+     * means no particular width is preferred, and the framework can choose a default width.
      */
     default int preferredWidth() {
         return -1;
     }
-    
 }

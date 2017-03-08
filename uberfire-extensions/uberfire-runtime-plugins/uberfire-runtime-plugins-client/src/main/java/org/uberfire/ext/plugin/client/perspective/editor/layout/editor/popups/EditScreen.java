@@ -45,98 +45,84 @@ import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.ButtonPressed;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
 
-import static org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent.*;
+import static org.uberfire.ext.plugin.client.perspective.editor.layout.editor.ScreenLayoutDragComponent.PLACE_NAME_PARAMETER;
 
 public class EditScreen
         extends BaseModal {
 
     public static String PROPERTY_EDITOR_KEY = "LayoutEditor";
-
+    private static Binder uiBinder = GWT.create(Binder.class);
     private final ModalConfigurationContext configContext;
-
+    protected List<String> availableWorkbenchScreensIds = new ArrayList<String>();
     @UiField
     TextBox key;
-
     @UiField
     FormGroup paramKeyControlGroup;
-
     @UiField
     HelpBlock paramKeyInline;
-
     @UiField
     TextBox value;
-
     @UiField
     PropertyEditorWidget propertyEditor;
-
     private ButtonPressed buttonPressed = ButtonPressed.CLOSE;
-
     private Map<String, String> lastParametersSaved = new HashMap<String, String>();
-    protected List<String> availableWorkbenchScreensIds = new ArrayList<String>();
 
-    interface Binder
-            extends
-            UiBinder<Widget, EditScreen> {
-
-    }
-
-    private static Binder uiBinder = GWT.create( Binder.class );
-
-    public EditScreen( ModalConfigurationContext configContext,
-                       List<String> availableWorkbenchScreensIds ) {
+    public EditScreen(ModalConfigurationContext configContext,
+                      List<String> availableWorkbenchScreensIds) {
         this.availableWorkbenchScreensIds = availableWorkbenchScreensIds;
         this.configContext = configContext;
-        setTitle( CommonConstants.INSTANCE.EditComponent() );
-        setBody( uiBinder.createAndBindUi( EditScreen.this ) );
-        propertyEditor.handle( generateEvent( generateScreenSettingsCategory() ) );
+        setTitle(CommonConstants.INSTANCE.EditComponent());
+        setBody(uiBinder.createAndBindUi(EditScreen.this));
+        propertyEditor.handle(generateEvent(generateScreenSettingsCategory()));
         saveOriginalState();
-        add( new ModalFooterOKCancelButtons(
-                     new Command() {
-                         @Override
-                         public void execute() {
-                             okButton();
-                         }
-                     },
-                     new Command() {
-                         @Override
-                         public void execute() {
-                             cancelButton();
-                         }
-                     }
-             )
+        add(new ModalFooterOKCancelButtons(
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            okButton();
+                        }
+                    },
+                    new Command() {
+                        @Override
+                        public void execute() {
+                            cancelButton();
+                        }
+                    }
+            )
         );
         addHiddenHandler();
-
     }
 
     private void saveOriginalState() {
         lastParametersSaved = new HashMap<String, String>();
         Map<String, String> layoutComponentProperties = configContext.getComponentProperties();
-        for ( String key : layoutComponentProperties.keySet() ) {
-            lastParametersSaved.put( key, layoutComponentProperties.get( key ) );
+        for (String key : layoutComponentProperties.keySet()) {
+            lastParametersSaved.put(key,
+                                    layoutComponentProperties.get(key));
         }
     }
 
     protected void addHiddenHandler() {
-        addHiddenHandler( new ModalHiddenHandler() {
+        addHiddenHandler(new ModalHiddenHandler() {
             @Override
-            public void onHidden( ModalHiddenEvent hiddenEvent ) {
-                if ( userPressedCloseOrCancel() ) {
+            public void onHidden(ModalHiddenEvent hiddenEvent) {
+                if (userPressedCloseOrCancel()) {
                     revertChanges();
                     configContext.configurationCancelled();
                 }
             }
-        } );
+        });
     }
 
     private boolean userPressedCloseOrCancel() {
-        return ButtonPressed.CANCEL.equals( buttonPressed ) || ButtonPressed.CLOSE.equals( buttonPressed );
+        return ButtonPressed.CANCEL.equals(buttonPressed) || ButtonPressed.CLOSE.equals(buttonPressed);
     }
 
     private void revertChanges() {
         configContext.resetComponentProperties();
-        for ( String key : lastParametersSaved.keySet() ) {
-            configContext.setComponentProperty( key, lastParametersSaved.get( key ) );
+        for (String key : lastParametersSaved.keySet()) {
+            configContext.setComponentProperty(key,
+                                               lastParametersSaved.get(key));
         }
     }
 
@@ -148,9 +134,10 @@ public class EditScreen
         buttonPressed = ButtonPressed.OK;
 
         // Make sure a default screen is set before finish
-        if ( configContext.getComponentProperty( PLACE_NAME_PARAMETER ) == null ) {
-            if ( !availableWorkbenchScreensIds.isEmpty() ) {
-                configContext.setComponentProperty( PLACE_NAME_PARAMETER, availableWorkbenchScreensIds.get( 0 ) );
+        if (configContext.getComponentProperty(PLACE_NAME_PARAMETER) == null) {
+            if (!availableWorkbenchScreensIds.isEmpty()) {
+                configContext.setComponentProperty(PLACE_NAME_PARAMETER,
+                                                   availableWorkbenchScreensIds.get(0));
                 configContext.configurationFinished();
             } else {
                 // If no screens are available then cancel
@@ -174,58 +161,59 @@ public class EditScreen
     }
 
     @UiHandler("add")
-    void add( final ClickEvent event ) {
+    void add(final ClickEvent event) {
         final PropertyEditorCategory property = addProperty();
-        if ( property == null ) {
+        if (property == null) {
             return;
         }
-        propertyEditor.handle( generateEvent( property ) );
-        key.setText( "" );
-        value.setText( "" );
+        propertyEditor.handle(generateEvent(property));
+        key.setText("");
+        value.setText("");
     }
 
     private PropertyEditorCategory addProperty() {
-        paramKeyInline.setText( "" );
-        paramKeyControlGroup.setValidationState( ValidationState.NONE );
+        paramKeyInline.setText("");
+        paramKeyControlGroup.setValidationState(ValidationState.NONE);
 
         //Check the Key is valid
         final NameValidator validator = NameValidator.parameterNameValidator();
-        if ( !validator.isValid( key.getText() ) ) {
-            paramKeyControlGroup.setValidationState( ValidationState.ERROR );
-            paramKeyInline.setText( validator.getValidationError() );
+        if (!validator.isValid(key.getText())) {
+            paramKeyControlGroup.setValidationState(ValidationState.ERROR);
+            paramKeyInline.setText(validator.getValidationError());
             return null;
         }
 
         //Check the Key is unique
         Map<String, String> properties = configContext.getComponentProperties();
-        for ( String parameterKey : properties.keySet() ) {
-            if ( key.getText().equals( parameterKey ) ) {
-                paramKeyControlGroup.setValidationState( ValidationState.ERROR );
-                paramKeyInline.setText( CommonConstants.INSTANCE.DuplicateParameterName() );
+        for (String parameterKey : properties.keySet()) {
+            if (key.getText().equals(parameterKey)) {
+                paramKeyControlGroup.setValidationState(ValidationState.ERROR);
+                paramKeyInline.setText(CommonConstants.INSTANCE.DuplicateParameterName());
                 return null;
             }
         }
 
-        configContext.setComponentProperty( key.getText(), value.getText() );
+        configContext.setComponentProperty(key.getText(),
+                                           value.getText());
         return generateScreenSettingsCategory();
     }
 
     private PropertyEditorCategory generateScreenSettingsCategory() {
 
         //Override getFields() so we can remove Parameter from ScreenEditor when collection is modified by PropertiesWidget
-        PropertyEditorCategory category = new PropertyEditorCategory( CommonConstants.INSTANCE.ScreenConfiguration() ) {
+        PropertyEditorCategory category = new PropertyEditorCategory(CommonConstants.INSTANCE.ScreenConfiguration()) {
 
             @Override
             public List<PropertyEditorFieldInfo> getFields() {
-                return new ArrayList<PropertyEditorFieldInfo>( super.getFields() ) {
+                return new ArrayList<PropertyEditorFieldInfo>(super.getFields()) {
 
                     @Override
-                    public boolean remove( Object o ) {
-                        if ( o instanceof PropertyEditorFieldInfo ) {
+                    public boolean remove(Object o) {
+                        if (o instanceof PropertyEditorFieldInfo) {
                             final PropertyEditorFieldInfo info = (PropertyEditorFieldInfo) o;
-                            configContext.removeComponentProperty( info.getLabel() );
+                            configContext.removeComponentProperty(info.getLabel());
                         }
-                        return super.remove( o );
+                        return super.remove(o);
                     }
                 };
             }
@@ -233,29 +221,33 @@ public class EditScreen
 
         // Add the screen selector property
         final Map<String, String> parameters = configContext.getComponentProperties();
-        String selectedScreenId = parameters.get( PLACE_NAME_PARAMETER );
+        String selectedScreenId = parameters.get(PLACE_NAME_PARAMETER);
 
-        category.withField( new PropertyEditorFieldInfo( CommonConstants.INSTANCE.PlaceName(),
-                                                         selectedScreenId == null ? "" : selectedScreenId, PropertyEditorType.COMBO )
-                                    .withComboValues( availableWorkbenchScreensIds )
-                                    .withKey( configContext.hashCode() + PLACE_NAME_PARAMETER ) );
+        category.withField(new PropertyEditorFieldInfo(CommonConstants.INSTANCE.PlaceName(),
+                                                       selectedScreenId == null ? "" : selectedScreenId,
+                                                       PropertyEditorType.COMBO)
+                                   .withComboValues(availableWorkbenchScreensIds)
+                                   .withKey(configContext.hashCode() + PLACE_NAME_PARAMETER));
 
         // Add the rest of the screen's properties
-        for ( final String key : parameters.keySet() ) {
-            if ( !PLACE_NAME_PARAMETER.equals( key ) ) {
-                category.withField( new PropertyEditorFieldInfo( key, parameters.get( key ), PropertyEditorType.TEXT )
-                                            .withKey( configContext.hashCode() + key )
-                                            .withRemovalSupported( true ) );
+        for (final String key : parameters.keySet()) {
+            if (!PLACE_NAME_PARAMETER.equals(key)) {
+                category.withField(new PropertyEditorFieldInfo(key,
+                                                               parameters.get(key),
+                                                               PropertyEditorType.TEXT)
+                                           .withKey(configContext.hashCode() + key)
+                                           .withRemovalSupported(true));
             }
         }
 
         // Ensure the screen category is always expanded after loadEmptyLayout
-        propertyEditor.setLastOpenAccordionGroupTitle( category.getName() );
+        propertyEditor.setLastOpenAccordionGroupTitle(category.getName());
         return category;
     }
 
-    private PropertyEditorEvent generateEvent( PropertyEditorCategory category ) {
-        PropertyEditorEvent event = new PropertyEditorEvent( PROPERTY_EDITOR_KEY, category );
+    private PropertyEditorEvent generateEvent(PropertyEditorCategory category) {
+        PropertyEditorEvent event = new PropertyEditorEvent(PROPERTY_EDITOR_KEY,
+                                                            category);
         return event;
     }
 
@@ -263,4 +255,9 @@ public class EditScreen
         return this.configContext;
     }
 
+    interface Binder
+            extends
+            UiBinder<Widget, EditScreen> {
+
+    }
 }

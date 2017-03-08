@@ -39,13 +39,13 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 
 import static org.junit.Assert.*;
-import static org.uberfire.ext.metadata.io.KObjectUtil.*;
+import static org.uberfire.ext.metadata.io.KObjectUtil.toKCluster;
 
 public class BatchIndexTest extends BaseIndexTest {
 
     @Override
     protected IOService ioService() {
-        if ( ioService == null ) {
+        if (ioService == null) {
             config = new LuceneConfigBuilder()
                     .withInMemoryMetaModelStore()
                     .useDirectoryBasedIndex()
@@ -58,199 +58,205 @@ public class BatchIndexTest extends BaseIndexTest {
 
     @Override
     protected String[] getRepositoryNames() {
-        return new String[]{ "temp-repo-test" };
+        return new String[]{"temp-repo-test"};
     }
 
     @Test
     public void testIndex() throws IOException, InterruptedException {
         {
-            final Path file = ioService().get( "git://temp-repo-test/path/to/file.txt" );
-            ioService().write( file,
-                               "some content here", Collections.<OpenOption>emptySet(),
-                               new FileAttribute<Object>() {
-                                   @Override
-                                   public String name() {
-                                       return "dcore.author";
-                                   }
+            final Path file = ioService().get("git://temp-repo-test/path/to/file.txt");
+            ioService().write(file,
+                              "some content here",
+                              Collections.<OpenOption>emptySet(),
+                              new FileAttribute<Object>() {
+                                  @Override
+                                  public String name() {
+                                      return "dcore.author";
+                                  }
 
-                                   @Override
-                                   public Object value() {
-                                       return "My User Name Here";
-                                   }
-                               },
-                               new FileAttribute<Object>() {
-                                   @Override
-                                   public String name() {
-                                       return "dcore.lastModification";
-                                   }
+                                  @Override
+                                  public Object value() {
+                                      return "My User Name Here";
+                                  }
+                              },
+                              new FileAttribute<Object>() {
+                                  @Override
+                                  public String name() {
+                                      return "dcore.lastModification";
+                                  }
 
-                                   @Override
-                                   public Object value() {
-                                       return new Date();
-                                   }
-                               },
-                               new FileAttribute<Object>() {
-                                   @Override
-                                   public String name() {
-                                       return "dcore.comment";
-                                   }
+                                  @Override
+                                  public Object value() {
+                                      return new Date();
+                                  }
+                              },
+                              new FileAttribute<Object>() {
+                                  @Override
+                                  public String name() {
+                                      return "dcore.comment";
+                                  }
 
-                                   @Override
-                                   public Object value() {
-                                       return "initial document version, should be revised later.";
-                                   }
-                               }
+                                  @Override
+                                  public Object value() {
+                                      return "initial document version, should be revised later.";
+                                  }
+                              }
             );
         }
         {
-            final Path file = ioService().get( "git://temp-repo-test/path/to/some/complex/file.txt" );
-            ioService().write( file,
-                               "some other content here",
-                               Collections.<OpenOption>emptySet(),
-                               new FileAttribute<Object>() {
-                                   @Override
-                                   public String name() {
-                                       return "dcore.author";
-                                   }
+            final Path file = ioService().get("git://temp-repo-test/path/to/some/complex/file.txt");
+            ioService().write(file,
+                              "some other content here",
+                              Collections.<OpenOption>emptySet(),
+                              new FileAttribute<Object>() {
+                                  @Override
+                                  public String name() {
+                                      return "dcore.author";
+                                  }
 
-                                   @Override
-                                   public Object value() {
-                                       return "My Second User Name";
-                                   }
-                               },
-                               new FileAttribute<Object>() {
-                                   @Override
-                                   public String name() {
-                                       return "dcore.lastModification";
-                                   }
+                                  @Override
+                                  public Object value() {
+                                      return "My Second User Name";
+                                  }
+                              },
+                              new FileAttribute<Object>() {
+                                  @Override
+                                  public String name() {
+                                      return "dcore.lastModification";
+                                  }
 
-                                   @Override
-                                   public Object value() {
-                                       return new Date();
-                                   }
-                               },
-                               new FileAttribute<Object>() {
-                                   @Override
-                                   public String name() {
-                                       return "dcore.comment";
-                                   }
+                                  @Override
+                                  public Object value() {
+                                      return new Date();
+                                  }
+                              },
+                              new FileAttribute<Object>() {
+                                  @Override
+                                  public String name() {
+                                      return "dcore.comment";
+                                  }
 
-                                   @Override
-                                   public Object value() {
-                                       return "important document, should be used right now.";
-                                   }
-                               }
+                                  @Override
+                                  public Object value() {
+                                      return "important document, should be used right now.";
+                                  }
+                              }
             );
         }
         {
-            final Path file = ioService().get( "git://temp-repo-test/simple.doc" );
-            ioService().write( file,
-                               "some doc content here",
-                               Collections.<OpenOption>emptySet(),
-                               new FileAttribute<Object>() {
-                                   @Override
-                                   public String name() {
-                                       return "dcore.author";
-                                   }
+            final Path file = ioService().get("git://temp-repo-test/simple.doc");
+            ioService().write(file,
+                              "some doc content here",
+                              Collections.<OpenOption>emptySet(),
+                              new FileAttribute<Object>() {
+                                  @Override
+                                  public String name() {
+                                      return "dcore.author";
+                                  }
 
-                                   @Override
-                                   public Object value() {
-                                       return "My Original User";
-                                   }
-                               },
-                               new FileAttribute<Object>() {
-                                   @Override
-                                   public String name() {
-                                       return "dcore.lastModification";
-                                   }
+                                  @Override
+                                  public Object value() {
+                                      return "My Original User";
+                                  }
+                              },
+                              new FileAttribute<Object>() {
+                                  @Override
+                                  public String name() {
+                                      return "dcore.lastModification";
+                                  }
 
-                                   @Override
-                                   public Object value() {
-                                       return new Date();
-                                   }
-                               },
-                               new FileAttribute<Object>() {
-                                   @Override
-                                   public String name() {
-                                       return "dcore.comment";
-                                   }
+                                  @Override
+                                  public Object value() {
+                                      return new Date();
+                                  }
+                              },
+                              new FileAttribute<Object>() {
+                                  @Override
+                                  public String name() {
+                                      return "dcore.comment";
+                                  }
 
-                                   @Override
-                                   public Object value() {
-                                       return "unlock document updated, should be checked by boss.";
-                                   }
-                               }
+                                  @Override
+                                  public Object value() {
+                                      return "unlock document updated, should be checked by boss.";
+                                  }
+                              }
             );
         }
 
         {
-            final Path file = ioService().get( "git://temp-repo-test/xxx/simple.xls" );
-            ioService().write( file,
-                               "plans!?" );
+            final Path file = ioService().get("git://temp-repo-test/xxx/simple.xls");
+            ioService().write(file,
+                              "plans!?");
         }
 
-        new BatchIndex( config.getIndexEngine(),
-                        ioService(),
-                        new Observer() {
-                            @Override
-                            public void information( final String message ) {
+        new BatchIndex(config.getIndexEngine(),
+                       ioService(),
+                       new Observer() {
+                           @Override
+                           public void information(final String message) {
 
-                            }
+                           }
 
-                            @Override
-                            public void warning( final String message ) {
+                           @Override
+                           public void warning(final String message) {
 
-                            }
+                           }
 
-                            @Override
-                            public void error( final String message ) {
+                           @Override
+                           public void error(final String message) {
 
-                            }
-                        },
-                        DublinCoreView.class ).run( ioService().get( "git://temp-repo-test/" ),
-                                                    () -> {
-                                                        try {
-                                                            final Index index = config.getIndexManager().get( toKCluster( ioService().get( "git://temp-repo-test/" ).getFileSystem() ) );
+                           }
+                       },
+                       DublinCoreView.class).run(ioService().get("git://temp-repo-test/"),
+                                                 () -> {
+                                                     try {
+                                                         final Index index = config.getIndexManager().get(toKCluster(ioService().get("git://temp-repo-test/").getFileSystem()));
 
-                                                            final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
-                                                            {
-                                                                final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
+                                                         final IndexSearcher searcher = ((LuceneIndex) index).nrtSearcher();
+                                                         {
+                                                             final TopScoreDocCollector collector = TopScoreDocCollector.create(10);
 
-                                                                searcher.search( new MatchAllDocsQuery(), collector );
+                                                             searcher.search(new MatchAllDocsQuery(),
+                                                                             collector);
 
-                                                                final ScoreDoc[] hits = collector.topDocs().scoreDocs;
+                                                             final ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
-                                                                assertEquals( 4, hits.length );
-                                                            }
+                                                             assertEquals(4,
+                                                                          hits.length);
+                                                         }
 
-                                                            {
-                                                                final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
+                                                         {
+                                                             final TopScoreDocCollector collector = TopScoreDocCollector.create(10);
 
-                                                                searcher.search( new TermQuery( new Term( "dcore.author", "name" ) ), collector );
+                                                             searcher.search(new TermQuery(new Term("dcore.author",
+                                                                                                    "name")),
+                                                                             collector);
 
-                                                                final ScoreDoc[] hits = collector.topDocs().scoreDocs;
+                                                             final ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
-                                                                assertEquals( 2, hits.length );
-                                                            }
+                                                             assertEquals(2,
+                                                                          hits.length);
+                                                         }
 
-                                                            {
-                                                                final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
+                                                         {
+                                                             final TopScoreDocCollector collector = TopScoreDocCollector.create(10);
 
-                                                                searcher.search( new TermQuery( new Term( "dcore.author", "second" ) ), collector );
+                                                             searcher.search(new TermQuery(new Term("dcore.author",
+                                                                                                    "second")),
+                                                                             collector);
 
-                                                                final ScoreDoc[] hits = collector.topDocs().scoreDocs;
+                                                             final ScoreDoc[] hits = collector.topDocs().scoreDocs;
 
-                                                                assertEquals( 1, hits.length );
-                                                            }
+                                                             assertEquals(1,
+                                                                          hits.length);
+                                                         }
 
-                                                            ( (LuceneIndex) index ).nrtRelease( searcher );
-
-                                                        } catch ( Exception ex ) {
-                                                            ex.printStackTrace();
-                                                            fail();
-                                                        }
-                                                    } );
-
+                                                         ((LuceneIndex) index).nrtRelease(searcher);
+                                                     } catch (Exception ex) {
+                                                         ex.printStackTrace();
+                                                         fail();
+                                                     }
+                                                 });
     }
-
 }

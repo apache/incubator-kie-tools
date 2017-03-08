@@ -20,7 +20,7 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.backend.vfs.Path;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Portable
 public class ResourceRenamed implements UberFireEvent,
@@ -29,9 +29,10 @@ public class ResourceRenamed implements UberFireEvent,
     private Path destinationPath;
     private String message;
 
-    public ResourceRenamed( @MapsTo("destinationPath") final Path destinationPath,
-                            @MapsTo("message") final String message ) {
-        this.destinationPath = checkNotNull( "destinationPath", destinationPath );
+    public ResourceRenamed(@MapsTo("destinationPath") final Path destinationPath,
+                           @MapsTo("message") final String message) {
+        this.destinationPath = checkNotNull("destinationPath",
+                                            destinationPath);
         this.message = message;
     }
 
@@ -48,5 +49,4 @@ public class ResourceRenamed implements UberFireEvent,
     public Path getDestinationPath() {
         return this.destinationPath;
     }
-
 }

@@ -24,7 +24,6 @@ import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.dom.Element;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -35,45 +34,39 @@ import org.uberfire.ext.security.management.client.resources.i18n.UsersManagemen
 public class ACLSettingsView extends Composite
         implements ACLSettings.View {
 
-    private ACLSettings presenter;
-
     @DataField
     LabelElement homePerspectiveLabel = Document.get().createLabelElement();
-
     @Inject
     @DataField
     Span homePerspectiveName;
-
     @Inject
     @DataField
     FlowPanel homePerspectiveSelectorPanel;
-
     @Inject
     @DataField
     Span homePerspectiveHelp;
-
     @DataField
     LabelElement priorityLabel = Document.get().createLabelElement();
-
     @Inject
     @DataField
     Span priorityValue;
-
     @Inject
     @DataField
     FlowPanel prioritySelectorPanel;
-
     @Inject
     @DataField
     Span priorityHelp;
+    private ACLSettings presenter;
 
     @Override
     public void init(ACLSettings presenter) {
         this.presenter = presenter;
         homePerspectiveLabel.setInnerText(UsersManagementWidgetsConstants.INSTANCE.homePerspective());
-        homePerspectiveHelp.setAttribute("title", UsersManagementWidgetsConstants.INSTANCE.homePerspectiveTooltip());
+        homePerspectiveHelp.setAttribute("title",
+                                         UsersManagementWidgetsConstants.INSTANCE.homePerspectiveTooltip());
         priorityLabel.setInnerText(UsersManagementWidgetsConstants.INSTANCE.priority());
-        priorityHelp.setAttribute("title", UsersManagementWidgetsConstants.INSTANCE.priorityTooltip());
+        priorityHelp.setAttribute("title",
+                                  UsersManagementWidgetsConstants.INSTANCE.priorityTooltip());
     }
 
     @Override
@@ -106,7 +99,8 @@ public class ACLSettingsView extends Composite
     public ACLSettings.View setHomePerspectiveSelectorEnabled(boolean enabled) {
         homePerspectiveSelectorPanel.setVisible(enabled);
         if (enabled) {
-            homePerspectiveName.getStyle().setProperty("display", "none");
+            homePerspectiveName.getStyle().setProperty("display",
+                                                       "none");
         } else {
             homePerspectiveName.getStyle().removeProperty("display");
         }
@@ -130,7 +124,8 @@ public class ACLSettingsView extends Composite
     public ACLSettings.View setPrioritySelectorEnabled(boolean enabled) {
         prioritySelectorPanel.setVisible(enabled);
         if (enabled) {
-            priorityValue.getStyle().setProperty("display", "none");
+            priorityValue.getStyle().setProperty("display",
+                                                 "none");
         } else {
             priorityValue.getStyle().removeProperty("display");
         }

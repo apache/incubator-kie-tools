@@ -34,11 +34,14 @@ import org.uberfire.ext.wires.core.client.util.ShapeFactoryUtil;
 @Dependent
 public class TemplatesGroup extends Composite {
 
+    private final ImmutableSet<String> templateNames = ImmutableSet.of("dog-problem.xml03",
+                                                                       "cancer.xml03",
+                                                                       "asia.xml03",
+                                                                       "car-starts.xml03",
+                                                                       "elimbel2.xml03",
+                                                                       "john-mary-call.xml03");
     private Layer layer;
     private LienzoPanel panel;
-
-    private final ImmutableSet<String> templateNames = ImmutableSet.of( "dog-problem.xml03", "cancer.xml03", "asia.xml03", "car-starts.xml03", "elimbel2.xml03", "john-mary-call.xml03" );
-
     @Inject
     private Event<BayesianTemplateSelectedEvent> bayesianEvent;
 
@@ -47,11 +50,11 @@ public class TemplatesGroup extends Composite {
 
     @PostConstruct
     public void init() {
-        panel = new LienzoPanel( ShapeFactoryUtil.WIDTH_PANEL,
-                                 ShapeFactoryUtil.HEIGHT_PANEL );
+        panel = new LienzoPanel(ShapeFactoryUtil.WIDTH_PANEL,
+                                ShapeFactoryUtil.HEIGHT_PANEL);
         layer = new Layer();
-        panel.getScene().add( layer );
-        initWidget( panel );
+        panel.getScene().add(layer);
+        initWidget(panel);
 
         drawTemplates();
     }
@@ -59,30 +62,29 @@ public class TemplatesGroup extends Composite {
     private void drawTemplates() {
         //Add Template files to panel
         final List<TemplateShape> shapes = new ArrayList<TemplateShape>();
-        for ( String templateName : templateNames ) {
-            shapes.add( stencilBuilder.build( templateName,
-                                              getTemplateClickHandler( templateName ) ) );
+        for (String templateName : templateNames) {
+            shapes.add(stencilBuilder.build(templateName,
+                                            getTemplateClickHandler(templateName)));
         }
 
         //Add TemplateShapes to the UI
         int shapeCount = 0;
-        for ( TemplateShape shape : shapes ) {
-            shape.setX( 0 );
-            shape.setY( shapeCount * ( ShapeFactoryUtil.HEIGHT_BOUNDING_LAYER + ShapeFactoryUtil.SPACE_BETWEEN_BOUNDING ) );
-            layer.add( shape );
+        for (TemplateShape shape : shapes) {
+            shape.setX(0);
+            shape.setY(shapeCount * (ShapeFactoryUtil.HEIGHT_BOUNDING_LAYER + ShapeFactoryUtil.SPACE_BETWEEN_BOUNDING));
+            layer.add(shape);
             shapeCount++;
         }
 
         layer.batch();
     }
 
-    private NodeMouseClickHandler getTemplateClickHandler( final String templateName ) {
+    private NodeMouseClickHandler getTemplateClickHandler(final String templateName) {
         return new NodeMouseClickHandler() {
             @Override
-            public void onNodeMouseClick( final NodeMouseClickEvent event ) {
-                bayesianEvent.fire( new BayesianTemplateSelectedEvent( templateName ) );
+            public void onNodeMouseClick(final NodeMouseClickEvent event) {
+                bayesianEvent.fire(new BayesianTemplateSelectedEvent(templateName));
             }
         };
     }
-
 }

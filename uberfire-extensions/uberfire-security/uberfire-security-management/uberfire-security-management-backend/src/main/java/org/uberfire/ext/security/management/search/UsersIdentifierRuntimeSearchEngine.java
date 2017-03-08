@@ -21,7 +21,6 @@ import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
 /**
  * <p>Default runtime search engine implementation for collections of user identifiers.</p>
- * 
  * @since 0.8.0
  */
 public class UsersIdentifierRuntimeSearchEngine extends IdentifierRuntimeSearchEngine<User> {

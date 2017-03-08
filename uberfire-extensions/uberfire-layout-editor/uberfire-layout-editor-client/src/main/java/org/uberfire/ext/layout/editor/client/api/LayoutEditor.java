@@ -20,28 +20,34 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
 public interface LayoutEditor {
 
-    void init( String layoutName, LayoutDragComponentGroup layoutDragComponentGroup, String emptyTitleText,
-               String emptySubTitleText );
+    void init(String layoutName,
+              LayoutDragComponentGroup layoutDragComponentGroup,
+              String emptyTitleText,
+              String emptySubTitleText);
 
     void clear();
 
     Widget asWidget();
 
-    void loadLayout( LayoutTemplate layoutTemplate );
+    void loadLayout(LayoutTemplate layoutTemplate);
 
-    void loadDefaultLayout( String layoutName );
+    void loadDefaultLayout(String layoutName);
 
     LayoutTemplate getLayout();
 
-    void addLayoutProperty( String key, String value );
+    void addLayoutProperty(String key,
+                           String value);
 
-    String getLayoutProperty( String key );
+    String getLayoutProperty(String key);
 
-    void addDraggableComponentGroup( LayoutDragComponentGroup group );
+    void addDraggableComponentGroup(LayoutDragComponentGroup group);
 
-    void addDraggableComponentToGroup( String groupId, String componentId, LayoutDragComponent component );
+    void addDraggableComponentToGroup(String groupId,
+                                      String componentId,
+                                      LayoutDragComponent component);
 
-    void removeDraggableComponentGroup( String groupId );
+    void removeDraggableComponentGroup(String groupId);
 
-    void removeDraggableGroupComponent( String groupId, String componentId );
+    void removeDraggableGroupComponent(String groupId,
+                                       String componentId);
 }

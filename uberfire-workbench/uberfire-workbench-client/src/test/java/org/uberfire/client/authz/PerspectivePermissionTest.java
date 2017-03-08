@@ -16,7 +16,6 @@
 
 package org.uberfire.client.authz;
 
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +26,6 @@ import org.uberfire.security.impl.authz.DefaultPermissionManager;
 import org.uberfire.workbench.model.ActivityResourceType;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PerspectivePermissionTest {
@@ -41,14 +39,26 @@ public class PerspectivePermissionTest {
 
     @Test
     public void testPermissionCreation() {
-        Permission readPermission = permissionManager.createPermission(ActivityResourceType.PERSPECTIVE, PerspectiveAction.READ, true);
-        Permission updatePermission = permissionManager.createPermission(ActivityResourceType.PERSPECTIVE, PerspectiveAction.UPDATE, true);
-        Permission deletePermission = permissionManager.createPermission(ActivityResourceType.PERSPECTIVE, PerspectiveAction.DELETE, true);
-        Permission createPermission = permissionManager.createPermission(ActivityResourceType.PERSPECTIVE, PerspectiveAction.CREATE, true);
+        Permission readPermission = permissionManager.createPermission(ActivityResourceType.PERSPECTIVE,
+                                                                       PerspectiveAction.READ,
+                                                                       true);
+        Permission updatePermission = permissionManager.createPermission(ActivityResourceType.PERSPECTIVE,
+                                                                         PerspectiveAction.UPDATE,
+                                                                         true);
+        Permission deletePermission = permissionManager.createPermission(ActivityResourceType.PERSPECTIVE,
+                                                                         PerspectiveAction.DELETE,
+                                                                         true);
+        Permission createPermission = permissionManager.createPermission(ActivityResourceType.PERSPECTIVE,
+                                                                         PerspectiveAction.CREATE,
+                                                                         true);
 
-        assertEquals(readPermission.getName(), "perspective.read");
-        assertEquals(updatePermission.getName(), "perspective.update");
-        assertEquals(deletePermission.getName(), "perspective.delete");
-        assertEquals(createPermission.getName(), "perspective.create");
+        assertEquals(readPermission.getName(),
+                     "perspective.read");
+        assertEquals(updatePermission.getName(),
+                     "perspective.update");
+        assertEquals(deletePermission.getName(),
+                     "perspective.delete");
+        assertEquals(createPermission.getName(),
+                     "perspective.create");
     }
 }

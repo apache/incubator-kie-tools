@@ -26,20 +26,57 @@ import com.google.gwt.animation.client.Animation;
 public class Sequencer {
 
     private int currentAnimationIndex = 0;
+    //The list of animations
+    private List<AnimationConfiguration> animations = new ArrayList<AnimationConfiguration>();
+
+    /**
+     * Add an animation to the list of animations to be sequenced.
+     * @param animation
+     * @param duration
+     */
+    public void add(final SequencedAnimation animation,
+                    final int duration) {
+        animations.add(new AnimationConfiguration(new WrappedAnimation(animation),
+                                                  duration));
+    }
+
+    /**
+     * Run all animations.
+     */
+    public void run() {
+        runNextAnimation();
+    }
+
+    /**
+     * Reset the sequence to the begining.
+     */
+    public void reset() {
+        currentAnimationIndex = 0;
+    }
+
+    private void runNextAnimation() {
+        if (currentAnimationIndex < animations.size()) {
+            final AnimationConfiguration config = animations.get(currentAnimationIndex++);
+            final WrappedAnimation animation = config.animation;
+            final int duration = config.duration;
+            animation.run(duration);
+        } else {
+            reset();
+        }
+    }
 
     //Simple holder for sequenced animation details
     private class AnimationConfiguration {
 
         final WrappedAnimation animation;
 
-        final int              duration;
+        final int duration;
 
         AnimationConfiguration(final WrappedAnimation animation,
                                final int duration) {
             this.animation = animation;
             this.duration = duration;
         }
-
     }
 
     //A wrapper for sequenced animations allowing us to hook into the onComplete method to launch the next animation
@@ -61,7 +98,7 @@ public class Sequencer {
         @Override
         protected void onUpdate(double progress) {
             //Pass through to the wrapped animation
-            animation.onUpdate( progress );
+            animation.onUpdate(progress);
         }
 
         @Override
@@ -73,7 +110,7 @@ public class Sequencer {
         @Override
         protected double interpolate(double progress) {
             //Pass through to the wrapped animation
-            return animation.interpolate( progress );
+            return animation.interpolate(progress);
         }
 
         @Override
@@ -87,47 +124,5 @@ public class Sequencer {
             //Pass through to the wrapped animation
             animation.onStart();
         }
-
     }
-
-    //The list of animations
-    private List<AnimationConfiguration> animations = new ArrayList<AnimationConfiguration>();
-
-    /**
-     * Add an animation to the list of animations to be sequenced.
-     * 
-     * @param animation
-     * @param duration
-     */
-    public void add(final SequencedAnimation animation,
-                    final int duration) {
-        animations.add( new AnimationConfiguration( new WrappedAnimation( animation ),
-                                                    duration ) );
-    }
-
-    /**
-     * Run all animations.
-     */
-    public void run() {
-        runNextAnimation();
-    }
-
-    /**
-     * Reset the sequence to the begining.
-     */
-    public void reset() {
-        currentAnimationIndex = 0;
-    }
-
-    private void runNextAnimation() {
-        if ( currentAnimationIndex < animations.size() ) {
-            final AnimationConfiguration config = animations.get( currentAnimationIndex++ );
-            final WrappedAnimation animation = config.animation;
-            final int duration = config.duration;
-            animation.run( duration );
-        } else {
-            reset();
-        }
-    }
-
 }

@@ -23,12 +23,12 @@ import org.uberfire.security.impl.authz.UnanimousBasedVoter;
 /**
  * Voting algorithms are used by the {@link PermissionManager} in order to determine what is the
  * winning result when the user is assigned with more than one role or group.
- *
+ * <p>
  * <p>See:</p>
  * <ul>
- *     <li>{@link UnanimousBasedVoter}</li>
- *     <li>{@link ConsensusBasedVoter}</li>
- *     <li>{@link AffirmativeBasedVoter}</li>
+ * <li>{@link UnanimousBasedVoter}</li>
+ * <li>{@link ConsensusBasedVoter}</li>
+ * <li>{@link AffirmativeBasedVoter}</li>
  * </ul>
  */
 public interface VotingAlgorithm {

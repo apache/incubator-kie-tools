@@ -44,16 +44,16 @@ public abstract class GitCommand {
      */
     public abstract <T> Optional<T> execute();
 
-    protected RevTree getRevTree( RevWalk revWalk,
-                                  RevCommit commit ) {
+    protected RevTree getRevTree(RevWalk revWalk,
+                                 RevCommit commit) {
         try {
-            return revWalk.parseTree( commit.getTree().getId() );
-
-        } catch ( IOException e ) {
+            return revWalk.parseTree(commit.getTree().getId());
+        } catch (IOException e) {
             String message = String.format(
                     "An error has ocurred trying to get the Revision Tree from commit (%s)",
-                    commit.getId() );
-            throw new GitException( message, e );
+                    commit.getId());
+            throw new GitException(message,
+                                   e);
         }
     }
 
@@ -63,13 +63,15 @@ public abstract class GitCommand {
      * @param revWalk the object that walks into the commit graph.
      * @return the revision commit parsed from the commit graph.
      */
-    protected RevCommit getRevCommit( ObjectId startCommitObjectId,
-                                      RevWalk revWalk ) {
+    protected RevCommit getRevCommit(ObjectId startCommitObjectId,
+                                     RevWalk revWalk) {
         try {
-            return revWalk.parseCommit( startCommitObjectId );
-        } catch ( IOException e ) {
-            String message = String.format( "An error has ocurred when parsing commit(%s)", startCommitObjectId );
-            throw new GitException( message, e );
+            return revWalk.parseCommit(startCommitObjectId);
+        } catch (IOException e) {
+            String message = String.format("An error has ocurred when parsing commit(%s)",
+                                           startCommitObjectId);
+            throw new GitException(message,
+                                   e);
         }
     }
 
@@ -77,9 +79,9 @@ public abstract class GitCommand {
      * Check if the repository is bare, if not throws an {@link IllegalStateException}
      * @param repository Git Repository you need to check
      */
-    protected void isBare( Repository repository ) {
-        if ( !repository.isBare() ) {
-            throw new IllegalStateException( "You cannot squash/rebase in a non BARE repository" );
+    protected void isBare(Repository repository) {
+        if (!repository.isBare()) {
+            throw new IllegalStateException("You cannot squash/rebase in a non BARE repository");
         }
     }
 
@@ -89,11 +91,12 @@ public abstract class GitCommand {
      * @param startCommitString a String with the id of the commit.
      * @return the commit objectid.
      */
-    protected ObjectId getStartCommit( Git git,
-                                       String startCommitString ) {
-        ObjectId startCommitObjectId = JGitUtil.resolveObjectId( git, startCommitString );
-        if ( startCommitObjectId == null ) {
-            throw new IllegalStateException( "Start Commit must be a valid commit" );
+    protected ObjectId getStartCommit(Git git,
+                                      String startCommitString) {
+        ObjectId startCommitObjectId = JGitUtil.resolveObjectId(git,
+                                                                startCommitString);
+        if (startCommitObjectId == null) {
+            throw new IllegalStateException("Start Commit must be a valid commit");
         }
         return startCommitObjectId;
     }

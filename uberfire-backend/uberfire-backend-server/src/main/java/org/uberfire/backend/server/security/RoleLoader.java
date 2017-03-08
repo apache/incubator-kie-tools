@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
@@ -31,8 +30,8 @@ import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.backend.server.WebAppSettings;
 import org.uberfire.backend.server.WebAppListener;
+import org.uberfire.backend.server.WebAppSettings;
 import org.uberfire.commons.services.cdi.Startup;
 import org.uberfire.commons.services.cdi.StartupType;
 
@@ -57,16 +56,18 @@ public class RoleLoader {
                 RoleRegistry.get().registerRole(role);
             }
             if (!roles.isEmpty()) {
-                logger.info("Roles registered from web.xml \"" + StringUtils.join(roles.toArray(), ",") + "\"");
+                logger.info("Roles registered from web.xml \"" + StringUtils.join(roles.toArray(),
+                                                                                  ",") + "\"");
             }
-        }
-        catch (Exception e) {
-            logger.error("Error reading roles from web.xml", e);
+        } catch (Exception e) {
+            logger.error("Error reading roles from web.xml",
+                         e);
         }
     }
 
     protected Set<String> loadRolesFromwWebXml() throws Exception {
-        Path webXml = WebAppSettings.get().getAbsolutePath("WEB-INF", "web.xml");
+        Path webXml = WebAppSettings.get().getAbsolutePath("WEB-INF",
+                                                           "web.xml");
 
         Set<String> result = new HashSet<>();
         SAXBuilder builder = new SAXBuilder();
@@ -76,9 +77,10 @@ public class RoleLoader {
         // Look for <security-role> declarations.
         List bundleNodes = root.getChildren("security-role");
         if (bundleNodes.isEmpty()) {
-            bundleNodes = root.getChildren("security-role", null);
+            bundleNodes = root.getChildren("security-role",
+                                           null);
         }
-        for (Iterator iterator = bundleNodes.iterator(); iterator.hasNext();) {
+        for (Iterator iterator = bundleNodes.iterator(); iterator.hasNext(); ) {
             Element el_role = (Element) iterator.next();
             List ch_role = el_role.getChildren();
             for (int i = 0; i < ch_role.size(); i++) {

@@ -16,6 +16,9 @@
 
 package org.uberfire.ext.layout.editor.client.infra;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -29,9 +32,6 @@ import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.ModalConfigurationContext;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 import org.uberfire.mvp.Command;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Dependent
 public class DragHelperComponentColumn {
@@ -47,9 +47,9 @@ public class DragHelperComponentColumn {
     private LayoutComponent layoutComponent;
 
     public LayoutDragComponent getLayoutDragComponent() {
-        if ( layoutDragComponent == null ) {
+        if (layoutDragComponent == null) {
             layoutDragComponent =
-                    helper.lookupDragTypeBean( layoutComponent.getDragTypeName() );
+                    helper.lookupDragTypeBean(layoutComponent.getDragTypeName());
         }
         return layoutDragComponent;
     }
@@ -58,26 +58,29 @@ public class DragHelperComponentColumn {
         return getLayoutDragComponent() instanceof HasModalConfiguration;
     }
 
-    public void setLayoutComponent( LayoutComponent layoutComponent ) {
+    public void setLayoutComponent(LayoutComponent layoutComponent) {
         this.layoutComponent = layoutComponent;
     }
 
-    public HTMLElement getPreviewElement( Widget context ) {
-        HTMLElement div = document.createElement( "div" );
-        FlowPanel gwtDivWrapper = GWT.create( FlowPanel.class );
-        gwtDivWrapper.add( getLayoutDragComponent()
-                                   .getPreviewWidget( new RenderingContext( layoutComponent, context ) ).asWidget() );
-        DOMUtil.appendWidgetToElement( div, gwtDivWrapper );
+    public HTMLElement getPreviewElement(Widget context) {
+        HTMLElement div = document.createElement("div");
+        FlowPanel gwtDivWrapper = GWT.create(FlowPanel.class);
+        gwtDivWrapper.add(getLayoutDragComponent()
+                                  .getPreviewWidget(new RenderingContext(layoutComponent,
+                                                                         context)).asWidget());
+        DOMUtil.appendWidgetToElement(div,
+                                      gwtDivWrapper);
         return div;
     }
 
-    public void showConfigModal( Command configurationFinish, Command configurationCanceled ) {
-        ModalConfigurationContext ctx = new ModalConfigurationContext( layoutComponent,
-                                                                       configurationFinish,
-                                                                       configurationCanceled
+    public void showConfigModal(Command configurationFinish,
+                                Command configurationCanceled) {
+        ModalConfigurationContext ctx = new ModalConfigurationContext(layoutComponent,
+                                                                      configurationFinish,
+                                                                      configurationCanceled
         );
-        Modal configModal = ( ( HasModalConfiguration )
-                getLayoutDragComponent() ).getConfigurationModal( ctx );
+        Modal configModal = ((HasModalConfiguration)
+                getLayoutDragComponent()).getConfigurationModal(ctx);
         configModal.show();
     }
 }

@@ -24,13 +24,6 @@ import org.uberfire.workbench.model.menu.Menus;
 @ApplicationScoped
 public class UtilityMenuBarPresenter implements UtilityMenuBar {
 
-    public interface View
-            extends
-            IsWidget, HasMenus {
-
-        void clear();
-    }
-
     @Inject
     private View view;
 
@@ -39,9 +32,9 @@ public class UtilityMenuBarPresenter implements UtilityMenuBar {
     }
 
     @Override
-    public void addMenus( final Menus menus ) {
-        if ( menus != null && !menus.getItems().isEmpty() ) {
-            view.addMenus( menus );
+    public void addMenus(final Menus menus) {
+        if (menus != null && !menus.getItems().isEmpty()) {
+            view.addMenus(menus);
         }
     }
 
@@ -50,4 +43,11 @@ public class UtilityMenuBarPresenter implements UtilityMenuBar {
         view.clear();
     }
 
+    public interface View
+            extends
+            IsWidget,
+            HasMenus {
+
+        void clear();
+    }
 }

@@ -16,6 +16,13 @@
 
 package org.uberfire.ext.security.management.client.widgets.management;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.EditorError;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -33,13 +40,6 @@ import org.uberfire.ext.security.management.client.widgets.management.events.OnE
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.uberfire.workbench.events.NotificationEvent.NotificationType.SUCCESS;
 
 /**
@@ -48,37 +48,37 @@ import static org.uberfire.workbench.events.NotificationEvent.NotificationType.S
 @Dependent
 public class ChangePassword implements IsWidget {
 
-    public interface ChangePasswordCallback {
-        void onPasswordUpdated();
-        void onError(final Throwable throwable);
-    }
-    
-    public interface View extends UberView<ChangePassword> {
+    /**
+     * <p>A default not empty password validator.</p>
+     */
+    final Validator<String> passwordValidator = new Validator<String>() {
+        @Override
+        public int getPriority() {
+            return 0;
+        }
 
-        View configure(final Validator<String> newPasswordBoxValidator,
-                       final Validator<String> repeatNewPasswordBoxValidator);
-        View show(final String username);
-        View hide();
-        View clear();
-
-    }
-
+        @Override
+        public List<EditorError> validate(Editor<String> editor,
+                                          String value) {
+            List<EditorError> result = new ArrayList<EditorError>();
+            if (value == null || value.trim().length() == 0) {
+                result.add(new BasicEditorError(editor,
+                                                value,
+                                                UsersManagementWidgetsConstants.INSTANCE.passwordCannotBeEmpty()));
+            }
+            return result;
+        }
+    };
     public View view;
     ClientUserSystemManager userSystemManager;
     Event<NotificationEvent> workbenchNotification;
     Event<OnErrorEvent> errorEvent;
     Event<ChangePasswordEvent> changePasswordEvent;
-    
     String username = null;
     ChangePasswordCallback callback;
-    
-    /*  ******************************************************************************************************
-                                 PUBLIC PRESENTER API 
-     ****************************************************************************************************** */
-
     @Inject
     public ChangePassword(final ClientUserSystemManager userSystemManager,
-                          final Event<NotificationEvent> workbenchNotification, 
+                          final Event<NotificationEvent> workbenchNotification,
                           final Event<OnErrorEvent> errorEvent,
                           final Event<ChangePasswordEvent> changePasswordEvent,
                           final View view) {
@@ -88,14 +88,19 @@ public class ChangePassword implements IsWidget {
         this.changePasswordEvent = changePasswordEvent;
         this.view = view;
     }
+    
+    /*  ******************************************************************************************************
+                                 PUBLIC PRESENTER API 
+     ****************************************************************************************************** */
 
     @PostConstruct
     public void init() {
         view.init(this);
         // Configure the view using the default not empty password validator.
-        view.configure(passwordValidator, passwordValidator);
+        view.configure(passwordValidator,
+                       passwordValidator);
     }
-    
+
     public void show(final String username) {
         // Clear current view.
         clear();
@@ -103,8 +108,9 @@ public class ChangePassword implements IsWidget {
         this.callback = null;
         view.show(UsersManagementWidgetsConstants.INSTANCE.changePasswordFor() + " " + username);
     }
-    
-    public void show(final String username, final ChangePasswordCallback callback) {
+
+    public void show(final String username,
+                     final ChangePasswordCallback callback) {
         // Clear current view.
         clear();
         this.username = username;
@@ -123,58 +129,70 @@ public class ChangePassword implements IsWidget {
         return view.asWidget();
     }
 
-     /*  ******************************************************************************************************
-                                 PACKAGE PROTECTED METHODS FOR USING AS CALLBACKS FOR THE VIEW 
-     ****************************************************************************************************** */
-
-    boolean validatePasswordsMatch(final String p1, final String p2) {
+    boolean validatePasswordsMatch(final String p1,
+                                   final String p2) {
         final boolean valid = p1 != null && p1.equals(p2);
         if (!valid) {
             showError(UsersManagementWidgetsConstants.INSTANCE.passwordsNotMatch());
         }
         return valid;
-    } 
-    
-    void onUpdatePassword(final String newPassword, final Command callback) {
+    }
+
+     /*  ******************************************************************************************************
+                                 PACKAGE PROTECTED METHODS FOR USING AS CALLBACKS FOR THE VIEW 
+     ****************************************************************************************************** */
+
+    void onUpdatePassword(final String newPassword,
+                          final Command callback) {
         // Call backend service.
         userSystemManager.users(new RemoteCallback<Void>() {
-            @Override
-            public void callback(final Void group) {
-                // Fire event as password changed succesfully on backend side.
-                changePasswordEvent.fire(new ChangePasswordEvent(this));
+                                    @Override
+                                    public void callback(final Void group) {
+                                        // Fire event as password changed succesfully on backend side.
+                                        changePasswordEvent.fire(new ChangePasswordEvent(this));
 
-                // Show a notification.
-                workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.passwordUpdatedSuccessfully(), SUCCESS));
-                
-                // Run the callback when backend request completed.
-                if (callback != null) {
-                    callback.execute();
-                }
-                if (ChangePassword.this.callback != null) {
-                    ChangePassword.this.callback.onPasswordUpdated();
-                }
-                
-                // Hide the view.
-                view.hide();
-                        
-            }
-        }, new ErrorCallback<Message>() {
-            @Override
-            public boolean error(Message message, Throwable throwable) {
-                if (throwable != null) showError("[ERROR] ChangePassword - Throwable: " + throwable.getMessage());
-                else showError("[ERROR] ChangePassword - Message: " + message.getSubject());
-                
-                // Run the callback when backend request completed.
-                if (callback != null) {
-                    callback.execute();
-                }
-                if (ChangePassword.this.callback != null) {
-                    ChangePassword.this.callback.onError(throwable);
-                }
-                return false;
-            }
-        }).changePassword(username, newPassword);
-        
+                                        // Show a notification.
+                                        workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.passwordUpdatedSuccessfully(),
+                                                                                         SUCCESS));
+
+                                        // Run the callback when backend request completed.
+                                        if (callback != null) {
+                                            callback.execute();
+                                        }
+                                        if (ChangePassword.this.callback != null) {
+                                            ChangePassword.this.callback.onPasswordUpdated();
+                                        }
+
+                                        // Hide the view.
+                                        view.hide();
+                                    }
+                                },
+                                new ErrorCallback<Message>() {
+                                    @Override
+                                    public boolean error(Message message,
+                                                         Throwable throwable) {
+                                        if (throwable != null) {
+                                            showError("[ERROR] ChangePassword - Throwable: " + throwable.getMessage());
+                                        } else {
+                                            showError("[ERROR] ChangePassword - Message: " + message.getSubject());
+                                        }
+
+                                        // Run the callback when backend request completed.
+                                        if (callback != null) {
+                                            callback.execute();
+                                        }
+                                        if (ChangePassword.this.callback != null) {
+                                            ChangePassword.this.callback.onError(throwable);
+                                        }
+                                        return false;
+                                    }
+                                }).changePassword(username,
+                                                  newPassword);
+    }
+
+    protected void showError(final String message) {
+        errorEvent.fire(new OnErrorEvent(ChangePassword.this,
+                                         message));
     }
     
     
@@ -182,27 +200,23 @@ public class ChangePassword implements IsWidget {
                                      PRIVATE METHODS FOR INTERNAL PRESENTER LOGIC 
          ****************************************************************************************************** */
 
-    /**
-     * <p>A default not empty password validator.</p>
-     */
-    final Validator<String> passwordValidator = new Validator<String>() {
-        @Override
-        public int getPriority() {
-            return 0;
-        }
+    public interface ChangePasswordCallback {
 
-        @Override
-        public List<EditorError> validate(Editor<String> editor, String value) {
-            List<EditorError> result = new ArrayList<EditorError>();
-            if (value == null || value.trim().length() == 0) {
-                result.add(new BasicEditorError(editor, value, UsersManagementWidgetsConstants.INSTANCE.passwordCannotBeEmpty()));
-            }
-            return result;
-        }
-    };
-;
-    protected void showError(final String message) {
-        errorEvent.fire(new OnErrorEvent(ChangePassword.this, message));
+        void onPasswordUpdated();
+
+        void onError(final Throwable throwable);
     }
-    
+    ;
+
+    public interface View extends UberView<ChangePassword> {
+
+        View configure(final Validator<String> newPasswordBoxValidator,
+                       final Validator<String> repeatNewPasswordBoxValidator);
+
+        View show(final String username);
+
+        View hide();
+
+        View clear();
+    }
 }

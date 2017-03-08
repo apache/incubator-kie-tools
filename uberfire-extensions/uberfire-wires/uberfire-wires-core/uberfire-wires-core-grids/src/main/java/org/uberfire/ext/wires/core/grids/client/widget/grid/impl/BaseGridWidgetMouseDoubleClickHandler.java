@@ -41,10 +41,10 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
     protected GridPinnedModeManager pinnedModeManager;
     protected GridRenderer renderer;
 
-    public BaseGridWidgetMouseDoubleClickHandler( final GridWidget gridWidget,
-                                                  final GridSelectionManager selectionManager,
-                                                  final GridPinnedModeManager pinnedModeManager,
-                                                  final GridRenderer renderer ) {
+    public BaseGridWidgetMouseDoubleClickHandler(final GridWidget gridWidget,
+                                                 final GridSelectionManager selectionManager,
+                                                 final GridPinnedModeManager pinnedModeManager,
+                                                 final GridRenderer renderer) {
         this.gridWidget = gridWidget;
         this.gridModel = gridWidget.getModel();
         this.rendererHelper = gridWidget.getRendererHelper();
@@ -54,12 +54,12 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
     }
 
     @Override
-    public void onNodeMouseDoubleClick( final NodeMouseDoubleClickEvent event ) {
-        if ( !gridWidget.isVisible() ) {
+    public void onNodeMouseDoubleClick(final NodeMouseDoubleClickEvent event) {
+        if (!gridWidget.isVisible()) {
             return;
         }
-        if ( !handleHeaderCellDoubleClick( event ) ) {
-            handleBodyCellDoubleClick( event );
+        if (!handleHeaderCellDoubleClick(event)) {
+            handleBodyCellDoubleClick(event);
         }
     }
 
@@ -67,32 +67,31 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
      * Enters or exits "pinned" mode; where one GridWidget is displayed and is scrollable.
      * @param event
      */
-    boolean handleHeaderCellDoubleClick( final NodeMouseDoubleClickEvent event ) {
+    boolean handleHeaderCellDoubleClick(final NodeMouseDoubleClickEvent event) {
         //Convert Canvas co-ordinate to Grid co-ordinate
-        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate( gridWidget,
-                                                                           new Point2D( event.getX(),
-                                                                                        event.getY() ) );
+        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate(gridWidget,
+                                                                          new Point2D(event.getX(),
+                                                                                      event.getY()));
         final double cx = ap.getX();
         final double cy = ap.getY();
 
         final Group header = gridWidget.getHeader();
         final double headerRowsYOffset = getHeaderRowsYOffset();
-        final double headerMinY = ( header == null ? headerRowsYOffset : header.getY() + headerRowsYOffset );
-        final double headerMaxY = ( header == null ? renderer.getHeaderHeight() : renderer.getHeaderHeight() + header.getY() );
+        final double headerMinY = (header == null ? headerRowsYOffset : header.getY() + headerRowsYOffset);
+        final double headerMaxY = (header == null ? renderer.getHeaderHeight() : renderer.getHeaderHeight() + header.getY());
 
-        if ( cx < 0 || cx > gridWidget.getWidth() ) {
+        if (cx < 0 || cx > gridWidget.getWidth()) {
             return false;
         }
-        if ( cy < headerMinY || cy > headerMaxY ) {
+        if (cy < headerMinY || cy > headerMaxY) {
             return false;
         }
 
-        if ( !pinnedModeManager.isGridPinned() ) {
-            pinnedModeManager.enterPinnedMode( gridWidget,
-                                               () -> {/*Nothing*/} );
-
+        if (!pinnedModeManager.isGridPinned()) {
+            pinnedModeManager.enterPinnedMode(gridWidget,
+                                              () -> {/*Nothing*/});
         } else {
-            pinnedModeManager.exitPinnedMode( () -> {/*Nothing*/} );
+            pinnedModeManager.exitPinnedMode(() -> {/*Nothing*/});
         }
 
         return true;
@@ -116,13 +115,12 @@ public class BaseGridWidgetMouseDoubleClickHandler implements NodeMouseDoubleCli
      * @param event
      */
 
-    boolean handleBodyCellDoubleClick( final NodeMouseDoubleClickEvent event ) {
+    boolean handleBodyCellDoubleClick(final NodeMouseDoubleClickEvent event) {
         //Convert Canvas co-ordinate to Grid co-ordinate
-        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate( gridWidget,
-                                                                           new Point2D( event.getX(),
-                                                                                        event.getY() ) );
+        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate(gridWidget,
+                                                                          new Point2D(event.getX(),
+                                                                                      event.getY()));
 
-        return gridWidget.startEditingCell( ap );
+        return gridWidget.startEditingCell(ap);
     }
-
 }

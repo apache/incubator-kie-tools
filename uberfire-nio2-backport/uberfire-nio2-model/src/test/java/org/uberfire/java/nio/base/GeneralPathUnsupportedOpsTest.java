@@ -28,37 +28,46 @@ import static org.mockito.Mockito.*;
 
 public class GeneralPathUnsupportedOpsTest {
 
-    final FileSystem          fs = mock( FileSystem.class );
-    final WatchService        ws = mock( WatchService.class );
-    final WatchEvent.Kind     kd = mock( WatchEvent.Kind.class );
-    final WatchEvent.Modifier mf = mock( WatchEvent.Modifier.class );
+    final FileSystem fs = mock(FileSystem.class);
+    final WatchService ws = mock(WatchService.class);
+    final WatchEvent.Kind kd = mock(WatchEvent.Kind.class);
+    final WatchEvent.Modifier mf = mock(WatchEvent.Modifier.class);
 
     Path param;
 
     @Before
     public void setup() {
-        when( fs.getSeparator() ).thenReturn( "/" );
-        param = GeneralPathImpl.create( fs, "path", false );
+        when(fs.getSeparator()).thenReturn("/");
+        param = GeneralPathImpl.create(fs,
+                                       "path",
+                                       false);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void compareTo() {
-        final Path path = GeneralPathImpl.create( fs, "/path/to/file.txt", false );
-        path.compareTo( param );
+        final Path path = GeneralPathImpl.create(fs,
+                                                 "/path/to/file.txt",
+                                                 false);
+        path.compareTo(param);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     @Ignore
     public void register() {
-        final Path path = GeneralPathImpl.create( fs, "/path/to/file.txt", false );
-        path.register( ws );
+        final Path path = GeneralPathImpl.create(fs,
+                                                 "/path/to/file.txt",
+                                                 false);
+        path.register(ws);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     @Ignore
     public void register2() {
-        final Path path = GeneralPathImpl.create( fs, "/path/to/file.txt", false );
-        path.register( ws, new WatchEvent.Kind<?>[]{ kd }, mf );
+        final Path path = GeneralPathImpl.create(fs,
+                                                 "/path/to/file.txt",
+                                                 false);
+        path.register(ws,
+                      new WatchEvent.Kind<?>[]{kd},
+                      mf);
     }
-
 }

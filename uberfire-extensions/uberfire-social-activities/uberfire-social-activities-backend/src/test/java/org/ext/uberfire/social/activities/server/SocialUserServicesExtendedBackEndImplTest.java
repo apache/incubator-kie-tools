@@ -14,6 +14,13 @@
 */
 package org.ext.uberfire.social.activities.server;
 
+import java.lang.annotation.Annotation;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.ConversationScoped;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,27 +28,22 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.io.ConfigIOServiceProducer;
 import org.uberfire.java.nio.file.FileSystem;
 
-import javax.enterprise.context.*;
-import java.lang.annotation.Annotation;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class SocialUserServicesExtendedBackEndImplTest {
 
+    final ConfigIOServiceProducer configIOServiceProducer = mock(ConfigIOServiceProducer.class);
     SocialUserServicesExtendedBackEndImpl socialUserServicesExtendedBackEnd;
     FileSystem filesystemConstructor;
     FileSystem fileSystemProducer;
-    final ConfigIOServiceProducer configIOServiceProducer = mock( ConfigIOServiceProducer.class );
 
     @Before
     public void setup() {
-        filesystemConstructor = mock( FileSystem.class );
-        fileSystemProducer = mock( FileSystem.class );
-        socialUserServicesExtendedBackEnd = new SocialUserServicesExtendedBackEndImpl( filesystemConstructor ) {
+        filesystemConstructor = mock(FileSystem.class);
+        fileSystemProducer = mock(FileSystem.class);
+        socialUserServicesExtendedBackEnd = new SocialUserServicesExtendedBackEndImpl(filesystemConstructor) {
             @Override
             ConfigIOServiceProducer getConfigIOServiceProducer() {
 
@@ -52,26 +54,26 @@ public class SocialUserServicesExtendedBackEndImplTest {
 
     @Test
     public void cannotBeAManagedBeanBecauseOfWas() {
-        assertNull( getAnnotation( ApplicationScoped.class ) );
-        assertNull( getAnnotation( Dependent.class ) );
-        assertNull( getAnnotation( SessionScoped.class ) );
-        assertNull( getAnnotation( RequestScoped.class ) );
-        assertNull( getAnnotation( ConversationScoped.class ) );
+        assertNull(getAnnotation(ApplicationScoped.class));
+        assertNull(getAnnotation(Dependent.class));
+        assertNull(getAnnotation(SessionScoped.class));
+        assertNull(getAnnotation(RequestScoped.class));
+        assertNull(getAnnotation(ConversationScoped.class));
     }
 
     @Test
     public void getFileSystemTest() {
 
-        when( configIOServiceProducer.configFileSystem() ).thenReturn( fileSystemProducer );
-        assertEquals( fileSystemProducer, socialUserServicesExtendedBackEnd.getFileSystem() );
+        when(configIOServiceProducer.configFileSystem()).thenReturn(fileSystemProducer);
+        assertEquals(fileSystemProducer,
+                     socialUserServicesExtendedBackEnd.getFileSystem());
 
-        when( configIOServiceProducer.configFileSystem() ).thenReturn( null );
-        assertEquals( filesystemConstructor, socialUserServicesExtendedBackEnd.getFileSystem() );
-
+        when(configIOServiceProducer.configFileSystem()).thenReturn(null);
+        assertEquals(filesystemConstructor,
+                     socialUserServicesExtendedBackEnd.getFileSystem());
     }
 
-
-    private Annotation getAnnotation( Class<? extends Annotation> annotation ) {
-        return SocialUserServicesExtendedBackEndImpl.class.getAnnotation( annotation );
+    private Annotation getAnnotation(Class<? extends Annotation> annotation) {
+        return SocialUserServicesExtendedBackEndImpl.class.getAnnotation(annotation);
     }
 }

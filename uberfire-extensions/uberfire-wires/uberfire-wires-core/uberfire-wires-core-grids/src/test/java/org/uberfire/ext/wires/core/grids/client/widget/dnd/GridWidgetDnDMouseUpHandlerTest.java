@@ -54,84 +54,83 @@ public class GridWidgetDnDMouseUpHandlerTest {
 
     @Before
     public void setup() {
-        when( layer.getViewport() ).thenReturn( viewport );
-        when( viewport.getElement() ).thenReturn( element );
-        when( element.getStyle() ).thenReturn( style );
+        when(layer.getViewport()).thenReturn(viewport);
+        when(viewport.getElement()).thenReturn(element);
+        when(element.getStyle()).thenReturn(style);
 
         final GridWidgetDnDHandlersState wrappedState = new GridWidgetDnDHandlersState();
-        this.state = spy( wrappedState );
+        this.state = spy(wrappedState);
 
-        final GridWidgetDnDMouseUpHandler wrapped = new GridWidgetDnDMouseUpHandler( layer,
-                                                                                     state );
-        this.handler = spy( wrapped );
+        final GridWidgetDnDMouseUpHandler wrapped = new GridWidgetDnDMouseUpHandler(layer,
+                                                                                    state);
+        this.handler = spy(wrapped);
     }
 
     @Test
     public void stateIsResetOnMouseUpWhenStateIsNone() {
-        state.setOperation( GridWidgetHandlersOperation.NONE );
+        state.setOperation(GridWidgetHandlersOperation.NONE);
 
-        handler.onNodeMouseUp( event );
+        handler.onNodeMouseUp(event);
 
-        verify( state,
-                times( 1 ) ).reset();
+        verify(state,
+               times(1)).reset();
     }
 
     @Test
     public void stateIsResetOnMouseUpWhenStateIsColumnMovePending() {
-        state.setOperation( GridWidgetHandlersOperation.COLUMN_MOVE_PENDING );
+        state.setOperation(GridWidgetHandlersOperation.COLUMN_MOVE_PENDING);
 
-        handler.onNodeMouseUp( event );
+        handler.onNodeMouseUp(event);
 
-        verify( state,
-                times( 1 ) ).reset();
+        verify(state,
+               times(1)).reset();
     }
 
     @Test
     public void stateIsResetOnMouseUpWhenStateIsColumnResizePending() {
-        state.setOperation( GridWidgetHandlersOperation.COLUMN_RESIZE_PENDING );
+        state.setOperation(GridWidgetHandlersOperation.COLUMN_RESIZE_PENDING);
 
-        handler.onNodeMouseUp( event );
+        handler.onNodeMouseUp(event);
 
-        verify( state,
-                times( 1 ) ).reset();
+        verify(state,
+               times(1)).reset();
     }
 
     @Test
     public void stateIsResetOnMouseUpWhenStateIsColumnResize() {
-        state.setOperation( GridWidgetHandlersOperation.COLUMN_RESIZE );
+        state.setOperation(GridWidgetHandlersOperation.COLUMN_RESIZE);
 
-        handler.onNodeMouseUp( event );
+        handler.onNodeMouseUp(event);
 
-        verify( state,
-                times( 1 ) ).reset();
+        verify(state,
+               times(1)).reset();
     }
 
     @Test
     public void stateIsResetOnMouseUpWhenStateIsColumnMove() {
-        state.setOperation( GridWidgetHandlersOperation.COLUMN_MOVE );
+        state.setOperation(GridWidgetHandlersOperation.COLUMN_MOVE);
 
-        handler.onNodeMouseUp( event );
+        handler.onNodeMouseUp(event);
 
-        verify( state,
-                times( 1 ) ).reset();
-        verify( layer,
-                times( 1 ) ).remove( any( IPrimitive.class ) );
-        verify( layer,
-                times( 1 ) ).batch();
+        verify(state,
+               times(1)).reset();
+        verify(layer,
+               times(1)).remove(any(IPrimitive.class));
+        verify(layer,
+               times(1)).batch();
     }
 
     @Test
     public void stateIsResetOnMouseUpWhenStateIsRowMove() {
-        state.setOperation( GridWidgetHandlersOperation.ROW_MOVE );
+        state.setOperation(GridWidgetHandlersOperation.ROW_MOVE);
 
-        handler.onNodeMouseUp( event );
+        handler.onNodeMouseUp(event);
 
-        verify( state,
-                times( 1 ) ).reset();
-        verify( layer,
-                times( 1 ) ).remove( any( IPrimitive.class ) );
-        verify( layer,
-                times( 1 ) ).batch();
+        verify(state,
+               times(1)).reset();
+        verify(layer,
+               times(1)).remove(any(IPrimitive.class));
+        verify(layer,
+               times(1)).batch();
     }
-
 }

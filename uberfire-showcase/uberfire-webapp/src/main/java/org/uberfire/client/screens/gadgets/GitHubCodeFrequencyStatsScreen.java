@@ -23,7 +23,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
 @ApplicationScoped
-@WorkbenchScreen( identifier = "GitHubFrequencyStats" )
+@WorkbenchScreen(identifier = "GitHubFrequencyStats")
 public class GitHubCodeFrequencyStatsScreen extends AbstractGitHubStatsScreen {
 
     @WorkbenchPartTitle
@@ -31,7 +31,7 @@ public class GitHubCodeFrequencyStatsScreen extends AbstractGitHubStatsScreen {
         return "Uberfire GitHub Code Frequency";
     }
 
-    public native JavaScriptObject generateGraph( final String id )/*-{
+    public native JavaScriptObject generateGraph(final String id)/*-{
         var that = this;
         return $wnd.c3.generate({
             bindto: '#' + id,

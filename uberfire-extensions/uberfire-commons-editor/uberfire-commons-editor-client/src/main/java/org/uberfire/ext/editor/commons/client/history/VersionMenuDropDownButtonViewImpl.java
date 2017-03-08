@@ -16,13 +16,6 @@
 
 package org.uberfire.ext.editor.commons.client.history;
 
-import org.gwtbootstrap3.client.ui.Button;
-import org.gwtbootstrap3.client.ui.DropDownMenu;
-import org.uberfire.client.callbacks.Callback;
-import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
-import org.uberfire.java.nio.base.version.VersionRecord;
-import org.uberfire.mvp.Command;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -31,39 +24,36 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.DropDownMenu;
+import org.uberfire.client.callbacks.Callback;
+import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
+import org.uberfire.java.nio.base.version.VersionRecord;
+import org.uberfire.mvp.Command;
 
 public class VersionMenuDropDownButtonViewImpl
         extends Composite
         implements VersionMenuDropDownButtonView {
 
-    interface Binder
-            extends
-            UiBinder<Widget, VersionMenuDropDownButtonViewImpl> {
-
-    }
-
-    private static Binder uiBinder = GWT.create( Binder.class );
-
+    private static Binder uiBinder = GWT.create(Binder.class);
     @UiField
     Button button;
-
     @UiField
     DropDownMenu menuItems;
-
     private Presenter presenter;
 
     public VersionMenuDropDownButtonViewImpl() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
-        button.addClickHandler( new ClickHandler() {
+        button.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
             }
-        } );
+        });
     }
 
     @Override
-    public void setPresenter( Presenter presenter ) {
+    public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -73,37 +63,38 @@ public class VersionMenuDropDownButtonViewImpl
     }
 
     @Override
-    public void addViewAllLabel( final int index,
-                                 final Command command ) {
-        menuItems.add( new ViewAllLabel( index, command ) );
+    public void addViewAllLabel(final int index,
+                                final Command command) {
+        menuItems.add(new ViewAllLabel(index,
+                                       command));
     }
 
     @Override
-    public void setTextToVersion( int versionIndex ) {
-        button.setText( CommonConstants.INSTANCE.Version( versionIndex ) );
+    public void setTextToVersion(int versionIndex) {
+        button.setText(CommonConstants.INSTANCE.Version(versionIndex));
     }
 
     @Override
     public void setTextToLatest() {
-        button.setText( CommonConstants.INSTANCE.LatestVersion() );
+        button.setText(CommonConstants.INSTANCE.LatestVersion());
     }
 
     @Override
-    public void addLabel( VersionRecord versionRecord,
-                          boolean isSelected,
-                          int versionIndex ) {
+    public void addLabel(VersionRecord versionRecord,
+                         boolean isSelected,
+                         int versionIndex) {
         VersionMenuItemLabel widget = new VersionMenuItemLabel(
                 versionRecord,
                 versionIndex,
                 isSelected,
                 new Callback<VersionRecord>() {
                     @Override
-                    public void callback( VersionRecord result ) {
-                        presenter.onVersionRecordSelected( result );
+                    public void callback(VersionRecord result) {
+                        presenter.onVersionRecordSelected(result);
                     }
-                } );
-        widget.setWidth( "400px" );
-        menuItems.add( widget );
+                });
+        widget.setWidth("400px");
+        menuItems.add(widget);
     }
 
     @Override
@@ -112,12 +103,18 @@ public class VersionMenuDropDownButtonViewImpl
     }
 
     @Override
-    public void setEnabled( boolean enabled ) {
-        button.setEnabled( enabled );
+    public void setEnabled(boolean enabled) {
+        button.setEnabled(enabled);
     }
 
     @UiHandler("button")
-    public void handleClick( ClickEvent event ) {
+    public void handleClick(ClickEvent event) {
         presenter.onMenuOpening();
+    }
+
+    interface Binder
+            extends
+            UiBinder<Widget, VersionMenuDropDownButtonViewImpl> {
+
     }
 }

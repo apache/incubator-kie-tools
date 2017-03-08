@@ -35,8 +35,8 @@ public interface PreferenceStorage {
      * @param key Key to be checked (must not be null).
      * @return true if the key is defined in that scope, and false otherwise.
      */
-    boolean exists( PreferenceScope preferenceScope,
-                    String key );
+    boolean exists(PreferenceScope preferenceScope,
+                   String key);
 
     /**
      * Checks if a given preference key is defined in any scope of the provided hierarchy.
@@ -44,8 +44,8 @@ public interface PreferenceStorage {
      * @param key Key to be checked (must not be null).
      * @return true if the key is defined in any scope, and false otherwise.
      */
-    boolean exists( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                    String key );
+    boolean exists(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                   String key);
 
     /**
      * Tries to read a preference value from a specific scope.
@@ -54,8 +54,8 @@ public interface PreferenceStorage {
      * @param <T> Type of the preference value.
      * @return The preference value (null if it is not defined).
      */
-    <T> T read( PreferenceScope preferenceScope,
-                String key );
+    <T> T read(PreferenceScope preferenceScope,
+               String key);
 
     /**
      * Tries to read a preference value from a scope hierarchy.
@@ -64,8 +64,8 @@ public interface PreferenceStorage {
      * @param <T> Type of the preference value.
      * @return The preference value (null if it is not defined in any scope in the hierarchy).
      */
-    <T> T read( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                String key );
+    <T> T read(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+               String key);
 
     /**
      * Tries to read a preference value from a scope hierarchy.
@@ -74,8 +74,8 @@ public interface PreferenceStorage {
      * @param <T> Type of the preference value.
      * @return The preference value and its scope (null if it is not defined in any scope in the hierarchy).
      */
-    <T> PreferenceScopedValue<T> readWithScope( PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
-                                                String key );
+    <T> PreferenceScopedValue<T> readWithScope(PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo,
+                                               String key);
 
     /**
      * (Over) Writes a preference value related to a preference key, for a specific scope.
@@ -83,29 +83,29 @@ public interface PreferenceStorage {
      * @param key The key of the preference, must not be null.
      * @param value The value of the preference, could be null.
      */
-    void write( PreferenceScope scope,
-                String key,
-                Object value );
+    void write(PreferenceScope scope,
+               String key,
+               Object value);
 
     /**
      * Deletes a preference, in a specific scope, if it exists.
      * @param scope Scope in which the preference is stored.
      * @param key The key of the preference to be deleted, must not be null.
      */
-    void delete( PreferenceScope scope,
-                 String key );
+    void delete(PreferenceScope scope,
+                String key);
 
     /**
      * Returns all preference keys defined in a specific scope.
      * @param scope Scope in which the preference keys will be searched.
      * @return All preference keys defined in the passed scope.
      */
-    Collection<String> allKeys( PreferenceScope scope );
+    Collection<String> allKeys(PreferenceScope scope);
 
     /**
      * Returns all preference keys defined in all passed scopes.
      * @param scopes Scopes in which the preference keys will be searched.
      * @return All preference keys defined in all passed scopes.
      */
-    Collection<String> allKeys( List<PreferenceScope> scopes );
+    Collection<String> allKeys(List<PreferenceScope> scopes);
 }

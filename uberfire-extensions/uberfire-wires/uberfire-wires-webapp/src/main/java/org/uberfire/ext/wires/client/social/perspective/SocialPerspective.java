@@ -16,15 +16,15 @@
 
 package org.uberfire.ext.wires.client.social.perspective;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 @Templated
 @Dependent
@@ -40,5 +40,4 @@ public class SocialPerspective implements IsElement {
     @DataField
     @WorkbenchPanel(parts = "SocialTimelinePresenter")
     Div socialTimelinePresenter;
-
 }

@@ -16,12 +16,10 @@
 
 package org.uberfire.ext.security.management.client.widgets.popup;
 
-
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 /**
  * <p>An error box view using <code>org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup</code>.</p>
- *
  * @since 0.8.0
  */
 public class ErrorBoxView implements ErrorBox.View {
@@ -30,5 +28,4 @@ public class ErrorBoxView implements ErrorBox.View {
     public void show(final String message) {
         ErrorPopup.showMessage(message);
     }
-
 }

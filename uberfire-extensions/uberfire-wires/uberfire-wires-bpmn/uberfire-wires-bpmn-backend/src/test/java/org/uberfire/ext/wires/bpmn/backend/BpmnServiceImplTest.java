@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.mockito.Spy;
 import org.uberfire.backend.vfs.Path;
 
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class BpmnServiceImplTest {
 
@@ -29,11 +29,14 @@ public class BpmnServiceImplTest {
 
     @Test(expected = UnsupportedOperationException.class)
     public void bpmnResourceCopyTest() {
-        Path path = mock( Path.class );
+        Path path = mock(Path.class);
         String newName = "newName";
-        Path targetDirectory = mock( Path.class );
+        Path targetDirectory = mock(Path.class);
         String comment = "comment";
 
-        bpmnService.copy( path, newName, targetDirectory, comment );
+        bpmnService.copy(path,
+                         newName,
+                         targetDirectory,
+                         comment);
     }
 }

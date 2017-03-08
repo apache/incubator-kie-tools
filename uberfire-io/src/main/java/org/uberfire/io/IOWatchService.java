@@ -21,9 +21,8 @@ import org.uberfire.java.nio.file.WatchService;
 
 public interface IOWatchService {
 
-    boolean hasWatchService( final FileSystem fs );
+    boolean hasWatchService(final FileSystem fs);
 
-    void addWatchService( final FileSystem fs,
-                          final WatchService watchService );
-
+    void addWatchService(final FileSystem fs,
+                         final WatchService watchService);
 }

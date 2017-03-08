@@ -42,32 +42,32 @@ public interface PluginServices
 
     Collection<RuntimePlugin> listRuntimePlugins();
 
-    Collection<RuntimePlugin> listPluginRuntimePlugins( final org.uberfire.backend.vfs.Path pluginPath );
+    Collection<RuntimePlugin> listPluginRuntimePlugins(final org.uberfire.backend.vfs.Path pluginPath);
 
     Collection<Plugin> listPlugins();
 
-    Plugin createNewPlugin( final String name,
-                            final PluginType type );
+    Plugin createNewPlugin(final String name,
+                           final PluginType type);
 
-    PluginContent getPluginContent( final Path path );
+    PluginContent getPluginContent(final Path path);
 
-    void deleteMedia( final Media media );
+    void deleteMedia(final Media media);
 
-    DynamicMenu getDynamicMenuContent( final Path path );
+    DynamicMenu getDynamicMenuContent(final Path path);
 
-    Path save( final PluginSimpleContent plugin,
-               final String commitMessage );
+    Path save(final PluginSimpleContent plugin,
+              final String commitMessage);
 
-    LayoutEditorModel getLayoutEditor( Path path,
-                                       PluginType pluginType );
+    LayoutEditorModel getLayoutEditor(Path path,
+                                      PluginType pluginType);
 
-    Path saveMenu( final DynamicMenu menu,
-                   final String commitMessage );
+    Path saveMenu(final DynamicMenu menu,
+                  final String commitMessage);
 
-    Path saveLayout( LayoutEditorModel layoutContent,
-                     String commitMessage );
+    Path saveLayout(LayoutEditorModel layoutContent,
+                    String commitMessage);
 
     Collection<DynamicMenu> listDynamicMenus();
 
-    Collection<LayoutEditorModel> listLayoutEditor( PluginType pluginType );
+    Collection<LayoutEditorModel> listLayoutEditor(PluginType pluginType);
 }

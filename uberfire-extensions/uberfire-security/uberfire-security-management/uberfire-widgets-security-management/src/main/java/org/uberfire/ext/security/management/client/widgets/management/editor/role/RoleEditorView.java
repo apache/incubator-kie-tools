@@ -31,21 +31,15 @@ import org.uberfire.ext.security.management.client.resources.i18n.UsersManagemen
 
 public class RoleEditorView extends Composite implements RoleEditor.View {
 
-    interface RoleEditorViewBinder extends UiBinder<Widget, RoleEditorView> {}
     private static RoleEditorViewBinder uiBinder = GWT.create(RoleEditorViewBinder.class);
-
     @UiField
     FlowPanel aclPanel;
-
     @UiField
     FlowPanel aclSettingsPanel;
-
     @UiField
     Heading roleTitle;
-
     @UiField
     Button editButton;
-
     private RoleEditor presenter;
 
     @Override
@@ -89,8 +83,12 @@ public class RoleEditorView extends Composite implements RoleEditor.View {
         return this;
     }
 
-    @UiHandler( "editButton" )
+    @UiHandler("editButton")
     public void onEditButtonClick(final ClickEvent event) {
         presenter.onEdit();
+    }
+
+    interface RoleEditorViewBinder extends UiBinder<Widget, RoleEditorView> {
+
     }
 }

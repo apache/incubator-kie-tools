@@ -51,92 +51,115 @@ public class WorkbenchBackendEntryPointTest {
 
     @Test
     public void testErrorDisplay() {
-        final WorkbenchBackendEntryPoint workbenchBackendEntryPoint = new WorkbenchBackendEntryPoint( logger, bus, workbenchServices, errorPopupPresenter );
+        final WorkbenchBackendEntryPoint workbenchBackendEntryPoint = new WorkbenchBackendEntryPoint(logger,
+                                                                                                     bus,
+                                                                                                     workbenchServices,
+                                                                                                     errorPopupPresenter);
 
-        doAnswer( new Answer<Void>() {
+        doAnswer(new Answer<Void>() {
             @Override
-            public Void answer( InvocationOnMock invocation ) throws Throwable {
+            public Void answer(InvocationOnMock invocation) throws Throwable {
                 final Object[] args = invocation.getArguments();
-                final ParameterizedCommand<Boolean> obj = (ParameterizedCommand<Boolean>) args[ 0 ];
-                obj.execute( false );
+                final ParameterizedCommand<Boolean> obj = (ParameterizedCommand<Boolean>) args[0];
+                obj.execute(false);
                 return null;
             }
-        } ).when( workbenchServices ).isWorkbenchOnCluster( any( ParameterizedCommand.class ) );
+        }).when(workbenchServices).isWorkbenchOnCluster(any(ParameterizedCommand.class));
 
         workbenchBackendEntryPoint.postConstruct();
         workbenchBackendEntryPoint.init();
 
-        final ArgumentCaptor<BusLifecycleListener> captor = ArgumentCaptor.forClass( BusLifecycleListener.class );
-        verify( bus ).addLifecycleListener( captor.capture() );
+        final ArgumentCaptor<BusLifecycleListener> captor = ArgumentCaptor.forClass(BusLifecycleListener.class);
+        verify(bus).addLifecycleListener(captor.capture());
 
         final BusLifecycleListener listener = captor.getValue();
-        final TransportError error = mock( TransportError.class );
-        final BusLifecycleEvent event = new BusLifecycleEvent( bus, error );
-        listener.busOffline( event );
+        final TransportError error = mock(TransportError.class);
+        final BusLifecycleEvent event = new BusLifecycleEvent(bus,
+                                                              error);
+        listener.busOffline(event);
 
-        verify( logger, times( 1 ) ).error( ( anyString() ) );
-        verify( errorPopupPresenter, times( 1 ) ).showMessage( anyString() );
+        verify(logger,
+               times(1)).error((anyString()));
+        verify(errorPopupPresenter,
+               times(1)).showMessage(anyString());
 
-        listener.busOffline( event );
+        listener.busOffline(event);
 
-        verify( logger, times( 1 ) ).error( ( anyString() ) );
-        verify( errorPopupPresenter, times( 1 ) ).showMessage( anyString() );
+        verify(logger,
+               times(1)).error((anyString()));
+        verify(errorPopupPresenter,
+               times(1)).showMessage(anyString());
 
-        listener.busOnline( event );
+        listener.busOnline(event);
 
-        verify( logger, times( 1 ) ).info( ( anyString() ) );
-        verify( errorPopupPresenter, times( 1 ) ).showMessage( anyString() );
+        verify(logger,
+               times(1)).info((anyString()));
+        verify(errorPopupPresenter,
+               times(1)).showMessage(anyString());
 
-        listener.busOffline( event );
-        listener.busOffline( event );
+        listener.busOffline(event);
+        listener.busOffline(event);
 
-        verify( logger, times( 2 ) ).error( ( anyString() ) );
-        verify( errorPopupPresenter, times( 2 ) ).showMessage( anyString() );
+        verify(logger,
+               times(2)).error((anyString()));
+        verify(errorPopupPresenter,
+               times(2)).showMessage(anyString());
     }
 
     @Test
     public void testNoErrorDisplay() {
-        final WorkbenchBackendEntryPoint workbenchBackendEntryPoint = new WorkbenchBackendEntryPoint( logger, bus, workbenchServices, errorPopupPresenter );
+        final WorkbenchBackendEntryPoint workbenchBackendEntryPoint = new WorkbenchBackendEntryPoint(logger,
+                                                                                                     bus,
+                                                                                                     workbenchServices,
+                                                                                                     errorPopupPresenter);
 
-        doAnswer( new Answer<Void>() {
+        doAnswer(new Answer<Void>() {
             @Override
-            public Void answer( InvocationOnMock invocation ) throws Throwable {
+            public Void answer(InvocationOnMock invocation) throws Throwable {
                 final Object[] args = invocation.getArguments();
-                final ParameterizedCommand<Boolean> obj = (ParameterizedCommand<Boolean>) args[ 0 ];
-                obj.execute( true );
+                final ParameterizedCommand<Boolean> obj = (ParameterizedCommand<Boolean>) args[0];
+                obj.execute(true);
                 return null;
             }
-        } ).when( workbenchServices ).isWorkbenchOnCluster( any( ParameterizedCommand.class ) );
+        }).when(workbenchServices).isWorkbenchOnCluster(any(ParameterizedCommand.class));
 
         workbenchBackendEntryPoint.postConstruct();
         workbenchBackendEntryPoint.init();
 
-        final ArgumentCaptor<BusLifecycleListener> captor = ArgumentCaptor.forClass( BusLifecycleListener.class );
-        verify( bus ).addLifecycleListener( captor.capture() );
+        final ArgumentCaptor<BusLifecycleListener> captor = ArgumentCaptor.forClass(BusLifecycleListener.class);
+        verify(bus).addLifecycleListener(captor.capture());
 
         final BusLifecycleListener listener = captor.getValue();
-        final TransportError error = mock( TransportError.class );
-        final BusLifecycleEvent event = new BusLifecycleEvent( bus, error );
-        listener.busOffline( event );
+        final TransportError error = mock(TransportError.class);
+        final BusLifecycleEvent event = new BusLifecycleEvent(bus,
+                                                              error);
+        listener.busOffline(event);
 
-        verify( logger, times( 1 ) ).error( ( anyString() ) );
-        verify( errorPopupPresenter, times( 0 ) ).showMessage( anyString() );
+        verify(logger,
+               times(1)).error((anyString()));
+        verify(errorPopupPresenter,
+               times(0)).showMessage(anyString());
 
-        listener.busOffline( event );
+        listener.busOffline(event);
 
-        verify( logger, times( 1 ) ).error( ( anyString() ) );
-        verify( errorPopupPresenter, times( 0 ) ).showMessage( anyString() );
+        verify(logger,
+               times(1)).error((anyString()));
+        verify(errorPopupPresenter,
+               times(0)).showMessage(anyString());
 
-        listener.busOnline( event );
+        listener.busOnline(event);
 
-        verify( logger, times( 1 ) ).info( ( anyString() ) );
-        verify( errorPopupPresenter, times( 0 ) ).showMessage( anyString() );
+        verify(logger,
+               times(1)).info((anyString()));
+        verify(errorPopupPresenter,
+               times(0)).showMessage(anyString());
 
-        listener.busOffline( event );
-        listener.busOffline( event );
+        listener.busOffline(event);
+        listener.busOffline(event);
 
-        verify( logger, times( 2 ) ).error( ( anyString() ) );
-        verify( errorPopupPresenter, times( 0 ) ).showMessage( anyString() );
+        verify(logger,
+               times(2)).error((anyString()));
+        verify(errorPopupPresenter,
+               times(0)).showMessage(anyString());
     }
-
 }

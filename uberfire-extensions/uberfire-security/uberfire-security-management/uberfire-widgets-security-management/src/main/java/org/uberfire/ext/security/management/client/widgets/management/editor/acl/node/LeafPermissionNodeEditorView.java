@@ -32,23 +32,19 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 public class LeafPermissionNodeEditorView extends Composite
         implements LeafPermissionNodeEditor.View {
 
-    private LeafPermissionNodeEditor presenter;
-
     @Inject
     @DataField
     Label nodeName;
-
     @Inject
     @DataField
     Span nodeNameHelp;
-
     @Inject
     @DataField
     Div nodeNamePanel;
-
     @Inject
     @DataField
     FlowPanel nodePermissions;
+    private LeafPermissionNodeEditor presenter;
 
     @Override
     public void init(LeafPermissionNodeEditor presenter) {
@@ -62,7 +58,8 @@ public class LeafPermissionNodeEditorView extends Composite
 
     @Override
     public void setNodePanelWidth(int width) {
-        nodeNamePanel.getStyle().setProperty("width", width + "px");
+        nodeNamePanel.getStyle().setProperty("width",
+                                             width + "px");
     }
 
     @Override

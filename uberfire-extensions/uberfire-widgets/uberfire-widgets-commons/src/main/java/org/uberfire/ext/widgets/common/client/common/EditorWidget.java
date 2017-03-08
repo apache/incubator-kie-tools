@@ -18,7 +18,7 @@ package org.uberfire.ext.widgets.common.client.common;
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface EditorWidget
-    extends
-    IsWidget {
+        extends
+        IsWidget {
 
 }

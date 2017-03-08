@@ -23,7 +23,7 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.uberfire.security.authz.Permission;
 import org.uberfire.security.authz.PermissionCollection;
 
-import static org.uberfire.security.authz.AuthorizationResult.*;
+import static org.uberfire.security.authz.AuthorizationResult.ACCESS_GRANTED;
 
 /**
  * A collection where the permissions are ordered by name.
@@ -69,14 +69,16 @@ public class DefaultPermissionCollection implements PermissionCollection {
     @Override
     public Permission get(String name) {
         for (Permission p : permissionSet) {
-            if (equalsName(name, p.getName())) {
+            if (equalsName(name,
+                           p.getName())) {
                 return p;
             }
         }
         return null;
     }
 
-    protected boolean equalsName(String s1, String s2) {
+    protected boolean equalsName(String s1,
+                                 String s2) {
         return (s1 == null && s2 == null) || (s1 != null && s1.equals(s2));
     }
 
@@ -101,7 +103,8 @@ public class DefaultPermissionCollection implements PermissionCollection {
     }
 
     @Override
-    public PermissionCollection merge(PermissionCollection other, int priority) {
+    public PermissionCollection merge(PermissionCollection other,
+                                      int priority) {
         if (other == null || other.collection().isEmpty()) {
             return this;
         }
@@ -110,7 +113,9 @@ public class DefaultPermissionCollection implements PermissionCollection {
         PermissionCollection target = priority > 0 ? this : other;
 
         for (Permission p : target.collection()) {
-            addToCollectionIf(result, p, priority == 0);
+            addToCollectionIf(result,
+                              p,
+                              priority == 0);
         }
         return result;
     }
@@ -120,18 +125,18 @@ public class DefaultPermissionCollection implements PermissionCollection {
      * <br/>
      * <br/> 1. The permission does not exit in the target collection and is not implied by name either</li>
      * <br/> 2. The permission is granted and the parameter grantedWins = true
-     *
      * @param result The collection where the permission shall be added
      * @param p The permission to add to the result
      * @param grantedWins If true then granted permission are always added to the result
      */
-    private void addToCollectionIf(PermissionCollection result, Permission p, boolean grantedWins) {
+    private void addToCollectionIf(PermissionCollection result,
+                                   Permission p,
+                                   boolean grantedWins) {
         Permission existing = result.get(p.getName());
 
         if (existing == null && !result.impliesName(p)) {
             result.add(p);
-        }
-        else if (grantedWins && ACCESS_GRANTED.equals(p.getResult())) {
+        } else if (grantedWins && ACCESS_GRANTED.equals(p.getResult())) {
             Iterator<Permission> it = result.collection().iterator();
             while (it.hasNext()) {
                 Permission next = it.next();

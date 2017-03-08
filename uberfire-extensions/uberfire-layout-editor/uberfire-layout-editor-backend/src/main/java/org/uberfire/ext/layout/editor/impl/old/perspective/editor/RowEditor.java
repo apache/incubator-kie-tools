@@ -19,8 +19,6 @@ package org.uberfire.ext.layout.editor.impl.old.perspective.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 @Deprecated
 public class RowEditor {
 
@@ -32,7 +30,7 @@ public class RowEditor {
 
     }
 
-    public RowEditor( List<String> rowSpam ) {
+    public RowEditor(List<String> rowSpam) {
         this.rowSpam = rowSpam;
     }
 
@@ -40,8 +38,8 @@ public class RowEditor {
         return columnEditors;
     }
 
-    public void add( ColumnEditor columnEditor ) {
-        columnEditors.add( columnEditor );
+    public void add(ColumnEditor columnEditor) {
+        columnEditors.add(columnEditor);
     }
 
     public List<String> getRowSpam() {
@@ -49,20 +47,20 @@ public class RowEditor {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof RowEditor ) ) {
+        if (!(o instanceof RowEditor)) {
             return false;
         }
 
         RowEditor rowEditor = (RowEditor) o;
 
-        if ( columnEditors != null ? !columnEditors.equals( rowEditor.columnEditors ) : rowEditor.columnEditors != null ) {
+        if (columnEditors != null ? !columnEditors.equals(rowEditor.columnEditors) : rowEditor.columnEditors != null) {
             return false;
         }
-        if ( rowSpam != null ? !rowSpam.equals( rowEditor.rowSpam ) : rowEditor.rowSpam != null ) {
+        if (rowSpam != null ? !rowSpam.equals(rowEditor.rowSpam) : rowEditor.rowSpam != null) {
             return false;
         }
 
@@ -72,7 +70,7 @@ public class RowEditor {
     @Override
     public int hashCode() {
         int result = rowSpam != null ? rowSpam.hashCode() : 0;
-        result = 31 * result + ( columnEditors != null ? columnEditors.hashCode() : 0 );
+        result = 31 * result + (columnEditors != null ? columnEditors.hashCode() : 0);
         return result;
     }
 }

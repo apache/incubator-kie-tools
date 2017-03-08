@@ -31,68 +31,66 @@ public class WiresFixedCircle extends WiresBaseShape implements RequiresContaine
 
     private final Circle circle;
     private final Circle bounding;
-
+    protected ContainerManager containerManager;
     private WiresContainer boundContainer;
 
-    protected ContainerManager containerManager;
-
-    public WiresFixedCircle( final Circle shape ) {
+    public WiresFixedCircle(final Circle shape) {
         circle = shape;
 
-        bounding = new Circle( circle.getRadius() + ( BOUNDARY_SIZE / 2 ) );
-        bounding.setStrokeWidth( BOUNDARY_SIZE );
-        bounding.setAlpha( 0.1 );
+        bounding = new Circle(circle.getRadius() + (BOUNDARY_SIZE / 2));
+        bounding.setStrokeWidth(BOUNDARY_SIZE);
+        bounding.setAlpha(0.1);
 
-        add( circle );
+        add(circle);
 
         //This class doesn't extend a super-class that handles Containers, so we add it manually
         //Check for the Shape being added to a Container as it is dragged around
-        addNodeDragMoveHandler( new NodeDragMoveHandler() {
+        addNodeDragMoveHandler(new NodeDragMoveHandler() {
 
             @Override
-            public void onNodeDragMove( final NodeDragMoveEvent nodeDragMoveEvent ) {
-                boundContainer = containerManager.getContainer( WiresFixedCircle.this.getX(),
-                                                                WiresFixedCircle.this.getY() );
-                if ( boundContainer != null ) {
-                    boundContainer.detachShape( WiresFixedCircle.this );
+            public void onNodeDragMove(final NodeDragMoveEvent nodeDragMoveEvent) {
+                boundContainer = containerManager.getContainer(WiresFixedCircle.this.getX(),
+                                                               WiresFixedCircle.this.getY());
+                if (boundContainer != null) {
+                    boundContainer.detachShape(WiresFixedCircle.this);
                 }
 
                 getLayer().batch();
             }
-        } );
+        });
 
         //When the drag ends; if it was within a Container add this Shape to the Container
-        addNodeDragEndHandler( new NodeDragEndHandler() {
+        addNodeDragEndHandler(new NodeDragEndHandler() {
 
             @Override
-            public void onNodeDragEnd( final NodeDragEndEvent nodeDragEndEvent ) {
-                if ( boundContainer != null ) {
-                    boundContainer.attachShape( WiresFixedCircle.this );
-                    boundContainer.setHover( false );
+            public void onNodeDragEnd(final NodeDragEndEvent nodeDragEndEvent) {
+                if (boundContainer != null) {
+                    boundContainer.attachShape(WiresFixedCircle.this);
+                    boundContainer.setHover(false);
                 }
 
                 getLayer().batch();
             }
-        } );
+        });
     }
 
     @Override
-    public void setContainerManager( final ContainerManager containerManager ) {
+    public void setContainerManager(final ContainerManager containerManager) {
         this.containerManager = containerManager;
     }
 
     @Override
-    public void setSelected( final boolean isSelected ) {
-        if ( isSelected ) {
-            add( bounding );
+    public void setSelected(final boolean isSelected) {
+        if (isSelected) {
+            add(bounding);
         } else {
-            remove( bounding );
+            remove(bounding);
         }
     }
 
     @Override
-    public boolean contains( final double cx,
-                             final double cy ) {
+    public boolean contains(final double cx,
+                            final double cy) {
         return false;
     }
 }

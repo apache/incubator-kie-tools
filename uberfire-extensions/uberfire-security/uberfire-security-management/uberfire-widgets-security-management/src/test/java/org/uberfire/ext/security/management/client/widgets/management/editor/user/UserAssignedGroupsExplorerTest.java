@@ -16,6 +16,11 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.user;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.GroupImpl;
@@ -35,35 +40,34 @@ import org.uberfire.ext.security.management.client.widgets.management.list.Group
 import org.uberfire.ext.security.management.client.widgets.popup.ConfirmBox;
 import org.uberfire.mocks.EventSourceMock;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.anySet;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class UserAssignedGroupsExplorerTest {
 
-    @Mock ClientUserSystemManager userSystemManager;
-    @Mock EventSourceMock<OnRemoveUserGroupEvent> removeUserGroupEventEvent;
-    @Mock ConfirmBox confirmBox;
-    @Mock GroupsList groupList;
-    @Mock  AssignedEntitiesExplorer view;
-
+    @Mock
+    ClientUserSystemManager userSystemManager;
+    @Mock
+    EventSourceMock<OnRemoveUserGroupEvent> removeUserGroupEventEvent;
+    @Mock
+    ConfirmBox confirmBox;
+    @Mock
+    GroupsList groupList;
+    @Mock
+    AssignedEntitiesExplorer view;
+    @Mock
+    User user;
     private UserAssignedGroupsExplorer tested;
-    @Mock User user;
 
     @Before
     public void setup() {
         Map<String, String> userAttributes = new HashMap<String, String>(1);
-        userAttributes.put("attr1", "value1");
+        userAttributes.put("attr1",
+                           "value1");
         when(user.getIdentifier()).thenReturn("user1");
         when(user.getProperties()).thenReturn(userAttributes);
         final Set<Group> groups = new HashSet<Group>();
@@ -77,24 +81,37 @@ public class UserAssignedGroupsExplorerTest {
             }
         }).when(userSystemManager).createGroup(anyString());
         when(userSystemManager.isUserCapabilityEnabled(any(Capability.class))).thenReturn(true);
-        tested = new UserAssignedGroupsExplorer(userSystemManager, confirmBox, groupList, view, removeUserGroupEventEvent);
+        tested = new UserAssignedGroupsExplorer(userSystemManager,
+                                                confirmBox,
+                                                groupList,
+                                                view,
+                                                removeUserGroupEventEvent);
     }
 
     @Test
     public void testInit() {
         tested.init();
-        verify(groupList, times(1)).setPageSize(anyInt());
-        verify(groupList, times(1)).setEmptyEntitiesText(anyString());
-        verify(view, times(1)).configure(anyString(), any(EntitiesList.View.class));
-        verify(view, times(0)).clear();
+        verify(groupList,
+               times(1)).setPageSize(anyInt());
+        verify(groupList,
+               times(1)).setEmptyEntitiesText(anyString());
+        verify(view,
+               times(1)).configure(anyString(),
+                                   any(EntitiesList.View.class));
+        verify(view,
+               times(0)).clear();
     }
 
     @Test
     public void testClear() {
         tested.clear();
-        verify(view, times(0)).configure(anyString(), any(EntitiesList.View.class));
-        verify(view, times(1)).clear();
-        verify(groupList, times(1)).clear();
+        verify(view,
+               times(0)).configure(anyString(),
+                                   any(EntitiesList.View.class));
+        verify(view,
+               times(1)).clear();
+        verify(groupList,
+               times(1)).clear();
         assertTrue(tested.entities.isEmpty());
         assertFalse(tested.isEditMode);
     }
@@ -104,12 +121,17 @@ public class UserAssignedGroupsExplorerTest {
         tested.show(user);
         assertFalse(tested.isEditMode);
         assertTrue(tested.entities.size() == 1);
-        verify(view, times(0)).configure(anyString(), any(EntitiesList.View.class));
-        verify(view, times(1)).clear();
-        verify(groupList, times(1)).clear();
-        verify(groupList, times(1)).show(anySet(), any(EntitiesList.Callback.class));
+        verify(view,
+               times(0)).configure(anyString(),
+                                   any(EntitiesList.View.class));
+        verify(view,
+               times(1)).clear();
+        verify(groupList,
+               times(1)).clear();
+        verify(groupList,
+               times(1)).show(anySet(),
+                              any(EntitiesList.Callback.class));
     }
-
 
     @Test
     public void testRemoveGroup() {
@@ -119,11 +141,17 @@ public class UserAssignedGroupsExplorerTest {
         tested.removeEntity("group1");
         assertFalse(tested.isEditMode);
         assertTrue(tested.entities.size() == 0);
-        verify(groupList, times(1)).show(anySet(), any(EntitiesList.Callback.class));
-        verify(removeUserGroupEventEvent, times(1)).fire(any(OnRemoveUserGroupEvent.class));
-        verify(view, times(0)).configure(anyString(), any(EntitiesList.View.class));
-        verify(view, times(0)).clear();
-        verify(groupList, times(0)).clear();
+        verify(groupList,
+               times(1)).show(anySet(),
+                              any(EntitiesList.Callback.class));
+        verify(removeUserGroupEventEvent,
+               times(1)).fire(any(OnRemoveUserGroupEvent.class));
+        verify(view,
+               times(0)).configure(anyString(),
+                                   any(EntitiesList.View.class));
+        verify(view,
+               times(0)).clear();
+        verify(groupList,
+               times(0)).clear();
     }
-
 }

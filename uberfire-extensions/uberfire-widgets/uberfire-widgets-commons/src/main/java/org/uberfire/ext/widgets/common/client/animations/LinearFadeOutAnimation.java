@@ -30,12 +30,11 @@ public class LinearFadeOutAnimation extends SequencedAnimation {
 
     @Override
     public void onUpdate(double progress) {
-        this.widget.getElement().getStyle().setOpacity( 1.0 - progress );
+        this.widget.getElement().getStyle().setOpacity(1.0 - progress);
     }
 
     @Override
     public double interpolate(double progress) {
         return progress;
     }
-
 }

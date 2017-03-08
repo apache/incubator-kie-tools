@@ -37,47 +37,47 @@ public abstract class WorkbenchMenuNavBarView extends Composite implements Workb
     private final Map<String, ComplexPanel> menuItemContextWidgetMap = Maps.newHashMap();
     private final Map<String, ComplexPanel> contextContainerWidgetMap = Maps.newHashMap();
 
-    protected NavbarNav navbarNav = GWT.create( NavbarNav.class );
+    protected NavbarNav navbarNav = GWT.create(NavbarNav.class);
 
     protected void setup() {
-        initWidget( navbarNav );
+        initWidget(navbarNav);
     }
 
     @Override
-    public void selectMenuItem( final String id ) {
-        final ComplexPanel menuItemWidget = getMenuItemWidgetMap().get( id );
-        if ( menuItemWidget != null ) {
-            selectElement( menuItemWidget );
+    public void selectMenuItem(final String id) {
+        final ComplexPanel menuItemWidget = getMenuItemWidgetMap().get(id);
+        if (menuItemWidget != null) {
+            selectElement(menuItemWidget);
         }
     }
 
     @Override
-    public void enableMenuItem( final String menuItemId,
-                                final boolean enabled ) {
-        final ComplexPanel cp = getMenuItemWidgetMap().get( menuItemId );
-        if ( cp == null ) {
+    public void enableMenuItem(final String menuItemId,
+                               final boolean enabled) {
+        final ComplexPanel cp = getMenuItemWidgetMap().get(menuItemId);
+        if (cp == null) {
             return;
         }
-        if ( cp instanceof AnchorListItem ) {
-            ( (AnchorListItem) cp ).setEnabled( enabled );
+        if (cp instanceof AnchorListItem) {
+            ((AnchorListItem) cp).setEnabled(enabled);
         }
     }
 
     @Override
-    public void enableContextMenuItem( final String menuItemId,
-                                       final boolean enabled ) {
-        final ComplexPanel cp = getMenuItemContextWidgetMap().get( menuItemId );
-        if ( cp == null ) {
+    public void enableContextMenuItem(final String menuItemId,
+                                      final boolean enabled) {
+        final ComplexPanel cp = getMenuItemContextWidgetMap().get(menuItemId);
+        if (cp == null) {
             return;
         }
-        if ( cp instanceof AnchorListItem ) {
-            ( (AnchorListItem) cp ).setEnabled( enabled );
+        if (cp instanceof AnchorListItem) {
+            ((AnchorListItem) cp).setEnabled(enabled);
         }
     }
 
     @Override
     public void clearContextMenu() {
-        for( final ComplexPanel contextContainer : getMenuItemContextWidgetMap().values() ){
+        for (final ComplexPanel contextContainer : getMenuItemContextWidgetMap().values()) {
             contextContainer.clear();
             contextContainer.removeFromParent();
         }
@@ -85,7 +85,7 @@ public abstract class WorkbenchMenuNavBarView extends Composite implements Workb
         getMenuItemContextWidgetMap().clear();
     }
 
-    protected abstract void selectElement( ComplexPanel menuItemWidget );
+    protected abstract void selectElement(ComplexPanel menuItemWidget);
 
     public void clear() {
         navbarNav.clear();
@@ -105,5 +105,4 @@ public abstract class WorkbenchMenuNavBarView extends Composite implements Workb
     protected Map<String, ComplexPanel> getContextContainerWidgetMap() {
         return contextContainerWidgetMap;
     }
-
 }

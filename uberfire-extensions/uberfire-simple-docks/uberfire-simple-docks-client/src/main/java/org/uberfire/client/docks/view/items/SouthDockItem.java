@@ -32,79 +32,77 @@ import org.uberfire.mvp.ParameterizedCommand;
 public class SouthDockItem
         extends AbstractDockItem {
 
+    private static WebAppResource CSS = GWT.create(WebAppResource.class);
     private final ParameterizedCommand<String> selectCommand;
-
     private final ParameterizedCommand<String> deselectCommand;
-
-    private boolean selected;
-
-    private static WebAppResource CSS = GWT.create( WebAppResource.class );
-
-    interface ViewBinder
-            extends
-            UiBinder<Widget, SouthDockItem> {
-
-    }
-
     @UiField
     Button itemButton;
+    private boolean selected;
+    private ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
-    private ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
-    SouthDockItem( final UberfireDock dock,
-                   final ParameterizedCommand<String> selectCommand,
-                   final ParameterizedCommand<String> deselectCommand ) {
-        super( dock );
+    SouthDockItem(final UberfireDock dock,
+                  final ParameterizedCommand<String> selectCommand,
+                  final ParameterizedCommand<String> deselectCommand) {
+        super(dock);
         this.selectCommand = selectCommand;
         this.deselectCommand = deselectCommand;
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
         createButton();
     }
 
     void createButton() {
-        itemButton.setSize( ButtonSize.SMALL );
-        itemButton.setType( ButtonType.LINK );
-        configureText( itemButton, getDock().getLabel() );
-        configureIcon( itemButton, getDock().getImageIcon() );
-        itemButton.getElement().addClassName( CSS.CSS().southDockItem() );
-        itemButton.addClickHandler( new ClickHandler() {
+        itemButton.setSize(ButtonSize.SMALL);
+        itemButton.setType(ButtonType.LINK);
+        configureText(itemButton,
+                      getDock().getLabel());
+        configureIcon(itemButton,
+                      getDock().getImageIcon());
+        itemButton.getElement().addClassName(CSS.CSS().southDockItem());
+        itemButton.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
-                if ( !selected ) {
+            public void onClick(ClickEvent event) {
+                if (!selected) {
                     select();
-                    selectCommand.execute( getIdentifier() );
+                    selectCommand.execute(getIdentifier());
                 } else {
                     deselect();
-                    deselectCommand.execute( getIdentifier() );
+                    deselectCommand.execute(getIdentifier());
                 }
             }
-        } );
+        });
     }
 
     @Override
     public void selectAndExecuteExpandCommand() {
         select();
-        selectCommand.execute( getIdentifier() );
+        selectCommand.execute(getIdentifier());
     }
 
     @Override
     public void select() {
         selected = true;
-        itemButton.setType( ButtonType.INFO );
-        if ( getDock().getImageIconFocused() != null ) {
-            itemButton.remove( 0 );
-            configureImageIcon( itemButton, getDock().getImageIconFocused() );
+        itemButton.setType(ButtonType.INFO);
+        if (getDock().getImageIconFocused() != null) {
+            itemButton.remove(0);
+            configureImageIcon(itemButton,
+                               getDock().getImageIconFocused());
         }
     }
 
     @Override
     public void deselect() {
         selected = false;
-        itemButton.setType( ButtonType.LINK );
-        if ( getDock().getImageIcon() != null ) {
-            itemButton.remove( 0 );
-            configureImageIcon( itemButton, getDock().getImageIcon() );
+        itemButton.setType(ButtonType.LINK);
+        if (getDock().getImageIcon() != null) {
+            itemButton.remove(0);
+            configureImageIcon(itemButton,
+                               getDock().getImageIcon());
         }
     }
 
+    interface ViewBinder
+            extends
+            UiBinder<Widget, SouthDockItem> {
+
+    }
 }

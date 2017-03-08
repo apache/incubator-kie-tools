@@ -37,11 +37,10 @@ public class PartContextMenusView
     private User identity;
 
     @Override
-    public void buildMenu( final Menus menus ) {
+    public void buildMenu(final Menus menus) {
     }
 
     @Override
     public void clear() {
     }
-
 }

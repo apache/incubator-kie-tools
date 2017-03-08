@@ -16,7 +16,8 @@
 
 package org.uberfire.ext.wires.client.social.screens;
 
-import com.google.gwt.core.client.GWT;
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.inject.Inject;
 import org.ext.uberfire.social.activities.client.widgets.timeline.simple.SimpleSocialTimelineWidget;
@@ -30,32 +31,29 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-
 @Dependent
 @Templated
-public class SimpleTimelineView implements IsElement, SimpleTimelinePresenter.View {
-
-    private SimpleTimelinePresenter presenter;
+public class SimpleTimelineView implements IsElement,
+                                           SimpleTimelinePresenter.View {
 
     @Inject
     @DataField
     Div panelContainer;
-
     @Inject
     @DataField
     Button newEvent;
+    private SimpleTimelinePresenter presenter;
 
-    @EventHandler( "newEvent" )
-    public void onNewEvent( final ClickEvent clickEvent ) {
+    @EventHandler("newEvent")
+    public void onNewEvent(final ClickEvent clickEvent) {
         presenter.fireEvent();
     }
 
     @Override
-    public void setupWidget( SimpleSocialTimelineWidgetModel model ) {
-        DOMUtil.removeAllChildren( panelContainer );
-        DOMUtil.appendWidgetToElement( panelContainer, new SimpleSocialTimelineWidget( model ) );
+    public void setupWidget(SimpleSocialTimelineWidgetModel model) {
+        DOMUtil.removeAllChildren(panelContainer);
+        DOMUtil.appendWidgetToElement(panelContainer,
+                                      new SimpleSocialTimelineWidget(model));
     }
 
     @WorkbenchPartTitle
@@ -64,9 +62,7 @@ public class SimpleTimelineView implements IsElement, SimpleTimelinePresenter.Vi
     }
 
     @Override
-    public void init( final SimpleTimelinePresenter presenter ) {
+    public void init(final SimpleTimelinePresenter presenter) {
         this.presenter = presenter;
     }
-
-
 }

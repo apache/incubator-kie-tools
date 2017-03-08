@@ -28,10 +28,10 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
  */
 public class TextBoxDOMElementFactory extends BaseDOMElementFactory<String, TextBox, TextBoxDOMElement> {
 
-    public TextBoxDOMElementFactory( final GridLayer gridLayer,
-                                     final GridWidget gridWidget ) {
-        super( gridLayer,
-               gridWidget );
+    public TextBoxDOMElementFactory(final GridLayer gridLayer,
+                                    final GridWidget gridWidget) {
+        super(gridLayer,
+              gridWidget);
     }
 
     @Override
@@ -40,21 +40,20 @@ public class TextBoxDOMElementFactory extends BaseDOMElementFactory<String, Text
     }
 
     @Override
-    public TextBoxDOMElement createDomElement( final GridLayer gridLayer,
-                                               final GridWidget gridWidget,
-                                               final GridBodyCellRenderContext context ) {
+    public TextBoxDOMElement createDomElement(final GridLayer gridLayer,
+                                              final GridWidget gridWidget,
+                                              final GridBodyCellRenderContext context) {
         final TextBox widget = createWidget();
-        final TextBoxDOMElement e = new TextBoxDOMElement( widget,
-                                                           gridLayer,
-                                                           gridWidget );
-        widget.addBlurHandler( new BlurHandler() {
+        final TextBoxDOMElement e = new TextBoxDOMElement(widget,
+                                                          gridLayer,
+                                                          gridWidget);
+        widget.addBlurHandler(new BlurHandler() {
             @Override
-            public void onBlur( final BlurEvent event ) {
-                e.flush( widget.getValue() );
+            public void onBlur(final BlurEvent event) {
+                e.flush(widget.getValue());
                 gridLayer.batch();
             }
-        } );
+        });
         return e;
     }
-
 }

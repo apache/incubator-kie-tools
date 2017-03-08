@@ -22,13 +22,15 @@ public class AccessDeniedException extends FileSystemException {
         super();
     }
 
-    public AccessDeniedException( String file ) {
-        super( file );
+    public AccessDeniedException(String file) {
+        super(file);
     }
 
-    public AccessDeniedException( String file,
-                                  String other,
-                                  String reason ) {
-        super( file, other, reason );
+    public AccessDeniedException(String file,
+                                 String other,
+                                 String reason) {
+        super(file,
+              other,
+              reason);
     }
 }

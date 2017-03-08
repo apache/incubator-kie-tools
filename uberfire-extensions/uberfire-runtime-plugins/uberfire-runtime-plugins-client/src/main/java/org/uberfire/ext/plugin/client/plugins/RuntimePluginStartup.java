@@ -1,5 +1,10 @@
 package org.uberfire.ext.plugin.client.plugins;
 
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.ScriptInjector;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -12,21 +17,14 @@ import org.uberfire.client.workbench.Workbench;
 import org.uberfire.ext.plugin.client.perspective.editor.generator.PerspectiveEditorGenerator;
 import org.uberfire.workbench.events.UberfireJSAPIReadyEvent;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.List;
-
 @EntryPoint
 @EnabledByProperty(value = "uberfire.plugin.mode.active", negated = true)
 public class RuntimePluginStartup {
 
     @Inject
-    private Workbench workbench;
-
-    @Inject
     PerspectiveEditorGenerator perspectiveEditorGenerator;
-
+    @Inject
+    private Workbench workbench;
     @Inject
     private Caller<RuntimePluginService> runtimePlugins;
 
@@ -51,8 +49,6 @@ public class RuntimePluginStartup {
                 } finally {
                     workbench.removeStartupBlocker(RuntimePluginStartup.class);
                 }
-
-
             }
         }).getRuntimePlugins();
     }
@@ -64,5 +60,4 @@ public class RuntimePluginStartup {
     private boolean isJSPlugin(RuntimePlugin p) {
         return p.getType().name() == PluginProcessor.PluginProcessorType.JS.name();
     }
-
 }

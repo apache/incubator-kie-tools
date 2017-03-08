@@ -44,12 +44,24 @@ public class PageResponse<T extends AbstractPageRow> {
         return pageRowList;
     }
 
+    public void setPageRowList(List<T> assetPageRowList) {
+        this.pageRowList = assetPageRowList;
+    }
+
     public int getStartRowIndex() {
         return startRowIndex;
     }
 
+    public void setStartRowIndex(int startRowIndex) {
+        this.startRowIndex = startRowIndex;
+    }
+
     public int getTotalRowSize() {
         return totalRowSize;
+    }
+
+    public void setTotalRowSize(int totalRowSize) {
+        this.totalRowSize = totalRowSize;
     }
 
     public boolean isFirstPage() {
@@ -60,28 +72,15 @@ public class PageResponse<T extends AbstractPageRow> {
         return lastPage;
     }
 
+    public void setLastPage(boolean lastPage) {
+        this.lastPage = lastPage;
+    }
+
     public boolean isTotalRowSizeExact() {
         return totalRowSizeExact;
     }
 
-    public void setLastPage( boolean lastPage ) {
-        this.lastPage = lastPage;
-    }
-
-    public void setPageRowList( List<T> assetPageRowList ) {
-        this.pageRowList = assetPageRowList;
-    }
-
-    public void setStartRowIndex( int startRowIndex ) {
-        this.startRowIndex = startRowIndex;
-    }
-
-    public void setTotalRowSize( int totalRowSize ) {
-        this.totalRowSize = totalRowSize;
-    }
-
-    public void setTotalRowSizeExact( boolean totalRowSizeExact ) {
+    public void setTotalRowSizeExact(boolean totalRowSizeExact) {
         this.totalRowSizeExact = totalRowSizeExact;
     }
-
 }

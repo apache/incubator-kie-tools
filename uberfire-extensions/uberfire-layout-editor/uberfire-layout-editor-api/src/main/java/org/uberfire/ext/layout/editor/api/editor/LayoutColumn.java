@@ -16,11 +16,11 @@
 
 package org.uberfire.ext.layout.editor.api.editor;
 
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jboss.errai.common.client.api.annotations.MapsTo;
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class LayoutColumn {
@@ -31,16 +31,16 @@ public class LayoutColumn {
 
     private List<LayoutComponent> layoutComponents = new ArrayList<LayoutComponent>();
 
-    public LayoutColumn( @MapsTo("span") String span ) {
+    public LayoutColumn(@MapsTo("span") String span) {
         this.span = span;
     }
 
-    public void addRow( LayoutRow layoutRow) {
+    public void addRow(LayoutRow layoutRow) {
         rows.add(layoutRow);
     }
 
-    public void add( LayoutComponent layoutComponent ) {
-        layoutComponents.add( layoutComponent );
+    public void add(LayoutComponent layoutComponent) {
+        layoutComponents.add(layoutComponent);
     }
 
     public String getSpan() {
@@ -60,31 +60,30 @@ public class LayoutColumn {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof LayoutColumn ) ) {
+        if (!(o instanceof LayoutColumn)) {
             return false;
         }
 
-        LayoutColumn that = (LayoutColumn ) o;
+        LayoutColumn that = (LayoutColumn) o;
 
-        if ( span != null ? !span.equals( that.span ) : that.span != null ) {
+        if (span != null ? !span.equals(that.span) : that.span != null) {
             return false;
         }
-        if ( rows != null ? !rows.equals( that.rows ) : that.rows != null ) {
+        if (rows != null ? !rows.equals(that.rows) : that.rows != null) {
             return false;
         }
-        return !( layoutComponents != null ? !layoutComponents.equals( that.layoutComponents ) : that.layoutComponents != null );
-
+        return !(layoutComponents != null ? !layoutComponents.equals(that.layoutComponents) : that.layoutComponents != null);
     }
 
     @Override
     public int hashCode() {
         int result = span != null ? span.hashCode() : 0;
-        result = 31 * result + ( rows != null ? rows.hashCode() : 0 );
-        result = 31 * result + ( layoutComponents != null ? layoutComponents.hashCode() : 0 );
+        result = 31 * result + (rows != null ? rows.hashCode() : 0);
+        result = 31 * result + (layoutComponents != null ? layoutComponents.hashCode() : 0);
         return result;
     }
 

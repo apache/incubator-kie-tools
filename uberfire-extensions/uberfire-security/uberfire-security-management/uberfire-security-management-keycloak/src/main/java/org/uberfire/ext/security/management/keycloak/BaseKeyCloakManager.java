@@ -16,6 +16,13 @@
 
 package org.uberfire.ext.security.management.keycloak;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -26,7 +33,6 @@ import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.commons.config.ConfigProperties;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.api.UserManager;
 import org.uberfire.ext.security.management.api.exception.GroupNotFoundException;
@@ -37,68 +43,96 @@ import org.uberfire.ext.security.management.impl.SearchRequestImpl;
 import org.uberfire.ext.security.management.impl.UserAttributeImpl;
 import org.uberfire.ext.security.management.keycloak.client.ClientFactory;
 import org.uberfire.ext.security.management.keycloak.client.Keycloak;
-import org.uberfire.ext.security.management.keycloak.client.auth.TokenManager;
-import org.uberfire.ext.security.management.keycloak.client.resource.*;
+import org.uberfire.ext.security.management.keycloak.client.resource.RealmResource;
+import org.uberfire.ext.security.management.keycloak.client.resource.RoleMappingResource;
+import org.uberfire.ext.security.management.keycloak.client.resource.RoleResource;
+import org.uberfire.ext.security.management.keycloak.client.resource.UserResource;
+import org.uberfire.ext.security.management.keycloak.client.resource.UsersResource;
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
-import javax.ws.rs.core.Response;
-import java.util.*;
-
 public abstract class BaseKeyCloakManager {
-    private static final Logger LOG = LoggerFactory.getLogger(BaseKeyCloakManager.class);
-    
-    
+
     protected static final String ATTRIBUTE_USER_ID = "user.id";
     protected static final String ATTRIBUTE_USER_FIRST_NAME = "user.firstName";
     protected static final String ATTRIBUTE_USER_LAST_NAME = "user.lastName";
     protected static final String ATTRIBUTE_USER_ENABLED = "user.enabled";
     protected static final String ATTRIBUTE_USER_EMAIL = "user.email";
     protected static final String ATTRIBUTE_USER_EMAIL_VERIFIED = "user.isEmailVerified";
-
-    protected static final UserManager.UserAttribute USER_ID = new UserAttributeImpl(ATTRIBUTE_USER_ID, true, false, null);
-    protected static final UserManager.UserAttribute USER_FIST_NAME = new UserAttributeImpl(ATTRIBUTE_USER_FIRST_NAME, true, true, "First name");
-    protected static final UserManager.UserAttribute USER_LAST_NAME= new UserAttributeImpl(ATTRIBUTE_USER_LAST_NAME, true, true, "Last name");
-    protected static final UserManager.UserAttribute USER_ENABLED  = new UserAttributeImpl(ATTRIBUTE_USER_ENABLED, true, true, "true");
-    protected static final UserManager.UserAttribute USER_EMAIL = new UserAttributeImpl(ATTRIBUTE_USER_EMAIL, false, true, "");
-    protected static final UserManager.UserAttribute USER_EMAIL_VERIFIED = new UserAttributeImpl(ATTRIBUTE_USER_EMAIL_VERIFIED, false, true, "false");
-    protected static final Collection<UserManager.UserAttribute> USER_ATTRIBUTES = 
-            Arrays.asList(USER_ID, USER_FIST_NAME, USER_LAST_NAME, USER_ENABLED, USER_EMAIL, USER_EMAIL_VERIFIED);
-    
+    protected static final UserManager.UserAttribute USER_ID = new UserAttributeImpl(ATTRIBUTE_USER_ID,
+                                                                                     true,
+                                                                                     false,
+                                                                                     null);
+    protected static final UserManager.UserAttribute USER_FIST_NAME = new UserAttributeImpl(ATTRIBUTE_USER_FIRST_NAME,
+                                                                                            true,
+                                                                                            true,
+                                                                                            "First name");
+    protected static final UserManager.UserAttribute USER_LAST_NAME = new UserAttributeImpl(ATTRIBUTE_USER_LAST_NAME,
+                                                                                            true,
+                                                                                            true,
+                                                                                            "Last name");
+    protected static final UserManager.UserAttribute USER_ENABLED = new UserAttributeImpl(ATTRIBUTE_USER_ENABLED,
+                                                                                          true,
+                                                                                          true,
+                                                                                          "true");
+    protected static final UserManager.UserAttribute USER_EMAIL = new UserAttributeImpl(ATTRIBUTE_USER_EMAIL,
+                                                                                        false,
+                                                                                        true,
+                                                                                        "");
+    protected static final UserManager.UserAttribute USER_EMAIL_VERIFIED = new UserAttributeImpl(ATTRIBUTE_USER_EMAIL_VERIFIED,
+                                                                                                 false,
+                                                                                                 true,
+                                                                                                 "false");
+    protected static final Collection<UserManager.UserAttribute> USER_ATTRIBUTES =
+            Arrays.asList(USER_ID,
+                          USER_FIST_NAME,
+                          USER_LAST_NAME,
+                          USER_ENABLED,
+                          USER_EMAIL,
+                          USER_EMAIL_VERIFIED);
+    private static final Logger LOG = LoggerFactory.getLogger(BaseKeyCloakManager.class);
     protected ClientFactory factory;
 
     protected void init(ClientFactory factory) {
         this.factory = factory;
     }
-    
+
     protected synchronized Keycloak getKeyCloakInstance() {
         return factory.get();
     }
-    
+
     protected RealmResource getRealmResource() {
         return getKeyCloakInstance().realm();
     }
-    
+
     protected AbstractEntityManager.SearchRequest getSearchRequest(final AbstractEntityManager.SearchRequest request) {
         return request != null ? request : new SearchRequestImpl();
     }
 
     protected User createUser(UserRepresentation userRepresentation) {
-        return createUser(userRepresentation, null, null);
+        return createUser(userRepresentation,
+                          null,
+                          null);
     }
 
-    protected User createUser(UserRepresentation userRepresentation, Set<Group> groups, Set<Role> roles) {
+    protected User createUser(UserRepresentation userRepresentation,
+                              Set<Group> groups,
+                              Set<Role> roles) {
         if (userRepresentation != null) {
             String username = userRepresentation.getUsername();
-            final User user = SecurityManagementUtils.createUser(username, groups, roles);
-            fillUserAttributes(user, userRepresentation);
+            final User user = SecurityManagementUtils.createUser(username,
+                                                                 groups,
+                                                                 roles);
+            fillUserAttributes(user,
+                               userRepresentation);
             return user;
         }
         return null;
     }
-    
+
     protected Group createGroup(RoleRepresentation roleRepresentation) {
         if (roleRepresentation != null) {
-            String name = roleRepresentation.getName();;
+            String name = roleRepresentation.getName();
+            ;
             final Group group = createGroup(name);
             return group;
         }
@@ -123,38 +157,50 @@ public abstract class BaseKeyCloakManager {
                 for (RoleRepresentation roleRepresentation : roles) {
                     if (roleRepresentation != null) {
                         String name = roleRepresentation.getName();
-                        SecurityManagementUtils.populateGroupOrRoles(name, registeredRoles, _groups, _roles);
+                        SecurityManagementUtils.populateGroupOrRoles(name,
+                                                                     registeredRoles,
+                                                                     _groups,
+                                                                     _roles);
                     }
                 }
-                return new Set[] { _groups, _roles };
+                return new Set[]{_groups, _roles};
             }
         }
         return null;
     }
 
-    protected void fillUserAttributes(final User user, final UserRepresentation userRepresentation) {
+    protected void fillUserAttributes(final User user,
+                                      final UserRepresentation userRepresentation) {
         final String userId = userRepresentation.getId();
         final String firstName = userRepresentation.getFirstName();
         final String lastName = userRepresentation.getLastName();
         final String email = userRepresentation.getEmail();
         final boolean isEmailVerified = userRepresentation.isEmailVerified();
         final boolean isEnabled = userRepresentation.isEnabled();
-        user.setProperty(ATTRIBUTE_USER_ID, userId);
-        user.setProperty(ATTRIBUTE_USER_FIRST_NAME, firstName);
-        user.setProperty(ATTRIBUTE_USER_LAST_NAME, lastName);
-        user.setProperty(ATTRIBUTE_USER_EMAIL, email);
-        user.setProperty(ATTRIBUTE_USER_EMAIL_VERIFIED, Boolean.toString(isEmailVerified));
-        user.setProperty(ATTRIBUTE_USER_ENABLED, Boolean.toString(isEnabled));
+        user.setProperty(ATTRIBUTE_USER_ID,
+                         userId);
+        user.setProperty(ATTRIBUTE_USER_FIRST_NAME,
+                         firstName);
+        user.setProperty(ATTRIBUTE_USER_LAST_NAME,
+                         lastName);
+        user.setProperty(ATTRIBUTE_USER_EMAIL,
+                         email);
+        user.setProperty(ATTRIBUTE_USER_EMAIL_VERIFIED,
+                         Boolean.toString(isEmailVerified));
+        user.setProperty(ATTRIBUTE_USER_ENABLED,
+                         Boolean.toString(isEnabled));
         final Map<String, Object> attrs = userRepresentation.getAttributes();
         if (attrs != null && !attrs.isEmpty()) {
             for (final Map.Entry<String, Object> entry : attrs.entrySet()) {
                 final String v = entry.getValue() != null ? entry.getValue().toString() : null;
-                user.setProperty(entry.getKey(), v);
+                user.setProperty(entry.getKey(),
+                                 v);
             }
         }
     }
 
-    protected void fillUserRepresentationAttributes(final User user, final UserRepresentation userRepresentation) {
+    protected void fillUserRepresentationAttributes(final User user,
+                                                    final UserRepresentation userRepresentation) {
         String username = user.getIdentifier();
         userRepresentation.setUsername(username);
         Map<String, String> props = user.getProperties();
@@ -175,21 +221,30 @@ public abstract class BaseKeyCloakManager {
                 } else if (ATTRIBUTE_USER_ENABLED.equals(key)) {
                     userRepresentation.setEnabled(Boolean.valueOf(value));
                 } else {
-                    userRepresentation.singleAttribute(key, value);
+                    userRepresentation.singleAttribute(key,
+                                                       value);
                 }
             }
         }
-        
     }
 
-    protected UserResource getUserResource(UsersResource usersResource, String username) {
-        List<UserRepresentation> userRepresentations = usersResource.search(username, null, null, null, 0, 1);
-        if (userRepresentations == null || userRepresentations.isEmpty()) throw new UserNotFoundException(username);
+    protected UserResource getUserResource(UsersResource usersResource,
+                                           String username) {
+        List<UserRepresentation> userRepresentations = usersResource.search(username,
+                                                                            null,
+                                                                            null,
+                                                                            null,
+                                                                            0,
+                                                                            1);
+        if (userRepresentations == null || userRepresentations.isEmpty()) {
+            throw new UserNotFoundException(username);
+        }
         String id = userRepresentations.get(0).getId();
         return usersResource.get(id);
     }
 
-    protected RoleRepresentation getRoleRepresentation(String name, RoleResource roleResource) {
+    protected RoleRepresentation getRoleRepresentation(String name,
+                                                       RoleResource roleResource) {
         if (roleResource != null) {
             try {
                 return roleResource.toRepresentation();
@@ -197,8 +252,8 @@ public abstract class BaseKeyCloakManager {
                 throw new GroupNotFoundException(name);
             } catch (ClientResponseFailure clientResponseFailure) {
                 int status = clientResponseFailure.getResponse().getResponseStatus().getStatusCode();
-                if ( 404 == status ) {
-                    throw new GroupNotFoundException(name);    
+                if (404 == status) {
+                    throw new GroupNotFoundException(name);
                 }
             } catch (Exception e) {
                 throw new SecurityManagementException(e);
@@ -206,17 +261,16 @@ public abstract class BaseKeyCloakManager {
         }
         throw new GroupNotFoundException(name);
     }
-    
+
     protected void handleResponse(ClientResponse response) {
         if (response != null) {
             int status = response.getStatus();
             response.releaseConnection();
-            
+
             if (status >= 400) {
-                throw new OperationFailedException(status, "Operation failed. See server log messages.");
+                throw new OperationFailedException(status,
+                                                   "Operation failed. See server log messages.");
             }
         }
     }
-
-
 }

@@ -18,10 +18,9 @@ package org.uberfire.client.mvp;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
-
-import com.google.gwt.user.client.ui.IsWidget;
 
 @ApplicationScoped
 public class MyTestType implements ClientResourceType {
@@ -62,7 +61,7 @@ public class MyTestType implements ClientResourceType {
     }
 
     @Override
-    public boolean accept( final Path path ) {
+    public boolean accept(final Path path) {
         return true;
     }
 }

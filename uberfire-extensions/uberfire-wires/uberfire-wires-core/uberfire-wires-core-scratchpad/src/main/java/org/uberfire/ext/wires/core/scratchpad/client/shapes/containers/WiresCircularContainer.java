@@ -40,79 +40,83 @@ public class WiresCircularContainer extends WiresBaseDynamicContainer {
 
     private final ControlPoint controlPoint1;
 
-    public WiresCircularContainer( final Circle shape ) {
+    public WiresCircularContainer(final Circle shape) {
         circle = shape;
         circleFillColour = shape.getFillColor();
         circleStrokeColour = shape.getStrokeColor();
 
         final double radius = circle.getRadius();
-        bounding = new Circle( radius + ( BOUNDARY_SIZE / 2 ) );
-        bounding.setStrokeWidth( BOUNDARY_SIZE );
-        bounding.setAlpha( 0.1 );
+        bounding = new Circle(radius + (BOUNDARY_SIZE / 2));
+        bounding.setStrokeWidth(BOUNDARY_SIZE);
+        bounding.setAlpha(0.1);
 
-        add( circle );
+        add(circle);
 
         magnets.clear();
-        magnet1 = new DefaultMagnet( getX() - radius,
-                                     getY() );
-        magnet2 = new DefaultMagnet( getX() + radius,
-                                     getY() );
-        magnet3 = new DefaultMagnet( getX(),
-                                     getY() - radius );
-        magnet4 = new DefaultMagnet( getX(),
-                                     getY() + radius );
-        addMagnet( magnet1 );
-        addMagnet( magnet2 );
-        addMagnet( magnet3 );
-        addMagnet( magnet4 );
+        magnet1 = new DefaultMagnet(getX() - radius,
+                                    getY());
+        magnet2 = new DefaultMagnet(getX() + radius,
+                                    getY());
+        magnet3 = new DefaultMagnet(getX(),
+                                    getY() - radius);
+        magnet4 = new DefaultMagnet(getX(),
+                                    getY() + radius);
+        addMagnet(magnet1);
+        addMagnet(magnet2);
+        addMagnet(magnet3);
+        addMagnet(magnet4);
 
         controlPoints.clear();
-        controlPoint1 = new DefaultControlPoint( getX() + radius,
-                                                 getY(),
-                                                 new ControlPointMoveHandler() {
-                                                     @Override
-                                                     public void onMove( final double x,
-                                                                         final double y ) {
-                                                         final double dx = getX() - x;
-                                                         final double dy = getY() - y;
-                                                         final double r = Math.sqrt( Math.pow( dx, 2 ) + Math.pow( dy, 2 ) );
-                                                         magnet1.setX( getX() - r );
-                                                         magnet2.setX( getX() + r );
-                                                         magnet3.setY( getY() - r );
-                                                         magnet4.setY( getY() + r );
-                                                         circle.setRadius( r );
-                                                         bounding.setRadius( r + ( BOUNDARY_SIZE / 2 ) );
-                                                     }
-                                                 }
+        controlPoint1 = new DefaultControlPoint(getX() + radius,
+                                                getY(),
+                                                new ControlPointMoveHandler() {
+                                                    @Override
+                                                    public void onMove(final double x,
+                                                                       final double y) {
+                                                        final double dx = getX() - x;
+                                                        final double dy = getY() - y;
+                                                        final double r = Math.sqrt(Math.pow(dx,
+                                                                                            2) + Math.pow(dy,
+                                                                                                          2));
+                                                        magnet1.setX(getX() - r);
+                                                        magnet2.setX(getX() + r);
+                                                        magnet3.setY(getY() - r);
+                                                        magnet4.setY(getY() + r);
+                                                        circle.setRadius(r);
+                                                        bounding.setRadius(r + (BOUNDARY_SIZE / 2));
+                                                    }
+                                                }
         );
-        addControlPoint( controlPoint1 );
+        addControlPoint(controlPoint1);
     }
 
     @Override
-    public void setSelected( final boolean isSelected ) {
-        if ( isSelected ) {
-            add( bounding );
+    public void setSelected(final boolean isSelected) {
+        if (isSelected) {
+            add(bounding);
         } else {
-            remove( bounding );
+            remove(bounding);
         }
     }
 
     @Override
-    public boolean contains( final double cx,
-                             final double cy ) {
+    public boolean contains(final double cx,
+                            final double cy) {
         final double _x = cx - getX();
         final double _y = cy - getY();
-        return Math.sqrt( Math.pow( _x, 2 ) + Math.pow( _y, 2 ) ) < circle.getRadius() + BOUNDARY_SIZE;
+        return Math.sqrt(Math.pow(_x,
+                                  2) + Math.pow(_y,
+                                                2)) < circle.getRadius() + BOUNDARY_SIZE;
     }
 
     @Override
-    public void setHover( final boolean isHover ) {
-        if ( isHover ) {
-            circle.setFillColor( ShapesUtils.RGB_FILL_HOVER_CONTAINER );
-            circle.setStrokeColor( ShapesUtils.RGB_STROKE_HOVER_CONTAINER );
+    public void setHover(final boolean isHover) {
+        if (isHover) {
+            circle.setFillColor(ShapesUtils.RGB_FILL_HOVER_CONTAINER);
+            circle.setStrokeColor(ShapesUtils.RGB_STROKE_HOVER_CONTAINER);
         } else {
-            circle.setFillColor( circleFillColour );
-            circle.setStrokeColor( circleStrokeColour );
+            circle.setFillColor(circleFillColour);
+            circle.setStrokeColor(circleStrokeColour);
         }
     }
 
@@ -120,5 +124,4 @@ public class WiresCircularContainer extends WiresBaseDynamicContainer {
     public String toString() {
         return "WiresCircularContainer{" + "id=" + getId() + ",x = " + getX() + ", y = " + getY() + "}";
     }
-
 }

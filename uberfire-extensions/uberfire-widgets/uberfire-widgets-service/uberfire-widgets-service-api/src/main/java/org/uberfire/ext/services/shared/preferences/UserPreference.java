@@ -28,15 +28,15 @@ public class UserPreference {
         return type;
     }
 
-    public void setType( final UserPreferencesType type ) {
+    public void setType(final UserPreferencesType type) {
         this.type = type;
-    }
-
-    public void setPreferenceKey( final String preferenceKey ) {
-        this.preferenceKey = preferenceKey;
     }
 
     public String getPreferenceKey() {
         return this.preferenceKey;
+    }
+
+    public void setPreferenceKey(final String preferenceKey) {
+        this.preferenceKey = preferenceKey;
     }
 }

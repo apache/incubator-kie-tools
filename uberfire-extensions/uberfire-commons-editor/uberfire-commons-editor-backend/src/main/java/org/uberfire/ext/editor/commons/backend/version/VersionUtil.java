@@ -28,7 +28,9 @@ import org.uberfire.java.nio.file.Path;
 public class VersionUtil {
 
     @Inject
-    private @Named("ioStrategy") IOService ioService;
+    private
+    @Named("ioStrategy")
+    IOService ioService;
 
     public Path getDotFilePath(Path path) {
         return path.resolveSibling("." + path.getFileName());
@@ -37,13 +39,15 @@ public class VersionUtil {
     public String getVersion(Path path) {
         if (path instanceof AbstractPath) {
             String host = ((AbstractPath) path).getHost();
-            return host.substring(0, host.indexOf("@"));
+            return host.substring(0,
+                                  host.indexOf("@"));
         } else {
             return "master";
         }
     }
 
-    public Path getPath(Path path, String version) throws URISyntaxException {
+    public Path getPath(Path path,
+                        String version) throws URISyntaxException {
 
         String authority = path.toUri().getAuthority(); // master@uf-playground
         authority = version + authority.substring(authority.indexOf("@"));

@@ -35,17 +35,17 @@ public class GridBodyCellRenderContext {
     private final Transform transform;
     private final GridRenderer renderer;
 
-    public GridBodyCellRenderContext( final double absoluteCellX,
-                                      final double absoluteCellY,
-                                      final double cellWidth,
-                                      final double cellHeight,
-                                      final double clipMinY,
-                                      final double clipMinX,
-                                      final int rowIndex,
-                                      final int columnIndex,
-                                      final boolean isFloating,
-                                      final Transform transform,
-                                      final GridRenderer renderer ) {
+    public GridBodyCellRenderContext(final double absoluteCellX,
+                                     final double absoluteCellY,
+                                     final double cellWidth,
+                                     final double cellHeight,
+                                     final double clipMinY,
+                                     final double clipMinX,
+                                     final int rowIndex,
+                                     final int columnIndex,
+                                     final boolean isFloating,
+                                     final Transform transform,
+                                     final GridRenderer renderer) {
         this.absoluteCellX = absoluteCellX;
         this.absoluteCellY = absoluteCellY;
         this.cellWidth = cellWidth;
@@ -146,5 +146,4 @@ public class GridBodyCellRenderContext {
     public GridRenderer getRenderer() {
         return renderer;
     }
-
 }

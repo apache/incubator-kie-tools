@@ -38,8 +38,8 @@ public class PreferenceScopeResolutionStrategyInfo {
      */
     private final PreferenceScope defaultScope;
 
-    public PreferenceScopeResolutionStrategyInfo( @MapsTo("order") final List<PreferenceScope> order,
-                                                  @MapsTo("defaultScope") final PreferenceScope defaultScope ) {
+    public PreferenceScopeResolutionStrategyInfo(@MapsTo("order") final List<PreferenceScope> order,
+                                                 @MapsTo("defaultScope") final PreferenceScope defaultScope) {
         this.order = order;
         this.defaultScope = defaultScope;
     }

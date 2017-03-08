@@ -28,7 +28,7 @@ public interface UberfireSimplePagerResources
         extends
         ClientBundle {
 
-    UberfireSimplePagerResources INSTANCE = GWT.create( UberfireSimplePagerResources.class );
+    UberfireSimplePagerResources INSTANCE = GWT.create(UberfireSimplePagerResources.class);
 
     /**
      * The image used to skip ahead multiple pages.
@@ -105,5 +105,4 @@ public interface UberfireSimplePagerResources
      */
     @Source("css/UberfireSimplePager.css")
     UberfireSimplePager.Style simplePagerStyle();
-
 }

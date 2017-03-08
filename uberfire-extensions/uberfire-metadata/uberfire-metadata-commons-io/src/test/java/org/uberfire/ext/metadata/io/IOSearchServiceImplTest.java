@@ -33,70 +33,75 @@ public class IOSearchServiceImplTest extends BaseIndexTest {
 
     @Override
     protected String[] getRepositoryNames() {
-        return new String[]{ this.getClass().getSimpleName() };
+        return new String[]{this.getClass().getSimpleName()};
     }
 
     @Test
     public void testFullTextSearch() throws IOException, InterruptedException {
-        setupCountDown( 3 );
+        setupCountDown(3);
 
-        final IOSearchServiceImpl searchIndex = new IOSearchServiceImpl( config.getSearchIndex(), ioService() );
+        final IOSearchServiceImpl searchIndex = new IOSearchServiceImpl(config.getSearchIndex(),
+                                                                        ioService());
 
-        final Path path1 = getBasePath( this.getClass().getSimpleName() ).resolve( "g.txt" );
-        ioService().write( path1,
-                           "ooooo!" );
+        final Path path1 = getBasePath(this.getClass().getSimpleName()).resolve("g.txt");
+        ioService().write(path1,
+                          "ooooo!");
 
-        final Path path2 = getBasePath( this.getClass().getSimpleName() ).resolve( "a.txt" );
-        ioService().write( path2,
-                           "ooooo!" );
+        final Path path2 = getBasePath(this.getClass().getSimpleName()).resolve("a.txt");
+        ioService().write(path2,
+                          "ooooo!");
 
-        final Path path3 = getBasePath( this.getClass().getSimpleName() ).resolve( "the.txt" );
-        ioService().write( path3,
-                           "ooooo!" );
+        final Path path3 = getBasePath(this.getClass().getSimpleName()).resolve("the.txt");
+        ioService().write(path3,
+                          "ooooo!");
 
         final Path root = path1.getRoot();
 
-        waitForCountDown( 5000 );
+        waitForCountDown(5000);
 
         {
-            final List<Path> result = searchIndex.fullTextSearch( "g",
-                                                                  new IOSearchService.NoOpFilter(),
-                                                                  root );
+            final List<Path> result = searchIndex.fullTextSearch("g",
+                                                                 new IOSearchService.NoOpFilter(),
+                                                                 root);
 
-            assertEquals( 1, result.size() );
+            assertEquals(1,
+                         result.size());
         }
 
         {
-            final List<Path> result = searchIndex.fullTextSearch( "a",
-                                                                  new IOSearchService.NoOpFilter(),
-                                                                  root );
+            final List<Path> result = searchIndex.fullTextSearch("a",
+                                                                 new IOSearchService.NoOpFilter(),
+                                                                 root);
 
-            assertEquals( 1, result.size() );
+            assertEquals(1,
+                         result.size());
         }
 
         {
-            final List<Path> result = searchIndex.fullTextSearch( "the",
-                                                                  new IOSearchService.NoOpFilter(),
-                                                                  root );
+            final List<Path> result = searchIndex.fullTextSearch("the",
+                                                                 new IOSearchService.NoOpFilter(),
+                                                                 root);
 
-            assertEquals( 1, result.size() );
+            assertEquals(1,
+                         result.size());
         }
 
         {
-            final List<Path> result = searchIndex.fullTextSearch( "",
-                                                                  new IOSearchService.NoOpFilter(),
-                                                                  root );
+            final List<Path> result = searchIndex.fullTextSearch("",
+                                                                 new IOSearchService.NoOpFilter(),
+                                                                 root);
 
-            assertEquals( 0, result.size() );
+            assertEquals(0,
+                         result.size());
         }
 
         {
             try {
-                searchIndex.fullTextSearch( null,
-                                            new IOSearchService.NoOpFilter(),
-                                            root );
+                searchIndex.fullTextSearch(null,
+                                           new IOSearchService.NoOpFilter(),
+                                           root);
                 fail();
-            } catch ( final IllegalArgumentException ignored ) {
+            } catch (final IllegalArgumentException ignored) {
             }
         }
     }

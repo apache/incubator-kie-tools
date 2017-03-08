@@ -72,7 +72,7 @@ public class RenamePopUpView implements RenamePopUpPresenter.View,
     private String originalFileName;
 
     @Override
-    public void init( RenamePopUpPresenter presenter ) {
+    public void init(RenamePopUpPresenter presenter) {
         this.presenter = presenter;
         modalSetup();
     }
@@ -92,86 +92,94 @@ public class RenamePopUpView implements RenamePopUpPresenter.View,
 
     @Override
     public void handleDuplicatedFileName() {
-        showError( translate( Constants.RenamePopUpView_FileAlreadyExists, newNameTextBox.getValue() ) );
+        showError(translate(Constants.RenamePopUpView_FileAlreadyExists,
+                            newNameTextBox.getValue()));
     }
 
     @Override
     public void handleInvalidFileName() {
-        showError( translate( Constants.RenamePopUpView_InvalidFileName, newNameTextBox.getValue() ) );
+        showError(translate(Constants.RenamePopUpView_InvalidFileName,
+                            newNameTextBox.getValue()));
     }
 
     @Override
-    public void setOriginalFileName( String fileName ) {
+    public void setOriginalFileName(String fileName) {
         originalFileName = fileName;
     }
 
     @EventHandler("newNameTextBox")
-    public void onNewFileNameChange( KeyUpEvent event ) {
+    public void onNewFileNameChange(KeyUpEvent event) {
         disableRenameButtonIfNewNameIsNotNew();
     }
 
     private void modalSetup() {
         this.modal = new CommonModalBuilder()
-                .addHeader( translate( Constants.RenamePopUpView_RenameAsset ) )
-                .addBody( body )
-                .addFooter( footer() )
+                .addHeader(translate(Constants.RenamePopUpView_RenameAsset))
+                .addBody(body)
+                .addFooter(footer())
                 .build();
     }
 
     private ModalFooter footer() {
         GenericModalFooter footer = new GenericModalFooter();
-        footer.add( cancelButton() );
-        footer.add( renameButton() );
+        footer.add(cancelButton());
+        footer.add(renameButton());
         return footer;
     }
 
     private Button renameButton() {
-        renameButton = button( translate( Constants.RenamePopUpView_Rename ), renameCommand(), ButtonType.PRIMARY );
+        renameButton = button(translate(Constants.RenamePopUpView_Rename),
+                              renameCommand(),
+                              ButtonType.PRIMARY);
         return renameButton;
     }
 
     private Button cancelButton() {
-        return button( translate( Constants.RenamePopUpView_Cancel ), cancelCommand(), ButtonType.DEFAULT );
+        return button(translate(Constants.RenamePopUpView_Cancel),
+                      cancelCommand(),
+                      ButtonType.DEFAULT);
     }
 
-    private Button button( final String text,
-                           final Command command,
-                           final ButtonType type ) {
-        Button button = new Button( text, new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                command.execute();
-            }
-        } );
-        button.setType( type );
+    private Button button(final String text,
+                          final Command command,
+                          final ButtonType type) {
+        Button button = new Button(text,
+                                   new ClickHandler() {
+                                       @Override
+                                       public void onClick(ClickEvent event) {
+                                           command.execute();
+                                       }
+                                   });
+        button.setType(type);
         return button;
     }
 
-    private String translate( final String key,
-                              Object... args ) {
-        return translationService.format( key, args );
+    private String translate(final String key,
+                             Object... args) {
+        return translationService.format(key,
+                                         args);
     }
 
     private void newNameTextBoxSetup() {
-        newNameTextBox.setValue( originalFileName );
+        newNameTextBox.setValue(originalFileName);
         disableRenameButtonIfNewNameIsNotNew();
     }
 
     private void errorSetup() {
-        this.error.setHidden( true );
+        this.error.setHidden(true);
     }
 
     private void disableRenameButtonIfNewNameIsNotNew() {
-        renameButton.setEnabled( !newNameTextBox.getValue().equals( originalFileName ) );
+        renameButton.setEnabled(!newNameTextBox.getValue().equals(originalFileName));
     }
 
-    private void showError( String errorMessage ) {
-        this.errorMessage.setTextContent( errorMessage );
-        this.error.setHidden( false );
+    private void showError(String errorMessage) {
+        this.errorMessage.setTextContent(errorMessage);
+        this.error.setHidden(false);
     }
 
     private Command renameCommand() {
-        return () -> presenter.rename( newNameTextBox.getValue() );
+        return () -> presenter.rename(newNameTextBox.getValue());
     }
 
     private Command cancelCommand() {
@@ -179,7 +187,7 @@ public class RenamePopUpView implements RenamePopUpPresenter.View,
     }
 
     private void setupComment() {
-        body.appendChild( toggleCommentPresenter().getViewElement() );
+        body.appendChild(toggleCommentPresenter().getViewElement());
     }
 
     private ToggleCommentPresenter toggleCommentPresenter() {

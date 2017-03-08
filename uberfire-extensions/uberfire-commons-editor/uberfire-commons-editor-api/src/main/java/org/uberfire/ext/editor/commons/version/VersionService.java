@@ -28,11 +28,10 @@ import org.uberfire.java.nio.base.version.VersionRecord;
 @Remote
 public interface VersionService {
 
-    List<VersionRecord> getVersions( final Path path );
+    List<VersionRecord> getVersions(final Path path);
 
-    Path getPathToPreviousVersion( String uri );
+    Path getPathToPreviousVersion(String uri);
 
-    Path restore( final Path path,
-                  final String comment );
-
+    Path restore(final Path path,
+                 final String comment);
 }

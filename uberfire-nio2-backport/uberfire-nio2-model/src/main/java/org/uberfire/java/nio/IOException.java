@@ -30,7 +30,8 @@ public class IOException extends RuntimeException {
         super(description);
     }
 
-    public IOException(final String description, Exception e) {
+    public IOException(final String description,
+                       Exception e) {
         super(description);
     }
 }

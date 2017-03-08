@@ -57,8 +57,8 @@ import org.uberfire.java.nio.file.attribute.FileTime;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static java.util.Arrays.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static java.util.Arrays.asList;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 public class IOSecurityService implements IOService {
 
@@ -66,13 +66,16 @@ public class IOSecurityService implements IOService {
     private final AuthenticationService authenticationService;
     private final AuthorizationManager authManager;
 
-    public IOSecurityService( final IOService service,
-                              final AuthenticationService authenticationService,
-                              final AuthorizationManager authManager ) {
-        this.authManager = checkNotNull( "authManager", authManager );
-        this.service = checkNotNull( "service", service );
-        this.authenticationService = checkNotNull( "provider", authenticationService );
-        PriorityDisposableRegistry.register( this );
+    public IOSecurityService(final IOService service,
+                             final AuthenticationService authenticationService,
+                             final AuthorizationManager authManager) {
+        this.authManager = checkNotNull("authManager",
+                                        authManager);
+        this.service = checkNotNull("service",
+                                    service);
+        this.authenticationService = checkNotNull("provider",
+                                                  authenticationService);
+        PriorityDisposableRegistry.register(this);
     }
 
     @Override
@@ -85,41 +88,47 @@ public class IOSecurityService implements IOService {
     }
 
     @Override
-    public void startBatch( FileSystem fs ) {
-        if ( !authManager.authorize( toResource( fs ), getUser() ) ) {
+    public void startBatch(FileSystem fs) {
+        if (!authManager.authorize(toResource(fs),
+                                   getUser())) {
             throw new SecurityException();
         }
-        service.startBatch( fs );
+        service.startBatch(fs);
     }
 
     @Override
-    public void startBatch( FileSystem[] fss,
-                            Option... options ) {
-        for ( FileSystem fs : fss ) {
-            if ( !authManager.authorize( toResource( fs ), getUser() ) ) {
+    public void startBatch(FileSystem[] fss,
+                           Option... options) {
+        for (FileSystem fs : fss) {
+            if (!authManager.authorize(toResource(fs),
+                                       getUser())) {
                 throw new SecurityException();
             }
         }
-        service.startBatch( fss, options );
+        service.startBatch(fss,
+                           options);
     }
 
     @Override
-    public void startBatch( FileSystem fs,
-                            Option... options ) {
-        if ( !authManager.authorize( toResource( fs ), getUser() ) ) {
+    public void startBatch(FileSystem fs,
+                           Option... options) {
+        if (!authManager.authorize(toResource(fs),
+                                   getUser())) {
             throw new SecurityException();
         }
-        service.startBatch( fs, options );
+        service.startBatch(fs,
+                           options);
     }
 
     @Override
-    public void startBatch( FileSystem... fss ) {
-        for ( FileSystem fs : fss ) {
-            if ( !authManager.authorize( toResource( fs ), getUser() ) ) {
+    public void startBatch(FileSystem... fss) {
+        for (FileSystem fs : fss) {
+            if (!authManager.authorize(toResource(fs),
+                                       getUser())) {
                 throw new SecurityException();
             }
         }
-        service.startBatch( fss );
+        service.startBatch(fss);
     }
 
     @Override
@@ -128,35 +137,38 @@ public class IOSecurityService implements IOService {
     }
 
     @Override
-    public FileAttribute<?>[] convert( Map<String, ?> attrs ) {
-        return service.convert( attrs );
+    public FileAttribute<?>[] convert(Map<String, ?> attrs) {
+        return service.convert(attrs);
     }
 
     @Override
-    public Path get( String first,
-                     String... more ) throws IllegalArgumentException {
+    public Path get(String first,
+                    String... more) throws IllegalArgumentException {
         try {
-            final Path result = service.get( first, more );
-            if ( !authManager.authorize( toResource( result ), getUser() ) ) {
+            final Path result = service.get(first,
+                                            more);
+            if (!authManager.authorize(toResource(result),
+                                       getUser())) {
                 throw new SecurityException();
             }
             return result;
-        } catch ( IllegalArgumentException ex ) {
+        } catch (IllegalArgumentException ex) {
             throw ex;
         }
     }
 
     @Override
-    public Path get( URI uri ) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
+    public Path get(URI uri) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
         try {
-            final Path result = service.get( uri );
-            if ( !authManager.authorize( toResource( result ), getUser() ) ) {
+            final Path result = service.get(uri);
+            if (!authManager.authorize(toResource(result),
+                                       getUser())) {
                 throw new SecurityException();
             }
             return result;
-        } catch ( IllegalArgumentException ex ) {
+        } catch (IllegalArgumentException ex) {
             throw ex;
-        } catch ( FileSystemNotFoundException ex ) {
+        } catch (FileSystemNotFoundException ex) {
             throw ex;
         }
     }
@@ -165,9 +177,10 @@ public class IOSecurityService implements IOService {
     public Iterable<FileSystem> getFileSystems() {
         final Iterable<FileSystem> _result = service.getFileSystems();
         final Set<FileSystem> result = new HashSet<FileSystem>();
-        for ( final FileSystem fs : _result ) {
-            if ( authManager.authorize( toResource( fs ), getUser() ) ) {
-                result.add( fs );
+        for (final FileSystem fs : _result) {
+            if (authManager.authorize(toResource(fs),
+                                      getUser())) {
+                result.add(fs);
             }
         }
 
@@ -175,533 +188,658 @@ public class IOSecurityService implements IOService {
     }
 
     @Override
-    public FileSystem getFileSystem( URI uri ) throws IllegalArgumentException, FileSystemNotFoundException, ProviderNotFoundException, SecurityException {
+    public FileSystem getFileSystem(URI uri) throws IllegalArgumentException, FileSystemNotFoundException, ProviderNotFoundException, SecurityException {
         try {
-            final FileSystem result = service.getFileSystem( uri );
-            if ( !authManager.authorize( toResource( result ), getUser() ) ) {
+            final FileSystem result = service.getFileSystem(uri);
+            if (!authManager.authorize(toResource(result),
+                                       getUser())) {
                 throw new SecurityException();
             }
             return result;
-        } catch ( IllegalArgumentException ex ) {
+        } catch (IllegalArgumentException ex) {
             throw ex;
-        } catch ( FileSystemNotFoundException ex ) {
+        } catch (FileSystemNotFoundException ex) {
             throw ex;
-        } catch ( ProviderNotFoundException ex ) {
+        } catch (ProviderNotFoundException ex) {
             throw ex;
         }
     }
 
     @Override
-    public FileSystem newFileSystem( URI uri,
-                                     Map<String, ?> env ) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, IOException, SecurityException {
+    public FileSystem newFileSystem(URI uri,
+                                    Map<String, ?> env) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, IOException, SecurityException {
         try {
-            final FileSystem fs = service.newFileSystem( uri, env );
-            if ( !authManager.authorize( toResource( fs ), getUser() ) ) {
-                service.delete( fs.getPath( null ) );
+            final FileSystem fs = service.newFileSystem(uri,
+                                                        env);
+            if (!authManager.authorize(toResource(fs),
+                                       getUser())) {
+                service.delete(fs.getPath(null));
                 throw new SecurityException();
             }
             return fs;
-        } catch ( IllegalArgumentException ex ) {
+        } catch (IllegalArgumentException ex) {
             throw ex;
-        } catch ( FileSystemNotFoundException ex ) {
+        } catch (FileSystemNotFoundException ex) {
             throw ex;
-        } catch ( ProviderNotFoundException ex ) {
+        } catch (ProviderNotFoundException ex) {
             throw ex;
         }
     }
 
     @Override
-    public void onNewFileSystem( NewFileSystemListener listener ) {
-        service.onNewFileSystem( listener );
+    public void onNewFileSystem(NewFileSystemListener listener) {
+        service.onNewFileSystem(listener);
     }
 
     @Override
-    public InputStream newInputStream( Path path,
-                                       OpenOption... options ) throws IllegalArgumentException, NoSuchFileException, UnsupportedOperationException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public InputStream newInputStream(Path path,
+                                      OpenOption... options) throws IllegalArgumentException, NoSuchFileException, UnsupportedOperationException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.newInputStream( path, options );
+        return service.newInputStream(path,
+                                      options);
     }
 
     @Override
-    public OutputStream newOutputStream( Path path,
-                                         OpenOption... options ) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public OutputStream newOutputStream(Path path,
+                                        OpenOption... options) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.newOutputStream( path, options );
+        return service.newOutputStream(path,
+                                       options);
     }
 
     @Override
-    public SeekableByteChannel newByteChannel( Path path,
-                                               OpenOption... options ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public SeekableByteChannel newByteChannel(Path path,
+                                              OpenOption... options) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.newByteChannel( path, options );
+        return service.newByteChannel(path,
+                                      options);
     }
 
     @Override
-    public SeekableByteChannel newByteChannel( Path path,
-                                               Set<? extends OpenOption> options,
-                                               FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public SeekableByteChannel newByteChannel(Path path,
+                                              Set<? extends OpenOption> options,
+                                              FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.newByteChannel( path, options, attrs );
+        return service.newByteChannel(path,
+                                      options,
+                                      attrs);
     }
 
     @Override
-    public DirectoryStream<Path> newDirectoryStream( Path dir ) throws IllegalArgumentException, NotDirectoryException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( dir ), getUser() ) ) {
+    public DirectoryStream<Path> newDirectoryStream(Path dir) throws IllegalArgumentException, NotDirectoryException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(dir),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.newDirectoryStream( dir );
+        return service.newDirectoryStream(dir);
     }
 
     @Override
-    public DirectoryStream<Path> newDirectoryStream( Path dir,
-                                                     DirectoryStream.Filter<Path> filter ) throws IllegalArgumentException, NotDirectoryException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( dir ), getUser() ) ) {
+    public DirectoryStream<Path> newDirectoryStream(Path dir,
+                                                    DirectoryStream.Filter<Path> filter) throws IllegalArgumentException, NotDirectoryException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(dir),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.newDirectoryStream( dir, filter );
+        return service.newDirectoryStream(dir,
+                                          filter);
     }
 
     @Override
-    public Path createFile( Path path,
-                            FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public Path createFile(Path path,
+                           FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.createFile( path, attrs );
+        return service.createFile(path,
+                                  attrs);
     }
 
     @Override
-    public Path createDirectory( Path dir,
-                                 FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( dir ), getUser() ) ) {
+    public Path createDirectory(Path dir,
+                                FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(dir),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.createFile( dir, attrs );
+        return service.createFile(dir,
+                                  attrs);
     }
 
     @Override
-    public Path createDirectories( Path dir,
-                                   FileAttribute<?>... attrs ) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( dir ), getUser() ) ) {
+    public Path createDirectories(Path dir,
+                                  FileAttribute<?>... attrs) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(dir),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.createDirectories( dir, attrs );
+        return service.createDirectories(dir,
+                                         attrs);
     }
 
     @Override
-    public Path createDirectory( Path dir,
-                                 Map<String, ?> attrs ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( dir ), getUser() ) ) {
+    public Path createDirectory(Path dir,
+                                Map<String, ?> attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(dir),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.createDirectory( dir, attrs );
+        return service.createDirectory(dir,
+                                       attrs);
     }
 
     @Override
-    public Path createDirectories( Path dir,
-                                   Map<String, ?> attrs ) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( dir ), getUser() ) ) {
+    public Path createDirectories(Path dir,
+                                  Map<String, ?> attrs) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(dir),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.createDirectories( dir, attrs );
+        return service.createDirectories(dir,
+                                         attrs);
     }
 
     @Override
-    public void delete( Path path,
-                        DeleteOption... options ) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public void delete(Path path,
+                       DeleteOption... options) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        service.delete( path, options );
+        service.delete(path,
+                       options);
     }
 
     @Override
-    public boolean deleteIfExists( Path path,
-                                   DeleteOption... options ) throws IllegalArgumentException, DirectoryNotEmptyException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public boolean deleteIfExists(Path path,
+                                  DeleteOption... options) throws IllegalArgumentException, DirectoryNotEmptyException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.deleteIfExists( path, options );
+        return service.deleteIfExists(path,
+                                      options);
     }
 
     @Override
-    public Path createTempFile( String prefix,
-                                String suffix,
-                                FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        return service.createTempFile( prefix, suffix, attrs );
+    public Path createTempFile(String prefix,
+                               String suffix,
+                               FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+        return service.createTempFile(prefix,
+                                      suffix,
+                                      attrs);
     }
 
     @Override
-    public Path createTempFile( Path dir,
-                                String prefix,
-                                String suffix,
-                                FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( dir ), getUser() ) ) {
+    public Path createTempFile(Path dir,
+                               String prefix,
+                               String suffix,
+                               FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(dir),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.createTempFile( dir, prefix, suffix, attrs );
+        return service.createTempFile(dir,
+                                      prefix,
+                                      suffix,
+                                      attrs);
     }
 
     @Override
-    public Path createTempDirectory( String prefix,
-                                     FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        return service.createTempDirectory( prefix, attrs );
+    public Path createTempDirectory(String prefix,
+                                    FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+        return service.createTempDirectory(prefix,
+                                           attrs);
     }
 
     @Override
-    public Path createTempDirectory( Path dir,
-                                     String prefix,
-                                     FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( dir ), getUser() ) ) {
+    public Path createTempDirectory(Path dir,
+                                    String prefix,
+                                    FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(dir),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.createTempDirectory( dir, prefix, attrs );
+        return service.createTempDirectory(dir,
+                                           prefix,
+                                           attrs);
     }
 
     @Override
-    public Path copy( Path source,
-                      Path target,
-                      CopyOption... options ) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( source ), getUser() ) ) {
+    public Path copy(Path source,
+                     Path target,
+                     CopyOption... options) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(source),
+                                   getUser())) {
             throw new SecurityException();
         }
-        if ( !authManager.authorize( toResource( target ), getUser() ) ) {
+        if (!authManager.authorize(toResource(target),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.copy( source, target, options );
+        return service.copy(source,
+                            target,
+                            options);
     }
 
     @Override
-    public Path move( Path source,
-                      Path target,
-                      CopyOption... options ) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( source ), getUser() ) ) {
+    public Path move(Path source,
+                     Path target,
+                     CopyOption... options) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(source),
+                                   getUser())) {
             throw new SecurityException();
         }
-        if ( !authManager.authorize( toResource( target ), getUser() ) ) {
+        if (!authManager.authorize(toResource(target),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.move( source, target, options );
+        return service.move(source,
+                            target,
+                            options);
     }
 
     @Override
-    public <V extends FileAttributeView> V getFileAttributeView( Path path,
-                                                                 Class<V> type ) throws IllegalArgumentException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public <V extends FileAttributeView> V getFileAttributeView(Path path,
+                                                                Class<V> type) throws IllegalArgumentException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.getFileAttributeView( path, type );
+        return service.getFileAttributeView(path,
+                                            type);
     }
 
     @Override
-    public Map<String, Object> readAttributes( Path path ) throws UnsupportedOperationException, NoSuchFileException, IllegalArgumentException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public Map<String, Object> readAttributes(Path path) throws UnsupportedOperationException, NoSuchFileException, IllegalArgumentException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.readAttributes( path );
+        return service.readAttributes(path);
     }
 
     @Override
-    public Map<String, Object> readAttributes( Path path,
-                                               String attributes ) throws UnsupportedOperationException, NoSuchFileException, IllegalArgumentException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public Map<String, Object> readAttributes(Path path,
+                                              String attributes) throws UnsupportedOperationException, NoSuchFileException, IllegalArgumentException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.readAttributes( path, attributes );
+        return service.readAttributes(path,
+                                      attributes);
     }
 
     @Override
-    public Path setAttributes( Path path,
-                               FileAttribute<?>... attrs ) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public Path setAttributes(Path path,
+                              FileAttribute<?>... attrs) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.setAttributes( path, attrs );
+        return service.setAttributes(path,
+                                     attrs);
     }
 
     @Override
-    public Path setAttributes( Path path,
-                               Map<String, Object> attrs ) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public Path setAttributes(Path path,
+                              Map<String, Object> attrs) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.setAttributes( path, attrs );
+        return service.setAttributes(path,
+                                     attrs);
     }
 
     @Override
-    public Path setAttribute( Path path,
-                              String attribute,
-                              Object value ) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public Path setAttribute(Path path,
+                             String attribute,
+                             Object value) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.setAttribute( path, attribute, value );
+        return service.setAttribute(path,
+                                    attribute,
+                                    value);
     }
 
     @Override
-    public Object getAttribute( Path path,
-                                String attribute ) throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public Object getAttribute(Path path,
+                               String attribute) throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.getAttribute( path, attribute );
+        return service.getAttribute(path,
+                                    attribute);
     }
 
     @Override
-    public FileTime getLastModifiedTime( Path path ) throws IllegalArgumentException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public FileTime getLastModifiedTime(Path path) throws IllegalArgumentException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.getLastModifiedTime( path );
+        return service.getLastModifiedTime(path);
     }
 
     @Override
-    public long size( Path path ) throws IllegalArgumentException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public long size(Path path) throws IllegalArgumentException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.size( path );
+        return service.size(path);
     }
 
     @Override
-    public boolean exists( Path path ) throws IllegalArgumentException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public boolean exists(Path path) throws IllegalArgumentException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.exists( path );
+        return service.exists(path);
     }
 
     @Override
-    public boolean notExists( Path path ) throws IllegalArgumentException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public boolean notExists(Path path) throws IllegalArgumentException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.notExists( path );
+        return service.notExists(path);
     }
 
     @Override
-    public boolean isSameFile( Path path,
-                               Path path2 ) throws IllegalArgumentException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public boolean isSameFile(Path path,
+                              Path path2) throws IllegalArgumentException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        if ( !authManager.authorize( toResource( path2 ), getUser() ) ) {
+        if (!authManager.authorize(toResource(path2),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.isSameFile( path, path2 );
+        return service.isSameFile(path,
+                                  path2);
     }
 
     @Override
-    public BufferedReader newBufferedReader( Path path,
-                                             Charset cs ) throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public BufferedReader newBufferedReader(Path path,
+                                            Charset cs) throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.newBufferedReader( path, cs );
+        return service.newBufferedReader(path,
+                                         cs);
     }
 
     @Override
-    public BufferedWriter newBufferedWriter( Path path,
-                                             Charset cs,
-                                             OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public BufferedWriter newBufferedWriter(Path path,
+                                            Charset cs,
+                                            OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.newBufferedWriter( path, cs, options );
+        return service.newBufferedWriter(path,
+                                         cs,
+                                         options);
     }
 
     @Override
-    public long copy( InputStream in,
-                      Path target,
-                      CopyOption... options ) throws IOException, FileAlreadyExistsException, DirectoryNotEmptyException, UnsupportedOperationException, SecurityException {
-        if ( !authManager.authorize( toResource( target ), getUser() ) ) {
+    public long copy(InputStream in,
+                     Path target,
+                     CopyOption... options) throws IOException, FileAlreadyExistsException, DirectoryNotEmptyException, UnsupportedOperationException, SecurityException {
+        if (!authManager.authorize(toResource(target),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.copy( in, target, options );
+        return service.copy(in,
+                            target,
+                            options);
     }
 
     @Override
-    public long copy( Path source,
-                      OutputStream out ) throws IOException, SecurityException {
-        if ( !authManager.authorize( toResource( source ), getUser() ) ) {
+    public long copy(Path source,
+                     OutputStream out) throws IOException, SecurityException {
+        if (!authManager.authorize(toResource(source),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.copy( source, out );
+        return service.copy(source,
+                            out);
     }
 
     @Override
-    public byte[] readAllBytes( Path path ) throws IOException, OutOfMemoryError, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public byte[] readAllBytes(Path path) throws IOException, OutOfMemoryError, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.readAllBytes( path );
+        return service.readAllBytes(path);
     }
 
     @Override
-    public List<String> readAllLines( Path path ) throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public List<String> readAllLines(Path path) throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.readAllLines( path );
+        return service.readAllLines(path);
     }
 
     @Override
-    public List<String> readAllLines( Path path,
-                                      Charset cs ) throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public List<String> readAllLines(Path path,
+                                     Charset cs) throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.readAllLines( path, cs );
+        return service.readAllLines(path,
+                                    cs);
     }
 
     @Override
-    public String readAllString( Path path,
-                                 Charset cs ) throws IllegalArgumentException, NoSuchFileException, IOException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public String readAllString(Path path,
+                                Charset cs) throws IllegalArgumentException, NoSuchFileException, IOException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.readAllString( path, cs );
+        return service.readAllString(path,
+                                     cs);
     }
 
     @Override
-    public String readAllString( Path path ) throws IllegalArgumentException, NoSuchFileException, IOException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public String readAllString(Path path) throws IllegalArgumentException, NoSuchFileException, IOException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.readAllString( path );
+        return service.readAllString(path);
     }
 
     @Override
-    public Path write( Path path,
-                       byte[] bytes,
-                       OpenOption... options ) throws IOException, UnsupportedOperationException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public Path write(Path path,
+                      byte[] bytes,
+                      OpenOption... options) throws IOException, UnsupportedOperationException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.write( path, bytes );
+        return service.write(path,
+                             bytes);
     }
 
     @Override
-    public Path write( Path path,
-                       byte[] bytes,
-                       Map<String, ?> attrs,
-                       OpenOption... options ) throws IOException, UnsupportedOperationException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public Path write(Path path,
+                      byte[] bytes,
+                      Map<String, ?> attrs,
+                      OpenOption... options) throws IOException, UnsupportedOperationException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.write( path, bytes, attrs, options );
+        return service.write(path,
+                             bytes,
+                             attrs,
+                             options);
     }
 
     @Override
-    public Path write( Path path,
-                       byte[] bytes,
-                       Set<? extends OpenOption> options,
-                       FileAttribute<?>... attrs ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public Path write(Path path,
+                      byte[] bytes,
+                      Set<? extends OpenOption> options,
+                      FileAttribute<?>... attrs) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.write( path, bytes, options, attrs );
+        return service.write(path,
+                             bytes,
+                             options,
+                             attrs);
     }
 
     @Override
-    public Path write( Path path,
-                       Iterable<? extends CharSequence> lines,
-                       Charset cs,
-                       OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException, SecurityException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public Path write(Path path,
+                      Iterable<? extends CharSequence> lines,
+                      Charset cs,
+                      OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException, SecurityException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.write( path, lines, cs, options );
+        return service.write(path,
+                             lines,
+                             cs,
+                             options);
     }
 
     @Override
-    public Path write( Path path,
-                       String content,
-                       OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public Path write(Path path,
+                      String content,
+                      OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.write( path, content, options );
+        return service.write(path,
+                             content,
+                             options);
     }
 
     @Override
-    public Path write( Path path,
-                       String content,
-                       Charset cs,
-                       OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public Path write(Path path,
+                      String content,
+                      Charset cs,
+                      OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.write( path, content, cs, options );
+        return service.write(path,
+                             content,
+                             cs,
+                             options);
     }
 
     @Override
-    public Path write( Path path,
-                       String content,
-                       Set<? extends OpenOption> options,
-                       FileAttribute<?>... attrs ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public Path write(Path path,
+                      String content,
+                      Set<? extends OpenOption> options,
+                      FileAttribute<?>... attrs) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.write( path, content, options, attrs );
+        return service.write(path,
+                             content,
+                             options,
+                             attrs);
     }
 
     @Override
-    public Path write( Path path,
-                       String content,
-                       Charset cs,
-                       Set<? extends OpenOption> options,
-                       FileAttribute<?>... attrs ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public Path write(Path path,
+                      String content,
+                      Charset cs,
+                      Set<? extends OpenOption> options,
+                      FileAttribute<?>... attrs) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.write( path, content, cs, options, attrs );
+        return service.write(path,
+                             content,
+                             cs,
+                             options,
+                             attrs);
     }
 
     @Override
-    public Path write( Path path,
-                       String content,
-                       Map<String, ?> attrs,
-                       OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public Path write(Path path,
+                      String content,
+                      Map<String, ?> attrs,
+                      OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.write( path, content, attrs, options );
+        return service.write(path,
+                             content,
+                             attrs,
+                             options);
     }
 
     @Override
-    public Path write( Path path,
-                       String content,
-                       Charset cs,
-                       Map<String, ?> attrs,
-                       OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        if ( !authManager.authorize( toResource( path ), getUser() ) ) {
+    public Path write(Path path,
+                      String content,
+                      Charset cs,
+                      Map<String, ?> attrs,
+                      OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+        if (!authManager.authorize(toResource(path),
+                                   getUser())) {
             throw new SecurityException();
         }
-        return service.write( path, content, cs, attrs, options );
+        return service.write(path,
+                             content,
+                             cs,
+                             attrs,
+                             options);
     }
 
-    private Resource toResource( final FileSystem fs ) {
-        return new FileSystemResourceAdaptor( fs );
+    private Resource toResource(final FileSystem fs) {
+        return new FileSystemResourceAdaptor(fs);
     }
 
-    private Resource toResource( final Path path ) {
-        return new FileSystemResourceAdaptor( path.getFileSystem() );
+    private Resource toResource(final Path path) {
+        return new FileSystemResourceAdaptor(path.getFileSystem());
     }
 
     private User getUser() {
         try {
             return authenticationService.getUser();
-        } catch ( final IllegalStateException ex ) {
-            return new UserImpl( "system", asList( new RoleImpl( "admin" ) ) );
+        } catch (final IllegalStateException ex) {
+            return new UserImpl("system",
+                                asList(new RoleImpl("admin")));
         }
     }
 }

@@ -33,38 +33,38 @@ public class BatchIndexConcurrencyTest extends BaseIndexTest {
 
     @Override
     protected String[] getRepositoryNames() {
-        return new String[]{ this.getClass().getSimpleName() };
+        return new String[]{this.getClass().getSimpleName()};
     }
 
     @Test
     //See https://bugzilla.redhat.com/show_bug.cgi?id=1288132
     public void testSingleConcurrentBatchIndexExecution() throws IOException, InterruptedException {
-        final Path path1 = getBasePath( this.getClass().getSimpleName() ).resolve( "xxx" );
-        ioService().write( path1,
-                           "xxx!" );
+        final Path path1 = getBasePath(this.getClass().getSimpleName()).resolve("xxx");
+        ioService().write(path1,
+                          "xxx!");
 
-        setupCountDown( 3 );
+        setupCountDown(3);
 
-        final URI fsURI = URI.create( "git://" + this.getClass().getSimpleName() + "/file1" );
+        final URI fsURI = URI.create("git://" + this.getClass().getSimpleName() + "/file1");
 
         //Make multiple requests for the FileSystem. We should only have one batch index operation
-        final CountDownLatch startSignal = new CountDownLatch( 1 );
-        for ( int i = 0; i < 3; i++ ) {
+        final CountDownLatch startSignal = new CountDownLatch(1);
+        for (int i = 0; i < 3; i++) {
             Runnable r = () -> {
                 try {
                     startSignal.await();
-                    ioService().getFileSystem( fsURI );
-                } catch ( InterruptedException e ) {
-                    fail( e.getMessage() );
+                    ioService().getFileSystem(fsURI);
+                } catch (InterruptedException e) {
+                    fail(e.getMessage());
                 }
             };
-            new Thread( r ).start();
+            new Thread(r).start();
         }
         startSignal.countDown();
 
-        waitForCountDown( 5000 );
+        waitForCountDown(5000);
 
-        assertEquals( 1, getStartBatchCount() );
+        assertEquals(1,
+                     getStartBatchCount());
     }
-
 }

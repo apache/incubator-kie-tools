@@ -16,6 +16,11 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.user;
 
+import java.util.Set;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -26,14 +31,8 @@ import org.uberfire.ext.security.management.client.widgets.management.editor.Ass
 import org.uberfire.ext.security.management.client.widgets.management.events.OnUpdateUserGroupsEvent;
 import org.uberfire.ext.security.management.client.widgets.management.explorer.GroupsExplorer;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.Set;
-
 /**
  * <p>Presenter class for user's assigned groups editor.</p>
- *
  * @since 0.8.0
  */
 @Dependent
@@ -42,14 +41,15 @@ public class UserAssignedGroupsEditor extends UserAssignedEntitiesEditor<Group> 
     Event<OnUpdateUserGroupsEvent> updateUserGroupsEventEvent;
 
     @Inject
-    public UserAssignedGroupsEditor(final ClientUserSystemManager userSystemManager, 
-                                    final GroupsExplorer groupsExplorer, 
+    public UserAssignedGroupsEditor(final ClientUserSystemManager userSystemManager,
+                                    final GroupsExplorer groupsExplorer,
                                     final @AssignedEntitiesModalEditor AssignedEntitiesEditor<UserAssignedGroupsEditor> view,
                                     final Event<OnUpdateUserGroupsEvent> updateUserGroupsEventEvent) {
-        super(userSystemManager, groupsExplorer, view);
+        super(userSystemManager,
+              groupsExplorer,
+              view);
         this.updateUserGroupsEventEvent = updateUserGroupsEventEvent;
     }
-
 
     @Override
     public Widget asWidget() {
@@ -93,7 +93,7 @@ public class UserAssignedGroupsEditor extends UserAssignedEntitiesEditor<Group> 
         }
 
         // Delegate the recently updated assigned groups for the user.
-        updateUserGroupsEventEvent.fire(new OnUpdateUserGroupsEvent(UserAssignedGroupsEditor.this, selectedEntities));
+        updateUserGroupsEventEvent.fire(new OnUpdateUserGroupsEvent(UserAssignedGroupsEditor.this,
+                                                                    selectedEntities));
     }
-    
 }

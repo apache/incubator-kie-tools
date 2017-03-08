@@ -26,11 +26,11 @@ import org.uberfire.ext.properties.editor.model.validators.PropertyFieldValidato
 public class DoubleValidator implements PropertyFieldValidator {
 
     @Override
-    public boolean validate( Object value ) {
+    public boolean validate(Object value) {
         try {
-            Double.parseDouble( value.toString() );
+            Double.parseDouble(value.toString());
             return true;
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -39,5 +39,4 @@ public class DoubleValidator implements PropertyFieldValidator {
     public String getValidatorErrorMessage() {
         return "Value must be a double.";
     }
-
 }

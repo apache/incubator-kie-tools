@@ -27,17 +27,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class HeaderHTML extends Composite {
 
-    interface HeaderHTMLBinder
-            extends
-            UiBinder<Widget, HeaderHTML> {
-
-    }
-
     private static HeaderHTMLBinder uiBinder = GWT.create(HeaderHTMLBinder.class);
-
     @UiField
     Label textLabel;
-
     @UiField
     Image image;
 
@@ -51,5 +43,11 @@ public class HeaderHTML extends Composite {
 
     public void setImageResource(ImageResource imageResource) {
         image.setResource(imageResource);
+    }
+
+    interface HeaderHTMLBinder
+            extends
+            UiBinder<Widget, HeaderHTML> {
+
     }
 }

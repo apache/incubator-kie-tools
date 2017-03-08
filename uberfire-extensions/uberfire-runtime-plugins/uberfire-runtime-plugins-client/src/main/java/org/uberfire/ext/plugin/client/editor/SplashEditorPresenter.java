@@ -21,7 +21,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -30,17 +29,13 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.ext.plugin.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.plugin.client.type.SplashPluginResourceType;
-import org.uberfire.ext.plugin.model.Media;
-import org.uberfire.ext.plugin.model.PluginContent;
-import org.uberfire.ext.plugin.model.PluginSimpleContent;
 import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.plugin.service.PluginServices;
 import org.uberfire.lifecycle.OnMayClose;
-import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchEditor(identifier = "Splash PlugIn Editor", supportedTypes = { SplashPluginResourceType.class }, priority = Integer.MAX_VALUE)
+@WorkbenchEditor(identifier = "Splash PlugIn Editor", supportedTypes = {SplashPluginResourceType.class}, priority = Integer.MAX_VALUE)
 public class SplashEditorPresenter
         extends RuntimePluginBaseEditor {
 
@@ -51,8 +46,8 @@ public class SplashEditorPresenter
     private Caller<PluginServices> pluginServices;
 
     @Inject
-    public SplashEditorPresenter( final SplashEditorView baseView ) {
-        super( baseView );
+    public SplashEditorPresenter(final SplashEditorView baseView) {
+        super(baseView);
     }
 
     protected ClientResourceType getResourceType() {
@@ -92,5 +87,4 @@ public class SplashEditorPresenter
     SplashEditorView view() {
         return (SplashEditorView) baseView;
     }
-
 }

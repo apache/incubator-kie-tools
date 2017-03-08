@@ -20,11 +20,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * <p>Default explorer screen.</p>
- * 
  * @since 0.8.0
  */
 public interface BaseScreen extends IsWidget {
-    
+
     void init(IsWidget explorerWidget);
-    
 }

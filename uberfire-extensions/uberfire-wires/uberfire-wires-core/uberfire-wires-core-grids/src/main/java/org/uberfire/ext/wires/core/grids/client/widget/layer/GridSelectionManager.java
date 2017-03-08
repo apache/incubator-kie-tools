@@ -22,10 +22,9 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 
 public interface GridSelectionManager {
 
-    void select( final GridWidget selectedGridWidget );
+    void select(final GridWidget selectedGridWidget);
 
-    void selectLinkedColumn( final GridColumn<?> selectedGridColumn );
+    void selectLinkedColumn(final GridColumn<?> selectedGridColumn);
 
     Set<GridWidget> getGridWidgets();
-
 }

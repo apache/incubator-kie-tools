@@ -27,13 +27,12 @@ public interface Command {
      * @param ruleManager
      * @return
      */
-    Results apply( final RuleManager ruleManager );
+    Results apply(final RuleManager ruleManager);
 
     /**
      * Undo the changes the command made to the model
      * @param ruleManager
      * @return
      */
-    Results undo( final RuleManager ruleManager );
-
+    Results undo(final RuleManager ruleManager);
 }

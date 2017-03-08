@@ -25,12 +25,11 @@ public class ActionShape extends Group implements Serializable {
 
     private static final long serialVersionUID = -6555009991474610157L;
 
-    public void setBounding( final Rectangle bounding ) {
-        add( bounding );
+    public void setBounding(final Rectangle bounding) {
+        add(bounding);
     }
 
-    public void setPicture( final Picture picture ) {
-        add( picture );
+    public void setPicture(final Picture picture) {
+        add(picture);
     }
-
 }

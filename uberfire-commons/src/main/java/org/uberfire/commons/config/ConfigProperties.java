@@ -16,13 +16,13 @@
 
 package org.uberfire.commons.config;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Encapsulates a collection of Java System Properties by name and value. Includes handy methods for providing and
@@ -35,26 +35,24 @@ public class ConfigProperties {
 
     /**
      * Creates a new container of configured values from which specific config properties can be obtained.
-     *
-     * @param configuredValues
-     *            The configured values, which may have been hardcoded in a Map, read from a config file, or whatever.
+     * @param configuredValues The configured values, which may have been hardcoded in a Map, read from a config file, or whatever.
      */
     public ConfigProperties(Map<String, String> configuredValues) {
-        this.configuredValues = checkNotNull( "configuredValues", configuredValues );
+        this.configuredValues = checkNotNull("configuredValues",
+                                             configuredValues);
     }
 
     /**
      * Creates a new container of configured values from which specific config properties can be obtained.
-     *
-     * @param configuredValues
-     *            The configured values, which may have been read from a properties file, or obtained from
-     *            {@link System#getProperties()}. If the property set contains entries whose key and value are not both
-     *            Strings, these entries will be ignored.
+     * @param configuredValues The configured values, which may have been read from a properties file, or obtained from
+     * {@link System#getProperties()}. If the property set contains entries whose key and value are not both
+     * Strings, these entries will be ignored.
      */
     public ConfigProperties(Properties configuredValues) {
         Map<String, String> stringProperties = new HashMap<String, String>();
-        for ( String key : configuredValues.stringPropertyNames() ) {
-            stringProperties.put( key, configuredValues.getProperty( key ) );
+        for (String key : configuredValues.stringPropertyNames()) {
+            stringProperties.put(key,
+                                 configuredValues.getProperty(key));
         }
         this.configuredValues = stringProperties;
     }
@@ -62,22 +60,24 @@ public class ConfigProperties {
     /**
      * Returns the ConfigProperty instance corresponding to the configured value of the given property, or the default
      * if no configured value exists.
-     *
-     * @param name
-     *            the property name. Must not be null.
-     * @param defaultValue
-     *            the value to use if no configured value exists. May be null.
+     * @param name the property name. Must not be null.
+     * @param defaultValue the value to use if no configured value exists. May be null.
      * @return
      */
-    public ConfigProperty get( String name, String defaultValue ) {
-        String val = configuredValues.get( name );
+    public ConfigProperty get(String name,
+                              String defaultValue) {
+        String val = configuredValues.get(name);
         ConfigProperty cp;
-        if ( val == null || val.trim().length() == 0 ) {
-            cp = new ConfigProperty( name, defaultValue, true );
+        if (val == null || val.trim().length() == 0) {
+            cp = new ConfigProperty(name,
+                                    defaultValue,
+                                    true);
         } else {
-            cp = new ConfigProperty( name, val.trim(), false );
+            cp = new ConfigProperty(name,
+                                    val.trim(),
+                                    false);
         }
-        configSummary.add( cp );
+        configSummary.add(cp);
         return cp;
     }
 
@@ -87,15 +87,13 @@ public class ConfigProperties {
      * contain a lot of unrelated information (for example, when using System.getProperties()). This is useful for
      * printing a summary of the configuration in a given subsystem. It also helps users learn about available
      * configuration values.
-     *
-     * @param heading
-     *            a line of text to print before listing the configuration values
+     * @param heading a line of text to print before listing the configuration values
      */
-    public String getConfigurationSummary( String heading ) {
-        final String newLine = System.getProperty( "line.separator" );
-        StringBuilder sb = new StringBuilder( heading );
-        for ( ConfigProperty cp : configSummary ) {
-            sb.append( newLine ).append( cp );
+    public String getConfigurationSummary(String heading) {
+        final String newLine = System.getProperty("line.separator");
+        StringBuilder sb = new StringBuilder(heading);
+        for (ConfigProperty cp : configSummary) {
+            sb.append(newLine).append(cp);
         }
         return sb.toString();
     }
@@ -106,7 +104,9 @@ public class ConfigProperties {
         private final String value;
         private final boolean isDefault;
 
-        ConfigProperty(String name, String value, boolean isDefault) {
+        ConfigProperty(String name,
+                       String value,
+                       boolean isDefault) {
             this.name = name;
             this.value = value;
             this.isDefault = isDefault;
@@ -121,10 +121,9 @@ public class ConfigProperties {
 
         /**
          * Returns the value of this property, which may or may not have been the default value.
-         *
-         * @see #isDefault()
          * @return the property value. Will be null if both the configured value was missing and the default was given
-         *         as null.
+         * as null.
+         * @see #isDefault()
          */
         public String getValue() {
             return value;
@@ -133,7 +132,6 @@ public class ConfigProperties {
         /**
          * Returns false if this value appeared among the user-supplied values; false if it came from the
          * application-provided default.
-         *
          * @return whether this value is a default
          */
         public boolean isDefault() {
@@ -145,18 +143,16 @@ public class ConfigProperties {
          * {@link Boolean#valueOf(String)}.
          */
         public boolean getBooleanValue() {
-            return Boolean.valueOf( value );
+            return Boolean.valueOf(value);
         }
 
         /**
          * Returns the integer value of this property, converting from string using the same rules as
          * {@link Integer#parseInt(String)}.
-         *
-         * @throws NumberFormatException
-         *             if the value cannot be parsed as an integer.
+         * @throws NumberFormatException if the value cannot be parsed as an integer.
          */
         public int getIntValue() {
-            return Integer.parseInt( value );
+            return Integer.parseInt(value);
         }
 
         @Override
@@ -164,5 +160,4 @@ public class ConfigProperties {
             return name + " = \"" + value + "\"" + (isDefault ? " (Defaulted)" : "");
         }
     }
-
 }

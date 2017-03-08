@@ -29,7 +29,7 @@ public class BpmnResourceType
         extends BpmnResourceTypeDefinition
         implements ClientResourceType {
 
-    private static final Image IMAGE = new Image( BpmnEditorResources.INSTANCE.images().typeBpmn() );
+    private static final Image IMAGE = new Image(BpmnEditorResources.INSTANCE.images().typeBpmn());
 
     @Override
     public IsWidget getIcon() {
@@ -39,7 +39,7 @@ public class BpmnResourceType
     @Override
     public String getDescription() {
         String desc = BpmnEditorConstants.INSTANCE.bpmnResourceTypeDescription();
-        if ( desc == null || desc.isEmpty() ) {
+        if (desc == null || desc.isEmpty()) {
             return super.getDescription();
         }
         return desc;

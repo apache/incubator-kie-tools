@@ -55,42 +55,41 @@ public class CompassDropController implements DropController {
     @Inject
     private Event<DropPlaceEvent> workbenchPartDroppedEvent;
 
-    public void setup( final WorkbenchPanelView<?> view ) {
+    public void setup(final WorkbenchPanelView<?> view) {
         dropTarget = view;
     }
 
     @Override
     //When entering a DecoratedWorkbenchPanel show the Compass
-    public void onEnter( DragContext context ) {
-        compass.onEnter( context );
+    public void onEnter(DragContext context) {
+        compass.onEnter(context);
     }
 
     @Override
     //Hide the DecoratedWorkbenchPanel's Compass
-    public void onLeave( DragContext context ) {
-        compass.onLeave( context );
+    public void onLeave(DragContext context) {
+        compass.onLeave(context);
     }
 
     @Override
-    public void onMove( DragContext context ) {
-        compass.onMove( context );
+    public void onMove(DragContext context) {
+        compass.onMove(context);
     }
 
     @Override
-    public void onDrop( DragContext context ) {
+    public void onDrop(DragContext context) {
 
         //If not dropTarget has been identified do nothing
         Position p = compass.getDropPosition();
-        if ( p == CompassPosition.NONE ) {
+        if (p == CompassPosition.NONE) {
             return;
         }
 
-        compass.onDrop( context );
+        compass.onDrop(context);
 
         //Move Part from source to target
         final WorkbenchDragContext workbenchContext = dndManager.getWorkbenchContext();
         final Menus menus = workbenchContext.getMenus();
-
 
         final PanelDefinition sourcePanel = workbenchContext.getSourcePanel();
         final PanelDefinition dropPanel = dropTarget.getPresenter().getDefinition();
@@ -98,46 +97,45 @@ public class CompassDropController implements DropController {
         //If the Target Panel is the same as the Source we're trying to reposition the
         //Source's tab within itself. If the Source Panel has only one Tab there is no
         //net effect. If we're trying to drop as a new tab there is no net effect.
-        if ( sourcePanel.equals( dropPanel ) ) {
-            if ( sourcePanel.getParts() != null && sourcePanel.getParts().size() == 1 ) {
+        if (sourcePanel.equals(dropPanel)) {
+            if (sourcePanel.getParts() != null && sourcePanel.getParts().size() == 1) {
                 return;
             }
-            if ( p == CompassPosition.SELF ) {
+            if (p == CompassPosition.SELF) {
                 return;
             }
         }
 
         final PlaceRequest place = workbenchContext.getPlace();
 
-        firePartDroppedEvent( place );
-
+        firePartDroppedEvent(place);
 
         final Integer height = null;
         final Integer width = null;
         final Integer minHeight = workbenchContext.getMinHeight();
         final Integer minWidth = workbenchContext.getMinWidth();
 
-        final PanelDefinition targetPanel = panelManager.addWorkbenchPanel( dropPanel,
-                p,
-                height,
-                width,
-                minHeight,
-                minWidth );
+        final PanelDefinition targetPanel = panelManager.addWorkbenchPanel(dropPanel,
+                                                                           p,
+                                                                           height,
+                                                                           width,
+                                                                           minHeight,
+                                                                           minWidth);
         final UIPart uiPart = workbenchContext.getUiPart();
         final PartDefinition sourcePart = workbenchContext.getSourcePart();
 
-        panelManager.addWorkbenchPart( place,
-                sourcePart,
-                targetPanel,
-                menus,
-                uiPart,
-                workbenchContext.getContextId(),
-                null,
-                null );
+        panelManager.addWorkbenchPart(place,
+                                      sourcePart,
+                                      targetPanel,
+                                      menus,
+                                      uiPart,
+                                      workbenchContext.getContextId(),
+                                      null,
+                                      null);
     }
 
-    void firePartDroppedEvent( PlaceRequest place ) {
-        workbenchPartDroppedEvent.fire( new DropPlaceEvent( place ) );
+    void firePartDroppedEvent(PlaceRequest place) {
+        workbenchPartDroppedEvent.fire(new DropPlaceEvent(place));
     }
 
     @Override
@@ -146,7 +144,6 @@ public class CompassDropController implements DropController {
     }
 
     @Override
-    public void onPreviewDrop( DragContext context ) throws VetoDragException {
+    public void onPreviewDrop(DragContext context) throws VetoDragException {
     }
-
 }

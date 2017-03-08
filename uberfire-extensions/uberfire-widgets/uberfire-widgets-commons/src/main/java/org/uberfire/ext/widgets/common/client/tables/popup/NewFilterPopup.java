@@ -72,89 +72,66 @@ import org.uberfire.workbench.events.NotificationEvent;
 @Dependent
 public class NewFilterPopup extends BaseModal {
 
-    interface Binder
-            extends
-            UiBinder<Widget, NewFilterPopup> {
-
-    }
-
     public static String FILTER_NAME_PARAM = "filterName";
-
+    private static Binder uiBinder = GWT.create(Binder.class);
+    private final List<FormGroup> filterControlGroups = new ArrayList<FormGroup>();
     @UiField
     public TabListItem tabAdd;
-
     @UiField
     public TabListItem tabManagement;
-
     @UiField
     public Form horizontalForm;
-
     @UiField
     public FlowPanel existingFiltersPanel;
-
     @UiField
     public HelpBlock errorMessages;
-
     @UiField
     public FormGroup errorMessagesGroup;
-
+    protected AsyncDataProvider<DataGridFilterSummary> dataProvider;
     @UiField
     TabPane tab1;
-
     @UiField
     TabPane tab2;
-
+    HashMap formValues = new HashMap();
+    Command refreshFiltersCommand;
+    PagedTable<DataGridFilterSummary> existingFiltersGrid = new PagedTable<DataGridFilterSummary>(5);
     @Inject
     private Event<NotificationEvent> notification;
-
-    HashMap formValues = new HashMap();
-
     private GridPreferencesStore gridPreferenceStore;
-
-    private final List<FormGroup> filterControlGroups = new ArrayList<FormGroup>();
-
-    private CommonImages images = GWT.create( CommonImages.class );
-
-    Command refreshFiltersCommand;
-
-    protected AsyncDataProvider<DataGridFilterSummary> dataProvider;
-
-    PagedTable<DataGridFilterSummary> existingFiltersGrid = new PagedTable<DataGridFilterSummary>( 5 );
-
-    private static Binder uiBinder = GWT.create( Binder.class );
+    private CommonImages images = GWT.create(CommonImages.class);
 
     public NewFilterPopup() {
         createProvider();
 
         initColumns();
-        setTitle( CommonConstants.INSTANCE.Filter_Management() );
+        setTitle(CommonConstants.INSTANCE.Filter_Management());
 
-        add( new ModalBody() {{
-            add( uiBinder.createAndBindUi( NewFilterPopup.this ) );
-        }} );
+        add(new ModalBody() {{
+            add(uiBinder.createAndBindUi(NewFilterPopup.this));
+        }});
 
-        tabAdd.setDataTargetWidget( tab1 );
-        tabManagement.setDataTargetWidget( tab2 );
+        tabAdd.setDataTargetWidget(tab1);
+        tabManagement.setDataTargetWidget(tab2);
 
         init();
         final GenericModalFooter footer = new GenericModalFooter();
-        footer.addButton( CommonConstants.INSTANCE.OK(),
-                          new Command() {
-                              @Override
-                              public void execute() {
-                                  okButton();
-                              }
-                          }, null,
-                          ButtonType.PRIMARY );
+        footer.addButton(CommonConstants.INSTANCE.OK(),
+                         new Command() {
+                             @Override
+                             public void execute() {
+                                 okButton();
+                             }
+                         },
+                         null,
+                         ButtonType.PRIMARY);
 
-        add( footer );
-
+        add(footer);
     }
 
-    public void show( Command addfilterCommand,
-                      Command refreshFilters,
-                      GridPreferencesStore gridPreferenceStore ) {
-        addCreateFilterButton( addfilterCommand );
+    public void show(Command addfilterCommand,
+                     Command refreshFilters,
+                     GridPreferencesStore gridPreferenceStore) {
+        addCreateFilterButton(addfilterCommand);
         this.refreshFiltersCommand = refreshFilters;
         this.gridPreferenceStore = gridPreferenceStore;
         refreshGrid();
@@ -164,7 +141,6 @@ public class NewFilterPopup extends BaseModal {
     private void okButton() {
         refreshFiltersCommand.execute();
         closePopup();
-
     }
 
     public void init() {
@@ -175,43 +151,41 @@ public class NewFilterPopup extends BaseModal {
         FormGroup controlGroup = new FormGroup();
 
         FormLabel controlLabel = new FormLabel();
-        controlLabel.setTitle( CommonConstants.INSTANCE.Filter_Name() );
-        HTML lab = new HTML( "<span style=\"color:red\"> * </span>" + "<span style=\"margin-right:10px\">" + CommonConstants.INSTANCE.Filter_Name() + "</span>" );
-        controlLabel.setHTML( lab.getHTML() );
+        controlLabel.setTitle(CommonConstants.INSTANCE.Filter_Name());
+        HTML lab = new HTML("<span style=\"color:red\"> * </span>" + "<span style=\"margin-right:10px\">" + CommonConstants.INSTANCE.Filter_Name() + "</span>");
+        controlLabel.setHTML(lab.getHTML());
 
         TextBox fieldTextBox = new TextBox();
-        fieldTextBox.setName( FILTER_NAME_PARAM );
+        fieldTextBox.setName(FILTER_NAME_PARAM);
 
-        controlGroup.add( controlLabel );
-        controlGroup.add( fieldTextBox );
+        controlGroup.add(controlLabel);
+        controlGroup.add(fieldTextBox);
 
-        filterControlGroups.add( controlGroup );
-        horizontalForm.add( controlGroup );
+        filterControlGroups.add(controlGroup);
+        horizontalForm.add(controlGroup);
 
         existingFiltersPanel.clear();
-        existingFiltersPanel.add( existingFiltersGrid );
+        existingFiltersPanel.add(existingFiltersGrid);
         existingFiltersGrid.loadPageSizePreferences();
-        existingFiltersGrid.setColumnPickerButtonVisible( false );
-        existingFiltersGrid.setEmptyTableCaption( CommonConstants.INSTANCE.NoCustomFilterAvailable() );
-
+        existingFiltersGrid.setColumnPickerButtonVisible(false);
+        existingFiltersGrid.setEmptyTableCaption(CommonConstants.INSTANCE.NoCustomFilterAvailable());
     }
 
-    public void cleanFormValues( List<FormGroup> controlGroups ) {
+    public void cleanFormValues(List<FormGroup> controlGroups) {
         formValues = new HashMap();
         clearErrorMessages();
-        for ( FormGroup groupControl : controlGroups ) {
-            if ( groupControl.getWidget( 1 ) instanceof TextBox ) {
-                ( (TextBox) groupControl.getWidget( 1 ) ).setText( "" );
-            } else if ( groupControl.getWidget( 1 ) instanceof ListBox ) {
-                ListBox listBox = (ListBox) groupControl.getWidget( 1 );
-                listBox.setSelectedIndex( -1 );
-
+        for (FormGroup groupControl : controlGroups) {
+            if (groupControl.getWidget(1) instanceof TextBox) {
+                ((TextBox) groupControl.getWidget(1)).setText("");
+            } else if (groupControl.getWidget(1) instanceof ListBox) {
+                ListBox listBox = (ListBox) groupControl.getWidget(1);
+                listBox.setSelectedIndex(-1);
             }
         }
     }
 
     public void closePopup() {
-        cleanFormValues( filterControlGroups );
+        cleanFormValues(filterControlGroups);
         hide();
         super.hide();
     }
@@ -219,142 +193,146 @@ public class NewFilterPopup extends BaseModal {
     private boolean validateForm() {
         boolean valid = true;
         clearErrorMessages();
-        String filterName = (String) formValues.get( FILTER_NAME_PARAM );
-        if ( filterName == null || filterName.trim().length() == 0 ) {
-            errorMessages.setText( CommonConstants.INSTANCE.Filter_Must_Have_A_Name() );
-            errorMessagesGroup.setValidationState( ValidationState.ERROR );
+        String filterName = (String) formValues.get(FILTER_NAME_PARAM);
+        if (filterName == null || filterName.trim().length() == 0) {
+            errorMessages.setText(CommonConstants.INSTANCE.Filter_Must_Have_A_Name());
+            errorMessagesGroup.setValidationState(ValidationState.ERROR);
             valid = false;
         } else {
-            errorMessages.setText( "" );
-            errorMessagesGroup.setValidationState( ValidationState.NONE );
+            errorMessages.setText("");
+            errorMessagesGroup.setValidationState(ValidationState.NONE);
         }
         return valid;
     }
 
-    public void getFormValues( List<FormGroup> controlGroups ) {
+    public void getFormValues(List<FormGroup> controlGroups) {
         formValues = new HashMap();
 
-        for ( FormGroup groupControl : controlGroups ) {
-            if ( groupControl.getWidget( 1 ) instanceof TextBox ) {
-                formValues.put( ( (TextBox) groupControl.getWidget( 1 ) ).getName(),
-                                ( (TextBox) groupControl.getWidget( 1 ) ).getValue() );
-            } else if ( groupControl.getWidget( 1 ) instanceof ListBox ) {
-                ListBox listBox = (ListBox) groupControl.getWidget( 1 );
+        for (FormGroup groupControl : controlGroups) {
+            if (groupControl.getWidget(1) instanceof TextBox) {
+                formValues.put(((TextBox) groupControl.getWidget(1)).getName(),
+                               ((TextBox) groupControl.getWidget(1)).getValue());
+            } else if (groupControl.getWidget(1) instanceof ListBox) {
+                ListBox listBox = (ListBox) groupControl.getWidget(1);
 
                 List<String> selectedValues = new ArrayList<String>();
-                for ( int i = 0; i < listBox.getItemCount(); i++ ) {
-                    if ( listBox.isItemSelected( i ) ) {
-                        selectedValues.add( listBox.getValue( i ) );
+                for (int i = 0; i < listBox.getItemCount(); i++) {
+                    if (listBox.isItemSelected(i)) {
+                        selectedValues.add(listBox.getValue(i));
                     }
                 }
 
-                formValues.put( listBox.getName(), selectedValues );
+                formValues.put(listBox.getName(),
+                               selectedValues);
             }
         }
     }
 
     private void clearErrorMessages() {
-        errorMessages.setText( "" );
+        errorMessages.setText("");
     }
 
     public HashMap getFormValues() {
         return formValues;
     }
 
-    public void addListBoxToFilter( String label,
-                                    String fieldName,
-                                    boolean multiselect,
-                                    HashMap<String, String> listBoxInfo ) {
+    public void addListBoxToFilter(String label,
+                                   String fieldName,
+                                   boolean multiselect,
+                                   HashMap<String, String> listBoxInfo) {
         FormGroup controlGroup = new FormGroup();
 
         FormLabel controlLabel = new FormLabel();
-        controlLabel.setTitle( label );
-        HTML lab = new HTML( "<span style=\"margin-right:10px\">" + label + "</span>" );
-        controlLabel.setHTML( lab.getHTML() );
+        controlLabel.setTitle(label);
+        HTML lab = new HTML("<span style=\"margin-right:10px\">" + label + "</span>");
+        controlLabel.setHTML(lab.getHTML());
 
-        ListBox listBox = new ListBox( multiselect );
-        if ( listBoxInfo != null ) {
+        ListBox listBox = new ListBox(multiselect);
+        if (listBoxInfo != null) {
             Set listBoxKeys = listBoxInfo.keySet();
             Iterator it = listBoxKeys.iterator();
             String key;
-            while ( it.hasNext() ) {
+            while (it.hasNext()) {
                 key = (String) it.next();
-                listBox.addItem( listBoxInfo.get( key ), key );
+                listBox.addItem(listBoxInfo.get(key),
+                                key);
             }
         }
-        listBox.setName( fieldName );
+        listBox.setName(fieldName);
 
-        controlGroup.add( controlLabel );
-        controlGroup.add( listBox );
+        controlGroup.add(controlLabel);
+        controlGroup.add(listBox);
 
-        filterControlGroups.add( controlGroup );
-        horizontalForm.add( controlGroup );
+        filterControlGroups.add(controlGroup);
+        horizontalForm.add(controlGroup);
     }
 
-    public void addTextBoxToFilter( String label,
-                                    String fieldName ) {
-        addTextBoxToFilter( label, fieldName, "" );
+    public void addTextBoxToFilter(String label,
+                                   String fieldName) {
+        addTextBoxToFilter(label,
+                           fieldName,
+                           "");
     }
 
-    public void addTextBoxToFilter( String label,
-                                    String fieldName,
-                                    String defaultValue ) {
+    public void addTextBoxToFilter(String label,
+                                   String fieldName,
+                                   String defaultValue) {
         FormGroup controlGroup = new FormGroup();
 
         FormLabel controlLabel = new FormLabel();
-        controlLabel.setTitle( label );
-        HTML lab = new HTML( "<span style=\"margin-right:10px\">" + label + "</span>" );
-        controlLabel.setHTML( lab.getHTML() );
+        controlLabel.setTitle(label);
+        HTML lab = new HTML("<span style=\"margin-right:10px\">" + label + "</span>");
+        controlLabel.setHTML(lab.getHTML());
 
         TextBox textBox = new TextBox();
-        textBox.setName( fieldName );
-        if ( defaultValue != null && defaultValue.trim().length() > 0 ) {
-            textBox.setText( defaultValue );
+        textBox.setName(fieldName);
+        if (defaultValue != null && defaultValue.trim().length() > 0) {
+            textBox.setText(defaultValue);
         }
 
-        controlGroup.add( controlLabel );
-        controlGroup.add( textBox );
+        controlGroup.add(controlLabel);
+        controlGroup.add(textBox);
 
-        filterControlGroups.add( controlGroup );
-        horizontalForm.add( controlGroup );
+        filterControlGroups.add(controlGroup);
+        horizontalForm.add(controlGroup);
     }
 
     private void createProvider() {
         dataProvider = new AsyncDataProvider<DataGridFilterSummary>() {
 
             @Override
-            protected void onRangeChanged( HasData<DataGridFilterSummary> display ) {
+            protected void onRangeChanged(HasData<DataGridFilterSummary> display) {
 
                 final Range visibleRange = display.getVisibleRange();
                 List<DataGridFilterSummary> currentCustomFilters = getData();
-                dataProvider.updateRowCount( currentCustomFilters.size(),
-                                             true );
+                dataProvider.updateRowCount(currentCustomFilters.size(),
+                                            true);
                 int endRange;
-                if ( visibleRange.getStart() + 5 < currentCustomFilters.size() ) {
+                if (visibleRange.getStart() + 5 < currentCustomFilters.size()) {
 
                     endRange = visibleRange.getStart() + 5;
                 } else {
                     endRange = currentCustomFilters.size();
                 }
-                dataProvider.updateRowData( visibleRange.getStart(),
-                                            currentCustomFilters.subList( visibleRange.getStart(), endRange ) );
-
+                dataProvider.updateRowData(visibleRange.getStart(),
+                                           currentCustomFilters.subList(visibleRange.getStart(),
+                                                                        endRange));
             }
         };
-        existingFiltersGrid.setDataProvider( dataProvider );
+        existingFiltersGrid.setDataProvider(dataProvider);
     }
 
     private List<DataGridFilterSummary> getData() {
         List<DataGridFilterSummary> customFilters = new ArrayList<DataGridFilterSummary>();
-        if ( gridPreferenceStore != null ) {
+        if (gridPreferenceStore != null) {
             final HashMap storedCustomFilters = gridPreferenceStore.getCustomFilters();
-            if ( storedCustomFilters != null && storedCustomFilters.size() > 0 ) {
+            if (storedCustomFilters != null && storedCustomFilters.size() > 0) {
                 Set customFilterKeys = storedCustomFilters.keySet();
                 Iterator it = customFilterKeys.iterator();
-                while ( it.hasNext() ) {
+                while (it.hasNext()) {
 
                     final String customFilterName = (String) it.next();
-                    customFilters.add( new DataGridFilterSummary( customFilterName ) );
+                    customFilters.add(new DataGridFilterSummary(customFilterName));
                 }
             }
         }
@@ -368,45 +346,82 @@ public class NewFilterPopup extends BaseModal {
 
         List<ColumnMeta<DataGridFilterSummary>> columnMetas = new ArrayList<ColumnMeta<DataGridFilterSummary>>();
 
-        columnMetas.add( new ColumnMeta<DataGridFilterSummary>( descriptionColumn, CommonConstants.INSTANCE.Filter_Name() ) );
-        columnMetas.add( new ColumnMeta<DataGridFilterSummary>( actionsColumn, CommonConstants.INSTANCE.Actions() ) );
-        existingFiltersGrid.addColumns( columnMetas );
-
+        columnMetas.add(new ColumnMeta<DataGridFilterSummary>(descriptionColumn,
+                                                              CommonConstants.INSTANCE.Filter_Name()));
+        columnMetas.add(new ColumnMeta<DataGridFilterSummary>(actionsColumn,
+                                                              CommonConstants.INSTANCE.Actions()));
+        existingFiltersGrid.addColumns(columnMetas);
     }
 
     private com.google.gwt.user.cellview.client.Column initDescriptionColumn() {
         // start time
-        com.google.gwt.user.cellview.client.Column<DataGridFilterSummary, String> descriptionColumn = new com.google.gwt.user.cellview.client.Column<DataGridFilterSummary, String>( new TextCell() ) {
+        com.google.gwt.user.cellview.client.Column<DataGridFilterSummary, String> descriptionColumn = new com.google.gwt.user.cellview.client.Column<DataGridFilterSummary, String>(new TextCell()) {
             @Override
-            public String getValue( DataGridFilterSummary object ) {
+            public String getValue(DataGridFilterSummary object) {
                 return object.getFilterName();
             }
         };
-        descriptionColumn.setSortable( true );
-        descriptionColumn.setDataStoreName( "log.filterName" );
+        descriptionColumn.setSortable(true);
+        descriptionColumn.setDataStoreName("log.filterName");
         return descriptionColumn;
     }
 
     private com.google.gwt.user.cellview.client.Column initActionsColumn() {
         List<HasCell<DataGridFilterSummary, ?>> cells = new LinkedList<HasCell<DataGridFilterSummary, ?>>();
 
-        cells.add( new RemoveActionHasCell( "Remove", new ActionCell.Delegate<DataGridFilterSummary>() {
-            @Override
-            public void execute( DataGridFilterSummary filter ) {
-                gridPreferenceStore.removeCustomFilter( filter.getFilterName() );
-                refreshGrid();
-            }
-        } ) );
+        cells.add(new RemoveActionHasCell("Remove",
+                                          new ActionCell.Delegate<DataGridFilterSummary>() {
+                                              @Override
+                                              public void execute(DataGridFilterSummary filter) {
+                                                  gridPreferenceStore.removeCustomFilter(filter.getFilterName());
+                                                  refreshGrid();
+                                              }
+                                          }));
 
-        CompositeCell<DataGridFilterSummary> cell = new CompositeCell<DataGridFilterSummary>( cells );
+        CompositeCell<DataGridFilterSummary> cell = new CompositeCell<DataGridFilterSummary>(cells);
         com.google.gwt.user.cellview.client.Column<DataGridFilterSummary, DataGridFilterSummary> actionsColumn = new com.google.gwt.user.cellview.client.Column<DataGridFilterSummary, DataGridFilterSummary>(
-                cell ) {
+                cell) {
             @Override
-            public DataGridFilterSummary getValue( DataGridFilterSummary object ) {
+            public DataGridFilterSummary getValue(DataGridFilterSummary object) {
                 return object;
             }
         };
         return actionsColumn;
+    }
+
+    public void refreshGrid() {
+        HasData<DataGridFilterSummary> next = dataProvider.getDataDisplays().iterator().next();
+        next.setVisibleRangeAndClearData(next.getVisibleRange(),
+                                         true);
+    }
+
+    private void addCreateFilterButton(final Command addfilterCommand) {
+        HorizontalPanel buttonPanel = new HorizontalPanel();
+        buttonPanel.setWidth("100%");
+        buttonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+
+        Button createFilterButton = new Button();
+        createFilterButton.setText(CommonConstants.INSTANCE.Add_New_Filter());
+
+        createFilterButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                getFormValues(filterControlGroups);
+                if (validateForm()) {
+                    addfilterCommand.execute();
+                    refreshGrid();
+                    cleanFormValues(filterControlGroups);
+                    tabAdd.showTab();
+                }
+            }
+        });
+        buttonPanel.add(createFilterButton);
+        horizontalForm.add(buttonPanel);
+    }
+
+    interface Binder
+            extends
+            UiBinder<Widget, NewFilterPopup> {
 
     }
 
@@ -414,20 +429,20 @@ public class NewFilterPopup extends BaseModal {
 
         private ActionCell<DataGridFilterSummary> cell;
 
-        public RemoveActionHasCell( String text,
-                                    ActionCell.Delegate<DataGridFilterSummary> delegate ) {
-            cell = new ActionCell<DataGridFilterSummary>( text, delegate ) {
+        public RemoveActionHasCell(String text,
+                                   ActionCell.Delegate<DataGridFilterSummary> delegate) {
+            cell = new ActionCell<DataGridFilterSummary>(text,
+                                                         delegate) {
                 @Override
-                public void render( Cell.Context context,
-                                    final DataGridFilterSummary value,
-                                    SafeHtmlBuilder sb ) {
-                    AbstractImagePrototype imageProto = AbstractImagePrototype.create( images.close() );
+                public void render(Cell.Context context,
+                                   final DataGridFilterSummary value,
+                                   SafeHtmlBuilder sb) {
+                    AbstractImagePrototype imageProto = AbstractImagePrototype.create(images.close());
                     SafeHtmlBuilder mysb = new SafeHtmlBuilder();
-                    mysb.appendHtmlConstant( "<span title='" + CommonConstants.INSTANCE.RemoveFilter() + " " + value.getFilterName() + "' style='margin-right:5px;'>" );
-                    mysb.append( imageProto.getSafeHtml() );
-                    mysb.appendHtmlConstant( "</span>" );
-                    sb.append( mysb.toSafeHtml() );
-
+                    mysb.appendHtmlConstant("<span title='" + CommonConstants.INSTANCE.RemoveFilter() + " " + value.getFilterName() + "' style='margin-right:5px;'>");
+                    mysb.append(imageProto.getSafeHtml());
+                    mysb.appendHtmlConstant("</span>");
+                    sb.append(mysb.toSafeHtml());
                 }
             };
         }
@@ -443,37 +458,8 @@ public class NewFilterPopup extends BaseModal {
         }
 
         @Override
-        public DataGridFilterSummary getValue( DataGridFilterSummary object ) {
+        public DataGridFilterSummary getValue(DataGridFilterSummary object) {
             return object;
         }
-    }
-
-    public void refreshGrid() {
-        HasData<DataGridFilterSummary> next = dataProvider.getDataDisplays().iterator().next();
-        next.setVisibleRangeAndClearData( next.getVisibleRange(), true );
-    }
-
-    private void addCreateFilterButton( final Command addfilterCommand ) {
-        HorizontalPanel buttonPanel = new HorizontalPanel();
-        buttonPanel.setWidth( "100%" );
-        buttonPanel.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_CENTER );
-
-        Button createFilterButton = new Button();
-        createFilterButton.setText( CommonConstants.INSTANCE.Add_New_Filter() );
-
-        createFilterButton.addClickHandler( new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                getFormValues( filterControlGroups );
-                if ( validateForm() ) {
-                    addfilterCommand.execute();
-                    refreshGrid();
-                    cleanFormValues( filterControlGroups );
-                    tabAdd.showTab();
-                }
-            }
-        } );
-        buttonPanel.add( createFilterButton );
-        horizontalForm.add( buttonPanel );
     }
 }

@@ -18,7 +18,6 @@ package org.uberfire.ext.plugin.event;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.uberfire.ext.plugin.model.Plugin;
 import org.uberfire.ext.plugin.model.PluginType;
 
 @Portable
@@ -28,8 +27,8 @@ public class PluginUnregistered {
 
     private final PluginType type;
 
-    public PluginUnregistered( @MapsTo("name") final String name,
-                                @MapsTo("type") final PluginType type ) {
+    public PluginUnregistered(@MapsTo("name") final String name,
+                              @MapsTo("type") final PluginType type) {
         this.name = name;
         this.type = type;
     }

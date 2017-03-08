@@ -27,279 +27,330 @@ public class FilesUnsupportedOpsTest extends AbstractBaseTest {
 
     @Test(expected = NotDirectoryException.class)
     public void newDirectoryStreamGlobNotDirectoryException() {
-        Files.newDirectoryStream( Files.createTempFile( "foo", "bar" ), "*.*" );
+        Files.newDirectoryStream(Files.createTempFile("foo",
+                                                      "bar"),
+                                 "*.*");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void newDirectoryStreamGlobNull() {
-        Files.newDirectoryStream( null, (String) null );
+        Files.newDirectoryStream(null,
+                                 (String) null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void newDirectoryStreamGlobNull2() {
-        Files.newDirectoryStream( newTempDir(), (String) null );
+        Files.newDirectoryStream(newTempDir(),
+                                 (String) null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void newDirectoryStreamGlobNull3() {
-        Files.newDirectoryStream( null, "*.*" );
+        Files.newDirectoryStream(null,
+                                 "*.*");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void newDirectoryStreamGlobEmpty() {
-        Files.newDirectoryStream( newTempDir(), "" );
+        Files.newDirectoryStream(newTempDir(),
+                                 "");
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void probeContentType() {
-        Files.probeContentType( Files.createTempFile( null, null ) );
+        Files.probeContentType(Files.createTempFile(null,
+                                                    null));
     }
 
     @Test(expected = NoSuchFileException.class)
     public void probeContentTypeDir() {
-        Files.probeContentType( newTempDir() );
+        Files.probeContentType(newTempDir());
     }
 
     @Test(expected = NoSuchFileException.class)
     public void probeContentTypeNonExistent() {
-        Files.probeContentType( Paths.get( "/path/to/some/plaxe.txt" ) );
+        Files.probeContentType(Paths.get("/path/to/some/plaxe.txt"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void probeContentTypeNull() {
-        Files.probeContentType( null );
+        Files.probeContentType(null);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void getPosixFilePermissions() {
-        Files.getPosixFilePermissions( newTempDir() );
+        Files.getPosixFilePermissions(newTempDir());
     }
 
     @Test(expected = NoSuchFileException.class)
     public void getPosixFilePermissionsNoSuchFileException() {
-        Files.getPosixFilePermissions( Paths.get( "/some/path" ) );
+        Files.getPosixFilePermissions(Paths.get("/some/path"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void getPosixFilePermissionsNull() {
-        Files.getPosixFilePermissions( null );
+        Files.getPosixFilePermissions(null);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void getOwner() {
-        Files.getOwner( newTempDir() );
+        Files.getOwner(newTempDir());
     }
 
     @Test(expected = NoSuchFileException.class)
     public void getOwnerNoSuchFileException() {
-        Files.getOwner( Paths.get( "/some/path" ) );
+        Files.getOwner(Paths.get("/some/path"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void getOwnerNull() {
-        Files.getOwner( null );
+        Files.getOwner(null);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void setOwner() {
-        Files.setOwner( newTempDir(), new UserPrincipal() {
-            @Override
-            public String getName() {
-                return "name";
-            }
-        } );
+        Files.setOwner(newTempDir(),
+                       new UserPrincipal() {
+                           @Override
+                           public String getName() {
+                               return "name";
+                           }
+                       });
     }
 
     @Test(expected = NoSuchFileException.class)
     public void setOwnerNoSuchFileException() {
-        Files.setOwner( Paths.get( "/some/path" ), new UserPrincipal() {
-            @Override
-            public String getName() {
-                return "name";
-            }
-        } );
+        Files.setOwner(Paths.get("/some/path"),
+                       new UserPrincipal() {
+                           @Override
+                           public String getName() {
+                               return "name";
+                           }
+                       });
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setOwnerNull() {
-        Files.setOwner( newTempDir(), null );
+        Files.setOwner(newTempDir(),
+                       null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setOwnerNull2() {
-        Files.setOwner( null, new UserPrincipal() {
-            @Override
-            public String getName() {
-                return "name";
-            }
-        } );
+        Files.setOwner(null,
+                       new UserPrincipal() {
+                           @Override
+                           public String getName() {
+                               return "name";
+                           }
+                       });
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setOwnerNull3() {
-        Files.setOwner( null, null );
+        Files.setOwner(null,
+                       null);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void setPosixFilePermissions() {
-        Files.setPosixFilePermissions( newTempDir(), Collections.<PosixFilePermission>emptySet() );
+        Files.setPosixFilePermissions(newTempDir(),
+                                      Collections.<PosixFilePermission>emptySet());
     }
 
     @Test(expected = NoSuchFileException.class)
     public void setPosixFilePermissionsNoSuchFileException() {
-        Files.setPosixFilePermissions( Paths.get( "/some/path" ), Collections.<PosixFilePermission>emptySet() );
+        Files.setPosixFilePermissions(Paths.get("/some/path"),
+                                      Collections.<PosixFilePermission>emptySet());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setPosixFilePermissionsNull() {
-        Files.setPosixFilePermissions( newTempDir(), null );
+        Files.setPosixFilePermissions(newTempDir(),
+                                      null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void setPosixFilePermissionsNull2() {
-        Files.setPosixFilePermissions( null, Collections.<PosixFilePermission>emptySet() );
+        Files.setPosixFilePermissions(null,
+                                      Collections.<PosixFilePermission>emptySet());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void newDirectoryStreamNull() {
-        Files.newDirectoryStream( null );
+        Files.newDirectoryStream(null);
     }
 
     @Test(expected = NotDirectoryException.class)
     public void newDirectoryStreamNonDirecotory() {
-        Files.newDirectoryStream( Files.createTempFile( "foo", "bar" ) );
+        Files.newDirectoryStream(Files.createTempFile("foo",
+                                                      "bar"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void newDirectoryStreamNull2() {
-        Files.newDirectoryStream( null, new DirectoryStream.Filter<Path>() {
-            @Override
-            public boolean accept( Path entry ) throws IOException {
-                return true;
-            }
-        } );
+        Files.newDirectoryStream(null,
+                                 new DirectoryStream.Filter<Path>() {
+                                     @Override
+                                     public boolean accept(Path entry) throws IOException {
+                                         return true;
+                                     }
+                                 });
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void newDirectoryStreamNull3() {
-        Files.newDirectoryStream( newTempDir(), (DirectoryStream.Filter<Path>) null );
+        Files.newDirectoryStream(newTempDir(),
+                                 (DirectoryStream.Filter<Path>) null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void newDirectoryStreamNull4() {
-        Files.newDirectoryStream( null, (DirectoryStream.Filter<Path>) null );
+        Files.newDirectoryStream(null,
+                                 (DirectoryStream.Filter<Path>) null);
     }
 
     @Test(expected = NotDirectoryException.class)
     public void newDirectoryStreamNotDirecotory2() {
-        Files.newDirectoryStream( Files.createTempFile( "foo", "bar" ), new DirectoryStream.Filter<Path>() {
-            @Override
-            public boolean accept( Path entry ) throws IOException {
-                return false;
-            }
-        } );
+        Files.newDirectoryStream(Files.createTempFile("foo",
+                                                      "bar"),
+                                 new DirectoryStream.Filter<Path>() {
+                                     @Override
+                                     public boolean accept(Path entry) throws IOException {
+                                         return false;
+                                     }
+                                 });
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void newDirectoryStreamNull5() {
-        Files.newDirectoryStream( null, "*.*" );
+        Files.newDirectoryStream(null,
+                                 "*.*");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void newDirectoryStreamNull6() {
-        Files.newDirectoryStream( newTempDir(), (String) null );
+        Files.newDirectoryStream(newTempDir(),
+                                 (String) null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void newDirectoryStreamEmpty() {
-        Files.newDirectoryStream( newTempDir(), "" );
+        Files.newDirectoryStream(newTempDir(),
+                                 "");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void newDirectoryStreamNull7() {
-        Files.newDirectoryStream( null, (String) null );
+        Files.newDirectoryStream(null,
+                                 (String) null);
     }
 
     @Test(expected = NotDirectoryException.class)
     public void newDirectoryStreamNotDirecotory3() {
-        Files.newDirectoryStream( Files.createTempFile( "foo", "bar" ), "*.*" );
+        Files.newDirectoryStream(Files.createTempFile("foo",
+                                                      "bar"),
+                                 "*.*");
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void createSymbolicLink() {
-        Files.createSymbolicLink( Paths.get( "/path/some/place.link" ), Files.createTempFile( "foo", "bar" ) );
+        Files.createSymbolicLink(Paths.get("/path/some/place.link"),
+                                 Files.createTempFile("foo",
+                                                      "bar"));
     }
 
     @Test(expected = FileAlreadyExistsException.class)
     public void createSymbolicLinkIllegalStateException1() {
-        Files.createSymbolicLink( Files.createTempFile( "foo", "bar" ), Files.createTempFile( "foo", "bar" ) );
+        Files.createSymbolicLink(Files.createTempFile("foo",
+                                                      "bar"),
+                                 Files.createTempFile("foo",
+                                                      "bar"));
     }
 
     @Test(expected = IllegalStateException.class)
     public void createSymbolicLinkIllegalStateException2() {
-        final Path path = Files.createTempFile( "foo", "bar" );
-        Files.createSymbolicLink( path, path );
+        final Path path = Files.createTempFile("foo",
+                                               "bar");
+        Files.createSymbolicLink(path,
+                                 path);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void createSymbolicLinkNull1() {
-        Files.createSymbolicLink( null, Files.createTempFile( "foo", "bar" ) );
+        Files.createSymbolicLink(null,
+                                 Files.createTempFile("foo",
+                                                      "bar"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void createSymbolicLinkNull2() {
-        Files.createSymbolicLink( Paths.get( "/path/some/place.link" ), null );
+        Files.createSymbolicLink(Paths.get("/path/some/place.link"),
+                                 null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void createSymbolicLinkNull3() {
-        Files.createSymbolicLink( null, null );
+        Files.createSymbolicLink(null,
+                                 null);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void createLink() {
-        Files.createLink( Paths.get( "/path/some/place.link" ), Files.createTempFile( "foo", "bar" ) );
+        Files.createLink(Paths.get("/path/some/place.link"),
+                         Files.createTempFile("foo",
+                                              "bar"));
     }
 
     @Test(expected = FileAlreadyExistsException.class)
     public void createLinkIllegalStateException1() {
-        Files.createLink( Files.createTempFile( "foo", "bar" ), Files.createTempFile( "foo", "bar" ) );
+        Files.createLink(Files.createTempFile("foo",
+                                              "bar"),
+                         Files.createTempFile("foo",
+                                              "bar"));
     }
 
     @Test(expected = IllegalStateException.class)
     public void createLinkIllegalStateException2() {
-        final Path path = Files.createTempFile( "foo", "bar" );
-        Files.createLink( path, path );
+        final Path path = Files.createTempFile("foo",
+                                               "bar");
+        Files.createLink(path,
+                         path);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void createLinkNull1() {
-        Files.createLink( null, Files.createTempFile( "foo", "bar" ) );
+        Files.createLink(null,
+                         Files.createTempFile("foo",
+                                              "bar"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void createLinkNull2() {
-        Files.createLink( Paths.get( "/path/some/place.link" ), null );
+        Files.createLink(Paths.get("/path/some/place.link"),
+                         null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void createLinkNull3() {
-        Files.createSymbolicLink( null, null );
+        Files.createSymbolicLink(null,
+                                 null);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void readSymbolicLink() {
-        Files.readSymbolicLink( Files.createTempFile( "foo", "bar" ) );
+        Files.readSymbolicLink(Files.createTempFile("foo",
+                                                    "bar"));
     }
 
     @Test(expected = NotLinkException.class)
     public void readSymbolicLinkNotLink() {
-        Files.readSymbolicLink( Paths.get( "/some/file/link.lnk" ) );
+        Files.readSymbolicLink(Paths.get("/some/file/link.lnk"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void readSymbolicLinkNull() {
-        Files.readSymbolicLink( null );
+        Files.readSymbolicLink(null);
     }
 
 //walkFileTree

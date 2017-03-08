@@ -34,46 +34,48 @@ import org.uberfire.java.nio.file.Path;
 
 public abstract class BaseUploadServlet extends BaseFilteredServlet {
 
-    private static final Logger logger = LoggerFactory.getLogger( BaseUploadServlet.class );
+    private static final Logger logger = LoggerFactory.getLogger(BaseUploadServlet.class);
 
-    protected FileItem getFileItem( HttpServletRequest request ) throws FileUploadException {
-        final Iterator iterator = getServletFileUpload().parseRequest( request ).iterator();
-        while ( iterator.hasNext() ) {
+    protected FileItem getFileItem(HttpServletRequest request) throws FileUploadException {
+        final Iterator iterator = getServletFileUpload().parseRequest(request).iterator();
+        while (iterator.hasNext()) {
             FileItem item = (FileItem) iterator.next();
-            if ( !item.isFormField() ) {
+            if (!item.isFormField()) {
                 return item;
             }
         }
         return null;
     }
 
-    protected void writeResponse( HttpServletResponse response,
-                                  String ok ) throws IOException {
-        response.setContentType( "text/html" );
-        response.getWriter().write( ok );
+    protected void writeResponse(HttpServletResponse response,
+                                 String ok) throws IOException {
+        response.setContentType("text/html");
+        response.getWriter().write(ok);
         response.getWriter().flush();
     }
 
     protected ServletFileUpload getServletFileUpload() {
         FileItemFactory factory = new DiskFileItemFactory();
-        ServletFileUpload upload = new ServletFileUpload( factory );
-        upload.setHeaderEncoding( "UTF-8" );
+        ServletFileUpload upload = new ServletFileUpload(factory);
+        upload.setHeaderEncoding("UTF-8");
         return upload;
     }
 
-    protected void writeFile( final IOService ioService,
-                              final Path path,
-                              final FileItem uploadedItem ) throws IOException {
-        if ( !ioService.exists( path ) ) {
-            ioService.createFile( path );
+    protected void writeFile(final IOService ioService,
+                             final Path path,
+                             final FileItem uploadedItem) throws IOException {
+        if (!ioService.exists(path)) {
+            ioService.createFile(path);
         }
 
-        ioService.write( path, IOUtils.toByteArray( uploadedItem.getInputStream() ) );
+        ioService.write(path,
+                        IOUtils.toByteArray(uploadedItem.getInputStream()));
 
         uploadedItem.getInputStream().close();
     }
 
-    protected void logError( Throwable e ) {
-        logger.error( "Failed to upload a file.", e );
+    protected void logError(Throwable e) {
+        logger.error("Failed to upload a file.",
+                     e);
     }
 }

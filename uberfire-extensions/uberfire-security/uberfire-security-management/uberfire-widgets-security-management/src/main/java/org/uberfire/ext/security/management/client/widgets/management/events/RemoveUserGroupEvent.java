@@ -22,10 +22,11 @@ import org.uberfire.workbench.events.UberFireEvent;
  * <p>Event for removing an assigned group from a user.</p>
  */
 public class RemoveUserGroupEvent extends ContextualEvent implements UberFireEvent {
-    
+
     private final String name;
 
-    public RemoveUserGroupEvent(Object context, String name) {
+    public RemoveUserGroupEvent(Object context,
+                                String name) {
         super(context);
         this.name = name;
     }

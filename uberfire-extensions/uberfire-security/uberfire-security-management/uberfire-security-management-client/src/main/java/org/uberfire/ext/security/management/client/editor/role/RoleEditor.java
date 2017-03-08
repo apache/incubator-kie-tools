@@ -23,7 +23,6 @@ import org.uberfire.security.authz.PermissionCollection;
 
 /**
  * <p>A role editor.</p>
- *
  * @since 0.9.0
  */
 public interface RoleEditor extends Editor<Role, Role> {

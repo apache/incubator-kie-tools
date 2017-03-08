@@ -30,7 +30,6 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class PermissionExceptionSwitchTest {
 
-
     @Mock
     PermissionExceptionSwitch.View view;
 
@@ -43,14 +42,18 @@ public class PermissionExceptionSwitchTest {
     public void setup() {
         presenter = new PermissionExceptionSwitch(view);
     }
-    
+
     @Test
     public void testExceptionInit() {
         when(view.isOn()).thenReturn(true);
-        presenter.init(null, null, true, true);
+        presenter.init(null,
+                       null,
+                       true,
+                       true);
 
         assertTrue(presenter.isOn());
-        verify(view).init(null, null);
+        verify(view).init(null,
+                          null);
         verify(view).setOn(true);
         verify(view).setExceptionEnabled(true);
         assertTrue(presenter.isOn());
@@ -59,7 +62,10 @@ public class PermissionExceptionSwitchTest {
     @Test
     public void testExceptionChange() {
         when(view.isOn()).thenReturn(false);
-        presenter.init(null, null, true, true);
+        presenter.init(null,
+                       null,
+                       true,
+                       true);
         presenter.setOnChange(onChange);
 
         reset(view);
@@ -75,10 +81,14 @@ public class PermissionExceptionSwitchTest {
     @Test
     public void testNoExceptionInit() {
         when(view.isOn()).thenReturn(true);
-        presenter.init(null, null, true, false);
+        presenter.init(null,
+                       null,
+                       true,
+                       false);
 
         assertTrue(presenter.isOn());
-        verify(view).init(null, null);
+        verify(view).init(null,
+                          null);
         verify(view).setOn(true);
         assertTrue(presenter.isOn());
     }
@@ -86,7 +96,10 @@ public class PermissionExceptionSwitchTest {
     @Test
     public void testNoExceptionChange() {
         when(view.isOn()).thenReturn(false);
-        presenter.init(null, null, true, false);
+        presenter.init(null,
+                       null,
+                       true,
+                       false);
         presenter.setOnChange(onChange);
 
         reset(view);

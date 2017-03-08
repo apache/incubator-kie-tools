@@ -25,33 +25,32 @@ import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;
 
 public class EditableBayesianProbability extends WiresBaseShape {
 
+    private final Rectangle rectangle;
     private Map<Text, Rectangle> parentNode;
     private Map<Text, Rectangle> porcentualOptions;
     private Map<Text, Rectangle> porcentualValues;
     private Map<Map<Text, Rectangle>, Map<Text, Rectangle>> incomingNodes;
 
-    private final Rectangle rectangle;
-
     public EditableBayesianProbability() {
-        this( 0,
-              0,
-              0,
-              0 );
+        this(0,
+             0,
+             0,
+             0);
     }
 
-    public EditableBayesianProbability( final double width,
-                                        final double height,
-                                        final double positionXNode,
-                                        final double positionYNode ) {
-        rectangle = new Rectangle( width,
-                                   height );
-        rectangle.setStrokeColor( ColorName.WHITE.getValue() );
+    public EditableBayesianProbability(final double width,
+                                       final double height,
+                                       final double positionXNode,
+                                       final double positionYNode) {
+        rectangle = new Rectangle(width,
+                                  height);
+        rectangle.setStrokeColor(ColorName.WHITE.getValue());
 
-        add( rectangle );
+        add(rectangle);
 
-        setX( positionXNode );
-        setY( positionYNode );
-        setDraggable( false );
+        setX(positionXNode);
+        setY(positionYNode);
+        setDraggable(false);
 
         this.parentNode = Maps.newHashMap();
         this.porcentualOptions = Maps.newHashMap();
@@ -60,34 +59,33 @@ public class EditableBayesianProbability extends WiresBaseShape {
     }
 
     @Override
-    public void setSelected( final boolean isSelected ) {
+    public void setSelected(final boolean isSelected) {
         //It's not possible to select these Shapes
     }
 
     @Override
-    public boolean contains( double cx,
-                             double cy ) {
+    public boolean contains(double cx,
+                            double cy) {
         //We don't have any ControlPoints so no need to worry about whether we contain a given point
         return false;
     }
 
     public void buildGrid() {
-        drawComponents( this.parentNode );
-        drawComponents( this.porcentualOptions );
-        drawComponents( this.porcentualValues );
-        if ( this.incomingNodes != null && !this.incomingNodes.isEmpty() ) {
-            for ( Map.Entry<Map<Text, Rectangle>, Map<Text, Rectangle>> porc : incomingNodes.entrySet() ) {
-                drawComponents( porc.getValue() );
-                drawComponents( porc.getKey() );
+        drawComponents(this.parentNode);
+        drawComponents(this.porcentualOptions);
+        drawComponents(this.porcentualValues);
+        if (this.incomingNodes != null && !this.incomingNodes.isEmpty()) {
+            for (Map.Entry<Map<Text, Rectangle>, Map<Text, Rectangle>> porc : incomingNodes.entrySet()) {
+                drawComponents(porc.getValue());
+                drawComponents(porc.getKey());
             }
-
         }
     }
 
-    private void drawComponents( final Map<Text, Rectangle> hash ) {
-        for ( Map.Entry<Text, Rectangle> parent : hash.entrySet() ) {
-            add( parent.getValue() );
-            add( parent.getKey() );
+    private void drawComponents(final Map<Text, Rectangle> hash) {
+        for (Map.Entry<Text, Rectangle> parent : hash.entrySet()) {
+            add(parent.getValue());
+            add(parent.getKey());
         }
     }
 
@@ -95,7 +93,7 @@ public class EditableBayesianProbability extends WiresBaseShape {
         return parentNode;
     }
 
-    public void setParentNode( final Map<Text, Rectangle> parentNode ) {
+    public void setParentNode(final Map<Text, Rectangle> parentNode) {
         this.parentNode = parentNode;
     }
 
@@ -103,7 +101,7 @@ public class EditableBayesianProbability extends WiresBaseShape {
         return porcentualOptions;
     }
 
-    public void setPorcentualOptions( final Map<Text, Rectangle> porcentualOptions ) {
+    public void setPorcentualOptions(final Map<Text, Rectangle> porcentualOptions) {
         this.porcentualOptions = porcentualOptions;
     }
 
@@ -111,7 +109,7 @@ public class EditableBayesianProbability extends WiresBaseShape {
         return porcentualValues;
     }
 
-    public void setPorcentualValues( final Map<Text, Rectangle> porcentualValues ) {
+    public void setPorcentualValues(final Map<Text, Rectangle> porcentualValues) {
         this.porcentualValues = porcentualValues;
     }
 
@@ -119,8 +117,7 @@ public class EditableBayesianProbability extends WiresBaseShape {
         return incomingNodes;
     }
 
-    public void setIncomingNodes( final Map<Map<Text, Rectangle>, Map<Text, Rectangle>> incomingNodes ) {
+    public void setIncomingNodes(final Map<Map<Text, Rectangle>, Map<Text, Rectangle>> incomingNodes) {
         this.incomingNodes = incomingNodes;
     }
-
 }

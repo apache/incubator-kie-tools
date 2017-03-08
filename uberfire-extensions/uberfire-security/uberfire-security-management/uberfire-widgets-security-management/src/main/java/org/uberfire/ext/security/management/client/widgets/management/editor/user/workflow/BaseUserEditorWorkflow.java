@@ -16,6 +16,10 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.user.workflow;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+import javax.enterprise.event.Event;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.messaging.Message;
@@ -39,20 +43,16 @@ import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import javax.enterprise.event.Event;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import static org.uberfire.workbench.events.NotificationEvent.NotificationType.SUCCESS;
 
 /**
  * <p>The workflow for editing a user.</p>
  * <p>It links the editor & sub-editors components with the editor driver and the remote user services.</p>
- * 
  * @since 0.8.0
  */
 public abstract class BaseUserEditorWorkflow implements IsWidget {
 
+    public EntityWorkflowView view;
     protected ClientUserSystemManager userSystemManager;
     protected Event<OnErrorEvent> errorEvent;
     protected Event<NotificationEvent> workbenchNotification;
@@ -63,11 +63,18 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
     protected UserEditorDriver userEditorDriver;
     protected ChangePassword changePassword;
     protected LoadingBox loadingBox;
-    public EntityWorkflowView view;
-
+    protected final ErrorCallback<Message> errorCallback = new ErrorCallback<Message>() {
+        @Override
+        public boolean error(final Message message,
+                             final Throwable throwable) {
+            hideLoadingBox();
+            showError(throwable);
+            return false;
+        }
+    };
     protected User user;
     protected boolean isDirty;
-    
+
     public BaseUserEditorWorkflow(final ClientUserSystemManager userSystemManager,
                                   final Event<OnErrorEvent> errorEvent,
                                   final Event<NotificationEvent> workbenchNotification,
@@ -79,7 +86,7 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
                                   final ChangePassword changePassword,
                                   final LoadingBox loadingBox,
                                   final EntityWorkflowView view) {
-        
+
         this.userSystemManager = userSystemManager;
         this.errorEvent = errorEvent;
         this.workbenchNotification = workbenchNotification;
@@ -94,21 +101,21 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
         this.isDirty = false;
     }
 
+    /*  ******************************************************************************************************
+                                     PROTECTED PRESENTER API 
+         ****************************************************************************************************** */
+
     @Override
     public Widget asWidget() {
         return view.asWidget();
     }
 
-    /*  ******************************************************************************************************
-                                     PROTECTED PRESENTER API 
-         ****************************************************************************************************** */
-    
     protected void doShow(final String userId) {
         assert userId != null;
-        
+
         // Configure the view.
         doShowEditorView();
-        
+
         // Start the show workflow's logic.
         checkDirty(new Command() {
             @Override
@@ -117,22 +124,23 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
                 // Call backend service.
                 showLoadingBox();
                 userSystemManager.users(new RemoteCallback<User>() {
-                    @Override
-                    public void callback(User o) {
-                        hideLoadingBox();
-                        BaseUserEditorWorkflow.this.user = o;
-                        assert user != null;
-                        
-                        userEditorDriver.show(user, userEditor);
-                        view.setCancelButtonVisible(false);
-                        view.setSaveButtonVisible(false);
-                    }
-                }, errorCallback).get(userId);
+                                            @Override
+                                            public void callback(User o) {
+                                                hideLoadingBox();
+                                                BaseUserEditorWorkflow.this.user = o;
+                                                assert user != null;
+
+                                                userEditorDriver.show(user,
+                                                                      userEditor);
+                                                view.setCancelButtonVisible(false);
+                                                view.setSaveButtonVisible(false);
+                                            }
+                                        },
+                                        errorCallback).get(userId);
             }
         });
-        
     }
-    
+
     public void clear() {
         checkDirty(new Command() {
             @Override
@@ -149,7 +157,7 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
     protected void onSave() {
         doSave();
     }
-    
+
     protected void onCancel() {
         doShow(BaseUserEditorWorkflow.this.user.getIdentifier());
     }
@@ -177,7 +185,7 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
         return UsersManagementWidgetsConstants.INSTANCE.saveChanges();
     }
 
-    protected  void setDirty(final boolean isDirty) {
+    protected void setDirty(final boolean isDirty) {
         this.isDirty = isDirty;
         view.setSaveButtonEnabled(isDirty);
         if (isDirty) {
@@ -186,14 +194,15 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
             view.clearNotification();
         }
     }
-    
+
     protected void edit() {
-        userEditorDriver.edit(user, userEditor);
+        userEditorDriver.edit(user,
+                              userEditor);
         view.setCancelButtonVisible(true);
         view.setSaveButtonEnabled(false);
         view.setSaveButtonVisible(true);
     }
-    
+
     protected void doSave() {
         assert user != null;
 
@@ -204,41 +213,42 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
             final RemoteCallback<User> assignGroupsCallback = new RemoteCallback<User>() {
                 @Override
                 public void callback(final User user) {
-                doAssignGroups(new Command() {
-                    @Override
-                    public void execute() {
-                        doAssignRoles(new Command() {
-                            @Override
-                            public void execute() {
-                                hideLoadingBox();
-                                BaseUserEditorWorkflow.this.isDirty = false;
-                                // Ask for the user's password if user is just created.
-                                final String id = user.getIdentifier();
-                                afterSave(id);
-                            }
-                        });
-                    }
-                });                    
+                    doAssignGroups(new Command() {
+                        @Override
+                        public void execute() {
+                            doAssignRoles(new Command() {
+                                @Override
+                                public void execute() {
+                                    hideLoadingBox();
+                                    BaseUserEditorWorkflow.this.isDirty = false;
+                                    // Ask for the user's password if user is just created.
+                                    final String id = user.getIdentifier();
+                                    afterSave(id);
+                                }
+                            });
+                        }
+                    });
                 }
             };
-            
+
             // Update the wrapped user instance from the modifiable one and assign updated groups if update op is successful.
             showLoadingBox();
             doSaveRemoteServiceCall(assignGroupsCallback);
-            
         } else {
             throw new RuntimeException("User must be valid before updating it.");
         }
     }
-    
+
     protected void doAssignGroups(final Command callback) {
         if (userEditor.canAssignGroups()) {
             userSystemManager.users(new RemoteCallback<Void>() {
-                @Override
-                public void callback(Void aVoid) {
-                    callback.execute();
-                }
-            }, errorCallback).assignGroups(user.getIdentifier(), getGroupNames());
+                                        @Override
+                                        public void callback(Void aVoid) {
+                                            callback.execute();
+                                        }
+                                    },
+                                    errorCallback).assignGroups(user.getIdentifier(),
+                                                                getGroupNames());
         } else {
             callback.execute();
         }
@@ -247,51 +257,59 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
     protected void doAssignRoles(final Command callback) {
         if (userEditor.canAssignRoles()) {
             userSystemManager.users(new RemoteCallback<Void>() {
-                @Override
-                public void callback(Void aVoid) {
-                    callback.execute();
-                }
-            }, errorCallback).assignRoles(user.getIdentifier(), getRoleNames());
+                                        @Override
+                                        public void callback(Void aVoid) {
+                                            callback.execute();
+                                        }
+                                    },
+                                    errorCallback).assignRoles(user.getIdentifier(),
+                                                               getRoleNames());
         } else {
             callback.execute();
         }
     }
-    
+
     protected void doSaveRemoteServiceCall(final RemoteCallback<User> callback) {
-        userSystemManager.users(callback, errorCallback).update(user);
+        userSystemManager.users(callback,
+                                errorCallback).update(user);
     }
-    
+
     protected void afterSave(final String id) {
-        workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.userSaved(id), SUCCESS));
+        workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.userSaved(id),
+                                                         SUCCESS));
         saveUserEvent.fire(new SaveUserEvent(id));
         doShow(user.getIdentifier());
     }
 
     protected void doDelete() {
         if (user != null && user.getIdentifier() != null) {
-            confirmBox.show(UsersManagementWidgetsConstants.INSTANCE.confirmAction(), UsersManagementWidgetsConstants.INSTANCE.ensureRemoveUser(),
-                    new Command() {
-                        @Override
-                        public void execute() {
-                            final String id = user.getIdentifier();
-                            showLoadingBox();
-                            userSystemManager.users(new RemoteCallback<Void>() {
+            confirmBox.show(UsersManagementWidgetsConstants.INSTANCE.confirmAction(),
+                            UsersManagementWidgetsConstants.INSTANCE.ensureRemoveUser(),
+                            new Command() {
                                 @Override
-                                public void callback(Void o) {
-                                    hideLoadingBox();
+                                public void execute() {
                                     final String id = user.getIdentifier();
-                                    deleteUserEvent.fire(new DeleteUserEvent(id));
-                                    workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.userRemoved(id), SUCCESS));
-                                    clear();
+                                    showLoadingBox();
+                                    userSystemManager.users(new RemoteCallback<Void>() {
+                                                                @Override
+                                                                public void callback(Void o) {
+                                                                    hideLoadingBox();
+                                                                    final String id = user.getIdentifier();
+                                                                    deleteUserEvent.fire(new DeleteUserEvent(id));
+                                                                    workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.userRemoved(id),
+                                                                                                                     SUCCESS));
+                                                                    clear();
+                                                                }
+                                                            },
+                                                            errorCallback).delete(id);
                                 }
-                            }, errorCallback).delete(id);
-                        }
-                    }, new Command() {
-                        @Override
-                        public void execute() {
+                            },
+                            new Command() {
+                                @Override
+                                public void execute() {
 
-                        }
-                    });
+                                }
+                            });
         }
     }
 
@@ -300,9 +318,10 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
     }
 
     protected void showPasswordPopup(final ChangePassword.ChangePasswordCallback callback) {
-        changePassword.show(user.getIdentifier(), callback);
+        changePassword.show(user.getIdentifier(),
+                            callback);
     }
-    
+
     protected Set<String> getGroupNames() {
         final Set<String> result = new LinkedHashSet<String>(user.getGroups().size());
         for (final Group group : user.getGroups()) {
@@ -326,18 +345,10 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
         setDirty(false);
     }
 
-    protected boolean checkEventContext(final ContextualEvent contextualEvent, final Object context) {
+    protected boolean checkEventContext(final ContextualEvent contextualEvent,
+                                        final Object context) {
         return contextualEvent != null && contextualEvent.getContext() != null && contextualEvent.getContext().equals(context);
     }
-
-    protected final ErrorCallback<Message> errorCallback = new ErrorCallback<Message>() {
-        @Override
-        public boolean error(final Message message, final Throwable throwable) {
-            hideLoadingBox();
-            showError(throwable);
-            return false;
-        }
-    };
 
     protected void showError(final Throwable throwable) {
         final String msg = throwable != null ? throwable.getMessage() : UsersManagementWidgetsConstants.INSTANCE.genericError();
@@ -345,16 +356,20 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
     }
 
     protected void showError(final String message) {
-        errorEvent.fire(new OnErrorEvent(BaseUserEditorWorkflow.this, message));
+        errorEvent.fire(new OnErrorEvent(BaseUserEditorWorkflow.this,
+                                         message));
     }
 
     protected void checkDirty(final Command callback) {
         if (isDirty) {
             confirmBox.show(UsersManagementWidgetsConstants.INSTANCE.confirmAction(),
-                    UsersManagementWidgetsConstants.INSTANCE.userIsDirty(), () -> {
-                        BaseUserEditorWorkflow.this.isDirty = false;
-                        callback.execute();
-                    }, () -> {});
+                            UsersManagementWidgetsConstants.INSTANCE.userIsDirty(),
+                            () -> {
+                                BaseUserEditorWorkflow.this.isDirty = false;
+                                callback.execute();
+                            },
+                            () -> {
+                            });
         } else {
             callback.execute();
         }
@@ -363,7 +378,7 @@ public abstract class BaseUserEditorWorkflow implements IsWidget {
     protected void showLoadingBox() {
         loadingBox.show();
     }
-    
+
     protected void hideLoadingBox() {
         loadingBox.hide();
     }

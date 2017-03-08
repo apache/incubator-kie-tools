@@ -59,8 +59,8 @@ public class DefaultGridLayerTest {
     public void setup() {
         this.transform = new Transform();
 
-        final LienzoPanel panel = new LienzoPanel( 500,
-                                                   500 );
+        final LienzoPanel panel = new LienzoPanel(500,
+                                                  500);
         final DefaultGridLayer wrapped = new DefaultGridLayer() {
 
             @Override
@@ -70,167 +70,165 @@ public class DefaultGridLayerTest {
             }
 
             @Override
-            public Layer batch( final GridLayerRedrawManager.PrioritizedCommand command ) {
+            public Layer batch(final GridLayerRedrawManager.PrioritizedCommand command) {
                 //Don't render Layer for tests
                 return this;
             }
         };
-        panel.add( wrapped );
-        this.gridLayer = spy( wrapped );
+        panel.add(wrapped);
+        this.gridLayer = spy(wrapped);
 
-        when( gridLayer.getViewport() ).thenReturn( viewport );
-        when( viewport.getTransform() ).thenReturn( transform );
-        when( viewport.getMediators() ).thenReturn( mediators );
+        when(gridLayer.getViewport()).thenReturn(viewport);
+        when(viewport.getTransform()).thenReturn(transform);
+        when(viewport.getMediators()).thenReturn(mediators);
     }
 
     private GridWidget makeGridWidget() {
         final GridData uiModel = new BaseGridData();
-        return new BaseGridWidget( uiModel,
-                                   gridLayer,
-                                   gridLayer,
-                                   renderer ) {
+        return new BaseGridWidget(uiModel,
+                                  gridLayer,
+                                  gridLayer,
+                                  renderer) {
             @Override
             public void select() {
                 //Don't render Selector for tests
             }
         };
-
     }
 
     @Test
     public void checkFlipToGridWidgetWhenPinned() {
         final GridWidget gridWidget = makeGridWidget();
-        this.gridLayer.add( gridWidget );
+        this.gridLayer.add(gridWidget);
 
-        gridLayer.enterPinnedMode( gridWidget,
-                                   new GridLayerRedrawManager.PrioritizedCommand( 0 ) {
-                                       @Override
-                                       public void execute() {
+        gridLayer.enterPinnedMode(gridWidget,
+                                  new GridLayerRedrawManager.PrioritizedCommand(0) {
+                                      @Override
+                                      public void execute() {
 
-                                       }
-                                   } );
+                                      }
+                                  });
 
-        gridLayer.flipToGridWidget( gridWidget );
+        gridLayer.flipToGridWidget(gridWidget);
 
-        verify( gridLayer,
-                times( 1 ) ).updatePinnedContext( eq( gridWidget ) );
-        verify( gridLayer,
-                times( 1 ) ).batch( any( GridLayerRedrawManager.PrioritizedCommand.class ) );
+        verify(gridLayer,
+               times(1)).updatePinnedContext(eq(gridWidget));
+        verify(gridLayer,
+               times(1)).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
     }
 
     @Test
     public void checkFlipToGridWidgetWhenNotPinned() {
         final GridWidget gridWidget = makeGridWidget();
-        this.gridLayer.add( gridWidget );
+        this.gridLayer.add(gridWidget);
 
-        gridLayer.flipToGridWidget( gridWidget );
+        gridLayer.flipToGridWidget(gridWidget);
 
-        verify( gridLayer,
-                never() ).updatePinnedContext( eq( gridWidget ) );
-        verify( gridLayer,
-                never() ).batch( any( GridLayerRedrawManager.PrioritizedCommand.class ) );
+        verify(gridLayer,
+               never()).updatePinnedContext(eq(gridWidget));
+        verify(gridLayer,
+               never()).batch(any(GridLayerRedrawManager.PrioritizedCommand.class));
     }
 
     @Test
     public void checkScrollToGridWidgetWhenPinned() {
         final GridWidget gridWidget = makeGridWidget();
-        this.gridLayer.add( gridWidget );
+        this.gridLayer.add(gridWidget);
 
-        gridLayer.enterPinnedMode( gridWidget,
-                                   new GridLayerRedrawManager.PrioritizedCommand( 0 ) {
-                                       @Override
-                                       public void execute() {
-                                           //Do nothing
-                                       }
-                                   } );
+        gridLayer.enterPinnedMode(gridWidget,
+                                  new GridLayerRedrawManager.PrioritizedCommand(0) {
+                                      @Override
+                                      public void execute() {
+                                          //Do nothing
+                                      }
+                                  });
 
-        gridLayer.scrollToGridWidget( gridWidget );
+        gridLayer.scrollToGridWidget(gridWidget);
 
-        verify( gridLayer,
-                never() ).select( eq( gridWidget ) );
+        verify(gridLayer,
+               never()).select(eq(gridWidget));
     }
 
     @Test
     public void checkScrollToGridWidgetWhenNotPinned() {
         final GridWidget gridWidget = makeGridWidget();
-        this.gridLayer.add( gridWidget );
+        this.gridLayer.add(gridWidget);
 
-        gridLayer.scrollToGridWidget( gridWidget );
+        gridLayer.scrollToGridWidget(gridWidget);
 
-        verify( gridLayer,
-                times( 1 ) ).select( eq( gridWidget ) );
+        verify(gridLayer,
+               times(1)).select(eq(gridWidget));
     }
 
     @Test
     public void checkRemoveAllClearsCachedReferences() {
         final GridWidget gridWidget1 = makeGridWidget();
-        final GridColumn column1 = mock( GridColumn.class );
-        when( column1.isVisible() ).thenReturn( true );
-        gridWidget1.getModel().appendColumn( column1 );
+        final GridColumn column1 = mock(GridColumn.class);
+        when(column1.isVisible()).thenReturn(true);
+        gridWidget1.getModel().appendColumn(column1);
 
         final GridWidget gridWidget2 = makeGridWidget();
-        final GridColumn column2 = mock( GridColumn.class );
-        when( column2.isVisible() ).thenReturn( true );
-        when( column2.isLinked() ).thenReturn( true );
-        when( column2.getLink() ).thenReturn( column1 );
-        gridWidget2.getModel().appendColumn( column2 );
+        final GridColumn column2 = mock(GridColumn.class);
+        when(column2.isVisible()).thenReturn(true);
+        when(column2.isLinked()).thenReturn(true);
+        when(column2.getLink()).thenReturn(column1);
+        gridWidget2.getModel().appendColumn(column2);
 
-        this.gridLayer.add( gridWidget1 );
-        this.gridLayer.add( gridWidget2 );
+        this.gridLayer.add(gridWidget1);
+        this.gridLayer.add(gridWidget2);
 
-        assertEquals( 2,
-                      gridLayer.getGridWidgets().size() );
-        assertEquals( 1,
-                      gridLayer.getGridWidgetConnectors().size() );
+        assertEquals(2,
+                     gridLayer.getGridWidgets().size());
+        assertEquals(1,
+                     gridLayer.getGridWidgetConnectors().size());
 
         gridLayer.removeAll();
 
-        assertEquals( 0,
-                      gridLayer.getGridWidgets().size() );
-        assertEquals( 0,
-                      gridLayer.getGridWidgetConnectors().size() );
+        assertEquals(0,
+                     gridLayer.getGridWidgets().size());
+        assertEquals(0,
+                     gridLayer.getGridWidgetConnectors().size());
     }
 
     @Test
     public void checkConnectorsVisibilityFollowPinnedModeStatus() {
         final GridWidget gridWidget1 = makeGridWidget();
-        final GridColumn column1 = mock( GridColumn.class );
-        when( column1.isVisible() ).thenReturn( true );
-        gridWidget1.getModel().appendColumn( column1 );
+        final GridColumn column1 = mock(GridColumn.class);
+        when(column1.isVisible()).thenReturn(true);
+        gridWidget1.getModel().appendColumn(column1);
 
         final GridWidget gridWidget2 = makeGridWidget();
-        final GridColumn column2 = mock( GridColumn.class );
-        when( column2.isVisible() ).thenReturn( true );
-        when( column2.isLinked() ).thenReturn( true );
-        when( column2.getLink() ).thenReturn( column1 );
-        gridWidget2.getModel().appendColumn( column2 );
+        final GridColumn column2 = mock(GridColumn.class);
+        when(column2.isVisible()).thenReturn(true);
+        when(column2.isLinked()).thenReturn(true);
+        when(column2.getLink()).thenReturn(column1);
+        gridWidget2.getModel().appendColumn(column2);
 
-        this.gridLayer.add( gridWidget1 );
-        this.gridLayer.add( gridWidget2 );
-
-        gridLayer.refreshGridWidgetConnectors();
-
-        checkConnectorsVisibility( true );
-
-        gridLayer.enterPinnedMode( gridWidget1,
-                                   new GridLayerRedrawManager.PrioritizedCommand( 0 ) {
-                                       @Override
-                                       public void execute() {
-                                           //Do nothing
-                                       }
-                                   } );
+        this.gridLayer.add(gridWidget1);
+        this.gridLayer.add(gridWidget2);
 
         gridLayer.refreshGridWidgetConnectors();
 
-        checkConnectorsVisibility( false );
+        checkConnectorsVisibility(true);
+
+        gridLayer.enterPinnedMode(gridWidget1,
+                                  new GridLayerRedrawManager.PrioritizedCommand(0) {
+                                      @Override
+                                      public void execute() {
+                                          //Do nothing
+                                      }
+                                  });
+
+        gridLayer.refreshGridWidgetConnectors();
+
+        checkConnectorsVisibility(false);
     }
 
-    private void checkConnectorsVisibility( final boolean isVisible ) {
+    private void checkConnectorsVisibility(final boolean isVisible) {
         final Set<IPrimitive<?>> connectors = gridLayer.getGridWidgetConnectors();
-        assertEquals( 1,
-                      connectors.size() );
-        assertEquals( isVisible,
-                      connectors.iterator().next().isVisible() );
+        assertEquals(1,
+                     connectors.size());
+        assertEquals(isVisible,
+                     connectors.iterator().next().isVisible());
     }
-
 }

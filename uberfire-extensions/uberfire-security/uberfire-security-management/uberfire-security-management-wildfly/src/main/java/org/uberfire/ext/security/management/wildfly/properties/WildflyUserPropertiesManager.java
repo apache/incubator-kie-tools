@@ -16,7 +16,21 @@
 
 package org.uberfire.ext.security.management.wildfly.properties;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.regex.Matcher;
 
 import org.jboss.as.domain.management.security.UserPropertiesFileLoader;
 import org.jboss.errai.security.shared.api.Group;
@@ -25,7 +39,12 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.commons.config.ConfigProperties;
-import org.uberfire.ext.security.management.api.*;
+import org.uberfire.ext.security.management.api.Capability;
+import org.uberfire.ext.security.management.api.CapabilityStatus;
+import org.uberfire.ext.security.management.api.ContextualManager;
+import org.uberfire.ext.security.management.api.UserManager;
+import org.uberfire.ext.security.management.api.UserManagerSettings;
+import org.uberfire.ext.security.management.api.UserSystemManager;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
 import org.uberfire.ext.security.management.impl.UserManagerSettingsImpl;
@@ -33,21 +52,14 @@ import org.uberfire.ext.security.management.search.IdentifierRuntimeSearchEngine
 import org.uberfire.ext.security.management.search.UsersIdentifierRuntimeSearchEngine;
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.regex.Matcher;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * <p>Users manager service provider implementation for JBoss Wildfly, when using default realm based on properties files.</p>
- * 
  * @since 0.8.0
  */
-public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager implements UserManager, ContextualManager {
+public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager implements UserManager,
+                                                                                          ContextualManager {
 
     public static final String DEFAULT_USERS_FILE = "./standalone/configuration/application-users.properties";
     public static final String DEFAULT_PASSWORD = "";
@@ -59,21 +71,22 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
     UserPropertiesFileLoader usersFileLoader;
 
     public WildflyUserPropertiesManager() {
-        this( new ConfigProperties( System.getProperties() ) );
+        this(new ConfigProperties(System.getProperties()));
     }
 
     public WildflyUserPropertiesManager(final Map<String, String> gitPrefs) {
-        this( new ConfigProperties( gitPrefs ) );
+        this(new ConfigProperties(gitPrefs));
     }
 
     public WildflyUserPropertiesManager(final ConfigProperties gitPrefs) {
-        loadConfig( gitPrefs );
+        loadConfig(gitPrefs);
     }
 
-    protected void loadConfig( final ConfigProperties config ) {
+    protected void loadConfig(final ConfigProperties config) {
         LOG.debug("Configuring JBoss Wildfly provider from properties.");
         super.loadConfig(config);
-        final ConfigProperties.ConfigProperty usersFilePathProperty = config.get("org.uberfire.ext.security.management.wildfly.properties.users-file-path", DEFAULT_USERS_FILE);
+        final ConfigProperties.ConfigProperty usersFilePathProperty = config.get("org.uberfire.ext.security.management.wildfly.properties.users-file-path",
+                                                                                 DEFAULT_USERS_FILE);
         if (!isConfigPropertySet(usersFilePathProperty)) {
             throw new IllegalArgumentException("Property 'org.uberfire.ext.security.management.wildfly.properties.users-file-path' is mandatory and not set.");
         }
@@ -95,7 +108,8 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
     @Override
     public SearchResponse<User> search(SearchRequest request) throws SecurityManagementException {
         List<String> users = getUserNames();
-        return usersSearchEngine.searchByIdentifiers(users, request);
+        return usersSearchEngine.searchByIdentifiers(users,
+                                                     request);
     }
 
     @Override
@@ -106,12 +120,14 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
             Set<Role> userRoles = null;
             if (getGroupsPropertiesManager() != null) {
                 final Set[] gr = getGroupsPropertiesManager().getGroupsAndRolesForUser(identifier);
-                if ( null != gr ) {
+                if (null != gr) {
                     userGroups = gr[0];
                     userRoles = gr[1];
-                } 
+                }
             }
-            return SecurityManagementUtils.createUser(identifier, userGroups, userRoles);
+            return SecurityManagementUtils.createUser(identifier,
+                                                      userGroups,
+                                                      userRoles);
         }
         throw new UserNotFoundException(identifier);
     }
@@ -119,68 +135,85 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
     public String getUsersFilePath() {
         return usersFilePath;
     }
-    
+
     @Override
     public User create(User entity) throws SecurityManagementException {
-        checkNotNull("entity", entity);
-        updateUserProperty(entity.getIdentifier(), "Error creating user." + entity.getIdentifier());
+        checkNotNull("entity",
+                     entity);
+        updateUserProperty(entity.getIdentifier(),
+                           "Error creating user." + entity.getIdentifier());
         return entity;
     }
 
     @Override
     public User update(User entity) throws SecurityManagementException {
-        checkNotNull("entity", entity);
-        updateUserProperty(entity.getIdentifier(), "Error updating user " + entity.getIdentifier());
+        checkNotNull("entity",
+                     entity);
+        updateUserProperty(entity.getIdentifier(),
+                           "Error updating user " + entity.getIdentifier());
         return entity;
     }
 
     @Override
     public void delete(String... usernames) throws SecurityManagementException {
-        checkNotNull("usernames", usernames);
+        checkNotNull("usernames",
+                     usernames);
         for (String username : usernames) {
             final User user = get(username);
             if (user == null) {
                 throw new UserNotFoundException(username);
             }
             try {
-                
+
                 // Remove the entry on the users properties file.
                 usersFileLoader.getProperties().remove(username);
                 usersFileLoader.persistProperties();
 
                 // Remove the entry on the groups properties file.
                 getGroupsPropertiesManager().removeEntry(username);
-                
             } catch (IOException e) {
-                LOG.error("Error removing user " + username, e);
+                LOG.error("Error removing user " + username,
+                          e);
                 throw new SecurityManagementException(e);
             }
         }
     }
-    
+
     @Override
-    public void assignGroups(String username, Collection<String> groups) throws SecurityManagementException {
+    public void assignGroups(String username,
+                             Collection<String> groups) throws SecurityManagementException {
         if (getGroupsPropertiesManager() != null) {
-            Set<String> userRoles = SecurityManagementUtils.rolesToString(SecurityManagementUtils.getRoles(userSystemManager, username));
+            Set<String> userRoles = SecurityManagementUtils.rolesToString(SecurityManagementUtils.getRoles(userSystemManager,
+                                                                                                           username));
             userRoles.addAll(groups);
-            getGroupsPropertiesManager().setGroupsForUser(username, userRoles);
+            getGroupsPropertiesManager().setGroupsForUser(username,
+                                                          userRoles);
         }
     }
 
     @Override
-    public void assignRoles(String username, Collection<String> roles) throws SecurityManagementException {
+    public void assignRoles(String username,
+                            Collection<String> roles) throws SecurityManagementException {
         if (getGroupsPropertiesManager() != null) {
-            Set<String> userGroups = SecurityManagementUtils.groupsToString(SecurityManagementUtils.getGroups(userSystemManager, username));
+            Set<String> userGroups = SecurityManagementUtils.groupsToString(SecurityManagementUtils.getGroups(userSystemManager,
+                                                                                                              username));
             userGroups.addAll(roles);
-            getGroupsPropertiesManager().setGroupsForUser(username, userGroups);
+            getGroupsPropertiesManager().setGroupsForUser(username,
+                                                          userGroups);
         }
     }
-    
+
     @Override
-    public void changePassword(String username, String newPassword) throws SecurityManagementException {
-        checkNotNull("username", username);
+    public void changePassword(String username,
+                               String newPassword) throws SecurityManagementException {
+        checkNotNull("username",
+                     username);
         if (newPassword != null) {
-            updateUserProperty(username, generateHashPassword(username, realm, newPassword), "Error changing user's password.");
+            updateUserProperty(username,
+                               generateHashPassword(username,
+                                                    realm,
+                                                    newPassword),
+                               "Error changing user's password.");
         }
     }
 
@@ -188,9 +221,11 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
     public UserManagerSettings getSettings() {
         final Map<Capability, CapabilityStatus> capabilityStatusMap = new HashMap<Capability, CapabilityStatus>(8);
         for (final Capability capability : SecurityManagementUtils.USERS_CAPABILITIES) {
-            capabilityStatusMap.put(capability, getCapabilityStatus(capability));
+            capabilityStatusMap.put(capability,
+                                    getCapabilityStatus(capability));
         }
-        return new UserManagerSettingsImpl(capabilityStatusMap, null);
+        return new UserManagerSettingsImpl(capabilityStatusMap,
+                                           null);
     }
 
     protected CapabilityStatus getCapabilityStatus(Capability capability) {
@@ -211,14 +246,15 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
         return CapabilityStatus.UNSUPPORTED;
     }
 
-    protected  UserPropertiesFileLoader buildFileLoader(String usersFilePath) throws Exception {
+    protected UserPropertiesFileLoader buildFileLoader(String usersFilePath) throws Exception {
         File usersFile = new File(usersFilePath);
         if (!usersFile.exists()) {
             throw new RuntimeException("Properties file for users not found at '" + usersFilePath + "'.");
         }
 
-        this.usersFileLoader = new UserPropertiesFileLoader(usersFile.getAbsolutePath(), null) {
-            
+        this.usersFileLoader = new UserPropertiesFileLoader(usersFile.getAbsolutePath(),
+                                                            null) {
+
             // TODO Remove this when fixed in WF. Bug: Deleted properties are still persisted to properties file 
             // as the line still present in the original property file is copied during persistProperties.
             @Override
@@ -226,7 +262,8 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
                 beginPersistence();
 
                 List<String> content = readFile(propertiesFile);
-                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(propertiesFile), StandardCharsets.UTF_8));
+                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(propertiesFile),
+                                                                              StandardCharsets.UTF_8));
                 try {
                     for (String line : content) {
                         String trimmed = line.trim();
@@ -234,8 +271,10 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
                             bw.newLine();
                         } else {
                             Matcher matcher = PROPERTY_PATTERN.matcher(trimmed);
-                            if (!matcher.matches()) {                                
-                                write(bw, line, true);
+                            if (!matcher.matches()) {
+                                write(bw,
+                                      line,
+                                      true);
                             }
                         }
                     }
@@ -248,36 +287,37 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
         try {
             this.usersFileLoader.start(null);
         } catch (Exception e) {
-            throw new IOException( "Failed to start UserPropertiesFileLoader.", e);
+            throw new IOException("Failed to start UserPropertiesFileLoader.",
+                                  e);
         }
 
         return this.usersFileLoader;
-
     }
 
     /**
-     * NOTE: To obtain the user names from the UsersFileLoader class, do not use the <code>getEnabledUserNames</code> method that comes in the jboss domain-management artifcat from Wildfly, 
+     * NOTE: To obtain the user names from the UsersFileLoader class, do not use the <code>getEnabledUserNames</code> method that comes in the jboss domain-management artifcat from Wildfly,
      * as this method is not present when using the jboss domain-management artifact from EAP modules, as it's version
      * for 6.4.0.GA is quite older. So in order to be compatible with both wildfly and eap, do not use the <code>getEnabledUserNames</code> method.
      */
-    protected  List<String> getUserNames() {
+    protected List<String> getUserNames() {
         try {
             final Properties properties = usersFileLoader.getProperties();
             return toList(properties);
         } catch (Exception e) {
-            LOG.error("Error obtaining JBoss users from properties file.", e);
+            LOG.error("Error obtaining JBoss users from properties file.",
+                      e);
             throw new SecurityManagementException(e);
         }
     }
-    
+
     private List<String> toList(Properties p) {
-        if ( null != p && !p.isEmpty() ) {
+        if (null != p && !p.isEmpty()) {
             final ArrayList<String> result = new ArrayList<String>(p.size());
             final Enumeration<?> pNames = p.propertyNames();
             while (pNames.hasMoreElements()) {
                 final String pName = (String) pNames.nextElement();
                 final String trimmed = pName.trim();
-                if ( !trimmed.startsWith("#") ) {
+                if (!trimmed.startsWith("#")) {
                     result.add(pName);
                 }
             }
@@ -286,19 +326,26 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
         return new ArrayList<String>(0);
     }
 
-    protected  void updateUserProperty(final String username, final String errorMessage) {
-        updateUserProperty(username, null, errorMessage);
+    protected void updateUserProperty(final String username,
+                                      final String errorMessage) {
+        updateUserProperty(username,
+                           null,
+                           errorMessage);
     }
 
-    protected  void updateUserProperty(final String username, final String password, final String errorMessage) {
+    protected void updateUserProperty(final String username,
+                                      final String password,
+                                      final String errorMessage) {
         if (username != null) {
             try {
                 String p = password != null ? password : usersFileLoader.getProperties().getProperty(username);
                 p = p != null ? p : DEFAULT_PASSWORD;
-                usersFileLoader.getProperties().put(username, p);
+                usersFileLoader.getProperties().put(username,
+                                                    p);
                 usersFileLoader.persistProperties();
             } catch (IOException e) {
-                LOG.error(errorMessage, e);
+                LOG.error(errorMessage,
+                          e);
                 throw new SecurityManagementException(e);
             }
         }
@@ -319,5 +366,4 @@ public class WildflyUserPropertiesManager extends BaseWildflyPropertiesManager i
             return null;
         }
     }
-    
 }

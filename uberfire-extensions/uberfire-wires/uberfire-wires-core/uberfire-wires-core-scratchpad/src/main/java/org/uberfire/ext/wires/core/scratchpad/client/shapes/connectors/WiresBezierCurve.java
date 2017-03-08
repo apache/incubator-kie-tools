@@ -50,180 +50,181 @@ public class WiresBezierCurve extends WiresBaseDynamicShape implements MagnetMan
 
     private MagnetManager magnetManager;
 
-    public WiresBezierCurve( final BezierCurve shape ) {
-        final double x = shape.getControlPoints().get( 0 ).getX();
-        final double y = shape.getControlPoints().get( 0 ).getY();
-        final double controlX1 = shape.getControlPoints().get( 1 ).getX();
-        final double controlY1 = shape.getControlPoints().get( 1 ).getY();
-        final double controlX2 = shape.getControlPoints().get( 2 ).getX();
-        final double controlY2 = shape.getControlPoints().get( 2 ).getY();
-        final double endX = shape.getControlPoints().get( 3 ).getX();
-        final double endY = shape.getControlPoints().get( 3 ).getY();
+    public WiresBezierCurve(final BezierCurve shape) {
+        final double x = shape.getControlPoints().get(0).getX();
+        final double y = shape.getControlPoints().get(0).getY();
+        final double controlX1 = shape.getControlPoints().get(1).getX();
+        final double controlY1 = shape.getControlPoints().get(1).getY();
+        final double controlX2 = shape.getControlPoints().get(2).getX();
+        final double controlY2 = shape.getControlPoints().get(2).getY();
+        final double endX = shape.getControlPoints().get(3).getX();
+        final double endY = shape.getControlPoints().get(3).getY();
 
         curve = shape;
-        bounding = new BezierCurve( x,
-                                    y,
-                                    controlX1,
-                                    controlY1,
-                                    controlX2,
-                                    controlY2,
-                                    endX,
-                                    endY );
-        bounding.setStrokeWidth( BOUNDARY_SIZE );
-        bounding.setAlpha( ALPHA_DESELECTED );
+        bounding = new BezierCurve(x,
+                                   y,
+                                   controlX1,
+                                   controlY1,
+                                   controlX2,
+                                   controlY2,
+                                   endX,
+                                   endY);
+        bounding.setStrokeWidth(BOUNDARY_SIZE);
+        bounding.setAlpha(ALPHA_DESELECTED);
 
-        controlLine1 = new Line( x,
-                                 y,
-                                 controlX1,
-                                 controlY1 );
-        controlLine1.setAlpha( 0.5 );
-        controlLine1.setStrokeColor( "#0000ff" );
-        controlLine1.setDashArray( 2, 2 );
-        controlLine2 = new Line( controlX2,
-                                 controlY2,
-                                 endX,
-                                 endY );
-        controlLine2.setAlpha( 0.5 );
-        controlLine2.setStrokeColor( "#0000ff" );
-        controlLine2.setDashArray( 2, 2 );
+        controlLine1 = new Line(x,
+                                y,
+                                controlX1,
+                                controlY1);
+        controlLine1.setAlpha(0.5);
+        controlLine1.setStrokeColor("#0000ff");
+        controlLine1.setDashArray(2,
+                                  2);
+        controlLine2 = new Line(controlX2,
+                                controlY2,
+                                endX,
+                                endY);
+        controlLine2.setAlpha(0.5);
+        controlLine2.setStrokeColor("#0000ff");
+        controlLine2.setDashArray(2,
+                                  2);
 
-        add( curve );
-        add( bounding );
+        add(curve);
+        add(bounding);
 
         magnets.clear();
 
         controlPoints.clear();
-        controlPoint1 = new ConnectibleControlPoint( curve.getControlPoints().get( 0 ).getX(),
-                                                     curve.getControlPoints().get( 0 ).getY(),
-                                                     this,
-                                                     this,
-                                                     new ControlPointMoveHandler() {
-                                                         @Override
-                                                         public void onMove( final double x,
-                                                                             final double y ) {
-                                                             curve.getControlPoints().get( 0 ).setX( x - getX() );
-                                                             curve.getControlPoints().get( 0 ).setY( y - getY() );
-                                                             bounding.getControlPoints().get( 0 ).setX( x - getX() );
-                                                             bounding.getControlPoints().get( 0 ).setY( y - getY() );
-                                                             controlLine1.getPoints().get( 0 ).setX( x - getX() );
-                                                             controlLine1.getPoints().get( 0 ).setY( y - getY() );
-                                                         }
-                                                     }
+        controlPoint1 = new ConnectibleControlPoint(curve.getControlPoints().get(0).getX(),
+                                                    curve.getControlPoints().get(0).getY(),
+                                                    this,
+                                                    this,
+                                                    new ControlPointMoveHandler() {
+                                                        @Override
+                                                        public void onMove(final double x,
+                                                                           final double y) {
+                                                            curve.getControlPoints().get(0).setX(x - getX());
+                                                            curve.getControlPoints().get(0).setY(y - getY());
+                                                            bounding.getControlPoints().get(0).setX(x - getX());
+                                                            bounding.getControlPoints().get(0).setY(y - getY());
+                                                            controlLine1.getPoints().get(0).setX(x - getX());
+                                                            controlLine1.getPoints().get(0).setY(y - getY());
+                                                        }
+                                                    }
         );
 
-        controlPoint2 = new DefaultControlPoint( curve.getControlPoints().get( 1 ).getX(),
-                                                 curve.getControlPoints().get( 1 ).getY(),
-                                                 new ControlPointMoveHandler() {
-                                                     @Override
-                                                     public void onMove( final double x,
-                                                                         final double y ) {
-                                                         curve.getControlPoints().get( 1 ).setX( x - getX() );
-                                                         curve.getControlPoints().get( 1 ).setY( y - getY() );
-                                                         bounding.getControlPoints().get( 1 ).setX( x - getX() );
-                                                         bounding.getControlPoints().get( 1 ).setY( y - getY() );
-                                                         controlLine1.getPoints().get( 1 ).setX( x - getX() );
-                                                         controlLine1.getPoints().get( 1 ).setY( y - getY() );
-                                                     }
-                                                 }
+        controlPoint2 = new DefaultControlPoint(curve.getControlPoints().get(1).getX(),
+                                                curve.getControlPoints().get(1).getY(),
+                                                new ControlPointMoveHandler() {
+                                                    @Override
+                                                    public void onMove(final double x,
+                                                                       final double y) {
+                                                        curve.getControlPoints().get(1).setX(x - getX());
+                                                        curve.getControlPoints().get(1).setY(y - getY());
+                                                        bounding.getControlPoints().get(1).setX(x - getX());
+                                                        bounding.getControlPoints().get(1).setY(y - getY());
+                                                        controlLine1.getPoints().get(1).setX(x - getX());
+                                                        controlLine1.getPoints().get(1).setY(y - getY());
+                                                    }
+                                                }
         );
 
-        controlPoint3 = new DefaultControlPoint( curve.getControlPoints().get( 2 ).getX(),
-                                                 curve.getControlPoints().get( 2 ).getY(),
-                                                 new ControlPointMoveHandler() {
-                                                     @Override
-                                                     public void onMove( final double x,
-                                                                         final double y ) {
-                                                         curve.getControlPoints().get( 2 ).setX( x - getX() );
-                                                         curve.getControlPoints().get( 2 ).setY( y - getY() );
-                                                         bounding.getControlPoints().get( 2 ).setX( x - getX() );
-                                                         bounding.getControlPoints().get( 2 ).setY( y - getY() );
-                                                         controlLine2.getPoints().get( 0 ).setX( x - getX() );
-                                                         controlLine2.getPoints().get( 0 ).setY( y - getY() );
-                                                     }
-                                                 }
+        controlPoint3 = new DefaultControlPoint(curve.getControlPoints().get(2).getX(),
+                                                curve.getControlPoints().get(2).getY(),
+                                                new ControlPointMoveHandler() {
+                                                    @Override
+                                                    public void onMove(final double x,
+                                                                       final double y) {
+                                                        curve.getControlPoints().get(2).setX(x - getX());
+                                                        curve.getControlPoints().get(2).setY(y - getY());
+                                                        bounding.getControlPoints().get(2).setX(x - getX());
+                                                        bounding.getControlPoints().get(2).setY(y - getY());
+                                                        controlLine2.getPoints().get(0).setX(x - getX());
+                                                        controlLine2.getPoints().get(0).setY(y - getY());
+                                                    }
+                                                }
         );
 
-        controlPoint4 = new ConnectibleControlPoint( curve.getControlPoints().get( 3 ).getX(),
-                                                     curve.getControlPoints().get( 3 ).getY(),
-                                                     this,
-                                                     this,
-                                                     new ControlPointMoveHandler() {
-                                                         @Override
-                                                         public void onMove( final double x,
-                                                                             final double y ) {
-                                                             curve.getControlPoints().get( 3 ).setX( x - getX() );
-                                                             curve.getControlPoints().get( 3 ).setY( y - getY() );
-                                                             bounding.getControlPoints().get( 3 ).setX( x - getX() );
-                                                             bounding.getControlPoints().get( 3 ).setY( y - getY() );
-                                                             controlLine2.getPoints().get( 1 ).setX( x - getX() );
-                                                             controlLine2.getPoints().get( 1 ).setY( y - getY() );
-                                                         }
-                                                     }
+        controlPoint4 = new ConnectibleControlPoint(curve.getControlPoints().get(3).getX(),
+                                                    curve.getControlPoints().get(3).getY(),
+                                                    this,
+                                                    this,
+                                                    new ControlPointMoveHandler() {
+                                                        @Override
+                                                        public void onMove(final double x,
+                                                                           final double y) {
+                                                            curve.getControlPoints().get(3).setX(x - getX());
+                                                            curve.getControlPoints().get(3).setY(y - getY());
+                                                            bounding.getControlPoints().get(3).setX(x - getX());
+                                                            bounding.getControlPoints().get(3).setY(y - getY());
+                                                            controlLine2.getPoints().get(1).setX(x - getX());
+                                                            controlLine2.getPoints().get(1).setY(y - getY());
+                                                        }
+                                                    }
         );
 
-        addControlPoint( controlPoint1 );
-        addControlPoint( controlPoint2 );
-        addControlPoint( controlPoint3 );
-        addControlPoint( controlPoint4 );
+        addControlPoint(controlPoint1);
+        addControlPoint(controlPoint2);
+        addControlPoint(controlPoint3);
+        addControlPoint(controlPoint4);
 
         //If Connector is dragged as a whole (i.e. not a ControlPoint) detach it from Magnets
-        addNodeDragMoveHandler( new NodeDragMoveHandler() {
+        addNodeDragMoveHandler(new NodeDragMoveHandler() {
             @Override
-            public void onNodeDragMove( final NodeDragMoveEvent nodeDragMoveEvent ) {
+            public void onNodeDragMove(final NodeDragMoveEvent nodeDragMoveEvent) {
                 final Magnet boundMagnet1 = controlPoint1.getBoundMagnet();
                 final Magnet boundMagnet4 = controlPoint4.getBoundMagnet();
-                if ( boundMagnet1 != null ) {
-                    boundMagnet1.detachControlPoint( controlPoint1 );
+                if (boundMagnet1 != null) {
+                    boundMagnet1.detachControlPoint(controlPoint1);
                 }
-                if ( boundMagnet4 != null ) {
-                    boundMagnet4.detachControlPoint( controlPoint4 );
+                if (boundMagnet4 != null) {
+                    boundMagnet4.detachControlPoint(controlPoint4);
                 }
                 getLayer().batch();
             }
-        } );
+        });
     }
 
     @Override
-    public void setMagnetManager( final MagnetManager magnetManager ) {
+    public void setMagnetManager(final MagnetManager magnetManager) {
         this.magnetManager = magnetManager;
     }
 
     @Override
     public void hideAllMagnets() {
-        if ( magnetManager != null ) {
+        if (magnetManager != null) {
             magnetManager.hideAllMagnets();
         }
     }
 
     @Override
-    public Magnet getMagnet( final WiresShape shapeActive,
-                             final double cx,
-                             final double cy ) {
-        if ( this.magnetManager != null ) {
-            return magnetManager.getMagnet( shapeActive,
-                                            cx,
-                                            cy );
+    public Magnet getMagnet(final WiresShape shapeActive,
+                            final double cx,
+                            final double cy) {
+        if (this.magnetManager != null) {
+            return magnetManager.getMagnet(shapeActive,
+                                           cx,
+                                           cy);
         }
         return null;
     }
 
     @Override
-    public void setSelected( final boolean isSelected ) {
-        if ( isSelected ) {
-            add( controlLine1 );
-            add( controlLine2 );
-            bounding.setAlpha( ALPHA_SELECTED );
+    public void setSelected(final boolean isSelected) {
+        if (isSelected) {
+            add(controlLine1);
+            add(controlLine2);
+            bounding.setAlpha(ALPHA_SELECTED);
         } else {
-            remove( controlLine1 );
-            remove( controlLine2 );
-            bounding.setAlpha( ALPHA_DESELECTED );
+            remove(controlLine1);
+            remove(controlLine2);
+            bounding.setAlpha(ALPHA_DESELECTED);
         }
     }
 
     @Override
-    public boolean contains( final double cx,
-                             final double cy ) {
+    public boolean contains(final double cx,
+                            final double cy) {
         return false;
     }
-
 }

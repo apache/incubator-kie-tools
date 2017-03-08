@@ -23,5 +23,4 @@ public interface KObjectSimpleKey {
     String getSegmentId();
 
     String getKey();
-
 }

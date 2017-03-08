@@ -16,14 +16,13 @@
 
 package org.uberfire.ext.security.management.api;
 
-import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
-
 import java.util.List;
 import java.util.Set;
 
+import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
+
 /**
  * <p>Basic management API for security realm entities type of <code>T</code>.</p>
- * 
  * @since 0.8.0
  */
 public interface AbstractEntityManager<T, S extends Settings> {
@@ -31,7 +30,7 @@ public interface AbstractEntityManager<T, S extends Settings> {
     /**
      * Search entities.
      * @param request The search request constraints.
-     * @return List of resulting entities from the search result. 
+     * @return List of resulting entities from the search result.
      * @throws SecurityManagementException
      */
     SearchResponse<T> search(SearchRequest request) throws SecurityManagementException;
@@ -86,16 +85,16 @@ public interface AbstractEntityManager<T, S extends Settings> {
         String getSearchPattern();
 
         /**
-         * <p>Constrained (not available to use) identifiers.</p> 
-         * <p>If you don't want to include some entities in the response, add their identifiers in the collection.</p>  
+         * <p>Constrained (not available to use) identifiers.</p>
+         */
+        Set<String> getConstrainedIdentifiers();
+
+        /**
+         * <p>Constrained (not available to use) identifiers.</p>
+         * <p>If you don't want to include some entities in the response, add their identifiers in the collection.</p>
          */
         SearchRequest setConstrainedIdentifiers(Set<String> constrainedIdentifiers);
 
-        /**
-         * <p>Constrained (not available to use) identifiers.</p> 
-         */
-        Set<String> getConstrainedIdentifiers();
-        
         /**
          * <p>The page number for the search cursor.</p>
          * <p>IMPORTANT NOTE: Page number starts with value <code>1</code>.</p>
@@ -115,17 +114,17 @@ public interface AbstractEntityManager<T, S extends Settings> {
      * @param <T> The entity type.
      */
     interface SearchResponse<T> {
+
         /**
          * <p>The entities resulting from the search operation.</p>
          * @return The entities resulting from the search operation.
          */
         List<T> getResults();
-        
+
         /**
          * <p>The total entities count.</p>
-         * @return 
-         *  <p>By convention, if the service provider implementation class is not able to get the row count, this method should return <code>-1</code>.</p>
-         *  <p>Otherwise, returns search results count for this entity type.</p>
+         * @return <p>By convention, if the service provider implementation class is not able to get the row count, this method should return <code>-1</code>.</p>
+         * <p>Otherwise, returns search results count for this entity type.</p>
          */
         int getTotal();
 
@@ -155,5 +154,4 @@ public interface AbstractEntityManager<T, S extends Settings> {
          */
         int getPageSize();
     }
-
 }

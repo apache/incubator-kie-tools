@@ -40,66 +40,51 @@ import org.uberfire.ext.security.management.client.resources.i18n.SecurityManage
 public class MultiplePermissionNodeEditorView extends Composite
         implements MultiplePermissionNodeEditor.View {
 
-    private MultiplePermissionNodeEditor presenter;
-
     @Inject
     @DataField
     Div rootPanel;
-
     @Inject
     @DataField
     Div headerPanel;
-
     @Inject
     @DataField
     Anchor nodeAnchor;
-
     @Inject
     @DataField
     Div nodeAnchorPanel;
-
     @Inject
     @DataField
     Span nodeAnchorHelp;
-
     @Inject
     @DataField
     FlowPanel nodePermissions;
-
     @Inject
     @DataField
     Div collapsePanel;
-
     @Inject
     @DataField
     FlowPanel nodeChildren;
-
     @Inject
     @DataField
     Anchor addChildAnchor;
-
     @Inject
     @DataField
     Anchor clearChildrenAnchor;
-
     @Inject
     @DataField
     Div addChildPanel;
-
     @Inject
     @DataField
     Div clearChildrenPanel;
-
     @Inject
     @DataField
     Anchor cancelAnchor;
-
     @Inject
     @DataField
     FlowPanel childSelectorPanel;
-
     boolean expanded;
     boolean mouseOver;
+    private MultiplePermissionNodeEditor presenter;
 
     @Override
     public void init(MultiplePermissionNodeEditor presenter) {
@@ -120,7 +105,8 @@ public class MultiplePermissionNodeEditorView extends Composite
 
     @Override
     public void setNodePanelWidth(int width) {
-        nodeAnchorPanel.getStyle().setProperty("width", width + "px");
+        nodeAnchorPanel.getStyle().setProperty("width",
+                                               width + "px");
     }
 
     @Override
@@ -141,26 +127,29 @@ public class MultiplePermissionNodeEditorView extends Composite
     }
 
     @Override
-    public void addChildEditor(PermissionNodeEditor editor, boolean dynamic) {
+    public void addChildEditor(PermissionNodeEditor editor,
+                               boolean dynamic) {
         if (dynamic) {
             editor.setLeftMargin(20);
 
             FlowPanel row = new FlowPanel();
             org.gwtbootstrap3.client.ui.Anchor anchor = new org.gwtbootstrap3.client.ui.Anchor();
             anchor.addStyleName("pf pficon-delete");
-            anchor.getElement().getStyle().setWidth(20, Style.Unit.PX);
+            anchor.getElement().getStyle().setWidth(20,
+                                                    Style.Unit.PX);
             anchor.getElement().getStyle().setDisplay(Style.Display.TABLE_CELL);
             anchor.getElement().getStyle().setVerticalAlign(Style.VerticalAlign.MIDDLE);
             anchor.addClickHandler(event -> presenter.onRemoveChild(editor));
             editor.asWidget().getElement().getStyle().setDisplay(Style.Display.TABLE_CELL);
-            editor.asWidget().getElement().getStyle().setProperty("paddingLeft", "0px");
+            editor.asWidget().getElement().getStyle().setProperty("paddingLeft",
+                                                                  "0px");
 
-            row.getElement().getStyle().setProperty("paddingLeft", "20px");
+            row.getElement().getStyle().setProperty("paddingLeft",
+                                                    "20px");
             row.add(anchor);
             row.add(editor);
             nodeChildren.add(row);
-        }
-        else {
+        } else {
             nodeChildren.add(editor);
         }
     }
@@ -168,7 +157,8 @@ public class MultiplePermissionNodeEditorView extends Composite
     @Override
     public void addChildSeparator() {
         FlowPanel separator = new FlowPanel();
-        separator.getElement().getStyle().setHeight(1, Style.Unit.PX);
+        separator.getElement().getStyle().setHeight(1,
+                                                    Style.Unit.PX);
         separator.getElement().getStyle().setBackgroundColor("lightgrey");
         nodeChildren.add(separator);
     }
@@ -211,7 +201,8 @@ public class MultiplePermissionNodeEditorView extends Composite
 
     @Override
     public void hideChildSelector() {
-        addChildPanel.getStyle().setProperty("display", "none");
+        addChildPanel.getStyle().setProperty("display",
+                                             "none");
     }
 
     @Override
@@ -219,7 +210,8 @@ public class MultiplePermissionNodeEditorView extends Composite
         if (enabled) {
             addChildAnchor.getStyle().removeProperty("display");
         } else {
-            addChildAnchor.getStyle().setProperty("display", "none");
+            addChildAnchor.getStyle().setProperty("display",
+                                                  "none");
         }
     }
 
@@ -228,7 +220,8 @@ public class MultiplePermissionNodeEditorView extends Composite
         if (enabled) {
             clearChildrenAnchor.getStyle().removeProperty("display");
         } else {
-            clearChildrenAnchor.getStyle().setProperty("display", "none");
+            clearChildrenAnchor.getStyle().setProperty("display",
+                                                       "none");
         }
     }
 
@@ -241,7 +234,6 @@ public class MultiplePermissionNodeEditorView extends Composite
         rootPanel.setClassName(rootPanelCss);
         headerPanel.setClassName(headerPanelCss);
     }
-
 
     @EventHandler("nodeAnchor")
     private void onNodeClick(ClickEvent event) {

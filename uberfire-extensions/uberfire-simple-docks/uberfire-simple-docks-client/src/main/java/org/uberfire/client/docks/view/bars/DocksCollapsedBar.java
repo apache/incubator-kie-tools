@@ -35,25 +35,13 @@ import org.uberfire.mvp.ParameterizedCommand;
 public class DocksCollapsedBar
         extends Composite {
 
-    private UberfireDockPosition position;
-
-    private WebAppResource CSS = GWT.create(WebAppResource.class);
-
-    private AbstractDockItem firstDockItem;
-
-    private SingleSideDockItem singleSideDockItem;
-
-    interface ViewBinder
-            extends
-            UiBinder<Widget, DocksCollapsedBar> {
-
-    }
-
-    private ViewBinder uiBinder = GWT.create(ViewBinder.class);
-
     @UiField
     FlowPanel docksBarPanel;
-
+    private UberfireDockPosition position;
+    private WebAppResource CSS = GWT.create(WebAppResource.class);
+    private AbstractDockItem firstDockItem;
+    private SingleSideDockItem singleSideDockItem;
+    private ViewBinder uiBinder = GWT.create(ViewBinder.class);
     private List<AbstractDockItem> docksItems = new ArrayList<AbstractDockItem>();
 
     public DocksCollapsedBar(UberfireDockPosition position) {
@@ -61,7 +49,6 @@ public class DocksCollapsedBar
         this.position = position;
         setCSS(position);
     }
-
 
     private void setCSS(UberfireDockPosition position) {
         if (position == UberfireDockPosition.SOUTH) {
@@ -75,23 +62,31 @@ public class DocksCollapsedBar
                         final ParameterizedCommand<String> selectCommand,
                         final ParameterizedCommand<String> deselectCommand) {
 
-        AbstractDockItem dockItem = AbstractDockItem.create(dock, selectCommand, deselectCommand);
+        AbstractDockItem dockItem = AbstractDockItem.create(dock,
+                                                            selectCommand,
+                                                            deselectCommand);
 
         if (dock.getDockPosition().allowSingleDockItem()) {
-            handleSingleDockItem(dockItem, dock, selectCommand, deselectCommand);
+            handleSingleDockItem(dockItem,
+                                 dock,
+                                 selectCommand,
+                                 deselectCommand);
         }
 
         docksBarPanel.add(dockItem);
 
         docksItems.add(dockItem);
-
     }
 
-
-    private void handleSingleDockItem(AbstractDockItem dockItem, UberfireDock dock, ParameterizedCommand<String> selectCommand, ParameterizedCommand<String> deselectCommand) {
+    private void handleSingleDockItem(AbstractDockItem dockItem,
+                                      UberfireDock dock,
+                                      ParameterizedCommand<String> selectCommand,
+                                      ParameterizedCommand<String> deselectCommand) {
         if (docksItems.isEmpty()) {
-            createSingleDockItem(dockItem, dock, selectCommand, deselectCommand);
-
+            createSingleDockItem(dockItem,
+                                 dock,
+                                 selectCommand,
+                                 deselectCommand);
         } else if (singleDockMode()) {
             clearSingleDockItem();
         }
@@ -101,10 +96,15 @@ public class DocksCollapsedBar
         return position.allowSingleDockItem() && docksItems.size() == 1;
     }
 
-    private void createSingleDockItem(AbstractDockItem dockItem, UberfireDock dock, ParameterizedCommand<String> selectCommand, ParameterizedCommand<String> deselectCommand) {
+    private void createSingleDockItem(AbstractDockItem dockItem,
+                                      UberfireDock dock,
+                                      ParameterizedCommand<String> selectCommand,
+                                      ParameterizedCommand<String> deselectCommand) {
         firstDockItem = dockItem;
         firstDockItem.addStyleName(CSS.CSS().hideElement());
-        singleSideDockItem = new SingleSideDockItem(dock, selectCommand, deselectCommand);
+        singleSideDockItem = new SingleSideDockItem(dock,
+                                                    selectCommand,
+                                                    deselectCommand);
         docksBarPanel.add(singleSideDockItem);
     }
 
@@ -156,11 +156,15 @@ public class DocksCollapsedBar
     public void expand(UberfireDock targetDock) {
         for (AbstractDockItem abstractDockItem : getDocksItems()) {
             UberfireDock candidate = abstractDockItem.getDock();
-            if(candidate.equals(targetDock)){
+            if (candidate.equals(targetDock)) {
                 abstractDockItem.selectAndExecuteExpandCommand();
             }
         }
     }
 
+    interface ViewBinder
+            extends
+            UiBinder<Widget, DocksCollapsedBar> {
 
+    }
 }

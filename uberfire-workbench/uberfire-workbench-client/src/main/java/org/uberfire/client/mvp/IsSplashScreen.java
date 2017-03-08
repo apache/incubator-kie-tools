@@ -26,7 +26,7 @@ import javax.inject.Qualifier;
 @Qualifier
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
+@Target({ElementType.TYPE})
 public @interface IsSplashScreen {
 
 }

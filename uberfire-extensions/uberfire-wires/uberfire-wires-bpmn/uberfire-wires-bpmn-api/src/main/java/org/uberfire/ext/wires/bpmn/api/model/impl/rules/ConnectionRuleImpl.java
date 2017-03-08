@@ -30,15 +30,15 @@ public class ConnectionRuleImpl implements ConnectionRule {
     private Role role;
     private Set<PermittedConnection> permittedRoles;
 
-    public ConnectionRuleImpl( @MapsTo("name") final String name,
-                               @MapsTo("role") final Role role,
-                               @MapsTo("permittedRoles") final Set<PermittedConnection> permittedRoles ) {
-        this.name = PortablePreconditions.checkNotNull( "name",
-                                                        name );
-        this.role = PortablePreconditions.checkNotNull( "role",
-                                                        role );
-        this.permittedRoles = PortablePreconditions.checkNotNull( "permittedRoles",
-                                                                  permittedRoles );
+    public ConnectionRuleImpl(@MapsTo("name") final String name,
+                              @MapsTo("role") final Role role,
+                              @MapsTo("permittedRoles") final Set<PermittedConnection> permittedRoles) {
+        this.name = PortablePreconditions.checkNotNull("name",
+                                                       name);
+        this.role = PortablePreconditions.checkNotNull("role",
+                                                       role);
+        this.permittedRoles = PortablePreconditions.checkNotNull("permittedRoles",
+                                                                 permittedRoles);
     }
 
     @Override
@@ -55,5 +55,4 @@ public class ConnectionRuleImpl implements ConnectionRule {
     public Set<PermittedConnection> getPermittedConnections() {
         return permittedRoles;
     }
-
 }

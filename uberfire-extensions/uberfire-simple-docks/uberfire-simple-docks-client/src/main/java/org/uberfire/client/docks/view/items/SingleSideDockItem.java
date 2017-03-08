@@ -33,48 +33,40 @@ import org.uberfire.mvp.ParameterizedCommand;
 public class SingleSideDockItem
         extends AbstractDockItem {
 
+    private static WebAppResource CSS = GWT.create(WebAppResource.class);
     private final ParameterizedCommand<String> selectCommand;
-
-    interface ViewBinder
-            extends
-            UiBinder<Widget, SingleSideDockItem> {
-
-    }
-
     @UiField
     Button itemButton;
 
-    private ViewBinder uiBinder = GWT.create( ViewBinder.class );
+    private ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
-    private static WebAppResource CSS = GWT.create( WebAppResource.class );
-
-    public SingleSideDockItem( UberfireDock dock,
-                               final ParameterizedCommand<String> selectCommand,
-                               final ParameterizedCommand<String> deselectCommand ) {
-        super( dock );
+    public SingleSideDockItem(UberfireDock dock,
+                              final ParameterizedCommand<String> selectCommand,
+                              final ParameterizedCommand<String> deselectCommand) {
+        super(dock);
         this.selectCommand = selectCommand;
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
         createButtom();
     }
 
     private void createButtom() {
-        itemButton.addStyleName( CSS.CSS().singleDockItem() );
-        itemButton.addStyleName( CSS.CSS().sideDockItem() );
-        itemButton.setIcon( IconType.CHEVRON_RIGHT );
-        itemButton.setIconFixedWidth( true );
-        itemButton.setSize( ButtonSize.SMALL );
-        itemButton.setType( ButtonType.LINK );
-        itemButton.addClickHandler( new ClickHandler() {
+        itemButton.addStyleName(CSS.CSS().singleDockItem());
+        itemButton.addStyleName(CSS.CSS().sideDockItem());
+        itemButton.setIcon(IconType.CHEVRON_RIGHT);
+        itemButton.setIconFixedWidth(true);
+        itemButton.setSize(ButtonSize.SMALL);
+        itemButton.setType(ButtonType.LINK);
+        itemButton.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 selectAndExecuteExpandCommand();
             }
-        } );
+        });
     }
 
     @Override
     public void selectAndExecuteExpandCommand() {
-        selectCommand.execute( getIdentifier() );
+        selectCommand.execute(getIdentifier());
     }
 
     @Override
@@ -85,4 +77,9 @@ public class SingleSideDockItem
     public void deselect() {
     }
 
+    interface ViewBinder
+            extends
+            UiBinder<Widget, SingleSideDockItem> {
+
+    }
 }

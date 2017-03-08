@@ -21,8 +21,8 @@ import javax.enterprise.context.ApplicationScoped;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.uberfire.ext.plugin.type.ScreenPluginResourceTypeDefinition;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.ext.plugin.type.ScreenPluginResourceTypeDefinition;
 
 @ApplicationScoped
 public class ScreenPluginResourceType
@@ -31,6 +31,6 @@ public class ScreenPluginResourceType
 
     @Override
     public IsWidget getIcon() {
-        return new Icon( IconType.DESKTOP );
+        return new Icon(IconType.DESKTOP);
     }
 }

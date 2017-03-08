@@ -38,78 +38,81 @@ import org.uberfire.mvp.impl.PathPlaceRequest;
 @ApplicationScoped
 public class NewPluginPopUp implements NewPluginPopUpView.Presenter {
 
-    private NewPluginPopUpView view;
-
     @Inject
     Caller<PluginServices> pluginServices;
-
     @Inject
     PlaceManager placeManager;
-
     @Inject
     PluginNameValidator pluginNameValidator;
+    private NewPluginPopUpView view;
 
     // For proxying
-    protected NewPluginPopUp() {}
+    protected NewPluginPopUp() {
+    }
 
     @Inject
-    public NewPluginPopUp( final NewPluginPopUpView view ) {
+    public NewPluginPopUp(final NewPluginPopUpView view) {
         this.view = view;
-        this.view.init( this );
+        this.view.init(this);
     }
 
     @Override
     public RuleValidator getNameValidator() {
-        return NameValidator.createNameValidator( view.emptyName(), view.invalidName() );
+        return NameValidator.createNameValidator(view.emptyName(),
+                                                 view.invalidName());
     }
 
     @Override
-    public void onOK( final String name,
-                      final PluginType type ) {
+    public void onOK(final String name,
+                     final PluginType type) {
 
-        pluginNameValidator.validate( name + ".plugin", new ValidatorWithReasonCallback() {
-            @Override
-            public void onFailure( final String reason ) {
-                if ( ValidationErrorReason.EMPTY_NAME.name().equals( reason ) ) {
-                    view.handleNameValidationError( view.emptyName() );
-                } else if ( ValidationErrorReason.DUPLICATED_NAME.name().equals( reason ) ) {
-                    view.handleNameValidationError( view.duplicatedName() );
-                } else {
-                    view.handleNameValidationError( view.invalidName() );
-                }
-            }
+        pluginNameValidator.validate(name + ".plugin",
+                                     new ValidatorWithReasonCallback() {
+                                         @Override
+                                         public void onFailure(final String reason) {
+                                             if (ValidationErrorReason.EMPTY_NAME.name().equals(reason)) {
+                                                 view.handleNameValidationError(view.emptyName());
+                                             } else if (ValidationErrorReason.DUPLICATED_NAME.name().equals(reason)) {
+                                                 view.handleNameValidationError(view.duplicatedName());
+                                             } else {
+                                                 view.handleNameValidationError(view.invalidName());
+                                             }
+                                         }
 
-            @Override
-            public void onSuccess() {
-                pluginServices.call( new RemoteCallback<Plugin>() {
-                    @Override
-                    public void callback( final Plugin response ) {
-                        placeManager.goTo( getPathPlaceRequest( response ) );
-                        hide();
-                    }
-                }, new ErrorCallback<Object>() {
-                    @Override
-                    public boolean error( final Object message,
-                                          final Throwable throwable ) {
-                        if ( throwable instanceof PluginAlreadyExists ) {
-                            view.handleNameValidationError( view.duplicatedName() );
-                        } else {
-                            view.handleNameValidationError( view.invalidName() );
-                        }
-                        return false;
-                    }
-                } ).createNewPlugin( name, type );
-            }
+                                         @Override
+                                         public void onSuccess() {
+                                             pluginServices.call(new RemoteCallback<Plugin>() {
+                                                                     @Override
+                                                                     public void callback(final Plugin response) {
+                                                                         placeManager.goTo(getPathPlaceRequest(response));
+                                                                         hide();
+                                                                     }
+                                                                 },
+                                                                 new ErrorCallback<Object>() {
+                                                                     @Override
+                                                                     public boolean error(final Object message,
+                                                                                          final Throwable throwable) {
+                                                                         if (throwable instanceof PluginAlreadyExists) {
+                                                                             view.handleNameValidationError(view.duplicatedName());
+                                                                         } else {
+                                                                             view.handleNameValidationError(view.invalidName());
+                                                                         }
+                                                                         return false;
+                                                                     }
+                                                                 }).createNewPlugin(name,
+                                                                                    type);
+                                         }
 
-            @Override
-            public void onFailure() {
-                view.handleNameValidationError( view.invalidName() );
-            }
-        } );
+                                         @Override
+                                         public void onFailure() {
+                                             view.handleNameValidationError(view.invalidName());
+                                         }
+                                     });
     }
 
-    protected PlaceRequest getPathPlaceRequest( Plugin response ) {
-        return new PathPlaceRequest( response.getPath() ).addParameter( "name", response.getName() );
+    protected PlaceRequest getPathPlaceRequest(Plugin response) {
+        return new PathPlaceRequest(response.getPath()).addParameter("name",
+                                                                     response.getName());
     }
 
     @Override
@@ -117,8 +120,8 @@ public class NewPluginPopUp implements NewPluginPopUpView.Presenter {
         hide();
     }
 
-    public void show( final PluginType type ) {
-        view.show( type );
+    public void show(final PluginType type) {
+        view.show(type);
     }
 
     private void hide() {

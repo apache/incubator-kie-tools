@@ -22,12 +22,12 @@ import java.util.Map;
 import org.uberfire.java.nio.file.attribute.AttributeView;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributeView;
 
-import static java.util.Collections.*;
+import static java.util.Collections.unmodifiableMap;
 
 public class AttrsStorageImpl implements AttrsStorage {
 
-    final Properties                   content        = new Properties();
-    final Map<String, AttributeView>   viewsNameIndex = new HashMap<String, AttributeView>();
+    final Properties content = new Properties();
+    final Map<String, AttributeView> viewsNameIndex = new HashMap<String, AttributeView>();
     final Map<Class<?>, AttributeView> viewsTypeIndex = new HashMap<Class<?>, AttributeView>();
 
     @Override
@@ -36,26 +36,29 @@ public class AttrsStorageImpl implements AttrsStorage {
     }
 
     @Override
-    public <V extends AttributeView> void addAttrView( final V view ) {
-        viewsNameIndex.put( view.name(), view );
-        if ( view instanceof ExtendedAttributeView ) {
+    public <V extends AttributeView> void addAttrView(final V view) {
+        viewsNameIndex.put(view.name(),
+                           view);
+        if (view instanceof ExtendedAttributeView) {
             final ExtendedAttributeView extendedView = (ExtendedAttributeView) view;
-            for ( Class<? extends BasicFileAttributeView> type : extendedView.viewTypes() ) {
-                viewsTypeIndex.put( type, view );
+            for (Class<? extends BasicFileAttributeView> type : extendedView.viewTypes()) {
+                viewsTypeIndex.put(type,
+                                   view);
             }
         } else {
-            viewsTypeIndex.put( view.getClass(), view );
+            viewsTypeIndex.put(view.getClass(),
+                               view);
         }
     }
 
     @Override
-    public <V extends AttributeView> V getAttrView( final Class<V> type ) {
-        return (V) viewsTypeIndex.get( type );
+    public <V extends AttributeView> V getAttrView(final Class<V> type) {
+        return (V) viewsTypeIndex.get(type);
     }
 
     @Override
-    public <V extends AttributeView> V getAttrView( final String name ) {
-        return (V) viewsNameIndex.get( name );
+    public <V extends AttributeView> V getAttrView(final String name) {
+        return (V) viewsNameIndex.get(name);
     }
 
     @Override
@@ -67,36 +70,38 @@ public class AttrsStorageImpl implements AttrsStorage {
 
     @Override
     public Properties toProperties() {
-        return buildProperties( false );
+        return buildProperties(false);
     }
 
     @Override
-    public void loadContent( final Properties properties ) {
+    public void loadContent(final Properties properties) {
         content.clear();
-        for ( final Map.Entry<String, Object> attr : properties.entrySet() ) {
-            content.put( attr.getKey(), attr.getValue() );
+        for (final Map.Entry<String, Object> attr : properties.entrySet()) {
+            content.put(attr.getKey(),
+                        attr.getValue());
         }
     }
 
     @Override
     public Map<String, Object> getContent() {
-        return unmodifiableMap( buildProperties( false ) );
+        return unmodifiableMap(buildProperties(false));
     }
 
     @Override
     public Map<String, Object> getAllContent() {
-        return unmodifiableMap( buildProperties( true ) );
+        return unmodifiableMap(buildProperties(true));
     }
 
-    private synchronized Properties buildProperties( boolean includesNonSerializable ) {
-        final Properties properties = new Properties( content );
+    private synchronized Properties buildProperties(boolean includesNonSerializable) {
+        final Properties properties = new Properties(content);
 
-        for ( final Map.Entry<String, AttributeView> view : viewsNameIndex.entrySet() ) {
-            if ( includesNonSerializable ||
-                    view.getValue() instanceof ExtendedAttributeView && ( (ExtendedAttributeView) view.getValue() ).isSerializable() ) {
+        for (final Map.Entry<String, AttributeView> view : viewsNameIndex.entrySet()) {
+            if (includesNonSerializable ||
+                    view.getValue() instanceof ExtendedAttributeView && ((ExtendedAttributeView) view.getValue()).isSerializable()) {
                 final ExtendedAttributeView extendedView = (ExtendedAttributeView) view.getValue();
-                for ( final Map.Entry<String, Object> attr : extendedView.readAllAttributes().entrySet() ) {
-                    properties.put( attr.getKey(), attr.getValue() );
+                for (final Map.Entry<String, Object> attr : extendedView.readAllAttributes().entrySet()) {
+                    properties.put(attr.getKey(),
+                                   attr.getValue());
                 }
             }
         }

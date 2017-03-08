@@ -35,62 +35,59 @@ import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
  */
 public class ErrorPopup extends BaseModal {
 
+    private static ErrorPopupWidgetBinder uiBinder = GWT.create(ErrorPopupWidgetBinder.class);
+    private static ErrorPopup instance = new ErrorPopup();
+    @UiField
+    protected HTML message;
+
+    private ErrorPopup() {
+        setTitle(CommonConstants.INSTANCE.Error());
+
+        setBody(uiBinder.createAndBindUi(ErrorPopup.this));
+        add(new ModalFooterOKButton(new Command() {
+            @Override
+            public void execute() {
+                hide();
+            }
+        }));
+    }
+
+    public static void showMessage(String message) {
+        instance.setMessage(message);
+        instance.show();
+    }
+
+    public static void showMessage(final String msg,
+                                   final Command afterShow,
+                                   final Command afterClose) {
+        new ErrorPopup() {{
+            setMessage(msg);
+            addShowHandler(new ModalShowHandler() {
+                @Override
+                public void onShow(final ModalShowEvent showEvent) {
+                    if (afterShow != null) {
+                        afterShow.execute();
+                    }
+                }
+            });
+            addHiddenHandler(new ModalHiddenHandler() {
+                @Override
+                public void onHidden(final ModalHiddenEvent hiddenEvent) {
+                    if (afterClose != null) {
+                        afterClose.execute();
+                    }
+                }
+            });
+        }}.show();
+    }
+
+    public void setMessage(final String message) {
+        this.message.setHTML(SafeHtmlUtils.fromTrustedString(message));
+    }
+
     interface ErrorPopupWidgetBinder
             extends
             UiBinder<Widget, ErrorPopup> {
 
     }
-
-    private static ErrorPopupWidgetBinder uiBinder = GWT.create( ErrorPopupWidgetBinder.class );
-
-    private static ErrorPopup instance = new ErrorPopup();
-
-    @UiField
-    protected HTML message;
-
-    private ErrorPopup() {
-        setTitle( CommonConstants.INSTANCE.Error() );
-
-        setBody( uiBinder.createAndBindUi( ErrorPopup.this ) );
-        add( new ModalFooterOKButton( new Command() {
-            @Override
-            public void execute() {
-                hide();
-            }
-        } ) );
-    }
-
-    public void setMessage( final String message ) {
-        this.message.setHTML( SafeHtmlUtils.fromTrustedString( message ) );
-    }
-
-    public static void showMessage( String message ) {
-        instance.setMessage( message );
-        instance.show();
-    }
-
-    public static void showMessage( final String msg,
-                                    final Command afterShow,
-                                    final Command afterClose ) {
-        new ErrorPopup() {{
-            setMessage( msg );
-            addShowHandler( new ModalShowHandler() {
-                @Override
-                public void onShow( final ModalShowEvent showEvent ) {
-                    if ( afterShow != null ) {
-                        afterShow.execute();
-                    }
-                }
-            } );
-            addHiddenHandler( new ModalHiddenHandler() {
-                @Override
-                public void onHidden( final ModalHiddenEvent hiddenEvent ) {
-                    if ( afterClose != null ) {
-                        afterClose.execute();
-                    }
-                }
-            } );
-        }}.show();
-    }
-
 }

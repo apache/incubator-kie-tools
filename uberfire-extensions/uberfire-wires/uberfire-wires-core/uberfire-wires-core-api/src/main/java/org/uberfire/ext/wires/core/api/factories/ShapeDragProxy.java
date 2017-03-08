@@ -33,16 +33,16 @@ public interface ShapeDragProxy {
      * @param x
      * @param y
      */
-    void onDragPreview( final double x,
-                        final double y );
+    void onDragPreview(final double x,
+                       final double y);
 
     /**
      * Called when the drag operation completes
      * @param x
      * @param y
      */
-    void onDragComplete( final double x,
-                         final double y );
+    void onDragComplete(final double x,
+                        final double y);
 
     /**
      * Height of proxy used to ensure proxy is centered around mouse pointer position
@@ -55,5 +55,4 @@ public interface ShapeDragProxy {
      * @return
      */
     double getWidth();
-
 }

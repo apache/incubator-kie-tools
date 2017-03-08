@@ -22,65 +22,60 @@ import org.uberfire.mvp.PlaceRequest;
  */
 public class NotificationEvent implements UberFireEvent {
 
-    public static enum NotificationType {
-        DEFAULT, ERROR, SUCCESS, INFO, WARNING
-    }
-
     private final String notification;
     private final NotificationType type;
     private final boolean isSingleton;
     private final PlaceRequest placeRequest;
     private final Integer initialTopOffset;
-
-    public NotificationEvent( final String notification ) {
-        this( notification,
-              NotificationType.DEFAULT,
-              false,
-              null );
+    public NotificationEvent(final String notification) {
+        this(notification,
+             NotificationType.DEFAULT,
+             false,
+             null);
     }
 
-    public NotificationEvent( final String notification,
-                              final NotificationType type ) {
-        this( notification,
-              type,
-              false,
-              null );
+    public NotificationEvent(final String notification,
+                             final NotificationType type) {
+        this(notification,
+             type,
+             false,
+             null);
     }
 
-    public NotificationEvent( final String notification,
-                              final boolean isSingleton ) {
-        this( notification,
-              NotificationType.DEFAULT,
-              isSingleton,
-              null );
+    public NotificationEvent(final String notification,
+                             final boolean isSingleton) {
+        this(notification,
+             NotificationType.DEFAULT,
+             isSingleton,
+             null);
     }
 
-    public NotificationEvent( final String notification,
-                              final NotificationType type,
-                              final boolean isSingleton ) {
-        this( notification,
-              NotificationType.DEFAULT,
-              isSingleton,
-              null );
+    public NotificationEvent(final String notification,
+                             final NotificationType type,
+                             final boolean isSingleton) {
+        this(notification,
+             NotificationType.DEFAULT,
+             isSingleton,
+             null);
     }
 
-    public NotificationEvent( final String notification,
-                              final NotificationType type,
-                              final boolean isSingleton,
-                              final PlaceRequest placeRequest ) {
-        
-        this( notification,
-              type,
-              isSingleton,
-              placeRequest,
-              null );
+    public NotificationEvent(final String notification,
+                             final NotificationType type,
+                             final boolean isSingleton,
+                             final PlaceRequest placeRequest) {
+
+        this(notification,
+             type,
+             isSingleton,
+             placeRequest,
+             null);
     }
-    
-    public NotificationEvent( final String notification,
-                              final NotificationType type,
-                              final boolean isSingleton,
-                              final PlaceRequest placeRequest,
-                              final Integer initialTopOffset) {
+
+    public NotificationEvent(final String notification,
+                             final NotificationType type,
+                             final boolean isSingleton,
+                             final PlaceRequest placeRequest,
+                             final Integer initialTopOffset) {
         this.notification = notification;
         this.type = type;
         this.isSingleton = isSingleton;
@@ -103,7 +98,7 @@ public class NotificationEvent implements UberFireEvent {
     public PlaceRequest getPlaceRequest() {
         return placeRequest;
     }
-    
+
     public Integer getInitialTopOffset() {
         return initialTopOffset;
     }
@@ -126,34 +121,52 @@ public class NotificationEvent implements UberFireEvent {
     }
 
     @Override
-    public boolean equals( Object obj ) {
-        if ( this == obj )
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
-        if ( obj == null )
+        }
+        if (obj == null) {
             return false;
-        if ( getClass() != obj.getClass() )
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         NotificationEvent other = (NotificationEvent) obj;
-        if ( isSingleton != other.isSingleton )
+        if (isSingleton != other.isSingleton) {
             return false;
-        if ( notification == null ) {
-            if ( other.notification != null )
+        }
+        if (notification == null) {
+            if (other.notification != null) {
                 return false;
-        } else if ( !notification.equals( other.notification ) )
+            }
+        } else if (!notification.equals(other.notification)) {
             return false;
-        if ( placeRequest == null ) {
-            if ( other.placeRequest != null )
+        }
+        if (placeRequest == null) {
+            if (other.placeRequest != null) {
                 return false;
-        } else if ( !placeRequest.equals( other.placeRequest ) )
+            }
+        } else if (!placeRequest.equals(other.placeRequest)) {
             return false;
-        if ( initialTopOffset == null ) {
-            if ( other.initialTopOffset != null )
+        }
+        if (initialTopOffset == null) {
+            if (other.initialTopOffset != null) {
                 return false;
-        } else if ( !initialTopOffset.equals( other.initialTopOffset ) )
+            }
+        } else if (!initialTopOffset.equals(other.initialTopOffset)) {
             return false;
-        if ( type != other.type )
+        }
+        if (type != other.type) {
             return false;
+        }
         return true;
     }
-    
+
+    public static enum NotificationType {
+        DEFAULT,
+        ERROR,
+        SUCCESS,
+        INFO,
+        WARNING
+    }
 }

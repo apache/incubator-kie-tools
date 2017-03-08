@@ -24,7 +24,7 @@ import org.uberfire.backend.vfs.Path;
 public class SaveInProgressEvent {
 
     private final Path path;
-    
+
     public SaveInProgressEvent(Path path) {
         this.path = path;
     }
@@ -32,5 +32,4 @@ public class SaveInProgressEvent {
     public Path getPath() {
         return path;
     }
-    
 }

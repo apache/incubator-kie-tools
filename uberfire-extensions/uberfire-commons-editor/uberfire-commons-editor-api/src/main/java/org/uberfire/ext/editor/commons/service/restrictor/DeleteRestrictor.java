@@ -20,4 +20,5 @@ package org.uberfire.ext.editor.commons.service.restrictor;
  * Represents a restrictor to a delete operation.
  */
 public interface DeleteRestrictor extends PathOperationRestrictor {
+
 }

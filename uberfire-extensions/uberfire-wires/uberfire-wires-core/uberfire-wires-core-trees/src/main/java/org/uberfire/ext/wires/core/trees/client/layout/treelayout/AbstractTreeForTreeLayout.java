@@ -23,49 +23,49 @@ import org.uberfire.ext.wires.core.trees.client.layout.treelayout.util.ListUtil;
 /**
  * Provides an easy way to implement the {@link TreeForTreeLayout} interface by
  * defining just two simple methods and a constructor.
- * <p/>
+ * <p>
  * To use this class the underlying tree must provide the children as a list
  * (see {@link #getChildrenList(Object)} and give direct access to the parent of
  * a node (see {@link #getParent(Object)}).
- * <p/>
+ * <p>
  * @param <TreeNode> <p/>
- * <p/>
+ * <p>
  * Adapted from https://code.google.com/p/treelayout/ to be available to GWT clients
- * <p/>
+ * <p>
  * @author Udo Borkowski (ub@abego.org)
  */
 public abstract class AbstractTreeForTreeLayout<TreeNode> implements
                                                           TreeForTreeLayout<TreeNode> {
 
+    private final TreeNode root;
+
+    public AbstractTreeForTreeLayout(TreeNode root) {
+        this.root = root;
+    }
+
     /**
      * Returns the parent of a node, if it has one.
-     * <p/>
+     * <p>
      * Time Complexity: O(1)
      * @param node
      * @return [nullable] the parent of the node, or null when the node is a
-     *         root.
+     * root.
      */
-    abstract public TreeNode getParent( TreeNode node );
+    abstract public TreeNode getParent(TreeNode node);
 
     /**
      * Return the children of a node as a {@link List}.
-     * <p/>
+     * <p>
      * Time Complexity: O(1)
-     * <p/>
+     * <p>
      * Also the access to an item of the list must have time complexity O(1).
-     * <p/>
+     * <p>
      * A client must not modify the returned list.
      * @param node
      * @return the children of the given node. When node is a leaf the list is
-     *         empty.
+     * empty.
      */
-    abstract public List<TreeNode> getChildrenList( TreeNode node );
-
-    private final TreeNode root;
-
-    public AbstractTreeForTreeLayout( TreeNode root ) {
-        this.root = root;
-    }
+    abstract public List<TreeNode> getChildrenList(TreeNode node);
 
     @Override
     public TreeNode getRoot() {
@@ -73,34 +73,34 @@ public abstract class AbstractTreeForTreeLayout<TreeNode> implements
     }
 
     @Override
-    public boolean isLeaf( TreeNode node ) {
-        return getChildrenList( node ).isEmpty();
+    public boolean isLeaf(TreeNode node) {
+        return getChildrenList(node).isEmpty();
     }
 
     @Override
-    public boolean isChildOfParent( TreeNode node,
-                                    TreeNode parentNode ) {
-        return getParent( node ) == parentNode;
+    public boolean isChildOfParent(TreeNode node,
+                                   TreeNode parentNode) {
+        return getParent(node) == parentNode;
     }
 
     @Override
-    public Iterable<TreeNode> getChildren( TreeNode node ) {
-        return getChildrenList( node );
+    public Iterable<TreeNode> getChildren(TreeNode node) {
+        return getChildrenList(node);
     }
 
     @Override
-    public Iterable<TreeNode> getChildrenReverse( TreeNode node ) {
-        return IterableUtil.createReverseIterable( getChildrenList( node ) );
+    public Iterable<TreeNode> getChildrenReverse(TreeNode node) {
+        return IterableUtil.createReverseIterable(getChildrenList(node));
     }
 
     @Override
-    public TreeNode getFirstChild( TreeNode parentNode ) {
-        return getChildrenList( parentNode ).get( 0 );
+    public TreeNode getFirstChild(TreeNode parentNode) {
+        return getChildrenList(parentNode).get(0);
     }
 
     @Override
-    public TreeNode getLastChild( TreeNode parentNode ) {
-        return ListUtil.getLast( getChildrenList( parentNode ) );
+    public TreeNode getLastChild(TreeNode parentNode) {
+        return ListUtil.getLast(getChildrenList(parentNode));
     }
 }
 

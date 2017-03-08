@@ -31,8 +31,8 @@ public class DefaultResultsImpl implements Results {
     private List<Result> results = new ArrayList<Result>();
 
     @Override
-    public void addMessage( final Result result ) {
-        results.add( result );
+    public void addMessage(final Result result) {
+        results.add(result);
     }
 
     @Override
@@ -41,20 +41,20 @@ public class DefaultResultsImpl implements Results {
     }
 
     @Override
-    public List<Result> getMessages( final ResultType type ) {
+    public List<Result> getMessages(final ResultType type) {
         final List<Result> filteredResults = new ArrayList<Result>();
-        for ( Result result : results ) {
-            if ( result.getType().equals( type ) ) {
-                filteredResults.add( result );
+        for (Result result : results) {
+            if (result.getType().equals(type)) {
+                filteredResults.add(result);
             }
         }
-        return Collections.unmodifiableList( filteredResults );
+        return Collections.unmodifiableList(filteredResults);
     }
 
     @Override
-    public boolean contains( final ResultType type ) {
-        for ( Result result : results ) {
-            if ( result.getType().equals( type ) ) {
+    public boolean contains(final ResultType type) {
+        for (Result result : results) {
+            if (result.getType().equals(type)) {
                 return true;
             }
         }
@@ -62,17 +62,17 @@ public class DefaultResultsImpl implements Results {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof DefaultResultsImpl ) ) {
+        if (!(o instanceof DefaultResultsImpl)) {
             return false;
         }
 
         DefaultResultsImpl that = (DefaultResultsImpl) o;
 
-        if ( !results.equals( that.results ) ) {
+        if (!results.equals(that.results)) {
             return false;
         }
 
@@ -90,5 +90,4 @@ public class DefaultResultsImpl implements Results {
                 "results=" + results +
                 '}';
     }
-
 }

@@ -31,7 +31,7 @@ public interface Bounds {
      * Sets the Canvas (untransformed) x-coordinate of the bounds.
      * @param x
      */
-    void setX( final double x );
+    void setX(final double x);
 
     /**
      * Returns the Canvas (untransformed) y-coordinate of the bounds.
@@ -43,7 +43,7 @@ public interface Bounds {
      * Sets the Canvas (untransformed) y-coordinate of the bounds.
      * @param y
      */
-    void setY( final double y );
+    void setY(final double y);
 
     /**
      * Returns the Canvas (untransformed) width of the bounds.
@@ -55,7 +55,7 @@ public interface Bounds {
      * Sets the Canvas (untransformed) width of the bounds.
      * @param width Must be positive.
      */
-    void setWidth( final double width );
+    void setWidth(final double width);
 
     /**
      * Returns the Canvas (untransformed) height of the bounds.
@@ -67,6 +67,5 @@ public interface Bounds {
      * Sets the Canvas (untransformed) height of the bounds.
      * @param height Must be positive.
      */
-    void setHeight( final double height );
-
+    void setHeight(final double height);
 }

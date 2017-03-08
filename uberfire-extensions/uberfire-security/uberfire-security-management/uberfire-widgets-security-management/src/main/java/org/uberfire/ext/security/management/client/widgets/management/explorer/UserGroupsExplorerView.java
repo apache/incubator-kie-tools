@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.explorer;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -24,12 +26,9 @@ import com.google.gwt.user.client.ui.Composite;
 import org.gwtbootstrap3.client.ui.Row;
 import org.uberfire.ext.security.management.client.widgets.management.list.EntitiesList;
 
-import javax.enterprise.context.Dependent;
-
 /**
  * <p>View implementation for exploring the assigned groups or roles for a given user.</p>
  * <p>This explorer is implemented using a <code>org.gwtbootstrap3.client.ui.LinkedGroup</code> widget.</p>
- *           
  * @since 0.8.0
  */
 @Dependent
@@ -37,34 +36,22 @@ public class UserGroupsExplorerView extends Composite
         implements
         UserGroupsExplorer.View {
 
-    interface UserGroupsExplorerViewBinder
-            extends
-            UiBinder<Row, UserGroupsExplorerView> {
-
-    }
-
     private static UserGroupsExplorerViewBinder uiBinder = GWT.create(UserGroupsExplorerViewBinder.class);
-
-    private UserGroupsExplorer presenter;
-    
-    interface UserGroupsExplorerViewStyle extends CssResource {
-    }
-
     @UiField
     UserGroupsExplorerViewStyle style;
-    
     @UiField(provided = true)
     EntitiesList.View entitiesListView;
+    private UserGroupsExplorer presenter;
 
     @Override
     public void init(UserGroupsExplorer presenter) {
         this.presenter = presenter;
     }
-    
+
     @Override
     public UserGroupsExplorer.View configure(final EntitiesList.View entitiesList) {
         this.entitiesListView = entitiesList;
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
         return this;
     }
 
@@ -74,4 +61,13 @@ public class UserGroupsExplorerView extends Composite
         return this;
     }
 
+    interface UserGroupsExplorerViewBinder
+            extends
+            UiBinder<Row, UserGroupsExplorerView> {
+
+    }
+
+    interface UserGroupsExplorerViewStyle extends CssResource {
+
+    }
 }

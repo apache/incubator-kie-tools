@@ -20,7 +20,7 @@ import org.uberfire.backend.vfs.ObservablePath;
 
 public class ConcurrentDeleteIgnoredEvent extends AbstractConcurrentOperationEvent {
 
-    public ConcurrentDeleteIgnoredEvent( final ObservablePath path ) {
-        super( path );
+    public ConcurrentDeleteIgnoredEvent(final ObservablePath path) {
+        super(path);
     }
 }

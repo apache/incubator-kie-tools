@@ -18,6 +18,9 @@ package org.uberfire.client.screens;
 
 import java.util.Arrays;
 
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
+import org.gwtbootstrap3.client.ui.html.Text;
 import org.uberfire.client.annotations.SplashBodyHeight;
 import org.uberfire.client.annotations.SplashFilter;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -25,11 +28,6 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchSplashScreen;
 import org.uberfire.workbench.model.SplashScreenFilter;
 import org.uberfire.workbench.model.impl.SplashScreenFilterImpl;
-
-import org.gwtbootstrap3.client.ui.html.Text;
-
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 @WorkbenchSplashScreen(identifier = "demo.splash")
 public class DemoSplashScreen {
@@ -42,18 +40,19 @@ public class DemoSplashScreen {
     @WorkbenchPartView
     public Widget getView() {
         return new FlowPanel() {{
-            add( new Text( "Cool!!" ) );
+            add(new Text("Cool!!"));
         }};
     }
 
     @SplashFilter
     public SplashScreenFilter getFilter() {
-        return new SplashScreenFilterImpl( "demo.splash", true, Arrays.asList( "HomePerspective" ) );
+        return new SplashScreenFilterImpl("demo.splash",
+                                          true,
+                                          Arrays.asList("HomePerspective"));
     }
 
     @SplashBodyHeight
     public Integer getBodySize() {
         return 40;
     }
-
 }

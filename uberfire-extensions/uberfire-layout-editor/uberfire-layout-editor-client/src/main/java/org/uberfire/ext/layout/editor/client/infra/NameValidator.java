@@ -23,42 +23,41 @@ public class NameValidator {
 
     private String error;
 
-    private NameValidator( String error ) {
+    private NameValidator(String error) {
         this.error = error;
     }
 
     public static NameValidator layoutNameValidador() {
-        return new NameValidator( CommonConstants.INSTANCE.InvalidLayoutName() );
+        return new NameValidator(CommonConstants.INSTANCE.InvalidLayoutName());
     }
 
     public static NameValidator tagNameValidator() {
-        return new NameValidator( CommonConstants.INSTANCE.InvalidTagName() );
+        return new NameValidator(CommonConstants.INSTANCE.InvalidTagName());
     }
 
     public static NameValidator parameterNameValidator() {
-        return new NameValidator( CommonConstants.INSTANCE.InvalidParameterName() );
+        return new NameValidator(CommonConstants.INSTANCE.InvalidParameterName());
     }
 
     public static NameValidator activityIdValidator() {
-        return new NameValidator( CommonConstants.INSTANCE.InvalidActivityID() );
+        return new NameValidator(CommonConstants.INSTANCE.InvalidActivityID());
     }
 
     public static NameValidator menuLabelValidator() {
-        return new NameValidator( CommonConstants.INSTANCE.InvalidMenuLabel() );
+        return new NameValidator(CommonConstants.INSTANCE.InvalidMenuLabel());
     }
 
     public String getValidationError() {
         return error;
     }
 
-    public boolean isValid( String dirName ) {
-        if ( dirName == null || dirName.isEmpty() ) {
+    public boolean isValid(String dirName) {
+        if (dirName == null || dirName.isEmpty()) {
             return Boolean.FALSE;
         }
-        if ( !dirName.matches( VALID_DIR_REGEX ) ) {
+        if (!dirName.matches(VALID_DIR_REGEX)) {
             return Boolean.FALSE;
         }
         return Boolean.TRUE;
     }
-
 }

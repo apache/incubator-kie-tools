@@ -21,12 +21,11 @@ public class ShapeAddedEvent {
 
     private WiresBaseShape shape;
 
-    public ShapeAddedEvent( final WiresBaseShape shape ) {
+    public ShapeAddedEvent(final WiresBaseShape shape) {
         this.shape = shape;
     }
 
     public WiresBaseShape getShape() {
         return shape;
     }
-
 }

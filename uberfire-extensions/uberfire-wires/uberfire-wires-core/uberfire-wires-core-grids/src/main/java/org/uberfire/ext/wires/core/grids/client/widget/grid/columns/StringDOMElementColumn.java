@@ -28,22 +28,22 @@ public class StringDOMElementColumn extends BaseGridColumn<String> implements Ha
 
     private TextBoxDOMElementFactory factory;
 
-    public StringDOMElementColumn( final GridColumn.HeaderMetaData headerMetaData,
-                                   final TextBoxDOMElementFactory factory,
-                                   final double width ) {
-        this( new ArrayList<HeaderMetaData>() {{
-                  add( headerMetaData );
-              }},
-              factory,
-              width );
+    public StringDOMElementColumn(final GridColumn.HeaderMetaData headerMetaData,
+                                  final TextBoxDOMElementFactory factory,
+                                  final double width) {
+        this(new ArrayList<HeaderMetaData>() {{
+                 add(headerMetaData);
+             }},
+             factory,
+             width);
     }
 
-    public StringDOMElementColumn( final List<GridColumn.HeaderMetaData> headerMetaData,
-                                   final TextBoxDOMElementFactory factory,
-                                   final double width ) {
-        super( headerMetaData,
-               new StringColumnDOMElementRenderer( factory ),
-               width );
+    public StringDOMElementColumn(final List<GridColumn.HeaderMetaData> headerMetaData,
+                                  final TextBoxDOMElementFactory factory,
+                                  final double width) {
+        super(headerMetaData,
+              new StringColumnDOMElementRenderer(factory),
+              width);
         this.factory = factory;
     }
 
@@ -61,5 +61,4 @@ public class StringDOMElementColumn extends BaseGridColumn<String> implements Ha
     public void freeUnusedResources() {
         factory.freeUnusedResources();
     }
-
 }

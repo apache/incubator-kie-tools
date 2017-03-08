@@ -33,12 +33,12 @@ public class SplashScreenFilterImpl implements SplashScreenFilter {
     private boolean displayNextTime;
     private Collection<String> interceptionPoints = new ArrayList<String>();
 
-    public SplashScreenFilterImpl( @MapsTo("name") final String name,
-                                   @MapsTo("displayNextTime") final boolean displayNextTime,
-                                   @MapsTo("interceptionPoints") final Collection<String> interceptionPoints ) {
+    public SplashScreenFilterImpl(@MapsTo("name") final String name,
+                                  @MapsTo("displayNextTime") final boolean displayNextTime,
+                                  @MapsTo("interceptionPoints") final Collection<String> interceptionPoints) {
         this.name = name;
         this.displayNextTime = displayNextTime;
-        this.interceptionPoints.addAll( interceptionPoints );
+        this.interceptionPoints.addAll(interceptionPoints);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class SplashScreenFilterImpl implements SplashScreenFilter {
     }
 
     @Override
-    public void setName( final String name ) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -57,7 +57,7 @@ public class SplashScreenFilterImpl implements SplashScreenFilter {
     }
 
     @Override
-    public void setDisplayNextTime( final boolean value ) {
+    public void setDisplayNextTime(final boolean value) {
         this.displayNextTime = value;
     }
 
@@ -67,8 +67,8 @@ public class SplashScreenFilterImpl implements SplashScreenFilter {
     }
 
     @Override
-    public void setInterceptionPoints( final Collection<String> places ) {
+    public void setInterceptionPoints(final Collection<String> places) {
         interceptionPoints.clear();
-        interceptionPoints.addAll( places );
+        interceptionPoints.addAll(places);
     }
 }

@@ -17,7 +17,6 @@ package org.uberfire.ext.layout.editor.client.api;
 
 /**
  * Configuration interface for layout drag components providing any type of configuration screen.
- *
  * @see HasModalConfiguration
  */
 public interface HasConfiguration {

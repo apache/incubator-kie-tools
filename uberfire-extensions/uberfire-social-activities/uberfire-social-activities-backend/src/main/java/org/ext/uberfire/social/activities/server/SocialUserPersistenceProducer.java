@@ -82,17 +82,25 @@ public class SocialUserPersistenceProducer {
     public void setup() {
         gsonFactory();
         final IOService _ioService = getConfigIOServiceProducer().configIOService();
-        final SocialUserServicesExtendedBackEndImpl userServicesBackend = new SocialUserServicesExtendedBackEndImpl( fileSystem );
+        final SocialUserServicesExtendedBackEndImpl userServicesBackend = new SocialUserServicesExtendedBackEndImpl(fileSystem);
 
-        setupSocialUserPersistenceAPI( _ioService, userServicesBackend );
+        setupSocialUserPersistenceAPI(_ioService,
+                                      userServicesBackend);
     }
 
-    void setupSocialUserPersistenceAPI( IOService _ioService,
-                                                SocialUserServicesExtendedBackEndImpl userServicesBackend ) {
-        if ( clusterServiceFactory == null ) {
-            socialUserPersistenceAPI = new SocialUserInstancePersistence( userServicesBackend, userServices, _ioService, gson );
+    void setupSocialUserPersistenceAPI(IOService _ioService,
+                                       SocialUserServicesExtendedBackEndImpl userServicesBackend) {
+        if (clusterServiceFactory == null) {
+            socialUserPersistenceAPI = new SocialUserInstancePersistence(userServicesBackend,
+                                                                         userServices,
+                                                                         _ioService,
+                                                                         gson);
         } else {
-            socialUserPersistenceAPI = new SocialUserClusterPersistence( userServicesBackend, userServices, _ioService, gson, socialUserClusterMessaging );
+            socialUserPersistenceAPI = new SocialUserClusterPersistence(userServicesBackend,
+                                                                        userServices,
+                                                                        _ioService,
+                                                                        gson,
+                                                                        socialUserClusterMessaging);
         }
         socialUserPersistenceAPI.setup();
     }
@@ -114,5 +122,4 @@ public class SocialUserPersistenceProducer {
         gsonCollectionType = new TypeToken<Collection<SocialActivitiesEvent>>() {
         }.getType();
     }
-
 }

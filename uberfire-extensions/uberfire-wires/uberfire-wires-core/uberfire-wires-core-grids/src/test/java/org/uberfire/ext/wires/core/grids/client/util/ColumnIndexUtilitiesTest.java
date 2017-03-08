@@ -32,25 +32,24 @@ public class ColumnIndexUtilitiesTest {
     @Test
     public void testFindUiColumnIndex() {
         final List<GridColumn<?>> columns = new ArrayList<>();
-        for ( int index = 0; index < COLUMN_COUNT; index++ ) {
-            final GridColumn<String> column = new BaseGridTest.MockMergableGridColumn<>( "col1",
-                                                                                         100 );
-            column.setIndex( COLUMN_COUNT - index - 1 );
-            columns.add( column );
+        for (int index = 0; index < COLUMN_COUNT; index++) {
+            final GridColumn<String> column = new BaseGridTest.MockMergableGridColumn<>("col1",
+                                                                                        100);
+            column.setIndex(COLUMN_COUNT - index - 1);
+            columns.add(column);
         }
 
-        assertEquals( 3,
-                      ColumnIndexUtilities.findUiColumnIndex( columns,
-                                                              0 ) );
-        assertEquals( 2,
-                      ColumnIndexUtilities.findUiColumnIndex( columns,
-                                                              1 ) );
-        assertEquals( 1,
-                      ColumnIndexUtilities.findUiColumnIndex( columns,
-                                                              2 ) );
-        assertEquals( 0,
-                      ColumnIndexUtilities.findUiColumnIndex( columns,
-                                                              3 ) );
+        assertEquals(3,
+                     ColumnIndexUtilities.findUiColumnIndex(columns,
+                                                            0));
+        assertEquals(2,
+                     ColumnIndexUtilities.findUiColumnIndex(columns,
+                                                            1));
+        assertEquals(1,
+                     ColumnIndexUtilities.findUiColumnIndex(columns,
+                                                            2));
+        assertEquals(0,
+                     ColumnIndexUtilities.findUiColumnIndex(columns,
+                                                            3));
     }
-
 }

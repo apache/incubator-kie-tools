@@ -36,33 +36,34 @@ public class UserMenuViewImpl extends AnchorListItem implements UserMenu.UserMen
 
     @PostConstruct
     public void setup() {
-        anchor.addStyleName( Styles.DROPDOWN_TOGGLE );
-        anchor.setDataToggle( Toggle.DROPDOWN );
+        anchor.addStyleName(Styles.DROPDOWN_TOGGLE);
+        anchor.setDataToggle(Toggle.DROPDOWN);
 
         final Span userIcon = new Span();
-        userIcon.addStyleName( "pficon" );
-        userIcon.addStyleName( "pficon-user" );
+        userIcon.addStyleName("pficon");
+        userIcon.addStyleName("pficon-user");
 
-        anchor.add( userIcon );
-        anchor.add( userNameWidget );
+        anchor.add(userIcon);
+        anchor.add(userNameWidget);
         final Span caret = new Span();
-        caret.addStyleName( Styles.CARET );
-        anchor.add( caret );
+        caret.addStyleName(Styles.CARET);
+        anchor.add(caret);
 
-        addStyleName( Styles.DROPDOWN );
-        add( anchor );
-        add( menu );
+        addStyleName(Styles.DROPDOWN);
+        add(anchor);
+        add(menu);
     }
 
     @Override
-    public void setUserName( final String userName ) {
-        userNameWidget.setText( userName );
+    public void setUserName(final String userName) {
+        userNameWidget.setText(userName);
     }
 
     @Override
-    public void addMenuItem( final MenuPosition position, final Widget menuContent ) {
+    public void addMenuItem(final MenuPosition position,
+                            final Widget menuContent) {
         //Always add new option on top
-        menu.insert( menuContent, 0 );
+        menu.insert(menuContent,
+                    0);
     }
-
 }

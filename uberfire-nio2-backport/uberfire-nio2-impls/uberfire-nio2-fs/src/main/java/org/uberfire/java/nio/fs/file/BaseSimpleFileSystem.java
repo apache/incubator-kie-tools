@@ -33,7 +33,9 @@ import org.uberfire.java.nio.file.WatchService;
 import org.uberfire.java.nio.file.attribute.UserPrincipalLookupService;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
 
-import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.Preconditions.checkCondition;
+import static org.uberfire.commons.validation.Preconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.Preconditions.checkNotNull;
 
 public abstract class BaseSimpleFileSystem implements FileSystem,
                                                       FileSystemId {
@@ -43,22 +45,26 @@ public abstract class BaseSimpleFileSystem implements FileSystem,
     private final Set<String> supportedFileAttributeViews;
     private final File[] roots;
 
-    BaseSimpleFileSystem( final FileSystemProvider provider,
-                          final String path ) {
-        this( File.listRoots(), provider, path );
+    BaseSimpleFileSystem(final FileSystemProvider provider,
+                         final String path) {
+        this(File.listRoots(),
+             provider,
+             path);
     }
 
-    BaseSimpleFileSystem( final File[] roots,
-                          final FileSystemProvider provider,
-                          final String path ) {
-        checkNotNull( "roots", roots );
-        checkCondition( "should have at least one root", roots.length > 0 );
+    BaseSimpleFileSystem(final File[] roots,
+                         final FileSystemProvider provider,
+                         final String path) {
+        checkNotNull("roots",
+                     roots);
+        checkCondition("should have at least one root",
+                       roots.length > 0);
         this.roots = roots;
         this.provider = provider;
-        this.defaultDirectory = validateDefaultDir( path );
-        this.supportedFileAttributeViews = Collections.unmodifiableSet( new HashSet<String>() {{
-            add( "basic" );
-        }} );
+        this.defaultDirectory = validateDefaultDir(path);
+        this.supportedFileAttributeViews = Collections.unmodifiableSet(new HashSet<String>() {{
+            add("basic");
+        }});
     }
 
     @Override
@@ -66,10 +72,13 @@ public abstract class BaseSimpleFileSystem implements FileSystem,
         return "/";
     }
 
-    private String validateDefaultDir( final String path ) throws IllegalArgumentException {
-        checkNotEmpty( "path", path );
-        if ( !GeneralPathImpl.create( this, path, false ).isAbsolute() ) {
-            throw new IllegalArgumentException( "Path needs to be absolute, got: " + path );
+    private String validateDefaultDir(final String path) throws IllegalArgumentException {
+        checkNotEmpty("path",
+                      path);
+        if (!GeneralPathImpl.create(this,
+                                    path,
+                                    false).isAbsolute()) {
+            throw new IllegalArgumentException("Path needs to be absolute, got: " + path);
         }
         return path;
     }
@@ -91,7 +100,8 @@ public abstract class BaseSimpleFileSystem implements FileSystem,
 
     @Override
     public String getSeparator() {
-        return System.getProperty( "file.separator", "/" );
+        return System.getProperty("file.separator",
+                                  "/");
     }
 
     @Override
@@ -100,39 +110,44 @@ public abstract class BaseSimpleFileSystem implements FileSystem,
     }
 
     @Override
-    public Path getPath( String first,
-                         String... more ) throws InvalidPathException {
-        if ( more == null || more.length == 0 ) {
-            return GeneralPathImpl.create( this, removeTrailingSlash( first ), false );
+    public Path getPath(String first,
+                        String... more) throws InvalidPathException {
+        if (more == null || more.length == 0) {
+            return GeneralPathImpl.create(this,
+                                          removeTrailingSlash(first),
+                                          false);
         }
         final StringBuilder sb = new StringBuilder();
-        sb.append( first );
-        for ( final String segment : more ) {
-            if ( segment.length() > 0 ) {
-                if ( sb.length() > 0 ) {
-                    sb.append( getSeparator() );
+        sb.append(first);
+        for (final String segment : more) {
+            if (segment.length() > 0) {
+                if (sb.length() > 0) {
+                    sb.append(getSeparator());
                 }
-                sb.append( segment );
+                sb.append(segment);
             }
         }
-        return GeneralPathImpl.create( this, sb.toString(), false );
+        return GeneralPathImpl.create(this,
+                                      sb.toString(),
+                                      false);
     }
 
-    private String removeTrailingSlash( final String path ) {
-        for ( final File root : roots ) {
-            if ( root.toString().equals( path ) ) {
+    private String removeTrailingSlash(final String path) {
+        for (final File root : roots) {
+            if (root.toString().equals(path)) {
                 return path;
             }
         }
-        if ( path.endsWith( getSeparator() ) ) {
-            return path.substring( 0, path.length() - getSeparator().length() );
+        if (path.endsWith(getSeparator())) {
+            return path.substring(0,
+                                  path.length() - getSeparator().length());
         }
 
         return path;
     }
 
     @Override
-    public PathMatcher getPathMatcher( String syntaxAndPattern )
+    public PathMatcher getPathMatcher(String syntaxAndPattern)
             throws IllegalArgumentException, PatternSyntaxException, UnsupportedOperationException {
         throw new UnsupportedOperationException();
     }
@@ -151,7 +166,7 @@ public abstract class BaseSimpleFileSystem implements FileSystem,
 
     @Override
     public void close() throws IOException, UnsupportedOperationException {
-        throw new UnsupportedOperationException( "can't close this file system." );
+        throw new UnsupportedOperationException("can't close this file system.");
     }
 
     File[] listRoots() {

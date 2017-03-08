@@ -48,10 +48,10 @@ public class WorkbenchBackendEntryPoint {
     }
 
     @Inject
-    public WorkbenchBackendEntryPoint( final Logger logger,
-                                       final ClientMessageBus bus,
-                                       final WorkbenchServicesProxy workbenchServices,
-                                       final ErrorPopupPresenter errorPopupPresenter ) {
+    public WorkbenchBackendEntryPoint(final Logger logger,
+                                      final ClientMessageBus bus,
+                                      final WorkbenchServicesProxy workbenchServices,
+                                      final ErrorPopupPresenter errorPopupPresenter) {
         this.logger = logger;
         this.bus = bus;
         this.workbenchServices = workbenchServices;
@@ -60,35 +60,34 @@ public class WorkbenchBackendEntryPoint {
 
     @AfterInitialization
     public void init() {
-        workbenchServices.isWorkbenchOnCluster( new ParameterizedCommand<Boolean>() {
+        workbenchServices.isWorkbenchOnCluster(new ParameterizedCommand<Boolean>() {
             @Override
-            public void execute( final Boolean parameter ) {
-                isWorkbenchOnCluster = !( parameter == null || parameter.equals( Boolean.FALSE ) );
+            public void execute(final Boolean parameter) {
+                isWorkbenchOnCluster = !(parameter == null || parameter.equals(Boolean.FALSE));
             }
-        } );
+        });
     }
 
     @PostConstruct
     public void postConstruct() {
-        bus.addLifecycleListener( new BusLifecycleAdapter() {
+        bus.addLifecycleListener(new BusLifecycleAdapter() {
             @Override
-            public void busOnline( final BusLifecycleEvent e ) {
-                logger.info( "Bus is back online." );
+            public void busOnline(final BusLifecycleEvent e) {
+                logger.info("Bus is back online.");
                 showedError = false;
             }
 
             @Override
-            public void busOffline( final BusLifecycleEvent e ) {
-                if ( showedError ) {
+            public void busOffline(final BusLifecycleEvent e) {
+                if (showedError) {
                     return;
                 }
-                logger.error( "Bus is offline. [" + e.getReason().getErrorMessage() + "]" );
-                if ( !isWorkbenchOnCluster ) {
-                    errorPopupPresenter.showMessage( "You've been disconnected." );
+                logger.error("Bus is offline. [" + e.getReason().getErrorMessage() + "]");
+                if (!isWorkbenchOnCluster) {
+                    errorPopupPresenter.showMessage("You've been disconnected.");
                 }
                 showedError = true;
             }
-        } );
+        });
     }
-
 }

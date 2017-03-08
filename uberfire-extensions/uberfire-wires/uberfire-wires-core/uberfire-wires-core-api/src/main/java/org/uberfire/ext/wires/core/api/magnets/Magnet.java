@@ -32,13 +32,13 @@ public interface Magnet<T extends IPrimitive<T>> extends IPrimitive<T> {
      * Attach a ControlPoint to the Magnet
      * @param controlPoint
      */
-    void attachControlPoint( final ControlPoint controlPoint );
+    void attachControlPoint(final ControlPoint controlPoint);
 
     /**
      * Detach a ControlPoint from the Magnet
      * @param controlPoint
      */
-    void detachControlPoint( final ControlPoint controlPoint );
+    void detachControlPoint(final ControlPoint controlPoint);
 
     /**
      * Get a list of ControlPoints attached to the Magnet
@@ -50,9 +50,8 @@ public interface Magnet<T extends IPrimitive<T>> extends IPrimitive<T> {
      * Activate the Magnet
      * @param isActive
      */
-    void setActive( final boolean isActive );
+    void setActive(final boolean isActive);
 
-    void move( final double dx,
-               final double dy );
-
+    void move(final double dx,
+              final double dy);
 }

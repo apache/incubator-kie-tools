@@ -38,57 +38,52 @@ public class PluginUtil {
     /**
      * {@link List} is a {@link JsType} but {@link Collection#iterator()} is
      * {@link JsIgnore}d and therefore not exported to JavaScript.
-     * 
+     * <p>
      * This method takes a list and converts it to a new list so it can be
      * iterated over in the current script (e.g. using enhanced for loops), even
      * if the instance was provided by an external (GWT-compiled) script.
-     * 
-     * @param externalList
-     *            A list, possibly provided by an external script. Must not be null.
+     * @param externalList A list, possibly provided by an external script. Must not be null.
      * @return an immutable list containing the original elements of the
-     *         provided list
+     * provided list
      */
-    public static <T> List<T> ensureIterable( List<T> externalList ) {
-        checkNotNull( "externalList",
-                      externalList );
-        
+    public static <T> List<T> ensureIterable(List<T> externalList) {
+        checkNotNull("externalList",
+                     externalList);
+
         // toArray(T[]) is @JsIgnored
         @SuppressWarnings("unchecked")
-        final List<T> tmp = (List<T>) Arrays.asList( externalList.toArray() );
-        return Collections.unmodifiableList( tmp );
+        final List<T> tmp = (List<T>) Arrays.asList(externalList.toArray());
+        return Collections.unmodifiableList(tmp);
     }
 
     /**
      * {@link Set} is a {@link JsType} but {@link Collection#iterator()} is
      * {@link JsIgnore}d and therefore not exported to JavaScript.
-     * 
+     * <p>
      * This method takes a set and converts it to a new set so it can be
      * iterated over in the current script (e.g. using enhanced for loops), even
      * if the instance was provided by an external (GWT-compiled) script.
-     * 
-     * @param externalSet
-     *            A set, possibly provided by an external script. Must not be null.
+     * @param externalSet A set, possibly provided by an external script. Must not be null.
      * @return an immutable set containing the original elements of the provided
-     *         set
+     * set
      */
-    public static <T> Set<T> ensureIterable( Set<T> externalSet ) {
-        checkNotNull( "externalSet",
-                      externalSet );
-        
+    public static <T> Set<T> ensureIterable(Set<T> externalSet) {
+        checkNotNull("externalSet",
+                     externalSet);
+
         // toArray(T[]) is @JsIgnored
         @SuppressWarnings("unchecked")
-        final List<T> tmp = (List<T>) Arrays.asList( externalSet.toArray() );
-        return Collections.unmodifiableSet( new HashSet<T>( tmp ) );
+        final List<T> tmp = (List<T>) Arrays.asList(externalSet.toArray());
+        return Collections.unmodifiableSet(new HashSet<T>(tmp));
     }
-    
+
     /**
      * {@link Integer} is not a {@link JsType} and can't be shared across
      * scripts.
-     * 
+     * <p>
      * This method converts a regular int to an {@link Integer} using -1 as a
      * placeholder for null.
-     * 
-     * @param value 
+     * @param value
      * @return boxed {@link Integer}, null if provided value is -1.
      */
     public static Integer toInteger(int value) {

@@ -31,123 +31,184 @@ import org.uberfire.mvp.Command;
 
 public class YesNoCancelPopup extends BaseModal {
 
-    interface YesNoCancelPopupWidgetBinder
-            extends
-            UiBinder<Widget, YesNoCancelPopup> {
-
-    }
-
-    private YesNoCancelPopupWidgetBinder uiBinder = GWT.create( YesNoCancelPopupWidgetBinder.class );
-
     @UiField
     protected ScrollPanel scroll;
-
     @UiField
     protected HTML message;
+    private YesNoCancelPopupWidgetBinder uiBinder = GWT.create(YesNoCancelPopupWidgetBinder.class);
 
-    protected YesNoCancelPopup( final String title,
-                                final String content,
-                                final Command yesCommand,
-                                final String yesButtonText,
-                                final ButtonType yesButtonType,
-                                final IconType yesButtonIconType,
-                                final Command noCommand,
-                                final String noButtonText,
-                                final ButtonType noButtonType,
-                                final IconType noButtonIconType,
-                                final Command cancelCommand,
-                                final String cancelButtonText,
-                                final ButtonType cancelButtonType,
-                                final IconType cancelButtonIconType ) {
+    protected YesNoCancelPopup(final String title,
+                               final String content,
+                               final Command yesCommand,
+                               final String yesButtonText,
+                               final ButtonType yesButtonType,
+                               final IconType yesButtonIconType,
+                               final Command noCommand,
+                               final String noButtonText,
+                               final ButtonType noButtonType,
+                               final IconType noButtonIconType,
+                               final Command cancelCommand,
+                               final String cancelButtonText,
+                               final ButtonType cancelButtonType,
+                               final IconType cancelButtonIconType) {
 
-        setTitle( title );
-        setHideOtherModals( false );
+        setTitle(title);
+        setHideOtherModals(false);
 
-        add( new ModalBody() {{
-            add( uiBinder.createAndBindUi( YesNoCancelPopup.this ) );
-        }} );
-        add( new ModalFooterYesNoCancelButtons( this, yesCommand, yesButtonText, yesButtonType, yesButtonIconType,
-                                                noCommand, noButtonText, noButtonType, noButtonIconType,
-                                                cancelCommand, cancelButtonText, cancelButtonType, cancelButtonIconType ) );
+        add(new ModalBody() {{
+            add(uiBinder.createAndBindUi(YesNoCancelPopup.this));
+        }});
+        add(new ModalFooterYesNoCancelButtons(this,
+                                              yesCommand,
+                                              yesButtonText,
+                                              yesButtonType,
+                                              yesButtonIconType,
+                                              noCommand,
+                                              noButtonText,
+                                              noButtonType,
+                                              noButtonIconType,
+                                              cancelCommand,
+                                              cancelButtonText,
+                                              cancelButtonType,
+                                              cancelButtonIconType));
 
-        message.setHTML( SafeHtmlUtils.fromTrustedString( content != null ? content : "" ) );
+        message.setHTML(SafeHtmlUtils.fromTrustedString(content != null ? content : ""));
     }
 
-    protected YesNoCancelPopup( final String title,
-                                final String content,
-                                final Command yesCommand,
-                                final Command noCommand,
-                                final Command cancelCommand ) {
-        this( title, content, yesCommand, null, null, null, noCommand, null, null, null, cancelCommand, null, null, null );
-
+    protected YesNoCancelPopup(final String title,
+                               final String content,
+                               final Command yesCommand,
+                               final Command noCommand,
+                               final Command cancelCommand) {
+        this(title,
+             content,
+             yesCommand,
+             null,
+             null,
+             null,
+             noCommand,
+             null,
+             null,
+             null,
+             cancelCommand,
+             null,
+             null,
+             null);
     }
 
-    public static YesNoCancelPopup newYesNoCancelPopup( final String title,
-                                                        final String content,
-                                                        final Command yesCommand,
-                                                        final String yesButtonText,
-                                                        final ButtonType yesButtonType,
-                                                        final IconType yesButtonIconType,
-                                                        final Command noCommand,
-                                                        final String noButtonText,
-                                                        final ButtonType noButtonType,
-                                                        final IconType noButtonIconType,
-                                                        final Command cancelCommand,
-                                                        final String cancelButtonText,
-                                                        final ButtonType cancelButtonType,
-                                                        final IconType cancelButtonIconType ) {
+    public static YesNoCancelPopup newYesNoCancelPopup(final String title,
+                                                       final String content,
+                                                       final Command yesCommand,
+                                                       final String yesButtonText,
+                                                       final ButtonType yesButtonType,
+                                                       final IconType yesButtonIconType,
+                                                       final Command noCommand,
+                                                       final String noButtonText,
+                                                       final ButtonType noButtonType,
+                                                       final IconType noButtonIconType,
+                                                       final Command cancelCommand,
+                                                       final String cancelButtonText,
+                                                       final ButtonType cancelButtonType,
+                                                       final IconType cancelButtonIconType) {
 
-        return new YesNoCancelPopup( title, content, yesCommand, yesButtonText, yesButtonType, yesButtonIconType,
-                                     noCommand, noButtonText, noButtonType, noButtonIconType,
-                                     cancelCommand, cancelButtonText, cancelButtonType, cancelButtonIconType );
-
+        return new YesNoCancelPopup(title,
+                                    content,
+                                    yesCommand,
+                                    yesButtonText,
+                                    yesButtonType,
+                                    yesButtonIconType,
+                                    noCommand,
+                                    noButtonText,
+                                    noButtonType,
+                                    noButtonIconType,
+                                    cancelCommand,
+                                    cancelButtonText,
+                                    cancelButtonType,
+                                    cancelButtonIconType);
     }
 
-    public static YesNoCancelPopup newYesNoCancelPopup( final String title,
-                                                        final String content,
-                                                        final Command yesCommand,
-                                                        final Command noCommand,
-                                                        final Command cancelCommand ) {
+    public static YesNoCancelPopup newYesNoCancelPopup(final String title,
+                                                       final String content,
+                                                       final Command yesCommand,
+                                                       final Command noCommand,
+                                                       final Command cancelCommand) {
 
-        return new YesNoCancelPopup( title, content, yesCommand, null, null, null, noCommand, null, null, null,
-                                     cancelCommand, null, null, null );
-
+        return new YesNoCancelPopup(title,
+                                    content,
+                                    yesCommand,
+                                    null,
+                                    null,
+                                    null,
+                                    noCommand,
+                                    null,
+                                    null,
+                                    null,
+                                    cancelCommand,
+                                    null,
+                                    null,
+                                    null);
     }
 
-    public static YesNoCancelPopup newYesNoCancelPopup( final String title,
-                                                        final String content,
-                                                        final Command yesCommand,
-                                                        final String yesButtonText,
-                                                        final Command noCommand,
-                                                        final String noButtonText,
-                                                        final Command cancelCommand,
-                                                        final String cancelButtonText ) {
+    public static YesNoCancelPopup newYesNoCancelPopup(final String title,
+                                                       final String content,
+                                                       final Command yesCommand,
+                                                       final String yesButtonText,
+                                                       final Command noCommand,
+                                                       final String noButtonText,
+                                                       final Command cancelCommand,
+                                                       final String cancelButtonText) {
 
-        return new YesNoCancelPopup( title, content, yesCommand, yesButtonText, null, null,
-                                     noCommand, noButtonText, null, null,
-                                     cancelCommand, cancelButtonText, null, null );
-
+        return new YesNoCancelPopup(title,
+                                    content,
+                                    yesCommand,
+                                    yesButtonText,
+                                    null,
+                                    null,
+                                    noCommand,
+                                    noButtonText,
+                                    null,
+                                    null,
+                                    cancelCommand,
+                                    cancelButtonText,
+                                    null,
+                                    null);
     }
 
-    public static YesNoCancelPopup newYesNoCancelPopup( final String title,
-                                                        final String content,
-                                                        final Command yesCommand,
-                                                        final String yesButtonText,
-                                                        final ButtonType yesButtonType,
-                                                        final Command noCommand,
-                                                        final String noButtonText,
-                                                        final ButtonType noButtonType,
-                                                        final Command cancelCommand,
-                                                        final String cancelButtonText,
-                                                        final ButtonType cancelButtonType ) {
+    public static YesNoCancelPopup newYesNoCancelPopup(final String title,
+                                                       final String content,
+                                                       final Command yesCommand,
+                                                       final String yesButtonText,
+                                                       final ButtonType yesButtonType,
+                                                       final Command noCommand,
+                                                       final String noButtonText,
+                                                       final ButtonType noButtonType,
+                                                       final Command cancelCommand,
+                                                       final String cancelButtonText,
+                                                       final ButtonType cancelButtonType) {
 
-        return new YesNoCancelPopup( title, content,
-                                     yesCommand, yesButtonText, yesButtonType, null,
-                                     noCommand, noButtonText, noButtonType, null,
-                                     cancelCommand, cancelButtonText, cancelButtonType, null );
+        return new YesNoCancelPopup(title,
+                                    content,
+                                    yesCommand,
+                                    yesButtonText,
+                                    yesButtonType,
+                                    null,
+                                    noCommand,
+                                    noButtonText,
+                                    noButtonType,
+                                    null,
+                                    cancelCommand,
+                                    cancelButtonText,
+                                    cancelButtonType,
+                                    null);
     }
 
     public void clearScrollHeight() {
         this.scroll.getElement().getStyle().clearHeight();
+    }
+
+    interface YesNoCancelPopupWidgetBinder
+            extends
+            UiBinder<Widget, YesNoCancelPopup> {
+
     }
 }

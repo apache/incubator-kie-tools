@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.layout.editor.client.infra;
 
+import java.util.List;
+
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
@@ -24,55 +26,64 @@ import org.uberfire.ext.layout.editor.client.components.columns.ColumnWithCompon
 import org.uberfire.ext.layout.editor.client.components.container.Container;
 import org.uberfire.ext.layout.editor.client.components.rows.Row;
 
-import java.util.List;
-
 public class LayoutTemplateAdapter {
 
-    public static LayoutTemplate convert( Container container ) {
-        return convertToLayoutEditor( container );
+    public static LayoutTemplate convert(Container container) {
+        return convertToLayoutEditor(container);
     }
 
-    private static LayoutTemplate convertToLayoutEditor( Container container ) {
-        LayoutTemplate layoutTemplate = new LayoutTemplate( container.getLayoutName(), container.getProperties() );
-        extractRows( container.getRows(), layoutTemplate );
+    private static LayoutTemplate convertToLayoutEditor(Container container) {
+        LayoutTemplate layoutTemplate = new LayoutTemplate(container.getLayoutName(),
+                                                           container.getProperties());
+        extractRows(container.getRows(),
+                    layoutTemplate);
         return layoutTemplate;
     }
 
-    private static void extractRows( List<Row> rows, LayoutTemplate layoutTemplate ) {
-        for ( Row row : rows ) {
+    private static void extractRows(List<Row> rows,
+                                    LayoutTemplate layoutTemplate) {
+        for (Row row : rows) {
             LayoutRow layoutRow = new LayoutRow();
-            extractColumns( row.getColumns(), layoutRow );
-            layoutTemplate.addRow( layoutRow );
+            extractColumns(row.getColumns(),
+                           layoutRow);
+            layoutTemplate.addRow(layoutRow);
         }
     }
 
-    private static void extractColumns( List<Column> columns, LayoutRow layoutRow ) {
-        for ( Column col : columns ) {
-            LayoutColumn layoutColumn = new LayoutColumn( col.getSize().toString() );
-            if ( col.hasInnerRows() ) {
-                extractColumnWithComponents( col, layoutColumn );
-
+    private static void extractColumns(List<Column> columns,
+                                       LayoutRow layoutRow) {
+        for (Column col : columns) {
+            LayoutColumn layoutColumn = new LayoutColumn(col.getSize().toString());
+            if (col.hasInnerRows()) {
+                extractColumnWithComponents(col,
+                                            layoutColumn);
             } else {
-                extractComponents( col, layoutColumn );
+                extractComponents(col,
+                                  layoutColumn);
             }
-            layoutRow.add( layoutColumn );
+            layoutRow.add(layoutColumn);
         }
     }
 
-    private static void extractColumnWithComponents( Column col, LayoutColumn layoutColumn ) {
-        if ( col instanceof ColumnWithComponents ) {
-            ColumnWithComponents columnWithComponents = ( ColumnWithComponents ) col;
+    private static void extractColumnWithComponents(Column col,
+                                                    LayoutColumn layoutColumn) {
+        if (col instanceof ColumnWithComponents) {
+            ColumnWithComponents columnWithComponents = (ColumnWithComponents) col;
             LayoutRow layoutRow = new LayoutRow();
-            extractColumns( columnWithComponents.getRow().getColumns(), layoutRow );
-            layoutColumn.addRow( layoutRow );
+            extractColumns(columnWithComponents.getRow().getColumns(),
+                           layoutRow);
+            layoutColumn.addRow(layoutRow);
         }
     }
 
-    private static void extractComponents( Column col, LayoutColumn layoutColumn ) {
-        extractLayoutEditorComponent( col, layoutColumn );
+    private static void extractComponents(Column col,
+                                          LayoutColumn layoutColumn) {
+        extractLayoutEditorComponent(col,
+                                     layoutColumn);
     }
 
-    private static void extractLayoutEditorComponent( Column col, LayoutColumn layoutColumn ) {
-        layoutColumn.add( col.getLayoutComponent() );
+    private static void extractLayoutEditorComponent(Column col,
+                                                     LayoutColumn layoutColumn) {
+        layoutColumn.add(col.getLayoutComponent());
     }
 }

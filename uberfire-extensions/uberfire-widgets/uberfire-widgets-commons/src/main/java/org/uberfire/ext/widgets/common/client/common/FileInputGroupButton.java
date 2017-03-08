@@ -24,10 +24,10 @@ public class FileInputGroupButton extends Composite {
 
     private Span wrapper;
 
-    public FileInputGroupButton( FileInputButton input ) {
+    public FileInputGroupButton(FileInputButton input) {
         wrapper = new Span();
-        wrapper.setStyleName( Styles.INPUT_GROUP_BTN );
-        wrapper.add( input );
-        initWidget( wrapper );
+        wrapper.setStyleName(Styles.INPUT_GROUP_BTN);
+        wrapper.add(input);
+        initWidget(wrapper);
     }
 }

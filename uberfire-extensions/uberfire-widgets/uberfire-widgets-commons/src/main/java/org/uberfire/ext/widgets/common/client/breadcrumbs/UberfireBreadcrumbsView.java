@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.widgets.common.client.breadcrumbs;
 
+import javax.inject.Inject;
+
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Element;
 import org.jboss.errai.common.client.dom.OrderedList;
@@ -25,44 +27,40 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.widgets.common.client.breadcrumbs.widget.BreadcrumbsPresenter;
 
-import javax.inject.Inject;
-
 import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
 
 @Templated
 public class UberfireBreadcrumbsView implements UberElement<UberfireBreadcrumbs>,
-        UberfireBreadcrumbs.View, IsElement {
-
-
-    private UberfireBreadcrumbs presenter;
+                                                UberfireBreadcrumbs.View,
+                                                IsElement {
 
     @Inject
     @DataField
     OrderedList breadcrumbs;
-
     @Inject
     @DataField
     Div breadcrumbsToolbar;
+    private UberfireBreadcrumbs presenter;
 
     @Override
-    public void init( UberfireBreadcrumbs presenter ) {
+    public void init(UberfireBreadcrumbs presenter) {
         this.presenter = presenter;
     }
 
     @Override
     public void clear() {
-        removeAllChildren( breadcrumbs );
-        removeAllChildren( breadcrumbsToolbar );
+        removeAllChildren(breadcrumbs);
+        removeAllChildren(breadcrumbsToolbar);
     }
 
     @Override
-    public void addBreadcrumb( UberElement<BreadcrumbsPresenter> view ) {
-        breadcrumbs.appendChild( view.getElement() );
+    public void addBreadcrumb(UberElement<BreadcrumbsPresenter> view) {
+        breadcrumbs.appendChild(view.getElement());
     }
 
     @Override
-    public void addBreadcrumbToolbar( Element toolbar ) {
-        removeAllChildren( breadcrumbsToolbar );
-        breadcrumbsToolbar.appendChild( toolbar );
+    public void addBreadcrumbToolbar(Element toolbar) {
+        removeAllChildren(breadcrumbsToolbar);
+        breadcrumbsToolbar.appendChild(toolbar);
     }
 }

@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -28,11 +30,8 @@ import org.gwtbootstrap3.client.ui.Row;
 import org.uberfire.ext.security.management.client.widgets.management.explorer.EntitiesExplorerView;
 import org.uberfire.mvp.Command;
 
-import javax.enterprise.context.Dependent;
-
 /**
  * <p>An editor view implementation for modifying the assigned entities inline in a bootstrap grip container.</p>
- *
  * @since 0.8.0
  */
 
@@ -42,26 +41,15 @@ public class AssignedEntitiesInlineEditorView<T> extends Composite
         implements
         AssignedEntitiesEditor<T> {
 
-    interface AssignedEntitiesInlineEditorViewBinder
-            extends
-            UiBinder<Row, AssignedEntitiesInlineEditorView> {
-
-    }
-
     private static AssignedEntitiesInlineEditorViewBinder uiBinder = GWT.create(AssignedEntitiesInlineEditorViewBinder.class);
-
     @UiField
     Row mainRow;
-    
     @UiField
     Heading heading;
-    
     @UiField(provided = true)
     EntitiesExplorerView entitiesExplorerView;
-    
     @UiField
     Button saveButton;
-
     private T presenter;
 
     @Override
@@ -72,25 +60,28 @@ public class AssignedEntitiesInlineEditorView<T> extends Composite
     @Override
     public AssignedEntitiesEditor<T> configure(final EntitiesExplorerView explorerView) {
         this.entitiesExplorerView = explorerView;
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
         return this;
     }
 
     @Override
-    public AssignedEntitiesEditor<T> configureClose(final String closeText, final Command closeCallback) {
+    public AssignedEntitiesEditor<T> configureClose(final String closeText,
+                                                    final Command closeCallback) {
         // Close not available for this view implementation.
         return this;
     }
 
     @Override
-    public AssignedEntitiesEditor<T> configureSave(final String saveText, final Command saveCallback) {
+    public AssignedEntitiesEditor<T> configureSave(final String saveText,
+                                                   final Command saveCallback) {
         saveButton.setText(saveText);
         saveButton.setTitle(saveText);
         saveButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(final ClickEvent clickEvent) {
                 if (saveCallback != null) {
-                    saveCallback.execute();;
+                    saveCallback.execute();
+                    ;
                 }
             }
         });
@@ -111,4 +102,9 @@ public class AssignedEntitiesInlineEditorView<T> extends Composite
         return this;
     }
 
+    interface AssignedEntitiesInlineEditorViewBinder
+            extends
+            UiBinder<Row, AssignedEntitiesInlineEditorView> {
+
+    }
 }

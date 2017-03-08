@@ -33,24 +33,12 @@ import org.uberfire.mvp.Command;
 @WebListener
 public class WebAppListener implements ServletContextListener {
 
-    private static final Logger logger = LoggerFactory.getLogger( WebAppListener.class );
+    private static final Logger logger = LoggerFactory.getLogger(WebAppListener.class);
 
     private static List<Command> onStartupCommandList = new ArrayList<>();
     private static List<Command> onDestroyCommandList = new ArrayList<>();
     private static boolean initialized = false;
     private static boolean destroyed = false;
-
-    @Override
-    public void contextInitialized(ServletContextEvent servletContextEvent) {
-        ServletContext servletContext = servletContextEvent.getServletContext();
-        String rootDir = servletContext.getRealPath("/");
-        setRootDir(rootDir);
-    }
-
-    @Override
-    public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        resetRootDir();
-    }
 
     public synchronized static void registerOnStartupCommand(Command command) {
         if (initialized) {
@@ -73,7 +61,6 @@ public class WebAppListener implements ServletContextListener {
         WebAppSettings.get().setRootDir(rootDir);
         logger.info("Root directory = " + rootDir);
         notifyCallbacks(onStartupCommandList);
-
     }
 
     private synchronized static void resetRootDir() {
@@ -86,5 +73,17 @@ public class WebAppListener implements ServletContextListener {
         for (Command command : commandList) {
             command.execute();
         }
+    }
+
+    @Override
+    public void contextInitialized(ServletContextEvent servletContextEvent) {
+        ServletContext servletContext = servletContextEvent.getServletContext();
+        String rootDir = servletContext.getRealPath("/");
+        setRootDir(rootDir);
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent servletContextEvent) {
+        resetRootDir();
     }
 }

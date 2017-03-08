@@ -29,16 +29,16 @@ public class EntityAlreadyExistsException extends SecurityManagementException {
 
     private String identifier;
 
-    public EntityAlreadyExistsException( @MapsTo("message") String message,
-                                         @MapsTo("identifier") String identifier ) {
-        super( message );
+    public EntityAlreadyExistsException(@MapsTo("message") String message,
+                                        @MapsTo("identifier") String identifier) {
+        super(message);
         this.identifier = identifier;
     }
 
     @Override
     public String getMessage() {
         String m = super.getMessage();
-        if ( identifier != null ) {
+        if (identifier != null) {
             return m + ": " + identifier;
         }
         return m;

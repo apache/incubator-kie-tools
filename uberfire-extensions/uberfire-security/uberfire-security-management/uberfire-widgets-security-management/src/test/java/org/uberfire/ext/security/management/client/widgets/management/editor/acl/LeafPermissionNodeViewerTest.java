@@ -56,21 +56,28 @@ public class LeafPermissionNodeViewerTest {
         permissionNode = new PermissionLeafNode();
         permissionNode.setNodeName("r1");
         permissionNode.setNodeFullName("r1 full");
-        permissionNode.addPermission(permission1, "grant1", "deny1");
-        permissionNode.addPermission(permission2, "grant2", "deny2");
+        permissionNode.addPermission(permission1,
+                                     "grant1",
+                                     "deny1");
+        permissionNode.addPermission(permission2,
+                                     "grant2",
+                                     "deny2");
         presenter.show(permissionNode);
     }
-    
+
     @Test
     public void testShow() {
         assertNull(presenter.getChildren());
-        assertEquals(presenter.getPermissionNode(), permissionNode);
+        assertEquals(presenter.getPermissionNode(),
+                     permissionNode);
 
         verify(view).setNodeName("r1");
         verify(view).setNodeFullName("r1 full");
         verify(view).permissionDenied("deny1");
         verify(view).permissionGranted("grant2");
-        verify(view, never()).permissionGranted("grant1");
-        verify(view, never()).permissionDenied("deny2");
+        verify(view,
+               never()).permissionGranted("grant1");
+        verify(view,
+               never()).permissionDenied("deny2");
     }
 }

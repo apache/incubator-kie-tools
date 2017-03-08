@@ -32,8 +32,6 @@ import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresente
 import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
 import org.uberfire.ext.preferences.client.central.actions.PreferencesCentralActionsScreen;
 import org.uberfire.ext.preferences.client.resources.i18n.Constants;
-import org.uberfire.lifecycle.OnStartup;
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.CompassPosition;
 import org.uberfire.workbench.model.PanelDefinition;
@@ -58,9 +56,9 @@ public class PreferencesCentralPerspective {
 
     private PerspectiveDefinition perspective;
 
-    public void perspectiveChangeEvent( @Observes UberfireDockReadyEvent dockReadyEvent ) {
-        if ( dockReadyEvent.getCurrentPerspective().equals( IDENTIFIER ) ) {
-            uberfireDocks.expand( dock );
+    public void perspectiveChangeEvent(@Observes UberfireDockReadyEvent dockReadyEvent) {
+        if (dockReadyEvent.getCurrentPerspective().equals(IDENTIFIER)) {
+            uberfireDocks.expand(dock);
         }
     }
 
@@ -70,28 +68,28 @@ public class PreferencesCentralPerspective {
     }
 
     PerspectiveDefinition buildPerspective() {
-        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        perspective.setName( "Preferences" );
+        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        perspective.setName("Preferences");
 
-        final PanelDefinition actionsBar = new PanelDefinitionImpl( StaticWorkbenchPanelPresenter.class.getName() );
-        actionsBar.setHeight( 80 );
-        actionsBar.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( PreferencesCentralActionsScreen.IDENTIFIER ) ) );
+        final PanelDefinition actionsBar = new PanelDefinitionImpl(StaticWorkbenchPanelPresenter.class.getName());
+        actionsBar.setHeight(80);
+        actionsBar.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(PreferencesCentralActionsScreen.IDENTIFIER)));
 
-        perspective.getRoot().insertChild( CompassPosition.SOUTH,
-                                           actionsBar );
+        perspective.getRoot().insertChild(CompassPosition.SOUTH,
+                                          actionsBar);
 
         return perspective;
     }
 
     @PostConstruct
     public void setupNavBarDock() {
-        dock = new UberfireDock( UberfireDockPosition.WEST,
-                                 "ADJUST",
-                                 new DefaultPlaceRequest( PreferencesCentralNavBarScreen.IDENTIFIER ),
-                                 IDENTIFIER )
-                .withLabel( translationService.format( Constants.PreferencesCentralPerspective_Preferences ) )
-                .withSize( 420 );
+        dock = new UberfireDock(UberfireDockPosition.WEST,
+                                "ADJUST",
+                                new DefaultPlaceRequest(PreferencesCentralNavBarScreen.IDENTIFIER),
+                                IDENTIFIER)
+                .withLabel(translationService.format(Constants.PreferencesCentralPerspective_Preferences))
+                .withSize(420);
 
-        uberfireDocks.add( dock );
+        uberfireDocks.add(dock);
     }
 }

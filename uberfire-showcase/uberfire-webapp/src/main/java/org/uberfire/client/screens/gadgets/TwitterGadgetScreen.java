@@ -27,21 +27,20 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchScreen;
 
 @Dependent
-@WorkbenchScreen( identifier = "TwitterGadget" )
+@WorkbenchScreen(identifier = "TwitterGadget")
 @Templated
 public class TwitterGadgetScreen extends Composite {
 
     @PostConstruct
-    public void init(){
+    public void init() {
         final ScriptElement se = Document.get().createScriptElement();
-        se.setId( "twitter-wjs" );
-        se.setSrc( "http://platform.twitter.com/widgets.js" );
-        this.getElement().appendChild( se );
+        se.setId("twitter-wjs");
+        se.setSrc("http://platform.twitter.com/widgets.js");
+        this.getElement().appendChild(se);
     }
 
     @WorkbenchPartTitle
     public String getName() {
         return "Uberfire Twitter";
     }
-
 }

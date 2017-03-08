@@ -24,8 +24,8 @@ public class FileNameAndCommitMessage {
     private final String newFileName;
     private final String commitMessage;
 
-    public FileNameAndCommitMessage( final String newFileName,
-                                     final String commitMessage ) {
+    public FileNameAndCommitMessage(final String newFileName,
+                                    final String commitMessage) {
         this.newFileName = newFileName;
         this.commitMessage = commitMessage;
     }

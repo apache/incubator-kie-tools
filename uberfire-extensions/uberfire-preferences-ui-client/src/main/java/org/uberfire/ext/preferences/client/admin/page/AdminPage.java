@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
+import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 
 /**
  * Used to customize the admin page perspective.
@@ -34,8 +34,8 @@ public interface AdminPage {
      * @param identifier Admin screen identifier.
      * @param title Admin screen title.
      */
-    void addScreen( String identifier,
-                    String title );
+    void addScreen(String identifier,
+                   String title);
 
     /**
      * Adds a new admin tool to the admin page (with a counter).
@@ -47,12 +47,12 @@ public interface AdminPage {
      * @param counterCommand {@link ParameterizedCommand} that calls its {@link ParameterizedCommand} parameter
      * passing the counter.
      */
-    void addTool( String screen,
-                  String title,
-                  String iconCss,
-                  String category,
-                  Command command,
-                  ParameterizedCommand<ParameterizedCommand<Integer>> counterCommand );
+    void addTool(String screen,
+                 String title,
+                 String iconCss,
+                 String category,
+                 Command command,
+                 ParameterizedCommand<ParameterizedCommand<Integer>> counterCommand);
 
     /**
      * Adds a new admin tool to the admin page.
@@ -62,11 +62,11 @@ public interface AdminPage {
      * @param category Defines the group inside which the shortcut will be.
      * @param command Command to be executed when the shortcut is accessed.
      */
-    void addTool( String screen,
-                  String title,
-                  String iconCss,
-                  String category,
-                  Command command );
+    void addTool(String screen,
+                 String title,
+                 String iconCss,
+                 String category,
+                 Command command);
 
     /**
      * Adds a new admin tool that links to a preference to the admin page.
@@ -76,11 +76,11 @@ public interface AdminPage {
      * @param iconCss CSS class related to the shortcut icon.
      * @param category Defines the group inside which the shortcut will be.
      */
-    void addPreference( String screen,
-                        String identifier,
-                        String title,
-                        String iconCss,
-                        String category );
+    void addPreference(String screen,
+                       String identifier,
+                       String title,
+                       String iconCss,
+                       String category);
 
     /**
      * Adds a new admin tool that links to a preference to the admin page.
@@ -92,36 +92,36 @@ public interface AdminPage {
      * @param customScopeResolutionStrategySupplier Supplier for a custom preference scope resolution strategy.
      * It will be used when the tool is selected.
      */
-    void addPreference( String screen,
-                        String identifier,
-                        String title,
-                        String iconCss,
-                        String category,
-                        Supplier<PreferenceScopeResolutionStrategyInfo> customScopeResolutionStrategySupplier );
+    void addPreference(String screen,
+                       String identifier,
+                       String title,
+                       String iconCss,
+                       String category,
+                       Supplier<PreferenceScopeResolutionStrategyInfo> customScopeResolutionStrategySupplier);
 
     /**
      * Returns all added admin tools, grouped by their category.
      * @param screen Identifier for the admin screen from where the tools will be returned.
      * @return A map containing a list of admin tools by each category of that screen.
      */
-    Map<String, List<AdminTool>> getToolsByCategory( String screen );
+    Map<String, List<AdminTool>> getToolsByCategory(String screen);
 
     /**
      * Returns the screen title to be exhibit in the admin page.
      * @param screen Screen identifier.
      * @return Screen title, as passed when the screen was added.
      */
-    String getScreenTitle( String screen );
-
-    /**
-     * Defines the default screen to be opened when navigating to the Admin Page perspective.
-     * @param defaultScreen Default screen identifier. Must not be null or empty.
-     */
-    void setDefaultScreen( String defaultScreen );
+    String getScreenTitle(String screen);
 
     /**
      * Returns the default screen to be opened when navigating to the Admin Page perspective.
      * @return Default screen identifier.
      */
     String getDefaultScreen();
+
+    /**
+     * Defines the default screen to be opened when navigating to the Admin Page perspective.
+     * @param defaultScreen Default screen identifier. Must not be null or empty.
+     */
+    void setDefaultScreen(String defaultScreen);
 }

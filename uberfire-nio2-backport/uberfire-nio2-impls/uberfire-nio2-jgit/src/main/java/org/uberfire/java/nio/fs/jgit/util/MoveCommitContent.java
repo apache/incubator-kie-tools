@@ -22,7 +22,7 @@ public class MoveCommitContent implements CommitContent {
 
     private final Map<String, String> content;
 
-    public MoveCommitContent( Map<String, String> content ) {
+    public MoveCommitContent(Map<String, String> content) {
         this.content = content;
     }
 

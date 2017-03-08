@@ -16,6 +16,16 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor.layout.editor;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -37,24 +47,16 @@ import org.uberfire.ext.properties.editor.model.PropertyEditorChangeEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.*;
-
 @ApplicationScoped
 public class ScreenLayoutDragComponent implements PerspectiveEditorDragComponent,
-        HasModalConfiguration {
+                                                  HasModalConfiguration {
 
     public static final String PLACE_NAME_PARAMETER = "Place Name";
-
+    protected List<String> availableWorkbenchScreensIds = new ArrayList<String>();
     @Inject
     private PlaceManager placeManager;
-
-    protected List<String> availableWorkbenchScreensIds = new ArrayList<String>();
-
     private EditScreen editScreen;
+    private ModalConfigurationContext configContext;
 
     @PostConstruct
     public void setup() {
@@ -67,62 +69,67 @@ public class ScreenLayoutDragComponent implements PerspectiveEditorDragComponent
     }
 
     @Override
-    public IsWidget getPreviewWidget( RenderingContext ctx ) {
-        return getShowWidget( ctx );
+    public IsWidget getPreviewWidget(RenderingContext ctx) {
+        return getShowWidget(ctx);
     }
 
     @Override
-    public IsWidget getShowWidget( RenderingContext ctx ) {
+    public IsWidget getShowWidget(RenderingContext ctx) {
 
-        FlowPanel panel = GWT.create( FlowPanel.class );
-        Map<String, String> properties = extractScreenProperties( ctx );
+        FlowPanel panel = GWT.create(FlowPanel.class);
+        Map<String, String> properties = extractScreenProperties(ctx);
 
-        String placeName = properties.get( PLACE_NAME_PARAMETER );
-        if ( placeName == null ) {
+        String placeName = properties.get(PLACE_NAME_PARAMETER);
+        if (placeName == null) {
             return null;
         }
 
-        placeManager.goTo( new DefaultPlaceRequest( placeName, properties ), panel );
+        placeManager.goTo(new DefaultPlaceRequest(placeName,
+                                                  properties),
+                          panel);
         return panel;
     }
 
-    private Map<String, String> extractScreenProperties( RenderingContext ctx ) {
+    private Map<String, String> extractScreenProperties(RenderingContext ctx) {
         Map<String, String> properties = ctx.getComponent().getProperties();
         Map<String, String> newProperties = new HashMap<>();
-        for ( String key : properties.keySet() ) {
-            newProperties.put( key, properties.get( key ) );
+        for (String key : properties.keySet()) {
+            newProperties.put(key,
+                              properties.get(key));
         }
         //TODO probably UF bug on insert and remove a screen in the same perspective
-        newProperties.put( "random", "" + ( new Random().nextLong() ) );
+        newProperties.put("random",
+                          "" + (new Random().nextLong()));
         return newProperties;
     }
 
     @Override
-    public Modal getConfigurationModal( ModalConfigurationContext ctx ) {
+    public Modal getConfigurationModal(ModalConfigurationContext ctx) {
         this.configContext = ctx;
-        return new EditScreen( ctx, availableWorkbenchScreensIds );
+        return new EditScreen(ctx,
+                              availableWorkbenchScreensIds);
     }
 
-    private ModalConfigurationContext configContext;
-
-    public void observeEditComponentEventFromPropertyEditor( @Observes PropertyEditorChangeEvent event ) {
+    public void observeEditComponentEventFromPropertyEditor(@Observes PropertyEditorChangeEvent event) {
 
         PropertyEditorFieldInfo property = event.getProperty();
-        if ( property.getEventId().equalsIgnoreCase( EditScreen.PROPERTY_EDITOR_KEY ) ) {
-            configContext.setComponentProperty( property.getLabel(), property.getCurrentStringValue() );
+        if (property.getEventId().equalsIgnoreCase(EditScreen.PROPERTY_EDITOR_KEY)) {
+            configContext.setComponentProperty(property.getLabel(),
+                                               property.getCurrentStringValue());
         }
     }
 
-    public void onNewPluginRegistered( @Observes NewPluginRegistered newPluginRegistered ) {
-        if ( newPluginRegistered.getType().equals( PluginType.SCREEN ) &&
-                !availableWorkbenchScreensIds.contains( newPluginRegistered.getName() ) ) {
-            getActivityBeansInfo().addActivityBean( availableWorkbenchScreensIds, newPluginRegistered.getName() );
+    public void onNewPluginRegistered(@Observes NewPluginRegistered newPluginRegistered) {
+        if (newPluginRegistered.getType().equals(PluginType.SCREEN) &&
+                !availableWorkbenchScreensIds.contains(newPluginRegistered.getName())) {
+            getActivityBeansInfo().addActivityBean(availableWorkbenchScreensIds,
+                                                   newPluginRegistered.getName());
         }
     }
 
-    public void onPluginUnregistered( @Observes PluginUnregistered pluginUnregistered ) {
-        if ( pluginUnregistered.getType().equals( PluginType.SCREEN ) ) {
-            availableWorkbenchScreensIds.remove( pluginUnregistered.getName() );
+    public void onPluginUnregistered(@Observes PluginUnregistered pluginUnregistered) {
+        if (pluginUnregistered.getType().equals(PluginType.SCREEN)) {
+            availableWorkbenchScreensIds.remove(pluginUnregistered.getName());
         }
     }
 
@@ -133,7 +140,7 @@ public class ScreenLayoutDragComponent implements PerspectiveEditorDragComponent
 
     ActivityBeansInfo getActivityBeansInfo() {
         final SyncBeanDef<ActivityBeansInfo> activityBeansInfoIOCBeanDef = IOC.getBeanManager()
-                .lookupBean( ActivityBeansInfo.class );
+                .lookupBean(ActivityBeansInfo.class);
         return activityBeansInfoIOCBeanDef.getInstance();
     }
 

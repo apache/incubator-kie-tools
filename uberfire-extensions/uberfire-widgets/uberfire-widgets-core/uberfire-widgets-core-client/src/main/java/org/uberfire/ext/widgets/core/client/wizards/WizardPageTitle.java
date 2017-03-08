@@ -39,64 +39,53 @@ import org.uberfire.mvp.Command;
 @Dependent
 public class WizardPageTitle extends Composite {
 
+    private static WizardPageTitleViewBinder uiBinder = GWT.create(WizardPageTitleViewBinder.class);
     @UiField
     protected AnchorListItem container;
-
-    @Inject
-    private Event<WizardPageSelectedEvent> selectPageEvent;
-
     private final Command isCompleteCommand = new Command() {
         @Override
         public void execute() {
-            setComplete( true );
+            setComplete(true);
         }
     };
 
     private final Command isIncompleteCommand = new Command() {
         @Override
         public void execute() {
-            setComplete( false );
+            setComplete(false);
         }
     };
-
-    interface WizardPageTitleViewBinder
-            extends
-            UiBinder<Widget, WizardPageTitle> {
-
-    }
-
-    private static WizardPageTitleViewBinder uiBinder = GWT.create( WizardPageTitleViewBinder.class );
+    @Inject
+    private Event<WizardPageSelectedEvent> selectPageEvent;
 
     public WizardPageTitle() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
-    public void setContent( final WizardPage page ) {
-        container.setText( page.getTitle() );
-        page.isComplete( new Callback<Boolean>() {
+    public void setContent(final WizardPage page) {
+        container.setText(page.getTitle());
+        page.isComplete(new Callback<Boolean>() {
             @Override
-            public void callback( final Boolean result ) {
-                setComplete( Boolean.TRUE.equals( result ) );
+            public void callback(final Boolean result) {
+                setComplete(Boolean.TRUE.equals(result));
             }
-        } );
+        });
 
-        container.addDomHandler( new ClickHandler() {
+        container.addDomHandler(new ClickHandler() {
 
-            public void onClick( final ClickEvent event ) {
-                selectPageEvent.fire( new WizardPageSelectedEvent( page ) );
-            }
-
-        },
-                                 ClickEvent.getType() );
-
+                                    public void onClick(final ClickEvent event) {
+                                        selectPageEvent.fire(new WizardPageSelectedEvent(page));
+                                    }
+                                },
+                                ClickEvent.getType());
     }
 
     /**
      * Is the page complete
      * @param isComplete
      */
-    public void setComplete( final boolean isComplete ) {
-        container.setIcon( isComplete ? IconType.CHECK_SQUARE_O : IconType.SQUARE_O );
+    public void setComplete(final boolean isComplete) {
+        container.setIcon(isComplete ? IconType.CHECK_SQUARE_O : IconType.SQUARE_O);
     }
 
     /**
@@ -106,8 +95,13 @@ public class WizardPageTitle extends Composite {
      * "current pages".
      * @param isSelected
      */
-    public void setPageSelected( final boolean isSelected ) {
-        container.setActive( isSelected );
+    public void setPageSelected(final boolean isSelected) {
+        container.setActive(isSelected);
     }
 
+    interface WizardPageTitleViewBinder
+            extends
+            UiBinder<Widget, WizardPageTitle> {
+
+    }
 }

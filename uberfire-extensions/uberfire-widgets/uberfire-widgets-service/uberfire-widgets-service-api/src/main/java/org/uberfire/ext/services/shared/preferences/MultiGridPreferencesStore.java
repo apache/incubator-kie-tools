@@ -15,98 +15,107 @@
  */
 package org.uberfire.ext.services.shared.preferences;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class MultiGridPreferencesStore extends UserPreference {
 
-  private String multiGridId;
-  private HashMap<String,HashMap> gridsSettings =  new HashMap<String, HashMap>(  );
-  private ArrayList<String> gridsIds = new ArrayList<String>(  );
-  private String selectedGrid = "NONE";
-  private int refreshInterval = 10;
+    private String multiGridId;
+    private HashMap<String, HashMap> gridsSettings = new HashMap<String, HashMap>();
+    private ArrayList<String> gridsIds = new ArrayList<String>();
+    private String selectedGrid = "NONE";
+    private int refreshInterval = 10;
 
-  public MultiGridPreferencesStore() {
-  }
-
-  public MultiGridPreferencesStore( String multiGridId ) {
-      this.multiGridId = multiGridId;
-    super.type= UserPreferencesType.MULTIGRIDPREFERENCES;
-    super.preferenceKey = multiGridId;
-  }
-
-  public String getMultiGridId() {
-    return multiGridId;
-  }
-
-  public void setMultiGridId( String multiGridId ) {
-    this.multiGridId = multiGridId;
-  }
-
-  public HashMap getGridSettings(String key){
-    if(gridsSettings!=null) return gridsSettings.get( key );
-    return null;
-  }
-
-  public String getGridSettingParam(String key, String paramId){
-    HashMap<String,String> params = getGridSettings( key );
-    if(params!=null) return params.get( paramId );
-    return null;
-  }
-
-  public void setGridSettings(String key, HashMap params){
-    gridsSettings.put( key,params );
-  }
-
-
-
-  public ArrayList<String>  getGridsId() {
-    return gridsIds ;
-  }
-
-  public void addGridId(String gridKey) {
-    getGridsId().add( gridKey );
-  }
-
-  public void addNewTab(String gridKey,HashMap gridsSettings){
-    addGridId( gridKey );
-    setGridSettings( gridKey,gridsSettings );
-  }
-
-  public void removeTab(String gridKey) {
-    gridsSettings.remove( gridKey ) ;
-
-    for(int i=0; i< getGridsId().size();i++){
-      if(gridsIds.get( i ).equals( gridKey )){
-        gridsIds.remove( i );
-      }
+    public MultiGridPreferencesStore() {
     }
-    if(isSelectedGrid( gridKey )) selectedGrid="";
-  }
 
-
-  public void setSelectedGrid( String gridKey ) {
-    selectedGrid = gridKey;
-  }
-
-  public boolean isSelectedGrid( String gridKey ) {
-    if(selectedGrid!=null){
-      return selectedGrid.equals( gridKey );
+    public MultiGridPreferencesStore(String multiGridId) {
+        this.multiGridId = multiGridId;
+        super.type = UserPreferencesType.MULTIGRIDPREFERENCES;
+        super.preferenceKey = multiGridId;
     }
-    return false;
-  }
-  public String getSelectedGrid(){
-    return selectedGrid;
-  }
 
-  public int getRefreshInterval() {
-    return refreshInterval;
-  }
+    public String getMultiGridId() {
+        return multiGridId;
+    }
 
-  public void setRefreshInterval( int refreshInterval ) {
-    this.refreshInterval = refreshInterval;
-  }
+    public void setMultiGridId(String multiGridId) {
+        this.multiGridId = multiGridId;
+    }
+
+    public HashMap getGridSettings(String key) {
+        if (gridsSettings != null) {
+            return gridsSettings.get(key);
+        }
+        return null;
+    }
+
+    public String getGridSettingParam(String key,
+                                      String paramId) {
+        HashMap<String, String> params = getGridSettings(key);
+        if (params != null) {
+            return params.get(paramId);
+        }
+        return null;
+    }
+
+    public void setGridSettings(String key,
+                                HashMap params) {
+        gridsSettings.put(key,
+                          params);
+    }
+
+    public ArrayList<String> getGridsId() {
+        return gridsIds;
+    }
+
+    public void addGridId(String gridKey) {
+        getGridsId().add(gridKey);
+    }
+
+    public void addNewTab(String gridKey,
+                          HashMap gridsSettings) {
+        addGridId(gridKey);
+        setGridSettings(gridKey,
+                        gridsSettings);
+    }
+
+    public void removeTab(String gridKey) {
+        gridsSettings.remove(gridKey);
+
+        for (int i = 0; i < getGridsId().size(); i++) {
+            if (gridsIds.get(i).equals(gridKey)) {
+                gridsIds.remove(i);
+            }
+        }
+        if (isSelectedGrid(gridKey)) {
+            selectedGrid = "";
+        }
+    }
+
+    public boolean isSelectedGrid(String gridKey) {
+        if (selectedGrid != null) {
+            return selectedGrid.equals(gridKey);
+        }
+        return false;
+    }
+
+    public String getSelectedGrid() {
+        return selectedGrid;
+    }
+
+    public void setSelectedGrid(String gridKey) {
+        selectedGrid = gridKey;
+    }
+
+    public int getRefreshInterval() {
+        return refreshInterval;
+    }
+
+    public void setRefreshInterval(int refreshInterval) {
+        this.refreshInterval = refreshInterval;
+    }
 }

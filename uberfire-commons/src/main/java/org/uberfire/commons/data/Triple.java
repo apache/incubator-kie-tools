@@ -41,7 +41,7 @@ public class Triple<K1, K2, K3> {
     public Triple(
             final K1 k1,
             final K2 k2,
-            final K3 k3 ) {
+            final K3 k3) {
         this.k1 = k1;
         this.k2 = k2;
         this.k3 = k3;
@@ -55,10 +55,12 @@ public class Triple<K1, K2, K3> {
      * @param k2
      * @return
      */
-    public static <K1, K2, K3> Triple<K1, K2, K3> newTriple( final K1 k1,
-                                                             final K2 k2,
-                                                             final K3 k3 ) {
-        return new Triple<K1, K2, K3>( k1, k2, k3 );
+    public static <K1, K2, K3> Triple<K1, K2, K3> newTriple(final K1 k1,
+                                                            final K2 k2,
+                                                            final K3 k3) {
+        return new Triple<K1, K2, K3>(k1,
+                                      k2,
+                                      k3);
     }
 
     /**
@@ -83,23 +85,23 @@ public class Triple<K1, K2, K3> {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof Triple ) ) {
+        if (!(o instanceof Triple)) {
             return false;
         }
 
         Triple triple = (Triple) o;
 
-        if ( k1 != null ? !k1.equals( triple.k1 ) : triple.k1 != null ) {
+        if (k1 != null ? !k1.equals(triple.k1) : triple.k1 != null) {
             return false;
         }
-        if ( k2 != null ? !k2.equals( triple.k2 ) : triple.k2 != null ) {
+        if (k2 != null ? !k2.equals(triple.k2) : triple.k2 != null) {
             return false;
         }
-        if ( k3 != null ? !k3.equals( triple.k3 ) : triple.k3 != null ) {
+        if (k3 != null ? !k3.equals(triple.k3) : triple.k3 != null) {
             return false;
         }
 
@@ -109,8 +111,8 @@ public class Triple<K1, K2, K3> {
     @Override
     public int hashCode() {
         int result = k1 != null ? k1.hashCode() : 0;
-        result = 31 * result + ( k2 != null ? k2.hashCode() : 0 );
-        result = 31 * result + ( k3 != null ? k3.hashCode() : 0 );
+        result = 31 * result + (k2 != null ? k2.hashCode() : 0);
+        result = 31 * result + (k3 != null ? k3.hashCode() : 0);
         return result;
     }
 

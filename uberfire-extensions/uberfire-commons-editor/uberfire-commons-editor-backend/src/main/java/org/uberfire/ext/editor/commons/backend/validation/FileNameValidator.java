@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.editor.commons.backend.validation;
 
-import java.lang.String;import org.uberfire.backend.vfs.Path;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * Generic validator for Path based resources
@@ -33,19 +33,18 @@ public interface FileNameValidator {
      * @param fileName File name to validate (including extension)
      * @return true if matches, otherwise false
      */
-    public boolean accept( final String fileName );
+    public boolean accept(final String fileName);
 
     /**
      * Indicates if the current parameter path matched the current validator
      * @param path Path to validate
      * @return true if matches, otherwise false
      */
-    public boolean accept( final Path path );
+    public boolean accept(final Path path);
 
     /**
      * Validate the value
      * @param value Value to be validated
      */
-    public boolean isValid( final String value );
-
+    public boolean isValid(final String value);
 }

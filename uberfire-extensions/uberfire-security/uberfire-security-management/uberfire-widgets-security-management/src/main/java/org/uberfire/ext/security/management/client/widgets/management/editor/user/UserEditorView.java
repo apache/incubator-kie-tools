@@ -24,92 +24,68 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.gwtbootstrap3.client.ui.*;
+import org.gwtbootstrap3.client.ui.Button;
+import org.gwtbootstrap3.client.ui.Heading;
+import org.gwtbootstrap3.client.ui.Row;
+import org.gwtbootstrap3.client.ui.TabContent;
+import org.gwtbootstrap3.client.ui.TabListItem;
+import org.gwtbootstrap3.client.ui.TabPane;
 import org.uberfire.ext.security.management.client.widgets.management.editor.AssignedEntitiesEditor;
 import org.uberfire.ext.security.management.client.widgets.management.editor.AssignedEntitiesExplorer;
 import org.uberfire.ext.security.management.client.widgets.management.editor.acl.ACLViewer;
 
 public class UserEditorView extends Composite implements UserEditor.View {
 
-    interface UserEditorViewBinder
-            extends
-            UiBinder<Widget, UserEditorView> {
-
-    }
-
     private static UserEditorViewBinder uiBinder = GWT.create(UserEditorViewBinder.class);
-
     @UiField
     FlowPanel mainPanel;
-
     @UiField
     Row userTitleRow;
-
     @UiField
     Heading userTitle;
-
     @UiField
     Button editButton;
-
     @UiField
     Button deleteButton;
-
     @UiField
     Row userAttributesRow;
-    
     @UiField(provided = true)
     UserAttributesEditor.View userAttributesEditorView;
-
     @UiField
     TabListItem groupsTabItem;
-    
     @UiField
     TabListItem rolesTabItem;
-    
     @UiField
     TabListItem permissionsTabItem;
-
     @UiField
     TabContent tabContent;
-    
     @UiField
     TabPane groupsTabPane;
-
     @UiField
     TabPane rolesTabPane;
-    
     @UiField
     TabPane permissionsTabPane;
-
     @UiField
     Button addToGroupsButton;
-    
     @UiField(provided = true)
     AssignedEntitiesExplorer userAssignedGroupsExplorerView;
-
     @UiField
     Button changePasswordButton;
-
     @UiField(provided = true)
     AssignedEntitiesEditor userAssignedGroupsEditorView;
-
     @UiField(provided = true)
     AssignedEntitiesEditor userAssignedRolesEditorView;
-    
     @UiField
     Button addToRolesButton;
-    
     @UiField(provided = true)
     AssignedEntitiesExplorer userAssignedRolesExplorerView;
-    
     @UiField(provided = true)
     ACLViewer aclViewer;
-
     private UserEditor presenter;
-    
+
     @Override
     public void init(final UserEditor presenter) {
-        this.presenter = presenter;    
+        this.presenter = presenter;
     }
 
     @Override
@@ -128,7 +104,7 @@ public class UserEditorView extends Composite implements UserEditor.View {
         this.aclViewer = aclViewer;
 
         // Bind this view and initialize the widget.
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
         // Tab panel configuration.
         groupsTabItem.setDataTargetWidget(groupsTabPane);
@@ -187,29 +163,34 @@ public class UserEditorView extends Composite implements UserEditor.View {
         return this;
     }
 
-    @UiHandler( "editButton" )
-    public void onEditButtonClick( final ClickEvent event ) {
+    @UiHandler("editButton")
+    public void onEditButtonClick(final ClickEvent event) {
         presenter.onEdit();
     }
 
-    @UiHandler( "deleteButton" )
-    public void onDeleteButtonClick( final ClickEvent event ) {
+    @UiHandler("deleteButton")
+    public void onDeleteButtonClick(final ClickEvent event) {
         presenter.onDelete();
     }
 
-    @UiHandler( "changePasswordButton" )
-    public void onChangePasswordButtonClick( final ClickEvent event ) {
+    @UiHandler("changePasswordButton")
+    public void onChangePasswordButtonClick(final ClickEvent event) {
         presenter.onChangePassword();
     }
 
-    @UiHandler( "addToGroupsButton" )
-    public void onAddToGroupsButtonClick(final ClickEvent event ) {
+    @UiHandler("addToGroupsButton")
+    public void onAddToGroupsButtonClick(final ClickEvent event) {
         presenter.onAssignGroups();
     }
 
-    @UiHandler( "addToRolesButton" )
-    public void onAddToRolessButtonClick(final ClickEvent event ) {
+    @UiHandler("addToRolesButton")
+    public void onAddToRolessButtonClick(final ClickEvent event) {
         presenter.onAssignRoles();
     }
-    
+
+    interface UserEditorViewBinder
+            extends
+            UiBinder<Widget, UserEditorView> {
+
+    }
 }

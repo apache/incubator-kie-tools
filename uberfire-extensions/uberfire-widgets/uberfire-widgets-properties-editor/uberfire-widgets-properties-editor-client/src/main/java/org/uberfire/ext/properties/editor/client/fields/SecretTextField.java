@@ -41,51 +41,56 @@ public class SecretTextField extends AbstractField {
     }
 
     @Override
-    public Widget widget( final PropertyEditorFieldInfo property ) {
-        final PropertyEditorPasswordTextBox passwordTextBox = GWT.create( PropertyEditorPasswordTextBox.class );
-        passwordTextBox.setText( property.getCurrentStringValue() );
-        addLostFocusHandler( property,passwordTextBox );
-        addKeyDownHandler( property, passwordTextBox );
+    public Widget widget(final PropertyEditorFieldInfo property) {
+        final PropertyEditorPasswordTextBox passwordTextBox = GWT.create(PropertyEditorPasswordTextBox.class);
+        passwordTextBox.setText(property.getCurrentStringValue());
+        addLostFocusHandler(property,
+                            passwordTextBox);
+        addKeyDownHandler(property,
+                          passwordTextBox);
         return passwordTextBox;
     }
 
     private void addLostFocusHandler(final PropertyEditorFieldInfo property,
-                                     final PropertyEditorPasswordTextBox passwordTextBox ) {
+                                     final PropertyEditorPasswordTextBox passwordTextBox) {
 
-        passwordTextBox.addBlurHandler( new BlurHandler() {
+        passwordTextBox.addBlurHandler(new BlurHandler() {
             @Override
-            public void onBlur( BlurEvent event ) {
-                if ( validate( property, passwordTextBox.getText() ) ) {
+            public void onBlur(BlurEvent event) {
+                if (validate(property,
+                             passwordTextBox.getText())) {
                     passwordTextBox.clearOldValidationErrors();
-                    property.setCurrentStringValue( passwordTextBox.getText() );
-                    propertyEditorChangeEventEvent.fire( new PropertyEditorChangeEvent( property, passwordTextBox.getText() ) );
+                    property.setCurrentStringValue(passwordTextBox.getText());
+                    propertyEditorChangeEventEvent.fire(new PropertyEditorChangeEvent(property,
+                                                                                      passwordTextBox.getText()));
                 } else {
-                    passwordTextBox.setValidationError( getValidatorErrorMessage( property, passwordTextBox.getText() ) );
-                    passwordTextBox.setText( property.getCurrentStringValue() );
+                    passwordTextBox.setValidationError(getValidatorErrorMessage(property,
+                                                                                passwordTextBox.getText()));
+                    passwordTextBox.setText(property.getCurrentStringValue());
                 }
-
             }
-
-        } );
+        });
     }
-    private void addKeyDownHandler( final PropertyEditorFieldInfo property,
-                                    final PropertyEditorPasswordTextBox passwordTextBox ) {
-        passwordTextBox.addKeyDownHandler( new KeyDownHandler() {
+
+    private void addKeyDownHandler(final PropertyEditorFieldInfo property,
+                                   final PropertyEditorPasswordTextBox passwordTextBox) {
+        passwordTextBox.addKeyDownHandler(new KeyDownHandler() {
             @Override
-            public void onKeyDown( KeyDownEvent event ) {
-                if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
-                    if ( validate( property, passwordTextBox.getText() ) ) {
+            public void onKeyDown(KeyDownEvent event) {
+                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+                    if (validate(property,
+                                 passwordTextBox.getText())) {
                         passwordTextBox.clearOldValidationErrors();
-                        property.setCurrentStringValue( passwordTextBox.getText() );
-                        propertyEditorChangeEventEvent.fire( new PropertyEditorChangeEvent( property, passwordTextBox.getText() ) );
+                        property.setCurrentStringValue(passwordTextBox.getText());
+                        propertyEditorChangeEventEvent.fire(new PropertyEditorChangeEvent(property,
+                                                                                          passwordTextBox.getText()));
                     } else {
-                        passwordTextBox.setValidationError( getValidatorErrorMessage( property, passwordTextBox.getText() ) );
-                        passwordTextBox.setText( property.getCurrentStringValue() );
+                        passwordTextBox.setValidationError(getValidatorErrorMessage(property,
+                                                                                    passwordTextBox.getText()));
+                        passwordTextBox.setText(property.getCurrentStringValue());
                     }
                 }
-
             }
-
-        } );
+        });
     }
 }

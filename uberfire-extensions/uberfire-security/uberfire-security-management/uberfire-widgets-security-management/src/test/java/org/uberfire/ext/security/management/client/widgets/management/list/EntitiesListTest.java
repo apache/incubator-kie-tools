@@ -16,6 +16,9 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.list;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.gwtbootstrap3.client.ui.constants.HeadingSize;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
@@ -29,9 +32,6 @@ import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.client.widgets.management.AbstractSecurityManagementTest;
 import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 
-import java.util.Collection;
-import java.util.List;
-
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -43,16 +43,18 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class EntitiesListTest extends AbstractSecurityManagementTest {
 
-    @Mock LoadingBox loadingBox;
-    @Mock EntitiesList.View view;
-    
     protected EntitiesList<User> presenter;
     protected HeadingSize headingSize = HeadingSize.H3;
-    
+    @Mock
+    LoadingBox loadingBox;
+    @Mock
+    EntitiesList.View view;
+
     @Before
     public void setup() {
         super.setup();
-        presenter = new EntitiesList<User>(loadingBox, view);
+        presenter = new EntitiesList<User>(loadingBox,
+                                           view);
         presenter.setPageSize(5);
         presenter.setEntityTitleSize(headingSize);
     }
@@ -66,18 +68,30 @@ public class EntitiesListTest extends AbstractSecurityManagementTest {
         presenter.clear();
         assertNull(presenter.callback);
         assertNull(presenter.paginationConstraints);
-        assertEquals(presenter.totalPages, -1);
+        assertEquals(presenter.totalPages,
+                     -1);
         assertNull(presenter.emptyEntitiesText);
-        verify(view, times(0)).configure(anyString(), any(EntitiesList.PaginationConstraints.class));
-        verify(view, times(0)).add(anyInt(), anyString(), anyString(), 
-                any(HeadingSize.class), anyBoolean(), anyBoolean(), anyBoolean(), anyBoolean());
-        verify(view, times(1)).clear();
+        verify(view,
+               times(0)).configure(anyString(),
+                                   any(EntitiesList.PaginationConstraints.class));
+        verify(view,
+               times(0)).add(anyInt(),
+                             anyString(),
+                             anyString(),
+                             any(HeadingSize.class),
+                             anyBoolean(),
+                             anyBoolean(),
+                             anyBoolean(),
+                             anyBoolean());
+        verify(view,
+               times(1)).clear();
     }
 
     @Test
     public void testCallbacks() throws Exception {
         final String id = "user1";
-        final EntitiesList.Callback callback = mock(EntitiesList.Callback.class);;
+        final EntitiesList.Callback callback = mock(EntitiesList.Callback.class);
+        ;
         final EntitiesList.PaginationConstraints paginationConstraints = mock(EntitiesList.PaginationConstraints.class);
         when(paginationConstraints.getCurrentPage()).thenReturn(5);
         presenter.callback = callback;
@@ -85,32 +99,45 @@ public class EntitiesListTest extends AbstractSecurityManagementTest {
         presenter.totalPages = 10;
 
         presenter.getEntityType();
-        verify(callback, times(1)).getEntityType();
-        
+        verify(callback,
+               times(1)).getEntityType();
+
         presenter.onReadEntity(id);
-        verify(callback, times(1)).onReadEntity(id);
+        verify(callback,
+               times(1)).onReadEntity(id);
 
         presenter.onRemoveEntity(id);
-        verify(callback, times(1)).onRemoveEntity(id);
+        verify(callback,
+               times(1)).onRemoveEntity(id);
 
         presenter.onGoToFirstPage();
-        verify(callback, times(1)).onChangePage(anyInt(), eq(1));
+        verify(callback,
+               times(1)).onChangePage(anyInt(),
+                                      eq(1));
 
         presenter.onGoToPrevPage();
-        verify(callback, times(1)).onChangePage(anyInt(), eq(4));
+        verify(callback,
+               times(1)).onChangePage(anyInt(),
+                                      eq(4));
 
         presenter.onGoToNextPage();
-        verify(callback, times(1)).onChangePage(anyInt(), eq(6));
-        
+        verify(callback,
+               times(1)).onChangePage(anyInt(),
+                                      eq(6));
 
         presenter.onGoToLastPage();
-        verify(callback, times(1)).onChangePage(anyInt(), eq(11));
+        verify(callback,
+               times(1)).onChangePage(anyInt(),
+                                      eq(11));
 
-        presenter.onSelectEntity(id, 0, false);
-        verify(callback, times(1)).onSelectEntity(id, false);
-
+        presenter.onSelectEntity(id,
+                                 0,
+                                 false);
+        verify(callback,
+               times(1)).onSelectEntity(id,
+                                        false);
     }
-    
+
     @Test
     public void testCreatePaginationCallbackSinglePage() throws Exception {
         final Integer size = 10;
@@ -118,10 +145,14 @@ public class EntitiesListTest extends AbstractSecurityManagementTest {
         final boolean hasNextPage = false;
         final int page = 1;
         final int pageSize = 50;
-        
-        final AbstractEntityManager.SearchResponse<User> searchResponse = createSearchResponse(users, size,
-                hasNextPage, "", page, pageSize);
-        
+
+        final AbstractEntityManager.SearchResponse<User> searchResponse = createSearchResponse(users,
+                                                                                               size,
+                                                                                               hasNextPage,
+                                                                                               "",
+                                                                                               page,
+                                                                                               pageSize);
+
         EntitiesList.PaginationConstraints constraints = presenter.createPaginationCallback(searchResponse);
         assertFalse(constraints.isFirstPageEnabled());
         assertFalse(constraints.isFirstPageVisible());
@@ -131,8 +162,10 @@ public class EntitiesListTest extends AbstractSecurityManagementTest {
         assertFalse(constraints.isPrevPageVisible());
         assertFalse(constraints.isLastPageEnabled());
         assertFalse(constraints.isLastPageVisible());
-        assertEquals(constraints.getTotal(), size);
-        assertEquals(constraints.getCurrentPage(), page);
+        assertEquals(constraints.getTotal(),
+                     size);
+        assertEquals(constraints.getCurrentPage(),
+                     page);
     }
 
     @Test
@@ -143,8 +176,12 @@ public class EntitiesListTest extends AbstractSecurityManagementTest {
         final int page = 1;
         final int pageSize = 5;
 
-        final AbstractEntityManager.SearchResponse<User> searchResponse = createSearchResponse(users, size,
-                hasNextPage, "", page, pageSize);
+        final AbstractEntityManager.SearchResponse<User> searchResponse = createSearchResponse(users,
+                                                                                               size,
+                                                                                               hasNextPage,
+                                                                                               "",
+                                                                                               page,
+                                                                                               pageSize);
 
         EntitiesList.PaginationConstraints constraints = presenter.createPaginationCallback(searchResponse);
         assertFalse(constraints.isFirstPageEnabled());
@@ -155,8 +192,10 @@ public class EntitiesListTest extends AbstractSecurityManagementTest {
         assertFalse(constraints.isPrevPageVisible());
         assertTrue(constraints.isLastPageEnabled());
         assertTrue(constraints.isLastPageVisible());
-        assertEquals(constraints.getTotal(), size);
-        assertEquals(constraints.getCurrentPage(), page);
+        assertEquals(constraints.getTotal(),
+                     size);
+        assertEquals(constraints.getCurrentPage(),
+                     page);
     }
 
     @Test
@@ -167,8 +206,12 @@ public class EntitiesListTest extends AbstractSecurityManagementTest {
         final int page = 2;
         final int pageSize = 5;
 
-        final AbstractEntityManager.SearchResponse<User> searchResponse = createSearchResponse(users, size,
-                hasNextPage, "", page, pageSize);
+        final AbstractEntityManager.SearchResponse<User> searchResponse = createSearchResponse(users,
+                                                                                               size,
+                                                                                               hasNextPage,
+                                                                                               "",
+                                                                                               page,
+                                                                                               pageSize);
 
         EntitiesList.PaginationConstraints constraints = presenter.createPaginationCallback(searchResponse);
         assertTrue(constraints.isFirstPageEnabled());
@@ -179,10 +222,12 @@ public class EntitiesListTest extends AbstractSecurityManagementTest {
         assertTrue(constraints.isPrevPageVisible());
         assertFalse(constraints.isLastPageEnabled());
         assertFalse(constraints.isLastPageVisible());
-        assertEquals(constraints.getTotal(), size);
-        assertEquals(constraints.getCurrentPage(), page);
+        assertEquals(constraints.getTotal(),
+                     size);
+        assertEquals(constraints.getCurrentPage(),
+                     page);
     }
-    
+
     @Test
     public void testShow() throws Exception {
         final int size = 10;
@@ -191,36 +236,58 @@ public class EntitiesListTest extends AbstractSecurityManagementTest {
         final int page = 1;
         final int pageSize = 50;
 
-        final AbstractEntityManager.SearchResponse<User> searchResponse = createSearchResponse(users, size, 
-                hasNextPage, "", page, pageSize);
-        final EntitiesList.Callback<User> callback = createEntitiesListCallback(users, true, true, true);
+        final AbstractEntityManager.SearchResponse<User> searchResponse = createSearchResponse(users,
+                                                                                               size,
+                                                                                               hasNextPage,
+                                                                                               "",
+                                                                                               page,
+                                                                                               pageSize);
+        final EntitiesList.Callback<User> callback = createEntitiesListCallback(users,
+                                                                                true,
+                                                                                true,
+                                                                                true);
 
         // Call the public show method.
-        presenter.show(searchResponse, callback);
-        assertEquals(presenter.callback, callback);
+        presenter.show(searchResponse,
+                       callback);
+        assertEquals(presenter.callback,
+                     callback);
 
         // Not clear verify.
-        verify(view, times(0)).clear();
-
+        verify(view,
+               times(0)).clear();
 
         // Verify loading popup.
-        verify(loadingBox, times(1)).show();
-        
+        verify(loadingBox,
+               times(1)).show();
+
         // Verify view configuration.
-        verify(view, times(1)).configure(anyString(), any(EntitiesList.PaginationConstraints.class));
+        verify(view,
+               times(1)).configure(anyString(),
+                                   any(EntitiesList.PaginationConstraints.class));
 
         // Verify adding entities to the view. 
         for (int x = 0; x < size; x++) {
-            verify(view, times(1)).add(x, getUserIdentifier(x), getUserIdentifier(x), headingSize, true, true, true, false);
+            verify(view,
+                   times(1)).add(x,
+                                 getUserIdentifier(x),
+                                 getUserIdentifier(x),
+                                 headingSize,
+                                 true,
+                                 true,
+                                 true,
+                                 false);
         }
 
         // Verify loading popup.
-        verify(loadingBox, times(1)).hide();
-
+        verify(loadingBox,
+               times(1)).hide();
     }
 
-    protected EntitiesList.Callback<User> createEntitiesListCallback(Collection<User> entities, boolean canRead,
-                                                                     boolean canRemove, boolean canSelect) {
+    protected EntitiesList.Callback<User> createEntitiesListCallback(Collection<User> entities,
+                                                                     boolean canRead,
+                                                                     boolean canRemove,
+                                                                     boolean canSelect) {
         EntitiesList.Callback<User> callback = mock(EntitiesList.Callback.class);
         when(callback.getEntityType()).thenReturn("User");
         when(callback.canRead()).thenReturn(canRead);
@@ -243,10 +310,13 @@ public class EntitiesListTest extends AbstractSecurityManagementTest {
         });
         return callback;
     }
-    
-    protected AbstractEntityManager.SearchResponse<User> createSearchResponse(final List<User> users, final int total, 
-                                                                            final boolean hasNextPage, final String searchPattern,
-                                                                            final int page, final int pageSize) {
+
+    protected AbstractEntityManager.SearchResponse<User> createSearchResponse(final List<User> users,
+                                                                              final int total,
+                                                                              final boolean hasNextPage,
+                                                                              final String searchPattern,
+                                                                              final int page,
+                                                                              final int pageSize) {
         AbstractEntityManager.SearchResponse<User> response = mock(AbstractEntityManager.SearchResponse.class);
         when(response.getResults()).thenReturn(users);
         when(response.getTotal()).thenReturn(total);
@@ -256,5 +326,4 @@ public class EntitiesListTest extends AbstractSecurityManagementTest {
         when(response.getPageSize()).thenReturn(pageSize);
         return response;
     }
-    
 }

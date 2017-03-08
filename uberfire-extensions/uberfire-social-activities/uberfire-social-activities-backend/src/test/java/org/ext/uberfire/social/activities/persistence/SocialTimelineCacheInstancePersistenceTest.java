@@ -30,22 +30,22 @@ public class SocialTimelineCacheInstancePersistenceTest {
     public void setup() {
         //default
         threshold = 100;
-        final SocialTimelineCacheInstancePersistence cacheInstancePersistence = new SocialTimelineCacheInstancePersistenceUnitTestWrapper(  );
+        final SocialTimelineCacheInstancePersistence cacheInstancePersistence = new SocialTimelineCacheInstancePersistenceUnitTestWrapper();
         cacheControl = cacheInstancePersistence.new SocialCacheControl();
-        assertTrue( PriorityDisposableRegistry.getDisposables().contains( cacheInstancePersistence ) );
+        assertTrue(PriorityDisposableRegistry.getDisposables().contains(cacheInstancePersistence));
     }
 
     @Test
     public void socialCacheControlTest() {
-        assertFalse( cacheControl.needToPersist() );
-        registerEvents( threshold + 1 );
-        assertTrue( cacheControl.needToPersist() );
+        assertFalse(cacheControl.needToPersist());
+        registerEvents(threshold + 1);
+        assertTrue(cacheControl.needToPersist());
         cacheControl.reset();
-        assertFalse( cacheControl.needToPersist() );
+        assertFalse(cacheControl.needToPersist());
     }
 
-    private void registerEvents( int numberOfEvents ) {
-        for ( int i = 0; i < numberOfEvents;i++){
+    private void registerEvents(int numberOfEvents) {
+        for (int i = 0; i < numberOfEvents; i++) {
             cacheControl.registerNewEvent();
             cacheControl.registerNewEvent();
             cacheControl.registerNewEvent();

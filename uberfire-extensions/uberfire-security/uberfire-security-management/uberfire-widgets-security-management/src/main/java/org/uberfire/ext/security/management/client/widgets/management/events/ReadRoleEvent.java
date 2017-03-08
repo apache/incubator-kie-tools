@@ -34,5 +34,4 @@ public class ReadRoleEvent implements UberFireEvent {
     public String toString() {
         return "ReadRoleEvent [name=" + name + "]";
     }
-
 }

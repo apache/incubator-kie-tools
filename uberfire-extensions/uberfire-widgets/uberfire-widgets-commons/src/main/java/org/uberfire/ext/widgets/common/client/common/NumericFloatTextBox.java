@@ -23,30 +23,30 @@ import com.google.gwt.regexp.shared.RegExp;
 public class NumericFloatTextBox extends AbstractRestrictedEntryTextBox {
 
     // A valid Float
-    private static final RegExp VALID = RegExp.compile( "(^[-]?[0-9]*\\.?[0-9]*$)" );
+    private static final RegExp VALID = RegExp.compile("(^[-]?[0-9]*\\.?[0-9]*$)");
 
     public NumericFloatTextBox() {
-        super( false );
+        super(false);
     }
 
     public NumericFloatTextBox(final boolean allowEmptyValue) {
-        super( allowEmptyValue );
+        super(allowEmptyValue);
     }
 
     @Override
     public boolean isValidValue(String value,
                                 boolean isOnFocusLost) {
-        boolean isValid = VALID.test( value );
-        if ( !isValid ) {
+        boolean isValid = VALID.test(value);
+        if (!isValid) {
             return isValid;
         }
-        if ( !isOnFocusLost && "-".equals( value ) ) {
+        if (!isOnFocusLost && "-".equals(value)) {
             return true;
         }
         try {
-            Float.parseFloat( value );
-        } catch ( NumberFormatException nfe ) {
-            isValid = ("".equals( value ) && allowEmptyValue);
+            Float.parseFloat(value);
+        } catch (NumberFormatException nfe) {
+            isValid = ("".equals(value) && allowEmptyValue);
         }
         return isValid;
     }
@@ -55,5 +55,4 @@ public class NumericFloatTextBox extends AbstractRestrictedEntryTextBox {
     protected String makeValidValue(String value) {
         return "0.0";
     }
-
 }

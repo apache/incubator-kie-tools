@@ -29,55 +29,55 @@ import org.uberfire.workbench.model.impl.PanelDefinitionImpl;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class SimpleDnDWorkbenchPanelPresenterTest {
 
     @Mock
-    private PlaceManager placeManager;
-
-    @Mock
     SimpleDnDWorkbenchPanelView view;
-
     SimpleDnDWorkbenchPanelPresenter presenter;
-
+    @Mock
+    private PlaceManager placeManager;
 
     @Test
     public void addPartTest() {
-        presenter = new SimpleDnDWorkbenchPanelPresenter( view, mock( PerspectiveManager.class ), placeManager );
+        presenter = new SimpleDnDWorkbenchPanelPresenter(view,
+                                                         mock(PerspectiveManager.class),
+                                                         placeManager);
         presenter.init();
-        presenter.setDefinition( new PanelDefinitionImpl() );
+        presenter.setDefinition(new PanelDefinitionImpl());
 
-        WorkbenchPartPresenter part = mock( WorkbenchPartPresenter.class );
-        when( part.getDefinition() ).thenReturn( mock( PartDefinition.class ) );
+        WorkbenchPartPresenter part = mock(WorkbenchPartPresenter.class);
+        when(part.getDefinition()).thenReturn(mock(PartDefinition.class));
 
-        presenter.addPart( part );
+        presenter.addPart(part);
 
-        verify( view ).addPart( any() );
+        verify(view).addPart(any());
     }
 
     @Test
     public void addPartTwiceShouldCloseOtherPartTest() {
 
-        SinglePartPanelHelper singlePartPanelHelper = mock( SinglePartPanelHelper.class );
+        SinglePartPanelHelper singlePartPanelHelper = mock(SinglePartPanelHelper.class);
 
-        presenter = new SimpleDnDWorkbenchPanelPresenter( view, mock( PerspectiveManager.class ), placeManager ) {
+        presenter = new SimpleDnDWorkbenchPanelPresenter(view,
+                                                         mock(PerspectiveManager.class),
+                                                         placeManager) {
             SinglePartPanelHelper createSinglePartPanelHelper() {
                 return singlePartPanelHelper;
             }
         };
 
         presenter.init();
-        presenter.setDefinition( new PanelDefinitionImpl() );
+        presenter.setDefinition(new PanelDefinitionImpl());
 
         //there is already a part
-        when( singlePartPanelHelper.hasNoParts() ).thenReturn( false );
+        when(singlePartPanelHelper.hasNoParts()).thenReturn(false);
 
-        WorkbenchPartPresenter part2 = mock( WorkbenchPartPresenter.class );
-        when( part2.getDefinition() ).thenReturn( mock( PartDefinition.class ) );
+        WorkbenchPartPresenter part2 = mock(WorkbenchPartPresenter.class);
+        when(part2.getDefinition()).thenReturn(mock(PartDefinition.class));
 
-        presenter.addPart( part2 );
+        presenter.addPart(part2);
 
-        verify( singlePartPanelHelper ).closeFirstPartAndAddNewOne( any( Command.class ) );
-
+        verify(singlePartPanelHelper).closeFirstPartAndAddNewOne(any(Command.class));
     }
 }

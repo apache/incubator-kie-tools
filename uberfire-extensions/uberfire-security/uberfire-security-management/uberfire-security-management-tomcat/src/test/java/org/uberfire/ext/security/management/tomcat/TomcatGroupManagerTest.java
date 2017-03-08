@@ -16,9 +16,21 @@
 
 package org.uberfire.ext.security.management.tomcat;
 
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.io.FileUtils;
 import org.jboss.errai.security.shared.api.Group;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.Spy;
@@ -28,21 +40,15 @@ import org.uberfire.ext.security.management.BaseTest;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.api.CapabilityStatus;
-import org.uberfire.ext.security.management.api.UserSystemManager;
 import org.uberfire.ext.security.management.api.exception.GroupNotFoundException;
 import org.uberfire.ext.security.management.api.exception.UnsupportedServiceCapabilityException;
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
-import java.io.File;
-import java.net.URL;
-import java.util.*;
-
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
- * This tests create temporary working copy of the "tomcat-users.xml" file as the tests are run using the real tomcat admin api for realm management. 
+ * This tests create temporary working copy of the "tomcat-users.xml" file as the tests are run using the real tomcat admin api for realm management.
  */
 @RunWith(MockitoJUnitRunner.class)
 public class TomcatGroupManagerTest extends BaseTest {
@@ -55,7 +61,7 @@ public class TomcatGroupManagerTest extends BaseTest {
     public static TemporaryFolder tempFolder = new TemporaryFolder();
 
     private static File elHome;
-    
+
     @Spy
     private TomcatGroupManager groupsManager = new TomcatGroupManager();
 
@@ -69,14 +75,21 @@ public class TomcatGroupManagerTest extends BaseTest {
         URL templateURL = Thread.currentThread().getContextClassLoader().getResource(USERS_FILE_PATH + USERS_FILE_NAME);
         File templateFile = new File(templateURL.getFile());
         FileUtils.cleanDirectory(elHome);
-        FileUtils.copyFileToDirectory(templateFile, elHome);
-        String full = new File(elHome, templateFile.getName()).getAbsolutePath();
-        String path = full.substring(0, full.lastIndexOf(File.separator));
-        String name = full.substring(full.lastIndexOf(File.separator) + 1, full.length());
+        FileUtils.copyFileToDirectory(templateFile,
+                                      elHome);
+        String full = new File(elHome,
+                               templateFile.getName()).getAbsolutePath();
+        String path = full.substring(0,
+                                     full.lastIndexOf(File.separator));
+        String name = full.substring(full.lastIndexOf(File.separator) + 1,
+                                     full.length());
         Map<String, String> props = new HashMap<String, String>(1);
-        props.put("org.uberfire.ext.security.management.tomcat.catalina-base", path);
-        props.put("org.uberfire.ext.security.management.tomcat.users-file", name);
-        System.setProperty(BaseTomcatManager.CATALINA_BASE_PROPERTY, "");
+        props.put("org.uberfire.ext.security.management.tomcat.catalina-base",
+                  path);
+        props.put("org.uberfire.ext.security.management.tomcat.users-file",
+                  name);
+        System.setProperty(BaseTomcatManager.CATALINA_BASE_PROPERTY,
+                           "");
         groupsManager.loadConfig(new ConfigProperties(props));
         groupsManager.initialize(userSystemManager);
     }
@@ -88,11 +101,16 @@ public class TomcatGroupManagerTest extends BaseTest {
 
     @Test
     public void testCapabilities() {
-        assertEquals(groupsManager.getCapabilityStatus(Capability.CAN_SEARCH_GROUPS), CapabilityStatus.ENABLED);
-        assertEquals(groupsManager.getCapabilityStatus(Capability.CAN_READ_GROUP), CapabilityStatus.ENABLED);
-        assertEquals(groupsManager.getCapabilityStatus(Capability.CAN_ADD_GROUP), CapabilityStatus.ENABLED);
-        assertEquals(groupsManager.getCapabilityStatus(Capability.CAN_DELETE_GROUP), CapabilityStatus.ENABLED);
-        assertEquals(groupsManager.getCapabilityStatus(Capability.CAN_UPDATE_GROUP), CapabilityStatus.UNSUPPORTED);
+        assertEquals(groupsManager.getCapabilityStatus(Capability.CAN_SEARCH_GROUPS),
+                     CapabilityStatus.ENABLED);
+        assertEquals(groupsManager.getCapabilityStatus(Capability.CAN_READ_GROUP),
+                     CapabilityStatus.ENABLED);
+        assertEquals(groupsManager.getCapabilityStatus(Capability.CAN_ADD_GROUP),
+                     CapabilityStatus.ENABLED);
+        assertEquals(groupsManager.getCapabilityStatus(Capability.CAN_DELETE_GROUP),
+                     CapabilityStatus.ENABLED);
+        assertEquals(groupsManager.getCapabilityStatus(Capability.CAN_UPDATE_GROUP),
+                     CapabilityStatus.UNSUPPORTED);
     }
 
     @Test
@@ -102,23 +120,33 @@ public class TomcatGroupManagerTest extends BaseTest {
 
     @Test(expected = RuntimeException.class)
     public void testSearchPageZero() {
-        AbstractEntityManager.SearchRequest request = buildSearchRequestMock("", 0, 5);
+        AbstractEntityManager.SearchRequest request = buildSearchRequestMock("",
+                                                                             0,
+                                                                             5);
         AbstractEntityManager.SearchResponse<Group> response = groupsManager.search(request);
     }
-    
+
     @Test
     public void testSearchAll() {
-        AbstractEntityManager.SearchRequest request = buildSearchRequestMock("", 1, 5);
+        AbstractEntityManager.SearchRequest request = buildSearchRequestMock("",
+                                                                             1,
+                                                                             5);
         AbstractEntityManager.SearchResponse<Group> response = groupsManager.search(request);
         assertNotNull(response);
         List<Group> groups = response.getResults();
         int total = response.getTotal();
         boolean hasNextPage = response.hasNextPage();
-        assertEquals(total, 4);
+        assertEquals(total,
+                     4);
         assertTrue(!hasNextPage);
-        assertEquals(groups.size(), 4);
-        List<Group> expectedGroups = createGroupList(ADMIN, "role3", "role2", "role1");
-        assertEquals(new HashSet<Group>(expectedGroups), new HashSet<Group>(groups));
+        assertEquals(groups.size(),
+                     4);
+        List<Group> expectedGroups = createGroupList(ADMIN,
+                                                     "role3",
+                                                     "role2",
+                                                     "role1");
+        assertEquals(new HashSet<Group>(expectedGroups),
+                     new HashSet<Group>(groups));
     }
 
     @Test
@@ -136,9 +164,10 @@ public class TomcatGroupManagerTest extends BaseTest {
         groupsManager.create(group);
         Group created = groupsManager.get("role10");
         assertNotNull(created);
-        assertEquals("role10", created.getName());
+        assertEquals("role10",
+                     created.getName());
     }
-    
+
     @Test(expected = UnsupportedServiceCapabilityException.class)
     public void testUpdateGroup() {
         Group group = mock(Group.class);
@@ -151,7 +180,7 @@ public class TomcatGroupManagerTest extends BaseTest {
         groupsManager.delete("role3");
         groupsManager.get("role3");
     }
-    
+
     private List<Group> createGroupList(String... names) {
         if (names != null) {
             List<Group> result = new ArrayList<Group>(names.length);
@@ -164,11 +193,11 @@ public class TomcatGroupManagerTest extends BaseTest {
         }
         return null;
     }
-    
+
     private void assertGet(String name) {
         Group group = groupsManager.get(name);
         assertNotNull(group);
-        assertEquals(group.getName(), name);
+        assertEquals(group.getName(),
+                     name);
     }
-
 }

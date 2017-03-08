@@ -23,12 +23,11 @@ public class ShowcaseSocialUserEvent {
 
     private String username;
 
-    public ShowcaseSocialUserEvent( @MapsTo( "username" ) final String username ) {
+    public ShowcaseSocialUserEvent(@MapsTo("username") final String username) {
         this.username = username;
     }
 
     public String getUsername() {
         return username;
     }
-
 }

@@ -38,13 +38,12 @@ public class ActivityNotFoundView extends Composite implements ActivityNotFoundP
     private Span identifier = new Span();
 
     @Override
-    public void init( final ActivityNotFoundPresenter presenter ) {
+    public void init(final ActivityNotFoundPresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setRequestedPlaceIdentifier( final String identifier ) {
-        this.identifier.setHTML( identifier );
+    public void setRequestedPlaceIdentifier(final String identifier) {
+        this.identifier.setHTML(identifier);
     }
-
 }

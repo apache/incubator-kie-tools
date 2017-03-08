@@ -24,23 +24,25 @@ import org.slf4j.LoggerFactory;
  */
 public class ExceptionUtilities {
 
-    private static final Logger logger = LoggerFactory.getLogger( ExceptionUtilities.class );
+    private static final Logger logger = LoggerFactory.getLogger(ExceptionUtilities.class);
 
     /**
      * Helper to return a @Portable RuntimeException.
      * @param e
      * @return
      */
-    public static RuntimeException handleException( final Exception e ) {
-        logger.debug( "Exception thrown: " + e.getMessage(), e );
-        if ( EnvUtil.isPortableType( e.getClass() ) ) {
-            if ( e instanceof RuntimeException ) {
+    public static RuntimeException handleException(final Exception e) {
+        logger.debug("Exception thrown: " + e.getMessage(),
+                     e);
+        if (EnvUtil.isPortableType(e.getClass())) {
+            if (e instanceof RuntimeException) {
                 return (RuntimeException) e;
             } else {
-                return new GenericPortableException( e.getMessage(), e );
+                return new GenericPortableException(e.getMessage(),
+                                                    e);
             }
         }
-        return new GenericPortableException( e.getMessage(), e );
+        return new GenericPortableException(e.getMessage(),
+                                            e);
     }
-
 }

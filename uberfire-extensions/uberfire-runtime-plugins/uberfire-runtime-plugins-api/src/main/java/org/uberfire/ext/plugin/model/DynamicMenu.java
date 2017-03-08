@@ -27,11 +27,13 @@ public class DynamicMenu extends Plugin {
 
     private Collection<DynamicMenuItem> menuItems;
 
-    public DynamicMenu( @MapsTo("name") final String name,
-                        @MapsTo("type") final PluginType type,
-                        @MapsTo("path") final Path path,
-                        @MapsTo("menuItems") final Collection<DynamicMenuItem> menuItems ) {
-        super( name, type, path );
+    public DynamicMenu(@MapsTo("name") final String name,
+                       @MapsTo("type") final PluginType type,
+                       @MapsTo("path") final Path path,
+                       @MapsTo("menuItems") final Collection<DynamicMenuItem> menuItems) {
+        super(name,
+              type,
+              path);
         this.menuItems = menuItems;
     }
 
@@ -40,20 +42,20 @@ public class DynamicMenu extends Plugin {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof DynamicMenu ) ) {
+        if (!(o instanceof DynamicMenu)) {
             return false;
         }
-        if ( !super.equals( o ) ) {
+        if (!super.equals(o)) {
             return false;
         }
 
         DynamicMenu that = (DynamicMenu) o;
 
-        if ( menuItems != null ? !menuItems.equals( that.menuItems ) : that.menuItems != null ) {
+        if (menuItems != null ? !menuItems.equals(that.menuItems) : that.menuItems != null) {
             return false;
         }
 
@@ -64,7 +66,7 @@ public class DynamicMenu extends Plugin {
     public int hashCode() {
         int result = super.hashCode();
         result = ~~result;
-        result = 31 * result + ( menuItems != null ? menuItems.hashCode() : 0 );
+        result = 31 * result + (menuItems != null ? menuItems.hashCode() : 0);
         result = ~~result;
         return result;
     }

@@ -71,80 +71,79 @@ public class DefaultPinnedModeManagerTest {
 
     @Before
     public void setup() {
-        this.manager = new DefaultPinnedModeManager( gridLayer ) {
+        this.manager = new DefaultPinnedModeManager(gridLayer) {
             @Override
-            protected void doEnterPinnedMode( final Command onStartCommand,
-                                              final GridWidget gridWidget,
-                                              final Set<GridWidget> gridWidgetsToFadeFromView,
-                                              final Set<IPrimitive<?>> gridWidgetConnectorsToFadeFromView ) {
-                assertEquals( DefaultPinnedModeManagerTest.this.gridWidget,
-                              gridWidget );
-                assertTrue( gridWidgetsToFadeFromView.isEmpty() );
-                assertTrue( gridWidgetConnectorsToFadeFromView.isEmpty() );
+            protected void doEnterPinnedMode(final Command onStartCommand,
+                                             final GridWidget gridWidget,
+                                             final Set<GridWidget> gridWidgetsToFadeFromView,
+                                             final Set<IPrimitive<?>> gridWidgetConnectorsToFadeFromView) {
+                assertEquals(DefaultPinnedModeManagerTest.this.gridWidget,
+                             gridWidget);
+                assertTrue(gridWidgetsToFadeFromView.isEmpty());
+                assertTrue(gridWidgetConnectorsToFadeFromView.isEmpty());
                 onStartCommand.execute();
             }
 
             @Override
-            protected void doExitPinnedMode( final Command onCompleteCommand,
-                                             final Set<GridWidget> gridWidgetsToFadeIntoView,
-                                             final Set<IPrimitive<?>> gridWidgetConnectorsToFadeIntoView ) {
-                assertTrue( gridWidgetsToFadeIntoView.isEmpty() );
-                assertTrue( gridWidgetConnectorsToFadeIntoView.isEmpty() );
+            protected void doExitPinnedMode(final Command onCompleteCommand,
+                                            final Set<GridWidget> gridWidgetsToFadeIntoView,
+                                            final Set<IPrimitive<?>> gridWidgetConnectorsToFadeIntoView) {
+                assertTrue(gridWidgetsToFadeIntoView.isEmpty());
+                assertTrue(gridWidgetConnectorsToFadeIntoView.isEmpty());
                 onCompleteCommand.execute();
             }
         };
-        this.mediators = new Mediators( viewport );
-        this.mediators.push( new RestrictedMousePanMediator( gridLayer ) );
+        this.mediators = new Mediators(viewport);
+        this.mediators.push(new RestrictedMousePanMediator(gridLayer));
 
-        when( gridLayer.getViewport() ).thenReturn( viewport );
-        when( gridLayer.getDefaultTransformMediator() ).thenReturn( defaultMediator );
-        when( gridWidget.getViewport() ).thenReturn( viewport );
-        when( gridWidget.getLayer() ).thenReturn( layer );
-        when( viewport.getMediators() ).thenReturn( mediators );
-        when( viewport.getTransform() ).thenReturn( transform );
-        when( transform.copy() ).thenReturn( transform );
-        when( transform.getInverse() ).thenReturn( transform );
+        when(gridLayer.getViewport()).thenReturn(viewport);
+        when(gridLayer.getDefaultTransformMediator()).thenReturn(defaultMediator);
+        when(gridWidget.getViewport()).thenReturn(viewport);
+        when(gridWidget.getLayer()).thenReturn(layer);
+        when(viewport.getMediators()).thenReturn(mediators);
+        when(viewport.getTransform()).thenReturn(transform);
+        when(transform.copy()).thenReturn(transform);
+        when(transform.getInverse()).thenReturn(transform);
     }
 
     @Test
     public void enteringPinnedModeSetsMediatorToGridTransformMediator() {
-        manager.enterPinnedMode( gridWidget,
-                                 enterPinnedModeCommand );
+        manager.enterPinnedMode(gridWidget,
+                                enterPinnedModeCommand);
 
-        verify( enterPinnedModeCommand,
-                times( 1 ) ).execute();
+        verify(enterPinnedModeCommand,
+               times(1)).execute();
 
-        assertNotNull( manager.getPinnedContext() );
+        assertNotNull(manager.getPinnedContext());
 
         final IMediator mediator = mediators.pop();
-        assertTrue( mediator instanceof RestrictedMousePanMediator );
+        assertTrue(mediator instanceof RestrictedMousePanMediator);
 
         final RestrictedMousePanMediator rmpm = (RestrictedMousePanMediator) mediator;
         final TransformMediator tm = rmpm.getTransformMediator();
 
-        assertTrue( tm instanceof GridTransformMediator );
+        assertTrue(tm instanceof GridTransformMediator);
     }
 
     @Test
     public void exitingPinnedModeSetsMediatorToDefaultTransformMediator() {
-        manager.enterPinnedMode( gridWidget,
-                                 enterPinnedModeCommand );
+        manager.enterPinnedMode(gridWidget,
+                                enterPinnedModeCommand);
 
-        manager.exitPinnedMode( exitPinnedModeCommand );
+        manager.exitPinnedMode(exitPinnedModeCommand);
 
-        verify( exitPinnedModeCommand,
-                times( 1 ) ).execute();
+        verify(exitPinnedModeCommand,
+               times(1)).execute();
 
-        assertNull( manager.getPinnedContext() );
+        assertNull(manager.getPinnedContext());
 
         final IMediator mediator = mediators.pop();
-        assertTrue( mediator instanceof RestrictedMousePanMediator );
+        assertTrue(mediator instanceof RestrictedMousePanMediator);
 
         final RestrictedMousePanMediator rmpm = (RestrictedMousePanMediator) mediator;
         final TransformMediator tm = rmpm.getTransformMediator();
 
-        assertEquals( defaultMediator,
-                      tm );
+        assertEquals(defaultMediator,
+                     tm);
     }
-
 }

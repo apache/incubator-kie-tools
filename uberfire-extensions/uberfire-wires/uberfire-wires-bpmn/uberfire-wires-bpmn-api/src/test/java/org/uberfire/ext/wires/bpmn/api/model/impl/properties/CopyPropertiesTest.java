@@ -20,35 +20,33 @@ import org.uberfire.ext.wires.bpmn.api.model.Property;
 import org.uberfire.ext.wires.bpmn.api.model.impl.types.StringType;
 
 import static junit.framework.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class CopyPropertiesTest {
 
     @Test
     public void testCopyProperties() {
-        final Property property = new DefaultPropertyImpl( "id",
-                                                           new StringType(),
-                                                           "caption",
-                                                           "description",
-                                                           true,
-                                                           true );
+        final Property property = new DefaultPropertyImpl("id",
+                                                          new StringType(),
+                                                          "caption",
+                                                          "description",
+                                                          true,
+                                                          true);
         final Property copy = property.copy();
 
-        assertNotNull( copy );
-        assertFalse( property == copy );
-        assertEquals( property.getId(),
-                      copy.getId() );
-        assertEquals( property.getType(),
-                      copy.getType() );
-        assertEquals( property.getCaption(),
-                      copy.getCaption() );
-        assertEquals( property.getDescription(),
-                      copy.getDescription() );
-        assertEquals( property.isReadOnly(),
-                      copy.isReadOnly() );
-        assertEquals( property.isOptional(),
-                      copy.isOptional() );
+        assertNotNull(copy);
+        assertFalse(property == copy);
+        assertEquals(property.getId(),
+                     copy.getId());
+        assertEquals(property.getType(),
+                     copy.getType());
+        assertEquals(property.getCaption(),
+                     copy.getCaption());
+        assertEquals(property.getDescription(),
+                     copy.getDescription());
+        assertEquals(property.isReadOnly(),
+                     copy.isReadOnly());
+        assertEquals(property.isOptional(),
+                     copy.isOptional());
     }
-
 }

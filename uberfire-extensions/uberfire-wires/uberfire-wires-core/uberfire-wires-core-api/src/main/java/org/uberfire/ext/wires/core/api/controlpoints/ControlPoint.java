@@ -23,7 +23,6 @@ public interface ControlPoint<T extends IPrimitive<T>> extends IPrimitive<T> {
 
     ControlPointMoveHandler getHandler();
 
-    void move( final double dx,
-               final double dy );
-
+    void move(final double dx,
+              final double dy);
 }

@@ -35,8 +35,8 @@ public class PartDefinitionImplTest {
 
     @Before
     public void setUp() throws Exception {
-        PlaceRequest placeRequest = mock( PlaceRequest.class );
-        part = new PartDefinitionImpl( placeRequest );
+        PlaceRequest placeRequest = mock(PlaceRequest.class);
+        part = new PartDefinitionImpl(placeRequest);
         parent = new PanelDefinitionImpl();
         anotherParent = new PanelDefinitionImpl();
     }
@@ -45,32 +45,32 @@ public class PartDefinitionImplTest {
     public void defineParentPanelWithOldParent() throws Exception {
         PanelDefinitionImpl parentMock = createParentMock();
 
-        part.setParentPanel( parentMock );
-        part.setParentPanel( anotherParent );
+        part.setParentPanel(parentMock);
+        part.setParentPanel(anotherParent);
     }
 
     @Test(expected = IllegalStateException.class)
     public void defineParentPanelWithOldParentWithoutPart() throws Exception {
         parent = createParentMock();
-        part.setParentPanel( parent );
-        when( parent.getParts() ).thenReturn( new HashSet<PartDefinition>() );
+        part.setParentPanel(parent);
+        when(parent.getParts()).thenReturn(new HashSet<PartDefinition>());
         PanelDefinitionImpl anotherParent = createParentMock();
-        part.setParentPanel( anotherParent );
+        part.setParentPanel(anotherParent);
     }
 
     private PanelDefinitionImpl createParentMock() {
-        PanelDefinitionImpl parentMock = mock( PanelDefinitionImpl.class );
+        PanelDefinitionImpl parentMock = mock(PanelDefinitionImpl.class);
         HashSet<PartDefinition> mockSet = new HashSet<PartDefinition>();
-        mockSet.add( part );
-        when( parentMock.getParts() ).thenReturn( mockSet );
+        mockSet.add(part);
+        when(parentMock.getParts()).thenReturn(mockSet);
         return parentMock;
     }
 
     @Test
     public void defineParentPanel() throws Exception {
         PanelDefinitionImpl parentMock = createParentMock();
-        part.setParentPanel( parentMock );
-        assertEquals( parentMock, part.getParentPanel() );
+        part.setParentPanel(parentMock);
+        assertEquals(parentMock,
+                     part.getParentPanel());
     }
-
 }

@@ -31,7 +31,6 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.RootPanel;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.gwtbootstrap3.client.ui.ListBox;
@@ -57,38 +56,31 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.impl.Restri
 public class WiresGridsDemoViewImpl extends Composite implements WiresGridsDemoView {
 
     private static final double VP_SCALE = 1.0;
-
+    private final DefaultGridLayer gridLayer = new DefaultGridLayer();
+    private final RestrictedMousePanMediator mousePanMediator = new RestrictedMousePanMediator(gridLayer);
+    private final Map<String, GridRendererTheme> themes = new HashMap<String, GridRendererTheme>();
     @DataField("gridPanel")
-    GridLienzoPanel gridPanel = new GridLienzoPanel( 200, 200 );
-
+    GridLienzoPanel gridPanel = new GridLienzoPanel(200,
+                                                    200);
     @DataField("zoom")
     ListBox zoom;
-
     @DataField("basicRendererSelector")
     ListBox basicRendererSelector;
-
     @DataField("chkShowMerged")
     CheckBox chkShowMerged;
-
     @DataField("btnAppendRow")
     Button btnAppendRow;
-
     @DataField("btnDeleteRow")
     Button btnDeleteRow;
-
-    private final DefaultGridLayer gridLayer = new DefaultGridLayer();
-    private final RestrictedMousePanMediator mousePanMediator = new RestrictedMousePanMediator( gridLayer );
-    private final Map<String, GridRendererTheme> themes = new HashMap<String, GridRendererTheme>();
-
     private TranslationService translationService;
 
     @Inject
-    public WiresGridsDemoViewImpl( final ListBox zoom,
-                                   final ListBox basicRendererSelector,
-                                   final CheckBox chkShowMerged,
-                                   final Button btnAppendRow,
-                                   final Button btnDeleteRow,
-                                   final TranslationService translationService ) {
+    public WiresGridsDemoViewImpl(final ListBox zoom,
+                                  final ListBox basicRendererSelector,
+                                  final CheckBox chkShowMerged,
+                                  final Button btnAppendRow,
+                                  final Button btnDeleteRow,
+                                  final TranslationService translationService) {
         this.zoom = zoom;
         this.basicRendererSelector = basicRendererSelector;
         this.chkShowMerged = chkShowMerged;
@@ -103,28 +95,28 @@ public class WiresGridsDemoViewImpl extends Composite implements WiresGridsDemoV
         setupZoomSelector();
         setupStyleSelector();
 
-        chkShowMerged.setText( translationService.getTranslation( WiresGridsDemoConstants.Options_ShowMerged ) );
-        btnAppendRow.setText( translationService.getTranslation( WiresGridsDemoConstants.Options_AppendRow ) );
-        btnDeleteRow.setText( translationService.getTranslation( WiresGridsDemoConstants.Options_DeleteRow ) );
+        chkShowMerged.setText(translationService.getTranslation(WiresGridsDemoConstants.Options_ShowMerged));
+        btnAppendRow.setText(translationService.getTranslation(WiresGridsDemoConstants.Options_AppendRow));
+        btnDeleteRow.setText(translationService.getTranslation(WiresGridsDemoConstants.Options_DeleteRow));
     }
 
     private void setupCanvas() {
-        mousePanMediator.setBatchDraw( true );
-        mousePanMediator.setTransformMediator( new BoundaryTransformMediator() );
-        gridPanel.getViewport().getMediators().push( mousePanMediator );
+        mousePanMediator.setBatchDraw(true);
+        mousePanMediator.setTransformMediator(new BoundaryTransformMediator());
+        gridPanel.getViewport().getMediators().push(mousePanMediator);
 
-        final Transform transform = new Transform().scale( VP_SCALE );
-        gridPanel.getViewport().setTransform( transform );
+        final Transform transform = new Transform().scale(VP_SCALE);
+        gridPanel.getViewport().setTransform(transform);
 
-        gridPanel.add( gridLayer );
+        gridPanel.add(gridLayer);
     }
 
     private void setupZoomSelector() {
-        for ( int pct = 50; pct <= 150; pct = pct + 10 ) {
-            zoom.addItem( Integer.toString( pct ) );
+        for (int pct = 50; pct <= 150; pct = pct + 10) {
+            zoom.addItem(Integer.toString(pct));
         }
 
-        zoom.setSelectedIndex( 5 );
+        zoom.setSelectedIndex(5);
     }
 
     private void setupStyleSelector() {
@@ -132,29 +124,28 @@ public class WiresGridsDemoViewImpl extends Composite implements WiresGridsDemoV
         final GreenTheme greenRenderer = new GreenTheme();
         final BlueTheme blueRenderer = new BlueTheme();
         final MultiColouredTheme multiColouredTheme = new MultiColouredTheme();
-        themes.put( redRenderer.getName(),
-                    redRenderer );
-        themes.put( greenRenderer.getName(),
-                    greenRenderer );
-        themes.put( blueRenderer.getName(),
-                    blueRenderer );
-        themes.put( multiColouredTheme.getName(),
-                    multiColouredTheme );
+        themes.put(redRenderer.getName(),
+                   redRenderer);
+        themes.put(greenRenderer.getName(),
+                   greenRenderer);
+        themes.put(blueRenderer.getName(),
+                   blueRenderer);
+        themes.put(multiColouredTheme.getName(),
+                   multiColouredTheme);
 
-        for ( String name : themes.keySet() ) {
-            basicRendererSelector.addItem( name );
+        for (String name : themes.keySet()) {
+            basicRendererSelector.addItem(name);
         }
-
     }
 
     @Override
-    public void select( final GridWidget selectedGridWidget ) {
-        gridLayer.select( selectedGridWidget );
+    public void select(final GridWidget selectedGridWidget) {
+        gridLayer.select(selectedGridWidget);
     }
 
     @Override
-    public void selectLinkedColumn( final GridColumn<?> selectedGridColumn ) {
-        gridLayer.selectLinkedColumn( selectedGridColumn );
+    public void selectLinkedColumn(final GridColumn<?> selectedGridColumn) {
+        gridLayer.selectLinkedColumn(selectedGridColumn);
     }
 
     @Override
@@ -163,8 +154,8 @@ public class WiresGridsDemoViewImpl extends Composite implements WiresGridsDemoV
     }
 
     @Override
-    public void add( final GridWidget gridWidget ) {
-        gridLayer.add( gridWidget );
+    public void add(final GridWidget gridWidget) {
+        gridLayer.add(gridWidget);
     }
 
     @Override
@@ -183,69 +174,69 @@ public class WiresGridsDemoViewImpl extends Composite implements WiresGridsDemoV
     }
 
     @Override
-    public HandlerRegistration addKeyDownHandler( final KeyDownHandler handler ) {
-        return gridPanel.addDomHandler( handler,
-                                        KeyDownEvent.getType() );
+    public HandlerRegistration addKeyDownHandler(final KeyDownHandler handler) {
+        return gridPanel.addDomHandler(handler,
+                                       KeyDownEvent.getType());
     }
 
     @Override
-    public HandlerRegistration addZoomChangeHandler( final ChangeHandler handler ) {
-        return zoom.addChangeHandler( handler );
+    public HandlerRegistration addZoomChangeHandler(final ChangeHandler handler) {
+        return zoom.addChangeHandler(handler);
     }
 
     @Override
     public int getSelectedZoomLevel() {
         final int selectedIndex = zoom.getSelectedIndex();
-        final int pct = Integer.parseInt( zoom.getValue( selectedIndex ) );
+        final int pct = Integer.parseInt(zoom.getValue(selectedIndex));
         return pct;
     }
 
     @Override
-    public void setZoom( final int zoom ) {
+    public void setZoom(final int zoom) {
         final Transform transform = new Transform();
         final double tx = gridPanel.getViewport().getTransform().getTranslateX();
         final double ty = gridPanel.getViewport().getTransform().getTranslateY();
-        transform.translate( tx, ty );
-        transform.scale( ( (double) zoom / 100.0 ) );
+        transform.translate(tx,
+                            ty);
+        transform.scale(((double) zoom / 100.0));
 
-        gridPanel.getViewport().setTransform( transform );
+        gridPanel.getViewport().setTransform(transform);
         gridPanel.getViewport().batch();
     }
 
     @Override
-    public HandlerRegistration addThemeChangeHandler( final ChangeHandler handler ) {
-        return basicRendererSelector.addChangeHandler( handler );
+    public HandlerRegistration addThemeChangeHandler(final ChangeHandler handler) {
+        return basicRendererSelector.addChangeHandler(handler);
     }
 
     @Override
     public GridRendererTheme getSelectedTheme() {
-        final GridRendererTheme theme = themes.get( basicRendererSelector.getItemText( basicRendererSelector.getSelectedIndex() ) );
+        final GridRendererTheme theme = themes.get(basicRendererSelector.getItemText(basicRendererSelector.getSelectedIndex()));
         return theme;
     }
 
     @Override
-    public HandlerRegistration addMergedStateValueChangeHandler( final ValueChangeHandler<Boolean> handler ) {
-        return chkShowMerged.addValueChangeHandler( handler );
+    public HandlerRegistration addMergedStateValueChangeHandler(final ValueChangeHandler<Boolean> handler) {
+        return chkShowMerged.addValueChangeHandler(handler);
     }
 
     @Override
-    public void setMergedState( final boolean isMerged ) {
-        chkShowMerged.setValue( isMerged );
+    public void setMergedState(final boolean isMerged) {
+        chkShowMerged.setValue(isMerged);
     }
 
     @Override
-    public HandlerRegistration addAppendRowClickHandler( final ClickHandler handler ) {
-        return btnAppendRow.addClickHandler( handler );
+    public HandlerRegistration addAppendRowClickHandler(final ClickHandler handler) {
+        return btnAppendRow.addClickHandler(handler);
     }
 
     @Override
-    public HandlerRegistration addDeleteRowClickHandler( final ClickHandler handler ) {
-        return btnDeleteRow.addClickHandler( handler );
+    public HandlerRegistration addDeleteRowClickHandler(final ClickHandler handler) {
+        return btnDeleteRow.addClickHandler(handler);
     }
 
     @Override
     public void onResize() {
         gridPanel.onResize();
     }
-
 }

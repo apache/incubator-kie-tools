@@ -22,81 +22,84 @@ import java.util.List;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class GridPreferencesStore extends UserPreference{
+public class GridPreferencesStore extends UserPreference {
 
-  private GridGlobalPreferences globalPreferences;
-  private List<GridColumnPreference> columnPreferences = new ArrayList<GridColumnPreference>();
-  private int pageSizePreferences;
-  private String selectedFilterKey;
-  private HashMap<String,HashMap> customFilters =new HashMap<String, HashMap>(  );
+    private GridGlobalPreferences globalPreferences;
+    private List<GridColumnPreference> columnPreferences = new ArrayList<GridColumnPreference>();
+    private int pageSizePreferences;
+    private String selectedFilterKey;
+    private HashMap<String, HashMap> customFilters = new HashMap<String, HashMap>();
 
-  public GridPreferencesStore() {
-  }
-
-  public GridPreferencesStore(GridGlobalPreferences globalPreferences) {
-    this.globalPreferences = globalPreferences;
-    if(globalPreferences!=null) {
-      this.pageSizePreferences= globalPreferences.getPageSize();
+    public GridPreferencesStore() {
     }
-    super.type=UserPreferencesType.GRIDPREFERENCES;
-    super.preferenceKey = globalPreferences.getKey();
-  }
 
-  public GridGlobalPreferences getGlobalPreferences() {
-    return globalPreferences;
-  }
-
-  public List<GridColumnPreference> getColumnPreferences() {
-    return columnPreferences;
-  }
-
-  public void addGridColumnPreference(GridColumnPreference preference) {
-    columnPreferences.add(preference);
-  }
-
-  public void resetGridColumnPreferences(){
-    columnPreferences.clear();
-  }
-  public void resetPageSizePreferences(){
-    if(globalPreferences!=null) {
-      this.pageSizePreferences= globalPreferences.getPageSize();
+    public GridPreferencesStore(GridGlobalPreferences globalPreferences) {
+        this.globalPreferences = globalPreferences;
+        if (globalPreferences != null) {
+            this.pageSizePreferences = globalPreferences.getPageSize();
+        }
+        super.type = UserPreferencesType.GRIDPREFERENCES;
+        super.preferenceKey = globalPreferences.getKey();
     }
-  }
 
-  public int getPageSizePreferences() {
-    return pageSizePreferences;
-  }
-
-  public void setPageSizePreferences( int pageSizePreferences ) {
-    this.pageSizePreferences = pageSizePreferences;
-  }
-
-  public String getSelectedFilterKey() {
-    return selectedFilterKey;
-  }
-
-  public void setSelectedFilterKey( String selectedFilterKey ) {
-    if(!"addFilter".equals( selectedFilterKey )) {
-      this.selectedFilterKey = selectedFilterKey;
+    public GridGlobalPreferences getGlobalPreferences() {
+        return globalPreferences;
     }
-  }
 
-  public void addCustomFilter(String filterName, HashMap filterParams){
-    customFilters.put(filterName,filterParams);
-  }
+    public List<GridColumnPreference> getColumnPreferences() {
+        return columnPreferences;
+    }
 
-  public HashMap getCustomFilters(){
-    return customFilters;
-  }
+    public void addGridColumnPreference(GridColumnPreference preference) {
+        columnPreferences.add(preference);
+    }
 
-  public void removeCustomFilter(String filterName){
-    customFilters.remove( filterName);
-  }
+    public void resetGridColumnPreferences() {
+        columnPreferences.clear();
+    }
 
-  public void resetGridPreferences(){
-    resetPageSizePreferences();
-    resetGridColumnPreferences();
-    selectedFilterKey="";
-    customFilters.clear();
-  }
+    public void resetPageSizePreferences() {
+        if (globalPreferences != null) {
+            this.pageSizePreferences = globalPreferences.getPageSize();
+        }
+    }
+
+    public int getPageSizePreferences() {
+        return pageSizePreferences;
+    }
+
+    public void setPageSizePreferences(int pageSizePreferences) {
+        this.pageSizePreferences = pageSizePreferences;
+    }
+
+    public String getSelectedFilterKey() {
+        return selectedFilterKey;
+    }
+
+    public void setSelectedFilterKey(String selectedFilterKey) {
+        if (!"addFilter".equals(selectedFilterKey)) {
+            this.selectedFilterKey = selectedFilterKey;
+        }
+    }
+
+    public void addCustomFilter(String filterName,
+                                HashMap filterParams) {
+        customFilters.put(filterName,
+                          filterParams);
+    }
+
+    public HashMap getCustomFilters() {
+        return customFilters;
+    }
+
+    public void removeCustomFilter(String filterName) {
+        customFilters.remove(filterName);
+    }
+
+    public void resetGridPreferences() {
+        resetPageSizePreferences();
+        resetGridColumnPreferences();
+        selectedFilterKey = "";
+        customFilters.clear();
+    }
 }

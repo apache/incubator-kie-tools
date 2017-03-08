@@ -16,6 +16,9 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.user;
 
+import java.util.Map;
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -32,38 +35,22 @@ import com.google.gwt.view.client.SelectionModel;
 import org.gwtbootstrap3.client.ui.Row;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
 
-import javax.enterprise.context.Dependent;
-import java.util.Map;
-
 @Dependent
 public class UserAttributesEditorView extends Composite implements UserAttributesEditor.View {
 
-    interface UserAttributesEditorViewBinder
-            extends
-            UiBinder<Widget, UserAttributesEditorView> {
-
-    }
-
     private static UserAttributesEditorViewBinder uiBinder = GWT.create(UserAttributesEditorViewBinder.class);
-
     @UiField
     Row userEmptyAttributesRow;
-
     @UiField
     FlowPanel newUserAttributePanel;
-    
     @UiField(provided = true)
     NewUserAttributeEditor.View newUserAttributeView;
-    
     @UiField
     Row userAttributesRow;
-
     @UiField(provided = true)
     CellTable attributesGrid;
-
     @UiField(provided = true)
     SimplePager attributesGridPager;
-
     private UserAttributesEditor presenter;
 
     @Override
@@ -77,7 +64,8 @@ public class UserAttributesEditorView extends Composite implements UserAttribute
 
         // Init the image list grid.
         attributesGrid = new CellTable<Map.Entry<String, String>>(presenter.KEY_PROVIDER);
-        attributesGrid.setWidth("100%", true);
+        attributesGrid.setWidth("100%",
+                                true);
 
         // Do not refresh the headers and footers every time the data is updated.
         attributesGrid.setAutoHeaderRefreshDisabled(true);
@@ -85,19 +73,23 @@ public class UserAttributesEditorView extends Composite implements UserAttribute
 
         // Create a Pager to control the table.
         SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
-        attributesGridPager = new SimplePager(SimplePager.TextLocation.CENTER, pagerResources, false, 0, true);
+        attributesGridPager = new SimplePager(SimplePager.TextLocation.CENTER,
+                                              pagerResources,
+                                              false,
+                                              0,
+                                              true);
         attributesGridPager.setDisplay(attributesGrid);
 
         // Add a selection model so we can select cells.
         final SelectionModel<Map.Entry<String, String>> selectionModel = new MultiSelectionModel<Map.Entry<String, String>>(presenter.KEY_PROVIDER);
         attributesGrid.setSelectionModel(selectionModel,
-                DefaultSelectionEventManager.<Map.Entry<String, String>>createCheckboxManager());
+                                         DefaultSelectionEventManager.<Map.Entry<String, String>>createCheckboxManager());
 
         presenter.addDataDisplay(attributesGrid);
 
         // Bind this view and initialize the widget.
-        initWidget( uiBinder.createAndBindUi( this ) );
-        
+        initWidget(uiBinder.createAndBindUi(this));
+
         return this;
     }
 
@@ -114,9 +106,13 @@ public class UserAttributesEditorView extends Composite implements UserAttribute
     }
 
     @Override
-    public UserAttributesEditor.View addColumn(Column<Map.Entry<String, String>, String> column, String name) {
-        attributesGrid.addColumn(column, name);
-        attributesGrid.setColumnWidth(column, 5, Style.Unit.PCT);
+    public UserAttributesEditor.View addColumn(Column<Map.Entry<String, String>, String> column,
+                                               String name) {
+        attributesGrid.addColumn(column,
+                                 name);
+        attributesGrid.setColumnWidth(column,
+                                      5,
+                                      Style.Unit.PCT);
         return this;
     }
 
@@ -143,5 +139,10 @@ public class UserAttributesEditorView extends Composite implements UserAttribute
         attributesGrid.redraw();
         return this;
     }
-    
+
+    interface UserAttributesEditorViewBinder
+            extends
+            UiBinder<Widget, UserAttributesEditorView> {
+
+    }
 }

@@ -23,7 +23,7 @@ public class CherryPickCopyOption
 
     private final String[] commits;
 
-    public CherryPickCopyOption( final String... commits ) {
+    public CherryPickCopyOption(final String... commits) {
         this.commits = commits;
     }
 

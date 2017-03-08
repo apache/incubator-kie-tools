@@ -17,7 +17,6 @@
 package org.uberfire.backend.server;
 
 import java.util.Set;
-
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
@@ -39,46 +38,43 @@ import org.uberfire.java.nio.file.Path;
 @WebListener
 public class LockCleanupSessionListener implements HttpSessionListener {
 
-    private static final Logger logger = LoggerFactory.getLogger( LockCleanupSessionListener.class );
+    private static final Logger logger = LoggerFactory.getLogger(LockCleanupSessionListener.class);
 
     @Override
-    public void sessionCreated( HttpSessionEvent se ) {
+    public void sessionCreated(HttpSessionEvent se) {
     }
 
     @Override
-    public void sessionDestroyed( HttpSessionEvent se ) {
+    public void sessionDestroyed(HttpSessionEvent se) {
         final ConfigIOServiceProducer ioServiceProducer = ConfigIOServiceProducer.getInstance();
         final IOService ioService = ioServiceProducer.configIOService();
         final FileSystem fileSystem = ioServiceProducer.configFileSystem();
 
         @SuppressWarnings("unchecked")
         final Set<LockInfo> locks = (Set<LockInfo>) se.getSession()
-                                                      .getAttribute( VFSLockServiceImpl.LOCK_SESSION_ATTRIBUTE_NAME );
+                .getAttribute(VFSLockServiceImpl.LOCK_SESSION_ATTRIBUTE_NAME);
 
-        if ( locks != null ) {
+        if (locks != null) {
             try {
-                ioService.startBatch( fileSystem );
-                for ( LockInfo lock : locks ) {
+                ioService.startBatch(fileSystem);
+                for (LockInfo lock : locks) {
                     try {
-                        final Path lockPath = Paths.convert( PathFactory.newLock( lock.getFile() ) );
+                        final Path lockPath = Paths.convert(PathFactory.newLock(lock.getFile()));
                         // Lock could have change ownership due to a forced lock release
-                        if ( ioService.readAllString( lockPath ).equals( lock.lockedBy() ) ) {
-                            ioService.delete( lockPath );
+                        if (ioService.readAllString(lockPath).equals(lock.lockedBy())) {
+                            ioService.delete(lockPath);
                         }
-                    } 
-                    catch (NoSuchFileException e) {
+                    } catch (NoSuchFileException e) {
                         // Logging this with a lower level as it can happen when a user triggers 
                         // a forced lock release or when the locked file itself was deleted.
-                        logger.debug( "Problem when releasing lock on session end (lock no longer exists): " + lock,
-                                      e );
-                    } 
-                    catch ( Throwable t ) {
-                        logger.warn( "Problem when releasing lock on session end: " + lock,
-                                     t );
+                        logger.debug("Problem when releasing lock on session end (lock no longer exists): " + lock,
+                                     e);
+                    } catch (Throwable t) {
+                        logger.warn("Problem when releasing lock on session end: " + lock,
+                                    t);
                     }
                 }
-            } 
-            finally {
+            } finally {
                 ioService.endBatch();
             }
         }

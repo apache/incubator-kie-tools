@@ -35,5 +35,4 @@ public class SplashPluginResourceTypeDefinition extends BasePluginResourceTypeDe
     public String getSuffix() {
         return "/" + PluginType.SPLASH.toString().toLowerCase() + ".plugin";
     }
-
 }

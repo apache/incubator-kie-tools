@@ -21,18 +21,16 @@ import org.uberfire.ext.security.management.keycloak.client.Keycloak;
 
 /**
  * Base client factory that provides the client instance..
- *
- *  @since 0.9.0
+ * @since 0.9.0
  */
 public abstract class BaseClientFactory implements ClientFactory {
 
     protected static final String DEFAULT_AUTH_SERVER = "http://localhost:8080/auth";
     protected Keycloak client;
-    
+
     @Override
     public Keycloak get() {
         assert client != null;
         return client;
     }
-
 }

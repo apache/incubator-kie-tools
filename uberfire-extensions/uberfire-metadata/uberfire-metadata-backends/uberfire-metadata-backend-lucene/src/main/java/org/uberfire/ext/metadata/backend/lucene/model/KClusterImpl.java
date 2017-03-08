@@ -22,7 +22,7 @@ public class KClusterImpl implements KCluster {
 
     private final String clusterId;
 
-    public KClusterImpl( final String clusterId ) {
+    public KClusterImpl(final String clusterId) {
         this.clusterId = clusterId;
     }
 
@@ -32,17 +32,17 @@ public class KClusterImpl implements KCluster {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof KClusterImpl ) ) {
+        if (!(o instanceof KClusterImpl)) {
             return false;
         }
 
         KClusterImpl kCluster = (KClusterImpl) o;
 
-        if ( !clusterId.equals( kCluster.clusterId ) ) {
+        if (!clusterId.equals(kCluster.clusterId)) {
             return false;
         }
 

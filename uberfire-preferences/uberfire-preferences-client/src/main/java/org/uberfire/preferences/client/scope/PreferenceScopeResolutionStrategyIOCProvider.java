@@ -39,11 +39,12 @@ public class PreferenceScopeResolutionStrategyIOCProvider implements ContextualT
     private PreferenceScopeFactory scopeFactory;
 
     @Override
-    public PreferenceScopeResolutionStrategy provide( final Class<?>[] typeargs,
-                                                      final Annotation[] qualifiers ) {
-        if ( this.scopeResolutionStrategyProvider.isUnsatisfied() ) {
-            final String componentKey = PreferenceQualifierUtils.getComponentKeyIfExists( qualifiers );
-            return new DefaultPreferenceScopeResolutionStrategy( scopeFactory, componentKey );
+    public PreferenceScopeResolutionStrategy provide(final Class<?>[] typeargs,
+                                                     final Annotation[] qualifiers) {
+        if (this.scopeResolutionStrategyProvider.isUnsatisfied()) {
+            final String componentKey = PreferenceQualifierUtils.getComponentKeyIfExists(qualifiers);
+            return new DefaultPreferenceScopeResolutionStrategy(scopeFactory,
+                                                                componentKey);
         }
 
         return this.scopeResolutionStrategyProvider.get();

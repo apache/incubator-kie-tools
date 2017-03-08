@@ -22,10 +22,11 @@ import org.jboss.errai.security.shared.service.AuthenticationService;
 
 public class MockAuthenticationService implements AuthenticationService {
 
-    public static final User FAKE_USER = new UserImpl( "fake" );
+    public static final User FAKE_USER = new UserImpl("fake");
 
     @Override
-    public User login( String username, String password ) {
+    public User login(String username,
+                      String password) {
         return FAKE_USER;
     }
 
@@ -42,5 +43,4 @@ public class MockAuthenticationService implements AuthenticationService {
     public User getUser() {
         return FAKE_USER;
     }
-
 }

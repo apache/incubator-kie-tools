@@ -37,13 +37,12 @@ public interface SplashScreenActivity extends Activity {
 
     SplashScreenFilter getFilter();
 
-    Boolean intercept( final PlaceRequest intercepted );
+    Boolean intercept(final PlaceRequest intercepted);
 
     boolean isEnabled();
-    
+
     @Override
     default ResourceType getResourceType() {
         return ActivityResourceType.SPLASH;
     }
-    
 }

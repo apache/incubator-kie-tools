@@ -16,10 +16,10 @@
 
 package org.uberfire.ext.layout.editor.api.editor;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class LayoutComponent {
@@ -31,7 +31,7 @@ public class LayoutComponent {
     public LayoutComponent() {
     }
 
-    public LayoutComponent( String dragType ) {
+    public LayoutComponent(String dragType) {
         this.dragTypeName = dragType;
     }
 
@@ -40,27 +40,26 @@ public class LayoutComponent {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof LayoutComponent ) ) {
+        if (!(o instanceof LayoutComponent)) {
             return false;
         }
 
-        LayoutComponent that = ( LayoutComponent ) o;
+        LayoutComponent that = (LayoutComponent) o;
 
-        if ( dragTypeName != null ? !dragTypeName.equals( that.dragTypeName ) : that.dragTypeName != null ) {
+        if (dragTypeName != null ? !dragTypeName.equals(that.dragTypeName) : that.dragTypeName != null) {
             return false;
         }
-        return !( properties != null ? !properties.equals( that.properties ) : that.properties != null );
-
+        return !(properties != null ? !properties.equals(that.properties) : that.properties != null);
     }
 
     @Override
     public int hashCode() {
         int result = dragTypeName != null ? dragTypeName.hashCode() : 0;
-        result = 31 * result + ( properties != null ? properties.hashCode() : 0 );
+        result = 31 * result + (properties != null ? properties.hashCode() : 0);
         return result;
     }
 
@@ -68,14 +67,16 @@ public class LayoutComponent {
         return properties;
     }
 
-    public void addProperty( String key,
-                             String value ) {
-        properties.put( key, value );
+    public void addProperty(String key,
+                            String value) {
+        properties.put(key,
+                       value);
     }
 
-    public void addProperties( Map<String, String> properties ) {
-        for ( String key : properties.keySet() ) {
-            this.properties.put( key, properties.get( key ) );
+    public void addProperties(Map<String, String> properties) {
+        for (String key : properties.keySet()) {
+            this.properties.put(key,
+                                properties.get(key));
         }
     }
 
@@ -86,5 +87,4 @@ public class LayoutComponent {
                 ", properties=" + properties +
                 '}';
     }
-
 }

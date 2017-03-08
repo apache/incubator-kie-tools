@@ -35,21 +35,21 @@ import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 @ApplicationScoped
 public class SearchMenuBuilder implements MenuFactory.CustomMenuBuilder {
 
-    private AnchorListItem link = GWT.create( AnchorListItem.class );
+    private AnchorListItem link = GWT.create(AnchorListItem.class);
 
     public SearchMenuBuilder() {
-        link.setIcon( IconType.SEARCH );
-        link.setPull( Pull.RIGHT );
-        link.addClickHandler( new ClickHandler() {
+        link.setIcon(IconType.SEARCH);
+        link.setPull(Pull.RIGHT);
+        link.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
-                Window.alert( "Search!" );
+            public void onClick(ClickEvent event) {
+                Window.alert("Search!");
             }
-        } );
+        });
     }
 
     @Override
-    public void push( final MenuFactory.CustomMenuBuilder element ) {
+    public void push(final MenuFactory.CustomMenuBuilder element) {
         // Do nothing
     }
 
@@ -66,7 +66,6 @@ public class SearchMenuBuilder implements MenuFactory.CustomMenuBuilder {
             public MenuPosition getPosition() {
                 return MenuPosition.RIGHT;
             }
-
         };
     }
 }

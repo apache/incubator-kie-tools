@@ -16,6 +16,12 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.user;
 
+import java.util.Iterator;
+import java.util.Set;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.ext.security.management.api.Capability;
@@ -26,16 +32,9 @@ import org.uberfire.ext.security.management.client.widgets.management.events.OnR
 import org.uberfire.ext.security.management.client.widgets.management.list.RolesList;
 import org.uberfire.ext.security.management.client.widgets.popup.ConfirmBox;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.Iterator;
-import java.util.Set;
-
 /**
  * <p>Presenter class for user's assigned roles explorer widget.</p>
  * <p>It's considered an Editor due to it allows removing assigned user's roles.</p>
- * 
  * @since 0.8.0
  */
 @Dependent
@@ -49,10 +48,12 @@ public class UserAssignedRolesExplorer extends UserAssignedEntitiesExplorer<Role
                                      final RolesList rolesList,
                                      final AssignedEntitiesExplorer view,
                                      final Event<OnRemoveUserRoleEvent> removeUserRoleEvent) {
-        super(userSystemManager, confirmBox, rolesList, view);
+        super(userSystemManager,
+              confirmBox,
+              rolesList,
+              view);
         this.removeUserRoleEvent = removeUserRoleEvent;
     }
-
 
     @Override
     protected String getEmptyText() {
@@ -101,7 +102,8 @@ public class UserAssignedRolesExplorer extends UserAssignedEntitiesExplorer<Role
 
     @Override
     protected void doShow() {
-        entitiesList.show(this.entities, getCallback());
+        entitiesList.show(this.entities,
+                          getCallback());
     }
 
     @Override
@@ -119,7 +121,7 @@ public class UserAssignedRolesExplorer extends UserAssignedEntitiesExplorer<Role
         doShow();
 
         // Fire the event for any others components listening.
-        removeUserRoleEvent.fire(new OnRemoveUserRoleEvent(UserAssignedRolesExplorer.this, name));
+        removeUserRoleEvent.fire(new OnRemoveUserRoleEvent(UserAssignedRolesExplorer.this,
+                                                           name));
     }
-
 }

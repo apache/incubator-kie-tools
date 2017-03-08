@@ -39,22 +39,23 @@ public class LockRestrictor implements DeleteRestrictor,
     private User identity;
 
     @Override
-    public PathOperationRestriction hasRestriction( final Path path ) {
-        final LockInfo lockInfo = lockService.retrieveLockInfo( path );
-        if ( lockInfo != null && lockInfo.isLocked() && !identity.getIdentifier().equals( lockInfo.lockedBy() ) ) {
+    public PathOperationRestriction hasRestriction(final Path path) {
+        final LockInfo lockInfo = lockService.retrieveLockInfo(path);
+        if (lockInfo != null && lockInfo.isLocked() && !identity.getIdentifier().equals(lockInfo.lockedBy())) {
             return new PathOperationRestriction() {
                 @Override
-                public String getMessage( final Path path ) {
+                public String getMessage(final Path path) {
                     return path.toURI() + " cannot be deleted, moved or renamed. It is locked by: " + lockInfo.lockedBy();
                 }
             };
         }
 
-        final List<LockInfo> lockInfos = lockService.retrieveLockInfos( path, true );
-        if ( lockInfos != null && !lockInfos.isEmpty() ) {
+        final List<LockInfo> lockInfos = lockService.retrieveLockInfos(path,
+                                                                       true);
+        if (lockInfos != null && !lockInfos.isEmpty()) {
             return new PathOperationRestriction() {
                 @Override
-                public String getMessage( final Path path ) {
+                public String getMessage(final Path path) {
                     return path.toURI() + " cannot be deleted, moved or renamed. It contains the following locked files: " + lockInfos;
                 }
             };

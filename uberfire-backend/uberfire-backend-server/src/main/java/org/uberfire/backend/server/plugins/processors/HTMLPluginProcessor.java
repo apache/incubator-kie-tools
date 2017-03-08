@@ -15,14 +15,14 @@
  */
 package org.uberfire.backend.server.plugins.processors;
 
-import org.uberfire.backend.plugin.RuntimePlugin;
-import org.uberfire.workbench.events.PluginAddedEvent;
-import org.uberfire.workbench.events.PluginUpdatedEvent;
-
+import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import java.util.Optional;
+
+import org.uberfire.backend.plugin.RuntimePlugin;
+import org.uberfire.workbench.events.PluginAddedEvent;
+import org.uberfire.workbench.events.PluginUpdatedEvent;
 
 @ApplicationScoped
 public class HTMLPluginProcessor extends AbstractRuntimePluginProcessor {
@@ -33,7 +33,8 @@ public class HTMLPluginProcessor extends AbstractRuntimePluginProcessor {
     @Inject
     public HTMLPluginProcessor(final Event<PluginAddedEvent> pluginAddedEvent,
                                final Event<PluginUpdatedEvent> pluginUpdatedEvent) {
-        super(pluginAddedEvent, pluginUpdatedEvent);
+        super(pluginAddedEvent,
+              pluginUpdatedEvent);
     }
 
     @Override

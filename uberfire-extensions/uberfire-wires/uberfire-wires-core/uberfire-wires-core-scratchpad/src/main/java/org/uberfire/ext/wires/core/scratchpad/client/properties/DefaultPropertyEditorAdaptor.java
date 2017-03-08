@@ -35,38 +35,38 @@ public class DefaultPropertyEditorAdaptor implements PropertyEditorAdaptor {
     private static final String POSITION_NODE = "Position Node";
 
     @Override
-    public boolean supports( final WiresBaseShape shape ) {
+    public boolean supports(final WiresBaseShape shape) {
         return true;
     }
 
     @Override
-    public List<PropertyEditorCategory> getProperties( final WiresBaseShape shape ) {
-        final PropertyEditorFieldInfo fieldInfo1 = new PropertyEditorFieldInfo( "X",
-                                                                                String.valueOf( shape.getX() ),
-                                                                                PropertyEditorType.NATURAL_NUMBER ) {
+    public List<PropertyEditorCategory> getProperties(final WiresBaseShape shape) {
+        final PropertyEditorFieldInfo fieldInfo1 = new PropertyEditorFieldInfo("X",
+                                                                               String.valueOf(shape.getX()),
+                                                                               PropertyEditorType.NATURAL_NUMBER) {
             @Override
-            public void setCurrentStringValue( final String currentStringValue ) {
-                super.setCurrentStringValue( currentStringValue );
+            public void setCurrentStringValue(final String currentStringValue) {
+                super.setCurrentStringValue(currentStringValue);
                 try {
-                    final double x = Double.parseDouble( currentStringValue );
-                    shape.setX( x );
+                    final double x = Double.parseDouble(currentStringValue);
+                    shape.setX(x);
                     shape.getLayer().batch();
-                } catch ( NumberFormatException e ) {
+                } catch (NumberFormatException e) {
                     //Swallow
                 }
             }
         };
-        final PropertyEditorFieldInfo fieldInfo2 = new PropertyEditorFieldInfo( "Y",
-                                                                                String.valueOf( shape.getY() ),
-                                                                                PropertyEditorType.NATURAL_NUMBER ) {
+        final PropertyEditorFieldInfo fieldInfo2 = new PropertyEditorFieldInfo("Y",
+                                                                               String.valueOf(shape.getY()),
+                                                                               PropertyEditorType.NATURAL_NUMBER) {
             @Override
-            public void setCurrentStringValue( final String currentStringValue ) {
-                super.setCurrentStringValue( currentStringValue );
+            public void setCurrentStringValue(final String currentStringValue) {
+                super.setCurrentStringValue(currentStringValue);
                 try {
-                    final double y = Double.parseDouble( currentStringValue );
-                    shape.setY( y );
+                    final double y = Double.parseDouble(currentStringValue);
+                    shape.setY(y);
                     shape.getLayer().batch();
-                } catch ( NumberFormatException e ) {
+                } catch (NumberFormatException e) {
                     //Swallow
                 }
             }
@@ -75,12 +75,11 @@ public class DefaultPropertyEditorAdaptor implements PropertyEditorAdaptor {
         //Setup Validators
         fieldInfo1.getValidators().clear();
         fieldInfo2.getValidators().clear();
-        fieldInfo1.getValidators().add( new DoubleValidator() );
-        fieldInfo2.getValidators().add( new DoubleValidator() );
+        fieldInfo1.getValidators().add(new DoubleValidator());
+        fieldInfo2.getValidators().add(new DoubleValidator());
 
-        final PropertyEditorCategory position = new PropertyEditorCategory( POSITION_NODE ).withField( fieldInfo1 ).withField( fieldInfo2 );
+        final PropertyEditorCategory position = new PropertyEditorCategory(POSITION_NODE).withField(fieldInfo1).withField(fieldInfo2);
 
-        return Lists.newArrayList( position );
+        return Lists.newArrayList(position);
     }
-
 }

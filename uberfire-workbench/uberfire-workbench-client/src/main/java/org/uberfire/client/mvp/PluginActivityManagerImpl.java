@@ -17,7 +17,6 @@
 package org.uberfire.client.mvp;
 
 import java.util.Set;
-
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.ioc.client.api.EnabledByProperty;
@@ -36,77 +35,76 @@ public class PluginActivityManagerImpl implements ActivityManager {
 
     private void fail() {
         // Plugins should not be able to interact with the activity manager.
-        throw new RuntimeException( "Invalid use of ActivityManager in plugin." );
+        throw new RuntimeException("Invalid use of ActivityManager in plugin.");
     }
 
     @Override
-    public <T extends Activity> Set<T> getActivities( final Class<T> clazz ) {
+    public <T extends Activity> Set<T> getActivities(final Class<T> clazz) {
         fail();
         return null;
     }
 
     @Override
-    public SplashScreenActivity getSplashScreenInterceptor( final PlaceRequest placeRequest ) {
+    public SplashScreenActivity getSplashScreenInterceptor(final PlaceRequest placeRequest) {
         fail();
         return null;
     }
 
     @Override
-    public Set<Activity> getActivities( final PlaceRequest placeRequest ) {
+    public Set<Activity> getActivities(final PlaceRequest placeRequest) {
         fail();
         return null;
     }
 
     @Override
-    public boolean containsActivity( final PlaceRequest placeRequest ) {
+    public boolean containsActivity(final PlaceRequest placeRequest) {
         fail();
         return false;
     }
 
     @Override
-    public Activity getActivity( final PlaceRequest placeRequest ) {
+    public Activity getActivity(final PlaceRequest placeRequest) {
         fail();
         return null;
     }
 
     @Override
-    public <T extends Activity> T getActivity( final Class<T> clazz,
-                                               final PlaceRequest placeRequest ) {
+    public <T extends Activity> T getActivity(final Class<T> clazz,
+                                              final PlaceRequest placeRequest) {
         fail();
         return null;
     }
 
     @Override
-    public void destroyActivity( final Activity activity ) {
+    public void destroyActivity(final Activity activity) {
         fail();
     }
 
     @Override
-    public boolean isStarted( final Activity activity ) {
+    public boolean isStarted(final Activity activity) {
         fail();
         return false;
     }
 
     @Override
-    public Set<Activity> getActivities( PlaceRequest placeRequest,
-                                        boolean secure ) {
+    public Set<Activity> getActivities(PlaceRequest placeRequest,
+                                       boolean secure) {
         fail();
         return null;
     }
 
     @Override
-    public Activity getActivity( PlaceRequest placeRequest,
-                                 boolean secure ) {
+    public Activity getActivity(PlaceRequest placeRequest,
+                                boolean secure) {
         fail();
         return null;
     }
 
     @Override
-    public <T extends Activity> T getActivity( Class<T> clazz,
-                                               PlaceRequest placeRequest,
-                                               boolean secure ) {
+    public <T extends Activity> T getActivity(Class<T> clazz,
+                                              PlaceRequest placeRequest,
+                                              boolean secure) {
         fail();
         return null;
     }
-
 }

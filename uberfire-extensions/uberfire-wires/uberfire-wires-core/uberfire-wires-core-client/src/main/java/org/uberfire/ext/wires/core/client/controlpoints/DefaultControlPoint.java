@@ -19,9 +19,9 @@ import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.event.NodeDragMoveHandler;
 import com.ait.lienzo.client.core.shape.Circle;
 import com.ait.lienzo.client.core.types.Point2D;
+import org.uberfire.commons.uuid.UUID;
 import org.uberfire.ext.wires.core.api.controlpoints.ControlPoint;
 import org.uberfire.ext.wires.core.api.controlpoints.ControlPointMoveHandler;
-import org.uberfire.commons.uuid.UUID;
 import org.uberfire.ext.wires.core.client.util.ShapesUtils;
 
 /**
@@ -34,20 +34,20 @@ public class DefaultControlPoint extends Circle implements ControlPoint<Circle> 
     private final String id;
     private final ControlPointMoveHandler cpMoveHandler;
 
-    public DefaultControlPoint( final double x,
-                                final double y,
-                                final ControlPointMoveHandler cpMoveHandler ) {
-        super( RADIUS );
+    public DefaultControlPoint(final double x,
+                               final double y,
+                               final ControlPointMoveHandler cpMoveHandler) {
+        super(RADIUS);
         this.id = UUID.uuid();
         this.cpMoveHandler = cpMoveHandler;
 
-        setFillColor( ShapesUtils.CP_RGB_FILL_COLOR );
-        setStrokeWidth( ShapesUtils.CP_RGB_STROKE_WIDTH_SHAPE );
-        setX( x );
-        setY( y );
-        setDraggable( true );
+        setFillColor(ShapesUtils.CP_RGB_FILL_COLOR);
+        setStrokeWidth(ShapesUtils.CP_RGB_STROKE_WIDTH_SHAPE);
+        setX(x);
+        setY(y);
+        setDraggable(true);
 
-        setupHandlers( cpMoveHandler );
+        setupHandlers(cpMoveHandler);
     }
 
     @Override
@@ -61,27 +61,26 @@ public class DefaultControlPoint extends Circle implements ControlPoint<Circle> 
     }
 
     @Override
-    public void move( final double dx,
-                      final double dy ) {
-        setLocation( getLocation().add( new Point2D( dx,
-                                                     dy ) ) );
+    public void move(final double dx,
+                     final double dy) {
+        setLocation(getLocation().add(new Point2D(dx,
+                                                  dy)));
     }
 
-    protected void setupHandlers( final ControlPointMoveHandler moveHandler ) {
-        addNodeDragMoveHandler( new NodeDragMoveHandler() {
+    protected void setupHandlers(final ControlPointMoveHandler moveHandler) {
+        addNodeDragMoveHandler(new NodeDragMoveHandler() {
 
             @Override
-            public void onNodeDragMove( final NodeDragMoveEvent nodeDragMoveEvent ) {
-                moveHandler.onMove( DefaultControlPoint.this.getX(),
-                                    DefaultControlPoint.this.getY() );
+            public void onNodeDragMove(final NodeDragMoveEvent nodeDragMoveEvent) {
+                moveHandler.onMove(DefaultControlPoint.this.getX(),
+                                   DefaultControlPoint.this.getY());
                 getLayer().batch();
             }
-        } );
+        });
     }
 
     @Override
     public String toString() {
         return "DefaultControlPoint{" + "id=" + id + "}";
     }
-
 }

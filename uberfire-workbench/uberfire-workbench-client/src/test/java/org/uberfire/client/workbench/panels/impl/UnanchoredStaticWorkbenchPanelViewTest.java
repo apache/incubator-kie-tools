@@ -20,10 +20,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.workbench.model.PartDefinition;
 
-import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class UnanchoredStaticWorkbenchPanelViewTest {
 
     private UnanchoredStaticWorkbenchPanelView view;
@@ -33,11 +33,10 @@ public class UnanchoredStaticWorkbenchPanelViewTest {
         view = new UnanchoredStaticWorkbenchPanelView() {
             @Override
             PartDefinition getCurrentPartDefinition() {
-                return mock( PartDefinition.class );
+                return mock(PartDefinition.class);
             }
         };
 
         assertFalse(view.getParts().isEmpty());
     }
-
 }

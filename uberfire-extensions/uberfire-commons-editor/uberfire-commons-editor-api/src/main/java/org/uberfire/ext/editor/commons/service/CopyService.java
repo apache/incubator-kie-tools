@@ -33,14 +33,14 @@ public interface CopyService extends SupportsCopy {
      * @param newName New path's name.
      * @param comment Comment about the renaming.
      */
-    void copyIfExists( final Collection<Path> paths,
-                       final String newName,
-                       final String comment );
+    void copyIfExists(final Collection<Path> paths,
+                      final String newName,
+                      final String comment);
 
     /**
      * Verifies if a path can be copied.
      * @param path Path to be verified.
      * @return true if there is a restriction and the path cannot be copied, and false otherwise.
      */
-    boolean hasRestriction( Path path );
+    boolean hasRestriction(Path path);
 }

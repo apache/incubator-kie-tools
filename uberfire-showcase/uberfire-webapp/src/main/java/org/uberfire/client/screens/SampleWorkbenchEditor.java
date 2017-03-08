@@ -30,25 +30,27 @@ import org.uberfire.client.views.pfly.multipage.PageImpl;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 
 @Dependent
-@WorkbenchEditor( identifier = "SampleWorkbenchEditor", supportedTypes = TextResourceType.class )
+@WorkbenchEditor(identifier = "SampleWorkbenchEditor", supportedTypes = TextResourceType.class)
 public class SampleWorkbenchEditor {
 
     @Inject
     private MultiPageEditor pageEditor;
 
-    @PostConstruct
-    public void init() {
-        pageEditor.addPage( newPage( "Source" ) );
-        pageEditor.addPage( newPage( "Overview" ) );
-        pageEditor.addPage( newPage( "Metadata" ) );
-        pageEditor.addPage( newPage( "Preview" ) );
-        pageEditor.addPage( newPage( "Details" ) );
+    private static PageImpl newPage(final String name) {
+        final Paragraph paragraph = new Paragraph(name + " Tab");
+        paragraph.getElement().getStyle().setMargin(15,
+                                                    Style.Unit.PX);
+        return new PageImpl(paragraph,
+                            name);
     }
 
-    private static PageImpl newPage( final String name ) {
-        final Paragraph paragraph = new Paragraph( name + " Tab" );
-        paragraph.getElement().getStyle().setMargin( 15, Style.Unit.PX );
-        return new PageImpl( paragraph, name );
+    @PostConstruct
+    public void init() {
+        pageEditor.addPage(newPage("Source"));
+        pageEditor.addPage(newPage("Overview"));
+        pageEditor.addPage(newPage("Metadata"));
+        pageEditor.addPage(newPage("Preview"));
+        pageEditor.addPage(newPage("Details"));
     }
 
     @WorkbenchPartTitle

@@ -31,5 +31,4 @@ public interface Content extends Copyable<Content> {
     Set<Role> getRoles();
 
     Set<Property> getProperties();
-
 }

@@ -15,18 +15,15 @@
  */
 package org.uberfire.annotations.processors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.io.FileNotFoundException;
 import java.util.List;
-
 import javax.tools.Diagnostic;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.JavaFileObject;
 
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests for Editor related class generation
@@ -37,55 +34,67 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
 
     @Override
     protected AbstractErrorAbsorbingProcessor getProcessorUnderTest() {
-        return new WorkbenchEditorProcessor( new GenerationCompleteCallback() {
+        return new WorkbenchEditorProcessor(new GenerationCompleteCallback() {
 
             @Override
-            public void generationComplete( final String code ) {
-                result.setActualCode( code );
+            public void generationComplete(final String code) {
+                result.setActualCode(code);
             }
-        } );
+        });
     }
 
     @Test
     public void testNoWorkbenchEditorAnnotation() throws FileNotFoundException {
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                "org/uberfire/annotations/processors/WorkbenchEditorTest1" );
-        assertSuccessfulCompilation( diagnostics );
-        assertNull( result.getActualCode() );
+                "org/uberfire/annotations/processors/WorkbenchEditorTest1");
+        assertSuccessfulCompilation(diagnostics);
+        assertNull(result.getActualCode());
     }
 
     @Test
     public void testWorkbenchEditorMissingViewAnnotation() {
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                "org/uberfire/annotations/processors/WorkbenchEditorTest2" );
+                "org/uberfire/annotations/processors/WorkbenchEditorTest2");
 
-        assertFailedCompilation( diagnostics );
-        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchEditorTest2Activity: The WorkbenchEditor must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
-        assertNull( result.getActualCode() );
+        assertFailedCompilation(diagnostics);
+        assertCompilationMessage(diagnostics,
+                                 Kind.ERROR,
+                                 Diagnostic.NOPOS,
+                                 Diagnostic.NOPOS,
+                                 "org.uberfire.annotations.processors.WorkbenchEditorTest2Activity: The WorkbenchEditor must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget.");
+        assertNull(result.getActualCode());
     }
 
     @Test
     public void testWorkbenchEditorHasViewAnnotationMissingTitleAnnotation() {
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                "org/uberfire/annotations/processors/WorkbenchEditorTest3" );
+                "org/uberfire/annotations/processors/WorkbenchEditorTest3");
 
-        assertFailedCompilation( diagnostics );
-        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchEditorTest3Activity: The WorkbenchEditor must provide a @WorkbenchPartTitle annotated method to return a java.lang.String." );
-        assertNull( result.getActualCode() );
+        assertFailedCompilation(diagnostics);
+        assertCompilationMessage(diagnostics,
+                                 Kind.ERROR,
+                                 Diagnostic.NOPOS,
+                                 Diagnostic.NOPOS,
+                                 "org.uberfire.annotations.processors.WorkbenchEditorTest3Activity: The WorkbenchEditor must provide a @WorkbenchPartTitle annotated method to return a java.lang.String.");
+        assertNull(result.getActualCode());
     }
 
     @Test
     public void testWorkbenchEditorMissingViewAnnotationHasTitleAnnotation() {
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                "org/uberfire/annotations/processors/WorkbenchEditorTest4" );
+                "org/uberfire/annotations/processors/WorkbenchEditorTest4");
 
-        assertFailedCompilation( diagnostics );
-        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "org.uberfire.annotations.processors.WorkbenchEditorTest4Activity: The WorkbenchEditor must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget." );
-        assertNull( result.getActualCode() );
+        assertFailedCompilation(diagnostics);
+        assertCompilationMessage(diagnostics,
+                                 Kind.ERROR,
+                                 Diagnostic.NOPOS,
+                                 Diagnostic.NOPOS,
+                                 "org.uberfire.annotations.processors.WorkbenchEditorTest4Activity: The WorkbenchEditor must either extend IsWidget or provide a @WorkbenchPartView annotated method to return a com.google.gwt.user.client.ui.IsWidget.");
+        assertNull(result.getActualCode());
     }
 
     @Test
@@ -93,17 +102,17 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest5";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest5.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -111,17 +120,17 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest6";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest6.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -129,18 +138,22 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest7";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest7.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertCompilationMessage( diagnostics, Kind.WARNING, Diagnostic.NOPOS, Diagnostic.NOPOS, "The WorkbenchEditor both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence." );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertCompilationMessage(diagnostics,
+                                 Kind.WARNING,
+                                 Diagnostic.NOPOS,
+                                 Diagnostic.NOPOS,
+                                 "The WorkbenchEditor both extends com.google.gwt.user.client.ui.IsWidget and provides a @WorkbenchPartView annotated method. The annotated method will take precedence.");
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -148,17 +161,17 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest8";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest8.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -166,17 +179,17 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest9";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest9.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -184,17 +197,17 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest10";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest10.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -202,17 +215,17 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest11";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest11.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -220,17 +233,17 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest12";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest12.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -238,18 +251,22 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest13";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest13.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertFailedCompilation( diagnostics );
-        assertCompilationMessage( diagnostics, Kind.ERROR, Diagnostic.NOPOS, Diagnostic.NOPOS, "Methods annotated with @OnStartup must take one argument of type org.uberfire.backend.vfs.Path and an optional second argument of type org.uberfire.mvp.PlaceRequest" );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertFailedCompilation(diagnostics);
+        assertCompilationMessage(diagnostics,
+                                 Kind.ERROR,
+                                 Diagnostic.NOPOS,
+                                 Diagnostic.NOPOS,
+                                 "Methods annotated with @OnStartup must take one argument of type org.uberfire.backend.vfs.Path and an optional second argument of type org.uberfire.mvp.PlaceRequest");
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -257,18 +274,22 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest14";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest14.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertCompilationMessage( diagnostics, Kind.WARNING, 27, 17, "There is also an @OnStartup(Path, PlaceRequest) method in this class. That method takes precedence over this one." );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertCompilationMessage(diagnostics,
+                                 Kind.WARNING,
+                                 27,
+                                 17,
+                                 "There is also an @OnStartup(Path, PlaceRequest) method in this class. That method takes precedence over this one.");
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -276,17 +297,17 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest15";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest15.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -294,17 +315,17 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest16";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest16.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -312,17 +333,17 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest17";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest17.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -330,17 +351,17 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest18";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest18.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -348,16 +369,16 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest19";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest19.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(), 
-                      result.getActualCode() );
+                pathCompilationUnit);
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -366,9 +387,13 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertCompilationMessage( diagnostics, Kind.ERROR, 14, Diagnostic.NOPOS, "owningPerspective must be a class annotated with @WorkbenchPerspective" );
+        assertCompilationMessage(diagnostics,
+                                 Kind.ERROR,
+                                 14,
+                                 Diagnostic.NOPOS,
+                                 "owningPerspective must be a class annotated with @WorkbenchPerspective");
     }
 
     @Test
@@ -376,31 +401,31 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest24";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest24.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(),
-                                                                                pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(getProcessorUnderTest(),
+                                                                               pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     public void testWorkbenchEditorMultipleSupportedTypesWithNegativePreferredWidth() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest25";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest25.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(),
-                                                                                pathCompilationUnit );
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(getProcessorUnderTest(),
+                                                                               pathCompilationUnit);
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -408,15 +433,15 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest26";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest26.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(),
-                                                                                pathCompilationUnit );
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(getProcessorUnderTest(),
+                                                                               pathCompilationUnit);
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -424,15 +449,15 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest21";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest21.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(),
-                                                                                pathCompilationUnit );
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(getProcessorUnderTest(),
+                                                                               pathCompilationUnit);
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -440,15 +465,15 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest22";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest22.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(),
-                                                                                pathCompilationUnit );
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(getProcessorUnderTest(),
+                                                                               pathCompilationUnit);
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -456,50 +481,50 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest23";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest23.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(),
-                                                                                pathCompilationUnit );
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(getProcessorUnderTest(),
+                                                                               pathCompilationUnit);
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
-    
+
     @Test
     public void testEditorWithLockingStrategy() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest27";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest27.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(), 
-                      result.getActualCode() );
+                pathCompilationUnit);
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
-    
+
     @Test
     public void testDynamicWorkbenchEditor() throws FileNotFoundException {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest28";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest28.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 
     @Test
@@ -507,16 +532,16 @@ public class WorkbenchEditorProcessorTest extends AbstractProcessorTest {
         final String pathCompilationUnit = "org/uberfire/annotations/processors/WorkbenchEditorTest29";
         final String pathExpectedResult = "org/uberfire/annotations/processors/expected/WorkbenchEditorTest29.expected";
 
-        result.setExpectedCode( getExpectedSourceCode( pathExpectedResult ) );
+        result.setExpectedCode(getExpectedSourceCode(pathExpectedResult));
 
         final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(
                 getProcessorUnderTest(),
-                pathCompilationUnit );
+                pathCompilationUnit);
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( result.getActualCode() );
-        assertNotNull( result.getExpectedCode() );
-        assertEquals( result.getExpectedCode(),
-                      result.getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(result.getActualCode());
+        assertNotNull(result.getExpectedCode());
+        assertEquals(result.getExpectedCode(),
+                     result.getActualCode());
     }
 }

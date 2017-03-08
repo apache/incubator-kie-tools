@@ -26,16 +26,15 @@ import org.uberfire.workbench.model.ActivityResourceType;
  */
 public interface WorkbenchEditorActivity extends WorkbenchActivity {
 
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place );
+    public void onStartup(final ObservablePath path,
+                          final PlaceRequest place);
 
     public void onSave();
 
     public boolean isDirty();
-    
+
     @Override
     default ResourceType getResourceType() {
         return ActivityResourceType.EDITOR;
     }
-
 }

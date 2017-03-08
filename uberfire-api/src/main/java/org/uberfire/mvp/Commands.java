@@ -26,7 +26,7 @@ public class Commands {
      */
     public static final Command DO_NOTHING = new Command() {
         @Override
-        public void execute() {}
+        public void execute() {
+        }
     };
-
 }

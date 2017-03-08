@@ -26,8 +26,8 @@ public class MediaDeleted {
     private String pluginName;
     private Media media;
 
-    public MediaDeleted( @MapsTo("pluginName") final String pluginName,
-                         @MapsTo("media") final Media media ) {
+    public MediaDeleted(@MapsTo("pluginName") final String pluginName,
+                        @MapsTo("media") final Media media) {
         this.pluginName = pluginName;
         this.media = media;
     }

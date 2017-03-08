@@ -37,6 +37,8 @@ import static org.junit.Assert.*;
  */
 public class GitIOServiceDotFileTest extends CommonIOExceptionsServiceDotFileTest {
 
+    private static boolean created = false;
+
     @Override
     protected int testFileAttrSize4() {
         return 9;
@@ -90,126 +92,131 @@ public class GitIOServiceDotFileTest extends CommonIOExceptionsServiceDotFileTes
     @Test
     public void testGetFileSystems() {
 
-        final URI newRepo = URI.create( "git://" + new Date().getTime() + "-repo-test" );
-        ioService().newFileSystem( newRepo, new HashMap<String, Object>() );
+        final URI newRepo = URI.create("git://" + new Date().getTime() + "-repo-test");
+        ioService().newFileSystem(newRepo,
+                                  new HashMap<String, Object>());
 
-        final URI newRepo2 = URI.create( "git://" + new Date().getTime() + "-repo2-test" );
-        ioService().newFileSystem( newRepo2, new HashMap<String, Object>() );
+        final URI newRepo2 = URI.create("git://" + new Date().getTime() + "-repo2-test");
+        ioService().newFileSystem(newRepo2,
+                                  new HashMap<String, Object>());
 
-        final URI newRepo3 = URI.create( "git://" + new Date().getTime() + "-repo3-test" );
-        ioService().newFileSystem( newRepo3, new HashMap<String, Object>() );
+        final URI newRepo3 = URI.create("git://" + new Date().getTime() + "-repo3-test");
+        ioService().newFileSystem(newRepo3,
+                                  new HashMap<String, Object>());
 
         final Iterator<FileSystem> iterator = ioService.getFileSystems().iterator();
 
-        assertNotNull( iterator );
+        assertNotNull(iterator);
 
-        assertTrue( iterator.hasNext() );
-        assertNotNull( iterator.next() );
+        assertTrue(iterator.hasNext());
+        assertNotNull(iterator.next());
 
-        assertTrue( iterator.hasNext() );
-        assertNotNull( iterator.next() );
+        assertTrue(iterator.hasNext());
+        assertNotNull(iterator.next());
 
-        assertTrue( iterator.hasNext() );
-        assertNotNull( iterator.next() );
+        assertTrue(iterator.hasNext());
+        assertNotNull(iterator.next());
 
-        assertTrue( iterator.hasNext() );
-        assertNotNull( iterator.next() );
+        assertTrue(iterator.hasNext());
+        assertNotNull(iterator.next());
 
-        assertFalse( iterator.hasNext() );
-
+        assertFalse(iterator.hasNext());
     }
 
     @Test
     public void testRoot() throws IOException {
         final Path path = getRootPath();
 
-        ioService().setAttributes( path, new FileAttribute<Object>() {
-            @Override
-            public String name() {
-                return "my_new_key";
-            }
+        ioService().setAttributes(path,
+                                  new FileAttribute<Object>() {
+                                      @Override
+                                      public String name() {
+                                          return "my_new_key";
+                                      }
 
-            @Override
-            public Object value() {
-                return "value";
-            }
-        } );
+                                      @Override
+                                      public Object value() {
+                                          return "value";
+                                      }
+                                  });
 
-        final Map<String, Object> attrsValue = ioService().readAttributes( path );
+        final Map<String, Object> attrsValue = ioService().readAttributes(path);
 
-        assertEquals( 9, attrsValue.size() );
-        assertTrue( attrsValue.containsKey( "my_new_key" ) );
+        assertEquals(9,
+                     attrsValue.size());
+        assertTrue(attrsValue.containsKey("my_new_key"));
 
-        ioService().setAttributes( path, new FileAttribute<Object>() {
-            @Override
-            public String name() {
-                return "my_new_key";
-            }
+        ioService().setAttributes(path,
+                                  new FileAttribute<Object>() {
+                                      @Override
+                                      public String name() {
+                                          return "my_new_key";
+                                      }
 
-            @Override
-            public Object value() {
-                return null;
-            }
-        } );
+                                      @Override
+                                      public Object value() {
+                                          return null;
+                                      }
+                                  });
 
-        final Map<String, Object> attrsValue2 = ioService().readAttributes( path );
+        final Map<String, Object> attrsValue2 = ioService().readAttributes(path);
 
-        assertEquals( 8, attrsValue2.size() );
-        assertFalse( attrsValue2.containsKey( "my_new_key" ) );
+        assertEquals(8,
+                     attrsValue2.size());
+        assertFalse(attrsValue2.containsKey("my_new_key"));
     }
 
     @Override
     public Path getFilePath() {
 
-        final Path file = ioService().get( URI.create( "git://repo-test/myfile" + new Random( 10L ).nextInt() + ".txt" ) );
-        ioService().deleteIfExists( file );
+        final Path file = ioService().get(URI.create("git://repo-test/myfile" + new Random(10L).nextInt() + ".txt"));
+        ioService().deleteIfExists(file);
 
         return file;
     }
 
     @Override
     public Path getTargetPath() {
-        final Path file = ioService().get( URI.create( "git://repo-test/myTargetFile" + new Random( 10L ).nextInt() + ".txt" ) );
-        ioService().deleteIfExists( file );
+        final Path file = ioService().get(URI.create("git://repo-test/myTargetFile" + new Random(10L).nextInt() + ".txt"));
+        ioService().deleteIfExists(file);
 
         return file;
     }
 
     @Override
     public Path getDirectoryPath() {
-        final Path dir = ioService().get( URI.create( "git://repo-test/someDir" + new Random( 10L ).nextInt() ) );
-        ioService().deleteIfExists( dir );
+        final Path dir = ioService().get(URI.create("git://repo-test/someDir" + new Random(10L).nextInt()));
+        ioService().deleteIfExists(dir);
 
         return dir;
     }
 
     @Override
     public Path getComposedDirectoryPath() {
-        return ioService().get( URI.create( "git://repo-test/path/to/someNewRandom" + new Random( 10L ).nextInt() ) );
+        return ioService().get(URI.create("git://repo-test/path/to/someNewRandom" + new Random(10L).nextInt()));
     }
 
     private Path getRootPath() {
-        return ioService().get( URI.create( "git://repo-test/" ) );
+        return ioService().get(URI.create("git://repo-test/"));
     }
-
-    private static boolean created = false;
 
     @Before
     public void setup() throws IOException {
-        if ( !created ) {
+        if (!created) {
             final String path = createTempDirectory().getAbsolutePath();
-            System.setProperty( "org.uberfire.nio.git.dir", path );
-            System.out.println( ".niogit: " + path );
+            System.setProperty("org.uberfire.nio.git.dir",
+                               path);
+            System.out.println(".niogit: " + path);
 
-            final URI newRepo = URI.create( "git://repo-test" );
+            final URI newRepo = URI.create("git://repo-test");
 
             try {
-                ioService().newFileSystem( newRepo, new HashMap<String, Object>() );
-            } catch ( final Exception ex ) {
+                ioService().newFileSystem(newRepo,
+                                          new HashMap<String, Object>());
+            } catch (final Exception ex) {
             } finally {
                 created = true;
             }
         }
     }
-
 }

@@ -66,7 +66,7 @@ public class CopyPopUpView implements CopyPopUpPresenter.View,
     private BaseModal modal;
 
     @Override
-    public void init( CopyPopUpPresenter presenter ) {
+    public void init(CopyPopUpPresenter presenter) {
         this.presenter = presenter;
         modalSetup();
         setupComment();
@@ -86,12 +86,14 @@ public class CopyPopUpView implements CopyPopUpPresenter.View,
 
     @Override
     public void handleDuplicatedFileName() {
-        showError( translate( Constants.CopyPopUpView_FileAlreadyExists, newNameTextBox.getValue() ) );
+        showError(translate(Constants.CopyPopUpView_FileAlreadyExists,
+                            newNameTextBox.getValue()));
     }
 
     @Override
     public void handleInvalidFileName() {
-        showError( translate( Constants.CopyPopUpView_InvalidFileName, newNameTextBox.getValue() ) );
+        showError(translate(Constants.CopyPopUpView_InvalidFileName,
+                            newNameTextBox.getValue()));
     }
 
     @Override
@@ -106,39 +108,44 @@ public class CopyPopUpView implements CopyPopUpPresenter.View,
 
     private void modalSetup() {
         this.modal = new CommonModalBuilder()
-                .addHeader( translate( Constants.CopyPopUpView_MakeACopy ) )
-                .addBody( body )
-                .addFooter( footer() )
+                .addHeader(translate(Constants.CopyPopUpView_MakeACopy))
+                .addBody(body)
+                .addFooter(footer())
                 .build();
     }
 
     private ModalFooter footer() {
         GenericModalFooter footer = new GenericModalFooter();
-        footer.addButton( translate( Constants.CopyPopUpView_Cancel ), cancelCommand(), ButtonType.DEFAULT );
-        footer.addButton( translate( Constants.CopyPopUpView_MakeACopy ), copyCommand(), ButtonType.PRIMARY );
+        footer.addButton(translate(Constants.CopyPopUpView_Cancel),
+                         cancelCommand(),
+                         ButtonType.DEFAULT);
+        footer.addButton(translate(Constants.CopyPopUpView_MakeACopy),
+                         copyCommand(),
+                         ButtonType.PRIMARY);
         return footer;
     }
 
-    private String translate( final String key,
-                              final Object... args ) {
-        return translationService.format( key, args );
+    private String translate(final String key,
+                             final Object... args) {
+        return translationService.format(key,
+                                         args);
     }
 
     private Command copyCommand() {
-        return () -> presenter.copy( newNameTextBox.getValue() );
+        return () -> presenter.copy(newNameTextBox.getValue());
     }
 
     private void newNameTextBoxSetup() {
-        newNameTextBox.setValue( "" );
+        newNameTextBox.setValue("");
     }
 
     private void errorSetup() {
-        this.error.setHidden( true );
+        this.error.setHidden(true);
     }
 
-    private void showError( String errorMessage ) {
-        this.errorMessage.setTextContent( errorMessage );
-        this.error.setHidden( false );
+    private void showError(String errorMessage) {
+        this.errorMessage.setTextContent(errorMessage);
+        this.error.setHidden(false);
     }
 
     private Command cancelCommand() {
@@ -146,7 +153,7 @@ public class CopyPopUpView implements CopyPopUpPresenter.View,
     }
 
     private void setupComment() {
-        body.appendChild( toggleCommentPresenter().getViewElement() );
+        body.appendChild(toggleCommentPresenter().getViewElement());
     }
 
     private ToggleCommentPresenter toggleCommentPresenter() {

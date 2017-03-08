@@ -26,7 +26,7 @@ public class ClientUsernameProvider implements UsernameProvider {
     private SessionInfo sessionInfo;
 
     @Inject
-    public ClientUsernameProvider( final SessionInfo sessionInfo ) {
+    public ClientUsernameProvider(final SessionInfo sessionInfo) {
         this.sessionInfo = sessionInfo;
     }
 

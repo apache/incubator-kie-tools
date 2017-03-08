@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 public interface FileTime extends Comparable<FileTime> {
 
-    long to( TimeUnit unit );
+    long to(TimeUnit unit);
 
     long toMillis();
 }

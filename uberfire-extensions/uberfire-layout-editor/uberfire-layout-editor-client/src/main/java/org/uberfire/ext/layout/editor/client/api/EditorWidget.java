@@ -16,9 +16,9 @@
 
 package org.uberfire.ext.layout.editor.client.api;
 
-import com.google.gwt.user.client.ui.ComplexPanel;
-
 import java.util.List;
+
+import com.google.gwt.user.client.ui.ComplexPanel;
 
 public interface EditorWidget {
 
@@ -28,9 +28,9 @@ public interface EditorWidget {
 
     List<EditorWidget> getChildren();
 
-    void addChild( EditorWidget editorWidget );
+    void addChild(EditorWidget editorWidget);
 
-    void removeChild( EditorWidget editorWidget );
+    void removeChild(EditorWidget editorWidget);
 
     LayoutDragComponent getType();
 }

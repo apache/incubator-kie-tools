@@ -16,23 +16,20 @@
 
 package org.uberfire.ext.layout.editor.client.infra;
 
-import com.google.gwt.event.dom.client.DropEvent;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.IsWidget;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
+
 import org.jboss.errai.ioc.client.container.Factory;
 import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManagerImpl;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
-import org.uberfire.ext.layout.editor.client.api.*;
-
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import org.uberfire.ext.layout.editor.client.api.HasDragAndDropSettings;
+import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 
 @ApplicationScoped
 public class LayoutDragComponentHelper {
@@ -41,67 +38,64 @@ public class LayoutDragComponentHelper {
     private List<Object> instances = new ArrayList<>();
 
     @PreDestroy
-    public void destroy(){
-        for ( Object instance : instances ) {
-            destroy( instance );
+    public void destroy() {
+        for (Object instance : instances) {
+            destroy(instance);
         }
     }
 
-    public LayoutDragComponent lookupDragTypeBean( String dragTypeClassName ) {
-        return lookupBean( dragTypeClassName );
+    public LayoutDragComponent lookupDragTypeBean(String dragTypeClassName) {
+        return lookupBean(dragTypeClassName);
     }
 
-    private LayoutDragComponent lookupBean( String dragTypeClassName ) {
-        SyncBeanManagerImpl beanManager = ( SyncBeanManagerImpl ) IOC.getBeanManager();
-        Collection<SyncBeanDef<LayoutDragComponent>> iocBeanDefs = beanManager.lookupBeans( LayoutDragComponent.class );
-        for ( SyncBeanDef<LayoutDragComponent> iocBeanDef : iocBeanDefs ) {
+    private LayoutDragComponent lookupBean(String dragTypeClassName) {
+        SyncBeanManagerImpl beanManager = (SyncBeanManagerImpl) IOC.getBeanManager();
+        Collection<SyncBeanDef<LayoutDragComponent>> iocBeanDefs = beanManager.lookupBeans(LayoutDragComponent.class);
+        for (SyncBeanDef<LayoutDragComponent> iocBeanDef : iocBeanDefs) {
             LayoutDragComponent instance = iocBeanDef.getInstance();
-            instances.add( instance );
-            if ( getRealBeanClass( instance ).equalsIgnoreCase( dragTypeClassName ) ) {
+            instances.add(instance);
+            if (getRealBeanClass(instance).equalsIgnoreCase(dragTypeClassName)) {
                 return instance;
             }
         }
         return null;
     }
 
-    public String getRealBeanClass( LayoutDragComponent instance ) {
-        return Factory.maybeUnwrapProxy( instance ).getClass().getName();
+    public String getRealBeanClass(LayoutDragComponent instance) {
+        return Factory.maybeUnwrapProxy(instance).getClass().getName();
     }
 
-    public LayoutComponent getLayoutComponentFromDrop( String dropData ) {
-        LayoutDragComponent component = extractComponent( dropData );
-        LayoutComponent layoutComponent = getLayoutComponent( component );
+    public LayoutComponent getLayoutComponentFromDrop(String dropData) {
+        LayoutDragComponent component = extractComponent(dropData);
+        LayoutComponent layoutComponent = getLayoutComponent(component);
         return layoutComponent;
     }
 
-    public LayoutComponent getLayoutComponent( LayoutDragComponent dragComponent ) {
+    public LayoutComponent getLayoutComponent(LayoutDragComponent dragComponent) {
 
-        LayoutComponent layoutComponent = new LayoutComponent( getRealBeanClass( dragComponent ) );
+        LayoutComponent layoutComponent = new LayoutComponent(getRealBeanClass(dragComponent));
 
-        if ( dragComponent instanceof HasDragAndDropSettings ) {
-            Map<String, String> properties = ( ( HasDragAndDropSettings ) dragComponent ).getMapSettings();
+        if (dragComponent instanceof HasDragAndDropSettings) {
+            Map<String, String> properties = ((HasDragAndDropSettings) dragComponent).getMapSettings();
 
-            if ( properties != null ) {
-                layoutComponent.addProperties( properties );
+            if (properties != null) {
+                layoutComponent.addProperties(properties);
             }
         }
 
         return layoutComponent;
     }
 
-    private LayoutDragComponent extractComponent( String dropData ) {
+    private LayoutDragComponent extractComponent(String dropData) {
         return converter
-                .readJSONDragComponent( dropData );
+                .readJSONDragComponent(dropData);
     }
 
-
-
-    private boolean hasComponent( LayoutComponent component ) {
+    private boolean hasComponent(LayoutComponent component) {
         return component != null;
     }
 
-    protected void destroy( Object o ) {
-        BeanHelper.destroy( o );
+    protected void destroy(Object o) {
+        BeanHelper.destroy(o);
     }
-
 }

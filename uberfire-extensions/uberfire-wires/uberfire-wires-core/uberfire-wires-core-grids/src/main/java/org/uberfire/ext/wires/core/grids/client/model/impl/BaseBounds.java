@@ -29,14 +29,14 @@ public class BaseBounds implements Bounds {
     private double width;
     private double height;
 
-    public BaseBounds( final double x,
-                       final double y,
-                       final double width,
-                       final double height ) {
-        setX( x );
-        setY( y );
-        setWidth( width );
-        setHeight( height );
+    public BaseBounds(final double x,
+                      final double y,
+                      final double width,
+                      final double height) {
+        setX(x);
+        setY(y);
+        setWidth(width);
+        setHeight(height);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class BaseBounds implements Bounds {
     }
 
     @Override
-    public void setX( double x ) {
+    public void setX(double x) {
         this.x = x;
     }
 
@@ -55,7 +55,7 @@ public class BaseBounds implements Bounds {
     }
 
     @Override
-    public void setY( double y ) {
+    public void setY(double y) {
         this.y = y;
     }
 
@@ -65,8 +65,9 @@ public class BaseBounds implements Bounds {
     }
 
     @Override
-    public void setWidth( double width ) {
-        PortablePreconditions.checkCondition( "Width must be positive", width >= 0 );
+    public void setWidth(double width) {
+        PortablePreconditions.checkCondition("Width must be positive",
+                                             width >= 0);
         this.width = width;
     }
 
@@ -76,9 +77,9 @@ public class BaseBounds implements Bounds {
     }
 
     @Override
-    public void setHeight( double height ) {
-        PortablePreconditions.checkCondition( "Height must be positive", height >= 0 );
+    public void setHeight(double height) {
+        PortablePreconditions.checkCondition("Height must be positive",
+                                             height >= 0);
         this.height = height;
     }
-
 }

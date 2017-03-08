@@ -30,7 +30,7 @@ import org.uberfire.commons.services.cdi.StartupType;
 public class ClusterServiceFactoryProducer {
 
     private final ClusterServiceFactory factory;
-    private AtomicBoolean initialized = new AtomicBoolean( false );
+    private AtomicBoolean initialized = new AtomicBoolean(false);
 
     ClusterServiceFactoryProducer() {
         this.factory = buildFactory();
@@ -43,8 +43,8 @@ public class ClusterServiceFactoryProducer {
     @Produces
     @Named("clusterServiceFactory")
     public synchronized ClusterServiceFactory clusterServiceFactory() {
-        if ( factory != null && !initialized.getAndSet( true ) ) {
-            factory.build( null );
+        if (factory != null && !initialized.getAndSet(true)) {
+            factory.build(null);
         }
         return factory;
     }

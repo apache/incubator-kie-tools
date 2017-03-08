@@ -38,10 +38,9 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class UberfireBreadcrumbsTest {
 
     @Mock
@@ -56,186 +55,247 @@ public class UberfireBreadcrumbsTest {
     private UberfireBreadcrumbs uberfireBreadcrumbs;
     private UberfireBreadcrumbs.View view;
 
-
     @Before
     public void setup() {
 
-        when( breadcrumbsPresenters.get() ).thenReturn( mock( BreadcrumbsPresenter.class ) )
-                .thenReturn( mock( BreadcrumbsPresenter.class ) ).thenReturn( mock( BreadcrumbsPresenter.class ) );
+        when(breadcrumbsPresenters.get()).thenReturn(mock(BreadcrumbsPresenter.class))
+                .thenReturn(mock(BreadcrumbsPresenter.class)).thenReturn(mock(BreadcrumbsPresenter.class));
 
-        view = mock( UberfireBreadcrumbs.View.class );
-        uberfireBreadcrumbs = spy( new UberfireBreadcrumbs( uberfireDocksContainer,
-                                                            breadcrumbsPresenters,
-                                                            placeManager,
-                                                            view ) {
-        } );
+        view = mock(UberfireBreadcrumbs.View.class);
+        uberfireBreadcrumbs = spy(new UberfireBreadcrumbs(uberfireDocksContainer,
+                                                          breadcrumbsPresenters,
+                                                          placeManager,
+                                                          view) {
+        });
     }
 
     @Test
     public void setupTest() {
-        uberfireBreadcrumbs.setup( new UberfireDockContainerReadyEvent() );
+        uberfireBreadcrumbs.setup(new UberfireDockContainerReadyEvent());
 
-        assertNotNull( uberfireBreadcrumbs );
-        verify( uberfireDocksContainer ).addBreadcrumbs( any( IsElement.class ), eq( UberfireBreadcrumbs.SIZE ) );
+        assertNotNull(uberfireBreadcrumbs);
+        verify(uberfireDocksContainer).addBreadcrumbs(any(IsElement.class),
+                                                      eq(UberfireBreadcrumbs.SIZE));
     }
 
     @Test
     public void addToolbar() {
-        assertTrue( uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty() );
+        assertTrue(uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty());
 
         uberfireBreadcrumbs.currentPerspective = "myperspective";
-        uberfireBreadcrumbs.addToolbar( "myperspective", mock( Element.class ) );
+        uberfireBreadcrumbs.addToolbar("myperspective",
+                                       mock(Element.class));
 
-        assertFalse( uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty() );
+        assertFalse(uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty());
     }
 
     @Test
     public void addBreadCrumbs() {
-        assertTrue( uberfireBreadcrumbs.breadcrumbsPerPerspective.isEmpty() );
+        assertTrue(uberfireBreadcrumbs.breadcrumbsPerPerspective.isEmpty());
 
         uberfireBreadcrumbs.currentPerspective = "myperspective";
-        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ) );
-        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label2", new DefaultPlaceRequest( "screen2" ) );
-        uberfireBreadcrumbs.addBreadCrumb( "myperspective2", "label4", new DefaultPlaceRequest( "screen4" ) );
+        uberfireBreadcrumbs.addBreadCrumb("myperspective",
+                                          "label",
+                                          new DefaultPlaceRequest("screen"));
+        uberfireBreadcrumbs.addBreadCrumb("myperspective",
+                                          "label2",
+                                          new DefaultPlaceRequest("screen2"));
+        uberfireBreadcrumbs.addBreadCrumb("myperspective2",
+                                          "label4",
+                                          new DefaultPlaceRequest("screen4"));
 
-
-        assertFalse( uberfireBreadcrumbs.breadcrumbsPerPerspective.isEmpty() );
-        assertEquals( 2, uberfireBreadcrumbs.breadcrumbsPerPerspective.size() );
-        assertEquals( 2, uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" ).size() );
+        assertFalse(uberfireBreadcrumbs.breadcrumbsPerPerspective.isEmpty());
+        assertEquals(2,
+                     uberfireBreadcrumbs.breadcrumbsPerPerspective.size());
+        assertEquals(2,
+                     uberfireBreadcrumbs.breadcrumbsPerPerspective.get("myperspective").size());
     }
 
     @Test
     public void clearBreadCrumbsTest() {
         uberfireBreadcrumbs.currentPerspective = "myperspective";
-        uberfireBreadcrumbs.addToolbar( "myperspective", mock( Element.class ) );
-        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ) );
+        uberfireBreadcrumbs.addToolbar("myperspective",
+                                       mock(Element.class));
+        uberfireBreadcrumbs.addBreadCrumb("myperspective",
+                                          "label",
+                                          new DefaultPlaceRequest("screen"));
 
-        assertFalse( uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" ).isEmpty() );
-        assertFalse( uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty() );
+        assertFalse(uberfireBreadcrumbs.breadcrumbsPerPerspective.get("myperspective").isEmpty());
+        assertFalse(uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty());
 
-        uberfireBreadcrumbs.clearBreadCrumbs( "myperspective" );
+        uberfireBreadcrumbs.clearBreadCrumbs("myperspective");
 
-        assertTrue( uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" ).isEmpty() );
-        assertFalse( uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty() );
+        assertTrue(uberfireBreadcrumbs.breadcrumbsPerPerspective.get("myperspective").isEmpty());
+        assertFalse(uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty());
     }
 
     @Test
     public void clearBreadCrumbsAndToolBarsTest() {
         uberfireBreadcrumbs.currentPerspective = "myperspective";
-        uberfireBreadcrumbs.addToolbar( "myperspective", mock( Element.class ) );
-        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ) );
+        uberfireBreadcrumbs.addToolbar("myperspective",
+                                       mock(Element.class));
+        uberfireBreadcrumbs.addBreadCrumb("myperspective",
+                                          "label",
+                                          new DefaultPlaceRequest("screen"));
 
-        assertFalse( uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" ).isEmpty() );
-        assertFalse( uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty() );
+        assertFalse(uberfireBreadcrumbs.breadcrumbsPerPerspective.get("myperspective").isEmpty());
+        assertFalse(uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty());
 
-        uberfireBreadcrumbs.clearBreadCrumbsAndToolBars( "myperspective" );
+        uberfireBreadcrumbs.clearBreadCrumbsAndToolBars("myperspective");
 
-        assertTrue( uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" ).isEmpty() );
-        assertTrue( uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty() );
+        assertTrue(uberfireBreadcrumbs.breadcrumbsPerPerspective.get("myperspective").isEmpty());
+        assertTrue(uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.isEmpty());
     }
 
     @Test
     public void removeDeepLevelBreadcrumbsTest() {
-        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ) );
+        uberfireBreadcrumbs.addBreadCrumb("myperspective",
+                                          "label",
+                                          new DefaultPlaceRequest("screen"));
         uberfireBreadcrumbs
-                .addBreadCrumb( "myperspective", "label2", new DefaultPlaceRequest( "screen2" ) );
-        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label3", new DefaultPlaceRequest( "screen3" ) );
+                .addBreadCrumb("myperspective",
+                               "label2",
+                               new DefaultPlaceRequest("screen2"));
+        uberfireBreadcrumbs.addBreadCrumb("myperspective",
+                                          "label3",
+                                          new DefaultPlaceRequest("screen3"));
 
-        List<BreadcrumbsPresenter> breadcrumbs = uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" );
+        List<BreadcrumbsPresenter> breadcrumbs = uberfireBreadcrumbs.breadcrumbsPerPerspective.get("myperspective");
 
-        uberfireBreadcrumbs.removeDeepLevelBreadcrumbs( "myperspective", breadcrumbs.get( 0 ) );
+        uberfireBreadcrumbs.removeDeepLevelBreadcrumbs("myperspective",
+                                                       breadcrumbs.get(0));
 
-        assertEquals( 1, uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" ).size() );
+        assertEquals(1,
+                     uberfireBreadcrumbs.breadcrumbsPerPerspective.get("myperspective").size());
     }
 
     @Test
     public void generateBreadCrumbSelectCommandTest() {
-        DefaultPlaceRequest placeRequest = new DefaultPlaceRequest( "screen" );
-        final Command command = mock( Command.class );
-        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", placeRequest );
+        DefaultPlaceRequest placeRequest = new DefaultPlaceRequest("screen");
+        final Command command = mock(Command.class);
+        uberfireBreadcrumbs.addBreadCrumb("myperspective",
+                                          "label",
+                                          placeRequest);
 
-        List<BreadcrumbsPresenter> breadcrumbs = uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" );
+        List<BreadcrumbsPresenter> breadcrumbs = uberfireBreadcrumbs.breadcrumbsPerPerspective.get("myperspective");
 
-        BreadcrumbsPresenter breadcrumb = breadcrumbs.get( 0 );
+        BreadcrumbsPresenter breadcrumb = breadcrumbs.get(0);
 
+        uberfireBreadcrumbs.generateBreadCrumbSelectCommand("myperspective",
+                                                            breadcrumb,
+                                                            placeRequest,
+                                                            null,
+                                                            command).execute();
 
-        uberfireBreadcrumbs.generateBreadCrumbSelectCommand( "myperspective",
-                                                             breadcrumb,
-                                                             placeRequest,
-                                                             null,
-                                                             command ).execute();
-
-        verify( placeManager ).goTo( placeRequest );
-        verify( placeManager, never() ).goTo( eq( placeRequest ), any( HasWidgets.class ) );
-        verify( command ).execute();
+        verify(placeManager).goTo(placeRequest);
+        verify(placeManager,
+               never()).goTo(eq(placeRequest),
+                             any(HasWidgets.class));
+        verify(command).execute();
     }
 
     @Test
     public void generateBreadCrumbSelectCommandWithTargetPanelTest() {
-        DefaultPlaceRequest placeRequest = new DefaultPlaceRequest( "screen" );
-        final Command command = mock( Command.class );
-        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", placeRequest );
+        DefaultPlaceRequest placeRequest = new DefaultPlaceRequest("screen");
+        final Command command = mock(Command.class);
+        uberfireBreadcrumbs.addBreadCrumb("myperspective",
+                                          "label",
+                                          placeRequest);
 
-        List<BreadcrumbsPresenter> breadcrumbs = uberfireBreadcrumbs.breadcrumbsPerPerspective.get( "myperspective" );
+        List<BreadcrumbsPresenter> breadcrumbs = uberfireBreadcrumbs.breadcrumbsPerPerspective.get("myperspective");
 
-        BreadcrumbsPresenter breadcrumb = breadcrumbs.get( 0 );
+        BreadcrumbsPresenter breadcrumb = breadcrumbs.get(0);
 
-        uberfireBreadcrumbs.generateBreadCrumbSelectCommand( "myperspective",
-                                                             breadcrumb,
-                                                             placeRequest,
-                                                             mock( HasWidgets.class ),
-                                                             command ).execute();
+        uberfireBreadcrumbs.generateBreadCrumbSelectCommand("myperspective",
+                                                            breadcrumb,
+                                                            placeRequest,
+                                                            mock(HasWidgets.class),
+                                                            command).execute();
 
-        verify( placeManager ).goTo( eq( placeRequest ), any( HasWidgets.class ) );
-        verify( placeManager, never() ).goTo( placeRequest );
-        verify( command ).execute();
+        verify(placeManager).goTo(eq(placeRequest),
+                                  any(HasWidgets.class));
+        verify(placeManager,
+               never()).goTo(placeRequest);
+        verify(command).execute();
     }
 
     @Test
     public void getViewShouldAddInnerBreadCrumbsTest() {
 
         List<BreadcrumbsPresenter> breadcrumbs = Arrays
-                .asList( mock( BreadcrumbsPresenter.class ), mock( BreadcrumbsPresenter.class ) );
-        uberfireBreadcrumbs.breadcrumbsPerPerspective.put( "myperspective", breadcrumbs );
-        uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.put( "myperspective", mock( Element.class ) );
+                .asList(mock(BreadcrumbsPresenter.class),
+                        mock(BreadcrumbsPresenter.class));
+        uberfireBreadcrumbs.breadcrumbsPerPerspective.put("myperspective",
+                                                          breadcrumbs);
+        uberfireBreadcrumbs.breadcrumbsToolBarPerPerspective.put("myperspective",
+                                                                 mock(Element.class));
 
         uberfireBreadcrumbs.getView();
 
-        verify( view ).clear();
-        verify( view, never() ).addBreadcrumb( any( UberElement.class ) );
+        verify(view).clear();
+        verify(view,
+               never()).addBreadcrumb(any(UberElement.class));
 
         uberfireBreadcrumbs.currentPerspective = "myperspective";
 
         uberfireBreadcrumbs.getView();
 
-        verify( view, times( 2 ) ).addBreadcrumb( any( UberElement.class ) );
-        verify( view, times( 1 ) ).addBreadcrumbToolbar( any( Element.class ) );
+        verify(view,
+               times(2)).addBreadcrumb(any(UberElement.class));
+        verify(view,
+               times(1)).addBreadcrumbToolbar(any(Element.class));
     }
 
     @Test
     public void addBreadcrumbAssociatedWithACommandTest() {
-        final Command command = mock( Command.class );
-        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", command );
-        verify( uberfireBreadcrumbs ).addBreadCrumb( "myperspective", "label", null, null, command );
+        final Command command = mock(Command.class);
+        uberfireBreadcrumbs.addBreadCrumb("myperspective",
+                                          "label",
+                                          command);
+        verify(uberfireBreadcrumbs).addBreadCrumb("myperspective",
+                                                  "label",
+                                                  null,
+                                                  null,
+                                                  command);
     }
 
     @Test
     public void addBreadcrumbAssociatedWithAPlaceRequestTest() {
-        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ) );
-        verify( uberfireBreadcrumbs ).addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ), null, null );
+        uberfireBreadcrumbs.addBreadCrumb("myperspective",
+                                          "label",
+                                          new DefaultPlaceRequest("screen"));
+        verify(uberfireBreadcrumbs).addBreadCrumb("myperspective",
+                                                  "label",
+                                                  new DefaultPlaceRequest("screen"),
+                                                  null,
+                                                  null);
     }
 
     @Test
     public void addBreadcrumbAssociatedWithAPlaceRequestAndATargetPanelTest() {
-        final HasWidgets targetPanel = mock( HasWidgets.class );
-        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ), targetPanel );
-        verify( uberfireBreadcrumbs ).addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ), targetPanel, null );
+        final HasWidgets targetPanel = mock(HasWidgets.class);
+        uberfireBreadcrumbs.addBreadCrumb("myperspective",
+                                          "label",
+                                          new DefaultPlaceRequest("screen"),
+                                          targetPanel);
+        verify(uberfireBreadcrumbs).addBreadCrumb("myperspective",
+                                                  "label",
+                                                  new DefaultPlaceRequest("screen"),
+                                                  targetPanel,
+                                                  null);
     }
 
     @Test
     public void addBreadcrumbAssociatedWithAPlaceRequestWithACommandTest() {
-        final Command command = mock( Command.class );
-        uberfireBreadcrumbs.addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ), command );
-        verify( uberfireBreadcrumbs ).addBreadCrumb( "myperspective", "label", new DefaultPlaceRequest( "screen" ), null, command );
+        final Command command = mock(Command.class);
+        uberfireBreadcrumbs.addBreadCrumb("myperspective",
+                                          "label",
+                                          new DefaultPlaceRequest("screen"),
+                                          command);
+        verify(uberfireBreadcrumbs).addBreadCrumb("myperspective",
+                                                  "label",
+                                                  new DefaultPlaceRequest("screen"),
+                                                  null,
+                                                  command);
     }
 }

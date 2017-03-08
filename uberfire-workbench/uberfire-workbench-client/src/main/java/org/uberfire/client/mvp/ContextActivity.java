@@ -15,18 +15,16 @@
  */
 package org.uberfire.client.mvp;
 
-import org.uberfire.workbench.model.PanelDefinition;
-
 import com.google.gwt.user.client.ui.IsWidget;
+import org.uberfire.workbench.model.PanelDefinition;
 
 public interface ContextActivity extends Activity {
 
-    void onAttach( final PanelDefinition definition );
+    void onAttach(final PanelDefinition definition);
 
     String getTitle();
 
     IsWidget getTitleDecoration();
 
     IsWidget getWidget();
-
 }

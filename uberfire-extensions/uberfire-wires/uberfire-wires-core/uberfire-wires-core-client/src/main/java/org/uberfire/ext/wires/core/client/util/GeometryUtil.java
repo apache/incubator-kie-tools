@@ -26,7 +26,7 @@ public class GeometryUtil {
      * point and the closest point between the specified end points.
      * If the specified point intersects the line segment in between the
      * end points, this method returns 0.0.
-     * <p/>
+     * <p>
      * See http://docs.oracle.com/javase/6/docs/api/java/awt/geom/Line2D.html#ptSegDist%28double,%20double,%20double,%20double,%20double,%20double%29
      * @param x1 the X coordinate of the start point of the
      * specified line segment
@@ -41,14 +41,14 @@ public class GeometryUtil {
      * @param py the Y coordinate of the specified point being
      * measured against the specified line segment
      * @return a double value that is the square of the distance from the
-     *         specified point to the specified line segment.
+     * specified point to the specified line segment.
      */
-    public static double ptSegDistSq( double x1,
-                                      double y1,
-                                      double x2,
-                                      double y2,
-                                      double px,
-                                      double py ) {
+    public static double ptSegDistSq(double x1,
+                                     double y1,
+                                     double x2,
+                                     double y2,
+                                     double px,
+                                     double py) {
         // Adjust vectors relative to x1,y1
         // x2,y2 becomes relative vector from x1,y1 to end of segment
         x2 -= x1;
@@ -58,7 +58,7 @@ public class GeometryUtil {
         py -= y1;
         double dotprod = px * x2 + py * y2;
         double projlenSq;
-        if ( dotprod <= 0.0 ) {
+        if (dotprod <= 0.0) {
             // px,py is on the side of x1,y1 away from x2,y2
             // distance to segment is length of px,py vector
             // "length of its (clipped) projection" is now 0.0
@@ -72,7 +72,7 @@ public class GeometryUtil {
             px = x2 - px;
             py = y2 - py;
             dotprod = px * x2 + py * y2;
-            if ( dotprod <= 0.0 ) {
+            if (dotprod <= 0.0) {
                 // px,py is on the side of x2,y2 away from x1,y1
                 // distance to segment is length of (backwards) px,py vector
                 // "length of its (clipped) projection" is now 0.0
@@ -82,7 +82,7 @@ public class GeometryUtil {
                 // dotprod is the length of the px,py vector
                 // projected on the x2,y2=>x1,y1 vector times the
                 // length of the x2,y2=>x1,y1 vector
-                projlenSq = dotprod * dotprod / ( x2 * x2 + y2 * y2 );
+                projlenSq = dotprod * dotprod / (x2 * x2 + y2 * y2);
             }
         }
         // Distance to line is now the length of the relative point
@@ -90,10 +90,9 @@ public class GeometryUtil {
         // (which is zero if the projection falls outside the range
         //  of the line segment).
         double lenSq = px * px + py * py - projlenSq;
-        if ( lenSq < 0 ) {
+        if (lenSq < 0) {
             lenSq = 0;
         }
         return lenSq;
     }
-
 }

@@ -31,42 +31,47 @@ public class SocialTimeLineRepositoryUnitTestWrapper extends SocialTimeLineRepos
     }
 
     @Override
-    public List<SocialActivitiesEvent> getLastUserTimeline( SocialUser user,
-                                                            Map commandsMap ) {
-        if ( mockMap.get( user.getUserName() ) == null ) {
-            mockMap.put( user.getUserName(), new ArrayList() );
+    public List<SocialActivitiesEvent> getLastUserTimeline(SocialUser user,
+                                                           Map commandsMap) {
+        if (mockMap.get(user.getUserName()) == null) {
+            mockMap.put(user.getUserName(),
+                        new ArrayList());
         }
-        return mockMap.get( user.getUserName() );
+        return mockMap.get(user.getUserName());
     }
 
     @Override
-    public List<SocialActivitiesEvent> getLastEventTimeline( String type,
-                                                             Map commandsMap ) {
-        if ( mockMap.get( type ) == null ) {
-            mockMap.put( type, new ArrayList() );
+    public List<SocialActivitiesEvent> getLastEventTimeline(String type,
+                                                            Map commandsMap) {
+        if (mockMap.get(type) == null) {
+            mockMap.put(type,
+                        new ArrayList());
         }
-        return mockMap.get( type );
+        return mockMap.get(type);
     }
 
     @Override
-    public void saveTypeEvent( SocialActivitiesEvent event ) {
-        if ( mockMap.get( event.getType() ) == null ) {
-            mockMap.put( event.getType(), new ArrayList() );
+    public void saveTypeEvent(SocialActivitiesEvent event) {
+        if (mockMap.get(event.getType()) == null) {
+            mockMap.put(event.getType(),
+                        new ArrayList());
         }
-        List<SocialActivitiesEvent> socialActivitiesEvents = mockMap.get( event.getType() );
-        socialActivitiesEvents.add( event );
-        mockMap.put( event.getType(), socialActivitiesEvents );
+        List<SocialActivitiesEvent> socialActivitiesEvents = mockMap.get(event.getType());
+        socialActivitiesEvents.add(event);
+        mockMap.put(event.getType(),
+                    socialActivitiesEvents);
     }
 
     @Override
-    public void saveUserEvent( SocialActivitiesEvent event ) {
+    public void saveUserEvent(SocialActivitiesEvent event) {
         String userName = event.getSocialUser().getUserName();
-        if ( mockMap.get( userName ) == null ) {
-            mockMap.put( userName, new ArrayList() );
+        if (mockMap.get(userName) == null) {
+            mockMap.put(userName,
+                        new ArrayList());
         }
-        List<SocialActivitiesEvent> socialActivitiesEvents = mockMap.get( userName );
-        socialActivitiesEvents.add( event );
-        mockMap.put( userName, socialActivitiesEvents );
-
+        List<SocialActivitiesEvent> socialActivitiesEvents = mockMap.get(userName);
+        socialActivitiesEvents.add(event);
+        mockMap.put(userName,
+                    socialActivitiesEvents);
     }
 }

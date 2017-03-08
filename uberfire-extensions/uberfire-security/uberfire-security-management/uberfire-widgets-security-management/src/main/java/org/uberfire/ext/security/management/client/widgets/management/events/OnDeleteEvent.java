@@ -20,14 +20,14 @@ import org.uberfire.workbench.events.UberFireEvent;
 
 /**
  * <p>User ask for deleting an instance.</p>
- * 
  * @since 0.8.0
  */
 public class OnDeleteEvent extends ContextualEvent implements UberFireEvent {
 
     private Object instance;
 
-    public OnDeleteEvent(Object context, Object instance) {
+    public OnDeleteEvent(Object context,
+                         Object instance) {
         super(context);
         this.instance = instance;
     }
@@ -40,5 +40,4 @@ public class OnDeleteEvent extends ContextualEvent implements UberFireEvent {
     public String toString() {
         return "OnDeleteEvent [context=" + getContext() + "]";
     }
-
 }

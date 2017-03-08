@@ -27,5 +27,4 @@ public class ShapesGroup extends BaseGroup {
     public Category getCategory() {
         return ShapeCategory.CATEGORY;
     }
-
 }

@@ -50,90 +50,84 @@ import org.uberfire.workbench.model.Position;
 public class CompassWidgetImpl implements CompassWidget {
 
     public static final String FA_ACTIVE = "fa-active";
-
-    interface CompassWidgetBinder extends UiBinder<PopupPanel, CompassWidgetImpl> {}
-
-    private static CompassWidgetBinder uiBinder = GWT.create( CompassWidgetBinder.class );
-
-    private Element dropTargetHighlight;
-
+    private static CompassWidgetBinder uiBinder = GWT.create(CompassWidgetBinder.class);
     @UiField
     DockLayoutPanel container;
-
     @UiField
     PopupPanel popup;
-
     @UiField
     Widget south;
-
     @UiField
     Widget north;
-
     @UiField
     Widget west;
-
     @UiField
     Widget east;
-
     @UiField
     Widget centre;
-
+    private Element dropTargetHighlight;
     private CompassPosition dropTargetPosition = CompassPosition.NONE;
 
     @PostConstruct
     private void init() {
-        popup = uiBinder.createAndBindUi( this );
+        popup = uiBinder.createAndBindUi(this);
 
         //Setup drop indicator
-        if ( dropTargetHighlight == null ) {
+        if (dropTargetHighlight == null) {
             dropTargetHighlight = Document.get().createDivElement();
-            dropTargetHighlight.getStyle().setPosition( Style.Position.ABSOLUTE );
-            dropTargetHighlight.getStyle().setVisibility( Visibility.HIDDEN );
-            dropTargetHighlight.setClassName( WorkbenchResources.INSTANCE.CSS().dropTargetHighlight() );
-            Document.get().getBody().appendChild( dropTargetHighlight );
+            dropTargetHighlight.getStyle().setPosition(Style.Position.ABSOLUTE);
+            dropTargetHighlight.getStyle().setVisibility(Visibility.HIDDEN);
+            dropTargetHighlight.setClassName(WorkbenchResources.INSTANCE.CSS().dropTargetHighlight());
+            Document.get().getBody().appendChild(dropTargetHighlight);
         }
 
-        north.ensureDebugId( "CompassWidget-north" );
-        south.ensureDebugId( "CompassWidget-south" );
-        east.ensureDebugId( "CompassWidget-east" );
-        west.ensureDebugId( "CompassWidget-west" );
-        centre.ensureDebugId( "CompassWidget-centre" );
+        north.ensureDebugId("CompassWidget-north");
+        south.ensureDebugId("CompassWidget-south");
+        east.ensureDebugId("CompassWidget-east");
+        west.ensureDebugId("CompassWidget-west");
+        centre.ensureDebugId("CompassWidget-centre");
     }
 
     @Override
-    public void onEnter( DragContext context ) {
-        show( context );
+    public void onEnter(DragContext context) {
+        show(context);
     }
 
     @Override
-    public void onLeave( DragContext context ) {
+    public void onLeave(DragContext context) {
         popup.hide();
     }
 
     @Override
-    public void onMove( DragContext context ) {
-        final Location l = new CoordinateLocation( context.mouseX,
-                                                   context.mouseY );
-        final WidgetArea northWidgetArea = new WidgetArea( north, null );
-        final WidgetArea southWidgetArea = new WidgetArea( south, null );
-        final WidgetArea eastWidgetArea = new WidgetArea( east, null );
-        final WidgetArea westWidgetArea = new WidgetArea( west, null );
-        final WidgetArea centreWidgetArea = new WidgetArea( centre, null );
+    public void onMove(DragContext context) {
+        final Location l = new CoordinateLocation(context.mouseX,
+                                                  context.mouseY);
+        final WidgetArea northWidgetArea = new WidgetArea(north,
+                                                          null);
+        final WidgetArea southWidgetArea = new WidgetArea(south,
+                                                          null);
+        final WidgetArea eastWidgetArea = new WidgetArea(east,
+                                                         null);
+        final WidgetArea westWidgetArea = new WidgetArea(west,
+                                                         null);
+        final WidgetArea centreWidgetArea = new WidgetArea(centre,
+                                                           null);
         CompassPosition p = CompassPosition.NONE;
-        if ( northWidgetArea.intersects( l ) ) {
+        if (northWidgetArea.intersects(l)) {
             p = CompassPosition.NORTH;
-        } else if ( southWidgetArea.intersects( l ) ) {
+        } else if (southWidgetArea.intersects(l)) {
             p = CompassPosition.SOUTH;
-        } else if ( eastWidgetArea.intersects( l ) ) {
+        } else if (eastWidgetArea.intersects(l)) {
             p = CompassPosition.EAST;
-        } else if ( westWidgetArea.intersects( l ) ) {
+        } else if (westWidgetArea.intersects(l)) {
             p = CompassPosition.WEST;
-        } else if ( centreWidgetArea.intersects( l ) ) {
+        } else if (centreWidgetArea.intersects(l)) {
             p = CompassPosition.SELF;
         }
-        if ( p != dropTargetPosition ) {
+        if (p != dropTargetPosition) {
             dropTargetPosition = p;
-            showDropTarget( context, p );
+            showDropTarget(context,
+                           p);
         }
     }
 
@@ -148,18 +142,18 @@ public class CompassWidgetImpl implements CompassWidget {
     }
 
     @Override
-    public void onDrop( DragContext context ) {
+    public void onDrop(DragContext context) {
         this.dropTargetPosition = CompassPosition.NONE;
-        highlightActiveDropTarget( null );
+        highlightActiveDropTarget(null);
         hideDropTarget();
     }
 
     @Override
-    public void onPreviewDrop( DragContext context ) throws VetoDragException {
+    public void onPreviewDrop(DragContext context) throws VetoDragException {
         throw new UnsupportedOperationException();
     }
 
-    private void show( final DragContext context ) {
+    private void show(final DragContext context) {
 
         //Get centre of DropTarget
         final Widget dropTargetParent = context.dropController.getDropTarget();
@@ -168,126 +162,131 @@ public class CompassWidgetImpl implements CompassWidget {
         int cxmax = dropTargetParent.getElement().getAbsoluteRight();
         int cymax = dropTargetParent.getElement().getAbsoluteBottom();
 
-        final CoordinateArea ca = new CoordinateArea( cxmin,
-                                                      cymin,
-                                                      cxmax,
-                                                      cymax );
+        final CoordinateArea ca = new CoordinateArea(cxmin,
+                                                     cymin,
+                                                     cxmax,
+                                                     cymax);
 
         //Display Compass if not already visible
-        if ( !popup.isAttached() ) {
-            popup.setPopupPositionAndShow( new PopupPanel.PositionCallback() {
+        if (!popup.isAttached()) {
+            popup.setPopupPositionAndShow(new PopupPanel.PositionCallback() {
 
                 @Override
-                public void setPosition( int offsetWidth,
-                                         int offsetHeight ) {
-                    popup.setPopupPosition( ca.getCenter().getLeft() - ( offsetWidth / 2 ),
-                            ca.getCenter().getTop() - ( offsetHeight / 2 ) );
+                public void setPosition(int offsetWidth,
+                                        int offsetHeight) {
+                    popup.setPopupPosition(ca.getCenter().getLeft() - (offsetWidth / 2),
+                                           ca.getCenter().getTop() - (offsetHeight / 2));
                 }
-
-            } );
-
+            });
         } else {
-            popup.setPopupPosition( ca.getCenter().getLeft() - ( popup.getOffsetWidth() / 2 ),
-                    ca.getCenter().getTop() - ( popup.getOffsetHeight() / 2 ) );
+            popup.setPopupPosition(ca.getCenter().getLeft() - (popup.getOffsetWidth() / 2),
+                                   ca.getCenter().getTop() - (popup.getOffsetHeight() / 2));
         }
     }
 
-    private void showDropTarget( final DragContext context,
-                                 final CompassPosition p ) {
+    private void showDropTarget(final DragContext context,
+                                final CompassPosition p) {
         int x = 0;
         int y = 0;
         int width = 0;
         int height = 0;
         final Widget dropTargetParent = context.dropController.getDropTarget();
-        switch ( p ) {
+        switch (p) {
             case SELF:
                 x = dropTargetParent.getAbsoluteLeft();
                 y = dropTargetParent.getAbsoluteTop();
                 width = dropTargetParent.getOffsetWidth();
                 height = dropTargetParent.getOffsetHeight();
-                highlightActiveDropTarget( centre );
-                showDropTarget( x,
-                                y,
-                                width,
-                                height );
+                highlightActiveDropTarget(centre);
+                showDropTarget(x,
+                               y,
+                               width,
+                               height);
                 break;
             case NORTH:
                 x = dropTargetParent.getAbsoluteLeft();
                 y = dropTargetParent.getAbsoluteTop();
                 width = dropTargetParent.getOffsetWidth();
-                height = (int) ( dropTargetParent.getOffsetHeight() * 0.50 );
-                highlightActiveDropTarget( north );
-                showDropTarget( x,
-                                y,
-                                width,
-                                height );
+                height = (int) (dropTargetParent.getOffsetHeight() * 0.50);
+                highlightActiveDropTarget(north);
+                showDropTarget(x,
+                               y,
+                               width,
+                               height);
                 break;
             case SOUTH:
                 x = dropTargetParent.getAbsoluteLeft();
-                height = (int) ( dropTargetParent.getOffsetHeight() * 0.50 );
+                height = (int) (dropTargetParent.getOffsetHeight() * 0.50);
                 y = dropTargetParent.getOffsetHeight() + dropTargetParent.getAbsoluteTop() - height;
                 width = dropTargetParent.getOffsetWidth();
-                highlightActiveDropTarget( south );
-                showDropTarget( x,
-                                y,
-                                width,
-                                height );
+                highlightActiveDropTarget(south);
+                showDropTarget(x,
+                               y,
+                               width,
+                               height);
                 break;
             case EAST:
-                width = (int) ( dropTargetParent.getOffsetWidth() * 0.50 );
+                width = (int) (dropTargetParent.getOffsetWidth() * 0.50);
                 x = dropTargetParent.getOffsetWidth() + dropTargetParent.getAbsoluteLeft() - width;
                 y = dropTargetParent.getAbsoluteTop();
                 height = dropTargetParent.getOffsetHeight();
-                highlightActiveDropTarget( east );
-                showDropTarget( x,
-                                y,
-                                width,
-                                height );
+                highlightActiveDropTarget(east);
+                showDropTarget(x,
+                               y,
+                               width,
+                               height);
                 break;
             case WEST:
                 x = dropTargetParent.getAbsoluteLeft();
                 y = dropTargetParent.getAbsoluteTop();
-                width = (int) ( dropTargetParent.getOffsetWidth() * 0.50 );
+                width = (int) (dropTargetParent.getOffsetWidth() * 0.50);
                 height = dropTargetParent.getOffsetHeight();
-                highlightActiveDropTarget( west );
-                showDropTarget( x,
-                        y,
-                        width,
-                        height );
+                highlightActiveDropTarget(west);
+                showDropTarget(x,
+                               y,
+                               width,
+                               height);
                 break;
             default:
-                highlightActiveDropTarget( null );
+                highlightActiveDropTarget(null);
                 hideDropTarget();
         }
     }
 
-    private void highlightActiveDropTarget(final Widget target){
-        south.removeStyleName( FA_ACTIVE );
-        north.removeStyleName( FA_ACTIVE );
-        west.removeStyleName( FA_ACTIVE );
-        east.removeStyleName( FA_ACTIVE );
-        centre.removeStyleName( FA_ACTIVE );
-        if( target != null ) {
-            target.addStyleName( FA_ACTIVE );
+    private void highlightActiveDropTarget(final Widget target) {
+        south.removeStyleName(FA_ACTIVE);
+        north.removeStyleName(FA_ACTIVE);
+        west.removeStyleName(FA_ACTIVE);
+        east.removeStyleName(FA_ACTIVE);
+        centre.removeStyleName(FA_ACTIVE);
+        if (target != null) {
+            target.addStyleName(FA_ACTIVE);
         }
     }
 
-    private void showDropTarget( int x,
-                                 int y,
-                                 int width,
-                                 int height ) {
-        dropTargetHighlight.getStyle().setLeft( x, Unit.PX );
-        dropTargetHighlight.getStyle().setWidth( width, Unit.PX );
-        dropTargetHighlight.getStyle().setTop( y, Unit.PX );
-        dropTargetHighlight.getStyle().setHeight( height, Unit.PX );
-        dropTargetHighlight.getStyle().setVisibility( Visibility.VISIBLE );
-        dropTargetHighlight.getStyle().setDisplay( Display.BLOCK );
+    private void showDropTarget(int x,
+                                int y,
+                                int width,
+                                int height) {
+        dropTargetHighlight.getStyle().setLeft(x,
+                                               Unit.PX);
+        dropTargetHighlight.getStyle().setWidth(width,
+                                                Unit.PX);
+        dropTargetHighlight.getStyle().setTop(y,
+                                              Unit.PX);
+        dropTargetHighlight.getStyle().setHeight(height,
+                                                 Unit.PX);
+        dropTargetHighlight.getStyle().setVisibility(Visibility.VISIBLE);
+        dropTargetHighlight.getStyle().setDisplay(Display.BLOCK);
     }
 
     private void hideDropTarget() {
-        dropTargetHighlight.getStyle().setVisibility( Visibility.HIDDEN );
-        dropTargetHighlight.getStyle().setDisplay( Display.NONE );
+        dropTargetHighlight.getStyle().setVisibility(Visibility.HIDDEN);
+        dropTargetHighlight.getStyle().setDisplay(Display.NONE);
         dropTargetPosition = CompassPosition.NONE;
     }
 
+    interface CompassWidgetBinder extends UiBinder<PopupPanel, CompassWidgetImpl> {
+
+    }
 }

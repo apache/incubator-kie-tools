@@ -17,12 +17,12 @@ package org.uberfire.ext.wires.bpmn.client.rules.impl;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.uberfire.ext.wires.bpmn.api.model.BpmnEdge;
 import org.uberfire.ext.wires.bpmn.api.model.impl.edges.BpmnEdgeImpl;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.EndProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.ProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.nodes.StartProcessNode;
 import org.uberfire.ext.wires.bpmn.api.model.impl.roles.DefaultRoleImpl;
-import org.uberfire.ext.wires.bpmn.api.model.BpmnEdge;
 import org.uberfire.ext.wires.bpmn.api.model.rules.Rule;
 import org.uberfire.ext.wires.bpmn.client.AbstractBaseRuleTest;
 import org.uberfire.ext.wires.bpmn.client.TestDummyNode;
@@ -30,7 +30,8 @@ import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
 import org.uberfire.ext.wires.bpmn.client.commands.Results;
 import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 public class ConnectionRulesTest extends AbstractBaseRuleTest {
 
@@ -48,58 +49,57 @@ public class ConnectionRulesTest extends AbstractBaseRuleTest {
         node2 = new TestDummyNode();
         node3 = new EndProcessNode();
 
-        for ( Rule rule : getConnectionRules() ) {
-            ruleManager.addRule( rule );
+        for (Rule rule : getConnectionRules()) {
+            ruleManager.addRule(rule);
         }
 
         //Add StartProcessNode
-        process.addNode( node1 );
-        process.addNode( node2 );
-        process.addNode( node3 );
+        process.addNode(node1);
+        process.addNode(node2);
+        process.addNode(node3);
     }
 
     @Test
     public void testAddEdgeBetweenStartNodeAndDummyNode() {
-        final BpmnEdge e1 = new BpmnEdgeImpl( new DefaultRoleImpl( "general_edge" ) );
+        final BpmnEdge e1 = new BpmnEdgeImpl(new DefaultRoleImpl("general_edge"));
 
-        final Results results1 = ruleManager.checkConnectionRules( node1,
-                                                                   node2,
-                                                                   e1 );
+        final Results results1 = ruleManager.checkConnectionRules(node1,
+                                                                  node2,
+                                                                  e1);
 
         //An Edge with role "general_edge" is permitted between StartNode and DummyNode
-        assertNotNull( results1 );
-        assertEquals( 0,
-                      results1.getMessages().size() );
+        assertNotNull(results1);
+        assertEquals(0,
+                     results1.getMessages().size());
     }
 
     @Test
     public void testAddEdgeBetweenDummyNodeAndEndNode() {
-        final BpmnEdge e1 = new BpmnEdgeImpl( new DefaultRoleImpl( "general_edge" ) );
+        final BpmnEdge e1 = new BpmnEdgeImpl(new DefaultRoleImpl("general_edge"));
 
-        final Results results1 = ruleManager.checkConnectionRules( node2,
-                                                                   node3,
-                                                                   e1 );
+        final Results results1 = ruleManager.checkConnectionRules(node2,
+                                                                  node3,
+                                                                  e1);
 
         //An Edge with role "general_edge" is permitted between DummyNode and EndNode
-        assertNotNull( results1 );
-        assertEquals( 0,
-                      results1.getMessages().size() );
+        assertNotNull(results1);
+        assertEquals(0,
+                     results1.getMessages().size());
     }
 
     @Test
     public void testAddEdgeBetweenStartNodeAndEndNode() {
-        final BpmnEdge e1 = new BpmnEdgeImpl( new DefaultRoleImpl( "general_edge" ) );
+        final BpmnEdge e1 = new BpmnEdgeImpl(new DefaultRoleImpl("general_edge"));
 
-        final Results results1 = ruleManager.checkConnectionRules( node1,
-                                                                   node3,
-                                                                   e1 );
+        final Results results1 = ruleManager.checkConnectionRules(node1,
+                                                                  node3,
+                                                                  e1);
 
         //An Edge with role "general_edge" is NOT permitted between StartNode and EndNode
-        assertNotNull( results1 );
-        assertEquals( 1,
-                      results1.getMessages().size() );
-        assertEquals( 1,
-                      results1.getMessages( ResultType.ERROR ).size() );
+        assertNotNull(results1);
+        assertEquals(1,
+                     results1.getMessages().size());
+        assertEquals(1,
+                     results1.getMessages(ResultType.ERROR).size());
     }
-
 }

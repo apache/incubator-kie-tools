@@ -31,34 +31,32 @@ import org.gwtbootstrap3.client.ui.constants.IconType;
 
 public class PropertyEditorItemButtons extends Composite implements HasClickHandlers {
 
+    private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
     @UiField
     Button removalButton;
 
     public PropertyEditorItemButtons() {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        removalButton.setType( ButtonType.DANGER );
-        removalButton.setSize( ButtonSize.EXTRA_SMALL );
-        removalButton.setIcon( IconType.MINUS );
+        initWidget(uiBinder.createAndBindUi(this));
+        removalButton.setType(ButtonType.DANGER);
+        removalButton.setSize(ButtonSize.EXTRA_SMALL);
+        removalButton.setIcon(IconType.MINUS);
 //        removalButton.addClickHandler( clickHandler );
     }
 
-    public void addRemovalButton( ClickHandler clickHandler ) {
-        removalButton.setVisible( true );
-        removalButton.setType( ButtonType.DANGER );
-        removalButton.setSize( ButtonSize.EXTRA_SMALL );
-        removalButton.setIcon( IconType.MINUS );
-        removalButton.addClickHandler( clickHandler );
+    public void addRemovalButton(ClickHandler clickHandler) {
+        removalButton.setVisible(true);
+        removalButton.setType(ButtonType.DANGER);
+        removalButton.setSize(ButtonSize.EXTRA_SMALL);
+        removalButton.setIcon(IconType.MINUS);
+        removalButton.addClickHandler(clickHandler);
     }
 
     @Override
-    public HandlerRegistration addClickHandler( ClickHandler handler ) {
-        return removalButton.addClickHandler( handler );
+    public HandlerRegistration addClickHandler(ClickHandler handler) {
+        return removalButton.addClickHandler(handler);
     }
 
     interface MyUiBinder extends UiBinder<Widget, PropertyEditorItemButtons> {
 
     }
-
-    private static MyUiBinder uiBinder = GWT.create( MyUiBinder.class );
-
 }

@@ -29,69 +29,73 @@ import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 
 public abstract class Dialog extends DialogBox {
-	private ClickHandler buttonClickHandler = new ClickHandler() {
-		public void onClick(ClickEvent event) {
-			buttonClicked((Widget) event.getSource());
-		}
-	};
-	private Widget dialogArea;
-	private Button okButton;
-	private Button cancelButton;
-	
-	public Dialog() {
-		VerticalPanel panel = new VerticalPanel();
-		dialogArea = createDialogArea();
-		panel.add(dialogArea);
-		panel.add(createButtonBar());
-		setWidget(panel);
-	}
-	
-	public HandlerRegistration addDialogClosedHandler(DialogClosedHandler handler) {
-		return addHandler(handler, DialogClosedEvent.getType());
-	}
 
-	protected void close(boolean canceled) {
-		hide();
-		fireDialogClosed(canceled);
-	}
+    private ClickHandler buttonClickHandler = new ClickHandler() {
+        public void onClick(ClickEvent event) {
+            buttonClicked((Widget) event.getSource());
+        }
+    };
+    private Widget dialogArea;
+    private Button okButton;
+    private Button cancelButton;
 
-	private void fireDialogClosed(boolean canceled) {
-		fireEvent(new DialogClosedEvent(canceled));
-	}
+    public Dialog() {
+        VerticalPanel panel = new VerticalPanel();
+        dialogArea = createDialogArea();
+        panel.add(dialogArea);
+        panel.add(createButtonBar());
+        setWidget(panel);
+    }
 
-	protected Widget createButtonBar() {
-		FlowPanel buttonsPanel = new FlowPanel();
-		buttonsPanel.setStyleName("DialogButtons");
-		List<? extends Widget> buttons = createButtonsForButtonBar();
-		for (Widget button : buttons) {
-			buttonsPanel.add(button);
-		}
-		return buttonsPanel;
-	}
+    public HandlerRegistration addDialogClosedHandler(DialogClosedHandler handler) {
+        return addHandler(handler,
+                          DialogClosedEvent.getType());
+    }
 
-	protected List<? extends Widget> createButtonsForButtonBar() {
-		okButton = createButton(CommonConstants.INSTANCE.OK());
-		cancelButton = createButton(CommonConstants.INSTANCE.Cancel());
-		return Arrays.asList(okButton, cancelButton);
-	}
+    protected void close(boolean canceled) {
+        hide();
+        fireDialogClosed(canceled);
+    }
 
-	protected Button createButton(String text) {
-		return new Button(text, buttonClickHandler);
-	}
+    private void fireDialogClosed(boolean canceled) {
+        fireEvent(new DialogClosedEvent(canceled));
+    }
 
-	protected abstract Widget createDialogArea();
-	
-	protected Widget getDialogArea() {
-		return dialogArea;
-	}
+    protected Widget createButtonBar() {
+        FlowPanel buttonsPanel = new FlowPanel();
+        buttonsPanel.setStyleName("DialogButtons");
+        List<? extends Widget> buttons = createButtonsForButtonBar();
+        for (Widget button : buttons) {
+            buttonsPanel.add(button);
+        }
+        return buttonsPanel;
+    }
 
-	protected abstract void buttonClicked(Widget button);
-	
-	protected Button getOkButton() {
-		return okButton;
-	}
-	
-	protected Button getCancelButton() {
-		return cancelButton;
-	}
+    protected List<? extends Widget> createButtonsForButtonBar() {
+        okButton = createButton(CommonConstants.INSTANCE.OK());
+        cancelButton = createButton(CommonConstants.INSTANCE.Cancel());
+        return Arrays.asList(okButton,
+                             cancelButton);
+    }
+
+    protected Button createButton(String text) {
+        return new Button(text,
+                          buttonClickHandler);
+    }
+
+    protected abstract Widget createDialogArea();
+
+    protected Widget getDialogArea() {
+        return dialogArea;
+    }
+
+    protected abstract void buttonClicked(Widget button);
+
+    protected Button getOkButton() {
+        return okButton;
+    }
+
+    protected Button getCancelButton() {
+        return cancelButton;
+    }
 }

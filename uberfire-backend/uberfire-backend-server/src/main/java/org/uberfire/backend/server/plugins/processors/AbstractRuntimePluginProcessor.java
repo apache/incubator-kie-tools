@@ -15,14 +15,6 @@
  */
 package org.uberfire.backend.server.plugins.processors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.uberfire.backend.plugin.RuntimePlugin;
-import org.uberfire.backend.plugin.RuntimePluginProcessor;
-import org.uberfire.workbench.events.PluginAddedEvent;
-import org.uberfire.workbench.events.PluginUpdatedEvent;
-
-import javax.enterprise.event.Event;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -31,6 +23,14 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import javax.enterprise.event.Event;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.uberfire.backend.plugin.RuntimePlugin;
+import org.uberfire.backend.plugin.RuntimePluginProcessor;
+import org.uberfire.workbench.events.PluginAddedEvent;
+import org.uberfire.workbench.events.PluginUpdatedEvent;
 
 public abstract class AbstractRuntimePluginProcessor implements RuntimePluginProcessor {
 
@@ -42,14 +42,14 @@ public abstract class AbstractRuntimePluginProcessor implements RuntimePluginPro
 
     private Event<PluginUpdatedEvent> pluginUpdatedEvent;
 
-    public AbstractRuntimePluginProcessor(){
+    public AbstractRuntimePluginProcessor() {
 
     }
 
-    public AbstractRuntimePluginProcessor(Event<PluginAddedEvent> pluginAddedEvent, Event<PluginUpdatedEvent> pluginUpdatedEvent) {
+    public AbstractRuntimePluginProcessor(Event<PluginAddedEvent> pluginAddedEvent,
+                                          Event<PluginUpdatedEvent> pluginUpdatedEvent) {
         this.pluginAddedEvent = pluginAddedEvent;
         this.pluginUpdatedEvent = pluginUpdatedEvent;
-
     }
 
     @Override
@@ -73,10 +73,13 @@ public abstract class AbstractRuntimePluginProcessor implements RuntimePluginPro
     }
 
     @Override
-    public void process(String pluginName, String pluginDeploymentDir, boolean notifyClients) {
+    public void process(String pluginName,
+                        String pluginDeploymentDir,
+                        boolean notifyClients) {
 
         if (!isRegistered(pluginName)) {
-            loadPlugin(pluginName, pluginDeploymentDir);
+            loadPlugin(pluginName,
+                       pluginDeploymentDir);
 
             if (notifyClients) {
                 pluginAddedEvent.fire(new PluginAddedEvent(pluginName));
@@ -88,19 +91,24 @@ public abstract class AbstractRuntimePluginProcessor implements RuntimePluginPro
         }
     }
 
-    private void loadPlugin(String pluginName, String pluginDeploymentDir) {
+    private void loadPlugin(String pluginName,
+                            String pluginDeploymentDir) {
         try {
-            String pluginContent = getPluginContent(pluginName, pluginDeploymentDir);
+            String pluginContent = getPluginContent(pluginName,
+                                                    pluginDeploymentDir);
             availableRuntimePlugins.put(pluginName,
-                    new RuntimePlugin(getType(), pluginName, pluginContent));
-
+                                        new RuntimePlugin(getType(),
+                                                          pluginName,
+                                                          pluginContent));
         } catch (IOException e) {
-            LOG.error("Failed to initialize " + pluginDeploymentDir, e);
+            LOG.error("Failed to initialize " + pluginDeploymentDir,
+                      e);
             throw new RuntimeException(e);
         }
     }
 
-    String getPluginContent(String pluginName, String pluginDeploymentDir) throws IOException {
+    String getPluginContent(String pluginName,
+                            String pluginDeploymentDir) throws IOException {
         Path path = Paths.get(pluginDeploymentDir + File.separator + pluginName);
         return new String(Files.readAllBytes(path));
     }

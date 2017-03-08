@@ -24,7 +24,9 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
  */
 public abstract class AbstractActivityTest {
 
-    /** Subclasses should implement this method to return the object they are unit testing. */
+    /**
+     * Subclasses should implement this method to return the object they are unit testing.
+     */
     public abstract Activity getActivityUnderTest();
 
     @Test(expected = IllegalStateException.class)
@@ -35,14 +37,14 @@ public abstract class AbstractActivityTest {
     @Test
     public void onOpenShouldSucceedWhenActivityStarted() throws Exception {
         Activity a = getActivityUnderTest();
-        a.onStartup( new DefaultPlaceRequest( "testplace" ) );
+        a.onStartup(new DefaultPlaceRequest("testplace"));
         a.onOpen();
     }
 
     @Test(expected = IllegalStateException.class)
     public void onOpenShouldFailWhenActivityAlreadyOpen() {
         Activity a = getActivityUnderTest();
-        a.onStartup( new DefaultPlaceRequest( "testplace" ) );
+        a.onStartup(new DefaultPlaceRequest("testplace"));
         a.onOpen();
         a.onOpen();
     }
@@ -50,14 +52,14 @@ public abstract class AbstractActivityTest {
     @Test
     public void onShutdownShouldSucceedWhenActivityNeverOpened() throws Exception {
         Activity a = getActivityUnderTest();
-        a.onStartup( new DefaultPlaceRequest( "testplace" ) );
+        a.onStartup(new DefaultPlaceRequest("testplace"));
         a.onShutdown();
     }
 
     @Test
     public void onCloseShouldSucceedWhenActivityOpened() throws Exception {
         Activity a = getActivityUnderTest();
-        a.onStartup( new DefaultPlaceRequest( "testplace" ) );
+        a.onStartup(new DefaultPlaceRequest("testplace"));
         a.onOpen();
         a.onClose();
     }
@@ -70,14 +72,14 @@ public abstract class AbstractActivityTest {
     @Test(expected = IllegalStateException.class)
     public void onCloseShouldFailWhenActivityNotOpen() {
         Activity a = getActivityUnderTest();
-        a.onStartup( new DefaultPlaceRequest( "testplace" ) );
+        a.onStartup(new DefaultPlaceRequest("testplace"));
         a.onClose();
     }
 
     @Test(expected = IllegalStateException.class)
     public void onCloseShouldFailWhenActivityAlreadyClosed() {
         Activity a = getActivityUnderTest();
-        a.onStartup( new DefaultPlaceRequest( "testplace" ) );
+        a.onStartup(new DefaultPlaceRequest("testplace"));
         a.onOpen();
         a.onClose();
         a.onClose();
@@ -91,7 +93,7 @@ public abstract class AbstractActivityTest {
     @Test(expected = IllegalStateException.class)
     public void onShutdownShouldFailWhenActivityOpen() {
         Activity a = getActivityUnderTest();
-        a.onStartup( new DefaultPlaceRequest( "testplace" ) );
+        a.onStartup(new DefaultPlaceRequest("testplace"));
         a.onOpen();
         a.onShutdown();
     }
@@ -99,10 +101,9 @@ public abstract class AbstractActivityTest {
     @Test
     public void fullLifecycleShouldSucceed() throws Exception {
         Activity a = getActivityUnderTest();
-        a.onStartup( new DefaultPlaceRequest( "testplace" ) );
+        a.onStartup(new DefaultPlaceRequest("testplace"));
         a.onOpen();
         a.onClose();
         a.onShutdown();
     }
-
 }

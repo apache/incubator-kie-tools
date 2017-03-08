@@ -31,24 +31,22 @@ public interface PopupView extends HasCloseHandlers<PopupView> {
 
     /**
      * Sets the main content of this popup dialog, replacing any content that was previously set.
-     *
      * @param widget the content to add. Must not be null.
      */
-    void setContent( final IsWidget widget );
+    void setContent(final IsWidget widget);
 
     /**
      * Sets the title text for this popup's dialog. Usually, the view will put this in a large font above the
      * main content.
-     *
      * @param title The title text for the popup container.
      */
-    void setTitle( final String title );
+    void setTitle(final String title);
 
     /**
      * Sets the size for the popup.
      * @param size The popup size
      */
-    void setSize( final WorkbenchPopupSize size );
+    void setSize(final WorkbenchPopupSize size);
 
     /**
      * Makes this popup container (and the main content along with it) visible on the workbench. Has no effect if this
@@ -61,5 +59,4 @@ public interface PopupView extends HasCloseHandlers<PopupView> {
      * already showing.
      */
     void hide();
-
 }

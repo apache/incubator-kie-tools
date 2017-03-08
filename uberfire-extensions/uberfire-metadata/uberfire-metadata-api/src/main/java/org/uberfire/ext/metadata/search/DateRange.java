@@ -26,5 +26,4 @@ public interface DateRange {
     Date before();
 
     Date after();
-
 }

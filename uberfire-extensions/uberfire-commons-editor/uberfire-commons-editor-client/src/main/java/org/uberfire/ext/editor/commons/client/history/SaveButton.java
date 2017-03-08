@@ -16,6 +16,10 @@
 
 package org.uberfire.ext.editor.commons.client.history;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
@@ -25,29 +29,24 @@ import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.MenuVisitor;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Widget;
-
 public class SaveButton
         implements MenuCustom<Widget> {
 
-    private Button button = GWT.create( Button.class );
+    private Button button = GWT.create(Button.class);
 
     private Command command;
 
     public SaveButton() {
-        button.setText( CommonConstants.INSTANCE.Save() );
-        button.addClickHandler( new ClickHandler() {
+        button.setText(CommonConstants.INSTANCE.Save());
+        button.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
-                if ( command != null ) {
+            public void onClick(ClickEvent event) {
+                if (command != null) {
                     command.execute();
                 }
             }
-        } );
-        button.setSize( ButtonSize.SMALL );
+        });
+        button.setSize(ButtonSize.SMALL);
     }
 
     @Override
@@ -61,8 +60,8 @@ public class SaveButton
     }
 
     @Override
-    public void setEnabled( boolean enabled ) {
-        button.setEnabled( enabled );
+    public void setEnabled(boolean enabled) {
+        button.setEnabled(enabled);
     }
 
     @Override
@@ -86,12 +85,12 @@ public class SaveButton
     }
 
     @Override
-    public void accept( final MenuVisitor visitor ) {
-        visitor.visit( this );
+    public void accept(final MenuVisitor visitor) {
+        visitor.visit(this);
     }
 
     @Override
-    public void addEnabledStateChangeListener( EnabledStateChangeListener listener ) {
+    public void addEnabledStateChangeListener(EnabledStateChangeListener listener) {
 
     }
 
@@ -101,14 +100,14 @@ public class SaveButton
     }
 
     public void setTextToSave() {
-        button.setText( CommonConstants.INSTANCE.Save() );
+        button.setText(CommonConstants.INSTANCE.Save());
     }
 
     public void setTextToRestore() {
-        button.setText( CommonConstants.INSTANCE.Restore() );
+        button.setText(CommonConstants.INSTANCE.Restore());
     }
 
-    public void setCommand( Command command ) {
+    public void setCommand(Command command) {
         this.command = command;
     }
 }

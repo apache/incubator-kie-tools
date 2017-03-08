@@ -20,7 +20,6 @@ import java.util.Date;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.extras.datepicker.client.ui.base.constants.DatePickerLanguage;
 import org.junit.Before;
@@ -28,22 +27,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DatePickerTest {
+
     @Mock
     public org.gwtbootstrap3.extras.datepicker.client.ui.DatePicker datePickerMock;
-
+    public DatePicker datePicker;
     @Mock
     TextBox textBox;
 
-    public DatePicker datePicker;
-
     @Before
-    public void setup(){
+    public void setup() {
         when(datePickerMock.getTextBox()).thenReturn(textBox);
     }
 
@@ -54,7 +51,7 @@ public class DatePickerTest {
         DateTimeFormat gwtDateTimeFormat = DateTimeFormat.getFormat(gwtDateFormat);
 
         datePicker.setLocaleName("en");
-        datePicker.setFormat( gwtDateFormat);
+        datePicker.setFormat(gwtDateFormat);
         verify(datePickerMock).setLanguage(DatePickerLanguage.EN);
         verify(datePickerMock).setFormat(DatePickerFormatUtilities.convertToBS3DateFormat(gwtDateFormat));
 
@@ -64,9 +61,10 @@ public class DatePickerTest {
         datePicker.setValue(now);
         verify(textBox).setValue(gwtDateTimeFormat.format(now));
         when(textBox.getValue()).thenReturn(gwtDateTimeFormat.format(now));
-        assertEquals(now, datePicker.getValue());
-
+        assertEquals(now,
+                     datePicker.getValue());
     }
+
     @Test
     public void testSetDatePickerLang() {
         datePicker = new DatePicker(datePickerMock);
@@ -107,7 +105,6 @@ public class DatePickerTest {
         datePicker.setLocaleName("en");
         datePicker.setFormat(gwtDateFormat);
         verify(datePickerMock).setLanguage(DatePickerLanguage.EN);
-
     }
 
     @Test
@@ -115,20 +112,21 @@ public class DatePickerTest {
         datePicker = new DatePicker(datePickerMock);
 
         datePicker.setLocaleName("");
-        assertEquals("", datePicker.getLocaleName());
+        assertEquals("",
+                     datePicker.getLocaleName());
 
         datePicker.setLocaleName(null);
-        assertEquals("", datePicker.getLocaleName());
+        assertEquals("",
+                     datePicker.getLocaleName());
 
         datePicker.setLocaleName("default");
-        assertEquals("", datePicker.getLocaleName());
+        assertEquals("",
+                     datePicker.getLocaleName());
 
         String currentLocale = "testValue";
         datePicker.setLocaleName(currentLocale);
-        assertEquals(currentLocale, datePicker.getLocaleName());
-
+        assertEquals(currentLocale,
+                     datePicker.getLocaleName());
     }
-
-
 }
 

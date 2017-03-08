@@ -36,8 +36,8 @@ import org.uberfire.security.client.authz.tree.PermissionTree;
 import org.uberfire.security.client.authz.tree.impl.DefaultLoadOptions;
 import org.uberfire.security.impl.authz.DefaultPermissionManager;
 
-import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PerspectiveTreeProviderTest {
@@ -71,10 +71,14 @@ public class PerspectiveTreeProviderTest {
         when(beanManager.lookupBeans(PerspectiveActivity.class)).thenReturn(beanDefs);
 
         permissionManager = new DefaultPermissionManager();
-        provider = new PerspectiveTreeProvider(beanManager, permissionManager, i18n);
+        provider = new PerspectiveTreeProvider(beanManager,
+                                               permissionManager,
+                                               i18n);
         provider.setRootNodeName("root");
-        provider.setPerspectiveName("Perspective1", "A nice perspective");
-        provider.setPerspectiveName("Perspective2", "Another nice perspective");
+        provider.setPerspectiveName("Perspective1",
+                                    "A nice perspective");
+        provider.setPerspectiveName("Perspective2",
+                                    "Another nice perspective");
         root = provider.buildRootNode();
         root.setPermissionTree(permissionTree);
     }
@@ -82,27 +86,36 @@ public class PerspectiveTreeProviderTest {
     @Test
     public void testEmpty() {
         DefaultLoadOptions options = new DefaultLoadOptions();
-        provider.loadChildren(root, options, children -> {
-            assertEquals(children.size(), 0);
-        });
+        provider.loadChildren(root,
+                              options,
+                              children -> {
+                                  assertEquals(children.size(),
+                                               0);
+                              });
     }
 
     @Test
     public void testIncludedResourceIds() {
         DefaultLoadOptions options = new DefaultLoadOptions();
         options.setResourceIds(Arrays.asList("Perspective1"));
-        provider.loadChildren(root, options, children -> {
-            assertEquals(children.size(), 1);
-        });
+        provider.loadChildren(root,
+                              options,
+                              children -> {
+                                  assertEquals(children.size(),
+                                               1);
+                              });
     }
 
     @Test
     public void testExcludedResourceIds() {
         DefaultLoadOptions options = new DefaultLoadOptions();
         options.setResourceIds(Arrays.asList("Perspective1"));
-        provider.loadChildren(root, options, children -> {
-            assertEquals(children.size(), 1);
-        });
+        provider.loadChildren(root,
+                              options,
+                              children -> {
+                                  assertEquals(children.size(),
+                                               1);
+                              });
     }
 
     @Test
@@ -110,41 +123,54 @@ public class PerspectiveTreeProviderTest {
         provider.excludePerspectiveId("Perspective1");
         DefaultLoadOptions options = new DefaultLoadOptions();
         options.setNodeNamePattern("");
-        provider.loadChildren(root, options, children -> {
-            assertEquals(children.size(), 1);
-        });
+        provider.loadChildren(root,
+                              options,
+                              children -> {
+                                  assertEquals(children.size(),
+                                               1);
+                              });
     }
 
     @Test
     public void testNameSearch1() {
         DefaultLoadOptions options = new DefaultLoadOptions();
         options.setNodeNamePattern("nice");
-        provider.loadChildren(root, options, children -> {
-            assertEquals(children.size(), 2);
-        });
+        provider.loadChildren(root,
+                              options,
+                              children -> {
+                                  assertEquals(children.size(),
+                                               2);
+                              });
     }
 
     @Test
     public void testNameSearch2() {
         DefaultLoadOptions options = new DefaultLoadOptions();
         options.setNodeNamePattern("another");
-        provider.loadChildren(root, options, children -> {
-            assertEquals(children.size(), 1);
-        });
+        provider.loadChildren(root,
+                              options,
+                              children -> {
+                                  assertEquals(children.size(),
+                                               1);
+                              });
     }
 
     @Test
     public void testNameSearch3() {
         DefaultLoadOptions options = new DefaultLoadOptions();
         options.setNodeNamePattern("another");
-        provider.loadChildren(root, options, children -> {
-            assertEquals(children.size(), 1);
-        });
+        provider.loadChildren(root,
+                              options,
+                              children -> {
+                                  assertEquals(children.size(),
+                                               1);
+                              });
     }
 
     @Test
     public void testRootNode() {
-        assertEquals(root.getPermissionList().size(), 4);
+        assertEquals(root.getPermissionList().size(),
+                     4);
         checkDependencies(root);
     }
 
@@ -152,7 +178,8 @@ public class PerspectiveTreeProviderTest {
     public void testChildrenNodes() {
         root.expand(children -> {
             for (PermissionNode child : children) {
-                assertEquals(child.getPermissionList().size(), 3);
+                assertEquals(child.getPermissionList().size(),
+                             3);
                 checkDependencies(child);
             }
         });
@@ -163,9 +190,9 @@ public class PerspectiveTreeProviderTest {
             Collection<Permission> dependencies = permissionNode.getDependencies(permission);
 
             if (permission.getName().startsWith("perspective.read")) {
-                assertEquals(dependencies.size(), 2);
-            }
-            else {
+                assertEquals(dependencies.size(),
+                             2);
+            } else {
                 assertNull(dependencies);
             }
         }

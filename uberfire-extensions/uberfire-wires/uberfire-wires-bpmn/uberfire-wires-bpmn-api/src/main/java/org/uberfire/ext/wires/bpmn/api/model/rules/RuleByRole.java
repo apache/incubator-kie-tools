@@ -27,5 +27,4 @@ public interface RuleByRole extends Rule {
      * @return
      */
     Role getRole();
-
 }

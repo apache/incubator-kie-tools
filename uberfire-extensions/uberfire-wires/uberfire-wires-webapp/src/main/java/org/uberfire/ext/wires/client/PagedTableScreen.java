@@ -43,78 +43,89 @@ import org.uberfire.ext.widgets.table.client.UberfirePagedTable;
 import org.uberfire.paging.AbstractPageRow;
 
 @Dependent
-@WorkbenchScreen( identifier = "PagedTableScreen" )
+@WorkbenchScreen(identifier = "PagedTableScreen")
 public class PagedTableScreen extends Composite implements RequiresResize {
 
     private static final int PADDING = 30;
 
-    protected final UberfirePagedTable<Row> dataGrid = new UberfirePagedTable<Row>( 10, null, true, true, true );
+    protected final UberfirePagedTable<Row> dataGrid = new UberfirePagedTable<Row>(10,
+                                                                                   null,
+                                                                                   true,
+                                                                                   true,
+                                                                                   true);
     protected final FlowPanel panel = new FlowPanel();
     protected final Button addButton = new Button();
     protected final List<Row> data = new ArrayList<Row>();
     protected final AsyncDataProvider<Row> dataProvider = new AsyncDataProvider<Row>() {
         @Override
-        protected void onRangeChanged( final HasData<Row> display ) {
+        protected void onRangeChanged(final HasData<Row> display) {
             final ColumnSortList columnSortList = dataGrid.getColumnSortList();
-            Collections.sort( data, new Comparator<Row>() {
-                @Override
-                public int compare( final Row o1, final Row o2 ) {
-                    if ( columnSortList == null || columnSortList.size() == 0 || columnSortList.get( 0 ).isAscending() == false ) {
-                        return o1.getName().compareTo( o2.getName() );
-                    } else {
-                        return o2.getName().compareTo( o1.getName() );
-                    }
-                }
-            } );
-            Scheduler.get().scheduleFixedDelay( new Scheduler.RepeatingCommand() {
-                @Override
-                public boolean execute() {
-                    updateRowCount( data.size(), true );
-                    updateRowData( 0, data );
-                    return false;
-                }
-            }, 1000 );
-
+            Collections.sort(data,
+                             new Comparator<Row>() {
+                                 @Override
+                                 public int compare(final Row o1,
+                                                    final Row o2) {
+                                     if (columnSortList == null || columnSortList.size() == 0 || columnSortList.get(0).isAscending() == false) {
+                                         return o1.getName().compareTo(o2.getName());
+                                     } else {
+                                         return o2.getName().compareTo(o1.getName());
+                                     }
+                                 }
+                             });
+            Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
+                                                   @Override
+                                                   public boolean execute() {
+                                                       updateRowCount(data.size(),
+                                                                      true);
+                                                       updateRowData(0,
+                                                                     data);
+                                                       return false;
+                                                   }
+                                               },
+                                               1000);
         }
     };
 
     @PostConstruct
     public void init() {
-        dataGrid.setEmptyTableCaption( "No data" );
+        dataGrid.setEmptyTableCaption("No data");
 
-        final Column<Row, String> nameColumn = new Column<Row, String>( new TextCell() ) {
+        final Column<Row, String> nameColumn = new Column<Row, String>(new TextCell()) {
             @Override
-            public String getValue( Row row ) {
+            public String getValue(Row row) {
                 return row.getName();
             }
         };
-        final Column<Row, String> descColumn = new Column<Row, String>( new TextCell() ) {
+        final Column<Row, String> descColumn = new Column<Row, String>(new TextCell()) {
             @Override
-            public String getValue( Row row ) {
+            public String getValue(Row row) {
                 return row.getDescription();
             }
         };
-        nameColumn.setSortable( true );
-        dataGrid.addColumn( nameColumn, "Name" );
-        dataGrid.addColumn( descColumn, "Description" );
+        nameColumn.setSortable(true);
+        dataGrid.addColumn(nameColumn,
+                           "Name");
+        dataGrid.addColumn(descColumn,
+                           "Description");
 
-        addButton.setText( "New Row" );
-        addButton.setIcon( IconType.PLUS );
-        addButton.getElement().getStyle().setMarginLeft( 10, Style.Unit.PX );
-        addButton.addClickHandler( new ClickHandler() {
+        addButton.setText("New Row");
+        addButton.setIcon(IconType.PLUS);
+        addButton.getElement().getStyle().setMarginLeft(10,
+                                                        Style.Unit.PX);
+        addButton.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
-                data.add( new Row( data.size() ) );
+            public void onClick(ClickEvent event) {
+                data.add(new Row(data.size()));
                 dataGrid.refresh();
             }
-        } );
-        dataProvider.addDataDisplay( dataGrid );
+        });
+        dataProvider.addDataDisplay(dataGrid);
 
-        dataGrid.addColumnSortHandler( new ColumnSortEvent.AsyncHandler( dataGrid ) );
+        dataGrid.addColumnSortHandler(new ColumnSortEvent.AsyncHandler(dataGrid));
 
-        panel.add( dataGrid );
-        panel.add( addButton );
-        initWidget( panel );
+        panel.add(dataGrid);
+        panel.add(addButton);
+        initWidget(panel);
     }
 
     @WorkbenchPartTitle
@@ -122,11 +133,19 @@ public class PagedTableScreen extends Composite implements RequiresResize {
         return "Paged Table Screen";
     }
 
+    @Override
+    public void onResize() {
+        int height = getParent().getOffsetHeight() - PADDING;
+        int width = getParent().getOffsetWidth() - PADDING;
+        setPixelSize(width,
+                     height);
+    }
+
     class Row extends AbstractPageRow {
 
         private String name;
 
-        public Row( int index ) {
+        public Row(int index) {
             this.name = "Row " + index;
         }
 
@@ -139,16 +158,8 @@ public class PagedTableScreen extends Composite implements RequiresResize {
         }
 
         @Override
-        public int compareTo( AbstractPageRow o ) {
-            return getName().compareTo( ( (Row) o ).getName() );
+        public int compareTo(AbstractPageRow o) {
+            return getName().compareTo(((Row) o).getName());
         }
     }
-
-    @Override
-    public void onResize() {
-        int height = getParent().getOffsetHeight() - PADDING;
-        int width = getParent().getOffsetWidth() - PADDING;
-        setPixelSize( width, height );
-    }
-
 }

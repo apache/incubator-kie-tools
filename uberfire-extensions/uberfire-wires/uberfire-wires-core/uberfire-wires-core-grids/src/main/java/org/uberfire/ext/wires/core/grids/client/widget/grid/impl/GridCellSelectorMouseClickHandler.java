@@ -36,9 +36,9 @@ public class GridCellSelectorMouseClickHandler implements NodeMouseClickHandler 
     protected GridSelectionManager selectionManager;
     protected GridRenderer renderer;
 
-    public GridCellSelectorMouseClickHandler( final GridWidget gridWidget,
-                                              final GridSelectionManager selectionManager,
-                                              final GridRenderer renderer ) {
+    public GridCellSelectorMouseClickHandler(final GridWidget gridWidget,
+                                             final GridSelectionManager selectionManager,
+                                             final GridRenderer renderer) {
         this.gridWidget = gridWidget;
         this.gridModel = gridWidget.getModel();
         this.rendererHelper = gridWidget.getRendererHelper();
@@ -47,28 +47,27 @@ public class GridCellSelectorMouseClickHandler implements NodeMouseClickHandler 
     }
 
     @Override
-    public void onNodeMouseClick( final NodeMouseClickEvent event ) {
-        if ( !gridWidget.isVisible() ) {
+    public void onNodeMouseClick(final NodeMouseClickEvent event) {
+        if (!gridWidget.isVisible()) {
             return;
         }
-        handleBodyCellClick( event );
+        handleBodyCellClick(event);
     }
 
     /**
      * Select cells.
      * @param event
      */
-    void handleBodyCellClick( final NodeMouseClickEvent event ) {
+    void handleBodyCellClick(final NodeMouseClickEvent event) {
         //Convert Canvas co-ordinate to Grid co-ordinate
-        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate( gridWidget,
-                                                                           new Point2D( event.getX(),
-                                                                                        event.getY() ) );
+        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate(gridWidget,
+                                                                          new Point2D(event.getX(),
+                                                                                      event.getY()));
 
-        if ( gridWidget.selectCell( ap,
-                                    event.isShiftKeyDown(),
-                                    event.isControlKeyDown() ) ) {
+        if (gridWidget.selectCell(ap,
+                                  event.isShiftKeyDown(),
+                                  event.isControlKeyDown())) {
             gridWidget.getLayer().batch();
         }
     }
-
 }

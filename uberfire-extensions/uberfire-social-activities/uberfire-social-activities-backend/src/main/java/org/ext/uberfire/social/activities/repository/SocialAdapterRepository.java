@@ -37,8 +37,9 @@ public class SocialAdapterRepository implements SocialAdapterRepositoryAPI {
 
     @PostConstruct
     public void setup() {
-        for ( SocialAdapter bean : services ) {
-            socialAdapters.put( bean.eventToIntercept(), bean );
+        for (SocialAdapter bean : services) {
+            socialAdapters.put(bean.eventToIntercept(),
+                               bean);
         }
     }
 

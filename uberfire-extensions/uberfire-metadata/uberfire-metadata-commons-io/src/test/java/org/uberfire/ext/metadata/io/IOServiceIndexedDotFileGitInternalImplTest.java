@@ -49,7 +49,7 @@ public class IOServiceIndexedDotFileGitInternalImplTest extends BaseIndexTest {
 
     @Test
     public void testIndexedGitInternalDotFile() throws IOException, InterruptedException {
-        setupCountDown( 1 );
+        setupCountDown(1);
         final Path path1 = getBasePath(this.getClass().getSimpleName()).resolve(".gitkeep");
         ioService().write(path1,
                           "ooooo!",
@@ -62,7 +62,7 @@ public class IOServiceIndexedDotFileGitInternalImplTest extends BaseIndexTest {
                           Collections.<OpenOption>emptySet(),
                           getFileAttributes());
 
-        waitForCountDown( 5000 );
+        waitForCountDown(5000);
 
         final Index index = config.getIndexManager().get(toKCluster(path1.getFileSystem()));
 

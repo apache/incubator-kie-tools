@@ -32,56 +32,55 @@ public class DeleteEdgeCommand implements Command {
     private BpmnGraphNode incomingNode;
     private BpmnEdge edge;
 
-    public DeleteEdgeCommand( final BpmnGraphNode outgoingNode,
-                              final BpmnGraphNode incomingNode,
-                              final BpmnEdge edge ) {
-        this.outgoingNode = PortablePreconditions.checkNotNull( "outgoingNode",
-                                                                outgoingNode );
-        this.incomingNode = PortablePreconditions.checkNotNull( "incomingNode",
-                                                                incomingNode );
-        this.edge = PortablePreconditions.checkNotNull( "edge",
-                                                        edge );
+    public DeleteEdgeCommand(final BpmnGraphNode outgoingNode,
+                             final BpmnGraphNode incomingNode,
+                             final BpmnEdge edge) {
+        this.outgoingNode = PortablePreconditions.checkNotNull("outgoingNode",
+                                                               outgoingNode);
+        this.incomingNode = PortablePreconditions.checkNotNull("incomingNode",
+                                                               incomingNode);
+        this.edge = PortablePreconditions.checkNotNull("edge",
+                                                       edge);
     }
 
     @Override
-    public Results apply( final RuleManager ruleManager ) {
+    public Results apply(final RuleManager ruleManager) {
         final Results results = new DefaultResultsImpl();
         boolean isEdgeOutgoing = false;
         boolean isEdgeIncoming = false;
-        for ( BpmnEdge e : outgoingNode.getOutEdges() ) {
-            if ( e.equals( edge ) ) {
+        for (BpmnEdge e : outgoingNode.getOutEdges()) {
+            if (e.equals(edge)) {
                 isEdgeOutgoing = true;
                 break;
             }
         }
-        for ( BpmnEdge e : incomingNode.getInEdges() ) {
-            if ( e.equals( edge ) ) {
+        for (BpmnEdge e : incomingNode.getInEdges()) {
+            if (e.equals(edge)) {
                 isEdgeIncoming = true;
                 break;
             }
         }
-        if ( isEdgeOutgoing && isEdgeIncoming ) {
-            results.getMessages().addAll( ruleManager.checkCardinality( outgoingNode,
-                                                                        incomingNode,
-                                                                        edge,
-                                                                        RuleManager.Operation.DELETE ).getMessages() );
-            if ( !results.contains( ResultType.ERROR ) ) {
-                outgoingNode.getOutEdges().remove( edge );
-                incomingNode.getInEdges().remove( edge );
+        if (isEdgeOutgoing && isEdgeIncoming) {
+            results.getMessages().addAll(ruleManager.checkCardinality(outgoingNode,
+                                                                      incomingNode,
+                                                                      edge,
+                                                                      RuleManager.Operation.DELETE).getMessages());
+            if (!results.contains(ResultType.ERROR)) {
+                outgoingNode.getOutEdges().remove(edge);
+                incomingNode.getInEdges().remove(edge);
             }
         } else {
-            results.addMessage( new DefaultResultImpl( ResultType.WARNING,
-                                                       "The Edge does not connect the given GraphNodes and hence was not deleted." ) );
+            results.addMessage(new DefaultResultImpl(ResultType.WARNING,
+                                                     "The Edge does not connect the given GraphNodes and hence was not deleted."));
         }
         return results;
     }
 
     @Override
-    public Results undo( final RuleManager ruleManager ) {
-        final Command undoCommand = new AddEdgeCommand( outgoingNode,
-                                                        incomingNode,
-                                                        edge );
-        return undoCommand.apply( ruleManager );
+    public Results undo(final RuleManager ruleManager) {
+        final Command undoCommand = new AddEdgeCommand(outgoingNode,
+                                                       incomingNode,
+                                                       edge);
+        return undoCommand.apply(ruleManager);
     }
-
 }

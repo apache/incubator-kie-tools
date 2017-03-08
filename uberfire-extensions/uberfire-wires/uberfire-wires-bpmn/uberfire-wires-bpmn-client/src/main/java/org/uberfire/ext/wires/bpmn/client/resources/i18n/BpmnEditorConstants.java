@@ -22,7 +22,7 @@ public interface BpmnEditorConstants
         extends
         Messages {
 
-    public static final BpmnEditorConstants INSTANCE = GWT.create( BpmnEditorConstants.class );
+    public static final BpmnEditorConstants INSTANCE = GWT.create(BpmnEditorConstants.class);
 
     String bpmnResourceTypeDescription();
 
@@ -37,5 +37,4 @@ public interface BpmnEditorConstants
     String bpmnExplorerFileUrl();
 
     String bpmnEditorTitle();
-
 }

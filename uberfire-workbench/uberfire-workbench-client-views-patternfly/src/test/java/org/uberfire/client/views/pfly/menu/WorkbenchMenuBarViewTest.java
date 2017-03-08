@@ -53,9 +53,9 @@ public class WorkbenchMenuBarViewTest {
 
     @Test
     public void testAddMenuItem() {
-        final String menuId = RandomStringUtils.random( 10 );
-        final String menuParentId = RandomStringUtils.random( 10 );
-        final String label = RandomStringUtils.random( 10 );
+        final String menuId = RandomStringUtils.random(10);
+        final String menuParentId = RandomStringUtils.random(10);
+        final String label = RandomStringUtils.random(10);
         final MenuPosition position = MenuPosition.LEFT;
         final Command command = new Command() {
             @Override
@@ -63,40 +63,61 @@ public class WorkbenchMenuBarViewTest {
 
             }
         };
-        workbenchMenuBarView.addMenuItem( menuId, label, menuParentId, command, position );
+        workbenchMenuBarView.addMenuItem(menuId,
+                                         label,
+                                         menuParentId,
+                                         command,
+                                         position);
 
-        verify( workbenchMenuCompactNavBarView ).addMenuItem( menuId, label, menuParentId, command, position );
-        verify( workbenchMenuStandardNavBarView ).addMenuItem( menuId, label, menuParentId, command, position );
+        verify(workbenchMenuCompactNavBarView).addMenuItem(menuId,
+                                                           label,
+                                                           menuParentId,
+                                                           command,
+                                                           position);
+        verify(workbenchMenuStandardNavBarView).addMenuItem(menuId,
+                                                            label,
+                                                            menuParentId,
+                                                            command,
+                                                            position);
     }
 
     @Test
     public void testAddCustomMenuItem() {
-        final Widget menu = GWT.create( Widget.class );
+        final Widget menu = GWT.create(Widget.class);
         final MenuPosition position = MenuPosition.LEFT;
-        workbenchMenuBarView.addCustomMenuItem( menu, position );
+        workbenchMenuBarView.addCustomMenuItem(menu,
+                                               position);
 
-        verify( workbenchMenuCompactNavBarView ).addCustomMenuItem( menu, position );
-        verify( workbenchMenuStandardNavBarView ).addCustomMenuItem( menu, position );
+        verify(workbenchMenuCompactNavBarView).addCustomMenuItem(menu,
+                                                                 position);
+        verify(workbenchMenuStandardNavBarView).addCustomMenuItem(menu,
+                                                                  position);
     }
 
     @Test
     public void testAddGroupMenuItem() {
-        final String menuId = RandomStringUtils.random( 10 );
-        final String label = RandomStringUtils.random( 10 );
+        final String menuId = RandomStringUtils.random(10);
+        final String label = RandomStringUtils.random(10);
         final MenuPosition position = MenuPosition.LEFT;
 
-        workbenchMenuBarView.addGroupMenuItem( menuId, label, position );
+        workbenchMenuBarView.addGroupMenuItem(menuId,
+                                              label,
+                                              position);
 
-        verify( workbenchMenuCompactNavBarView ).addGroupMenuItem( menuId, label, position );
-        verify( workbenchMenuStandardNavBarView ).addGroupMenuItem( menuId, label, position );
+        verify(workbenchMenuCompactNavBarView).addGroupMenuItem(menuId,
+                                                                label,
+                                                                position);
+        verify(workbenchMenuStandardNavBarView).addGroupMenuItem(menuId,
+                                                                 label,
+                                                                 position);
     }
 
     @Test
     public void testAddContextMenuItem() {
-        final String menuItemId = RandomStringUtils.random( 10 );
-        final String menuId = RandomStringUtils.random( 10 );
-        final String menuParentId = RandomStringUtils.random( 10 );
-        final String label = RandomStringUtils.random( 10 );
+        final String menuItemId = RandomStringUtils.random(10);
+        final String menuId = RandomStringUtils.random(10);
+        final String menuParentId = RandomStringUtils.random(10);
+        final String label = RandomStringUtils.random(10);
         final MenuPosition position = MenuPosition.RIGHT;
         final Command command = new Command() {
             @Override
@@ -106,109 +127,148 @@ public class WorkbenchMenuBarViewTest {
         };
 
         workbenchMenuBarView
-                .addContextMenuItem( menuItemId, menuId, label, menuParentId, command, position );
+                .addContextMenuItem(menuItemId,
+                                    menuId,
+                                    label,
+                                    menuParentId,
+                                    command,
+                                    position);
 
-        verify( workbenchMenuCompactNavBarView )
-                .addContextMenuItem( menuItemId, menuId, label, menuParentId, command, position );
-        verify( workbenchMenuStandardNavBarView )
-                .addContextMenuItem( menuItemId, menuId, label, menuParentId, command, position );
+        verify(workbenchMenuCompactNavBarView)
+                .addContextMenuItem(menuItemId,
+                                    menuId,
+                                    label,
+                                    menuParentId,
+                                    command,
+                                    position);
+        verify(workbenchMenuStandardNavBarView)
+                .addContextMenuItem(menuItemId,
+                                    menuId,
+                                    label,
+                                    menuParentId,
+                                    command,
+                                    position);
     }
 
     @Test
     public void testAddContextGroupMenuItem() {
-        final String menuItemId = RandomStringUtils.random( 10 );
-        final String menuId = RandomStringUtils.random( 10 );
-        final String label = RandomStringUtils.random( 10 );
+        final String menuItemId = RandomStringUtils.random(10);
+        final String menuId = RandomStringUtils.random(10);
+        final String label = RandomStringUtils.random(10);
         final MenuPosition position = MenuPosition.LEFT;
 
-        workbenchMenuBarView.addContextGroupMenuItem( menuItemId, menuId, label, position );
+        workbenchMenuBarView.addContextGroupMenuItem(menuItemId,
+                                                     menuId,
+                                                     label,
+                                                     position);
 
-        verify( workbenchMenuCompactNavBarView ).addContextGroupMenuItem( menuItemId, menuId, label, position );
-        verify( workbenchMenuStandardNavBarView ).addContextGroupMenuItem( menuItemId, menuId, label, position );
+        verify(workbenchMenuCompactNavBarView).addContextGroupMenuItem(menuItemId,
+                                                                       menuId,
+                                                                       label,
+                                                                       position);
+        verify(workbenchMenuStandardNavBarView).addContextGroupMenuItem(menuItemId,
+                                                                        menuId,
+                                                                        label,
+                                                                        position);
     }
 
     @Test
     public void testSelectMenu() {
-        final String menuId = RandomStringUtils.random( 10 );
-        workbenchMenuBarView.selectMenuItem( menuId );
+        final String menuId = RandomStringUtils.random(10);
+        workbenchMenuBarView.selectMenuItem(menuId);
 
-        verify( workbenchMenuCompactNavBarView ).selectMenuItem( menuId );
-        verify( workbenchMenuStandardNavBarView ).selectMenuItem( menuId );
+        verify(workbenchMenuCompactNavBarView).selectMenuItem(menuId);
+        verify(workbenchMenuStandardNavBarView).selectMenuItem(menuId);
     }
 
     @Test
     public void testClear() {
         workbenchMenuBarView.clear();
 
-        verify( workbenchMenuCompactNavBarView ).clear();
-        verify( workbenchMenuStandardNavBarView ).clear();
-        verify( utilityMenuBarView ).clear();
+        verify(workbenchMenuCompactNavBarView).clear();
+        verify(workbenchMenuStandardNavBarView).clear();
+        verify(utilityMenuBarView).clear();
     }
 
     @Test
     public void testEnableMenu() {
-        final String menuId = RandomStringUtils.random( 10 );
-        workbenchMenuBarView.enableMenuItem( menuId, true );
+        final String menuId = RandomStringUtils.random(10);
+        workbenchMenuBarView.enableMenuItem(menuId,
+                                            true);
 
-        verify( workbenchMenuCompactNavBarView ).enableMenuItem( menuId, true );
-        verify( workbenchMenuStandardNavBarView ).enableMenuItem( menuId, true );
+        verify(workbenchMenuCompactNavBarView).enableMenuItem(menuId,
+                                                              true);
+        verify(workbenchMenuStandardNavBarView).enableMenuItem(menuId,
+                                                               true);
     }
 
     @Test
     public void testDisableMenu() {
-        final String menuId = RandomStringUtils.random( 10 );
-        workbenchMenuBarView.enableMenuItem( menuId, false );
+        final String menuId = RandomStringUtils.random(10);
+        workbenchMenuBarView.enableMenuItem(menuId,
+                                            false);
 
-        verify( workbenchMenuCompactNavBarView ).enableMenuItem( menuId, false );
-        verify( workbenchMenuStandardNavBarView ).enableMenuItem( menuId, false );
+        verify(workbenchMenuCompactNavBarView).enableMenuItem(menuId,
+                                                              false);
+        verify(workbenchMenuStandardNavBarView).enableMenuItem(menuId,
+                                                               false);
     }
 
     @Test
     public void testEnableContextMenu() {
-        final String menuId = RandomStringUtils.random( 10 );
-        workbenchMenuBarView.enableContextMenuItem( menuId, true );
+        final String menuId = RandomStringUtils.random(10);
+        workbenchMenuBarView.enableContextMenuItem(menuId,
+                                                   true);
 
-        verify( workbenchMenuCompactNavBarView ).enableContextMenuItem( menuId, true );
-        verify( workbenchMenuStandardNavBarView ).enableContextMenuItem( menuId, true );
+        verify(workbenchMenuCompactNavBarView).enableContextMenuItem(menuId,
+                                                                     true);
+        verify(workbenchMenuStandardNavBarView).enableContextMenuItem(menuId,
+                                                                      true);
     }
 
     @Test
     public void testDisableContextMenu() {
-        final String menuId = RandomStringUtils.random( 10 );
-        workbenchMenuBarView.enableContextMenuItem( menuId, false );
+        final String menuId = RandomStringUtils.random(10);
+        workbenchMenuBarView.enableContextMenuItem(menuId,
+                                                   false);
 
-        verify( workbenchMenuCompactNavBarView ).enableContextMenuItem( menuId, false );
-        verify( workbenchMenuStandardNavBarView ).enableContextMenuItem( menuId, false );
+        verify(workbenchMenuCompactNavBarView).enableContextMenuItem(menuId,
+                                                                     false);
+        verify(workbenchMenuStandardNavBarView).enableContextMenuItem(menuId,
+                                                                      false);
     }
 
     @Test
     public void testClearContextMenu() {
         workbenchMenuBarView.clearContextMenu();
 
-        verify( workbenchMenuCompactNavBarView ).clearContextMenu();
-        verify( workbenchMenuStandardNavBarView ).clearContextMenu();
+        verify(workbenchMenuCompactNavBarView).clearContextMenu();
+        verify(workbenchMenuStandardNavBarView).clearContextMenu();
     }
 
     @Test
     public void testExpand() {
-        when( navBarCollapse.isHidden() ).thenReturn( true, false );
+        when(navBarCollapse.isHidden()).thenReturn(true,
+                                                   false);
 
         workbenchMenuBarView.expand();
         workbenchMenuBarView.expand();
 
-        verify( navBarCollapse ).show();
-        verify( navBarCollapse, never() ).hide();
+        verify(navBarCollapse).show();
+        verify(navBarCollapse,
+               never()).hide();
     }
 
     @Test
     public void testCollapse() {
-        when( navBarCollapse.isShown() ).thenReturn( true, false );
+        when(navBarCollapse.isShown()).thenReturn(true,
+                                                  false);
 
         workbenchMenuBarView.collapse();
         workbenchMenuBarView.collapse();
 
-        verify( navBarCollapse ).hide();
-        verify( navBarCollapse, never() ).show();
+        verify(navBarCollapse).hide();
+        verify(navBarCollapse,
+               never()).show();
     }
-
 }

@@ -29,11 +29,10 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 @Templated
 public class ACLEditorView extends Composite implements ACLEditor.View {
 
-    private ACLEditor presenter;
-
     @Inject
     @DataField("container")
     Container container;
+    private ACLEditor presenter;
 
     @Override
     public void init(ACLEditor presenter) {

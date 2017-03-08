@@ -23,28 +23,27 @@ import org.uberfire.java.nio.file.api.FileSystemProviders;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 
-import static org.fest.assertions.api.Assertions.*;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 public class FileSystemProvidersTest {
 
     @Test
     public void generalTests() {
-        assertThat( FileSystemProviders.installedProviders() ).isNotNull().isNotEmpty().hasSize( 2 );
-        assertThat( FileSystemProviders.getDefaultProvider() ).isNotNull().isInstanceOf( SimpleFileSystemProvider.class );
+        assertThat(FileSystemProviders.installedProviders()).isNotNull().isNotEmpty().hasSize(2);
+        assertThat(FileSystemProviders.getDefaultProvider()).isNotNull().isInstanceOf(SimpleFileSystemProvider.class);
 
-        assertThat( FileSystemProviders.resolveProvider( URI.create( "default:///" ) ) ).isNotNull().isInstanceOf( SimpleFileSystemProvider.class );
-        assertThat( FileSystemProviders.resolveProvider( URI.create( "file:///" ) ) ).isNotNull().isInstanceOf( SimpleFileSystemProvider.class );
-        assertThat( FileSystemProviders.resolveProvider( URI.create( "git:///" ) ) ).isNotNull().isInstanceOf( JGitFileSystemProvider.class );
+        assertThat(FileSystemProviders.resolveProvider(URI.create("default:///"))).isNotNull().isInstanceOf(SimpleFileSystemProvider.class);
+        assertThat(FileSystemProviders.resolveProvider(URI.create("file:///"))).isNotNull().isInstanceOf(SimpleFileSystemProvider.class);
+        assertThat(FileSystemProviders.resolveProvider(URI.create("git:///"))).isNotNull().isInstanceOf(JGitFileSystemProvider.class);
     }
 
     @Test(expected = FileSystemNotFoundException.class)
     public void resolveNonExistentProvider() {
-        assertThat( FileSystemProviders.resolveProvider( URI.create( "nothing:///" ) ) ).isNotNull().isInstanceOf( JGitFileSystemProvider.class );
+        assertThat(FileSystemProviders.resolveProvider(URI.create("nothing:///"))).isNotNull().isInstanceOf(JGitFileSystemProvider.class);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void resolveProviderNull() {
-        FileSystemProviders.resolveProvider( null );
+        FileSystemProviders.resolveProvider(null);
     }
-
 }

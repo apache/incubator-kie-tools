@@ -29,17 +29,17 @@ public class PatternFlyBootstrapper {
      * GWTBootstrap 3 widgets should call this before creating their first such widget.
      */
     public static void ensurejQueryIsAvailable() {
-        if ( !isjQueryLoaded() ) {
-            ScriptInjector.fromString( GwtBootstrap3ClientBundle.INSTANCE.jQuery().getText() )
-                    .setWindow( ScriptInjector.TOP_WINDOW )
+        if (!isjQueryLoaded()) {
+            ScriptInjector.fromString(GwtBootstrap3ClientBundle.INSTANCE.jQuery().getText())
+                    .setWindow(ScriptInjector.TOP_WINDOW)
                     .inject();
         }
     }
 
     public static void ensurePrettifyIsAvailable() {
-        if ( !isPrettifyLoaded() ) {
-            ScriptInjector.fromString( PatternFlyClientBundle.INSTANCE.prettify().getText() )
-                    .setWindow( ScriptInjector.TOP_WINDOW )
+        if (!isPrettifyLoaded()) {
+            ScriptInjector.fromString(PatternFlyClientBundle.INSTANCE.prettify().getText())
+                    .setWindow(ScriptInjector.TOP_WINDOW)
                     .inject();
         }
     }

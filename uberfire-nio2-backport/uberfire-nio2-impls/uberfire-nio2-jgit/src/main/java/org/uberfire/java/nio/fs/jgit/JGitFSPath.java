@@ -35,7 +35,7 @@ public class JGitFSPath implements FSPath {
 
     private final JGitFileSystem fs;
 
-    public JGitFSPath( final JGitFileSystem fs ) {
+    public JGitFSPath(final JGitFileSystem fs) {
         this.fs = fs;
     }
 
@@ -70,33 +70,33 @@ public class JGitFSPath implements FSPath {
     }
 
     @Override
-    public Path getName( int index ) throws IllegalArgumentException {
+    public Path getName(int index) throws IllegalArgumentException {
         return null;
     }
 
     @Override
-    public Path subpath( int beginIndex,
-                         int endIndex ) throws IllegalArgumentException {
+    public Path subpath(int beginIndex,
+                        int endIndex) throws IllegalArgumentException {
         return null;
     }
 
     @Override
-    public boolean startsWith( Path other ) {
+    public boolean startsWith(Path other) {
         return false;
     }
 
     @Override
-    public boolean startsWith( String other ) throws InvalidPathException {
+    public boolean startsWith(String other) throws InvalidPathException {
         return false;
     }
 
     @Override
-    public boolean endsWith( Path other ) {
+    public boolean endsWith(Path other) {
         return false;
     }
 
     @Override
-    public boolean endsWith( String other ) throws InvalidPathException {
+    public boolean endsWith(String other) throws InvalidPathException {
         return false;
     }
 
@@ -106,33 +106,33 @@ public class JGitFSPath implements FSPath {
     }
 
     @Override
-    public Path resolve( Path other ) {
+    public Path resolve(Path other) {
         return null;
     }
 
     @Override
-    public Path resolve( String other ) throws InvalidPathException {
+    public Path resolve(String other) throws InvalidPathException {
         return null;
     }
 
     @Override
-    public Path resolveSibling( Path other ) {
+    public Path resolveSibling(Path other) {
         return null;
     }
 
     @Override
-    public Path resolveSibling( String other ) throws InvalidPathException {
+    public Path resolveSibling(String other) throws InvalidPathException {
         return null;
     }
 
     @Override
-    public Path relativize( Path other ) throws IllegalArgumentException {
+    public Path relativize(Path other) throws IllegalArgumentException {
         return null;
     }
 
     @Override
     public URI toUri() throws IOException, SecurityException {
-        return URI.create( fs.toString() );
+        return URI.create(fs.toString());
     }
 
     @Override
@@ -141,7 +141,7 @@ public class JGitFSPath implements FSPath {
     }
 
     @Override
-    public Path toRealPath( LinkOption... options ) throws IOException, SecurityException {
+    public Path toRealPath(LinkOption... options) throws IOException, SecurityException {
         return this;
     }
 
@@ -151,7 +151,7 @@ public class JGitFSPath implements FSPath {
     }
 
     @Override
-    public int compareTo( Path path ) {
+    public int compareTo(Path path) {
         return 0;
     }
 
@@ -161,15 +161,15 @@ public class JGitFSPath implements FSPath {
     }
 
     @Override
-    public WatchKey register( WatchService watcher,
-                              WatchEvent.Kind<?>[] events,
-                              WatchEvent.Modifier... modifiers ) throws UnsupportedOperationException, IllegalArgumentException, ClosedWatchServiceException, IOException, SecurityException {
+    public WatchKey register(WatchService watcher,
+                             WatchEvent.Kind<?>[] events,
+                             WatchEvent.Modifier... modifiers) throws UnsupportedOperationException, IllegalArgumentException, ClosedWatchServiceException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public WatchKey register( WatchService watcher,
-                              WatchEvent.Kind<?>... events ) throws UnsupportedOperationException, IllegalArgumentException, ClosedWatchServiceException, IOException, SecurityException {
+    public WatchKey register(WatchService watcher,
+                             WatchEvent.Kind<?>... events) throws UnsupportedOperationException, IllegalArgumentException, ClosedWatchServiceException, IOException, SecurityException {
         return null;
     }
 }

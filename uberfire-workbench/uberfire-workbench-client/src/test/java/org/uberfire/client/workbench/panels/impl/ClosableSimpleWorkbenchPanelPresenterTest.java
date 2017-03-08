@@ -31,22 +31,20 @@ import org.uberfire.workbench.model.PartDefinition;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class ClosableSimpleWorkbenchPanelPresenterTest extends AbstractDockingWorkbenchPanelPresenterTest {
 
-    @Mock( name = "view" )
+    @Mock(name = "view")
     protected DockingWorkbenchPanelView<ClosableSimpleWorkbenchPanelPresenter> view;
-
-    @Mock
-    private PlaceManager placeManager;
-
     @InjectMocks
     ClosableSimpleWorkbenchPanelPresenter presenter;
+    @Mock
+    private PlaceManager placeManager;
 
     @Before
     public void setUp2() {
         presenter.init();
-        presenter.setDefinition( panelPresenterPanelDefinition );
+        presenter.setDefinition(panelPresenterPanelDefinition);
     }
 
     @Override
@@ -56,46 +54,44 @@ public class ClosableSimpleWorkbenchPanelPresenterTest extends AbstractDockingWo
 
     @Test
     public void initShouldBindPresenterToView() {
-        verify( view ).init( presenter );
+        verify(view).init(presenter);
     }
 
     @Test
     public void addPartTest() {
 
-        WorkbenchPartPresenter part = mock( WorkbenchPartPresenter.class );
-        when( part.getDefinition() ).thenReturn( mock( PartDefinition.class ) );
+        WorkbenchPartPresenter part = mock(WorkbenchPartPresenter.class);
+        when(part.getDefinition()).thenReturn(mock(PartDefinition.class));
 
-        presenter.addPart( part );
+        presenter.addPart(part);
 
-        verify( view ).addPart( any() );
+        verify(view).addPart(any());
     }
 
     @Test
     public void addPartTwiceShouldCloseOtherPartTest() {
 
-        SinglePartPanelHelper singlePartPanelHelper = mock( SinglePartPanelHelper.class );
+        SinglePartPanelHelper singlePartPanelHelper = mock(SinglePartPanelHelper.class);
 
-        ClosableSimpleWorkbenchPanelPresenter presenter = new ClosableSimpleWorkbenchPanelPresenter( view,
-                                                                                                     mock( PerspectiveManager.class ),
-                                                                                                     placeManager ) {
+        ClosableSimpleWorkbenchPanelPresenter presenter = new ClosableSimpleWorkbenchPanelPresenter(view,
+                                                                                                    mock(PerspectiveManager.class),
+                                                                                                    placeManager) {
             SinglePartPanelHelper createSinglePartPanelHelper() {
                 return singlePartPanelHelper;
             }
         };
 
         presenter.init();
-        presenter.setDefinition( panelPresenterPanelDefinition );
+        presenter.setDefinition(panelPresenterPanelDefinition);
 
         //there is already a part
-        when( singlePartPanelHelper.hasNoParts() ).thenReturn( false );
+        when(singlePartPanelHelper.hasNoParts()).thenReturn(false);
 
-        WorkbenchPartPresenter part2 = mock( WorkbenchPartPresenter.class );
-        when( part2.getDefinition() ).thenReturn( mock( PartDefinition.class ) );
+        WorkbenchPartPresenter part2 = mock(WorkbenchPartPresenter.class);
+        when(part2.getDefinition()).thenReturn(mock(PartDefinition.class));
 
-        presenter.addPart( part2 );
+        presenter.addPart(part2);
 
-        verify( singlePartPanelHelper ).closeFirstPartAndAddNewOne( any( Command.class ) );
-
+        verify(singlePartPanelHelper).closeFirstPartAndAddNewOne(any(Command.class));
     }
-
 }

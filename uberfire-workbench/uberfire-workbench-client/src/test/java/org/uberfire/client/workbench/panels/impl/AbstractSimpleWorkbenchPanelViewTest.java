@@ -52,55 +52,53 @@ public abstract class AbstractSimpleWorkbenchPanelViewTest extends AbstractDocki
 
     @Before
     public void setup() {
-        Widget listBarWidget = mock( Widget.class );
-        when( listBar.asWidget() ).thenReturn( listBarWidget );
-        when( listBarWidget.getElement() ).thenReturn( listBarElement );
-        when( listBarElement.getStyle() ).thenReturn( listBarElementStyle );
-        when( listBar.getMaximizeButton() ).thenReturn( maximizeButton );
+        Widget listBarWidget = mock(Widget.class);
+        when(listBar.asWidget()).thenReturn(listBarWidget);
+        when(listBarWidget.getElement()).thenReturn(listBarElement);
+        when(listBarElement.getStyle()).thenReturn(listBarElementStyle);
+        when(listBar.getMaximizeButton()).thenReturn(maximizeButton);
 
         final AtomicLong parts = new AtomicLong();
-        doAnswer( new Answer() {
+        doAnswer(new Answer() {
             @Override
-            public Object answer( InvocationOnMock invocation ) throws Throwable {
+            public Object answer(InvocationOnMock invocation) throws Throwable {
                 parts.incrementAndGet();
                 return null;
             }
-        } ).when( listBar ).addPart( any( WorkbenchPartPresenter.View.class ) );
+        }).when(listBar).addPart(any(WorkbenchPartPresenter.View.class));
 
-        doAnswer( new Answer() {
+        doAnswer(new Answer() {
             @Override
-            public Boolean answer( InvocationOnMock invocation ) throws Throwable {
+            public Boolean answer(InvocationOnMock invocation) throws Throwable {
                 parts.decrementAndGet();
                 return true;
             }
-        } ).when( listBar ).remove( any( PartDefinition.class ) );
+        }).when(listBar).remove(any(PartDefinition.class));
 
-        when( listBar.getPartsSize() ).thenAnswer( new Answer<Integer>() {
+        when(listBar.getPartsSize()).thenAnswer(new Answer<Integer>() {
             @Override
-            public Integer answer( InvocationOnMock invocation ) throws Throwable {
+            public Integer answer(InvocationOnMock invocation) throws Throwable {
                 return parts.intValue();
             }
-        } );
-        when( listBar.getParts() ).thenAnswer( new Answer<Collection<PartDefinition>>() {
+        });
+        when(listBar.getParts()).thenAnswer(new Answer<Collection<PartDefinition>>() {
             @Override
-            public Collection<PartDefinition> answer( InvocationOnMock invocation ) throws Throwable {
+            public Collection<PartDefinition> answer(InvocationOnMock invocation) throws Throwable {
 
-                return new ArrayList<PartDefinition>( parts.intValue() );
+                return new ArrayList<PartDefinition>(parts.intValue());
             }
-        } );
-
-
+        });
     }
 
     @Test
     public void addAndGetPartsTest() {
-        assertEquals( 0, listBar.getPartsSize() );
+        assertEquals(0,
+                     listBar.getPartsSize());
 
-        getViewToTest().addPart(  mock( WorkbenchPartPresenter.View.class ) );
-        verify( listBar ).addPart( any( WorkbenchPartPresenter.View.class ) );
+        getViewToTest().addPart(mock(WorkbenchPartPresenter.View.class));
+        verify(listBar).addPart(any(WorkbenchPartPresenter.View.class));
 
-        assertEquals( 1, listBar.getPartsSize() );
-
+        assertEquals(1,
+                     listBar.getPartsSize());
     }
-
 }

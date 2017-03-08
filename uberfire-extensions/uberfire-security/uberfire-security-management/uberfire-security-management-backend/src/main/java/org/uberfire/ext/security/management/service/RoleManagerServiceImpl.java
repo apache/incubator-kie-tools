@@ -16,6 +16,10 @@
 
 package org.uberfire.ext.security.management.service;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.Role;
 import org.slf4j.Logger;
@@ -27,10 +31,6 @@ import org.uberfire.ext.security.management.api.exception.NoImplementationAvaila
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.api.service.RoleManagerService;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 /**
  * <p>The UberFire service implementation for RolesManager API.</p>
  */
@@ -39,17 +39,17 @@ import javax.inject.Inject;
 public class RoleManagerServiceImpl implements RoleManagerService {
 
     private static final Logger LOG = LoggerFactory.getLogger(RoleManagerServiceImpl.class);
-    
+
     @Inject
     private BackendUserSystemManager userSystemManager;
-    
+
     private RoleManager service;
-    
+
     @PostConstruct
     public void init() {
         service = userSystemManager.roles();
     }
-    
+
     private RoleManager getService() throws SecurityManagementException {
         if (service == null) {
             throw new NoImplementationAvailableException();
@@ -95,5 +95,4 @@ public class RoleManagerServiceImpl implements RoleManagerService {
         final RoleManager serviceImpl = getService();
         return serviceImpl.getSettings();
     }
-
 }

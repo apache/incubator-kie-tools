@@ -28,19 +28,19 @@ public class IFrameScreenView
     private final Frame frame = new Frame();
 
     public IFrameScreenView() {
-        initWidget( frame );
+        initWidget(frame);
     }
 
     @Override
-    public void setURL( final String url ) {
-        frame.setUrl( url );
+    public void setURL(final String url) {
+        frame.setUrl(url);
     }
 
     @Override
     public void onResize() {
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();
-        frame.setPixelSize( width, height );
+        frame.setPixelSize(width,
+                           height);
     }
-
 }

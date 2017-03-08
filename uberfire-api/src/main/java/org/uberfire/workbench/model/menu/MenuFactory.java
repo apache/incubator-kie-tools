@@ -25,39 +25,46 @@ import org.uberfire.security.ResourceAction;
 import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.menu.impl.MenuBuilderImpl;
 
-import static org.uberfire.workbench.model.menu.impl.MenuBuilderImpl.MenuType.*;
+import static org.uberfire.workbench.model.menu.impl.MenuBuilderImpl.MenuType.CONTRIBUTED;
+import static org.uberfire.workbench.model.menu.impl.MenuBuilderImpl.MenuType.CUSTOM;
+import static org.uberfire.workbench.model.menu.impl.MenuBuilderImpl.MenuType.REGULAR;
+import static org.uberfire.workbench.model.menu.impl.MenuBuilderImpl.MenuType.TOP_LEVEL;
 
 public final class MenuFactory {
 
     private MenuFactory() {
     }
 
-    public static MenuBuilder<TopLevelMenusBuilder<MenuBuilder>> newTopLevelMenu( final String caption ) {
-        return new MenuBuilderImpl( TOP_LEVEL, caption );
+    public static MenuBuilder<TopLevelMenusBuilder<MenuBuilder>> newTopLevelMenu(final String caption) {
+        return new MenuBuilderImpl(TOP_LEVEL,
+                                   caption);
     }
 
-    public static ContributedMenuBuilder<TopLevelMenusBuilder<MenuBuilder>> newContributedMenu( final String caption ) {
-        return new MenuBuilderImpl( CONTRIBUTED, caption );
+    public static ContributedMenuBuilder<TopLevelMenusBuilder<MenuBuilder>> newContributedMenu(final String caption) {
+        return new MenuBuilderImpl(CONTRIBUTED,
+                                   caption);
     }
 
-    public static MenuBuilder<Builder> newSimpleItem( final String caption ) {
-        return new MenuBuilderImpl( REGULAR, caption );
+    public static MenuBuilder<Builder> newSimpleItem(final String caption) {
+        return new MenuBuilderImpl(REGULAR,
+                                   caption);
     }
 
-    public static MenuBuilder<TopLevelMenusBuilder<MenuBuilder>> newTopLevelCustomMenu( final CustomMenuBuilder builder ) {
-        return new MenuBuilderImpl( CUSTOM, builder );
+    public static MenuBuilder<TopLevelMenusBuilder<MenuBuilder>> newTopLevelCustomMenu(final CustomMenuBuilder builder) {
+        return new MenuBuilderImpl(CUSTOM,
+                                   builder);
     }
 
     public interface TopLevelMenusBuilder<T>
             extends Builder {
 
-        ContributedMenuBuilder<TopLevelMenusBuilder<T>> newContributedMenu( final String caption );
+        ContributedMenuBuilder<TopLevelMenusBuilder<T>> newContributedMenu(final String caption);
 
-        TerminalMenu<TopLevelMenusBuilder<T>> newTopLevelMenu( final MenuItem menu );
+        TerminalMenu<TopLevelMenusBuilder<T>> newTopLevelMenu(final MenuItem menu);
 
-        MenuBuilder<TopLevelMenusBuilder<T>> newTopLevelMenu( final String caption );
+        MenuBuilder<TopLevelMenusBuilder<T>> newTopLevelMenu(final String caption);
 
-        TerminalCustomMenu<TopLevelMenusBuilder<T>> newTopLevelCustomMenu( final CustomMenuBuilder builder );
+        TerminalCustomMenu<TopLevelMenusBuilder<T>> newTopLevelCustomMenu(final CustomMenuBuilder builder);
     }
 
     public interface Builder {
@@ -67,8 +74,7 @@ public final class MenuFactory {
 
     public interface ContributedMenuBuilder<T> extends MenuBuilder<T> {
 
-        ContributedMenuBuilder<T> contributeTo( final String contributionPoint );
-
+        ContributedMenuBuilder<T> contributeTo(final String contributionPoint);
     }
 
     public interface MenuBuilder<T>
@@ -78,13 +84,13 @@ public final class MenuFactory {
                     PerspectiveMenu<MenuBuilder<T>>,
                     OrderedMenu<MenuBuilder<T>> {
 
-        TerminalMenu<T> custom( final CustomMenuBuilder builder );
+        TerminalMenu<T> custom(final CustomMenuBuilder builder);
 
-        SubMenusBuilder<SubMenuBuilder<T>> submenu( final String caption );
+        SubMenusBuilder<SubMenuBuilder<T>> submenu(final String caption);
 
         SubMenusBuilder<SubMenuBuilder<T>> menus();
 
-        TerminalMenu<T> withItems( final List<? extends MenuItem> items );
+        TerminalMenu<T> withItems(final List<? extends MenuItem> items);
 
         T endMenu();
     }
@@ -93,7 +99,7 @@ public final class MenuFactory {
             extends SimpleMenuBuilder<MenuBuilder<T>>,
                     SecurityInfos<MenuBuilder<T>> {
 
-        SubMenusBuilder<SubMenuBuilder<T>> submenu( final String caption );
+        SubMenusBuilder<SubMenuBuilder<T>> submenu(final String caption);
 
         T endMenu();
     }
@@ -102,14 +108,14 @@ public final class MenuFactory {
 
         T identifier(final String id);
 
-        T order( final int order );
+        T order(final int order);
 
-        T position( final MenuPosition position );
+        T position(final MenuPosition position);
     }
 
     public interface SubMenusBuilder<T> {
 
-        MenuBuilder<SubMenusBuilder<T>> menu( final String caption );
+        MenuBuilder<SubMenusBuilder<T>> menu(final String caption);
 
         T endMenus();
     }
@@ -126,45 +132,51 @@ public final class MenuFactory {
 
     public interface SecurityInfos<T> {
 
-        T withPermission( final ResourceType resourceType );
+        T withPermission(final ResourceType resourceType);
 
-        T withPermission( final ResourceType resourceType, final ResourceAction resourceAction );
+        T withPermission(final ResourceType resourceType,
+                         final ResourceAction resourceAction);
 
-        T withPermission( final ResourceType resourceType, final Resource resource, final ResourceAction resourceAction );
+        T withPermission(final ResourceType resourceType,
+                         final Resource resource,
+                         final ResourceAction resourceAction);
 
-        T withPermission( final Resource resource );
+        T withPermission(final Resource resource);
 
-        T withPermission( final Resource resource, final ResourceAction resourceAction );
+        T withPermission(final Resource resource,
+                         final ResourceAction resourceAction);
 
-        T withPermission( final String resourceId, final ResourceType resourceType );
+        T withPermission(final String resourceId,
+                         final ResourceType resourceType);
 
-        T withPermission( final String resourceId, final ResourceType resourceType, final ResourceAction resourceAction );
+        T withPermission(final String resourceId,
+                         final ResourceType resourceType,
+                         final ResourceAction resourceAction);
 
-        T withPermission( final String permission );
+        T withPermission(final String permission);
     }
 
     public interface CustomMenuBuilder {
 
-        void push( final CustomMenuBuilder element );
+        void push(final CustomMenuBuilder element);
 
         MenuItem build();
     }
 
     public interface CommandMenu<T> {
 
-        T respondsWith( final Command command );
+        T respondsWith(final Command command);
     }
 
     public interface PerspectiveMenu<T> {
 
-        T perspective( final String identifier );
+        T perspective(final String identifier);
 
-        T place( final PlaceRequest placeRequest );
+        T place(final PlaceRequest placeRequest);
     }
 
     public interface OrderedMenu<T> {
 
-        T orderAll( final int order );
+        T orderAll(final int order);
     }
-
 }

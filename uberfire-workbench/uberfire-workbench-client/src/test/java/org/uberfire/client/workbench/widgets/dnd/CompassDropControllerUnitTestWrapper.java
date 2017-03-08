@@ -31,36 +31,36 @@ public class CompassDropControllerUnitTestWrapper extends CompassDropController 
     WorkbenchDragContext workDragContextMock;
     PanelDefinition positionMock;
 
-    public void setupMocks( WorkbenchDragAndDropManager dndManager, PanelManager panelManager ) {
+    public void setupMocks(WorkbenchDragAndDropManager dndManager,
+                           PanelManager panelManager) {
         this.dndManager = dndManager;
         this.panelManager = panelManager;
-        workDragContextMock = mock( WorkbenchDragContext.class );
+        workDragContextMock = mock(WorkbenchDragContext.class);
 
-        when( dndManager.getWorkbenchContext() ).thenReturn( workDragContextMock );
-        this.compass = mock( CompassWidget.class );
+        when(dndManager.getWorkbenchContext()).thenReturn(workDragContextMock);
+        this.compass = mock(CompassWidget.class);
     }
 
     @Override
-    void firePartDroppedEvent( PlaceRequest place ) {
+    void firePartDroppedEvent(PlaceRequest place) {
 
     }
 
     public void mockDropTargetPositionNone() {
-        when( this.compass.getDropPosition() ).thenReturn( CompassPosition.NONE );
+        when(this.compass.getDropPosition()).thenReturn(CompassPosition.NONE);
     }
 
     public void mockDropTargetPosition(Position position) {
-        when( this.compass.getDropPosition() ).thenReturn( position);
+        when(this.compass.getDropPosition()).thenReturn(position);
     }
 
-    public void mockSamePositionDrag( WorkbenchPanelView dropTarget ) {
+    public void mockSamePositionDrag(WorkbenchPanelView dropTarget) {
         this.dropTarget = dropTarget;
-        positionMock = mock( PanelDefinition.class );
+        positionMock = mock(PanelDefinition.class);
 
-        when( workDragContextMock.getSourcePanel() ).thenReturn( positionMock );
-        when( dropTarget.getPresenter() ).thenReturn( mock( WorkbenchPanelPresenter.class ) );
+        when(workDragContextMock.getSourcePanel()).thenReturn(positionMock);
+        when(dropTarget.getPresenter()).thenReturn(mock(WorkbenchPanelPresenter.class));
         WorkbenchPanelPresenter presenter = dropTarget.getPresenter();
-        when( presenter.getDefinition() ).thenReturn( positionMock );
-
+        when(presenter.getDefinition()).thenReturn(positionMock);
     }
 }

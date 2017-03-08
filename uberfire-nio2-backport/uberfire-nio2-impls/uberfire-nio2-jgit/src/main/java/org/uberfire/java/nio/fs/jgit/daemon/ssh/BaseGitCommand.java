@@ -55,52 +55,53 @@ public abstract class BaseGitCommand implements Command,
     private ExitCallback callback;
     private FileSystemUser user;
 
-    public BaseGitCommand( final String command,
-                           final FileSystemAuthorizer fileSystemAuthorizer,
-                           final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver ) {
+    public BaseGitCommand(final String command,
+                          final FileSystemAuthorizer fileSystemAuthorizer,
+                          final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver) {
         this.command = command;
         this.fileSystemAuthorizer = fileSystemAuthorizer;
-        this.repositoryName = buildRepositoryName( command );
+        this.repositoryName = buildRepositoryName(command);
         this.repositoryResolver = repositoryResolver;
     }
 
-    private String buildRepositoryName( String command ) {
+    private String buildRepositoryName(String command) {
         int start = getCommandName().length() + 2;
-        final String temp = command.substring( start );
-        return temp.substring( 0, temp.indexOf( "'" ) );
+        final String temp = command.substring(start);
+        return temp.substring(0,
+                              temp.indexOf("'"));
     }
 
     protected abstract String getCommandName();
 
     @Override
-    public void setInputStream( InputStream in ) {
+    public void setInputStream(InputStream in) {
         this.in = in;
     }
 
     @Override
-    public void setOutputStream( OutputStream out ) {
+    public void setOutputStream(OutputStream out) {
         this.out = out;
-        if ( out instanceof ChannelOutputStream ) {
-            ( (ChannelOutputStream) out ).setNoDelay( true );
+        if (out instanceof ChannelOutputStream) {
+            ((ChannelOutputStream) out).setNoDelay(true);
         }
     }
 
     @Override
-    public void setErrorStream( OutputStream err ) {
+    public void setErrorStream(OutputStream err) {
         this.err = err;
-        if ( err instanceof ChannelOutputStream ) {
-            ( (ChannelOutputStream) err ).setNoDelay( true );
+        if (err instanceof ChannelOutputStream) {
+            ((ChannelOutputStream) err).setNoDelay(true);
         }
     }
 
     @Override
-    public void setExitCallback( ExitCallback callback ) {
+    public void setExitCallback(ExitCallback callback) {
         this.callback = callback;
     }
 
     @Override
-    public void start( final Environment env ) throws IOException {
-        SimpleAsyncExecutorService.getDefaultInstance().execute( new DescriptiveRunnable() {
+    public void start(final Environment env) throws IOException {
+        SimpleAsyncExecutorService.getDefaultInstance().execute(new DescriptiveRunnable() {
             @Override
             public String getDescription() {
                 return "Git Command [" + getClass().getName() + "]";
@@ -110,68 +111,75 @@ public abstract class BaseGitCommand implements Command,
             public void run() {
                 BaseGitCommand.this.run();
             }
-        } );
+        });
     }
 
     @Override
     public void run() {
         try {
-            final Repository repository = openRepository( repositoryName );
-            if ( repository != null ) {
-                final JGitFileSystem fileSystem = repositoryResolver.resolveFileSystem( repository );
+            final Repository repository = openRepository(repositoryName);
+            if (repository != null) {
+                final JGitFileSystem fileSystem = repositoryResolver.resolveFileSystem(repository);
 
-                if ( fileSystemAuthorizer.authorize( fileSystem, user ) ) {
-                    execute( user, repository, in, out, err, fileSystem );
+                if (fileSystemAuthorizer.authorize(fileSystem,
+                                                   user)) {
+                    execute(user,
+                            repository,
+                            in,
+                            out,
+                            err,
+                            fileSystem);
                 } else {
-                    err.write( "Invalid credentials.".getBytes() );
+                    err.write("Invalid credentials.".getBytes());
                 }
-
             } else {
-                err.write( "Can't resolve repository name.".getBytes() );
+                err.write("Can't resolve repository name.".getBytes());
             }
-        } catch ( final Throwable ignored ) {
+        } catch (final Throwable ignored) {
         }
-        if ( callback != null ) {
-            callback.onExit( 0 );
+        if (callback != null) {
+            callback.onExit(0);
         }
     }
 
-    private Repository openRepository( String name )
+    private Repository openRepository(String name)
             throws ServiceMayNotContinueException {
         // Assume any attempt to use \ was by a Windows client
         // and correct to the more typical / used in Git URIs.
         //
-        name = name.replace( '\\', '/' );
+        name = name.replace('\\',
+                            '/');
 
         // git://thishost/path should always be name="/path" here
         //
-        if ( !name.startsWith( "/" ) ) {
+        if (!name.startsWith("/")) {
             return null;
         }
 
         try {
-            return repositoryResolver.open( this, name.substring( 1 ) );
-        } catch ( RepositoryNotFoundException e ) {
+            return repositoryResolver.open(this,
+                                           name.substring(1));
+        } catch (RepositoryNotFoundException e) {
             // null signals it "wasn't found", which is all that is suitable
             // for the remote client to know.
             return null;
-        } catch ( ServiceNotAuthorizedException e ) {
+        } catch (ServiceNotAuthorizedException e) {
             // null signals it "wasn't found", which is all that is suitable
             // for the remote client to know.
             return null;
-        } catch ( ServiceNotEnabledException e ) {
+        } catch (ServiceNotEnabledException e) {
             // null signals it "wasn't found", which is all that is suitable
             // for the remote client to know.
             return null;
         }
     }
 
-    protected abstract void execute( final FileSystemUser user,
-                                     final Repository repository,
-                                     final InputStream in,
-                                     final OutputStream out,
-                                     final OutputStream err,
-                                     final JGitFileSystem fileSystem );
+    protected abstract void execute(final FileSystemUser user,
+                                    final Repository repository,
+                                    final InputStream in,
+                                    final OutputStream out,
+                                    final OutputStream err,
+                                    final JGitFileSystem fileSystem);
 
     @Override
     public void destroy() {
@@ -182,7 +190,7 @@ public abstract class BaseGitCommand implements Command,
     }
 
     @Override
-    public void setSession( final ServerSession session ) {
-        this.user = session.getAttribute( BaseGitCommand.SUBJECT_KEY );
+    public void setSession(final ServerSession session) {
+        this.user = session.getAttribute(BaseGitCommand.SUBJECT_KEY);
     }
 }

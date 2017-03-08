@@ -39,12 +39,9 @@ import org.uberfire.client.annotations.WorkbenchScreen;
 @WorkbenchScreen(identifier = "BayesianVariablesScreen")
 public class BayesianVariablesScreen extends Composite {
 
-    interface ViewBinder extends UiBinder<Widget, BayesianVariablesScreen> {
-
-    }
-
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    @UiField
+    public SimplePanel variables;
     @UiField
     PanelGroup accordion;
 
@@ -53,22 +50,18 @@ public class BayesianVariablesScreen extends Composite {
 
     @UiField
     PanelCollapse collapseVariables;
-
-    @UiField
-    public SimplePanel variables;
-
     @Inject
     private SyncBeanManager iocManager;
 
     @PostConstruct
     public void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
-        accordion.setId( DOM.createUniqueId() );
-        headerVariables.setDataParent( accordion.getId() );
-        headerVariables.setDataTargetWidget( collapseVariables );
+        accordion.setId(DOM.createUniqueId());
+        headerVariables.setDataParent(accordion.getId());
+        headerVariables.setDataTargetWidget(collapseVariables);
 
-        variables.add( iocManager.lookupBean( PorcentualsGroup.class ).getInstance() );
+        variables.add(iocManager.lookupBean(PorcentualsGroup.class).getInstance());
     }
 
     @WorkbenchPartTitle
@@ -82,4 +75,7 @@ public class BayesianVariablesScreen extends Composite {
         return this;
     }
 
+    interface ViewBinder extends UiBinder<Widget, BayesianVariablesScreen> {
+
+    }
 }

@@ -40,165 +40,177 @@ import org.uberfire.mvp.ParameterizedCommand;
 
 public class TilesApp extends Composite {
 
+    private static WebAppResource APP_CSS = GWT.create(WebAppResource.class);
+    private static TilesBinder uiBinder = GWT.create(TilesBinder.class);
     @UiField
     Icon icon;
-
     @UiField
     Label label;
-
     @UiField
     FlowPanel outerPanel;
-
     @UiField
     FlowPanel tilePanel;
-
     @UiField
     FlowPanel deletePanel;
-
     private NewDirectoryPopup newDirectoryPopup;
-
     private Icon deleteIcon;
 
-    private static WebAppResource APP_CSS = GWT.create( WebAppResource.class );
-
-    interface TilesBinder
-            extends
-            UiBinder<Widget, TilesApp> {
-
-    }
-
-    private static TilesBinder uiBinder = GWT.create( TilesBinder.class );
-
-    public static TilesApp createDirTiles( TYPE type,
-                                           final ParameterizedCommand<String> clickCommand,
-                                           Directory currentDirectory ) {
-        return new TilesApp( type, clickCommand, currentDirectory );
-    }
-
-    private TilesApp( TYPE type,
-                      final ParameterizedCommand<String> clickCommand,
-                      Directory currentDirectory ) {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        defineTileColor( type );
-        createIcon( type, CommonConstants.INSTANCE.CreateDir() );
+    private TilesApp(TYPE type,
+                     final ParameterizedCommand<String> clickCommand,
+                     Directory currentDirectory) {
+        initWidget(uiBinder.createAndBindUi(this));
+        defineTileColor(type);
+        createIcon(type,
+                   CommonConstants.INSTANCE.CreateDir());
         displayNoneOnLabel();
-        addClickPopUpHandler( clickCommand, currentDirectory );
+        addClickPopUpHandler(clickCommand,
+                             currentDirectory);
     }
 
-    public static TilesApp componentTiles( String componentName,
-                                           TYPE type,
-                                           final ParameterizedCommand<String> clickCommand ) {
-        return new TilesApp( componentName, type, clickCommand );
+    private TilesApp(String componentName,
+                     TYPE type,
+                     final ParameterizedCommand<String> clickCommand) {
+        initWidget(uiBinder.createAndBindUi(this));
+        defineTileColor(type);
+        createIcon(type,
+                   CommonConstants.INSTANCE.GotoComponent());
+        createLabel(componentName);
+        addClickCommandHandler(clickCommand,
+                               componentName);
     }
 
-    private TilesApp( String componentName,
-                      TYPE type,
-                      final ParameterizedCommand<String> clickCommand ) {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        defineTileColor( type );
-        createIcon( type, CommonConstants.INSTANCE.GotoComponent() );
-        createLabel( componentName );
-        addClickCommandHandler( clickCommand, componentName );
+    private TilesApp(String dirName,
+                     String dirURI,
+                     TYPE type,
+                     final ParameterizedCommand<String> clickCommand,
+                     final ParameterizedCommand<String> deleteCommand) {
+        initWidget(uiBinder.createAndBindUi(this));
+        defineTileColor(type);
+        createIcon(type,
+                   CommonConstants.INSTANCE.OpenDir());
+        createLabel(dirName);
+        addClickCommandHandler(clickCommand,
+                               dirURI);
+        createDeleteIcon(deleteCommand,
+                         dirURI);
     }
 
-    public static TilesApp directoryTiles( String dirName,
-                                           String dirURI,
-                                           TYPE type,
-                                           final ParameterizedCommand<String> clickCommand,
-                                           ParameterizedCommand<String> deleteCommand ) {
-        return new TilesApp( dirName, dirURI, type, clickCommand, deleteCommand );
+    public static TilesApp createDirTiles(TYPE type,
+                                          final ParameterizedCommand<String> clickCommand,
+                                          Directory currentDirectory) {
+        return new TilesApp(type,
+                            clickCommand,
+                            currentDirectory);
     }
 
-    private TilesApp( String dirName,
-                      String dirURI,
-                      TYPE type,
-                      final ParameterizedCommand<String> clickCommand,
-                      final ParameterizedCommand<String> deleteCommand ) {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        defineTileColor( type );
-        createIcon( type, CommonConstants.INSTANCE.OpenDir() );
-        createLabel( dirName );
-        addClickCommandHandler( clickCommand, dirURI );
-        createDeleteIcon( deleteCommand, dirURI );
+    public static TilesApp componentTiles(String componentName,
+                                          TYPE type,
+                                          final ParameterizedCommand<String> clickCommand) {
+        return new TilesApp(componentName,
+                            type,
+                            clickCommand);
     }
 
-    private void createDeleteIcon( final ParameterizedCommand<String> deleteCommand,
-                                   final String dirURI ) {
-        deleteIcon = new Icon( IconType.REMOVE );
-        deleteIcon.setTitle( CommonConstants.INSTANCE.DeleteDir() );
-        deleteIcon.addStyleName( APP_CSS.CSS().deleteIcon() );
-        deleteIcon.addStyleName( "fa" );
-        deleteIcon.addDomHandler( new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                if ( Window.confirm( CommonConstants.INSTANCE.DeleteAppPrompt() ) ) {
-                    deleteCommand.execute( dirURI );
-                }
-            }
-        }, ClickEvent.getType() );
-        outerPanel.addDomHandler( new MouseOverHandler() {
-            @Override
-            public void onMouseOver( MouseOverEvent event ) {
-                deletePanel.add( deleteIcon );
-            }
-        }, MouseOverEvent.getType() );
-        outerPanel.addDomHandler( new MouseOutHandler() {
-            @Override
-            public void onMouseOut( MouseOutEvent event ) {
-                deletePanel.remove( deleteIcon );
-            }
-        }, MouseOutEvent.getType() );
+    public static TilesApp directoryTiles(String dirName,
+                                          String dirURI,
+                                          TYPE type,
+                                          final ParameterizedCommand<String> clickCommand,
+                                          ParameterizedCommand<String> deleteCommand) {
+        return new TilesApp(dirName,
+                            dirURI,
+                            type,
+                            clickCommand,
+                            deleteCommand);
     }
 
-    private void defineTileColor( TYPE type ) {
-        tilePanel.addStyleName( type.tileColor() );
-        deletePanel.addStyleName( type.tileColor() );
+    private void createDeleteIcon(final ParameterizedCommand<String> deleteCommand,
+                                  final String dirURI) {
+        deleteIcon = new Icon(IconType.REMOVE);
+        deleteIcon.setTitle(CommonConstants.INSTANCE.DeleteDir());
+        deleteIcon.addStyleName(APP_CSS.CSS().deleteIcon());
+        deleteIcon.addStyleName("fa");
+        deleteIcon.addDomHandler(new ClickHandler() {
+                                     @Override
+                                     public void onClick(ClickEvent event) {
+                                         if (Window.confirm(CommonConstants.INSTANCE.DeleteAppPrompt())) {
+                                             deleteCommand.execute(dirURI);
+                                         }
+                                     }
+                                 },
+                                 ClickEvent.getType());
+        outerPanel.addDomHandler(new MouseOverHandler() {
+                                     @Override
+                                     public void onMouseOver(MouseOverEvent event) {
+                                         deletePanel.add(deleteIcon);
+                                     }
+                                 },
+                                 MouseOverEvent.getType());
+        outerPanel.addDomHandler(new MouseOutHandler() {
+                                     @Override
+                                     public void onMouseOut(MouseOutEvent event) {
+                                         deletePanel.remove(deleteIcon);
+                                     }
+                                 },
+                                 MouseOutEvent.getType());
+    }
+
+    private void defineTileColor(TYPE type) {
+        tilePanel.addStyleName(type.tileColor());
+        deletePanel.addStyleName(type.tileColor());
     }
 
     private void displayNoneOnLabel() {
-        label.getElement().getStyle().setProperty( "display", "none" );
+        label.getElement().getStyle().setProperty("display",
+                                                  "none");
     }
 
-    private void addClickCommandHandler( final ParameterizedCommand<String> clickCommand,
-                                         final String parameter ) {
-        tilePanel.addDomHandler( new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                clickCommand.execute( parameter );
-            }
-        }, ClickEvent.getType() );
+    private void addClickCommandHandler(final ParameterizedCommand<String> clickCommand,
+                                        final String parameter) {
+        tilePanel.addDomHandler(new ClickHandler() {
+                                    @Override
+                                    public void onClick(ClickEvent event) {
+                                        clickCommand.execute(parameter);
+                                    }
+                                },
+                                ClickEvent.getType());
     }
 
-    private void addClickPopUpHandler( final ParameterizedCommand<String> clickCommand,
-                                       final Directory currentDirectory ) {
-        tilePanel.addDomHandler( new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                newDirectoryPopup = new NewDirectoryPopup( currentDirectory );
-                newDirectoryPopup.show( clickCommand );
-            }
-        }, ClickEvent.getType() );
+    private void addClickPopUpHandler(final ParameterizedCommand<String> clickCommand,
+                                      final Directory currentDirectory) {
+        tilePanel.addDomHandler(new ClickHandler() {
+                                    @Override
+                                    public void onClick(ClickEvent event) {
+                                        newDirectoryPopup = new NewDirectoryPopup(currentDirectory);
+                                        newDirectoryPopup.show(clickCommand);
+                                    }
+                                },
+                                ClickEvent.getType());
     }
 
-    private void createLabel( String name ) {
-        label.setText( name );
+    private void createLabel(String name) {
+        label.setText(name);
     }
 
-    private void createIcon( TYPE type,
-                             String tooltip ) {
-        icon.setTitle( tooltip );
-        icon.setType( type.icon() );
+    private void createIcon(TYPE type,
+                            String tooltip) {
+        icon.setTitle(tooltip);
+        icon.setType(type.icon());
     }
 
     public enum TYPE {
 
-        DIR( IconType.FOLDER_OPEN, APP_CSS.CSS().blueTile() ), ADD( IconType.PLUS, APP_CSS.CSS().redTile() ), COMPONENT( IconType.FILE, APP_CSS.CSS().greenTile() );
+        DIR(IconType.FOLDER_OPEN,
+            APP_CSS.CSS().blueTile()),
+        ADD(IconType.PLUS,
+            APP_CSS.CSS().redTile()),
+        COMPONENT(IconType.FILE,
+                  APP_CSS.CSS().greenTile());
 
         private IconType iconType;
         private String tile;
 
-        TYPE( IconType iconType,
-              String tile ) {
+        TYPE(IconType iconType,
+             String tile) {
             this.iconType = iconType;
             this.tile = tile;
         }
@@ -213,4 +225,9 @@ public class TilesApp extends Composite {
 
     }
 
+    interface TilesBinder
+            extends
+            UiBinder<Widget, TilesApp> {
+
+    }
 }

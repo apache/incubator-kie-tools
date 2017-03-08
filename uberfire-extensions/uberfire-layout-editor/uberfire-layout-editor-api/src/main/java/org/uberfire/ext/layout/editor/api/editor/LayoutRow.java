@@ -16,10 +16,10 @@
 
 package org.uberfire.ext.layout.editor.api.editor;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class LayoutRow {
@@ -34,26 +34,26 @@ public class LayoutRow {
         return layoutColumns;
     }
 
-    public void add( List<LayoutColumn> layoutColumn) {
+    public void add(List<LayoutColumn> layoutColumn) {
         layoutColumns.addAll(layoutColumn);
     }
 
-    public void add( LayoutColumn layoutColumn) {
+    public void add(LayoutColumn layoutColumn) {
         layoutColumns.add(layoutColumn);
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof LayoutRow ) ) {
+        if (!(o instanceof LayoutRow)) {
             return false;
         }
 
-        LayoutRow layoutRow = (LayoutRow ) o;
+        LayoutRow layoutRow = (LayoutRow) o;
 
-        if ( layoutColumns != null ? !layoutColumns.equals( layoutRow.layoutColumns) : layoutRow.layoutColumns != null ) {
+        if (layoutColumns != null ? !layoutColumns.equals(layoutRow.layoutColumns) : layoutRow.layoutColumns != null) {
             return false;
         }
 
@@ -64,7 +64,6 @@ public class LayoutRow {
     public int hashCode() {
         return layoutColumns != null ? layoutColumns.hashCode() : 0;
     }
-
 
     @Override
     public String toString() {

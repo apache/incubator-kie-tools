@@ -38,8 +38,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 @Dependent
 public class AppsHomeView extends Composite implements AppsHomePresenter.View {
 
-    private AppsHomePresenter presenter;
-
+    private static AppsHomeViewBinder uiBinder = GWT.create(AppsHomeViewBinder.class);
     @UiField
     FlowPanel mainPanel;
 
@@ -48,54 +47,52 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
 
     @UiField
     FlowPanel dirContent;
-
-    interface AppsHomeViewBinder
-            extends
-            UiBinder<Widget, AppsHomeView> {
-
-    }
-
-    private static AppsHomeViewBinder uiBinder = GWT.create( AppsHomeViewBinder.class );
+    private AppsHomePresenter presenter;
 
     @AfterInitialization
     public void initialize() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
-    public void init( final AppsHomePresenter presenter ) {
+    public void init(final AppsHomePresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setupBreadCrumbs( List<DirectoryBreadCrumb> breadCrumbs,
-                                  final ParameterizedCommand<String> breadCrumbAction ) {
+    public void setupBreadCrumbs(List<DirectoryBreadCrumb> breadCrumbs,
+                                 final ParameterizedCommand<String> breadCrumbAction) {
         dirs.clear();
-        for ( final DirectoryBreadCrumb breadCrumb : breadCrumbs ) {
-            final AnchorListItem bread = new AnchorListItem( breadCrumb.getName() );
-            bread.addClickHandler( new ClickHandler() {
+        for (final DirectoryBreadCrumb breadCrumb : breadCrumbs) {
+            final AnchorListItem bread = new AnchorListItem(breadCrumb.getName());
+            bread.addClickHandler(new ClickHandler() {
                 @Override
-                public void onClick( ClickEvent event ) {
-                    breadCrumbAction.execute( breadCrumb.getUri() );
+                public void onClick(ClickEvent event) {
+                    breadCrumbAction.execute(breadCrumb.getUri());
                 }
-            } );
-            dirs.add( bread );
+            });
+            dirs.add(bread);
         }
     }
 
     @Override
-    public void setupAddDir( final ParameterizedCommand<String> clickCommand,
-                             Directory currentDirectory ) {
-        generateCreateDirThumbNail( clickCommand, currentDirectory );
+    public void setupAddDir(final ParameterizedCommand<String> clickCommand,
+                            Directory currentDirectory) {
+        generateCreateDirThumbNail(clickCommand,
+                                   currentDirectory);
     }
 
     @Override
-    public void setupChildsDirectories( List<Directory> childsDirectories,
-                                        ParameterizedCommand<String> clickCommand,
-                                        ParameterizedCommand<String> deleteCommand ) {
-        for ( Directory childsDirectory : childsDirectories ) {
-            final TilesApp link = TilesApp.directoryTiles( childsDirectory.getName(), childsDirectory.getURI(), TilesApp.TYPE.DIR, clickCommand, deleteCommand );
-            dirContent.add( link );
+    public void setupChildsDirectories(List<Directory> childsDirectories,
+                                       ParameterizedCommand<String> clickCommand,
+                                       ParameterizedCommand<String> deleteCommand) {
+        for (Directory childsDirectory : childsDirectories) {
+            final TilesApp link = TilesApp.directoryTiles(childsDirectory.getName(),
+                                                          childsDirectory.getURI(),
+                                                          TilesApp.TYPE.DIR,
+                                                          clickCommand,
+                                                          deleteCommand);
+            dirContent.add(link);
         }
     }
 
@@ -105,19 +102,27 @@ public class AppsHomeView extends Composite implements AppsHomePresenter.View {
     }
 
     @Override
-    public void setupChildComponents( List<String> childComponents,
-                                      ParameterizedCommand<String> clickCommand ) {
-        for ( String childComponent : childComponents ) {
-            final TilesApp link = TilesApp.componentTiles( childComponent, TilesApp.TYPE.COMPONENT, clickCommand );
-            dirContent.add( link );
+    public void setupChildComponents(List<String> childComponents,
+                                     ParameterizedCommand<String> clickCommand) {
+        for (String childComponent : childComponents) {
+            final TilesApp link = TilesApp.componentTiles(childComponent,
+                                                          TilesApp.TYPE.COMPONENT,
+                                                          clickCommand);
+            dirContent.add(link);
         }
-
     }
 
-    private void generateCreateDirThumbNail( final ParameterizedCommand<String> clickCommand,
-                                             Directory currentDirectory ) {
-        final TilesApp link = TilesApp.createDirTiles( TilesApp.TYPE.ADD, clickCommand, currentDirectory );
-        dirContent.add( link );
+    private void generateCreateDirThumbNail(final ParameterizedCommand<String> clickCommand,
+                                            Directory currentDirectory) {
+        final TilesApp link = TilesApp.createDirTiles(TilesApp.TYPE.ADD,
+                                                      clickCommand,
+                                                      currentDirectory);
+        dirContent.add(link);
     }
 
+    interface AppsHomeViewBinder
+            extends
+            UiBinder<Widget, AppsHomeView> {
+
+    }
 }

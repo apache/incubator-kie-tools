@@ -45,12 +45,9 @@ import org.uberfire.ext.wires.core.client.factories.ShapeFactoryCache;
 @WorkbenchScreen(identifier = "WiresLayersScreen")
 public class LayersScreen extends Composite {
 
-    interface ViewBinder extends UiBinder<Widget, LayersScreen> {
-
-    }
-
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    @UiField
+    public SimplePanel layers;
     @UiField
     PanelGroup accordion;
 
@@ -59,25 +56,20 @@ public class LayersScreen extends Composite {
 
     @UiField
     PanelCollapse collapseLayers;
-
-    @UiField
-    public SimplePanel layers;
-
     @Inject
     private LayersGroup layersGroup;
-
     @Inject
     private ShapeFactoryCache factoriesCache;
 
     @PostConstruct
     public void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
-        accordion.setId( DOM.createUniqueId() );
-        headerLayers.setDataParent( accordion.getId() );
-        headerLayers.setDataTargetWidget( collapseLayers );
+        accordion.setId(DOM.createUniqueId());
+        headerLayers.setDataParent(accordion.getId());
+        headerLayers.setDataTargetWidget(collapseLayers);
 
-        layers.add( layersGroup );
+        layers.add(layersGroup);
     }
 
     @WorkbenchPartTitle
@@ -91,23 +83,26 @@ public class LayersScreen extends Composite {
         return this;
     }
 
-    public void onShapeAdded( @Observes ShapeAddedEvent shapeAddedEvent ) {
+    public void onShapeAdded(@Observes ShapeAddedEvent shapeAddedEvent) {
         final WiresBaseShape shape = shapeAddedEvent.getShape();
-        for ( ShapeFactory factory : factoriesCache.getShapeFactories() ) {
-            if ( factory.builds( shape ) ) {
-                layersGroup.addShape( shape,
-                                      factory );
+        for (ShapeFactory factory : factoriesCache.getShapeFactories()) {
+            if (factory.builds(shape)) {
+                layersGroup.addShape(shape,
+                                     factory);
             }
         }
     }
 
-    public void onShapeDeleted( @Observes ShapeDeletedEvent shapeDeletedEvent ) {
+    public void onShapeDeleted(@Observes ShapeDeletedEvent shapeDeletedEvent) {
         final WiresBaseShape shape = shapeDeletedEvent.getShape();
-        layersGroup.deleteShape( shape );
+        layersGroup.deleteShape(shape);
     }
 
-    public void onClear( @Observes ClearEvent event ) {
+    public void onClear(@Observes ClearEvent event) {
         layersGroup.clearPanel();
     }
 
+    interface ViewBinder extends UiBinder<Widget, LayersScreen> {
+
+    }
 }

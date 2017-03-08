@@ -39,49 +39,44 @@ import org.uberfire.ext.widgets.common.client.common.popups.ButtonPressed;
 public class EditHTMLView implements EditHTMLPresenter.View {
 
     private final TranslationService translationService;
-
-    private EditHTMLPresenter presenter;
-
-    private BaseModal modal;
-
-    private ButtonPressed buttonPressed = ButtonPressed.CLOSE;
-
     @Inject
     @DataField("body")
     Div body;
-
     @Inject
     @DataField("footer")
     Div footer;
+    private EditHTMLPresenter presenter;
+    private BaseModal modal;
+    private ButtonPressed buttonPressed = ButtonPressed.CLOSE;
 
     @Inject
-    public EditHTMLView( final TranslationService translationService ) {
+    public EditHTMLView(final TranslationService translationService) {
         super();
         this.translationService = translationService;
     }
 
     @Override
-    public void init( final EditHTMLPresenter presenter ) {
+    public void init(final EditHTMLPresenter presenter) {
         this.presenter = presenter;
         modalSetup();
     }
 
     private void modalSetup() {
-        body.appendChild( presenter.getHtmlEditorView().getElement() );
+        body.appendChild(presenter.getHtmlEditorView().getElement());
 
         modal = new CommonModalBuilder()
-                .addHeader( translationService.format( Constants.EditHTMLView_Title ) )
-                .addBody( body )
-                .addFooter( footer )
+                .addHeader(translationService.format(Constants.EditHTMLView_Title))
+                .addBody(body)
+                .addFooter(footer)
                 .build();
 
-        modal.addHiddenHandler( hiddenEvent -> {
-            if ( ButtonPressed.CLOSE.equals( buttonPressed ) ) {
+        modal.addHiddenHandler(hiddenEvent -> {
+            if (ButtonPressed.CLOSE.equals(buttonPressed)) {
                 presenter.closeClick();
             }
-        } );
+        });
 
-        modal.setWidth( "960px" );
+        modal.setWidth("960px");
     }
 
     @Override
@@ -96,7 +91,7 @@ public class EditHTMLView implements EditHTMLPresenter.View {
 
     @Override
     public String getHtmlEditorPlaceHolder() {
-        return translationService.format( Constants.EditHTMLView_HtmlPlaceHolder );
+        return translationService.format(Constants.EditHTMLView_HtmlPlaceHolder);
     }
 
     @Override
@@ -106,19 +101,19 @@ public class EditHTMLView implements EditHTMLPresenter.View {
 
     @Override
     public HTMLElement getElement() {
-        return (HTMLElement) TemplateWidgetMapper.get( modal ).getElement().cast();
+        return (HTMLElement) TemplateWidgetMapper.get(modal).getElement().cast();
     }
 
     @SinkNative(Event.ONCLICK)
     @EventHandler("okButton")
-    public void okClick( final Event event ) {
+    public void okClick(final Event event) {
         buttonPressed = ButtonPressed.OK;
         presenter.okClick();
     }
 
     @SinkNative(Event.ONCLICK)
     @EventHandler("cancelButton")
-    public void cancelClick( final Event event ) {
+    public void cancelClick(final Event event) {
         buttonPressed = ButtonPressed.CANCEL;
         presenter.cancelClick();
     }

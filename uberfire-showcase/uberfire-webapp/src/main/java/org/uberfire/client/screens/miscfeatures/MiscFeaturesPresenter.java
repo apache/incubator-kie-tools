@@ -37,27 +37,17 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 @WorkbenchScreen(identifier = "MiscellaneousFeatures")
 public class MiscFeaturesPresenter {
 
-    public interface View
-            extends
-            UberView<MiscFeaturesPresenter> {
-
-    }
-
-    private String title = "Miscellaneous features";
-
     @Inject
     public View view;
-
+    private String title = "Miscellaneous features";
     @Inject
     private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
-
     @Inject
     private PlaceManager placeManager;
-
     private PlaceRequest placeRequest;
 
     @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
+    public void onStartup(final PlaceRequest placeRequest) {
         this.placeRequest = placeRequest;
     }
 
@@ -77,13 +67,19 @@ public class MiscFeaturesPresenter {
     }
 
     public void launchUnknownPlace() {
-        final PlaceRequest place = new DefaultPlaceRequest( "somewhere.that.does.not.exist" );
-        placeManager.goTo( place );
+        final PlaceRequest place = new DefaultPlaceRequest("somewhere.that.does.not.exist");
+        placeManager.goTo(place);
     }
 
-    public void setNewTitle( final String newCoolTitle ) {
+    public void setNewTitle(final String newCoolTitle) {
         title = "Cool!";
-        changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest, title ) );
+        changeTitleWidgetEvent.fire(new ChangeTitleWidgetEvent(placeRequest,
+                                                               title));
     }
 
+    public interface View
+            extends
+            UberView<MiscFeaturesPresenter> {
+
+    }
 }

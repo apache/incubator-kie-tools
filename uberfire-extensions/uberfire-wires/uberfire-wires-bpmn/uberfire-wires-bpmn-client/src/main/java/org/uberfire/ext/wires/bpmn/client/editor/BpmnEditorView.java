@@ -22,7 +22,6 @@ import org.uberfire.ext.wires.bpmn.api.model.impl.BpmnEditorContent;
 public interface BpmnEditorView extends BaseEditorView,
                                         UberView<BpmnEditorPresenter> {
 
-    void setContent( final BpmnEditorContent content,
-                     final boolean isReadOnly );
-
+    void setContent(final BpmnEditorContent content,
+                    final boolean isReadOnly);
 }

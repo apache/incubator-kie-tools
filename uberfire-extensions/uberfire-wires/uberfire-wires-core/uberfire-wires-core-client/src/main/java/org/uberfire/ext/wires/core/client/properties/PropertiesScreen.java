@@ -30,42 +30,33 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.uberfire.client.annotations.WorkbenchPartTitle;
+import org.uberfire.client.annotations.WorkbenchPartView;
+import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.ext.properties.editor.client.PropertyEditorWidget;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
 import org.uberfire.ext.wires.core.api.events.ShapeSelectedEvent;
 import org.uberfire.ext.wires.core.api.properties.PropertyEditorAdaptor;
 import org.uberfire.ext.wires.core.api.shapes.WiresBaseShape;
-import org.uberfire.client.annotations.WorkbenchPartTitle;
-import org.uberfire.client.annotations.WorkbenchPartView;
-import org.uberfire.client.annotations.WorkbenchScreen;
 
 @Dependent
 @WorkbenchScreen(identifier = "WiresPropertiesScreen")
 public class PropertiesScreen extends Composite {
 
-    interface ViewBinder extends UiBinder<Widget, PropertiesScreen> {
-
-    }
-
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
     private static final String MY_ID = "WiresPropertiesScreen";
-
-    private WiresBaseShape selectedShape;
-
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
     @UiField
     FlowPanel panel;
-
     @UiField
     PropertyEditorWidget propertyEditorWidget;
-
     @Inject
     PropertyEditorAdaptorsCache adaptors;
+    private WiresBaseShape selectedShape;
 
     @PostConstruct
     public void init() {
-        super.initWidget( uiBinder.createAndBindUi( this ) );
+        super.initWidget(uiBinder.createAndBindUi(this));
     }
 
     @WorkbenchPartTitle
@@ -79,21 +70,23 @@ public class PropertiesScreen extends Composite {
         return this;
     }
 
-    public void onShapeSelectedEvent( @Observes ShapeSelectedEvent event ) {
+    public void onShapeSelectedEvent(@Observes ShapeSelectedEvent event) {
         selectedShape = event.getShape();
-        propertyEditorWidget.handle( new PropertyEditorEvent( MY_ID,
-                                                              getProperties( selectedShape ) ) );
-
+        propertyEditorWidget.handle(new PropertyEditorEvent(MY_ID,
+                                                            getProperties(selectedShape)));
     }
 
-    protected List<PropertyEditorCategory> getProperties( final WiresBaseShape shape ) {
+    protected List<PropertyEditorCategory> getProperties(final WiresBaseShape shape) {
         final List<PropertyEditorCategory> properties = new ArrayList<PropertyEditorCategory>();
-        for ( PropertyEditorAdaptor adaptor : adaptors.getAdaptors() ) {
-            if ( adaptor.supports( shape ) ) {
-                properties.addAll( adaptor.getProperties( shape ) );
+        for (PropertyEditorAdaptor adaptor : adaptors.getAdaptors()) {
+            if (adaptor.supports(shape)) {
+                properties.addAll(adaptor.getProperties(shape));
             }
         }
         return properties;
     }
 
+    interface ViewBinder extends UiBinder<Widget, PropertiesScreen> {
+
+    }
 }

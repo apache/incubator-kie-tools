@@ -35,5 +35,4 @@ public interface AppImages extends ClientBundle {
 
     @Source("layerPanel/clear.png")
     ImageResource clear();
-
 }

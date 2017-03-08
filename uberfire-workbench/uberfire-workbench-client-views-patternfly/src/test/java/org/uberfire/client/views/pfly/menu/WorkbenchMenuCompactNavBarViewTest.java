@@ -71,84 +71,106 @@ public class WorkbenchMenuCompactNavBarViewTest {
 
     @Test
     public void testAddMenuItem() {
-        final String menuId = RandomStringUtils.random( 10 );
+        final String menuId = RandomStringUtils.random(10);
         final String menuParentId = null;
-        final String label = RandomStringUtils.random( 10 );
+        final String label = RandomStringUtils.random(10);
         final MenuPosition position = MenuPosition.RIGHT;
-        final Command command = mock( Command.class );
+        final Command command = mock(Command.class);
 
-        workbenchMenuCompactNavBarView.addMenuItem( menuId, label, menuParentId, command, position );
+        workbenchMenuCompactNavBarView.addMenuItem(menuId,
+                                                   label,
+                                                   menuParentId,
+                                                   command,
+                                                   position);
 
-        verify( dropDownMenu ).add( anchorListItem );
-        verify( anchorListItem ).setText( label );
-        assertEquals( anchorListItem, workbenchMenuCompactNavBarView.getMenuItemWidgetMap().get( menuId ) );
+        verify(dropDownMenu).add(anchorListItem);
+        verify(anchorListItem).setText(label);
+        assertEquals(anchorListItem,
+                     workbenchMenuCompactNavBarView.getMenuItemWidgetMap().get(menuId));
     }
 
     @Test
     public void testAddGroupMenuItem() {
-        final String menuId = RandomStringUtils.random( 10 );
-        final String label = RandomStringUtils.random( 10 );
+        final String menuId = RandomStringUtils.random(10);
+        final String label = RandomStringUtils.random(10);
         final MenuPosition position = MenuPosition.RIGHT;
 
-        workbenchMenuCompactNavBarView.addGroupMenuItem( menuId, label, position );
+        workbenchMenuCompactNavBarView.addGroupMenuItem(menuId,
+                                                        label,
+                                                        position);
 
-        verify( dropDownMenu ).add( dropDownHeader );
-        verify( dropDownHeader ).setText( label );
+        verify(dropDownMenu).add(dropDownHeader);
+        verify(dropDownHeader).setText(label);
     }
 
     @Test
     public void testAddContextMenuItem() {
         final String menuItemId = "menuItemId";
-        final String menuId = RandomStringUtils.random( 10 );
-        final String menuParentId = RandomStringUtils.random( 10 );
-        final String label = RandomStringUtils.random( 10 );
+        final String menuId = RandomStringUtils.random(10);
+        final String menuParentId = RandomStringUtils.random(10);
+        final String label = RandomStringUtils.random(10);
         final MenuPosition position = MenuPosition.RIGHT;
-        final Command command = mock( Command.class );
+        final Command command = mock(Command.class);
 
-        workbenchMenuCompactNavBarView.addContextMenuItem( menuItemId, menuId, label, menuParentId, command, position );
+        workbenchMenuCompactNavBarView.addContextMenuItem(menuItemId,
+                                                          menuId,
+                                                          label,
+                                                          menuParentId,
+                                                          command,
+                                                          position);
 
-        verify( anchorListItem ).setText( label );
-        assertEquals( anchorListItem, workbenchMenuCompactNavBarView.getMenuItemContextWidgetMap().get( menuId ) );
-        assertTrue( workbenchMenuCompactNavBarView.getMenuItemContextMenus().containsValue( anchorListItem ) );
+        verify(anchorListItem).setText(label);
+        assertEquals(anchorListItem,
+                     workbenchMenuCompactNavBarView.getMenuItemContextWidgetMap().get(menuId));
+        assertTrue(workbenchMenuCompactNavBarView.getMenuItemContextMenus().containsValue(anchorListItem));
     }
 
     @Test
     public void testAddContextGroupMenuItem() {
         final String menuItemId = "menuItemId";
-        final String menuId = RandomStringUtils.random( 10 );
-        final String label = RandomStringUtils.random( 10 );
+        final String menuId = RandomStringUtils.random(10);
+        final String label = RandomStringUtils.random(10);
         final MenuPosition position = MenuPosition.RIGHT;
 
-        workbenchMenuCompactNavBarView.addContextGroupMenuItem( menuItemId, menuId, label, position );
+        workbenchMenuCompactNavBarView.addContextGroupMenuItem(menuItemId,
+                                                               menuId,
+                                                               label,
+                                                               position);
 
-        verify( anchorButton ).setText( label );
-        verify( listDropDown ).add( anchorButton );
-        assertEquals( dropDownMenu, workbenchMenuCompactNavBarView.getMenuItemContextWidgetMap().get( menuId ) );
-        assertTrue( workbenchMenuCompactNavBarView.getMenuItemContextMenus().containsValue( listDropDown ) );
+        verify(anchorButton).setText(label);
+        verify(listDropDown).add(anchorButton);
+        assertEquals(dropDownMenu,
+                     workbenchMenuCompactNavBarView.getMenuItemContextWidgetMap().get(menuId));
+        assertTrue(workbenchMenuCompactNavBarView.getMenuItemContextMenus().containsValue(listDropDown));
     }
 
     @Test
     public void testSelectElement() {
-        final ComplexPanel panel = mock( ComplexPanel.class );
-        final ComplexPanel panelActive = mock( ComplexPanel.class );
+        final ComplexPanel panel = mock(ComplexPanel.class);
+        final ComplexPanel panelActive = mock(ComplexPanel.class);
 
-        when( dropDownMenu.iterator() ).thenReturn( Collections.<Widget>singletonList( panel ).iterator() );
+        when(dropDownMenu.iterator()).thenReturn(Collections.<Widget>singletonList(panel).iterator());
 
-        workbenchMenuCompactNavBarView.selectElement( panelActive );
+        workbenchMenuCompactNavBarView.selectElement(panelActive);
 
-        verify( panelActive ).addStyleName( Styles.ACTIVE );
-        verify( panel ).removeStyleName( Styles.ACTIVE );
+        verify(panelActive).addStyleName(Styles.ACTIVE);
+        verify(panel).removeStyleName(Styles.ACTIVE);
     }
 
     @Test
     public void testSelectMenuItemNoMenu() {
         final String menuId = "menuId";
 
-        workbenchMenuCompactNavBarView.addContextMenuItem( menuId, "contextMenuId", "labelContext", null, null, null );
-        workbenchMenuCompactNavBarView.selectMenuItem( menuId );
+        workbenchMenuCompactNavBarView.addContextMenuItem(menuId,
+                                                          "contextMenuId",
+                                                          "labelContext",
+                                                          null,
+                                                          null,
+                                                          null);
+        workbenchMenuCompactNavBarView.selectMenuItem(menuId);
 
-        verify( navbarNav ).add( anchorListItem );
-        verify( text ).setText( "" );
+        verify(navbarNav).add(anchorListItem);
+        verify(text).setText("");
     }
 
     @Test
@@ -156,45 +178,65 @@ public class WorkbenchMenuCompactNavBarViewTest {
         final String menuId = "menuId";
         final String label = "label";
         final String labelContext = "labelContext";
-        when( dropDownMenu.iterator() ).thenReturn( Collections.<Widget>emptyList().iterator() );
+        when(dropDownMenu.iterator()).thenReturn(Collections.<Widget>emptyList().iterator());
 
-        workbenchMenuCompactNavBarView.addContextMenuItem( menuId, "contextMenuId", labelContext, null, null, null );
-        workbenchMenuCompactNavBarView.addMenuItem( menuId, label, null, null, null );
-        workbenchMenuCompactNavBarView.selectMenuItem( menuId );
+        workbenchMenuCompactNavBarView.addContextMenuItem(menuId,
+                                                          "contextMenuId",
+                                                          labelContext,
+                                                          null,
+                                                          null,
+                                                          null);
+        workbenchMenuCompactNavBarView.addMenuItem(menuId,
+                                                   label,
+                                                   null,
+                                                   null,
+                                                   null);
+        workbenchMenuCompactNavBarView.selectMenuItem(menuId);
 
-        verify( navbarNav ).add( anchorListItem );
-        verify( text ).setText( label );
-        verify( anchorListItem ).setText( labelContext );
-        verify( anchorListItem ).setText( label );
-        verify( dropDownMenu ).add( anchorListItem );
+        verify(navbarNav).add(anchorListItem);
+        verify(text).setText(label);
+        verify(anchorListItem).setText(labelContext);
+        verify(anchorListItem).setText(label);
+        verify(dropDownMenu).add(anchorListItem);
     }
 
     @Test
     public void testClearContextMenu() {
         final String menuId = "menuId";
 
-        workbenchMenuCompactNavBarView.addContextMenuItem( menuId, "contextMenuItemId", "labelContextMenu", null, null, null );
-        workbenchMenuCompactNavBarView.addContextGroupMenuItem( menuId, "contextGroupMenuId", "labelContextGroup", null );
+        workbenchMenuCompactNavBarView.addContextMenuItem(menuId,
+                                                          "contextMenuItemId",
+                                                          "labelContextMenu",
+                                                          null,
+                                                          null,
+                                                          null);
+        workbenchMenuCompactNavBarView.addContextGroupMenuItem(menuId,
+                                                               "contextGroupMenuId",
+                                                               "labelContextGroup",
+                                                               null);
         workbenchMenuCompactNavBarView.clearContextMenu();
 
-        assertTrue( workbenchMenuCompactNavBarView.getMenuItemContextMenus().isEmpty() );
-        assertTrue( workbenchMenuCompactNavBarView.getMenuItemContextWidgetMap().isEmpty() );
-        verify( anchorListItem, times(2) ).clear();
-        verify( anchorListItem, times(2) ).removeFromParent();
-        verify( listDropDown ).clear();
-        verify( listDropDown ).removeFromParent();
+        assertTrue(workbenchMenuCompactNavBarView.getMenuItemContextMenus().isEmpty());
+        assertTrue(workbenchMenuCompactNavBarView.getMenuItemContextWidgetMap().isEmpty());
+        verify(anchorListItem,
+               times(2)).clear();
+        verify(anchorListItem,
+               times(2)).removeFromParent();
+        verify(listDropDown).clear();
+        verify(listDropDown).removeFromParent();
     }
 
     @Test
     public void testClear() {
-        workbenchMenuCompactNavBarView.getMenuItemContextMenus().put( "key", mock( ComplexPanel.class ) );
-        workbenchMenuCompactNavBarView.getMenuItemContextWidgetMap().put( "key", mock( ComplexPanel.class ) );
+        workbenchMenuCompactNavBarView.getMenuItemContextMenus().put("key",
+                                                                     mock(ComplexPanel.class));
+        workbenchMenuCompactNavBarView.getMenuItemContextWidgetMap().put("key",
+                                                                         mock(ComplexPanel.class));
 
         workbenchMenuCompactNavBarView.clear();
 
-        verify( navbarNav ).clear();
-        assertTrue( workbenchMenuCompactNavBarView.getMenuItemContextMenus().isEmpty() );
-        assertTrue( workbenchMenuCompactNavBarView.getMenuItemContextWidgetMap().isEmpty() );
+        verify(navbarNav).clear();
+        assertTrue(workbenchMenuCompactNavBarView.getMenuItemContextMenus().isEmpty());
+        assertTrue(workbenchMenuCompactNavBarView.getMenuItemContextWidgetMap().isEmpty());
     }
-
 }

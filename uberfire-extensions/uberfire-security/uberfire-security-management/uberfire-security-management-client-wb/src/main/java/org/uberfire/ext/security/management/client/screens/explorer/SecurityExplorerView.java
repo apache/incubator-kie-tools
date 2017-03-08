@@ -27,84 +27,78 @@ import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.TabListItem;
 import org.gwtbootstrap3.client.ui.TabPane;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class SecurityExplorerView extends Composite implements SecurityExplorerScreen.View {
 
-    interface Binder extends UiBinder<Widget, SecurityExplorerView> {
-
-    }
-
-    private static Binder uiBinder = GWT.create( Binder.class );
-
+    private static Binder uiBinder = GWT.create(Binder.class);
     @UiField
     TabListItem rolesTab;
-
     @UiField
     TabListItem groupsTab;
-
     @UiField
     TabListItem usersTab;
-
     @UiField
     TabPane rolesPane;
-
     @UiField
     TabPane groupsPane;
-
     @UiField
     TabPane usersPane;
-
     SecurityExplorerScreen presenter;
 
     @Override
-    public void init( SecurityExplorerScreen presenter ) {
-        this.presenter = checkNotNull( "presenter", presenter );
-        initWidget( uiBinder.createAndBindUi( this ) );
+    public void init(SecurityExplorerScreen presenter) {
+        this.presenter = checkNotNull("presenter",
+                                      presenter);
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
-    public void init( SecurityExplorerScreen presenter,
-                      IsWidget rolesExplorer,
-                      IsWidget groupsExplorer,
-                      IsWidget usersExplorer ) {
-        this.init( presenter );
-        rolesPane.add( rolesExplorer );
-        groupsPane.add( groupsExplorer );
-        usersPane.add( usersExplorer );
+    public void init(SecurityExplorerScreen presenter,
+                     IsWidget rolesExplorer,
+                     IsWidget groupsExplorer,
+                     IsWidget usersExplorer) {
+        this.init(presenter);
+        rolesPane.add(rolesExplorer);
+        groupsPane.add(groupsExplorer);
+        usersPane.add(usersExplorer);
     }
 
     @Override
-    public void rolesEnabled( boolean enabled ) {
-        rolesTab.setEnabled( enabled );
+    public void rolesEnabled(boolean enabled) {
+        rolesTab.setEnabled(enabled);
     }
 
     @Override
-    public void groupsEnabled( boolean enabled ) {
-        groupsTab.setEnabled( enabled );
+    public void groupsEnabled(boolean enabled) {
+        groupsTab.setEnabled(enabled);
     }
 
     @Override
-    public void usersEnabled( boolean enabled ) {
-        usersTab.setEnabled( enabled );
+    public void usersEnabled(boolean enabled) {
+        usersTab.setEnabled(enabled);
     }
 
     @Override
-    public void rolesActive( boolean active ) {
-        rolesTab.setActive( active );
-        rolesPane.setActive( active );
+    public void rolesActive(boolean active) {
+        rolesTab.setActive(active);
+        rolesPane.setActive(active);
     }
 
     @Override
-    public void groupsActive( boolean active ) {
-        groupsTab.setActive( active );
-        groupsPane.setActive( active );
+    public void groupsActive(boolean active) {
+        groupsTab.setActive(active);
+        groupsPane.setActive(active);
     }
 
     @Override
-    public void usersActive( boolean active ) {
-        usersTab.setActive( active );
-        usersPane.setActive( active );
+    public void usersActive(boolean active) {
+        usersTab.setActive(active);
+        usersPane.setActive(active);
+    }
+
+    interface Binder extends UiBinder<Widget, SecurityExplorerView> {
+
     }
 }

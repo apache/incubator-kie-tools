@@ -35,7 +35,7 @@ import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 
 import static org.junit.Assert.*;
-import static org.uberfire.ext.metadata.io.KObjectUtil.*;
+import static org.uberfire.ext.metadata.io.KObjectUtil.toKCluster;
 
 @RunWith(BMUnitRunner.class)
 @BMUnitConfig(debug = true)
@@ -44,63 +44,62 @@ public class IOServiceIndexedDeleteFileTest extends BaseIndexTest {
 
     @Override
     protected String[] getRepositoryNames() {
-        return new String[]{ this.getClass().getSimpleName() };
+        return new String[]{this.getClass().getSimpleName()};
     }
 
     @Test
     public void testDeleteFile() throws IOException, InterruptedException {
-        setupCountDown( 1 );
-        final Path path = getBasePath( this.getClass().getSimpleName() ).resolve( "delete-me.txt" );
-        ioService().write( path,
-                           "content",
-                           Collections.<OpenOption>emptySet(),
-                           new FileAttribute<Object>() {
-                               @Override
-                               public String name() {
-                                   return "delete";
-                               }
+        setupCountDown(1);
+        final Path path = getBasePath(this.getClass().getSimpleName()).resolve("delete-me.txt");
+        ioService().write(path,
+                          "content",
+                          Collections.<OpenOption>emptySet(),
+                          new FileAttribute<Object>() {
+                              @Override
+                              public String name() {
+                                  return "delete";
+                              }
 
-                               @Override
-                               public Object value() {
-                                   return "me";
-                               }
-                           } );
+                              @Override
+                              public Object value() {
+                                  return "me";
+                              }
+                          });
 
-        waitForCountDown( 5000 );
+        waitForCountDown(5000);
 
-        final Index index = config.getIndexManager().get( toKCluster( path.getFileSystem() ) );
+        final Index index = config.getIndexManager().get(toKCluster(path.getFileSystem()));
 
-        final IndexSearcher searcher = ( (LuceneIndex) index ).nrtSearcher();
+        final IndexSearcher searcher = ((LuceneIndex) index).nrtSearcher();
 
-        final TopScoreDocCollector collector = TopScoreDocCollector.create( 10 );
+        final TopScoreDocCollector collector = TopScoreDocCollector.create(10);
 
         //Check the file has been indexed
-        searcher.search( new TermQuery( new Term( "delete",
-                                                  "me" ) ),
-                         collector );
+        searcher.search(new TermQuery(new Term("delete",
+                                               "me")),
+                        collector);
 
         ScoreDoc[] hits = collector.topDocs().scoreDocs;
-        listHitPaths( searcher,
-                      hits );
-        assertEquals( 1,
-                      hits.length );
+        listHitPaths(searcher,
+                     hits);
+        assertEquals(1,
+                     hits.length);
 
-        setupCountDown( 2 );
+        setupCountDown(2);
 
         //Delete and re-check the index
-        ioService().delete( path );
+        ioService().delete(path);
 
-        waitForCountDown( 5000 );
+        waitForCountDown(5000);
 
-        searcher.search( new TermQuery( new Term( "delete",
-                                                  "me" ) ),
-                         collector );
+        searcher.search(new TermQuery(new Term("delete",
+                                               "me")),
+                        collector);
 
         hits = collector.topDocs().scoreDocs;
-        assertEquals( 0,
-                      hits.length );
+        assertEquals(0,
+                     hits.length);
 
-        ( (LuceneIndex) index ).nrtRelease( searcher );
+        ((LuceneIndex) index).nrtRelease(searcher);
     }
-
 }

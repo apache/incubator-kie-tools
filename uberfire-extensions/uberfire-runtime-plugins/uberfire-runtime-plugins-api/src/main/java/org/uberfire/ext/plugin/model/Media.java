@@ -28,8 +28,8 @@ public class Media {
     public Media() {
     }
 
-    public Media( final String externalURI,
-                  final Path path ) {
+    public Media(final String externalURI,
+                 final Path path) {
         this.externalURI = externalURI;
         this.path = path;
     }
@@ -47,20 +47,20 @@ public class Media {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof Media ) ) {
+        if (!(o instanceof Media)) {
             return false;
         }
 
         Media media = (Media) o;
 
-        if ( externalURI != null ? !externalURI.equals( media.externalURI ) : media.externalURI != null ) {
+        if (externalURI != null ? !externalURI.equals(media.externalURI) : media.externalURI != null) {
             return false;
         }
-        if ( path != null ? !path.equals( media.path ) : media.path != null ) {
+        if (path != null ? !path.equals(media.path) : media.path != null) {
             return false;
         }
 
@@ -71,7 +71,7 @@ public class Media {
     public int hashCode() {
         int result = externalURI != null ? externalURI.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( path != null ? path.hashCode() : 0 );
+        result = 31 * result + (path != null ? path.hashCode() : 0);
         result = ~~result;
         return result;
     }

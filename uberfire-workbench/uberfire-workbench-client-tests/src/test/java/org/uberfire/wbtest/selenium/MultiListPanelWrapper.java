@@ -23,11 +23,11 @@ import org.openqa.selenium.WebDriver;
  */
 public class MultiListPanelWrapper extends AbstractWorkbenchPanelWrapper {
 
-    public MultiListPanelWrapper( WebDriver driver,
-                                  String panelId ) {
-        super( driver, panelId );
+    public MultiListPanelWrapper(WebDriver driver,
+                                 String panelId) {
+        super(driver,
+              panelId);
     }
 
     // TODO methods for listing parts and switching parts, checking if panel is focused, etc.
-
 }

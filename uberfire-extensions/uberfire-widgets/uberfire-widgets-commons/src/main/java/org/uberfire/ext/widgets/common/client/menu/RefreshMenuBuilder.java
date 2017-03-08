@@ -30,15 +30,8 @@ import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
 public class RefreshMenuBuilder implements MenuFactory.CustomMenuBuilder {
 
-    public interface SupportsRefresh {
-
-        void onRefresh();
-
-    }
-
-    private SupportsRefresh supportsRefresh;
-
     protected Button menuRefreshButton = GWT.create(Button.class);
+    private SupportsRefresh supportsRefresh;
 
     public RefreshMenuBuilder(final SupportsRefresh supportsRefresh) {
         this.supportsRefresh = supportsRefresh;
@@ -81,4 +74,8 @@ public class RefreshMenuBuilder implements MenuFactory.CustomMenuBuilder {
         });
     }
 
+    public interface SupportsRefresh {
+
+        void onRefresh();
+    }
 }

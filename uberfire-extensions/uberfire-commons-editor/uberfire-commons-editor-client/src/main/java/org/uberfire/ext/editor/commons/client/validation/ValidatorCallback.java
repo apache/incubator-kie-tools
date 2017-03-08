@@ -24,5 +24,4 @@ public interface ValidatorCallback {
     public void onSuccess();
 
     public void onFailure();
-
 }

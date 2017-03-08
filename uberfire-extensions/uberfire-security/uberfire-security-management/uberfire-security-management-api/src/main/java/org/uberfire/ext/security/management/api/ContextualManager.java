@@ -18,7 +18,6 @@ package org.uberfire.ext.security.management.api;
 
 /**
  * <p>You should implement this interface if your managed will be handled within the given EE context (eg: JavaEE CDI context).</p>.
- * 
  * @since 0.8.0
  */
 public interface ContextualManager {

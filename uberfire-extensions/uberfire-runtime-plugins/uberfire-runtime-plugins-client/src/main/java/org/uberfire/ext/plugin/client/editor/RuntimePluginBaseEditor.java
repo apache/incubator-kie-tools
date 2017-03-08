@@ -55,8 +55,11 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 
-import static com.google.gwt.core.client.ScriptInjector.*;
-import static org.uberfire.ext.editor.commons.client.menu.MenuItems.*;
+import static com.google.gwt.core.client.ScriptInjector.TOP_WINDOW;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.COPY;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.DELETE;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.RENAME;
+import static org.uberfire.ext.editor.commons.client.menu.MenuItems.SAVE;
 
 public abstract class RuntimePluginBaseEditor extends BaseEditor {
 
@@ -83,8 +86,8 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
     @Inject
     private SavePopUpPresenter savePopUpPresenter;
 
-    protected RuntimePluginBaseEditor( final BaseEditorView baseView ) {
-        super( baseView );
+    protected RuntimePluginBaseEditor(final BaseEditorView baseView) {
+        super(baseView);
     }
 
     protected abstract PluginType getPluginType();
@@ -92,36 +95,37 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
     protected abstract ClientResourceType getResourceType();
 
     @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        init( path,
-              place,
-              getResourceType(),
-              true,
-              false,
-              SAVE,
-              COPY,
-              RENAME,
-              DELETE );
+    public void onStartup(final ObservablePath path,
+                          final PlaceRequest place) {
+        init(path,
+             place,
+             getResourceType(),
+             true,
+             false,
+             SAVE,
+             COPY,
+             RENAME,
+             DELETE);
 
         // This is only used to define the "name" used by @WorkbenchPartTitle which is called by Uberfire after @OnStartup
         // but before the async call in "loadContent()" has returned. When the *real* plugin is loaded this is overwritten
-        this.plugin = new Plugin( place.getParameter( "name", "" ),
-                                  getPluginType(),
-                                  path );
+        this.plugin = new Plugin(place.getParameter("name",
+                                                    ""),
+                                 getPluginType(),
+                                 path);
 
         this.place = place;
     }
 
-    protected void onPlugInRenamed( @Observes final PluginRenamed pluginRenamed ) {
-        if ( pluginRenamed.getOldPluginName().equals( plugin.getName() ) &&
-                pluginRenamed.getPlugin().getType().equals( plugin.getType() ) ) {
-            this.plugin = new Plugin( pluginRenamed.getPlugin().getName(),
-                                      getPluginType(),
-                                      pluginRenamed.getPlugin().getPath() );
-            changeTitleNotification.fire( new ChangeTitleWidgetEvent( place,
-                                                                      getTitleText(),
-                                                                      getTitle() ) );
+    protected void onPlugInRenamed(@Observes final PluginRenamed pluginRenamed) {
+        if (pluginRenamed.getOldPluginName().equals(plugin.getName()) &&
+                pluginRenamed.getPlugin().getType().equals(plugin.getType())) {
+            this.plugin = new Plugin(pluginRenamed.getPlugin().getName(),
+                                     getPluginType(),
+                                     pluginRenamed.getPlugin().getPath());
+            changeTitleNotification.fire(new ChangeTitleWidgetEvent(place,
+                                                                    getTitleText(),
+                                                                    getTitle()));
         }
     }
 
@@ -139,22 +143,23 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
 
     @Override
     protected void loadContent() {
-        getPluginServices().call( new RemoteCallback<PluginContent>() {
+        getPluginServices().call(new RemoteCallback<PluginContent>() {
 
             @Override
-            public void callback( final PluginContent response ) {
-                view().setFramework( response.getFrameworks() );
-                view().setupContent( response, new ParameterizedCommand<Media>() {
+            public void callback(final PluginContent response) {
+                view().setFramework(response.getFrameworks());
+                view().setupContent(response,
+                                    new ParameterizedCommand<Media>() {
 
-                    @Override
-                    public void execute( final Media media ) {
-                        getPluginServices().call().deleteMedia( media );
-                    }
-                } );
+                                        @Override
+                                        public void execute(final Media media) {
+                                            getPluginServices().call().deleteMedia(media);
+                                        }
+                                    });
                 view().hideBusyIndicator();
-                setOriginalHash( getContent().hashCode() );
+                setOriginalHash(getContent().hashCode());
             }
-        } ).getPluginContent( getCurrentPath() );
+        }).getPluginContent(getCurrentPath());
     }
 
     ObservablePath getCurrentPath() {
@@ -162,22 +167,27 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
     }
 
     public PluginSimpleContent getContent() {
-        return new PluginSimpleContent( view().getContent(), view().getTemplate(), view().getCss(), view().getCodeMap(),
-                                        view().getFrameworks(), view().getContent().getLanguage() );
+        return new PluginSimpleContent(view().getContent(),
+                                       view().getTemplate(),
+                                       view().getCss(),
+                                       view().getCodeMap(),
+                                       view().getFrameworks(),
+                                       view().getContent().getLanguage());
     }
 
     protected void save() {
-        savePopUpPresenter.show( getCurrentPath(), getSaveCommand() );
+        savePopUpPresenter.show(getCurrentPath(),
+                                getSaveCommand());
         concurrentUpdateSessionInfo = null;
     }
 
     ParameterizedCommand<String> getSaveCommand() {
         return new ParameterizedCommand<String>() {
             @Override
-            public void execute( final String commitMessage ) {
-                getPluginServices().call( getSaveSuccessCallback( getContent().hashCode() ) ).save(
+            public void execute(final String commitMessage) {
+                getPluginServices().call(getSaveSuccessCallback(getContent().hashCode())).save(
                         getContent(),
-                        commitMessage );
+                        commitMessage);
                 view().onSave();
             }
         };
@@ -185,7 +195,7 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
 
     public boolean mayClose() {
         view().onClose();
-        return super.mayClose( getContent().hashCode() );
+        return super.mayClose(getContent().hashCode());
     }
 
     abstract RuntimePluginBaseView view();
@@ -209,40 +219,45 @@ public abstract class RuntimePluginBaseEditor extends BaseEditor {
         return pluginNameValidator;
     }
 
-    public void onPluginSaved( @Observes PluginSaved pluginSaved ) {
-        registerPlugin( pluginSaved.getPlugin() );
+    public void onPluginSaved(@Observes PluginSaved pluginSaved) {
+        registerPlugin(pluginSaved.getPlugin());
     }
 
-    public void onPluginAdded( @Observes PluginAdded pluginAdded ) {
-        registerPlugin( pluginAdded.getPlugin() );
+    public void onPluginAdded(@Observes PluginAdded pluginAdded) {
+        registerPlugin(pluginAdded.getPlugin());
     }
 
-    public void onPluginDeleted( @Observes PluginDeleted pluginDeleted ) {
-        unregisterPlugin( pluginDeleted.getPluginName(), pluginDeleted.getPluginType() );
+    public void onPluginDeleted(@Observes PluginDeleted pluginDeleted) {
+        unregisterPlugin(pluginDeleted.getPluginName(),
+                         pluginDeleted.getPluginType());
     }
 
-    public void onPluginRenamed( @Observes PluginRenamed pluginRenamed ) {
-        unregisterPlugin( pluginRenamed.getOldPluginName(), pluginRenamed.getOldPluginType() );
-        registerPlugin( pluginRenamed.getPlugin() );
+    public void onPluginRenamed(@Observes PluginRenamed pluginRenamed) {
+        unregisterPlugin(pluginRenamed.getOldPluginName(),
+                         pluginRenamed.getOldPluginType());
+        registerPlugin(pluginRenamed.getPlugin());
     }
 
-    void unregisterPlugin( String name,
-                           PluginType type ) {
-        pluginUnregisteredEvent.fire( new PluginUnregistered( name, type ) );
+    void unregisterPlugin(String name,
+                          PluginType type) {
+        pluginUnregisteredEvent.fire(new PluginUnregistered(name,
+                                                            type));
     }
 
-    void registerPlugin( Plugin plugin ) {
+    void registerPlugin(Plugin plugin) {
 
-        pluginServices.call( new RemoteCallback<Collection<RuntimePlugin>>() {
+        pluginServices.call(new RemoteCallback<Collection<RuntimePlugin>>() {
 
             @Override
-            public void callback( final Collection<RuntimePlugin> runtimePlugins ) {
-                for ( final RuntimePlugin plugin : runtimePlugins ) {
-                    ScriptInjector.fromString( plugin.getScript() ).setWindow( TOP_WINDOW ).inject();
-                    StyleInjector.inject( plugin.getStyle(), true );
+            public void callback(final Collection<RuntimePlugin> runtimePlugins) {
+                for (final RuntimePlugin plugin : runtimePlugins) {
+                    ScriptInjector.fromString(plugin.getScript()).setWindow(TOP_WINDOW).inject();
+                    StyleInjector.inject(plugin.getStyle(),
+                                         true);
                 }
-                newPluginRegisteredEvent.fire( new NewPluginRegistered( plugin.getName(), plugin.getType() ) );
+                newPluginRegisteredEvent.fire(new NewPluginRegistered(plugin.getName(),
+                                                                      plugin.getType()));
             }
-        } ).listPluginRuntimePlugins( plugin.getPath() );
+        }).listPluginRuntimePlugins(plugin.getPath());
     }
 }

@@ -25,21 +25,22 @@ import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
 
 public class AtomSocialTimelineConverter {
 
-    public static String generate( List<SocialActivitiesEvent> eventTimeline, String type ) {
+    public static String generate(List<SocialActivitiesEvent> eventTimeline,
+                                  String type) {
         Abdera abdera = new Abdera();
         Feed feed = abdera.newFeed();
 
-        feed.setId( "tag:org.uberfire,2014:/"+ type );
-        feed.setTitle( "Social Activities Feed" );
-        feed.setUpdated( new Date() );
-        feed.addAuthor( "Red Hat JBoss" );
+        feed.setId("tag:org.uberfire,2014:/" + type);
+        feed.setTitle("Social Activities Feed");
+        feed.setUpdated(new Date());
+        feed.addAuthor("Red Hat JBoss");
 
-        for ( SocialActivitiesEvent event : eventTimeline ) {
+        for (SocialActivitiesEvent event : eventTimeline) {
             Entry entry = feed.addEntry();
-            entry.setTitle( event.getType() );
-            entry.setSummary( event.getSocialUser().getUserName() + "  " + event.toString() );
-            entry.setUpdated( event.getTimestamp() );
-            entry.setPublished( event.getTimestamp() );
+            entry.setTitle(event.getType());
+            entry.setSummary(event.getSocialUser().getUserName() + "  " + event.toString());
+            entry.setUpdated(event.getTimestamp());
+            entry.setPublished(event.getTimestamp());
         }
         return feed.toString();
     }

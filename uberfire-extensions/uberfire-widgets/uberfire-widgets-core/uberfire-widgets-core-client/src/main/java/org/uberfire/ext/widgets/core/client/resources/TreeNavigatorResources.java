@@ -26,7 +26,7 @@ public interface TreeNavigatorResources
         extends
         ClientBundle {
 
-    public static final TreeNavigatorResources INSTANCE = GWT.create( TreeNavigatorResources.class );
+    public static final TreeNavigatorResources INSTANCE = GWT.create(TreeNavigatorResources.class);
 
     @Source("css/TreeNavigator.css")
     NavigatorStyle css();

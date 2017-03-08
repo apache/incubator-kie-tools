@@ -68,23 +68,237 @@ import org.uberfire.workbench.model.CompassPosition;
  */
 public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
 
+    private static final int DEFAULT_SPLITTER_SIZE = 1;
+    private static final int DEFAULT_SPLITTER_HOVER_SIZE = 10;
+    /**
+     * The element that masks the screen so we can catch mouse events over
+     * iframes.
+     */
+    private static Element glassElem = null;
+    private final int splitterSize;
+    private int minCenterSize = 0;
+
+    /**
+     * Construct a new {@link SplitLayoutPanel} with the default splitter size
+     * of 8px.
+     */
+    public WorkbenchSplitLayoutPanel() {
+        this(DEFAULT_SPLITTER_SIZE);
+    }
+
+    /**
+     * Construct a new {@link SplitLayoutPanel} with the specified splitter size
+     * in pixels.
+     * @param splitterSize the size of the splitter in pixels
+     */
+    public WorkbenchSplitLayoutPanel(int splitterSize) {
+        super(Unit.PX);
+        this.splitterSize = splitterSize;
+        setStyleName(WorkbenchResources.INSTANCE.CSS().splitLayoutPanel());
+
+        if (glassElem == null) {
+            glassElem = Document.get().createDivElement();
+            glassElem.getStyle().setPosition(Position.ABSOLUTE);
+            glassElem.getStyle().setTop(0,
+                                        Unit.PX);
+            glassElem.getStyle().setLeft(0,
+                                         Unit.PX);
+            glassElem.getStyle().setMargin(0,
+                                           Unit.PX);
+            glassElem.getStyle().setPadding(0,
+                                            Unit.PX);
+            glassElem.getStyle().setBorderWidth(0,
+                                                Unit.PX);
+
+            // We need to set the background color or mouse events will go right
+            // through the glassElem. If the SplitPanel contains an iframe, the
+            // iframe will capture the event and the slider will stop moving.
+            glassElem.getStyle().setProperty("background",
+                                             "white");
+            glassElem.getStyle().setOpacity(0.0);
+        }
+    }
+
+    /**
+     * Return the size of the splitter in pixels.
+     * @return the splitter size
+     */
+    public int getSplitterSize() {
+        return splitterSize;
+    }
+
+    @Override
+    public void insert(Widget child,
+                       Direction direction,
+                       double size,
+                       Widget before) {
+        super.insert(child,
+                     direction,
+                     size,
+                     before);
+        if (direction != Direction.CENTER) {
+            insertSplitter(child,
+                           before);
+        }
+    }
+
+    @Override
+    public boolean remove(Widget child) {
+        assert !(child instanceof Splitter) : "Splitters may not be directly removed";
+
+        int idx = getWidgetIndex(child);
+        if (super.remove(child)) {
+            // Remove the associated splitter, if any.
+            // Now that the widget is removed, idx is the index of the splitter.
+            if (idx < getWidgetCount()) {
+                // Call super.remove(), or we'll end up recursing.
+                super.remove(getWidget(idx));
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Sets the minimum allowable size for the given widget.
+     * <p>
+     * Its associated splitter cannot be dragged to a position that would make
+     * it smaller than this size. This method has no effect for the
+     * {@link DockLayoutPanel.Direction#CENTER} widget.
+     * </p>
+     * @param child the child whose minimum size will be set
+     * @param minSize the minimum size for this widget
+     */
+    public void setWidgetMinSize(Widget child,
+                                 int minSize) {
+        assertIsAChild(child);
+        Splitter splitter = getAssociatedSplitter(child);
+        // The splitter is null for the center element.
+        if (splitter != null) {
+            splitter.setMinSize(minSize);
+        } else {
+            minCenterSize = minSize;
+        }
+    }
+
+    private void assertIsAChild(Widget widget) {
+        assert (widget == null) || (widget.getParent() == this) : "The specified widget is not a child of this panel";
+    }
+
+    private Splitter getAssociatedSplitter(Widget child) {
+        // If a widget has a next sibling, it must be a splitter, because the only
+        // widget that *isn't* followed by a splitter must be the CENTER, which has
+        // no associated splitter.
+        int idx = getWidgetIndex(child);
+        if (idx > -1 && idx < getWidgetCount() - 1) {
+            Widget splitter = getWidget(idx + 1);
+            assert splitter instanceof Splitter : "Expected child widget to be splitter";
+            return (Splitter) splitter;
+        }
+        return null;
+    }
+
+    private void insertSplitter(Widget widget,
+                                Widget before) {
+        assert getChildren().size() > 0 : "Can't add a splitter before any children";
+
+        LayoutData layout = (LayoutData) widget.getLayoutData();
+        Splitter splitter = null;
+        switch (getResolvedDirection(layout.direction)) {
+            case WEST:
+                splitter = new HSplitter(widget,
+                                         false);
+                break;
+            case EAST:
+                splitter = new HSplitter(widget,
+                                         true);
+                break;
+            case NORTH:
+                splitter = new VSplitter(widget,
+                                         false);
+                break;
+            case SOUTH:
+                splitter = new VSplitter(widget,
+                                         true);
+                break;
+            default:
+                assert false : "Unexpected direction";
+        }
+
+        super.insert(splitter,
+                     layout.direction,
+                     splitterSize,
+                     before);
+    }
+
+    /**
+     * Adds the given widget as a child of this splitter.
+     * @param child the widget to add
+     * @param position the position to dock the widget at (must be an actual compass position NORTH, SOUTH, EAST, or WEST)
+     * @param size the width or height to give the added child.
+     */
+    public void add(Widget child,
+                    CompassPosition position,
+                    double size) {
+        switch (position) {
+            case NORTH:
+                addNorth(child,
+                         size);
+                break;
+            case SOUTH:
+                addSouth(child,
+                         size);
+                break;
+            case EAST:
+                addEast(child,
+                        size);
+                break;
+            case WEST:
+                addWest(child,
+                        size);
+                break;
+            default:
+                throw new IllegalArgumentException("Bad child position: " + position);
+        }
+    }
+
+    /**
+     * Adds the given widget as a child of this splitter.
+     * @param child the widget to add
+     * @param position the position to dock the widget at (must be an actual compass position NORTH, SOUTH, EAST, or WEST)
+     * @param size the width or height to give the added child
+     */
+    public void add(Widget child,
+                    CompassPosition position,
+                    int size) {
+        double doubleSize = (double) size;
+        add(child,
+            position,
+            doubleSize);
+    }
+
     class HSplitter extends Splitter {
+
         public HSplitter(Widget target,
                          boolean reverse) {
-            super( target,
-                   reverse );
+            super(target,
+                  reverse);
             setStyleName(WorkbenchResources.INSTANCE.CSS().splitLayoutPanelHDragger());
         }
 
         @Override
-        protected void setUpHoverStyle( final Style style, int size ) {
-            style.setWidth( size, Unit.PX );
-            style.setMarginLeft( - (size/2), Unit.PX );
+        protected void setUpHoverStyle(final Style style,
+                                       int size) {
+            style.setWidth(size,
+                           Unit.PX);
+            style.setMarginLeft(-(size / 2),
+                                Unit.PX);
         }
 
         @Override
         public void onResize() {
-            hover.getElement().getStyle().setHeight( target.getOffsetHeight(), Unit.PX );
+            hover.getElement().getStyle().setHeight(target.getOffsetHeight(),
+                                                    Unit.PX);
         }
 
         @Override
@@ -119,18 +333,17 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
     }
 
     abstract class Splitter extends Composite implements RequiresResize {
+
         protected final Widget target;
         protected final Widget hover;
         protected final Element mouseTracker;
-
-        private int              offset;
-        private boolean          mouseDown;
+        private final boolean reverse;
+        private int offset;
+        private boolean mouseDown;
         private ScheduledCommand layoutCommand;
+        private int minSize;
 
-        private final boolean    reverse;
-        private int              minSize;
-
-        private double           centerSize, syncedCenterSize;
+        private double centerSize, syncedCenterSize;
 
         public Splitter(Widget target,
                         boolean reverse) {
@@ -139,77 +352,82 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
 
             final ResizeFlowPanel widget = new ResizeFlowPanel();
 
-            sinkEvents( Event.ONMOUSEDOWN | Event.ONMOUSEUP | Event.ONMOUSEMOVE | Event.ONDBLCLICK );
+            sinkEvents(Event.ONMOUSEDOWN | Event.ONMOUSEUP | Event.ONMOUSEMOVE | Event.ONDBLCLICK);
 
             this.hover = new FlowPanel();
             final Style style = hover.getElement().getStyle();
-            style.setOpacity( 0 );
-            style.setZIndex( 2 );
-            style.setPosition( Position.FIXED );
-            setUpHoverStyle( style, DEFAULT_SPLITTER_HOVER_SIZE );
-            widget.add( hover );
-            initWidget( widget );
+            style.setOpacity(0);
+            style.setZIndex(2);
+            style.setPosition(Position.FIXED);
+            setUpHoverStyle(style,
+                            DEFAULT_SPLITTER_HOVER_SIZE);
+            widget.add(hover);
+            initWidget(widget);
 
             mouseTracker = Document.get().createDivElement();
-            mouseTracker.getStyle().setCursor( getHoverCursorStyle() );
-            mouseTracker.getStyle().setZIndex( Integer.MAX_VALUE );
-            mouseTracker.getStyle().setPosition( Position.ABSOLUTE );
-            mouseTracker.getStyle().setHeight( 50, Unit.PX );
-            mouseTracker.getStyle().setWidth( 50, Unit.PX );
+            mouseTracker.getStyle().setCursor(getHoverCursorStyle());
+            mouseTracker.getStyle().setZIndex(Integer.MAX_VALUE);
+            mouseTracker.getStyle().setPosition(Position.ABSOLUTE);
+            mouseTracker.getStyle().setHeight(50,
+                                              Unit.PX);
+            mouseTracker.getStyle().setWidth(50,
+                                             Unit.PX);
         }
 
         @Override
         public void onBrowserEvent(final Event event) {
-            switch ( event.getTypeInt() ) {
-                case Event.ONMOUSEDOWN :
+            switch (event.getTypeInt()) {
+                case Event.ONMOUSEDOWN:
                     mouseDown = true;
                     /*
                      * Resize glassElem to take up the entire scrollable window
                      * area, which is the greater of the scroll size and the
                      * client size.
                      */
-                    int width = Math.max( Window.getClientWidth(),
-                                          Document.get().getScrollWidth() );
-                    int height = Math.max( Window.getClientHeight(),
-                                           Document.get().getScrollHeight() );
-                    glassElem.getStyle().setHeight( height,
-                                                    Unit.PX );
-                    glassElem.getStyle().setWidth( width,
-                                                   Unit.PX );
-                    Document.get().getBody().appendChild( glassElem );
+                    int width = Math.max(Window.getClientWidth(),
+                                         Document.get().getScrollWidth());
+                    int height = Math.max(Window.getClientHeight(),
+                                          Document.get().getScrollHeight());
+                    glassElem.getStyle().setHeight(height,
+                                                   Unit.PX);
+                    glassElem.getStyle().setWidth(width,
+                                                  Unit.PX);
+                    Document.get().getBody().appendChild(glassElem);
 
-                    offset = getEventPosition( event ) - getAbsolutePosition();
-                    Event.setCapture( getElement() );
+                    offset = getEventPosition(event) - getAbsolutePosition();
+                    Event.setCapture(getElement());
                     event.preventDefault();
 
-                    Document.get().getBody().appendChild( mouseTracker );
+                    Document.get().getBody().appendChild(mouseTracker);
                     break;
 
-                case Event.ONMOUSEUP :
+                case Event.ONMOUSEUP:
                     mouseDown = false;
 
                     glassElem.removeFromParent();
 
-                    Event.releaseCapture( getElement() );
+                    Event.releaseCapture(getElement());
                     event.preventDefault();
 
                     mouseTracker.removeFromParent();
                     break;
 
-                case Event.ONMOUSEMOVE :
-                    if ( mouseDown ) {
+                case Event.ONMOUSEMOVE:
+                    if (mouseDown) {
                         int size;
-                        if ( reverse ) {
+                        if (reverse) {
                             size = getTargetPosition() + getTargetSize()
-                                    - getEventPosition( event ) - offset;
+                                    - getEventPosition(event) - offset;
                         } else {
-                            size = getEventPosition( event ) - getTargetPosition() - offset;
+                            size = getEventPosition(event) - getTargetPosition() - offset;
                         }
-                        setAssociatedWidgetSize( size );
+                        setAssociatedWidgetSize(size);
                         event.preventDefault();
 
-                        mouseTracker.getStyle().setLeft( event.getClientX() - mouseTracker.getOffsetWidth() / 2, Unit.PX );
-                        mouseTracker.getStyle().setTop( event.getClientY() - mouseTracker.getOffsetHeight() / 2, Unit.PX );
+                        mouseTracker.getStyle().setLeft(event.getClientX() - mouseTracker.getOffsetWidth() / 2,
+                                                        Unit.PX);
+                        mouseTracker.getStyle().setTop(event.getClientY() - mouseTracker.getOffsetHeight() / 2,
+                                                       Unit.PX);
                     }
                     break;
             }
@@ -221,10 +439,11 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
 
             // Try resetting the associated widget's size, which will enforce the new
             // minSize value.
-            setAssociatedWidgetSize( (int) layout.size );
+            setAssociatedWidgetSize((int) layout.size);
         }
 
-        protected abstract void setUpHoverStyle(Style style, int size);
+        protected abstract void setUpHoverStyle(Style style,
+                                                int size);
 
         protected abstract Style.Cursor getHoverCursorStyle();
 
@@ -243,32 +462,32 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
             // updates, maintain our own copy up to date and resync when the
             // DockLayoutPanel value changes.
             double newCenterSize = getCenterSize();
-            if ( syncedCenterSize != newCenterSize ) {
+            if (syncedCenterSize != newCenterSize) {
                 syncedCenterSize = newCenterSize;
                 centerSize = newCenterSize;
             }
 
-            return Math.max( ((LayoutData) target.getLayoutData()).size + centerSize,
-                             0 );
+            return Math.max(((LayoutData) target.getLayoutData()).size + centerSize,
+                            0);
         }
 
         private void setAssociatedWidgetSize(double size) {
             double maxSize = getMaxSize();
-            if ( size > maxSize ) {
+            if (size > maxSize) {
                 size = maxSize;
             }
 
-            if ( size < minSize ) {
+            if (size < minSize) {
                 size = minSize;
             }
 
             LayoutData layout = (LayoutData) target.getLayoutData();
-            if ( size == layout.size ) {
+            if (size == layout.size) {
                 return;
             }
 
             double newCenterSize = centerSize + (layout.size - size);
-            if ( newCenterSize < minCenterSize ) {
+            if (newCenterSize < minCenterSize) {
                 return;
             }
 
@@ -279,7 +498,7 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
 
             // Defer actually updating the layout, so that if we receive many
             // mouse events before layout/paint occurs, we'll only update once.
-            if ( layoutCommand == null ) {
+            if (layoutCommand == null) {
                 layoutCommand = new Command() {
                     @Override
                     public void execute() {
@@ -287,28 +506,33 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
                         forceLayout();
                     }
                 };
-                Scheduler.get().scheduleDeferred( layoutCommand );
+                Scheduler.get().scheduleDeferred(layoutCommand);
             }
         }
     }
 
     class VSplitter extends Splitter {
+
         public VSplitter(Widget target,
                          boolean reverse) {
-            super( target,
-                   reverse );
+            super(target,
+                  reverse);
             setStyleName(WorkbenchResources.INSTANCE.CSS().splitLayoutPanelVDragger());
         }
 
         @Override
-        protected void setUpHoverStyle( final Style style, int size ) {
-            style.setHeight( size, Unit.PX );
-            style.setMarginTop( -( size / 2 ), Unit.PX );
+        protected void setUpHoverStyle(final Style style,
+                                       int size) {
+            style.setHeight(size,
+                            Unit.PX);
+            style.setMarginTop(-(size / 2),
+                               Unit.PX);
         }
 
         @Override
         public void onResize() {
-            hover.getElement().getStyle().setWidth( target.getOffsetWidth(), Unit.PX );
+            hover.getElement().getStyle().setWidth(target.getOffsetWidth(),
+                                                   Unit.PX);
         }
 
         @Override
@@ -340,225 +564,5 @@ public class WorkbenchSplitLayoutPanel extends DockLayoutPanel {
         protected int getTargetSize() {
             return target.getOffsetHeight();
         }
-    }
-
-    private static final int DEFAULT_SPLITTER_SIZE = 1;
-    private static final int DEFAULT_SPLITTER_HOVER_SIZE = 10;
-
-    /**
-     * The element that masks the screen so we can catch mouse events over
-     * iframes.
-     */
-    private static Element   glassElem             = null;
-
-    private final int        splitterSize;
-
-    private int              minCenterSize         = 0;
-
-    /**
-     * Construct a new {@link SplitLayoutPanel} with the default splitter size
-     * of 8px.
-     */
-    public WorkbenchSplitLayoutPanel() {
-        this( DEFAULT_SPLITTER_SIZE );
-    }
-
-    /**
-     * Construct a new {@link SplitLayoutPanel} with the specified splitter size
-     * in pixels.
-     *
-     * @param splitterSize
-     *            the size of the splitter in pixels
-     */
-    public WorkbenchSplitLayoutPanel(int splitterSize) {
-        super( Unit.PX );
-        this.splitterSize = splitterSize;
-        setStyleName(WorkbenchResources.INSTANCE.CSS().splitLayoutPanel());
-
-        if ( glassElem == null ) {
-            glassElem = Document.get().createDivElement();
-            glassElem.getStyle().setPosition( Position.ABSOLUTE );
-            glassElem.getStyle().setTop( 0,
-                                         Unit.PX );
-            glassElem.getStyle().setLeft( 0,
-                                          Unit.PX );
-            glassElem.getStyle().setMargin( 0,
-                                            Unit.PX );
-            glassElem.getStyle().setPadding( 0,
-                                             Unit.PX );
-            glassElem.getStyle().setBorderWidth( 0,
-                                                 Unit.PX );
-
-            // We need to set the background color or mouse events will go right
-            // through the glassElem. If the SplitPanel contains an iframe, the
-            // iframe will capture the event and the slider will stop moving.
-            glassElem.getStyle().setProperty( "background",
-                    "white" );
-            glassElem.getStyle().setOpacity( 0.0 );
-        }
-    }
-
-    /**
-     * Return the size of the splitter in pixels.
-     *
-     * @return the splitter size
-     */
-    public int getSplitterSize() {
-        return splitterSize;
-    }
-
-    @Override
-    public void insert(Widget child,
-                       Direction direction,
-                       double size,
-                       Widget before) {
-        super.insert( child,
-                      direction,
-                      size,
-                      before );
-        if ( direction != Direction.CENTER ) {
-            insertSplitter( child,
-                            before );
-        }
-    }
-
-    @Override
-    public boolean remove(Widget child) {
-        assert !(child instanceof Splitter) : "Splitters may not be directly removed";
-
-        int idx = getWidgetIndex( child );
-        if ( super.remove( child ) ) {
-            // Remove the associated splitter, if any.
-            // Now that the widget is removed, idx is the index of the splitter.
-            if ( idx < getWidgetCount() ) {
-                // Call super.remove(), or we'll end up recursing.
-                super.remove( getWidget( idx ) );
-            }
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Sets the minimum allowable size for the given widget.
-     * <p>
-     * Its associated splitter cannot be dragged to a position that would make
-     * it smaller than this size. This method has no effect for the
-     * {@link DockLayoutPanel.Direction#CENTER} widget.
-     * </p>
-     *
-     * @param child
-     *            the child whose minimum size will be set
-     * @param minSize
-     *            the minimum size for this widget
-     */
-    public void setWidgetMinSize(Widget child,
-                                 int minSize) {
-        assertIsAChild( child );
-        Splitter splitter = getAssociatedSplitter( child );
-        // The splitter is null for the center element.
-        if ( splitter != null ) {
-            splitter.setMinSize( minSize );
-        } else {
-            minCenterSize = minSize;
-        }
-    }
-
-    private void assertIsAChild(Widget widget) {
-        assert (widget == null) || (widget.getParent() == this) : "The specified widget is not a child of this panel";
-    }
-
-    private Splitter getAssociatedSplitter(Widget child) {
-        // If a widget has a next sibling, it must be a splitter, because the only
-        // widget that *isn't* followed by a splitter must be the CENTER, which has
-        // no associated splitter.
-        int idx = getWidgetIndex( child );
-        if ( idx > -1 && idx < getWidgetCount() - 1 ) {
-            Widget splitter = getWidget( idx + 1 );
-            assert splitter instanceof Splitter : "Expected child widget to be splitter";
-            return (Splitter) splitter;
-        }
-        return null;
-    }
-
-    private void insertSplitter(Widget widget,
-                                Widget before) {
-        assert getChildren().size() > 0 : "Can't add a splitter before any children";
-
-        LayoutData layout = (LayoutData) widget.getLayoutData();
-        Splitter splitter = null;
-        switch ( getResolvedDirection( layout.direction ) ) {
-            case WEST :
-                splitter = new HSplitter( widget,
-                                          false );
-                break;
-            case EAST :
-                splitter = new HSplitter( widget,
-                                          true );
-                break;
-            case NORTH :
-                splitter = new VSplitter( widget,
-                                          false );
-                break;
-            case SOUTH :
-                splitter = new VSplitter( widget,
-                                          true );
-                break;
-            default :
-                assert false : "Unexpected direction";
-        }
-
-        super.insert( splitter,
-                      layout.direction,
-                      splitterSize,
-                      before );
-    }
-
-    /**
-     * Adds the given widget as a child of this splitter.
-     *
-     * @param child
-     *            the widget to add
-     * @param position
-     *            the position to dock the widget at (must be an actual compass position NORTH, SOUTH, EAST, or WEST)
-     * @param size
-     *            the width or height to give the added child.
-     */
-    public void add( Widget child,
-                     CompassPosition position,
-                     double size ) {
-        switch ( position ) {
-            case NORTH:
-                addNorth( child, size );
-                break;
-            case SOUTH:
-                addSouth( child, size );
-                break;
-            case EAST:
-                addEast( child, size );
-                break;
-            case WEST:
-                addWest( child, size );
-                break;
-            default:
-                throw new IllegalArgumentException( "Bad child position: " + position );
-        }
-    }
-
-    /**
-     * Adds the given widget as a child of this splitter.
-     *
-     * @param child
-     *            the widget to add
-     * @param position
-     *            the position to dock the widget at (must be an actual compass position NORTH, SOUTH, EAST, or WEST)
-     * @param size
-     *            the width or height to give the added child
-     */
-    public void add( Widget child,
-                     CompassPosition position,
-                     int size ) {
-        double doubleSize = (double) size;
-        add( child, position, doubleSize );
     }
 }

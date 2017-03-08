@@ -27,16 +27,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class StackItemHeaderViewImpl extends Composite implements StackItemHeaderView {
 
-    interface HeaderHTMLBinder
-            extends
-            UiBinder<Widget, StackItemHeaderViewImpl> {
-    }
-
     private static HeaderHTMLBinder uiBinder = GWT.create(HeaderHTMLBinder.class);
-
     @UiField
     Label textLabel;
-
     @UiField
     Image imageResource;
 
@@ -50,5 +43,11 @@ public class StackItemHeaderViewImpl extends Composite implements StackItemHeade
 
     public void setImageResource(ImageResource imageResource) {
         this.imageResource.setResource(imageResource);
+    }
+
+    interface HeaderHTMLBinder
+            extends
+            UiBinder<Widget, StackItemHeaderViewImpl> {
+
     }
 }

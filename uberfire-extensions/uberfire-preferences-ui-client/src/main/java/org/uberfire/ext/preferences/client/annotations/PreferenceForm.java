@@ -24,7 +24,6 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.preferences.shared.bean.BasePreference;
 
 /**
  * Used to qualify {@link WorkbenchScreen} that represents a customized preference form.
@@ -32,7 +31,7 @@ import org.uberfire.preferences.shared.bean.BasePreference;
 @Qualifier
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
+@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
 public @interface PreferenceForm {
 
     /**

@@ -27,8 +27,8 @@ public class DynamicMenuItem {
     public DynamicMenuItem() {
     }
 
-    public DynamicMenuItem( String activityId,
-                            String menuLabel ) {
+    public DynamicMenuItem(String activityId,
+                           String menuLabel) {
         this.activityId = activityId;
         this.menuLabel = menuLabel;
     }
@@ -37,7 +37,7 @@ public class DynamicMenuItem {
         return activityId;
     }
 
-    public void setActivityId( String activityId ) {
+    public void setActivityId(String activityId) {
         this.activityId = activityId;
     }
 
@@ -45,25 +45,25 @@ public class DynamicMenuItem {
         return menuLabel;
     }
 
-    public void setMenuLabel( String menuLabel ) {
+    public void setMenuLabel(String menuLabel) {
         this.menuLabel = menuLabel;
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof DynamicMenuItem ) ) {
+        if (!(o instanceof DynamicMenuItem)) {
             return false;
         }
 
         DynamicMenuItem that = (DynamicMenuItem) o;
 
-        if ( activityId != null ? !activityId.equals( that.activityId ) : that.activityId != null ) {
+        if (activityId != null ? !activityId.equals(that.activityId) : that.activityId != null) {
             return false;
         }
-        if ( menuLabel != null ? !menuLabel.equals( that.menuLabel ) : that.menuLabel != null ) {
+        if (menuLabel != null ? !menuLabel.equals(that.menuLabel) : that.menuLabel != null) {
             return false;
         }
 
@@ -74,7 +74,7 @@ public class DynamicMenuItem {
     public int hashCode() {
         int result = activityId != null ? activityId.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( menuLabel != null ? menuLabel.hashCode() : 0 );
+        result = 31 * result + (menuLabel != null ? menuLabel.hashCode() : 0);
         result = ~~result;
         return result;
     }

@@ -47,13 +47,13 @@ public class BpmnExplorerPresenter {
     private BpmnExplorerView view;
 
     @OnStartup
-    public void onStartup( final PlaceRequest place ) {
-        service.call( new RemoteCallback<List<Path>>() {
+    public void onStartup(final PlaceRequest place) {
+        service.call(new RemoteCallback<List<Path>>() {
             @Override
-            public void callback( final List<Path> files ) {
-                view.setContent( files );
+            public void callback(final List<Path> files) {
+                view.setContent(files);
             }
-        } ).listFiles();
+        }).listFiles();
     }
 
     @WorkbenchPartTitle
@@ -66,8 +66,7 @@ public class BpmnExplorerPresenter {
         return view;
     }
 
-    public void openFile( final Path file ) {
-        placeManager.goTo( new PathPlaceRequest( file ) );
+    public void openFile(final Path file) {
+        placeManager.goTo(new PathPlaceRequest(file));
     }
-
 }

@@ -19,6 +19,7 @@ package org.uberfire.client.perspective;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Window;
 import org.jboss.errai.ioc.client.api.Shared;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.annotations.Perspective;
@@ -34,62 +35,61 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
-import com.google.gwt.user.client.Window;
-
 @ApplicationScoped
 @WorkbenchPerspective(identifier = "DynamicPerspective", isDynamic = true)
 public class DynamicPerspective {
-    
-    @Inject @Shared
+
+    @Inject
+    @Shared
     private PlaceManager placeManager;
-    
+
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
-        p.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( "DynamicScreen" ) ) );        
-        p.setName( "Dynamic Perspective" );
+        final PerspectiveDefinition p = new PerspectiveDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        p.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest("DynamicScreen")));
+        p.setName("Dynamic Perspective");
         return p;
     }
 
     @WorkbenchMenu
     public Menus getMenus() {
         return MenuFactory
-                .newTopLevelMenu( "Dynamic Menu" ).respondsWith( new Command() {
+                .newTopLevelMenu("Dynamic Menu").respondsWith(new Command() {
                     @Override
                     public void execute() {
-                        Window.alert( "Hello from a dynamic menu!" );
+                        Window.alert("Hello from a dynamic menu!");
                     }
-                } )
+                })
                 .endMenu()
-                .newTopLevelMenu( "Open Dynamic Editor" ).respondsWith( new Command() {
+                .newTopLevelMenu("Open Dynamic Editor").respondsWith(new Command() {
                     @Override
                     public void execute() {
                         placeManager.goTo("DynamicEditor");
                     }
-                } )
+                })
                 .endMenu()
-                .newTopLevelMenu( "Open Dynamic Screen" )
-                .respondsWith( new Command() {
+                .newTopLevelMenu("Open Dynamic Screen")
+                .respondsWith(new Command() {
                     @Override
                     public void execute() {
                         placeManager.goTo("DynamicScreen");
                     }
-                } )
+                })
                 .endMenu()
-                .newTopLevelMenu( "Create New" )
-                    .menus()
-                         // Test that an editor from a dynamic plugin can be opened for a dynamic resource type
-                        .menu( "File matching dynamically loaded resource type" )
-                            .respondsWith( new Command() {
-                            @Override
-                            public void execute() {
-                                placeManager.goTo(PathFactory.newPath( "test.csa", "default://project/" ));
-                            }
-                        } )
-                        .endMenu()
-                    .endMenus()
+                .newTopLevelMenu("Create New")
+                .menus()
+                // Test that an editor from a dynamic plugin can be opened for a dynamic resource type
+                .menu("File matching dynamically loaded resource type")
+                .respondsWith(new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo(PathFactory.newPath("test.csa",
+                                                              "default://project/"));
+                    }
+                })
+                .endMenu()
+                .endMenus()
                 .endMenu()
                 .build();
     }
-    
 }

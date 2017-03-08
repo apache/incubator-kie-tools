@@ -34,5 +34,4 @@ public class CreateUserEvent implements UberFireEvent {
     public String toString() {
         return "CreateUserEvent [identifier=" + identifier + "]";
     }
-
 }

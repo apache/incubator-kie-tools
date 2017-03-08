@@ -15,8 +15,6 @@
  */
 package org.uberfire.ext.wires.client;
 
-import java.util.HashMap;
-import java.util.Map;
 import javax.inject.Inject;
 
 import com.google.gwt.animation.client.Animation;
@@ -37,7 +35,7 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.workbench.model.menu.MenuFactory.*;
+import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelMenu;
 
 /**
  * GWT's Entry-point for Wires
@@ -57,6 +55,10 @@ public class ShowcaseEntryPoint {
     @Inject
     private ActivityManager activityManager;
 
+    public static native void redirect(String url)/*-{
+        $wnd.location = url;
+    }-*/;
+
     @AfterInitialization
     public void startApp() {
         setupMenu();
@@ -65,109 +67,105 @@ public class ShowcaseEntryPoint {
     }
 
     private void setupSettings() {
-        adminPage.addScreen( "root", "Wires Admin Tools" );
-        adminPage.setDefaultScreen( "root" );
+        adminPage.addScreen("root",
+                            "Wires Admin Tools");
+        adminPage.setDefaultScreen("root");
 
-        adminPage.addTool( "root",
-                           "Apps",
-                           "fa-map",
-                           "General",
-                           () -> placeManager.goTo( new DefaultPlaceRequest( "AppsPerspective" ) ) );
+        adminPage.addTool("root",
+                          "Apps",
+                          "fa-map",
+                          "General",
+                          () -> placeManager.goTo(new DefaultPlaceRequest("AppsPerspective")));
 
-        adminPage.addPreference( "root",
-                                 "MyPreference",
-                                 "My Preferences",
-                                 "fa-gear",
-                                 "Preferences" );
+        adminPage.addPreference("root",
+                                "MyPreference",
+                                "My Preferences",
+                                "fa-gear",
+                                "Preferences");
 
-        adminPage.addPreference( "root",
-                                 "MySharedPreference",
-                                 "Shared Preferences",
-                                 "fa-share-alt",
-                                 "Preferences" );
+        adminPage.addPreference("root",
+                                "MySharedPreference",
+                                "Shared Preferences",
+                                "fa-share-alt",
+                                "Preferences");
     }
 
     private void setupMenu() {
-        final Menus menus = newTopLevelMenu( "Wires ScratchPad" ).respondsWith( new Command() {
+        final Menus menus = newTopLevelMenu("Wires ScratchPad").respondsWith(new Command() {
             @Override
             public void execute() {
-                placeManager.goTo( new DefaultPlaceRequest( "WiresScratchPadPerspective" ) );
+                placeManager.goTo(new DefaultPlaceRequest("WiresScratchPadPerspective"));
             }
-        } ).endMenu().newTopLevelMenu( "Wires Trees" ).respondsWith( new Command() {
+        }).endMenu().newTopLevelMenu("Wires Trees").respondsWith(new Command() {
             @Override
             public void execute() {
-                placeManager.goTo( new DefaultPlaceRequest( "WiresTreesPerspective" ) );
+                placeManager.goTo(new DefaultPlaceRequest("WiresTreesPerspective"));
             }
-        } ).endMenu().newTopLevelMenu( "Wires Grids" ).respondsWith( new Command() {
+        }).endMenu().newTopLevelMenu("Wires Grids").respondsWith(new Command() {
             @Override
             public void execute() {
-                placeManager.goTo( new DefaultPlaceRequest( "WiresGridsDemoPerspective" ) );
+                placeManager.goTo(new DefaultPlaceRequest("WiresGridsDemoPerspective"));
             }
-        } ).endMenu().newTopLevelMenu( "Wires BPMN" ).respondsWith( new Command() {
+        }).endMenu().newTopLevelMenu("Wires BPMN").respondsWith(new Command() {
             @Override
             public void execute() {
-                placeManager.goTo( new DefaultPlaceRequest( "BpmnPerspective" ) );
+                placeManager.goTo(new DefaultPlaceRequest("BpmnPerspective"));
             }
-        } ).endMenu().newTopLevelMenu( "Bayesian Networks" ).respondsWith( new Command() {
+        }).endMenu().newTopLevelMenu("Bayesian Networks").respondsWith(new Command() {
             @Override
             public void execute() {
-                placeManager.goTo( new DefaultPlaceRequest( "WiresBayesianPerspective" ) );
+                placeManager.goTo(new DefaultPlaceRequest("WiresBayesianPerspective"));
             }
-        } ).endMenu().newTopLevelMenu( "Extensions" ).respondsWith( new Command() {
+        }).endMenu().newTopLevelMenu("Extensions").respondsWith(new Command() {
             @Override
             public void execute() {
-                placeManager.goTo( new DefaultPlaceRequest( "PlugInAuthoringPerspective" ) );
+                placeManager.goTo(new DefaultPlaceRequest("PlugInAuthoringPerspective"));
             }
-        } ).endMenu().newTopLevelMenu( "Apps" ).respondsWith( new Command() {
+        }).endMenu().newTopLevelMenu("Apps").respondsWith(new Command() {
             @Override
             public void execute() {
-                placeManager.goTo( new DefaultPlaceRequest( "AppsPerspective" ) );
+                placeManager.goTo(new DefaultPlaceRequest("AppsPerspective"));
             }
-        } ).endMenu().newTopLevelMenu( "Social" ).respondsWith( new Command() {
+        }).endMenu().newTopLevelMenu("Social").respondsWith(new Command() {
             @Override
             public void execute() {
-                placeManager.goTo( new ConditionalPlaceRequest( "SocialPerspective" ));
+                placeManager.goTo(new ConditionalPlaceRequest("SocialPerspective"));
             }
-        } ).endMenu()
-                .newTopLevelMenu( "Widgets" ).respondsWith( new Command() {
-            @Override
-            public void execute() {
-                placeManager.goTo( new ConditionalPlaceRequest( "UFWidgets" ).when( p -> true ).orElse( new DefaultPlaceRequest( "AppsPerspective" ) ) );
-            }
-        } ).endMenu().newTopLevelMenu( "Admin" ).respondsWith( new Command() {
-            @Override
-            public void execute() {
-                placeManager.goTo( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER ) );
-            }
-        } ).endMenu().newTopLevelMenu( "Logout" ).position( MenuPosition.RIGHT ).respondsWith( new Command() {
-            @Override
-            public void execute() {
-                redirect( GWT.getModuleBaseURL() + "uf_logout" );
-            }
-        } ).endMenu().build();
-        menubar.addMenus( menus );
+        }).endMenu()
+                .newTopLevelMenu("Widgets").respondsWith(new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo(new ConditionalPlaceRequest("UFWidgets").when(p -> true).orElse(new DefaultPlaceRequest("AppsPerspective")));
+                    }
+                }).endMenu().newTopLevelMenu("Admin").respondsWith(new Command() {
+                    @Override
+                    public void execute() {
+                        placeManager.goTo(new DefaultPlaceRequest(AdminPagePerspective.IDENTIFIER));
+                    }
+                }).endMenu().newTopLevelMenu("Logout").position(MenuPosition.RIGHT).respondsWith(new Command() {
+                    @Override
+                    public void execute() {
+                        redirect(GWT.getModuleBaseURL() + "uf_logout");
+                    }
+                }).endMenu().build();
+        menubar.addMenus(menus);
     }
 
     // Fade out the "Loading application" pop-up
     private void hideLoadingPopup() {
-        final Element e = RootPanel.get( "loading" ).getElement();
+        final Element e = RootPanel.get("loading").getElement();
 
         new Animation() {
 
             @Override
-            protected void onUpdate( double progress ) {
-                e.getStyle().setOpacity( 1.0 - progress );
+            protected void onUpdate(double progress) {
+                e.getStyle().setOpacity(1.0 - progress);
             }
 
             @Override
             protected void onComplete() {
-                e.getStyle().setVisibility( Style.Visibility.HIDDEN );
+                e.getStyle().setVisibility(Style.Visibility.HIDDEN);
             }
-        }.run( 500 );
+        }.run(500);
     }
-
-    public static native void redirect( String url )/*-{
-        $wnd.location = url;
-    }-*/;
-
 }

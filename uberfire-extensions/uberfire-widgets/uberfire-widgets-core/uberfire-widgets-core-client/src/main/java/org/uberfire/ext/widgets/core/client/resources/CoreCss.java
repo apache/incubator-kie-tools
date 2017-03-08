@@ -18,7 +18,7 @@ package org.uberfire.ext.widgets.core.client.resources;
 import com.google.gwt.resources.client.CssResource;
 
 public interface CoreCss
-    extends
-    CssResource {
+        extends
+        CssResource {
 
 }

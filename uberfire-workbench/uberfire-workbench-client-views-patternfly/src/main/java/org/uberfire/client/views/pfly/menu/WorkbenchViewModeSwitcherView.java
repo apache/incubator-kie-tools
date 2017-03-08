@@ -28,28 +28,27 @@ import org.uberfire.mvp.Command;
 @Dependent
 public class WorkbenchViewModeSwitcherView implements WorkbenchViewModeSwitcherPresenter.View {
 
-
     private final AnchorListItem menu = new AnchorListItem();
     private WorkbenchViewModeSwitcherPresenter presenter;
 
     @Override
-    public void setText( final String text ){
-        menu.setText( text );
+    public void setText(final String text) {
+        menu.setText(text);
     }
 
     @Override
-    public void init( final WorkbenchViewModeSwitcherPresenter presenter ) {
+    public void init(final WorkbenchViewModeSwitcherPresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void addClickHandler( final Command command ) {
-        menu.addClickHandler( new ClickHandler() {
+    public void addClickHandler(final Command command) {
+        menu.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 command.execute();
             }
-        } );
+        });
     }
 
     @Override
@@ -59,11 +58,11 @@ public class WorkbenchViewModeSwitcherView implements WorkbenchViewModeSwitcherP
 
     @Override
     public void enable() {
-        menu.setEnabled( true );
+        menu.setEnabled(true);
     }
 
     @Override
     public void disable() {
-        menu.setEnabled( false );
+        menu.setEnabled(false);
     }
 }

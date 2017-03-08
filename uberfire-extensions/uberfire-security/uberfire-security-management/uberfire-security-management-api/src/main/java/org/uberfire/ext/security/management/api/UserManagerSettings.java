@@ -20,7 +20,6 @@ import java.util.Collection;
 
 /**
  * <p>The settings for a users entity manager.</p>
- *
  * @since 0.8.0
  */
 public interface UserManagerSettings extends Settings {
@@ -30,5 +29,4 @@ public interface UserManagerSettings extends Settings {
      * @return The collection of supported attributes in the underlying security system.
      */
     Collection<UserManager.UserAttribute> getSupportedAttributes();
-    
 }

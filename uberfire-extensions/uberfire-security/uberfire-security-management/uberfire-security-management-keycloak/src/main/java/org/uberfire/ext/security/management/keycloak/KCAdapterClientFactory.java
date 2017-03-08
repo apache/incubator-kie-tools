@@ -16,37 +16,38 @@
 
 package org.uberfire.ext.security.management.keycloak;
 
+import javax.enterprise.context.Dependent;
+import javax.servlet.http.HttpServletRequest;
+
 import org.uberfire.commons.config.ConfigProperties;
 import org.uberfire.ext.security.management.keycloak.client.Keycloak;
 import org.uberfire.ext.security.management.keycloak.client.auth.adapter.KCAdapterContextTokenManager;
 
-import javax.enterprise.context.Dependent;
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Factory that build Keycloak clients using the current session access token provided by KC client adapter.
- * 
  * @since 0.9.0
  */
 @Dependent
 public class KCAdapterClientFactory extends BaseClientFactory {
-    
+
     private Keycloak client;
-    
+
     @Override
     public Keycloak get() {
         assert client != null;
         return client;
     }
 
-    public void init(final ConfigProperties config, HttpServletRequest request) {
-        
+    public void init(final ConfigProperties config,
+                     HttpServletRequest request) {
+
         // Check mandatory properties.
-        final ConfigProperties.ConfigProperty authServer = config.get("org.uberfire.ext.security.management.keycloak.authServer", DEFAULT_AUTH_SERVER);
+        final ConfigProperties.ConfigProperty authServer = config.get("org.uberfire.ext.security.management.keycloak.authServer",
+                                                                      DEFAULT_AUTH_SERVER);
 
         final KCAdapterContextTokenManager tokenManager = new KCAdapterContextTokenManager(request);
-        this.client = Keycloak.getInstance(authServer.getValue(), tokenManager.getRealm(), tokenManager);
-        
+        this.client = Keycloak.getInstance(authServer.getValue(),
+                                           tokenManager.getRealm(),
+                                           tokenManager);
     }
-    
 }

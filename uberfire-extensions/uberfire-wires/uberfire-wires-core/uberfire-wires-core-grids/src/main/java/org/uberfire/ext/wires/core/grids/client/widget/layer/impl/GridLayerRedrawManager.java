@@ -30,31 +30,27 @@ public class GridLayerRedrawManager {
 
     private final Comparator<PrioritizedCommand> COMPARATOR = new Comparator<PrioritizedCommand>() {
         @Override
-        public int compare( final PrioritizedCommand o1,
-                            final PrioritizedCommand o2 ) {
+        public int compare(final PrioritizedCommand o1,
+                           final PrioritizedCommand o2) {
             return o1.getPriority() - o2.getPriority();
         }
     };
 
-    SortedSet<PrioritizedCommand> commands = new TreeSet<PrioritizedCommand>( COMPARATOR );
+    SortedSet<PrioritizedCommand> commands = new TreeSet<PrioritizedCommand>(COMPARATOR);
 
     private AnimationScheduler.AnimationCallback callback;
-
-    public static final GridLayerRedrawManager get() {
-        return instance;
-    }
 
     private GridLayerRedrawManager() {
         callback = new AnimationScheduler.AnimationCallback() {
 
             @Override
-            public void execute( double time ) {
+            public void execute(double time) {
                 final SortedSet<PrioritizedCommand> clone = commands;
-                commands = new TreeSet<PrioritizedCommand>( COMPARATOR );
+                commands = new TreeSet<PrioritizedCommand>(COMPARATOR);
 
-                if ( !clone.isEmpty() ) {
+                if (!clone.isEmpty()) {
                     final Iterator<PrioritizedCommand> itr = clone.iterator();
-                    while ( itr.hasNext() ) {
+                    while (itr.hasNext()) {
                         final PrioritizedCommand command = itr.next();
                         command.execute();
                     }
@@ -63,18 +59,22 @@ public class GridLayerRedrawManager {
         };
     }
 
-    public void schedule( final PrioritizedCommand command ) {
-        PortablePreconditions.checkNotNull( "command",
-                                            command );
-        if ( !commands.contains( command ) ) {
-            commands.add( command );
+    public static final GridLayerRedrawManager get() {
+        return instance;
+    }
+
+    public void schedule(final PrioritizedCommand command) {
+        PortablePreconditions.checkNotNull("command",
+                                           command);
+        if (!commands.contains(command)) {
+            commands.add(command);
             kick();
         }
     }
 
     private void kick() {
-        if ( commands.size() > 0 ) {
-            AnimationScheduler.get().requestAnimationFrame( callback );
+        if (commands.size() > 0) {
+            AnimationScheduler.get().requestAnimationFrame(callback);
         }
     }
 
@@ -82,7 +82,7 @@ public class GridLayerRedrawManager {
 
         private int priority = 0;
 
-        public PrioritizedCommand( final int priority ) {
+        public PrioritizedCommand(final int priority) {
             this.priority = priority;
         }
 
@@ -90,5 +90,4 @@ public class GridLayerRedrawManager {
             return priority;
         }
     }
-
 }

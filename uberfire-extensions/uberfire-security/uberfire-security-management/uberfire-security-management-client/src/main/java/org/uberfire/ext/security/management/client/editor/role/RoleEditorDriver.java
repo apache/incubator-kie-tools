@@ -30,9 +30,8 @@ import org.uberfire.security.authz.PermissionCollection;
 
 /**
  * <p>It links the user editors hierarchy with the instance edited by flushing the editor's values into the User model.</p>
- * <p>It contains all logic for editing a User instance by using Editors hierarchy instances, so 
+ * <p>It contains all logic for editing a User instance by using Editors hierarchy instances, so
  * the editors's concrete widget/component implementation is isolated from the edition logic.</p>
- * 
  * @since 0.8.0
  */
 @Dependent
@@ -50,7 +49,8 @@ public class RoleEditorDriver implements Driver<Role, RoleEditor> {
         this.userSystemManager = userSystemManager;
     }
 
-    public void show(final Role role, final RoleEditor roleEditor) {
+    public void show(final Role role,
+                     final RoleEditor roleEditor) {
         this.isFlushed = false;
         this.isEditMode = false;
         this.role = role;
@@ -58,7 +58,8 @@ public class RoleEditorDriver implements Driver<Role, RoleEditor> {
         roleEditor.show(role);
     }
 
-    public void edit(final Role role, final RoleEditor roleEditor) {
+    public void edit(final Role role,
+                     final RoleEditor roleEditor) {
         this.isFlushed = false;
         this.isEditMode = true;
         this.role = role;
@@ -69,7 +70,7 @@ public class RoleEditorDriver implements Driver<Role, RoleEditor> {
     public boolean flush() {
         assert this.isEditMode;
         this.isFlushed = true;
-        
+
         roleEditor.flush();
 
         // Obtain the editor's values
@@ -77,7 +78,7 @@ public class RoleEditorDriver implements Driver<Role, RoleEditor> {
 
         // Create a new resulting instance
         role = new RoleImpl(name);
-        
+
         // Validate the instance and set delegate violations, if any, to the editors hierarchy.
         Set<ConstraintViolation<Role>> violations = userSystemManager.rolesValidator().validate(role);
         roleEditor.setViolations(violations);

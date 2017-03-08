@@ -22,17 +22,7 @@ import org.uberfire.ext.plugin.model.PluginType;
 
 public interface NewPluginPopUpView extends UberView<NewPluginPopUpView.Presenter> {
 
-    interface Presenter {
-
-        void onOK( String name,
-                   PluginType type );
-
-        void onCancel();
-
-        RuleValidator getNameValidator();
-    }
-
-    void show( final PluginType type );
+    void show(final PluginType type);
 
     void hide();
 
@@ -42,5 +32,15 @@ public interface NewPluginPopUpView extends UberView<NewPluginPopUpView.Presente
 
     String duplicatedName();
 
-    void handleNameValidationError( String errorMessage );
+    void handleNameValidationError(String errorMessage);
+
+    interface Presenter {
+
+        void onOK(String name,
+                  PluginType type);
+
+        void onCancel();
+
+        RuleValidator getNameValidator();
+    }
 }

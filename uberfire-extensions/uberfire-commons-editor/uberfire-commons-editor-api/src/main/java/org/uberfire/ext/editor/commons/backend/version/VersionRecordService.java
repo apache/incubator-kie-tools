@@ -29,5 +29,4 @@ public interface VersionRecordService {
     public List<VersionRecord> loadVersionRecords(Path path);
 
     public VersionRecord loadRecord(Path path) throws URISyntaxException;
-
 }

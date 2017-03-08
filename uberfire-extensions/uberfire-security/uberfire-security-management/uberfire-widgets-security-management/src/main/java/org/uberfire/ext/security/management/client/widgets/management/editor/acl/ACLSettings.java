@@ -36,25 +36,6 @@ import org.uberfire.security.authz.PermissionManager;
 @Dependent
 public class ACLSettings implements IsWidget {
 
-    public interface View extends UberView<ACLSettings> {
-
-        View setHomePerspectiveName(String name);
-
-        View setHomePerspectiveTitle(String name);
-
-        View setHomePerspectiveSelectorEnabled(boolean enabled);
-
-        View setHomePerspectiveSelector(IsWidget widget);
-
-        View setNoHomePerspectiveDefined();
-
-        View setPriorityName(String name);
-
-        View setPrioritySelectorEnabled(boolean enabled);
-
-        View setPrioritySelector(IsWidget widget);
-    }
-
     View view;
     PermissionManager permissionManager;
     PerspectiveDropDown homePerspectiveDropDown;
@@ -64,7 +45,6 @@ public class ACLSettings implements IsWidget {
     Event<PriorityChangedEvent> priorityChangedEvent;
     AuthorizationPolicy authzPolicy;
     boolean isEditMode;
-
     @Inject
     public ACLSettings(View view,
                        PermissionManager permissionManager,
@@ -131,16 +111,19 @@ public class ACLSettings implements IsWidget {
     private void open(Role role) {
         String homePerspectiveId = authzPolicy.getHomePerspective(role);
         int priority = authzPolicy.getPriority(role);
-        open(homePerspectiveId, priority);
+        open(homePerspectiveId,
+             priority);
     }
 
     private void open(Group group) {
         String homePerspectiveId = authzPolicy.getHomePerspective(group);
         int priority = authzPolicy.getPriority(group);
-        open(homePerspectiveId, priority);
+        open(homePerspectiveId,
+             priority);
     }
 
-    private void open(String homePerspectiveId, int priority) {
+    private void open(String homePerspectiveId,
+                      int priority) {
         if (homePerspectiveId == null) {
             homePerspectiveId = homePerspectiveDropDown.getDefaultPerspective().getIdentifier();
         }
@@ -153,14 +136,12 @@ public class ACLSettings implements IsWidget {
                 homePerspectiveDropDown.setSelectedPerspective(homePerspectiveId);
             }
             priorityDropDown.setSelectedPriority(priority);
-        }
-        else {
+        } else {
             if (homePerspectiveId != null) {
                 String itemName = homePerspectiveDropDown.getItemName(homePerspectiveId);
                 view.setHomePerspectiveName(itemName);
                 view.setHomePerspectiveTitle(homePerspectiveId);
-            }
-            else {
+            } else {
                 view.setNoHomePerspectiveDefined();
             }
             view.setPriorityName(priorityDropDown.getPriorityName(priority));
@@ -169,11 +150,32 @@ public class ACLSettings implements IsWidget {
 
     void onHomePerspectiveSelected() {
         PerspectiveActivity p = getHomePerspective();
-        homePerspectiveChangedEvent.fire(new HomePerspectiveChangedEvent(this, p));
+        homePerspectiveChangedEvent.fire(new HomePerspectiveChangedEvent(this,
+                                                                         p));
     }
 
     void onPrioritySelected() {
         int priority = getPriority();
-        priorityChangedEvent.fire(new PriorityChangedEvent(this, priority));
+        priorityChangedEvent.fire(new PriorityChangedEvent(this,
+                                                           priority));
+    }
+
+    public interface View extends UberView<ACLSettings> {
+
+        View setHomePerspectiveName(String name);
+
+        View setHomePerspectiveTitle(String name);
+
+        View setHomePerspectiveSelectorEnabled(boolean enabled);
+
+        View setHomePerspectiveSelector(IsWidget widget);
+
+        View setNoHomePerspectiveDefined();
+
+        View setPriorityName(String name);
+
+        View setPrioritySelectorEnabled(boolean enabled);
+
+        View setPrioritySelector(IsWidget widget);
     }
 }

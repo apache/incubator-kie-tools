@@ -21,40 +21,39 @@ import org.uberfire.ext.wires.bpmn.client.commands.Results;
 
 import static org.jgroups.util.Util.assertFalse;
 import static org.jgroups.util.Util.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class ResultsTest {
 
     @Test
     public void testNewInstance() {
         final Results results = new DefaultResultsImpl();
-        assertTrue( results.getMessages().isEmpty() );
-        assertTrue( results.getMessages( ResultType.ERROR ).isEmpty() );
-        assertTrue( results.getMessages( ResultType.WARNING ).isEmpty() );
+        assertTrue(results.getMessages().isEmpty());
+        assertTrue(results.getMessages(ResultType.ERROR).isEmpty());
+        assertTrue(results.getMessages(ResultType.WARNING).isEmpty());
     }
 
     @Test
     public void testAdd() {
         final Results results = new DefaultResultsImpl();
-        results.addMessage( new DefaultResultImpl( ResultType.ERROR,
-                                                   "An error" ) );
-        results.addMessage( new DefaultResultImpl( ResultType.WARNING,
-                                                   "A warning" ) );
-        assertEquals( 2,
-                      results.getMessages().size() );
-        assertEquals( 1,
-                      results.getMessages( ResultType.ERROR ).size() );
-        assertEquals( 1,
-                      results.getMessages( ResultType.WARNING ).size() );
+        results.addMessage(new DefaultResultImpl(ResultType.ERROR,
+                                                 "An error"));
+        results.addMessage(new DefaultResultImpl(ResultType.WARNING,
+                                                 "A warning"));
+        assertEquals(2,
+                     results.getMessages().size());
+        assertEquals(1,
+                     results.getMessages(ResultType.ERROR).size());
+        assertEquals(1,
+                     results.getMessages(ResultType.WARNING).size());
     }
 
     @Test
     public void testContains() {
         final Results results = new DefaultResultsImpl();
-        results.addMessage( new DefaultResultImpl( ResultType.ERROR,
-                                                   "An error" ) );
-        assertTrue( results.contains( ResultType.ERROR ) );
-        assertFalse( results.contains( ResultType.WARNING ) );
+        results.addMessage(new DefaultResultImpl(ResultType.ERROR,
+                                                 "An error"));
+        assertTrue(results.contains(ResultType.ERROR));
+        assertFalse(results.contains(ResultType.WARNING));
     }
-
 }

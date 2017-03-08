@@ -23,8 +23,7 @@ public interface DockConstants
         extends
         Messages {
 
-    public static final DockConstants INSTANCE = GWT.create( DockConstants.class );
+    public static final DockConstants INSTANCE = GWT.create(DockConstants.class);
 
     String OK();
-
 }

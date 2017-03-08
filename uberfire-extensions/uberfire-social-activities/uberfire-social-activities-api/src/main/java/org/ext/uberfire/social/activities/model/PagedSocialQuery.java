@@ -30,13 +30,13 @@ public class PagedSocialQuery implements Serializable {
 
     }
 
-    public PagedSocialQuery( List<SocialActivitiesEvent> socialEvents,
-                             SocialPaged socialPaged ) {
+    public PagedSocialQuery(List<SocialActivitiesEvent> socialEvents,
+                            SocialPaged socialPaged) {
         this.socialEvents = socialEvents;
         this.socialPaged = socialPaged;
     }
 
-    public SocialPaged socialPaged(){
+    public SocialPaged socialPaged() {
         return socialPaged;
     }
 

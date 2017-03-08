@@ -32,33 +32,19 @@ import org.uberfire.preferences.shared.bean.PreferenceHierarchyElement;
 
 public class TreeHierarchyInternalItemPresenter implements HierarchyInternalItemPresenter {
 
-    public interface View extends HierarchyItemView,
-                                  UberElement<TreeHierarchyInternalItemPresenter> {
-
-        void select();
-
-        void selectElement();
-    }
-
     private final View view;
-
     private final ManagedInstance<TreeHierarchyInternalItemPresenter> treeHierarchyInternalItemPresenterProvider;
-
     private final ManagedInstance<TreeHierarchyLeafItemPresenter> treeHierarchyLeafItemPresenterProvider;
-
     private final Event<HierarchyItemSelectedEvent> hierarchyItemSelectedEvent;
-
     private List<HierarchyItemPresenter> hierarchyItems;
-
     private PreferenceHierarchyElement<?> hierarchyElement;
-
     private int level;
 
     @Inject
-    public TreeHierarchyInternalItemPresenter( final View view,
-                                               final ManagedInstance<TreeHierarchyInternalItemPresenter> treeHierarchyInternalItemPresenterProvider,
-                                               final ManagedInstance<TreeHierarchyLeafItemPresenter> treeHierarchyLeafItemPresenterProvider,
-                                               final Event<HierarchyItemSelectedEvent> hierarchyItemSelectedEvent ) {
+    public TreeHierarchyInternalItemPresenter(final View view,
+                                              final ManagedInstance<TreeHierarchyInternalItemPresenter> treeHierarchyInternalItemPresenterProvider,
+                                              final ManagedInstance<TreeHierarchyLeafItemPresenter> treeHierarchyLeafItemPresenterProvider,
+                                              final Event<HierarchyItemSelectedEvent> hierarchyItemSelectedEvent) {
         this.view = view;
         this.treeHierarchyInternalItemPresenterProvider = treeHierarchyInternalItemPresenterProvider;
         this.treeHierarchyLeafItemPresenterProvider = treeHierarchyLeafItemPresenterProvider;
@@ -66,33 +52,35 @@ public class TreeHierarchyInternalItemPresenter implements HierarchyInternalItem
     }
 
     @Override
-    public <T> void init( final PreferenceHierarchyElement<T> preference,
-                          final int level,
-                          boolean tryToSelectChild ) {
+    public <T> void init(final PreferenceHierarchyElement<T> preference,
+                         final int level,
+                         boolean tryToSelectChild) {
         hierarchyElement = preference;
         this.level = level;
 
         hierarchyItems = new ArrayList<>();
 
-        for ( PreferenceHierarchyElement<?> child : preference.getChildren() ) {
+        for (PreferenceHierarchyElement<?> child : preference.getChildren()) {
             HierarchyItemPresenter hierarchyItem;
 
-            if ( child.hasChildren() ) {
+            if (child.hasChildren()) {
                 hierarchyItem = treeHierarchyInternalItemPresenterProvider.get();
             } else {
                 hierarchyItem = treeHierarchyLeafItemPresenterProvider.get();
             }
 
-            hierarchyItem.init( child, level + 1, tryToSelectChild && !child.isSelectable() );
-            if ( child.isSelectable() ) {
+            hierarchyItem.init(child,
+                               level + 1,
+                               tryToSelectChild && !child.isSelectable());
+            if (child.isSelectable()) {
                 hierarchyItem.fireSelect();
                 tryToSelectChild = false;
             }
 
-            hierarchyItems.add( hierarchyItem );
+            hierarchyItems.add(hierarchyItem);
         }
 
-        view.init( this );
+        view.init(this);
     }
 
     @Override
@@ -101,15 +89,15 @@ public class TreeHierarchyInternalItemPresenter implements HierarchyInternalItem
     }
 
     public void select() {
-        if ( hierarchyElement.isSelectable() ) {
-            final HierarchyItemSelectedEvent event = new HierarchyItemSelectedEvent( hierarchyElement );
-            hierarchyItemSelectedEvent.fire( event );
+        if (hierarchyElement.isSelectable()) {
+            final HierarchyItemSelectedEvent event = new HierarchyItemSelectedEvent(hierarchyElement);
+            hierarchyItemSelectedEvent.fire(event);
             view.selectElement();
         }
     }
 
-    public void hierarchyItemSelectedEvent( @Observes HierarchyItemSelectedEvent hierarchyItemSelectedEvent ) {
-        if ( !hierarchyElement.getId().equals( hierarchyItemSelectedEvent ) ) {
+    public void hierarchyItemSelectedEvent(@Observes HierarchyItemSelectedEvent hierarchyItemSelectedEvent) {
+        if (!hierarchyElement.getId().equals(hierarchyItemSelectedEvent)) {
             view.deselect();
         }
     }
@@ -129,5 +117,13 @@ public class TreeHierarchyInternalItemPresenter implements HierarchyInternalItem
 
     public int getLevel() {
         return level;
+    }
+
+    public interface View extends HierarchyItemView,
+                                  UberElement<TreeHierarchyInternalItemPresenter> {
+
+        void select();
+
+        void selectElement();
     }
 }

@@ -22,7 +22,6 @@ public class BayesianNodeCategory extends Category {
     public static final BayesianNodeCategory CATEGORY = new BayesianNodeCategory();
 
     private BayesianNodeCategory() {
-        super( "Bayesian Node" );
+        super("Bayesian Node");
     }
-
 }

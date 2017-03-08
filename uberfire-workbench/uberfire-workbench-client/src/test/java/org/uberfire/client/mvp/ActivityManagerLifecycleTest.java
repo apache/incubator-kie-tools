@@ -16,25 +16,9 @@
 
 package org.uberfire.client.mvp;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 
@@ -59,9 +43,15 @@ import org.uberfire.mvp.impl.PathPlaceRequest;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
 
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
+
 @RunWith(MockitoJUnitRunner.class)
 public class ActivityManagerLifecycleTest {
 
+    public static final String PATH_PLACE_ID = "id";
     // things to inject into the activity manager
     @Mock
     SyncBeanManagerImpl iocManager;
@@ -70,164 +60,178 @@ public class ActivityManagerLifecycleTest {
     @Mock
     AuthorizationManager authzManager;
     @Spy
-    User dorothy = new UserImpl( "dorothy" );
-
-    public static final String PATH_PLACE_ID = "id";
-
+    User dorothy = new UserImpl("dorothy");
     // the activity manager we're unit testing
     @InjectMocks
     ActivityManagerImpl activityManager = new ActivityManagerImpl();
 
     // things that are useful to individual tests
     PlaceRequest kansas;
-    Activity kansasActivity = mock( Activity.class );
+    Activity kansasActivity = mock(Activity.class);
 
-    Path path = mock( Path.class );
+    Path path = mock(Path.class);
     PlaceRequest pathPlace;
-    Activity pathPlaceActivity = mock( Activity.class );
+    Activity pathPlaceActivity = mock(Activity.class);
 
     private SyncBeanDef<Activity> pathIocBeanSpy;
 
     @Before
     public void setup() {
-        kansas = new DefaultPlaceRequest( "kansas" );
-        when( kansasActivity.getPlace() ).thenReturn( kansas );
+        kansas = new DefaultPlaceRequest("kansas");
+        when(kansasActivity.getPlace()).thenReturn(kansas);
 
-        SyncBeanDef<Activity> kansasIocBean = makeDependentBean( Activity.class, kansasActivity );
-        when( activityBeansCache.getActivity( "kansas" ) ).thenReturn( kansasIocBean );
+        SyncBeanDef<Activity> kansasIocBean = makeDependentBean(Activity.class,
+                                                                kansasActivity);
+        when(activityBeansCache.getActivity("kansas")).thenReturn(kansasIocBean);
 
-        pathPlace = new PathPlaceRequest( path ) {
+        pathPlace = new PathPlaceRequest(path) {
             @Override
-            protected ObservablePath createObservablePath( Path path ) {
-                return mock( ObservablePath.class );
+            protected ObservablePath createObservablePath(Path path) {
+                return mock(ObservablePath.class);
             }
         };
 
-        when( pathPlaceActivity.getPlace() ).thenReturn( pathPlace );
-        when( pathPlaceActivity.getIdentifier() ).thenReturn( PATH_PLACE_ID );
-        SyncBeanDef<Activity> pathIocBean = makeDependentBean( Activity.class, pathPlaceActivity );
-        pathIocBeanSpy = spy( pathIocBean );
-        when( activityBeansCache.getActivity( pathPlace.getIdentifier() ) ).thenReturn( pathIocBeanSpy );
+        when(pathPlaceActivity.getPlace()).thenReturn(pathPlace);
+        when(pathPlaceActivity.getIdentifier()).thenReturn(PATH_PLACE_ID);
+        SyncBeanDef<Activity> pathIocBean = makeDependentBean(Activity.class,
+                                                              pathPlaceActivity);
+        pathIocBeanSpy = spy(pathIocBean);
+        when(activityBeansCache.getActivity(pathPlace.getIdentifier())).thenReturn(pathIocBeanSpy);
 
-
-        when( authzManager.authorize( any( Resource.class ),
-                                      eq( dorothy ) ) ).thenReturn( true );
-
-
+        when(authzManager.authorize(any(Resource.class),
+                                    eq(dorothy))).thenReturn(true);
     }
 
     @Test
     public void shouldCallOnStartupBeforeReturningNewActivity() throws Exception {
-        Set<Activity> activities = activityManager.getActivities( kansas );
+        Set<Activity> activities = activityManager.getActivities(kansas);
 
-        assertEquals( 1, activities.size() );
-        assertEquals( kansasActivity, activities.iterator().next() );
+        assertEquals(1,
+                     activities.size());
+        assertEquals(kansasActivity,
+                     activities.iterator().next());
 
-        verify( kansasActivity, times( 1 ) ).onStartup( kansas );
+        verify(kansasActivity,
+               times(1)).onStartup(kansas);
     }
 
     @Test
     public void shouldResolvePlaceIdentifierForPathPlaceRequestOnGetActivity() throws Exception {
 
-        assertEquals( PathPlaceRequest.NULL, pathPlace.getIdentifier() );
-        Activity activity = activityManager.getActivity( pathPlace );
-        assertNotNull( activity );
-        assertEquals( PATH_PLACE_ID, pathPlace.getIdentifier() );
-        assertEquals( pathPlaceActivity, activity );
-
+        assertEquals(PathPlaceRequest.NULL,
+                     pathPlace.getIdentifier());
+        Activity activity = activityManager.getActivity(pathPlace);
+        assertNotNull(activity);
+        assertEquals(PATH_PLACE_ID,
+                     pathPlace.getIdentifier());
+        assertEquals(pathPlaceActivity,
+                     activity);
     }
 
     @Test
     public void shouldResolvePlaceIdentifierForPathPlaceRequestsOnGetActivities() throws Exception {
 
-        assertEquals( PathPlaceRequest.NULL, pathPlace.getIdentifier() );
+        assertEquals(PathPlaceRequest.NULL,
+                     pathPlace.getIdentifier());
 
-        Set<Activity> activities = activityManager.getActivities( pathPlace );
-        assertEquals( 1, activities.size() );
-        assertEquals( PATH_PLACE_ID, activities.iterator().next().getPlace().getIdentifier() );
+        Set<Activity> activities = activityManager.getActivities(pathPlace);
+        assertEquals(1,
+                     activities.size());
+        assertEquals(PATH_PLACE_ID,
+                     activities.iterator().next().getPlace().getIdentifier());
     }
 
     @Test
     public void activityBeanShouldBeCreatedOnlyOnceOnGetActivities() throws Exception {
-        activityManager.getActivities( pathPlace );
-        verify( pathIocBeanSpy, times( 1 ) ).getInstance();
+        activityManager.getActivities(pathPlace);
+        verify(pathIocBeanSpy,
+               times(1)).getInstance();
     }
 
     @Test
     public void activityBeanShouldBeCreatedOnlyOnceOnGetActivity() throws Exception {
-        activityManager.getActivity( pathPlace );
-        activityManager.getActivity( pathPlace );
-        verify( pathIocBeanSpy, times( 1 ) ).getInstance();
+        activityManager.getActivity(pathPlace);
+        activityManager.getActivity(pathPlace);
+        verify(pathIocBeanSpy,
+               times(1)).getInstance();
     }
 
     @Test
     public void shouldResolveIdentifier() throws Exception {
-        Set<Activity> activities = activityManager.getActivities( kansas );
+        Set<Activity> activities = activityManager.getActivities(kansas);
 
-        assertEquals( 1, activities.size() );
-        assertEquals( kansasActivity, activities.iterator().next() );
+        assertEquals(1,
+                     activities.size());
+        assertEquals(kansasActivity,
+                     activities.iterator().next());
 
-        verify( kansasActivity, times( 1 ) ).onStartup( kansas );
+        verify(kansasActivity,
+               times(1)).onStartup(kansas);
     }
-
 
     @Test
     public void shouldCallOnShutdownWhenDestroyingActivity() throws Exception {
-        activityManager.getActivities( kansas );
-        activityManager.destroyActivity( kansasActivity );
+        activityManager.getActivities(kansas);
+        activityManager.destroyActivity(kansasActivity);
 
-        verify( kansasActivity, times( 1 ) ).onShutdown();
-        verify( iocManager, times( 1 ) ).destroyBean( kansasActivity );
+        verify(kansasActivity,
+               times(1)).onShutdown();
+        verify(iocManager,
+               times(1)).destroyBean(kansasActivity);
     }
 
     @Test
     public void shouldThrowExceptionWhenDestroyingDestroyedActivity() throws Exception {
-        activityManager.getActivities( kansas );
-        activityManager.destroyActivity( kansasActivity );
+        activityManager.getActivities(kansas);
+        activityManager.destroyActivity(kansasActivity);
 
         try {
-            activityManager.destroyActivity( kansasActivity );
-            fail( "second destroy should have thrown an exception" );
-        } catch ( IllegalStateException e ) {
+            activityManager.destroyActivity(kansasActivity);
+            fail("second destroy should have thrown an exception");
+        } catch (IllegalStateException e) {
             // expected
         }
 
-        verify( kansasActivity, times( 1 ) ).onShutdown();
-        verify( iocManager, times( 1 ) ).destroyBean( kansasActivity );
+        verify(kansasActivity,
+               times(1)).onShutdown();
+        verify(iocManager,
+               times(1)).destroyBean(kansasActivity);
     }
 
     @Test
     public void shouldNotSeeUnauthorizedActivities() throws Exception {
-        when( authzManager.authorize( any( Resource.class ),
-                                      eq( dorothy ) ) ).thenReturn( false );
-        Set<Activity> activities = activityManager.getActivities( kansas );
-        assertEquals( 0, activities.size() );
+        when(authzManager.authorize(any(Resource.class),
+                                    eq(dorothy))).thenReturn(false);
+        Set<Activity> activities = activityManager.getActivities(kansas);
+        assertEquals(0,
+                     activities.size());
     }
 
     @Test
     public void shouldNotLeakUnauthorizedActivityInstances() throws Exception {
-        when( authzManager.authorize( any( Resource.class ),
-                                      eq( dorothy ) ) ).thenReturn( false );
-        activityManager.getActivities( kansas );
+        when(authzManager.authorize(any(Resource.class),
+                                    eq(dorothy))).thenReturn(false);
+        activityManager.getActivities(kansas);
 
         // this overspecified; all we care is that any activity that was created has also been destroyed.
         // it would be equally okay if the bean was never instantiated in the first place.
-        verify( activityBeansCache ).getActivity( "kansas" );
-        verify( iocManager ).destroyBean( kansasActivity );
+        verify(activityBeansCache).getActivity("kansas");
+        verify(iocManager).destroyBean(kansasActivity);
     }
 
     @Test
     public void shouldNotStartUnauthorizedActivities() throws Exception {
-        when( authzManager.authorize( any( Resource.class ),
-                                      eq( dorothy ) ) ).thenReturn( false );
-        activityManager.getActivities( kansas );
-        verify( kansasActivity, never() ).onStartup( kansas );
+        when(authzManager.authorize(any(Resource.class),
+                                    eq(dorothy))).thenReturn(false);
+        activityManager.getActivities(kansas);
+        verify(kansasActivity,
+               never()).onStartup(kansas);
     }
 
     @Test
     public void lookupShouldReturnNullWhenPlaceHasNoSplashScreen() throws Exception {
-        SplashScreenActivity splashScreenActivity = activityManager.getSplashScreenInterceptor( kansas );
-        assertNull( splashScreenActivity );
+        SplashScreenActivity splashScreenActivity = activityManager.getSplashScreenInterceptor(kansas);
+        assertNull(splashScreenActivity);
     }
 
     /**
@@ -235,20 +239,23 @@ public class ActivityManagerLifecycleTest {
      */
     @Test
     public void shouldStartSplashScreens() throws Exception {
-        PlaceRequest oz = new DefaultPlaceRequest( "oz" );
+        PlaceRequest oz = new DefaultPlaceRequest("oz");
 
         List<SplashScreenActivity> splashScreenList = new ArrayList<SplashScreenActivity>();
-        SplashScreenActivity expectedSplashScreenActivity = makeEnabledSplashScreenThatIntercepts( kansas );
-        SplashScreenActivity nonExpectedSplashScreenActivity = makeEnabledSplashScreenThatIntercepts( oz );
-        splashScreenList.add( expectedSplashScreenActivity );
+        SplashScreenActivity expectedSplashScreenActivity = makeEnabledSplashScreenThatIntercepts(kansas);
+        SplashScreenActivity nonExpectedSplashScreenActivity = makeEnabledSplashScreenThatIntercepts(oz);
+        splashScreenList.add(expectedSplashScreenActivity);
 
-        when( activityBeansCache.getSplashScreens() ).thenReturn( splashScreenList );
+        when(activityBeansCache.getSplashScreens()).thenReturn(splashScreenList);
 
-        SplashScreenActivity splashScreenActivity = activityManager.getSplashScreenInterceptor( kansas );
-        assertSame( expectedSplashScreenActivity, splashScreenActivity );
-        verify( splashScreenActivity, times( 1 ) ).onStartup( kansas );
+        SplashScreenActivity splashScreenActivity = activityManager.getSplashScreenInterceptor(kansas);
+        assertSame(expectedSplashScreenActivity,
+                   splashScreenActivity);
+        verify(splashScreenActivity,
+               times(1)).onStartup(kansas);
 
-        verify( nonExpectedSplashScreenActivity, never() ).onStartup( any( PlaceRequest.class ) );
+        verify(nonExpectedSplashScreenActivity,
+               never()).onStartup(any(PlaceRequest.class));
     }
 
     /**
@@ -257,13 +264,14 @@ public class ActivityManagerLifecycleTest {
     @Test
     public void shouldNotStartDisabledSplashScreens() throws Exception {
         List<SplashScreenActivity> splashScreenList = new ArrayList<SplashScreenActivity>();
-        SplashScreenActivity expectedSplashScreenActivity = makeSplashScreenThatIntercepts( kansas, false );
-        splashScreenList.add( expectedSplashScreenActivity );
+        SplashScreenActivity expectedSplashScreenActivity = makeSplashScreenThatIntercepts(kansas,
+                                                                                           false);
+        splashScreenList.add(expectedSplashScreenActivity);
 
-        when( activityBeansCache.getSplashScreens() ).thenReturn( splashScreenList );
+        when(activityBeansCache.getSplashScreens()).thenReturn(splashScreenList);
 
-        SplashScreenActivity splashScreenActivity = activityManager.getSplashScreenInterceptor( kansas );
-        assertNull( splashScreenActivity );
+        SplashScreenActivity splashScreenActivity = activityManager.getSplashScreenInterceptor(kansas);
+        assertNull(splashScreenActivity);
     }
 
     /**
@@ -273,43 +281,47 @@ public class ActivityManagerLifecycleTest {
     public void shouldStopSplashScreensWhenDestroyed() throws Exception {
 
         List<SplashScreenActivity> splashScreenList = new ArrayList<SplashScreenActivity>();
-        SplashScreenActivity expectedSplashScreenActivity = makeEnabledSplashScreenThatIntercepts( kansas );
-        splashScreenList.add( expectedSplashScreenActivity );
+        SplashScreenActivity expectedSplashScreenActivity = makeEnabledSplashScreenThatIntercepts(kansas);
+        splashScreenList.add(expectedSplashScreenActivity);
 
-        when( activityBeansCache.getSplashScreens() ).thenReturn( splashScreenList );
+        when(activityBeansCache.getSplashScreens()).thenReturn(splashScreenList);
 
-        SplashScreenActivity splashScreenActivity = activityManager.getSplashScreenInterceptor( kansas );
-        activityManager.destroyActivity( splashScreenActivity );
-        verify( expectedSplashScreenActivity, times( 1 ) ).onShutdown();
-        assertFalse( activityManager.isStarted( expectedSplashScreenActivity ) );
+        SplashScreenActivity splashScreenActivity = activityManager.getSplashScreenInterceptor(kansas);
+        activityManager.destroyActivity(splashScreenActivity);
+        verify(expectedSplashScreenActivity,
+               times(1)).onShutdown();
+        assertFalse(activityManager.isStarted(expectedSplashScreenActivity));
 
         // never try to destroy singleton beans!
-        verify( iocManager, never() ).destroyBean( expectedSplashScreenActivity );
+        verify(iocManager,
+               never()).destroyBean(expectedSplashScreenActivity);
     }
 
     @Test
     public void shouldNotGetConfusedAboutSplashScreensWithSamePlaceAsTheirScreen() throws Exception {
 
         List<SplashScreenActivity> splashScreenList = new ArrayList<SplashScreenActivity>();
-        SplashScreenActivity expectedSplashScreenActivity = makeEnabledSplashScreenThatIntercepts( kansas );
-        when( expectedSplashScreenActivity.getPlace() ).thenReturn( kansas );
-        splashScreenList.add( expectedSplashScreenActivity );
+        SplashScreenActivity expectedSplashScreenActivity = makeEnabledSplashScreenThatIntercepts(kansas);
+        when(expectedSplashScreenActivity.getPlace()).thenReturn(kansas);
+        splashScreenList.add(expectedSplashScreenActivity);
 
-        when( activityBeansCache.getSplashScreens() ).thenReturn( splashScreenList );
+        when(activityBeansCache.getSplashScreens()).thenReturn(splashScreenList);
 
         // this loads the regular kansas activity (not the splash screen) into the activityBeansCache
-        activityManager.getActivity( kansas );
+        activityManager.getActivity(kansas);
 
-        SplashScreenActivity splashScreenActivity = activityManager.getSplashScreenInterceptor( kansas );
+        SplashScreenActivity splashScreenActivity = activityManager.getSplashScreenInterceptor(kansas);
 
         // this must not get confused even though expectedSplashScreenActivity and kansasActivity both have the same PlaceRequest
-        activityManager.destroyActivity( splashScreenActivity );
+        activityManager.destroyActivity(splashScreenActivity);
 
-        verify( expectedSplashScreenActivity, times( 1 ) ).onShutdown();
-        assertFalse( activityManager.isStarted( expectedSplashScreenActivity ) );
+        verify(expectedSplashScreenActivity,
+               times(1)).onShutdown();
+        assertFalse(activityManager.isStarted(expectedSplashScreenActivity));
 
         // never try to destroy singleton beans!
-        verify( iocManager, never() ).destroyBean( expectedSplashScreenActivity );
+        verify(iocManager,
+               never()).destroyBean(expectedSplashScreenActivity);
     }
 
     /**
@@ -319,23 +331,25 @@ public class ActivityManagerLifecycleTest {
     public void shouldThrowExceptionWhenDoubleDestroyingSplashScreen() throws Exception {
 
         List<SplashScreenActivity> splashScreenList = new ArrayList<SplashScreenActivity>();
-        SplashScreenActivity expectedSplashScreenActivity = makeEnabledSplashScreenThatIntercepts( kansas );
-        splashScreenList.add( expectedSplashScreenActivity );
+        SplashScreenActivity expectedSplashScreenActivity = makeEnabledSplashScreenThatIntercepts(kansas);
+        splashScreenList.add(expectedSplashScreenActivity);
 
-        when( activityBeansCache.getSplashScreens() ).thenReturn( splashScreenList );
+        when(activityBeansCache.getSplashScreens()).thenReturn(splashScreenList);
 
-        SplashScreenActivity splashScreenActivity = activityManager.getSplashScreenInterceptor( kansas );
-        activityManager.destroyActivity( splashScreenActivity );
+        SplashScreenActivity splashScreenActivity = activityManager.getSplashScreenInterceptor(kansas);
+        activityManager.destroyActivity(splashScreenActivity);
         try {
-            activityManager.destroyActivity( splashScreenActivity );
-            fail( "should have thrown exception on double destroy" );
-        } catch ( IllegalStateException e ) {
+            activityManager.destroyActivity(splashScreenActivity);
+            fail("should have thrown exception on double destroy");
+        } catch (IllegalStateException e) {
             // expected
         }
 
-        verify( expectedSplashScreenActivity, times( 1 ) ).onShutdown();
+        verify(expectedSplashScreenActivity,
+               times(1)).onShutdown();
         // never try to destroy singleton beans!
-        verify( iocManager, never() ).destroyBean( expectedSplashScreenActivity );
+        verify(iocManager,
+               never()).destroyBean(expectedSplashScreenActivity);
     }
 
     @Test
@@ -345,75 +359,82 @@ public class ActivityManagerLifecycleTest {
         }
         ;
         final String myPerspectiveId = "myPerspectiveId";
-        final MyPerspectiveActivity activity = mock( MyPerspectiveActivity.class );
-        when( activity.getIdentifier() ).thenReturn( myPerspectiveId );
-        when( activity.getPlace() ).thenReturn( new DefaultPlaceRequest( myPerspectiveId ) );
+        final MyPerspectiveActivity activity = mock(MyPerspectiveActivity.class);
+        when(activity.getIdentifier()).thenReturn(myPerspectiveId);
+        when(activity.getPlace()).thenReturn(new DefaultPlaceRequest(myPerspectiveId));
 
         // note that we're telling the bean manager this bean is of concrete type PerspectiveActivity.
         // this mirrors what the JavaScript runtime plugin API does.
-        SyncBeanDef<PerspectiveActivity> perspectiveActivityBean = makeSingletonBean( PerspectiveActivity.class, activity, myPerspectiveId );
+        SyncBeanDef<PerspectiveActivity> perspectiveActivityBean = makeSingletonBean(PerspectiveActivity.class,
+                                                                                     activity,
+                                                                                     myPerspectiveId);
 
-        when( activityBeansCache.getActivity( myPerspectiveId ) ).thenReturn( (SyncBeanDef) perspectiveActivityBean );
+        when(activityBeansCache.getActivity(myPerspectiveId)).thenReturn((SyncBeanDef) perspectiveActivityBean);
 
-        Activity retrievedActivity = activityManager.getActivity( Activity.class, new DefaultPlaceRequest( myPerspectiveId ) );
-        activityManager.destroyActivity( retrievedActivity );
+        Activity retrievedActivity = activityManager.getActivity(Activity.class,
+                                                                 new DefaultPlaceRequest(myPerspectiveId));
+        activityManager.destroyActivity(retrievedActivity);
 
         // it's a singleton, so we should not try to destroy it.
-        verify( iocManager, never() ).destroyBean( activity );
+        verify(iocManager,
+               never()).destroyBean(activity);
     }
 
-    private SplashScreenActivity makeEnabledSplashScreenThatIntercepts( final PlaceRequest place ) {
-        return makeSplashScreenThatIntercepts( place, true );
+    private SplashScreenActivity makeEnabledSplashScreenThatIntercepts(final PlaceRequest place) {
+        return makeSplashScreenThatIntercepts(place,
+                                              true);
     }
 
-    private SplashScreenActivity makeSplashScreenThatIntercepts( final PlaceRequest place,
-                                                                 final boolean enabled ) {
+    private SplashScreenActivity makeSplashScreenThatIntercepts(final PlaceRequest place,
+                                                                final boolean enabled) {
         String splashActivityName = place.getIdentifier() + "!Splash";
-        SplashScreenActivity splashScreenActivity = mock( SplashScreenActivity.class );
-        when( splashScreenActivity.isEnabled() ).thenReturn( enabled );
-        when( splashScreenActivity.intercept( place ) ).thenReturn( true );
-        when( splashScreenActivity.getPlace() ).thenReturn( new DefaultPlaceRequest( splashActivityName ) );
-        makeSingletonBean( SplashScreenActivity.class, splashScreenActivity );
+        SplashScreenActivity splashScreenActivity = mock(SplashScreenActivity.class);
+        when(splashScreenActivity.isEnabled()).thenReturn(enabled);
+        when(splashScreenActivity.intercept(place)).thenReturn(true);
+        when(splashScreenActivity.getPlace()).thenReturn(new DefaultPlaceRequest(splashActivityName));
+        makeSingletonBean(SplashScreenActivity.class,
+                          splashScreenActivity);
         return splashScreenActivity;
     }
 
     @SuppressWarnings("unchecked")
-    private <T> SyncBeanDef<T> makeDependentBean( final Class<T> type,
-                                                 final T beanInstance ) {
-        final SyncBeanDef<T> beanDef = new MockIOCBeanDef<T, T>( beanInstance,
+    private <T> SyncBeanDef<T> makeDependentBean(final Class<T> type,
+                                                 final T beanInstance) {
+        final SyncBeanDef<T> beanDef = new MockIOCBeanDef<T, T>(beanInstance,
                                                                 type,
                                                                 Dependent.class,
                                                                 null,
                                                                 beanInstance.getClass().getSimpleName(),
-                                                                true );
-        when( (IOCBeanDef<T>) iocManager.lookupBean( beanInstance.getClass() ) ).thenReturn( beanDef );
+                                                                true);
+        when((IOCBeanDef<T>) iocManager.lookupBean(beanInstance.getClass())).thenReturn(beanDef);
         return beanDef;
     }
 
     /**
      * Makes a singleton bean whose name is type.getSimpleName().
      */
-    private <T> IOCBeanDef<T> makeSingletonBean( final Class<T> type,
-                                                 final T beanInstance ) {
-        return makeSingletonBean( type, beanInstance, type.getSimpleName() );
+    private <T> IOCBeanDef<T> makeSingletonBean(final Class<T> type,
+                                                final T beanInstance) {
+        return makeSingletonBean(type,
+                                 beanInstance,
+                                 type.getSimpleName());
     }
 
     /**
      * Makes a singleton bean with the given name.
      */
     @SuppressWarnings("unchecked")
-    private <T> SyncBeanDef<T> makeSingletonBean( final Class<T> type,
+    private <T> SyncBeanDef<T> makeSingletonBean(final Class<T> type,
                                                  final T beanInstance,
-                                                 final String name ) {
-        SyncBeanDef<T> beanDef = new MockIOCBeanDef<T, T>( beanInstance,
+                                                 final String name) {
+        SyncBeanDef<T> beanDef = new MockIOCBeanDef<T, T>(beanInstance,
                                                           type,
                                                           ApplicationScoped.class,
                                                           null,
                                                           name,
-                                                          true );
+                                                          true);
 
-        when( (IOCBeanDef<T>) iocManager.lookupBean( beanInstance.getClass() ) ).thenReturn( beanDef );
+        when((IOCBeanDef<T>) iocManager.lookupBean(beanInstance.getClass())).thenReturn(beanDef);
         return beanDef;
     }
-
 }

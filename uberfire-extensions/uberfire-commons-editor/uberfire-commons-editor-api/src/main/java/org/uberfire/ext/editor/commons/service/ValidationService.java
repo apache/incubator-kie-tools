@@ -28,11 +28,11 @@ public interface ValidationService {
     /**
      * Checks if the path and file name is valid.
      */
-    boolean isFileNameValid( final Path path,
-                             final String fileName );
+    boolean isFileNameValid(final Path path,
+                            final String fileName);
 
     /**
      * Checks if the file name is valid.
      */
-    boolean isFileNameValid( final String fileName );
+    boolean isFileNameValid(final String fileName);
 }

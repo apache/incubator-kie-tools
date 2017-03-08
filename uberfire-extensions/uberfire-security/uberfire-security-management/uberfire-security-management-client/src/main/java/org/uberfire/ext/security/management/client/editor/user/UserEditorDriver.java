@@ -16,6 +16,13 @@
 
 package org.uberfire.ext.security.management.client.editor.user;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.validation.ConstraintViolation;
+
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -24,30 +31,22 @@ import org.uberfire.ext.security.management.api.UserManager;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.editor.Driver;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.validation.ConstraintViolation;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * <p>It links the user editors hierarchy with the instance edited by flushing the editor's values into the User model.</p>
- * <p>It contains all logic for editing a User instance by using Editors hierarchy instances, so 
+ * <p>It contains all logic for editing a User instance by using Editors hierarchy instances, so
  * the editors's concrete widget/component implementation is isolated from the edition logic.</p>
- * 
  * @since 0.8.0
  */
 @Dependent
 public class UserEditorDriver implements Driver<User, UserEditor> {
 
     ClientUserSystemManager userSystemManager;
-    
+
     UserEditor userEditor;
     User user;
     boolean isFlushed = false;
     boolean isEditMode = false;
-    
+
     @Inject
     public UserEditorDriver(final ClientUserSystemManager userSystemManager) {
         this.userSystemManager = userSystemManager;
@@ -63,14 +62,16 @@ public class UserEditorDriver implements Driver<User, UserEditor> {
                 final boolean isEditable = attribute.isEditable();
                 if (isMandatory && isEditable && name != null) {
                     final String defaultValue = attribute.getDefaultValue();
-                    user.setProperty(name, defaultValue);
+                    user.setProperty(name,
+                                     defaultValue);
                 }
             }
         }
         return user;
     }
-    
-    public void show(final User user, final UserEditor userEditor) {
+
+    public void show(final User user,
+                     final UserEditor userEditor) {
         this.isFlushed = false;
         this.isEditMode = false;
         this.user = user;
@@ -83,7 +84,8 @@ public class UserEditorDriver implements Driver<User, UserEditor> {
         userEditor.rolesExplorer().show(user);
     }
 
-    public void edit(final User user, final UserEditor userEditor) {
+    public void edit(final User user,
+                     final UserEditor userEditor) {
         this.isFlushed = false;
         this.isEditMode = true;
         this.user = user;
@@ -99,7 +101,7 @@ public class UserEditorDriver implements Driver<User, UserEditor> {
     public boolean flush() {
         assert this.isEditMode;
         this.isFlushed = true;
-        
+
         // Flush editor and sub-editors.
         userEditor.flush();
         userEditor.attributesEditor().flush();
@@ -111,10 +113,13 @@ public class UserEditorDriver implements Driver<User, UserEditor> {
         final Map<String, String> properties = userEditor.attributesEditor().getValue();
         final Set<Group> groups = userEditor.groupsExplorer().getValue();
         final Set<Role> roles = userEditor.rolesExplorer().getValue();
-        
+
         // Create a new resulting instance (as groups & roles are unmodifiable collections in the default UserImpl).
-        user = new UserImpl(id, roles, groups, properties);
-        
+        user = new UserImpl(id,
+                            roles,
+                            groups,
+                            properties);
+
         // Validate the instance and set delegate violations, if any, to the editors hierarchy.
         Set<ConstraintViolation<User>> violations = userSystemManager.usersValidator().validate(user);
         userEditor.setViolations(violations);
@@ -126,5 +131,4 @@ public class UserEditorDriver implements Driver<User, UserEditor> {
         assert this.isFlushed;
         return user;
     }
-
 }

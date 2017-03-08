@@ -45,14 +45,14 @@ public class SplashModalFooter extends Composite {
 
     @PostConstruct
     private void setup() {
-        closeButton.ensureDebugId( "SplashModalFooter-close" );
-        show.ensureDebugId( "SplashModalFooter-dontShowAgain" );
+        closeButton.ensureDebugId("SplashModalFooter-close");
+        show.ensureDebugId("SplashModalFooter-dontShowAgain");
     }
 
-    @EventHandler( "closeButton" )
-    public void onOKButtonClick( final ClickEvent e ) {
-        if ( closeCommand != null ) {
-            closeCommand.execute( !show.getValue() );
+    @EventHandler("closeButton")
+    public void onOKButtonClick(final ClickEvent e) {
+        if (closeCommand != null) {
+            closeCommand.execute(!show.getValue());
         }
     }
 
@@ -64,8 +64,7 @@ public class SplashModalFooter extends Composite {
      * Sets the command to be executed when the close button has been clicked. The argument passed to the command is the
      * state of the "don't show again" checkbox.
      */
-    public void setCloseCommand( ParameterizedCommand<Boolean> closeCommand ) {
+    public void setCloseCommand(ParameterizedCommand<Boolean> closeCommand) {
         this.closeCommand = closeCommand;
     }
-
 }

@@ -37,45 +37,48 @@ public class ClusterServiceHelixTest {
     @Test
     public void getNodeStatusEmptyOrNullShouldReturnOfflineTest() {
 
-        when( externalView.getStateMap( "resourceName_0" ) ).thenReturn( null );
-        assertEquals( "OFFLINE", clusterServiceHelix.getNodeStatus() );
+        when(externalView.getStateMap("resourceName_0")).thenReturn(null);
+        assertEquals("OFFLINE",
+                     clusterServiceHelix.getNodeStatus());
 
         Map<String, String> emptyMap = new HashMap<String, String>();
-        when( externalView.getStateMap( "resourceName_0" ) ).thenReturn( emptyMap );
-        assertEquals( "OFFLINE", clusterServiceHelix.getNodeStatus() );
-
+        when(externalView.getStateMap("resourceName_0")).thenReturn(emptyMap);
+        assertEquals("OFFLINE",
+                     clusterServiceHelix.getNodeStatus());
     }
 
     @Test
     public void getNodeStatusTest() {
 
         Map<String, String> valueMap = new HashMap<String, String>();
-        valueMap.put( "instanceName", "LEADER" );
-        when( externalView.getStateMap( "resourceName_0" ) ).thenReturn( valueMap );
-        assertEquals( "LEADER", clusterServiceHelix.getNodeStatus() );
-
+        valueMap.put("instanceName",
+                     "LEADER");
+        when(externalView.getStateMap("resourceName_0")).thenReturn(valueMap);
+        assertEquals("LEADER",
+                     clusterServiceHelix.getNodeStatus());
     }
 
     @Test
     public void getNodeStatusNullViewTest() {
         externalView = null;
-        assertEquals( "OFFLINE", clusterServiceHelix.getNodeStatus() );
+        assertEquals("OFFLINE",
+                     clusterServiceHelix.getNodeStatus());
     }
 
     @Before
     public void setup() {
-        externalView = mock( ExternalView.class );
+        externalView = mock(ExternalView.class);
 
-        clusterServiceHelix = new ClusterServiceHelix( "clusterName",
-                                                       "zkAddress",
-                                                       "instanceName",
-                                                       "resourceName",
-                                                       mock( MessageHandlerResolver.class ) ) {
+        clusterServiceHelix = new ClusterServiceHelix("clusterName",
+                                                      "zkAddress",
+                                                      "instanceName",
+                                                      "resourceName",
+                                                      mock(MessageHandlerResolver.class)) {
             @Override
-            HelixManager getZkHelixManager( String clusterName,
-                                            String zkAddress,
-                                            String instanceName ) {
-                return mock( HelixManager.class );
+            HelixManager getZkHelixManager(String clusterName,
+                                           String zkAddress,
+                                           String instanceName) {
+                return mock(HelixManager.class);
             }
 
             @Override
@@ -83,7 +86,7 @@ public class ClusterServiceHelixTest {
             }
 
             @Override
-            public void addMessageHandlerResolver( MessageHandlerResolver resolver ) {
+            public void addMessageHandlerResolver(MessageHandlerResolver resolver) {
             }
 
             @Override
@@ -92,6 +95,6 @@ public class ClusterServiceHelixTest {
             }
         };
 
-        assertTrue( PriorityDisposableRegistry.getDisposables().contains( clusterServiceHelix ) );
+        assertTrue(PriorityDisposableRegistry.getDisposables().contains(clusterServiceHelix));
     }
 }

@@ -15,8 +15,6 @@
  */
 package org.uberfire.client;
 
-import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelMenu;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,12 +22,16 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.animation.client.Animation;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.IOC;
@@ -51,11 +53,7 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-import com.google.gwt.animation.client.Animation;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootPanel;
+import static org.uberfire.workbench.model.menu.MenuFactory.newTopLevelMenu;
 
 /**
  * GWT's Entry-point for Uberfire-showcase
@@ -81,77 +79,84 @@ public class ShowcaseEntryPoint {
     @Inject
     private ClientMessageBus bus;
 
-    @Inject private Event<DumpLayout> dumpLayoutEvent;
-    public static class DumpLayout {};
+    @Inject
+    private Event<DumpLayout> dumpLayoutEvent;
+
+    public static native void redirect(String url)/*-{
+        $wnd.location = url;
+    }-*/;
+
+    ;
 
     @PostConstruct
     public void startApp() {
         hideLoadingPopup();
     }
 
-    private void setupMenu( @Observes final ApplicationReadyEvent event ) {
+    private void setupMenu(@Observes final ApplicationReadyEvent event) {
         final PerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
 
         final Menus menus =
-                newTopLevelMenu( "Home" )
-                .respondsWith( new Command() {
+                newTopLevelMenu("Home")
+                        .respondsWith(new Command() {
+                            @Override
+                            public void execute() {
+                                if (defaultPerspective != null) {
+                                    placeManager.goTo(new DefaultPlaceRequest(defaultPerspective.getIdentifier()));
+                                } else {
+                                    Window.alert("Default perspective not found.");
+                                }
+                            }
+                        })
+                        .endMenu()
+                        .newTopLevelMenu("Perspectives")
+                        .withItems(getPerspectives())
+                        .endMenu()
+                        .newTopLevelMenu("Screens")
+                        .withItems(getScreens())
+                        .endMenu()
+                        .newTopLevelMenu("Dump Layout").respondsWith(new Command() {
                     @Override
                     public void execute() {
-                        if ( defaultPerspective != null ) {
-                            placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
-                        } else {
-                            Window.alert( "Default perspective not found." );
-                        }
+                        dumpLayoutEvent.fire(new DumpLayout());
                     }
-                } )
-                .endMenu()
-                .newTopLevelMenu( "Perspectives" )
-                .withItems( getPerspectives() )
-                .endMenu()
-                .newTopLevelMenu( "Screens" )
-                .withItems( getScreens() )
-                .endMenu()
-                .newTopLevelMenu( "Dump Layout" ).respondsWith( new Command() {
-                    @Override
-                    public void execute() {
-                        dumpLayoutEvent.fire( new DumpLayout() );
-                    }
-                } ).endMenu()
-                .build();
+                }).endMenu()
+                        .build();
 
-        menubar.addMenus( menus );
+        menubar.addMenus(menus);
     }
 
     private List<MenuItem> getScreens() {
         final List<MenuItem> screens = new ArrayList<MenuItem>();
         final List<String> names = new ArrayList<String>();
 
-        for ( final IOCBeanDef<WorkbenchScreenActivity> _menuItem : IOC.getBeanManager().lookupBeans( WorkbenchScreenActivity.class ) ) {
+        for (final IOCBeanDef<WorkbenchScreenActivity> _menuItem : IOC.getBeanManager().lookupBeans(WorkbenchScreenActivity.class)) {
             final String name;
-            if ( _menuItem.getBeanClass().equals( JSWorkbenchScreenActivity.class ) ) {
+            if (_menuItem.getBeanClass().equals(JSWorkbenchScreenActivity.class)) {
                 name = _menuItem.getName();
             } else {
-                name = IOC.getBeanManager().lookupBean( _menuItem.getBeanClass() ).getName();
+                name = IOC.getBeanManager().lookupBean(_menuItem.getBeanClass()).getName();
             }
-            names.add( name );
+            names.add(name);
         }
 
-        Collections.sort( names );
+        Collections.sort(names);
 
-        for ( final String name : names ) {
-            final MenuItem item = MenuFactory.newSimpleItem( name )
-                    .respondsWith( new Command() {
+        for (final String name : names) {
+            final MenuItem item = MenuFactory.newSimpleItem(name)
+                    .respondsWith(new Command() {
                         @Override
                         public void execute() {
                             List<PanelDefinition> panelsUnderRoot = perspectiveManager.getLivePerspectiveDefinition().getRoot().getChildren();
-                            if ( panelsUnderRoot.isEmpty() ) {
-                                Window.alert( "Sorry, can't find anywhere to launch the requested screen" );
+                            if (panelsUnderRoot.isEmpty()) {
+                                Window.alert("Sorry, can't find anywhere to launch the requested screen");
                             } else {
-                                placeManager.goTo( new DefaultPlaceRequest( name ), panelsUnderRoot.get( 0 ) );
+                                placeManager.goTo(new DefaultPlaceRequest(name),
+                                                  panelsUnderRoot.get(0));
                             }
                         }
-                    } ).endMenu().build().getItems().get( 0 );
-            screens.add( item );
+                    }).endMenu().build().getItems().get(0);
+            screens.add(item);
         }
 
         return screens;
@@ -159,18 +164,17 @@ public class ShowcaseEntryPoint {
 
     private List<MenuItem> getPerspectives() {
         final List<MenuItem> perspectives = new ArrayList<MenuItem>();
-        for ( final PerspectiveActivity perspective : getPerspectiveActivities() ) {
+        for (final PerspectiveActivity perspective : getPerspectiveActivities()) {
             final String name = perspective.getDefaultPerspectiveLayout().getName();
             final Command cmd = new Command() {
 
                 @Override
                 public void execute() {
-                    placeManager.goTo( new DefaultPlaceRequest( perspective.getIdentifier() ) );
+                    placeManager.goTo(new DefaultPlaceRequest(perspective.getIdentifier()));
                 }
-
             };
-            final MenuItem item = MenuFactory.newSimpleItem( name ).respondsWith( cmd ).endMenu().build().getItems().get( 0 );
-            perspectives.add( item );
+            final MenuItem item = MenuFactory.newSimpleItem(name).respondsWith(cmd).endMenu().build().getItems().get(0);
+            perspectives.add(item);
         }
 
         return perspectives;
@@ -178,17 +182,17 @@ public class ShowcaseEntryPoint {
 
     private PerspectiveActivity getDefaultPerspectiveActivity() {
         PerspectiveActivity defaultPerspective = null;
-        final Collection<SyncBeanDef<PerspectiveActivity>> perspectives = manager.lookupBeans( PerspectiveActivity.class );
+        final Collection<SyncBeanDef<PerspectiveActivity>> perspectives = manager.lookupBeans(PerspectiveActivity.class);
         final Iterator<SyncBeanDef<PerspectiveActivity>> perspectivesIterator = perspectives.iterator();
 
-        while ( perspectivesIterator.hasNext() ) {
+        while (perspectivesIterator.hasNext()) {
             final SyncBeanDef<PerspectiveActivity> perspective = perspectivesIterator.next();
             final PerspectiveActivity instance = perspective.getInstance();
-            if ( instance.isDefault() ) {
+            if (instance.isDefault()) {
                 defaultPerspective = instance;
                 break;
             } else {
-                manager.destroyBean( instance );
+                manager.destroyBean(instance);
             }
         }
         return defaultPerspective;
@@ -197,45 +201,42 @@ public class ShowcaseEntryPoint {
     private List<PerspectiveActivity> getPerspectiveActivities() {
 
         //Get Perspective Providers
-        final Set<PerspectiveActivity> activities = activityManager.getActivities( PerspectiveActivity.class );
+        final Set<PerspectiveActivity> activities = activityManager.getActivities(PerspectiveActivity.class);
 
         //Sort Perspective Providers so they're always in the same sequence!
-        List<PerspectiveActivity> sortedActivities = new ArrayList<PerspectiveActivity>( activities );
-        Collections.sort( sortedActivities,
-                          new Comparator<PerspectiveActivity>() {
+        List<PerspectiveActivity> sortedActivities = new ArrayList<PerspectiveActivity>(activities);
+        Collections.sort(sortedActivities,
+                         new Comparator<PerspectiveActivity>() {
 
-            @Override
-            public int compare( PerspectiveActivity o1,
-                                PerspectiveActivity o2 ) {
-                return o1.getDefaultPerspectiveLayout().getName().compareTo( o2.getDefaultPerspectiveLayout().getName() );
-            }
-
-        } );
-
+                             @Override
+                             public int compare(PerspectiveActivity o1,
+                                                PerspectiveActivity o2) {
+                                 return o1.getDefaultPerspectiveLayout().getName().compareTo(o2.getDefaultPerspectiveLayout().getName());
+                             }
+                         });
 
         return sortedActivities;
     }
 
     //Fade out the "Loading application" pop-up
     private void hideLoadingPopup() {
-        final Element e = RootPanel.get( "loading" ).getElement();
+        final Element e = RootPanel.get("loading").getElement();
 
         new Animation() {
 
             @Override
-            protected void onUpdate( double progress ) {
-                e.getStyle().setOpacity( 1.0 - progress );
+            protected void onUpdate(double progress) {
+                e.getStyle().setOpacity(1.0 - progress);
             }
 
             @Override
             protected void onComplete() {
-                e.getStyle().setVisibility( Style.Visibility.HIDDEN );
+                e.getStyle().setVisibility(Style.Visibility.HIDDEN);
             }
-        }.run( 500 );
+        }.run(500);
     }
 
-    public static native void redirect( String url )/*-{
-        $wnd.location = url;
-    }-*/;
+    public static class DumpLayout {
 
+    }
 }

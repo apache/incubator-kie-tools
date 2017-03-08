@@ -35,31 +35,22 @@ import org.uberfire.mvp.PlaceRequest;
 @WorkbenchPopup(identifier = "workbench.activity.notfound")
 public class ActivityNotFoundPresenter {
 
-    public interface View
-            extends
-            UberView<ActivityNotFoundPresenter> {
-
-        void setRequestedPlaceIdentifier( final String requestedPlaceIdentifier );
-
-    }
-
     @Inject
     private View view;
-
     @Inject
     private PlaceManager placeManager;
-
     private PlaceRequest place;
 
     @OnStartup
-    public void onStartup( final PlaceRequest place ) {
+    public void onStartup(final PlaceRequest place) {
         this.place = place;
     }
 
     @OnOpen
     public void onOpen() {
-        final String identifier = place.getParameter( "requestedPlaceIdentifier", null );
-        view.setRequestedPlaceIdentifier( identifier );
+        final String identifier = place.getParameter("requestedPlaceIdentifier",
+                                                     null);
+        view.setRequestedPlaceIdentifier(identifier);
     }
 
     @WorkbenchPartTitle
@@ -73,7 +64,13 @@ public class ActivityNotFoundPresenter {
     }
 
     public void close() {
-        placeManager.forceClosePlace( this.place );
+        placeManager.forceClosePlace(this.place);
     }
 
+    public interface View
+            extends
+            UberView<ActivityNotFoundPresenter> {
+
+        void setRequestedPlaceIdentifier(final String requestedPlaceIdentifier);
+    }
 }

@@ -27,15 +27,15 @@ public class GridWidgetDnDMouseUpHandler implements NodeMouseUpHandler {
     private final GridLayer layer;
     private final GridWidgetDnDHandlersState state;
 
-    public GridWidgetDnDMouseUpHandler( final GridLayer layer,
-                                        final GridWidgetDnDHandlersState state ) {
+    public GridWidgetDnDMouseUpHandler(final GridLayer layer,
+                                       final GridWidgetDnDHandlersState state) {
         this.layer = layer;
         this.state = state;
     }
 
     @Override
-    public void onNodeMouseUp( final NodeMouseUpEvent event ) {
-        switch ( state.getOperation() ) {
+    public void onNodeMouseUp(final NodeMouseUpEvent event) {
+        switch (state.getOperation()) {
             case NONE:
             case COLUMN_MOVE_PENDING:
             case COLUMN_RESIZE_PENDING:
@@ -45,14 +45,13 @@ public class GridWidgetDnDMouseUpHandler implements NodeMouseUpHandler {
             case COLUMN_MOVE:
             case ROW_MOVE:
                 //Clean-up the GridWidgetDnDProxy
-                layer.remove( state.getEventColumnHighlight() );
+                layer.remove(state.getEventColumnHighlight());
                 layer.batch();
                 break;
         }
 
         //Reset state
         state.reset();
-        layer.getViewport().getElement().getStyle().setCursor( state.getCursor() );
+        layer.getViewport().getElement().getStyle().setCursor(state.getCursor());
     }
-
 }

@@ -19,10 +19,9 @@ package org.uberfire.mvp;
 import java.util.Map;
 import java.util.Set;
 
+import jsinterop.annotations.JsType;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
-
-import jsinterop.annotations.JsType;
 
 /**
  * A request to navigate to a particular UberFire Workbench Place (a WorkbenchPerspective, a WorkbenchScreen, or a
@@ -34,7 +33,7 @@ import jsinterop.annotations.JsType;
 @JsType
 public interface PlaceRequest {
 
-    public static final PlaceRequest NOWHERE = new DefaultPlaceRequest( "NOWHERE" );
+    public static final PlaceRequest NOWHERE = new DefaultPlaceRequest("NOWHERE");
 
     String getIdentifier();
 
@@ -42,15 +41,15 @@ public interface PlaceRequest {
 
     String getFullIdentifier();
 
-    String getParameter( final String key,
-                         final String defaultValue );
+    String getParameter(final String key,
+                        final String defaultValue);
 
     Set<String> getParameterNames();
 
     Map<String, String> getParameters();
 
-    PlaceRequest addParameter( final String name,
-                               final String value );
+    PlaceRequest addParameter(final String name,
+                              final String value);
 
     // TODO (UF-88) when PlaceRequest is an immutable value type, cloning will no longer be a sensible operation
     PlaceRequest clone();
@@ -59,7 +58,7 @@ public interface PlaceRequest {
      * Indicates whether or not the Workbench framework should add a browser history item when navigating to this place.
      */
     boolean isUpdateLocationBarAllowed();
-    
+
     /**
      * Returns the path associated with this {@link PlaceRequest}.
      */
@@ -67,12 +66,11 @@ public interface PlaceRequest {
         // TODO go over all UF public API and start using Optional
         return null;
     }
-    
+
     /**
      * Invokes {@link #toString()} but exported to JavaScript so it can be invoked from different scripts.
      */
     default String asString() {
         return this.toString();
     }
-    
 }

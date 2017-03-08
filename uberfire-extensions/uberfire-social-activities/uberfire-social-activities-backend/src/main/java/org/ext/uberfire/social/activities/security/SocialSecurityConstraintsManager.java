@@ -15,32 +15,29 @@
  */
 package org.ext.uberfire.social.activities.security;
 
-import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
-import org.ext.uberfire.social.activities.service.SocialSecurityConstraint;
-
+import java.util.ArrayList;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+
+import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
+import org.ext.uberfire.social.activities.service.SocialSecurityConstraint;
 
 @ApplicationScoped
 public class SocialSecurityConstraintsManager {
 
-
     @Inject
     private Instance<SocialSecurityConstraint> socialSecurityConstraints;
 
-
-    public List<SocialActivitiesEvent> applyConstraints( List<SocialActivitiesEvent> events ) {
+    public List<SocialActivitiesEvent> applyConstraints(List<SocialActivitiesEvent> events) {
         List<SocialActivitiesEvent> secureEvents = new ArrayList<SocialActivitiesEvent>();
 
         initConstraints();
 
-        for ( SocialActivitiesEvent event : events ) {
-            if ( isAllowed( event ) ) {
-                secureEvents.add( event );
+        for (SocialActivitiesEvent event : events) {
+            if (isAllowed(event)) {
+                secureEvents.add(event);
             }
         }
 
@@ -48,14 +45,14 @@ public class SocialSecurityConstraintsManager {
     }
 
     private void initConstraints() {
-        for ( SocialSecurityConstraint securityConstraint : getSocialSecurityConstraints() ) {
+        for (SocialSecurityConstraint securityConstraint : getSocialSecurityConstraints()) {
             securityConstraint.init();
         }
     }
 
-    private boolean isAllowed( SocialActivitiesEvent event ) {
-        for ( SocialSecurityConstraint securityConstraint : getSocialSecurityConstraints() ) {
-            if ( securityConstraint.hasRestrictions( event ) ) {
+    private boolean isAllowed(SocialActivitiesEvent event) {
+        for (SocialSecurityConstraint securityConstraint : getSocialSecurityConstraints()) {
+            if (securityConstraint.hasRestrictions(event)) {
                 return false;
             }
         }

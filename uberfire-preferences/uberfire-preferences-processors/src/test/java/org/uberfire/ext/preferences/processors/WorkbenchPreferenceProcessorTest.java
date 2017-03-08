@@ -36,11 +36,11 @@ public class WorkbenchPreferenceProcessorTest extends AbstractProcessorTest {
 
     @Override
     protected AbstractErrorAbsorbingProcessor getProcessorUnderTest() {
-        return new WorkbenchPreferenceProcessor( code -> {
+        return new WorkbenchPreferenceProcessor(code -> {
             Result result = new Result();
-            result.setActualCode( code );
-            results.add( result );
-        } );
+            result.setActualCode(code);
+            results.add(result);
+        });
     }
 
     @Test
@@ -49,25 +49,26 @@ public class WorkbenchPreferenceProcessorTest extends AbstractProcessorTest {
         final String pathExpectedBeanImplResult = "org/uberfire/ext/preferences/processors/expected/MyPreferenceBeanGeneratedImpl.expected";
         final String pathExpectedPortableImplResult = "org/uberfire/ext/preferences/processors/expected/MyPreferencePortableGeneratedImpl.expected";
 
-        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile( getProcessorUnderTest(), pathCompilationUnit );
+        final List<Diagnostic<? extends JavaFileObject>> diagnostics = compile(getProcessorUnderTest(),
+                                                                               pathCompilationUnit);
 
-        getBeanGenerationResult().setExpectedCode( getExpectedSourceCode( pathExpectedBeanImplResult ) );
-        getPortableGenerationResult().setExpectedCode( getExpectedSourceCode( pathExpectedPortableImplResult ) );
+        getBeanGenerationResult().setExpectedCode(getExpectedSourceCode(pathExpectedBeanImplResult));
+        getPortableGenerationResult().setExpectedCode(getExpectedSourceCode(pathExpectedPortableImplResult));
 
-        assertSuccessfulCompilation( diagnostics );
-        assertNotNull( getBeanGenerationResult().getActualCode() );
-        assertNotNull( getPortableGenerationResult().getExpectedCode() );
-        assertEquals( getBeanGenerationResult().getExpectedCode(),
-                      getBeanGenerationResult().getActualCode() );
-        assertEquals( getPortableGenerationResult().getExpectedCode(),
-                      getPortableGenerationResult().getActualCode() );
+        assertSuccessfulCompilation(diagnostics);
+        assertNotNull(getBeanGenerationResult().getActualCode());
+        assertNotNull(getPortableGenerationResult().getExpectedCode());
+        assertEquals(getBeanGenerationResult().getExpectedCode(),
+                     getBeanGenerationResult().getActualCode());
+        assertEquals(getPortableGenerationResult().getExpectedCode(),
+                     getPortableGenerationResult().getActualCode());
     }
 
     private Result getBeanGenerationResult() {
-        return results.get( 0 );
+        return results.get(0);
     }
 
     private Result getPortableGenerationResult() {
-        return results.get( 1 );
+        return results.get(1);
     }
 }

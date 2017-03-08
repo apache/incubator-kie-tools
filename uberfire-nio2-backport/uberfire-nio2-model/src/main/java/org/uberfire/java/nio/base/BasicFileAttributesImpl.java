@@ -22,22 +22,22 @@ import org.uberfire.java.nio.file.attribute.FileTime;
 public class BasicFileAttributesImpl
         implements BasicFileAttributes {
 
-    private final String   fileKey;
+    private final String fileKey;
     private final FileTime lastModifiedTime;
     private final FileTime creationTime;
     private final FileTime lastAccessTime;
-    private final boolean  isRegularFile;
-    private final boolean  isDirectory;
-    private Long                 size           = null;
+    private final boolean isRegularFile;
+    private final boolean isDirectory;
+    private Long size = null;
     private LazyAttrLoader<Long> lazySizeLoader = null;
 
-    public BasicFileAttributesImpl( final String fileKey,
-                                    final FileTime lastModifiedTime,
-                                    final FileTime creationTime,
-                                    final FileTime lastAccessTime,
-                                    final long size,
-                                    final boolean isRegularFile,
-                                    final boolean isDirectory ) {
+    public BasicFileAttributesImpl(final String fileKey,
+                                   final FileTime lastModifiedTime,
+                                   final FileTime creationTime,
+                                   final FileTime lastAccessTime,
+                                   final long size,
+                                   final boolean isRegularFile,
+                                   final boolean isDirectory) {
         this.fileKey = fileKey;
         this.lastModifiedTime = lastModifiedTime;
         this.creationTime = creationTime;
@@ -47,13 +47,13 @@ public class BasicFileAttributesImpl
         this.isDirectory = isDirectory;
     }
 
-    public BasicFileAttributesImpl( final String fileKey,
-                                    final FileTime lastModifiedTime,
-                                    final FileTime creationTime,
-                                    final FileTime lastAccessTime,
-                                    final LazyAttrLoader<Long> size,
-                                    final boolean isRegularFile,
-                                    final boolean isDirectory ) {
+    public BasicFileAttributesImpl(final String fileKey,
+                                   final FileTime lastModifiedTime,
+                                   final FileTime creationTime,
+                                   final FileTime lastAccessTime,
+                                   final LazyAttrLoader<Long> size,
+                                   final boolean isRegularFile,
+                                   final boolean isDirectory) {
         this.fileKey = fileKey;
         this.lastModifiedTime = lastModifiedTime;
         this.creationTime = creationTime;
@@ -100,7 +100,7 @@ public class BasicFileAttributesImpl
 
     @Override
     public long size() {
-        if ( lazySizeLoader != null ) {
+        if (lazySizeLoader != null) {
             return lazySizeLoader.get();
         }
         return size;
@@ -110,5 +110,4 @@ public class BasicFileAttributesImpl
     public Object fileKey() {
         return fileKey;
     }
-
 }

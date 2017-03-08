@@ -41,28 +41,29 @@ public class SocialTimeLineServlet extends HttpServlet {
     SocialRouterAPI socialRouter;
 
     @Override
-    protected void doGet( final HttpServletRequest request,
-                          final HttpServletResponse response ) throws ServletException,
+    protected void doGet(final HttpServletRequest request,
+                         final HttpServletResponse response) throws ServletException,
             IOException {
 
         try {
-            SocialAdapter socialAdapter = socialRouter.getSocialAdapterByPath( request.getPathInfo() );
+            SocialAdapter socialAdapter = socialRouter.getSocialAdapterByPath(request.getPathInfo());
             Map commandsMap = request.getParameterMap();
-            List<SocialActivitiesEvent> eventTimeline = timeLineRepositoryAPI.getLastEventTimeline( socialAdapter, commandsMap );
+            List<SocialActivitiesEvent> eventTimeline = timeLineRepositoryAPI.getLastEventTimeline(socialAdapter,
+                                                                                                   commandsMap);
 
-            response.setContentType( "application/atom+xml" );
+            response.setContentType("application/atom+xml");
 
-            String url = "/social"+request.getPathInfo();
-            response.getWriter().println( createFeed( eventTimeline, url ) );
-
-        } catch ( SocialRouter.SocialAdapterNotFound e ) {
+            String url = "/social" + request.getPathInfo();
+            response.getWriter().println(createFeed(eventTimeline,
+                                                    url));
+        } catch (SocialRouter.SocialAdapterNotFound e) {
             throw e;
         }
-
     }
 
-    private String createFeed( List<SocialActivitiesEvent> eventTimeline, String url ) {
-        return AtomSocialTimelineConverter.generate( eventTimeline, url );
+    private String createFeed(List<SocialActivitiesEvent> eventTimeline,
+                              String url) {
+        return AtomSocialTimelineConverter.generate(eventTimeline,
+                                                    url);
     }
-
 }

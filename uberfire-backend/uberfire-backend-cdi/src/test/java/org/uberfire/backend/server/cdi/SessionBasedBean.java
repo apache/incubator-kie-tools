@@ -26,8 +26,7 @@ public class SessionBasedBean implements Serializable {
     @Inject
     private WorkspaceBuilderService service;
 
-    public void build( String gav ) {
-        service.build( gav );
+    public void build(String gav) {
+        service.build(gav);
     }
-
 }

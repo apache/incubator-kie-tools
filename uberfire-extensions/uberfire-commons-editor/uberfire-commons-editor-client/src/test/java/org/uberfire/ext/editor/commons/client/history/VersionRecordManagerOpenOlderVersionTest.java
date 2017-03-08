@@ -16,7 +16,7 @@
 
 package org.uberfire.ext.editor.commons.client.history;
 
-import java.lang.Exception;import java.lang.IllegalArgumentException;import java.lang.Override;import java.lang.String;import java.util.ArrayList;
+import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,9 +48,9 @@ public class VersionRecordManagerOpenOlderVersionTest {
 
     @Before
     public void setUp() throws Exception {
-        dropDownButton = mock( VersionMenuDropDownButton.class );
-        saveButton = mock( SaveButton.class );
-        restorePopup = mock( RestorePopUpPresenter.class );
+        dropDownButton = mock(VersionMenuDropDownButton.class);
+        saveButton = mock(SaveButton.class);
+        restorePopup = mock(RestorePopUpPresenter.class);
 
         setUpUtil();
         setUpVersions();
@@ -63,31 +63,33 @@ public class VersionRecordManagerOpenOlderVersionTest {
                 new VersionSelectedEventMock(
                         new Callback<VersionSelectedEvent>() {
                             @Override
-                            public void callback( VersionSelectedEvent result ) {
-                                manager.onVersionSelectedEvent( result );
+                            public void callback(VersionSelectedEvent result) {
+                                manager.onVersionSelectedEvent(result);
                             }
-                        } ),
-                new VersionServiceCallerMock( versions ) );
-
+                        }),
+                new VersionServiceCallerMock(versions));
     }
 
     private void setUpVersions() {
-        versions.add( getVersionRecord( "111" ) );
-        versions.add( getVersionRecord( "222" ) );
-        versions.add( getVersionRecord( "333" ) );
+        versions.add(getVersionRecord("111"));
+        versions.add(getVersionRecord("222"));
+        versions.add(getVersionRecord("333"));
     }
 
     private void setUpUtil() {
-        util = mock( RestoreUtil.class );
-        pathTo111 = mock( ObservablePath.class );
-        pathTo222 = mock( ObservablePath.class );
-        pathTo333 = mock( ObservablePath.class );
-        when( pathTo111.toURI() ).thenReturn( "hehe//111" );
-        when( pathTo222.toURI() ).thenReturn( "hehe//222" );
-        when( pathTo333.toURI() ).thenReturn( "hehe//333" );
-        when( util.createObservablePath( pathTo333, "hehe//111" ) ).thenReturn( pathTo111 );
-        when( util.createObservablePath( pathTo333, "hehe//222" ) ).thenReturn( pathTo222 );
-        when( util.createObservablePath( pathTo333, "hehe//333" ) ).thenReturn( pathTo333 );
+        util = mock(RestoreUtil.class);
+        pathTo111 = mock(ObservablePath.class);
+        pathTo222 = mock(ObservablePath.class);
+        pathTo333 = mock(ObservablePath.class);
+        when(pathTo111.toURI()).thenReturn("hehe//111");
+        when(pathTo222.toURI()).thenReturn("hehe//222");
+        when(pathTo333.toURI()).thenReturn("hehe//333");
+        when(util.createObservablePath(pathTo333,
+                                       "hehe//111")).thenReturn(pathTo111);
+        when(util.createObservablePath(pathTo333,
+                                       "hehe//222")).thenReturn(pathTo222);
+        when(util.createObservablePath(pathTo333,
+                                       "hehe//333")).thenReturn(pathTo333);
     }
 
     @Test
@@ -98,14 +100,17 @@ public class VersionRecordManagerOpenOlderVersionTest {
                 pathTo333,
                 new Callback<VersionRecord>() {
                     @Override
-                    public void callback( VersionRecord result ) {
-                        manager.setVersion( result.id() );
+                    public void callback(VersionRecord result) {
+                        manager.setVersion(result.id());
                     }
-                } );
+                });
 
-        assertEquals( pathTo222, manager.getCurrentPath() );
-        assertEquals( pathTo333, manager.getPathToLatest() );
-        assertEquals( "222", manager.getVersion() );
+        assertEquals(pathTo222,
+                     manager.getCurrentPath());
+        assertEquals(pathTo333,
+                     manager.getPathToLatest());
+        assertEquals("222",
+                     manager.getVersion());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -116,17 +121,16 @@ public class VersionRecordManagerOpenOlderVersionTest {
                 pathTo333,
                 new Callback<VersionRecord>() {
                     @Override
-                    public void callback( VersionRecord result ) {
-                        manager.setVersion( result.id() );
+                    public void callback(VersionRecord result) {
+                        manager.setVersion(result.id());
                     }
-                } );
+                });
     }
 
-    private VersionRecord getVersionRecord( String version ) {
-        VersionRecord versionRecord = mock( VersionRecord.class );
-        when( versionRecord.id() ).thenReturn( version );
-        when( versionRecord.uri() ).thenReturn( "hehe//" + version );
+    private VersionRecord getVersionRecord(String version) {
+        VersionRecord versionRecord = mock(VersionRecord.class);
+        when(versionRecord.id()).thenReturn(version);
+        when(versionRecord.uri()).thenReturn("hehe//" + version);
         return versionRecord;
     }
-
 }

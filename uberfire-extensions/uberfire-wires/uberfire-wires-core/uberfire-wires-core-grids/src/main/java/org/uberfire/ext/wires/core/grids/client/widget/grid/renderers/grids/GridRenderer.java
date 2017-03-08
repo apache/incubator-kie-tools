@@ -43,15 +43,15 @@ public interface GridRenderer {
     double getHeaderRowHeight();
 
     /**
-     * Sets the theme.
-     * @param theme
-     */
-    void setTheme( final GridRendererTheme theme );
-
-    /**
      * Returns the theme.
      */
     GridRendererTheme getTheme();
+
+    /**
+     * Sets the theme.
+     * @param theme
+     */
+    void setTheme(final GridRendererTheme theme);
 
     /**
      * Renders a "selector" when a grid has been selected, i.e. clicked.
@@ -60,9 +60,9 @@ public interface GridRenderer {
      * @param renderingInformation Calculated rendering information supporting rendering.
      * @return A Group containing the "selector"
      */
-    Group renderSelector( final double width,
-                          final double height,
-                          final BaseGridRendererHelper.RenderingInformation renderingInformation );
+    Group renderSelector(final double width,
+                         final double height,
+                         final BaseGridRendererHelper.RenderingInformation renderingInformation);
 
     /**
      * Renders the selected ranges and append to the Body Group.
@@ -71,9 +71,9 @@ public interface GridRenderer {
      * @param rendererHelper Helper for rendering.
      * @return
      */
-    Group renderSelectedCells( final GridData model,
-                               final GridBodyRenderContext context,
-                               final BaseGridRendererHelper rendererHelper );
+    Group renderSelectedCells(final GridData model,
+                              final GridBodyRenderContext context,
+                              final BaseGridRendererHelper rendererHelper);
 
     /**
      * Renders the header for the Grid.
@@ -83,10 +83,10 @@ public interface GridRenderer {
      * @param renderingInformation Calculated rendering information supporting rendering.
      * @return A Group containing all Shapes representing the Header.
      */
-    Group renderHeader( final GridData model,
-                        final GridHeaderRenderContext context,
-                        final BaseGridRendererHelper rendererHelper,
-                        final BaseGridRendererHelper.RenderingInformation renderingInformation );
+    Group renderHeader(final GridData model,
+                       final GridHeaderRenderContext context,
+                       final BaseGridRendererHelper rendererHelper,
+                       final BaseGridRendererHelper.RenderingInformation renderingInformation);
 
     /**
      * Renders the body for the Grid.
@@ -96,10 +96,10 @@ public interface GridRenderer {
      * @param renderingInformation Calculated rendering information supporting rendering.
      * @return A Group containing all Shapes representing the Body.
      */
-    Group renderBody( final GridData model,
-                      final GridBodyRenderContext context,
-                      final BaseGridRendererHelper rendererHelper,
-                      final BaseGridRendererHelper.RenderingInformation renderingInformation );
+    Group renderBody(final GridData model,
+                     final GridBodyRenderContext context,
+                     final BaseGridRendererHelper rendererHelper,
+                     final BaseGridRendererHelper.RenderingInformation renderingInformation);
 
     /**
      * Renders a divider between Grid header and body. The divider must be positioned in the Group relative to the
@@ -109,7 +109,7 @@ public interface GridRenderer {
      * @param width The width of the divider. May not be the width of the whole grid if there are floating columns.
      * @return A Group containing the divider positioned relative to the top-left of the Grid.
      */
-    Group renderHeaderBodyDivider( final double width );
+    Group renderHeaderBodyDivider(final double width);
 
     /**
      * Renders a boundary around the grid.
@@ -117,8 +117,8 @@ public interface GridRenderer {
      * @param height The height of the GridWidget including header and body.
      * @return A Group containing the grids boundary.
      */
-    Group renderGridBoundary( final double width,
-                              final double height );
+    Group renderGridBoundary(final double width,
+                             final double height);
 
     /**
      * Checks whether a cell-relative coordinate is "on" the hot-spot to toggle the collapsed/expanded state.
@@ -128,9 +128,8 @@ public interface GridRenderer {
      * @param cellHeight Height of the containing cell.
      * @return true if the cell coordinate is on the hot-spot.
      */
-    boolean onGroupingToggle( final double cellX,
-                              final double cellY,
-                              final double cellWidth,
-                              final double cellHeight );
-
+    boolean onGroupingToggle(final double cellX,
+                             final double cellY,
+                             final double cellWidth,
+                             final double cellHeight);
 }

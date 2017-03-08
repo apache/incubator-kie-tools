@@ -15,17 +15,15 @@
  */
 package org.uberfire.backend.server.plugins.processors;
 
-import org.uberfire.backend.plugin.RuntimePlugin;
-import org.uberfire.workbench.events.PluginAddedEvent;
-import org.uberfire.workbench.events.PluginUpdatedEvent;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.uberfire.workbench.events.PluginAddedEvent;
+import org.uberfire.workbench.events.PluginUpdatedEvent;
+
 @ApplicationScoped
 public class PerspectiveLayoutPluginProcessor extends AbstractRuntimePluginProcessor {
-
 
     public PerspectiveLayoutPluginProcessor() {
     }
@@ -33,12 +31,12 @@ public class PerspectiveLayoutPluginProcessor extends AbstractRuntimePluginProce
     @Inject
     public PerspectiveLayoutPluginProcessor(final Event<PluginAddedEvent> pluginAddedEvent,
                                             final Event<PluginUpdatedEvent> pluginUpdatedEvent) {
-        super(pluginAddedEvent, pluginUpdatedEvent);
+        super(pluginAddedEvent,
+              pluginUpdatedEvent);
     }
 
     @Override
     PluginProcessorType getType() {
         return PluginProcessorType.PERSPECTIVE_EDITOR;
     }
-
 }

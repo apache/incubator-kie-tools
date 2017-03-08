@@ -45,226 +45,312 @@ import org.uberfire.java.nio.base.version.VersionRecord;
 import org.uberfire.java.nio.file.Path;
 
 import static org.junit.Assert.*;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.resolveObjectId;
 
 @RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
 @BMUnitConfig(loadDirectory = "target/test-classes", debug = true) // set "debug=true to see debug output
 public class JGitFileSystemProviderBytemanTest extends AbstractTestInfra {
 
-    private static Logger logger = LoggerFactory.getLogger( JGitFileSystemProviderBytemanTest.class );
+    private static Logger logger = LoggerFactory.getLogger(JGitFileSystemProviderBytemanTest.class);
+
+    private static void printLog(final Git git) {
+        try {
+            for (final RevCommit revCommit : git.log().call()) {
+                logger.info("[LOG]: " + revCommit.getName() + " --- " + revCommit.getFullMessage());
+            }
+        } catch (GitAPIException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected static void waitFor(CyclicBarrier barrier) {
+        String threadName = Thread.currentThread().getName();
+        try {
+            logger.info(threadName + " request for await");
+            barrier.await();
+            logger.info(threadName + " await finished");
+        } catch (InterruptedException e) {
+            fail("Thread '" + threadName + "' was interrupted while waiting for the other threads!");
+        } catch (BrokenBarrierException e) {
+            fail("Thread '" + threadName + "' barrier was broken while waiting for the other threads!");
+        }
+    }
 
     @Ignore("This test produces a strange behaviour that locks the other test. Is ignored until a solution is found.")
     @Test()
     @BMScript(value = "byteman/squash_lock.btm")
     public void testConcurrentLocking() throws IOException, GitAPIException {
 
-        final URI newRepo = URI.create( "git://byteman-lock-squash-repo" );
-        final JGitFileSystem fs = (JGitFileSystem) provider.newFileSystem( newRepo, EMPTY_ENV );
-        final CyclicBarrier threadsFinishedBarrier = new CyclicBarrier( 3 );
+        final URI newRepo = URI.create("git://byteman-lock-squash-repo");
+        final JGitFileSystem fs = (JGitFileSystem) provider.newFileSystem(newRepo,
+                                                                          EMPTY_ENV);
+        final CyclicBarrier threadsFinishedBarrier = new CyclicBarrier(3);
 
-        final Thread t = new Thread( () -> {
+        final Thread t = new Thread(() -> {
 
-            final Path master = provider.getPath( URI.create( "git://master@byteman-lock-squash-repo" ) );
-            final RevCommit commit = commitThreeTimesAndGetReference( fs, "byteman-lock-squash-repo", "master", "t1" );
+            final Path master = provider.getPath(URI.create("git://master@byteman-lock-squash-repo"));
+            final RevCommit commit = commitThreeTimesAndGetReference(fs,
+                                                                     "byteman-lock-squash-repo",
+                                                                     "master",
+                                                                     "t1");
 
-            Thread t1 = new Thread( () -> {
-                logger.info( "<<<<<<<<<<<<< " + commit.getName() + " --- " + commit.getFullMessage() );
-                printLog( fs.gitRepo() );
-                VersionRecord record = makeVersionRecord( "aparedes", "aparedes@redhat.com", "squashing a!", new Date(), commit.getName() );
-                SquashOption squashOption = new SquashOption( record );
+            Thread t1 = new Thread(() -> {
+                logger.info("<<<<<<<<<<<<< " + commit.getName() + " --- " + commit.getFullMessage());
+                printLog(fs.gitRepo());
+                VersionRecord record = makeVersionRecord("aparedes",
+                                                         "aparedes@redhat.com",
+                                                         "squashing a!",
+                                                         new Date(),
+                                                         commit.getName());
+                SquashOption squashOption = new SquashOption(record);
 
-                logger.info( "COMMITTER-1: Squashing" );
-                provider.setAttribute( master, SquashOption.SQUASH_ATTR, squashOption );
-                printLog( fs.gitRepo() );
-                waitFor( threadsFinishedBarrier );
-            } );
+                logger.info("COMMITTER-1: Squashing");
+                provider.setAttribute(master,
+                                      SquashOption.SQUASH_ATTR,
+                                      squashOption);
+                printLog(fs.gitRepo());
+                waitFor(threadsFinishedBarrier);
+            });
 
-            Thread t2 = new Thread( () -> {
-                logger.info( "<<<<<<<<<<<<< " + commit.getName() + " --- " + commit.getFullMessage() );
-                printLog( fs.gitRepo() );
-                VersionRecord record = makeVersionRecord( "aparedes", "aparedes@redhat.com", "squashing a!", new Date(), commit.getName() );
-                SquashOption squashOption = new SquashOption( record );
+            Thread t2 = new Thread(() -> {
+                logger.info("<<<<<<<<<<<<< " + commit.getName() + " --- " + commit.getFullMessage());
+                printLog(fs.gitRepo());
+                VersionRecord record = makeVersionRecord("aparedes",
+                                                         "aparedes@redhat.com",
+                                                         "squashing a!",
+                                                         new Date(),
+                                                         commit.getName());
+                SquashOption squashOption = new SquashOption(record);
 
-                logger.info( "COMMITTER-2: Squashing" );
-                provider.setAttribute( master, SquashOption.SQUASH_ATTR, squashOption );
-                printLog( fs.gitRepo() );
-                waitFor( threadsFinishedBarrier );
-            } );
+                logger.info("COMMITTER-2: Squashing");
+                provider.setAttribute(master,
+                                      SquashOption.SQUASH_ATTR,
+                                      squashOption);
+                printLog(fs.gitRepo());
+                waitFor(threadsFinishedBarrier);
+            });
 
-            t1.setName( "LOCK-COMMITTER-1" );
-            t2.setName( "LOCK-COMMITTER-2" );
+            t1.setName("LOCK-COMMITTER-1");
+            t2.setName("LOCK-COMMITTER-2");
             t2.start();
             t1.start();
 
-            waitFor( threadsFinishedBarrier );
-
-        } );
+            waitFor(threadsFinishedBarrier);
+        });
         try {
             t.start();
-            t.join( 10000 );
+            t.join(10000);
             t.interrupt();
-
-        } catch ( InterruptedException e ) {
+        } catch (InterruptedException e) {
         }
 
-        assertEquals( 3, this.getCommitsFromBranch( fs.gitRepo(), "master" ).size() );
+        assertEquals(3,
+                     this.getCommitsFromBranch(fs.gitRepo(),
+                                               "master").size());
     }
 
     @Test
     @BMScript(value = "byteman/squash.btm")
     public void testConcurrentSquashWithThreeCommit() throws IOException, GitAPIException {
-        final URI newRepo = URI.create( "git://three-squash-repo" );
-        final JGitFileSystem fs = (JGitFileSystem) provider.newFileSystem( newRepo, EMPTY_ENV );
+        final URI newRepo = URI.create("git://three-squash-repo");
+        final JGitFileSystem fs = (JGitFileSystem) provider.newFileSystem(newRepo,
+                                                                          EMPTY_ENV);
 
-        final CyclicBarrier threadsFinishedBarrier = new CyclicBarrier( 3 );
-        final Path master = provider.getPath( URI.create( "git://three-squash-repo" ) );
-        final RevCommit commit = commitThreeTimesAndGetReference( fs, "three-squash-repo", "master", "t1" );
+        final CyclicBarrier threadsFinishedBarrier = new CyclicBarrier(3);
+        final Path master = provider.getPath(URI.create("git://three-squash-repo"));
+        final RevCommit commit = commitThreeTimesAndGetReference(fs,
+                                                                 "three-squash-repo",
+                                                                 "master",
+                                                                 "t1");
 
-        Thread t1 = new Thread( () -> {
-            logger.info( "<<<<<<<<<<<<< COMMIT TO SQUASH " + commit.getName() + " --- " + commit.getFullMessage() );
-            printLog( fs.gitRepo() );
-            VersionRecord record = makeVersionRecord( "aparedes", "aparedes@redhat.com", "squashing a!", new Date(), commit.getName() );
-            SquashOption squashOption = new SquashOption( record );
-            logger.info( "COMMITTER-1: Squashing" );
-            provider.setAttribute( master, SquashOption.SQUASH_ATTR, squashOption );
-            printLog( fs.gitRepo() );
-            waitFor( threadsFinishedBarrier );
-        } );
+        Thread t1 = new Thread(() -> {
+            logger.info("<<<<<<<<<<<<< COMMIT TO SQUASH " + commit.getName() + " --- " + commit.getFullMessage());
+            printLog(fs.gitRepo());
+            VersionRecord record = makeVersionRecord("aparedes",
+                                                     "aparedes@redhat.com",
+                                                     "squashing a!",
+                                                     new Date(),
+                                                     commit.getName());
+            SquashOption squashOption = new SquashOption(record);
+            logger.info("COMMITTER-1: Squashing");
+            provider.setAttribute(master,
+                                  SquashOption.SQUASH_ATTR,
+                                  squashOption);
+            printLog(fs.gitRepo());
+            waitFor(threadsFinishedBarrier);
+        });
 
-        Thread t2 = new Thread( () -> {
-            logger.info( "<<<<<<<<<<<<< COMMIT TO SQUASH " + commit.getName() + " --- " + commit.getFullMessage() );
-            printLog( fs.gitRepo() );
-            VersionRecord record = makeVersionRecord( "aparedes", "aparedes@redhat.com", "squashing b!", new Date(), commit.getName() );
-            SquashOption squashOption = new SquashOption( record );
-            logger.info( "COMMITTER-2: Squashing" );
-            provider.setAttribute( master, SquashOption.SQUASH_ATTR, squashOption );
-            printLog( fs.gitRepo() );
-            waitFor( threadsFinishedBarrier );
-        } );
+        Thread t2 = new Thread(() -> {
+            logger.info("<<<<<<<<<<<<< COMMIT TO SQUASH " + commit.getName() + " --- " + commit.getFullMessage());
+            printLog(fs.gitRepo());
+            VersionRecord record = makeVersionRecord("aparedes",
+                                                     "aparedes@redhat.com",
+                                                     "squashing b!",
+                                                     new Date(),
+                                                     commit.getName());
+            SquashOption squashOption = new SquashOption(record);
+            logger.info("COMMITTER-2: Squashing");
+            provider.setAttribute(master,
+                                  SquashOption.SQUASH_ATTR,
+                                  squashOption);
+            printLog(fs.gitRepo());
+            waitFor(threadsFinishedBarrier);
+        });
 
-        t1.setName( "COMMITTER-1" );
-        t2.setName( "COMMITTER-2" );
+        t1.setName("COMMITTER-1");
+        t2.setName("COMMITTER-2");
         t2.start();
         t1.start();
 
-        waitFor( threadsFinishedBarrier );
+        waitFor(threadsFinishedBarrier);
 
-        assertEquals( 2, getCommitsFromBranch( fs.gitRepo(), "master" ).size() );
-
+        assertEquals(2,
+                     getCommitsFromBranch(fs.gitRepo(),
+                                          "master").size());
     }
 
     @Test
     @BMScript(value = "byteman/squash.btm")
     public void testConcurrentSquashWithSixCommit() throws IOException, GitAPIException {
-        final URI newRepo = URI.create( "git://byteman-six-squash-repo" );
-        final JGitFileSystem fs = (JGitFileSystem) provider.newFileSystem( newRepo, EMPTY_ENV );
+        final URI newRepo = URI.create("git://byteman-six-squash-repo");
+        final JGitFileSystem fs = (JGitFileSystem) provider.newFileSystem(newRepo,
+                                                                          EMPTY_ENV);
 
-        final CyclicBarrier threadsFinishedBarrier = new CyclicBarrier( 3 );
-        final Path master = provider.getPath( URI.create( "git://master@byteman-six-squash-repo" ) );
-        final RevCommit commit = commitSixTimesAndGetReference( fs, "byteman-six-squash-repo", "master", "t1" );
+        final CyclicBarrier threadsFinishedBarrier = new CyclicBarrier(3);
+        final Path master = provider.getPath(URI.create("git://master@byteman-six-squash-repo"));
+        final RevCommit commit = commitSixTimesAndGetReference(fs,
+                                                               "byteman-six-squash-repo",
+                                                               "master",
+                                                               "t1");
 
-        Thread t1 = new Thread( () -> {
-            logger.info( "<<<<<<<<<<<<< COMMIT TO SQUASH " + commit.getName() + " --- " + commit.getFullMessage() );
-            printLog( fs.gitRepo() );
-            VersionRecord record = makeVersionRecord( "aparedes", "aparedes@redhat.com", "squashing a!", new Date(), commit.getName() );
-            SquashOption squashOption = new SquashOption( record );
-            logger.info( "COMMITTER-1: Squashing" );
-            provider.setAttribute( master, SquashOption.SQUASH_ATTR, squashOption );
-            printLog( fs.gitRepo() );
-            waitFor( threadsFinishedBarrier );
-        } );
+        Thread t1 = new Thread(() -> {
+            logger.info("<<<<<<<<<<<<< COMMIT TO SQUASH " + commit.getName() + " --- " + commit.getFullMessage());
+            printLog(fs.gitRepo());
+            VersionRecord record = makeVersionRecord("aparedes",
+                                                     "aparedes@redhat.com",
+                                                     "squashing a!",
+                                                     new Date(),
+                                                     commit.getName());
+            SquashOption squashOption = new SquashOption(record);
+            logger.info("COMMITTER-1: Squashing");
+            provider.setAttribute(master,
+                                  SquashOption.SQUASH_ATTR,
+                                  squashOption);
+            printLog(fs.gitRepo());
+            waitFor(threadsFinishedBarrier);
+        });
 
-        Thread t2 = new Thread( () -> {
-            logger.info( "<<<<<<<<<<<<< COMMIT TO SQUASH " + commit.getName() + " --- " + commit.getFullMessage() );
-            printLog( fs.gitRepo() );
-            VersionRecord record = makeVersionRecord( "aparedes", "aparedes@redhat.com", "squashing b!", new Date(), commit.getName() );
-            SquashOption squashOption = new SquashOption( record );
-            logger.info( "COMMITTER-2: Squashing" );
-            provider.setAttribute( master, SquashOption.SQUASH_ATTR, squashOption );
-            printLog( fs.gitRepo() );
-            waitFor( threadsFinishedBarrier );
-        } );
+        Thread t2 = new Thread(() -> {
+            logger.info("<<<<<<<<<<<<< COMMIT TO SQUASH " + commit.getName() + " --- " + commit.getFullMessage());
+            printLog(fs.gitRepo());
+            VersionRecord record = makeVersionRecord("aparedes",
+                                                     "aparedes@redhat.com",
+                                                     "squashing b!",
+                                                     new Date(),
+                                                     commit.getName());
+            SquashOption squashOption = new SquashOption(record);
+            logger.info("COMMITTER-2: Squashing");
+            provider.setAttribute(master,
+                                  SquashOption.SQUASH_ATTR,
+                                  squashOption);
+            printLog(fs.gitRepo());
+            waitFor(threadsFinishedBarrier);
+        });
 
-        t1.setName( "COMMITTER-1" );
-        t2.setName( "COMMITTER-2" );
+        t1.setName("COMMITTER-1");
+        t2.setName("COMMITTER-2");
         t2.start();
         t1.start();
 
-        waitFor( threadsFinishedBarrier );
+        waitFor(threadsFinishedBarrier);
 
-        assertEquals( 2, getCommitsFromBranch( fs.gitRepo(), "master" ).size() );
-
+        assertEquals(2,
+                     getCommitsFromBranch(fs.gitRepo(),
+                                          "master").size());
     }
 
     @Test
     @BMScript(value = "byteman/squash_exception.btm")
     public void testForceExceptionWhenTryingToSquash() throws IOException, GitAPIException {
 
-        final URI newRepo = URI.create( "git://byteman-exception-squash-repo" );
-        final JGitFileSystem fs = (JGitFileSystem) provider.newFileSystem( newRepo, EMPTY_ENV );
+        final URI newRepo = URI.create("git://byteman-exception-squash-repo");
+        final JGitFileSystem fs = (JGitFileSystem) provider.newFileSystem(newRepo,
+                                                                          EMPTY_ENV);
 
-        final Path master = provider.getPath( URI.create( "git://master@byteman-exception-squash-repo" ) );
-        final RevCommit commit = commitThreeTimesAndGetReference( fs, "byteman-exception-squash-repo", "master", "t1" );
+        final Path master = provider.getPath(URI.create("git://master@byteman-exception-squash-repo"));
+        final RevCommit commit = commitThreeTimesAndGetReference(fs,
+                                                                 "byteman-exception-squash-repo",
+                                                                 "master",
+                                                                 "t1");
 
-        logger.info( "<<<<<<<<<<<<< COMMIT TO SQUASH " + commit.getName() + " --- " + commit.getFullMessage() );
-        printLog( fs.gitRepo() );
-        VersionRecord record = makeVersionRecord( "aparedes", "aparedes@redhat.com", "squashing a!", new Date(), commit.getName() );
-        SquashOption squashOption = new SquashOption( record );
-        logger.info( "COMMITTER-1: Squashing" );
+        logger.info("<<<<<<<<<<<<< COMMIT TO SQUASH " + commit.getName() + " --- " + commit.getFullMessage());
+        printLog(fs.gitRepo());
+        VersionRecord record = makeVersionRecord("aparedes",
+                                                 "aparedes@redhat.com",
+                                                 "squashing a!",
+                                                 new Date(),
+                                                 commit.getName());
+        SquashOption squashOption = new SquashOption(record);
+        logger.info("COMMITTER-1: Squashing");
 
         try {
-            provider.setAttribute( master, SquashOption.SQUASH_ATTR, squashOption );
-        } catch ( Exception e ) {
+            provider.setAttribute(master,
+                                  SquashOption.SQUASH_ATTR,
+                                  squashOption);
+        } catch (Exception e) {
             fs.lock();
             fs.unlock();
         }
 
-        assertEquals( 3, getCommitsFromBranch( fs.gitRepo(), "master" ).size() );
-
+        assertEquals(3,
+                     getCommitsFromBranch(fs.gitRepo(),
+                                          "master").size());
     }
 
     @Test
     @BMScript(value = "byteman/commit_exception.btm")
     public void testFileSystemLockOnException() throws IOException, GitAPIException {
 
-        final URI newRepo = URI.create( "git://byteman-exception-commit-repo" );
-        final JGitFileSystem fs = (JGitFileSystem) provider.newFileSystem( newRepo, EMPTY_ENV );
+        final URI newRepo = URI.create("git://byteman-exception-commit-repo");
+        final JGitFileSystem fs = (JGitFileSystem) provider.newFileSystem(newRepo,
+                                                                          EMPTY_ENV);
 
-        final Path path = provider.getPath( URI.create( "git://master@byteman-exception-commit-repo/myfile.txt" ) );
+        final Path path = provider.getPath(URI.create("git://master@byteman-exception-commit-repo/myfile.txt"));
 
         try {
-            writeFile( fs, path, "master" );
-        } catch ( RuntimeException e ) {
+            writeFile(fs,
+                      path,
+                      "master");
+        } catch (RuntimeException e) {
             // intentional Exception. Ignore
         }
 
         // fs must be unlocked
         Object lock = null;
         try {
-            Field field = JGitFileSystem.class.getDeclaredField( "lock" );
-            field.setAccessible( true );
-            lock = field.get( fs );
-        } catch ( Exception e ) {
-            fail( e.getMessage() );
+            Field field = JGitFileSystem.class.getDeclaredField("lock");
+            field.setAccessible(true);
+            lock = field.get(fs);
+        } catch (Exception e) {
+            fail(e.getMessage());
         }
         Object isLocked = null;
         try {
-            Field field = lock.getClass().getDeclaredField( "isLocked" );
-            field.setAccessible( true );
-            isLocked = field.get( lock );
-        } catch ( Exception e ) {
-            fail( e.getMessage() );
+            Field field = lock.getClass().getDeclaredField("isLocked");
+            field.setAccessible(true);
+            isLocked = field.get(lock);
+        } catch (Exception e) {
+            fail(e.getMessage());
         }
 
-        assertFalse( ((AtomicBoolean) isLocked).get() );
-
+        assertFalse(((AtomicBoolean) isLocked).get());
     }
 
-    private VersionRecord makeVersionRecord( final String author,
-                                             final String email,
-                                             final String comment,
-                                             final Date date,
-                                             final String commit ) {
+    private VersionRecord makeVersionRecord(final String author,
+                                            final String email,
+                                            final String comment,
+                                            final Date date,
+                                            final String commit) {
         return new VersionRecord() {
             @Override
             public String id() {
@@ -298,94 +384,90 @@ public class JGitFileSystemProviderBytemanTest extends AbstractTestInfra {
         };
     }
 
-    private static void printLog( final Git git ) {
+    private RevCommit commitThreeTimesAndGetReference(JGitFileSystem fs,
+                                                      String repo,
+                                                      String branch,
+                                                      String thread) {
         try {
-            for ( final RevCommit revCommit : git.log().call() ) {
-                logger.info( "[LOG]: " + revCommit.getName() + " --- " + revCommit.getFullMessage() );
-            }
-        } catch ( GitAPIException e ) {
-            e.printStackTrace();
-        }
-    }
+            final Path path = provider.getPath(URI.create("git://" + branch + "@" + repo + "/" + thread + "-myfile1.txt"));
+            final Path path2 = provider.getPath(URI.create("git://" + branch + "@" + repo + "/" + thread + "-myfile2.txt"));
+            final Path path3 = provider.getPath(URI.create("git://" + branch + "@" + repo + "/" + thread + "-myfile3.txt"));
 
-    protected static void waitFor( CyclicBarrier barrier ) {
-        String threadName = Thread.currentThread().getName();
-        try {
-            logger.info( threadName + " request for await" );
-            barrier.await();
-            logger.info( threadName + " await finished" );
-        } catch ( InterruptedException e ) {
-            fail( "Thread '" + threadName + "' was interrupted while waiting for the other threads!" );
-        } catch ( BrokenBarrierException e ) {
-            fail( "Thread '" + threadName + "' barrier was broken while waiting for the other threads!" );
-        }
-    }
-
-    private RevCommit commitThreeTimesAndGetReference( JGitFileSystem fs,
-                                                       String repo,
-                                                       String branch,
-                                                       String thread ) {
-        try {
-            final Path path = provider.getPath( URI.create( "git://" + branch + "@" + repo + "/" + thread + "-myfile1.txt" ) );
-            final Path path2 = provider.getPath( URI.create( "git://" + branch + "@" + repo + "/" + thread + "-myfile2.txt" ) );
-            final Path path3 = provider.getPath( URI.create( "git://" + branch + "@" + repo + "/" + thread + "-myfile3.txt" ) );
-
-            final RevCommit commit = writeFile( fs, path, branch );
-            writeFile( fs, path2, branch );
-            writeFile( fs, path3, branch );
+            final RevCommit commit = writeFile(fs,
+                                               path,
+                                               branch);
+            writeFile(fs,
+                      path2,
+                      branch);
+            writeFile(fs,
+                      path3,
+                      branch);
 
             return commit;
-        } catch ( IOException | GitAPIException e ) {
-            throw new RuntimeException( e );
+        } catch (IOException | GitAPIException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    private RevCommit commitSixTimesAndGetReference( JGitFileSystem fs,
-                                                     String repo,
-                                                     String branch,
-                                                     String thread ) {
+    private RevCommit commitSixTimesAndGetReference(JGitFileSystem fs,
+                                                    String repo,
+                                                    String branch,
+                                                    String thread) {
         try {
-            final Path path = provider.getPath( URI.create( "git://" + branch + "@" + repo + "/" + thread + "-myfile1.txt" ) );
-            final Path path2 = provider.getPath( URI.create( "git://" + branch + "@" + repo + "/" + thread + "-myfile2.txt" ) );
-            final Path path3 = provider.getPath( URI.create( "git://" + branch + "@" + repo + "/" + thread + "-myfile3.txt" ) );
-            final Path path4 = provider.getPath( URI.create( "git://" + branch + "@" + repo + "/" + thread + "-myfile4.txt" ) );
-            final Path path5 = provider.getPath( URI.create( "git://" + branch + "@" + repo + "/" + thread + "-myfile5.txt" ) );
-            final Path path6 = provider.getPath( URI.create( "git://" + branch + "@" + repo + "/" + thread + "-myfile6.txt" ) );
+            final Path path = provider.getPath(URI.create("git://" + branch + "@" + repo + "/" + thread + "-myfile1.txt"));
+            final Path path2 = provider.getPath(URI.create("git://" + branch + "@" + repo + "/" + thread + "-myfile2.txt"));
+            final Path path3 = provider.getPath(URI.create("git://" + branch + "@" + repo + "/" + thread + "-myfile3.txt"));
+            final Path path4 = provider.getPath(URI.create("git://" + branch + "@" + repo + "/" + thread + "-myfile4.txt"));
+            final Path path5 = provider.getPath(URI.create("git://" + branch + "@" + repo + "/" + thread + "-myfile5.txt"));
+            final Path path6 = provider.getPath(URI.create("git://" + branch + "@" + repo + "/" + thread + "-myfile6.txt"));
 
-            final RevCommit commit = writeFile( fs, path, branch );
-            writeFile( fs, path2, branch );
-            writeFile( fs, path3, branch );
-            writeFile( fs, path4, branch );
-            writeFile( fs, path5, branch );
-            writeFile( fs, path6, branch );
+            final RevCommit commit = writeFile(fs,
+                                               path,
+                                               branch);
+            writeFile(fs,
+                      path2,
+                      branch);
+            writeFile(fs,
+                      path3,
+                      branch);
+            writeFile(fs,
+                      path4,
+                      branch);
+            writeFile(fs,
+                      path5,
+                      branch);
+            writeFile(fs,
+                      path6,
+                      branch);
 
             return commit;
-        } catch ( IOException | GitAPIException e ) {
-            throw new RuntimeException( e );
+        } catch (IOException | GitAPIException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    private RevCommit writeFile( final JGitFileSystem fs,
-                                 final Path path,
-                                 String branch ) throws IOException, GitAPIException {
-        final OutputStream stream = provider.newOutputStream( path );
-        logger.info( "Writing file: " + path.getFileName().toString() );
-        stream.write( "my cool content".getBytes() );
+    private RevCommit writeFile(final JGitFileSystem fs,
+                                final Path path,
+                                String branch) throws IOException, GitAPIException {
+        final OutputStream stream = provider.newOutputStream(path);
+        logger.info("Writing file: " + path.getFileName().toString());
+        stream.write("my cool content".getBytes());
         stream.close();
-        return this.getCommitsFromBranch( fs.gitRepo(), branch ).get( 0 );
+        return this.getCommitsFromBranch(fs.gitRepo(),
+                                         branch).get(0);
     }
 
-    private List<RevCommit> getCommitsFromBranch( final Git origin,
-                                                  String branch ) throws GitAPIException, MissingObjectException, IncorrectObjectTypeException {
+    private List<RevCommit> getCommitsFromBranch(final Git origin,
+                                                 String branch) throws GitAPIException, MissingObjectException, IncorrectObjectTypeException {
         List<RevCommit> commits = new ArrayList<>();
-        final ObjectId id = resolveObjectId( origin, branch );
-        for ( RevCommit commit : origin.log().add( id ).call() ) {
+        final ObjectId id = resolveObjectId(origin,
+                                            branch);
+        for (RevCommit commit : origin.log().add(id).call()) {
 //            logger.info( ">>> " + branch + " Commits: " + commit.getFullMessage() + " - " + commit.toString() );
-            commits.add( commit );
+            commits.add(commit);
         }
         return commits;
     }
-
 }
 
 

@@ -45,38 +45,37 @@ public class RectangularContainerFactory extends AbstractBaseFactory<Rectangle> 
     }
 
     @Override
-    public WiresBaseShape getShape( final FactoryHelper helper ) {
-        return new WiresRectangularContainer( makeShape() );
+    public WiresBaseShape getShape(final FactoryHelper helper) {
+        return new WiresRectangularContainer(makeShape());
     }
 
     @Override
-    public boolean builds( final WiresBaseShape shapeType ) {
+    public boolean builds(final WiresBaseShape shapeType) {
         return shapeType instanceof WiresRectangularContainer;
     }
 
     @Override
     protected Rectangle makeShape() {
-        final Rectangle rectangle = new Rectangle( SHAPE_SIZE_X,
-                                                   SHAPE_SIZE_Y,
-                                                   10 );
-        rectangle.setX( 0 - ( SHAPE_SIZE_X / 2 ) )
-                .setY( 0 - ( SHAPE_SIZE_Y / 2 ) )
-                .setStrokeColor( ShapesUtils.RGB_STROKE_CONTAINER )
-                .setStrokeWidth( ShapesUtils.RGB_STROKE_WIDTH_CONTAINER )
-                .setFillColor( ShapesUtils.RGB_FILL_CONTAINER )
-                .setAlpha( ShapesUtils.RGB_ALPHA_CONTAINER )
-                .setDraggable( false );
+        final Rectangle rectangle = new Rectangle(SHAPE_SIZE_X,
+                                                  SHAPE_SIZE_Y,
+                                                  10);
+        rectangle.setX(0 - (SHAPE_SIZE_X / 2))
+                .setY(0 - (SHAPE_SIZE_Y / 2))
+                .setStrokeColor(ShapesUtils.RGB_STROKE_CONTAINER)
+                .setStrokeWidth(ShapesUtils.RGB_STROKE_WIDTH_CONTAINER)
+                .setFillColor(ShapesUtils.RGB_FILL_CONTAINER)
+                .setAlpha(ShapesUtils.RGB_ALPHA_CONTAINER)
+                .setDraggable(false);
         return rectangle;
     }
 
     @Override
     protected double getWidth() {
-        return SHAPE_SIZE_X + ( ShapesUtils.RGB_STROKE_WIDTH_SHAPE * 2 );
+        return SHAPE_SIZE_X + (ShapesUtils.RGB_STROKE_WIDTH_SHAPE * 2);
     }
 
     @Override
     protected double getHeight() {
-        return SHAPE_SIZE_Y + ( ShapesUtils.RGB_STROKE_WIDTH_SHAPE * 2 );
+        return SHAPE_SIZE_Y + (ShapesUtils.RGB_STROKE_WIDTH_SHAPE * 2);
     }
-
 }

@@ -24,17 +24,19 @@ import org.uberfire.mvp.PlaceRequest;
 public class ChangeTitleWidgetEvent {
 
     private final PlaceRequest place;
-    private final String       title;
-    private final IsWidget     titleDecoration;
+    private final String title;
+    private final IsWidget titleDecoration;
 
-    public ChangeTitleWidgetEvent( final PlaceRequest place,
-                                   final String title) {
-        this(place, title, null);
+    public ChangeTitleWidgetEvent(final PlaceRequest place,
+                                  final String title) {
+        this(place,
+             title,
+             null);
     }
 
-    public ChangeTitleWidgetEvent( final PlaceRequest place,
-                                   final String title,
-                                   final IsWidget titleDecoration ) {
+    public ChangeTitleWidgetEvent(final PlaceRequest place,
+                                  final String title,
+                                  final IsWidget titleDecoration) {
         this.place = place;
         this.title = title;
         this.titleDecoration = titleDecoration;

@@ -43,17 +43,21 @@ public class PreferenceStoreIOCProvider implements ContextualTypeProvider<Prefer
     private PreferenceScopeFactory scopeFactory;
 
     @Override
-    public PreferenceStore provide( final Class<?>[] typeargs,
-                                    final Annotation[] qualifiers ) {
-        final String componentKey = PreferenceQualifierUtils.getComponentKeyIfExists( qualifiers );
-        final PreferenceScopeResolutionStrategy scopeResolutionStrategy = getScopeResolutionStrategy( componentKey );
+    public PreferenceStore provide(final Class<?>[] typeargs,
+                                   final Annotation[] qualifiers) {
+        final String componentKey = PreferenceQualifierUtils.getComponentKeyIfExists(qualifiers);
+        final PreferenceScopeResolutionStrategy scopeResolutionStrategy = getScopeResolutionStrategy(componentKey);
 
-        return new PreferenceStore( componentKey, preferenceStoreCaller, scopeResolutionStrategy.getInfo(), scopeResolutionStrategy.getScopeResolver() );
+        return new PreferenceStore(componentKey,
+                                   preferenceStoreCaller,
+                                   scopeResolutionStrategy.getInfo(),
+                                   scopeResolutionStrategy.getScopeResolver());
     }
 
-    private PreferenceScopeResolutionStrategy getScopeResolutionStrategy( final String componentKey ) {
-        if ( this.scopeResolutionStrategyProvider.isUnsatisfied() ) {
-            return new DefaultPreferenceScopeResolutionStrategy( scopeFactory, componentKey );
+    private PreferenceScopeResolutionStrategy getScopeResolutionStrategy(final String componentKey) {
+        if (this.scopeResolutionStrategyProvider.isUnsatisfied()) {
+            return new DefaultPreferenceScopeResolutionStrategy(scopeFactory,
+                                                                componentKey);
         }
 
         return this.scopeResolutionStrategyProvider.get();

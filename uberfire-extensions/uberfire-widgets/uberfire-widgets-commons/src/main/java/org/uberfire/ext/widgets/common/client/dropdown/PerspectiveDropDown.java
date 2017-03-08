@@ -39,27 +39,6 @@ public class PerspectiveDropDown implements IsWidget {
     LiveSearchDropDown liveSearchDropDown;
     PerspectiveNameProvider perspectiveNameProvider;
     Set<String> perspectiveIdsExcluded;
-
-    @Inject
-    public PerspectiveDropDown(SyncBeanManager iocManager, LiveSearchDropDown liveSearchDropDown) {
-        this.iocManager = iocManager;
-        this.liveSearchDropDown = liveSearchDropDown;
-        this.perspectiveNameProvider = null;
-    }
-
-    @PostConstruct
-    private void init() {
-        liveSearchDropDown.setSelectorHint(CommonConstants.INSTANCE.PerspectiveSelectHint());
-        liveSearchDropDown.setSearchHint(CommonConstants.INSTANCE.PerspectiveSearchHint());
-        liveSearchDropDown.setNotFoundMessage(CommonConstants.INSTANCE.PerspectiveNotFound());
-        liveSearchDropDown.setSearchService(searchService);
-    }
-
-    @Override
-    public Widget asWidget() {
-        return liveSearchDropDown.asWidget();
-    }
-
     LiveSearchService searchService = (pattern, maxResults, callback) -> {
 
         List<String> result = new ArrayList<>();
@@ -78,11 +57,33 @@ public class PerspectiveDropDown implements IsWidget {
         }
 
         if (maxResults > 0 && maxResults < result.size()) {
-            result = result.subList(0, maxResults);
+            result = result.subList(0,
+                                    maxResults);
         }
         Collections.sort(result);
         callback.afterSearch(result);
     };
+
+    @Inject
+    public PerspectiveDropDown(SyncBeanManager iocManager,
+                               LiveSearchDropDown liveSearchDropDown) {
+        this.iocManager = iocManager;
+        this.liveSearchDropDown = liveSearchDropDown;
+        this.perspectiveNameProvider = null;
+    }
+
+    @PostConstruct
+    private void init() {
+        liveSearchDropDown.setSelectorHint(CommonConstants.INSTANCE.PerspectiveSelectHint());
+        liveSearchDropDown.setSearchHint(CommonConstants.INSTANCE.PerspectiveSearchHint());
+        liveSearchDropDown.setNotFoundMessage(CommonConstants.INSTANCE.PerspectiveNotFound());
+        liveSearchDropDown.setSearchService(searchService);
+    }
+
+    @Override
+    public Widget asWidget() {
+        return liveSearchDropDown.asWidget();
+    }
 
     public void setPerspectiveNameProvider(PerspectiveNameProvider perspectiveNameProvider) {
         this.perspectiveNameProvider = perspectiveNameProvider;
@@ -117,13 +118,13 @@ public class PerspectiveDropDown implements IsWidget {
         return null;
     }
 
-    public void setSelectedPerspective(PerspectiveActivity selectedPerspective) {
-        String item = getItemName(selectedPerspective);
+    public void setSelectedPerspective(String perspectiveId) {
+        String item = getItemName(perspectiveId);
         liveSearchDropDown.setSelectedItem(item);
     }
 
-    public void setSelectedPerspective(String perspectiveId) {
-        String item = getItemName(perspectiveId);
+    public void setSelectedPerspective(PerspectiveActivity selectedPerspective) {
+        String item = getItemName(selectedPerspective);
         liveSearchDropDown.setSelectedItem(item);
     }
 

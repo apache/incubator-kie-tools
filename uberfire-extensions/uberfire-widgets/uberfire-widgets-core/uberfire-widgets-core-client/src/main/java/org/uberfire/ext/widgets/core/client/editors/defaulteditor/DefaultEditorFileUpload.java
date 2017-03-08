@@ -21,8 +21,8 @@ import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
-import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 
 public class DefaultEditorFileUpload
         extends DefaultEditorFileUploadBase {
@@ -33,7 +33,8 @@ public class DefaultEditorFileUpload
     protected Map<String, String> getParameters() {
         HashMap<String, String> parameters = new HashMap<String, String>();
 
-        parameters.put("path", path.toURI());
+        parameters.put("path",
+                       path.toURI());
 
         return parameters;
     }
@@ -45,8 +46,8 @@ public class DefaultEditorFileUpload
     public void download() {
 
         Window.open(getFileDownloadURL(),
-                CoreConstants.INSTANCE.Downloading(),
-                "resizable=no,scrollbars=yes,status=no");
+                    CoreConstants.INSTANCE.Downloading(),
+                    "resizable=no,scrollbars=yes,status=no");
     }
 
     private String getFileDownloadURL() {

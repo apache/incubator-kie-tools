@@ -79,7 +79,9 @@ public class AuthorizationPolicyVfsStorage implements AuthorizationPolicyStorage
 
     @Override
     public synchronized void savePolicy(AuthorizationPolicy policy) {
-        savePolicyIntoVfs(policy, "system", "Save policy");
+        savePolicyIntoVfs(policy,
+                          "system",
+                          "Save policy");
     }
 
     // VFS operations
@@ -87,10 +89,12 @@ public class AuthorizationPolicyVfsStorage implements AuthorizationPolicyStorage
     public void initFileSystem() {
         try {
             fileSystem = ioService.newFileSystem(URI.create("default://security"),
-                    new HashMap<String, Object>() {{
-                        put("init", Boolean.TRUE);
-                        put("internal", Boolean.TRUE);
-                    }});
+                                                 new HashMap<String, Object>() {{
+                                                     put("init",
+                                                         Boolean.TRUE);
+                                                     put("internal",
+                                                         Boolean.TRUE);
+                                                 }});
         } catch (FileSystemAlreadyExistsException e) {
             fileSystem = ioService.getFileSystem(URI.create("default://security"));
         }
@@ -105,65 +109,79 @@ public class AuthorizationPolicyVfsStorage implements AuthorizationPolicyStorage
         AuthorizationPolicyBuilder builder = permissionManager.newAuthorizationPolicy();
         AuthorizationPolicyMarshaller marshaller = new AuthorizationPolicyMarshaller();
 
-        walkFileTree(authzPath, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
-                try {
-                    checkNotNull("file", file);
-                    checkNotNull("attrs", attrs);
+        walkFileTree(authzPath,
+                     new SimpleFileVisitor<Path>() {
+                         @Override
+                         public FileVisitResult visitFile(final Path file,
+                                                          final BasicFileAttributes attrs) throws IOException {
+                             try {
+                                 checkNotNull("file",
+                                              file);
+                                 checkNotNull("attrs",
+                                              attrs);
 
-                    if (isPolicyFile(file)) {
-                        String content = ioService.readAllString(file);
-                        NonEscapedProperties props = new NonEscapedProperties();
-                        props.load(new StringReader(content));
-                        marshaller.read(builder, props);
-                    }
-                } catch (final Exception e) {
-                    logger.error("Authz policy file VFS read error: " + file.getFileName(), e);
-                    return FileVisitResult.TERMINATE;
-                }
-                return FileVisitResult.CONTINUE;
-            }
-        });
+                                 if (isPolicyFile(file)) {
+                                     String content = ioService.readAllString(file);
+                                     NonEscapedProperties props = new NonEscapedProperties();
+                                     props.load(new StringReader(content));
+                                     marshaller.read(builder,
+                                                     props);
+                                 }
+                             } catch (final Exception e) {
+                                 logger.error("Authz policy file VFS read error: " + file.getFileName(),
+                                              e);
+                                 return FileVisitResult.TERMINATE;
+                             }
+                             return FileVisitResult.CONTINUE;
+                         }
+                     });
         return builder.build();
     }
 
     public boolean isPolicyFile(Path p) {
-        String fileName = p.getName(p.getNameCount()-1).toString();
+        String fileName = p.getName(p.getNameCount() - 1).toString();
         return fileName.equals("security-policy.properties") || fileName.startsWith("security-module-");
     }
 
-    public void savePolicyIntoVfs(AuthorizationPolicy policy, String subjectId, String message) {
+    public void savePolicyIntoVfs(AuthorizationPolicy policy,
+                                  String subjectId,
+                                  String message) {
 
         if (subjectId == null || message == null) {
             ioService.startBatch(fileSystem);
         } else {
-            ioService.startBatch(fileSystem, new CommentedOption(subjectId, message));
+            ioService.startBatch(fileSystem,
+                                 new CommentedOption(subjectId,
+                                                     message));
         }
 
         try {
             // Dump the entire authz policy into a properties map
             AuthorizationPolicyMarshaller marshaller = new AuthorizationPolicyMarshaller();
             NonEscapedProperties entries = new NonEscapedProperties();
-            marshaller.write(policy, entries);
+            marshaller.write(policy,
+                             entries);
 
             // Store the entries into a properties file
             StringWriter sw = new StringWriter();
-            entries.store(sw, "Authorization Policy", "Last update: " + new Date().toString());
+            entries.store(sw,
+                          "Authorization Policy",
+                          "Last update: " + new Date().toString());
             String policyContent = sw.toString();
             Path policyPath = getAuthzPath().resolve("security-policy.properties");
-            ioService.write(policyPath, policyContent);
-        }
-        catch (Exception e) {
-            logger.error("Authz policy write error.", e);
-        }
-        finally {
+            ioService.write(policyPath,
+                            policyContent);
+        } catch (Exception e) {
+            logger.error("Authz policy write error.",
+                         e);
+        } finally {
             ioService.endBatch();
         }
     }
 
     public Path getAuthzPath() {
-        checkNotNull("root", root);
+        checkNotNull("root",
+                     root);
         return root.resolve("authz");
     }
 }

@@ -54,8 +54,8 @@ public class BaseGridRenderer implements GridRenderer {
 
     protected GridRendererTheme theme;
 
-    public BaseGridRenderer( final GridRendererTheme theme ) {
-        setTheme( theme );
+    public BaseGridRenderer(final GridRendererTheme theme) {
+        setTheme(theme);
     }
 
     @Override
@@ -69,45 +69,45 @@ public class BaseGridRenderer implements GridRenderer {
     }
 
     @Override
-    public void setTheme( final GridRendererTheme theme ) {
-        this.theme = PortablePreconditions.checkNotNull( "theme",
-                                                         theme );
-    }
-
-    @Override
     public GridRendererTheme getTheme() {
         return theme;
     }
 
     @Override
-    public Group renderSelector( final double width,
-                                 final double height,
-                                 final BaseGridRendererHelper.RenderingInformation renderingInformation ) {
+    public void setTheme(final GridRendererTheme theme) {
+        this.theme = PortablePreconditions.checkNotNull("theme",
+                                                        theme);
+    }
+
+    @Override
+    public Group renderSelector(final double width,
+                                final double height,
+                                final BaseGridRendererHelper.RenderingInformation renderingInformation) {
         final Group g = new Group();
         final MultiPath selector = theme.getSelector()
-                .M( 0.5,
-                    0.5 )
-                .L( 0.5,
-                    height )
-                .L( width,
-                    height )
-                .L( width,
-                    0.5 )
-                .L( 0.5,
-                    0.5 )
-                .setListening( false );
-        g.add( selector );
+                .M(0.5,
+                   0.5)
+                .L(0.5,
+                   height)
+                .L(width,
+                   height)
+                .L(width,
+                   0.5)
+                .L(0.5,
+                   0.5)
+                .setListening(false);
+        g.add(selector);
         return g;
     }
 
     @Override
-    public Group renderSelectedCells( final GridData model,
-                                      final GridBodyRenderContext context,
-                                      final BaseGridRendererHelper rendererHelper ) {
+    public Group renderSelectedCells(final GridData model,
+                                     final GridBodyRenderContext context,
+                                     final BaseGridRendererHelper rendererHelper) {
         final List<GridColumn<?>> blockColumns = context.getBlockColumns();
         final SelectionsTransformer transformer = context.getTransformer();
-        final int minVisibleUiColumnIndex = model.getColumns().indexOf( blockColumns.get( 0 ) );
-        final int maxVisibleUiColumnIndex = model.getColumns().indexOf( blockColumns.get( blockColumns.size() - 1 ) );
+        final int minVisibleUiColumnIndex = model.getColumns().indexOf(blockColumns.get(0));
+        final int maxVisibleUiColumnIndex = model.getColumns().indexOf(blockColumns.get(blockColumns.size() - 1));
         final int minVisibleUiRowIndex = context.getMinVisibleRowIndex();
         final int maxVisibleUiRowIndex = context.getMaxVisibleRowIndex();
 
@@ -115,107 +115,107 @@ public class BaseGridRenderer implements GridRenderer {
         final List<SelectedRange> selectedRanges = transformer.transformToSelectedRanges();
 
         final Group g = new Group();
-        for ( SelectedRange selectedRange : selectedRanges ) {
+        for (SelectedRange selectedRange : selectedRanges) {
             final int rangeOriginUiColumnIndex = selectedRange.getUiColumnIndex();
             final int rangeOriginUiRowIndex = selectedRange.getUiRowIndex();
             final int rangeUiWidth = selectedRange.getWidth();
             final int rangeUiHeight = selectedRange.getHeight();
 
             //Only render range highlights if they're at least partially visible
-            if ( rangeOriginUiColumnIndex + rangeUiWidth - 1 < minVisibleUiColumnIndex ) {
+            if (rangeOriginUiColumnIndex + rangeUiWidth - 1 < minVisibleUiColumnIndex) {
                 continue;
             }
-            if ( rangeOriginUiColumnIndex > maxVisibleUiColumnIndex ) {
+            if (rangeOriginUiColumnIndex > maxVisibleUiColumnIndex) {
                 continue;
             }
-            if ( rangeOriginUiRowIndex + rangeUiHeight - 1 < minVisibleUiRowIndex ) {
+            if (rangeOriginUiRowIndex + rangeUiHeight - 1 < minVisibleUiRowIndex) {
                 continue;
             }
-            if ( rangeOriginUiRowIndex > maxVisibleUiRowIndex ) {
+            if (rangeOriginUiRowIndex > maxVisibleUiRowIndex) {
                 continue;
             }
 
             //Clip range to visible bounds
             SelectedRange _selectedRange = selectedRange;
-            if ( rangeOriginUiRowIndex < minVisibleUiRowIndex ) {
+            if (rangeOriginUiRowIndex < minVisibleUiRowIndex) {
                 final int dy = minVisibleUiRowIndex - rangeOriginUiRowIndex;
-                _selectedRange = new SelectedRange( selectedRange.getUiRowIndex() + dy,
-                                                    selectedRange.getUiColumnIndex(),
-                                                    selectedRange.getWidth(),
-                                                    selectedRange.getHeight() - dy );
+                _selectedRange = new SelectedRange(selectedRange.getUiRowIndex() + dy,
+                                                   selectedRange.getUiColumnIndex(),
+                                                   selectedRange.getWidth(),
+                                                   selectedRange.getHeight() - dy);
             }
 
-            final Group cs = renderSelectedRange( model,
-                                                  blockColumns,
-                                                  minVisibleUiColumnIndex,
-                                                  _selectedRange );
-            if ( cs != null ) {
-                final double csx = rendererHelper.getColumnOffset( blockColumns,
-                                                                   _selectedRange.getUiColumnIndex() - minVisibleUiColumnIndex );
-                final double csy = rendererHelper.getRowOffset( _selectedRange.getUiRowIndex() ) - rendererHelper.getRowOffset( minVisibleUiRowIndex );
-                cs.setX( csx )
-                        .setY( csy )
-                        .setListening( false );
-                g.add( cs );
+            final Group cs = renderSelectedRange(model,
+                                                 blockColumns,
+                                                 minVisibleUiColumnIndex,
+                                                 _selectedRange);
+            if (cs != null) {
+                final double csx = rendererHelper.getColumnOffset(blockColumns,
+                                                                  _selectedRange.getUiColumnIndex() - minVisibleUiColumnIndex);
+                final double csy = rendererHelper.getRowOffset(_selectedRange.getUiRowIndex()) - rendererHelper.getRowOffset(minVisibleUiRowIndex);
+                cs.setX(csx)
+                        .setY(csy)
+                        .setListening(false);
+                g.add(cs);
             }
         }
         return g;
     }
 
-    protected Group renderSelectedRange( final GridData model,
-                                         final List<GridColumn<?>> blockColumns,
-                                         final int minVisibleUiColumnIndex,
-                                         final SelectedRange selectedRange ) {
+    protected Group renderSelectedRange(final GridData model,
+                                        final List<GridColumn<?>> blockColumns,
+                                        final int minVisibleUiColumnIndex,
+                                        final SelectedRange selectedRange) {
         final Group cellSelector = new Group();
-        final double width = getSelectedRangeWidth( blockColumns,
-                                                    minVisibleUiColumnIndex,
-                                                    selectedRange );
-        final double height = getSelectedRangeHeight( model,
-                                                      selectedRange );
+        final double width = getSelectedRangeWidth(blockColumns,
+                                                   minVisibleUiColumnIndex,
+                                                   selectedRange);
+        final double height = getSelectedRangeHeight(model,
+                                                     selectedRange);
         final Rectangle selector = theme.getCellSelector()
-                .setWidth( width )
-                .setHeight( height )
-                .setStrokeWidth( 1.0 )
-                .setListening( false );
+                .setWidth(width)
+                .setHeight(height)
+                .setStrokeWidth(1.0)
+                .setListening(false);
 
         final Rectangle highlight = theme.getCellSelector()
-                .setWidth( width )
-                .setHeight( height )
-                .setFillColor( selector.getStrokeColor() )
-                .setListening( false )
-                .setAlpha( 0.25 );
+                .setWidth(width)
+                .setHeight(height)
+                .setFillColor(selector.getStrokeColor())
+                .setListening(false)
+                .setAlpha(0.25);
 
-        cellSelector.add( highlight );
-        cellSelector.add( selector );
+        cellSelector.add(highlight);
+        cellSelector.add(selector);
 
         return cellSelector;
     }
 
-    private double getSelectedRangeWidth( final List<GridColumn<?>> blockColumns,
-                                          final int minVisibleUiColumnIndex,
-                                          final SelectedRange selectedRange ) {
+    private double getSelectedRangeWidth(final List<GridColumn<?>> blockColumns,
+                                         final int minVisibleUiColumnIndex,
+                                         final SelectedRange selectedRange) {
         double width = 0;
-        for ( int columnIndex = 0; columnIndex < selectedRange.getWidth(); columnIndex++ ) {
+        for (int columnIndex = 0; columnIndex < selectedRange.getWidth(); columnIndex++) {
             final int relativeColumnIndex = columnIndex + selectedRange.getUiColumnIndex() - minVisibleUiColumnIndex;
-            width = width + blockColumns.get( relativeColumnIndex ).getWidth();
+            width = width + blockColumns.get(relativeColumnIndex).getWidth();
         }
         return width;
     }
 
-    private double getSelectedRangeHeight( final GridData model,
-                                           final SelectedRange selectedRange ) {
+    private double getSelectedRangeHeight(final GridData model,
+                                          final SelectedRange selectedRange) {
         double height = 0;
-        for ( int rowIndex = 0; rowIndex < selectedRange.getHeight(); rowIndex++ ) {
-            height = height + model.getRow( selectedRange.getUiRowIndex() + rowIndex ).getHeight();
+        for (int rowIndex = 0; rowIndex < selectedRange.getHeight(); rowIndex++) {
+            height = height + model.getRow(selectedRange.getUiRowIndex() + rowIndex).getHeight();
         }
         return height;
     }
 
     @Override
-    public Group renderHeader( final GridData model,
-                               final GridHeaderRenderContext context,
-                               final BaseGridRendererHelper rendererHelper,
-                               final BaseGridRendererHelper.RenderingInformation renderingInformation ) {
+    public Group renderHeader(final GridData model,
+                              final GridHeaderRenderContext context,
+                              final BaseGridRendererHelper rendererHelper,
+                              final BaseGridRendererHelper.RenderingInformation renderingInformation) {
         final List<GridColumn<?>> allBlockColumns = context.getAllColumns();
         final List<GridColumn<?>> visibleBlockColumns = context.getBlockColumns();
         final boolean isSelectionLayer = context.isSelectionLayer();
@@ -227,48 +227,48 @@ public class BaseGridRenderer implements GridRenderer {
 
         //Column backgrounds
         double x = 0;
-        for ( final GridColumn<?> column : visibleBlockColumns ) {
-            if ( column.isVisible() ) {
+        for (final GridColumn<?> column : visibleBlockColumns) {
+            if (column.isVisible()) {
                 final double w = column.getWidth();
                 Rectangle header;
-                if ( column.isLinked() ) {
-                    header = theme.getHeaderLinkBackground( column );
+                if (column.isLinked()) {
+                    header = theme.getHeaderLinkBackground(column);
                 } else {
-                    header = theme.getHeaderBackground( column );
+                    header = theme.getHeaderBackground(column);
                 }
-                if ( header != null ) {
-                    header.setWidth( w )
-                            .setListening( true )
-                            .setHeight( headerRowsHeight )
-                            .setY( headerRowsYOffset )
-                            .setX( x );
-                    g.add( header );
+                if (header != null) {
+                    header.setWidth(w)
+                            .setListening(true)
+                            .setHeight(headerRowsHeight)
+                            .setY(headerRowsYOffset)
+                            .setX(x);
+                    g.add(header);
                 }
                 x = x + w;
             }
         }
 
         //Don't render the Header's detail if we're rendering the SelectionLayer
-        if ( isSelectionLayer ) {
+        if (isSelectionLayer) {
             return g;
         }
 
         //Column title and grid lines
         x = 0;
-        for ( final GridColumn<?> column : visibleBlockColumns ) {
-            if ( column.isVisible() ) {
+        for (final GridColumn<?> column : visibleBlockColumns) {
+            if (column.isVisible()) {
                 final double columnWidth = column.getWidth();
-                final int columnIndex = visibleBlockColumns.indexOf( column );
-                final GridHeaderColumnRenderContext headerCellRenderContext = new GridHeaderColumnRenderContext( allBlockColumns,
-                                                                                                                 visibleBlockColumns,
-                                                                                                                 columnIndex,
-                                                                                                                 model,
-                                                                                                                 this );
-                final Group headerGroup = column.getColumnRenderer().renderHeader( column.getHeaderMetaData(),
-                                                                                   headerCellRenderContext,
-                                                                                   renderingInformation );
-                headerGroup.setX( x );
-                g.add( headerGroup );
+                final int columnIndex = visibleBlockColumns.indexOf(column);
+                final GridHeaderColumnRenderContext headerCellRenderContext = new GridHeaderColumnRenderContext(allBlockColumns,
+                                                                                                                visibleBlockColumns,
+                                                                                                                columnIndex,
+                                                                                                                model,
+                                                                                                                this);
+                final Group headerGroup = column.getColumnRenderer().renderHeader(column.getHeaderMetaData(),
+                                                                                  headerCellRenderContext,
+                                                                                  renderingInformation);
+                headerGroup.setX(x);
+                g.add(headerGroup);
 
                 x = x + columnWidth;
             }
@@ -276,46 +276,46 @@ public class BaseGridRenderer implements GridRenderer {
 
         //Linked column icons
         x = 0;
-        for ( final GridColumn<?> column : visibleBlockColumns ) {
-            if ( column.isVisible() ) {
+        for (final GridColumn<?> column : visibleBlockColumns) {
+            if (column.isVisible()) {
                 final double w = column.getWidth();
-                if ( column.isLinked() ) {
+                if (column.isLinked()) {
                     final Text t = theme.getBodyText()
-                            .setFontFamily( LINK_FONT_FAMILY )
-                            .setFontSize( LINK_FONT_SIZE )
-                            .setText( LINK_ICON )
-                            .setY( headerRowsYOffset + LINK_FONT_SIZE )
-                            .setX( x + w - LINK_FONT_SIZE );
-                    g.add( t );
+                            .setFontFamily(LINK_FONT_FAMILY)
+                            .setFontSize(LINK_FONT_SIZE)
+                            .setText(LINK_ICON)
+                            .setY(headerRowsYOffset + LINK_FONT_SIZE)
+                            .setX(x + w - LINK_FONT_SIZE);
+                    g.add(t);
                 }
                 x = x + w;
             }
         }
 
         //Divider between header and body
-        final Group divider = renderHeaderBodyDivider( x );
-        g.add( divider );
+        final Group divider = renderHeaderBodyDivider(x);
+        g.add(divider);
 
         return g;
     }
 
     @Override
-    public Group renderHeaderBodyDivider( final double width ) {
+    public Group renderHeaderBodyDivider(final double width) {
         final Group g = new Group();
         final Line divider = theme.getGridHeaderBodyDivider();
-        divider.setPoints( new Point2DArray( new Point2D( 0,
-                                                          getHeaderHeight() + 0.5 ),
-                                             new Point2D( width,
-                                                          getHeaderHeight() + 0.5 ) ) );
-        g.add( divider );
+        divider.setPoints(new Point2DArray(new Point2D(0,
+                                                       getHeaderHeight() + 0.5),
+                                           new Point2D(width,
+                                                       getHeaderHeight() + 0.5)));
+        g.add(divider);
         return g;
     }
 
     @Override
-    public Group renderBody( final GridData model,
-                             final GridBodyRenderContext context,
-                             final BaseGridRendererHelper rendererHelper,
-                             final BaseGridRendererHelper.RenderingInformation renderingInformation ) {
+    public Group renderBody(final GridData model,
+                            final GridBodyRenderContext context,
+                            final BaseGridRendererHelper rendererHelper,
+                            final BaseGridRendererHelper.RenderingInformation renderingInformation) {
         final double absoluteGridX = context.getAbsoluteGridX();
         final double absoluteGridY = context.getAbsoluteGridY();
         final double absoluteColumnOffsetX = context.getAbsoluteColumnOffsetX();
@@ -331,54 +331,54 @@ public class BaseGridRenderer implements GridRenderer {
         final BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation = renderingInformation.getFloatingBlockInformation();
         final List<Double> visibleRowOffsets = renderingInformation.getVisibleRowOffsets();
 
-        final double columnHeight = visibleRowOffsets.get( maxVisibleRowIndex - minVisibleRowIndex ) - visibleRowOffsets.get( 0 ) + model.getRow( maxVisibleRowIndex ).getHeight();
+        final double columnHeight = visibleRowOffsets.get(maxVisibleRowIndex - minVisibleRowIndex) - visibleRowOffsets.get(0) + model.getRow(maxVisibleRowIndex).getHeight();
 
         final Group g = new Group();
 
         //Column backgrounds
         double x = 0;
-        for ( final GridColumn<?> column : blockColumns ) {
-            if ( column.isVisible() ) {
+        for (final GridColumn<?> column : blockColumns) {
+            if (column.isVisible()) {
                 final double columnWidth = column.getWidth();
-                final Rectangle body = theme.getBodyBackground( column )
-                        .setWidth( columnWidth )
-                        .setListening( true )
-                        .setHeight( columnHeight )
-                        .setX( x );
-                g.add( body );
+                final Rectangle body = theme.getBodyBackground(column)
+                        .setWidth(columnWidth)
+                        .setListening(true)
+                        .setHeight(columnHeight)
+                        .setX(x);
+                g.add(body);
                 x = x + columnWidth;
             }
         }
 
         //Don't render the Body's detail if we're rendering the SelectionLayer
-        if ( isSelectionLayer ) {
+        if (isSelectionLayer) {
             return g;
         }
 
         x = 0;
-        for ( GridColumn<?> column : blockColumns ) {
-            if ( column.isVisible() ) {
+        for (GridColumn<?> column : blockColumns) {
+            if (column.isVisible()) {
                 final double columnWidth = column.getWidth();
-                final double columnRelativeX = rendererHelper.getColumnOffset( blockColumns,
-                                                                               blockColumns.indexOf( column ) ) + absoluteColumnOffsetX;
-                final boolean isFloating = floatingBlockInformation.getColumns().contains( column );
-                final GridBodyColumnRenderContext columnContext = new GridBodyColumnRenderContext( absoluteGridX,
-                                                                                                   absoluteGridY,
-                                                                                                   absoluteGridX + columnRelativeX,
-                                                                                                   clipMinY,
-                                                                                                   clipMinX,
-                                                                                                   minVisibleRowIndex,
-                                                                                                   maxVisibleRowIndex,
-                                                                                                   isFloating,
-                                                                                                   model,
-                                                                                                   transform,
-                                                                                                   renderer );
-                final Group columnGroup = column.getColumnRenderer().renderColumn( column,
-                                                                                   columnContext,
-                                                                                   rendererHelper,
-                                                                                   renderingInformation );
-                columnGroup.setX( x );
-                g.add( columnGroup );
+                final double columnRelativeX = rendererHelper.getColumnOffset(blockColumns,
+                                                                              blockColumns.indexOf(column)) + absoluteColumnOffsetX;
+                final boolean isFloating = floatingBlockInformation.getColumns().contains(column);
+                final GridBodyColumnRenderContext columnContext = new GridBodyColumnRenderContext(absoluteGridX,
+                                                                                                  absoluteGridY,
+                                                                                                  absoluteGridX + columnRelativeX,
+                                                                                                  clipMinY,
+                                                                                                  clipMinX,
+                                                                                                  minVisibleRowIndex,
+                                                                                                  maxVisibleRowIndex,
+                                                                                                  isFloating,
+                                                                                                  model,
+                                                                                                  transform,
+                                                                                                  renderer);
+                final Group columnGroup = column.getColumnRenderer().renderColumn(column,
+                                                                                  columnContext,
+                                                                                  rendererHelper,
+                                                                                  renderingInformation);
+                columnGroup.setX(x);
+                g.add(columnGroup);
 
                 x = x + columnWidth;
             }
@@ -388,28 +388,27 @@ public class BaseGridRenderer implements GridRenderer {
     }
 
     @Override
-    public Group renderGridBoundary( final double width,
-                                     final double height ) {
+    public Group renderGridBoundary(final double width,
+                                    final double height) {
         final Group g = new Group();
         final Rectangle boundary = theme.getGridBoundary()
-                .setWidth( width )
-                .setHeight( height )
-                .setListening( false )
-                .setX( 0.5 )
-                .setY( 0.5 );
-        g.add( boundary );
+                .setWidth(width)
+                .setHeight(height)
+                .setListening(false)
+                .setX(0.5)
+                .setY(0.5);
+        g.add(boundary);
         return g;
     }
 
     @Override
-    public boolean onGroupingToggle( double cellX,
-                                     double cellY,
-                                     double cellWidth,
-                                     double cellHeight ) {
-        return GroupingToggle.onHotSpot( cellX,
-                                         cellY,
-                                         cellWidth,
-                                         cellHeight );
+    public boolean onGroupingToggle(double cellX,
+                                    double cellY,
+                                    double cellWidth,
+                                    double cellHeight) {
+        return GroupingToggle.onHotSpot(cellX,
+                                        cellY,
+                                        cellWidth,
+                                        cellHeight);
     }
-
 }

@@ -18,6 +18,12 @@ package org.uberfire.java.nio.file;
 
 public interface WatchEvent<T> {
 
+    Kind<T> kind();
+
+    int count();
+
+    T context();
+
     public static interface Kind<T> {
 
         String name();
@@ -29,10 +35,4 @@ public interface WatchEvent<T> {
 
         String name();
     }
-
-    Kind<T> kind();
-
-    int count();
-
-    T context();
 }

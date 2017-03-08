@@ -22,10 +22,9 @@ public class ComponentDropEvent {
 
     private LayoutComponent component;
 
-    public ComponentDropEvent( LayoutComponent component ) {
+    public ComponentDropEvent(LayoutComponent component) {
 
         this.component = component;
-
     }
 
     public LayoutComponent getComponent() {

@@ -34,5 +34,4 @@ public class SaveUserEvent implements UberFireEvent {
     public String toString() {
         return "SaveUserEvent [identifier=" + identifier + "]";
     }
-
 }

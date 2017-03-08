@@ -16,8 +16,16 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.list;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -26,19 +34,23 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import org.gwtbootstrap3.client.ui.*;
+import org.gwtbootstrap3.client.ui.AnchorListItem;
+import org.gwtbootstrap3.client.ui.Badge;
+import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtbootstrap3.client.ui.Heading;
+import org.gwtbootstrap3.client.ui.Label;
+import org.gwtbootstrap3.client.ui.LinkedGroup;
+import org.gwtbootstrap3.client.ui.LinkedGroupItem;
+import org.gwtbootstrap3.client.ui.Pagination;
+import org.gwtbootstrap3.client.ui.Row;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.HeadingSize;
 import org.gwtbootstrap3.client.ui.constants.IconPosition;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-
 /**
  * <p>View implementation for listing entities with pagination features.</p>
- *           
  * @since 0.8.0
  */
 @Dependent
@@ -46,59 +58,31 @@ public class EntitiesListView extends Composite
         implements
         EntitiesList.View {
 
-    interface EntitiesListViewBinder
-            extends
-            UiBinder<Row, EntitiesListView> {
-
-    }
-
     private static EntitiesListViewBinder uiBinder = GWT.create(EntitiesListViewBinder.class);
-
-    interface EntitiesListViewStyle extends CssResource {
-        String entityPanel();
-        String entityGroup();
-        String entitiesList();
-        String entityListTitle();
-        String entityListButton();
-        String left();
-    }
-
     @UiField
     EntitiesListViewStyle style;
-
     @UiField
     Row emptyEntitiesRow;
-    
     @UiField
     Label emptyEntitiesLabel;
-    
     @UiField
     LinkedGroup entitiesList;
-
     @UiField
     Pagination pagination;
-
     @UiField
     AnchorListItem firstPageAnchor;
-    
     @UiField
     AnchorListItem prevPageAnchor;
-
     @UiField
     AnchorListItem currentPageAnchor;
-
     @UiField
     AnchorListItem nextPageAnchor;
-
     @UiField
     AnchorListItem lastPageAnchor;
-    
     @UiField
     Badge totalBadge;
-    
     @UiField
     HTML totalText;
-    
     private EntitiesList presenter;
     private HandlerRegistration firstPageAnchorClickHandlerRegistration = null;
     private HandlerRegistration prevPageAnchorClickHandlerRegistration = null;
@@ -107,7 +91,7 @@ public class EntitiesListView extends Composite
 
     @PostConstruct
     protected void initUIBinder() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
@@ -115,9 +99,8 @@ public class EntitiesListView extends Composite
         this.presenter = presenter;
     }
 
-
     @Override
-    public EntitiesList.View configure(final String emptyEntitiesText, 
+    public EntitiesList.View configure(final String emptyEntitiesText,
                                        final EntitiesList.PaginationConstraints paginationConstraints) {
         clear();
         final String emptyText = emptyEntitiesText != null ? emptyEntitiesText : UsersManagementWidgetsConstants.INSTANCE.emptyEntities();
@@ -127,11 +110,22 @@ public class EntitiesListView extends Composite
     }
 
     @Override
-    public EntitiesList.View add(final int index, final String identifier, final String title, 
-                                 final HeadingSize titleSize, 
-                                 final boolean canRead, final boolean canRemove, 
-                                 final boolean canSelect, final boolean isSelected) {
-        addEntityInList(index, identifier, title, titleSize, canRead, canRemove, canSelect, isSelected);
+    public EntitiesList.View add(final int index,
+                                 final String identifier,
+                                 final String title,
+                                 final HeadingSize titleSize,
+                                 final boolean canRead,
+                                 final boolean canRemove,
+                                 final boolean canSelect,
+                                 final boolean isSelected) {
+        addEntityInList(index,
+                        identifier,
+                        title,
+                        titleSize,
+                        canRead,
+                        canRemove,
+                        canSelect,
+                        isSelected);
         emptyEntitiesRow.setVisible(false);
         return this;
     }
@@ -143,9 +137,14 @@ public class EntitiesListView extends Composite
         return this;
     }
 
-    private void addEntityInList(final int index, final String id, final String title, final HeadingSize titleSize, 
-                                 final boolean canRead, final boolean canRemove, 
-                                 final boolean canSelect, final boolean isSelected) {
+    private void addEntityInList(final int index,
+                                 final String id,
+                                 final String title,
+                                 final HeadingSize titleSize,
+                                 final boolean canRead,
+                                 final boolean canRemove,
+                                 final boolean canSelect,
+                                 final boolean isSelected) {
 
         final LinkedGroupItem groupItem = new LinkedGroupItem();
         groupItem.addStyleName(style.entityGroup());
@@ -169,14 +168,17 @@ public class EntitiesListView extends Composite
             checkBox.addStyleName(style.left());
             checkBox.setValue(isSelected);
             checkBox.addDomHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent clickEvent) {
-                    clickEvent.stopPropagation();
-                    final boolean value = checkBox.getValue();
-                    presenter.onSelectEntity(id, index, checkBox.getValue());
-                }
-            }, ClickEvent.getType());
-            
+                                       @Override
+                                       public void onClick(ClickEvent clickEvent) {
+                                           clickEvent.stopPropagation();
+                                           final boolean value = checkBox.getValue();
+                                           presenter.onSelectEntity(id,
+                                                                    index,
+                                                                    checkBox.getValue());
+                                       }
+                                   },
+                                   ClickEvent.getType());
+
             groupPanel.add(checkBox);
         }
 
@@ -185,7 +187,7 @@ public class EntitiesListView extends Composite
         heading.setText(title);
         heading.addStyleName(style.entityListTitle());
         groupPanel.add(heading);
-        
+
         // Entity remove from list feature.
         if (canRemove) {
 
@@ -205,25 +207,26 @@ public class EntitiesListView extends Composite
             });
             removeButton.setVisible(false);
             groupPanel.add(removeButton);
-            
+
             // Show the button on mouse over.
             groupItem.addDomHandler(new MouseOverHandler() {
-                @Override
-                public void onMouseOver(final MouseOverEvent mouseOverEvent) {
-                    mouseOverEvent.stopPropagation();
-                    removeButton.setVisible(true);
-                }
-            }, MouseOverEvent.getType());
+                                        @Override
+                                        public void onMouseOver(final MouseOverEvent mouseOverEvent) {
+                                            mouseOverEvent.stopPropagation();
+                                            removeButton.setVisible(true);
+                                        }
+                                    },
+                                    MouseOverEvent.getType());
 
             // Hide the button on mouse over.
             groupItem.addDomHandler(new MouseOutHandler() {
-                @Override
-                public void onMouseOut(final MouseOutEvent mouseOverEvent) {
-                    mouseOverEvent.stopPropagation();
-                    removeButton.setVisible(false);
-                }
-            }, MouseOutEvent.getType());
-            
+                                        @Override
+                                        public void onMouseOut(final MouseOutEvent mouseOverEvent) {
+                                            mouseOverEvent.stopPropagation();
+                                            removeButton.setVisible(false);
+                                        }
+                                    },
+                                    MouseOutEvent.getType());
         }
 
         groupItem.add(groupPanel);
@@ -243,7 +246,7 @@ public class EntitiesListView extends Composite
             final boolean isLastPageEnabled = constraints.isLastPageEnabled();
             final boolean isLastPageVisible = constraints.isLastPageVisible();
             final Integer total = constraints.getTotal();
-            
+
             // Only show pagination if necesssary.
             existsPagination = isPrevPageVisible || isNextPageVisible;
             if (existsPagination) {
@@ -251,7 +254,10 @@ public class EntitiesListView extends Composite
                 // First page anchor.
                 firstPageAnchor.setEnabled(isFirstPageEnabled);
                 firstPageAnchor.setVisible(isFirstPageVisible);
-                if (firstPageAnchorClickHandlerRegistration != null) firstPageAnchorClickHandlerRegistration.removeHandler();;
+                if (firstPageAnchorClickHandlerRegistration != null) {
+                    firstPageAnchorClickHandlerRegistration.removeHandler();
+                }
+                ;
                 firstPageAnchorClickHandlerRegistration = firstPageAnchor.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(final ClickEvent clickEvent) {
@@ -265,7 +271,10 @@ public class EntitiesListView extends Composite
                 // Previous page anchor.
                 prevPageAnchor.setEnabled(isPrevPageEnabled);
                 prevPageAnchor.setVisible(isPrevPageVisible);
-                if (prevPageAnchorClickHandlerRegistration != null) prevPageAnchorClickHandlerRegistration.removeHandler();;
+                if (prevPageAnchorClickHandlerRegistration != null) {
+                    prevPageAnchorClickHandlerRegistration.removeHandler();
+                }
+                ;
                 prevPageAnchorClickHandlerRegistration = prevPageAnchor.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(final ClickEvent clickEvent) {
@@ -275,14 +284,17 @@ public class EntitiesListView extends Composite
                         }
                     }
                 });
-                
+
                 // Current page anchor.
                 currentPageAnchor.setText(Integer.toString(currentPage));
 
                 // Next page anchor.
                 nextPageAnchor.setEnabled(isNextPageEnabled);
                 nextPageAnchor.setVisible(isNextPageVisible);
-                if (nextPageAnchorClickHandlerRegistration != null) nextPageAnchorClickHandlerRegistration.removeHandler();;
+                if (nextPageAnchorClickHandlerRegistration != null) {
+                    nextPageAnchorClickHandlerRegistration.removeHandler();
+                }
+                ;
                 nextPageAnchorClickHandlerRegistration = nextPageAnchor.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent clickEvent) {
@@ -296,7 +308,10 @@ public class EntitiesListView extends Composite
                 // Last page anchor.
                 lastPageAnchor.setEnabled(isLastPageEnabled);
                 lastPageAnchor.setVisible(isLastPageVisible);
-                if (lastPageAnchorClickHandlerRegistration != null) lastPageAnchorClickHandlerRegistration.removeHandler();;
+                if (lastPageAnchorClickHandlerRegistration != null) {
+                    lastPageAnchorClickHandlerRegistration.removeHandler();
+                }
+                ;
                 lastPageAnchorClickHandlerRegistration = lastPageAnchor.addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(final ClickEvent clickEvent) {
@@ -319,5 +334,25 @@ public class EntitiesListView extends Composite
         }
         pagination.setVisible(existsPagination);
     }
-    
+
+    interface EntitiesListViewBinder
+            extends
+            UiBinder<Row, EntitiesListView> {
+
+    }
+
+    interface EntitiesListViewStyle extends CssResource {
+
+        String entityPanel();
+
+        String entityGroup();
+
+        String entitiesList();
+
+        String entityListTitle();
+
+        String entityListButton();
+
+        String left();
+    }
 }

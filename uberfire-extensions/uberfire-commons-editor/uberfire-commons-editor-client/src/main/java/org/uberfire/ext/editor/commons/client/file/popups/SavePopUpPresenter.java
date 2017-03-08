@@ -27,31 +27,21 @@ import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.editor.commons.client.file.popups.commons.ToggleCommentPresenter;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import static org.uberfire.backend.vfs.PathSupport.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.backend.vfs.PathSupport.isVersioned;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class SavePopUpPresenter {
 
-    public interface View extends UberElement<SavePopUpPresenter> {
-
-        void show();
-
-        void hide();
-    }
-
     private ParameterizedCommand<String> command;
-
     private View view;
-
     private Event<SaveInProgressEvent> saveInProgressEvent;
-
     private ToggleCommentPresenter toggleCommentPresenter;
 
     @Inject
-    public SavePopUpPresenter( View view,
-                               Event<SaveInProgressEvent> saveInProgressEvent,
-                               ToggleCommentPresenter toggleCommentPresenter ) {
+    public SavePopUpPresenter(View view,
+                              Event<SaveInProgressEvent> saveInProgressEvent,
+                              ToggleCommentPresenter toggleCommentPresenter) {
         this.toggleCommentPresenter = toggleCommentPresenter;
         this.saveInProgressEvent = saveInProgressEvent;
         this.view = view;
@@ -59,22 +49,23 @@ public class SavePopUpPresenter {
 
     @PostConstruct
     public void setup() {
-        view.init( this );
+        view.init(this);
     }
 
-    public void show( final ParameterizedCommand<String> command ) {
+    public void show(final ParameterizedCommand<String> command) {
         this.command = command;
         view.show();
     }
 
-    public void show( final Path path,
-                      final ParameterizedCommand<String> command ) {
-        final ParameterizedCommand<String> wrappedCommand = wrapWithSaveInProgressEvent( path, command );
+    public void show(final Path path,
+                     final ParameterizedCommand<String> command) {
+        final ParameterizedCommand<String> wrappedCommand = wrapWithSaveInProgressEvent(path,
+                                                                                        command);
 
-        if ( isVersioned( path ) ) {
-            show( wrappedCommand );
+        if (isVersioned(path)) {
+            show(wrappedCommand);
         } else {
-            wrappedCommand.execute( "" );
+            wrappedCommand.execute("");
         }
     }
 
@@ -83,8 +74,9 @@ public class SavePopUpPresenter {
     }
 
     public void save() {
-        checkNotNull( "command", command );
-        command.execute( toggleCommentPresenter.getComment() );
+        checkNotNull("command",
+                     command);
+        command.execute(toggleCommentPresenter.getComment());
         view.hide();
     }
 
@@ -94,15 +86,22 @@ public class SavePopUpPresenter {
 
     private ParameterizedCommand<String> wrapWithSaveInProgressEvent(
             final Path path,
-            final ParameterizedCommand<String> command ) {
+            final ParameterizedCommand<String> command) {
 
         return parameter -> {
-            command.execute( parameter );
-            saveInProgressEvent.fire( new SaveInProgressEvent( path ) );
+            command.execute(parameter);
+            saveInProgressEvent.fire(new SaveInProgressEvent(path));
         };
     }
 
     public ToggleCommentPresenter getToggleCommentPresenter() {
         return toggleCommentPresenter;
+    }
+
+    public interface View extends UberElement<SavePopUpPresenter> {
+
+        void show();
+
+        void hide();
     }
 }

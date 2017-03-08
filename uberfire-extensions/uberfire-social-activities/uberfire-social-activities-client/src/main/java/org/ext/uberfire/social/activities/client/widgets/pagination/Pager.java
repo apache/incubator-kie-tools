@@ -24,6 +24,6 @@ import org.gwtbootstrap3.client.ui.html.UnorderedList;
 public class Pager extends UnorderedList {
 
     public Pager() {
-        addStyleName( Styles.PAGER );
+        addStyleName(Styles.PAGER);
     }
 }

@@ -22,7 +22,7 @@ public class NotDirectoryException extends FileSystemException {
         super();
     }
 
-    public NotDirectoryException( String file ) {
-        super( file );
+    public NotDirectoryException(String file) {
+        super(file);
     }
 }

@@ -15,6 +15,7 @@
  */
 package org.uberfire.client.workbench.panels.impl;
 
+import java.util.Collection;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -25,38 +26,36 @@ import org.uberfire.client.workbench.widgets.listbar.ListBarWidget;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
 
-import java.util.Collection;
-
 /**
  * A Workbench panel that can contain WorkbenchParts.
  */
 @Dependent
 @Named("MultiListWorkbenchPanelView")
 public class MultiListWorkbenchPanelView
-extends AbstractMultiPartWorkbenchPanelView<MultiListWorkbenchPanelPresenter> {
+        extends AbstractMultiPartWorkbenchPanelView<MultiListWorkbenchPanelPresenter> {
 
     @Inject
     protected ListBarWidget listBar;
 
     @Override
     protected MultiPartWidget setupWidget() {
-        addOnFocusHandler( listBar );
-        addSelectionHandler( listBar );
+        addOnFocusHandler(listBar);
+        addSelectionHandler(listBar);
 
         final MaximizeToggleButtonPresenter maximizeButton = listBar.getMaximizeButton();
-        maximizeButton.setVisible( true );
-        maximizeButton.setMaximizeCommand( new Command() {
+        maximizeButton.setVisible(true);
+        maximizeButton.setMaximizeCommand(new Command() {
             @Override
             public void execute() {
                 maximize();
             }
-        } );
-        maximizeButton.setUnmaximizeCommand( new Command() {
+        });
+        maximizeButton.setUnmaximizeCommand(new Command() {
             @Override
             public void execute() {
                 unmaximize();
             }
-        } );
+        });
 
         return listBar;
     }
@@ -64,19 +63,19 @@ extends AbstractMultiPartWorkbenchPanelView<MultiListWorkbenchPanelPresenter> {
     @Override
     public void maximize() {
         super.maximize();
-        listBar.getMaximizeButton().setMaximized( true );
+        listBar.getMaximizeButton().setMaximized(true);
     }
 
     @Override
     public void unmaximize() {
         super.unmaximize();
-        listBar.getMaximizeButton().setMaximized( false );
+        listBar.getMaximizeButton().setMaximized(false);
     }
-    
+
     @Override
-    public void setElementId( String elementId ) {
-        super.setElementId( elementId );
-        listBar.getMaximizeButton().getView().asWidget().ensureDebugId( elementId + "-maximizeButton" );
+    public void setElementId(String elementId) {
+        super.setElementId(elementId);
+        listBar.getMaximizeButton().getView().asWidget().ensureDebugId(elementId + "-maximizeButton");
     }
 
     @Override

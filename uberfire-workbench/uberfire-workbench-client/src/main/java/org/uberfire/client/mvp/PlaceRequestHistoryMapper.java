@@ -24,5 +24,5 @@ public interface PlaceRequestHistoryMapper {
      * @param token a String token
      * @return a {@link PlaceRequest} instance
      */
-    PlaceRequest getPlaceRequest( final String token );
+    PlaceRequest getPlaceRequest(final String token);
 }

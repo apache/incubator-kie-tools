@@ -17,16 +17,15 @@ package org.uberfire.ext.wires.bpmn.beliefs.graph;
 
 public interface Graph<C, T extends GraphNode> extends Iterable<T> {
 
-    public T addNode( T node );
+    public T addNode(T node);
 
-    public T removeNode( int id );
+    public T removeNode(int id);
 
-    public T getNode( int id );
+    public T getNode(int id);
 
     public C getContent();
 
-    public void setContent( C content );
+    public void setContent(C content);
 
     public int size();
-
 }

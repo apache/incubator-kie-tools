@@ -26,7 +26,7 @@ public interface AttrsStorage extends AttrHolder {
 
     Map<String, Object> getAllContent();
 
-    void loadContent( final Properties properties );
+    void loadContent(final Properties properties);
 
     void clear();
 }

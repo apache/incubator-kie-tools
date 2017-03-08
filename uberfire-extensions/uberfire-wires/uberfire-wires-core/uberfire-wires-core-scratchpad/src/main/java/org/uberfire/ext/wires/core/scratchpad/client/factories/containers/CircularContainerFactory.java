@@ -44,34 +44,33 @@ public class CircularContainerFactory extends AbstractBaseFactory<Circle> {
     }
 
     @Override
-    public WiresBaseShape getShape( final FactoryHelper helper ) {
-        return new WiresCircularContainer( makeShape() );
+    public WiresBaseShape getShape(final FactoryHelper helper) {
+        return new WiresCircularContainer(makeShape());
     }
 
     @Override
-    public boolean builds( final WiresBaseShape shapeType ) {
+    public boolean builds(final WiresBaseShape shapeType) {
         return shapeType instanceof WiresCircularContainer;
     }
 
     @Override
     protected Circle makeShape() {
-        final Circle circle = new Circle( SHAPE_RADIUS );
-        circle.setStrokeColor( ShapesUtils.RGB_STROKE_CONTAINER )
-                .setStrokeWidth( ShapesUtils.RGB_STROKE_WIDTH_CONTAINER )
-                .setFillColor( ShapesUtils.RGB_FILL_CONTAINER )
-                .setAlpha( ShapesUtils.RGB_ALPHA_CONTAINER )
-                .setDraggable( false );
+        final Circle circle = new Circle(SHAPE_RADIUS);
+        circle.setStrokeColor(ShapesUtils.RGB_STROKE_CONTAINER)
+                .setStrokeWidth(ShapesUtils.RGB_STROKE_WIDTH_CONTAINER)
+                .setFillColor(ShapesUtils.RGB_FILL_CONTAINER)
+                .setAlpha(ShapesUtils.RGB_ALPHA_CONTAINER)
+                .setDraggable(false);
         return circle;
     }
 
     @Override
     protected double getWidth() {
-        return ( SHAPE_RADIUS + ShapesUtils.RGB_STROKE_WIDTH_SHAPE ) * 2;
+        return (SHAPE_RADIUS + ShapesUtils.RGB_STROKE_WIDTH_SHAPE) * 2;
     }
 
     @Override
     protected double getHeight() {
-        return ( SHAPE_RADIUS + ShapesUtils.RGB_STROKE_WIDTH_SHAPE ) * 2;
+        return (SHAPE_RADIUS + ShapesUtils.RGB_STROKE_WIDTH_SHAPE) * 2;
     }
-
 }

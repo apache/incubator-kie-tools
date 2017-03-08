@@ -22,16 +22,15 @@ import com.ait.lienzo.client.core.shape.Text;
 
 public class TemplateShape extends Group {
 
-    public void setBounding( Rectangle bounding ) {
-        add( bounding );
+    public void setBounding(Rectangle bounding) {
+        add(bounding);
     }
 
-    public void setShape( Shape<?> shape ) {
-        add( shape );
+    public void setShape(Shape<?> shape) {
+        add(shape);
     }
 
-    public void setDescription( Text description ) {
-        add( description );
+    public void setDescription(Text description) {
+        add(description);
     }
-
 }

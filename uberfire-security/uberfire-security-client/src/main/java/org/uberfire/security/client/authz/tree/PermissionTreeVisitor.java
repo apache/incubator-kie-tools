@@ -22,7 +22,6 @@ public interface PermissionTreeVisitor {
 
     /**
      * Visit the given {@link PermissionNode}.
-     *
      * @param node The node to visit
      */
     void visit(PermissionNode node);

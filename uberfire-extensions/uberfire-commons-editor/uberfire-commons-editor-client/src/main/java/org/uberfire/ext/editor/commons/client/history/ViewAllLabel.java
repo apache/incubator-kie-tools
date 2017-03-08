@@ -29,30 +29,29 @@ import org.uberfire.mvp.Command;
 public class ViewAllLabel
         extends Composite {
 
-    private Command showAllCommand;
-
-    interface Binder
-            extends
-            UiBinder<Widget, ViewAllLabel> {
-
-    }
-
     private static Binder uiBinder = GWT.create(Binder.class);
-
-    @UiField Label amount;
-    @UiField Label link;
-
-    public ViewAllLabel(Integer amount, Command showAllCommand) {
+    @UiField
+    Label amount;
+    @UiField
+    Label link;
+    private Command showAllCommand;
+    public ViewAllLabel(Integer amount,
+                        Command showAllCommand) {
         this.showAllCommand = showAllCommand;
 
         initWidget(uiBinder.createAndBindUi(this));
 
         this.amount.setText(amount.toString());
-
     }
 
     @UiHandler("link")
     public void handleClick(ClickEvent event) {
         showAllCommand.execute();
+    }
+
+    interface Binder
+            extends
+            UiBinder<Widget, ViewAllLabel> {
+
     }
 }

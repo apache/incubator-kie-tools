@@ -46,38 +46,26 @@ import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterO
 public class AddTag
         extends BaseModal {
 
+    private static Binder uiBinder = GWT.create(Binder.class);
     private final PerspectiveEditorPresenter perspectivePresenter;
-
     @UiField
     FormGroup tagControlGroup;
-
     @UiField
     TextBox tag;
-
     @UiField
     HelpBlock tagInline;
-
     @UiField
     HorizontalPanel tags;
-
     private List<String> tagsList = new ArrayList<String>();
 
-    interface Binder
-            extends
-            UiBinder<Widget, AddTag> {
-
-    }
-
-    private static Binder uiBinder = GWT.create( Binder.class );
-
-    public AddTag( PerspectiveEditorPresenter perspectivePresenter ) {
+    public AddTag(PerspectiveEditorPresenter perspectivePresenter) {
         this.perspectivePresenter = perspectivePresenter;
-        setTitle( CommonConstants.INSTANCE.AddTag() );
+        setTitle(CommonConstants.INSTANCE.AddTag());
 
-        add( new ModalBody() {{
-            add( uiBinder.createAndBindUi( AddTag.this ) );
-        }} );
-        add( new ModalFooterOKCancelButtons(
+        add(new ModalBody() {{
+            add(uiBinder.createAndBindUi(AddTag.this));
+        }});
+        add(new ModalFooterOKCancelButtons(
                 new Command() {
                     @Override
                     public void execute() {
@@ -90,7 +78,7 @@ public class AddTag
                         cancelButton();
                     }
                 }
-        ) );
+        ));
     }
 
     private void cancelButton() {
@@ -109,54 +97,60 @@ public class AddTag
     }
 
     private void loadTags() {
-        String tagsString = perspectivePresenter.getLayoutProperty( TagsConverterUtil.LAYOUT_PROPERTY );
-        this.tagsList = TagsConverterUtil.convertTagStringToTag( tagsString );
+        String tagsString = perspectivePresenter.getLayoutProperty(TagsConverterUtil.LAYOUT_PROPERTY);
+        this.tagsList = TagsConverterUtil.convertTagStringToTag(tagsString);
         generateTags();
     }
 
     private void generateTags() {
         this.tags.clear();
-        for ( String tag : tagsList ) {
-            tags.add( new Label( tag ) );
-            tags.add( generateRemoveIcon( tag ) );
+        for (String tag : tagsList) {
+            tags.add(new Label(tag));
+            tags.add(generateRemoveIcon(tag));
         }
     }
 
     private void okButton() {
-        String tags = TagsConverterUtil.convertTagsToString( tagsList );
-        perspectivePresenter.saveProperty( TagsConverterUtil.LAYOUT_PROPERTY, tags );
+        String tags = TagsConverterUtil.convertTagsToString(tagsList);
+        perspectivePresenter.saveProperty(TagsConverterUtil.LAYOUT_PROPERTY,
+                                          tags);
         hide();
     }
 
     @UiHandler("addTag")
-    void addTag( final ClickEvent event ) {
+    void addTag(final ClickEvent event) {
         NameValidator validator = NameValidator.tagNameValidator();
-        if ( validator.isValid( tag.getText() ) ) {
-            tagsList.add( tag.getText() );
-            tags.add( new Label( tag.getText() ) );
-            tags.add( generateRemoveIcon( tag.getText() ) );
-            tag.setText( "" );
-            tagControlGroup.setValidationState( ValidationState.NONE );
-            tagInline.setText( "" );
-
+        if (validator.isValid(tag.getText())) {
+            tagsList.add(tag.getText());
+            tags.add(new Label(tag.getText()));
+            tags.add(generateRemoveIcon(tag.getText()));
+            tag.setText("");
+            tagControlGroup.setValidationState(ValidationState.NONE);
+            tagInline.setText("");
         } else {
-            tagControlGroup.setValidationState( ValidationState.ERROR );
-            tagInline.setText( validator.getValidationError() );
+            tagControlGroup.setValidationState(ValidationState.ERROR);
+            tagInline.setText(validator.getValidationError());
         }
     }
 
-    private Icon generateRemoveIcon( final String value ) {
-        final Icon icon = new Icon( IconType.REMOVE );
-        icon.addDomHandler( new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                tagsList.remove( value );
-                generateTags();
-            }
-        }, ClickEvent.getType() );
-        icon.getElement().getStyle().setColor( "rgb(153, 153, 153)" );
-        icon.getElement().getStyle().setCursor( Style.Cursor.POINTER );
+    private Icon generateRemoveIcon(final String value) {
+        final Icon icon = new Icon(IconType.REMOVE);
+        icon.addDomHandler(new ClickHandler() {
+                               @Override
+                               public void onClick(ClickEvent event) {
+                                   tagsList.remove(value);
+                                   generateTags();
+                               }
+                           },
+                           ClickEvent.getType());
+        icon.getElement().getStyle().setColor("rgb(153, 153, 153)");
+        icon.getElement().getStyle().setCursor(Style.Cursor.POINTER);
         return icon;
     }
 
+    interface Binder
+            extends
+            UiBinder<Widget, AddTag> {
+
+    }
 }

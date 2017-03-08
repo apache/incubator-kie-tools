@@ -27,7 +27,6 @@ import org.uberfire.ext.security.management.api.validation.EntityValidator;
  * <p>By default, two implementation are provided. A given one for the backend side and another one for the client side.</p>
  * @see <a>org.uberfire.ext.security.management.BackendUserSystemManager</a>
  * @see <a>org.uberfire.ext.security.management.client.ClientUserSystemManager</a>
- * 
  * @since 0.8.0
  */
 public interface UserSystemManager extends UserManagementService {
@@ -51,7 +50,7 @@ public interface UserSystemManager extends UserManagementService {
     EntityValidator<Role> rolesValidator();
 
     /**
-     * Check if the user system management service are active and successfully initialized. 
+     * Check if the user system management service are active and successfully initialized.
      */
     boolean isActive();
 }

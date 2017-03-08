@@ -47,62 +47,70 @@ import org.uberfire.java.nio.file.FileSystem;
 public class SocialTimelinePersistenceProducer {
 
     @Inject
+    SocialEventTypeRepositoryAPI socialEventTypeRepository;
+    @Inject
+    SocialSecurityConstraintsManager socialSecurityConstraintsManager;
+    @Inject
     @Named("clusterServiceFactory")
     private ClusterServiceFactory clusterServiceFactory;
-
     private SocialTimelinePersistenceAPI socialTimelinePersistenceAPI;
-
     private Gson gson;
-
     private Type gsonCollectionType;
-
     //please do not remove, for the absurd it may sound, this is needed
     //to guarantee the bean initializion order. if removed, doesn't work
     //on WAS. https://bugzilla.redhat.com/show_bug.cgi?id=1266138
     @Inject
     @Named("configIO")
     private IOService ioService;
-
     //please do not remove, for the absurd it may sound, this is needed
     //to guarantee the bean initializion order. if removed, doesn't work
     //on WAS. https://bugzilla.redhat.com/show_bug.cgi?id=1266138
     @Inject
     @Named("systemFS")
     private FileSystem fileSystem;
-
-    @Inject
-    SocialEventTypeRepositoryAPI socialEventTypeRepository;
-
     @Inject
     private SocialClusterMessaging socialClusterMessaging;
-
     @Inject
     private SocialUserPersistenceAPI socialUserPersistenceAPI;
-
-    @Inject
-    SocialSecurityConstraintsManager socialSecurityConstraintsManager;
 
     @PostConstruct
     public void setup() {
         gsonFactory();
         final IOService _ioService = getConfigIOServiceProducer().configIOService();
         final FileSystem _fileSystem = getConfigIOServiceProducer().configFileSystem();
-        final SocialUserServicesExtendedBackEndImpl userServicesBackend = new SocialUserServicesExtendedBackEndImpl( fileSystem );
+        final SocialUserServicesExtendedBackEndImpl userServicesBackend = new SocialUserServicesExtendedBackEndImpl(fileSystem);
 
-        setupSocialTimelinePersistenceAPI( _ioService, _fileSystem, userServicesBackend );
-
+        setupSocialTimelinePersistenceAPI(_ioService,
+                                          _fileSystem,
+                                          userServicesBackend);
     }
 
     ConfigIOServiceProducer getConfigIOServiceProducer() {
         return ConfigIOServiceProducer.getInstance();
     }
 
-    void setupSocialTimelinePersistenceAPI( IOService _ioService, FileSystem _fileSystem,
-                                                    SocialUserServicesExtendedBackEndImpl userServicesBackend ) {
-        if ( clusterServiceFactory == null ) {
-            socialTimelinePersistenceAPI = new SocialTimelineCacheInstancePersistence( gson, gsonCollectionType, _ioService, socialEventTypeRepository, socialUserPersistenceAPI, userServicesBackend, _fileSystem, socialSecurityConstraintsManager );
+    void setupSocialTimelinePersistenceAPI(IOService _ioService,
+                                           FileSystem _fileSystem,
+                                           SocialUserServicesExtendedBackEndImpl userServicesBackend) {
+        if (clusterServiceFactory == null) {
+            socialTimelinePersistenceAPI = new SocialTimelineCacheInstancePersistence(gson,
+                                                                                      gsonCollectionType,
+                                                                                      _ioService,
+                                                                                      socialEventTypeRepository,
+                                                                                      socialUserPersistenceAPI,
+                                                                                      userServicesBackend,
+                                                                                      _fileSystem,
+                                                                                      socialSecurityConstraintsManager);
         } else {
-            socialTimelinePersistenceAPI = new SocialTimelineCacheClusterPersistence( gson, gsonCollectionType, _ioService, socialEventTypeRepository, socialUserPersistenceAPI, socialClusterMessaging, userServicesBackend, _fileSystem, socialSecurityConstraintsManager );
+            socialTimelinePersistenceAPI = new SocialTimelineCacheClusterPersistence(gson,
+                                                                                     gsonCollectionType,
+                                                                                     _ioService,
+                                                                                     socialEventTypeRepository,
+                                                                                     socialUserPersistenceAPI,
+                                                                                     socialClusterMessaging,
+                                                                                     userServicesBackend,
+                                                                                     _fileSystem,
+                                                                                     socialSecurityConstraintsManager);
         }
         socialTimelinePersistenceAPI.setup();
     }
@@ -120,5 +128,4 @@ public class SocialTimelinePersistenceProducer {
         gsonCollectionType = new TypeToken<Collection<SocialActivitiesEvent>>() {
         }.getType();
     }
-
 }

@@ -38,10 +38,10 @@ public class Directory {
     public Directory() {
     }
 
-    public Directory( String name,
-                      String fullPath,
-                      String URI,
-                      Directory parent ) {
+    public Directory(String name,
+                     String fullPath,
+                     String URI,
+                     Directory parent) {
         this.name = name;
         this.fullPath = fullPath;
         this.parent = parent;
@@ -50,10 +50,10 @@ public class Directory {
         setupChildComponents();
     }
 
-    public Directory( String name,
-                      String fullPath,
-                      String URI,
-                      Map<String, List<String>> tagMap ) {
+    public Directory(String name,
+                     String fullPath,
+                     String URI,
+                     Map<String, List<String>> tagMap) {
         this.fullPath = fullPath;
         this.name = name;
         this.URI = URI;
@@ -62,9 +62,9 @@ public class Directory {
     }
 
     private void setupChildComponents() {
-        final List<String> components = tagMap.get( name.toUpperCase() );
-        if ( components != null ) {
-            childComponents.addAll( components );
+        final List<String> components = tagMap.get(name.toUpperCase());
+        if (components != null) {
+            childComponents.addAll(components);
         }
     }
 
@@ -76,12 +76,12 @@ public class Directory {
         return childsDirectories;
     }
 
-    public void addChildDirectory( Directory directory ) {
-        childsDirectories.add( directory );
+    public void addChildDirectory(Directory directory) {
+        childsDirectories.add(directory);
     }
 
-    public void addChildDirectories( List<Directory> directories ) {
-        childsDirectories.addAll( directories );
+    public void addChildDirectories(List<Directory> directories) {
+        childsDirectories.addAll(directories);
     }
 
     public Directory getParent() {
@@ -100,16 +100,16 @@ public class Directory {
         return childComponents;
     }
 
-    public void removeChildDirectoryByURI( String uri ) {
+    public void removeChildDirectoryByURI(String uri) {
         Directory candidate = null;
-        for ( Directory child : childsDirectories ) {
-            if ( child.getURI().equalsIgnoreCase( uri ) ) {
+        for (Directory child : childsDirectories) {
+            if (child.getURI().equalsIgnoreCase(uri)) {
                 candidate = child;
                 break;
             }
         }
-        if ( candidate != null ) {
-            childsDirectories.remove( candidate );
+        if (candidate != null) {
+            childsDirectories.remove(candidate);
         }
     }
 
@@ -117,9 +117,9 @@ public class Directory {
         return fullPath;
     }
 
-    public boolean alreadyHasChild( String dirName ) {
-        for ( Directory child : childsDirectories ) {
-            if ( child.getName().equalsIgnoreCase( dirName ) ) {
+    public boolean alreadyHasChild(String dirName) {
+        for (Directory child : childsDirectories) {
+            if (child.getName().equalsIgnoreCase(dirName)) {
                 return true;
             }
         }

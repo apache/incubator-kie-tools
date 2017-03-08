@@ -23,8 +23,6 @@ import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import java.util.List;
-
 public class DocksBar {
 
     private UberfireDockPosition position;
@@ -79,10 +77,13 @@ public class DocksBar {
         expandedBar.clear();
     }
 
-    public void addDock(UberfireDock dock, final ParameterizedCommand<String> selectCommand,
+    public void addDock(UberfireDock dock,
+                        final ParameterizedCommand<String> selectCommand,
                         final ParameterizedCommand<String> deselectCommand) {
         if (collapsedBar != null) {
-            collapsedBar.addDock(dock, selectCommand, deselectCommand);
+            collapsedBar.addDock(dock,
+                                 selectCommand,
+                                 deselectCommand);
         }
     }
 
@@ -112,8 +113,7 @@ public class DocksBar {
 
     public void expand(UberfireDock dock) {
         collapsedBar.expand(dock);
-        AbstractDockItem docksItems = collapsedBar.getDocksItems().get( 0 );
+        AbstractDockItem docksItems = collapsedBar.getDocksItems().get(0);
         docksItems.select();
-
     }
 }

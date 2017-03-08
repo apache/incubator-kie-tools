@@ -24,26 +24,26 @@ public enum DefaultScopes {
     /**
      * Scope type responsible to store preferences for all users.
      */
-    ALL_USERS( "all-users" ),
+    ALL_USERS("all-users"),
 
     /**
      * Scope type responsible to store preferences for the entire application.
      */
-    ENTIRE_APPLICATION( "entire-application" ),
+    ENTIRE_APPLICATION("entire-application"),
 
     /**
      * Scope type responsible to store preferences separately for each component.
      */
-    COMPONENT( "component" ),
+    COMPONENT("component"),
 
     /**
      * Scope type responsible to store preferences separately for each username.
      */
-    USER( "user" );
+    USER("user");
 
     private final String type;
 
-    DefaultScopes( final String type ) {
+    DefaultScopes(final String type) {
         this.type = type;
     }
 

@@ -31,10 +31,10 @@ public abstract class AbstractRestrictedEntryTextBox extends TextBox {
     protected final boolean allowEmptyValue;
 
     public AbstractRestrictedEntryTextBox() {
-        this( false );
+        this(false);
     }
 
-    public AbstractRestrictedEntryTextBox( final boolean allowEmptyValue ) {
+    public AbstractRestrictedEntryTextBox(final boolean allowEmptyValue) {
         this.allowEmptyValue = allowEmptyValue;
         setup();
     }
@@ -43,13 +43,13 @@ public abstract class AbstractRestrictedEntryTextBox extends TextBox {
         final TextBox me = this;
 
         //Validate value as it is entered
-        this.addKeyPressHandler( new KeyPressHandler() {
+        this.addKeyPressHandler(new KeyPressHandler() {
 
-            public void onKeyPress( KeyPressEvent event ) {
+            public void onKeyPress(KeyPressEvent event) {
 
                 // Permit navigation
                 int keyCode = event.getNativeEvent().getKeyCode();
-                if ( event.isControlKeyDown()
+                if (event.isControlKeyDown()
                         || keyCode == KeyCodes.KEY_BACKSPACE
                         || keyCode == KeyCodes.KEY_DELETE
                         || keyCode == KeyCodes.KEY_LEFT
@@ -64,79 +64,75 @@ public abstract class AbstractRestrictedEntryTextBox extends TextBox {
                 // Get new value and validate
                 int charCode = event.getCharCode();
                 String oldValue = me.getValue();
-                String newValue = oldValue.substring( 0,
-                                                      me.getCursorPos() );
+                String newValue = oldValue.substring(0,
+                                                     me.getCursorPos());
                 newValue = newValue
-                        + ( (char) charCode );
+                        + ((char) charCode);
                 newValue = newValue
-                        + oldValue.substring( me.getCursorPos() + me.getSelectionLength() );
-                if ( !isValidValue( newValue,
-                                    false ) ) {
+                        + oldValue.substring(me.getCursorPos() + me.getSelectionLength());
+                if (!isValidValue(newValue,
+                                  false)) {
                     event.preventDefault();
                 }
-
             }
-
-        } );
+        });
 
         //Add validation when looses focus (for when values are pasted in by users')
-        this.addBlurHandler( new BlurHandler() {
+        this.addBlurHandler(new BlurHandler() {
 
             @Override
-            public void onBlur( BlurEvent event ) {
+            public void onBlur(BlurEvent event) {
                 final String value = me.getText();
-                if ( !isValidValue( value,
-                                    true ) ) {
-                    final String validValue = makeValidValue( value );
-                    me.setText( validValue );
-                    ValueChangeEvent.fire( AbstractRestrictedEntryTextBox.this,
-                                           validValue );
+                if (!isValidValue(value,
+                                  true)) {
+                    final String validValue = makeValidValue(value);
+                    me.setText(validValue);
+                    ValueChangeEvent.fire(AbstractRestrictedEntryTextBox.this,
+                                          validValue);
                 }
             }
-
-        } );
-
+        });
     }
 
     @Override
-    public void setText( final String text ) {
-        if ( !isValidValue( text,
-                            false ) ) {
-            final String validValue = makeValidValue( text );
-            super.setText( validValue );
-            ValueChangeEvent.fire( AbstractRestrictedEntryTextBox.this,
-                                   validValue );
+    public void setText(final String text) {
+        if (!isValidValue(text,
+                          false)) {
+            final String validValue = makeValidValue(text);
+            super.setText(validValue);
+            ValueChangeEvent.fire(AbstractRestrictedEntryTextBox.this,
+                                  validValue);
         } else {
-            super.setText( text );
+            super.setText(text);
         }
     }
 
     @Override
-    public void setValue( final String value ) {
-        if ( !isValidValue( value,
-                            false ) ) {
-            final String validValue = makeValidValue( value );
-            super.setValue( validValue );
-            ValueChangeEvent.fire( AbstractRestrictedEntryTextBox.this,
-                                   validValue );
+    public void setValue(final String value) {
+        if (!isValidValue(value,
+                          false)) {
+            final String validValue = makeValidValue(value);
+            super.setValue(validValue);
+            ValueChangeEvent.fire(AbstractRestrictedEntryTextBox.this,
+                                  validValue);
         } else {
-            super.setValue( value );
+            super.setValue(value);
         }
     }
 
     @Override
-    public void setValue( final String value,
-                          final boolean fireEvents ) {
-        if ( !isValidValue( value,
-                            false ) ) {
-            final String validValue = makeValidValue( value );
-            super.setValue( validValue,
-                            fireEvents );
-            ValueChangeEvent.fire( AbstractRestrictedEntryTextBox.this,
-                                   validValue );
+    public void setValue(final String value,
+                         final boolean fireEvents) {
+        if (!isValidValue(value,
+                          false)) {
+            final String validValue = makeValidValue(value);
+            super.setValue(validValue,
+                           fireEvents);
+            ValueChangeEvent.fire(AbstractRestrictedEntryTextBox.this,
+                                  validValue);
         } else {
-            super.setValue( value,
-                            fireEvents );
+            super.setValue(value,
+                           fireEvents);
         }
     }
 
@@ -146,8 +142,8 @@ public abstract class AbstractRestrictedEntryTextBox extends TextBox {
      * @param isOnFocusLost Focus has been lost from the TextBox
      * @return True if valid
      */
-    public abstract boolean isValidValue( final String value,
-                                          final boolean isOnFocusLost );
+    public abstract boolean isValidValue(final String value,
+                                         final boolean isOnFocusLost);
 
     /**
      * If validation fails (e.g. as a result of a user pasting a value) when the
@@ -158,8 +154,7 @@ public abstract class AbstractRestrictedEntryTextBox extends TextBox {
      * @param value Current value
      * @return A valid value
      */
-    protected String makeValidValue( String value ) {
+    protected String makeValidValue(String value) {
         return "";
     }
-
 }

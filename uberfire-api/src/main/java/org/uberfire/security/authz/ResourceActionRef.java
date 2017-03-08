@@ -16,13 +16,12 @@
 
 package org.uberfire.security.authz;
 
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
 import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceAction;
 import org.uberfire.security.ResourceRef;
 import org.uberfire.security.ResourceType;
-
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 
 /**
  * A instance holding a resource reference plus an action
@@ -35,24 +34,31 @@ public class ResourceActionRef {
 
     @JsIgnore
     public ResourceActionRef(Resource resource) {
-        this(resource,ResourceAction.READ);
+        this(resource,
+             ResourceAction.READ);
     }
 
     @JsIgnore
-    public ResourceActionRef(Resource resource, ResourceAction action) {
+    public ResourceActionRef(Resource resource,
+                             ResourceAction action) {
         this.resource = resource;
         this.action = action;
     }
 
     @JsIgnore
-    public ResourceActionRef(ResourceType type, ResourceAction action) {
-        this.resource = new ResourceRef(null, type);
+    public ResourceActionRef(ResourceType type,
+                             ResourceAction action) {
+        this.resource = new ResourceRef(null,
+                                        type);
         this.action = action;
     }
 
     @JsIgnore
-    public ResourceActionRef(ResourceType type, Resource resource, ResourceAction action) {
-        this.resource = resource != null ? resource : new ResourceRef(null, type);
+    public ResourceActionRef(ResourceType type,
+                             Resource resource,
+                             ResourceAction action) {
+        this.resource = resource != null ? resource : new ResourceRef(null,
+                                                                      type);
         this.action = action;
     }
 

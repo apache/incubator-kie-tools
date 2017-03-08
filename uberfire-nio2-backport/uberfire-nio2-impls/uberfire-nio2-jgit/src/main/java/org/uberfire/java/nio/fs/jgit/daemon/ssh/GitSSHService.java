@@ -37,7 +37,8 @@ import org.uberfire.java.nio.security.FileSystemAuthenticator;
 import org.uberfire.java.nio.security.FileSystemAuthorizer;
 import org.uberfire.java.nio.security.FileSystemUser;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 public class GitSSHService {
 
@@ -45,83 +46,100 @@ public class GitSSHService {
     private FileSystemAuthenticator fileSystemAuthenticator;
     private FileSystemAuthorizer fileSystemAuthorizer;
 
-    public void setup( final File certDir,
-                       final InetSocketAddress inetSocketAddress,
-                       final String sshIdleTimeout,
-                       final String algorithm,
-                       final ReceivePackFactory receivePackFactory,
-                       final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver ) {
-        checkNotNull( "certDir", certDir );
-        checkNotEmpty( "sshIdleTimeout", sshIdleTimeout );
-        checkNotEmpty( "algorithm", algorithm );
-        checkNotNull( "receivePackFactory", receivePackFactory );
-        checkNotNull( "repositoryResolver", repositoryResolver );
+    public void setup(final File certDir,
+                      final InetSocketAddress inetSocketAddress,
+                      final String sshIdleTimeout,
+                      final String algorithm,
+                      final ReceivePackFactory receivePackFactory,
+                      final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver) {
+        checkNotNull("certDir",
+                     certDir);
+        checkNotEmpty("sshIdleTimeout",
+                      sshIdleTimeout);
+        checkNotEmpty("algorithm",
+                      algorithm);
+        checkNotNull("receivePackFactory",
+                     receivePackFactory);
+        checkNotNull("repositoryResolver",
+                     repositoryResolver);
 
-        sshd.getProperties().put( SshServer.IDLE_TIMEOUT, sshIdleTimeout );
+        sshd.getProperties().put(SshServer.IDLE_TIMEOUT,
+                                 sshIdleTimeout);
 
-        if ( inetSocketAddress != null ) {
-            sshd.setHost( inetSocketAddress.getHostName() );
-            sshd.setPort( inetSocketAddress.getPort() );
+        if (inetSocketAddress != null) {
+            sshd.setHost(inetSocketAddress.getHostName());
+            sshd.setPort(inetSocketAddress.getPort());
         }
 
-        if ( !certDir.exists() ) {
+        if (!certDir.exists()) {
             certDir.mkdirs();
         }
 
-        final AbstractGeneratorHostKeyProvider keyPairProvider = new SimpleGeneratorHostKeyProvider( new File( certDir, "hostkey.ser" ).getAbsolutePath() );
+        final AbstractGeneratorHostKeyProvider keyPairProvider = new SimpleGeneratorHostKeyProvider(new File(certDir,
+                                                                                                             "hostkey.ser").getAbsolutePath());
 
         try {
-            SecurityUtils.getKeyPairGenerator( algorithm );
-            keyPairProvider.setAlgorithm( algorithm );
-        } catch ( final Exception ignore ) {
-            throw new RuntimeException( String.format( "Can't use '%s' algorithm for ssh key pair generator.", algorithm ), ignore );
+            SecurityUtils.getKeyPairGenerator(algorithm);
+            keyPairProvider.setAlgorithm(algorithm);
+        } catch (final Exception ignore) {
+            throw new RuntimeException(String.format("Can't use '%s' algorithm for ssh key pair generator.",
+                                                     algorithm),
+                                       ignore);
         }
 
-        sshd.setKeyPairProvider( keyPairProvider );
-        sshd.setCommandFactory( new CommandFactory() {
+        sshd.setKeyPairProvider(keyPairProvider);
+        sshd.setCommandFactory(new CommandFactory() {
             @Override
-            public Command createCommand( String command ) {
-                if ( command.startsWith( "git-upload-pack" ) ) {
-                    return new GitUploadCommand( command, repositoryResolver, getAuthorizationManager() );
-                } else if ( command.startsWith( "git-receive-pack" ) ) {
-                    return new GitReceiveCommand( command, repositoryResolver, getAuthorizationManager(), receivePackFactory );
+            public Command createCommand(String command) {
+                if (command.startsWith("git-upload-pack")) {
+                    return new GitUploadCommand(command,
+                                                repositoryResolver,
+                                                getAuthorizationManager());
+                } else if (command.startsWith("git-receive-pack")) {
+                    return new GitReceiveCommand(command,
+                                                 repositoryResolver,
+                                                 getAuthorizationManager(),
+                                                 receivePackFactory);
                 } else {
-                    return new UnknownCommand( command );
+                    return new UnknownCommand(command);
                 }
             }
-        } );
-        sshd.setPasswordAuthenticator( new PasswordAuthenticator() {
+        });
+        sshd.setPasswordAuthenticator(new PasswordAuthenticator() {
             @Override
-            public boolean authenticate( final String username,
-                                         final String password,
-                                         final ServerSession session ) {
-                FileSystemUser user = getUserPassAuthenticator().authenticate( username, password );
-                if ( user == null ) {
+            public boolean authenticate(final String username,
+                                        final String password,
+                                        final ServerSession session) {
+                FileSystemUser user = getUserPassAuthenticator().authenticate(username,
+                                                                              password);
+                if (user == null) {
                     return false;
                 }
-                session.setAttribute( BaseGitCommand.SUBJECT_KEY, user );
+                session.setAttribute(BaseGitCommand.SUBJECT_KEY,
+                                     user);
                 return true;
             }
-        } );
+        });
     }
 
     public void stop() {
         try {
-            sshd.stop( true );
-        } catch ( final InterruptedException ignored ) {
+            sshd.stop(true);
+        } catch (final InterruptedException ignored) {
         }
     }
 
     public void start() {
         try {
             sshd.start();
-        } catch ( IOException e ) {
-            throw new RuntimeException( "Couldn't start SSH daemon at " + sshd.getHost() + ":" + sshd.getPort(), e );
+        } catch (IOException e) {
+            throw new RuntimeException("Couldn't start SSH daemon at " + sshd.getHost() + ":" + sshd.getPort(),
+                                       e);
         }
     }
 
     public boolean isRunning() {
-        return !( sshd.isClosed() || sshd.isClosing() );
+        return !(sshd.isClosed() || sshd.isClosing());
     }
 
     SshServer getSshServer() {
@@ -129,14 +147,14 @@ public class GitSSHService {
     }
 
     public Map<String, String> getProperties() {
-        return Collections.unmodifiableMap( sshd.getProperties() );
+        return Collections.unmodifiableMap(sshd.getProperties());
     }
 
     public FileSystemAuthenticator getUserPassAuthenticator() {
         return fileSystemAuthenticator;
     }
 
-    public void setUserPassAuthenticator( FileSystemAuthenticator fileSystemAuthenticator ) {
+    public void setUserPassAuthenticator(FileSystemAuthenticator fileSystemAuthenticator) {
         this.fileSystemAuthenticator = fileSystemAuthenticator;
     }
 
@@ -144,7 +162,7 @@ public class GitSSHService {
         return fileSystemAuthorizer;
     }
 
-    public void setAuthorizationManager( FileSystemAuthorizer fileSystemAuthorizer ) {
+    public void setAuthorizationManager(FileSystemAuthorizer fileSystemAuthorizer) {
         this.fileSystemAuthorizer = fileSystemAuthorizer;
     }
 }

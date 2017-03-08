@@ -16,7 +16,6 @@
 
 package org.uberfire.ext.security.management.client.validation;
 
-
 import org.uberfire.ext.security.management.api.validation.RoleValidator;
 
 // Not implemented yet.

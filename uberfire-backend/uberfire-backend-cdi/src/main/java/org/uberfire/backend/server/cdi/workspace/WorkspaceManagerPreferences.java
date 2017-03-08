@@ -37,7 +37,7 @@ public class WorkspaceManagerPreferences implements BasePreference<WorkspaceMana
     private String cacheExpirationUnit;
 
     @Override
-    public WorkspaceManagerPreferences defaultValue( final WorkspaceManagerPreferences defaultValue ) {
+    public WorkspaceManagerPreferences defaultValue(final WorkspaceManagerPreferences defaultValue) {
         defaultValue.cacheMaximumSize = 10;
         defaultValue.cacheExpirationTime = 10;
         defaultValue.cacheExpirationUnit = TimeUnit.MINUTES.toString();
@@ -48,7 +48,7 @@ public class WorkspaceManagerPreferences implements BasePreference<WorkspaceMana
         return cacheMaximumSize;
     }
 
-    public void setCacheMaximumSize( final int cacheMaximumSize ) {
+    public void setCacheMaximumSize(final int cacheMaximumSize) {
         this.cacheMaximumSize = cacheMaximumSize;
     }
 
@@ -56,7 +56,7 @@ public class WorkspaceManagerPreferences implements BasePreference<WorkspaceMana
         return cacheExpirationTime;
     }
 
-    public void setCacheExpirationTime( final int cacheExpirationTime ) {
+    public void setCacheExpirationTime(final int cacheExpirationTime) {
         this.cacheExpirationTime = cacheExpirationTime;
     }
 
@@ -64,7 +64,7 @@ public class WorkspaceManagerPreferences implements BasePreference<WorkspaceMana
         return this.cacheExpirationUnit;
     }
 
-    public void setCacheExpirationUnit( final String cacheExpirationUnit ) {
+    public void setCacheExpirationUnit(final String cacheExpirationUnit) {
         this.cacheExpirationUnit = cacheExpirationUnit;
     }
 }

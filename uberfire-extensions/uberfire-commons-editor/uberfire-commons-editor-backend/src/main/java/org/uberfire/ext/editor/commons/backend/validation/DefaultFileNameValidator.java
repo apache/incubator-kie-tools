@@ -31,18 +31,17 @@ public class DefaultFileNameValidator implements FileNameValidator {
     }
 
     @Override
-    public boolean accept( final String fileName ) {
+    public boolean accept(final String fileName) {
         return true;
     }
 
     @Override
-    public boolean accept( final Path path ) {
+    public boolean accept(final Path path) {
         return true;
     }
 
     @Override
-    public boolean isValid( final String value ) {
-        return ValidationUtils.isFileName( value );
+    public boolean isValid(final String value) {
+        return ValidationUtils.isFileName(value);
     }
-
 }

@@ -16,27 +16,20 @@
 
 package org.uberfire.client.mvp;
 
-import com.google.gwt.dom.builder.shared.HtmlElementBuilder;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.uberfire.workbench.model.NamedPosition;
-
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-
 
 public interface TemplatedActivity {
 
     /**
      * Returns the HTMLElement that contains the child WorkbenchPanelView at the given position.
-     * 
      * @return the HTMLElement that contains the child at the given position, or null if the given position does not exist
-     *         within this activity's view.
+     * within this activity's view.
      */
-    HTMLElement resolvePosition(NamedPosition p );
+    HTMLElement resolvePosition(NamedPosition p);
 
     /**
      * Returns the HTMLElement that is the root panel of this activity.
      */
     HTMLElement getRootElement();
-
 }

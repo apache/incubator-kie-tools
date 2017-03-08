@@ -19,10 +19,9 @@ package org.uberfire.ext.security.management.client.editor;
 /**
  * <p>A component that have restricted values (values not allowed to use)..</p>
  * @param <T> The type of the restricted values.
- *
  * @since 0.8.0
  */
 public interface HasRestrictedValues<T> {
-    
+
     void setRestrictedValues(T value);
 }

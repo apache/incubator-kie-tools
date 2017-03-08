@@ -16,6 +16,12 @@
 
 package org.uberfire.ext.security.management.util;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.RoleImpl;
@@ -24,19 +30,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.uberfire.backend.server.security.RoleRegistry;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * <p>Unit test class for SecurityManagementUtils.</p>
- * 
  * @since 0.8.0
  */
 public class SecurityManagementUtilsTest {
@@ -52,7 +50,8 @@ public class SecurityManagementUtilsTest {
         final Group group = SecurityManagementUtils.createGroup(testId);
         assertNotNull(group);
         final String name = group.getName();
-        assertEquals(name, testId);
+        assertEquals(name,
+                     testId);
     }
 
     @Test
@@ -61,7 +60,8 @@ public class SecurityManagementUtilsTest {
         final Role role = SecurityManagementUtils.createRole(testId);
         assertNotNull(role);
         final String name = role.getName();
-        assertEquals(name, testId);
+        assertEquals(name,
+                     testId);
     }
 
     @Test
@@ -70,7 +70,8 @@ public class SecurityManagementUtilsTest {
         final User user = SecurityManagementUtils.createUser(testId);
         assertNotNull(user);
         final String id = user.getIdentifier();
-        assertEquals(id, testId);
+        assertEquals(id,
+                     testId);
     }
 
     @Test
@@ -89,14 +90,17 @@ public class SecurityManagementUtilsTest {
         final Set<Group> groups = new HashSet<Group>(2);
         groups.add(group1);
         groups.add(group2);
-        final User user = SecurityManagementUtils.createUser(testId, groups);
+        final User user = SecurityManagementUtils.createUser(testId,
+                                                             groups);
         assertNotNull(user);
         final String id = user.getIdentifier();
-        assertEquals(id, testId);
+        assertEquals(id,
+                     testId);
         final Set<Group> resultGroups = user.getGroups();
         assertNotNull(resultGroups);
         assertTrue(resultGroups.size() == 2);
-        assertEquals(resultGroups, groups);
+        assertEquals(resultGroups,
+                     groups);
     }
 
     @Test
@@ -111,23 +115,28 @@ public class SecurityManagementUtilsTest {
         final Set<Group> groups = new HashSet<Group>(2);
         groups.add(group1);
         groups.add(group2);
-        final  Role role1 = SecurityManagementUtils.createRole(role1Id);
-        final  Role role2 = SecurityManagementUtils.createRole(role2Id);
+        final Role role1 = SecurityManagementUtils.createRole(role1Id);
+        final Role role2 = SecurityManagementUtils.createRole(role2Id);
         final Set<Role> roles = new HashSet<Role>(2);
         roles.add(role1);
         roles.add(role2);
-        final User user = SecurityManagementUtils.createUser(testId, groups, roles);
+        final User user = SecurityManagementUtils.createUser(testId,
+                                                             groups,
+                                                             roles);
         assertNotNull(user);
         final String id = user.getIdentifier();
-        assertEquals(id, testId);
+        assertEquals(id,
+                     testId);
         final Set<Group> resultGroups = user.getGroups();
         assertNotNull(resultGroups);
         assertTrue(resultGroups.size() == 2);
-        assertEquals(resultGroups, groups);
+        assertEquals(resultGroups,
+                     groups);
         final Set<Role> resultRoles = user.getRoles();
         assertNotNull(resultRoles);
         assertTrue(resultRoles.size() == 2);
-        assertEquals(resultRoles, roles);
+        assertEquals(resultRoles,
+                     roles);
     }
 
     @Test
@@ -142,32 +151,42 @@ public class SecurityManagementUtilsTest {
         final Set<Group> groups = new HashSet<Group>(2);
         groups.add(group1);
         groups.add(group2);
-        final  Role role1 = SecurityManagementUtils.createRole(role1Id);
-        final  Role role2 = SecurityManagementUtils.createRole(role2Id);
+        final Role role1 = SecurityManagementUtils.createRole(role1Id);
+        final Role role2 = SecurityManagementUtils.createRole(role2Id);
         final Set<Role> roles = new HashSet<Role>(2);
         roles.add(role1);
         roles.add(role2);
         final Map<String, String> props = new HashMap<String, String>(2);
-        props.put("p1", "value1");
-        props.put("p2", "value2");
-        final User user = SecurityManagementUtils.createUser(testId, groups, roles, props);
+        props.put("p1",
+                  "value1");
+        props.put("p2",
+                  "value2");
+        final User user = SecurityManagementUtils.createUser(testId,
+                                                             groups,
+                                                             roles,
+                                                             props);
         assertNotNull(user);
         final String id = user.getIdentifier();
-        assertEquals(id, testId);
+        assertEquals(id,
+                     testId);
         final Set<Group> resultGroups = user.getGroups();
         assertNotNull(resultGroups);
         assertTrue(resultGroups.size() == 2);
-        assertEquals(resultGroups, groups);
+        assertEquals(resultGroups,
+                     groups);
         final Set<Role> resultRoles = user.getRoles();
         assertNotNull(resultRoles);
         assertTrue(resultRoles.size() == 2);
-        assertEquals(resultRoles, roles);
+        assertEquals(resultRoles,
+                     roles);
 
         final Map<String, String> resultProps = user.getProperties();
         assertNotNull(resultProps);
         assertTrue(resultProps.size() == 2);
-        assertEquals(resultProps.get("p1"), "value1");
-        assertEquals(resultProps.get("p2"), "value2");
+        assertEquals(resultProps.get("p1"),
+                     "value1");
+        assertEquals(resultProps.get("p2"),
+                     "value2");
     }
 
     @Test
@@ -182,32 +201,42 @@ public class SecurityManagementUtilsTest {
         final Set<Group> groups = new HashSet<Group>(2);
         groups.add(group1);
         groups.add(group2);
-        final  Role role1 = SecurityManagementUtils.createRole(role1Id);
-        final  Role role2 = SecurityManagementUtils.createRole(role2Id);
+        final Role role1 = SecurityManagementUtils.createRole(role1Id);
+        final Role role2 = SecurityManagementUtils.createRole(role2Id);
         final Set<Role> roles = new HashSet<Role>(2);
         roles.add(role1);
         roles.add(role2);
         final Map<String, String> props = new HashMap<String, String>(2);
-        props.put("p1", "value1");
-        props.put("p2", "value2");
-        final User user = SecurityManagementUtils.createUser(testId, groups, roles, props);
+        props.put("p1",
+                  "value1");
+        props.put("p2",
+                  "value2");
+        final User user = SecurityManagementUtils.createUser(testId,
+                                                             groups,
+                                                             roles,
+                                                             props);
         final User cloned = SecurityManagementUtils.clone(user);
         assertNotNull(cloned);
         final String id = cloned.getIdentifier();
-        assertEquals(id, testId);
+        assertEquals(id,
+                     testId);
         final Set<Group> resultGroups = cloned.getGroups();
         assertNotNull(resultGroups);
         assertTrue(resultGroups.size() == 2);
-        assertEquals(resultGroups, groups);
+        assertEquals(resultGroups,
+                     groups);
         final Set<Role> resultRoles = cloned.getRoles();
         assertNotNull(resultRoles);
         assertTrue(resultRoles.size() == 2);
-        assertEquals(resultRoles, roles);
+        assertEquals(resultRoles,
+                     roles);
         final Map<String, String> resultProps = cloned.getProperties();
         assertNotNull(resultProps);
         assertTrue(resultProps.size() == 2);
-        assertEquals(resultProps.get("p1"), "value1");
-        assertEquals(resultProps.get("p2"), "value2");
+        assertEquals(resultProps.get("p1"),
+                     "value1");
+        assertEquals(resultProps.get("p2"),
+                     "value2");
     }
 
     @Test
@@ -280,14 +309,19 @@ public class SecurityManagementUtilsTest {
     public void testPopulateGroupsOrRoles() {
         RoleRegistry.get().registerRole("role1");
         Set<String> registeredRoles = SecurityManagementUtils.getRegisteredRoleNames();
-        Set<Group> groups  = new HashSet<Group>();
+        Set<Group> groups = new HashSet<Group>();
         Set<Role> roles = new HashSet<Role>();
-        SecurityManagementUtils.populateGroupOrRoles("group1", registeredRoles, groups, roles);
+        SecurityManagementUtils.populateGroupOrRoles("group1",
+                                                     registeredRoles,
+                                                     groups,
+                                                     roles);
         assertTrue(groups.size() == 1);
         assertTrue(roles.isEmpty());
-        SecurityManagementUtils.populateGroupOrRoles("role1", registeredRoles, groups, roles);
+        SecurityManagementUtils.populateGroupOrRoles("role1",
+                                                     registeredRoles,
+                                                     groups,
+                                                     roles);
         assertTrue(groups.size() == 1);
         assertTrue(roles.size() == 1);
     }
-    
 }

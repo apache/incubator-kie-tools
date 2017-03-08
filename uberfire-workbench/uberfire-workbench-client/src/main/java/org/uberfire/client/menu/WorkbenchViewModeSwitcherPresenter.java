@@ -30,84 +30,73 @@ import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
 import org.uberfire.client.workbench.widgets.menu.WorkbenchMenuBar;
 import org.uberfire.mvp.Command;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class WorkbenchViewModeSwitcherPresenter implements IsWidget {
 
     private final WorkbenchMenuBar menubar;
-
+    private final View view;
     private WorkbenchConstants constants = WorkbenchConstants.INSTANCE;
-
     private Command collapseCommand;
     private Command expandCommand;
 
-    public interface View extends UberView<WorkbenchViewModeSwitcherPresenter> {
-
-        void setText( String text );
-
-        void enable();
-
-        void disable();
-
-        void addClickHandler( Command command );
-    }
-
-    private final View view;
-
     @Inject
-    public WorkbenchViewModeSwitcherPresenter( final View view, final WorkbenchMenuBar menubar ) {
-        this.view = checkNotNull( "view", view );
-        this.menubar = checkNotNull( "menubar", menubar );
-        view.init( this );
-        view.setText( constants.switchToCompactView() );
-        view.addClickHandler( new Command() {
+    public WorkbenchViewModeSwitcherPresenter(final View view,
+                                              final WorkbenchMenuBar menubar) {
+        this.view = checkNotNull("view",
+                                 view);
+        this.menubar = checkNotNull("menubar",
+                                    menubar);
+        view.init(this);
+        view.setText(constants.switchToCompactView());
+        view.addClickHandler(new Command() {
             @Override
             public void execute() {
-                if( menubar.isExpanded() ){
+                if (menubar.isExpanded()) {
                     menubar.collapse();
-                    if( collapseCommand != null ) {
+                    if (collapseCommand != null) {
                         collapseCommand.execute();
                     }
                 } else {
                     menubar.expand();
-                    if( expandCommand != null ) {
+                    if (expandCommand != null) {
                         expandCommand.execute();
                     }
                 }
             }
-        } );
-        menubar.addCollapseHandler( new Command() {
+        });
+        menubar.addCollapseHandler(new Command() {
             @Override
             public void execute() {
-                view.setText( constants.switchToDefaultView() );
+                view.setText(constants.switchToDefaultView());
             }
-        } );
-        menubar.addExpandHandler( new Command() {
+        });
+        menubar.addExpandHandler(new Command() {
             @Override
             public void execute() {
-                view.setText( constants.switchToCompactView() );
+                view.setText(constants.switchToCompactView());
             }
-        } );
+        });
     }
 
-    public void setCollapseHandler( final Command command ){
+    public void setCollapseHandler(final Command command) {
         this.collapseCommand = command;
     }
 
-    public void setExpandHandler( final Command command ){
+    public void setExpandHandler(final Command command) {
         this.expandCommand = command;
     }
 
-    protected void onPerspectiveChange( @Observes final PerspectiveChange perspectiveChange ) {
+    protected void onPerspectiveChange(@Observes final PerspectiveChange perspectiveChange) {
         view.enable();
     }
 
-    protected void onPlaceMinimized( @Observes final PlaceMinimizedEvent event ) {
+    protected void onPlaceMinimized(@Observes final PlaceMinimizedEvent event) {
         view.enable();
     }
 
-    protected void onPlaceMaximized( @Observes final PlaceMaximizedEvent event ) {
+    protected void onPlaceMaximized(@Observes final PlaceMaximizedEvent event) {
         view.disable();
     }
 
@@ -116,4 +105,14 @@ public class WorkbenchViewModeSwitcherPresenter implements IsWidget {
         return view.asWidget();
     }
 
+    public interface View extends UberView<WorkbenchViewModeSwitcherPresenter> {
+
+        void setText(String text);
+
+        void enable();
+
+        void disable();
+
+        void addClickHandler(Command command);
+    }
 }

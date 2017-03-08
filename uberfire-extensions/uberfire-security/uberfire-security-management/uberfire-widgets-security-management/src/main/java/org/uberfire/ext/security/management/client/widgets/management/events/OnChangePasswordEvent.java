@@ -21,14 +21,14 @@ import org.uberfire.workbench.events.UberFireEvent;
 
 /**
  * <p>User ask for changing user's password.</p>
- * 
  * @since 0.8.0
  */
 public class OnChangePasswordEvent extends ContextualEvent implements UberFireEvent {
 
     private User instance;
 
-    public OnChangePasswordEvent(Object context, User instance) {
+    public OnChangePasswordEvent(Object context,
+                                 User instance) {
         super(context);
         this.instance = instance;
     }
@@ -41,5 +41,4 @@ public class OnChangePasswordEvent extends ContextualEvent implements UberFireEv
     public String toString() {
         return "OnChangePasswordEvent [context=" + getContext() + "]";
     }
-
 }

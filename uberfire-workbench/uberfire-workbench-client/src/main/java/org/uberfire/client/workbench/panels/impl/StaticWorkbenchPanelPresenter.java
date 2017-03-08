@@ -34,10 +34,11 @@ public class StaticWorkbenchPanelPresenter extends AbstractWorkbenchPanelPresent
     private PlaceManager placeManager;
 
     @Inject
-    public StaticWorkbenchPanelPresenter( @Named("StaticWorkbenchPanelView") final StaticWorkbenchPanelView view,
-                                          final PerspectiveManager perspectiveManager,
-                                          final PlaceManager placeManager) {
-        super( view, perspectiveManager );
+    public StaticWorkbenchPanelPresenter(@Named("StaticWorkbenchPanelView") final StaticWorkbenchPanelView view,
+                                         final PerspectiveManager perspectiveManager,
+                                         final PlaceManager placeManager) {
+        super(view,
+              perspectiveManager);
         this.placeManager = placeManager;
     }
 
@@ -55,26 +56,30 @@ public class StaticWorkbenchPanelPresenter extends AbstractWorkbenchPanelPresent
     }
 
     @Override
-    public void addPart( WorkbenchPartPresenter part ) {
+    public void addPart(WorkbenchPartPresenter part) {
         SinglePartPanelHelper h = createSinglePartPanelHelper();
-        if ( h.hasNoParts() ) {
-            super.addPart( part );
+        if (h.hasNoParts()) {
+            super.addPart(part);
         } else {
-            h.closeFirstPartAndAddNewOne( () -> super.addPart( part ) );
+            h.closeFirstPartAndAddNewOne(() -> super.addPart(part));
         }
     }
 
     @Override
-    public void addPart( WorkbenchPartPresenter part, String contextId ) {
+    public void addPart(WorkbenchPartPresenter part,
+                        String contextId) {
         SinglePartPanelHelper h = createSinglePartPanelHelper();
-        if ( h.hasNoParts() ) {
-            super.addPart( part, contextId );
+        if (h.hasNoParts()) {
+            super.addPart(part,
+                          contextId);
         } else {
-            h.closeFirstPartAndAddNewOne( () -> super.addPart( part, contextId ) );
+            h.closeFirstPartAndAddNewOne(() -> super.addPart(part,
+                                                             contextId));
         }
     }
 
     SinglePartPanelHelper createSinglePartPanelHelper() {
-        return new SinglePartPanelHelper( getPanelView().getParts(), placeManager);
+        return new SinglePartPanelHelper(getPanelView().getParts(),
+                                         placeManager);
     }
 }

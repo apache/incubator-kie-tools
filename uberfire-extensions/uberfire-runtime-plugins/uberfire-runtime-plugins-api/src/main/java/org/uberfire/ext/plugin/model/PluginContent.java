@@ -30,16 +30,23 @@ public class PluginContent extends PluginSimpleContent {
     public PluginContent() {
     }
 
-    public PluginContent( final String name,
-                          final PluginType type,
-                          final Path path,
-                          final String template,
-                          final String css,
-                          final Map<CodeType, String> codeMap,
-                          final Set<Framework> frameworks,
-                          final Language language,
-                          final Set<Media> mediaLibrary ) {
-        super( name, type, path, template, css, codeMap, frameworks, language );
+    public PluginContent(final String name,
+                         final PluginType type,
+                         final Path path,
+                         final String template,
+                         final String css,
+                         final Map<CodeType, String> codeMap,
+                         final Set<Framework> frameworks,
+                         final Language language,
+                         final Set<Media> mediaLibrary) {
+        super(name,
+              type,
+              path,
+              template,
+              css,
+              codeMap,
+              frameworks,
+              language);
         this.mediaLibrary = mediaLibrary;
     }
 
@@ -48,20 +55,20 @@ public class PluginContent extends PluginSimpleContent {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof PluginContent ) ) {
+        if (!(o instanceof PluginContent)) {
             return false;
         }
-        if ( !super.equals( o ) ) {
+        if (!super.equals(o)) {
             return false;
         }
 
         PluginContent that = (PluginContent) o;
 
-        if ( mediaLibrary != null ? !mediaLibrary.equals( that.mediaLibrary ) : that.mediaLibrary != null ) {
+        if (mediaLibrary != null ? !mediaLibrary.equals(that.mediaLibrary) : that.mediaLibrary != null) {
             return false;
         }
 
@@ -72,7 +79,7 @@ public class PluginContent extends PluginSimpleContent {
     public int hashCode() {
         int result = super.hashCode();
         result = ~~result;
-        result = 31 * result + ( mediaLibrary != null ? mediaLibrary.hashCode() : 0 );
+        result = 31 * result + (mediaLibrary != null ? mediaLibrary.hashCode() : 0);
         result = ~~result;
         return result;
     }

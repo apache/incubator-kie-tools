@@ -17,18 +17,18 @@ package org.uberfire.ext.services.shared.preferences;
 
 public enum UserPreferencesType {
 
-    GRIDPREFERENCES( "datagrid-preferences" ),
+    GRIDPREFERENCES("datagrid-preferences"),
     MULTIGRIDPREFERENCES("multigrid-preferences"),
-    WORKBENCHSETTINGS( "workbench-settings" );
+    WORKBENCHSETTINGS("workbench-settings");
 
     private String ext;
 
-    public String getExt() {
-        return this.ext;
+    private UserPreferencesType(final String ext) {
+        this.ext = ext;
     }
 
-    private UserPreferencesType( final String ext ) {
-        this.ext = ext;
+    public String getExt() {
+        return this.ext;
     }
 
 }

@@ -21,7 +21,7 @@ import javax.servlet.FilterConfig;
 /**
  * HTTP headers related to security
  * For example: HSTS and Clickjacking mitigation support
- * <p/>
+ * <p>
  * Note: This implementation has been borrowed from Aerogear Security.
  */
 public class SecureHeadersConfig {
@@ -32,45 +32,47 @@ public class SecureHeadersConfig {
     private final String frameOptions;
     private final String xssOptions;
 
-    public SecureHeadersConfig( final FilterConfig config ) {
-        final String _maxAge = config.getInitParameter( "max-age" );
-        if ( _maxAge != null ) {
-            this.maxAge = Long.valueOf( _maxAge );
+    public SecureHeadersConfig(final FilterConfig config) {
+        final String _maxAge = config.getInitParameter("max-age");
+        if (_maxAge != null) {
+            this.maxAge = Long.valueOf(_maxAge);
         } else {
             this.maxAge = null;
         }
-        final String _includeSubDomains = config.getInitParameter( "include-subdomains" );
-        if ( _includeSubDomains != null ) {
-            this.includeSubDomains = Boolean.valueOf( _includeSubDomains );
+        final String _includeSubDomains = config.getInitParameter("include-subdomains");
+        if (_includeSubDomains != null) {
+            this.includeSubDomains = Boolean.valueOf(_includeSubDomains);
         } else {
             this.includeSubDomains = false;
         }
-        this.location = config.getInitParameter( "Location" );
-        this.frameOptions = config.getInitParameter( "x-frame-options" );
-        final String _xssOptionsEnable = config.getInitParameter( "x-xss-protection-enable" );
-        final String _xssOptionsBlock = config.getInitParameter( "x-xss-protection-block" );
+        this.location = config.getInitParameter("Location");
+        this.frameOptions = config.getInitParameter("x-frame-options");
+        final String _xssOptionsEnable = config.getInitParameter("x-xss-protection-enable");
+        final String _xssOptionsBlock = config.getInitParameter("x-xss-protection-block");
         String _xssOptions;
-        if ( _xssOptionsEnable == null ) {
+        if (_xssOptionsEnable == null) {
             xssOptions = null;
         } else {
-            if ( toBoolean( _xssOptionsEnable, false ) ) {
+            if (toBoolean(_xssOptionsEnable,
+                          false)) {
                 _xssOptions = "1";
             } else {
                 _xssOptions = "0";
             }
 
-            if ( toBoolean( _xssOptionsBlock, false ) ) {
+            if (toBoolean(_xssOptionsBlock,
+                          false)) {
                 _xssOptions += "; mode=block";
             }
             xssOptions = _xssOptions;
         }
     }
 
-    private boolean toBoolean( final String value,
-                               final boolean defaultValue ) {
+    private boolean toBoolean(final String value,
+                              final boolean defaultValue) {
         try {
-            return Boolean.valueOf( value );
-        } catch ( Exception ex ) {
+            return Boolean.valueOf(value);
+        } catch (Exception ex) {
             return defaultValue;
         }
     }
@@ -81,9 +83,9 @@ public class SecureHeadersConfig {
      * @see <a href="https://tools.ietf.org/html/rfc6797#section-6.1.1">The max-age Directive</a>
      */
     public String getMaxAge() {
-        final StringBuilder header = new StringBuilder( "max-age=" + maxAge );
-        if ( includeSubDomains ) {
-            header.append( "; includeSubdomains" );
+        final StringBuilder header = new StringBuilder("max-age=" + maxAge);
+        if (includeSubDomains) {
+            header.append("; includeSubdomains");
         }
         return header.toString();
     }
@@ -123,7 +125,7 @@ public class SecureHeadersConfig {
      * @return boolean
      */
     public boolean hasLocation() {
-        return isEmpty( location );
+        return isEmpty(location);
     }
 
     /**
@@ -131,7 +133,7 @@ public class SecureHeadersConfig {
      * @return boolean
      */
     public boolean hasFrameOptions() {
-        return isEmpty( frameOptions );
+        return isEmpty(frameOptions);
     }
 
     /**
@@ -139,14 +141,14 @@ public class SecureHeadersConfig {
      * @return boolean
      */
     public boolean hasXSSOptions() {
-        return isEmpty( xssOptions );
+        return isEmpty(xssOptions);
     }
 
     public String getXssOptions() {
         return xssOptions;
     }
 
-    private boolean isEmpty( final String value ) {
+    private boolean isEmpty(final String value) {
         return value != null && !value.trim().isEmpty();
     }
 }

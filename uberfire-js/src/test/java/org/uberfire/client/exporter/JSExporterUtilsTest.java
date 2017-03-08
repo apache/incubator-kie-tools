@@ -43,39 +43,39 @@ public class JSExporterUtilsTest {
 
     @Before
     public void setup() {
-        beanManager = mock( SyncBeanManager.class );
-        screen = mock( JSNativeScreen.class );
-        screenActivity = new JSWorkbenchScreenActivity( screen, mock( PlaceManager.class ) );
-        when( screen.getId() ).thenReturn( "id" );
+        beanManager = mock(SyncBeanManager.class);
+        screen = mock(JSNativeScreen.class);
+        screenActivity = new JSWorkbenchScreenActivity(screen,
+                                                       mock(PlaceManager.class));
+        when(screen.getId()).thenReturn("id");
     }
 
     @Test
     public void testUpdateExistentActivity() {
         List<SyncBeanDef> activities = new ArrayList<SyncBeanDef>();
-        activities.add( createActivityBeanDef( screenActivity ) );
-        when( beanManager.lookupBeans( any( String.class ) ) ).thenReturn( activities );
+        activities.add(createActivityBeanDef(screenActivity));
+        when(beanManager.lookupBeans(any(String.class))).thenReturn(activities);
 
-        JSWorkbenchScreenActivity activity = JSExporterUtils.findActivityIfExists( beanManager,
-                                                                                   screen.getId(),
-                                                                                   JSWorkbenchScreenActivity.class );
+        JSWorkbenchScreenActivity activity = JSExporterUtils.findActivityIfExists(beanManager,
+                                                                                  screen.getId(),
+                                                                                  JSWorkbenchScreenActivity.class);
 
-        assertNotNull( activity );
+        assertNotNull(activity);
     }
 
     @Test
     public void testTryUpdatingUnexistentActivity() {
         List<SyncBeanDef> activities = new ArrayList<SyncBeanDef>();
-        when( beanManager.lookupBeans( any( String.class ) ) ).thenReturn( activities );
+        when(beanManager.lookupBeans(any(String.class))).thenReturn(activities);
 
-        JSWorkbenchScreenActivity activity = JSExporterUtils.findActivityIfExists( beanManager,
-                                                                                   screen.getId(),
-                                                                                   JSWorkbenchScreenActivity.class );
+        JSWorkbenchScreenActivity activity = JSExporterUtils.findActivityIfExists(beanManager,
+                                                                                  screen.getId(),
+                                                                                  JSWorkbenchScreenActivity.class);
 
-        assertNull( activity );
+        assertNull(activity);
     }
 
-
-    private SyncBeanDef createActivityBeanDef( Activity activity ) {
+    private SyncBeanDef createActivityBeanDef(Activity activity) {
         return new SyncBeanDef() {
             @Override
             public Object getInstance() {
@@ -88,7 +88,7 @@ public class JSExporterUtilsTest {
             }
 
             @Override
-            public boolean isAssignableTo( final Class aClass ) {
+            public boolean isAssignableTo(final Class aClass) {
                 return false;
             }
 
@@ -113,7 +113,7 @@ public class JSExporterUtilsTest {
             }
 
             @Override
-            public boolean matches( final Set set ) {
+            public boolean matches(final Set set) {
                 return false;
             }
 

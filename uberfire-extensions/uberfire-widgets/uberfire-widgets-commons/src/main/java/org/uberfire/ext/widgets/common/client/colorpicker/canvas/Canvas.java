@@ -29,45 +29,51 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 
 public class Canvas extends Composite implements HasAllMouseHandlers {
-	private HTML html;
-	private Element canvas;
 
-	public Canvas() {
-		html = new HTML("<canvas></canvas>");
-		initWidget(html);
-		canvas = (Element) html.getElement().getFirstChild();
-	}
-	
-	public native RenderingContext getContext() /*-{
-		return this.@org.uberfire.ext.widgets.common.client.colorpicker.canvas.Canvas::canvas.getContext("2d");
-	}-*/;
+    private HTML html;
+    private Element canvas;
 
-	public void setCanvasSize(int width, int height) {
-		DOM.setElementPropertyInt(canvas, "width", width);
-		DOM.setElementPropertyInt(canvas, "height", height);
-	}
+    public Canvas() {
+        html = new HTML("<canvas></canvas>");
+        initWidget(html);
+        canvas = (Element) html.getElement().getFirstChild();
+    }
 
-	public HandlerRegistration addMouseDownHandler(MouseDownHandler handler) {
-		return html.addMouseDownHandler(handler);
-	}
-	
-	public HandlerRegistration addMouseUpHandler(MouseUpHandler handler) {
-		return html.addMouseUpHandler(handler);
-	}
-	
-	public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
-		return html.addMouseOverHandler(handler);
-	}
-	
-	public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
-		return html.addMouseOutHandler(handler);
-	}
-	
-	public HandlerRegistration addMouseMoveHandler(MouseMoveHandler handler) {
-		return html.addMouseMoveHandler(handler);
-	}
-	
-	public HandlerRegistration addMouseWheelHandler(MouseWheelHandler handler) {
-		return html.addMouseWheelHandler(handler);
-	}
+    public native RenderingContext getContext() /*-{
+        return this.@org.uberfire.ext.widgets.common.client.colorpicker.canvas.Canvas::canvas.getContext("2d");
+    }-*/;
+
+    public void setCanvasSize(int width,
+                              int height) {
+        DOM.setElementPropertyInt(canvas,
+                                  "width",
+                                  width);
+        DOM.setElementPropertyInt(canvas,
+                                  "height",
+                                  height);
+    }
+
+    public HandlerRegistration addMouseDownHandler(MouseDownHandler handler) {
+        return html.addMouseDownHandler(handler);
+    }
+
+    public HandlerRegistration addMouseUpHandler(MouseUpHandler handler) {
+        return html.addMouseUpHandler(handler);
+    }
+
+    public HandlerRegistration addMouseOverHandler(MouseOverHandler handler) {
+        return html.addMouseOverHandler(handler);
+    }
+
+    public HandlerRegistration addMouseOutHandler(MouseOutHandler handler) {
+        return html.addMouseOutHandler(handler);
+    }
+
+    public HandlerRegistration addMouseMoveHandler(MouseMoveHandler handler) {
+        return html.addMouseMoveHandler(handler);
+    }
+
+    public HandlerRegistration addMouseWheelHandler(MouseWheelHandler handler) {
+        return html.addMouseWheelHandler(handler);
+    }
 }

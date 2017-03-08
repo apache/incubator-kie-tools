@@ -28,7 +28,7 @@ public class ForceUnlockEvent {
 
     private final Path path;
 
-    public ForceUnlockEvent( Path path ) {
+    public ForceUnlockEvent(Path path) {
         this.path = path;
     }
 

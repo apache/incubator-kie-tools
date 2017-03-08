@@ -22,10 +22,9 @@ import com.google.gwt.user.client.Command;
  */
 public class WorkbenchCloseHandlerImpl implements WorkbenchCloseHandler {
 
-    public void onWindowClose( final Command command ) {
-        if ( command != null ) {
+    public void onWindowClose(final Command command) {
+        if (command != null) {
             command.execute();
         }
     }
-
 }

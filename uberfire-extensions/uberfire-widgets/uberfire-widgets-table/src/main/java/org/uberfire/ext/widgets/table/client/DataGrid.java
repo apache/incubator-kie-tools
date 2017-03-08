@@ -21,33 +21,31 @@ import com.google.gwt.view.client.ProvidesKey;
 
 public class DataGrid<T> extends org.gwtbootstrap3.client.ui.gwt.DataGrid<T> {
 
-    public DataGrid(){
+    public DataGrid() {
         super();
         setupDefaults();
     }
 
     public DataGrid(final ProvidesKey<T> keyProvider) {
-        super( keyProvider );
+        super(keyProvider);
         setupDefaults();
     }
 
-    protected void setupDefaults(){
-        setHover( true );
-        setStriped( true );
-        setBordered( true );
+    protected void setupDefaults() {
+        setHover(true);
+        setStriped(true);
+        setBordered(true);
     }
 
     @Override
     protected void onLoad() {
         super.onLoad();
-        fixTableStyle( this.getElement() );
+        fixTableStyle(this.getElement());
     }
 
-    public native void fixTableStyle( final Element e ) /*-{
-        var table = $wnd.jQuery(e).find( "table" ).first();
-        table.addClass( "table" );
-        table.css( "margin-bottom", "0px" );
+    public native void fixTableStyle(final Element e) /*-{
+        var table = $wnd.jQuery(e).find("table").first();
+        table.addClass("table");
+        table.css("margin-bottom", "0px");
     }-*/;
-
-
 }

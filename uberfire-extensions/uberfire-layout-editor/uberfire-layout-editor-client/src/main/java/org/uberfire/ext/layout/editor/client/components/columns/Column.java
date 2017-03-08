@@ -27,13 +27,14 @@ public interface Column<T> {
 
     Integer getSize();
 
+    void setSize(Integer size);
+
     void incrementSize();
 
     void reduzeSize();
 
-    void setupResize( boolean canResizeLeft, boolean canResizeRight );
-
-    void setSize( Integer size );
+    void setupResize(boolean canResizeLeft,
+                     boolean canResizeRight);
 
     LayoutComponent getLayoutComponent();
 

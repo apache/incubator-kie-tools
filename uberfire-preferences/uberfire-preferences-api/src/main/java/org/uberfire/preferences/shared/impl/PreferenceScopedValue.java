@@ -37,8 +37,8 @@ public class PreferenceScopedValue<T> {
      */
     private final PreferenceScope scope;
 
-    public PreferenceScopedValue( @MapsTo("value") final T value,
-                                  @MapsTo("scope") final PreferenceScope scope ) {
+    public PreferenceScopedValue(@MapsTo("value") final T value,
+                                 @MapsTo("scope") final PreferenceScope scope) {
         this.value = value;
         this.scope = scope;
     }
@@ -52,28 +52,27 @@ public class PreferenceScopedValue<T> {
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         final PreferenceScopedValue<?> that = (PreferenceScopedValue<?>) o;
 
-        if ( value != null ? !value.equals( that.value ) : that.value != null ) {
+        if (value != null ? !value.equals(that.value) : that.value != null) {
             return false;
         }
-        return !( scope != null ? !scope.equals( that.scope ) : that.scope != null );
-
+        return !(scope != null ? !scope.equals(that.scope) : that.scope != null);
     }
 
     @Override
     public int hashCode() {
         int result = value != null ? value.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( scope != null ? scope.hashCode() : 0 );
+        result = 31 * result + (scope != null ? scope.hashCode() : 0);
         result = ~~result;
         return result;
     }

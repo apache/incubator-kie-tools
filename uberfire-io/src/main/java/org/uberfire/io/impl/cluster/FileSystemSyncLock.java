@@ -24,7 +24,7 @@ import org.uberfire.commons.message.MessageType;
 import org.uberfire.java.nio.base.FileSystemId;
 import org.uberfire.java.nio.file.FileSystem;
 
-import static org.uberfire.io.impl.cluster.ClusterMessageType.*;
+import static org.uberfire.io.impl.cluster.ClusterMessageType.SYNC_FS;
 
 public class FileSystemSyncLock<V> extends LockExecuteNotifyAsyncReleaseTemplate<V> {
 
@@ -33,12 +33,12 @@ public class FileSystemSyncLock<V> extends LockExecuteNotifyAsyncReleaseTemplate
     private final String id;
     private final String uri;
 
-    public FileSystemSyncLock( final String serviceId,
-                               final FileSystem _fileSystem ) {
+    public FileSystemSyncLock(final String serviceId,
+                              final FileSystem _fileSystem) {
         final FileSystem fileSystem = _fileSystem.getRootDirectories().iterator().next().getFileSystem();
         this.serviceId = serviceId;
         this.scheme = fileSystem.getRootDirectories().iterator().next().toUri().getScheme();
-        this.id = ( (FileSystemId) fileSystem ).id();
+        this.id = ((FileSystemId) fileSystem).id();
         this.uri = fileSystem.toString();
     }
 
@@ -55,9 +55,12 @@ public class FileSystemSyncLock<V> extends LockExecuteNotifyAsyncReleaseTemplate
     @Override
     public Map<String, String> buildContent() {
         return new HashMap<String, String>() {{
-            put( "fs_scheme", scheme );
-            put( "fs_id", id );
-            put( "fs_uri", uri );
+            put("fs_scheme",
+                scheme);
+            put("fs_id",
+                id);
+            put("fs_uri",
+                uri);
         }};
     }
 }

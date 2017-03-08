@@ -36,7 +36,7 @@ public class NewPanelBuilder {
         return partPlace;
     }
 
-    public void setPartPlace( String partPlace ) {
+    public void setPartPlace(String partPlace) {
         this.partPlace = partPlace;
     }
 
@@ -44,7 +44,7 @@ public class NewPanelBuilder {
         return type;
     }
 
-    public void setType( String type ) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -52,16 +52,18 @@ public class NewPanelBuilder {
         return position;
     }
 
-    public void setPosition( String position ) {
+    public void setPosition(String position) {
         this.position = position;
     }
 
-    public void makePanel( PlaceManager placeManager, PanelManager panelManager ) {
-        PlaceRequest place = DefaultPlaceRequest.parse( partPlace );
-        PanelDefinition panel = new PanelDefinitionImpl( type );
-        panelManager.addWorkbenchPanel( panelManager.getRoot(),
-                                        panel,
-                                        CompassPosition.valueOf( position.toUpperCase() ) );
-        placeManager.goTo( place, panel );
+    public void makePanel(PlaceManager placeManager,
+                          PanelManager panelManager) {
+        PlaceRequest place = DefaultPlaceRequest.parse(partPlace);
+        PanelDefinition panel = new PanelDefinitionImpl(type);
+        panelManager.addWorkbenchPanel(panelManager.getRoot(),
+                                       panel,
+                                       CompassPosition.valueOf(position.toUpperCase()));
+        placeManager.goTo(place,
+                          panel);
     }
 }

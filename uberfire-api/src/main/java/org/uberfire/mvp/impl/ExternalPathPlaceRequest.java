@@ -15,36 +15,34 @@
  */
 package org.uberfire.mvp.impl;
 
-import org.uberfire.backend.vfs.Path;
-
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
+import org.uberfire.backend.vfs.Path;
 
 /**
- * A {@link PathPlaceRequest} originating from an external script. 
+ * A {@link PathPlaceRequest} originating from an external script.
  */
 @JsType
 public class ExternalPathPlaceRequest extends DefaultPlaceRequest {
 
     private Path path;
-    
+
     public ExternalPathPlaceRequest(Path path) {
         this.path = path;
     }
-    
+
+    @JsIgnore
+    public static ExternalPathPlaceRequest create(PathPlaceRequest request) {
+        return new ExternalPathPlaceRequest(request.getPath().getOriginal());
+    }
+
     @Override
     public Path getPath() {
         return path;
-    }
-    
-    @JsIgnore
-    public static ExternalPathPlaceRequest create(PathPlaceRequest request) {
-        return  new ExternalPathPlaceRequest(request.getPath().getOriginal());
     }
 
     @Override
     public String toString() {
         return "ExternalPathPlaceRequest [path=" + path + "]";
     }
-
 }

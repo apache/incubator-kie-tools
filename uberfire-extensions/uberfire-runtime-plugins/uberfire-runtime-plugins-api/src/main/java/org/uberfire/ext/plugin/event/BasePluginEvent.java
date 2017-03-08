@@ -25,8 +25,8 @@ public abstract class BasePluginEvent {
     private Plugin plugin;
     private SessionInfo sessionInfo;
 
-    public BasePluginEvent( @MapsTo("plugin") final Plugin plugin,
-                            @MapsTo("sessionInfo") final SessionInfo sessionInfo ) {
+    public BasePluginEvent(@MapsTo("plugin") final Plugin plugin,
+                           @MapsTo("sessionInfo") final SessionInfo sessionInfo) {
         this.plugin = plugin;
         this.sessionInfo = sessionInfo;
     }

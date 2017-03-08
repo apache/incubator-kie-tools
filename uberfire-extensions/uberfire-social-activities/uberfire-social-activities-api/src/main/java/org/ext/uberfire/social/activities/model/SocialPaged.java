@@ -42,20 +42,20 @@ public class SocialPaged implements Serializable {
 
     }
 
-    public SocialPaged( int pageSize ) {
+    public SocialPaged(int pageSize) {
         this.pageSize = pageSize;
         this.freshIndex = 0;
         this.lastFileReaded = "";
         this.lastFileIndex = 0;
-        this.numberOfEventsOnFile=-1;
+        this.numberOfEventsOnFile = -1;
         this.canIGoForward = false;
         this.canIGoBackward = false;
         this.direction = Direction.FORWARD;
     }
 
-    public SocialPaged( SocialPaged socialPaged ) {
-        if ( socialPaged.lastQuery != null ) {
-            this.lastQuery = new SocialPaged( socialPaged.lastQuery );
+    public SocialPaged(SocialPaged socialPaged) {
+        if (socialPaged.lastQuery != null) {
+            this.lastQuery = new SocialPaged(socialPaged.lastQuery);
         }
 
         this.direction = socialPaged.direction;
@@ -72,7 +72,7 @@ public class SocialPaged implements Serializable {
 
         this.canIGoBackward = socialPaged.canIGoBackward;
 
-        this.numberOfEventsOnFile= socialPaged.numberOfEventsOnFile;
+        this.numberOfEventsOnFile = socialPaged.numberOfEventsOnFile;
     }
 
     public int getPageSize() {
@@ -103,7 +103,7 @@ public class SocialPaged implements Serializable {
         return lastFileReaded.isEmpty();
     }
 
-    public void setLastFileReaded( String lastFileReaded ) {
+    public void setLastFileReaded(String lastFileReaded) {
         this.lastFileReaded = lastFileReaded;
     }
 
@@ -112,7 +112,7 @@ public class SocialPaged implements Serializable {
     }
 
     public String getNextFileToRead() {
-        Integer lastFile = Integer.valueOf( lastFileReaded );
+        Integer lastFile = Integer.valueOf(lastFileReaded);
         Integer nextFile = lastFile - 1;
         this.lastFileReaded = nextFile.toString();
         this.lastFileIndex = 0;
@@ -123,13 +123,13 @@ public class SocialPaged implements Serializable {
         return canIGoForward;
     }
 
-    public void setCanIGoForward( boolean canIGoForward ) {
+    public void setCanIGoForward(boolean canIGoForward) {
         this.canIGoForward = canIGoForward;
     }
 
     public boolean canIGoBackward() {
         SocialPaged socialPaged = getLastQuery();
-        if ( socialPaged != null && socialPaged.getLastQuery() != null ) {
+        if (socialPaged != null && socialPaged.getLastQuery() != null) {
             return true;
         }
         return false;
@@ -147,34 +147,35 @@ public class SocialPaged implements Serializable {
         return this.direction == Direction.BACKWARD;
     }
 
-    public void setLastQuery( SocialPaged socialPaged ) {
-        this.lastQuery = socialPaged;
-    }
-
     public SocialPaged getLastQuery() {
         return lastQuery;
     }
 
+    public void setLastQuery(SocialPaged socialPaged) {
+        this.lastQuery = socialPaged;
+    }
+
     public SocialPaged goBackToLastQuery() {
         SocialPaged socialPaged = getLastQuery();
-        if ( socialPaged.getLastQuery() != null ) {
+        if (socialPaged.getLastQuery() != null) {
             socialPaged = socialPaged.getLastQuery();
         }
         return socialPaged;
     }
 
     public boolean isLastEventFromLastFile() {
-        if ( lastFileReaded.equalsIgnoreCase( "0" ) && lastFileIndex==numberOfEventsOnFile ) {
+        if (lastFileReaded.equalsIgnoreCase("0") && lastFileIndex == numberOfEventsOnFile) {
             return true;
         }
         return false;
     }
 
-    public void setNumberOfEventsOnFile( Integer numberOfEventsOnFile ) {
+    public void setNumberOfEventsOnFile(Integer numberOfEventsOnFile) {
         this.numberOfEventsOnFile = numberOfEventsOnFile;
     }
 
     public enum Direction {
-        FORWARD, BACKWARD;
+        FORWARD,
+        BACKWARD;
     }
 }

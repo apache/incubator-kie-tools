@@ -15,19 +15,19 @@
  */
 package org.ext.uberfire.social.activities.security;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
-import org.ext.uberfire.social.activities.model.SocialUser;
-import org.ext.uberfire.social.activities.service.SocialSecurityConstraint;
-
-import javax.enterprise.inject.Instance;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import javax.enterprise.inject.Instance;
 
-import static org.junit.Assert.assertEquals;
+import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
+import org.ext.uberfire.social.activities.model.SocialUser;
+import org.ext.uberfire.social.activities.service.SocialSecurityConstraint;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class SocialSecurityConstraintsManagerTest {
@@ -40,23 +40,22 @@ public class SocialSecurityConstraintsManagerTest {
     private SocialSecurityConstraint constraint1;
     private SocialSecurityConstraint constraint2;
 
-
     @Before
     public void setup() {
-        securityConstraints = mock( Instance.class );
-        event1 = generateEvent( new SocialUser( "admin" ) );
-        event2 = generateEvent( new SocialUser( "dora" ) );
+        securityConstraints = mock(Instance.class);
+        event1 = generateEvent(new SocialUser("admin"));
+        event2 = generateEvent(new SocialUser("dora"));
         events = new ArrayList<SocialActivitiesEvent>();
-        events.add( event1 );
-        events.add( event2 );
-        constraint1 = mock( SocialSecurityConstraint.class );
-        constraint2 = mock( SocialSecurityConstraint.class );
-        when( securityConstraints.iterator() ).thenReturn( createSecurityConstraintsIterator() );
+        events.add(event1);
+        events.add(event2);
+        constraint1 = mock(SocialSecurityConstraint.class);
+        constraint2 = mock(SocialSecurityConstraint.class);
+        when(securityConstraints.iterator()).thenReturn(createSecurityConstraintsIterator());
         socialSecurityConstraintsManager = new SocialSecurityConstraintsManager() {
             @Override
             Instance<SocialSecurityConstraint> getSocialSecurityConstraints() {
-                Instance<SocialSecurityConstraint> mock = mock( Instance.class );
-                when( mock.iterator() ).thenReturn( createSecurityConstraintsIterator() );
+                Instance<SocialSecurityConstraint> mock = mock(Instance.class);
+                when(mock.iterator()).thenReturn(createSecurityConstraintsIterator());
                 return mock;
             }
         };
@@ -64,30 +63,35 @@ public class SocialSecurityConstraintsManagerTest {
 
     @Test
     public void applyConstraintsTest() throws Exception {
-        final List<SocialActivitiesEvent> secureEvents = socialSecurityConstraintsManager.applyConstraints( events );
-        verify( constraint1 ).init();
-        verify( constraint2 ).init();
-        assertEquals( events.size(), secureEvents.size() );
+        final List<SocialActivitiesEvent> secureEvents = socialSecurityConstraintsManager.applyConstraints(events);
+        verify(constraint1).init();
+        verify(constraint2).init();
+        assertEquals(events.size(),
+                     secureEvents.size());
     }
 
     @Test
     public void applyConstraintsWithRestrictionTest() throws Exception {
-        when( constraint2.hasRestrictions( event1 ) ).thenReturn( true );
+        when(constraint2.hasRestrictions(event1)).thenReturn(true);
 
-        final List<SocialActivitiesEvent> secureEvents = socialSecurityConstraintsManager.applyConstraints( events );
-        assertEquals( 1, secureEvents.size() );
-        assertEquals( event2, secureEvents.get( 0 ) );
+        final List<SocialActivitiesEvent> secureEvents = socialSecurityConstraintsManager.applyConstraints(events);
+        assertEquals(1,
+                     secureEvents.size());
+        assertEquals(event2,
+                     secureEvents.get(0));
     }
 
     private Iterator<SocialSecurityConstraint> createSecurityConstraintsIterator() {
         List<SocialSecurityConstraint> list = new ArrayList<SocialSecurityConstraint>();
-        list.add( constraint1 );
-        list.add( constraint2 );
+        list.add(constraint1);
+        list.add(constraint2);
         return list.iterator();
     }
 
-    private SocialActivitiesEvent generateEvent( SocialUser user ) {
+    private SocialActivitiesEvent generateEvent(SocialUser user) {
         return new SocialActivitiesEvent(
-                user, "", new Date() );
+                user,
+                "",
+                new Date());
     }
 }

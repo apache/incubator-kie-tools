@@ -22,8 +22,7 @@ package org.uberfire.paging;
 public abstract class AbstractPageRow
         implements Comparable<AbstractPageRow> {
 
-    public int compareTo( AbstractPageRow o ) {
+    public int compareTo(AbstractPageRow o) {
         return 0;
     }
-
 }

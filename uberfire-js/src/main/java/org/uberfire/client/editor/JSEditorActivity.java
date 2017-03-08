@@ -17,6 +17,8 @@ package org.uberfire.client.editor;
 
 import javax.enterprise.inject.Alternative;
 
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.client.mvp.AbstractWorkbenchEditorActivity;
 import org.uberfire.client.mvp.PlaceManager;
@@ -24,32 +26,30 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.IsWidget;
-
 @Alternative
 public class JSEditorActivity extends AbstractWorkbenchEditorActivity {
 
     private JSNativeEditor nativeEditor;
 
-    public JSEditorActivity( final JSNativeEditor nativeEditor,
-                             final PlaceManager placeManager ) {
-        super( placeManager );
+    public JSEditorActivity(final JSNativeEditor nativeEditor,
+                            final PlaceManager placeManager) {
+        super(placeManager);
         this.nativeEditor = nativeEditor;
     }
 
     @Override
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
-        super.onStartup( path, place );
+    public void onStartup(final ObservablePath path,
+                          final PlaceRequest place) {
+        super.onStartup(path,
+                        place);
         setupObservablePathCallBacks();
-        nativeEditor.onStartup( path.toURI() );
+        nativeEditor.onStartup(path.toURI());
     }
 
     @Override
     public void onOpen() {
         super.onOpen();
-        nativeEditor.onOpen( path.toURI() );
+        nativeEditor.onOpen(path.toURI());
     }
 
     @Override
@@ -70,54 +70,54 @@ public class JSEditorActivity extends AbstractWorkbenchEditorActivity {
     }
 
     private void setupObservablePathCallBacks() {
-        path.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
+        path.onConcurrentUpdate(new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
             @Override
-            public void execute( ObservablePath.OnConcurrentUpdateEvent parameter ) {
+            public void execute(ObservablePath.OnConcurrentUpdateEvent parameter) {
                 nativeEditor.onConcurrentUpdate();
             }
-        } );
-        path.onConcurrentDelete( new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
+        });
+        path.onConcurrentDelete(new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
             @Override
-            public void execute( ObservablePath.OnConcurrentDelete parameter ) {
+            public void execute(ObservablePath.OnConcurrentDelete parameter) {
                 nativeEditor.onConcurrentDelete();
             }
-        } );
-        path.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
+        });
+        path.onConcurrentRename(new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
             @Override
-            public void execute( ObservablePath.OnConcurrentRenameEvent parameter ) {
+            public void execute(ObservablePath.OnConcurrentRenameEvent parameter) {
                 nativeEditor.onConcurrentRename();
             }
-        } );
-        path.onConcurrentCopy( new ParameterizedCommand<ObservablePath.OnConcurrentCopyEvent>() {
+        });
+        path.onConcurrentCopy(new ParameterizedCommand<ObservablePath.OnConcurrentCopyEvent>() {
             @Override
-            public void execute( ObservablePath.OnConcurrentCopyEvent parameter ) {
+            public void execute(ObservablePath.OnConcurrentCopyEvent parameter) {
                 nativeEditor.onConcurrentCopy();
             }
-        } );
-        path.onRename(  new Command() {
+        });
+        path.onRename(new Command() {
             @Override
             public void execute() {
                 nativeEditor.onRename();
             }
         });
-        path.onDelete( new Command() {
+        path.onDelete(new Command() {
             @Override
             public void execute() {
                 nativeEditor.onDelete();
             }
-        } );
-        path.onUpdate( new Command() {
+        });
+        path.onUpdate(new Command() {
             @Override
             public void execute() {
                 nativeEditor.onUpdate();
             }
-        } );
-        path.onCopy( new Command() {
+        });
+        path.onCopy(new Command() {
             @Override
             public void execute() {
                 nativeEditor.onCopy();
             }
-        } );
+        });
     }
 
     @Override
@@ -127,14 +127,14 @@ public class JSEditorActivity extends AbstractWorkbenchEditorActivity {
 
     @Override
     public IsWidget getWidget() {
-        return new HTML( nativeEditor.getElement().getInnerHTML() );
+        return new HTML(nativeEditor.getElement().getInnerHTML());
     }
 
     public JSNativeEditor getNativeEditor() {
         return nativeEditor;
     }
 
-    public void setNativeEditor( JSNativeEditor nativeEditor ) {
+    public void setNativeEditor(JSNativeEditor nativeEditor) {
         this.nativeEditor = nativeEditor;
     }
 }

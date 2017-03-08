@@ -23,7 +23,7 @@ public interface CommonConstants
         extends
         Messages {
 
-    public static final CommonConstants INSTANCE = GWT.create( CommonConstants.class );
+    public static final CommonConstants INSTANCE = GWT.create(CommonConstants.class);
 
     String CreateDir();
 

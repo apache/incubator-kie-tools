@@ -19,8 +19,6 @@ package org.uberfire.ext.layout.editor.impl.old.perspective.editor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 @Deprecated
 public class ScreenEditor {
 
@@ -41,29 +39,32 @@ public class ScreenEditor {
         return parameters;
     }
 
-    public void addParameters( String key,
-                               String value ) {
-        parameters.put( key, value );
+    public void addParameters(String key,
+                              String value) {
+        parameters.put(key,
+                       value);
     }
 
-    public void removeParameter( final String key ) {
-        parameters.remove( key );
+    public void removeParameter(final String key) {
+        parameters.remove(key);
     }
 
-    public void setParameterValue( final String key,
-                                   final String value ) {
-        parameters.put( key, value );
-    }
-
-    public void setPlaceName( String placeName ) {
-        parameters.put( PLACE_NAME_KEY, placeName );
+    public void setParameterValue(final String key,
+                                  final String value) {
+        parameters.put(key,
+                       value);
     }
 
     public String getPlaceName() {
-        return parameters.get( PLACE_NAME_KEY );
+        return parameters.get(PLACE_NAME_KEY);
     }
 
-    public void setType( SCREEN_TYPE type ) {
+    public void setPlaceName(String placeName) {
+        parameters.put(PLACE_NAME_KEY,
+                       placeName);
+    }
+
+    public void setType(SCREEN_TYPE type) {
         this.type = type;
     }
 
@@ -73,51 +74,49 @@ public class ScreenEditor {
 
     public void saveOriginalState() {
         lastParametersSaved = new HashMap<String, String>();
-        for ( String key : parameters.keySet() ) {
-            lastParametersSaved.put( key, parameters.get( key ) );
+        for (String key : parameters.keySet()) {
+            lastParametersSaved.put(key,
+                                    parameters.get(key));
         }
     }
 
-    public void loadOriginalState(){
-        if(!lastParametersSaved.isEmpty()){
-            parameters = new HashMap<String, String>(  );
-            for ( String key : lastParametersSaved.keySet() ) {
-                parameters.put( key, lastParametersSaved.get( key ) );
+    public void loadOriginalState() {
+        if (!lastParametersSaved.isEmpty()) {
+            parameters = new HashMap<String, String>();
+            for (String key : lastParametersSaved.keySet()) {
+                parameters.put(key,
+                               lastParametersSaved.get(key));
             }
         }
-    }
-
-    public enum SCREEN_TYPE {
-        DEFAULT, EXTERNAL
     }
 
     public String getExternalComponentFQCN() {
         return externalComponentFQCN;
     }
 
-    public void setExternalComponentFQCN( String externalComponentFQCN ) {
+    public void setExternalComponentFQCN(String externalComponentFQCN) {
         this.externalComponentFQCN = externalComponentFQCN;
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof ScreenEditor ) ) {
+        if (!(o instanceof ScreenEditor)) {
             return false;
         }
 
         ScreenEditor that = (ScreenEditor) o;
 
-        if ( externalComponentFQCN != null ? !externalComponentFQCN.equals( that.externalComponentFQCN ) : that.externalComponentFQCN != null ) {
+        if (externalComponentFQCN != null ? !externalComponentFQCN.equals(that.externalComponentFQCN) : that.externalComponentFQCN != null) {
             return false;
         }
-        if ( parameters != null ? !parameters.equals( that.parameters ) : that.parameters != null ) {
+        if (parameters != null ? !parameters.equals(that.parameters) : that.parameters != null) {
             return false;
         }
 
-        if ( type != that.type ) {
+        if (type != that.type) {
             return false;
         }
 
@@ -127,8 +126,13 @@ public class ScreenEditor {
     @Override
     public int hashCode() {
         int result = type != null ? type.hashCode() : 0;
-        result = 31 * result + ( externalComponentFQCN != null ? externalComponentFQCN.hashCode() : 0 );
-        result = 31 * result + ( parameters != null ? parameters.hashCode() : 0 );
+        result = 31 * result + (externalComponentFQCN != null ? externalComponentFQCN.hashCode() : 0);
+        result = 31 * result + (parameters != null ? parameters.hashCode() : 0);
         return result;
+    }
+
+    public enum SCREEN_TYPE {
+        DEFAULT,
+        EXTERNAL
     }
 }

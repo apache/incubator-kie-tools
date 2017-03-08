@@ -23,9 +23,12 @@ package org.uberfire.annotations.processors.facades;
  */
 public class BackendModule {
 
-    private BackendModule(){};
-
     public static final String path = "org.uberfire.backend.vfs.Path";
+
+    ;
+
+    private BackendModule() {
+    }
 
     public static String getPathClass() {
         return path;

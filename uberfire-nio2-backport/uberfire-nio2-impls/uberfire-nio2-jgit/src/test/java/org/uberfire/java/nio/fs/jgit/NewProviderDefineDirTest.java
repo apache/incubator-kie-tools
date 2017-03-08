@@ -16,8 +16,6 @@
 
 package org.uberfire.java.nio.fs.jgit;
 
-import static org.fest.assertions.api.Assertions.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -33,6 +31,8 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.fest.assertions.api.Assertions.assertThat;
+
 public class NewProviderDefineDirTest {
 
     protected static final Map<String, Object> EMPTY_ENV = Collections.emptyMap();
@@ -41,7 +41,8 @@ public class NewProviderDefineDirTest {
 
     protected static File createTempDirectory()
             throws IOException {
-        final File temp = File.createTempFile("temp", Long.toString(System.nanoTime()));
+        final File temp = File.createTempFile("temp",
+                                              Long.toString(System.nanoTime()));
         if (!(temp.delete())) {
             throw new IOException("Could not delete temp file: " + temp.getAbsolutePath());
         }
@@ -60,7 +61,8 @@ public class NewProviderDefineDirTest {
     public static void cleanup() {
         for (final File tempFile : tempFiles) {
             try {
-                FileUtils.delete(tempFile, FileUtils.RECURSIVE);
+                FileUtils.delete(tempFile,
+                                 FileUtils.RECURSIVE);
             } catch (IOException e) {
             }
         }
@@ -73,20 +75,22 @@ public class NewProviderDefineDirTest {
         final File dir = createTempDirectory();
 
         Map<String, String> gitPrefs = new HashMap<String, String>();
-        gitPrefs.put( "org.uberfire.nio.git.dir", dir.toString() );
-        final JGitFileSystemProvider provider = new JGitFileSystemProvider( gitPrefs );
+        gitPrefs.put("org.uberfire.nio.git.dir",
+                     dir.toString());
+        final JGitFileSystemProvider provider = new JGitFileSystemProvider(gitPrefs);
 
         final URI newRepo = URI.create("git://repo-name");
 
-        provider.newFileSystem(newRepo, EMPTY_ENV);
+        provider.newFileSystem(newRepo,
+                               EMPTY_ENV);
 
         final String[] names = dir.list();
 
         assertThat(names).isNotEmpty().contains(".niogit");
 
-        final String[] repos = new File(dir, ".niogit").list();
+        final String[] repos = new File(dir,
+                                        ".niogit").list();
 
         assertThat(repos).isNotEmpty().contains("repo-name.git");
     }
-
 }

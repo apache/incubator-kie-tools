@@ -15,22 +15,14 @@
  */
 package org.uberfire.workbench.model.toolbar.impl;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import org.uberfire.mvp.Command;
-import org.uberfire.security.Resource;
-import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.toolbar.IconType;
 import org.uberfire.workbench.model.toolbar.ToolBarIcon;
 import org.uberfire.workbench.model.toolbar.ToolBarItem;
 import org.uberfire.workbench.model.toolbar.ToolBarTypeIcon;
 import org.uberfire.workbench.model.toolbar.ToolBarUrlIcon;
 
-import static java.lang.System.*;
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Default implementation of ToolBarItem
@@ -47,12 +39,15 @@ public class DefaultToolBarItem
 
     private boolean isEnabled = true;
 
-    public DefaultToolBarItem( final String url,
-                               final String tooltip,
-                               final Command command ) {
-        this.tooltip = checkNotNull( "tooltip", tooltip );
-        this.command = checkNotNull( "command", command );
-        checkNotNull( "url", url );
+    public DefaultToolBarItem(final String url,
+                              final String tooltip,
+                              final Command command) {
+        this.tooltip = checkNotNull("tooltip",
+                                    tooltip);
+        this.command = checkNotNull("command",
+                                    command);
+        checkNotNull("url",
+                     url);
         this.icon = new ToolBarUrlIcon() {
             @Override
             public String getUrl() {
@@ -61,12 +56,15 @@ public class DefaultToolBarItem
         };
     }
 
-    public DefaultToolBarItem( final IconType iconType,
-                               final String tooltip,
-                               final Command command ) {
-        this.tooltip = checkNotNull( "tooltip", tooltip );
-        this.command = checkNotNull( "command", command );
-        checkNotNull( "iconType", iconType );
+    public DefaultToolBarItem(final IconType iconType,
+                              final String tooltip,
+                              final Command command) {
+        this.tooltip = checkNotNull("tooltip",
+                                    tooltip);
+        this.command = checkNotNull("command",
+                                    command);
+        checkNotNull("iconType",
+                     iconType);
         this.icon = new ToolBarTypeIcon() {
             @Override
             public IconType getType() {
@@ -96,7 +94,7 @@ public class DefaultToolBarItem
     }
 
     @Override
-    public void setEnabled( boolean isEnabled ) {
+    public void setEnabled(boolean isEnabled) {
         this.isEnabled = isEnabled;
     }
 

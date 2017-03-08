@@ -38,7 +38,5 @@ public interface Property extends Copyable<Property> {
     public static interface Type {
 
         String getName();
-
     }
-
 }

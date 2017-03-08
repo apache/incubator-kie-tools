@@ -38,14 +38,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 @Dependent
 public class RestorePopUpPresenter {
 
-    public interface View extends UberElement<RestorePopUpPresenter> {
-
-        void show();
-
-        void hide();
-
-    }
-
+    protected ParameterizedCommand<String> command;
     private BusyIndicatorView busyIndicatorView;
 
     private Caller<VersionService> versionService;
@@ -55,18 +48,15 @@ public class RestorePopUpPresenter {
     private RestoreUtil restoreUtil;
 
     private View view;
-
-    protected ParameterizedCommand<String> command;
-
     private ToggleCommentPresenter toggleCommentPresenter;
 
     @Inject
-    public RestorePopUpPresenter( View view,
-                                  BusyIndicatorView busyIndicatorView,
-                                  Caller<VersionService> versionService,
-                                  Event<RestoreEvent> restoreEvent,
-                                  RestoreUtil restoreUtil,
-                                  ToggleCommentPresenter toggleCommentPresenter ) {
+    public RestorePopUpPresenter(View view,
+                                 BusyIndicatorView busyIndicatorView,
+                                 Caller<VersionService> versionService,
+                                 Event<RestoreEvent> restoreEvent,
+                                 RestoreUtil restoreUtil,
+                                 ToggleCommentPresenter toggleCommentPresenter) {
         this.view = view;
         this.busyIndicatorView = busyIndicatorView;
         this.versionService = versionService;
@@ -77,17 +67,18 @@ public class RestorePopUpPresenter {
 
     @PostConstruct
     public void setup() {
-        view.init( this );
+        view.init(this);
     }
 
     public void restore() {
-        command.execute( toggleCommentPresenter.getComment() );
+        command.execute(toggleCommentPresenter.getComment());
         view.hide();
     }
 
-    public void show( final ObservablePath currentPath,
-                      final String currentVersionRecordUri ) {
-        command = restoreCommand( currentPath, currentVersionRecordUri );
+    public void show(final ObservablePath currentPath,
+                     final String currentVersionRecordUri) {
+        command = restoreCommand(currentPath,
+                                 currentVersionRecordUri);
         view.show();
     }
 
@@ -100,23 +91,32 @@ public class RestorePopUpPresenter {
     }
 
     private HasBusyIndicatorDefaultErrorCallback errorCallback() {
-        return new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView );
+        return new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView);
     }
 
-    private RemoteCallback<Path> successCallback( final String currentVersionRecordUri ) {
+    private RemoteCallback<Path> successCallback(final String currentVersionRecordUri) {
         return restored -> {
             busyIndicatorView.hideBusyIndicator();
-            restoreEvent.fire( new RestoreEvent( restoreUtil.createObservablePath(
+            restoreEvent.fire(new RestoreEvent(restoreUtil.createObservablePath(
                     restored,
-                    currentVersionRecordUri ) ) );
+                    currentVersionRecordUri)));
         };
     }
 
-    ParameterizedCommand<String> restoreCommand( final ObservablePath currentPath,
-                                                 final String currentVersionRecordUri ) {
+    ParameterizedCommand<String> restoreCommand(final ObservablePath currentPath,
+                                                final String currentVersionRecordUri) {
         return comment -> {
-            busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Restoring() );
-            versionService.call( successCallback( currentVersionRecordUri ), errorCallback() ).restore( currentPath, comment );
+            busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Restoring());
+            versionService.call(successCallback(currentVersionRecordUri),
+                                errorCallback()).restore(currentPath,
+                                                         comment);
         };
+    }
+
+    public interface View extends UberElement<RestorePopUpPresenter> {
+
+        void show();
+
+        void hide();
     }
 }

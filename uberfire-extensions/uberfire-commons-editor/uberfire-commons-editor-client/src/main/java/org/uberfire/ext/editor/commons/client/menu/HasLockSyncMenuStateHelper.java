@@ -30,7 +30,7 @@ public interface HasLockSyncMenuStateHelper {
      * considered to be synchronized with lock state are 'Save', 'Delete', 'Rename' and 'Restore'.
      * @param lockSyncMenuStateHelper Cannot be null.
      */
-    void setLockSyncMenuStateHelper( final LockSyncMenuStateHelper lockSyncMenuStateHelper );
+    void setLockSyncMenuStateHelper(final LockSyncMenuStateHelper lockSyncMenuStateHelper);
 
     /**
      * Helper to ascertain the enabled state of {@link MenuItem}s synchronized with lock state.
@@ -44,9 +44,9 @@ public interface HasLockSyncMenuStateHelper {
          * @param isLockedByCurrentUser true if the file is locked by the current User.
          * @return
          */
-        Operation enable( final Path file,
-                          final boolean isLocked,
-                          final boolean isLockedByCurrentUser );
+        Operation enable(final Path file,
+                         final boolean isLocked,
+                         final boolean isLockedByCurrentUser);
 
         /**
          * Possible operations; enable/disable MenuItem or veto any change all together.
@@ -56,7 +56,6 @@ public interface HasLockSyncMenuStateHelper {
             DISABLE,
             VETO
         }
-
     }
 
     /**
@@ -65,17 +64,15 @@ public interface HasLockSyncMenuStateHelper {
     class BasicLockSyncMenuStateHelper implements LockSyncMenuStateHelper {
 
         @Override
-        public Operation enable( final Path file,
-                                 final boolean isLocked,
-                                 final boolean isLockedByCurrentUser ) {
-            if ( !isLocked ) {
+        public Operation enable(final Path file,
+                                final boolean isLocked,
+                                final boolean isLockedByCurrentUser) {
+            if (!isLocked) {
                 return Operation.ENABLE;
-
-            } else if ( isLockedByCurrentUser ) {
+            } else if (isLockedByCurrentUser) {
                 return Operation.ENABLE;
             }
             return Operation.DISABLE;
         }
     }
-
 }

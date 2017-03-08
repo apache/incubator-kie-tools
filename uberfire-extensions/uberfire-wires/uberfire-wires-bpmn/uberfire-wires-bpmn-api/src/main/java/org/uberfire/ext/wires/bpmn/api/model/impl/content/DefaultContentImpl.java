@@ -37,21 +37,21 @@ public class DefaultContentImpl implements Content {
     private Set<Role> roles;
     private Set<Property> properties;
 
-    public DefaultContentImpl( @MapsTo("id") final String id,
-                               @MapsTo("title") final String title,
-                               @MapsTo("description") final String description,
-                               @MapsTo("roles") final Set<Role> roles,
-                               @MapsTo("properties") final Set<Property> properties ) {
-        this.id = PortablePreconditions.checkNotNull( "id",
-                                                      id );
-        this.title = PortablePreconditions.checkNotNull( "title",
-                                                         title );
-        this.description = PortablePreconditions.checkNotNull( "description",
-                                                               description );
-        this.roles = PortablePreconditions.checkNotNull( "roles",
-                                                         roles );
-        this.properties = PortablePreconditions.checkNotNull( "properties",
-                                                              properties );
+    public DefaultContentImpl(@MapsTo("id") final String id,
+                              @MapsTo("title") final String title,
+                              @MapsTo("description") final String description,
+                              @MapsTo("roles") final Set<Role> roles,
+                              @MapsTo("properties") final Set<Property> properties) {
+        this.id = PortablePreconditions.checkNotNull("id",
+                                                     id);
+        this.title = PortablePreconditions.checkNotNull("title",
+                                                        title);
+        this.description = PortablePreconditions.checkNotNull("description",
+                                                              description);
+        this.roles = PortablePreconditions.checkNotNull("roles",
+                                                        roles);
+        this.properties = PortablePreconditions.checkNotNull("properties",
+                                                             properties);
     }
 
     @Override
@@ -81,54 +81,54 @@ public class DefaultContentImpl implements Content {
 
     @Override
     public Content copy() {
-        final Content copy = new DefaultContentImpl( this.id,
-                                                     this.title,
-                                                     this.description,
-                                                     copyRoles( this.roles ),
-                                                     copyProperties( this.properties ) );
+        final Content copy = new DefaultContentImpl(this.id,
+                                                    this.title,
+                                                    this.description,
+                                                    copyRoles(this.roles),
+                                                    copyProperties(this.properties));
         return copy;
     }
 
-    private Set<Role> copyRoles( final Set<Role> roles ) {
+    private Set<Role> copyRoles(final Set<Role> roles) {
         final Set<Role> copy = new HashSet<Role>();
-        for ( Role role : roles ) {
-            copy.add( role.copy() );
+        for (Role role : roles) {
+            copy.add(role.copy());
         }
         return copy;
     }
 
-    private Set<Property> copyProperties( final Set<Property> properties ) {
+    private Set<Property> copyProperties(final Set<Property> properties) {
         final Set<Property> copy = new HashSet<Property>();
-        for ( Property property : properties ) {
-            copy.add( property.copy() );
+        for (Property property : properties) {
+            copy.add(property.copy());
         }
         return copy;
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof DefaultContentImpl ) ) {
+        if (!(o instanceof DefaultContentImpl)) {
             return false;
         }
 
         DefaultContentImpl that = (DefaultContentImpl) o;
 
-        if ( !description.equals( that.description ) ) {
+        if (!description.equals(that.description)) {
             return false;
         }
-        if ( !id.equals( that.id ) ) {
+        if (!id.equals(that.id)) {
             return false;
         }
-        if ( !properties.equals( that.properties ) ) {
+        if (!properties.equals(that.properties)) {
             return false;
         }
-        if ( !roles.equals( that.roles ) ) {
+        if (!roles.equals(that.roles)) {
             return false;
         }
-        if ( !title.equals( that.title ) ) {
+        if (!title.equals(that.title)) {
             return false;
         }
 
@@ -160,6 +160,5 @@ public class DefaultContentImpl implements Content {
                 ", properties=" + properties +
                 '}';
     }
-
 }
 

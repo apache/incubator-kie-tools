@@ -32,7 +32,7 @@ public class MediaServletURIProducer {
 
     @PostConstruct
     public void setup() {
-        mediaServletURI = new MediaServletURI( "plugins/" );
+        mediaServletURI = new MediaServletURI("plugins/");
     }
 
     @Produces

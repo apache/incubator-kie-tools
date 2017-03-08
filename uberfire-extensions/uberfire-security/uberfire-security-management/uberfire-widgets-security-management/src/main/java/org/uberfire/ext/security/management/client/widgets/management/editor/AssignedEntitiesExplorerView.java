@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -24,12 +26,9 @@ import org.gwtbootstrap3.client.ui.Heading;
 import org.gwtbootstrap3.client.ui.Row;
 import org.uberfire.ext.security.management.client.widgets.management.list.EntitiesList;
 
-import javax.enterprise.context.Dependent;
-
 /**
  * <p>View implementation for exploring the assigned groups or roles for a given user.</p>
  * <p>This explorer is implemented using a <code>org.gwtbootstrap3.client.ui.LinkedGroup</code> widget.</p>
- *           
  * @since 0.8.0
  */
 @Dependent
@@ -37,29 +36,21 @@ public class AssignedEntitiesExplorerView extends Composite
         implements
         AssignedEntitiesExplorer {
 
-    interface AssignedEntitiesExplorerViewBinder
-            extends
-            UiBinder<Row, AssignedEntitiesExplorerView> {
-
-    }
-
     private static AssignedEntitiesExplorerViewBinder uiBinder = GWT.create(AssignedEntitiesExplorerViewBinder.class);
-
     @UiField
     Row headerRow;
-            
     @UiField
     Heading headerText;
-    
     @UiField(provided = true)
     EntitiesList.View entitiesListView;
 
     @Override
-    public AssignedEntitiesExplorer configure(final String header, final EntitiesList.View entitiesList) {
+    public AssignedEntitiesExplorer configure(final String header,
+                                              final EntitiesList.View entitiesList) {
         this.entitiesListView = entitiesList;
-        initWidget( uiBinder.createAndBindUi( this ) );
-        
-        if ( null != header && header.trim().length() > 0 ) {
+        initWidget(uiBinder.createAndBindUi(this));
+
+        if (null != header && header.trim().length() > 0) {
             headerText.setText(header);
             headerRow.setVisible(true);
         } else {
@@ -75,4 +66,9 @@ public class AssignedEntitiesExplorerView extends Composite
         return this;
     }
 
+    interface AssignedEntitiesExplorerViewBinder
+            extends
+            UiBinder<Row, AssignedEntitiesExplorerView> {
+
+    }
 }

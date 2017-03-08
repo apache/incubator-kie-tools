@@ -35,29 +35,30 @@ import org.uberfire.java.nio.file.spi.FileSystemProvider;
 import org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.mockito.Mockito.*;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ PriorityDisposableRegistry.class,
+@PrepareForTest({PriorityDisposableRegistry.class,
         SimpleAsyncExecutorService.class,
-        FileSystemProviders.class })
+        FileSystemProviders.class})
 public class DisposableShutdownServiceTest {
 
     @Test
     public void testGeneralStatic() {
-        mockStatic( PriorityDisposableRegistry.class );
-        mockStatic( SimpleAsyncExecutorService.class );
-        mockStatic( FileSystemProviders.class );
+        mockStatic(PriorityDisposableRegistry.class);
+        mockStatic(SimpleAsyncExecutorService.class);
+        mockStatic(FileSystemProviders.class);
 
-        final JGitFileSystemProvider disposableProvider = mock( JGitFileSystemProvider.class );
+        final JGitFileSystemProvider disposableProvider = mock(JGitFileSystemProvider.class);
 
-        when( FileSystemProviders.installedProviders() ).thenReturn( Arrays.asList( mock( FileSystemProvider.class ), disposableProvider ) );
+        when(FileSystemProviders.installedProviders()).thenReturn(Arrays.asList(mock(FileSystemProvider.class),
+                                                                                disposableProvider));
 
-        new DisposableShutdownService().contextDestroyed( null );
+        new DisposableShutdownService().contextDestroyed(null);
 
-        verify( disposableProvider, times( 1 ) ).dispose();
+        verify(disposableProvider,
+               times(1)).dispose();
 
         PowerMockito.verifyStatic();
         SimpleAsyncExecutorService.shutdownInstances();
@@ -68,71 +69,88 @@ public class DisposableShutdownServiceTest {
 
     @Test
     public void testCluster() {
-        mockStatic( PriorityDisposableRegistry.class );
-        mockStatic( SimpleAsyncExecutorService.class );
-        mockStatic( FileSystemProviders.class );
+        mockStatic(PriorityDisposableRegistry.class);
+        mockStatic(SimpleAsyncExecutorService.class);
+        mockStatic(FileSystemProviders.class);
 
-        final ClusterService clusterService = mock( ClusterService.class );
+        final ClusterService clusterService = mock(ClusterService.class);
 
-        when( FileSystemProviders.installedProviders() ).thenReturn( Collections.<FileSystemProvider>emptyList() );
-        when( PriorityDisposableRegistry.getDisposables() ).thenReturn( Arrays.asList( mock( PriorityDisposable.class ), clusterService ) );
+        when(FileSystemProviders.installedProviders()).thenReturn(Collections.<FileSystemProvider>emptyList());
+        when(PriorityDisposableRegistry.getDisposables()).thenReturn(Arrays.asList(mock(PriorityDisposable.class),
+                                                                                   clusterService));
 
-        new DisposableShutdownService().contextDestroyed( null );
+        new DisposableShutdownService().contextDestroyed(null);
 
-        verify( clusterService, times( 1 ) ).lock();
-        verify( clusterService, times( 1 ) ).unlock();
-        verify( clusterService, times( 1 ) ).dispose();
+        verify(clusterService,
+               times(1)).lock();
+        verify(clusterService,
+               times(1)).unlock();
+        verify(clusterService,
+               times(1)).dispose();
     }
 
     @Test
     public void testDisposables() {
-        mockStatic( PriorityDisposableRegistry.class );
-        mockStatic( SimpleAsyncExecutorService.class );
-        mockStatic( FileSystemProviders.class );
+        mockStatic(PriorityDisposableRegistry.class);
+        mockStatic(SimpleAsyncExecutorService.class);
+        mockStatic(FileSystemProviders.class);
 
-        final PriorityDisposable priorityDisposable1 = mock( PriorityDisposable.class );
-        final PriorityDisposable priorityDisposable2 = mock( PriorityDisposable.class );
-        final PriorityDisposable priorityDisposable3 = mock( PriorityDisposable.class );
+        final PriorityDisposable priorityDisposable1 = mock(PriorityDisposable.class);
+        final PriorityDisposable priorityDisposable2 = mock(PriorityDisposable.class);
+        final PriorityDisposable priorityDisposable3 = mock(PriorityDisposable.class);
 
-        when( FileSystemProviders.installedProviders() ).thenReturn( Collections.<FileSystemProvider>emptyList() );
-        when( PriorityDisposableRegistry.getDisposables() ).thenReturn( Arrays.asList( priorityDisposable1, priorityDisposable2, priorityDisposable3 ) );
+        when(FileSystemProviders.installedProviders()).thenReturn(Collections.<FileSystemProvider>emptyList());
+        when(PriorityDisposableRegistry.getDisposables()).thenReturn(Arrays.asList(priorityDisposable1,
+                                                                                   priorityDisposable2,
+                                                                                   priorityDisposable3));
 
-        new DisposableShutdownService().contextDestroyed( null );
+        new DisposableShutdownService().contextDestroyed(null);
 
-        verify( priorityDisposable1, times( 1 ) ).dispose();
-        verify( priorityDisposable2, times( 1 ) ).dispose();
-        verify( priorityDisposable3, times( 1 ) ).dispose();
+        verify(priorityDisposable1,
+               times(1)).dispose();
+        verify(priorityDisposable2,
+               times(1)).dispose();
+        verify(priorityDisposable3,
+               times(1)).dispose();
     }
 
     @Test
     public void testSort() {
-        final PriorityDisposable priorityDisposable1 = mock( PriorityDisposable.class );
-        Mockito.when( priorityDisposable1.priority() ).thenReturn( -1 );
-        final PriorityDisposable priorityDisposable2 = mock( PriorityDisposable.class );
-        Mockito.when( priorityDisposable2.priority() ).thenReturn( 0 );
-        final PriorityDisposable priorityDisposable3 = mock( PriorityDisposable.class );
-        Mockito.when( priorityDisposable3.priority() ).thenReturn( 10 );
-        final PriorityDisposable priorityDisposable4 = mock( PriorityDisposable.class );
-        Mockito.when( priorityDisposable4.priority() ).thenReturn( 11 );
+        final PriorityDisposable priorityDisposable1 = mock(PriorityDisposable.class);
+        Mockito.when(priorityDisposable1.priority()).thenReturn(-1);
+        final PriorityDisposable priorityDisposable2 = mock(PriorityDisposable.class);
+        Mockito.when(priorityDisposable2.priority()).thenReturn(0);
+        final PriorityDisposable priorityDisposable3 = mock(PriorityDisposable.class);
+        Mockito.when(priorityDisposable3.priority()).thenReturn(10);
+        final PriorityDisposable priorityDisposable4 = mock(PriorityDisposable.class);
+        Mockito.when(priorityDisposable4.priority()).thenReturn(11);
 
         final ArrayList<PriorityDisposable> disposables = new ArrayList<PriorityDisposable>();
-        disposables.add( priorityDisposable3 );
-        disposables.add( priorityDisposable2 );
-        disposables.add( priorityDisposable4 );
-        disposables.add( priorityDisposable1 );
+        disposables.add(priorityDisposable3);
+        disposables.add(priorityDisposable2);
+        disposables.add(priorityDisposable4);
+        disposables.add(priorityDisposable1);
 
-        assertEquals( priorityDisposable3, disposables.get( 0 ) );
-        assertEquals( priorityDisposable2, disposables.get( 1 ) );
-        assertEquals( priorityDisposable4, disposables.get( 2 ) );
-        assertEquals( priorityDisposable1, disposables.get( 3 ) );
+        assertEquals(priorityDisposable3,
+                     disposables.get(0));
+        assertEquals(priorityDisposable2,
+                     disposables.get(1));
+        assertEquals(priorityDisposable4,
+                     disposables.get(2));
+        assertEquals(priorityDisposable1,
+                     disposables.get(3));
 
-        new DisposableShutdownService().sort( disposables );
+        new DisposableShutdownService().sort(disposables);
 
-        assertEquals( 4, disposables.size() );
-        assertEquals( priorityDisposable4, disposables.get( 0 ) );
-        assertEquals( priorityDisposable3, disposables.get( 1 ) );
-        assertEquals( priorityDisposable2, disposables.get( 2 ) );
-        assertEquals( priorityDisposable1, disposables.get( 3 ) );
+        assertEquals(4,
+                     disposables.size());
+        assertEquals(priorityDisposable4,
+                     disposables.get(0));
+        assertEquals(priorityDisposable3,
+                     disposables.get(1));
+        assertEquals(priorityDisposable2,
+                     disposables.get(2));
+        assertEquals(priorityDisposable1,
+                     disposables.get(3));
     }
-
 }

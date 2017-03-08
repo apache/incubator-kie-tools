@@ -26,7 +26,6 @@ public interface ContainerManager {
      * @param cy Canvas Y co-ordinate
      * @return A Container or null if the point was not within a Container
      */
-    WiresContainer getContainer( final double cx,
-                                 final double cy );
-
+    WiresContainer getContainer(final double cx,
+                                final double cy);
 }

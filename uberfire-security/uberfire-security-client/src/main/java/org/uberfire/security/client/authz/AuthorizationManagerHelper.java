@@ -34,17 +34,137 @@ import org.uberfire.security.impl.authz.DefaultResourceType;
 @ApplicationScoped
 public class AuthorizationManagerHelper {
 
+    private AuthorizationManager authorizationManager;
+    private User user;
+    @Inject
+    public AuthorizationManagerHelper(AuthorizationManager authorizationManager,
+                                      User user) {
+        this.authorizationManager = authorizationManager;
+        this.user = user;
+    }
+
     private static AuthorizationManagerHelper get() {
         return IOC.getBeanManager().lookupBean(AuthorizationManagerHelper.class).getInstance();
     }
-    
-    private AuthorizationManager authorizationManager;
-    private User user;
 
-    @Inject
-    public AuthorizationManagerHelper(AuthorizationManager authorizationManager, User user) {
-        this.authorizationManager = authorizationManager;
-        this.user = user;
+    public static boolean authorize(Resource resource) {
+        AuthorizationManagerHelper helper = get();
+        return helper.getAuthorizationManager().authorize(resource,
+                                                          helper.getUser());
+    }
+
+    public static boolean authorize(Resource resource,
+                                    String action) {
+        AuthorizationManagerHelper helper = get();
+        return helper.getAuthorizationManager().authorize(resource,
+                                                          new DefaultResourceAction(action),
+                                                          helper.getUser());
+    }
+
+    public static boolean authorize(Resource resource,
+                                    ResourceAction action) {
+        AuthorizationManagerHelper helper = get();
+        return helper.getAuthorizationManager().authorize(resource,
+                                                          action,
+                                                          helper.getUser());
+    }
+
+    public static boolean authorize(String resourceType,
+                                    String action) {
+        return authorize(new DefaultResourceType(resourceType),
+                         new DefaultResourceAction(action));
+    }
+
+    public static boolean authorize(ResourceType resourceType,
+                                    ResourceAction action) {
+        AuthorizationManagerHelper helper = get();
+        return helper.getAuthorizationManager().authorize(resourceType,
+                                                          action,
+                                                          helper.getUser());
+    }
+
+    public static boolean authorize(Resource resource,
+                                    VotingStrategy votingStrategy) {
+        AuthorizationManagerHelper helper = get();
+        return helper.getAuthorizationManager().authorize(resource,
+                                                          helper.getUser(),
+                                                          votingStrategy);
+    }
+
+    public static boolean authorize(Resource resource,
+                                    ResourceAction action,
+                                    VotingStrategy votingStrategy) {
+        AuthorizationManagerHelper helper = get();
+        return helper.getAuthorizationManager().authorize(resource,
+                                                          action,
+                                                          helper.getUser(),
+                                                          votingStrategy);
+    }
+
+    public static boolean authorize(ResourceType resourceType,
+                                    ResourceAction action,
+                                    VotingStrategy votingStrategy) {
+        AuthorizationManagerHelper helper = get();
+        return helper.getAuthorizationManager().authorize(resourceType,
+                                                          action,
+                                                          helper.getUser(),
+                                                          votingStrategy);
+    }
+
+    public static boolean authorize(String permission) {
+        AuthorizationManagerHelper helper = get();
+        return helper.getAuthorizationManager().authorize(permission,
+                                                          helper.getUser());
+    }
+
+    public static boolean authorize(Permission permission) {
+        AuthorizationManagerHelper helper = get();
+        return helper.getAuthorizationManager().authorize(permission,
+                                                          helper.getUser());
+    }
+
+    public static boolean authorize(String permission,
+                                    VotingStrategy votingStrategy) {
+        AuthorizationManagerHelper helper = get();
+        return helper.getAuthorizationManager().authorize(permission,
+                                                          helper.getUser(),
+                                                          votingStrategy);
+    }
+
+    public static boolean authorize(Permission permission,
+                                    VotingStrategy votingStrategy) {
+        AuthorizationManagerHelper helper = get();
+        return helper.getAuthorizationManager().authorize(permission,
+                                                          helper.getUser(),
+                                                          votingStrategy);
+    }
+
+    public static AuthorizationCheck check(Resource target) {
+        AuthorizationManagerHelper helper = get();
+        return helper.getAuthorizationManager().check(target,
+                                                      helper.getUser());
+    }
+
+    public static AuthorizationCheck check(Resource target,
+                                           VotingStrategy votingStrategy) {
+        AuthorizationManagerHelper helper = get();
+        return helper.getAuthorizationManager().check(target,
+                                                      helper.getUser(),
+                                                      votingStrategy);
+    }
+
+    public static AuthorizationCheck check(String permission) {
+        AuthorizationManagerHelper helper = get();
+        return helper.getAuthorizationManager().check(permission,
+                                                      helper.getUser());
+    }
+
+    public static AuthorizationCheck check(String permission,
+                                           VotingStrategy votingStrategy) {
+        AuthorizationManagerHelper helper = get();
+        return helper.getAuthorizationManager().check(permission,
+                                                      helper.getUser(),
+                                                      votingStrategy);
     }
 
     public AuthorizationManager getAuthorizationManager() {
@@ -53,84 +173,5 @@ public class AuthorizationManagerHelper {
 
     public User getUser() {
         return user;
-    }
-
-    public static boolean authorize(Resource resource) {
-        AuthorizationManagerHelper helper = get();
-        return helper.getAuthorizationManager().authorize(resource, helper.getUser());
-    }
-
-    public static boolean authorize(Resource resource, String action) {
-        AuthorizationManagerHelper helper = get();
-        return helper.getAuthorizationManager().authorize(resource, new DefaultResourceAction(action), helper.getUser());
-    }
-
-    public static boolean authorize(Resource resource, ResourceAction action) {
-        AuthorizationManagerHelper helper = get();
-        return helper.getAuthorizationManager().authorize(resource, action, helper.getUser());
-    }
-
-    public static boolean authorize(String resourceType, String action) {
-        return authorize(new DefaultResourceType(resourceType), new DefaultResourceAction(action));
-    }
-
-    public static boolean authorize(ResourceType resourceType, ResourceAction action) {
-        AuthorizationManagerHelper helper = get();
-        return helper.getAuthorizationManager().authorize(resourceType, action, helper.getUser());
-    }
-
-    public static boolean authorize(Resource resource, VotingStrategy votingStrategy) {
-        AuthorizationManagerHelper helper = get();
-        return helper.getAuthorizationManager().authorize(resource, helper.getUser(), votingStrategy);
-    }
-
-    public static boolean authorize(Resource resource, ResourceAction action, VotingStrategy votingStrategy) {
-        AuthorizationManagerHelper helper = get();
-        return helper.getAuthorizationManager().authorize(resource, action, helper.getUser(), votingStrategy);
-    }
-
-    public static boolean authorize(ResourceType resourceType, ResourceAction action, VotingStrategy votingStrategy) {
-        AuthorizationManagerHelper helper = get();
-        return helper.getAuthorizationManager().authorize(resourceType, action, helper.getUser(), votingStrategy);
-    }
-
-    public static boolean authorize(String permission) {
-        AuthorizationManagerHelper helper = get();
-        return helper.getAuthorizationManager().authorize(permission, helper.getUser());
-    }
-
-    public static boolean authorize(Permission permission) {
-        AuthorizationManagerHelper helper = get();
-        return helper.getAuthorizationManager().authorize(permission, helper.getUser());
-    }
-
-    public static boolean authorize(String permission, VotingStrategy votingStrategy) {
-        AuthorizationManagerHelper helper = get();
-        return helper.getAuthorizationManager().authorize(permission, helper.getUser(), votingStrategy);
-    }
-
-    public static boolean authorize(Permission permission, VotingStrategy votingStrategy) {
-        AuthorizationManagerHelper helper = get();
-        return helper.getAuthorizationManager().authorize(permission, helper.getUser(), votingStrategy);
-    }
-
-    public static AuthorizationCheck check(Resource target) {
-        AuthorizationManagerHelper helper = get();
-        return helper.getAuthorizationManager().check(target, helper.getUser());
-    }
-
-    public static AuthorizationCheck check(Resource target, VotingStrategy votingStrategy) {
-        AuthorizationManagerHelper helper = get();
-        return helper.getAuthorizationManager().check(target, helper.getUser(), votingStrategy);
-    }
-
-    public static AuthorizationCheck check(String permission) {
-        AuthorizationManagerHelper helper = get();
-        return helper.getAuthorizationManager().check(permission, helper.getUser());
-    }
-
-    public static AuthorizationCheck check(String permission, VotingStrategy votingStrategy) {
-        AuthorizationManagerHelper helper = get();
-        return helper.getAuthorizationManager().check(permission, helper.getUser(), votingStrategy);
     }
 }

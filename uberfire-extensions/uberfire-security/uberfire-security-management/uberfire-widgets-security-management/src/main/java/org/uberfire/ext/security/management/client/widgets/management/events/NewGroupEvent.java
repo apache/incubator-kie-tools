@@ -24,5 +24,4 @@ public class NewGroupEvent implements UberFireEvent {
     public String toString() {
         return "NewGroupEvent";
     }
-
 }

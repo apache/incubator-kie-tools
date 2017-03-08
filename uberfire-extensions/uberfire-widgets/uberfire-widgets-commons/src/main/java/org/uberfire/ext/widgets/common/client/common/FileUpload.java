@@ -34,12 +34,8 @@ public class FileUpload
         extends Composite {
 
     private static final String FAKEPATH = "c:\\fakepath\\";
+    private static FileUploadBinder uiBinder = GWT.create(FileUploadBinder.class);
     private final Command command;
-
-    interface FileUploadBinder extends UiBinder<Widget, FileUpload> {
-
-    }
-
     @UiField
     InputGroupAddon uploadButton;
 
@@ -54,51 +50,53 @@ public class FileUpload
 
     private boolean isDisabled = false;
 
-    private static FileUploadBinder uiBinder = GWT.create( FileUploadBinder.class );
-
     public FileUpload() {
-        this( null, false );
+        this(null,
+             false);
     }
 
-    public FileUpload( final Command command ) {
-        this( command, true );
+    public FileUpload(final Command command) {
+        this(command,
+             true);
     }
 
-    public FileUpload( final Command command,
-                       boolean displayUploadButton ) {
-        initWidget( uiBinder.createAndBindUi( this ) );
+    public FileUpload(final Command command,
+                      boolean displayUploadButton) {
+        initWidget(uiBinder.createAndBindUi(this));
         this.command = command;
-        fileText.setReadOnly( true );
+        fileText.setReadOnly(true);
 
-        file.addChangeHandler( getFileChangeHandler() );
+        file.addChangeHandler(getFileChangeHandler());
 
-        chooseButton.addDomHandler( new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                ( (InputElement) file.getElement().cast() ).click();
-            }
-        }, ClickEvent.getType() );
+        chooseButton.addDomHandler(new ClickHandler() {
+                                       @Override
+                                       public void onClick(ClickEvent event) {
+                                           ((InputElement) file.getElement().cast()).click();
+                                       }
+                                   },
+                                   ClickEvent.getType());
 
-        if ( displayUploadButton ) {
-            uploadButton.addDomHandler( new ClickHandler() {
-                @Override
-                public void onClick( ClickEvent event ) {
-                    if ( isDisabled ) {
-                        return;
-                    }
-                    if ( command != null ) {
-                        command.execute();
-                    }
-                }
-            }, ClickEvent.getType() );
+        if (displayUploadButton) {
+            uploadButton.addDomHandler(new ClickHandler() {
+                                           @Override
+                                           public void onClick(ClickEvent event) {
+                                               if (isDisabled) {
+                                                   return;
+                                               }
+                                               if (command != null) {
+                                                   command.execute();
+                                               }
+                                           }
+                                       },
+                                       ClickEvent.getType());
         } else {
             uploadButton.removeFromParent();
             uploadButton = null;
         }
     }
 
-    public void setName( final String name ) {
-        file.setName( name );
+    public void setName(final String name) {
+        file.setName(name);
     }
 
     public void upload() {
@@ -109,30 +107,33 @@ public class FileUpload
         return file.getValue();
     }
 
-    public void setEnabled( boolean b ) {
-        if ( uploadButton == null ) {
+    public void setEnabled(boolean b) {
+        if (uploadButton == null) {
             return;
         }
-        if ( !b ) {
+        if (!b) {
             isDisabled = true;
-            uploadButton.addStyleName( "disabled" );
+            uploadButton.addStyleName("disabled");
         } else {
             isDisabled = false;
-            uploadButton.removeStyleName( "disabled" );
+            uploadButton.removeStyleName("disabled");
         }
     }
 
     protected ChangeHandler getFileChangeHandler() {
         return new ChangeHandler() {
             @Override
-            public void onChange( ChangeEvent event ) {
+            public void onChange(ChangeEvent event) {
                 String fileName = file.getValue();
-                if( fileName.toLowerCase().startsWith( FAKEPATH ) ){
-                    fileName = fileName.substring( FAKEPATH.length() );
+                if (fileName.toLowerCase().startsWith(FAKEPATH)) {
+                    fileName = fileName.substring(FAKEPATH.length());
                 }
-                fileText.setValue( fileName );
+                fileText.setValue(fileName);
             }
         };
     }
 
+    interface FileUploadBinder extends UiBinder<Widget, FileUpload> {
+
+    }
 }

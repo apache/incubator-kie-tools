@@ -32,89 +32,84 @@ import org.uberfire.commons.validation.PortablePreconditions;
  */
 public class WizardPopupFooter extends ModalFooter {
 
-    private static WizardPopupFooterBinder uiBinder = GWT.create( WizardPopupFooterBinder.class );
+    private static WizardPopupFooterBinder uiBinder = GWT.create(WizardPopupFooterBinder.class);
 
     private final Command cmdPreviousButton;
     private final Command cmdNextButton;
     private final Command cmdCancelButton;
     private final Command cmdFinishButton;
+    @UiField
+    Button btnPrevious;
+    @UiField
+    Button btnNext;
+    @UiField
+    Button btnCancel;
+    @UiField
+    Button btnFinish;
+
+    public WizardPopupFooter(final Command cmdPreviousButton,
+                             final Command cmdNextButton,
+                             final Command cmdCancelButton,
+                             final Command cmdFinishButton) {
+        this.cmdPreviousButton = PortablePreconditions.checkNotNull("cmdPreviousButton",
+                                                                    cmdPreviousButton);
+        this.cmdNextButton = PortablePreconditions.checkNotNull("cmdNextButton",
+                                                                cmdNextButton);
+        this.cmdCancelButton = PortablePreconditions.checkNotNull("cmdCancelButton",
+                                                                  cmdCancelButton);
+        this.cmdFinishButton = PortablePreconditions.checkNotNull("cmdFinishButton",
+                                                                  cmdFinishButton);
+        add(uiBinder.createAndBindUi(this));
+    }
+
+    public void enablePreviousButton(final boolean enabled) {
+        btnPrevious.setEnabled(enabled);
+    }
+
+    public void enableNextButton(final boolean enabled) {
+        btnNext.setEnabled(enabled);
+    }
+
+    public void enableFinishButton(final boolean enabled) {
+        btnFinish.setEnabled(enabled);
+        if (enabled) {
+            btnFinish.setType(ButtonType.PRIMARY);
+        } else {
+            btnFinish.setType(ButtonType.DEFAULT);
+        }
+    }
+
+    public void setPreviousButtonFocus(final boolean focused) {
+        btnPrevious.setFocus(focused);
+    }
+
+    public void setNextButtonFocus(final boolean focused) {
+        btnNext.setFocus(focused);
+    }
+
+    @UiHandler("btnPrevious")
+    public void onPreviousButtonClick(final ClickEvent e) {
+        cmdPreviousButton.execute();
+    }
+
+    @UiHandler("btnNext")
+    public void onNextButtonClick(final ClickEvent e) {
+        cmdNextButton.execute();
+    }
+
+    @UiHandler("btnCancel")
+    public void onCancelButtonClick(final ClickEvent e) {
+        cmdCancelButton.execute();
+    }
+
+    @UiHandler("btnFinish")
+    public void onFinishButtonClick(final ClickEvent e) {
+        cmdFinishButton.execute();
+    }
 
     interface WizardPopupFooterBinder
             extends
             UiBinder<Widget, WizardPopupFooter> {
 
     }
-
-    @UiField
-    Button btnPrevious;
-
-    @UiField
-    Button btnNext;
-
-    @UiField
-    Button btnCancel;
-
-    @UiField
-    Button btnFinish;
-
-    public WizardPopupFooter( final Command cmdPreviousButton,
-                              final Command cmdNextButton,
-                              final Command cmdCancelButton,
-                              final Command cmdFinishButton ) {
-        this.cmdPreviousButton = PortablePreconditions.checkNotNull( "cmdPreviousButton",
-                                                                     cmdPreviousButton );
-        this.cmdNextButton = PortablePreconditions.checkNotNull( "cmdNextButton",
-                                                                 cmdNextButton );
-        this.cmdCancelButton = PortablePreconditions.checkNotNull( "cmdCancelButton",
-                                                                   cmdCancelButton );
-        this.cmdFinishButton = PortablePreconditions.checkNotNull( "cmdFinishButton",
-                                                                   cmdFinishButton );
-        add( uiBinder.createAndBindUi( this ) );
-    }
-
-    public void enablePreviousButton( final boolean enabled ) {
-        btnPrevious.setEnabled( enabled );
-    }
-
-    public void enableNextButton( final boolean enabled ) {
-        btnNext.setEnabled( enabled );
-    }
-
-    public void enableFinishButton( final boolean enabled ) {
-        btnFinish.setEnabled( enabled );
-        if ( enabled ) {
-            btnFinish.setType( ButtonType.PRIMARY );
-        } else {
-            btnFinish.setType( ButtonType.DEFAULT );
-        }
-    }
-
-    public void setPreviousButtonFocus( final boolean focused ) {
-        btnPrevious.setFocus( focused );
-    }
-
-    public void setNextButtonFocus( final boolean focused ) {
-        btnNext.setFocus( focused );
-    }
-
-    @UiHandler("btnPrevious")
-    public void onPreviousButtonClick( final ClickEvent e ) {
-        cmdPreviousButton.execute();
-    }
-
-    @UiHandler("btnNext")
-    public void onNextButtonClick( final ClickEvent e ) {
-        cmdNextButton.execute();
-    }
-
-    @UiHandler("btnCancel")
-    public void onCancelButtonClick( final ClickEvent e ) {
-        cmdCancelButton.execute();
-    }
-
-    @UiHandler("btnFinish")
-    public void onFinishButtonClick( final ClickEvent e ) {
-        cmdFinishButton.execute();
-    }
-
 }

@@ -25,8 +25,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class SocialActivitiesEvent implements Serializable {
 
-    public static enum LINK_TYPE { VFS, CUSTOM }
-
     private static final long serialVersionUID = 1L;
     private static SocialActivitiesEvent dummyLastWrittenMarker;
     private Date timestamp;
@@ -34,52 +32,64 @@ public class SocialActivitiesEvent implements Serializable {
     private String type;
     private String linkLabel;
     private String linkTarget;
-    private Map<String, String> linkParams = new HashMap<String, String>( );
+    private Map<String, String> linkParams = new HashMap<String, String>();
     private LINK_TYPE linkType = LINK_TYPE.VFS;
     private String[] additionalInfo;
     private String description;
-
     public SocialActivitiesEvent() {
     }
 
-    public SocialActivitiesEvent( SocialUser socialUser,
-                                  String type,
-                                  Date timestamp ) {
+    public SocialActivitiesEvent(SocialUser socialUser,
+                                 String type,
+                                 Date timestamp) {
         this.socialUser = socialUser;
         this.type = type;
         this.timestamp = timestamp;
     }
 
-    public SocialActivitiesEvent( SocialUser socialUser,
-                                  SocialEventType type,
-                                  Date timestamp ) {
+    public SocialActivitiesEvent(SocialUser socialUser,
+                                 SocialEventType type,
+                                 Date timestamp) {
         this.socialUser = socialUser;
         this.type = type.name();
         this.timestamp = timestamp;
     }
 
-    public SocialActivitiesEvent withLink( String linklabel,
-                                           String linkTarget ) {
+    public static SocialActivitiesEvent getDummyLastWrittenMarker() {
+
+        if (dummyLastWrittenMarker == null) {
+            dummyLastWrittenMarker = new SocialActivitiesEvent(new SocialUser("DUMMY"),
+                                                               DefaultTypes.DUMMY_EVENT,
+                                                               new Date());
+        }
+        return dummyLastWrittenMarker;
+    }
+
+    public SocialActivitiesEvent withLink(String linklabel,
+                                          String linkTarget) {
         this.linkLabel = linklabel;
         this.linkTarget = linkTarget;
         return this;
     }
 
-    public SocialActivitiesEvent withLink( String linklabel,
-            String linkTarget, LINK_TYPE linkType ) {
+    public SocialActivitiesEvent withLink(String linklabel,
+                                          String linkTarget,
+                                          LINK_TYPE linkType) {
         this.linkLabel = linklabel;
         this.linkTarget = linkTarget;
         this.linkType = linkType;
         return this;
     }
 
-    public SocialActivitiesEvent withDescription( String description) {
+    public SocialActivitiesEvent withDescription(String description) {
         this.description = description;
         return this;
     }
 
-    public SocialActivitiesEvent withParam( String name, String value) {
-        linkParams.put( name, value );
+    public SocialActivitiesEvent withParam(String name,
+                                           String value) {
+        linkParams.put(name,
+                       value);
         return this;
     }
 
@@ -107,7 +117,7 @@ public class SocialActivitiesEvent implements Serializable {
         return linkType == LINK_TYPE.VFS;
     }
 
-    public SocialActivitiesEvent withAdicionalInfo( String... adicionalInfo ) {
+    public SocialActivitiesEvent withAdicionalInfo(String... adicionalInfo) {
         this.additionalInfo = adicionalInfo;
         return this;
     }
@@ -122,12 +132,13 @@ public class SocialActivitiesEvent implements Serializable {
 
     public String getAdicionalInfos() {
         String adicionalInfos = "";
-        for ( String info : additionalInfo ) {
+        for (String info : additionalInfo) {
             adicionalInfos += info + " ";
         }
 
-        if ( !adicionalInfos.isEmpty() ) {
-            return adicionalInfos.substring( 0, adicionalInfos.length() - 1 );
+        if (!adicionalInfos.isEmpty()) {
+            return adicionalInfos.substring(0,
+                                            adicionalInfos.length() - 1);
         }
 
         return adicionalInfos;
@@ -157,34 +168,34 @@ public class SocialActivitiesEvent implements Serializable {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof SocialActivitiesEvent ) ) {
+        if (!(o instanceof SocialActivitiesEvent)) {
             return false;
         }
 
         SocialActivitiesEvent that = (SocialActivitiesEvent) o;
 
-        if ( socialUser != null ? !socialUser.equals( that.socialUser ) : that.socialUser != null ) {
+        if (socialUser != null ? !socialUser.equals(that.socialUser) : that.socialUser != null) {
             return false;
         }
-        if ( timestamp != null ? !compareDates( that ) : that.timestamp != null ) {
+        if (timestamp != null ? !compareDates(that) : that.timestamp != null) {
             return false;
         }
-        if ( !type.equals( that.type ) ) {
+        if (!type.equals(that.type)) {
             return false;
         }
         return true;
     }
 
-    private boolean compareDates( SocialActivitiesEvent that ) {
-        if ( that.getTimestamp() == null || that.getTimestamp() == null ) {
+    private boolean compareDates(SocialActivitiesEvent that) {
+        if (that.getTimestamp() == null || that.getTimestamp() == null) {
             return false;
         }
         final long difference = this.getTimestamp().getTime() - that.getTimestamp().getTime();
-        if ( difference > -1000 && difference < 1000 ) {
+        if (difference > -1000 && difference < 1000) {
             return true;
         } else {
             return false;
@@ -194,30 +205,25 @@ public class SocialActivitiesEvent implements Serializable {
     @Override
     public int hashCode() {
         int result = timestamp != null ? timestamp.hashCode() : 0;
-        result = 31 * result + ( socialUser != null ? socialUser.hashCode() : 0 );
-        result = 31 * result + ( type != null ? type.hashCode() : 0 );
+        result = 31 * result + (socialUser != null ? socialUser.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
         return result;
     }
 
     public boolean isDummyEvent() {
-        return type != null && type.equals( DefaultTypes.DUMMY_EVENT.name() );
-    }
-
-    public static SocialActivitiesEvent getDummyLastWrittenMarker() {
-
-        if ( dummyLastWrittenMarker == null ) {
-            dummyLastWrittenMarker = new SocialActivitiesEvent( new SocialUser( "DUMMY" ),
-                                                                DefaultTypes.DUMMY_EVENT,
-                                                                new Date() );
-        }
-        return dummyLastWrittenMarker;
+        return type != null && type.equals(DefaultTypes.DUMMY_EVENT.name());
     }
 
     public String getType() {
         return type;
     }
 
-    public void updateSocialUser( SocialUser updatedSocialUser ) {
+    public void updateSocialUser(SocialUser updatedSocialUser) {
         this.socialUser = updatedSocialUser;
+    }
+
+    public static enum LINK_TYPE {
+        VFS,
+        CUSTOM
     }
 }

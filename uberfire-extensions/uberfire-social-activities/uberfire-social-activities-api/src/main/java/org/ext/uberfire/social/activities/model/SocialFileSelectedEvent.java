@@ -24,9 +24,11 @@ public class SocialFileSelectedEvent {
 
     private String eventType;
 
-    public SocialFileSelectedEvent(){}
+    public SocialFileSelectedEvent() {
+    }
 
-    public SocialFileSelectedEvent(String eventType, String uri){
+    public SocialFileSelectedEvent(String eventType,
+                                   String uri) {
         this.eventType = eventType;
         this.uri = uri;
     }

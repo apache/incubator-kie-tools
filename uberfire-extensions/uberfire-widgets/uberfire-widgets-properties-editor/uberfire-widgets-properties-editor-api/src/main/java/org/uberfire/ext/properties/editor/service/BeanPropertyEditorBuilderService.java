@@ -22,8 +22,8 @@ import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 @Remote
 public interface BeanPropertyEditorBuilderService {
 
-    PropertyEditorCategory extract( String fqcn );
+    PropertyEditorCategory extract(String fqcn);
 
-    PropertyEditorCategory extract( String fqcn,
-                                    Object instance );
+    PropertyEditorCategory extract(String fqcn,
+                                   Object instance);
 }

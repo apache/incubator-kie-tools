@@ -20,14 +20,15 @@ import com.google.gwt.i18n.client.ConstantsWithLookup;
 
 /**
  * <p>UF Security client constants.</p>
- *
- * @since 0.8.0 
+ * @since 0.8.0
  */
 public interface UsersManagementClientConstants extends ConstantsWithLookup {
 
-    UsersManagementClientConstants INSTANCE = GWT.create( UsersManagementClientConstants.class );
+    UsersManagementClientConstants INSTANCE = GWT.create(UsersManagementClientConstants.class);
 
     String user_validation_nameNotEmpty();
+
     String group_validation_nameNotEmpty();
+
     String userSystemManagerInitializationError();
 }

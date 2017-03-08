@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.security.management.client.widgets.management;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -29,11 +31,8 @@ import org.gwtbootstrap3.client.ui.Legend;
 import org.gwtbootstrap3.client.ui.TextBox;
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
 
-import javax.enterprise.context.Dependent;
-
 /**
  * <p>View implementation for creating new entities.</p>
- *
  * @since 0.8.0
  */
 @Dependent
@@ -41,32 +40,21 @@ public class CreateEntityView extends Composite
         implements
         CreateEntity.View {
 
-    interface CreateEntityViewBinder
-            extends
-            UiBinder<Widget, CreateEntityView> {
-
-    }
-
     private static CreateEntityViewBinder uiBinder = GWT.create(CreateEntityViewBinder.class);
-
     @UiField
     Form form;
-
     @UiField
     Legend formLegend;
-
     @UiField
     FormGroup formGroup;
-
     @UiField
     TextBox identifierBox;
-
     private CreateEntity presenter;
 
     @Override
     public void init(final CreateEntity presenter) {
         this.presenter = presenter;
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
         identifierBox.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
             public void onValueChange(final ValueChangeEvent<String> valueChangeEvent) {
@@ -76,7 +64,8 @@ public class CreateEntityView extends Composite
     }
 
     @Override
-    public void show(String legend, String placeholder) {
+    public void show(String legend,
+                     String placeholder) {
         this.formLegend.setText(legend != null ? legend : "");
         identifierBox.setPlaceholder(placeholder != null ? placeholder : "");
     }
@@ -89,5 +78,11 @@ public class CreateEntityView extends Composite
     @Override
     public void clear() {
         form.reset();
+    }
+
+    interface CreateEntityViewBinder
+            extends
+            UiBinder<Widget, CreateEntityView> {
+
     }
 }

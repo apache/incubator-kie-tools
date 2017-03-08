@@ -38,8 +38,7 @@ public class ShadowedAuthorizationService implements AuthorizationService {
     }
 
     @Override
-    public void savePolicy( AuthorizationPolicy policy ) {
+    public void savePolicy(AuthorizationPolicy policy) {
         this.policy = policy;
     }
-
 }

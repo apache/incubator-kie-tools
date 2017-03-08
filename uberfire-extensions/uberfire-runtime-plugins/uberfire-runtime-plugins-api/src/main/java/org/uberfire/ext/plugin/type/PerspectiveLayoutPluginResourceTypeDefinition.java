@@ -35,5 +35,4 @@ public class PerspectiveLayoutPluginResourceTypeDefinition extends BasePluginRes
     public String getSuffix() {
         return "/" + PluginType.PERSPECTIVE_LAYOUT.toString().toLowerCase() + ".plugin";
     }
-
 }

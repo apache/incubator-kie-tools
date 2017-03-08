@@ -16,9 +16,13 @@
 
 package org.uberfire.ext.wires.client.social.screens;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import org.ext.uberfire.social.activities.client.widgets.timeline.regular.model.SocialTimelineWidgetModel;
 import org.ext.uberfire.social.activities.model.DefaultTypes;
-import org.ext.uberfire.social.activities.model.SocialPaged;
 import org.ext.uberfire.social.activities.model.SocialUser;
 import org.ext.uberfire.social.activities.service.SocialUserRepositoryAPI;
 import org.jboss.errai.common.client.api.Caller;
@@ -32,36 +36,21 @@ import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.wires.shared.social.ShowcaseSocialUserEvent;
 import org.uberfire.lifecycle.OnOpen;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 @ApplicationScoped
-@WorkbenchScreen( identifier = "SocialTimelinePresenter" )
+@WorkbenchScreen(identifier = "SocialTimelinePresenter")
 public class SocialTimelinePresenter {
 
-    public interface View extends UberElement<SocialTimelinePresenter> {
-
-        void setupWidget( SocialTimelineWidgetModel model );
-
-    }
-
+    @Inject
+    PlaceManager placeManager;
     @Inject
     private View view;
 
     @Inject
     private User loggedUser;
-
-    @Inject
-    PlaceManager placeManager;
-
     @Inject
     private Caller<SocialUserRepositoryAPI> socialUserRepositoryAPI;
-
     @Inject
     private Event<ShowcaseSocialUserEvent> event;
-
 
     @PostConstruct
     public void init() {
@@ -73,21 +62,23 @@ public class SocialTimelinePresenter {
     }
 
     public void fireEvent() {
-        event.fire( new ShowcaseSocialUserEvent( loggedUser.getIdentifier() ) );
+        event.fire(new ShowcaseSocialUserEvent(loggedUser.getIdentifier()));
         updateTimeline();
     }
 
     public void updateTimeline() {
 
-        socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
-            public void callback( SocialUser socialUser ) {
-                final SocialTimelineWidgetModel model = new SocialTimelineWidgetModel( DefaultTypes.DUMMY_EVENT,
-                                                                                       socialUser,
-                                                                                       placeManager )
-                        .droolsQuery( null, "anyrule", null );
-                view.setupWidget( model );
+        socialUserRepositoryAPI.call(new RemoteCallback<SocialUser>() {
+            public void callback(SocialUser socialUser) {
+                final SocialTimelineWidgetModel model = new SocialTimelineWidgetModel(DefaultTypes.DUMMY_EVENT,
+                                                                                      socialUser,
+                                                                                      placeManager)
+                        .droolsQuery(null,
+                                     "anyrule",
+                                     null);
+                view.setupWidget(model);
             }
-        } ).findSocialUser( loggedUser.getIdentifier() );
+        }).findSocialUser(loggedUser.getIdentifier());
     }
 
     @WorkbenchPartTitle
@@ -100,4 +91,8 @@ public class SocialTimelinePresenter {
         return view;
     }
 
+    public interface View extends UberElement<SocialTimelinePresenter> {
+
+        void setupWidget(SocialTimelineWidgetModel model);
+    }
 }

@@ -30,14 +30,14 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 public class StandaloneEditorPerspective extends AbstractWorkbenchPerspectiveActivity {
 
     @Inject
-    public StandaloneEditorPerspective( final PlaceManager placeManager ) {
-        super( placeManager );
+    public StandaloneEditorPerspective(final PlaceManager placeManager) {
+        super(placeManager);
     }
 
     @Override
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
-        final PerspectiveDefinition p = new PerspectiveDefinitionImpl( AdaptiveWorkbenchPanelPresenter.class.getName() );
-        p.setName( "Standalone Editor Perspective" );
+        final PerspectiveDefinition p = new PerspectiveDefinitionImpl(AdaptiveWorkbenchPanelPresenter.class.getName());
+        p.setName("Standalone Editor Perspective");
         return p;
     }
 
@@ -45,5 +45,4 @@ public class StandaloneEditorPerspective extends AbstractWorkbenchPerspectiveAct
     public String getIdentifier() {
         return "StandaloneEditorPerspective";
     }
-    
 }

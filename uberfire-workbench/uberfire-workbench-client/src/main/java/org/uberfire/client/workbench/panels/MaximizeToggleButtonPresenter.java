@@ -32,24 +32,10 @@ public class MaximizeToggleButtonPresenter {
     private Command maximizeCommand;
     private Command unmaximizeCommand;
 
-    public interface View extends UberView<MaximizeToggleButtonPresenter> {
-
-        /**
-         * Changes the maximized appearance of the button. When maximized is true, the button should show an
-         * "unmaximize" icon; when maximized is false, the button should show a "maximize" icon.
-         */
-        void setMaximized( boolean maximized );
-
-        /**
-         * Shows or hides this view's widget.
-         */
-        void setVisible( boolean b );
-
-    }
-
-    public MaximizeToggleButtonPresenter( View view ) {
-        this.view = PortablePreconditions.checkNotNull( "view", view );
-        view.init( this );
+    public MaximizeToggleButtonPresenter(View view) {
+        this.view = PortablePreconditions.checkNotNull("view",
+                                                       view);
+        view.init(this);
     }
 
     /**
@@ -62,7 +48,7 @@ public class MaximizeToggleButtonPresenter {
     /**
      * Sets the command to invoke upon each transition from unmaximized to maximized.
      */
-    public void setMaximizeCommand( Command maximizeCommand ) {
+    public void setMaximizeCommand(Command maximizeCommand) {
         this.maximizeCommand = maximizeCommand;
     }
 
@@ -76,7 +62,7 @@ public class MaximizeToggleButtonPresenter {
     /**
      * Sets the command to invoke upon each transition from maximized to unmaximized.
      */
-    public void setUnmaximizeCommand( Command unmaximizeCommand ) {
+    public void setUnmaximizeCommand(Command unmaximizeCommand) {
         this.unmaximizeCommand = unmaximizeCommand;
     }
 
@@ -92,12 +78,11 @@ public class MaximizeToggleButtonPresenter {
      * Changes the maximized state of this button <i>without</i> calling the commands. This can be used to notify the
      * button that some external process has already maximized the thing in question. It is permissible but not necessary
      * to call this method from the maximizeCommand and unmaximizeCommand.
-     *
      * @param maximized the new maximized state to set.
      */
-    public void setMaximized( boolean maximized ) {
+    public void setMaximized(boolean maximized) {
         this.maximized = maximized;
-        view.setMaximized( maximized );
+        view.setMaximized(maximized);
     }
 
     /**
@@ -105,13 +90,13 @@ public class MaximizeToggleButtonPresenter {
      */
     public void handleClick() {
         final boolean wasMaximized = maximized;
-        setMaximized( !wasMaximized );
-        if ( wasMaximized ) {
-            if ( unmaximizeCommand != null ) {
+        setMaximized(!wasMaximized);
+        if (wasMaximized) {
+            if (unmaximizeCommand != null) {
                 unmaximizeCommand.execute();
             }
         } else {
-            if ( maximizeCommand != null ) {
+            if (maximizeCommand != null) {
                 maximizeCommand.execute();
             }
         }
@@ -125,7 +110,21 @@ public class MaximizeToggleButtonPresenter {
         return view;
     }
 
-    public void setVisible( boolean b ) {
-        view.setVisible( b );
+    public void setVisible(boolean b) {
+        view.setVisible(b);
+    }
+
+    public interface View extends UberView<MaximizeToggleButtonPresenter> {
+
+        /**
+         * Changes the maximized appearance of the button. When maximized is true, the button should show an
+         * "unmaximize" icon; when maximized is false, the button should show a "maximize" icon.
+         */
+        void setMaximized(boolean maximized);
+
+        /**
+         * Shows or hides this view's widget.
+         */
+        void setVisible(boolean b);
     }
 }

@@ -22,14 +22,13 @@ import org.uberfire.ext.metadata.model.KObjectKey;
 
 public interface IndexManager extends Disposable {
 
-    boolean contains( final KCluster cluster );
+    boolean contains(final KCluster cluster);
 
-    Index indexOf( final KObjectKey object );
+    Index indexOf(final KObjectKey object);
 
-    KCluster kcluster( final KObjectKey object );
+    KCluster kcluster(final KObjectKey object);
 
-    void delete( final KCluster cluster );
+    void delete(final KCluster cluster);
 
-    Index get( final KCluster cluster );
-
+    Index get(final KCluster cluster);
 }

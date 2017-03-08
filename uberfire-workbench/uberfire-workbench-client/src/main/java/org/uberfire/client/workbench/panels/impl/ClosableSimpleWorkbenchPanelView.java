@@ -22,7 +22,7 @@ import javax.inject.Named;
  * A Workbench panel that can contain WorkbenchParts.
  */
 @Dependent
-@Named( "ClosableSimpleWorkbenchPanelView" )
+@Named("ClosableSimpleWorkbenchPanelView")
 public class ClosableSimpleWorkbenchPanelView extends AbstractSimpleWorkbenchPanelView<ClosableSimpleWorkbenchPanelPresenter> {
 
     @Override

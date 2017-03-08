@@ -22,7 +22,7 @@ import org.jboss.errai.common.client.api.IsElement;
  * Interface to inject a Presenter into a View for MVP-based Element
  * implementations. Due to limitations with CDI it is not possible to {@code @Inject}
  * the correct instance of a Presenter into a View.
- * <p/>
+ * <p>
  * Developers wishing to implement MVP-based Elements are encouraged to have
  * their View implement this interface if they require access to the appropriate
  * Presenter.
@@ -30,5 +30,5 @@ import org.jboss.errai.common.client.api.IsElement;
  */
 public interface UberElement<T> extends IsElement {
 
-    void init( T presenter );
+    void init(T presenter);
 }

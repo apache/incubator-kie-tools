@@ -25,8 +25,8 @@ public class GridWidgetConnector {
     private GridColumn<?> sourceColumn;
     private GridColumn<?> targetColumn;
 
-    public GridWidgetConnector( final GridColumn<?> sourceColumn,
-                                final GridColumn<?> targetColumn ) {
+    public GridWidgetConnector(final GridColumn<?> sourceColumn,
+                               final GridColumn<?> targetColumn) {
         this.sourceColumn = sourceColumn;
         this.targetColumn = targetColumn;
     }
@@ -48,20 +48,20 @@ public class GridWidgetConnector {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         GridWidgetConnector connector = (GridWidgetConnector) o;
 
-        if ( !sourceColumn.equals( connector.sourceColumn ) ) {
+        if (!sourceColumn.equals(connector.sourceColumn)) {
             return false;
         }
-        if ( !targetColumn.equals( connector.targetColumn ) ) {
+        if (!targetColumn.equals(connector.targetColumn)) {
             return false;
         }
 
@@ -76,5 +76,4 @@ public class GridWidgetConnector {
         result = ~~result;
         return result;
     }
-
 }

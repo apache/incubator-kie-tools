@@ -29,20 +29,23 @@ public class StencilActionBuilder {
     private static final int HEIGHT_PICTURE = 16;
     private static final int WIDTH_PICTURE = 16;
 
-    public ActionShape build( final NodeMouseClickHandler clickHandler,
-                              final ImageResource img ) {
-        final Rectangle bounding = getBoundingImage( clickHandler );
+    public ActionShape build(final NodeMouseClickHandler clickHandler,
+                             final ImageResource img) {
+        final Rectangle bounding = getBoundingImage(clickHandler);
         final ActionShape shape = new ActionShape();
-        shape.setBounding( bounding );
-        new Picture( img, shape::setPicture, WIDTH_PICTURE, HEIGHT_PICTURE, false );
+        shape.setBounding(bounding);
+        new Picture(img,
+                    shape::setPicture,
+                    WIDTH_PICTURE,
+                    HEIGHT_PICTURE,
+                    false);
         return shape;
     }
 
-    private Rectangle getBoundingImage( final NodeMouseClickHandler clickHandler ) {
-        final Rectangle bounding = new Rectangle( WIDTH_BOUNDING,
-                                                  HEIGHT_BOUNDING ).setX( 0 ).setY( 0 ).setStrokeColor( ColorName.WHITE.getValue() );
-        bounding.addNodeMouseClickHandler( clickHandler );
+    private Rectangle getBoundingImage(final NodeMouseClickHandler clickHandler) {
+        final Rectangle bounding = new Rectangle(WIDTH_BOUNDING,
+                                                 HEIGHT_BOUNDING).setX(0).setY(0).setStrokeColor(ColorName.WHITE.getValue());
+        bounding.addNodeMouseClickHandler(clickHandler);
         return bounding;
     }
-
 }

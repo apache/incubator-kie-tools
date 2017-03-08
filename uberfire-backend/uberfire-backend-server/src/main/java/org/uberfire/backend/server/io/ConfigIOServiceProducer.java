@@ -43,7 +43,7 @@ public class ConfigIOServiceProducer {
     @Inject
     @Named("clusterServiceFactory")
     private ClusterServiceFactory clusterServiceFactory;
-    
+
     @Inject
     @IOSecurityAuth
     private Instance<AuthenticationService> applicationProvidedConfigIOAuthService;
@@ -51,15 +51,24 @@ public class ConfigIOServiceProducer {
     private IOService configIOService;
     private FileSystem configFileSystem;
 
+    public static ConfigIOServiceProducer getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException(ConfigIOServiceProducer.class.getName() + " not initialized on startup");
+        }
+        return instance;
+    }
+
     @PostConstruct
     public void setup() {
         instance = this;
-        if ( clusterServiceFactory == null ) {
-            configIOService = new IOServiceNio2WrapperImpl( "config" );
+        if (clusterServiceFactory == null) {
+            configIOService = new IOServiceNio2WrapperImpl("config");
         } else {
-            configIOService = new IOServiceClusterImpl( new IOServiceNio2WrapperImpl( "config" ), clusterServiceFactory, clusterServiceFactory.isAutoStart() );
+            configIOService = new IOServiceClusterImpl(new IOServiceNio2WrapperImpl("config"),
+                                                       clusterServiceFactory,
+                                                       clusterServiceFactory.isAutoStart());
         }
-        configFileSystem = (FileSystem) PriorityDisposableRegistry.get( "systemFS" );
+        configFileSystem = (FileSystem) PriorityDisposableRegistry.get("systemFS");
     }
 
     public void destroy() {
@@ -73,17 +82,9 @@ public class ConfigIOServiceProducer {
     }
 
     public FileSystem configFileSystem() {
-        if ( configFileSystem == null ) {
-            configFileSystem = (FileSystem) PriorityDisposableRegistry.get( "systemFS" );
+        if (configFileSystem == null) {
+            configFileSystem = (FileSystem) PriorityDisposableRegistry.get("systemFS");
         }
         return configFileSystem;
     }
-
-    public static ConfigIOServiceProducer getInstance() {
-        if ( instance == null ) {
-            throw new IllegalStateException( ConfigIOServiceProducer.class.getName() + " not initialized on startup" );
-        }
-        return instance;
-    }
-
 }

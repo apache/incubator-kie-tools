@@ -39,157 +39,156 @@ public class GridTransformMediatorTest {
 
     @Before
     public void setup() {
-        this.restriction = new GridTransformMediator( grid );
+        this.restriction = new GridTransformMediator(grid);
     }
 
     @Test
     public void testGridNarrowerThanVisibleBounds() {
-        when( grid.getX() ).thenReturn( 10.0 );
-        when( grid.getY() ).thenReturn( 0.0 );
-        when( grid.getWidth() ).thenReturn( 100.0 );
-        when( grid.getHeight() ).thenReturn( 100.0 );
+        when(grid.getX()).thenReturn(10.0);
+        when(grid.getY()).thenReturn(0.0);
+        when(grid.getWidth()).thenReturn(100.0);
+        when(grid.getHeight()).thenReturn(100.0);
 
-        final Bounds visibleBounds = new BaseBounds( -500,
-                                                     -500,
-                                                     1000,
-                                                     1000 );
-        final Transform test = new Transform().translate( 1200.0,
-                                                          0.0 );
-        final Transform result = restriction.adjust( test,
-                                                     visibleBounds );
+        final Bounds visibleBounds = new BaseBounds(-500,
+                                                    -500,
+                                                    1000,
+                                                    1000);
+        final Transform test = new Transform().translate(1200.0,
+                                                         0.0);
+        final Transform result = restriction.adjust(test,
+                                                    visibleBounds);
 
-        assertNotNull( result );
-        assertEquals( -10.0,
-                      result.getTranslateX(),
-                      0.0 );
-        assertEquals( 0.0,
-                      result.getTranslateY(),
-                      0.0 );
+        assertNotNull(result);
+        assertEquals(-10.0,
+                     result.getTranslateX(),
+                     0.0);
+        assertEquals(0.0,
+                     result.getTranslateY(),
+                     0.0);
     }
 
     @Test
     public void testGridShorterThanVisibleBounds() {
-        when( grid.getX() ).thenReturn( 0.0 );
-        when( grid.getY() ).thenReturn( 10.0 );
-        when( grid.getWidth() ).thenReturn( 100.0 );
-        when( grid.getHeight() ).thenReturn( 100.0 );
+        when(grid.getX()).thenReturn(0.0);
+        when(grid.getY()).thenReturn(10.0);
+        when(grid.getWidth()).thenReturn(100.0);
+        when(grid.getHeight()).thenReturn(100.0);
 
-        final Bounds visibleBounds = new BaseBounds( -500,
-                                                     -500,
-                                                     1000,
-                                                     1000 );
-        final Transform test = new Transform().translate( 1200.0,
-                                                          0.0 );
-        final Transform result = restriction.adjust( test,
-                                                     visibleBounds );
+        final Bounds visibleBounds = new BaseBounds(-500,
+                                                    -500,
+                                                    1000,
+                                                    1000);
+        final Transform test = new Transform().translate(1200.0,
+                                                         0.0);
+        final Transform result = restriction.adjust(test,
+                                                    visibleBounds);
 
-        assertNotNull( result );
-        assertEquals( 0.0,
-                      result.getTranslateX(),
-                      0.0 );
-        assertEquals( -10.0,
-                      result.getTranslateY(),
-                      0.0 );
+        assertNotNull(result);
+        assertEquals(0.0,
+                     result.getTranslateX(),
+                     0.0);
+        assertEquals(-10.0,
+                     result.getTranslateY(),
+                     0.0);
     }
 
     @Test
     public void testGridWiderThanVisibleBoundsLeftEdge() {
-        when( grid.getX() ).thenReturn( 10.0 );
-        when( grid.getY() ).thenReturn( 0.0 );
-        when( grid.getWidth() ).thenReturn( 1100.0 );
-        when( grid.getHeight() ).thenReturn( 100.0 );
+        when(grid.getX()).thenReturn(10.0);
+        when(grid.getY()).thenReturn(0.0);
+        when(grid.getWidth()).thenReturn(1100.0);
+        when(grid.getHeight()).thenReturn(100.0);
 
-        final Bounds visibleBounds = new BaseBounds( -500,
-                                                     -500,
-                                                     1000,
-                                                     1000 );
-        final Transform test = new Transform().translate( 1200.0,
-                                                          0.0 );
-        final Transform result = restriction.adjust( test,
-                                                     visibleBounds );
+        final Bounds visibleBounds = new BaseBounds(-500,
+                                                    -500,
+                                                    1000,
+                                                    1000);
+        final Transform test = new Transform().translate(1200.0,
+                                                         0.0);
+        final Transform result = restriction.adjust(test,
+                                                    visibleBounds);
 
-        assertNotNull( result );
-        assertEquals( -10.0,
-                      result.getTranslateX(),
-                      0.0 );
-        assertEquals( 0.0,
-                      result.getTranslateY(),
-                      0.0 );
+        assertNotNull(result);
+        assertEquals(-10.0,
+                     result.getTranslateX(),
+                     0.0);
+        assertEquals(0.0,
+                     result.getTranslateY(),
+                     0.0);
     }
 
     @Test
     public void testGridWiderThanVisibleBoundsRightEdge() {
-        when( grid.getX() ).thenReturn( 10.0 );
-        when( grid.getY() ).thenReturn( 0.0 );
-        when( grid.getWidth() ).thenReturn( 1100.0 );
-        when( grid.getHeight() ).thenReturn( 100.0 );
+        when(grid.getX()).thenReturn(10.0);
+        when(grid.getY()).thenReturn(0.0);
+        when(grid.getWidth()).thenReturn(1100.0);
+        when(grid.getHeight()).thenReturn(100.0);
 
-        final Bounds visibleBounds = new BaseBounds( -500,
-                                                     -500,
-                                                     1000,
-                                                     1000 );
-        final Transform test = new Transform().translate( -200.0,
-                                                          0.0 );
-        final Transform result = restriction.adjust( test,
-                                                     visibleBounds );
+        final Bounds visibleBounds = new BaseBounds(-500,
+                                                    -500,
+                                                    1000,
+                                                    1000);
+        final Transform test = new Transform().translate(-200.0,
+                                                         0.0);
+        final Transform result = restriction.adjust(test,
+                                                    visibleBounds);
 
-        assertNotNull( result );
-        assertEquals( -110.0,
-                      result.getTranslateX(),
-                      0.0 );
-        assertEquals( 0.0,
-                      result.getTranslateY(),
-                      0.0 );
+        assertNotNull(result);
+        assertEquals(-110.0,
+                     result.getTranslateX(),
+                     0.0);
+        assertEquals(0.0,
+                     result.getTranslateY(),
+                     0.0);
     }
 
     @Test
     public void testGridTallerThanVisibleBoundsTopEdge() {
-        when( grid.getX() ).thenReturn( 0.0 );
-        when( grid.getY() ).thenReturn( 10.0 );
-        when( grid.getWidth() ).thenReturn( 100.0 );
-        when( grid.getHeight() ).thenReturn( 1100.0 );
+        when(grid.getX()).thenReturn(0.0);
+        when(grid.getY()).thenReturn(10.0);
+        when(grid.getWidth()).thenReturn(100.0);
+        when(grid.getHeight()).thenReturn(1100.0);
 
-        final Bounds visibleBounds = new BaseBounds( -500,
-                                                     -500,
-                                                     1000,
-                                                     1000 );
-        final Transform test = new Transform().translate( 0.0,
-                                                          1200.0 );
-        final Transform result = restriction.adjust( test,
-                                                     visibleBounds );
+        final Bounds visibleBounds = new BaseBounds(-500,
+                                                    -500,
+                                                    1000,
+                                                    1000);
+        final Transform test = new Transform().translate(0.0,
+                                                         1200.0);
+        final Transform result = restriction.adjust(test,
+                                                    visibleBounds);
 
-        assertNotNull( result );
-        assertEquals( 0.0,
-                      result.getTranslateX(),
-                      0.0 );
-        assertEquals( -10.0,
-                      result.getTranslateY(),
-                      0.0 );
+        assertNotNull(result);
+        assertEquals(0.0,
+                     result.getTranslateX(),
+                     0.0);
+        assertEquals(-10.0,
+                     result.getTranslateY(),
+                     0.0);
     }
 
     @Test
     public void testGridTallerThanVisibleBoundsBottomEdge() {
-        when( grid.getX() ).thenReturn( 0.0 );
-        when( grid.getY() ).thenReturn( 10.0 );
-        when( grid.getWidth() ).thenReturn( 100.0 );
-        when( grid.getHeight() ).thenReturn( 1100.0 );
+        when(grid.getX()).thenReturn(0.0);
+        when(grid.getY()).thenReturn(10.0);
+        when(grid.getWidth()).thenReturn(100.0);
+        when(grid.getHeight()).thenReturn(1100.0);
 
-        final Bounds visibleBounds = new BaseBounds( -500,
-                                                     -500,
-                                                     1000,
-                                                     1000 );
-        final Transform test = new Transform().translate( 0.0,
-                                                          -200.0 );
-        final Transform result = restriction.adjust( test,
-                                                     visibleBounds );
+        final Bounds visibleBounds = new BaseBounds(-500,
+                                                    -500,
+                                                    1000,
+                                                    1000);
+        final Transform test = new Transform().translate(0.0,
+                                                         -200.0);
+        final Transform result = restriction.adjust(test,
+                                                    visibleBounds);
 
-        assertNotNull( result );
-        assertEquals( 0.0,
-                      result.getTranslateX(),
-                      0.0 );
-        assertEquals( -110.0,
-                      result.getTranslateY(),
-                      0.0 );
+        assertNotNull(result);
+        assertEquals(0.0,
+                     result.getTranslateX(),
+                     0.0);
+        assertEquals(-110.0,
+                     result.getTranslateY(),
+                     0.0);
     }
-
 }

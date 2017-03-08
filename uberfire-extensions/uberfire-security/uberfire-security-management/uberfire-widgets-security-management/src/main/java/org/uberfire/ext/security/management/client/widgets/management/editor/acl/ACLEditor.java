@@ -39,19 +39,11 @@ import org.uberfire.security.impl.authz.DefaultPermissionCollection;
 @Dependent
 public class ACLEditor implements IsWidget {
 
-    public interface View extends UberView<ACLEditor> {
-
-        void clear();
-
-        void addRootNodeWidget(IsWidget rootNodeWidget);
-    }
-
     View view;
     PermissionWidgetFactory nodeWidgetFactory;
     PermissionTreeFactory permissionTreeFactory;
     PermissionTree permissionTree;
     List<PermissionNodeEditor> permissionNodeEditorList = new ArrayList<>();
-
     @Inject
     public ACLEditor(View view,
                      PermissionWidgetFactory nodeWidgetFactory,
@@ -63,7 +55,7 @@ public class ACLEditor implements IsWidget {
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
@@ -73,17 +65,20 @@ public class ACLEditor implements IsWidget {
 
     public PermissionCollection getPermissions() {
         PermissionCollection pc = new DefaultPermissionCollection();
-        collect(pc, permissionNodeEditorList);
+        collect(pc,
+                permissionNodeEditorList);
         return pc;
     }
 
-    private void collect(PermissionCollection pc, List<PermissionNodeEditor> nodeEditors) {
+    private void collect(PermissionCollection pc,
+                         List<PermissionNodeEditor> nodeEditors) {
         if (nodeEditors != null) {
             for (PermissionNodeEditor nodeEditor : nodeEditors) {
                 for (Permission p : nodeEditor.getPermissionNode().getPermissionList()) {
                     pc.add(p);
                 }
-                collect(pc, nodeEditor.getChildEditors());
+                collect(pc,
+                        nodeEditor.getChildEditors());
             }
         }
     }
@@ -109,5 +104,12 @@ public class ACLEditor implements IsWidget {
             view.addRootNodeWidget(rootNodeEditor);
             permissionNodeEditorList.add(rootNodeEditor);
         }
+    }
+
+    public interface View extends UberView<ACLEditor> {
+
+        void clear();
+
+        void addRootNodeWidget(IsWidget rootNodeWidget);
     }
 }

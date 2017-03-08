@@ -32,11 +32,11 @@ public class GridHeaderColumnRenderContext {
     private final GridData model;
     private final GridRenderer renderer;
 
-    public GridHeaderColumnRenderContext( final List<GridColumn<?>> allColumns,
-                                          final List<GridColumn<?>> blockColumns,
-                                          final int columnIndex,
-                                          final GridData model,
-                                          final GridRenderer renderer ) {
+    public GridHeaderColumnRenderContext(final List<GridColumn<?>> allColumns,
+                                         final List<GridColumn<?>> blockColumns,
+                                         final int columnIndex,
+                                         final GridData model,
+                                         final GridRenderer renderer) {
         this.allColumns = allColumns;
         this.blockColumns = blockColumns;
         this.columnIndex = columnIndex;
@@ -83,5 +83,4 @@ public class GridHeaderColumnRenderContext {
     public GridRenderer getRenderer() {
         return renderer;
     }
-
 }

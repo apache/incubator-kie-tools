@@ -29,96 +29,94 @@ import static org.junit.Assert.*;
 @RunWith(LienzoMockitoTestRunner.class)
 public class BoundaryTransformMediatorTest {
 
+    private final Bounds bounds = new BaseBounds(-1000,
+                                                 -1000,
+                                                 2000,
+                                                 2000);
     private BoundaryTransformMediator restriction;
-
-    private final Bounds bounds = new BaseBounds( -1000,
-                                                  -1000,
-                                                  2000,
-                                                  2000 );
 
     @Before
     public void setup() {
-        this.restriction = new BoundaryTransformMediator( bounds );
+        this.restriction = new BoundaryTransformMediator(bounds);
     }
 
     @Test
     public void testLeftEdge() {
-        final Bounds visibleBounds = new BaseBounds( -500,
-                                                     -500,
-                                                     1000,
-                                                     1000 );
-        final Transform test = new Transform().translate( 1200.0,
-                                                          0.0 );
-        final Transform result = restriction.adjust( test,
-                                                     visibleBounds );
+        final Bounds visibleBounds = new BaseBounds(-500,
+                                                    -500,
+                                                    1000,
+                                                    1000);
+        final Transform test = new Transform().translate(1200.0,
+                                                         0.0);
+        final Transform result = restriction.adjust(test,
+                                                    visibleBounds);
 
-        assertNotNull( result );
-        assertEquals( 1000.0,
-                      result.getTranslateX(),
-                      0.0 );
-        assertEquals( 0.0,
-                      result.getTranslateY(),
-                      0.0 );
+        assertNotNull(result);
+        assertEquals(1000.0,
+                     result.getTranslateX(),
+                     0.0);
+        assertEquals(0.0,
+                     result.getTranslateY(),
+                     0.0);
     }
 
     @Test
     public void testRightEdge() {
-        final Bounds visibleBounds = new BaseBounds( -500,
-                                                     -500,
-                                                     1000,
-                                                     1000 );
-        final Transform test = new Transform().translate( -200.0,
-                                                          0.0 );
-        final Transform result = restriction.adjust( test,
-                                                     visibleBounds );
+        final Bounds visibleBounds = new BaseBounds(-500,
+                                                    -500,
+                                                    1000,
+                                                    1000);
+        final Transform test = new Transform().translate(-200.0,
+                                                         0.0);
+        final Transform result = restriction.adjust(test,
+                                                    visibleBounds);
 
-        assertNotNull( result );
-        assertEquals( 0.0,
-                      result.getTranslateX(),
-                      0.0 );
-        assertEquals( 0.0,
-                      result.getTranslateY(),
-                      0.0 );
+        assertNotNull(result);
+        assertEquals(0.0,
+                     result.getTranslateX(),
+                     0.0);
+        assertEquals(0.0,
+                     result.getTranslateY(),
+                     0.0);
     }
 
     @Test
     public void testTopEdge() {
-        final Bounds visibleBounds = new BaseBounds( -500,
-                                                     -500,
-                                                     1000,
-                                                     1000 );
-        final Transform test = new Transform().translate( 0.0,
-                                                          1200.0 );
-        final Transform result = restriction.adjust( test,
-                                                     visibleBounds );
+        final Bounds visibleBounds = new BaseBounds(-500,
+                                                    -500,
+                                                    1000,
+                                                    1000);
+        final Transform test = new Transform().translate(0.0,
+                                                         1200.0);
+        final Transform result = restriction.adjust(test,
+                                                    visibleBounds);
 
-        assertNotNull( result );
-        assertEquals( 0.0,
-                      result.getTranslateX(),
-                      0.0 );
-        assertEquals( 1000.0,
-                      result.getTranslateY(),
-                      0.0 );
+        assertNotNull(result);
+        assertEquals(0.0,
+                     result.getTranslateX(),
+                     0.0);
+        assertEquals(1000.0,
+                     result.getTranslateY(),
+                     0.0);
     }
 
     @Test
     public void testBottomEdge() {
-        final Bounds visibleBounds = new BaseBounds( -500,
-                                                     -500,
-                                                     1000,
-                                                     1000 );
-        final Transform test = new Transform().translate( 0.0,
-                                                          -200.0 );
-        final Transform result = restriction.adjust( test,
-                                                     visibleBounds );
+        final Bounds visibleBounds = new BaseBounds(-500,
+                                                    -500,
+                                                    1000,
+                                                    1000);
+        final Transform test = new Transform().translate(0.0,
+                                                         -200.0);
+        final Transform result = restriction.adjust(test,
+                                                    visibleBounds);
 
-        assertNotNull( result );
-        assertEquals( 0.0,
-                      result.getTranslateX(),
-                      0.0 );
-        assertEquals( 0.0,
-                      result.getTranslateY(),
-                      0.0 );
+        assertNotNull(result);
+        assertEquals(0.0,
+                     result.getTranslateX(),
+                     0.0);
+        assertEquals(0.0,
+                     result.getTranslateY(),
+                     0.0);
     }
-
 }

@@ -27,5 +27,5 @@ public interface HasModalConfiguration extends HasConfiguration {
      * @param ctx The configuration context
      * @return A modal window in charge of the component's configuration.
      */
-    Modal getConfigurationModal( ModalConfigurationContext ctx );
+    Modal getConfigurationModal(ModalConfigurationContext ctx);
 }

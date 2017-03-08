@@ -48,230 +48,277 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class WorkbenchMenuStandardNavBarViewTest {
 
-    private WorkbenchMenuStandardNavBarView workbenchMenuStandardNavBarView;
-
     @GwtMock
     NavbarNav navbarNav;
-
     @GwtMock
     ListItem listItem;
-
     @GwtMock
     AnchorListItem anchorListItem;
-
     @GwtMock
     ListDropDown listDropDown;
-
     @GwtMock
     Anchor anchor;
-
     @GwtMock
     DropDownMenu dropDownMenu;
-
     @GwtMock
     UnorderedList unorderedList;
+    private WorkbenchMenuStandardNavBarView workbenchMenuStandardNavBarView;
 
     @Before
     public void setup() {
-        workbenchMenuStandardNavBarView = spy( WorkbenchMenuStandardNavBarView.class );
+        workbenchMenuStandardNavBarView = spy(WorkbenchMenuStandardNavBarView.class);
 
-        workbenchMenuStandardNavBarView.getMenuItemWidgetMap().put( "menuItemId", spy( ComplexPanel.class ) );
+        workbenchMenuStandardNavBarView.getMenuItemWidgetMap().put("menuItemId",
+                                                                   spy(ComplexPanel.class));
     }
 
     @Test
     public void testAddMenuItemWithoutParent() {
-        final String menuId = RandomStringUtils.random( 10 );
+        final String menuId = RandomStringUtils.random(10);
         final String menuParentId = null;
-        final String label = RandomStringUtils.random( 10 );
+        final String label = RandomStringUtils.random(10);
         final MenuPosition position = MenuPosition.RIGHT;
-        final Command command = mock( Command.class );
+        final Command command = mock(Command.class);
 
-        workbenchMenuStandardNavBarView.addMenuItem( menuId, label, menuParentId, command, position );
+        workbenchMenuStandardNavBarView.addMenuItem(menuId,
+                                                    label,
+                                                    menuParentId,
+                                                    command,
+                                                    position);
 
-        verify( workbenchMenuStandardNavBarView ).positionMenuItem( any( AbstractListItem.class ), eq( position ) );
+        verify(workbenchMenuStandardNavBarView).positionMenuItem(any(AbstractListItem.class),
+                                                                 eq(position));
     }
 
     @Test
     public void testAddMenuItemWithParent() {
-        final String menuId = RandomStringUtils.random( 10 );
-        final String menuParentId = RandomStringUtils.random( 10 );
-        final String label = RandomStringUtils.random( 10 );
+        final String menuId = RandomStringUtils.random(10);
+        final String menuParentId = RandomStringUtils.random(10);
+        final String label = RandomStringUtils.random(10);
         final MenuPosition position = MenuPosition.RIGHT;
-        final Command command = mock( Command.class );
+        final Command command = mock(Command.class);
 
-        workbenchMenuStandardNavBarView.addMenuItem( menuId, label, menuParentId, command, position );
+        workbenchMenuStandardNavBarView.addMenuItem(menuId,
+                                                    label,
+                                                    menuParentId,
+                                                    command,
+                                                    position);
 
-        verify( workbenchMenuStandardNavBarView, never() ).positionMenuItem( any( AbstractListItem.class ), eq( position ) );
+        verify(workbenchMenuStandardNavBarView,
+               never()).positionMenuItem(any(AbstractListItem.class),
+                                         eq(position));
     }
 
     @Test
     public void testAddCustomMenuItem() {
-        final Widget menu = GWT.create( Widget.class );
+        final Widget menu = GWT.create(Widget.class);
         final MenuPosition position = MenuPosition.RIGHT;
 
-        workbenchMenuStandardNavBarView.addCustomMenuItem( menu, position );
+        workbenchMenuStandardNavBarView.addCustomMenuItem(menu,
+                                                          position);
 
-        verify( workbenchMenuStandardNavBarView ).positionMenuItem( any( Widget.class ), eq( position ) );
+        verify(workbenchMenuStandardNavBarView).positionMenuItem(any(Widget.class),
+                                                                 eq(position));
     }
 
     @Test
     public void testAddGroupMenuItem() {
-        final String menuId = RandomStringUtils.random( 10 );
-        final String label = RandomStringUtils.random( 10 );
+        final String menuId = RandomStringUtils.random(10);
+        final String label = RandomStringUtils.random(10);
         final MenuPosition position = MenuPosition.RIGHT;
 
-        workbenchMenuStandardNavBarView.addGroupMenuItem( menuId, label, position );
+        workbenchMenuStandardNavBarView.addGroupMenuItem(menuId,
+                                                         label,
+                                                         position);
 
-        verify( workbenchMenuStandardNavBarView ).positionMenuItem( any( AbstractListItem.class ), eq( position ) );
+        verify(workbenchMenuStandardNavBarView).positionMenuItem(any(AbstractListItem.class),
+                                                                 eq(position));
     }
 
     @Test
     public void testAddContextMenuItem() {
         final String menuItemId = "menuItemId";
-        final String menuId = RandomStringUtils.random( 10 );
-        final String menuParentId = RandomStringUtils.random( 10 );
-        final String label = RandomStringUtils.random( 10 );
+        final String menuId = RandomStringUtils.random(10);
+        final String menuParentId = RandomStringUtils.random(10);
+        final String label = RandomStringUtils.random(10);
         final MenuPosition position = MenuPosition.RIGHT;
-        final Command command = mock( Command.class );
+        final Command command = mock(Command.class);
 
-        workbenchMenuStandardNavBarView.addContextMenuItem( menuItemId, menuId, label, menuParentId, command, position );
+        workbenchMenuStandardNavBarView.addContextMenuItem(menuItemId,
+                                                           menuId,
+                                                           label,
+                                                           menuParentId,
+                                                           command,
+                                                           position);
 
-        verify( workbenchMenuStandardNavBarView ).positionMenuItem( any( AbstractListItem.class ), eq( position ) );
-        verify( anchorListItem ).setText( label );
-        assertEquals( anchorListItem, workbenchMenuStandardNavBarView.getMenuItemContextWidgetMap().get( menuId ) );
+        verify(workbenchMenuStandardNavBarView).positionMenuItem(any(AbstractListItem.class),
+                                                                 eq(position));
+        verify(anchorListItem).setText(label);
+        assertEquals(anchorListItem,
+                     workbenchMenuStandardNavBarView.getMenuItemContextWidgetMap().get(menuId));
     }
 
     @Test
     public void testAddContextGroupMenuItem() {
         final String menuItemId = "menuItemId";
-        final String menuId = RandomStringUtils.random( 10 );
-        final String label = RandomStringUtils.random( 10 );
+        final String menuId = RandomStringUtils.random(10);
+        final String label = RandomStringUtils.random(10);
         final MenuPosition position = MenuPosition.RIGHT;
 
-        workbenchMenuStandardNavBarView.addContextGroupMenuItem( menuItemId, menuId, label, position );
+        workbenchMenuStandardNavBarView.addContextGroupMenuItem(menuItemId,
+                                                                menuId,
+                                                                label,
+                                                                position);
 
-        verify( workbenchMenuStandardNavBarView ).positionMenuItem( any( AbstractListItem.class ), eq( position ) );
-        verify( anchor ).setText( label );
-        verify( listDropDown ).add( anchor );
-        assertEquals( dropDownMenu, workbenchMenuStandardNavBarView.getMenuItemContextWidgetMap().get( menuId ) );
+        verify(workbenchMenuStandardNavBarView).positionMenuItem(any(AbstractListItem.class),
+                                                                 eq(position));
+        verify(anchor).setText(label);
+        verify(listDropDown).add(anchor);
+        assertEquals(dropDownMenu,
+                     workbenchMenuStandardNavBarView.getMenuItemContextWidgetMap().get(menuId));
     }
 
     @Test
     public void testPositionAbstractListItemOnLeft() {
-        final AbstractListItem menuItem = mock( AbstractListItem.class );
+        final AbstractListItem menuItem = mock(AbstractListItem.class);
         final MenuPosition position = MenuPosition.LEFT;
 
-        workbenchMenuStandardNavBarView.positionMenuItem( menuItem, position );
+        workbenchMenuStandardNavBarView.positionMenuItem(menuItem,
+                                                         position);
 
-        verify( menuItem, never() ).setPull( Pull.RIGHT );
+        verify(menuItem,
+               never()).setPull(Pull.RIGHT);
     }
 
     @Test
     public void testPositionAbstractListItemOnRight() {
-        final AbstractListItem menuItem = mock( AbstractListItem.class );
+        final AbstractListItem menuItem = mock(AbstractListItem.class);
         final MenuPosition position = MenuPosition.RIGHT;
 
-        workbenchMenuStandardNavBarView.positionMenuItem( menuItem, position );
+        workbenchMenuStandardNavBarView.positionMenuItem(menuItem,
+                                                         position);
 
-        verify( menuItem ).setPull( Pull.RIGHT );
+        verify(menuItem).setPull(Pull.RIGHT);
     }
 
     @Test
     public void testPositionWidgetOnLeft() {
-        final Widget menuItem = spy( Widget.class );
+        final Widget menuItem = spy(Widget.class);
         final MenuPosition position = MenuPosition.LEFT;
 
-        workbenchMenuStandardNavBarView.positionMenuItem( menuItem, position );
+        workbenchMenuStandardNavBarView.positionMenuItem(menuItem,
+                                                         position);
 
-        verify( menuItem.getElement().getStyle(), never() ).setFloat( Style.Float.RIGHT );
+        verify(menuItem.getElement().getStyle(),
+               never()).setFloat(Style.Float.RIGHT);
     }
 
     @Test
     public void testPositionWidgetOnRight() {
-        final Widget menuItem = spy( Widget.class );
+        final Widget menuItem = spy(Widget.class);
         final MenuPosition position = MenuPosition.RIGHT;
 
-        when( menuItem.getElement() ).thenReturn( spy( Element.class ) );
-        when( menuItem.getElement().getStyle() ).thenReturn( spy( Style.class ) );
+        when(menuItem.getElement()).thenReturn(spy(Element.class));
+        when(menuItem.getElement().getStyle()).thenReturn(spy(Style.class));
 
-        workbenchMenuStandardNavBarView.positionMenuItem( menuItem, position );
+        workbenchMenuStandardNavBarView.positionMenuItem(menuItem,
+                                                         position);
 
-        verify( menuItem.getElement().getStyle() ).setFloat( Style.Float.RIGHT );
+        verify(menuItem.getElement().getStyle()).setFloat(Style.Float.RIGHT);
     }
 
     @Test
     public void testSelectElement() {
         final ListDropDown parent1 = mock(ListDropDown.class);
         final Widget parent2 = mock(Widget.class);
-        final ComplexPanel panel = mock( ComplexPanel.class );
+        final ComplexPanel panel = mock(ComplexPanel.class);
 
-        when( navbarNav.iterator() ).thenReturn( Collections.<Widget>emptyList().iterator() );
-        when( panel.getParent() ).thenReturn( parent2 );
-        when( parent2.getParent() ).thenReturn( parent1 );
+        when(navbarNav.iterator()).thenReturn(Collections.<Widget>emptyList().iterator());
+        when(panel.getParent()).thenReturn(parent2);
+        when(parent2.getParent()).thenReturn(parent1);
 
-        workbenchMenuStandardNavBarView.selectElement( panel );
+        workbenchMenuStandardNavBarView.selectElement(panel);
 
-        verify( panel ).addStyleName( Styles.ACTIVE );
-        verify( parent1 ).addStyleName( Styles.ACTIVE );
+        verify(panel).addStyleName(Styles.ACTIVE);
+        verify(parent1).addStyleName(Styles.ACTIVE);
     }
 
     @Test
     public void testSelectMenuItemNoMenu() {
         final String menuId = "menuId";
-        when( navbarNav.iterator() ).thenReturn( Collections.<Widget>emptyList().iterator() );
-        when( listItem.getParent() ).thenReturn( mock(Widget.class) );
+        when(navbarNav.iterator()).thenReturn(Collections.<Widget>emptyList().iterator());
+        when(listItem.getParent()).thenReturn(mock(Widget.class));
 
-        workbenchMenuStandardNavBarView.selectMenuItem( menuId );
+        workbenchMenuStandardNavBarView.selectMenuItem(menuId);
 
-        verify( navbarNav ).add( listItem );
+        verify(navbarNav).add(listItem);
     }
 
     @Test
     public void testSelectMenuItem() {
         final String menuId = "menuId";
         final String label = "label";
-        when( navbarNav.iterator() ).thenReturn( Collections.<Widget>emptyList().iterator() );
-        when( anchorListItem.getParent() ).thenReturn( mock(Widget.class) );
-        final Widget ulParent = mock( Widget.class );
-        when( unorderedList.getParent() ).thenReturn( ulParent );
+        when(navbarNav.iterator()).thenReturn(Collections.<Widget>emptyList().iterator());
+        when(anchorListItem.getParent()).thenReturn(mock(Widget.class));
+        final Widget ulParent = mock(Widget.class);
+        when(unorderedList.getParent()).thenReturn(ulParent);
 
-        workbenchMenuStandardNavBarView.addContextMenuItem( menuId, "contextMenuId", "labelContext", null, null, null );
-        workbenchMenuStandardNavBarView.addMenuItem( menuId, label, null, null, null );
-        workbenchMenuStandardNavBarView.selectMenuItem( menuId );
+        workbenchMenuStandardNavBarView.addContextMenuItem(menuId,
+                                                           "contextMenuId",
+                                                           "labelContext",
+                                                           null,
+                                                           null,
+                                                           null);
+        workbenchMenuStandardNavBarView.addMenuItem(menuId,
+                                                    label,
+                                                    null,
+                                                    null,
+                                                    null);
+        workbenchMenuStandardNavBarView.selectMenuItem(menuId);
 
-        verify( navbarNav ).add( anchorListItem );
-        verify( anchorListItem ).setText( label );
-        verify( unorderedList ).setVisible( true );
-        verify( ulParent ).addStyleName( WorkbenchMenuNavBarView.UF_PERSPECTIVE_CONTEXT_MENU_CONTAINER );
+        verify(navbarNav).add(anchorListItem);
+        verify(anchorListItem).setText(label);
+        verify(unorderedList).setVisible(true);
+        verify(ulParent).addStyleName(WorkbenchMenuNavBarView.UF_PERSPECTIVE_CONTEXT_MENU_CONTAINER);
     }
 
     @Test
     public void testClearContextMenu() {
         final String menuId = "menuId";
-        when( navbarNav.iterator() ).thenReturn( Collections.<Widget>emptyList().iterator() );
-        when( listItem.getParent() ).thenReturn( mock(Widget.class) );
+        when(navbarNav.iterator()).thenReturn(Collections.<Widget>emptyList().iterator());
+        when(listItem.getParent()).thenReturn(mock(Widget.class));
 
-        workbenchMenuStandardNavBarView.addContextMenuItem( menuId, "contextMenuItemId", "labelContextMenu", null, null, null );
-        workbenchMenuStandardNavBarView.addContextGroupMenuItem( menuId, "contextGroupMenuId", "labelContextGroup", null );
+        workbenchMenuStandardNavBarView.addContextMenuItem(menuId,
+                                                           "contextMenuItemId",
+                                                           "labelContextMenu",
+                                                           null,
+                                                           null,
+                                                           null);
+        workbenchMenuStandardNavBarView.addContextGroupMenuItem(menuId,
+                                                                "contextGroupMenuId",
+                                                                "labelContextGroup",
+                                                                null);
         workbenchMenuStandardNavBarView.clearContextMenu();
 
-        assertTrue( workbenchMenuStandardNavBarView.getContextContainerWidgetMap().isEmpty() );
-        assertTrue( workbenchMenuStandardNavBarView.getMenuItemContextWidgetMap().isEmpty() );
-        verify( anchorListItem ).clear();
-        verify( anchorListItem ).removeFromParent();
-        verify( dropDownMenu ).clear();
-        verify( dropDownMenu ).removeFromParent();
+        assertTrue(workbenchMenuStandardNavBarView.getContextContainerWidgetMap().isEmpty());
+        assertTrue(workbenchMenuStandardNavBarView.getMenuItemContextWidgetMap().isEmpty());
+        verify(anchorListItem).clear();
+        verify(anchorListItem).removeFromParent();
+        verify(dropDownMenu).clear();
+        verify(dropDownMenu).removeFromParent();
     }
 
     @Test
     public void testClear() {
-        workbenchMenuStandardNavBarView.getContextContainerWidgetMap().put( "key", mock( ComplexPanel.class ) );
-        workbenchMenuStandardNavBarView.getMenuItemContextWidgetMap().put( "key", mock( ComplexPanel.class ) );
+        workbenchMenuStandardNavBarView.getContextContainerWidgetMap().put("key",
+                                                                           mock(ComplexPanel.class));
+        workbenchMenuStandardNavBarView.getMenuItemContextWidgetMap().put("key",
+                                                                          mock(ComplexPanel.class));
 
         workbenchMenuStandardNavBarView.clear();
 
-        verify( navbarNav ).clear();
-        assertTrue( workbenchMenuStandardNavBarView.getContextContainerWidgetMap().isEmpty() );
-        assertTrue( workbenchMenuStandardNavBarView.getMenuItemContextWidgetMap().isEmpty() );
+        verify(navbarNav).clear();
+        assertTrue(workbenchMenuStandardNavBarView.getContextContainerWidgetMap().isEmpty());
+        assertTrue(workbenchMenuStandardNavBarView.getMenuItemContextWidgetMap().isEmpty());
     }
 }

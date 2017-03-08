@@ -48,10 +48,11 @@ public class ApplicationScopedProducer {
 
     @PostConstruct
     public void setup() {
-        if ( clusterServiceFactory == null ) {
-            ioService = new IOServiceDotFileImpl( watchService );
+        if (clusterServiceFactory == null) {
+            ioService = new IOServiceDotFileImpl(watchService);
         } else {
-            ioService = new IOServiceClusterImpl( new IOServiceDotFileImpl( watchService ), clusterServiceFactory );
+            ioService = new IOServiceClusterImpl(new IOServiceDotFileImpl(watchService),
+                                                 clusterServiceFactory);
         }
     }
 

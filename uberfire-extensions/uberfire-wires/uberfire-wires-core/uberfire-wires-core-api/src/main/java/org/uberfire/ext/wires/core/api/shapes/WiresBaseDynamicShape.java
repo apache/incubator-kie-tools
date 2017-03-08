@@ -47,27 +47,29 @@ public abstract class WiresBaseDynamicShape extends WiresBaseShape implements Ha
 
     public WiresBaseDynamicShape() {
         //Update Magnets and ControlPoints when the Shape is dragged
-        addNodeDragMoveHandler( new NodeDragMoveHandler() {
+        addNodeDragMoveHandler(new NodeDragMoveHandler() {
             @Override
-            public void onNodeDragMove( final NodeDragMoveEvent nodeDragMoveEvent ) {
-                updateMagnetLocations( 0, 0 );
-                updateControlPointLocations( 0, 0 );
+            public void onNodeDragMove(final NodeDragMoveEvent nodeDragMoveEvent) {
+                updateMagnetLocations(0,
+                                      0);
+                updateControlPointLocations(0,
+                                            0);
                 getLayer().batch();
             }
-        } );
+        });
     }
 
     @Override
-    public void addControlPoint( final ControlPoint cp ) {
-        controlPoints.add( cp );
+    public void addControlPoint(final ControlPoint cp) {
+        controlPoints.add(cp);
     }
 
     @Override
     public void showControlPoints() {
         final Layer layer = getLayer();
-        if ( !controlPoints.isEmpty() && !showingControlPoints ) {
-            for ( ControlPoint cp : controlPoints ) {
-                layer.add( cp );
+        if (!controlPoints.isEmpty() && !showingControlPoints) {
+            for (ControlPoint cp : controlPoints) {
+                layer.add(cp);
             }
             showingControlPoints = true;
             getLayer().batch();
@@ -77,9 +79,9 @@ public abstract class WiresBaseDynamicShape extends WiresBaseShape implements Ha
     @Override
     public void hideControlPoints() {
         final Layer layer = getLayer();
-        if ( !controlPoints.isEmpty() && showingControlPoints ) {
-            for ( ControlPoint cp : controlPoints ) {
-                layer.remove( cp );
+        if (!controlPoints.isEmpty() && showingControlPoints) {
+            for (ControlPoint cp : controlPoints) {
+                layer.remove(cp);
             }
             showingControlPoints = false;
             getLayer().batch();
@@ -87,8 +89,8 @@ public abstract class WiresBaseDynamicShape extends WiresBaseShape implements Ha
     }
 
     @Override
-    public void addMagnet( final Magnet m ) {
-        magnets.add( m );
+    public void addMagnet(final Magnet m) {
+        magnets.add(m);
     }
 
     @Override
@@ -99,9 +101,9 @@ public abstract class WiresBaseDynamicShape extends WiresBaseShape implements Ha
     @Override
     public void showMagnetsPoints() {
         final Layer layer = getLayer();
-        if ( !magnets.isEmpty() && !showingMagnets ) {
-            for ( Magnet m : magnets ) {
-                layer.add( m );
+        if (!magnets.isEmpty() && !showingMagnets) {
+            for (Magnet m : magnets) {
+                layer.add(m);
             }
             showingMagnets = true;
             getLayer().batch();
@@ -111,9 +113,9 @@ public abstract class WiresBaseDynamicShape extends WiresBaseShape implements Ha
     @Override
     public void hideMagnetPoints() {
         final Layer layer = getLayer();
-        if ( !magnets.isEmpty() && showingMagnets ) {
-            for ( Magnet m : magnets ) {
-                layer.remove( m );
+        if (!magnets.isEmpty() && showingMagnets) {
+            for (Magnet m : magnets) {
+                layer.remove(m);
             }
             showingMagnets = false;
             getLayer().batch();
@@ -128,49 +130,48 @@ public abstract class WiresBaseDynamicShape extends WiresBaseShape implements Ha
     }
 
     @Override
-    public Group setX( final double x ) {
+    public Group setX(final double x) {
         final double dx = x - getX();
         final double dy = 0;
-        updateMagnetLocations( dx,
-                               dy );
-        updateControlPointLocations( dx,
-                                     dy );
-        final Group g = super.setX( x );
+        updateMagnetLocations(dx,
+                              dy);
+        updateControlPointLocations(dx,
+                                    dy);
+        final Group g = super.setX(x);
         return g;
     }
 
     @Override
-    public Group setY( final double y ) {
+    public Group setY(final double y) {
         final double dx = 0;
         final double dy = y - getY();
-        updateMagnetLocations( dx,
-                               dy );
-        updateControlPointLocations( dx,
-                                     dy );
-        final Group g = super.setY( y );
+        updateMagnetLocations(dx,
+                              dy);
+        updateControlPointLocations(dx,
+                                    dy);
+        final Group g = super.setY(y);
         return g;
     }
 
-    protected void updateMagnetLocations( final double dx,
-                                          final double dy ) {
-        if ( magnets == null ) {
+    protected void updateMagnetLocations(final double dx,
+                                         final double dy) {
+        if (magnets == null) {
             return;
         }
-        for ( Magnet m : magnets ) {
-            m.move( dx,
-                    dy );
+        for (Magnet m : magnets) {
+            m.move(dx,
+                   dy);
         }
     }
 
-    protected void updateControlPointLocations( final double dx,
-                                                final double dy ) {
-        if ( controlPoints == null ) {
+    protected void updateControlPointLocations(final double dx,
+                                               final double dy) {
+        if (controlPoints == null) {
             return;
         }
-        for ( ControlPoint cp : controlPoints ) {
-            cp.move( dx,
-                     dy );
+        for (ControlPoint cp : controlPoints) {
+            cp.move(dx,
+                    dy);
         }
     }
-
 }

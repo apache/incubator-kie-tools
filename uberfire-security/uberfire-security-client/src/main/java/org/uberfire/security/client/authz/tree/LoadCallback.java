@@ -25,7 +25,6 @@ public interface LoadCallback {
 
     /**
      * Called after a list of nodes have been loaded
-     *
      * @param nodeList The results
      */
     void afterLoad(List<PermissionNode> nodeList);

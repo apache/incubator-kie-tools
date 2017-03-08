@@ -24,8 +24,9 @@ import org.uberfire.rpc.SessionInfo;
 @Portable
 public class PluginSaved extends BasePluginEvent {
 
-    public PluginSaved( @MapsTo("plugin") Plugin plugin,
-                        @MapsTo("sessionInfo") SessionInfo sessionInfo ) {
-        super( plugin, sessionInfo );
+    public PluginSaved(@MapsTo("plugin") Plugin plugin,
+                       @MapsTo("sessionInfo") SessionInfo sessionInfo) {
+        super(plugin,
+              sessionInfo);
     }
 }

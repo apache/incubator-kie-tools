@@ -32,58 +32,57 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
  */
 public class MergableGridWidgetExpandRowsAnimation extends TimedAnimation {
 
-    public MergableGridWidgetExpandRowsAnimation( final GridWidget gridWidget,
-                                                  final int uiRowIndex,
-                                                  final int uiColumnIndex,
-                                                  final int rowCount ) {
-        super( 500,
-               new IAnimationCallback() {
+    public MergableGridWidgetExpandRowsAnimation(final GridWidget gridWidget,
+                                                 final int uiRowIndex,
+                                                 final int uiColumnIndex,
+                                                 final int rowCount) {
+        super(500,
+              new IAnimationCallback() {
 
-                   private AnimationTweener tweener = AnimationTweener.EASE_OUT;
-                   private List<Double> heights = new ArrayList<Double>();
+                  private AnimationTweener tweener = AnimationTweener.EASE_OUT;
+                  private List<Double> heights = new ArrayList<Double>();
 
-                   @Override
-                   public void onStart( final IAnimation iAnimation,
-                                        final IAnimationHandle iAnimationHandle ) {
-                       //Store the rows' target heights
-                       for ( int i = 0; i < rowCount; i++ ) {
-                           final GridRow row = gridWidget.getModel().getRow( uiRowIndex + i );
-                           heights.add( row.peekHeight() );
-                       }
+                  @Override
+                  public void onStart(final IAnimation iAnimation,
+                                      final IAnimationHandle iAnimationHandle) {
+                      //Store the rows' target heights
+                      for (int i = 0; i < rowCount; i++) {
+                          final GridRow row = gridWidget.getModel().getRow(uiRowIndex + i);
+                          heights.add(row.peekHeight());
+                      }
 
-                       //Mark cells as expanded
-                       gridWidget.getModel().expandCell( uiRowIndex,
-                                                         uiColumnIndex );
-                   }
+                      //Mark cells as expanded
+                      gridWidget.getModel().expandCell(uiRowIndex,
+                                                       uiColumnIndex);
+                  }
 
-                   @Override
-                   public void onFrame( final IAnimation iAnimation,
-                                        final IAnimationHandle iAnimationHandle ) {
-                       //Set the rows' height from zero to their starting height
-                       final double pct = assertPct( iAnimation.getPercent() );
-                       for ( int i = 1; i < rowCount; i++ ) {
-                           final GridRow row = gridWidget.getModel().getRow( uiRowIndex + i );
-                           row.setHeight( pct * heights.get( i ) );
-                       }
-                       gridWidget.getLayer().batch();
-                   }
+                  @Override
+                  public void onFrame(final IAnimation iAnimation,
+                                      final IAnimationHandle iAnimationHandle) {
+                      //Set the rows' height from zero to their starting height
+                      final double pct = assertPct(iAnimation.getPercent());
+                      for (int i = 1; i < rowCount; i++) {
+                          final GridRow row = gridWidget.getModel().getRow(uiRowIndex + i);
+                          row.setHeight(pct * heights.get(i));
+                      }
+                      gridWidget.getLayer().batch();
+                  }
 
-                   @Override
-                   public void onClose( final IAnimation iAnimation,
-                                        final IAnimationHandle iAnimationHandle ) {
-                       //Do nothing
-                   }
+                  @Override
+                  public void onClose(final IAnimation iAnimation,
+                                      final IAnimationHandle iAnimationHandle) {
+                      //Do nothing
+                  }
 
-                   private double assertPct( final double pct ) {
-                       if ( pct < 0 ) {
-                           return 0;
-                       }
-                       if ( pct > 1.0 ) {
-                           return 1.0;
-                       }
-                       return tweener.apply( pct );
-                   }
-               } );
+                  private double assertPct(final double pct) {
+                      if (pct < 0) {
+                          return 0;
+                      }
+                      if (pct > 1.0) {
+                          return 1.0;
+                      }
+                      return tweener.apply(pct);
+                  }
+              });
     }
-
 }

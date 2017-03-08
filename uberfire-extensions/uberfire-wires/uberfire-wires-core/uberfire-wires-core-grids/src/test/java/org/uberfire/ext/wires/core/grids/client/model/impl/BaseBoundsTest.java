@@ -24,58 +24,57 @@ public class BaseBoundsTest {
 
     @Test
     public void validConstructorParameters() {
-        final BaseBounds b = new BaseBounds( 10.0,
-                                             20.0,
-                                             30.0,
-                                             40.0 );
-        assertEquals( 10.0,
-                      b.getX(),
-                      0.0 );
-        assertEquals( 20.0,
-                      b.getY(),
-                      0.0 );
-        assertEquals( 30.0,
-                      b.getWidth(),
-                      0.0 );
-        assertEquals( 40.0,
-                      b.getHeight(),
-                      0.0 );
+        final BaseBounds b = new BaseBounds(10.0,
+                                            20.0,
+                                            30.0,
+                                            40.0);
+        assertEquals(10.0,
+                     b.getX(),
+                     0.0);
+        assertEquals(20.0,
+                     b.getY(),
+                     0.0);
+        assertEquals(30.0,
+                     b.getWidth(),
+                     0.0);
+        assertEquals(40.0,
+                     b.getHeight(),
+                     0.0);
     }
 
     @SuppressWarnings("unused")
     @Test(expected = IllegalStateException.class)
     public void invalidConstructorWidthParameter() {
-        final BaseBounds b = new BaseBounds( 10.0,
-                                             20.0,
-                                             -30.0,
-                                             40.0 );
+        final BaseBounds b = new BaseBounds(10.0,
+                                            20.0,
+                                            -30.0,
+                                            40.0);
     }
 
     @SuppressWarnings("unused")
     @Test(expected = IllegalStateException.class)
     public void invalidConstructorHeightParameter() {
-        final BaseBounds b = new BaseBounds( 10.0,
-                                             20.0,
-                                             30.0,
-                                             -40.0 );
+        final BaseBounds b = new BaseBounds(10.0,
+                                            20.0,
+                                            30.0,
+                                            -40.0);
     }
 
     @Test(expected = IllegalStateException.class)
     public void invalidSetterWidthParameter() {
-        final BaseBounds b = new BaseBounds( 10.0,
-                                             20.0,
-                                             30.0,
-                                             40.0 );
-        b.setWidth( -30.0 );
+        final BaseBounds b = new BaseBounds(10.0,
+                                            20.0,
+                                            30.0,
+                                            40.0);
+        b.setWidth(-30.0);
     }
 
     @Test(expected = IllegalStateException.class)
     public void invalidSetterHeightParameter() {
-        final BaseBounds b = new BaseBounds( 10.0,
-                                             20.0,
-                                             30.0,
-                                             40.0 );
-        b.setHeight( -40.0 );
+        final BaseBounds b = new BaseBounds(10.0,
+                                            20.0,
+                                            30.0,
+                                            40.0);
+        b.setHeight(-40.0);
     }
-
 }

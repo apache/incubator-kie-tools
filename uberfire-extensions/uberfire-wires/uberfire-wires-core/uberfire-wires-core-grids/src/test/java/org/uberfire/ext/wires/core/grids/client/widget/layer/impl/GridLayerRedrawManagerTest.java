@@ -15,21 +15,33 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.layer.impl;
 
-import static org.junit.Assert.assertSame;
-
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLayerRedrawManager.PrioritizedCommand;
 
-import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import static org.junit.Assert.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class GridLayerRedrawManagerTest {
 
+    @Test
+    public void comparatorUsedInsteadOfNaturalOrdering() {
+        final TestPrioritizedCommand c1 = new TestPrioritizedCommand(1);
+        final TestPrioritizedCommand c2 = new TestPrioritizedCommand(2);
+
+        final GridLayerRedrawManager gridLayerRedrawManager = GridLayerRedrawManager.get();
+        gridLayerRedrawManager.schedule(c1);
+        gridLayerRedrawManager.schedule(c2);
+
+        assertSame(c1,
+                   gridLayerRedrawManager.commands.first());
+    }
+
     private static class TestPrioritizedCommand extends GridLayerRedrawManager.PrioritizedCommand implements Comparable<GridLayerRedrawManager.PrioritizedCommand> {
 
-        public TestPrioritizedCommand( int priority ) {
-            super( priority );
+        public TestPrioritizedCommand(int priority) {
+            super(priority);
         }
 
         @Override
@@ -37,22 +49,8 @@ public class GridLayerRedrawManagerTest {
         }
 
         @Override
-        public int compareTo( PrioritizedCommand o ) {
-            throw new RuntimeException( "Should not be used as comparator is provided by GridLayerRedrawManager" );
+        public int compareTo(PrioritizedCommand o) {
+            throw new RuntimeException("Should not be used as comparator is provided by GridLayerRedrawManager");
         }
-
     }
-
-    @Test
-    public void comparatorUsedInsteadOfNaturalOrdering() {
-        final TestPrioritizedCommand c1 = new TestPrioritizedCommand( 1 );
-        final TestPrioritizedCommand c2 = new TestPrioritizedCommand( 2 );
-        
-        final GridLayerRedrawManager gridLayerRedrawManager = GridLayerRedrawManager.get();
-        gridLayerRedrawManager.schedule( c1 );
-        gridLayerRedrawManager.schedule( c2 );
-        
-        assertSame(c1, gridLayerRedrawManager.commands.first());
-    }
-
 }

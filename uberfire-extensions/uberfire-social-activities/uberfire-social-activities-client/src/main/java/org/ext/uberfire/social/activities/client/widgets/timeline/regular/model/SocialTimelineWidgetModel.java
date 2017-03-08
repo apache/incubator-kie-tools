@@ -19,17 +19,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.ext.uberfire.social.activities.client.widgets.item.model.LinkCommandParams;
-import org.ext.uberfire.social.activities.client.widgets.timeline.regular.SocialTimelineWidget;
 import org.ext.uberfire.social.activities.model.SocialEventType;
 import org.ext.uberfire.social.activities.model.SocialUser;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.ClientResourceType;
-import org.uberfire.commons.data.Pair;
-import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
 public class SocialTimelineWidgetModel {
-
 
     private String maxResults;
     private SocialEventType socialEventType;
@@ -44,45 +40,48 @@ public class SocialTimelineWidgetModel {
     private ParameterizedCommand<String> followUnfollowCommand;
     private ParameterizedCommand<LinkCommandParams> linkCommand;
 
-    public SocialTimelineWidgetModel( SocialUser socialUser,
-                                      PlaceManager placeManager, List<ClientResourceType> resourceTypes ) {
+    public SocialTimelineWidgetModel(SocialUser socialUser,
+                                     PlaceManager placeManager,
+                                     List<ClientResourceType> resourceTypes) {
         this.socialUser = socialUser;
         this.placeManager = placeManager;
         this.resourceTypes = resourceTypes;
     }
 
-    public SocialTimelineWidgetModel withFollowUnfollowCommand( ParameterizedCommand<String> parameterizedCommand){
-        followUnfollowCommand = parameterizedCommand;
-        return this;
-    }
-
-    public SocialTimelineWidgetModel withUserClickCommand( ParameterizedCommand<String> parameterizedCommand){
-        userClickCommand = parameterizedCommand;
-        return this;
-    }
-
-    public SocialTimelineWidgetModel withLinkCommand( ParameterizedCommand<LinkCommandParams> linkCommand ) {
-        this.linkCommand = linkCommand;
-        return this;
-    }
     public SocialTimelineWidgetModel(SocialEventType socialEventType,
-                                      SocialUser socialUser,
-                                      PlaceManager placeManager ) {
+                                     SocialUser socialUser,
+                                     PlaceManager placeManager) {
         this.socialEventType = socialEventType;
         this.socialUser = socialUser;
         this.placeManager = placeManager;
     }
 
+    public SocialTimelineWidgetModel withFollowUnfollowCommand(ParameterizedCommand<String> parameterizedCommand) {
+        followUnfollowCommand = parameterizedCommand;
+        return this;
+    }
+
+    public SocialTimelineWidgetModel withUserClickCommand(ParameterizedCommand<String> parameterizedCommand) {
+        userClickCommand = parameterizedCommand;
+        return this;
+    }
+
+    public SocialTimelineWidgetModel withLinkCommand(ParameterizedCommand<LinkCommandParams> linkCommand) {
+        this.linkCommand = linkCommand;
+        return this;
+    }
+
     public SocialTimelineWidgetModel droolsQuery(Map<String, String> globals,
-                                                 String drlName, String maxResults){
+                                                 String drlName,
+                                                 String maxResults) {
         this.globals = globals;
         this.drlName = drlName;
         this.maxResults = maxResults;
         return this;
     }
 
-    public boolean isDroolsQuery(){
-        return this.drlName !=null;
+    public boolean isDroolsQuery() {
+        return this.drlName != null;
     }
 
     public SocialEventType getSocialEventType() {
@@ -97,7 +96,7 @@ public class SocialTimelineWidgetModel {
         return placeManager;
     }
 
-    public Map<String,String> getGlobals() {
+    public Map<String, String> getGlobals() {
         return globals;
     }
 
@@ -122,16 +121,14 @@ public class SocialTimelineWidgetModel {
     }
 
     public ParameterizedCommand<LinkCommandParams> getLinkCommand() {
-        if(linkCommand==null){
+        if (linkCommand == null) {
             return new ParameterizedCommand<LinkCommandParams>() {
                 @Override
-                public void execute( LinkCommandParams parameters ) {
+                public void execute(LinkCommandParams parameters) {
 
                 }
             };
         }
         return linkCommand;
     }
-
-
 }

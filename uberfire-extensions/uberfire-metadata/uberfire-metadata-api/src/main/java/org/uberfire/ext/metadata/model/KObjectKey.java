@@ -23,5 +23,4 @@ public interface KObjectKey extends KObjectSimpleKey {
     String getId();
 
     MetaType getType();
-
 }

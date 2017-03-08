@@ -37,59 +37,66 @@ public class PropertiesTest {
 
     @Test
     public void testState() throws IOException {
-        final File fcontent = File.createTempFile( "foo", "bar" );
+        final File fcontent = File.createTempFile("foo",
+                                                  "bar");
         final Properties properties = new Properties();
         final Date dt = new Date();
 
-        properties.put( "int", 10453 );
-        properties.put( "long", 1000000L );
-        properties.put( "date", dt );
+        properties.put("int",
+                       10453);
+        properties.put("long",
+                       1000000L);
+        properties.put("date",
+                       dt);
 
-        final OutputStream out = new FileOutputStream( fcontent );
-        properties.store( out );
+        final OutputStream out = new FileOutputStream(fcontent);
+        properties.store(out);
 
         final Properties loadProperties = new Properties();
 
-        final InputStream in = new FileInputStream( fcontent );
-        loadProperties.load( in );
+        final InputStream in = new FileInputStream(fcontent);
+        loadProperties.load(in);
 
-        assertNotNull( properties.get( "int" ) );
-        assertNotNull( properties.get( "long" ) );
-        assertNotNull( properties.get( "date" ) );
+        assertNotNull(properties.get("int"));
+        assertNotNull(properties.get("long"));
+        assertNotNull(properties.get("date"));
 
-        assertEquals( 10453, properties.get( "int" ) );
-        assertEquals( 1000000L, properties.get( "long" ) );
-        assertEquals( dt, properties.get( "date" ) );
-
+        assertEquals(10453,
+                     properties.get("int"));
+        assertEquals(1000000L,
+                     properties.get("long"));
+        assertEquals(dt,
+                     properties.get("date"));
     }
 
     @Test
     public void testEmptyState() throws IOException {
-        final File fcontent = File.createTempFile( "foo2", "bar" );
+        final File fcontent = File.createTempFile("foo2",
+                                                  "bar");
         final Properties loadProperties = new Properties();
 
-        final InputStream in = new FileInputStream( fcontent );
-        loadProperties.load( in );
+        final InputStream in = new FileInputStream(fcontent);
+        loadProperties.load(in);
 
-        assertEquals( 0, loadProperties.size() );
+        assertEquals(0,
+                     loadProperties.size());
     }
 
     @Test
     public void testNullValues() throws IOException {
         final Map<String, Object> original = new HashMap<String, Object>();
-        original.put( "key1",
-                      "value1" );
-        original.put( "key2",
-                      null );
+        original.put("key1",
+                     "value1");
+        original.put("key2",
+                     null);
 
-        final Properties properties = new Properties( original );
+        final Properties properties = new Properties(original);
 
-        assertEquals( 1,
-                      properties.size() );
-        assertTrue( properties.containsKey( "key1" ) );
-        assertEquals( "value1",
-                      properties.get( "key1" ) );
-        assertFalse( properties.containsKey( "key2" ) );
+        assertEquals(1,
+                     properties.size());
+        assertTrue(properties.containsKey("key1"));
+        assertEquals("value1",
+                     properties.get("key1"));
+        assertFalse(properties.containsKey("key2"));
     }
-
 }

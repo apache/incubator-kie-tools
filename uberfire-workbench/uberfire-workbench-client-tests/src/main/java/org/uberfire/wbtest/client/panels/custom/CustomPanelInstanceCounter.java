@@ -23,7 +23,8 @@ import javax.inject.Inject;
 @ApplicationScoped
 public class CustomPanelInstanceCounter {
 
-    @Inject Event<CustomPanelInstanceCounter> event;
+    @Inject
+    Event<CustomPanelInstanceCounter> event;
 
     private int liveInstances;
     private int creationCount;
@@ -31,12 +32,12 @@ public class CustomPanelInstanceCounter {
     public void instanceCreated() {
         liveInstances++;
         creationCount++;
-        event.fire( this );
+        event.fire(this);
     }
 
     public void instanceDestroyed() {
         liveInstances--;
-        event.fire( this );
+        event.fire(this);
     }
 
     /**
@@ -52,5 +53,4 @@ public class CustomPanelInstanceCounter {
     public int getCreationCount() {
         return creationCount;
     }
-
 }

@@ -20,6 +20,6 @@ import org.ext.uberfire.social.activities.service.SocialUserImageRepositoryAPI.I
 
 public interface SocialUserImageProvider {
 
-    Image getImageForSocialUser( SocialUser socialUser, ImageSize imageSize );
-
+    Image getImageForSocialUser(SocialUser socialUser,
+                                ImageSize imageSize);
 }

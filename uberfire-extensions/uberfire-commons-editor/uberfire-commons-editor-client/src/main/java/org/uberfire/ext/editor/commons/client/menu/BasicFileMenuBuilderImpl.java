@@ -51,7 +51,7 @@ import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.MenuVisitor;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.workbench.model.menu.MenuFactory.*;
+import static org.uberfire.workbench.model.menu.MenuFactory.newSimpleItem;
 
 public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
 
@@ -77,12 +77,12 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
     private LockSyncMenuStateHelper lockSyncMenuStateHelper = new BasicFileMenuBuilder.BasicLockSyncMenuStateHelper();
 
     @Inject
-    public BasicFileMenuBuilderImpl( final DeletePopUpPresenter deletePopUpPresenter,
-                                     final CopyPopUpPresenter copyPopUpPresenter,
-                                     final RenamePopUpPresenter renamePopUpPresenter,
-                                     final BusyIndicatorView busyIndicatorView,
-                                     final Event<NotificationEvent> notification,
-                                     final RestoreVersionCommandProvider restoreVersionCommandProvider ) {
+    public BasicFileMenuBuilderImpl(final DeletePopUpPresenter deletePopUpPresenter,
+                                    final CopyPopUpPresenter copyPopUpPresenter,
+                                    final RenamePopUpPresenter renamePopUpPresenter,
+                                    final BusyIndicatorView busyIndicatorView,
+                                    final Event<NotificationEvent> notification,
+                                    final RestoreVersionCommandProvider restoreVersionCommandProvider) {
         this.deletePopUpPresenter = deletePopUpPresenter;
         this.copyPopUpPresenter = copyPopUpPresenter;
         this.renamePopUpPresenter = renamePopUpPresenter;
@@ -92,321 +92,333 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
     }
 
     @Override
-    public BasicFileMenuBuilder addSave( final MenuItem menuItem ) {
+    public BasicFileMenuBuilder addSave(final MenuItem menuItem) {
         saveMenuItem = menuItem;
         return this;
     }
 
     @Override
-    public BasicFileMenuBuilder addSave( final Command command ) {
+    public BasicFileMenuBuilder addSave(final Command command) {
         this.saveCommand = command;
         return this;
     }
 
     @Override
-    public BasicFileMenuBuilder addDelete( final Path path,
-                                           final Caller<? extends SupportsDelete> deleteCaller ) {
-        return addDelete( () -> {
-            deletePopUpPresenter.show( ( String comment ) -> {
-                busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Deleting() );
-                deleteCaller.call( getDeleteSuccessCallback(),
-                                   new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).delete( path,
-                                                                                                           comment );
-            } );
-        } );
+    public BasicFileMenuBuilder addDelete(final Path path,
+                                          final Caller<? extends SupportsDelete> deleteCaller) {
+        return addDelete(() -> {
+            deletePopUpPresenter.show((String comment) -> {
+                busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Deleting());
+                deleteCaller.call(getDeleteSuccessCallback(),
+                                  new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).delete(path,
+                                                                                                      comment);
+            });
+        });
     }
 
     @Override
-    public BasicFileMenuBuilder addDelete( final PathProvider provider,
-                                           final Caller<? extends SupportsDelete> deleteCaller ) {
-        return addDelete( () -> {
+    public BasicFileMenuBuilder addDelete(final PathProvider provider,
+                                          final Caller<? extends SupportsDelete> deleteCaller) {
+        return addDelete(() -> {
             final Path path = provider.getPath();
-            deletePopUpPresenter.show( ( String comment ) -> {
-                busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Deleting() );
-                deleteCaller.call( getDeleteSuccessCallback(),
-                                   new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).delete( path,
-                                                                                                           comment );
-            } );
-        } );
+            deletePopUpPresenter.show((String comment) -> {
+                busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Deleting());
+                deleteCaller.call(getDeleteSuccessCallback(),
+                                  new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).delete(path,
+                                                                                                      comment);
+            });
+        });
     }
 
     private RemoteCallback<Void> getDeleteSuccessCallback() {
-        return ( Void v ) -> {
+        return (Void v) -> {
             busyIndicatorView.hideBusyIndicator();
-            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
+            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemDeletedSuccessfully()));
         };
     }
 
     @Override
-    public BasicFileMenuBuilder addDelete( final Command command ) {
+    public BasicFileMenuBuilder addDelete(final Command command) {
         this.deleteCommand = command;
         return this;
     }
 
     @Override
-    public BasicFileMenuBuilder addRename( final Command command ) {
+    public BasicFileMenuBuilder addRename(final Command command) {
         this.renameCommand = command;
         return this;
     }
 
     @Override
-    public BasicFileMenuBuilder addRename( final Path path,
-                                           final Caller<? extends SupportsRename> renameCaller ) {
-        return addRename( () -> {
-            CommandWithFileNameAndCommitMessage command = getRenamePopupCommand( renameCaller,
-                                                                                 path,
-                                                                                 renamePopUpPresenter.getView() );
-            renamePopUpPresenter.show( path,
-                                       command );
-        } );
+    public BasicFileMenuBuilder addRename(final Path path,
+                                          final Caller<? extends SupportsRename> renameCaller) {
+        return addRename(() -> {
+            CommandWithFileNameAndCommitMessage command = getRenamePopupCommand(renameCaller,
+                                                                                path,
+                                                                                renamePopUpPresenter.getView());
+            renamePopUpPresenter.show(path,
+                                      command);
+        });
     }
 
     @Override
-    public BasicFileMenuBuilder addRename( final Path path,
-                                           final Validator validator,
-                                           final Caller<? extends SupportsRename> renameCaller ) {
-        return addRename( () -> {
-            CommandWithFileNameAndCommitMessage command = getRenamePopupCommand( renameCaller,
-                                                                                 path,
-                                                                                 renamePopUpPresenter.getView() );
-            renamePopUpPresenter.show( path,
-                                       validator,
-                                       command );
-        } );
+    public BasicFileMenuBuilder addRename(final Path path,
+                                          final Validator validator,
+                                          final Caller<? extends SupportsRename> renameCaller) {
+        return addRename(() -> {
+            CommandWithFileNameAndCommitMessage command = getRenamePopupCommand(renameCaller,
+                                                                                path,
+                                                                                renamePopUpPresenter.getView());
+            renamePopUpPresenter.show(path,
+                                      validator,
+                                      command);
+        });
     }
 
     @Override
-    public BasicFileMenuBuilder addRename( final PathProvider provider,
-                                           final Validator validator,
-                                           final Caller<? extends SupportsRename> renameCaller ) {
-        return addRename( () -> {
+    public BasicFileMenuBuilder addRename(final PathProvider provider,
+                                          final Validator validator,
+                                          final Caller<? extends SupportsRename> renameCaller) {
+        return addRename(() -> {
             final Path path = provider.getPath();
-            final CommandWithFileNameAndCommitMessage command = getRenamePopupCommand( renameCaller,
-                                                                                       path,
-                                                                                       renamePopUpPresenter.getView() );
-            renamePopUpPresenter.show( path,
-                                       validator,
-                                       command );
-        } );
+            final CommandWithFileNameAndCommitMessage command = getRenamePopupCommand(renameCaller,
+                                                                                      path,
+                                                                                      renamePopUpPresenter.getView());
+            renamePopUpPresenter.show(path,
+                                      validator,
+                                      command);
+        });
     }
 
-    private CommandWithFileNameAndCommitMessage getRenamePopupCommand( final Caller<? extends SupportsRename> renameCaller,
-                                                                       final Path path,
-                                                                       final RenamePopUpPresenter.View renamePopupView ) {
-        return ( FileNameAndCommitMessage details ) -> {
-            busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Renaming() );
-            renameCaller.call( getRenameSuccessCallback( renamePopupView ),
-                               getRenameErrorCallback( renamePopupView, busyIndicatorView ) ).rename( path,
-                                                                                                      details.getNewFileName(),
-                                                                                                      details.getCommitMessage() );
+    private CommandWithFileNameAndCommitMessage getRenamePopupCommand(final Caller<? extends SupportsRename> renameCaller,
+                                                                      final Path path,
+                                                                      final RenamePopUpPresenter.View renamePopupView) {
+        return (FileNameAndCommitMessage details) -> {
+            busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Renaming());
+            renameCaller.call(getRenameSuccessCallback(renamePopupView),
+                              getRenameErrorCallback(renamePopupView,
+                                                     busyIndicatorView)).rename(path,
+                                                                                details.getNewFileName(),
+                                                                                details.getCommitMessage());
         };
     }
 
-    private RemoteCallback<Path> getRenameSuccessCallback( final RenamePopUpPresenter.View renamePopupView ) {
-        return ( Path path ) -> {
+    private RemoteCallback<Path> getRenameSuccessCallback(final RenamePopUpPresenter.View renamePopupView) {
+        return (Path path) -> {
             renamePopupView.hide();
             busyIndicatorView.hideBusyIndicator();
-            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
+            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRenamedSuccessfully()));
         };
     }
 
-    private HasBusyIndicatorDefaultErrorCallback getRenameErrorCallback( final RenamePopUpPresenter.View renamePopupView,
-                                                                         BusyIndicatorView busyIndicatorView ) {
-        return new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) {
+    private HasBusyIndicatorDefaultErrorCallback getRenameErrorCallback(final RenamePopUpPresenter.View renamePopupView,
+                                                                        BusyIndicatorView busyIndicatorView) {
+        return new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView) {
 
             @Override
-            public boolean error( final Message message,
-                                  final Throwable throwable ) {
-                if ( fileAlreadyExists( throwable ) ) {
+            public boolean error(final Message message,
+                                 final Throwable throwable) {
+                if (fileAlreadyExists(throwable)) {
                     hideBusyIndicator();
                     renamePopupView.handleDuplicatedFileName();
                     return false;
                 }
 
                 renamePopupView.hide();
-                return super.error( message, throwable );
+                return super.error(message,
+                                   throwable);
             }
         };
     }
 
     @Override
-    public BasicFileMenuBuilder addCopy( final Command command ) {
+    public BasicFileMenuBuilder addCopy(final Command command) {
         this.copyCommand = command;
         return this;
     }
 
     @Override
-    public BasicFileMenuBuilder addCopy( final Path path,
-                                         final Caller<? extends SupportsCopy> copyCaller ) {
-        return addCopy( () -> copyPopUpPresenter.show( path,
-                                                       getCopyPopupCommand( copyCaller,
-                                                                            path,
-                                                                            copyPopUpPresenter.getView() ) ) );
+    public BasicFileMenuBuilder addCopy(final Path path,
+                                        final Caller<? extends SupportsCopy> copyCaller) {
+        return addCopy(() -> copyPopUpPresenter.show(path,
+                                                     getCopyPopupCommand(copyCaller,
+                                                                         path,
+                                                                         copyPopUpPresenter.getView())));
     }
 
     @Override
-    public BasicFileMenuBuilder addCopy( final Path path,
-                                         final Validator validator,
-                                         final Caller<? extends SupportsCopy> copyCaller ) {
-        return addCopy( () -> copyPopUpPresenter.show( path,
-                                                       validator,
-                                                       getCopyPopupCommand( copyCaller,
-                                                                            path,
-                                                                            copyPopUpPresenter.getView() ) ) );
+    public BasicFileMenuBuilder addCopy(final Path path,
+                                        final Validator validator,
+                                        final Caller<? extends SupportsCopy> copyCaller) {
+        return addCopy(() -> copyPopUpPresenter.show(path,
+                                                     validator,
+                                                     getCopyPopupCommand(copyCaller,
+                                                                         path,
+                                                                         copyPopUpPresenter.getView())));
     }
 
-    public BasicFileMenuBuilder addCopy( final PathProvider provider,
-                                         final Validator validator,
-                                         final Caller<? extends SupportsCopy> copyCaller ) {
-        return addCopy( () -> {
+    public BasicFileMenuBuilder addCopy(final PathProvider provider,
+                                        final Validator validator,
+                                        final Caller<? extends SupportsCopy> copyCaller) {
+        return addCopy(() -> {
             final Path path = provider.getPath();
-            copyPopUpPresenter.show( path,
-                                     validator,
-                                     getCopyPopupCommand( copyCaller,
-                                                          path,
-                                                          copyPopUpPresenter.getView() ) );
-        } );
+            copyPopUpPresenter.show(path,
+                                    validator,
+                                    getCopyPopupCommand(copyCaller,
+                                                        path,
+                                                        copyPopUpPresenter.getView()));
+        });
     }
 
-    private CommandWithFileNameAndCommitMessage getCopyPopupCommand( final Caller<? extends SupportsCopy> copyCaller,
-                                                                     final Path path,
-                                                                     final CopyPopUpPresenter.View copyPopupView ) {
-        return ( FileNameAndCommitMessage details ) -> {
-            busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Copying() );
-            copyCaller.call( getCopySuccessCallback( copyPopupView ),
-                             getCopyErrorCallback( copyPopupView, busyIndicatorView ) ).copy( path,
-                                                                                              details.getNewFileName(),
-                                                                                              copyPopupView.getTargetPath(),
-                                                                                              details.getCommitMessage() );
+    private CommandWithFileNameAndCommitMessage getCopyPopupCommand(final Caller<? extends SupportsCopy> copyCaller,
+                                                                    final Path path,
+                                                                    final CopyPopUpPresenter.View copyPopupView) {
+        return (FileNameAndCommitMessage details) -> {
+            busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Copying());
+            copyCaller.call(getCopySuccessCallback(copyPopupView),
+                            getCopyErrorCallback(copyPopupView,
+                                                 busyIndicatorView)).copy(path,
+                                                                          details.getNewFileName(),
+                                                                          copyPopupView.getTargetPath(),
+                                                                          details.getCommitMessage());
         };
     }
 
-    private RemoteCallback<Path> getCopySuccessCallback( final CopyPopUpPresenter.View copyPopupView ) {
-        return ( final Path path ) -> {
+    private RemoteCallback<Path> getCopySuccessCallback(final CopyPopUpPresenter.View copyPopupView) {
+        return (final Path path) -> {
             copyPopupView.hide();
             busyIndicatorView.hideBusyIndicator();
-            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
+            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCopiedSuccessfully()));
         };
     }
 
-    public HasBusyIndicatorDefaultErrorCallback getCopyErrorCallback( final CopyPopUpPresenter.View copyPopupView,
-                                                                      BusyIndicatorView busyIndicatorView ) {
-        return new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) {
+    public HasBusyIndicatorDefaultErrorCallback getCopyErrorCallback(final CopyPopUpPresenter.View copyPopupView,
+                                                                     BusyIndicatorView busyIndicatorView) {
+        return new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView) {
 
             @Override
-            public boolean error( final Message message,
-                                  final Throwable throwable ) {
-                if ( fileAlreadyExists( throwable ) ) {
+            public boolean error(final Message message,
+                                 final Throwable throwable) {
+                if (fileAlreadyExists(throwable)) {
                     hideBusyIndicator();
                     copyPopupView.handleDuplicatedFileName();
                     return false;
                 }
 
                 copyPopupView.hide();
-                return super.error( message, throwable );
+                return super.error(message,
+                                   throwable);
             }
         };
     }
 
-    private boolean fileAlreadyExists( final Throwable throwable ) {
-        return throwable != null && throwable.getMessage() != null && throwable.getMessage().contains( "FileAlreadyExistsException" );
+    private boolean fileAlreadyExists(final Throwable throwable) {
+        return throwable != null && throwable.getMessage() != null && throwable.getMessage().contains("FileAlreadyExistsException");
     }
 
     @Override
-    public BasicFileMenuBuilder addValidate( final Command validateCommand ) {
+    public BasicFileMenuBuilder addValidate(final Command validateCommand) {
         this.validateCommand = validateCommand;
         return this;
     }
 
     @Override
-    public BasicFileMenuBuilder addRestoreVersion( final Path path ) {
-        this.restoreCommand = restoreVersionCommandProvider.getCommand( path );
+    public BasicFileMenuBuilder addRestoreVersion(final Path path) {
+        this.restoreCommand = restoreVersionCommandProvider.getCommand(path);
         return this;
     }
 
     @Override
-    public BasicFileMenuBuilder addCommand( final String caption,
-                                            final Command command ) {
-        this.otherCommands.add( new Pair<String, Command>( caption,
-                                                           command ) );
+    public BasicFileMenuBuilder addCommand(final String caption,
+                                           final Command command) {
+        this.otherCommands.add(new Pair<String, Command>(caption,
+                                                         command));
         return this;
     }
 
     @Override
     public Menus build() {
         final Map<Object, MenuItem> menuItems = new LinkedHashMap<Object, MenuItem>();
-        if ( saveCommand != null ) {
-            menuItems.put( MenuItems.SAVE, MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Save() )
-                    .respondsWith( saveCommand )
-                    .endMenu()
-                    .build().getItems().get( 0 ) );
-        } else if ( saveMenuItem != null ) {
-            menuItems.put( MenuItems.SAVE, saveMenuItem );
-            menuItemsSyncedWithLockState.add( saveMenuItem );
+        if (saveCommand != null) {
+            menuItems.put(MenuItems.SAVE,
+                          MenuFactory.newTopLevelMenu(CommonConstants.INSTANCE.Save())
+                                  .respondsWith(saveCommand)
+                                  .endMenu()
+                                  .build().getItems().get(0));
+        } else if (saveMenuItem != null) {
+            menuItems.put(MenuItems.SAVE,
+                          saveMenuItem);
+            menuItemsSyncedWithLockState.add(saveMenuItem);
         }
 
-        if ( deleteCommand != null ) {
-            if ( deleteMenuItem == null ) {
-                deleteMenuItem = MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Delete() )
-                        .respondsWith( deleteCommand )
+        if (deleteCommand != null) {
+            if (deleteMenuItem == null) {
+                deleteMenuItem = MenuFactory.newTopLevelMenu(CommonConstants.INSTANCE.Delete())
+                        .respondsWith(deleteCommand)
                         .endMenu()
-                        .build().getItems().get( 0 );
+                        .build().getItems().get(0);
             }
-            menuItems.put( MenuItems.DELETE, deleteMenuItem );
-            menuItemsSyncedWithLockState.add( deleteMenuItem );
+            menuItems.put(MenuItems.DELETE,
+                          deleteMenuItem);
+            menuItemsSyncedWithLockState.add(deleteMenuItem);
         }
 
-        if ( renameCommand != null ) {
-            if ( renameMenuItem == null ) {
-                renameMenuItem = MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Rename() )
-                        .respondsWith( renameCommand )
+        if (renameCommand != null) {
+            if (renameMenuItem == null) {
+                renameMenuItem = MenuFactory.newTopLevelMenu(CommonConstants.INSTANCE.Rename())
+                        .respondsWith(renameCommand)
                         .endMenu()
-                        .build().getItems().get( 0 );
+                        .build().getItems().get(0);
             }
-            menuItems.put( MenuItems.RENAME, renameMenuItem );
-            menuItemsSyncedWithLockState.add( renameMenuItem );
+            menuItems.put(MenuItems.RENAME,
+                          renameMenuItem);
+            menuItemsSyncedWithLockState.add(renameMenuItem);
         }
 
-        if ( copyCommand != null ) {
-            menuItems.put( MenuItems.COPY, MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Copy() )
-                    .respondsWith( copyCommand )
-                    .endMenu()
-                    .build().getItems().get( 0 ) );
+        if (copyCommand != null) {
+            menuItems.put(MenuItems.COPY,
+                          MenuFactory.newTopLevelMenu(CommonConstants.INSTANCE.Copy())
+                                  .respondsWith(copyCommand)
+                                  .endMenu()
+                                  .build().getItems().get(0));
         }
 
-        if ( validateCommand != null ) {
-            menuItems.put( MenuItems.VALIDATE, MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Validate() )
-                    .respondsWith( validateCommand )
-                    .endMenu()
-                    .build().getItems().get( 0 ) );
+        if (validateCommand != null) {
+            menuItems.put(MenuItems.VALIDATE,
+                          MenuFactory.newTopLevelMenu(CommonConstants.INSTANCE.Validate())
+                                  .respondsWith(validateCommand)
+                                  .endMenu()
+                                  .build().getItems().get(0));
         }
 
-        if ( restoreCommand != null ) {
-            if ( restoreMenuItem == null ) {
-                restoreMenuItem = MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Restore() )
-                        .respondsWith( restoreCommand )
+        if (restoreCommand != null) {
+            if (restoreMenuItem == null) {
+                restoreMenuItem = MenuFactory.newTopLevelMenu(CommonConstants.INSTANCE.Restore())
+                        .respondsWith(restoreCommand)
                         .endMenu()
-                        .build().getItems().get( 0 );
+                        .build().getItems().get(0);
             }
-            menuItemsSyncedWithLockState.add( restoreMenuItem );
+            menuItemsSyncedWithLockState.add(restoreMenuItem);
         }
 
-        if ( !( otherCommands == null || otherCommands.isEmpty() ) ) {
+        if (!(otherCommands == null || otherCommands.isEmpty())) {
             final List<MenuItem> otherMenuItems = new ArrayList<MenuItem>();
-            for ( Pair<String, Command> other : otherCommands ) {
-                otherMenuItems.add( newSimpleItem( other.getK1() )
-                                            .respondsWith( other.getK2() )
-                                            .endMenu().build().getItems().get( 0 ) );
+            for (Pair<String, Command> other : otherCommands) {
+                otherMenuItems.add(newSimpleItem(other.getK1())
+                                           .respondsWith(other.getK2())
+                                           .endMenu().build().getItems().get(0));
             }
-            final MenuItem item = MenuFactory.newTopLevelMenu( CommonConstants.INSTANCE.Other() )
-                    .withItems( otherMenuItems )
+            final MenuItem item = MenuFactory.newTopLevelMenu(CommonConstants.INSTANCE.Other())
+                    .withItems(otherMenuItems)
                     .endMenu()
-                    .build().getItems().get( 0 );
-            menuItems.put( item, item );
+                    .build().getItems().get(0);
+            menuItems.put(item,
+                          item);
         }
 
-        for ( MenuItem menuItem : topLevelMenus ) {
-            menuItems.put( menuItem, menuItem );
+        for (MenuItem menuItem : topLevelMenus) {
+            menuItems.put(menuItem,
+                          menuItem);
         }
 
         return new Menus() {
@@ -414,8 +426,8 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
             @Override
             public List<MenuItem> getItems() {
                 return new ArrayList<MenuItem>() {{
-                    for ( final MenuItem menuItem : menuItems.values() ) {
-                        add( menuItem );
+                    for (final MenuItem menuItem : menuItems.values()) {
+                        add(menuItem);
                     }
                 }};
             }
@@ -426,12 +438,12 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
             }
 
             @Override
-            public void accept( MenuVisitor visitor ) {
-                if ( visitor.visitEnter( this ) ) {
-                    for ( final MenuItem item : menuItems.values() ) {
-                        item.accept( visitor );
+            public void accept(MenuVisitor visitor) {
+                if (visitor.visitEnter(this)) {
+                    for (final MenuItem item : menuItems.values()) {
+                        item.accept(visitor);
                     }
-                    visitor.visitLeave( this );
+                    visitor.visitLeave(this);
                 }
             }
 
@@ -443,31 +455,30 @@ public class BasicFileMenuBuilderImpl implements BasicFileMenuBuilder {
     }
 
     @Override
-    public BasicFileMenuBuilder addNewTopLevelMenu( MenuItem menu ) {
-        topLevelMenus.add( menu );
+    public BasicFileMenuBuilder addNewTopLevelMenu(MenuItem menu) {
+        topLevelMenus.add(menu);
         return this;
     }
 
     @Override
-    public void setLockSyncMenuStateHelper( final LockSyncMenuStateHelper lockSyncMenuStateHelper ) {
-        this.lockSyncMenuStateHelper = PortablePreconditions.checkNotNull( "lockSyncMenuStateHelper",
-                                                                           lockSyncMenuStateHelper );
+    public void setLockSyncMenuStateHelper(final LockSyncMenuStateHelper lockSyncMenuStateHelper) {
+        this.lockSyncMenuStateHelper = PortablePreconditions.checkNotNull("lockSyncMenuStateHelper",
+                                                                          lockSyncMenuStateHelper);
     }
 
-    void onEditorLockInfo( @Observes UpdatedLockStatusEvent lockInfo ) {
-        final Operation op = lockSyncMenuStateHelper.enable( lockInfo.getFile(),
-                                                             lockInfo.isLocked(),
-                                                             lockInfo.isLockedByCurrentUser() );
-        switch ( op ) {
+    void onEditorLockInfo(@Observes UpdatedLockStatusEvent lockInfo) {
+        final Operation op = lockSyncMenuStateHelper.enable(lockInfo.getFile(),
+                                                            lockInfo.isLocked(),
+                                                            lockInfo.isLockedByCurrentUser());
+        switch (op) {
             case ENABLE:
             case DISABLE:
-                for ( MenuItem menuItem : menuItemsSyncedWithLockState ) {
-                    menuItem.setEnabled( op == Operation.ENABLE );
+                for (MenuItem menuItem : menuItemsSyncedWithLockState) {
+                    menuItem.setEnabled(op == Operation.ENABLE);
                 }
                 break;
             case VETO:
                 //Do nothing
         }
     }
-
 }

@@ -20,28 +20,25 @@ import org.uberfire.mvp.Command;
 
 /**
  * A security check executed over a resource or permission.
- *
+ * <p>
  * <p>(See the {@link AuthorizationManager} {@code check} methods)</p>
  */
 public interface AuthorizationCheck<C extends AuthorizationCheck> {
 
     /**
      * Specifies the command instance to execute in case the check result is granted.
-     *
      * @param onGranted The command to execute
      */
     C granted(Command onGranted);
 
     /**
      * Specifies the command instance to execute in case the check result is denied.
-     *
      * @param onDenied The command to execute
      */
     C denied(Command onDenied);
 
     /**
      * Get the check result value
-     *
      * @return true if granted, false otherwise
      */
     boolean result();

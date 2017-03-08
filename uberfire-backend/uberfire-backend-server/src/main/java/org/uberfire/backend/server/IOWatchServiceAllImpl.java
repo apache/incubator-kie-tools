@@ -25,7 +25,7 @@ import org.uberfire.java.nio.file.WatchEvent;
 public class IOWatchServiceAllImpl extends AbstractIOWatchService {
 
     @Override
-    public boolean doFilter( WatchEvent<?> event ) {
+    public boolean doFilter(WatchEvent<?> event) {
         return false;
     }
 }

@@ -28,7 +28,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.uberfire.ext.widgets.common.client.menu.RefreshSelectorMenuBuilder;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
@@ -60,21 +59,29 @@ public class RefreshSelectorMenuBuilderTest {
     @Test
     public void testUpdateRefreshInterval() {
         int time = 1;
-        refreshSelectorMenuBuilder.createTimeSelector(time, "", time, mock(AnchorListItem.class));
+        refreshSelectorMenuBuilder.createTimeSelector(time,
+                                                      "",
+                                                      time,
+                                                      mock(AnchorListItem.class));
         clickHandler.onClick(new ClickEvent() {
         });
 
-        verify(supportsRefreshInterval).onUpdateRefreshInterval(true, time);
-        verify(oneMinuteRadioButton, times(2)).setIcon(IconType.CHECK);
+        verify(supportsRefreshInterval).onUpdateRefreshInterval(true,
+                                                                time);
+        verify(oneMinuteRadioButton,
+               times(2)).setIcon(IconType.CHECK);
     }
 
     @Test
     public void testSelectedRefreshInterval() {
         int time = 1;
         int selectedTime = 2;
-        refreshSelectorMenuBuilder.createTimeSelector(time, "", selectedTime, mock(AnchorListItem.class));
+        refreshSelectorMenuBuilder.createTimeSelector(time,
+                                                      "",
+                                                      selectedTime,
+                                                      mock(AnchorListItem.class));
 
-        verify(oneMinuteRadioButton, never()).setIcon(any(IconType.class));
+        verify(oneMinuteRadioButton,
+               never()).setIcon(any(IconType.class));
     }
-
 }

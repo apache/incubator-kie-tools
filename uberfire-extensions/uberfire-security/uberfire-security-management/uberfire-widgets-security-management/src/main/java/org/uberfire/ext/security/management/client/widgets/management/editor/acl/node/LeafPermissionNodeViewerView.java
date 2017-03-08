@@ -19,8 +19,8 @@ package org.uberfire.ext.security.management.client.widgets.management.editor.ac
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
@@ -32,14 +32,12 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 public class LeafPermissionNodeViewerView extends Composite
         implements LeafPermissionNodeViewer.View {
 
-    private LeafPermissionNodeViewer presenter;
-
     @Inject
     @DataField
     Label nodeName;
-
     @DataField
     Element nodePermissions = DOM.createDiv();
+    private LeafPermissionNodeViewer presenter;
 
     @Override
     public void init(LeafPermissionNodeViewer presenter) {
@@ -58,18 +56,22 @@ public class LeafPermissionNodeViewerView extends Composite
 
     @Override
     public void permissionGranted(String permission) {
-        addPermission(permission, "#00618a");
+        addPermission(permission,
+                      "#00618a");
     }
 
     @Override
     public void permissionDenied(String permission) {
-        addPermission(permission, "#a30000");
+        addPermission(permission,
+                      "#a30000");
     }
 
-    private void addPermission(String permission, String color) {
+    private void addPermission(String permission,
+                               String color) {
         Element div = DOM.createDiv();
         div.getStyle().setDisplay(Style.Display.TABLE_CELL);
-        div.getStyle().setPaddingLeft(5, Style.Unit.PX);
+        div.getStyle().setPaddingLeft(5,
+                                      Style.Unit.PX);
         div.getStyle().setColor(color);
         div.setInnerText(permission);
         nodePermissions.appendChild(div);

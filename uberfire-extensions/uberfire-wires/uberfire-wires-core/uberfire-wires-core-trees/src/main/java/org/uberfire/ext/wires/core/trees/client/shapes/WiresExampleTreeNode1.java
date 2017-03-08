@@ -30,53 +30,53 @@ public class WiresExampleTreeNode1 extends WiresBaseTreeNode {
 
     private final Circle circle;
     private final Circle bounding;
-    private final Text plus = new Text( "+",
-                                        "normal",
-                                        50 );
+    private final Text plus = new Text("+",
+                                       "normal",
+                                       50);
 
-    public WiresExampleTreeNode1( final Circle shape ) {
+    public WiresExampleTreeNode1(final Circle shape) {
         circle = shape;
 
-        bounding = new Circle( circle.getRadius() + ( BOUNDARY_SIZE / 2 ) );
-        bounding.setStrokeWidth( BOUNDARY_SIZE );
-        bounding.setAlpha( 0.1 );
+        bounding = new Circle(circle.getRadius() + (BOUNDARY_SIZE / 2));
+        bounding.setStrokeWidth(BOUNDARY_SIZE);
+        bounding.setAlpha(0.1);
 
-        plus.setTextAlign( TextAlign.CENTER );
-        plus.setTextBaseLine( TextBaseLine.MIDDLE );
-        plus.setFillColor( ColorName.CORNFLOWERBLUE );
-        plus.setStrokeColor( ColorName.BLUE );
+        plus.setTextAlign(TextAlign.CENTER);
+        plus.setTextBaseLine(TextBaseLine.MIDDLE);
+        plus.setFillColor(ColorName.CORNFLOWERBLUE);
+        plus.setStrokeColor(ColorName.BLUE);
 
-        add( circle );
+        add(circle);
     }
 
     @Override
-    public void setSelected( final boolean isSelected ) {
-        if ( isSelected ) {
-            add( bounding );
+    public void setSelected(final boolean isSelected) {
+        if (isSelected) {
+            add(bounding);
         } else {
-            remove( bounding );
+            remove(bounding);
         }
     }
 
     @Override
     public void onCollapseStart() {
-        add( plus );
-        plus.setAlpha( 0.0 );
+        add(plus);
+        plus.setAlpha(0.0);
     }
 
     @Override
-    public void onCollapseProgress( final double pct ) {
-        plus.setAlpha( pct );
+    public void onCollapseProgress(final double pct) {
+        plus.setAlpha(pct);
     }
 
     @Override
-    public void onExpandProgress( double pct ) {
-        plus.setAlpha( 1.0 - pct );
+    public void onExpandProgress(double pct) {
+        plus.setAlpha(1.0 - pct);
     }
 
     @Override
     public void onExpandEnd() {
-        remove( plus );
+        remove(plus);
     }
 
     @Override
@@ -88,5 +88,4 @@ public class WiresExampleTreeNode1 extends WiresBaseTreeNode {
     public double getHeight() {
         return circle.getRadius() * 2;
     }
-
 }

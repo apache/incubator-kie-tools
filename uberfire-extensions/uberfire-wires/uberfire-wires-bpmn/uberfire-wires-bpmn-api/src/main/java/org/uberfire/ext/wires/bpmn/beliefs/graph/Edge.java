@@ -20,5 +20,4 @@ public interface Edge<T extends GraphNode> {
     public T getOutGraphNode();
 
     public T getInGraphNode();
-
 }

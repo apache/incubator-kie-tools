@@ -16,8 +16,6 @@
 
 package org.uberfire.wbtest.selenium;
 
-import static org.junit.Assert.*;
-
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -28,6 +26,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.uberfire.wbtest.client.main.DefaultScreenActivity;
+
+import static org.junit.Assert.*;
 
 /**
  * All Selenium-based UberFire tests extend this base class, which provides the basic boilerplate operations of loading
@@ -63,13 +63,14 @@ public class AbstractSeleniumTest {
      */
     @Before
     public final void setUp() throws Exception {
-      driver = new FirefoxDriver();
-      baseUrl = "http://localhost:8080/index.html";
-      setNormalTimeout();
-      driver.manage().window().setSize( new Dimension( AbstractSeleniumTest.WINDOW_WIDTH, AbstractSeleniumTest.WINDOW_HEIGHT ) );
+        driver = new FirefoxDriver();
+        baseUrl = "http://localhost:8080/index.html";
+        setNormalTimeout();
+        driver.manage().window().setSize(new Dimension(AbstractSeleniumTest.WINDOW_WIDTH,
+                                                       AbstractSeleniumTest.WINDOW_HEIGHT));
 
-      driver.get( baseUrl );
-      waitForDefaultPerspective();
+        driver.get(baseUrl);
+        waitForDefaultPerspective();
     }
 
     /**
@@ -79,14 +80,14 @@ public class AbstractSeleniumTest {
     @After
     public final void detectUncaughtExceptions() {
         try {
-            if ( !skipUncaughtExceptionCheck ) {
-                WebElement alerterStatus = driver.findElement( By.id( "UncaughtExceptionAlerter-statusLabel" ) );
-                if ( !alerterStatus.getText().equals( "0 uncaught exceptions" ) ) {
-                    WebElement alerterLog = driver.findElement( By.id( "UncaughtExceptionAlerter-exceptionLog" ) );
-                    fail( "Uncaught exceptions detected:\n" +
-                            alerterLog.getAttribute( "value" ) +
-                            "\nNote: to get Java line numbers in the stack trace, run like this:" +
-                            "\n    mvn clean verify -Dgwt.style=PRETTY -Dit.test=" + getClass().getSimpleName() );
+            if (!skipUncaughtExceptionCheck) {
+                WebElement alerterStatus = driver.findElement(By.id("UncaughtExceptionAlerter-statusLabel"));
+                if (!alerterStatus.getText().equals("0 uncaught exceptions")) {
+                    WebElement alerterLog = driver.findElement(By.id("UncaughtExceptionAlerter-exceptionLog"));
+                    fail("Uncaught exceptions detected:\n" +
+                                 alerterLog.getAttribute("value") +
+                                 "\nNote: to get Java line numbers in the stack trace, run like this:" +
+                                 "\n    mvn clean verify -Dgwt.style=PRETTY -Dit.test=" + getClass().getSimpleName());
                 }
             }
         } finally {
@@ -102,7 +103,8 @@ public class AbstractSeleniumTest {
      * setUp() method).
      */
     protected void setNormalTimeout() {
-        driver.manage().timeouts().implicitlyWait( 30, TimeUnit.SECONDS );
+        driver.manage().timeouts().implicitlyWait(30,
+                                                  TimeUnit.SECONDS);
     }
 
     /**
@@ -111,7 +113,6 @@ public class AbstractSeleniumTest {
      * need to call this explicitly.
      */
     protected void waitForDefaultPerspective() {
-        driver.findElement( By.id( "gwt-debug-" + DefaultScreenActivity.DEBUG_ID ) );
+        driver.findElement(By.id("gwt-debug-" + DefaultScreenActivity.DEBUG_ID));
     }
-
 }

@@ -37,7 +37,7 @@ public abstract class BasePluginResourceTypeDefinition implements ResourceTypeDe
     }
 
     @Override
-    public boolean accept( final Path path ) {
-        return path.toURI().endsWith( getSuffix() );
+    public boolean accept(final Path path) {
+        return path.toURI().endsWith(getSuffix());
     }
 }

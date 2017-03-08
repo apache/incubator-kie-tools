@@ -16,12 +16,23 @@
 
 package org.uberfire.ext.layout.editor.client.components.container;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
+
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.api.ComponentDropEvent;
-import org.uberfire.ext.layout.editor.client.api.ComponentRemovedEvent;
 import org.uberfire.ext.layout.editor.client.components.columns.Column;
 import org.uberfire.ext.layout.editor.client.components.rows.EmptyDropRow;
 import org.uberfire.ext.layout.editor.client.components.rows.Row;
@@ -33,38 +44,15 @@ import org.uberfire.ext.layout.editor.client.infra.LayoutTemplateAdapter;
 import org.uberfire.ext.layout.editor.client.infra.UniqueIDGenerator;
 import org.uberfire.mvp.ParameterizedCommand;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 @Dependent
 public class Container {
 
-    private LayoutTemplate layoutTemplate;
-
-    public interface View extends UberElement<Container> {
-
-        void addRow( UberElement<Row> view );
-
-        void clear();
-
-        void addEmptyRow( UberElement<EmptyDropRow> emptyDropRow );
-
-    }
-
-    private String id;
-    private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
     private final Instance<Row> rowInstance;
     private final Instance<EmptyDropRow> emptyDropRowInstance;
     private final View view;
+    private LayoutTemplate layoutTemplate;
+    private String id;
+    private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
     private List<Row> rows = new ArrayList<>();
     private EmptyDropRow emptyDropRow;
     private String layoutName;
@@ -72,10 +60,11 @@ public class Container {
     private String emptySubTitleText;
     private Map<String, String> properties = new HashMap<>();
     private Event<ComponentDropEvent> componentDropEvent;
-
     @Inject
-    public Container( final View view, Instance<Row> rowInstance, Instance<EmptyDropRow> emptyDropRowInstance,
-                      Event<ComponentDropEvent> componentDropEvent ) {
+    public Container(final View view,
+                     Instance<Row> rowInstance,
+                     Instance<EmptyDropRow> emptyDropRowInstance,
+                     Event<ComponentDropEvent> componentDropEvent) {
         this.rowInstance = rowInstance;
         this.emptyDropRowInstance = emptyDropRowInstance;
         this.view = view;
@@ -85,48 +74,51 @@ public class Container {
 
     @PostConstruct
     public void setup() {
-        view.init( this );
+        view.init(this);
         init();
     }
 
     @PreDestroy
     public void preDestroy() {
-        for ( Row row : rows ) {
-            destroy( row );
+        for (Row row : rows) {
+            destroy(row);
         }
-        destroy( emptyDropRow );
+        destroy(emptyDropRow);
     }
-
 
     private void init() {
         view.clear();
-        for ( Row row : rows ) {
-            destroy( row );
+        for (Row row : rows) {
+            destroy(row);
         }
         rows = new ArrayList<>();
     }
 
     private void createEmptyDropRow() {
         emptyDropRow = createEmptyRow();
-        view.addEmptyRow( emptyDropRow.getView() );
+        view.addEmptyRow(emptyDropRow.getView());
     }
 
-    public void loadEmptyLayout( String layoutName, String emptyTitleText, String emptySubTitleText ) {
+    public void loadEmptyLayout(String layoutName,
+                                String emptyTitleText,
+                                String emptySubTitleText) {
         this.layoutName = layoutName;
         this.emptyTitleText = emptyTitleText;
         this.emptySubTitleText = emptySubTitleText;
         createEmptyDropRow();
     }
 
-    public void load( LayoutTemplate layoutTemplate, String emptyTitleText, String emptySubTitleText ) {
+    public void load(LayoutTemplate layoutTemplate,
+                     String emptyTitleText,
+                     String emptySubTitleText) {
         this.layoutTemplate = layoutTemplate;
         this.emptyTitleText = emptyTitleText;
         this.emptySubTitleText = emptySubTitleText;
-        if ( !layoutTemplate.isEmpty() ) {
+        if (!layoutTemplate.isEmpty()) {
             this.layoutName = layoutTemplate.getName();
             this.properties = layoutTemplate.getLayoutProperties();
-            for ( LayoutRow layoutRow : layoutTemplate.getRows() ) {
-                rows.add( load( layoutRow ) );
+            for (LayoutRow layoutRow : layoutTemplate.getRows()) {
+                rows.add(load(layoutRow));
             }
             updateView();
         } else {
@@ -146,42 +138,47 @@ public class Container {
 
     private EmptyDropRow createEmptyRow() {
         emptyDropRow = createInstanceEmptyDropRow();
-        emptyDropRow.init( createEmptyDropCommand(), emptyTitleText, emptySubTitleText );
+        emptyDropRow.init(createEmptyDropCommand(),
+                          emptyTitleText,
+                          emptySubTitleText);
         return emptyDropRow;
     }
 
     protected EmptyDropRow createInstanceEmptyDropRow() {
         EmptyDropRow emptyDropRow = emptyDropRowInstance.get();
-        emptyDropRow.setId( idGenerator.createRowID( id ) );
+        emptyDropRow.setId(idGenerator.createRowID(id));
         return emptyDropRow;
     }
 
     public ParameterizedCommand<RowDrop> createEmptyDropCommand() {
-        return ( drop ) -> {
-            destroy( emptyDropRow );
-            notifyDrop( drop.getComponent() );
-            rows.add( createRow( drop ) );
+        return (drop) -> {
+            destroy(emptyDropRow);
+            notifyDrop(drop.getComponent());
+            rows.add(createRow(drop));
             updateView();
         };
     }
 
-    private void notifyDrop( LayoutComponent component ) {
-        componentDropEvent.fire( new ComponentDropEvent( component ) );
+    private void notifyDrop(LayoutComponent component) {
+        componentDropEvent.fire(new ComponentDropEvent(component));
     }
 
-    private Row createRow( RowDrop drop ) {
+    private Row createRow(RowDrop drop) {
         final Row row = createInstanceRow();
-        row.init( createRowDropCommand(), createRemoveRowCommand(), createRemoveComponentCommand() );
-        row.withOneColumn( drop.getComponent(), drop.newComponent() );
-        view.addRow( row.getView() );
+        row.init(createRowDropCommand(),
+                 createRemoveRowCommand(),
+                 createRemoveComponentCommand());
+        row.withOneColumn(drop.getComponent(),
+                          drop.newComponent());
+        view.addRow(row.getView());
         return row;
     }
 
     private ParameterizedCommand<Row> createRemoveRowCommand() {
-        return ( row ) -> {
-            this.rows.remove( row );
-            destroy( row );
-            if ( layoutIsEmpty() ) {
+        return (row) -> {
+            this.rows.remove(row);
+            destroy(row);
+            if (layoutIsEmpty()) {
                 init();
                 createEmptyDropRow();
             } else {
@@ -191,7 +188,7 @@ public class Container {
     }
 
     private ParameterizedCommand<ColumnDrop> createRemoveComponentCommand() {
-        return drop -> removeOldComponent( drop.getOldColumn() );
+        return drop -> removeOldComponent(drop.getOldColumn());
     }
 
     private boolean layoutIsEmpty() {
@@ -199,59 +196,75 @@ public class Container {
     }
 
     public ParameterizedCommand<RowDrop> createRowDropCommand() {
-        return ( dropRow ) -> {
+        return (dropRow) -> {
             List<Row> updatedRows = new ArrayList<>();
-            for ( Row row : rows ) {
-                handleDrop( dropRow, updatedRows, row );
+            for (Row row : rows) {
+                handleDrop(dropRow,
+                           updatedRows,
+                           row);
             }
             rows = updatedRows;
             getView();
         };
     }
 
-    private void handleDrop( RowDrop dropRow, List<Row> updatedRows, Row row ) {
-        if ( dropIsInthisRow( row, dropRow ) ) {
-            if ( dropRow.newComponent() ) {
-                addNewRow( row, dropRow, updatedRows );
+    private void handleDrop(RowDrop dropRow,
+                            List<Row> updatedRows,
+                            Row row) {
+        if (dropIsInthisRow(row,
+                            dropRow)) {
+            if (dropRow.newComponent()) {
+                addNewRow(row,
+                          dropRow,
+                          updatedRows);
             } else {
-                handleMoveComponent( dropRow, updatedRows, row );
+                handleMoveComponent(dropRow,
+                                    updatedRows,
+                                    row);
             }
         } else {
-            updatedRows.add( row );
+            updatedRows.add(row);
         }
     }
 
-    private void handleMoveComponent( RowDrop dropRow, List<Row> updatedRows, Row row ) {
-        removeOldComponent( dropRow.getOldColumn() );
-        addNewRow( row, dropRow, updatedRows );
+    private void handleMoveComponent(RowDrop dropRow,
+                                     List<Row> updatedRows,
+                                     Row row) {
+        removeOldComponent(dropRow.getOldColumn());
+        addNewRow(row,
+                  dropRow,
+                  updatedRows);
     }
 
-    private void removeOldComponent( Column column ) {
-        for ( Row row : rows ) {
-            row.removeChildColumn( column );
+    private void removeOldComponent(Column column) {
+        for (Row row : rows) {
+            row.removeChildColumn(column);
         }
     }
 
-    private void addNewRow( Row row, RowDrop dropRow, List<Row> newRows ) {
-        if ( newRowIsBeforeThisRow( dropRow ) ) {
-            newRows.add( createRow( dropRow ) );
-            if ( !row.rowIsEmpty() ) {
-                newRows.add( row );
+    private void addNewRow(Row row,
+                           RowDrop dropRow,
+                           List<Row> newRows) {
+        if (newRowIsBeforeThisRow(dropRow)) {
+            newRows.add(createRow(dropRow));
+            if (!row.rowIsEmpty()) {
+                newRows.add(row);
             }
         } else {
-            if ( !row.rowIsEmpty() ) {
-                newRows.add( row );
+            if (!row.rowIsEmpty()) {
+                newRows.add(row);
             }
-            newRows.add( createRow( dropRow ) );
+            newRows.add(createRow(dropRow));
         }
-        notifyDrop( dropRow.getComponent() );
+        notifyDrop(dropRow.getComponent());
     }
 
-    private boolean newRowIsBeforeThisRow( RowDrop dropRow ) {
+    private boolean newRowIsBeforeThisRow(RowDrop dropRow) {
         return dropRow.getOrientation() == RowDrop.Orientation.BEFORE;
     }
 
-    private boolean dropIsInthisRow( Row row, RowDrop dropRow ) {
+    private boolean dropIsInthisRow(Row row,
+                                    RowDrop dropRow) {
         return dropRow.getRowId() == row.getId();
     }
 
@@ -259,24 +272,23 @@ public class Container {
         view.clear();
     }
 
-
-    protected void swapRows( @Observes RowDnDEvent rowDndEvent ) {
+    protected void swapRows(@Observes RowDnDEvent rowDndEvent) {
         List<Row> newRows = new ArrayList<>();
-        Row beginRow = lookForBeginningRow( rowDndEvent );
+        Row beginRow = lookForBeginningRow(rowDndEvent);
 
-        if ( beginRow != null ) {
-            for ( Row row : rows ) {
-                if ( row.getId() == rowDndEvent.getRowIdEnd() ) {
-                    if ( rowDndEvent.getOrientation() == RowDrop.Orientation.AFTER ) {
-                        newRows.add( row );
-                        newRows.add( beginRow );
+        if (beginRow != null) {
+            for (Row row : rows) {
+                if (row.getId() == rowDndEvent.getRowIdEnd()) {
+                    if (rowDndEvent.getOrientation() == RowDrop.Orientation.AFTER) {
+                        newRows.add(row);
+                        newRows.add(beginRow);
                     } else {
-                        newRows.add( beginRow );
-                        newRows.add( row );
+                        newRows.add(beginRow);
+                        newRows.add(row);
                     }
                 } else {
-                    if ( row.getId() != beginRow.getId() ) {
-                        newRows.add( row );
+                    if (row.getId() != beginRow.getId()) {
+                        newRows.add(row);
                     }
                 }
             }
@@ -286,11 +298,11 @@ public class Container {
         updateView();
     }
 
-    private Row lookForBeginningRow( @Observes RowDnDEvent rowDndEvent ) {
+    private Row lookForBeginningRow(@Observes RowDnDEvent rowDndEvent) {
         Row beginRow = null;
 
-        for ( Row row : rows ) {
-            if ( row.getId() == rowDndEvent.getRowIdBegin() ) {
+        for (Row row : rows) {
+            if (row.getId() == rowDndEvent.getRowIdBegin()) {
                 beginRow = row;
             }
         }
@@ -301,34 +313,37 @@ public class Container {
         return layoutName;
     }
 
-
-    private Row load( LayoutRow layoutRow ) {
+    private Row load(LayoutRow layoutRow) {
         final Row row = createInstanceRow();
-        row.load( createRowDropCommand(), layoutRow, createRemoveRowCommand(), createRemoveComponentCommand() );
+        row.load(createRowDropCommand(),
+                 layoutRow,
+                 createRemoveRowCommand(),
+                 createRemoveComponentCommand());
         return row;
     }
 
     protected Row createInstanceRow() {
         Row row = rowInstance.get();
-        row.setId( idGenerator.createRowID( id ) );
+        row.setId(idGenerator.createRowID(id));
         return row;
     }
 
-    public void addProperty( String key, String value ) {
-        properties.put( key, value );
+    public void addProperty(String key,
+                            String value) {
+        properties.put(key,
+                       value);
     }
 
-    public String getProperty( String key ) {
-        return properties.get( key );
+    public String getProperty(String key) {
+        return properties.get(key);
     }
 
     public Map<String, String> getProperties() {
         return properties;
     }
 
-
     public LayoutTemplate toLayoutTemplate() {
-        LayoutTemplate convert = LayoutTemplateAdapter.convert( this );
+        LayoutTemplate convert = LayoutTemplateAdapter.convert(this);
         return convert;
     }
 
@@ -336,12 +351,11 @@ public class Container {
         return rows;
     }
 
-
     void updateView() {
-        if ( !rows.isEmpty() ) {
+        if (!rows.isEmpty()) {
             clearView();
-            for ( Row row : rows ) {
-                view.addRow( row.getView() );
+            for (Row row : rows) {
+                view.addRow(row.getView());
             }
         }
     }
@@ -355,8 +369,16 @@ public class Container {
         return emptyDropRow;
     }
 
-    protected void destroy( Object o ) {
-        BeanHelper.destroy( o );
+    protected void destroy(Object o) {
+        BeanHelper.destroy(o);
     }
 
+    public interface View extends UberElement<Container> {
+
+        void addRow(UberElement<Row> view);
+
+        void clear();
+
+        void addEmptyRow(UberElement<EmptyDropRow> emptyDropRow);
+    }
 }

@@ -39,7 +39,7 @@ import org.uberfire.server.util.FileServletUtil;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class FileUploadServletTest {
 
     //Parameters expected by the FileUploadServlet.
@@ -49,7 +49,7 @@ public class FileUploadServletTest {
 
     private static final String TEST_ROOT_PATH = "default://master@test-repository/test-project/src/main/resources/test";
 
-    private static final String BOUNDARY ="---------------------------9051914041544843365972754266";
+    private static final String BOUNDARY = "---------------------------9051914041544843365972754266";
     private static final String BOUNDARY_DELIMITER = "--";
     private static final String CONTENT_TYPE = "multipart/form-data; boundary=\"" + BOUNDARY + "\"";
     /**
@@ -62,7 +62,7 @@ public class FileUploadServletTest {
      */
     private static final byte LF = 0x0A;
 
-    private static final String BREAK = new String( new char[] {CR, LF} );
+    private static final String BREAK = new String(new char[]{CR, LF});
 
     @Mock
     private IOService ioService;
@@ -72,10 +72,9 @@ public class FileUploadServletTest {
 
     /**
      * Tests the uploading of a file given the following parameters:
-     *
-     *  1) a destination folder on the server side.
-     *  2) a destination file name (with blank spaces).
-     *
+     * <p>
+     * 1) a destination folder on the server side.
+     * 2) a destination file name (with blank spaces).
      * @throws Exception
      */
     @Test
@@ -85,15 +84,16 @@ public class FileUploadServletTest {
         String targetFileName = "File Name With Spaces.some extension";
         String fileContent = "the local file content";
 
-        doUploadTestByNameAndFolder( targetFileName, TEST_ROOT_PATH, fileContent  );
+        doUploadTestByNameAndFolder(targetFileName,
+                                    TEST_ROOT_PATH,
+                                    fileContent);
     }
 
     /**
      * Tests the uploading of a file given the following parameters:
-     *
-     *  1) a destination folder on the server side.
-     *  2) a destination file name (with NO blank spaces).
-     *
+     * <p>
+     * 1) a destination folder on the server side.
+     * 2) a destination file name (with NO blank spaces).
      * @throws Exception
      */
     @Test
@@ -103,14 +103,15 @@ public class FileUploadServletTest {
         String targetFileName = "FileNameWithNoSpaces.someextension";
         String fileContent = "the local file content";
 
-        doUploadTestByNameAndFolder( targetFileName, TEST_ROOT_PATH, fileContent );
+        doUploadTestByNameAndFolder(targetFileName,
+                                    TEST_ROOT_PATH,
+                                    fileContent);
     }
 
     /**
      * Tests the uploading of a file given the following parameters:
-     *
-     *  1) a destination path, composed of a folder and a file name with blank spaces.
-     *
+     * <p>
+     * 1) a destination path, composed of a folder and a file name with blank spaces.
      * @throws Exception
      */
     @Test
@@ -120,14 +121,14 @@ public class FileUploadServletTest {
         String targetPath = TEST_ROOT_PATH + "/" + "File Name With Spaces.some extension";
         String fileContent = "the local file content";
 
-        doUploadTestByPath( targetPath, fileContent );
+        doUploadTestByPath(targetPath,
+                           fileContent);
     }
 
     /**
      * Tests the uploading of a file given the following parameters:
-     *
-     *  1) a destination path, composed of a folder and a file name with no blank spaces.
-     *
+     * <p>
+     * 1) a destination path, composed of a folder and a file name with no blank spaces.
      * @throws Exception
      */
     @Test
@@ -137,94 +138,117 @@ public class FileUploadServletTest {
         String targetPath = TEST_ROOT_PATH + "/" + "FileNameWithNoSpaces.someextension";
         String fileContent = "the local file content";
 
-        doUploadTestByPath( targetPath, fileContent );
+        doUploadTestByPath(targetPath,
+                           fileContent);
     }
 
-    private void doUploadTestByNameAndFolder( String targetFileName, String targetFolderName, String fileContent ) throws Exception {
+    private void doUploadTestByNameAndFolder(String targetFileName,
+                                             String targetFolderName,
+                                             String fileContent) throws Exception {
 
-        HttpServletRequest request = mock( HttpServletRequest.class );
-        HttpServletResponse response = mock( HttpServletResponse.class );
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
 
         String localFileName = "local_file_name.txt"; //not relevant for the test
 
         //mock the servlet parameters
-        when( request.getParameter( PARAM_FOLDER ) ).thenReturn( targetFolderName );
-        when( request.getParameter( PARAM_FILENAME ) ).thenReturn( targetFileName );
+        when(request.getParameter(PARAM_FOLDER)).thenReturn(targetFolderName);
+        when(request.getParameter(PARAM_FILENAME)).thenReturn(targetFileName);
 
         //mock the servlet multipart request
         //local file name, and local file name content are not relevant
-        String requestContent = mockMultipartRequestContent( localFileName, fileContent );
-        ByteArrayInputStream inputStream = new ByteArrayInputStream( requestContent.getBytes() );
-        MockServletInputStream servletInputStream = new MockServletInputStream( inputStream );
+        String requestContent = mockMultipartRequestContent(localFileName,
+                                                            fileContent);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(requestContent.getBytes());
+        MockServletInputStream servletInputStream = new MockServletInputStream(inputStream);
 
-        when( request.getContentLength() ).thenReturn( requestContent.getBytes().length );
-        when( request.getContentType() ).thenReturn( CONTENT_TYPE );
-        when( request.getInputStream() ).thenReturn( servletInputStream );
+        when(request.getContentLength()).thenReturn(requestContent.getBytes().length);
+        when(request.getContentType()).thenReturn(CONTENT_TYPE);
+        when(request.getInputStream()).thenReturn(servletInputStream);
 
         //mock the servlet response writer
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(  );
-        PrintWriter printWriter = new PrintWriter( outputStream );
-        when( response.getWriter() ).thenReturn( printWriter );
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintWriter printWriter = new PrintWriter(outputStream);
+        when(response.getWriter()).thenReturn(printWriter);
 
         //FileUploadServlet uploadServlet = new FileUploadServlet();
-        uploadServlet.doPost( request, response );
+        uploadServlet.doPost(request,
+                             response);
 
-        verify( request, times( 1 ) ).getParameter( PARAM_PATH );
-        verify( request, times( 2 ) ).getParameter( PARAM_FOLDER );
-        verify( request, times( 1 ) ).getParameter( PARAM_FILENAME );
+        verify(request,
+               times(1)).getParameter(PARAM_PATH);
+        verify(request,
+               times(2)).getParameter(PARAM_FOLDER);
+        verify(request,
+               times(1)).getParameter(PARAM_FILENAME);
 
         //Expected URI
-        URI expectedURI = new URI( targetFolderName + "/" + FileServletUtil.encodeFileName( targetFileName ) );
+        URI expectedURI = new URI(targetFolderName + "/" + FileServletUtil.encodeFileName(targetFileName));
 
-        verify( ioService, times( 1 ) ).get( eq( expectedURI ) );
-        verify( ioService, times( 1 ) ).exists( any( Path.class ) );
-        verify( ioService, times( 1 ) ).write( any( Path.class ), eq( fileContent.getBytes() ) );
+        verify(ioService,
+               times(1)).get(eq(expectedURI));
+        verify(ioService,
+               times(1)).exists(any(Path.class));
+        verify(ioService,
+               times(1)).write(any(Path.class),
+                               eq(fileContent.getBytes()));
 
         printWriter.flush();
-        assertEquals( "OK", new String( outputStream.toByteArray() ) );
+        assertEquals("OK",
+                     new String(outputStream.toByteArray()));
     }
 
-    private void doUploadTestByPath( String targetPath, String fileContent ) throws Exception {
+    private void doUploadTestByPath(String targetPath,
+                                    String fileContent) throws Exception {
 
-        HttpServletRequest request = mock( HttpServletRequest.class );
-        HttpServletResponse response = mock( HttpServletResponse.class );
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
 
         String localFileName = "local_file_name.txt"; //not relevant for the test
 
         //mock the servlet parameters
-        when( request.getParameter( PARAM_PATH ) ).thenReturn( targetPath );
+        when(request.getParameter(PARAM_PATH)).thenReturn(targetPath);
 
         //mock the servlet multipart request
         //local file name, and local file name content are not relevant
-        String requestContent = mockMultipartRequestContent( localFileName, fileContent );
-        ByteArrayInputStream inputStream = new ByteArrayInputStream( requestContent.getBytes() );
-        MockServletInputStream servletInputStream = new MockServletInputStream( inputStream );
+        String requestContent = mockMultipartRequestContent(localFileName,
+                                                            fileContent);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(requestContent.getBytes());
+        MockServletInputStream servletInputStream = new MockServletInputStream(inputStream);
 
-        when( request.getContentLength() ).thenReturn( requestContent.getBytes().length );
-        when( request.getContentType() ).thenReturn( CONTENT_TYPE );
-        when( request.getInputStream() ).thenReturn( servletInputStream );
+        when(request.getContentLength()).thenReturn(requestContent.getBytes().length);
+        when(request.getContentType()).thenReturn(CONTENT_TYPE);
+        when(request.getInputStream()).thenReturn(servletInputStream);
 
         //mock the servlet response writer
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(  );
-        PrintWriter printWriter = new PrintWriter( outputStream );
-        when( response.getWriter() ).thenReturn( printWriter );
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        PrintWriter printWriter = new PrintWriter(outputStream);
+        when(response.getWriter()).thenReturn(printWriter);
 
-        uploadServlet.doPost( request, response );
+        uploadServlet.doPost(request,
+                             response);
 
-        verify( request, times( 2 ) ).getParameter( PARAM_PATH );
+        verify(request,
+               times(2)).getParameter(PARAM_PATH);
 
         //Expected URI
-        URI expectedURI = new URI( FileServletUtil.encodeFileNamePart( targetPath ) );
+        URI expectedURI = new URI(FileServletUtil.encodeFileNamePart(targetPath));
 
-        verify( ioService, times( 1 ) ).get( eq( expectedURI ) );
-        verify( ioService, times( 1 ) ).exists( any( Path.class ) );
-        verify( ioService, times( 1 ) ).write( any( Path.class ), eq( fileContent.getBytes() ) );
+        verify(ioService,
+               times(1)).get(eq(expectedURI));
+        verify(ioService,
+               times(1)).exists(any(Path.class));
+        verify(ioService,
+               times(1)).write(any(Path.class),
+                               eq(fileContent.getBytes()));
 
         printWriter.flush();
-        assertEquals( "OK", new String( outputStream.toByteArray() ) );
+        assertEquals("OK",
+                     new String(outputStream.toByteArray()));
     }
 
-    private String mockMultipartRequestContent( String localFileName, String fileContent ) {
+    private String mockMultipartRequestContent(String localFileName,
+                                               String fileContent) {
         String content = BOUNDARY_DELIMITER + BOUNDARY + BREAK +
                 "Content-Disposition: form-data; name=\"file\"; filename=\"" + localFileName + "\"" + BREAK +
                 "Content-Type: text/plain" + BREAK + BREAK +
@@ -238,7 +262,7 @@ public class FileUploadServletTest {
 
         InputStream content;
 
-        public MockServletInputStream( InputStream content ) {
+        public MockServletInputStream(InputStream content) {
             this.content = content;
         }
 
@@ -247,35 +271,47 @@ public class FileUploadServletTest {
             return content.read();
         }
 
-        @Override public int read( byte[] b ) throws IOException {
-            return content.read( b );
+        @Override
+        public int read(byte[] b) throws IOException {
+            return content.read(b);
         }
 
-        @Override public int read( byte[] b, int off, int len ) throws IOException {
-            return content.read( b, off, len );
+        @Override
+        public int read(byte[] b,
+                        int off,
+                        int len) throws IOException {
+            return content.read(b,
+                                off,
+                                len);
         }
 
-        @Override public long skip( long n ) throws IOException {
-            return content.skip( n );
+        @Override
+        public long skip(long n) throws IOException {
+            return content.skip(n);
         }
 
-        @Override public int available() throws IOException {
+        @Override
+        public int available() throws IOException {
             return content.available();
         }
 
-        @Override public void close() throws IOException {
+        @Override
+        public void close() throws IOException {
             content.close();
         }
 
-        @Override public synchronized void mark( int readlimit ) {
-            content.mark( readlimit );
+        @Override
+        public synchronized void mark(int readlimit) {
+            content.mark(readlimit);
         }
 
-        @Override public synchronized void reset() throws IOException {
+        @Override
+        public synchronized void reset() throws IOException {
             content.reset();
         }
 
-        @Override public boolean markSupported() {
+        @Override
+        public boolean markSupported() {
             return content.markSupported();
         }
 
@@ -294,7 +330,7 @@ public class FileUploadServletTest {
         }
 
         @Override
-        public void setReadListener( ReadListener readListener ) {
+        public void setReadListener(ReadListener readListener) {
             // TODO how to treat the listener?
         }
     }

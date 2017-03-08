@@ -18,32 +18,33 @@ package org.uberfire.ext.widgets.common.client.colorpicker;
 import com.google.gwt.event.shared.GwtEvent;
 
 public class HueChangedEvent extends GwtEvent<HueChangedHandler> {
-	private static Type<HueChangedHandler> TYPE;
 
-	private int hue;
+    private static Type<HueChangedHandler> TYPE;
 
-	HueChangedEvent(int hue) {
-		this.hue = hue;
-	}
+    private int hue;
 
-	public static Type<HueChangedHandler> getType() {
-		if (TYPE == null) {
-			TYPE = new Type<HueChangedHandler>();
-		}
-		return TYPE;
-	}
+    HueChangedEvent(int hue) {
+        this.hue = hue;
+    }
 
-	@Override
-	public Type<HueChangedHandler> getAssociatedType() {
-		return TYPE;
-	}
+    public static Type<HueChangedHandler> getType() {
+        if (TYPE == null) {
+            TYPE = new Type<HueChangedHandler>();
+        }
+        return TYPE;
+    }
 
-	@Override
-	protected void dispatch(HueChangedHandler handler) {
-		handler.hueChanged(this);
-	}
-	
-	public int getHue() {
-		return hue;
-	}
+    @Override
+    public Type<HueChangedHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(HueChangedHandler handler) {
+        handler.hueChanged(this);
+    }
+
+    public int getHue() {
+        return hue;
+    }
 }

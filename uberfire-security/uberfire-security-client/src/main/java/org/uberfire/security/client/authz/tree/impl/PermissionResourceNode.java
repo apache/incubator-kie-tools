@@ -30,7 +30,8 @@ public class PermissionResourceNode extends AbstractPermissionNode implements Ha
         super();
     }
 
-    public PermissionResourceNode(String resourceName, PermissionTreeProvider provider) {
+    public PermissionResourceNode(String resourceName,
+                                  PermissionTreeProvider provider) {
         this();
         super.setPermissionTreeProvider(provider);
         this.resourceName = resourceName;

@@ -18,7 +18,7 @@ package org.ext.uberfire.social.activities.client.widgets.item.bundle;
 
 public class DuplicatedTranslationException extends Exception {
 
-    public DuplicatedTranslationException( final String translationKey ) {
-        super( "More then one social bundle definition was found for: " + translationKey );
+    public DuplicatedTranslationException(final String translationKey) {
+        super("More then one social bundle definition was found for: " + translationKey);
     }
 }

@@ -43,48 +43,48 @@ public class ProcessNode extends GraphNodeImpl<Content, BpmnEdge> implements
                                                                   BpmnGraph,
                                                                   BpmnGraphNode {
 
-    private Graph<Content, BpmnGraphNode> graph = new GraphImpl<Content, BpmnGraphNode>( new MapGraphStore<BpmnGraphNode>() );
+    private Graph<Content, BpmnGraphNode> graph = new GraphImpl<Content, BpmnGraphNode>(new MapGraphStore<BpmnGraphNode>());
 
     private Set<Role> roles = new HashSet<Role>() {{
-        add( new DefaultRoleImpl( "canContainArtifacts" ) );
+        add(new DefaultRoleImpl("canContainArtifacts"));
     }};
 
     private Set<Property> properties = new HashSet<Property>() {{
-        add( new DefaultPropertyImpl( "processn",
-                                      new StringType(),
-                                      "Process Name",
-                                      "Process Name",
-                                      false,
-                                      false ) );
-        add( new DefaultPropertyImpl( "documentation",
-                                      new StringType(),
-                                      "Documentation",
-                                      "This attribute is used to annotate the BPMN element, such as descriptions and other documentation.",
-                                      false,
-                                      true ) );
+        add(new DefaultPropertyImpl("processn",
+                                    new StringType(),
+                                    "Process Name",
+                                    "Process Name",
+                                    false,
+                                    false));
+        add(new DefaultPropertyImpl("documentation",
+                                    new StringType(),
+                                    "Documentation",
+                                    "This attribute is used to annotate the BPMN element, such as descriptions and other documentation.",
+                                    false,
+                                    true));
     }};
 
     public ProcessNode() {
-        setContent( new DefaultContentImpl( "BPMNProcess",
-                                            "BPMN-Process",
-                                            "A BPMN 2.0 Process.",
-                                            roles,
-                                            properties ) );
+        setContent(new DefaultContentImpl("BPMNProcess",
+                                          "BPMN-Process",
+                                          "A BPMN 2.0 Process.",
+                                          roles,
+                                          properties));
     }
 
     @Override
-    public BpmnGraphNode addNode( final BpmnGraphNode node ) {
-        return graph.addNode( node );
+    public BpmnGraphNode addNode(final BpmnGraphNode node) {
+        return graph.addNode(node);
     }
 
     @Override
-    public BpmnGraphNode removeNode( final int id ) {
-        return graph.removeNode( id );
+    public BpmnGraphNode removeNode(final int id) {
+        return graph.removeNode(id);
     }
 
     @Override
-    public BpmnGraphNode getNode( final int id ) {
-        return graph.getNode( id );
+    public BpmnGraphNode getNode(final int id) {
+        return graph.getNode(id);
     }
 
     @Override
@@ -100,9 +100,9 @@ public class ProcessNode extends GraphNodeImpl<Content, BpmnEdge> implements
     @Override
     public ProcessNode copy() {
         final ProcessNode copy = new ProcessNode();
-        copy.setContent( this.getContent().copy() );
-        for ( BpmnGraphNode node : graph ) {
-            copy.addNode( node.copy() );
+        copy.setContent(this.getContent().copy());
+        for (BpmnGraphNode node : graph) {
+            copy.addNode(node.copy());
         }
         return copy;
     }
@@ -115,5 +115,4 @@ public class ProcessNode extends GraphNodeImpl<Content, BpmnEdge> implements
                 ", properties=" + properties +
                 '}';
     }
-
 }

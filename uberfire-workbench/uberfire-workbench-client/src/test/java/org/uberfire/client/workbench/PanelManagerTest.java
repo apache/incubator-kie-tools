@@ -16,23 +16,14 @@
 
 package org.uberfire.client.workbench;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.refEq;
-import static org.mockito.Mockito.*;
-
 import java.lang.annotation.Annotation;
-
 import javax.enterprise.event.Event;
 
+import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.ioc.client.container.IOC;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,9 +31,6 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.uberfire.backend.vfs.ObservablePath;
-import org.uberfire.backend.vfs.Path;
-import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.client.mvp.UIPart;
 import org.uberfire.client.workbench.events.PanelFocusEvent;
@@ -54,7 +42,6 @@ import org.uberfire.client.workbench.events.PlaceMinimizedEvent;
 import org.uberfire.client.workbench.events.SelectPlaceEvent;
 import org.uberfire.client.workbench.panels.WorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.WorkbenchPanelView;
-import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.SimpleWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.StaticWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
@@ -71,23 +58,35 @@ import org.uberfire.workbench.model.impl.PerspectiveDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.refEq;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class PanelManagerTest {
 
-    @Mock BeanFactory beanFactory;
-    @Mock StubPlaceGainFocusEvent placeGainFocusEvent;
-    @Mock StubPlaceLostFocusEvent placeLostFocusEvent;
-    @Mock StubSelectPlaceEvent selectPlaceEvent;
-    @Mock StubPanelFocusEvent panelFocusEvent;
-    @Mock StubPlaceMaximizedEvent placeMaximizedEvent;
-    @Mock StubPlaceMinimizedEvent placeMinimizedEvent;
-    @Mock StubPlaceHiddenEvent placeHidEvent;
-    @Mock SimpleWorkbenchPanelPresenter workbenchPanelPresenter;
-    @Mock(answer=Answers.RETURNS_DEEP_STUBS) LayoutSelection layoutSelection;
+    @Mock
+    BeanFactory beanFactory;
+    @Mock
+    StubPlaceGainFocusEvent placeGainFocusEvent;
+    @Mock
+    StubPlaceLostFocusEvent placeLostFocusEvent;
+    @Mock
+    StubSelectPlaceEvent selectPlaceEvent;
+    @Mock
+    StubPanelFocusEvent panelFocusEvent;
+    @Mock
+    StubPlaceMaximizedEvent placeMaximizedEvent;
+    @Mock
+    StubPlaceMinimizedEvent placeMinimizedEvent;
+    @Mock
+    StubPlaceHiddenEvent placeHidEvent;
+    @Mock
+    SimpleWorkbenchPanelPresenter workbenchPanelPresenter;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    LayoutSelection layoutSelection;
 
     private PanelManagerImpl panelManager;
 
@@ -109,240 +108,278 @@ public class PanelManagerTest {
 
     @Before
     public void setup() {
-        when( layoutSelection.get().getPerspectiveContainer() ).thenReturn( mock( HasWidgets.class ) );
+        when(layoutSelection.get().getPerspectiveContainer()).thenReturn(mock(HasWidgets.class));
 
-        testPerspectiveDef = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
-        testPerspectiveRootPanelPresenter = mock( WorkbenchPanelPresenter.class );
+        testPerspectiveDef = new PerspectiveDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        testPerspectiveRootPanelPresenter = mock(WorkbenchPanelPresenter.class);
 
-        when( beanFactory.newRootPanel( any( PerspectiveActivity.class ),
-                                        eq( testPerspectiveDef.getRoot() ) )).thenReturn( testPerspectiveRootPanelPresenter );
-        when( testPerspectiveRootPanelPresenter.getDefinition() ).thenReturn( testPerspectiveDef.getRoot() );
-        when( testPerspectiveRootPanelPresenter.getPanelView() ).thenReturn( mock( WorkbenchPanelView.class ) );
-        when( testPerspectiveRootPanelPresenter.getDefaultChildType() ).thenReturn( SimpleWorkbenchPanelPresenter.class.getName() );
+        when(beanFactory.newRootPanel(any(PerspectiveActivity.class),
+                                      eq(testPerspectiveDef.getRoot()))).thenReturn(testPerspectiveRootPanelPresenter);
+        when(testPerspectiveRootPanelPresenter.getDefinition()).thenReturn(testPerspectiveDef.getRoot());
+        when(testPerspectiveRootPanelPresenter.getPanelView()).thenReturn(mock(WorkbenchPanelView.class));
+        when(testPerspectiveRootPanelPresenter.getDefaultChildType()).thenReturn(SimpleWorkbenchPanelPresenter.class.getName());
 
-        partPresenter = mock( WorkbenchPartPresenter.class);
-        when( beanFactory.newWorkbenchPart( any( Menus.class ),
-                                            any( String.class ),
-                                            any( IsWidget.class ),
-                                            any( PartDefinition.class ),
-                                            any( Class.class ) ) ).thenReturn( partPresenter );
+        partPresenter = mock(WorkbenchPartPresenter.class);
+        when(beanFactory.newWorkbenchPart(any(Menus.class),
+                                          any(String.class),
+                                          any(IsWidget.class),
+                                          any(PartDefinition.class),
+                                          any(Class.class))).thenReturn(partPresenter);
 
-        when( beanFactory.newWorkbenchPanel( any( PanelDefinition.class ) ) ).thenAnswer( new Answer<WorkbenchPanelPresenter>() {
+        when(beanFactory.newWorkbenchPanel(any(PanelDefinition.class))).thenAnswer(new Answer<WorkbenchPanelPresenter>() {
             @Override
-            public WorkbenchPanelPresenter answer( InvocationOnMock invocation ) throws Throwable {
-                WorkbenchPanelPresenter newPanelPresenter = mock( WorkbenchPanelPresenter.class, RETURNS_DEEP_STUBS );
-                when( newPanelPresenter.getDefinition() ).thenReturn( (PanelDefinition) invocation.getArguments()[0] );
+            public WorkbenchPanelPresenter answer(InvocationOnMock invocation) throws Throwable {
+                WorkbenchPanelPresenter newPanelPresenter = mock(WorkbenchPanelPresenter.class,
+                                                                 RETURNS_DEEP_STUBS);
+                when(newPanelPresenter.getDefinition()).thenReturn((PanelDefinition) invocation.getArguments()[0]);
                 return newPanelPresenter;
             }
-        } );
+        });
 
-        PerspectiveActivity testPerspectiveActivity = mock( PerspectiveActivity.class );
+        PerspectiveActivity testPerspectiveActivity = mock(PerspectiveActivity.class);
 
-        panelManager = spy( new PanelManagerImpl( placeGainFocusEvent,
-                                                  placeLostFocusEvent,
-                                                  panelFocusEvent,
-                                                  selectPlaceEvent,
-                                                  placeMaximizedEvent,
-                                                  placeMinimizedEvent,
-                                                  placeHidEvent,
-                                                  null,
-                                                  null,
-                                                  layoutSelection,
-                                                  beanFactory ) );
-        panelManager.setRoot( testPerspectiveActivity, testPerspectiveDef.getRoot() );
+        panelManager = spy(new PanelManagerImpl(placeGainFocusEvent,
+                                                placeLostFocusEvent,
+                                                panelFocusEvent,
+                                                selectPlaceEvent,
+                                                placeMaximizedEvent,
+                                                placeMinimizedEvent,
+                                                placeHidEvent,
+                                                null,
+                                                null,
+                                                layoutSelection,
+                                                beanFactory));
+        panelManager.setRoot(testPerspectiveActivity,
+                             testPerspectiveDef.getRoot());
 
-        doNothing().when( panelManager ).appendWidgetToElement( any( HTMLElement.class ), any( Widget.class ) );
+        doNothing().when(panelManager).appendWidgetToElement(any(HTMLElement.class),
+                                                             any(Widget.class));
     }
 
     @Test
     public void addPartToRootPanelShouldWork() throws Exception {
-        PlaceRequest rootPartPlace = new DefaultPlaceRequest( "rootPartPlace" );
-        PartDefinition rootPart = new PartDefinitionImpl( rootPartPlace );
-        Menus rootPartMenus = MenuFactory.newContributedMenu( "RootPartMenu" ).endMenu().build();
-        UIPart rootUiPart = new UIPart( "RootUiPart", null, mock(IsWidget.class) );
-        panelManager.addWorkbenchPart( rootPartPlace,
-                                       rootPart,
-                                       panelManager.getRoot(),
-                                       rootPartMenus,
-                                       rootUiPart,
-                                       "rootContextId",
-                                       100,
-                                       200 );
+        PlaceRequest rootPartPlace = new DefaultPlaceRequest("rootPartPlace");
+        PartDefinition rootPart = new PartDefinitionImpl(rootPartPlace);
+        Menus rootPartMenus = MenuFactory.newContributedMenu("RootPartMenu").endMenu().build();
+        UIPart rootUiPart = new UIPart("RootUiPart",
+                                       null,
+                                       mock(IsWidget.class));
+        panelManager.addWorkbenchPart(rootPartPlace,
+                                      rootPart,
+                                      panelManager.getRoot(),
+                                      rootPartMenus,
+                                      rootUiPart,
+                                      "rootContextId",
+                                      100,
+                                      200);
 
         // the presenter should have been created and configured for the rootPart
-        verify( partPresenter ).setWrappedWidget( rootUiPart.getWidget() );
-        verify( partPresenter ).setContextId( "rootContextId" );
+        verify(partPresenter).setWrappedWidget(rootUiPart.getWidget());
+        verify(partPresenter).setContextId("rootContextId");
 
         // the panel manager should be aware of the place/part mapping for the added part
-        assertEquals( rootPart, panelManager.getPartForPlace( rootPartPlace ) );
+        assertEquals(rootPart,
+                     panelManager.getPartForPlace(rootPartPlace));
 
         // the panel manager should select the place, firing a general notification
-        verify( selectPlaceEvent ).fire( refEq( new SelectPlaceEvent( rootPartPlace ) ) );
+        verify(selectPlaceEvent).fire(refEq(new SelectPlaceEvent(rootPartPlace)));
 
         // the panel manager should have modified the panel or part definitions (this is the responsibility of the parent panel)
-        assertEquals( null, rootPart.getParentPanel() );
-        assertFalse( panelManager.getRoot().getParts().contains( rootPart ) );
+        assertEquals(null,
+                     rootPart.getParentPanel());
+        assertFalse(panelManager.getRoot().getParts().contains(rootPart));
     }
 
     @Test
     public void addPartToUnknownPanelShouldFail() throws Exception {
-        PlaceRequest partPlace = new DefaultPlaceRequest( "partPlace" );
-        PartDefinition part = new PartDefinitionImpl( partPlace );
-        Menus partMenus = MenuFactory.newContributedMenu( "PartMenu" ).endMenu().build();
-        UIPart uiPart = new UIPart( "uiPart", null, mock(IsWidget.class) );
-        PanelDefinition randomUnattachedPanel = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        PlaceRequest partPlace = new DefaultPlaceRequest("partPlace");
+        PartDefinition part = new PartDefinitionImpl(partPlace);
+        Menus partMenus = MenuFactory.newContributedMenu("PartMenu").endMenu().build();
+        UIPart uiPart = new UIPart("uiPart",
+                                   null,
+                                   mock(IsWidget.class));
+        PanelDefinition randomUnattachedPanel = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
 
         try {
-            panelManager.addWorkbenchPart( partPlace,
-                                           part,
-                                           randomUnattachedPanel,
-                                           partMenus,
-                                           uiPart,
-                                           "contextId",
-                                           null,
-                                           null );
+            panelManager.addWorkbenchPart(partPlace,
+                                          part,
+                                          randomUnattachedPanel,
+                                          partMenus,
+                                          uiPart,
+                                          "contextId",
+                                          null,
+                                          null);
             fail();
-        } catch ( IllegalArgumentException e ) {
-            assertEquals( "Target panel is not part of the layout", e.getMessage() );
+        } catch (IllegalArgumentException e) {
+            assertEquals("Target panel is not part of the layout",
+                         e.getMessage());
         }
 
         // the presenter should not have been created and configured for the rootPart
-        verify( partPresenter, never() ).setWrappedWidget( uiPart.getWidget() );
-        verify( partPresenter, never() ).setContextId( "rootContextId" );
+        verify(partPresenter,
+               never()).setWrappedWidget(uiPart.getWidget());
+        verify(partPresenter,
+               never()).setContextId("rootContextId");
 
         // the panel manager should not be aware of the place/part mapping for the failed add
-        assertEquals( null, panelManager.getPartForPlace( partPlace ) );
+        assertEquals(null,
+                     panelManager.getPartForPlace(partPlace));
 
         // the failed part/place should not be selected
-        verify( selectPlaceEvent, never() ).fire( refEq( new SelectPlaceEvent( partPlace ) ) );
+        verify(selectPlaceEvent,
+               never()).fire(refEq(new SelectPlaceEvent(partPlace)));
     }
 
     @Test
     public void removingLastPartFromRootPanelShouldLeaveRootPanel() throws Exception {
         // add
-        PlaceRequest rootPartPlace = new DefaultPlaceRequest( "rootPartPlace" );
-        PartDefinition rootPart = new PartDefinitionImpl( rootPartPlace );
-        Menus rootPartMenus = MenuFactory.newContributedMenu( "RootPartMenu" ).endMenu().build();
-        UIPart rootUiPart = new UIPart( "RootUiPart", null, mock(IsWidget.class) );
-        panelManager.addWorkbenchPart( rootPartPlace,
-                                       rootPart,
-                                       panelManager.getRoot(),
-                                       rootPartMenus,
-                                       rootUiPart,
-                                       "rootContextId",
+        PlaceRequest rootPartPlace = new DefaultPlaceRequest("rootPartPlace");
+        PartDefinition rootPart = new PartDefinitionImpl(rootPartPlace);
+        Menus rootPartMenus = MenuFactory.newContributedMenu("RootPartMenu").endMenu().build();
+        UIPart rootUiPart = new UIPart("RootUiPart",
                                        null,
-                                       null );
+                                       mock(IsWidget.class));
+        panelManager.addWorkbenchPart(rootPartPlace,
+                                      rootPart,
+                                      panelManager.getRoot(),
+                                      rootPartMenus,
+                                      rootUiPart,
+                                      "rootContextId",
+                                      null,
+                                      null);
 
-        panelManager.removePartForPlace( rootPartPlace );
+        panelManager.removePartForPlace(rootPartPlace);
 
         // the panel manager should not know about the part/place mapping anymore
-        assertEquals( null, panelManager.getPartForPlace( rootPartPlace ) );
+        assertEquals(null,
+                     panelManager.getPartForPlace(rootPartPlace));
 
         // the part's presenter bean should be destroyed
-        verify( beanFactory ).destroy( partPresenter );
+        verify(beanFactory).destroy(partPresenter);
 
         // the root panel itself, although empty, should remain (because it is the root panel)
-        verify( beanFactory, never() ).destroy( testPerspectiveRootPanelPresenter );
+        verify(beanFactory,
+               never()).destroy(testPerspectiveRootPanelPresenter);
     }
 
     @Test
     public void addPanelAtRootPositionShouldReturnRootPanel() throws Exception {
-        when( beanFactory.newRootPanel( any( PerspectiveActivity.class ),
-                                        eq( testPerspectiveDef.getRoot() ) )).thenReturn( testPerspectiveRootPanelPresenter );
-        when( testPerspectiveRootPanelPresenter.getDefaultChildType() ).thenReturn( null );
-        PerspectiveActivity testPerspectiveActivity = mock( PerspectiveActivity.class );
-        panelManager.setRoot( testPerspectiveActivity, testPerspectiveDef.getRoot() );
-        
-        PanelDefinition notActuallyAdded = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
-        PanelDefinition result = panelManager.addWorkbenchPanel( testPerspectiveDef.getRoot(),
-                                                                 notActuallyAdded,
-                                                                 CompassPosition.ROOT );
-        assertSame( result, testPerspectiveDef.getRoot() );
+        when(beanFactory.newRootPanel(any(PerspectiveActivity.class),
+                                      eq(testPerspectiveDef.getRoot()))).thenReturn(testPerspectiveRootPanelPresenter);
+        when(testPerspectiveRootPanelPresenter.getDefaultChildType()).thenReturn(null);
+        PerspectiveActivity testPerspectiveActivity = mock(PerspectiveActivity.class);
+        panelManager.setRoot(testPerspectiveActivity,
+                             testPerspectiveDef.getRoot());
+
+        PanelDefinition notActuallyAdded = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        PanelDefinition result = panelManager.addWorkbenchPanel(testPerspectiveDef.getRoot(),
+                                                                notActuallyAdded,
+                                                                CompassPosition.ROOT);
+        assertSame(result,
+                   testPerspectiveDef.getRoot());
     }
+
     @Test
     public void addedPanelsShouldBeRemembered() throws Exception {
-        PanelDefinition subPanel = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
-        testPerspectiveDef.getRoot().appendChild( CompassPosition.WEST, subPanel );
+        PanelDefinition subPanel = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        testPerspectiveDef.getRoot().appendChild(CompassPosition.WEST,
+                                                 subPanel);
 
-        panelManager.addWorkbenchPanel( panelManager.getRoot(), subPanel, CompassPosition.WEST );
+        panelManager.addWorkbenchPanel(panelManager.getRoot(),
+                                       subPanel,
+                                       CompassPosition.WEST);
 
-        assertTrue( panelManager.mapPanelDefinitionToPresenter.containsKey( subPanel ) );
+        assertTrue(panelManager.mapPanelDefinitionToPresenter.containsKey(subPanel));
     }
 
     @Test
     public void addedCustomPanelsShouldBeRemembered() throws Exception {
-        HasWidgets container = mock( HasWidgets.class );
-        PanelDefinition customPanel = panelManager.addCustomPanel( container, StaticWorkbenchPanelPresenter.class.getName() );
+        HasWidgets container = mock(HasWidgets.class);
+        PanelDefinition customPanel = panelManager.addCustomPanel(container,
+                                                                  StaticWorkbenchPanelPresenter.class.getName());
 
-        assertTrue( panelManager.mapPanelDefinitionToPresenter.containsKey( customPanel ) );
+        assertTrue(panelManager.mapPanelDefinitionToPresenter.containsKey(customPanel));
     }
 
     @Test
     public void addedCustomPanelsInsideHTMLElementsShouldBeRemembered() throws Exception {
-        HTMLElement container = mock( HTMLElement.class );
-        PanelDefinition customPanel = panelManager.addCustomPanel( container, StaticWorkbenchPanelPresenter.class.getName() );
+        HTMLElement container = mock(HTMLElement.class);
+        PanelDefinition customPanel = panelManager.addCustomPanel(container,
+                                                                  StaticWorkbenchPanelPresenter.class.getName());
 
-        assertTrue( panelManager.mapPanelDefinitionToPresenter.containsKey( customPanel ) );
+        assertTrue(panelManager.mapPanelDefinitionToPresenter.containsKey(customPanel));
     }
 
     @Test
     public void explicitlyRemovedPanelsShouldBeForgotten() throws Exception {
-        PanelDefinition subPanel = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
-        testPerspectiveDef.getRoot().appendChild( CompassPosition.WEST, subPanel );
+        PanelDefinition subPanel = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        testPerspectiveDef.getRoot().appendChild(CompassPosition.WEST,
+                                                 subPanel);
 
-        panelManager.addWorkbenchPanel( panelManager.getRoot(), subPanel, CompassPosition.WEST );
-        panelManager.removeWorkbenchPanel( subPanel );
+        panelManager.addWorkbenchPanel(panelManager.getRoot(),
+                                       subPanel,
+                                       CompassPosition.WEST);
+        panelManager.removeWorkbenchPanel(subPanel);
 
-        assertFalse( panelManager.mapPanelDefinitionToPresenter.containsKey( subPanel ) );
+        assertFalse(panelManager.mapPanelDefinitionToPresenter.containsKey(subPanel));
     }
 
     @Test
     public void explicitlyRemovedCustomPanelsShouldBeForgotten() throws Exception {
-        HasWidgets container = mock( HasWidgets.class );
-        PanelDefinition customPanel = panelManager.addCustomPanel( container, StaticWorkbenchPanelPresenter.class.getName() );
-        panelManager.removeWorkbenchPanel( customPanel );
+        HasWidgets container = mock(HasWidgets.class);
+        PanelDefinition customPanel = panelManager.addCustomPanel(container,
+                                                                  StaticWorkbenchPanelPresenter.class.getName());
+        panelManager.removeWorkbenchPanel(customPanel);
 
-        assertFalse( panelManager.mapPanelDefinitionToPresenter.containsKey( customPanel ) );
+        assertFalse(panelManager.mapPanelDefinitionToPresenter.containsKey(customPanel));
     }
 
     @Test
     public void explicitlyRemovedCustomPanelsInsideHTMLElementsShouldBeForgotten() throws Exception {
-        HTMLElement container = mock( HTMLElement.class );
-        PanelDefinition customPanel = panelManager.addCustomPanel( container, StaticWorkbenchPanelPresenter.class.getName() );
-        panelManager.removeWorkbenchPanel( customPanel );
+        HTMLElement container = mock(HTMLElement.class);
+        PanelDefinition customPanel = panelManager.addCustomPanel(container,
+                                                                  StaticWorkbenchPanelPresenter.class.getName());
+        panelManager.removeWorkbenchPanel(customPanel);
 
-        assertFalse( panelManager.mapPanelDefinitionToPresenter.containsKey( customPanel ) );
+        assertFalse(panelManager.mapPanelDefinitionToPresenter.containsKey(customPanel));
     }
 
     @Test
     public void explicitlyRemovingRootPanelShouldFail() throws Exception {
         try {
-            panelManager.removeWorkbenchPanel( testPerspectiveDef.getRoot() );
-            fail( "Should have thrown exception" );
-        } catch ( IllegalArgumentException e ) {
-            assertTrue( e.getMessage().contains( "root" ) );
+            panelManager.removeWorkbenchPanel(testPerspectiveDef.getRoot());
+            fail("Should have thrown exception");
+        } catch (IllegalArgumentException e) {
+            assertTrue(e.getMessage().contains("root"));
         }
     }
-    
+
     @Test
     public void onSelectPlaceEventFocusesCorrectPresenter() throws Exception {
-        PanelDefinition p1 = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        PanelDefinition p1 = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
         PartDefinition pd1 = new PartDefinitionImpl(new DefaultPlaceRequest());
-        p1.addPart( pd1 );
-        testPerspectiveDef.getRoot().appendChild( CompassPosition.WEST, p1 );
-        panelManager.addWorkbenchPanel( panelManager.getRoot(), p1, CompassPosition.WEST );
-        
-        PanelDefinition p2 = new PanelDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
+        p1.addPart(pd1);
+        testPerspectiveDef.getRoot().appendChild(CompassPosition.WEST,
+                                                 p1);
+        panelManager.addWorkbenchPanel(panelManager.getRoot(),
+                                       p1,
+                                       CompassPosition.WEST);
+
+        PanelDefinition p2 = new PanelDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
         PartDefinition pd2 = new PartDefinitionImpl(new PathPlaceRequest());
-        p2.addPart( pd2 );
-        testPerspectiveDef.getRoot().appendChild( CompassPosition.EAST, p2 );
-        panelManager.addWorkbenchPanel( panelManager.getRoot(), p2, CompassPosition.EAST );
+        p2.addPart(pd2);
+        testPerspectiveDef.getRoot().appendChild(CompassPosition.EAST,
+                                                 p2);
+        panelManager.addWorkbenchPanel(panelManager.getRoot(),
+                                       p2,
+                                       CompassPosition.EAST);
 
         SelectPlaceEvent event = new SelectPlaceEvent(new PathPlaceRequest());
-        panelManager.onSelectPlaceEvent( event );
+        panelManager.onSelectPlaceEvent(event);
 
-        final WorkbenchPanelPresenter partPresenter = panelManager.mapPanelDefinitionToPresenter.get( p2 );
-        verify(partPresenter, times(2)).setFocus( true );
+        final WorkbenchPanelPresenter partPresenter = panelManager.mapPanelDefinitionToPresenter.get(p2);
+        verify(partPresenter,
+               times(2)).setFocus(true);
     }
 
     // After UF-117:
@@ -357,26 +394,47 @@ public class PanelManagerTest {
     static class StubEventSource<T> implements Event<T> {
 
         @Override
-        public void fire( T event ) {
+        public void fire(T event) {
             throw new UnsupportedOperationException("Not implemented.");
         }
 
         @Override
-        public Event<T> select( Annotation... qualifiers ) {
+        public Event<T> select(Annotation... qualifiers) {
             throw new UnsupportedOperationException("Not implemented.");
         }
 
         @Override
-        public <U extends T> Event<U> select( Class<U> subtype, Annotation... qualifiers ) {
+        public <U extends T> Event<U> select(Class<U> subtype,
+                                             Annotation... qualifiers) {
             throw new UnsupportedOperationException("Not implemented.");
         }
     }
 
-    static class StubPlaceGainFocusEvent extends StubEventSource<PlaceGainFocusEvent> {}
-    static class StubPlaceLostFocusEvent extends StubEventSource<PlaceLostFocusEvent> {}
-    static class StubSelectPlaceEvent extends StubEventSource<SelectPlaceEvent> {}
-    static class StubPanelFocusEvent extends StubEventSource<PanelFocusEvent> {}
-    static class StubPlaceMaximizedEvent extends StubEventSource<PlaceMaximizedEvent> {}
-    static class StubPlaceMinimizedEvent extends StubEventSource<PlaceMinimizedEvent> {}
-    static class StubPlaceHiddenEvent extends StubEventSource<PlaceHiddenEvent> {}
+    static class StubPlaceGainFocusEvent extends StubEventSource<PlaceGainFocusEvent> {
+
+    }
+
+    static class StubPlaceLostFocusEvent extends StubEventSource<PlaceLostFocusEvent> {
+
+    }
+
+    static class StubSelectPlaceEvent extends StubEventSource<SelectPlaceEvent> {
+
+    }
+
+    static class StubPanelFocusEvent extends StubEventSource<PanelFocusEvent> {
+
+    }
+
+    static class StubPlaceMaximizedEvent extends StubEventSource<PlaceMaximizedEvent> {
+
+    }
+
+    static class StubPlaceMinimizedEvent extends StubEventSource<PlaceMinimizedEvent> {
+
+    }
+
+    static class StubPlaceHiddenEvent extends StubEventSource<PlaceHiddenEvent> {
+
+    }
 }

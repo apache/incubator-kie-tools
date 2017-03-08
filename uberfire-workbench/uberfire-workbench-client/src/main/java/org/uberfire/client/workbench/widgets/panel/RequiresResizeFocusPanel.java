@@ -25,8 +25,8 @@ public class RequiresResizeFocusPanel
 
     @Override
     public void onResize() {
-        if ( getWidget() instanceof RequiresResize ) {
-            ( (RequiresResize) getWidget() ).onResize();
+        if (getWidget() instanceof RequiresResize) {
+            ((RequiresResize) getWidget()).onResize();
         }
     }
 }

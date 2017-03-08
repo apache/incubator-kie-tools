@@ -26,9 +26,10 @@ import org.uberfire.client.workbench.panels.WorkbenchPanelView;
 public class AdaptiveWorkbenchPanelPresenter extends AbstractDockingWorkbenchPanelPresenter<AdaptiveWorkbenchPanelPresenter> {
 
     @Inject
-    public AdaptiveWorkbenchPanelPresenter( @Named("AdaptiveWorkbenchPanelView") final WorkbenchPanelView<AdaptiveWorkbenchPanelPresenter> view,
-                                            final PerspectiveManager perspectiveManager ) {
-        super( view, perspectiveManager );
+    public AdaptiveWorkbenchPanelPresenter(@Named("AdaptiveWorkbenchPanelView") final WorkbenchPanelView<AdaptiveWorkbenchPanelPresenter> view,
+                                           final PerspectiveManager perspectiveManager) {
+        super(view,
+              perspectiveManager);
     }
 
     @Override
@@ -38,12 +39,11 @@ public class AdaptiveWorkbenchPanelPresenter extends AbstractDockingWorkbenchPan
 
     @Override
     public String getDefaultChildType() {
-        if ( getDefinition().isRoot() && !getDefinition().getParts().isEmpty() ) {
+        if (getDefinition().isRoot() && !getDefinition().getParts().isEmpty()) {
             return MultiListWorkbenchPanelPresenter.class.getName();
-        } else if ( getPanels().size() > 0 ) {
+        } else if (getPanels().size() > 0) {
             return MultiListWorkbenchPanelPresenter.class.getName();
         }
         return SimpleWorkbenchPanelPresenter.class.getName();
     }
-
 }

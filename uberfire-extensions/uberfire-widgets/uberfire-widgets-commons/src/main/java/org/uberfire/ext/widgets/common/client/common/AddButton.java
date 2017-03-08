@@ -25,28 +25,28 @@ import com.google.gwt.user.client.ui.Label;
 import org.uberfire.ext.widgets.common.client.resources.CommonImages;
 
 public class AddButton extends Composite
-    implements
-    HasClickHandlers {
+        implements
+        HasClickHandlers {
 
-    private Image plusButton = new Image( CommonImages.INSTANCE.newItem() );
+    private Image plusButton = new Image(CommonImages.INSTANCE.newItem());
 
-    private Label textLabel  = new Label();
+    private Label textLabel = new Label();
 
     public AddButton() {
         HorizontalPanel panel = new HorizontalPanel();
-        panel.add( plusButton );
-        panel.add( textLabel );
+        panel.add(plusButton);
+        panel.add(textLabel);
 
-        initWidget( panel );
-        setStyleName( "guvnor-cursor" );
+        initWidget(panel);
+        setStyleName("guvnor-cursor");
     }
 
     public void setText(String text) {
-        textLabel.setText( text );
+        textLabel.setText(text);
     }
 
     public HandlerRegistration addClickHandler(ClickHandler handler) {
-        textLabel.addClickHandler( handler );
-        return plusButton.addClickHandler( handler );
+        textLabel.addClickHandler(handler);
+        return plusButton.addClickHandler(handler);
     }
 }

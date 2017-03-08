@@ -20,10 +20,10 @@ import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInf
 
 public interface HierarchyStructurePresenter {
 
-    void init( String rootIdentifier );
+    void init(String rootIdentifier);
 
-    void init( String rootIdentifier,
-               PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategyInfo );
+    void init(String rootIdentifier,
+              PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategyInfo);
 
     HierarchyStructureView getView();
 }

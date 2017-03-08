@@ -36,48 +36,57 @@ import static org.junit.Assert.*;
 
 public class OpenCloseTest {
 
-    final IOService ioService = new IOServiceDotFileImpl();
     private static File path = null;
-
-    @Before
-    public void setup() throws IOException {
-        assertTrue( PriorityDisposableRegistry.getDisposables().contains( ioService ) );
-        path = CommonIOServiceDotFileTest.createTempDirectory();
-        System.setProperty( "org.uberfire.nio.git.dir", path.getAbsolutePath() );
-        System.out.println( ".niogit: " + path.getAbsolutePath() );
-
-        final URI newRepo = URI.create( "git://open-close-repo-test" );
-
-        ioService.newFileSystem( newRepo, new HashMap<String, Object>() );
-    }
+    final IOService ioService = new IOServiceDotFileImpl();
 
     @AfterClass
     @BeforeClass
     public static void cleanup() {
-        if ( path != null ) {
-            FileUtils.deleteQuietly( path );
+        if (path != null) {
+            FileUtils.deleteQuietly(path);
         }
+    }
+
+    @Before
+    public void setup() throws IOException {
+        assertTrue(PriorityDisposableRegistry.getDisposables().contains(ioService));
+        path = CommonIOServiceDotFileTest.createTempDirectory();
+        System.setProperty("org.uberfire.nio.git.dir",
+                           path.getAbsolutePath());
+        System.out.println(".niogit: " + path.getAbsolutePath());
+
+        final URI newRepo = URI.create("git://open-close-repo-test");
+
+        ioService.newFileSystem(newRepo,
+                                new HashMap<String, Object>());
     }
 
     @Test
     public void testOpenCloseFS() throws IOException, InterruptedException {
-        Path init = ioService.get( URI.create( "git://open-close-repo-test/readme.txt" ) );
-        ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
+        Path init = ioService.get(URI.create("git://open-close-repo-test/readme.txt"));
+        ioService.write(init,
+                        "init!",
+                        new CommentedOption("User Tester",
+                                            "message1"));
 
-        ioService.delete( init.getFileSystem().getPath( null ) );
+        ioService.delete(init.getFileSystem().getPath(null));
 
-        final URI repo = URI.create( "git://open-close-repo-test" );
+        final URI repo = URI.create("git://open-close-repo-test");
         try {
-            ioService.newFileSystem( repo, new HashMap<String, Object>() );
-        } catch ( FileSystemAlreadyExistsException ex ) {
-            fail( "FS doesn't exists!" );
+            ioService.newFileSystem(repo,
+                                    new HashMap<String, Object>());
+        } catch (FileSystemAlreadyExistsException ex) {
+            fail("FS doesn't exists!");
         }
 
-        ioService.write( init, "init!", new CommentedOption( "User Tester", "message1" ) );
-        assertEquals( "init!", ioService.readAllString( init ) );
+        ioService.write(init,
+                        "init!",
+                        new CommentedOption("User Tester",
+                                            "message1"));
+        assertEquals("init!",
+                     ioService.readAllString(init));
 
-        init = ioService.get( URI.create( "git://open-close-repo-test/readme.txt" ) );
-        ioService.delete( init.getFileSystem().getPath( null ) );
+        init = ioService.get(URI.create("git://open-close-repo-test/readme.txt"));
+        ioService.delete(init.getFileSystem().getPath(null));
     }
-
 }

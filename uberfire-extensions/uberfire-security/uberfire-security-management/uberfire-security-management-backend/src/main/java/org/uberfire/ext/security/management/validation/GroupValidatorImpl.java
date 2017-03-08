@@ -16,9 +16,9 @@
 
 package org.uberfire.ext.security.management.validation;
 
-import org.uberfire.ext.security.management.api.validation.GroupValidator;
-
 import java.util.ResourceBundle;
+
+import org.uberfire.ext.security.management.api.validation.GroupValidator;
 
 public class GroupValidatorImpl extends GroupValidator {
 

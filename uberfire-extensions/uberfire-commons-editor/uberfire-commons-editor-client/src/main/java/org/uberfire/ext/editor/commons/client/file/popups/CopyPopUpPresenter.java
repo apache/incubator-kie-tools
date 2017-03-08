@@ -31,61 +31,47 @@ import org.uberfire.ext.editor.commons.client.validation.Validator;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorCallback;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class CopyPopUpPresenter {
 
-    public interface View extends UberElement<CopyPopUpPresenter> {
-
-        void show();
-
-        void hide();
-
-        void handleDuplicatedFileName();
-
-        void handleInvalidFileName();
-
-        Path getTargetPath();
-
-        String getPackageName();
-    }
-
     private Path path;
-
     private Validator validator;
-
     private CommandWithFileNameAndCommitMessage command;
-
     private ToggleCommentPresenter toggleCommentPresenter;
-
     private View view;
 
     @Inject
-    public CopyPopUpPresenter( @Customizable View view,
-                               ToggleCommentPresenter toggleCommentPresenter ) {
+    public CopyPopUpPresenter(@Customizable View view,
+                              ToggleCommentPresenter toggleCommentPresenter) {
         this.view = view;
         this.toggleCommentPresenter = toggleCommentPresenter;
     }
 
     @PostConstruct
     public void setup() {
-        view.init( this );
+        view.init(this);
     }
 
-    public void show( Path path,
-                      Validator validator,
-                      CommandWithFileNameAndCommitMessage command ) {
-        this.path = checkNotNull( "path", path );
-        this.validator = checkNotNull( "validator", validator );
-        this.command = checkNotNull( "command", command );
+    public void show(Path path,
+                     Validator validator,
+                     CommandWithFileNameAndCommitMessage command) {
+        this.path = checkNotNull("path",
+                                 path);
+        this.validator = checkNotNull("validator",
+                                      validator);
+        this.command = checkNotNull("command",
+                                    command);
 
         view.show();
     }
 
-    public void show( final Path path,
-                      final CommandWithFileNameAndCommitMessage copyPopupCommand ) {
-        show( path, defaultValidator(), copyPopupCommand );
+    public void show(final Path path,
+                     final CommandWithFileNameAndCommitMessage copyPopupCommand) {
+        show(path,
+             defaultValidator(),
+             copyPopupCommand);
     }
 
     public void cancel() {
@@ -96,36 +82,38 @@ public class CopyPopUpPresenter {
         return view;
     }
 
-    public void copy( String newName ) {
-        final String newFileName = newName + extension( path.getFileName() );
+    public void copy(String newName) {
+        final String newFileName = newName + extension(path.getFileName());
 
-        validator.validate( newFileName, validatorCallback( toggleCommentPresenter.getComment(), newName ) );
+        validator.validate(newFileName,
+                           validatorCallback(toggleCommentPresenter.getComment(),
+                                             newName));
     }
 
     public ToggleCommentPresenter getToggleCommentPresenter() {
         return toggleCommentPresenter;
     }
 
-    private String extension( final String fileName ) {
-        return fileName.lastIndexOf( "." ) > 0 ? fileName.substring( fileName.lastIndexOf( "." ) ) : "";
+    private String extension(final String fileName) {
+        return fileName.lastIndexOf(".") > 0 ? fileName.substring(fileName.lastIndexOf(".")) : "";
     }
 
     private Validator defaultValidator() {
         return new Validator() {
             @Override
-            public void validate( final String value,
-                                  final ValidatorCallback callback ) {
+            public void validate(final String value,
+                                 final ValidatorCallback callback) {
                 callback.onSuccess();
             }
         };
     }
 
-    private ValidatorWithReasonCallback validatorCallback( final String commemt,
-                                                           final String baseFileName ) {
+    private ValidatorWithReasonCallback validatorCallback(final String commemt,
+                                                          final String baseFileName) {
         return new ValidatorWithReasonCallback() {
             @Override
-            public void onFailure( final String reason ) {
-                if ( ValidationErrorReason.DUPLICATED_NAME.name().equals( reason ) ) {
+            public void onFailure(final String reason) {
+                if (ValidationErrorReason.DUPLICATED_NAME.name().equals(reason)) {
                     view.handleDuplicatedFileName();
                 } else {
                     view.handleInvalidFileName();
@@ -134,7 +122,8 @@ public class CopyPopUpPresenter {
 
             @Override
             public void onSuccess() {
-                command.execute( new FileNameAndCommitMessage( baseFileName, commemt ) );
+                command.execute(new FileNameAndCommitMessage(baseFileName,
+                                                             commemt));
             }
 
             @Override
@@ -154,5 +143,20 @@ public class CopyPopUpPresenter {
 
     CommandWithFileNameAndCommitMessage getCommand() {
         return command;
+    }
+
+    public interface View extends UberElement<CopyPopUpPresenter> {
+
+        void show();
+
+        void hide();
+
+        void handleDuplicatedFileName();
+
+        void handleInvalidFileName();
+
+        Path getTargetPath();
+
+        String getPackageName();
     }
 }

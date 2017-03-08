@@ -16,6 +16,10 @@
 
 package org.uberfire.ext.wires.client.social.screens;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import org.ext.uberfire.social.activities.client.widgets.pagination.Next;
 import org.ext.uberfire.social.activities.client.widgets.timeline.simple.model.SimpleSocialTimelineWidgetModel;
 import org.ext.uberfire.social.activities.model.SocialPaged;
@@ -32,31 +36,19 @@ import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.wires.shared.social.ShowcaseSocialUserEvent;
 import org.uberfire.lifecycle.OnOpen;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 @ApplicationScoped
-@WorkbenchScreen( identifier = "SimpleTimelinePresenter" )
+@WorkbenchScreen(identifier = "SimpleTimelinePresenter")
 public class SimpleTimelinePresenter {
 
-    public interface View extends UberElement<SimpleTimelinePresenter> {
-
-        void setupWidget( SimpleSocialTimelineWidgetModel model );
-    }
-
+    @Inject
+    PlaceManager placeManager;
     @Inject
     private View view;
 
     @Inject
     private User loggedUser;
-
-    @Inject
-    PlaceManager placeManager;
-
     @Inject
     private Caller<SocialUserRepositoryAPI> socialUserRepositoryAPI;
-
     @Inject
     private Event<ShowcaseSocialUserEvent> event;
 
@@ -66,24 +58,24 @@ public class SimpleTimelinePresenter {
     }
 
     public void fireEvent() {
-        event.fire( new ShowcaseSocialUserEvent( loggedUser.getIdentifier() ) );
+        event.fire(new ShowcaseSocialUserEvent(loggedUser.getIdentifier()));
         updateTimeline();
     }
 
     public void updateTimeline() {
-        final SocialPaged socialPaged = new SocialPaged( 5 );
-        socialUserRepositoryAPI.call( new RemoteCallback<SocialUser>() {
-            public void callback( SocialUser socialUser ) {
-                SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel( socialUser,
-                                                                                             null,
-                                                                                             placeManager,
-                                                                                             socialPaged )
-                        .withOnlyMorePagination( new Next() {{
-                            setText( ">" );
-                        }} );
-                view.setupWidget( model );
+        final SocialPaged socialPaged = new SocialPaged(5);
+        socialUserRepositoryAPI.call(new RemoteCallback<SocialUser>() {
+            public void callback(SocialUser socialUser) {
+                SimpleSocialTimelineWidgetModel model = new SimpleSocialTimelineWidgetModel(socialUser,
+                                                                                            null,
+                                                                                            placeManager,
+                                                                                            socialPaged)
+                        .withOnlyMorePagination(new Next() {{
+                            setText(">");
+                        }});
+                view.setupWidget(model);
             }
-        } ).findSocialUser( loggedUser.getIdentifier() );
+        }).findSocialUser(loggedUser.getIdentifier());
     }
 
     @WorkbenchPartTitle
@@ -96,4 +88,8 @@ public class SimpleTimelinePresenter {
         return view;
     }
 
+    public interface View extends UberElement<SimpleTimelinePresenter> {
+
+        void setupWidget(SimpleSocialTimelineWidgetModel model);
+    }
 }

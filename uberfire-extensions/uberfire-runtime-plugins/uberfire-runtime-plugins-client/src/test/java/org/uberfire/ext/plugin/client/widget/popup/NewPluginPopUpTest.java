@@ -60,65 +60,79 @@ public class NewPluginPopUpTest {
 
     @Before
     public void setUp() {
-        presenter = new NewPluginPopUp( view ) {
+        presenter = new NewPluginPopUp(view) {
             @Override
-            protected PlaceRequest getPathPlaceRequest( Plugin response ) {
+            protected PlaceRequest getPathPlaceRequest(Plugin response) {
                 return new PathPlaceRequest();
             }
         };
 
-        pluginServicesCaller = new CallerMock<PluginServices>( pluginServices );
+        pluginServicesCaller = new CallerMock<PluginServices>(pluginServices);
         presenter.pluginServices = pluginServicesCaller;
         presenter.placeManager = placeManager;
 
-        when( pluginServices.createNewPlugin( anyString(), any( PluginType.class ) ) ).thenReturn( new Plugin() );
+        when(pluginServices.createNewPlugin(anyString(),
+                                            any(PluginType.class))).thenReturn(new Plugin());
 
-        successValidator = spy( new PluginNameValidator() {
+        successValidator = spy(new PluginNameValidator() {
             @Override
-            public void validate( String value,
-                                  ValidatorCallback callback ) {
+            public void validate(String value,
+                                 ValidatorCallback callback) {
                 callback.onSuccess();
             }
-        } );
+        });
 
-        failureValidator = spy( new PluginNameValidator() {
+        failureValidator = spy(new PluginNameValidator() {
             @Override
-            public void validate( String value,
-                                  ValidatorCallback callback ) {
+            public void validate(String value,
+                                 ValidatorCallback callback) {
                 callback.onFailure();
             }
-        } );
+        });
     }
 
     @Test
     public void testSuccessfulValidation() {
         presenter.pluginNameValidator = successValidator;
 
-        presenter.onOK( "newPlugin", PluginType.PERSPECTIVE );
+        presenter.onOK("newPlugin",
+                       PluginType.PERSPECTIVE);
 
-        verify( successValidator ).validate( eq( "newPlugin.plugin" ), any( ValidatorCallback.class ) );
-        verify( pluginServices ).createNewPlugin( "newPlugin", PluginType.PERSPECTIVE );
+        verify(successValidator).validate(eq("newPlugin.plugin"),
+                                          any(ValidatorCallback.class));
+        verify(pluginServices).createNewPlugin("newPlugin",
+                                               PluginType.PERSPECTIVE);
     }
 
     @Test
     public void testFailedValidation() {
         presenter.pluginNameValidator = failureValidator;
 
-        presenter.onOK( "invalid*", PluginType.PERSPECTIVE );
+        presenter.onOK("invalid*",
+                       PluginType.PERSPECTIVE);
 
-        verify( failureValidator ).validate( eq( "invalid*.plugin" ), any( ValidatorCallback.class ) );
-        verify( view ).handleNameValidationError( anyString() );
-        verify( view ).invalidName();
-        verify( pluginServices, never() ).createNewPlugin( anyString(), any( PluginType.class ) );
+        verify(failureValidator).validate(eq("invalid*.plugin"),
+                                          any(ValidatorCallback.class));
+        verify(view).handleNameValidationError(anyString());
+        verify(view).invalidName();
+        verify(pluginServices,
+               never()).createNewPlugin(anyString(),
+                                        any(PluginType.class));
     }
 
     @Test
     public void testPopupCanceled() {
         presenter.onCancel();
 
-        verify( successValidator, never() ).validate( anyString(), any( ValidatorCallback.class ) );
-        verify( failureValidator, never() ).validate( anyString(), any( ValidatorCallback.class ) );
-        verify( pluginServices, never() ).createNewPlugin( anyString(), any( PluginType.class ) );
-        verify( view ).hide();
+        verify(successValidator,
+               never()).validate(anyString(),
+                                 any(ValidatorCallback.class));
+        verify(failureValidator,
+               never()).validate(anyString(),
+                                 any(ValidatorCallback.class));
+        verify(pluginServices,
+               never()).createNewPlugin(anyString(),
+                                        any(PluginType.class));
+        verify(view).hide();
     }
 }

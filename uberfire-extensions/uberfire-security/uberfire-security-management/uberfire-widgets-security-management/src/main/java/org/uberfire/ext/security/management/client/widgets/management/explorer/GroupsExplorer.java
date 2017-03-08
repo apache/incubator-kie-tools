@@ -16,6 +16,11 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.explorer;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.Group;
@@ -23,15 +28,15 @@ import org.uberfire.ext.security.management.api.AbstractEntityManager;
 import org.uberfire.ext.security.management.api.Capability;
 import org.uberfire.ext.security.management.client.ClientUserSystemManager;
 import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
-import org.uberfire.ext.security.management.client.widgets.management.events.*;
+import org.uberfire.ext.security.management.client.widgets.management.events.AddUsersToGroupEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.CreateGroupEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.DeleteGroupEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.NewGroupEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.OnErrorEvent;
+import org.uberfire.ext.security.management.client.widgets.management.events.ReadGroupEvent;
 import org.uberfire.ext.security.management.client.widgets.management.list.EntitiesList;
 import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 import org.uberfire.ext.security.management.impl.SearchRequestImpl;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 
 /**
  * <p>Presenter class for groups explorer widget.</p>
@@ -40,23 +45,25 @@ import javax.inject.Inject;
 @Dependent
 public class GroupsExplorer extends AbstractEntityExplorer<Group> {
 
-   
     private Event<ReadGroupEvent> readGroupEvent;
     private Event<NewGroupEvent> newGroupEvent;
 
     @Inject
-    public GroupsExplorer(final ClientUserSystemManager userSystemManager, 
-                          final Event<OnErrorEvent> errorEvent, 
-                          final LoadingBox loadingBox, 
-                          final EntitiesList<Group> entitiesList, 
+    public GroupsExplorer(final ClientUserSystemManager userSystemManager,
+                          final Event<OnErrorEvent> errorEvent,
+                          final LoadingBox loadingBox,
+                          final EntitiesList<Group> entitiesList,
                           final EntitiesExplorerView view,
                           final Event<ReadGroupEvent> readGroupEvent,
                           final Event<NewGroupEvent> newGroupEvent) {
-        super(userSystemManager, errorEvent, loadingBox, entitiesList, view);
+        super(userSystemManager,
+              errorEvent,
+              loadingBox,
+              entitiesList,
+              view);
         this.readGroupEvent = readGroupEvent;
         this.newGroupEvent = newGroupEvent;
     }
-
 
     @Override
     public Widget asWidget() {
@@ -119,22 +126,27 @@ public class GroupsExplorer extends AbstractEntityExplorer<Group> {
 
         // Call backend service.
         userSystemManager.groups(new RemoteCallback<AbstractEntityManager.SearchResponse<Group>>() {
-            @Override
-            public void callback(final AbstractEntityManager.SearchResponse<Group> response) {
-                if (response != null) {
+                                     @Override
+                                     public void callback(final AbstractEntityManager.SearchResponse<Group> response) {
+                                         if (response != null) {
 
-                    final EntitiesList.Callback<Group> callback = createCallback();
+                                             final EntitiesList.Callback<Group> callback = createCallback();
 
-                    entitiesList.show(response, callback);
+                                             entitiesList.show(response,
+                                                               callback);
 
-                    // Show the explorer's view.
-                    view.show(context, viewCallback);
+                                             // Show the explorer's view.
+                                             view.show(context,
+                                                       viewCallback);
 
-                    hideLoadingView();
-                }
-            }
-        }, errorCallback).search(new SearchRequestImpl(searchPattern, currentPage, pageSize,
-                context != null ? context.getConstrainedEntities() : null));
+                                             hideLoadingView();
+                                         }
+                                     }
+                                 },
+                                 errorCallback).search(new SearchRequestImpl(searchPattern,
+                                                                             currentPage,
+                                                                             pageSize,
+                                                                             context != null ? context.getConstrainedEntities() : null));
     }
 
     void onGroupDeleted(@Observes final DeleteGroupEvent deleteGroupEvent) {
@@ -148,5 +160,4 @@ public class GroupsExplorer extends AbstractEntityExplorer<Group> {
     void onGroupCreated(@Observes final CreateGroupEvent createGroupEvent) {
         showSearch();
     }
-
 }

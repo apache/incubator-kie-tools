@@ -22,7 +22,6 @@ public class TreeNodesCategory extends Category {
     public static final TreeNodesCategory CATEGORY = new TreeNodesCategory();
 
     private TreeNodesCategory() {
-        super( "Tree Nodes" );
+        super("Tree Nodes");
     }
-
 }

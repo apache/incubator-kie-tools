@@ -57,34 +57,33 @@ public class DefaultEditorFileUploadTest {
 
     @Test
     public void formCharsetAdded() {
-        verify( formEncoder,
-                times( 1 ) ).addUtf8Charset( form );
+        verify(formEncoder,
+               times(1)).addUtf8Charset(form);
     }
 
     @Test
     public void formSubmitHandlersSet() {
-        verify( form,
-                never() ).addSubmitHandler( any( SubmitHandler.class ) );
-        verify( form,
-                times( 1 ) ).addSubmitCompleteHandler( any( SubmitCompleteHandler.class ) );
+        verify(form,
+               never()).addSubmitHandler(any(SubmitHandler.class));
+        verify(form,
+               times(1)).addSubmitCompleteHandler(any(SubmitCompleteHandler.class));
     }
 
     @Test
     public void formSubmitValidState() {
-        editor.setValid( true );
-        editor.upload( successCallback,
-                       errorCallback );
-        verify( form,
-                times( 1 ) ).submit();
+        editor.setValid(true);
+        editor.upload(successCallback,
+                      errorCallback);
+        verify(form,
+               times(1)).submit();
     }
 
     @Test
     public void formSubmitInvalidState() {
-        editor.setValid( false );
-        editor.upload( successCallback,
-                       errorCallback );
-        verify( form,
-                never() ).submit();
+        editor.setValid(false);
+        editor.upload(successCallback,
+                      errorCallback);
+        verify(form,
+               never()).submit();
     }
-
 }

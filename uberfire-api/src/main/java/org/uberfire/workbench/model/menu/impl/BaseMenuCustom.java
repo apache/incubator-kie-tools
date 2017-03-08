@@ -29,33 +29,47 @@ public abstract class BaseMenuCustom<T> implements MenuCustom<T> {
     private boolean enabled;
 
     protected BaseMenuCustom() {
-        this( null, null, null, true );
-
+        this(null,
+             null,
+             null,
+             true);
     }
 
-    protected BaseMenuCustom( boolean enabled ) {
-        this( null, null, null, enabled );
+    protected BaseMenuCustom(boolean enabled) {
+        this(null,
+             null,
+             null,
+             enabled);
     }
 
-    protected BaseMenuCustom( final String contributionPoint ) {
-        this( contributionPoint, null, null, true );
+    protected BaseMenuCustom(final String contributionPoint) {
+        this(contributionPoint,
+             null,
+             null,
+             true);
     }
 
-    protected BaseMenuCustom( final String contributionPoint,
-                              final String caption ) {
-        this( contributionPoint, caption, null, true );
+    protected BaseMenuCustom(final String contributionPoint,
+                             final String caption) {
+        this(contributionPoint,
+             caption,
+             null,
+             true);
     }
 
-    public BaseMenuCustom( final String contributionPoint,
-                           final String caption,
-                           final MenuPosition position ) {
-        this( contributionPoint, caption, position, true );
+    public BaseMenuCustom(final String contributionPoint,
+                          final String caption,
+                          final MenuPosition position) {
+        this(contributionPoint,
+             caption,
+             position,
+             true);
     }
 
-    public BaseMenuCustom( final String contributionPoint,
-                           final String caption,
-                           final MenuPosition position,
-                           final boolean enabled ) {
+    public BaseMenuCustom(final String contributionPoint,
+                          final String caption,
+                          final MenuPosition position,
+                          final boolean enabled) {
         this.contributionPoint = contributionPoint;
         this.caption = caption;
         this.position = position;
@@ -64,7 +78,7 @@ public abstract class BaseMenuCustom<T> implements MenuCustom<T> {
 
     @Override
     public String getIdentifier() {
-        if ( contributionPoint != null ) {
+        if (contributionPoint != null) {
             return getClass().getName() + "#" + contributionPoint + "#" + caption;
         }
         return getClass().getName() + "#" + caption;
@@ -76,7 +90,7 @@ public abstract class BaseMenuCustom<T> implements MenuCustom<T> {
     }
 
     @Override
-    public void setEnabled( boolean enabled ) {
+    public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
@@ -101,12 +115,12 @@ public abstract class BaseMenuCustom<T> implements MenuCustom<T> {
     }
 
     @Override
-    public void accept( final MenuVisitor visitor ) {
-        visitor.visit( this );
+    public void accept(final MenuVisitor visitor) {
+        visitor.visit(this);
     }
 
     @Override
-    public void addEnabledStateChangeListener( final EnabledStateChangeListener listener ) {
+    public void addEnabledStateChangeListener(final EnabledStateChangeListener listener) {
 
     }
 }

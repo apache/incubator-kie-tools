@@ -26,17 +26,21 @@ public class VersionHistoryScreenPlace
     public final static String FILENAME = "filename";
     public final static String VERSION = "version";
 
-    public VersionHistoryScreenPlace(ObservablePath pathToFile, String filename, String version) {
+    public VersionHistoryScreenPlace(ObservablePath pathToFile,
+                                     String filename,
+                                     String version) {
         super("versionHistoryScreen");
 
-        addParameter(URI, pathToFile.toURI());
-        addParameter(FILENAME, filename);
-        addParameter(VERSION, version);
+        addParameter(URI,
+                     pathToFile.toURI());
+        addParameter(FILENAME,
+                     filename);
+        addParameter(VERSION,
+                     version);
     }
 
     @Override
     public String toString() {
         return "VersionHistoryScreenPlace [identifier=" + identifier + ", parameters=" + parameters + "]";
     }
-    
 }

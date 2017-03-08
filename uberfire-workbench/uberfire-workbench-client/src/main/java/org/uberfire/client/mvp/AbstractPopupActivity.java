@@ -20,9 +20,9 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.client.annotations.WorkbenchPopup;
 import org.uberfire.client.annotations.WorkbenchPopup.WorkbenchPopupSize;
-import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.client.workbench.widgets.popup.PopupView;
 import org.uberfire.security.ResourceType;
+import org.uberfire.workbench.model.ActivityResourceType;
 
 /**
  * Implementation of behaviour common to all popup activities. Concrete implementations are typically not written by
@@ -46,8 +46,9 @@ public abstract class AbstractPopupActivity extends AbstractActivity implements 
     /**
      * MVP constructor that allows caller to provide the PopupView instance.
      */
-    protected AbstractPopupActivity( final PlaceManager placeManager, final PopupView popupView ) {
-        super( placeManager );
+    protected AbstractPopupActivity(final PlaceManager placeManager,
+                                    final PopupView popupView) {
+        super(placeManager);
         popup = popupView;
     }
 
@@ -60,7 +61,7 @@ public abstract class AbstractPopupActivity extends AbstractActivity implements 
     public abstract String getTitle();
 
     @Override
-    public WorkbenchPopupSize getSize(){
+    public WorkbenchPopupSize getSize() {
         return WorkbenchPopupSize.MEDIUM;
     }
 
@@ -76,32 +77,32 @@ public abstract class AbstractPopupActivity extends AbstractActivity implements 
     public void onOpen() {
         super.onOpen();
 
-        popup.addCloseHandler( new CloseHandler<PopupView>() {
+        popup.addCloseHandler(new CloseHandler<PopupView>() {
             @Override
-            public void onClose( CloseEvent<PopupView> event ) {
-                if ( !placeManagerIsClosingUs ) {
+            public void onClose(CloseEvent<PopupView> event) {
+                if (!placeManagerIsClosingUs) {
                     try {
                         popupAlreadyHiding = true;
-                        placeManager.closePlace( place );
+                        placeManager.closePlace(place);
                     } finally {
                         popupAlreadyHiding = false;
                     }
                 }
             }
-        } );
+        });
 
         final IsWidget widget = getWidget();
 
-        popup.setContent( widget );
-        popup.setSize( getSize() );
-        popup.setTitle( getTitle() );
+        popup.setContent(widget);
+        popup.setSize(getSize());
+        popup.setTitle(getTitle());
         popup.show();
     }
 
     @Override
     public void onClose() {
         super.onClose();
-        if ( !popupAlreadyHiding ) {
+        if (!popupAlreadyHiding) {
             try {
                 placeManagerIsClosingUs = true;
                 popup.hide();
@@ -115,5 +116,4 @@ public abstract class AbstractPopupActivity extends AbstractActivity implements 
     public boolean onMayClose() {
         return true;
     }
-
 }

@@ -27,7 +27,8 @@ import org.uberfire.ext.wires.bpmn.client.commands.ResultType;
 import org.uberfire.ext.wires.bpmn.client.commands.Results;
 import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 public class CardinalityRulesTest extends AbstractBaseRuleTest {
 
@@ -37,30 +38,30 @@ public class CardinalityRulesTest extends AbstractBaseRuleTest {
         final StartProcessNode candidate = new StartProcessNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : getCardinalityRules() ) {
-            ruleManager.addRule( rule );
+        for (Rule rule : getCardinalityRules()) {
+            ruleManager.addRule(rule);
         }
 
         //Try to add a single StartProcessNode
-        final Results results1 = ruleManager.checkCardinality( process,
-                                                               candidate,
-                                                               RuleManager.Operation.ADD );
+        final Results results1 = ruleManager.checkCardinality(process,
+                                                              candidate,
+                                                              RuleManager.Operation.ADD);
 
-        assertNotNull( results1 );
-        assertEquals( 0,
-                      results1.getMessages().size() );
-        process.addNode( candidate );
+        assertNotNull(results1);
+        assertEquals(0,
+                     results1.getMessages().size());
+        process.addNode(candidate);
 
         //Try to add a second StartProcessNode
-        final Results results2 = ruleManager.checkCardinality( process,
-                                                               candidate,
-                                                               RuleManager.Operation.ADD );
+        final Results results2 = ruleManager.checkCardinality(process,
+                                                              candidate,
+                                                              RuleManager.Operation.ADD);
 
-        assertNotNull( results2 );
-        assertEquals( 1,
-                      results2.getMessages().size() );
-        assertEquals( 1,
-                      results2.getMessages( ResultType.ERROR ).size() );
+        assertNotNull(results2);
+        assertEquals(1,
+                     results2.getMessages().size());
+        assertEquals(1,
+                     results2.getMessages(ResultType.ERROR).size());
     }
 
     @Test
@@ -69,30 +70,30 @@ public class CardinalityRulesTest extends AbstractBaseRuleTest {
         final EndProcessNode candidate = new EndProcessNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : getCardinalityRules() ) {
-            ruleManager.addRule( rule );
+        for (Rule rule : getCardinalityRules()) {
+            ruleManager.addRule(rule);
         }
 
         //Try to add a single EndProcessNode.
-        final Results results1 = ruleManager.checkCardinality( process,
-                                                               candidate,
-                                                               RuleManager.Operation.ADD );
+        final Results results1 = ruleManager.checkCardinality(process,
+                                                              candidate,
+                                                              RuleManager.Operation.ADD);
 
-        assertNotNull( results1 );
-        assertEquals( 0,
-                      results1.getMessages().size() );
-        process.addNode( candidate );
+        assertNotNull(results1);
+        assertEquals(0,
+                     results1.getMessages().size());
+        process.addNode(candidate);
 
         //Try to add a second EndProcessNode
-        final Results results2 = ruleManager.checkCardinality( process,
-                                                               candidate,
-                                                               RuleManager.Operation.ADD );
+        final Results results2 = ruleManager.checkCardinality(process,
+                                                              candidate,
+                                                              RuleManager.Operation.ADD);
 
-        assertNotNull( results2 );
-        assertEquals( 1,
-                      results2.getMessages().size() );
-        assertEquals( 1,
-                      results2.getMessages( ResultType.ERROR ).size() );
+        assertNotNull(results2);
+        assertEquals(1,
+                     results2.getMessages().size());
+        assertEquals(1,
+                     results2.getMessages(ResultType.ERROR).size());
     }
 
     @Test
@@ -101,18 +102,17 @@ public class CardinalityRulesTest extends AbstractBaseRuleTest {
         final BpmnGraphNode candidate = new TestDummyNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : getCardinalityRules() ) {
-            ruleManager.addRule( rule );
+        for (Rule rule : getCardinalityRules()) {
+            ruleManager.addRule(rule);
         }
 
         //Try to add a single TestDummyNode. There are no rules restricting the cardinality of TestDummyNode.
-        final Results results = ruleManager.checkCardinality( process,
-                                                              candidate,
-                                                              RuleManager.Operation.ADD );
+        final Results results = ruleManager.checkCardinality(process,
+                                                             candidate,
+                                                             RuleManager.Operation.ADD);
 
-        assertNotNull( results );
-        assertEquals( 0,
-                      results.getMessages().size() );
+        assertNotNull(results);
+        assertEquals(0,
+                     results.getMessages().size());
     }
-
 }

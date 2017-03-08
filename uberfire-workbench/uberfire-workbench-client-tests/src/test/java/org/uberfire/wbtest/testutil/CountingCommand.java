@@ -33,5 +33,4 @@ public class CountingCommand implements Command {
     public void execute() {
         executeCount++;
     }
-
 }

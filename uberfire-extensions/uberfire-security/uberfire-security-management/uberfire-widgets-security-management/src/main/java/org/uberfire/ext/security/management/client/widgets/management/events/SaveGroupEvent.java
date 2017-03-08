@@ -34,5 +34,4 @@ public class SaveGroupEvent implements UberFireEvent {
     public String toString() {
         return "SaveGroupEvent [name=" + name + "]";
     }
-
 }

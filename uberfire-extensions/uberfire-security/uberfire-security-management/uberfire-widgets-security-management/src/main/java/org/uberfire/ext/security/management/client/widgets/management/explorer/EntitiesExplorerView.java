@@ -16,15 +16,14 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.explorer;
 
+import java.util.Set;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
 import org.uberfire.ext.security.management.client.widgets.management.list.EntitiesList;
 
-import java.util.Set;
-
 /**
  * <p>Entities explorer view methods signatures.</p>
- *           
  * @since 0.8.0
  */
 public interface EntitiesExplorerView extends IsWidget {
@@ -33,35 +32,38 @@ public interface EntitiesExplorerView extends IsWidget {
      * <p>Configures the explorer's list widget.</p>
      * @param entityType A string that represents the current exploring type for the entities (eg: user, group). Used in buttons and texts in the explorer.
      * @param entitiesListView The view for entities list widget.
-     * @see <a>org.uberfire.ext.security.management.client.widgets.management.EntitiesListView</a>
      * @return The view instance.
+     * @see <a>org.uberfire.ext.security.management.client.widgets.management.EntitiesListView</a>
      */
-    EntitiesExplorerView configure(final String entityType, final EntitiesList.View entitiesListView);
+    EntitiesExplorerView configure(final String entityType,
+                                   final EntitiesList.View entitiesListView);
 
     /**
      * <p>Shows the list.</p>
-     * @param context The view context. 
-     * @see <a>org.uberfire.ext.security.management.client.widgets.management.explorer.EntitiesExplorerView.ViewContext</a>
+     * @param context The view context.
      * @param callback The view callback methods.
-     * @see <a>org.uberfire.ext.security.management.client.widgets.management.explorer.EntitiesExplorerView.ViewCallback</a>
      * @return The view instance.
+     * @see <a>org.uberfire.ext.security.management.client.widgets.management.explorer.EntitiesExplorerView.ViewContext</a>
+     * @see <a>org.uberfire.ext.security.management.client.widgets.management.explorer.EntitiesExplorerView.ViewCallback</a>
      */
-    EntitiesExplorerView show(final ViewContext context, final ViewCallback callback);
-    
+    EntitiesExplorerView show(final ViewContext context,
+                              final ViewCallback callback);
+
     /**
      * <p>Shows a meesage in the entities explorer view. No entities will be displayed, just the message.</p>
      * @param labelType The type of the label for the message.
      * @param message The message.
      * @return The view instance.
      */
-    EntitiesExplorerView showMessage(final LabelType labelType, final String message);
+    EntitiesExplorerView showMessage(final LabelType labelType,
+                                     final String message);
 
     /**
      * <p>Clears the current search.</p>
      * @return The view instance.
      */
     EntitiesExplorerView clearSearch();
-    
+
     /**
      * <p>Clears the view.</p>
      * @return The view instance.
@@ -77,51 +79,51 @@ public interface EntitiesExplorerView extends IsWidget {
         /**
          * <p>Allows enabling or disabling the entities search feature.</p>
          * @return <p>Two possible values:</p>
-         *          <ul>
-         *              <li><code>true</code> - The entities explorer widget enables the search feature.</li>
-         *              <li><code>false</code> - The entities explorer widget disables the search feature.</li>
-         *          </ul>
+         * <ul>
+         * <li><code>true</code> - The entities explorer widget enables the search feature.</li>
+         * <li><code>false</code> - The entities explorer widget disables the search feature.</li>
+         * </ul>
          */
         boolean canSearch();
 
         /**
          * <p>Allows enabling or disabling the entities creation feature.</p>
          * @return <p>Two possible values:</p>
-         *          <ul>
-         *              <li><code>true</code> - The entities explorer widget enables the create feature.</li>
-         *              <li><code>false</code> - The entities explorer widget disables the create feature.</li>
-         *              <li><code>null</code> - The entities explorer widget will determine if create is enabled by using the UserSysteManager API.</li>
-         *          </ul>
+         * <ul>
+         * <li><code>true</code> - The entities explorer widget enables the create feature.</li>
+         * <li><code>false</code> - The entities explorer widget disables the create feature.</li>
+         * <li><code>null</code> - The entities explorer widget will determine if create is enabled by using the UserSysteManager API.</li>
+         * </ul>
          */
         boolean canCreate();
 
         /**
          * <p>Allows enabling or disabling the entities read feature.</p>
          * @return <p>Two possible values:</p>
-         *          <ul>
-         *              <li><code>true</code> - The entities explorer widget enables the read feature.</li>
-         *              <li><code>false</code> - The entities explorer widget disables the read feature.</li>
-         *          </ul>
+         * <ul>
+         * <li><code>true</code> - The entities explorer widget enables the read feature.</li>
+         * <li><code>false</code> - The entities explorer widget disables the read feature.</li>
+         * </ul>
          */
         boolean canRead();
 
         /**
          * <p>Allows enabling or disabling the entities delete feature.</p>
          * @return <p>Two possible values:</p>
-         *          <ul>
-         *              <li><code>true</code> - The entities explorer widget enables the delete feature.</li>
-         *              <li><code>false</code> - The entities explorer widget disables the delete feature.</li>
-         *          </ul>
+         * <ul>
+         * <li><code>true</code> - The entities explorer widget enables the delete feature.</li>
+         * <li><code>false</code> - The entities explorer widget disables the delete feature.</li>
+         * </ul>
          */
         boolean canDelete();
 
         /**
          * <p>Allows enabling or disabling the entities selection feature.</p>
          * @return <p>Two possible values:</p>
-         *          <ul>
-         *              <li><code>true</code> - The entities explorer widget enables the selection feature.</li>
-         *              <li><code>false</code> - The entities explorer widget disables the selection feature.</li>
-         *          </ul>
+         * <ul>
+         * <li><code>true</code> - The entities explorer widget enables the selection feature.</li>
+         * <li><code>false</code> - The entities explorer widget disables the selection feature.</li>
+         * </ul>
          */
         boolean canSelect();
 
@@ -135,7 +137,6 @@ public interface EntitiesExplorerView extends IsWidget {
          * <p>The entity identifiers that cannot be used.</p>
          */
         Set<String> getConstrainedEntities();
-
     }
 
     /**

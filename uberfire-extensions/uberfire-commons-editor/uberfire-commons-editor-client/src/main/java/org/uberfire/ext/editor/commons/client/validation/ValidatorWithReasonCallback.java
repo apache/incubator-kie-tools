@@ -21,6 +21,5 @@ package org.uberfire.ext.editor.commons.client.validation;
  */
 public interface ValidatorWithReasonCallback extends ValidatorCallback {
 
-    public void onFailure( final String reason );
-
+    public void onFailure(final String reason);
 }

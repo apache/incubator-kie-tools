@@ -34,9 +34,9 @@ public interface GridColumnRenderer<T> {
      * @param renderingInformation Calculated rendering information supporting rendering.
      * @return
      */
-    Group renderHeader( final List<GridColumn.HeaderMetaData> headerMetaData,
-                        final GridHeaderColumnRenderContext context,
-                        final BaseGridRendererHelper.RenderingInformation renderingInformation );
+    Group renderHeader(final List<GridColumn.HeaderMetaData> headerMetaData,
+                       final GridHeaderColumnRenderContext context,
+                       final BaseGridRendererHelper.RenderingInformation renderingInformation);
 
     /**
      * Renders the column.textual information to support rendering
@@ -46,10 +46,10 @@ public interface GridColumnRenderer<T> {
      * @param renderingInformation Calculated rendering information supporting rendering.
      * @return
      */
-    Group renderColumn( final GridColumn<?> column,
-                        final GridBodyColumnRenderContext context,
-                        final BaseGridRendererHelper rendererHelper,
-                        final BaseGridRendererHelper.RenderingInformation renderingInformation );
+    Group renderColumn(final GridColumn<?> column,
+                       final GridBodyColumnRenderContext context,
+                       final BaseGridRendererHelper rendererHelper,
+                       final BaseGridRendererHelper.RenderingInformation renderingInformation);
 
     /**
      * Renders a cell for the column for a row. Normally a column would use its logical index
@@ -58,7 +58,6 @@ public interface GridColumnRenderer<T> {
      * @param context Contextual information to support rendering
      * @return
      */
-    Group renderCell( final GridCell<T> cell,
-                      final GridBodyCellRenderContext context );
-
+    Group renderCell(final GridCell<T> cell,
+                     final GridBodyCellRenderContext context);
 }

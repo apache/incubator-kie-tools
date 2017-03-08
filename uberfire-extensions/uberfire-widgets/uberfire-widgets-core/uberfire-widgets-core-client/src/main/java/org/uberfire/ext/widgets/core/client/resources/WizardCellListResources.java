@@ -25,7 +25,7 @@ public interface WizardCellListResources
         extends
         CellList.Resources {
 
-    WizardCellListResources INSTANCE = GWT.create( WizardCellListResources.class );
+    WizardCellListResources INSTANCE = GWT.create(WizardCellListResources.class);
 
     @Source("css/WizardsCellList.css")
     WizardCellListStyle cellListStyle();
@@ -45,7 +45,5 @@ public interface WizardCellListResources
         String cellListWidget();
 
         String cellListEmptyItem();
-
     }
-
 }

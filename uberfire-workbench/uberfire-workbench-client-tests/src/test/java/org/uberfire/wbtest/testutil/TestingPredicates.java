@@ -16,12 +16,10 @@
 
 package org.uberfire.wbtest.testutil;
 
-import org.uberfire.wbtest.client.main.DefaultScreenActivity;
-import org.uberfire.wbtest.client.panels.docking.NestingScreen;
-
 import com.google.common.base.Predicate;
 import com.google.gwt.user.client.DOM;
-
+import org.uberfire.wbtest.client.main.DefaultScreenActivity;
+import org.uberfire.wbtest.client.panels.docking.NestingScreen;
 
 public class TestingPredicates {
 
@@ -31,7 +29,7 @@ public class TestingPredicates {
      */
     public static final Predicate<Void> DEFAULT_SCREEN_NOT_LOADED = new Predicate<Void>() {
         @Override
-        public boolean apply( Void input ) {
+        public boolean apply(Void input) {
             return DefaultScreenActivity.instanceCount == 0;
         }
     };
@@ -41,8 +39,8 @@ public class TestingPredicates {
      */
     public static final Predicate<Void> DEFAULT_SCREEN_NOT_VISIBLE = new Predicate<Void>() {
         @Override
-        public boolean apply( Void input ) {
-            return DOM.getElementById( "gwt-debug-" + DefaultScreenActivity.DEBUG_ID ) == null;
+        public boolean apply(Void input) {
+            return DOM.getElementById("gwt-debug-" + DefaultScreenActivity.DEBUG_ID) == null;
         }
     };
 
@@ -51,7 +49,7 @@ public class TestingPredicates {
      */
     public static final Predicate<Void> NESTING_SCREEN_NOT_LOADED = new Predicate<Void>() {
         @Override
-        public boolean apply( Void input ) {
+        public boolean apply(Void input) {
             return NestingScreen.instanceCount == 0;
         }
     };

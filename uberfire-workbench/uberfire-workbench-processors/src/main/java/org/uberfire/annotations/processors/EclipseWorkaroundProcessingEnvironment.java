@@ -18,7 +18,6 @@ package org.uberfire.annotations.processors;
 
 import java.util.Locale;
 import java.util.Map;
-
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -36,7 +35,7 @@ public class EclipseWorkaroundProcessingEnvironment implements ProcessingEnviron
 
     public EclipseWorkaroundProcessingEnvironment(ProcessingEnvironment realImpl) {
         this.realImpl = realImpl;
-        this.wrappedTypeUtils = new EclipseWorkaroundTypeUtils( realImpl.getTypeUtils() );
+        this.wrappedTypeUtils = new EclipseWorkaroundTypeUtils(realImpl.getTypeUtils());
     }
 
     @Override
@@ -73,5 +72,4 @@ public class EclipseWorkaroundProcessingEnvironment implements ProcessingEnviron
     public Types getTypeUtils() {
         return wrappedTypeUtils;
     }
-
 }

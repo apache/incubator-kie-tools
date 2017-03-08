@@ -24,32 +24,30 @@ import org.uberfire.java.nio.file.Path;
 
 public interface IOSearchService {
 
-    List<Path> searchByAttrs( final Map<String, ?> attrs,
+    List<Path> searchByAttrs(final Map<String, ?> attrs,
+                             final Filter filter,
+                             final Path... roots);
+
+    List<Path> fullTextSearch(final String term,
                               final Filter filter,
-                              final Path... roots );
+                              final Path... roots);
 
-    List<Path> fullTextSearch( final String term,
-                               final Filter filter,
-                               final Path... roots );
+    int searchByAttrsHits(final Map<String, ?> attrs,
+                          final Path... roots);
 
-    int searchByAttrsHits( final Map<String, ?> attrs,
-                           final Path... roots );
-
-    int fullTextSearchHits( final String term,
-                            final Path... roots );
+    int fullTextSearchHits(final String term,
+                           final Path... roots);
 
     interface Filter {
 
-        boolean accept( final KObject kObject );
-
+        boolean accept(final KObject kObject);
     }
 
     class NoOpFilter implements Filter {
 
         @Override
-        public boolean accept( final KObject kObject ) {
+        public boolean accept(final KObject kObject) {
             return true;
         }
     }
-
 }

@@ -39,6 +39,5 @@ public interface BpmnService extends SupportsCreate<ProcessNode>,
 
     List<Path> listFiles();
 
-    BpmnEditorContent loadContent( final Path path );
-
+    BpmnEditorContent loadContent(final Path path);
 }

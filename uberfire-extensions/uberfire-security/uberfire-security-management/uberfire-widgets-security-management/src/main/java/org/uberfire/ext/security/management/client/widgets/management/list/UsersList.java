@@ -26,8 +26,9 @@ import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 public class UsersList extends EntitiesList<User> {
 
     @Inject
-    public UsersList( LoadingBox loadingBox, View view ) {
-        super( loadingBox, view );
+    public UsersList(LoadingBox loadingBox,
+                     View view) {
+        super(loadingBox,
+              view);
     }
-
 }

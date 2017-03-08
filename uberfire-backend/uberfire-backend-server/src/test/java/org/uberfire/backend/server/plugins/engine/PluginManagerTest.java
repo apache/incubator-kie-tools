@@ -15,22 +15,21 @@
  */
 package org.uberfire.backend.server.plugins.engine;
 
+import java.util.concurrent.ExecutorService;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.concurrent.ExecutorService;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PluginManagerTest extends AbstractPluginsTest{
+public class PluginManagerTest extends AbstractPluginsTest {
 
     @Mock
     private PluginWatcher pluginWatcher;
@@ -43,29 +42,34 @@ public class PluginManagerTest extends AbstractPluginsTest{
 
     @Test
     public void initPluginLoader() throws Exception {
-        manager.init( contextRootDir, pluginDir );
+        manager.init(contextRootDir,
+                     pluginDir);
         verify(pluginJarProcessor,
-                times( 1 ) ).init( eq( pluginDir ),
-                eq( pluginDeploymentDir ) );
+               times(1)).init(eq(pluginDir),
+                              eq(pluginDeploymentDir));
     }
 
     @Test
     public void initStartsWatcher() throws Exception {
-        manager.init( contextRootDir, pluginDir );
-        verify(pluginWatcher, times(1)).start(eq(pluginDir), any(ExecutorService.class), eq(pluginJarProcessor));
+        manager.init(contextRootDir,
+                     pluginDir);
+        verify(pluginWatcher,
+               times(1)).start(eq(pluginDir),
+                               any(ExecutorService.class),
+                               eq(pluginJarProcessor));
     }
 
     @Test
     public void shutdownStopsWatcher() throws Exception {
-        manager.shutDown( );
-        verify(pluginWatcher, times(1)).stop();
+        manager.shutDown();
+        verify(pluginWatcher,
+               times(1)).stop();
     }
 
     @Test
     public void findPluginDeploymentDir() throws Exception {
-        final String pluginDeploymentDir = manager.findPluginDeploymentDir( contextRootDir );
-        assertEquals( this.pluginDeploymentDir, pluginDeploymentDir );
+        final String pluginDeploymentDir = manager.findPluginDeploymentDir(contextRootDir);
+        assertEquals(this.pluginDeploymentDir,
+                     pluginDeploymentDir);
     }
-
-
 }

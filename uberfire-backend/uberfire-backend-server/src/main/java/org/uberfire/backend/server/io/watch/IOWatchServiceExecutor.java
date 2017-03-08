@@ -22,7 +22,6 @@ import org.uberfire.java.nio.file.WatchKey;
 
 public interface IOWatchServiceExecutor {
 
-    void execute( final WatchKey watchKey,
-                  final Filter<WatchEvent<?>> filter );
-
+    void execute(final WatchKey watchKey,
+                 final Filter<WatchEvent<?>> filter);
 }

@@ -27,7 +27,7 @@ public class ResizableTextArea extends TextArea
     public void onResize() {
         int height = getParent().getOffsetHeight() - 30;
         int width = getParent().getOffsetWidth() - 30;
-        setPixelSize( width, height );
+        setPixelSize(width,
+                     height);
     }
-
 }

@@ -31,7 +31,7 @@ public interface HasMagnets extends WiresShape {
      * Add a Magnet to the Shape
      * @param m
      */
-    void addMagnet( final Magnet m );
+    void addMagnet(final Magnet m);
 
     /**
      * Show Magnets

@@ -28,8 +28,8 @@ public interface MultiPageEditor extends IsWidget {
 
     MultiPageEditorView getView();
 
-    void addWidget( final IsWidget widget, final String label );
+    void addWidget(final IsWidget widget,
+                   final String label);
 
     void clear();
-
 }

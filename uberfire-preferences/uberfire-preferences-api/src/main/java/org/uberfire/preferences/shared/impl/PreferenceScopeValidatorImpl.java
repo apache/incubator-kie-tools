@@ -37,33 +37,33 @@ public class PreferenceScopeValidatorImpl implements PreferenceScopeValidator {
     }
 
     @Inject
-    public PreferenceScopeValidatorImpl( @Customizable final PreferenceScopeTypes scopeTypes,
-                                         @Customizable final PreferenceScopeResolutionStrategy scopeResolutionStrategy ) {
+    public PreferenceScopeValidatorImpl(@Customizable final PreferenceScopeTypes scopeTypes,
+                                        @Customizable final PreferenceScopeResolutionStrategy scopeResolutionStrategy) {
         this.scopeTypes = scopeTypes;
         this.scopeResolutionStrategy = scopeResolutionStrategy;
     }
 
     @Override
-    public void validate( final PreferenceScope scope ) throws InvalidPreferenceScopeException {
-        if ( scope == null ) {
-            throw new InvalidPreferenceScopeException( "A root scope must not be null." );
+    public void validate(final PreferenceScope scope) throws InvalidPreferenceScopeException {
+        if (scope == null) {
+            throw new InvalidPreferenceScopeException("A root scope must not be null.");
         }
 
-        for ( PreferenceScope currentScope = scope; currentScope != null; currentScope = currentScope.childScope() ) {
+        for (PreferenceScope currentScope = scope; currentScope != null; currentScope = currentScope.childScope()) {
             final String type = currentScope.type();
             final String key = currentScope.key();
 
-            if ( scopeTypes.typeRequiresKey( type ) && isEmpty( key ) ) {
-                throw new InvalidPreferenceScopeException( "The type " + type + " must be associated with a non empty key." );
+            if (scopeTypes.typeRequiresKey(type) && isEmpty(key)) {
+                throw new InvalidPreferenceScopeException("The type " + type + " must be associated with a non empty key.");
             }
         }
 
-        if ( !scopeResolutionStrategy.getInfo().order().contains( scope ) ) {
-            throw new InvalidPreferenceScopeException( "This scope is not defined in the scope hierarchy." );
+        if (!scopeResolutionStrategy.getInfo().order().contains(scope)) {
+            throw new InvalidPreferenceScopeException("This scope is not defined in the scope hierarchy.");
         }
     }
 
-    protected boolean isEmpty( String str ) {
+    protected boolean isEmpty(String str) {
         return str == null || str.trim().isEmpty();
     }
 }

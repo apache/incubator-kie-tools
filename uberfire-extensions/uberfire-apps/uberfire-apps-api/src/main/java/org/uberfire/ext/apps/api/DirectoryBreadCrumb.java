@@ -29,23 +29,25 @@ public class DirectoryBreadCrumb {
     private String name;
     private String uri;
 
-    public static List<DirectoryBreadCrumb> getBreadCrumbs(Directory directory) {
-        List<DirectoryBreadCrumb> breadcrumbs = new ArrayList<DirectoryBreadCrumb>();
-        breadcrumbs.add( new DirectoryBreadCrumb( directory.getName(), directory.getURI() ) );
-        Directory tempParent = directory.getParent();
-        while ( tempParent != null ) {
-            breadcrumbs.add( new DirectoryBreadCrumb( tempParent.getName(), tempParent.getURI() ) );
-            tempParent = tempParent.getParent();
-        }
-        Collections.reverse( breadcrumbs );
-        return breadcrumbs;
-    }
-
-    private DirectoryBreadCrumb( @MapsTo("name") String name,
-                                 @MapsTo("uri") String uri ) {
+    private DirectoryBreadCrumb(@MapsTo("name") String name,
+                                @MapsTo("uri") String uri) {
 
         this.name = name;
         this.uri = uri;
+    }
+
+    public static List<DirectoryBreadCrumb> getBreadCrumbs(Directory directory) {
+        List<DirectoryBreadCrumb> breadcrumbs = new ArrayList<DirectoryBreadCrumb>();
+        breadcrumbs.add(new DirectoryBreadCrumb(directory.getName(),
+                                                directory.getURI()));
+        Directory tempParent = directory.getParent();
+        while (tempParent != null) {
+            breadcrumbs.add(new DirectoryBreadCrumb(tempParent.getName(),
+                                                    tempParent.getURI()));
+            tempParent = tempParent.getParent();
+        }
+        Collections.reverse(breadcrumbs);
+        return breadcrumbs;
     }
 
     public String getName() {

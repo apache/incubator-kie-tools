@@ -35,38 +35,40 @@ public class SocialFile {
     private final Path path;
     private final Gson gson;
     private final String JSON_SEPARATOR = "01";
-    private byte[] JSON_SEPARATOR_BYTES;
     private final IOService ioService;
+    private byte[] JSON_SEPARATOR_BYTES;
     private SeekableByteChannel reader;
     private long currentCursorReadPosition;
     private ByteBuffer byteBufferSize;
 
-    public SocialFile( final Path path,
-                       final IOService ioService,
-                       final Gson gson ) {
+    public SocialFile(final Path path,
+                      final IOService ioService,
+                      final Gson gson) {
         try {
-            JSON_SEPARATOR_BYTES = Hex.decodeHex( JSON_SEPARATOR.toCharArray() );
-        } catch ( DecoderException e ) {
+            JSON_SEPARATOR_BYTES = Hex.decodeHex(JSON_SEPARATOR.toCharArray());
+        } catch (DecoderException e) {
             throw new ErrorReadingFile();
         }
-        this.byteBufferSize = ByteBuffer.allocate( "a".getBytes().length );
+        this.byteBufferSize = ByteBuffer.allocate("a".getBytes().length);
         this.path = path;
         this.gson = gson;
         this.currentCursorReadPosition = -1;
         this.ioService = ioService;
     }
 
-    public void write( List<SocialActivitiesEvent> events ) throws IOException {
+    public void write(List<SocialActivitiesEvent> events) throws IOException {
         try {
-            ioService.startBatch( path.getFileSystem() );
+            ioService.startBatch(path.getFileSystem());
 
-            SeekableByteChannel sbc = ioService.newByteChannel( path );
-            for ( SocialActivitiesEvent event : events ) {
-                String json = gson.toJson( event );
-                writeJson( json, sbc );
-                writeSeparator( sbc );
-                writeJsonSize( sbc, json );
-                writeSeparator( sbc );
+            SeekableByteChannel sbc = ioService.newByteChannel(path);
+            for (SocialActivitiesEvent event : events) {
+                String json = gson.toJson(event);
+                writeJson(json,
+                          sbc);
+                writeSeparator(sbc);
+                writeJsonSize(sbc,
+                              json);
+                writeSeparator(sbc);
             }
             sbc.close();
         } finally {
@@ -74,52 +76,54 @@ public class SocialFile {
         }
     }
 
-    private void writeJsonSize( SeekableByteChannel sbc,
-                                String json ) throws IOException {
-        String jsonLenght = String.valueOf( json.getBytes().length );
-        ByteBuffer bfSrc = ByteBuffer.wrap( jsonLenght.getBytes() );
-        sbc.write( bfSrc );
+    private void writeJsonSize(SeekableByteChannel sbc,
+                               String json) throws IOException {
+        String jsonLenght = String.valueOf(json.getBytes().length);
+        ByteBuffer bfSrc = ByteBuffer.wrap(jsonLenght.getBytes());
+        sbc.write(bfSrc);
     }
 
-    private void writeSeparator( SeekableByteChannel sbc ) throws IOException {
-        ByteBuffer bfSrc = ByteBuffer.wrap( JSON_SEPARATOR_BYTES );
-        sbc.write( bfSrc );
+    private void writeSeparator(SeekableByteChannel sbc) throws IOException {
+        ByteBuffer bfSrc = ByteBuffer.wrap(JSON_SEPARATOR_BYTES);
+        sbc.write(bfSrc);
     }
 
-    private void writeJson( String json,
-                            SeekableByteChannel sbc ) throws IOException {
-        ByteBuffer bfSrc = ByteBuffer.wrap( json.getBytes() );
-        sbc.write( bfSrc );
+    private void writeJson(String json,
+                           SeekableByteChannel sbc) throws IOException {
+        ByteBuffer bfSrc = ByteBuffer.wrap(json.getBytes());
+        sbc.write(bfSrc);
     }
 
     public void prepareForReading() throws IOException {
-        reader = ioService.newByteChannel( path, StandardOpenOption.READ );
+        reader = ioService.newByteChannel(path,
+                                          StandardOpenOption.READ);
         currentCursorReadPosition = reader.size() - 1;
     }
 
     private void reverseSearchForSeparatorPosition() throws IOException {
-        if ( reader.size() > 0 ) {
-            reader.position( currentCursorReadPosition );
-            reader.read( byteBufferSize );
+        if (reader.size() > 0) {
+            reader.position(currentCursorReadPosition);
+            reader.read(byteBufferSize);
             byteBufferSize.flip();
-            String s = new String( byteBufferSize.array() );
-            if ( !lookforSeparator( byteBufferSize.array() ) ) {
+            String s = new String(byteBufferSize.array());
+            if (!lookforSeparator(byteBufferSize.array())) {
                 currentCursorReadPosition--;
                 reverseSearchForSeparatorPosition();
             }
         }
     }
 
-    public List<SocialActivitiesEvent> readSocialEvents( Integer numberOfEvents ) {
+    public List<SocialActivitiesEvent> readSocialEvents(Integer numberOfEvents) {
         List<SocialActivitiesEvent> events = new ArrayList<SocialActivitiesEvent>();
 
-        if ( ioService.exists( path ) ) {
-            for ( int i = 0; i < numberOfEvents; i++ ) {
+        if (ioService.exists(path)) {
+            for (int i = 0; i < numberOfEvents; i++) {
                 try {
                     String json = readNextSocialEventJSON();
-                    SocialActivitiesEvent event = gson.fromJson( json, SocialActivitiesEvent.class );
-                    events.add( event );
-                } catch ( Exception e ) {
+                    SocialActivitiesEvent event = gson.fromJson(json,
+                                                                SocialActivitiesEvent.class);
+                    events.add(event);
+                } catch (Exception e) {
                     //ignore json error, try read next
                 }
             }
@@ -128,10 +132,10 @@ public class SocialFile {
     }
 
     private String readNextSocialEventJSON() throws IOException {
-        if ( startReading() ) {
+        if (startReading()) {
             prepareForReading();
         }
-        if ( reader.size() <= 0 ) {
+        if (reader.size() <= 0) {
             throw new EmptySocialFile();
         }
 
@@ -139,64 +143,66 @@ public class SocialFile {
 
         StringBuilder numberOfBytesNextJSON = getNumberOfBytesOfJSON();
 
-        if ( StringUtils.isNumeric( numberOfBytesNextJSON.toString() ) ) {
-            return extractJSON( numberOfBytesNextJSON );
+        if (StringUtils.isNumeric(numberOfBytesNextJSON.toString())) {
+            return extractJSON(numberOfBytesNextJSON);
         } else {
             return readNextSocialEventJSON();
         }
     }
 
     private String extractJSON(
-            StringBuilder numberOfBytesNextJSON ) throws IOException {
+            StringBuilder numberOfBytesNextJSON) throws IOException {
 
-        Integer numberOfBytes = getNumberOfBytesToReadJSON( numberOfBytesNextJSON );
-        putCursorInRightPosition( numberOfBytes );
+        Integer numberOfBytes = getNumberOfBytesToReadJSON(numberOfBytesNextJSON);
+        putCursorInRightPosition(numberOfBytes);
 
-        return readJSON( numberOfBytes );
+        return readJSON(numberOfBytes);
     }
 
-    private String readJSON( Integer numberOfBytes ) throws IOException {
-        ByteBuffer jsonByteBuffer = ByteBuffer.allocate( numberOfBytes.intValue() );
+    private String readJSON(Integer numberOfBytes) throws IOException {
+        ByteBuffer jsonByteBuffer = ByteBuffer.allocate(numberOfBytes.intValue());
         StringBuilder extractedJSON = new StringBuilder();
-        while ( ( reader.read( jsonByteBuffer ) ) > 0 ) {
-            extractedJSON.append( new String( jsonByteBuffer.array() ) );
+        while ((reader.read(jsonByteBuffer)) > 0) {
+            extractedJSON.append(new String(jsonByteBuffer.array()));
         }
         return extractedJSON.toString();
     }
 
-    private void putCursorInRightPosition( Integer numberOfBytes ) throws IOException {
+    private void putCursorInRightPosition(Integer numberOfBytes) throws IOException {
         currentCursorReadPosition = currentCursorReadPosition - numberOfBytes.intValue();
-        reader.position( currentCursorReadPosition );
+        reader.position(currentCursorReadPosition);
     }
 
-    private Integer getNumberOfBytesToReadJSON( StringBuilder numberOfBytesNextJSON ) {
-        Integer numberOfBytes = new Integer( numberOfBytesNextJSON.toString() );
+    private Integer getNumberOfBytesToReadJSON(StringBuilder numberOfBytesNextJSON) {
+        Integer numberOfBytes = new Integer(numberOfBytesNextJSON.toString());
         return numberOfBytes;
     }
 
     private StringBuilder getNumberOfBytesOfJSON() throws IOException {
         currentCursorReadPosition = currentCursorReadPosition - 1;
-        reader.position( currentCursorReadPosition );
+        reader.position(currentCursorReadPosition);
 
         StringBuilder numberOfBytesNextJSON = new StringBuilder();
-        if ( thereIsSomethingToRead( reader, byteBufferSize ) ) {
+        if (thereIsSomethingToRead(reader,
+                                   byteBufferSize)) {
             byteBufferSize.flip();
 
-            if ( !lookforSeparator( byteBufferSize.array() ) ) {
-                String charRead = new String( byteBufferSize.array() );
-                numberOfBytesNextJSON.append( charRead );
+            if (!lookforSeparator(byteBufferSize.array())) {
+                String charRead = new String(byteBufferSize.array());
+                numberOfBytesNextJSON.append(charRead);
                 currentCursorReadPosition = currentCursorReadPosition - 1;
-                reader.position( currentCursorReadPosition );
-                while ( thereIsSomethingToRead( reader, byteBufferSize ) ) {
+                reader.position(currentCursorReadPosition);
+                while (thereIsSomethingToRead(reader,
+                                              byteBufferSize)) {
                     byteBufferSize.flip();
-                    charRead = new String( byteBufferSize.array() );
-                    if ( lookforSeparator( byteBufferSize.array() ) ) {
+                    charRead = new String(byteBufferSize.array());
+                    if (lookforSeparator(byteBufferSize.array())) {
                         break;
                     }
-                    numberOfBytesNextJSON.append( charRead );
+                    numberOfBytesNextJSON.append(charRead);
                     byteBufferSize.clear();
                     currentCursorReadPosition = currentCursorReadPosition - 1;
-                    reader.position( currentCursorReadPosition );
+                    reader.position(currentCursorReadPosition);
                 }
             }
         }
@@ -208,15 +214,15 @@ public class SocialFile {
         return reader == null || currentCursorReadPosition <= 0;
     }
 
-    private boolean thereIsSomethingToRead( SeekableByteChannel sbc,
-                                            ByteBuffer bf ) throws IOException {
+    private boolean thereIsSomethingToRead(SeekableByteChannel sbc,
+                                           ByteBuffer bf) throws IOException {
         int i;
-        return ( i = sbc.read( bf ) ) > 0;
+        return (i = sbc.read(bf)) > 0;
     }
 
-    private boolean lookforSeparator( byte[] charRead ) {
-        String hexString = Hex.encodeHexString( charRead );
-        return hexString.equalsIgnoreCase( JSON_SEPARATOR );
+    private boolean lookforSeparator(byte[] charRead) {
+        String hexString = Hex.encodeHexString(charRead);
+        return hexString.equalsIgnoreCase(JSON_SEPARATOR);
     }
 
     private class EmptySocialFile extends RuntimeException {

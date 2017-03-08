@@ -28,8 +28,8 @@ public class FileSystemResourceAdaptor implements RuntimeContentResource {
 
     private final FileSystem fileSystem;
 
-    public FileSystemResourceAdaptor( final FileSystem fileSystem ) {
-        if ( fileSystem == null ) {
+    public FileSystemResourceAdaptor(final FileSystem fileSystem) {
+        if (fileSystem == null) {
             this.fileSystem = null;
         } else {
             this.fileSystem = fileSystem.getRootDirectories().iterator().next().getFileSystem();
@@ -42,8 +42,8 @@ public class FileSystemResourceAdaptor implements RuntimeContentResource {
 
     @Override
     public String getIdentifier() {
-        if ( fileSystem instanceof FileSystemId ) {
-            return ( (FileSystemId) fileSystem ).id();
+        if (fileSystem instanceof FileSystemId) {
+            return ((FileSystemId) fileSystem).id();
         }
         return fileSystem.toString();
     }
@@ -51,6 +51,5 @@ public class FileSystemResourceAdaptor implements RuntimeContentResource {
     @Override
     public ResourceType getResourceType() {
         return RESOURCE_TYPE;
-    }    
-    
+    }
 }

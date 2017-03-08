@@ -16,6 +16,8 @@
 
 package org.uberfire.client.workbench.panels;
 
+import java.util.Collection;
+
 import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -25,17 +27,14 @@ import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.PartDefinition;
 
-import java.util.Collection;
-import java.util.List;
-
 public interface MultiPartWidget extends IsWidget,
-RequiresResize,
-HasBeforeSelectionHandlers<PartDefinition>,
-HasSelectionHandlers<PartDefinition> {
+                                         RequiresResize,
+                                         HasBeforeSelectionHandlers<PartDefinition>,
+                                         HasSelectionHandlers<PartDefinition> {
 
-    void setPresenter( final WorkbenchPanelPresenter presenter );
+    void setPresenter(final WorkbenchPanelPresenter presenter);
 
-    void setDndManager( final WorkbenchDragAndDropManager dndManager );
+    void setDndManager(final WorkbenchDragAndDropManager dndManager);
 
     /**
      * Removes all contained WorkbenchParts from this multi-part panel. Part Activities are not closed and part Presenters
@@ -43,41 +42,35 @@ HasSelectionHandlers<PartDefinition> {
      */
     void clear();
 
-    void addPart( final WorkbenchPartPresenter.View view );
+    void addPart(final WorkbenchPartPresenter.View view);
 
-    void changeTitle( final PartDefinition part,
-                      final String title,
-                      final IsWidget titleDecoration );
+    void changeTitle(final PartDefinition part,
+                     final String title,
+                     final IsWidget titleDecoration);
 
     /**
      * Makes the given part visible if it is a direct child of this widget.
-     *
-     * @param part
-     *            the direct child part to select. Must not be null.
+     * @param part the direct child part to select. Must not be null.
      * @return true if the part was found as a direct child of this widget, and it was therefore selected. False if the
-     *         part was not found, in which case this method had no effect.
+     * part was not found, in which case this method had no effect.
      */
-    boolean selectPart( final PartDefinition part );
+    boolean selectPart(final PartDefinition part);
 
     /**
      * Removes the given part from this widget. If the part was currently selected (visible) when removed, another part
      * will be selected to take its place.
-     *
-     * @param part
-     *            the part to remove. Must not be null.
+     * @param part the part to remove. Must not be null.
      * @return True if the given part was found as a direct child of this widget, in which case it has been removed.
-     *         False if the given part was not found, in which case this method had no effect.
+     * False if the given part was not found, in which case this method had no effect.
      */
-    boolean remove( final PartDefinition part );
+    boolean remove(final PartDefinition part);
 
     /**
      * Informs this widget that its containing panel view has gained or lost panel focus. Views within focused panels
      * may respond by updating their style to look more prominent than unfocused views.
-     *
-     * @param hasFocus
-     *            if true, the containing panel now has focus. If false, the panel does not have focus.
+     * @param hasFocus if true, the containing panel now has focus. If false, the panel does not have focus.
      */
-    void setFocus( final boolean hasFocus );
+    void setFocus(final boolean hasFocus);
 
     /**
      * Registers the given Command to be called each time something happens (for example, a UI gesture or parhaps an API
@@ -85,12 +78,10 @@ HasSelectionHandlers<PartDefinition> {
      * <p>
      * Restated for clarity: the given command is called when this view thinks its panel should get focus. The command
      * is <i>not</i> called as a side effect of calls to {@link #setFocus(boolean)}.
-     *
-     * @param doWhenFocused
-     *            the command to call when this widget believes its panel should become focused. Typically, the given
-     *            command will call into the PanelManager to give focus to the containing panel.
+     * @param doWhenFocused the command to call when this widget believes its panel should become focused. Typically, the given
+     * command will call into the PanelManager to give focus to the containing panel.
      */
-    void addOnFocusHandler( final Command doWhenFocused );
+    void addOnFocusHandler(final Command doWhenFocused);
 
     /**
      * Returns the number of parts currently held by this widget.

@@ -16,6 +16,9 @@
 
 package org.uberfire.ext.plugin.client.perspective.editor.generator;
 
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Panel;
 import org.uberfire.client.mvp.WorkbenchScreenActivity;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.client.generator.LayoutGenerator;
@@ -26,16 +29,10 @@ import org.uberfire.workbench.model.Position;
 import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.toolbar.ToolBar;
 
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Panel;
-
 public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity {
 
-    private LayoutTemplate layoutTemplate;
-
     private final LayoutGenerator layoutGenerator;
-
+    private LayoutTemplate layoutTemplate;
     private PlaceRequest place;
 
     private Panel mainPanel = new FlowPanel();
@@ -44,6 +41,10 @@ public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity 
                                            final LayoutGenerator layoutGenerator) {
         this.layoutTemplate = layoutTemplate;
         this.layoutGenerator = layoutGenerator;
+    }
+
+    public static String screenSufix() {
+        return "Screen";
     }
 
     public LayoutTemplate getLayoutTemplate() {
@@ -131,10 +132,6 @@ public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity 
         mainPanel.add(layoutGenerator.build(layoutTemplate));
     }
 
-    public static String screenSufix() {
-        return "Screen";
-    }
-
     @Override
     public String contextId() {
         return getIdentifier();
@@ -144,5 +141,4 @@ public class PerspectiveEditorScreenActivity implements WorkbenchScreenActivity 
     public ActivityResourceType getResourceType() {
         return ActivityResourceType.SCREEN;
     }
-        
 }

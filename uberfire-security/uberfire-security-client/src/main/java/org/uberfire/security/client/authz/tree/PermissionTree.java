@@ -27,7 +27,7 @@ public interface PermissionTree {
 
     /**
      * Get the root nodes of the tree.
-     *
+     * <p>
      * A list of nodes order by its {@link PermissionNode#getPositionInTree()}. The nodes with the same position
      * are ordered by node name in incremental order.
      */
@@ -35,7 +35,6 @@ public interface PermissionTree {
 
     /**
      * Get the resource ids (if any) referenced from the permission instances, see {@link #getPermissions()}.
-     *
      * @param parentNode The parent node to start looking for
      * @return A collection of resource identifiers
      */

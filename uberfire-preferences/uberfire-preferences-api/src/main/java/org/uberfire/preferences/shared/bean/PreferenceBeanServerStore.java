@@ -34,7 +34,7 @@ public interface PreferenceBeanServerStore extends PreferenceBeanStore {
      * @param <T> Preference bean generated portable type.
      * @return A loaded preference bean portable instance.
      */
-    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> T load( T emptyPortablePreference );
+    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> T load(T emptyPortablePreference);
 
     /**
      * Loads all preference bean properties, following the passed scope resolution strategy.
@@ -44,8 +44,8 @@ public interface PreferenceBeanServerStore extends PreferenceBeanStore {
      * @param <T> Preference bean generated portable type.
      * @return A loaded preference bean portable instance.
      */
-    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> T load( T emptyPortablePreference,
-                                                                               PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo );
+    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> T load(T emptyPortablePreference,
+                                                                              PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo);
 
     /**
      * Saves all preference data.
@@ -53,7 +53,7 @@ public interface PreferenceBeanServerStore extends PreferenceBeanStore {
      * @param <U> Preference bean type.
      * @param <T> Preference bean generated portable type.
      */
-    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save( T portablePreference );
+    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save(T portablePreference);
 
     /**
      * Saves all preference data, following the passed scope resolution strategy.
@@ -62,8 +62,8 @@ public interface PreferenceBeanServerStore extends PreferenceBeanStore {
      * @param <U> Preference bean type.
      * @param <T> Preference bean generated portable type.
      */
-    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save( T portablePreference,
-                                                                                  PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo );
+    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void save(T portablePreference,
+                                                                                 PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo);
 
     /**
      * Saves all preference data, in the last scope of the hierarchy.
@@ -71,21 +71,21 @@ public interface PreferenceBeanServerStore extends PreferenceBeanStore {
      * @param <U> Preference bean type.
      * @param <T> Preference bean generated portable type.
      */
-    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void saveDefaultValue( T defaultValue );
+    <U extends BasePreference<U>, T extends BasePreferencePortable<U>> void saveDefaultValue(T defaultValue);
 
     /**
      * Saves all preferences passed.
      * @param portablePreferences Preference instances to be saved.
      */
-    void save( Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences );
+    void save(Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences);
 
     /**
      * Saves all preferences passed, following the passed scope resolution strategy.
      * @param portablePreferences Preference instances to be saved.
      * @param scopeResolutionStrategyInfo Custom scope resolution strategy to follow.
      */
-    void save( Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
-               PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo );
+    void save(Collection<BasePreferencePortable<? extends BasePreference<?>>> portablePreferences,
+              PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo);
 
     /**
      * Builds a tree hierarchy that begins with the root preference bean which identifier was passed and
@@ -93,7 +93,7 @@ public interface PreferenceBeanServerStore extends PreferenceBeanStore {
      * @param identifier Root preference identifier. Must not be null.
      * @return A tree hierarchy between all preference beans.
      */
-    PreferenceHierarchyElement<?> buildHierarchyStructureForPreference( String identifier );
+    PreferenceHierarchyElement<?> buildHierarchyStructureForPreference(String identifier);
 
     /**
      * Builds a tree hierarchy that begins with the root preference bean which identifier was passed and
@@ -102,6 +102,6 @@ public interface PreferenceBeanServerStore extends PreferenceBeanStore {
      * @param scopeResolutionStrategyInfo Custom scope resolution strategy to follow.
      * @return A tree hierarchy between all preference beans.
      */
-    PreferenceHierarchyElement<?> buildHierarchyStructureForPreference( String identifier,
-                                                                        PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo );
+    PreferenceHierarchyElement<?> buildHierarchyStructureForPreference(String identifier,
+                                                                       PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo);
 }

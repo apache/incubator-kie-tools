@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -66,13 +65,13 @@ public class PluginsInfo {
     }
 
     @Inject
-    public PluginsInfo( EditorPluginResourceType editorPluginResourceType,
-                        PerspectiveLayoutPluginResourceType perspectiveLayoutPluginResourceType,
-                        ScreenPluginResourceType screenPluginResourceType,
-                        SplashPluginResourceType splashPluginResourceType,
-                        DynamicMenuResourceType dynamicMenuResourceType,
-                        ActivityBeansInfo activityBeansInfo,
-                        ClientTypeRegistry clientTypeRegistry ) {
+    public PluginsInfo(EditorPluginResourceType editorPluginResourceType,
+                       PerspectiveLayoutPluginResourceType perspectiveLayoutPluginResourceType,
+                       ScreenPluginResourceType screenPluginResourceType,
+                       SplashPluginResourceType splashPluginResourceType,
+                       DynamicMenuResourceType dynamicMenuResourceType,
+                       ActivityBeansInfo activityBeansInfo,
+                       ClientTypeRegistry clientTypeRegistry) {
         this.editorPluginResourceType = editorPluginResourceType;
         this.perspectiveLayoutPluginResourceType = perspectiveLayoutPluginResourceType;
         this.screenPluginResourceType = screenPluginResourceType;
@@ -82,86 +81,104 @@ public class PluginsInfo {
         this.clientTypeRegistry = clientTypeRegistry;
     }
 
-    public Set<Activity> getAllPlugins( final Collection<Plugin> plugins ) {
+    public Set<Activity> getAllPlugins(final Collection<Plugin> plugins) {
         Set<Activity> activities = new HashSet<Activity>();
-        Collection<Set<Activity>> groupedActivities = getClassifiedPlugins( plugins ).values();
+        Collection<Set<Activity>> groupedActivities = getClassifiedPlugins(plugins).values();
 
-        for ( Set<Activity> groupOfActivities : groupedActivities ) {
-            activities.addAll( groupOfActivities );
+        for (Set<Activity> groupOfActivities : groupedActivities) {
+            activities.addAll(groupOfActivities);
         }
 
         return activities;
     }
 
-    public Map<ClientResourceType, Set<Activity>> getClassifiedPlugins( final Collection<Plugin> plugins ) {
+    public Map<ClientResourceType, Set<Activity>> getClassifiedPlugins(final Collection<Plugin> plugins) {
 
         final Map<ClientResourceType, Set<Activity>> classified = new LinkedHashMap<ClientResourceType, Set<Activity>>();
 
-        classified.put( perspectiveLayoutPluginResourceType, new HashSet<Activity>() );
-        classified.put( screenPluginResourceType, new HashSet<Activity>() );
-        classified.put( editorPluginResourceType, new HashSet<Activity>() );
-        classified.put( splashPluginResourceType, new HashSet<Activity>() );
-        classified.put( dynamicMenuResourceType, new HashSet<Activity>() );
+        classified.put(perspectiveLayoutPluginResourceType,
+                       new HashSet<Activity>());
+        classified.put(screenPluginResourceType,
+                       new HashSet<Activity>());
+        classified.put(editorPluginResourceType,
+                       new HashSet<Activity>());
+        classified.put(splashPluginResourceType,
+                       new HashSet<Activity>());
+        classified.put(dynamicMenuResourceType,
+                       new HashSet<Activity>());
 
-        for ( final String screenId : activityBeansInfo.getAvailableWorkbenchScreensIds() ) {
-            classified.get( screenPluginResourceType ).add( new Activity( screenId, PluginType.SCREEN ) );
+        for (final String screenId : activityBeansInfo.getAvailableWorkbenchScreensIds()) {
+            classified.get(screenPluginResourceType).add(new Activity(screenId,
+                                                                      PluginType.SCREEN));
         }
 
-        for ( final String perspectiveId : activityBeansInfo.getAvailablePerspectivesIds() ) {
-            classified.get( perspectiveLayoutPluginResourceType ).add( new Activity( perspectiveId, PluginType.PERSPECTIVE ) );
+        for (final String perspectiveId : activityBeansInfo.getAvailablePerspectivesIds()) {
+            classified.get(perspectiveLayoutPluginResourceType).add(new Activity(perspectiveId,
+                                                                                 PluginType.PERSPECTIVE));
         }
 
-        for ( final String editorId : activityBeansInfo.getAvailableWorkbenchEditorsIds() ) {
-            classified.get( editorPluginResourceType ).add( new Activity( editorId, PluginType.EDITOR ) );
+        for (final String editorId : activityBeansInfo.getAvailableWorkbenchEditorsIds()) {
+            classified.get(editorPluginResourceType).add(new Activity(editorId,
+                                                                      PluginType.EDITOR));
         }
 
-        for ( final String splashId : activityBeansInfo.getAvailableSplashScreensIds() ) {
-            classified.get( splashPluginResourceType ).add( new Activity( splashId, PluginType.SPLASH ) );
+        for (final String splashId : activityBeansInfo.getAvailableSplashScreensIds()) {
+            classified.get(splashPluginResourceType).add(new Activity(splashId,
+                                                                      PluginType.SPLASH));
         }
 
-        for ( final Plugin plugin : plugins ) {
-            final ClientResourceType type = clientTypeRegistry.resolve( plugin.getPath() );
-            if ( type != null ) {
-                classified.get( type ).add( plugin );
+        for (final Plugin plugin : plugins) {
+            final ClientResourceType type = clientTypeRegistry.resolve(plugin.getPath());
+            if (type != null) {
+                classified.get(type).add(plugin);
             }
         }
 
-        final Collection<SyncBeanDef<JSWorkbenchScreenActivity>> jsscreens = lookupBeans( JSWorkbenchScreenActivity.class );
-        for ( final SyncBeanDef<JSWorkbenchScreenActivity> beanDef : jsscreens ) {
-            classified.get( screenPluginResourceType ).add( new Activity( beanDef.getName(), PluginType.SCREEN ) );
+        final Collection<SyncBeanDef<JSWorkbenchScreenActivity>> jsscreens = lookupBeans(JSWorkbenchScreenActivity.class);
+        for (final SyncBeanDef<JSWorkbenchScreenActivity> beanDef : jsscreens) {
+            classified.get(screenPluginResourceType).add(new Activity(beanDef.getName(),
+                                                                      PluginType.SCREEN));
         }
 
-        final Collection<SyncBeanDef<JSWorkbenchPerspectiveActivity>> jsperspectives = lookupBeans( JSWorkbenchPerspectiveActivity.class );
-        for ( final SyncBeanDef<JSWorkbenchPerspectiveActivity> beanDef : jsperspectives ) {
-            classified.get( perspectiveLayoutPluginResourceType ).add( new Activity( beanDef.getName(), PluginType.PERSPECTIVE ) );
+        final Collection<SyncBeanDef<JSWorkbenchPerspectiveActivity>> jsperspectives = lookupBeans(JSWorkbenchPerspectiveActivity.class);
+        for (final SyncBeanDef<JSWorkbenchPerspectiveActivity> beanDef : jsperspectives) {
+            classified.get(perspectiveLayoutPluginResourceType).add(new Activity(beanDef.getName(),
+                                                                                 PluginType.PERSPECTIVE));
         }
 
-        final Collection<SyncBeanDef<JSEditorActivity>> jseditors = lookupBeans( JSEditorActivity.class );
-        for ( final SyncBeanDef<JSEditorActivity> beanDef : jseditors ) {
-            classified.get( editorPluginResourceType ).add( new Activity( beanDef.getName(), PluginType.EDITOR ) );
+        final Collection<SyncBeanDef<JSEditorActivity>> jseditors = lookupBeans(JSEditorActivity.class);
+        for (final SyncBeanDef<JSEditorActivity> beanDef : jseditors) {
+            classified.get(editorPluginResourceType).add(new Activity(beanDef.getName(),
+                                                                      PluginType.EDITOR));
         }
 
-        final Collection<SyncBeanDef<JSSplashScreenActivity>> jssplashes = lookupBeans( JSSplashScreenActivity.class );
-        for ( final SyncBeanDef<JSSplashScreenActivity> beanDef : jssplashes ) {
-            classified.get( splashPluginResourceType ).add( new Activity( beanDef.getName(), PluginType.SPLASH ) );
+        final Collection<SyncBeanDef<JSSplashScreenActivity>> jssplashes = lookupBeans(JSSplashScreenActivity.class);
+        for (final SyncBeanDef<JSSplashScreenActivity> beanDef : jssplashes) {
+            classified.get(splashPluginResourceType).add(new Activity(beanDef.getName(),
+                                                                      PluginType.SPLASH));
         }
 
         return classified;
     }
 
-    <T> Collection<SyncBeanDef<T>> lookupBeans( Class<T> clazz ) {
-        return IOC.getBeanManager().lookupBeans( clazz );
+    <T> Collection<SyncBeanDef<T>> lookupBeans(Class<T> clazz) {
+        return IOC.getBeanManager().lookupBeans(clazz);
     }
 
     public Map<ClientResourceType, String> getPluginsTypeLabels() {
 
         final Map<ClientResourceType, String> labelsByResourceType = new HashMap<ClientResourceType, String>();
 
-        labelsByResourceType.put( perspectiveLayoutPluginResourceType, CommonConstants.INSTANCE.PerspectivePlugin() );
-        labelsByResourceType.put( screenPluginResourceType, CommonConstants.INSTANCE.ScreenPlugin() );
-        labelsByResourceType.put( editorPluginResourceType, CommonConstants.INSTANCE.EditorPlugin() );
-        labelsByResourceType.put( splashPluginResourceType, CommonConstants.INSTANCE.SplashScreenPlugin() );
-        labelsByResourceType.put( dynamicMenuResourceType, CommonConstants.INSTANCE.DynamicMenu() );
+        labelsByResourceType.put(perspectiveLayoutPluginResourceType,
+                                 CommonConstants.INSTANCE.PerspectivePlugin());
+        labelsByResourceType.put(screenPluginResourceType,
+                                 CommonConstants.INSTANCE.ScreenPlugin());
+        labelsByResourceType.put(editorPluginResourceType,
+                                 CommonConstants.INSTANCE.EditorPlugin());
+        labelsByResourceType.put(splashPluginResourceType,
+                                 CommonConstants.INSTANCE.SplashScreenPlugin());
+        labelsByResourceType.put(dynamicMenuResourceType,
+                                 CommonConstants.INSTANCE.DynamicMenu());
 
         return labelsByResourceType;
     }

@@ -28,6 +28,5 @@ public interface KObject extends KObjectKey,
      * @see org.uberfire.ext.metadata.engine.Indexer
      */
     boolean fullText();
-
 }
 

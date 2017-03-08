@@ -15,54 +15,55 @@
  */
 package org.uberfire.ext.layout.editor.client.widgets;
 
+import java.util.Map;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.util.Map;
-
 @Dependent
 public class LayoutDragComponentGroupPresenter {
 
-    public interface View extends UberElement<LayoutDragComponentGroupPresenter> {
-
-        void setTitle( String name );
-
-        void addComponents( Map<String, LayoutDragComponent> components );
-
-        void addComponent( String componentId, LayoutDragComponent component );
-
-        void removeComponent( String componentId );
-    }
-
     private final View view;
-
     private LayoutDragComponentGroup group;
 
     @Inject
-    public LayoutDragComponentGroupPresenter( final View view ) {
+    public LayoutDragComponentGroupPresenter(final View view) {
         this.view = view;
-        view.init( this );
+        view.init(this);
     }
 
-    public void init( LayoutDragComponentGroup group ) {
+    public void init(LayoutDragComponentGroup group) {
         this.group = group;
-        view.setTitle( group.getName() );
-        view.addComponents( group.getComponents() );
+        view.setTitle(group.getName());
+        view.addComponents(group.getComponents());
     }
 
-    public void add( String componentId, LayoutDragComponent component ) {
-        view.addComponent( componentId, component );
+    public void add(String componentId,
+                    LayoutDragComponent component) {
+        view.addComponent(componentId,
+                          component);
     }
 
-    public void removeDraggableComponentFromGroup( String componentId ) {
-        view.removeComponent( componentId );
+    public void removeDraggableComponentFromGroup(String componentId) {
+        view.removeComponent(componentId);
     }
 
     public UberElement<LayoutDragComponentGroupPresenter> getView() {
         return view;
     }
 
+    public interface View extends UberElement<LayoutDragComponentGroupPresenter> {
+
+        void setTitle(String name);
+
+        void addComponents(Map<String, LayoutDragComponent> components);
+
+        void addComponent(String componentId,
+                          LayoutDragComponent component);
+
+        void removeComponent(String componentId);
+    }
 }

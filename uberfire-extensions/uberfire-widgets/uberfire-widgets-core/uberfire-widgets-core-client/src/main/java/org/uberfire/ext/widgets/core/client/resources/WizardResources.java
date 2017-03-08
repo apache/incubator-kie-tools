@@ -23,17 +23,17 @@ import com.google.gwt.resources.client.CssResource;
  * Wizard resources
  */
 public interface WizardResources
-    extends
-    ClientBundle {
+        extends
+        ClientBundle {
 
-    WizardResources INSTANCE = GWT.create( WizardResources.class );
+    WizardResources INSTANCE = GWT.create(WizardResources.class);
 
     @Source("css/Wizards.css")
     WizardStyle css();
 
     public interface WizardStyle
-        extends
-        CssResource {
+            extends
+            CssResource {
 
         String wizardDTableList();
 
@@ -56,16 +56,15 @@ public interface WizardResources
         String wizardPageTitleImageContainer();
 
         String wizardPageTitleLabelContainer();
-        
+
         String wizardDTableFieldContainerValid();
 
         String wizardDTableFieldContainerInvalid();
-        
+
         String wizardDTableSummaryContainer();
-        
+
         String wizardDTableCaption();
-        
+
         String scrollPanel();
-        
     }
 }

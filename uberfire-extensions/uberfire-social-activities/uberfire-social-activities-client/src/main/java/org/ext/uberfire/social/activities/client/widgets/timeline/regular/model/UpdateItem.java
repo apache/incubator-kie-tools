@@ -25,21 +25,20 @@ public class UpdateItem {
 
     private ParameterizedCommand<String> userClickCommand;
 
-
     private ParameterizedCommand<String> followUnfollowCommand;
 
     private SocialUser loggedUser;
+
+    public UpdateItem(SocialActivitiesEvent event) {
+        this.event = event;
+    }
 
     public ParameterizedCommand<String> getFollowUnfollowCommand() {
         return followUnfollowCommand;
     }
 
-    public void setFollowUnfollowCommand( ParameterizedCommand<String> followUnfollowCommand ) {
+    public void setFollowUnfollowCommand(ParameterizedCommand<String> followUnfollowCommand) {
         this.followUnfollowCommand = followUnfollowCommand;
-    }
-
-    public UpdateItem( SocialActivitiesEvent event ) {
-        this.event = event;
     }
 
     public SocialActivitiesEvent getEvent() {
@@ -47,22 +46,22 @@ public class UpdateItem {
     }
 
     public void setSocialUser(SocialUser social) {
-        event.updateSocialUser( social );
-    }
-
-    public void setUserClickCommand( ParameterizedCommand<String> userClickCommand ) {
-        this.userClickCommand = userClickCommand;
+        event.updateSocialUser(social);
     }
 
     public ParameterizedCommand<String> getUserClickCommand() {
         return userClickCommand;
     }
 
-    public void setLoggedUser( SocialUser loggedUser ) {
-        this.loggedUser = loggedUser;
+    public void setUserClickCommand(ParameterizedCommand<String> userClickCommand) {
+        this.userClickCommand = userClickCommand;
     }
 
     public SocialUser getLoggedUser() {
         return loggedUser;
+    }
+
+    public void setLoggedUser(SocialUser loggedUser) {
+        this.loggedUser = loggedUser;
     }
 }

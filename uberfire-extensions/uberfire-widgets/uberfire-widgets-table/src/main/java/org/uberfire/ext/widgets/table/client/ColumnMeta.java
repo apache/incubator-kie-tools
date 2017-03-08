@@ -19,6 +19,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.Header;
 
 public class ColumnMeta<T> implements Comparable {
+
     private Column<T, ?> column;
     private String caption;
     private Header header;
@@ -26,39 +27,43 @@ public class ColumnMeta<T> implements Comparable {
     private int position = -1;
     private boolean extraColumn;
 
-    public ColumnMeta( Column<T, ?> column,
-                       String caption) {
+    public ColumnMeta(Column<T, ?> column,
+                      String caption) {
         this.column = column;
         this.caption = caption;
     }
 
-    public ColumnMeta( Column<T, ?> column,
-                       String caption,
-                       boolean visible) {
+    public ColumnMeta(Column<T, ?> column,
+                      String caption,
+                      boolean visible) {
         this.column = column;
         this.caption = caption;
         this.visible = visible;
     }
 
-    public ColumnMeta( Column<T, ?> column,
-                       String caption,
-                       boolean visible,
-                       int position) {
+    public ColumnMeta(Column<T, ?> column,
+                      String caption,
+                      boolean visible,
+                      int position) {
         this.column = column;
         this.caption = caption;
         this.visible = visible;
         this.position = position;
     }
 
-    public ColumnMeta( Column<T, ?> column, String caption, boolean visible, boolean extraColumn) {
-        this(column, caption, visible);
+    public ColumnMeta(Column<T, ?> column,
+                      String caption,
+                      boolean visible,
+                      boolean extraColumn) {
+        this(column,
+             caption,
+             visible);
         this.extraColumn = extraColumn;
     }
 
     public boolean isExtraColumn() {
         return extraColumn;
     }
-
 
     public String getCaption() {
         return caption;
@@ -102,9 +107,15 @@ public class ColumnMeta<T> implements Comparable {
             return 0;
         }
         ColumnMeta otherMeta = (ColumnMeta) o;
-        if (position == -1 && otherMeta.getPosition() == -1) return 0;
-        if (position == -1) return  1;
-        if (otherMeta.getPosition() == -1) return -1;
+        if (position == -1 && otherMeta.getPosition() == -1) {
+            return 0;
+        }
+        if (position == -1) {
+            return 1;
+        }
+        if (otherMeta.getPosition() == -1) {
+            return -1;
+        }
         if (position < otherMeta.getPosition()) {
             return -1;
         } else if (position > otherMeta.getPosition()) {

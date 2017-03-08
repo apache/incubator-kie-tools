@@ -23,40 +23,38 @@ public class SocialDateFormatter {
 
     private static final Constants constants = Constants.INSTANCE;
 
-    public static String format( Date date ) {
-        int diffInDays = diffInDaysFromNow( date );
+    public static String format(Date date) {
+        int diffInDays = diffInDaysFromNow(date);
 
-        if ( diffInDays < 7 ) {
-            return formatInDays( diffInDays );
+        if (diffInDays < 7) {
+            return formatInDays(diffInDays);
         } else {
-            return formatInWeeks( diffInDays );
+            return formatInWeeks(diffInDays);
         }
-
     }
 
-    private static int diffInDaysFromNow( Date date ) {
-        int diffInDays = (int) ( ( new Date().getTime() - date.getTime() )
-                / ( 1000 * 60 * 60 * 24 ) );
-        return Math.abs( diffInDays );
+    private static int diffInDaysFromNow(Date date) {
+        int diffInDays = (int) ((new Date().getTime() - date.getTime())
+                / (1000 * 60 * 60 * 24));
+        return Math.abs(diffInDays);
     }
 
-    private static String formatInWeeks( int diffInDays ) {
+    private static String formatInWeeks(int diffInDays) {
         int numberOfWeeks = diffInDays / 7;
-        if ( numberOfWeeks == 1 || numberOfWeeks == 0 ) {
+        if (numberOfWeeks == 1 || numberOfWeeks == 0) {
             return constants.OneWeekAgo();
         } else {
             return numberOfWeeks + " " + constants.WeeksAgo();
         }
     }
 
-    private static String formatInDays( int diffInDays ) {
-        if ( diffInDays == 0 ) {
+    private static String formatInDays(int diffInDays) {
+        if (diffInDays == 0) {
             return constants.Today();
-        } else if ( diffInDays == 1 ) {
+        } else if (diffInDays == 1) {
             return diffInDays + " " + constants.DayAgo();
         } else {
             return diffInDays + " " + constants.DaysAgo();
         }
     }
-
 }

@@ -22,7 +22,6 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.util.HashMap;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletConfig;
@@ -64,122 +63,136 @@ public class PluginMediaServlet
     private Path root;
 
     @Override
-    public void init( final ServletConfig config ) throws ServletException {
-        final String pattern = config.getInitParameter( "url-pattern" );
-        if ( pattern != null && !pattern.trim().isEmpty() ) {
-            if ( pattern.endsWith( "/" ) ) {
+    public void init(final ServletConfig config) throws ServletException {
+        final String pattern = config.getInitParameter("url-pattern");
+        if (pattern != null && !pattern.trim().isEmpty()) {
+            if (pattern.endsWith("/")) {
                 this.pattern = pattern;
             } else {
                 this.pattern = pattern + "/";
             }
-            if ( this.pattern.startsWith( "/" ) ) {
-                mediaServletURI.setURI( this.pattern.substring( 1 ) );
+            if (this.pattern.startsWith("/")) {
+                mediaServletURI.setURI(this.pattern.substring(1));
             } else {
-                mediaServletURI.setURI( this.pattern );
+                mediaServletURI.setURI(this.pattern);
             }
         }
         try {
-            fileSystem = ioService.newFileSystem( URI.create( "default://plugins" ),
-                                                  new HashMap<String, Object>() {{
-                                                      put( "init", Boolean.TRUE );
-                                                      put( "internal", Boolean.TRUE );
-                                                  }} );
-        } catch ( final FileSystemAlreadyExistsException e ) {
-            fileSystem = ioService.getFileSystem( URI.create( "default://plugins" ) );
+            fileSystem = ioService.newFileSystem(URI.create("default://plugins"),
+                                                 new HashMap<String, Object>() {{
+                                                     put("init",
+                                                         Boolean.TRUE);
+                                                     put("internal",
+                                                         Boolean.TRUE);
+                                                 }});
+        } catch (final FileSystemAlreadyExistsException e) {
+            fileSystem = ioService.getFileSystem(URI.create("default://plugins"));
         }
         this.root = fileSystem.getRootDirectories().iterator().next();
     }
 
     @Override
-    public void doGet( final HttpServletRequest req,
-                       final HttpServletResponse resp ) throws IOException {
+    public void doGet(final HttpServletRequest req,
+                      final HttpServletResponse resp) throws IOException {
         String mime = null;
         InputStream in;
 
-        boolean isPreview = req.getParameterMap().containsKey( "preview" );
+        boolean isPreview = req.getParameterMap().containsKey("preview");
 
-        final String _filename = EncodingUtil.decode( req.getRequestURI().substring( req.getContextPath().length() ) );
+        final String _filename = EncodingUtil.decode(req.getRequestURI().substring(req.getContextPath().length()));
         final String filename;
-        if ( _filename.toLowerCase().endsWith( "?preview" ) ) {
-            filename = _filename.substring( 0, _filename.toLowerCase().indexOf( "?preview" ) );
+        if (_filename.toLowerCase().endsWith("?preview")) {
+            filename = _filename.substring(0,
+                                           _filename.toLowerCase().indexOf("?preview"));
             isPreview = true;
         } else {
             filename = _filename;
         }
 
-        final Path mediaPath = resolve( filename.replace( pattern, "/" ) );
-        if ( !ioService.exists( mediaPath ) ) {
+        final Path mediaPath = resolve(filename.replace(pattern,
+                                                        "/"));
+        if (!ioService.exists(mediaPath)) {
             mime = "image/png";
-            in = getClass().getResourceAsStream( "/nofound.png" );
+            in = getClass().getResourceAsStream("/nofound.png");
         } else {
-            mime = MimeType.fromExtension( "." + FilenameUtils.getExtension( mediaPath.getFileName().toString() ) ).getType();
-            if ( isPreview ) {
-                if ( mime != null && !mime.startsWith( "image/" ) ) {
+            mime = MimeType.fromExtension("." + FilenameUtils.getExtension(mediaPath.getFileName().toString())).getType();
+            if (isPreview) {
+                if (mime != null && !mime.startsWith("image/")) {
                     mime = "image/png";
-                    in = getClass().getResourceAsStream( "/placeholder.png" );
+                    in = getClass().getResourceAsStream("/placeholder.png");
                 } else {
-                    in = ioService.newInputStream( mediaPath );
+                    in = ioService.newInputStream(mediaPath);
                 }
             } else {
-                in = ioService.newInputStream( mediaPath );
+                in = ioService.newInputStream(mediaPath);
             }
         }
 
-        if ( mime == null ) {
-            resp.setStatus( HttpServletResponse.SC_INTERNAL_SERVER_ERROR );
+        if (mime == null) {
+            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             return;
         }
 
-        resp.setContentType( mime );
+        resp.setContentType(mime);
 
         final OutputStream out = resp.getOutputStream();
 
-        byte[] buf = new byte[ 1024 ];
+        byte[] buf = new byte[1024];
         int count = 0;
-        while ( ( count = in.read( buf ) ) >= 0 ) {
-            out.write( buf, 0, count );
+        while ((count = in.read(buf)) >= 0) {
+            out.write(buf,
+                      0,
+                      count);
         }
         out.close();
         in.close();
     }
 
     @Override
-    protected void doPost( HttpServletRequest req,
-                           HttpServletResponse response ) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req,
+                          HttpServletResponse response) throws ServletException, IOException {
 
         try {
-            final String filename = req.getRequestURI().substring( req.getContextPath().length() );
-            final String pluginName = filename.replace( pattern, "/" );
+            final String filename = req.getRequestURI().substring(req.getContextPath().length());
+            final String pluginName = filename.replace(pattern,
+                                                       "/");
 
-            if ( pluginName != null ) {
-                final FileItem fileItem = getFileItem( req );
-                final String fileName = FilenameUtils.getName( fileItem.getName() );
+            if (pluginName != null) {
+                final FileItem fileItem = getFileItem(req);
+                final String fileName = FilenameUtils.getName(fileItem.getName());
 
-                final Path path = resolve( pluginName + "/media/" + fileName );
+                final Path path = resolve(pluginName + "/media/" + fileName);
 
-                if ( ioService.exists( path ) ) {
-                    writeResponse( response, "FAIL - ALREADY EXISTS" );
+                if (ioService.exists(path)) {
+                    writeResponse(response,
+                                  "FAIL - ALREADY EXISTS");
                     return;
                 }
 
                 try {
                     ioService.startBatch();
-                    writeFile( ioService, path, fileItem );
+                    writeFile(ioService,
+                              path,
+                              fileItem);
                 } finally {
                     ioService.endBatch();
                 }
 
-                newMediaEvent.fire( new MediaAdded( pluginName.substring( 1 ), new Media( pattern.substring( 1 ) + pluginName.substring( 1 ) + "/media/" + path.getFileName(), Paths.convert( path ) ) ) );
+                newMediaEvent.fire(new MediaAdded(pluginName.substring(1),
+                                                  new Media(pattern.substring(1) + pluginName.substring(1) + "/media/" + path.getFileName(),
+                                                            Paths.convert(path))));
 
-                writeResponse( response, "OK" );
+                writeResponse(response,
+                              "OK");
             }
-        } catch ( final Exception e ) {
-            logError( e );
-            writeResponse( response, "FAIL" );
+        } catch (final Exception e) {
+            logError(e);
+            writeResponse(response,
+                          "FAIL");
         }
     }
 
-    Path resolve( final String other ) {
-        return root.resolve( other );
+    Path resolve(final String other) {
+        return root.resolve(other);
     }
 }

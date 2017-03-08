@@ -27,8 +27,8 @@ public class NewPluginRegistered {
 
     private final PluginType type;
 
-    public NewPluginRegistered( @MapsTo("name") final String name,
-                                @MapsTo("type") final PluginType type ) {
+    public NewPluginRegistered(@MapsTo("name") final String name,
+                               @MapsTo("type") final PluginType type) {
         this.name = name;
         this.type = type;
     }

@@ -37,35 +37,18 @@ import org.uberfire.workbench.events.NotificationEvent;
 public class AdminPagePresenter {
 
     public static final String IDENTIFIER = "AdminPagePresenter";
-
-    public interface View extends UberElement<AdminPagePresenter> {
-
-        void add( final AdminPageCategoryPresenter.View categoryView );
-
-        String getTitle();
-
-        String getNoScreenParameterError();
-
-        String getNoScreenFoundError( String screen );
-    }
-
     private final View view;
-
     private final AdminPage adminPage;
-
     private final ManagedInstance<AdminPageCategoryPresenter> categoryPresenterProvider;
-
     private final Event<NotificationEvent> notification;
-
     private String screen;
-
     private String perspectiveIdentifierToGoBackTo;
 
     @Inject
-    public AdminPagePresenter( final View view,
-                               final AdminPage adminPage,
-                               final ManagedInstance<AdminPageCategoryPresenter> categoryPresenterProvider,
-                               final Event<NotificationEvent> notification ) {
+    public AdminPagePresenter(final View view,
+                              final AdminPage adminPage,
+                              final ManagedInstance<AdminPageCategoryPresenter> categoryPresenterProvider,
+                              final Event<NotificationEvent> notification) {
         this.view = view;
         this.adminPage = adminPage;
         this.categoryPresenterProvider = categoryPresenterProvider;
@@ -73,32 +56,38 @@ public class AdminPagePresenter {
     }
 
     @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
-        screen = placeRequest.getParameter( "screen", adminPage.getDefaultScreen() );
-        perspectiveIdentifierToGoBackTo = placeRequest.getParameter( "perspectiveIdentifierToGoBackTo", null );
+    public void onStartup(final PlaceRequest placeRequest) {
+        screen = placeRequest.getParameter("screen",
+                                           adminPage.getDefaultScreen());
+        perspectiveIdentifierToGoBackTo = placeRequest.getParameter("perspectiveIdentifierToGoBackTo",
+                                                                    null);
 
-        view.init( this );
+        view.init(this);
 
-        if ( screen == null ) {
-            notification.fire( new NotificationEvent( view.getNoScreenParameterError(), NotificationEvent.NotificationType.ERROR ) );
+        if (screen == null) {
+            notification.fire(new NotificationEvent(view.getNoScreenParameterError(),
+                                                    NotificationEvent.NotificationType.ERROR));
         } else {
-            init( screen );
+            init(screen);
         }
     }
 
-    public void init( final String screen ) {
+    public void init(final String screen) {
         this.screen = screen;
 
-        final Map<String, List<AdminTool>> toolsByCategory = adminPage.getToolsByCategory( screen );
+        final Map<String, List<AdminTool>> toolsByCategory = adminPage.getToolsByCategory(screen);
 
-        if ( toolsByCategory != null ) {
-            toolsByCategory.forEach( ( category, adminTools ) -> {
+        if (toolsByCategory != null) {
+            toolsByCategory.forEach((category, adminTools) -> {
                 AdminPageCategoryPresenter categoryPresenter = categoryPresenterProvider.get();
-                categoryPresenter.setup( adminTools, screen, perspectiveIdentifierToGoBackTo );
-                view.add( categoryPresenter.getView() );
-            } );
+                categoryPresenter.setup(adminTools,
+                                        screen,
+                                        perspectiveIdentifierToGoBackTo);
+                view.add(categoryPresenter.getView());
+            });
         } else {
-            notification.fire( new NotificationEvent( view.getNoScreenFoundError( screen ), NotificationEvent.NotificationType.ERROR ) );
+            notification.fire(new NotificationEvent(view.getNoScreenFoundError(screen),
+                                                    NotificationEvent.NotificationType.ERROR));
         }
     }
 
@@ -118,5 +107,16 @@ public class AdminPagePresenter {
 
     public String getScreen() {
         return screen;
+    }
+
+    public interface View extends UberElement<AdminPagePresenter> {
+
+        void add(final AdminPageCategoryPresenter.View categoryView);
+
+        String getTitle();
+
+        String getNoScreenParameterError();
+
+        String getNoScreenFoundError(String screen);
     }
 }

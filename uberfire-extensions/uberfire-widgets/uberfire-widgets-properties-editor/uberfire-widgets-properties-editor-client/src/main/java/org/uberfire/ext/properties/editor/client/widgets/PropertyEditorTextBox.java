@@ -28,24 +28,21 @@ import org.gwtbootstrap3.client.ui.TextBox;
 
 public class PropertyEditorTextBox extends AbstractPropertyEditorWidget {
 
+    private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
     @UiField
     TextBox textBox;
 
     public PropertyEditorTextBox() {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        textBox.addFocusHandler( new FocusHandler() {
+        initWidget(uiBinder.createAndBindUi(this));
+        textBox.addFocusHandler(new FocusHandler() {
             @Override
-            public void onFocus( FocusEvent event ) {
+            public void onFocus(FocusEvent event) {
                 textBox.selectAll();
             }
-        } );
+        });
     }
 
-    public void setText(String text){
-        textBox.setText( text );
-    }
-
-    public void setId( String id ) {
+    public void setId(String id) {
 //        textBox.setId( id );
     }
 
@@ -53,18 +50,19 @@ public class PropertyEditorTextBox extends AbstractPropertyEditorWidget {
         return textBox.getText();
     }
 
-    public void addKeyDownHandler( KeyDownHandler keyDownHandler ) {
-        textBox.addKeyDownHandler( keyDownHandler );
+    public void setText(String text) {
+        textBox.setText(text);
     }
 
-    public void addBlurHandler( BlurHandler blurHandler ) {
-        textBox.addBlurHandler( blurHandler );
+    public void addKeyDownHandler(KeyDownHandler keyDownHandler) {
+        textBox.addKeyDownHandler(keyDownHandler);
+    }
+
+    public void addBlurHandler(BlurHandler blurHandler) {
+        textBox.addBlurHandler(blurHandler);
     }
 
     interface MyUiBinder extends UiBinder<Widget, PropertyEditorTextBox> {
 
     }
-
-    private static MyUiBinder uiBinder = GWT.create( MyUiBinder.class );
-
 }

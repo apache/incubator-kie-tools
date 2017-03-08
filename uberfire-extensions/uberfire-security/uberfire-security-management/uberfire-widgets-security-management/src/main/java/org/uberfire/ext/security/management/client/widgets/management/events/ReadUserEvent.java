@@ -34,5 +34,4 @@ public class ReadUserEvent implements UberFireEvent {
     public String toString() {
         return "ReadUserEvent [identifier=" + identifier + "]";
     }
-
 }

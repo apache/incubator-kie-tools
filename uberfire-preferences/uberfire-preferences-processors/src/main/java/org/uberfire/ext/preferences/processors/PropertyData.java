@@ -47,26 +47,26 @@ public class PropertyData {
 
     private TypeKind typeKind;
 
-    public PropertyData( final Element element,
-                         final Property propertyAnnotation,
-                         final Elements elementUtils ) {
+    public PropertyData(final Element element,
+                        final Property propertyAnnotation,
+                        final Elements elementUtils) {
         fieldName = element.getSimpleName().toString();
 
         typeFullName = element.asType().toString();
 
-        final char elementNameFirstLetter = fieldName.charAt( 0 );
-        final char elementNameCapitalizedFirstLetter = Character.toUpperCase( elementNameFirstLetter );
-        final String nameWithoutFirstLetter = fieldName.substring( 1 );
+        final char elementNameFirstLetter = fieldName.charAt(0);
+        final char elementNameCapitalizedFirstLetter = Character.toUpperCase(elementNameFirstLetter);
+        final String nameWithoutFirstLetter = fieldName.substring(1);
         capitalizedFieldName = elementNameCapitalizedFirstLetter + nameWithoutFirstLetter;
 
         shared = propertyAnnotation.shared();
 
-        final TypeElement typeElement = elementUtils.getTypeElement( element.asType().toString() );
-        subPreference = typeElement != null && typeElement.getAnnotation( WorkbenchPreference.class ) != null;
+        final TypeElement typeElement = elementUtils.getTypeElement(element.asType().toString());
+        subPreference = typeElement != null && typeElement.getAnnotation(WorkbenchPreference.class) != null;
 
         formType = propertyAnnotation.formType();
 
-        privateAccess = element.getModifiers().contains( Modifier.PRIVATE );
+        privateAccess = element.getModifiers().contains(Modifier.PRIVATE);
 
         typeKind = element.asType().getKind();
     }
@@ -104,8 +104,8 @@ public class PropertyData {
     }
 
     public String getHashCodeFormula() {
-        if ( isPrimitive() ) {
-            switch ( typeKind ) {
+        if (isPrimitive()) {
+            switch (typeKind) {
                 case BOOLEAN:
                     return "java.lang.Boolean.hashCode( " + getFieldAccessorCommand() + " )";
                 case BYTE:
@@ -129,9 +129,9 @@ public class PropertyData {
     }
 
     public String getFieldAccessorCommand() {
-        if ( !isPrivateAccess() ) {
+        if (!isPrivateAccess()) {
             return fieldName;
-        } else if ( isPrimitive() && TypeKind.BOOLEAN.equals( typeKind ) ) {
+        } else if (isPrimitive() && TypeKind.BOOLEAN.equals(typeKind)) {
             return "is" + capitalizedFieldName + "()";
         } else {
             return "get" + capitalizedFieldName + "()";

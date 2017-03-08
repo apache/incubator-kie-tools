@@ -34,57 +34,59 @@ import org.uberfire.ext.widgets.common.client.common.FormStyleLayout;
  */
 public class FormStylePopup extends BaseModal {
 
-    interface FormStylePopupWidgetBinder
-            extends
-            UiBinder<Widget, FormStylePopup> {
-
-    }
-
-    private static FormStylePopupWidgetBinder uiBinder = GWT.create( FormStylePopupWidgetBinder.class );
-
+    private static FormStylePopupWidgetBinder uiBinder = GWT.create(FormStylePopupWidgetBinder.class);
     @UiField
     FormStyleLayout form;
 
-    public FormStylePopup( final String title ) {
-        setBody( uiBinder.createAndBindUi( this ) );
-        setTitle( title );
+    public FormStylePopup(final String title) {
+        setBody(uiBinder.createAndBindUi(this));
+        setTitle(title);
     }
 
-    public FormStylePopup( final Image icon,
-                           final String title ) {
-        add( new ModalHeader() {{
-            add( new Heading( HeadingSize.H4 ) {{
-                add( icon );
-                getElement().setInnerText( title );
-            }} );
-        }} );
-        setBody( uiBinder.createAndBindUi( this ) );
+    public FormStylePopup(final Image icon,
+                          final String title) {
+        add(new ModalHeader() {{
+            add(new Heading(HeadingSize.H4) {{
+                add(icon);
+                getElement().setInnerText(title);
+            }});
+        }});
+        setBody(uiBinder.createAndBindUi(this));
     }
 
     public void clear() {
         this.form.clear();
     }
 
-    public FormStyleItem addAttribute( final String label,
-                                       final IsWidget wid ) {
-        return form.addAttribute( label, wid );
+    public FormStyleItem addAttribute(final String label,
+                                      final IsWidget wid) {
+        return form.addAttribute(label,
+                                 wid);
     }
 
-    public FormStyleItem addAttribute( final String label,
-                             final IsWidget wid,
-                             final boolean visible ) {
-        FormStyleItem formStyleItem = form.addAttribute( label, wid );
-        setAttributeVisibility( formStyleItem.getIndex(), visible );
+    public FormStyleItem addAttribute(final String label,
+                                      final IsWidget wid,
+                                      final boolean visible) {
+        FormStyleItem formStyleItem = form.addAttribute(label,
+                                                        wid);
+        setAttributeVisibility(formStyleItem.getIndex(),
+                               visible);
         return formStyleItem;
     }
 
-    public int addRow( final IsWidget wid ) {
-        return form.addRow( wid );
+    public int addRow(final IsWidget wid) {
+        return form.addRow(wid);
     }
 
-    public void setAttributeVisibility( final int index,
-                                        final boolean b ) {
-        form.setAttributeVisibility( index, b );
+    public void setAttributeVisibility(final int index,
+                                       final boolean b) {
+        form.setAttributeVisibility(index,
+                                    b);
     }
 
+    interface FormStylePopupWidgetBinder
+            extends
+            UiBinder<Widget, FormStylePopup> {
+
+    }
 }

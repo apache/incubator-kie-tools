@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.user;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.EditorError;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -33,60 +35,40 @@ import org.gwtbootstrap3.client.ui.constants.ValidationState;
 import org.gwtbootstrap3.client.ui.form.error.BasicEditorError;
 import org.gwtbootstrap3.client.ui.form.validator.Validator;
 
-import javax.enterprise.context.Dependent;
-
 @Dependent
 public class NewUserAttributeEditorView extends Composite implements NewUserAttributeEditor.View {
 
-    interface NewUserAttributeViewBinder
-            extends
-            UiBinder<Widget, NewUserAttributeEditorView> {
-
-    }
-
     private static NewUserAttributeViewBinder uiBinder = GWT.create(NewUserAttributeViewBinder.class);
-
     @UiField
     Row addAttributeButtonRow;
-
     @UiField
     Button addAttributeButton;
-
     @UiField
     Row addAttributeRow;
-    
     @UiField
     FormGroup newAttributeNameFormGroup;
-
     @UiField
     TextBox newAttributeNameBox;
-
     @UiField
     FormGroup newAttributeValueFormGroup;
-
     @UiField
     TextBox newAttributeValueBox;
-
     @UiField
     Button newAttributeCancelButton;
-
     @UiField
     Button newAttributeSaveButton;
-
     private NewUserAttributeEditor presenter;
 
     @UiConstructor
     public NewUserAttributeEditorView() {
-        
+
     }
 
     @Override
     public void init(final NewUserAttributeEditor presenter) {
         this.presenter = presenter;
 
-        initWidget( uiBinder.createAndBindUi( this ) );
-        
-        
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
@@ -99,13 +81,19 @@ public class NewUserAttributeEditorView extends Composite implements NewUserAttr
     }
 
     @Override
-    public EditorError createAttributeNameError(String value, String message) {
-        return new BasicEditorError(newAttributeNameBox, value, message);
+    public EditorError createAttributeNameError(String value,
+                                                String message) {
+        return new BasicEditorError(newAttributeNameBox,
+                                    value,
+                                    message);
     }
 
     @Override
-    public EditorError createAttributeValueError(String value, String message) {
-        return new BasicEditorError(newAttributeValueBox, value, message);
+    public EditorError createAttributeValueError(String value,
+                                                 String message) {
+        return new BasicEditorError(newAttributeValueBox,
+                                    value,
+                                    message);
     }
 
     @Override
@@ -129,26 +117,32 @@ public class NewUserAttributeEditorView extends Composite implements NewUserAttr
         return this;
     }
 
-    @UiHandler( "addAttributeButton" )
-    public void onAddAttributeButtonClick( final ClickEvent event ) {
+    @UiHandler("addAttributeButton")
+    public void onAddAttributeButtonClick(final ClickEvent event) {
         presenter.onNewAttributeClick();
     }
 
-    @UiHandler( "newAttributeCancelButton" )
-    public void onNewAttributeCancelButtonClick( final ClickEvent event ) {
+    @UiHandler("newAttributeCancelButton")
+    public void onNewAttributeCancelButtonClick(final ClickEvent event) {
         presenter.onCancel();
     }
 
-    @UiHandler( "newAttributeSaveButton" )
-    public void onNewAttributeSaveButtonClick( final ClickEvent event ) {
+    @UiHandler("newAttributeSaveButton")
+    public void onNewAttributeSaveButtonClick(final ClickEvent event) {
         final boolean isValid = newAttributeNameBox.validate() && newAttributeValueBox.validate();
         if (isValid) {
             newAttributeNameFormGroup.setValidationState(ValidationState.NONE);
             newAttributeValueFormGroup.setValidationState(ValidationState.NONE);
             final String name = newAttributeNameBox.getText();
             final String value = newAttributeValueBox.getText();
-            presenter.addNewAttribute(name, value);
+            presenter.addNewAttribute(name,
+                                      value);
         }
     }
-    
+
+    interface NewUserAttributeViewBinder
+            extends
+            UiBinder<Widget, NewUserAttributeEditorView> {
+
+    }
 }

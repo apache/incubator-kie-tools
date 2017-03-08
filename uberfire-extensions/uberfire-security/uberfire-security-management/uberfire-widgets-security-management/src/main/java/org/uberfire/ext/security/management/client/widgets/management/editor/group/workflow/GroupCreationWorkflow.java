@@ -16,6 +16,14 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.group.workflow;
 
+import java.util.Collection;
+import java.util.Set;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.bus.client.api.messaging.Message;
@@ -36,19 +44,10 @@ import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import java.util.Collection;
-import java.util.Set;
-
 import static org.uberfire.workbench.events.NotificationEvent.NotificationType.INFO;
 
 /**
  * <p>Main entry point for creating a group instance.</p>
- * 
  * @since 0.8.0
  */
 @Dependent
@@ -58,18 +57,26 @@ public class GroupCreationWorkflow implements IsWidget {
     Event<OnErrorEvent> errorEvent;
     ConfirmBox confirmBox;
     LoadingBox loadingBox;
+    final ErrorCallback<Message> errorCallback = new ErrorCallback<Message>() {
+        @Override
+        public boolean error(final Message message,
+                             final Throwable throwable) {
+            loadingBox.hide();
+            showError(throwable);
+            return false;
+        }
+    };
     Event<NotificationEvent> workbenchNotification;
     CreateEntity createEntity;
     GroupUsersAssignment groupUsersAssignment;
     EntityWorkflowView view;
     Event<CreateGroupEvent> onCreateGroupEvent;
-
     Group group;
-    
+
     @Inject
     public GroupCreationWorkflow(final ClientUserSystemManager userSystemManager,
                                  final Event<OnErrorEvent> errorEvent,
-                                 final ConfirmBox confirmBox, 
+                                 final ConfirmBox confirmBox,
                                  final LoadingBox loadingBox,
                                  final Event<NotificationEvent> workbenchNotification,
                                  final CreateEntity createEntity,
@@ -86,19 +93,19 @@ public class GroupCreationWorkflow implements IsWidget {
         this.onCreateGroupEvent = onCreateGroupEvent;
         this.view = view;
     }
-
-    @PostConstruct
-    public void init() {
-        
-    }
     
      /*  ******************************************************************************************************
                                      PUBLIC PRESENTER API 
          ****************************************************************************************************** */
 
+    @PostConstruct
+    public void init() {
+
+    }
+
     public void create() {
         clear();
-        
+
         // Configure the view with the create entity component first.
         view.setWidget(createEntity.asWidget())
                 .setSaveButtonVisible(true)
@@ -116,31 +123,30 @@ public class GroupCreationWorkflow implements IsWidget {
                         create();
                     }
                 });
-        
+
         createEntity.show(UsersManagementWidgetsConstants.INSTANCE.inputGroupName(),
-                UsersManagementWidgetsConstants.INSTANCE.groupName() + "...");
+                          UsersManagementWidgetsConstants.INSTANCE.groupName() + "...");
     }
-    
-    
+
     public void clear() {
         view.clearNotification();
         createEntity.clear();
         groupUsersAssignment.clear();
         group = null;
     }
+    
+    /*  ******************************************************************************************************
+                                 PRIVATE METHODS AND VALIDATORS
+     ****************************************************************************************************** */
 
     @Override
     public Widget asWidget() {
         return view.asWidget();
     }
-    
-    /*  ******************************************************************************************************
-                                 PRIVATE METHODS AND VALIDATORS
-     ****************************************************************************************************** */
-    
+
     protected void showUsersAssignment(final String name) {
         assert group != null;
-        
+
         // Configure the view with the group's users assignment component.
         view.setWidget(groupUsersAssignment.asWidget())
                 .setSaveButtonVisible(false)
@@ -150,7 +156,7 @@ public class GroupCreationWorkflow implements IsWidget {
                 .setCallback(new EntityWorkflowView.Callback() {
                     @Override
                     public void onSave() {
-                        // Save button not present. Listen to the AddUsersToGroupEvent instance fired. 
+                        // Save button not present. Listen to the AddUsersToGroupEvent instance fired.
                     }
 
                     @Override
@@ -160,85 +166,87 @@ public class GroupCreationWorkflow implements IsWidget {
                 });
 
         groupUsersAssignment.show(UsersManagementWidgetsConstants.INSTANCE.assignUsersToGroupName() + " " + name);
-        
     }
-    
-    
+
     protected void checkCreate() {
         final String identifier = createEntity.getEntityIdentifier();
         if (identifier != null) {
             loadingBox.show();
-            
+
             // Check constrained groups, they cannot be created (such as registered roles).
             final Collection<String> constrainedGroups = userSystemManager.getConstrainedGroups();
-            if ( null != constrainedGroups && constrainedGroups.contains(identifier)) {
-                
+            if (null != constrainedGroups && constrainedGroups.contains(identifier)) {
+
                 loadingBox.hide();
 
                 // Registered role found with this identifier, so name is not valid.
-                errorEvent.fire(new OnErrorEvent(GroupCreationWorkflow.this, UsersManagementWidgetsConstants.INSTANCE.alreadyExistRegisteredRole()));
+                errorEvent.fire(new OnErrorEvent(GroupCreationWorkflow.this,
+                                                 UsersManagementWidgetsConstants.INSTANCE.alreadyExistRegisteredRole()));
                 createEntity.setErrorState();
-                
             } else {
-                
-                userSystemManager.groups(new RemoteCallback<Group>() {
-                    @Override
-                    public void callback(final Group o) {
-                        loadingBox.hide();
 
-                        // Group found, so name is not valid.
-                        errorEvent.fire(new OnErrorEvent(GroupCreationWorkflow.this, UsersManagementWidgetsConstants.INSTANCE.groupAlreadyExists()));
-                        createEntity.setErrorState();
-                    }
-                }, new ErrorCallback<Message>() {
-                    @Override
-                    public boolean error(final Message o, final Throwable throwable) {
-                        loadingBox.hide();
-                        if (throwable instanceof GroupNotFoundException) {
-                            // Group not found, so name is valid.
-                            createGroup(identifier);
-                        } else {
-                            showError(throwable);
-                            create();
-                        }
-                        return false;
-                    }
-                }).get(identifier);
-                
+                userSystemManager.groups(new RemoteCallback<Group>() {
+                                             @Override
+                                             public void callback(final Group o) {
+                                                 loadingBox.hide();
+
+                                                 // Group found, so name is not valid.
+                                                 errorEvent.fire(new OnErrorEvent(GroupCreationWorkflow.this,
+                                                                                  UsersManagementWidgetsConstants.INSTANCE.groupAlreadyExists()));
+                                                 createEntity.setErrorState();
+                                             }
+                                         },
+                                         new ErrorCallback<Message>() {
+                                             @Override
+                                             public boolean error(final Message o,
+                                                                  final Throwable throwable) {
+                                                 loadingBox.hide();
+                                                 if (throwable instanceof GroupNotFoundException) {
+                                                     // Group not found, so name is valid.
+                                                     createGroup(identifier);
+                                                 } else {
+                                                     showError(throwable);
+                                                     create();
+                                                 }
+                                                 return false;
+                                             }
+                                         }).get(identifier);
             }
-            
         }
     }
-    
+
     protected void createGroup(final String name) {
         final Group _group = userSystemManager.createGroup(name);
         createEntity.clear();
         loadingBox.show();
         userSystemManager.groups(new RemoteCallback<Group>() {
-            @Override
-            public void callback(Group group) {
-                GroupCreationWorkflow.this.group = group;
-                final boolean isEmptyUsersAllowed = userSystemManager.getGroupManagerSettings().allowEmpty();
-                loadingBox.hide();
-                if (!isEmptyUsersAllowed) {
-                    showUsersAssignment(name);
-                } else {
-                    confirmBox.show(UsersManagementWidgetsConstants.INSTANCE.confirmAction(), UsersManagementWidgetsConstants.INSTANCE.assignUsersToGroupName() + " " + name,
-                            new Command() {
-                                @Override
-                                public void execute() {
-                                    showUsersAssignment(name);
-                                }
-                            }, new Command() {
-                                @Override
-                                public void execute() {
-                                    fireGroupCreated(name);
-                                    create();
-                                }
-                            });
-                }
-            }
-        }, errorCallback).create(_group);
+                                     @Override
+                                     public void callback(Group group) {
+                                         GroupCreationWorkflow.this.group = group;
+                                         final boolean isEmptyUsersAllowed = userSystemManager.getGroupManagerSettings().allowEmpty();
+                                         loadingBox.hide();
+                                         if (!isEmptyUsersAllowed) {
+                                             showUsersAssignment(name);
+                                         } else {
+                                             confirmBox.show(UsersManagementWidgetsConstants.INSTANCE.confirmAction(),
+                                                             UsersManagementWidgetsConstants.INSTANCE.assignUsersToGroupName() + " " + name,
+                                                             new Command() {
+                                                                 @Override
+                                                                 public void execute() {
+                                                                     showUsersAssignment(name);
+                                                                 }
+                                                             },
+                                                             new Command() {
+                                                                 @Override
+                                                                 public void execute() {
+                                                                     fireGroupCreated(name);
+                                                                     create();
+                                                                 }
+                                                             });
+                                         }
+                                     }
+                                 },
+                                 errorCallback).create(_group);
     }
 
     void onAssignUsers(@Observes final AddUsersToGroupEvent addUsersToGroupEvent) {
@@ -261,34 +269,29 @@ public class GroupCreationWorkflow implements IsWidget {
         } else {
             loadingBox.show();
             userSystemManager.groups(new RemoteCallback<Void>() {
-                @Override
-                public void callback(Void o) {
-                    loadingBox.hide();
-                    fireUsersAssigned(name);
-                    create();
-                }
-            }, errorCallback).assignUsers(name, users);
+                                         @Override
+                                         public void callback(Void o) {
+                                             loadingBox.hide();
+                                             fireUsersAssigned(name);
+                                             create();
+                                         }
+                                     },
+                                     errorCallback).assignUsers(name,
+                                                                users);
         }
     }
 
     protected void fireGroupCreated(final String name) {
-        workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.groupCreated(name) + " " + name, INFO));
+        workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.groupCreated(name) + " " + name,
+                                                         INFO));
         onCreateGroupEvent.fire(new CreateGroupEvent(name));
     }
 
     protected void fireUsersAssigned(final String name) {
-        workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.usersAssigned(name), INFO));
+        workbenchNotification.fire(new NotificationEvent(UsersManagementWidgetsConstants.INSTANCE.usersAssigned(name),
+                                                         INFO));
         onCreateGroupEvent.fire(new CreateGroupEvent(name));
     }
-    
-    final ErrorCallback<Message> errorCallback = new ErrorCallback<Message>() {
-        @Override
-        public boolean error(final Message message, final Throwable throwable) {
-            loadingBox.hide();
-            showError(throwable);
-            return false;
-        }
-    };
 
     protected void showError(final Throwable throwable) {
         final String msg = throwable != null ? throwable.getMessage() : UsersManagementWidgetsConstants.INSTANCE.genericError();
@@ -296,7 +299,7 @@ public class GroupCreationWorkflow implements IsWidget {
     }
 
     protected void showError(final String message) {
-        errorEvent.fire(new OnErrorEvent(GroupCreationWorkflow.this, message));
+        errorEvent.fire(new OnErrorEvent(GroupCreationWorkflow.this,
+                                         message));
     }
-    
 }

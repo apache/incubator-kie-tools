@@ -19,7 +19,7 @@ public class Category {
 
     private String category;
 
-    public Category( final String category ) {
+    public Category(final String category) {
         this.category = category;
     }
 
@@ -28,17 +28,17 @@ public class Category {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof Category ) ) {
+        if (!(o instanceof Category)) {
             return false;
         }
 
         Category that = (Category) o;
 
-        if ( !category.equals( that.category ) ) {
+        if (!category.equals(that.category)) {
             return false;
         }
 
@@ -56,5 +56,4 @@ public class Category {
                 "category='" + category + '\'' +
                 '}';
     }
-
 }

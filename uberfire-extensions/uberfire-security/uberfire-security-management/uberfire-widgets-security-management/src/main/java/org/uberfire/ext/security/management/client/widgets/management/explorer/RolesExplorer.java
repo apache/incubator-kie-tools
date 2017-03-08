@@ -16,6 +16,10 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.explorer;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.security.shared.api.Role;
 import org.uberfire.ext.security.management.api.AbstractEntityManager;
@@ -27,10 +31,6 @@ import org.uberfire.ext.security.management.client.widgets.management.list.Entit
 import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 import org.uberfire.ext.security.management.impl.SearchRequestImpl;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-
 /**
  * <p>Presenter class for roles explorer widget.</p>
  * <p>By default, the <code>admin</code> identifier is constrained.</p>
@@ -41,13 +41,17 @@ public class RolesExplorer extends AbstractEntityExplorer<Role> {
     private Event<ReadRoleEvent> readRoleEvent;
 
     @Inject
-    public RolesExplorer(final ClientUserSystemManager userSystemManager, 
-                         final Event<OnErrorEvent> errorEvent, 
-                         final LoadingBox loadingBox, 
-                         final EntitiesList<Role> entitiesList, 
+    public RolesExplorer(final ClientUserSystemManager userSystemManager,
+                         final Event<OnErrorEvent> errorEvent,
+                         final LoadingBox loadingBox,
+                         final EntitiesList<Role> entitiesList,
                          final EntitiesExplorerView view,
                          final Event<ReadRoleEvent> readRoleEvent) {
-        super(userSystemManager, errorEvent, loadingBox, entitiesList, view);
+        super(userSystemManager,
+              errorEvent,
+              loadingBox,
+              entitiesList,
+              view);
         this.readRoleEvent = readRoleEvent;
     }
 
@@ -107,21 +111,26 @@ public class RolesExplorer extends AbstractEntityExplorer<Role> {
 
         // Call backend service.
         userSystemManager.roles(new RemoteCallback<AbstractEntityManager.SearchResponse<Role>>() {
-            @Override
-            public void callback(final AbstractEntityManager.SearchResponse<Role> response) {
-                if (response != null) {
+                                    @Override
+                                    public void callback(final AbstractEntityManager.SearchResponse<Role> response) {
+                                        if (response != null) {
 
-                    final EntitiesList.Callback<Role> callback = createCallback();
+                                            final EntitiesList.Callback<Role> callback = createCallback();
 
-                    entitiesList.show(response, callback);
+                                            entitiesList.show(response,
+                                                              callback);
 
-                    // Show the explorer's view.
-                    view.show(context, viewCallback);
+                                            // Show the explorer's view.
+                                            view.show(context,
+                                                      viewCallback);
 
-                    hideLoadingView();
-                }
-            }
-        }, errorCallback).search(new SearchRequestImpl(searchPattern, currentPage, pageSize,
-                context != null ? context.getConstrainedEntities() : null));
+                                            hideLoadingView();
+                                        }
+                                    }
+                                },
+                                errorCallback).search(new SearchRequestImpl(searchPattern,
+                                                                            currentPage,
+                                                                            pageSize,
+                                                                            context != null ? context.getConstrainedEntities() : null));
     }
 }

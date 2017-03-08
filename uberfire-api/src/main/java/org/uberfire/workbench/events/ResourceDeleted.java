@@ -25,7 +25,7 @@ public class ResourceDeleted implements UberFireEvent,
 
     private String message;
 
-    public ResourceDeleted( @MapsTo("message") final String message ) {
+    public ResourceDeleted(@MapsTo("message") final String message) {
         this.message = message;
     }
 
@@ -38,5 +38,4 @@ public class ResourceDeleted implements UberFireEvent,
     public String getMessage() {
         return message;
     }
-
 }

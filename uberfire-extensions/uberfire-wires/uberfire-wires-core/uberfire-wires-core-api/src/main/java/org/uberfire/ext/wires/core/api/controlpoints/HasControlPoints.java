@@ -19,10 +19,9 @@ import org.uberfire.ext.wires.core.api.shapes.WiresShape;
 
 public interface HasControlPoints extends WiresShape {
 
-    void addControlPoint( final ControlPoint cp );
+    void addControlPoint(final ControlPoint cp);
 
     void showControlPoints();
 
     void hideControlPoints();
-
 }

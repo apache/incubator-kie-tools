@@ -43,37 +43,39 @@ public class DeletePopUpPresenterTest {
 
     @Before
     public void init() throws Exception {
-        presenter = new DeletePopUpPresenter( view, toggleCommentPresenter );
+        presenter = new DeletePopUpPresenter(view,
+                                             toggleCommentPresenter);
     }
 
     @Test
     public void testSetup() throws Exception {
         presenter.setup();
-        verify( view ).init( presenter );
+        verify(view).init(presenter);
     }
 
     @Test
     public void testShow() throws Exception {
-        presenter.show( command );
+        presenter.show(command);
 
-        verify( view ).show();
-        assertEquals( command, presenter.getCommand() );
+        verify(view).show();
+        assertEquals(command,
+                     presenter.getCommand());
     }
 
     @Test
     public void testDeleteWithCommand() throws Exception {
-        when( toggleCommentPresenter.getComment() ).thenReturn( "test" );
+        when(toggleCommentPresenter.getComment()).thenReturn("test");
 
-        presenter.show( command );
+        presenter.show(command);
         presenter.delete();
 
-        verify( command ).execute( "test" );
-        verify( view ).hide();
+        verify(command).execute("test");
+        verify(view).hide();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testDeleteWithoutCommand() throws Exception {
-        presenter.show( null );
+        presenter.show(null);
         presenter.delete();
     }
 
@@ -81,6 +83,6 @@ public class DeletePopUpPresenterTest {
     public void cancel() throws Exception {
         presenter.cancel();
 
-        verify( view ).hide();
+        verify(view).hide();
     }
 }

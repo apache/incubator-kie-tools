@@ -25,5 +25,4 @@ public interface Page {
     void onLostFocus();
 
     PageView getView();
-
 }

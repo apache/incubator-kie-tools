@@ -49,33 +49,43 @@ import org.uberfire.security.impl.authz.DefaultPermissionManager;
 import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.ActivityResourceType;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class GroupEditorWorkflowTest extends AbstractSecurityManagementTest {
 
-
-    @Mock Caller<AuthorizationService> authorizationService;
-    @Mock EventSourceMock<OnErrorEvent> errorEvent;
-    @Mock ConfirmBox confirmBox;
-    @Mock LoadingBox loadingBox;
-    @Mock EventSourceMock<SaveGroupEvent> saveGroupEvent;
-    @Mock EventSourceMock<DeleteGroupEvent> deleteGroupEvent;
-    @Mock GroupEditor groupEditor;
-    @Mock GroupEditorDriver groupEditorDriver;
-    @Mock EntityWorkflowView view;
-    @Mock ACLSettings aclSettings;
-    @Mock PerspectiveActivity homePerspective;
+    @Mock
+    Caller<AuthorizationService> authorizationService;
+    @Mock
+    EventSourceMock<OnErrorEvent> errorEvent;
+    @Mock
+    ConfirmBox confirmBox;
+    @Mock
+    LoadingBox loadingBox;
+    @Mock
+    EventSourceMock<SaveGroupEvent> saveGroupEvent;
+    @Mock
+    EventSourceMock<DeleteGroupEvent> deleteGroupEvent;
+    @Mock
+    GroupEditor groupEditor;
+    @Mock
+    GroupEditorDriver groupEditorDriver;
+    @Mock
+    EntityWorkflowView view;
+    @Mock
+    ACLSettings aclSettings;
+    @Mock
+    PerspectiveActivity homePerspective;
 
     PermissionManager permissionManager;
     PermissionCollection permissionCollection;
     GroupEditorWorkflow tested;
-    @Mock Group group; 
+    @Mock
+    Group group;
 
     @Before
     public void setup() {
@@ -99,9 +109,18 @@ public class GroupEditorWorkflowTest extends AbstractSecurityManagementTest {
         when(view.showNotification(anyString())).thenReturn(view);
         when(groupsManagerService.get(anyString())).thenReturn(group);
 
-        tested = spy(new GroupEditorWorkflow(userSystemManager, authorizationService, permissionManager, errorEvent,
-                confirmBox, loadingBox, workbenchNotification, saveGroupEvent, deleteGroupEvent,
-                groupEditor, groupEditorDriver, view));
+        tested = spy(new GroupEditorWorkflow(userSystemManager,
+                                             authorizationService,
+                                             permissionManager,
+                                             errorEvent,
+                                             confirmBox,
+                                             loadingBox,
+                                             workbenchNotification,
+                                             saveGroupEvent,
+                                             deleteGroupEvent,
+                                             groupEditor,
+                                             groupEditorDriver,
+                                             view));
     }
 
     @Test
@@ -109,32 +128,53 @@ public class GroupEditorWorkflowTest extends AbstractSecurityManagementTest {
         tested.group = group;
         tested.clear();
         assertNull(tested.group);
-        verify(groupEditor, times(1)).clear();
-        verify(groupEditor, times(0)).show(any(Group.class));
-        verify(view, times(1)).clearNotification();
-        verify(view, times(0)).setCancelButtonVisible(anyBoolean());
-        verify(view, times(0)).setCallback(any(EntityWorkflowView.Callback.class));
-        verify(view, times(0)).setSaveButtonText(anyString());
-        verify(view, times(0)).setWidget(any(IsWidget.class));
-        verify(view, times(0)).setSaveButtonVisible(anyBoolean());
-        verify(view, times(0)).setSaveButtonEnabled(anyBoolean());
-        verify(view, times(0)).showNotification(anyString());
+        verify(groupEditor,
+               times(1)).clear();
+        verify(groupEditor,
+               times(0)).show(any(Group.class));
+        verify(view,
+               times(1)).clearNotification();
+        verify(view,
+               times(0)).setCancelButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setCallback(any(EntityWorkflowView.Callback.class));
+        verify(view,
+               times(0)).setSaveButtonText(anyString());
+        verify(view,
+               times(0)).setWidget(any(IsWidget.class));
+        verify(view,
+               times(0)).setSaveButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setSaveButtonEnabled(anyBoolean());
+        verify(view,
+               times(0)).showNotification(anyString());
     }
-    
+
     @Test
     public void testShow() {
         final String name = "group1";
         tested.show(name);
-        verify(view, times(1)).setCancelButtonVisible(false);
-        verify(view, times(1)).setCallback(any(EntityWorkflowView.Callback.class));
-        verify(view, times(1)).setSaveButtonText(anyString());
-        verify(view, times(1)).setWidget(any(IsWidget.class));
-        verify(view, times(1)).setSaveButtonVisible(false);
-        verify(view, times(1)).setSaveButtonEnabled(false);
-        verify(view, times(0)).showNotification(anyString());
-        verify(view, times(1)).clearNotification();
-        verify(groupEditorDriver, times(1)).edit(group, groupEditor);
-        verify(groupEditor, times(1)).clear();
+        verify(view,
+               times(1)).setCancelButtonVisible(false);
+        verify(view,
+               times(1)).setCallback(any(EntityWorkflowView.Callback.class));
+        verify(view,
+               times(1)).setSaveButtonText(anyString());
+        verify(view,
+               times(1)).setWidget(any(IsWidget.class));
+        verify(view,
+               times(1)).setSaveButtonVisible(false);
+        verify(view,
+               times(1)).setSaveButtonEnabled(false);
+        verify(view,
+               times(0)).showNotification(anyString());
+        verify(view,
+               times(1)).clearNotification();
+        verify(groupEditorDriver,
+               times(1)).edit(group,
+                              groupEditor);
+        verify(groupEditor,
+               times(1)).clear();
     }
 
     @Test
@@ -148,12 +188,21 @@ public class GroupEditorWorkflowTest extends AbstractSecurityManagementTest {
                 callback.execute();
                 return null;
             }
-        }).when(confirmBox).show(anyString(), anyString(), any(), any());
+        }).when(confirmBox).show(anyString(),
+                                 anyString(),
+                                 any(),
+                                 any());
         tested.group = group;
         tested.onDeleteGroupEvent(onDeleteEvent);
-        verify(confirmBox, times(1)).show(anyString(), anyString(), any(), any());
-        verify(deleteGroupEvent, times(1)).fire(any(DeleteGroupEvent.class));
-        verify(workbenchNotification, times(1)).fire(any(NotificationEvent.class));
+        verify(confirmBox,
+               times(1)).show(anyString(),
+                              anyString(),
+                              any(),
+                              any());
+        verify(deleteGroupEvent,
+               times(1)).fire(any(DeleteGroupEvent.class));
+        verify(workbenchNotification,
+               times(1)).fire(any(NotificationEvent.class));
     }
 
     @Test
@@ -161,31 +210,45 @@ public class GroupEditorWorkflowTest extends AbstractSecurityManagementTest {
         Throwable error = mock(Throwable.class);
         when(error.getMessage()).thenReturn("error1");
         tested.showError(error);
-        verify(errorEvent, times(1)).fire(any(OnErrorEvent.class));
+        verify(errorEvent,
+               times(1)).fire(any(OnErrorEvent.class));
     }
-    
+
     @Test
     public void testHomePerspectiveGranted() {
-        permissionCollection.add(permissionManager.createPermission(homePerspective, PerspectiveAction.READ, true));
+        permissionCollection.add(permissionManager.createPermission(homePerspective,
+                                                                    PerspectiveAction.READ,
+                                                                    true));
         tested.edit();
-        verify(tested, never()).showNotification(anyString());
+        verify(tested,
+               never()).showNotification(anyString());
     }
 
     @Test
     public void testHomePerspectiveDenied() {
-        permissionCollection.add(permissionManager.createPermission(homePerspective, PerspectiveAction.READ, false));
+        permissionCollection.add(permissionManager.createPermission(homePerspective,
+                                                                    PerspectiveAction.READ,
+                                                                    false));
         tested.edit();
         verify(tested).showNotification(anyString());
     }
 
     private void assertNoViewCalls() {
-        verify(view, times(0)).setCancelButtonVisible(anyBoolean());
-        verify(view, times(0)).setCallback(any(EntityWorkflowView.Callback.class));
-        verify(view, times(0)).setSaveButtonText(anyString());
-        verify(view, times(0)).setWidget(any(IsWidget.class));
-        verify(view, times(0)).setSaveButtonVisible(anyBoolean());
-        verify(view, times(0)).setSaveButtonEnabled(anyBoolean());
-        verify(view, times(0)).showNotification(anyString());
-        verify(view, times(0)).clearNotification();
+        verify(view,
+               times(0)).setCancelButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setCallback(any(EntityWorkflowView.Callback.class));
+        verify(view,
+               times(0)).setSaveButtonText(anyString());
+        verify(view,
+               times(0)).setWidget(any(IsWidget.class));
+        verify(view,
+               times(0)).setSaveButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setSaveButtonEnabled(anyBoolean());
+        verify(view,
+               times(0)).showNotification(anyString());
+        verify(view,
+               times(0)).clearNotification();
     }
 }

@@ -34,36 +34,53 @@ public class CommandTimelineFilter {
     @Any
     private Instance<SocialCommandUserFilter> userFilters;
 
-    public List<SocialActivitiesEvent> executeTypeCommandsOn( SocialAdapter type,
-                                                              Map commandsMap,
-                                                              List<SocialActivitiesEvent> socialActivitiesEvents ) {
-        for ( Object mapvalue : commandsMap.keySet() ) {
-            socialActivitiesEvents = executeTypeAdapters( type, commandsMap, socialActivitiesEvents, mapvalue );
+    private static boolean theParameterIsThisAdapter(String key,
+                                                     SocialCommandTypeFilter socialCommandTypeFilter) {
+        return key.equalsIgnoreCase(socialCommandTypeFilter.getCommandName());
+    }
+
+    private static boolean theParameterIsThisUserAdapter(String key,
+                                                         SocialCommandUserFilter socialCommandUserFilter) {
+        return key.equalsIgnoreCase(socialCommandUserFilter.getCommandName());
+    }
+
+    public List<SocialActivitiesEvent> executeTypeCommandsOn(SocialAdapter type,
+                                                             Map commandsMap,
+                                                             List<SocialActivitiesEvent> socialActivitiesEvents) {
+        for (Object mapvalue : commandsMap.keySet()) {
+            socialActivitiesEvents = executeTypeAdapters(type,
+                                                         commandsMap,
+                                                         socialActivitiesEvents,
+                                                         mapvalue);
         }
         return socialActivitiesEvents;
     }
 
-    public List<SocialActivitiesEvent> executeUserCommandsOn( List<SocialActivitiesEvent> userEvents,
+    public List<SocialActivitiesEvent> executeUserCommandsOn(List<SocialActivitiesEvent> userEvents,
 
-                                                              Map commandsMap ) {
-        if ( thereIsUserFilters() ) {
-            for ( Object mapValue : commandsMap.keySet() ) {
-                userEvents = executeUserAdapters( commandsMap, userEvents, mapValue );
+                                                             Map commandsMap) {
+        if (thereIsUserFilters()) {
+            for (Object mapValue : commandsMap.keySet()) {
+                userEvents = executeUserAdapters(commandsMap,
+                                                 userEvents,
+                                                 mapValue);
             }
         }
         return userEvents;
     }
 
-    private List<SocialActivitiesEvent> executeUserAdapters( Map commandsMap,
-                                                             List<SocialActivitiesEvent> userEvents,
-                                                             Object s ) {
-        for ( SocialCommandUserFilter socialCommandUserFilter : userFilters ) {
+    private List<SocialActivitiesEvent> executeUserAdapters(Map commandsMap,
+                                                            List<SocialActivitiesEvent> userEvents,
+                                                            Object s) {
+        for (SocialCommandUserFilter socialCommandUserFilter : userFilters) {
             String key = (String) s;
-            if ( theParameterIsThisUserAdapter( key, socialCommandUserFilter ) ) {
-                String[] values = (String[]) commandsMap.get( s );
-                if ( values.length > 0 ) {
-                    String value = values[ 0 ];
-                    userEvents = socialCommandUserFilter.execute( value, userEvents );
+            if (theParameterIsThisUserAdapter(key,
+                                              socialCommandUserFilter)) {
+                String[] values = (String[]) commandsMap.get(s);
+                if (values.length > 0) {
+                    String value = values[0];
+                    userEvents = socialCommandUserFilter.execute(value,
+                                                                 userEvents);
                 }
             }
         }
@@ -74,33 +91,24 @@ public class CommandTimelineFilter {
         return userFilters != null && userFilters.iterator().hasNext();
     }
 
-    private List<SocialActivitiesEvent> executeTypeAdapters( SocialAdapter type,
-                                                             Map commandsMap,
-                                                             List<SocialActivitiesEvent> socialActivitiesEvents,
-                                                             Object s ) {
-        if ( type.getTimelineFilters() != null ) {
-            for ( SocialCommandTypeFilter socialCommandTypeFilter : (List<SocialCommandTypeFilter>) type.getTimelineFilters() ) {
+    private List<SocialActivitiesEvent> executeTypeAdapters(SocialAdapter type,
+                                                            Map commandsMap,
+                                                            List<SocialActivitiesEvent> socialActivitiesEvents,
+                                                            Object s) {
+        if (type.getTimelineFilters() != null) {
+            for (SocialCommandTypeFilter socialCommandTypeFilter : (List<SocialCommandTypeFilter>) type.getTimelineFilters()) {
                 String key = (String) s;
-                if ( theParameterIsThisAdapter( key, socialCommandTypeFilter ) ) {
-                    String[] values = (String[]) commandsMap.get( s );
-                    if ( values.length > 0 ) {
-                        String value = values[ 0 ];
-                        socialActivitiesEvents = socialCommandTypeFilter.execute( value, socialActivitiesEvents );
+                if (theParameterIsThisAdapter(key,
+                                              socialCommandTypeFilter)) {
+                    String[] values = (String[]) commandsMap.get(s);
+                    if (values.length > 0) {
+                        String value = values[0];
+                        socialActivitiesEvents = socialCommandTypeFilter.execute(value,
+                                                                                 socialActivitiesEvents);
                     }
                 }
             }
         }
         return socialActivitiesEvents;
     }
-
-    private static boolean theParameterIsThisAdapter( String key,
-                                                      SocialCommandTypeFilter socialCommandTypeFilter ) {
-        return key.equalsIgnoreCase( socialCommandTypeFilter.getCommandName() );
-    }
-
-    private static boolean theParameterIsThisUserAdapter( String key,
-                                                          SocialCommandUserFilter socialCommandUserFilter ) {
-        return key.equalsIgnoreCase( socialCommandUserFilter.getCommandName() );
-    }
-
 }

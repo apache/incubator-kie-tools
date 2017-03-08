@@ -28,7 +28,7 @@ import org.uberfire.client.workbench.WorkbenchServicesProxy;
 import org.uberfire.workbench.model.SplashScreenFilter;
 import org.uberfire.workbench.model.impl.SplashScreenFilterImpl;
 
-import static java.util.Collections.*;
+import static java.util.Collections.emptyList;
 
 @Dependent
 public class JSNativeSplashScreen extends JSNativePlugin {
@@ -38,6 +38,38 @@ public class JSNativeSplashScreen extends JSNativePlugin {
     @Inject
     private WorkbenchServicesProxy wbServices;
 
+    private static native boolean getDisplayNextTimeFunctionResult(final JavaScriptObject o) /*-{
+        var result = o.display_next_time();
+        if (typeof result === "boolean") {
+            return result;
+        }
+        return false;
+    }-*/;
+
+    private static native boolean getDisplayNextTime(final JavaScriptObject o) /*-{
+        return o.display_next_time;
+    }-*/;
+
+    private static native JsArrayString getInterceptionPointsFunctionResult(final JavaScriptObject o) /*-{
+        var result = o.interception_points();
+        if (result instanceof Array) {
+            return result;
+        }
+        return [];
+    }-*/;
+
+    private static native JsArrayString getInterceptionPoints(final JavaScriptObject o) /*-{
+        return o.interception_points;
+    }-*/;
+
+    private static native int getBodyHeight(final JavaScriptObject o) /*-{
+        return o.body_height;
+    }-*/;
+
+    private static native boolean getIsEnabled(final JavaScriptObject o) /*-{
+        return o.enabled;
+    }-*/;
+
     public WorkbenchServicesProxy getWbServices() {
         return wbServices;
     }
@@ -45,8 +77,9 @@ public class JSNativeSplashScreen extends JSNativePlugin {
     protected void buildElement() {
         super.buildElement();
 
-        if ( hasIntProperty( obj, "body_height" ) ) {
-            bodyHeight = getBodyHeight( obj );
+        if (hasIntProperty(obj,
+                           "body_height")) {
+            bodyHeight = getBodyHeight(obj);
         } else {
             bodyHeight = null;
         }
@@ -60,71 +93,44 @@ public class JSNativeSplashScreen extends JSNativePlugin {
         boolean displayNextTime = true;
         JsArrayString interceptionPoints = null;
 
-        if ( hasMethod( obj, "display_next_time" ) ) {
-            displayNextTime = getDisplayNextTimeFunctionResult( obj );
-        } else if ( hasBooleanProperty( obj, "display_next_time" ) ) {
-            displayNextTime = getDisplayNextTime( obj );
+        if (hasMethod(obj,
+                      "display_next_time")) {
+            displayNextTime = getDisplayNextTimeFunctionResult(obj);
+        } else if (hasBooleanProperty(obj,
+                                      "display_next_time")) {
+            displayNextTime = getDisplayNextTime(obj);
         }
 
-        if ( hasMethod( obj, "interception_points" ) ) {
-            interceptionPoints = getInterceptionPointsFunctionResult( obj );
+        if (hasMethod(obj,
+                      "interception_points")) {
+            interceptionPoints = getInterceptionPointsFunctionResult(obj);
         } else {
-            interceptionPoints = getInterceptionPoints( obj );
+            interceptionPoints = getInterceptionPoints(obj);
         }
 
-        return new SplashScreenFilterImpl( getId(), displayNextTime, toCollection( interceptionPoints ) );
+        return new SplashScreenFilterImpl(getId(),
+                                          displayNextTime,
+                                          toCollection(interceptionPoints));
     }
 
     public boolean isEnabled() {
-        if ( hasBooleanProperty( obj, "enabled" ) ) {
-            return getIsEnabled( obj );
+        if (hasBooleanProperty(obj,
+                               "enabled")) {
+            return getIsEnabled(obj);
         }
         return true;
     }
 
-    private Collection<String> toCollection( final JsArrayString interceptionPoints ) {
-        if ( interceptionPoints == null || interceptionPoints.length() == 0 ) {
+    private Collection<String> toCollection(final JsArrayString interceptionPoints) {
+        if (interceptionPoints == null || interceptionPoints.length() == 0) {
             return emptyList();
         }
 
         final Collection<String> result = new ArrayList<String>();
-        for ( int i = 0; i < interceptionPoints.length(); i++ ) {
-            result.add( interceptionPoints.get( i ) );
+        for (int i = 0; i < interceptionPoints.length(); i++) {
+            result.add(interceptionPoints.get(i));
         }
 
         return result;
     }
-
-    private static native boolean getDisplayNextTimeFunctionResult( final JavaScriptObject o ) /*-{
-        var result = o.display_next_time();
-        if (typeof result === "boolean") {
-            return result;
-        }
-        return false;
-    }-*/;
-
-    private static native boolean getDisplayNextTime( final JavaScriptObject o ) /*-{
-        return o.display_next_time;
-    }-*/;
-
-    private static native JsArrayString getInterceptionPointsFunctionResult( final JavaScriptObject o ) /*-{
-        var result = o.interception_points();
-        if (result instanceof Array) {
-            return result;
-        }
-        return [];
-    }-*/;
-
-    private static native JsArrayString getInterceptionPoints( final JavaScriptObject o ) /*-{
-        return o.interception_points;
-    }-*/;
-
-    private static native int getBodyHeight( final JavaScriptObject o ) /*-{
-        return o.body_height;
-    }-*/;
-
-    private static native boolean getIsEnabled( final JavaScriptObject o ) /*-{
-        return o.enabled;
-    }-*/;
-
 }

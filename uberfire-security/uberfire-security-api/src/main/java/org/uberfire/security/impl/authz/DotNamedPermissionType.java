@@ -40,27 +40,39 @@ public class DotNamedPermissionType implements PermissionType {
     }
 
     @Override
-    public Permission createPermission(String name, boolean granted) {
+    public Permission createPermission(String name,
+                                       boolean granted) {
         if (!supportsPermission(name)) {
             throw new IllegalArgumentException("The permission is not supported: " + name);
         }
-        return new DotNamedPermission(name, granted);
+        return new DotNamedPermission(name,
+                                      granted);
     }
 
     @Override
-    public Permission createPermission(ResourceType resourceType, ResourceAction action, boolean granted) {
+    public Permission createPermission(ResourceType resourceType,
+                                       ResourceAction action,
+                                       boolean granted) {
         ResourceAction _action = action != null ? action : ResourceAction.READ;
-        String name = buildPermissionName(resourceType, _action.getName().toLowerCase(), null);
-        return createPermission(name, granted);
+        String name = buildPermissionName(resourceType,
+                                          _action.getName().toLowerCase(),
+                                          null);
+        return createPermission(name,
+                                granted);
     }
 
     @Override
-    public Permission createPermission(Resource resource, ResourceAction action, boolean granted) {
+    public Permission createPermission(Resource resource,
+                                       ResourceAction action,
+                                       boolean granted) {
         ResourceAction _action = action != null ? action : ResourceAction.READ;
         ResourceType type = resource != null ? resource.getResourceType() : null;
         String id = resource != null ? resource.getIdentifier() : null;
-        String name = buildPermissionName(type, _action.getName().toLowerCase(), id);
-        return createPermission(name, granted);
+        String name = buildPermissionName(type,
+                                          _action.getName().toLowerCase(),
+                                          id);
+        return createPermission(name,
+                                granted);
     }
 
     @Override
@@ -76,9 +88,11 @@ public class DotNamedPermissionType implements PermissionType {
         return null;
     }
 
-    protected String buildPermissionName(ResourceType type, String action, String resourceId) {
+    protected String buildPermissionName(ResourceType type,
+                                         String action,
+                                         String resourceId) {
         String name = "";
-        if (type != null && !type.getName().equalsIgnoreCase( ResourceType.UNKNOWN.getName() ) ) {
+        if (type != null && !type.getName().equalsIgnoreCase(ResourceType.UNKNOWN.getName())) {
             name += type.getName();
         }
         if (action != null && action.trim().length() > 0) {

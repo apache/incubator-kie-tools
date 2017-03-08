@@ -16,39 +16,50 @@
 
 package org.uberfire.ext.security.management.keycloak;
 
-import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.resteasy.client.ClientResponse;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.uberfire.commons.config.ConfigProperties;
-import org.uberfire.ext.security.management.api.*;
+import org.uberfire.ext.security.management.api.Capability;
+import org.uberfire.ext.security.management.api.CapabilityStatus;
+import org.uberfire.ext.security.management.api.ContextualManager;
+import org.uberfire.ext.security.management.api.GroupManager;
+import org.uberfire.ext.security.management.api.GroupManagerSettings;
+import org.uberfire.ext.security.management.api.UserSystemManager;
 import org.uberfire.ext.security.management.api.exception.GroupNotFoundException;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.api.exception.UnsupportedServiceCapabilityException;
 import org.uberfire.ext.security.management.api.exception.UserNotFoundException;
 import org.uberfire.ext.security.management.impl.GroupManagerSettingsImpl;
-import org.uberfire.ext.security.management.keycloak.client.resource.*;
+import org.uberfire.ext.security.management.keycloak.client.resource.RealmResource;
+import org.uberfire.ext.security.management.keycloak.client.resource.RoleResource;
+import org.uberfire.ext.security.management.keycloak.client.resource.RolesResource;
+import org.uberfire.ext.security.management.keycloak.client.resource.UserResource;
+import org.uberfire.ext.security.management.keycloak.client.resource.UsersResource;
 import org.uberfire.ext.security.management.search.GroupsRuntimeSearchEngine;
 import org.uberfire.ext.security.management.search.RuntimeSearchEngine;
 import org.uberfire.ext.security.management.util.SecurityManagementUtils;
 
-import java.util.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * <p>GroupsManager Service Provider Implementation for KeyCloak.</p>
  * <p>Note that roles (in keycloak server) are mapped as groups (in the workbench) for the keycloak users management provider impl.</p>
- *
  * @since 0.8.0
  */
-public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupManager, ContextualManager {
+public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupManager,
+                                                                         ContextualManager {
 
-    RuntimeSearchEngine<Group> groupsSearchEngine;
-    
     private static final Logger LOG = LoggerFactory.getLogger(KeyCloakGroupManager.class);
-    
+    RuntimeSearchEngine<Group> groupsSearchEngine;
+
     public KeyCloakGroupManager() {
     }
 
@@ -75,29 +86,32 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
                 roles.add(group);
             }
         }
-        return groupsSearchEngine.search(roles, request);
+        return groupsSearchEngine.search(roles,
+                                         request);
     }
-    
 
     @Override
     public Group get(String identifier) throws SecurityManagementException {
-        checkNotNull("identifier", identifier);
+        checkNotNull("identifier",
+                     identifier);
         RealmResource realmResource = getRealmResource();
         RolesResource rolesResource = realmResource.roles();
         RoleResource roleResource = rolesResource.get(identifier);
         if (roleResource != null) {
-            RoleRepresentation roleRepresentation = getRoleRepresentation(identifier, roleResource);
+            RoleRepresentation roleRepresentation = getRoleRepresentation(identifier,
+                                                                          roleResource);
             Group g = createGroup(roleRepresentation);
-            if ( g != null ) {
+            if (g != null) {
                 return g;
             }
         }
         throw new GroupNotFoundException(identifier);
     }
-    
+
     @Override
     public Group create(Group entity) throws SecurityManagementException {
-        checkNotNull("entity", entity);
+        checkNotNull("entity",
+                     entity);
         RealmResource realmResource = getRealmResource();
         RolesResource rolesResource = realmResource.roles();
         RoleRepresentation roleRepresentation = new RoleRepresentation();
@@ -120,7 +134,8 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
 
     @Override
     public void delete(String... identifiers) throws SecurityManagementException {
-        checkNotNull("identifiers", identifiers);
+        checkNotNull("identifiers",
+                     identifiers);
         RealmResource realmResource = getRealmResource();
         RolesResource rolesResource = realmResource.roles();
         for (String identifier : identifiers) {
@@ -136,30 +151,35 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
     public GroupManagerSettings getSettings() {
         final Map<Capability, CapabilityStatus> capabilityStatusMap = new HashMap<Capability, CapabilityStatus>(8);
         for (final Capability capability : SecurityManagementUtils.GROUPS_CAPABILITIES) {
-            capabilityStatusMap.put(capability, getCapabilityStatus(capability));
+            capabilityStatusMap.put(capability,
+                                    getCapabilityStatus(capability));
         }
-        return new GroupManagerSettingsImpl(capabilityStatusMap, true);
+        return new GroupManagerSettingsImpl(capabilityStatusMap,
+                                            true);
     }
 
     @Override
-    public void assignUsers(String name, Collection<String> users) throws SecurityManagementException {
-        checkNotNull("name", name);
+    public void assignUsers(String name,
+                            Collection<String> users) throws SecurityManagementException {
+        checkNotNull("name",
+                     name);
         if (users != null) {
             RealmResource realmResource = getRealmResource();
             UsersResource usersResource = realmResource.users();
             RolesResource rolesResource = realmResource.roles();
             RoleResource roleResource = rolesResource.get(name);
             List<RoleRepresentation> rolesToAdd = new ArrayList<RoleRepresentation>(1);
-            rolesToAdd.add(getRoleRepresentation(name, roleResource));
+            rolesToAdd.add(getRoleRepresentation(name,
+                                                 roleResource));
             for (String username : users) {
-                UserResource userResource = getUserResource(usersResource, username);
+                UserResource userResource = getUserResource(usersResource,
+                                                            username);
                 if (userResource == null) {
                     throw new UserNotFoundException(username);
                 }
                 userResource.roles().realmLevel().add(rolesToAdd);
             }
         }
-
     }
 
     protected CapabilityStatus getCapabilityStatus(final Capability capability) {
@@ -172,12 +192,11 @@ public class KeyCloakGroupManager extends BaseKeyCloakManager implements GroupMa
                     return CapabilityStatus.ENABLED;
             }
         }
-        return CapabilityStatus.UNSUPPORTED;        
+        return CapabilityStatus.UNSUPPORTED;
     }
 
     @Override
     public void destroy() throws Exception {
         getKeyCloakInstance().close();
     }
-
 }

@@ -30,19 +30,18 @@ public final class Serializer {
     private Serializer() {
     }
 
-    public static byte[] toByteArray( final Object obj )
+    public static byte[] toByteArray(final Object obj)
             throws IOException {
         final ByteArrayOutputStream b = new ByteArrayOutputStream();
-        final ObjectOutputStream o = new ObjectOutputStream( b );
-        o.writeObject( obj );
+        final ObjectOutputStream o = new ObjectOutputStream(b);
+        o.writeObject(obj);
         return b.toByteArray();
     }
 
-    public static Object fromByteArray( byte[] bytes )
+    public static Object fromByteArray(byte[] bytes)
             throws IOException, ClassNotFoundException {
-        final ByteArrayInputStream b = new ByteArrayInputStream( bytes );
-        final ObjectInputStream o = new ObjectInputStream( b );
+        final ByteArrayInputStream b = new ByteArrayInputStream(bytes);
+        final ObjectInputStream o = new ObjectInputStream(b);
         return o.readObject();
-
     }
 }

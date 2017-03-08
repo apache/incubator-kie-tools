@@ -19,10 +19,10 @@ package org.uberfire.java.nio.fs.jgit.daemon.git;
 import java.io.IOException;
 
 import org.eclipse.jgit.lib.Config;
-import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.Config.SectionParser;
-import org.eclipse.jgit.transport.*;
-import org.eclipse.jgit.transport.DaemonClient;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.transport.PacketLineOut;
+import org.eclipse.jgit.transport.ServiceMayNotContinueException;
 import org.eclipse.jgit.transport.resolver.ServiceNotAuthorizedException;
 import org.eclipse.jgit.transport.resolver.ServiceNotEnabledException;
 
@@ -36,26 +36,17 @@ public abstract class DaemonService {
 
     private boolean overridable;
 
-    DaemonService( final String cmdName,
-                   final String cfgName ) {
-        command = cmdName.startsWith( "git-" ) ? cmdName : "git-" + cmdName;
+    DaemonService(final String cmdName,
+                  final String cfgName) {
+        command = cmdName.startsWith("git-") ? cmdName : "git-" + cmdName;
         configKey = new SectionParser<ServiceConfig>() {
-            public ServiceConfig parse( final Config cfg ) {
-                return new ServiceConfig( DaemonService.this, cfg, cfgName );
+            public ServiceConfig parse(final Config cfg) {
+                return new ServiceConfig(DaemonService.this,
+                                         cfg,
+                                         cfgName);
             }
         };
         overridable = true;
-    }
-
-    private static class ServiceConfig {
-
-        final boolean enabled;
-
-        ServiceConfig( final DaemonService service,
-                       final Config cfg,
-                       final String name ) {
-            enabled = cfg.getBoolean( "daemon", name, service.isEnabled() );
-        }
     }
 
     /**
@@ -68,7 +59,7 @@ public abstract class DaemonService {
     /**
      * @param on true to allow this service to be used; false to deny it.
      */
-    public void setEnabled( final boolean on ) {
+    public void setEnabled(final boolean on) {
         enabled = on;
     }
 
@@ -83,7 +74,7 @@ public abstract class DaemonService {
      * @param on true to permit repositories to override this service's enabled
      * state with the <code>daemon.servicename</code> config setting.
      */
-    public void setOverridable( final boolean on ) {
+    public void setOverridable(final boolean on) {
         overridable = on;
     }
 
@@ -99,48 +90,63 @@ public abstract class DaemonService {
      * @param commandLine input line from the client.
      * @return true if this command can accept the given command line.
      */
-    public boolean handles( final String commandLine ) {
+    public boolean handles(final String commandLine) {
         return command.length() + 1 < commandLine.length()
-                && commandLine.charAt( command.length() ) == ' '
-                && commandLine.startsWith( command );
+                && commandLine.charAt(command.length()) == ' '
+                && commandLine.startsWith(command);
     }
 
-    void execute( final org.uberfire.java.nio.fs.jgit.daemon.git.DaemonClient client,
-                  final String commandLine )
+    void execute(final org.uberfire.java.nio.fs.jgit.daemon.git.DaemonClient client,
+                 final String commandLine)
             throws IOException, ServiceNotEnabledException,
             ServiceNotAuthorizedException {
-        final String name = commandLine.substring( command.length() + 1 );
+        final String name = commandLine.substring(command.length() + 1);
         Repository db;
         try {
-            db = client.getDaemon().openRepository( client, name );
-        } catch ( ServiceMayNotContinueException e ) {
+            db = client.getDaemon().openRepository(client,
+                                                   name);
+        } catch (ServiceMayNotContinueException e) {
             // An error when opening the repo means the client is expecting a ref
             // advertisement, so use that style of error.
-            PacketLineOut pktOut = new PacketLineOut( client.getOutputStream() );
-            pktOut.writeString( "ERR " + e.getMessage() + "\n" );
+            PacketLineOut pktOut = new PacketLineOut(client.getOutputStream());
+            pktOut.writeString("ERR " + e.getMessage() + "\n");
             db = null;
         }
-        if ( db == null ) {
+        if (db == null) {
             return;
         }
         try {
-            if ( isEnabledFor( db ) ) {
-                execute( client, db );
+            if (isEnabledFor(db)) {
+                execute(client,
+                        db);
             }
         } finally {
             db.close();
         }
     }
 
-    private boolean isEnabledFor( final Repository db ) {
-        if ( isOverridable() ) {
-            return db.getConfig().get( configKey ).enabled;
+    private boolean isEnabledFor(final Repository db) {
+        if (isOverridable()) {
+            return db.getConfig().get(configKey).enabled;
         }
         return isEnabled();
     }
 
-    abstract void execute( org.uberfire.java.nio.fs.jgit.daemon.git.DaemonClient client,
-                           Repository db )
+    abstract void execute(org.uberfire.java.nio.fs.jgit.daemon.git.DaemonClient client,
+                          Repository db)
             throws IOException, ServiceNotEnabledException,
             ServiceNotAuthorizedException;
+
+    private static class ServiceConfig {
+
+        final boolean enabled;
+
+        ServiceConfig(final DaemonService service,
+                      final Config cfg,
+                      final String name) {
+            enabled = cfg.getBoolean("daemon",
+                                     name,
+                                     service.isEnabled());
+        }
+    }
 }

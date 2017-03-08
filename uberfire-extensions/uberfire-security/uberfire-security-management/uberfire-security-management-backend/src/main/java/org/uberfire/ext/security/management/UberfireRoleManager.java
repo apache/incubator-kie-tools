@@ -16,39 +16,43 @@
 
 package org.uberfire.ext.security.management;
 
+import javax.enterprise.context.Dependent;
+import javax.inject.Named;
+
 import org.jboss.errai.security.shared.api.Role;
 import org.uberfire.backend.server.security.RoleRegistry;
-import org.uberfire.ext.security.management.api.*;
+import org.uberfire.ext.security.management.api.ContextualManager;
+import org.uberfire.ext.security.management.api.RoleManager;
+import org.uberfire.ext.security.management.api.RoleManagerSettings;
+import org.uberfire.ext.security.management.api.UserSystemManager;
 import org.uberfire.ext.security.management.api.exception.SecurityManagementException;
 import org.uberfire.ext.security.management.search.RolesRuntimeSearchEngine;
 import org.uberfire.ext.security.management.search.RuntimeSearchEngine;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Named;
 
 /**
  * <p>The default role manager implementation for UF based applications.</p>
  * <p>Roles are not coming from any external system, are just the ones registered in the application</p>
  * <p>CRUD operations for roles are not allowed, only search is allowed.</p>
- * 
  * @since 0.8.0
  */
 @Dependent
 @Named("uberfireRoleManager")
-public class UberfireRoleManager implements RoleManager, ContextualManager {
+public class UberfireRoleManager implements RoleManager,
+                                            ContextualManager {
 
     UserSystemManager userSystemManager;
     RuntimeSearchEngine<Role> rolesSearchEngine;
-    
+
     @Override
     public void initialize(final UserSystemManager userSystemManager) throws Exception {
         this.userSystemManager = userSystemManager;
         rolesSearchEngine = new RolesRuntimeSearchEngine();
     }
-    
+
     @Override
     public SearchResponse<Role> search(SearchRequest request) throws SecurityManagementException {
-        return rolesSearchEngine.search(RoleRegistry.get().getRegisteredRoles(), request);
+        return rolesSearchEngine.search(RoleRegistry.get().getRegisteredRoles(),
+                                        request);
     }
 
     @Override

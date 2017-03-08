@@ -45,56 +45,58 @@ public class WorkbenchMenuCompactNavBarView extends WorkbenchMenuNavBarView {
 
     private final Map<String, String> menuLabelMap = Maps.newHashMap();
     private final SetMultimap<String, ComplexPanel> menuItemContextMenus = HashMultimap.create();
-    private final AnchorButton anchor = GWT.create( AnchorButton.class );
-    private final Text text = GWT.create( Text.class );
-    private final DropDownMenu dropDownMenu = GWT.create( DropDownMenu.class );
-    private final ListDropDown listDropDown = GWT.create( ListDropDown.class );
+    private final AnchorButton anchor = GWT.create(AnchorButton.class);
+    private final Text text = GWT.create(Text.class);
+    private final DropDownMenu dropDownMenu = GWT.create(DropDownMenu.class);
+    private final ListDropDown listDropDown = GWT.create(ListDropDown.class);
 
     @PostConstruct
     protected void setup() {
         super.setup();
-        this.addStyleName( "uf-navbar-nav-compact" );
-        anchor.setDataToggle( Toggle.DROPDOWN );
-        anchor.add( text );
-        listDropDown.add( anchor );
-        listDropDown.add( dropDownMenu );
-        this.navbarNav.add( listDropDown );
+        this.addStyleName("uf-navbar-nav-compact");
+        anchor.setDataToggle(Toggle.DROPDOWN);
+        anchor.add(text);
+        listDropDown.add(anchor);
+        listDropDown.add(dropDownMenu);
+        this.navbarNav.add(listDropDown);
     }
 
     @Override
-    public void addMenuItem( final String id,
-                             final String label,
-                             final String parentId,
-                             final Command command,
-                             final MenuPosition position ) {
-        final AnchorListItem menuItem = GWT.create( AnchorListItem.class );
-        menuItem.setText( label );
-        if ( command != null ) {
-            menuItem.addClickHandler( new ClickHandler() {
+    public void addMenuItem(final String id,
+                            final String label,
+                            final String parentId,
+                            final Command command,
+                            final MenuPosition position) {
+        final AnchorListItem menuItem = GWT.create(AnchorListItem.class);
+        menuItem.setText(label);
+        if (command != null) {
+            menuItem.addClickHandler(new ClickHandler() {
                 @Override
-                public void onClick( ClickEvent event ) {
+                public void onClick(ClickEvent event) {
                     command.execute();
                 }
-            } );
+            });
         }
-        getMenuItemWidgetMap().put( id, menuItem );
-        menuLabelMap.put( id, label );
-        dropDownMenu.add( menuItem );
+        getMenuItemWidgetMap().put(id,
+                                   menuItem);
+        menuLabelMap.put(id,
+                         label);
+        dropDownMenu.add(menuItem);
     }
 
     @Override
-    public void addCustomMenuItem( final Widget menu,
-                                   final MenuPosition position ) {
+    public void addCustomMenuItem(final Widget menu,
+                                  final MenuPosition position) {
         //No support for adding custom menus when using compact mode.
     }
 
     @Override
-    public void addGroupMenuItem( final String id,
-                                  final String label,
-                                  final MenuPosition position ) {
-        final DropDownHeader group = GWT.create( DropDownHeader.class );
-        group.setText( label );
-        dropDownMenu.add( group );
+    public void addGroupMenuItem(final String id,
+                                 final String label,
+                                 final MenuPosition position) {
+        final DropDownHeader group = GWT.create(DropDownHeader.class);
+        group.setText(label);
+        dropDownMenu.add(group);
     }
 
     @Override
@@ -104,52 +106,54 @@ public class WorkbenchMenuCompactNavBarView extends WorkbenchMenuNavBarView {
             final String label,
             final String parentId,
             final Command command,
-            final MenuPosition position ) {
-        final AnchorListItem menuItem = GWT.create( AnchorListItem.class );
-        menuItem.setText( label );
+            final MenuPosition position) {
+        final AnchorListItem menuItem = GWT.create(AnchorListItem.class);
+        menuItem.setText(label);
         if (parentId == null) {
-            menuItem.addStyleName( UF_PERSPECTIVE_CONTEXT_MENU );
+            menuItem.addStyleName(UF_PERSPECTIVE_CONTEXT_MENU);
         }
-        if ( command != null ) {
-            menuItem.addClickHandler( new ClickHandler() {
+        if (command != null) {
+            menuItem.addClickHandler(new ClickHandler() {
                 @Override
-                public void onClick( ClickEvent event ) {
+                public void onClick(ClickEvent event) {
                     command.execute();
                 }
-            } );
+            });
         }
 
-        final ComplexPanel contextContainer = getMenuItemContextWidgetMap().get( parentId );
-        if ( contextContainer != null ) {
-            contextContainer.add( menuItem );
+        final ComplexPanel contextContainer = getMenuItemContextWidgetMap().get(parentId);
+        if (contextContainer != null) {
+            contextContainer.add(menuItem);
         } else {
-            menuItemContextMenus.get( menuItemId ).add( menuItem );
+            menuItemContextMenus.get(menuItemId).add(menuItem);
         }
-        getMenuItemContextWidgetMap().put( id, menuItem );
+        getMenuItemContextWidgetMap().put(id,
+                                          menuItem);
     }
 
     @Override
-    public void addContextGroupMenuItem( final String menuItemId,
-                                         final String id,
-                                         final String label,
-                                         final MenuPosition position ) {
-        final ListDropDown listDropDown = GWT.create( ListDropDown.class );
-        listDropDown.addStyleName( UF_PERSPECTIVE_CONTEXT_MENU );
-        final AnchorButton anchor = GWT.create( AnchorButton.class );
-        anchor.setDataToggle( Toggle.DROPDOWN );
-        anchor.setText( label );
-        final DropDownMenu dropDownMenu = GWT.create( DropDownMenu.class );
-        listDropDown.add( anchor );
-        listDropDown.add( dropDownMenu );
-        menuItemContextMenus.get( menuItemId ).add( listDropDown );
-        getMenuItemContextWidgetMap().put( id, dropDownMenu );
+    public void addContextGroupMenuItem(final String menuItemId,
+                                        final String id,
+                                        final String label,
+                                        final MenuPosition position) {
+        final ListDropDown listDropDown = GWT.create(ListDropDown.class);
+        listDropDown.addStyleName(UF_PERSPECTIVE_CONTEXT_MENU);
+        final AnchorButton anchor = GWT.create(AnchorButton.class);
+        anchor.setDataToggle(Toggle.DROPDOWN);
+        anchor.setText(label);
+        final DropDownMenu dropDownMenu = GWT.create(DropDownMenu.class);
+        listDropDown.add(anchor);
+        listDropDown.add(dropDownMenu);
+        menuItemContextMenus.get(menuItemId).add(listDropDown);
+        getMenuItemContextWidgetMap().put(id,
+                                          dropDownMenu);
     }
 
     @Override
     public void clearContextMenu() {
         super.clearContextMenu();
 
-        for( final ComplexPanel contextContainer : menuItemContextMenus.values() ){
+        for (final ComplexPanel contextContainer : menuItemContextMenus.values()) {
             contextContainer.clear();
             contextContainer.removeFromParent();
         }
@@ -158,12 +162,12 @@ public class WorkbenchMenuCompactNavBarView extends WorkbenchMenuNavBarView {
     }
 
     @Override
-    public void selectMenuItem( final String id ) {
-        super.selectMenuItem( id );
-        final String menuLabel = menuLabelMap.get( id );
-        text.setText( menuLabel == null ? "" : menuLabel );
-        for ( ComplexPanel context : menuItemContextMenus.get( id ) ) {
-            navbarNav.add( context );
+    public void selectMenuItem(final String id) {
+        super.selectMenuItem(id);
+        final String menuLabel = menuLabelMap.get(id);
+        text.setText(menuLabel == null ? "" : menuLabel);
+        for (ComplexPanel context : menuItemContextMenus.get(id)) {
+            navbarNav.add(context);
         }
     }
 
@@ -175,12 +179,12 @@ public class WorkbenchMenuCompactNavBarView extends WorkbenchMenuNavBarView {
     }
 
     @Override
-    protected void selectElement( final ComplexPanel item ) {
-        for ( Widget widget : dropDownMenu ) {
-            widget.removeStyleName( Styles.ACTIVE );
+    protected void selectElement(final ComplexPanel item) {
+        for (Widget widget : dropDownMenu) {
+            widget.removeStyleName(Styles.ACTIVE);
         }
-        if ( item != null ) {
-            item.addStyleName( Styles.ACTIVE );
+        if (item != null) {
+            item.addStyleName(Styles.ACTIVE);
         }
     }
 

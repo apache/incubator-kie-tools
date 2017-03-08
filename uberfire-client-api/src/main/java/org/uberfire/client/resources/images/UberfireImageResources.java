@@ -25,5 +25,4 @@ public interface UberfireImageResources
 
     @Source("BPM_FileIcons_genericfile.png")
     ImageResource typeGenericFile();
-
 }

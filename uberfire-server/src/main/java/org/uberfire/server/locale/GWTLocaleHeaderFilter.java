@@ -42,7 +42,7 @@ import org.jsoup.nodes.Document;
 public class GWTLocaleHeaderFilter implements Filter {
 
     @Override
-    public void init( final FilterConfig filterConfig ) throws ServletException {
+    public void init(final FilterConfig filterConfig) throws ServletException {
     }
 
     @Override
@@ -50,41 +50,41 @@ public class GWTLocaleHeaderFilter implements Filter {
     }
 
     @Override
-    public void doFilter( final ServletRequest request,
-                          final ServletResponse response,
-                          final FilterChain chain ) throws IOException, ServletException {
+    public void doFilter(final ServletRequest request,
+                         final ServletResponse response,
+                         final FilterChain chain) throws IOException, ServletException {
 
-        final CharResponseWrapper wrappedResponse = getWrapper( (HttpServletResponse) response );
-        chain.doFilter( request,
-                        wrappedResponse );
+        final CharResponseWrapper wrappedResponse = getWrapper((HttpServletResponse) response);
+        chain.doFilter(request,
+                       wrappedResponse);
 
         final String output;
 
-        final Locale locale = getLocale( request );
+        final Locale locale = getLocale(request);
         final String injectedScript = "<meta name=\"gwt:property\" content=\"locale=" + locale.toString() + "\">";
 
-        final Document document = Jsoup.parse( wrappedResponse.toString() );
-        document.head().append( injectedScript );
+        final Document document = Jsoup.parse(wrappedResponse.toString());
+        document.head().append(injectedScript);
         output = document.html();
 
-        final byte[] outputBytes = output.getBytes( "UTF-8" );
-        response.setContentLength( outputBytes.length );
-        response.getWriter().print( output );
+        final byte[] outputBytes = output.getBytes("UTF-8");
+        response.setContentLength(outputBytes.length);
+        response.getWriter().print(output);
     }
 
-    protected CharResponseWrapper getWrapper( final HttpServletResponse response ) {
-        return new CharResponseWrapper( response );
+    protected CharResponseWrapper getWrapper(final HttpServletResponse response) {
+        return new CharResponseWrapper(response);
     }
 
-    private Locale getLocale( final ServletRequest request ) {
+    private Locale getLocale(final ServletRequest request) {
         Locale locale = request.getLocale();
-        final String paramLocale = request.getParameter( "locale" );
-        if ( paramLocale == null || paramLocale.isEmpty() ) {
+        final String paramLocale = request.getParameter("locale");
+        if (paramLocale == null || paramLocale.isEmpty()) {
             return locale;
         }
         try {
-            locale = LocaleUtils.toLocale( paramLocale );
-        } catch ( Exception e ) {
+            locale = LocaleUtils.toLocale(paramLocale);
+        } catch (Exception e) {
             //Swallow. Locale is initially set to ServletRequest locale
         }
         return locale;
@@ -101,20 +101,20 @@ public class GWTLocaleHeaderFilter implements Filter {
             }
 
             @Override
-            public void setWriteListener( WriteListener writeListener ) {
+            public void setWriteListener(WriteListener writeListener) {
                 // TODO how to treat the listener?
             }
 
             @Override
-            public void write( int b ) throws IOException {
-                charWriter.write( b );
+            public void write(int b) throws IOException {
+                charWriter.write(b);
             }
         };
 
-        protected PrintWriter writer = new PrintWriter( charWriter );
+        protected PrintWriter writer = new PrintWriter(charWriter);
 
-        public CharResponseWrapper( final HttpServletResponse response ) {
-            super( response );
+        public CharResponseWrapper(final HttpServletResponse response) {
+            super(response);
         }
 
         @Override
@@ -140,5 +140,4 @@ public class GWTLocaleHeaderFilter implements Filter {
             return charWriter.toString();
         }
     }
-
 }

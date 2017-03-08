@@ -16,21 +16,12 @@
 
 package org.uberfire.client.mvp;
 
-import static java.util.Collections.singletonList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -41,114 +32,122 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.uberfire.client.mvp.ActivityBeansCache.ActivityAndMetaInfo;
-import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.security.Resource;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static java.util.Collections.singletonList;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * Mock-based tests for how ActivityManager handles beans affected by Errai IOC's {@code @ActivatedBy} feature.
  */
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class ActivityManagerActivatedByTest {
 
-    /** The thing we're unit testing */
+    @SuppressWarnings("unchecked")
+    private final SyncBeanDef<Activity> activatedActivityBean = mock(SyncBeanDef.class);
+    @SuppressWarnings("unchecked")
+    private final SyncBeanDef<Activity> nonActivatedActivityBean = mock(SyncBeanDef.class);
+    /**
+     * The thing we're unit testing
+     */
     @InjectMocks
     ActivityManagerImpl activityManager;
-
     @Mock
     ActivityBeansCache activityBeansCache;
-
     @Mock
     SyncBeanManager iocManager;
-
     @Mock
     AuthorizationManager authzManager;
-
-
     private Activity activatedActivity;
-
-    @SuppressWarnings("unchecked")
-    private final SyncBeanDef<Activity> activatedActivityBean = mock( SyncBeanDef.class );
-
-    @SuppressWarnings("unchecked")
-    private final SyncBeanDef<Activity> nonActivatedActivityBean = mock( SyncBeanDef.class );
 
     @Before
     public void setup() {
-        when( authzManager.authorize( any( Resource.class ), any( User.class) ) ).thenReturn( true );
+        when(authzManager.authorize(any(Resource.class),
+                                    any(User.class))).thenReturn(true);
 
-        activatedActivity = mock( Activity.class );
-        when( activatedActivity.getIdentifier() ).thenReturn( "activated activity" );
+        activatedActivity = mock(Activity.class);
+        when(activatedActivity.getIdentifier()).thenReturn("activated activity");
 
-        when( activatedActivityBean.getInstance() ).thenReturn( activatedActivity );
-        when( activatedActivityBean.isActivated() ).thenReturn( true );
+        when(activatedActivityBean.getInstance()).thenReturn(activatedActivity);
+        when(activatedActivityBean.isActivated()).thenReturn(true);
 
-        when( nonActivatedActivityBean.isActivated() ).thenReturn( false );
+        when(nonActivatedActivityBean.isActivated()).thenReturn(false);
 
         Collection<SyncBeanDef<Activity>> activityList = new ArrayList<SyncBeanDef<Activity>>();
-        activityList.add( activatedActivityBean );
-        activityList.add( nonActivatedActivityBean );
+        activityList.add(activatedActivityBean);
+        activityList.add(nonActivatedActivityBean);
 
         // This covers the case where the activity manager goes directly to the Errai bean manager.
         // The list includes all beans, active or otherwise, and the activity manager has to filter them.
-        when( iocManager.lookupBeans( Activity.class ) ).thenReturn( activityList );
+        when(iocManager.lookupBeans(Activity.class)).thenReturn(activityList);
 
         // And this covers the case where the activity manager does the lookup via the ActivityBeansCache.
         // We set this up assuming ActivityBeansCache is well-behaved, and hides the existence of inactive beans.
         // (of course this assumption is verified in a separate test)
         ActivityAndMetaInfo activatedActivityAndMetaInfo =
-                activityBeansCache.new ActivityAndMetaInfo( activatedActivityBean, 0, Collections.<String>emptyList() );
-        when( activityBeansCache.getResourceActivities() ).thenReturn( singletonList( activatedActivityAndMetaInfo ) );
-        when( activityBeansCache.getActivity( "activated activity" ) ).thenReturn( activatedActivityBean );
+                activityBeansCache.new ActivityAndMetaInfo(activatedActivityBean,
+                                                           0,
+                                                           Collections.<String>emptyList());
+        when(activityBeansCache.getResourceActivities()).thenReturn(singletonList(activatedActivityAndMetaInfo));
+        when(activityBeansCache.getActivity("activated activity")).thenReturn(activatedActivityBean);
     }
 
     @After
     public void runBlanketVerifications() {
 
         // no matter what else we're testing, the non-activated bean should never be instantiated
-        verify( nonActivatedActivityBean, never() ).getInstance();
-        verify( nonActivatedActivityBean, never() ).newInstance();
+        verify(nonActivatedActivityBean,
+               never()).getInstance();
+        verify(nonActivatedActivityBean,
+               never()).newInstance();
     }
-
 
     @Test
     public void getActivitiesByTypeShouldRespectBeanActivationStatus() throws Exception {
-        Set<Activity> activities = activityManager.getActivities( Activity.class );
+        Set<Activity> activities = activityManager.getActivities(Activity.class);
 
-        assertEquals( 1, activities.size() );
-        assertSame( activatedActivity, activities.iterator().next() );
+        assertEquals(1,
+                     activities.size());
+        assertSame(activatedActivity,
+                   activities.iterator().next());
     }
 
     @Test
     public void getActivitiesForActivePlaceRequestShouldReturnActivity() throws Exception {
-        Set<Activity> activities = activityManager.getActivities( new DefaultPlaceRequest( "activated activity" )) ;
+        Set<Activity> activities = activityManager.getActivities(new DefaultPlaceRequest("activated activity"));
 
-        assertEquals( 1, activities.size() );
-        assertSame( activatedActivity, activities.iterator().next() );
+        assertEquals(1,
+                     activities.size());
+        assertSame(activatedActivity,
+                   activities.iterator().next());
     }
 
     @Test
     public void getActivitiesForInactivePlaceRequestShouldReturnEmptySet() throws Exception {
-        Set<Activity> activities = activityManager.getActivities( new DefaultPlaceRequest( "non-activated activity" )) ;
+        Set<Activity> activities = activityManager.getActivities(new DefaultPlaceRequest("non-activated activity"));
 
-        assertEquals( 0, activities.size() );
+        assertEquals(0,
+                     activities.size());
     }
 
     @Test
     public void getActivityForActivePlaceRequestShouldReturnActivity() throws Exception {
-        Activity activity = activityManager.getActivity( Activity.class, new DefaultPlaceRequest( "activated activity" )) ;
+        Activity activity = activityManager.getActivity(Activity.class,
+                                                        new DefaultPlaceRequest("activated activity"));
 
-        assertSame( activatedActivity, activity );
+        assertSame(activatedActivity,
+                   activity);
     }
 
     @Test
     public void getActivityForInactivePlaceRequestShouldReturnNull() throws Exception {
-        Activity activity = activityManager.getActivity( Activity.class, new DefaultPlaceRequest( "non-activated activity" )) ;
+        Activity activity = activityManager.getActivity(Activity.class,
+                                                        new DefaultPlaceRequest("non-activated activity"));
 
-        assertNull( activity );
+        assertNull(activity);
     }
-
 }

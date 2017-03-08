@@ -44,41 +44,53 @@ import static org.junit.Assert.*;
 @RunWith(Arquillian.class)
 public class WorkspaceBuilderServiceTest {
 
-    @Deployment
-    public static JavaArchive createDeployment() {
-
-        System.setProperty( "errai.marshalling.force_static_marshallers", Boolean.toString( true ) );
-
-        return ShrinkWrap.create( JavaArchive.class )
-                .addPackages( true, "org.uberfire.preferences" )
-                .addPackages( true, "org.uberfire.mvp" )
-                .addPackages( true, "org.uberfire.commons" )
-                .addPackages( true, "org.uberfire.backend.java" )
-                .addPackages( true, "org.uberfire.backend.server.cdi" )
-                .addPackages( true, "org.uberfire.backend.server.cluster" )
-                .addPackages( true, "org.uberfire.backend.server.io" )
-                .addPackages( true, "org.uberfire.java.nio.fs.jgit" )
-                .addClass( JGitFileSystemProvider.class )
-                .addAsManifestResource( EmptyAsset.INSTANCE, "beans.xml" )
-                .addAsResource( "ErraiApp.properties", "ErraiApp.properties" )
-                .addAsManifestResource( "META-INF/services/org.uberfire.java.nio.file.spi.FileSystemProvider", "services/org.uberfire.java.nio.file.spi.FileSystemProvider" )
-                .addAsServiceProvider( Extension.class, WorkspaceScopedExtension.class );
-    }
-
+    @Inject
+    SessionBasedBean bean;
     @Inject
     private WorkspaceManager workspaceManager;
 
-    @Inject
-    SessionBasedBean bean;
+    @Deployment
+    public static JavaArchive createDeployment() {
 
-    @Produces
-    protected SessionInfo createSessionInfo( InjectionPoint injectionPoint ) {
-        return new SessionInfoImpl( new UserImpl( Thread.currentThread().getName() ) );
+        System.setProperty("errai.marshalling.force_static_marshallers",
+                           Boolean.toString(true));
+
+        return ShrinkWrap.create(JavaArchive.class)
+                .addPackages(true,
+                             "org.uberfire.preferences")
+                .addPackages(true,
+                             "org.uberfire.mvp")
+                .addPackages(true,
+                             "org.uberfire.commons")
+                .addPackages(true,
+                             "org.uberfire.backend.java")
+                .addPackages(true,
+                             "org.uberfire.backend.server.cdi")
+                .addPackages(true,
+                             "org.uberfire.backend.server.cluster")
+                .addPackages(true,
+                             "org.uberfire.backend.server.io")
+                .addPackages(true,
+                             "org.uberfire.java.nio.fs.jgit")
+                .addClass(JGitFileSystemProvider.class)
+                .addAsManifestResource(EmptyAsset.INSTANCE,
+                                       "beans.xml")
+                .addAsResource("ErraiApp.properties",
+                               "ErraiApp.properties")
+                .addAsManifestResource("META-INF/services/org.uberfire.java.nio.file.spi.FileSystemProvider",
+                                       "services/org.uberfire.java.nio.file.spi.FileSystemProvider")
+                .addAsServiceProvider(Extension.class,
+                                      WorkspaceScopedExtension.class);
     }
 
     @BeforeClass
     public static void setUp() {
 
+    }
+
+    @Produces
+    protected SessionInfo createSessionInfo(InjectionPoint injectionPoint) {
+        return new SessionInfoImpl(new UserImpl(Thread.currentThread().getName()));
     }
 
     @Test
@@ -87,37 +99,44 @@ public class WorkspaceBuilderServiceTest {
         String THREAD_NAME_2 = "ray vaughan";
         String THREAD_NAME_1 = "hendrix";
 
-        CountDownLatch latch = new CountDownLatch( 2 );
+        CountDownLatch latch = new CountDownLatch(2);
 
-        Thread thread1 = createThread( bean, "a:b:c", latch );
-        Thread thread2 = createThread( bean, "d:e:f", latch );
+        Thread thread1 = createThread(bean,
+                                      "a:b:c",
+                                      latch);
+        Thread thread2 = createThread(bean,
+                                      "d:e:f",
+                                      latch);
 
-        thread1.setName( THREAD_NAME_1 );
-        thread2.setName( THREAD_NAME_2 );
+        thread1.setName(THREAD_NAME_1);
+        thread2.setName(THREAD_NAME_2);
         thread1.start();
         thread2.start();
 
         try {
-            latch.await( 7000, TimeUnit.SECONDS );
-            final WorkspaceImpl workspace1 = (WorkspaceImpl) workspaceManager.getWorkspace( THREAD_NAME_1 );
-            assertEquals( 1, workspaceManager.getBeansCount( workspace1 ) );
+            latch.await(7000,
+                        TimeUnit.SECONDS);
+            final WorkspaceImpl workspace1 = (WorkspaceImpl) workspaceManager.getWorkspace(THREAD_NAME_1);
+            assertEquals(1,
+                         workspaceManager.getBeansCount(workspace1));
 
-            final WorkspaceImpl workspace2 = (WorkspaceImpl) workspaceManager.getWorkspace( THREAD_NAME_2 );
-            assertEquals( 1, workspaceManager.getBeansCount( workspace2 ) );
+            final WorkspaceImpl workspace2 = (WorkspaceImpl) workspaceManager.getWorkspace(THREAD_NAME_2);
+            assertEquals(1,
+                         workspaceManager.getBeansCount(workspace2));
 
-            assertEquals( 2, workspaceManager.getWorkspaceCount() );
-        } catch ( InterruptedException e ) {
+            assertEquals(2,
+                         workspaceManager.getWorkspaceCount());
+        } catch (InterruptedException e) {
             fail();
         }
     }
 
-    private Thread createThread( final SessionBasedBean bean,
-                                 final String gav,
-                                 final CountDownLatch latch ) {
-        return new Thread( () -> {
-            bean.build( gav );
+    private Thread createThread(final SessionBasedBean bean,
+                                final String gav,
+                                final CountDownLatch latch) {
+        return new Thread(() -> {
+            bean.build(gav);
             latch.countDown();
-        } );
+        });
     }
-
 }

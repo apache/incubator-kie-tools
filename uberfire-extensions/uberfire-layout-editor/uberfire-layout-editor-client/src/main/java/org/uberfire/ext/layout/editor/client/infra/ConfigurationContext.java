@@ -15,10 +15,10 @@
  */
 package org.uberfire.ext.layout.editor.client.infra;
 
+import java.util.Map;
+
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.mvp.Command;
-
-import java.util.Map;
 
 /**
  * This class provides the context required during a layout component configuration
@@ -29,23 +29,26 @@ public class ConfigurationContext {
     private Command configurationFinish;
     private Command configurationCanceled;
 
-    public ConfigurationContext( LayoutComponent component, Command configurationFinish,
-                                 Command configurationCanceled ) {
+    public ConfigurationContext(LayoutComponent component,
+                                Command configurationFinish,
+                                Command configurationCanceled) {
         this.component = component;
         this.configurationFinish = configurationFinish;
         this.configurationCanceled = configurationCanceled;
     }
 
-    public void setComponentProperty( String key, String property ) {
-        component.addProperty( key, property );
+    public void setComponentProperty(String key,
+                                     String property) {
+        component.addProperty(key,
+                              property);
     }
 
-    public void removeComponentProperty( String key ) {
-        component.getProperties().remove( key );
+    public void removeComponentProperty(String key) {
+        component.getProperties().remove(key);
     }
 
-    public String getComponentProperty( String key ) {
-        return component.getProperties().get( key );
+    public String getComponentProperty(String key) {
+        return component.getProperties().get(key);
     }
 
     public Map<String, String> getComponentProperties() {
@@ -63,5 +66,4 @@ public class ConfigurationContext {
     public void configurationCancelled() {
         configurationCanceled.execute();
     }
-
 }

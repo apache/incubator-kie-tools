@@ -25,47 +25,63 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CreateEntityTest extends AbstractSecurityManagementTest {
 
-    @Mock CreateEntity.View view;
+    @Mock
+    CreateEntity.View view;
     private CreateEntity presenter;
 
     @Before
     public void setup() {
         super.setup();
-        presenter = new CreateEntity(userSystemManager, view);
-        assertEquals(view.asWidget(), presenter.asWidget());
+        presenter = new CreateEntity(userSystemManager,
+                                     view);
+        assertEquals(view.asWidget(),
+                     presenter.asWidget());
     }
 
     @Test
     public void testClear() throws Exception {
         presenter.clear();
-        verify(view, times(1)).clear();
-        verify(view, times(1)).setValidationState(ValidationState.NONE);
-        verify(view, times(0)).show(anyString(), anyString());
+        verify(view,
+               times(1)).clear();
+        verify(view,
+               times(1)).setValidationState(ValidationState.NONE);
+        verify(view,
+               times(0)).show(anyString(),
+                              anyString());
         assertNull(presenter.identifier);
     }
 
     @Test
     public void testSetErrorState() throws Exception {
         presenter.setErrorState();
-        verify(view, times(1)).setValidationState(ValidationState.ERROR);
-        verify(view, times(0)).clear();
-        verify(view, times(0)).show(anyString(), anyString());
+        verify(view,
+               times(1)).setValidationState(ValidationState.ERROR);
+        verify(view,
+               times(0)).clear();
+        verify(view,
+               times(0)).show(anyString(),
+                              anyString());
     }
 
     @Test
     public void testShow() throws Exception {
         final String legend = "legend";
         final String ph = "placeHolder";
-        presenter.show(legend, ph);
-        verify(view, times(1)).clear();
-        verify(view, times(1)).setValidationState(ValidationState.NONE);
-        verify(view, times(1)).show(legend, ph);
+        presenter.show(legend,
+                       ph);
+        verify(view,
+               times(1)).clear();
+        verify(view,
+               times(1)).setValidationState(ValidationState.NONE);
+        verify(view,
+               times(1)).show(legend,
+                              ph);
         assertNull(presenter.identifier);
     }
 
@@ -73,19 +89,29 @@ public class CreateEntityTest extends AbstractSecurityManagementTest {
     public void testGetEntityIdentifierValid() throws Exception {
         presenter.identifier = "id1";
         String id = presenter.getEntityIdentifier();
-        verify(view, times(1)).setValidationState(ValidationState.NONE);
-        verify(view, times(0)).clear();
-        verify(view, times(0)).show(anyString(), anyString());
-        Assert.assertEquals("id1", id);
+        verify(view,
+               times(1)).setValidationState(ValidationState.NONE);
+        verify(view,
+               times(0)).clear();
+        verify(view,
+               times(0)).show(anyString(),
+                              anyString());
+        Assert.assertEquals("id1",
+                            id);
     }
 
     @Test
     public void testGetEntityIdentifierInvalid() throws Exception {
         presenter.identifier = null;
         String id = presenter.getEntityIdentifier();
-        verify(view, times(1)).setValidationState(ValidationState.ERROR);
-        verify(view, times(0)).clear();
-        verify(view, times(0)).show(anyString(), anyString());
-        Assert.assertEquals(null, id);
+        verify(view,
+               times(1)).setValidationState(ValidationState.ERROR);
+        verify(view,
+               times(0)).clear();
+        verify(view,
+               times(0)).show(anyString(),
+                              anyString());
+        Assert.assertEquals(null,
+                            id);
     }
 }

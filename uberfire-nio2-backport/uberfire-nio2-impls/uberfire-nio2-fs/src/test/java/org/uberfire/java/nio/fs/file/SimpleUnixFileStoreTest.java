@@ -26,75 +26,74 @@ import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileStoreAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
-import org.uberfire.java.nio.fs.file.SimpleUnixFileStore;
 
-import static org.fest.assertions.api.Assertions.*;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 public class SimpleUnixFileStoreTest {
 
     @Test
     public void simpleTests() {
-        final FileStore fileStore = new SimpleUnixFileStore( null );
+        final FileStore fileStore = new SimpleUnixFileStore(null);
 
-        assertThat( fileStore.name() ).isNotNull().isEqualTo( "/" );
-        assertThat( fileStore.type() ).isNull();
-        assertThat( fileStore.isReadOnly() ).isFalse();
-        assertThat( fileStore.getTotalSpace() ).isEqualTo( File.listRoots()[ 0 ].getTotalSpace() );
-        assertThat( fileStore.getUsableSpace() ).isEqualTo( File.listRoots()[ 0 ].getUsableSpace() );
+        assertThat(fileStore.name()).isNotNull().isEqualTo("/");
+        assertThat(fileStore.type()).isNull();
+        assertThat(fileStore.isReadOnly()).isFalse();
+        assertThat(fileStore.getTotalSpace()).isEqualTo(File.listRoots()[0].getTotalSpace());
+        assertThat(fileStore.getUsableSpace()).isEqualTo(File.listRoots()[0].getUsableSpace());
 
-        assertThat( fileStore.supportsFileAttributeView( BasicFileAttributeView.class ) ).isTrue();
-        assertThat( fileStore.supportsFileAttributeView( MyFileAttributeView.class ) ).isFalse();
-        assertThat( fileStore.supportsFileAttributeView( MyAlsoInvalidFileAttributeView.class ) ).isFalse();
-        assertThat( fileStore.supportsFileAttributeView( "basic" ) ).isTrue();
-        assertThat( fileStore.supportsFileAttributeView( "any" ) ).isFalse();
-        assertThat( fileStore.supportsFileAttributeView( BasicFileAttributeView.class.getName() ) ).isFalse();
-        assertThat( fileStore.supportsFileAttributeView( MyAlsoInvalidFileAttributeView.class.getName() ) ).isFalse();
-        assertThat( fileStore.getFileStoreAttributeView( FileStoreAttributeView.class ) ).isNull();
+        assertThat(fileStore.supportsFileAttributeView(BasicFileAttributeView.class)).isTrue();
+        assertThat(fileStore.supportsFileAttributeView(MyFileAttributeView.class)).isFalse();
+        assertThat(fileStore.supportsFileAttributeView(MyAlsoInvalidFileAttributeView.class)).isFalse();
+        assertThat(fileStore.supportsFileAttributeView("basic")).isTrue();
+        assertThat(fileStore.supportsFileAttributeView("any")).isFalse();
+        assertThat(fileStore.supportsFileAttributeView(BasicFileAttributeView.class.getName())).isFalse();
+        assertThat(fileStore.supportsFileAttributeView(MyAlsoInvalidFileAttributeView.class.getName())).isFalse();
+        assertThat(fileStore.getFileStoreAttributeView(FileStoreAttributeView.class)).isNull();
 
-        assertThat( fileStore.getAttribute( "name" ) ).isNotNull().isEqualTo( fileStore.name() );
-        assertThat( fileStore.getAttribute( "totalSpace" ) ).isNotNull().isEqualTo( fileStore.getTotalSpace() );
-        assertThat( fileStore.getAttribute( "usableSpace" ) ).isNotNull().isEqualTo( fileStore.getUsableSpace() );
-        assertThat( fileStore.getAttribute( "readOnly" ) ).isNotNull().isEqualTo( fileStore.isReadOnly() );
+        assertThat(fileStore.getAttribute("name")).isNotNull().isEqualTo(fileStore.name());
+        assertThat(fileStore.getAttribute("totalSpace")).isNotNull().isEqualTo(fileStore.getTotalSpace());
+        assertThat(fileStore.getAttribute("usableSpace")).isNotNull().isEqualTo(fileStore.getUsableSpace());
+        assertThat(fileStore.getAttribute("readOnly")).isNotNull().isEqualTo(fileStore.isReadOnly());
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void getUnallocatedSpaceUnsupportedOp() {
-        new SimpleUnixFileStore( null ).getUnallocatedSpace();
+        new SimpleUnixFileStore(null).getUnallocatedSpace();
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void getAttributeUnsupportedOp() {
-        new SimpleUnixFileStore( null ).getAttribute( "someValueHere" );
+        new SimpleUnixFileStore(null).getAttribute("someValueHere");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void supportsFileAttributeViewNull1() {
-        new SimpleUnixFileStore( null ).supportsFileAttributeView( (Class<? extends FileAttributeView>) null );
+        new SimpleUnixFileStore(null).supportsFileAttributeView((Class<? extends FileAttributeView>) null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void supportsFileAttributeViewNull2() {
-        new SimpleUnixFileStore( null ).supportsFileAttributeView( (String) null );
+        new SimpleUnixFileStore(null).supportsFileAttributeView((String) null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void supportsFileAttributeViewEmpty() {
-        new SimpleUnixFileStore( null ).supportsFileAttributeView( "" );
+        new SimpleUnixFileStore(null).supportsFileAttributeView("");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void getFileStoreAttributeViewNull() {
-        new SimpleUnixFileStore( null ).getFileStoreAttributeView( null );
+        new SimpleUnixFileStore(null).getFileStoreAttributeView(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void getAttributeNull() {
-        new SimpleUnixFileStore( null ).getAttribute( null );
+        new SimpleUnixFileStore(null).getAttribute(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void getAttributeEmpty() {
-        new SimpleUnixFileStore( null ).getAttribute( "" );
+        new SimpleUnixFileStore(null).getAttribute("");
     }
 
     private static class MyFileAttributeView implements FileAttributeView {
@@ -113,9 +112,9 @@ public class SimpleUnixFileStoreTest {
         }
 
         @Override
-        public void setTimes( FileTime lastModifiedTime,
-                              FileTime lastAccessTime,
-                              FileTime createTime ) throws IOException {
+        public void setTimes(FileTime lastModifiedTime,
+                             FileTime lastAccessTime,
+                             FileTime createTime) throws IOException {
 
         }
 

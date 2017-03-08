@@ -49,12 +49,14 @@ public class DefaultPermissionTreeFactory implements PermissionTreeFactory {
     }
 
     @Inject
-    public DefaultPermissionTreeFactory(PermissionManager permissionManager, SyncBeanManager beanManager) {
+    public DefaultPermissionTreeFactory(PermissionManager permissionManager,
+                                        SyncBeanManager beanManager) {
         this.permissionManager = permissionManager;
         this.beanManager = beanManager;
     }
 
-    public DefaultPermissionTreeFactory(PermissionManager permissionManager, Collection<PermissionTreeProvider> permissionTreeProviderSet) {
+    public DefaultPermissionTreeFactory(PermissionManager permissionManager,
+                                        Collection<PermissionTreeProvider> permissionTreeProviderSet) {
         this.permissionManager = permissionManager;
         this.permissionTreeProviderSet = permissionTreeProviderSet;
     }
@@ -87,8 +89,10 @@ public class DefaultPermissionTreeFactory implements PermissionTreeFactory {
     }
 
     @Override
-    public PermissionTree createPermissionTree(User user, VotingStrategy votingStrategy) {
-        PermissionCollection pc = permissionManager.resolvePermissions(user, votingStrategy);
+    public PermissionTree createPermissionTree(User user,
+                                               VotingStrategy votingStrategy) {
+        PermissionCollection pc = permissionManager.resolvePermissions(user,
+                                                                       votingStrategy);
         return createPermissionTree(pc);
     }
 
@@ -102,11 +106,15 @@ public class DefaultPermissionTreeFactory implements PermissionTreeFactory {
                 }
             }
         }
-        Collections.sort(rootNodes, this::compareRootNode);
-        return new DefaultPermissionTree(permissionManager, rootNodes, permissions);
+        Collections.sort(rootNodes,
+                         this::compareRootNode);
+        return new DefaultPermissionTree(permissionManager,
+                                         rootNodes,
+                                         permissions);
     }
 
-    private int compareRootNode(PermissionNode n1, PermissionNode n2) {
+    private int compareRootNode(PermissionNode n1,
+                                PermissionNode n2) {
         if (n1.getPositionInTree() > n2.getPositionInTree()) {
             return 1;
         }

@@ -27,7 +27,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.Div;
@@ -91,20 +90,24 @@ public class LiveSearchDropDownView extends Composite
 
     @Override
     public void setMaxHeight(int maxHeight) {
-        dropDownMenu.getStyle().setProperty("max-height", maxHeight + "px");
+        dropDownMenu.getStyle().setProperty("max-height",
+                                            maxHeight + "px");
     }
 
     @Override
     public void setWidth(int minWidth) {
-        dropDownButton.getStyle().setProperty("width", minWidth + "px");
-        dropDownPanel.getStyle().setProperty("width", minWidth + "px");
+        dropDownButton.getStyle().setProperty("width",
+                                              minWidth + "px");
+        dropDownPanel.getStyle().setProperty("width",
+                                             minWidth + "px");
     }
 
     @Override
     public void setSearchEnabled(boolean enabled) {
         searchPanel.getStyle().removeProperty("display");
         if (!enabled) {
-            searchPanel.getStyle().setProperty("display", "none");
+            searchPanel.getStyle().setProperty("display",
+                                               "none");
         }
     }
 
@@ -118,7 +121,8 @@ public class LiveSearchDropDownView extends Composite
         removeAllChildren(dropDownMenu);
         SpanElement span = Document.get().createSpanElement();
         span.setInnerText(msg);
-        span.getStyle().setPropertyPx("marginLeft", 10);
+        span.getStyle().setPropertyPx("marginLeft",
+                                      10);
         dropDownMenu.appendChild((Node) span);
     }
 
@@ -127,12 +131,14 @@ public class LiveSearchDropDownView extends Composite
         AnchorElement anchor = Document.get().createAnchorElement();
         anchor.setInnerText(item);
 
-        Event.sinkEvents(anchor, Event.ONCLICK);
-        Event.setEventListener(anchor, event -> {
-            if(Event.ONCLICK == event.getTypeInt()) {
-                presenter.onItemSelected(item);
-            }
-        });
+        Event.sinkEvents(anchor,
+                         Event.ONCLICK);
+        Event.setEventListener(anchor,
+                               event -> {
+                                   if (Event.ONCLICK == event.getTypeInt()) {
+                                       presenter.onItemSelected(item);
+                                   }
+                               });
 
         LIElement li = Document.get().createLIElement();
         li.appendChild(anchor);
@@ -156,19 +162,22 @@ public class LiveSearchDropDownView extends Composite
 
     @Override
     public void setSearchHint(String text) {
-        searchInput.setAttribute("placeholder", text);
+        searchInput.setAttribute("placeholder",
+                                 text);
     }
 
     @Override
     public void searchInProgress(String msg) {
         spinnerText.setTextContent(msg);
         spinnerPanel.getStyle().removeProperty("display");
-        dropDownMenu.getStyle().setProperty("display", "none");
+        dropDownMenu.getStyle().setProperty("display",
+                                            "none");
     }
 
     @Override
     public void searchFinished() {
-        spinnerPanel.getStyle().setProperty("display", "none");
+        spinnerPanel.getStyle().setProperty("display",
+                                            "none");
         dropDownMenu.getStyle().removeProperty("display");
     }
 
@@ -190,7 +199,7 @@ public class LiveSearchDropDownView extends Composite
     private void removeAllChildren(org.jboss.errai.common.client.dom.Element element) {
         NodeList nodeList = element.getChildNodes();
         int lenght = nodeList.getLength();
-        for (int i=0; i<lenght; i++) {
+        for (int i = 0; i < lenght; i++) {
             element.removeChild(nodeList.item(0));
         }
     }

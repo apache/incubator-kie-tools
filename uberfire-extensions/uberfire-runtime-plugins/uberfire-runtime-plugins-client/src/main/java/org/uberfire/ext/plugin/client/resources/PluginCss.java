@@ -56,5 +56,4 @@ public interface PluginCss extends CssResource {
 
     @ClassName("media-lib")
     String mediaLib();
-
 }

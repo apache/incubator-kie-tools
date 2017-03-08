@@ -31,34 +31,32 @@ import org.uberfire.ext.widgets.common.client.resources.CommonResources;
  */
 public class SortableHeader<T, C extends Comparable> extends Header<String> {
 
-    private static final String DOWN_ARROW       = makeImage( CommonResources.INSTANCE.images().downArrow() );
-    private static final String SMALL_DOWN_ARROW = makeImage( CommonResources.INSTANCE.images().smallDownArrow() );
-    private static final String UP_ARROW         = makeImage( CommonResources.INSTANCE.images().upArrow() );
-    private static final String SMALL_UP_ARROW   = makeImage( CommonResources.INSTANCE.images().smallUpArrow() );
-
-    private static String makeImage( ImageResource resource ) {
-        AbstractImagePrototype prototype = AbstractImagePrototype.create( resource );
-        return prototype.getHTML();
-    }
-
+    private static final String DOWN_ARROW = makeImage(CommonResources.INSTANCE.images().downArrow());
+    private static final String SMALL_DOWN_ARROW = makeImage(CommonResources.INSTANCE.images().smallDownArrow());
+    private static final String UP_ARROW = makeImage(CommonResources.INSTANCE.images().upArrow());
+    private static final String SMALL_UP_ARROW = makeImage(CommonResources.INSTANCE.images().smallUpArrow());
     private final SortableHeaderGroup sortableHeaderGroup;
-    private       String              text;
-    private final Column<T, C>        column;
+    private final Column<T, C> column;
+    private String text;
     private SortDirection sortDirection = SortDirection.NONE;
-    private int           sortIndex     = -1;
-
-    public SortableHeader( SortableHeaderGroup sortableHeaderGroup,
-                           String text,
-                           Column<T, C> column ) {
-        super( new ClickableTextCell() );
+    private int sortIndex = -1;
+    public SortableHeader(SortableHeaderGroup sortableHeaderGroup,
+                          String text,
+                          Column<T, C> column) {
+        super(new ClickableTextCell());
         this.sortableHeaderGroup = sortableHeaderGroup;
         this.text = text;
         this.column = column;
-        setUpdater( new ValueUpdater<String>() {
-            public void update( String s ) {
-                SortableHeader.this.sortableHeaderGroup.headerClicked( SortableHeader.this );
+        setUpdater(new ValueUpdater<String>() {
+            public void update(String s) {
+                SortableHeader.this.sortableHeaderGroup.headerClicked(SortableHeader.this);
             }
-        } );
+        });
+    }
+
+    private static String makeImage(ImageResource resource) {
+        AbstractImagePrototype prototype = AbstractImagePrototype.create(resource);
+        return prototype.getHTML();
     }
 
     /**
@@ -72,7 +70,7 @@ public class SortableHeader<T, C extends Comparable> extends Header<String> {
      * Set the Column header
      * @param text
      */
-    public void setValue( String text ) {
+    public void setValue(String text) {
         this.text = text;
     }
 
@@ -84,7 +82,7 @@ public class SortableHeader<T, C extends Comparable> extends Header<String> {
         return sortDirection;
     }
 
-    public void setSortDirection( SortDirection sortDirection ) {
+    public void setSortDirection(SortDirection sortDirection) {
         this.sortDirection = sortDirection;
     }
 
@@ -92,36 +90,35 @@ public class SortableHeader<T, C extends Comparable> extends Header<String> {
         return sortIndex;
     }
 
-    public void setSortIndex( int sortIndex ) {
+    public void setSortIndex(int sortIndex) {
         this.sortIndex = sortIndex;
     }
 
     @Override
-    public void render( Cell.Context context,
-                        SafeHtmlBuilder sb ) {
-        sb.appendHtmlConstant( "<div style='position: relative; cursor: pointer; padding: 0px;'>" );
-        sb.appendHtmlConstant( "<span style='padding-right: 10px'>" );
-        sb.appendEscaped( text );
-        sb.appendHtmlConstant( "</span>" );
+    public void render(Cell.Context context,
+                       SafeHtmlBuilder sb) {
+        sb.appendHtmlConstant("<div style='position: relative; cursor: pointer; padding: 0px;'>");
+        sb.appendHtmlConstant("<span style='padding-right: 10px'>");
+        sb.appendEscaped(text);
+        sb.appendHtmlConstant("</span>");
         // sb.appendHtmlConstant("<div style='position:absolute;right:0px;top:0px;'></div>");
-        switch ( sortDirection ) {
+        switch (sortDirection) {
             case NONE:
                 // nothing
                 break;
             case ASCENDING:
-                sb.appendHtmlConstant( sortIndex == 0 ? UP_ARROW : SMALL_UP_ARROW );
+                sb.appendHtmlConstant(sortIndex == 0 ? UP_ARROW : SMALL_UP_ARROW);
                 break;
             case DESCENDING:
-                sb.appendHtmlConstant( sortIndex == 0 ? DOWN_ARROW : SMALL_DOWN_ARROW );
+                sb.appendHtmlConstant(sortIndex == 0 ? DOWN_ARROW : SMALL_DOWN_ARROW);
                 break;
             default:
-                throw new IllegalArgumentException( "Unknown sortDirection ("
-                                                            + sortDirection
-                                                            + ")." );
+                throw new IllegalArgumentException("Unknown sortDirection ("
+                                                           + sortDirection
+                                                           + ").");
         }
-        sb.appendHtmlConstant( "</div>" );
+        sb.appendHtmlConstant("</div>");
         // sb.appendHtmlConstant("<div>");
         // sb.appendHtmlConstant("</div></div>");
     }
-
 }

@@ -28,5 +28,4 @@ public interface LayoutEditorCss extends CssResource {
 
     @ClassName("rowContainer")
     String rowContainer();
-
 }

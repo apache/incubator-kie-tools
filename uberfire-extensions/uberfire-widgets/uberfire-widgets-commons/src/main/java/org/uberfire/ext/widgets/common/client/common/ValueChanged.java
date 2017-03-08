@@ -22,5 +22,5 @@ package org.uberfire.ext.widgets.common.client.common;
 @Deprecated
 public interface ValueChanged {
 
-    void valueChanged( String newValue );
+    void valueChanged(String newValue);
 }

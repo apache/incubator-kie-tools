@@ -18,19 +18,20 @@ package org.uberfire.ext.widgets.common.client.tables;
 import org.uberfire.mvp.Command;
 
 public class DataGridFilter<T> implements Comparable {
+
     private String key;
     private Command filterCommand;
 
-
-    public DataGridFilter( String key,
-                           Command filterCommand ) {
-        this.key=key;
+    public DataGridFilter(String key,
+                          Command filterCommand) {
+        this.key = key;
         this.filterCommand = filterCommand;
     }
 
-    public DataGridFilter( String key,String filterName,
-                           Command filterCommand ) {
-        this.key=key;
+    public DataGridFilter(String key,
+                          String filterName,
+                          Command filterCommand) {
+        this.key = key;
         this.filterCommand = filterCommand;
     }
 
@@ -38,30 +39,28 @@ public class DataGridFilter<T> implements Comparable {
         return key;
     }
 
-    public void setKey( String key ) {
+    public void setKey(String key) {
         this.key = key;
     }
-
 
     public Command getFilterCommand() {
         return filterCommand;
     }
 
-    public void setFilterCommand( Command filterCommand ) {
+    public void setFilterCommand(Command filterCommand) {
         this.filterCommand = filterCommand;
     }
 
-
     @Override
     public int compareTo(Object o) {
-        if (!(o instanceof DataGridFilter )) {
+        if (!(o instanceof DataGridFilter)) {
             return 0;
         }
-        DataGridFilter otherFilter = (DataGridFilter ) o;
-        if( key!=null && key.trim().equals( otherFilter.getKey() ) )
+        DataGridFilter otherFilter = (DataGridFilter) o;
+        if (key != null && key.trim().equals(otherFilter.getKey())) {
             return 0;
-        else
+        } else {
             return -1;
-
+        }
     }
 }

@@ -93,7 +93,8 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
     }
 
     @Override
-    public void setRoleDescription(Role role, String description) {
+    public void setRoleDescription(Role role,
+                                   String description) {
         DefaultAuthorizationEntry entry = getAuthzEntry(role);
         entry.setDescription(description);
     }
@@ -105,7 +106,8 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
     }
 
     @Override
-    public void setGroupDescription(Group group, String description) {
+    public void setGroupDescription(Group group,
+                                    String description) {
         DefaultAuthorizationEntry entry = getAuthzEntry(group);
         entry.setDescription(description);
     }
@@ -123,13 +125,15 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
     }
 
     @Override
-    public void setPriority(Role role, int priority) {
+    public void setPriority(Role role,
+                            int priority) {
         DefaultAuthorizationEntry entry = getAuthzEntry(role);
         entry.setPriority(priority);
     }
 
     @Override
-    public void setPriority(Group group, int priority) {
+    public void setPriority(Group group,
+                            int priority) {
         DefaultAuthorizationEntry entry = getAuthzEntry(group);
         entry.setPriority(priority);
     }
@@ -150,34 +154,40 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
         defaultEntry.getPermissions().add(permission);
     }
 
-    public void addPermission(Role role, Permission permission) {
+    public void addPermission(Role role,
+                              Permission permission) {
         DefaultAuthorizationEntry entry = getAuthzEntry(role);
         entry.getPermissions().add(permission);
     }
 
-    public void addPermission(Group group, Permission permission) {
+    public void addPermission(Group group,
+                              Permission permission) {
         DefaultAuthorizationEntry entry = getAuthzEntry(group);
         entry.getPermissions().add(permission);
     }
 
-    public void setPermissions(Role role, PermissionCollection collection) {
+    public void setPermissions(Role role,
+                               PermissionCollection collection) {
         DefaultAuthorizationEntry entry = getAuthzEntry(role);
         entry.setPermissions(collection);
     }
 
-    public void setPermissions(Group group, PermissionCollection collection) {
+    public void setPermissions(Group group,
+                               PermissionCollection collection) {
         DefaultAuthorizationEntry entry = getAuthzEntry(group);
         entry.setPermissions(collection);
     }
 
     @Override
-    public void setHomePerspective(Role role, String perspective) {
+    public void setHomePerspective(Role role,
+                                   String perspective) {
         DefaultAuthorizationEntry entry = getAuthzEntry(role);
         entry.setHomePerspective(perspective);
     }
 
     @Override
-    public void setHomePerspective(Group group, String perspective) {
+    public void setHomePerspective(Group group,
+                                   String perspective) {
         DefaultAuthorizationEntry entry = getAuthzEntry(group);
         entry.setHomePerspective(perspective);
     }
@@ -227,13 +237,13 @@ public class DefaultAuthorizationPolicy implements AuthorizationPolicy {
     }
 
     @Override
-    public void setHomePerspective(String perspectiveId) {
-        defaultEntry.setHomePerspective(perspectiveId);
+    public String getHomePerspective() {
+        return defaultEntry.getHomePerspective();
     }
 
     @Override
-    public String getHomePerspective() {
-        return defaultEntry.getHomePerspective();
+    public void setHomePerspective(String perspectiveId) {
+        defaultEntry.setHomePerspective(perspectiveId);
     }
 
     @Override

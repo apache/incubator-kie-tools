@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
  * method annotated with {@link Perspective}. See {@link WorkbenchPerspective} for details.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD })
+@Target({ElementType.FIELD})
 public @interface WorkbenchPanel {
 
     /**
@@ -44,11 +44,11 @@ public @interface WorkbenchPanel {
      * one item should be used here.
      * <p>
      * To specify a PlaceRequest with parameters, use standard URL query syntax:
-     *
+     * <p>
      * <pre>
      *   {@code @WorkbenchPanel(parts = "MyPlaceID?param1=val1&amp;param2=val2")}
      * </pre>
-     *
+     * <p>
      * Special characters can be escaped using URL encoding: for '%' use '%25'; for '&amp;' use '%26'; for '=' use '%3d';
      * for '?' use '%3f'.
      */
@@ -61,5 +61,4 @@ public @interface WorkbenchPanel {
      * define more than one default panel in a perspective.
      */
     boolean isDefault() default false;
-
 }

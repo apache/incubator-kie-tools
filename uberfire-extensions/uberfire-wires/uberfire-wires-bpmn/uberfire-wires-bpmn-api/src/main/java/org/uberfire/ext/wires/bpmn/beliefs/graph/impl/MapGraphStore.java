@@ -34,20 +34,20 @@ public class MapGraphStore<T extends GraphNode> implements GraphStore<T> {
     }
 
     @Override
-    public T addNode( T node ) {
-        node.setId( idCounter++ );
-        nodes.put( node.getId(),
-                   node );
+    public T addNode(T node) {
+        node.setId(idCounter++);
+        nodes.put(node.getId(),
+                  node);
         return node;
     }
 
-    public T removeNode( int id ) {
-        return nodes.remove( id );
+    public T removeNode(int id) {
+        return nodes.remove(id);
     }
 
     @Override
-    public T getNode( int id ) {
-        return nodes.get( id );
+    public T getNode(int id) {
+        return nodes.get(id);
     }
 
     @Override

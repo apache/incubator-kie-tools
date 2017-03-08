@@ -21,16 +21,11 @@ import javax.inject.Inject;
 
 /**
  * <p>An error box presenter.</p>
- * 
  * @since 0.8.0
  */
 @Dependent
 public class ErrorBox {
 
-    public interface View {
-        void show(final String message);
-    }
-    
     View view;
 
     @Inject
@@ -41,5 +36,9 @@ public class ErrorBox {
     public void show(final String message) {
         view.show(message);
     }
-    
+
+    public interface View {
+
+        void show(final String message);
+    }
 }

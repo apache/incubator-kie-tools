@@ -27,34 +27,33 @@ import org.gwtbootstrap3.client.ui.constants.Trigger;
  */
 public class InfoPopup extends Popover {
 
-    public InfoPopup( final String text ) {
+    public InfoPopup(final String text) {
         configure();
-        setContent( text );
+        setContent(text);
     }
 
-    public InfoPopup( final String heading,
-                      final String text ) {
+    public InfoPopup(final String heading,
+                     final String text) {
         configure();
-        setTitle( heading );
-        setContent( text );
+        setTitle(heading);
+        setContent(text);
     }
 
     private void configure() {
-        setPlacement( Placement.RIGHT );
-        setTrigger( Trigger.HOVER );
+        setPlacement(Placement.RIGHT);
+        setTrigger(Trigger.HOVER);
 
-        final Icon icon = new Icon( IconType.QUESTION );
-        icon.addStyleName( "help-inline" );
-        setWidget( icon );
+        final Icon icon = new Icon(IconType.QUESTION);
+        icon.addStyleName("help-inline");
+        setWidget(icon);
 
-        configurePopoverContainer( this.getWidget().getElement() );
-        getWidget().getElement().getStyle().setZIndex( Integer.MAX_VALUE );
+        configurePopoverContainer(this.getWidget().getElement());
+        getWidget().getElement().getStyle().setZIndex(Integer.MAX_VALUE);
     }
 
-    private native void configurePopoverContainer( Element e ) /*-{
+    private native void configurePopoverContainer(Element e) /*-{
         $wnd.jQuery(e).popover({
             container: 'body'
         });
     }-*/;
-
 }

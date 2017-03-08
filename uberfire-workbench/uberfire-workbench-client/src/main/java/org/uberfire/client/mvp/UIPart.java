@@ -24,9 +24,9 @@ public class UIPart {
     private final IsWidget titleDecoration;
     private final IsWidget widget;
 
-    public UIPart( final String title,
-                   final IsWidget titleDecoration,
-                   final IsWidget widget ) {
+    public UIPart(final String title,
+                  final IsWidget titleDecoration,
+                  final IsWidget widget) {
         this.title = title;
         this.titleDecoration = titleDecoration;
         this.widget = widget;

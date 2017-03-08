@@ -24,12 +24,19 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class ColorValidator implements PropertyFieldValidator {
 
-    public static final List<Character> _hexLetters = Arrays.asList('a','b','c','d','e','f');
+    public static final List<Character> _hexLetters = Arrays.asList('a',
+                                                                    'b',
+                                                                    'c',
+                                                                    'd',
+                                                                    'e',
+                                                                    'f');
 
     public static boolean isValid(String aColor) {
         try {
             String color = aColor.trim().toLowerCase();
-            if (color.length() != 6) return false;
+            if (color.length() != 6) {
+                return false;
+            }
 
             for (int i = 0; i < color.length(); i++) {
                 char c = color.charAt(i);
@@ -38,14 +45,16 @@ public class ColorValidator implements PropertyFieldValidator {
                 }
             }
             return true;
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             return false;
         }
     }
 
     @Override
     public boolean validate(Object value) {
-        if (value == null) return false;
+        if (value == null) {
+            return false;
+        }
         return isValid(value.toString());
     }
 

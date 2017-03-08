@@ -47,7 +47,7 @@ public class RestrictedMousePanMediator extends AbstractMediator {
 
     private Transform m_inverseTransform = null;
 
-    public RestrictedMousePanMediator( final GridLayer gridLayer ) {
+    public RestrictedMousePanMediator(final GridLayer gridLayer) {
         this.gridLayer = gridLayer;
     }
 
@@ -59,97 +59,94 @@ public class RestrictedMousePanMediator extends AbstractMediator {
         return this.transformMediator;
     }
 
-    public void setTransformMediator( final TransformMediator transformMediator ) {
+    public void setTransformMediator(final TransformMediator transformMediator) {
         this.transformMediator = transformMediator;
     }
 
     @Override
     public void cancel() {
         m_dragging = false;
-        setCursor( Style.Cursor.DEFAULT );
+        setCursor(Style.Cursor.DEFAULT);
     }
 
-    protected void setCursor( final Style.Cursor cursor ) {
+    protected void setCursor(final Style.Cursor cursor) {
         final Viewport viewport = gridLayer.getViewport();
-        viewport.getElement().getStyle().setCursor( cursor );
+        viewport.getElement().getStyle().setCursor(cursor);
     }
 
     @Override
-    public boolean handleEvent( final GwtEvent<?> event ) {
-        if ( event.getAssociatedType() == NodeMouseMoveEvent.getType() ) {
-            if ( m_dragging ) {
-                onMouseMove( (NodeMouseMoveEvent) event );
+    public boolean handleEvent(final GwtEvent<?> event) {
+        if (event.getAssociatedType() == NodeMouseMoveEvent.getType()) {
+            if (m_dragging) {
+                onMouseMove((NodeMouseMoveEvent) event);
             }
             return false;
-
-        } else if ( event.getAssociatedType() == NodeMouseDownEvent.getType() ) {
+        } else if (event.getAssociatedType() == NodeMouseDownEvent.getType()) {
             final IEventFilter filter = getEventFilter();
 
-            if ( ( null == filter ) || ( false == filter.isEnabled() ) || ( filter.test( event ) ) ) {
-                onMouseDown( (NodeMouseDownEvent) event );
+            if ((null == filter) || (false == filter.isEnabled()) || (filter.test(event))) {
+                onMouseDown((NodeMouseDownEvent) event);
             }
             return false;
-
-        } else if ( event.getAssociatedType() == NodeMouseUpEvent.getType() ) {
-            if ( m_dragging ) {
-                onMouseUp( (NodeMouseUpEvent) event );
+        } else if (event.getAssociatedType() == NodeMouseUpEvent.getType()) {
+            if (m_dragging) {
+                onMouseUp((NodeMouseUpEvent) event);
             }
-
-        } else if ( event.getAssociatedType() == NodeMouseOutEvent.getType() ) {
+        } else if (event.getAssociatedType() == NodeMouseOutEvent.getType()) {
             cancel();
         }
 
         return false;
     }
 
-    protected void onMouseDown( final NodeMouseDownEvent event ) {
-        m_last = new Point2D( event.getX(),
-                              event.getY() );
+    protected void onMouseDown(final NodeMouseDownEvent event) {
+        m_last = new Point2D(event.getX(),
+                             event.getY());
 
         m_dragging = true;
 
         Transform transform = getTransform();
 
-        if ( transform == null ) {
-            setTransform( transform = new Transform() );
+        if (transform == null) {
+            setTransform(transform = new Transform());
         }
         m_inverseTransform = transform.getInverse();
 
-        m_inverseTransform.transform( m_last,
-                                      m_last );
+        m_inverseTransform.transform(m_last,
+                                     m_last);
 
-        setCursor( Style.Cursor.MOVE );
+        setCursor(Style.Cursor.MOVE);
     }
 
-    protected void onMouseMove( final NodeMouseMoveEvent event ) {
-        final Point2D curr = new Point2D( event.getX(),
-                                          event.getY() );
+    protected void onMouseMove(final NodeMouseMoveEvent event) {
+        final Point2D curr = new Point2D(event.getX(),
+                                         event.getY());
 
-        m_inverseTransform.transform( curr, curr );
+        m_inverseTransform.transform(curr,
+                                     curr);
 
         double deltaX = curr.getX() - m_last.getX();
         double deltaY = curr.getY() - m_last.getY();
 
-        Transform newTransform = getTransform().copy().translate( deltaX,
-                                                                  deltaY );
-        if ( transformMediator != null ) {
-            newTransform = transformMediator.adjust( newTransform,
-                                                     gridLayer.getVisibleBounds() );
+        Transform newTransform = getTransform().copy().translate(deltaX,
+                                                                 deltaY);
+        if (transformMediator != null) {
+            newTransform = transformMediator.adjust(newTransform,
+                                                    gridLayer.getVisibleBounds());
         }
 
-        setTransform( newTransform );
+        setTransform(newTransform);
 
         m_last = curr;
 
-        if ( isBatchDraw() ) {
+        if (isBatchDraw()) {
             getViewport().getScene().batch();
         } else {
             getViewport().getScene().draw();
         }
     }
 
-    protected void onMouseUp( final NodeMouseUpEvent event ) {
+    protected void onMouseUp(final NodeMouseUpEvent event) {
         cancel();
     }
-
 }

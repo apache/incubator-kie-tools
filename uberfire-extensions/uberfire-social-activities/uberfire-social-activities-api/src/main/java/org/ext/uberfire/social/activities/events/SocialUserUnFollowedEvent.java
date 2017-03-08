@@ -16,9 +16,9 @@ package org.ext.uberfire.social.activities.events;
 
 import java.io.Serializable;
 
+import org.ext.uberfire.social.activities.model.SocialUser;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.ext.uberfire.social.activities.model.SocialUser;
 
 @Portable
 public class SocialUserUnFollowedEvent implements Serializable {
@@ -28,7 +28,8 @@ public class SocialUserUnFollowedEvent implements Serializable {
     private final SocialUser user;
     private final SocialUser unfollow;
 
-    public SocialUserUnFollowedEvent( @MapsTo( "user" ) final SocialUser user, @MapsTo( "unfollow" ) final SocialUser unfollow ) {
+    public SocialUserUnFollowedEvent(@MapsTo("user") final SocialUser user,
+                                     @MapsTo("unfollow") final SocialUser unfollow) {
         this.user = user;
         this.unfollow = unfollow;
     }
@@ -50,21 +51,26 @@ public class SocialUserUnFollowedEvent implements Serializable {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) return true;
-        if ( o == null || getClass() != o.getClass() ) return false;
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         SocialUserUnFollowedEvent that = (SocialUserUnFollowedEvent) o;
 
-        if ( user != null ? !user.equals( that.user ) : that.user != null ) return false;
-        return !( unfollow != null ? !unfollow.equals( that.unfollow ) : that.unfollow != null );
-
+        if (user != null ? !user.equals(that.user) : that.user != null) {
+            return false;
+        }
+        return !(unfollow != null ? !unfollow.equals(that.unfollow) : that.unfollow != null);
     }
 
     @Override
     public int hashCode() {
         int result = user != null ? user.hashCode() : 0;
-        result = 31 * result + ( unfollow != null ? unfollow.hashCode() : 0 );
+        result = 31 * result + (unfollow != null ? unfollow.hashCode() : 0);
         return result;
     }
 }

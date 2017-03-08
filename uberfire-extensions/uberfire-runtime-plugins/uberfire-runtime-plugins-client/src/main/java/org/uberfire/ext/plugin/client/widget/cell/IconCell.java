@@ -25,12 +25,12 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
-import com.google.gwt.user.client.Window;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 
-import static com.google.gwt.dom.client.BrowserEvents.*;
+import static com.google.gwt.dom.client.BrowserEvents.CLICK;
+import static com.google.gwt.dom.client.BrowserEvents.KEYDOWN;
 
 public class IconCell extends AbstractSafeHtmlCell<String> {
 
@@ -42,8 +42,9 @@ public class IconCell extends AbstractSafeHtmlCell<String> {
      * Construct a new {@link IconCell} with the specified icon type
      * @param iconType
      */
-    public IconCell( IconType iconType ) {
-        this( iconType, IconSize.NONE );
+    public IconCell(IconType iconType) {
+        this(iconType,
+             IconSize.NONE);
     }
 
     /**
@@ -51,9 +52,11 @@ public class IconCell extends AbstractSafeHtmlCell<String> {
      * @param iconType
      * @param iconSize
      */
-    public IconCell( IconType iconType,
-                     IconSize iconSize ) {
-        super( SimpleSafeHtmlRenderer.getInstance(), CLICK, KEYDOWN );
+    public IconCell(IconType iconType,
+                    IconSize iconSize) {
+        super(SimpleSafeHtmlRenderer.getInstance(),
+              CLICK,
+              KEYDOWN);
         this.iconType = iconType;
         this.iconSize = iconSize;
     }
@@ -62,7 +65,7 @@ public class IconCell extends AbstractSafeHtmlCell<String> {
         return iconType;
     }
 
-    public void setIconType( IconType iconType ) {
+    public void setIconType(IconType iconType) {
         this.iconType = iconType;
     }
 
@@ -70,7 +73,7 @@ public class IconCell extends AbstractSafeHtmlCell<String> {
         return iconSize;
     }
 
-    public void setIconSize( IconSize iconSize ) {
+    public void setIconSize(IconSize iconSize) {
         this.iconSize = iconSize;
     }
 
@@ -78,52 +81,58 @@ public class IconCell extends AbstractSafeHtmlCell<String> {
         return tooltip;
     }
 
-    public void setTooltip( String tooltip ) {
+    public void setTooltip(String tooltip) {
         this.tooltip = tooltip;
     }
 
     @Override
-    protected void render( Context context,
-                           SafeHtml data,
-                           SafeHtmlBuilder sb ) {
-        Icon icon = GWT.create( Icon.class );
-        if ( tooltip != null ) {
-            icon.setTitle( tooltip );
+    protected void render(Context context,
+                          SafeHtml data,
+                          SafeHtmlBuilder sb) {
+        Icon icon = GWT.create(Icon.class);
+        if (tooltip != null) {
+            icon.setTitle(tooltip);
         }
-        icon.setSize( iconSize );
-        icon.setType( iconType );
-        sb.appendHtmlConstant( icon.getElement().getString());
-
+        icon.setSize(iconSize);
+        icon.setType(iconType);
+        sb.appendHtmlConstant(icon.getElement().getString());
     }
 
     @Override
-    public void onBrowserEvent( final Context context,
-                                final Element parent,
-                                final String value,
-                                final NativeEvent event,
-                                final ValueUpdater<String> valueUpdater ) {
-        super.onBrowserEvent( context, parent, value, event, valueUpdater );
-        if ( CLICK.equals( event.getType() ) ) {
+    public void onBrowserEvent(final Context context,
+                               final Element parent,
+                               final String value,
+                               final NativeEvent event,
+                               final ValueUpdater<String> valueUpdater) {
+        super.onBrowserEvent(context,
+                             parent,
+                             value,
+                             event,
+                             valueUpdater);
+        if (CLICK.equals(event.getType())) {
             EventTarget eventTarget = event.getEventTarget();
-            if ( !Element.is( eventTarget ) ) {
+            if (!Element.is(eventTarget)) {
                 return;
             }
-            if ( parent.getFirstChildElement().isOrHasChild( Element.as( eventTarget ) ) ) {
+            if (parent.getFirstChildElement().isOrHasChild(Element.as(eventTarget))) {
                 // Ignore clicks that occur outside of the main element.
-                onEnterKeyDown( context, parent, value, event, valueUpdater );
+                onEnterKeyDown(context,
+                               parent,
+                               value,
+                               event,
+                               valueUpdater);
             }
         }
     }
 
     @Override
-    protected void onEnterKeyDown( final Context context,
-                                   final Element parent,
-                                   final String value,
-                                   final NativeEvent event,
-                                   final ValueUpdater<String> valueUpdater ) {
-        if ( valueUpdater != null ) {
-            valueUpdater.update( value );
+    protected void onEnterKeyDown(final Context context,
+                                  final Element parent,
+                                  final String value,
+                                  final NativeEvent event,
+                                  final ValueUpdater<String> valueUpdater) {
+        if (valueUpdater != null) {
+            valueUpdater.update(value);
         }
     }
-
 }

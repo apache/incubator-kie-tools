@@ -52,68 +52,79 @@ public class CopyPopUpPresenterTest {
 
     @Before
     public void init() throws Exception {
-        presenter = new CopyPopUpPresenter( view, toggleCommentPresenter );
+        presenter = new CopyPopUpPresenter(view,
+                                           toggleCommentPresenter);
     }
 
     @Test
     public void testSetup() throws Exception {
         presenter.setup();
 
-        verify( view ).init( presenter );
+        verify(view).init(presenter);
     }
 
     @Test
     public void testShow() throws Exception {
-        presenter.show( path, validator, command );
+        presenter.show(path,
+                       validator,
+                       command);
 
-        assertNotNull( presenter.getPath() );
-        assertNotNull( presenter.getValidator() );
-        assertNotNull( presenter.getCommand() );
-        verify( view ).show();
+        assertNotNull(presenter.getPath());
+        assertNotNull(presenter.getValidator());
+        assertNotNull(presenter.getCommand());
+        verify(view).show();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testShowMissingPath() throws Exception {
-        presenter.show( null, validator, command );
+        presenter.show(null,
+                       validator,
+                       command);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testShowMissingValidator() throws Exception {
-        presenter.show( path, null, command );
-
+        presenter.show(path,
+                       null,
+                       command);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testShowMissingCommand() throws Exception {
-        presenter.show( path, validator, null );
-
+        presenter.show(path,
+                       validator,
+                       null);
     }
 
     @Test
     public void testShowWithDefaultValidator() throws Exception {
-        presenter.show( path, command );
+        presenter.show(path,
+                       command);
 
-        assertNotNull( presenter.getPath() );
-        assertNotNull( presenter.getValidator() );
-        assertNotNull( presenter.getCommand() );
-        verify( view ).show();
+        assertNotNull(presenter.getPath());
+        assertNotNull(presenter.getValidator());
+        assertNotNull(presenter.getCommand());
+        verify(view).show();
     }
 
     @Test
     public void testCancel() throws Exception {
         presenter.cancel();
 
-        verify( view ).hide();
+        verify(view).hide();
     }
 
     @Test
     public void testCopy() throws Exception {
-        when( path.getFileName() ).thenReturn( "file.plugin" );
-        when( toggleCommentPresenter.getComment() ).thenReturn( "comment" );
+        when(path.getFileName()).thenReturn("file.plugin");
+        when(toggleCommentPresenter.getComment()).thenReturn("comment");
 
-        presenter.show( path, validator, command );
-        presenter.copy( "newFile" );
+        presenter.show(path,
+                       validator,
+                       command);
+        presenter.copy("newFile");
 
-        verify( validator ).validate( eq("newFile.plugin"), any( ValidatorWithReasonCallback.class ) );
+        verify(validator).validate(eq("newFile.plugin"),
+                                   any(ValidatorWithReasonCallback.class));
     }
 }

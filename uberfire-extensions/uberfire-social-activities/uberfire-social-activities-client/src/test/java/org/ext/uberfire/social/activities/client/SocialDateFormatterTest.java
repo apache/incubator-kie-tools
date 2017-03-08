@@ -18,54 +18,61 @@ package org.ext.uberfire.social.activities.client;
 import java.util.Date;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.ext.uberfire.social.activities.client.widgets.utils.SocialDateFormatter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ext.uberfire.social.activities.client.widgets.utils.SocialDateFormatter;
 
 import static org.junit.Assert.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class SocialDateFormatterTest {
 
-    private Date createDateFromNow( int daysToSubtract ) {
+    private Date createDateFromNow(int daysToSubtract) {
         Date today = new Date();
-        int miliSecondsToSubtract =  daysToSubtract * 24 * 60 * 60 * 1000;
-        Date targetDate = new Date( today.getTime() - miliSecondsToSubtract );
+        int miliSecondsToSubtract = daysToSubtract * 24 * 60 * 60 * 1000;
+        Date targetDate = new Date(today.getTime() - miliSecondsToSubtract);
         return targetDate;
     }
 
     @Test
     public void printsToday() throws Exception {
-        assertEquals("Today", SocialDateFormatter.format(new Date()));
+        assertEquals("Today",
+                     SocialDateFormatter.format(new Date()));
     }
 
     @Test
     public void printsOneDayAgo() throws Exception {
-        assertEquals("1 DayAgo", SocialDateFormatter.format(createDateFromNow(1)));
+        assertEquals("1 DayAgo",
+                     SocialDateFormatter.format(createDateFromNow(1)));
     }
 
     @Test
     public void printsTwoDayAgo() throws Exception {
-        assertEquals("2 DaysAgo", SocialDateFormatter.format(createDateFromNow(2)));
+        assertEquals("2 DaysAgo",
+                     SocialDateFormatter.format(createDateFromNow(2)));
     }
 
     @Test
     public void printsOneWeekAgo() throws Exception {
-        assertEquals("OneWeekAgo", SocialDateFormatter.format(createDateFromNow(7)));
+        assertEquals("OneWeekAgo",
+                     SocialDateFormatter.format(createDateFromNow(7)));
     }
 
     @Test
     public void printsOneWeekAgo2() throws Exception {
-        assertEquals("OneWeekAgo", SocialDateFormatter.format(createDateFromNow(8)));
+        assertEquals("OneWeekAgo",
+                     SocialDateFormatter.format(createDateFromNow(8)));
     }
 
     @Test
     public void printsTwoWeekAgo1() throws Exception {
-        assertEquals("2 WeeksAgo", SocialDateFormatter.format(createDateFromNow(14)));
+        assertEquals("2 WeeksAgo",
+                     SocialDateFormatter.format(createDateFromNow(14)));
     }
 
     @Test
     public void printsTwoWeekAgo() throws Exception {
-        assertEquals("2 WeeksAgo", SocialDateFormatter.format(createDateFromNow(15)));
+        assertEquals("2 WeeksAgo",
+                     SocialDateFormatter.format(createDateFromNow(15)));
     }
 }

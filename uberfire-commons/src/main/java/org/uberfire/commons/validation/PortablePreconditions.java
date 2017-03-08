@@ -36,7 +36,8 @@ public class PortablePreconditions {
      * @param name of parameter
      * @param condition itself
      */
-    public static void checkCondition(final String name, final boolean condition) {
+    public static void checkCondition(final String name,
+                                      final boolean condition) {
         if (!condition) {
             throw new IllegalStateException("Condition '" + name + "' is invalid!");
         }
@@ -48,17 +49,16 @@ public class PortablePreconditions {
      * @param name of parameter
      * @param parameters itself
      */
-    public static <T> void checkEachParameterNotNull(final String name, final T... parameters) {
+    public static <T> void checkEachParameterNotNull(final String name,
+                                                     final T... parameters) {
         if (parameters == null) {
             throw new IllegalArgumentException("Parameter named '" + name + "' should be not null!");
         }
         for (final Object parameter : parameters) {
             if (parameter == null) {
                 throw new IllegalArgumentException("Parameter named '" + name + "' should be not null!");
-
             }
         }
-
     }
 
     /**
@@ -66,7 +66,8 @@ public class PortablePreconditions {
      * @param name of parameter
      * @param parameter itself
      */
-    public static <T extends Collection<?>> T checkNotEmpty(final String name, final T parameter) {
+    public static <T extends Collection<?>> T checkNotEmpty(final String name,
+                                                            final T parameter) {
         if (parameter == null || parameter.size() == 0) {
             throw new IllegalArgumentException("Parameter named '" + name + "' should be filled!");
         }
@@ -78,7 +79,8 @@ public class PortablePreconditions {
      * @param name of parameter
      * @param parameter itself
      */
-    public static void checkNotEmpty(final String name, final Map<?, ?> parameter) {
+    public static void checkNotEmpty(final String name,
+                                     final Map<?, ?> parameter) {
         if (parameter == null || parameter.size() == 0) {
             throw new IllegalArgumentException("Parameter named '" + name + "' should be filled!");
         }
@@ -89,7 +91,8 @@ public class PortablePreconditions {
      * @param name of parameter
      * @param parameter itself
      */
-    public static String checkNotEmpty(final String name, final String parameter) {
+    public static String checkNotEmpty(final String name,
+                                       final String parameter) {
         if (parameter == null || parameter.trim().length() == 0) {
             throw new IllegalArgumentException("Parameter named '" + name + "' should be filled!");
         }
@@ -102,7 +105,8 @@ public class PortablePreconditions {
      * @param name of parameter
      * @param parameter itself
      */
-    public static <T> T[] checkNotEmpty(final String name, final T[] parameter) {
+    public static <T> T[] checkNotEmpty(final String name,
+                                        final T[] parameter) {
         if (parameter == null || parameter.length == 0) {
             throw new IllegalArgumentException("Parameter named '" + name + "' should be filled!");
         }
@@ -114,7 +118,8 @@ public class PortablePreconditions {
      * @param name of parameter
      * @param parameter itself
      */
-    public static <T> T checkNotNull(final String name, final T parameter) {
+    public static <T> T checkNotNull(final String name,
+                                     final T parameter) {
         if (parameter == null) {
             throw new IllegalArgumentException("Parameter named '" + name + "' should be not null!");
         }
@@ -126,10 +131,10 @@ public class PortablePreconditions {
      * @param name of parameter
      * @param parameter itself
      */
-    public static void checkNullMandatory(final String name, final Object parameter) {
+    public static void checkNullMandatory(final String name,
+                                          final Object parameter) {
         if (parameter != null) {
             throw new IllegalArgumentException("Parameter named '" + name + "' should be null!");
         }
     }
-
 }

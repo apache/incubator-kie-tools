@@ -25,33 +25,31 @@ import org.uberfire.client.views.pfly.widgets.FormLabelHelp;
 
 public class PropertyEditorItemLabel extends Composite {
 
+    private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
     @UiField
     FormLabelHelp label;
 
     public PropertyEditorItemLabel() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
-    public void setText(String text){
-        label.setText( text );
+    public void setText(String text) {
+        label.setText(text);
     }
 
-    public void setFor(String forValue){
-        label.setFor( forValue );
+    public void setFor(String forValue) {
+        label.setFor(forValue);
     }
 
-    public void setHelpTitle( final String title ){
-        label.setHelpTitle( title );
+    public void setHelpTitle(final String title) {
+        label.setHelpTitle(title);
     }
 
-    public void setHelpContent( final String content ){
-        label.setHelpContent( content );
+    public void setHelpContent(final String content) {
+        label.setHelpContent(content);
     }
 
     interface MyUiBinder extends UiBinder<Widget, PropertyEditorItemLabel> {
 
     }
-
-    private static MyUiBinder uiBinder = GWT.create( MyUiBinder.class );
-
 }

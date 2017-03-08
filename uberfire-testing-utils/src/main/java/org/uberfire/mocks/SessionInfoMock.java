@@ -31,15 +31,15 @@ public class SessionInfoMock implements SessionInfo {
     private String identity;
 
     public SessionInfoMock() {
-        this( "admin" );
+        this("admin");
     }
 
-    public SessionInfoMock( final String identity ) {
+    public SessionInfoMock(final String identity) {
         this.identity = identity;
     }
 
-    public SessionInfoMock( final String id,
-                            final String identity ) {
+    public SessionInfoMock(final String id,
+                           final String identity) {
         this.id = id;
         this.identity = identity;
     }
@@ -73,18 +73,18 @@ public class SessionInfoMock implements SessionInfo {
             }
 
             @Override
-            public void setProperty( final String s,
-                                     final String s1 ) {
+            public void setProperty(final String s,
+                                    final String s1) {
 
             }
 
             @Override
-            public void removeProperty( final String s ) {
+            public void removeProperty(final String s) {
 
             }
 
             @Override
-            public String getProperty( final String s ) {
+            public String getProperty(final String s) {
                 return null;
             }
         };

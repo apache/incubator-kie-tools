@@ -26,9 +26,9 @@ public abstract class BaseGridColumnSingletonDOMElementRenderer<T, W extends Wid
 
     protected final SingletonDOMElementFactory<W, E> factory;
 
-    public BaseGridColumnSingletonDOMElementRenderer( final SingletonDOMElementFactory<W, E> factory ) {
-        this.factory = PortablePreconditions.checkNotNull( "factory",
-                                                           factory );
+    public BaseGridColumnSingletonDOMElementRenderer(final SingletonDOMElementFactory<W, E> factory) {
+        this.factory = PortablePreconditions.checkNotNull("factory",
+                                                          factory);
     }
 
     @Override
@@ -40,5 +40,4 @@ public abstract class BaseGridColumnSingletonDOMElementRenderer<T, W extends Wid
     public void destroyResources() {
         factory.destroyResources();
     }
-
 }

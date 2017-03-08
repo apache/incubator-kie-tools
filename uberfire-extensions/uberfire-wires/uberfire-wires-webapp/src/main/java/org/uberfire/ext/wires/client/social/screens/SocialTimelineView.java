@@ -16,6 +16,8 @@
 
 package org.uberfire.ext.wires.client.social.screens;
 
+import javax.enterprise.context.Dependent;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.inject.Inject;
 import org.ext.uberfire.social.activities.client.widgets.timeline.regular.SocialTimelineWidget;
@@ -29,32 +31,31 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 
-import javax.enterprise.context.Dependent;
-
 @Dependent
 @Templated
-public class SocialTimelineView implements IsElement, SocialTimelinePresenter.View {
+public class SocialTimelineView implements IsElement,
+                                           SocialTimelinePresenter.View {
 
-    private SocialTimelinePresenter presenter;
     @Inject
     @DataField
     Div panelContainer;
-
     @Inject
     @DataField
     Button newEvent;
+    private SocialTimelinePresenter presenter;
 
-    @EventHandler( "newEvent" )
-    public void onNewEvent( final ClickEvent clickEvent ) {
+    @EventHandler("newEvent")
+    public void onNewEvent(final ClickEvent clickEvent) {
         presenter.fireEvent();
     }
 
     @Override
-    public void setupWidget( SocialTimelineWidgetModel model ) {
-        DOMUtil.removeAllChildren( panelContainer );
+    public void setupWidget(SocialTimelineWidgetModel model) {
+        DOMUtil.removeAllChildren(panelContainer);
         final SocialTimelineWidget socialTimelineWidget = new SocialTimelineWidget();
-        socialTimelineWidget.init( model );
-        DOMUtil.appendWidgetToElement( panelContainer, socialTimelineWidget );
+        socialTimelineWidget.init(model);
+        DOMUtil.appendWidgetToElement(panelContainer,
+                                      socialTimelineWidget);
     }
 
     @WorkbenchPartTitle
@@ -63,8 +64,7 @@ public class SocialTimelineView implements IsElement, SocialTimelinePresenter.Vi
     }
 
     @Override
-    public void init( final SocialTimelinePresenter presenter ) {
+    public void init(final SocialTimelinePresenter presenter) {
         this.presenter = presenter;
     }
-
 }

@@ -25,24 +25,23 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 public abstract class AbstractLazyStackPanelHeader extends SimplePanel
-    implements
-    HasCloseHandlers<AbstractLazyStackPanelHeader>,
-    HasOpenHandlers<AbstractLazyStackPanelHeader> {
+        implements
+        HasCloseHandlers<AbstractLazyStackPanelHeader>,
+        HasOpenHandlers<AbstractLazyStackPanelHeader> {
 
     protected boolean expanded = false;
 
     public HandlerRegistration addOpenHandler(OpenHandler<AbstractLazyStackPanelHeader> handler) {
-        return addHandler( handler,
-                           OpenEvent.getType() );
+        return addHandler(handler,
+                          OpenEvent.getType());
     }
 
     public HandlerRegistration addCloseHandler(CloseHandler<AbstractLazyStackPanelHeader> handler) {
-        return addHandler( handler,
-                           CloseEvent.getType() );
+        return addHandler(handler,
+                          CloseEvent.getType());
     }
-    
-    public abstract void expand();
-    
-    public abstract void collapse();
 
+    public abstract void expand();
+
+    public abstract void collapse();
 }

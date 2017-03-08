@@ -23,5 +23,6 @@ import jsinterop.annotations.JsType;
  */
 @JsType
 public enum MenuPosition {
-    LEFT, RIGHT
+    LEFT,
+    RIGHT
 }

@@ -32,5 +32,4 @@ public class CoreEntryPoint {
         WizardResources.INSTANCE.css().ensureInjected();
         TreeNavigatorResources.INSTANCE.css().ensureInjected();
     }
-
 }

@@ -20,20 +20,18 @@ import org.uberfire.ext.wires.bpmn.api.model.BpmnEdge;
 import org.uberfire.ext.wires.bpmn.api.model.impl.roles.DefaultRoleImpl;
 
 import static junit.framework.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class CopyEdgesTest {
 
     @Test
     public void testCopyEdge() {
-        final BpmnEdge edge = new BpmnEdgeImpl( new DefaultRoleImpl( "a-role" ) );
+        final BpmnEdge edge = new BpmnEdgeImpl(new DefaultRoleImpl("a-role"));
         final BpmnEdge copy = edge.copy();
 
-        assertNotNull( copy );
-        assertFalse( edge == copy );
-        assertEquals( edge.getRole(),
-                      copy.getRole() );
+        assertNotNull(copy);
+        assertFalse(edge == copy);
+        assertEquals(edge.getRole(),
+                     copy.getRole());
     }
-
 }

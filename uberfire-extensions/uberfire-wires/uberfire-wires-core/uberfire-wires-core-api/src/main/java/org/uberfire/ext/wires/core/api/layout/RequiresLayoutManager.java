@@ -20,6 +20,5 @@ package org.uberfire.ext.wires.core.api.layout;
  */
 public interface RequiresLayoutManager {
 
-    void setLayoutManager( final LayoutManager layoutManager );
-
+    void setLayoutManager(final LayoutManager layoutManager);
 }

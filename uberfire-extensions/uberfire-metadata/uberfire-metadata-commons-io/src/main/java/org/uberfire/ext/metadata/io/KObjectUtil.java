@@ -32,8 +32,9 @@ import org.uberfire.java.nio.file.FileSystem;
 import org.uberfire.java.nio.file.Path;
 import org.uberfire.java.nio.file.attribute.FileAttribute;
 
-import static org.apache.commons.codec.binary.Base64.*;
-import static org.apache.commons.io.FilenameUtils.*;
+import static org.apache.commons.codec.binary.Base64.encodeBase64String;
+import static org.apache.commons.io.FilenameUtils.getBaseName;
+import static org.apache.commons.io.FilenameUtils.getExtension;
 
 /**
  *
@@ -41,15 +42,6 @@ import static org.apache.commons.io.FilenameUtils.*;
 public final class KObjectUtil {
 
     private static final MessageDigest DIGEST;
-
-    static {
-        try {
-            DIGEST = MessageDigest.getInstance( "SHA1" );
-        } catch ( final NoSuchAlgorithmException e ) {
-            throw new RuntimeException( e );
-        }
-    }
-
     private static final MetaType META_TYPE = new MetaType() {
         @Override
         public String getName() {
@@ -57,15 +49,23 @@ public final class KObjectUtil {
         }
     };
 
+    static {
+        try {
+            DIGEST = MessageDigest.getInstance("SHA1");
+        } catch (final NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private KObjectUtil() {
 
     }
 
-    public static KObjectKey toKObjectKey( final Path path ) {
+    public static KObjectKey toKObjectKey(final Path path) {
         return new KObjectKey() {
             @Override
             public String getId() {
-                return sha1( getType().getName() + "|" + getKey() );
+                return sha1(getType().getName() + "|" + getKey());
             }
 
             @Override
@@ -75,12 +75,12 @@ public final class KObjectUtil {
 
             @Override
             public String getClusterId() {
-                return ( (FileSystemId) path.getFileSystem() ).id();
+                return ((FileSystemId) path.getFileSystem()).id();
             }
 
             @Override
             public String getSegmentId() {
-                return ( (SegmentedPath) path ).getSegmentId();
+                return ((SegmentedPath) path).getSegmentId();
             }
 
             @Override
@@ -90,13 +90,13 @@ public final class KObjectUtil {
         };
     }
 
-    public static KObject toKObject( final Path path,
-                                     final FileAttribute<?>... attrs ) {
+    public static KObject toKObject(final Path path,
+                                    final FileAttribute<?>... attrs) {
         return new KObject() {
 
             @Override
             public String getId() {
-                return sha1( getType().getName() + "|" + getKey() );
+                return sha1(getType().getName() + "|" + getKey());
             }
 
             @Override
@@ -106,12 +106,12 @@ public final class KObjectUtil {
 
             @Override
             public String getClusterId() {
-                return ( (FileSystemId) path.getFileSystem() ).id();
+                return ((FileSystemId) path.getFileSystem()).id();
             }
 
             @Override
             public String getSegmentId() {
-                return ( (SegmentedPath) path ).getSegmentId();
+                return ((SegmentedPath) path).getSegmentId();
             }
 
             @Override
@@ -121,9 +121,9 @@ public final class KObjectUtil {
 
             @Override
             public Iterable<KProperty<?>> getProperties() {
-                return new ArrayList<KProperty<?>>( attrs.length ) {{
-                    for ( final FileAttribute<?> attr : attrs ) {
-                        add( new KProperty<Object>() {
+                return new ArrayList<KProperty<?>>(attrs.length) {{
+                    for (final FileAttribute<?> attr : attrs) {
+                        add(new KProperty<Object>() {
                             @Override
                             public String getName() {
                                 return attr.name();
@@ -138,9 +138,9 @@ public final class KObjectUtil {
                             public boolean isSearchable() {
                                 return true;
                             }
-                        } );
+                        });
                     }
-                    add( new KProperty<String>() {
+                    add(new KProperty<String>() {
                         @Override
                         public String getName() {
                             return "filename";
@@ -148,7 +148,7 @@ public final class KObjectUtil {
 
                         @Override
                         public String getValue() {
-                            if ( path.getFileName() == null ) {
+                            if (path.getFileName() == null) {
                                 return "/";
                             }
                             return path.getFileName().toString();
@@ -158,8 +158,8 @@ public final class KObjectUtil {
                         public boolean isSearchable() {
                             return true;
                         }
-                    } );
-                    add( new KProperty<String>() {
+                    });
+                    add(new KProperty<String>() {
                         @Override
                         public String getName() {
                             return "extension";
@@ -167,18 +167,18 @@ public final class KObjectUtil {
 
                         @Override
                         public String getValue() {
-                            if ( path.getFileName() == null ) {
+                            if (path.getFileName() == null) {
                                 return "";
                             }
-                            return getExtension( path.getFileName().toString() );
+                            return getExtension(path.getFileName().toString());
                         }
 
                         @Override
                         public boolean isSearchable() {
                             return true;
                         }
-                    } );
-                    add( new KProperty<String>() {
+                    });
+                    add(new KProperty<String>() {
                         @Override
                         public String getName() {
                             return "basename";
@@ -186,18 +186,17 @@ public final class KObjectUtil {
 
                         @Override
                         public String getValue() {
-                            if ( path.getFileName() == null ) {
+                            if (path.getFileName() == null) {
                                 return "";
                             }
-                            return getBaseName( path.getFileName().toString() );
+                            return getBaseName(path.getFileName().toString());
                         }
 
                         @Override
                         public boolean isSearchable() {
                             return true;
                         }
-                    } );
-
+                    });
                 }};
             }
 
@@ -208,36 +207,36 @@ public final class KObjectUtil {
 
             @Override
             public String toString() {
-                StringBuilder sb = new StringBuilder( "KObject{" +
-                                                              ", key='" + getKey() + '\'' +
-                                                              ", id='" + getId() + '\'' +
-                                                              ", type=" + getType() +
-                                                              ", clusterId='" + getClusterId() + '\'' +
-                                                              ", segmentId='" + getSegmentId() + '\'' );
+                StringBuilder sb = new StringBuilder("KObject{" +
+                                                             ", key='" + getKey() + '\'' +
+                                                             ", id='" + getId() + '\'' +
+                                                             ", type=" + getType() +
+                                                             ", clusterId='" + getClusterId() + '\'' +
+                                                             ", segmentId='" + getSegmentId() + '\'');
 
-                for ( KProperty<?> xproperty : getProperties() ) {
-                    sb.append( ", " + xproperty.getName() + "='" + xproperty.getValue() + '\'' );
+                for (KProperty<?> xproperty : getProperties()) {
+                    sb.append(", " + xproperty.getName() + "='" + xproperty.getValue() + '\'');
                 }
 
-                sb.append( '}' );
+                sb.append('}');
 
                 return sb.toString();
             }
         };
     }
 
-    public static KCluster toKCluster( final FileSystemId fs ) {
-        return new KClusterImpl( fs.id() );
+    public static KCluster toKCluster(final FileSystemId fs) {
+        return new KClusterImpl(fs.id());
     }
 
-    public static KCluster toKCluster( final FileSystem fs ) {
-        return toKCluster( (FileSystemId) fs );
+    public static KCluster toKCluster(final FileSystem fs) {
+        return toKCluster((FileSystemId) fs);
     }
 
-    private static String sha1( final String input ) {
-        if ( input == null || input.trim().length() == 0 ) {
+    private static String sha1(final String input) {
+        if (input == null || input.trim().length() == 0) {
             return "--";
         }
-        return encodeBase64String( DIGEST.digest( input.getBytes() ) );
+        return encodeBase64String(DIGEST.digest(input.getBytes()));
     }
 }

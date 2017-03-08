@@ -14,6 +14,9 @@
 */
 package org.ext.uberfire.social.activities.server;
 
+import java.lang.reflect.Field;
+import javax.inject.Named;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,13 +25,10 @@ import org.uberfire.backend.server.io.ConfigIOServiceProducer;
 import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileSystem;
 
-import javax.inject.Named;
-import java.lang.reflect.Field;
-
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class SocialTimelinePersistenceProducerTest {
 
     SocialTimelinePersistenceProducer producer;
@@ -39,47 +39,43 @@ public class SocialTimelinePersistenceProducerTest {
     @Before
     public void setup() {
 
-        producer = mock( SocialTimelinePersistenceProducer.class );
-        ioService = mock( IOService.class );
-        fileSystem = mock( FileSystem.class );
-        configIO = mock( ConfigIOServiceProducer.class );
+        producer = mock(SocialTimelinePersistenceProducer.class);
+        ioService = mock(IOService.class);
+        fileSystem = mock(FileSystem.class);
+        configIO = mock(ConfigIOServiceProducer.class);
 
-        when( producer.getConfigIOServiceProducer() ).thenReturn( configIO );
-        when( configIO.configIOService() ).thenReturn( ioService );
-        when( configIO.configFileSystem() ).thenReturn( fileSystem );
+        when(producer.getConfigIOServiceProducer()).thenReturn(configIO);
+        when(configIO.configIOService()).thenReturn(ioService);
+        when(configIO.configFileSystem()).thenReturn(fileSystem);
 
-        doCallRealMethod().when( producer ).setup();
-
+        doCallRealMethod().when(producer).setup();
     }
 
     @Test
     public void assertRequiredWASInjections() {
-        assertTrue( hasNamedField( "systemFS" ) );
-        assertTrue( hasNamedField( "configIO" ) );
+        assertTrue(hasNamedField("systemFS"));
+        assertTrue(hasNamedField("configIO"));
     }
-
 
     @Test
     public void setupShouldUseConfigIOServiceProducer() {
 
         producer.setup();
-        verify( producer ).setupSocialTimelinePersistenceAPI( eq( ioService ),
-                                                              eq( fileSystem ),
-                                                              any( SocialUserServicesExtendedBackEndImpl.class ) );
+        verify(producer).setupSocialTimelinePersistenceAPI(eq(ioService),
+                                                           eq(fileSystem),
+                                                           any(SocialUserServicesExtendedBackEndImpl.class));
     }
 
-    private boolean hasNamedField( String targetName ) {
+    private boolean hasNamedField(String targetName) {
         final Field[] declaredFields = SocialTimelinePersistenceProducer.class.getDeclaredFields();
-        for ( Field declaredField : declaredFields ) {
-            final Named annotation = declaredField.getAnnotation( Named.class );
-            if ( annotation != null ) {
-                if ( annotation.value().equals( targetName ) ) {
+        for (Field declaredField : declaredFields) {
+            final Named annotation = declaredField.getAnnotation(Named.class);
+            if (annotation != null) {
+                if (annotation.value().equals(targetName)) {
                     return true;
                 }
             }
-
         }
         return false;
     }
-
 }

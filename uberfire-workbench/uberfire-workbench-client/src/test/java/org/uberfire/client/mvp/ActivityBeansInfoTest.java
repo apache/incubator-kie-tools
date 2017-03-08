@@ -16,22 +16,20 @@
 
 package org.uberfire.client.mvp;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.inject.Named;
 
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ActivityBeansInfoTest {
 
@@ -40,9 +38,9 @@ public class ActivityBeansInfoTest {
     private ActivityBeansInfo activityBeansInfo;
 
     @Before
-    public void setup(){
-        syncBeanManager = mock( SyncBeanManager.class );
-        activityBeansInfo = new ActivityBeansInfo(){
+    public void setup() {
+        syncBeanManager = mock(SyncBeanManager.class);
+        activityBeansInfo = new ActivityBeansInfo() {
             @Override
             public SyncBeanManager getBeanManager() {
                 return syncBeanManager;
@@ -51,31 +49,40 @@ public class ActivityBeansInfoTest {
     }
 
     @Test
-    public void getAvaliableWorkbenchScreensIdsTest(){
-        when( syncBeanManager.lookupBeans( WorkbenchScreenActivity.class ) )
-                .thenReturn( generateBeansList() );
+    public void getAvaliableWorkbenchScreensIdsTest() {
+        when(syncBeanManager.lookupBeans(WorkbenchScreenActivity.class))
+                .thenReturn(generateBeansList());
 
-        assertEquals( 4 , activityBeansInfo.getAvailableWorkbenchScreensIds().size() );
+        assertEquals(4,
+                     activityBeansInfo.getAvailableWorkbenchScreensIds().size());
         //assert bean order
-        assertEquals( "A" , activityBeansInfo.getAvailableWorkbenchScreensIds().get( 0 ) );
-        assertEquals( "a" , activityBeansInfo.getAvailableWorkbenchScreensIds().get( 1 ) );
-        assertEquals( "Z" , activityBeansInfo.getAvailableWorkbenchScreensIds().get( 2 ) );
-        assertEquals( "z" , activityBeansInfo.getAvailableWorkbenchScreensIds().get( 3 ) );
-
+        assertEquals("A",
+                     activityBeansInfo.getAvailableWorkbenchScreensIds().get(0));
+        assertEquals("a",
+                     activityBeansInfo.getAvailableWorkbenchScreensIds().get(1));
+        assertEquals("Z",
+                     activityBeansInfo.getAvailableWorkbenchScreensIds().get(2));
+        assertEquals("z",
+                     activityBeansInfo.getAvailableWorkbenchScreensIds().get(3));
     }
 
     private Collection<SyncBeanDef<WorkbenchScreenActivity>> generateBeansList() {
-        Collection<SyncBeanDef<WorkbenchScreenActivity>> beans = new ArrayList<SyncBeanDef<WorkbenchScreenActivity>>(  );
+        Collection<SyncBeanDef<WorkbenchScreenActivity>> beans = new ArrayList<SyncBeanDef<WorkbenchScreenActivity>>();
 
-        beans.add( generateBeanDef( "Z", true ) );
-        beans.add( generateBeanDef( "A", false ) );
-        beans.add( generateBeanDef( "a", false ) );
-        beans.add( generateBeanDef( "z", false ) );
+        beans.add(generateBeanDef("Z",
+                                  true));
+        beans.add(generateBeanDef("A",
+                                  false));
+        beans.add(generateBeanDef("a",
+                                  false));
+        beans.add(generateBeanDef("z",
+                                  false));
 
         return beans;
     }
 
-    private SyncBeanDef<WorkbenchScreenActivity> generateBeanDef(final String beanName, final boolean hasAnnotations) {
+    private SyncBeanDef<WorkbenchScreenActivity> generateBeanDef(final String beanName,
+                                                                 final boolean hasAnnotations) {
         return new SyncBeanDef<WorkbenchScreenActivity>() {
             @Override
             public Class<WorkbenchScreenActivity> getType() {
@@ -105,8 +112,8 @@ public class ActivityBeansInfoTest {
             @Override
             public Set<Annotation> getQualifiers() {
                 final HashSet<Annotation> annotations = new HashSet<Annotation>();
-                if( hasAnnotations ){
-                    annotations.add( new Named(){
+                if (hasAnnotations) {
+                    annotations.add(new Named() {
 
                         @Override
                         public Class<? extends Annotation> annotationType() {
@@ -117,13 +124,13 @@ public class ActivityBeansInfoTest {
                         public String value() {
                             return "Z";
                         }
-                    } );
+                    });
                 }
                 return annotations;
             }
 
             @Override
-            public boolean matches( Set<Annotation> annotations ) {
+            public boolean matches(Set<Annotation> annotations) {
                 return false;
             }
 
@@ -138,11 +145,9 @@ public class ActivityBeansInfoTest {
             }
 
             @Override
-            public boolean isAssignableTo( Class< ? > type ) {
-                return WorkbenchScreenActivity.class.equals( type );
+            public boolean isAssignableTo(Class<?> type) {
+                return WorkbenchScreenActivity.class.equals(type);
             }
         };
     }
-
-
 }

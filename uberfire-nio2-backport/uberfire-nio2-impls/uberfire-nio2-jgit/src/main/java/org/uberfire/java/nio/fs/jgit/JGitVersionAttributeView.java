@@ -29,21 +29,22 @@ public class JGitVersionAttributeView extends VersionAttributeView<JGitPathImpl>
 
     private VersionAttributes attrs = null;
 
-    public JGitVersionAttributeView( final JGitPathImpl path ) {
-        super( path );
+    public JGitVersionAttributeView(final JGitPathImpl path) {
+        super(path);
     }
 
     @Override
     public VersionAttributes readAttributes() throws IOException {
-        if ( attrs == null ) {
-            attrs = JGitUtil.buildVersionAttributes( path.getFileSystem(), path.getRefTree(), path.getPath() );
+        if (attrs == null) {
+            attrs = JGitUtil.buildVersionAttributes(path.getFileSystem(),
+                                                    path.getRefTree(),
+                                                    path.getPath());
         }
         return attrs;
     }
 
     @Override
     public Class<? extends BasicFileAttributeView>[] viewTypes() {
-        return new Class[]{ VersionAttributeView.class, JGitVersionAttributeView.class };
+        return new Class[]{VersionAttributeView.class, JGitVersionAttributeView.class};
     }
-
 }

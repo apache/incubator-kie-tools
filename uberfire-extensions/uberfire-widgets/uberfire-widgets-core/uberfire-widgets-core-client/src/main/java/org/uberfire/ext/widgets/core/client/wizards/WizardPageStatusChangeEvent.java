@@ -22,12 +22,11 @@ public class WizardPageStatusChangeEvent {
 
     private final WizardPage page;
 
-    public WizardPageStatusChangeEvent( final WizardPage page ) {
+    public WizardPageStatusChangeEvent(final WizardPage page) {
         this.page = page;
     }
 
     public WizardPage getPage() {
         return page;
     }
-
 }

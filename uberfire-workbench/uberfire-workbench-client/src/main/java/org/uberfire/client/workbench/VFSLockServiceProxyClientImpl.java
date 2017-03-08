@@ -27,30 +27,37 @@ import org.uberfire.mvp.ParameterizedCommand;
 public class VFSLockServiceProxyClientImpl implements VFSLockServiceProxy {
 
     @Override
-    public void acquireLock( Path path,
-                             ParameterizedCommand<LockResult> parameterizedCommand ) {
-        parameterizedCommand.execute( new LockResult(true, new LockInfo(false, "", path)) );
-        
+    public void acquireLock(Path path,
+                            ParameterizedCommand<LockResult> parameterizedCommand) {
+        parameterizedCommand.execute(new LockResult(true,
+                                                    new LockInfo(false,
+                                                                 "",
+                                                                 path)));
     }
 
     @Override
-    public void releaseLock( Path path,
-                             ParameterizedCommand<LockResult> parameterizedCommand ) {
-        parameterizedCommand.execute( new LockResult(true, new LockInfo(false, "", path)) );
-        
-    }
-    
-    @Override
-    public void forceReleaseLock( Path path,
-                             ParameterizedCommand<LockResult> parameterizedCommand ) {
-        parameterizedCommand.execute( new LockResult(true, new LockInfo(false, "", path)) );
-        
+    public void releaseLock(Path path,
+                            ParameterizedCommand<LockResult> parameterizedCommand) {
+        parameterizedCommand.execute(new LockResult(true,
+                                                    new LockInfo(false,
+                                                                 "",
+                                                                 path)));
     }
 
     @Override
-    public void retrieveLockInfo( Path path,
-                                  ParameterizedCommand<LockInfo> parameterizedCommand ) {
-        parameterizedCommand.execute( new LockInfo(false, "", path) );
+    public void forceReleaseLock(Path path,
+                                 ParameterizedCommand<LockResult> parameterizedCommand) {
+        parameterizedCommand.execute(new LockResult(true,
+                                                    new LockInfo(false,
+                                                                 "",
+                                                                 path)));
     }
-    
+
+    @Override
+    public void retrieveLockInfo(Path path,
+                                 ParameterizedCommand<LockInfo> parameterizedCommand) {
+        parameterizedCommand.execute(new LockInfo(false,
+                                                  "",
+                                                  path));
+    }
 }

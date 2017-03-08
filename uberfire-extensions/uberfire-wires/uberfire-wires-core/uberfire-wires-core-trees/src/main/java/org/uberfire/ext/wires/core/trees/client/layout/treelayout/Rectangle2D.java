@@ -25,10 +25,10 @@ public class Rectangle2D {
     private double width;
     private double height;
 
-    public Rectangle2D( final double x,
-                        final double y,
-                        final double w,
-                        final double h ) {
+    public Rectangle2D(final double x,
+                       final double y,
+                       final double w,
+                       final double h) {
         this.x = x;
         this.y = y;
         this.width = w;
@@ -50,5 +50,4 @@ public class Rectangle2D {
     public double getHeight() {
         return height;
     }
-
 }

@@ -16,23 +16,17 @@
 
 package org.uberfire.ext.security.management.client.widgets.popup;
 
-import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.uberfire.ext.security.management.client.resources.i18n.UsersManagementWidgetsConstants;
+
 /**
  * <p>An loading box presenter.</p>
- *
  * @since 0.8.0
  */
 @Dependent
 public class LoadingBox {
-
-    public interface View {
-        void show(String message);
-        void close();
-    }
 
     View view;
 
@@ -44,9 +38,15 @@ public class LoadingBox {
     public void show() {
         view.show(UsersManagementWidgetsConstants.INSTANCE.loading());
     }
-    
+
     public void hide() {
         view.close();
     }
-    
+
+    public interface View {
+
+        void show(String message);
+
+        void close();
+    }
 }

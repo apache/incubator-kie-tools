@@ -20,14 +20,14 @@ import org.uberfire.java.nio.IOException;
 
 public interface Watchable {
 
-    WatchKey register( final WatchService watcher,
-                       final WatchEvent.Kind<?>[] events,
-                       final WatchEvent.Modifier... modifiers )
+    WatchKey register(final WatchService watcher,
+                      final WatchEvent.Kind<?>[] events,
+                      final WatchEvent.Modifier... modifiers)
             throws UnsupportedOperationException, IllegalArgumentException, ClosedWatchServiceException,
             IOException, SecurityException;
 
-    WatchKey register( final WatchService watcher,
-                       final WatchEvent.Kind<?>... events )
+    WatchKey register(final WatchService watcher,
+                      final WatchEvent.Kind<?>... events)
             throws UnsupportedOperationException, IllegalArgumentException, ClosedWatchServiceException,
             IOException, SecurityException;
 }

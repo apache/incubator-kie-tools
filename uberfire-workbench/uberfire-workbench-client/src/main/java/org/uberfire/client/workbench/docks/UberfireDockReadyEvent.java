@@ -16,10 +16,7 @@
 
 package org.uberfire.client.workbench.docks;
 
-import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.UberFireEvent;
-import org.uberfire.workbench.model.PerspectiveDefinition;
-import org.uberfire.workbench.model.menu.Menus;
 
 public class UberfireDockReadyEvent implements UberFireEvent {
 

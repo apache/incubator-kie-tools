@@ -22,8 +22,8 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 public class TextValidator implements PropertyFieldValidator {
 
     @Override
-    public boolean validate( Object value ) {
-        if ( value.toString().length() > 3 ) {
+    public boolean validate(Object value) {
+        if (value.toString().length() > 3) {
             return true;
         }
         return false;

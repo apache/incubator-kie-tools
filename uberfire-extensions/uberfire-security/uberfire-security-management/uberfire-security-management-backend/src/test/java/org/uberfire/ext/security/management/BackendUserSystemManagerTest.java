@@ -16,7 +16,6 @@
 package org.uberfire.ext.security.management;
 
 import java.lang.reflect.Method;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
@@ -25,7 +24,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class BackendUserSystemManagerTest {
-    
+
     @Test
     public void testSearch() {
         for (Method method : BackendUserSystemManager.class.getMethods()) {
@@ -33,7 +32,7 @@ public class BackendUserSystemManagerTest {
                     || method.getAnnotation(PreDestroy.class) != null) {
 
                 assertTrue(method.getExceptionTypes() == null
-                        || method.getExceptionTypes().length == 0);
+                                   || method.getExceptionTypes().length == 0);
             }
         }
     }

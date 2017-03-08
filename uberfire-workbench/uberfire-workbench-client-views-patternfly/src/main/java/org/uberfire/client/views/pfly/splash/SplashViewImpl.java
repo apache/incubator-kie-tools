@@ -44,33 +44,33 @@ public class SplashViewImpl extends Composite implements SplashView {
 
     @PostConstruct
     public void setup() {
-        footer.setCloseCommand( new ParameterizedCommand<Boolean>() {
+        footer.setCloseCommand(new ParameterizedCommand<Boolean>() {
             @Override
-            public void execute( final Boolean parameter ) {
+            public void execute(final Boolean parameter) {
                 showAgain = parameter;
                 hide();
             }
-        } );
+        });
 
-        modal.setFooterContent( footer );
+        modal.setFooterContent(footer);
 
-        final SimplePanel panel = new SimplePanel( modal );
-        initWidget( panel );
+        final SimplePanel panel = new SimplePanel(modal);
+        initWidget(panel);
     }
 
     @Override
-    public void setContent( final IsWidget widget,
-                            final Integer height ) {
+    public void setContent(final IsWidget widget,
+                           final Integer height) {
         showAgain = null;
-        modal.setContent( widget );
-        if ( height != null ) {
-            modal.setBodyHeight( height );
+        modal.setContent(widget);
+        if (height != null) {
+            modal.setBodyHeight(height);
         }
     }
 
     @Override
-    public void setTitle( final String title ) {
-        modal.setModalTitle( title );
+    public void setTitle(final String title) {
+        modal.setModalTitle(title);
     }
 
     @Override
@@ -80,14 +80,16 @@ public class SplashViewImpl extends Composite implements SplashView {
 
     @Override
     public void show() {
-        modal.show( Commands.DO_NOTHING,
-                new Command() {
-                    @Override
-                    public void execute() {
-                        showAgain = footer.getShowAgain();
-                        CloseEvent.fire( SplashViewImpl.this, SplashViewImpl.this, false );
-                    }
-                } );
+        modal.show(Commands.DO_NOTHING,
+                   new Command() {
+                       @Override
+                       public void execute() {
+                           showAgain = footer.getShowAgain();
+                           CloseEvent.fire(SplashViewImpl.this,
+                                           SplashViewImpl.this,
+                                           false);
+                       }
+                   });
     }
 
     @Override
@@ -96,8 +98,8 @@ public class SplashViewImpl extends Composite implements SplashView {
     }
 
     @Override
-    public HandlerRegistration addCloseHandler( final CloseHandler<SplashView> handler ) {
-        return addHandler( handler, CloseEvent.getType() );
+    public HandlerRegistration addCloseHandler(final CloseHandler<SplashView> handler) {
+        return addHandler(handler,
+                          CloseEvent.getType());
     }
-
 }

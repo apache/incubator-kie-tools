@@ -30,47 +30,47 @@ import org.uberfire.workbench.model.SplashScreenFilter;
 public class WorkbenchServicesProxyClientImpl implements WorkbenchServicesProxy {
 
     @Override
-    public void save( final String perspectiveId,
-                      final PerspectiveDefinition activePerspective,
-                      final Command callback ) {
+    public void save(final String perspectiveId,
+                     final PerspectiveDefinition activePerspective,
+                     final Command callback) {
         callback.execute();
     }
 
     @Override
-    public void loadPerspective( final String name,
-                                 final ParameterizedCommand<PerspectiveDefinition> parameterizedCommand ) {
-        parameterizedCommand.execute( null );
+    public void loadPerspective(final String name,
+                                final ParameterizedCommand<PerspectiveDefinition> parameterizedCommand) {
+        parameterizedCommand.execute(null);
     }
 
     @Override
-    public void loadPerspectives( final ParameterizedCommand<Set<PerspectiveDefinition>> parameterizedCommand ) {
-        parameterizedCommand.execute( null );
+    public void loadPerspectives(final ParameterizedCommand<Set<PerspectiveDefinition>> parameterizedCommand) {
+        parameterizedCommand.execute(null);
     }
 
     @Override
-    public void removePerspectiveState( final String perspectiveId,
-                                        final Command callback ) {
+    public void removePerspectiveState(final String perspectiveId,
+                                       final Command callback) {
         callback.execute();
     }
 
     @Override
-    public void removePerspectiveStates( final Command doWhenFinished ) {
+    public void removePerspectiveStates(final Command doWhenFinished) {
         doWhenFinished.execute();
     }
 
     @Override
-    public void save( final SplashScreenFilter splashFilter ) {
+    public void save(final SplashScreenFilter splashFilter) {
 
     }
 
     @Override
-    public void loadSplashScreenFilter( final String name,
-                                        final ParameterizedCommand<SplashScreenFilter> parameterizedCommand ) {
-        parameterizedCommand.execute( null );
+    public void loadSplashScreenFilter(final String name,
+                                       final ParameterizedCommand<SplashScreenFilter> parameterizedCommand) {
+        parameterizedCommand.execute(null);
     }
 
     @Override
-    public void isWorkbenchOnCluster( final ParameterizedCommand<Boolean> parameterizedCommand ) {
-        parameterizedCommand.execute( false );
+    public void isWorkbenchOnCluster(final ParameterizedCommand<Boolean> parameterizedCommand) {
+        parameterizedCommand.execute(false);
     }
 }

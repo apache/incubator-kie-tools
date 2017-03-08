@@ -24,13 +24,13 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class GenericPortableException extends RuntimeException {
 
-    public GenericPortableException( final String message ) {
-        super( message );
+    public GenericPortableException(final String message) {
+        super(message);
     }
 
-    public GenericPortableException( @MapsTo("message") final String message,
-                                     @MapsTo("e") Exception e ) {
-        super( message, e );
+    public GenericPortableException(@MapsTo("message") final String message,
+                                    @MapsTo("e") Exception e) {
+        super(message,
+              e);
     }
-
 }

@@ -16,6 +16,12 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.user;
 
+import java.util.Iterator;
+import java.util.Set;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -27,33 +33,29 @@ import org.uberfire.ext.security.management.client.widgets.management.events.OnR
 import org.uberfire.ext.security.management.client.widgets.management.list.GroupsList;
 import org.uberfire.ext.security.management.client.widgets.popup.ConfirmBox;
 
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.Iterator;
-import java.util.Set;
-
 /**
  * <p>Presenter class for user's assigned groups explorer widget.</p>
  * <p>It's considered an Editor due to it allows removing assigned user's groups.</p>
- * 
  * @since 0.8.0
  */
 @Dependent
-public class UserAssignedGroupsExplorer extends UserAssignedEntitiesExplorer<Group> implements IsWidget, org.uberfire.ext.security.management.client.editor.user.UserAssignedGroupsExplorer {
+public class UserAssignedGroupsExplorer extends UserAssignedEntitiesExplorer<Group> implements IsWidget,
+                                                                                               org.uberfire.ext.security.management.client.editor.user.UserAssignedGroupsExplorer {
 
     Event<OnRemoveUserGroupEvent> removeUserGroupEventEvent;
 
     @Inject
-    public UserAssignedGroupsExplorer(final ClientUserSystemManager userSystemManager, 
-                                      final ConfirmBox confirmBox, 
-                                      final GroupsList groupList, 
+    public UserAssignedGroupsExplorer(final ClientUserSystemManager userSystemManager,
+                                      final ConfirmBox confirmBox,
+                                      final GroupsList groupList,
                                       final AssignedEntitiesExplorer view,
                                       final Event<OnRemoveUserGroupEvent> removeUserGroupEventEvent) {
-        super(userSystemManager, confirmBox, groupList, view);
+        super(userSystemManager,
+              confirmBox,
+              groupList,
+              view);
         this.removeUserGroupEventEvent = removeUserGroupEventEvent;
     }
-
 
     @Override
     protected String getEmptyText() {
@@ -104,7 +106,8 @@ public class UserAssignedGroupsExplorer extends UserAssignedEntitiesExplorer<Gro
 
     @Override
     protected void doShow() {
-        entitiesList.show(this.entities, getCallback());
+        entitiesList.show(this.entities,
+                          getCallback());
     }
 
     @Override
@@ -122,7 +125,7 @@ public class UserAssignedGroupsExplorer extends UserAssignedEntitiesExplorer<Gro
         doShow();
 
         // Fire the event for any others components listening.
-        removeUserGroupEventEvent.fire(new OnRemoveUserGroupEvent(UserAssignedGroupsExplorer.this, name));
+        removeUserGroupEventEvent.fire(new OnRemoveUserGroupEvent(UserAssignedGroupsExplorer.this,
+                                                                  name));
     }
-
 }

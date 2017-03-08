@@ -25,7 +25,6 @@ public interface ControlPointMoveHandler {
      * @param x
      * @param y
      */
-    void onMove( final double x,
-                 final double y );
-
+    void onMove(final double x,
+                final double y);
 }

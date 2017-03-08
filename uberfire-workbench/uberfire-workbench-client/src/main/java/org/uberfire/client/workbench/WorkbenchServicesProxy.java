@@ -25,25 +25,24 @@ import org.uberfire.workbench.model.SplashScreenFilter;
 
 public interface WorkbenchServicesProxy {
 
-    void save( final String perspectiveId,
-               final PerspectiveDefinition activePerspective,
-               final Command callback );
+    void save(final String perspectiveId,
+              final PerspectiveDefinition activePerspective,
+              final Command callback);
 
-    void loadPerspective( final String name,
-                          final ParameterizedCommand<PerspectiveDefinition> parameterizedCommand );
+    void loadPerspective(final String name,
+                         final ParameterizedCommand<PerspectiveDefinition> parameterizedCommand);
 
-    void loadPerspectives( final ParameterizedCommand<Set<PerspectiveDefinition>> parameterizedCommand );
+    void loadPerspectives(final ParameterizedCommand<Set<PerspectiveDefinition>> parameterizedCommand);
 
-    void removePerspectiveState( final String perspectiveId,
-                                 final Command callback );
+    void removePerspectiveState(final String perspectiveId,
+                                final Command callback);
 
-    void removePerspectiveStates( final Command doWhenFinished );
+    void removePerspectiveStates(final Command doWhenFinished);
 
-    void save( final SplashScreenFilter splashFilter );
+    void save(final SplashScreenFilter splashFilter);
 
-    void loadSplashScreenFilter( final String name,
-                                 final ParameterizedCommand<SplashScreenFilter> parameterizedCommand );
+    void loadSplashScreenFilter(final String name,
+                                final ParameterizedCommand<SplashScreenFilter> parameterizedCommand);
 
-    void isWorkbenchOnCluster( final ParameterizedCommand<Boolean> parameterizedCommand );
-
+    void isWorkbenchOnCluster(final ParameterizedCommand<Boolean> parameterizedCommand);
 }

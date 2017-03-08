@@ -18,8 +18,8 @@ package org.uberfire.preferences.shared.impl;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.uberfire.preferences.shared.impl.exception.InvalidPreferenceScopeException;
 import org.uberfire.mocks.SessionInfoMock;
+import org.uberfire.preferences.shared.impl.exception.InvalidPreferenceScopeException;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.*;
@@ -31,34 +31,37 @@ public class DefaultPreferenceScopeTypesTest {
     @Before
     public void setup() {
         final SessionInfo sessionInfo = new SessionInfoMock();
-        defaultPreferenceScopeTypes = new DefaultPreferenceScopeTypes( new UsernameProviderMock( sessionInfo ) );
+        defaultPreferenceScopeTypes = new DefaultPreferenceScopeTypes(new UsernameProviderMock(sessionInfo));
     }
 
     @Test
     public void typesRequireKeyTest() {
-        assertFalse( defaultPreferenceScopeTypes.typeRequiresKey( DefaultScopes.ALL_USERS.type() ) );
-        assertFalse( defaultPreferenceScopeTypes.typeRequiresKey( DefaultScopes.ENTIRE_APPLICATION.type() ) );
-        assertTrue( defaultPreferenceScopeTypes.typeRequiresKey( DefaultScopes.COMPONENT.type() ) );
-        assertFalse( defaultPreferenceScopeTypes.typeRequiresKey( DefaultScopes.USER.type() ) );
+        assertFalse(defaultPreferenceScopeTypes.typeRequiresKey(DefaultScopes.ALL_USERS.type()));
+        assertFalse(defaultPreferenceScopeTypes.typeRequiresKey(DefaultScopes.ENTIRE_APPLICATION.type()));
+        assertTrue(defaultPreferenceScopeTypes.typeRequiresKey(DefaultScopes.COMPONENT.type()));
+        assertFalse(defaultPreferenceScopeTypes.typeRequiresKey(DefaultScopes.USER.type()));
     }
 
     @Test
     public void defaultKeysForTypesTest() {
-        assertEquals( DefaultScopes.ALL_USERS.type(), defaultPreferenceScopeTypes.getDefaultKeyFor( DefaultScopes.ALL_USERS.type() ) );
-        assertEquals( DefaultScopes.ENTIRE_APPLICATION.type(), defaultPreferenceScopeTypes.getDefaultKeyFor( DefaultScopes.ENTIRE_APPLICATION.type() ) );
-        assertEquals( "admin", defaultPreferenceScopeTypes.getDefaultKeyFor( DefaultScopes.USER.type() ) );
+        assertEquals(DefaultScopes.ALL_USERS.type(),
+                     defaultPreferenceScopeTypes.getDefaultKeyFor(DefaultScopes.ALL_USERS.type()));
+        assertEquals(DefaultScopes.ENTIRE_APPLICATION.type(),
+                     defaultPreferenceScopeTypes.getDefaultKeyFor(DefaultScopes.ENTIRE_APPLICATION.type()));
+        assertEquals("admin",
+                     defaultPreferenceScopeTypes.getDefaultKeyFor(DefaultScopes.USER.type()));
     }
 
     @Test(expected = InvalidPreferenceScopeException.class)
     public void defaultKeysForTypesThatDoNotHaveDefaultKeysTest() {
-        defaultPreferenceScopeTypes.getDefaultKeyFor( DefaultScopes.COMPONENT.type() );
+        defaultPreferenceScopeTypes.getDefaultKeyFor(DefaultScopes.COMPONENT.type());
     }
 
     @Test
     public void isEmptyTest() {
-        assertTrue( defaultPreferenceScopeTypes.isEmpty( null ) );
-        assertTrue( defaultPreferenceScopeTypes.isEmpty( "" ) );
-        assertTrue( defaultPreferenceScopeTypes.isEmpty( "  " ) );
-        assertFalse( defaultPreferenceScopeTypes.isEmpty( "anyString" ) );
+        assertTrue(defaultPreferenceScopeTypes.isEmpty(null));
+        assertTrue(defaultPreferenceScopeTypes.isEmpty(""));
+        assertTrue(defaultPreferenceScopeTypes.isEmpty("  "));
+        assertFalse(defaultPreferenceScopeTypes.isEmpty("anyString"));
     }
 }

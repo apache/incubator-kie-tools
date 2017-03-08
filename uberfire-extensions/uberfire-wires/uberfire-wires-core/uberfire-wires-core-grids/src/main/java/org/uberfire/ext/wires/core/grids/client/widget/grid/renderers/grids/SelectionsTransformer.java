@@ -25,5 +25,4 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.impl
 public interface SelectionsTransformer {
 
     List<SelectedRange> transformToSelectedRanges();
-
 }

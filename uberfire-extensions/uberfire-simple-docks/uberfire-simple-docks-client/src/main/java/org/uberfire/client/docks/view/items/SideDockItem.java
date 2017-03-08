@@ -17,14 +17,12 @@
 package org.uberfire.client.docks.view.items;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
 import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
@@ -36,66 +34,58 @@ import org.uberfire.mvp.ParameterizedCommand;
 public class SideDockItem
         extends AbstractDockItem {
 
-    private MouseEventHandler mouseEventHandler;
-
-    interface ViewBinder
-            extends
-            UiBinder<Widget, SideDockItem> {
-
-    }
-
+    private static WebAppResource CSS = GWT.create(WebAppResource.class);
+    private final ParameterizedCommand<String> selectCommand;
+    private final ParameterizedCommand<String> deselectCommand;
     @UiField
     Button itemButton;
-
-    private final ParameterizedCommand<String> selectCommand;
-
-    private final ParameterizedCommand<String> deselectCommand;
-
-    private SideDockItemFocused popup = new SideDockItemFocused( SideDockItem.this );
+    private MouseEventHandler mouseEventHandler;
+    private SideDockItemFocused popup = new SideDockItemFocused(SideDockItem.this);
 
     private boolean selected;
 
-    private ViewBinder uiBinder = GWT.create( ViewBinder.class );
+    private ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
-    private static WebAppResource CSS = GWT.create( WebAppResource.class );
-
-    SideDockItem( UberfireDock dock,
-                  final ParameterizedCommand<String> selectCommand,
-                  final ParameterizedCommand<String> deselectCommand ) {
-        super( dock );
+    SideDockItem(UberfireDock dock,
+                 final ParameterizedCommand<String> selectCommand,
+                 final ParameterizedCommand<String> deselectCommand) {
+        super(dock);
         this.selectCommand = selectCommand;
         this.deselectCommand = deselectCommand;
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
         createButton();
     }
 
     void createButton() {
-        itemButton.setSize( ButtonSize.SMALL );
-        itemButton.setType( ButtonType.LINK );
-        configureIcon( itemButton, getDock().getImageIcon() );
+        itemButton.setSize(ButtonSize.SMALL);
+        itemButton.setType(ButtonType.LINK);
+        configureIcon(itemButton,
+                      getDock().getImageIcon());
         mouseEventHandler = new MouseEventHandler();
-        itemButton.addDomHandler( mouseEventHandler, MouseOverEvent.getType() );
-        itemButton.addStyleName( CSS.CSS().sideDockItem() );
-        itemButton.addClickHandler( new ClickHandler() {
+        itemButton.addDomHandler(mouseEventHandler,
+                                 MouseOverEvent.getType());
+        itemButton.addStyleName(CSS.CSS().sideDockItem());
+        itemButton.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
-                if ( !isSelected() ) {
+            public void onClick(ClickEvent event) {
+                if (!isSelected()) {
                     selectAndExecuteExpandCommand();
                 } else {
                     deselectAndExecuteCommand();
                 }
             }
-        } );
+        });
     }
 
     @Override
     public void select() {
         selected = true;
-        itemButton.setActive( true );
-        itemButton.setType( ButtonType.INFO );
-        if ( getDock().getImageIconFocused() != null ) {
-            itemButton.remove( 0 );
-            configureImageIcon( itemButton, getDock().getImageIconFocused() );
+        itemButton.setActive(true);
+        itemButton.setType(ButtonType.INFO);
+        if (getDock().getImageIconFocused() != null) {
+            itemButton.remove(0);
+            configureImageIcon(itemButton,
+                               getDock().getImageIconFocused());
         }
     }
 
@@ -103,37 +93,25 @@ public class SideDockItem
     public void selectAndExecuteExpandCommand() {
         select();
         popup.select();
-        selectCommand.execute( getIdentifier() );
+        selectCommand.execute(getIdentifier());
     }
 
     @Override
     public void deselect() {
         selected = false;
         popup.deselect();
-        itemButton.setActive( false );
-        itemButton.setType( ButtonType.LINK );
-        if ( getDock().getImageIcon() != null ) {
-            itemButton.remove( 0 );
-            configureImageIcon( itemButton, getDock().getImageIcon() );
+        itemButton.setActive(false);
+        itemButton.setType(ButtonType.LINK);
+        if (getDock().getImageIcon() != null) {
+            itemButton.remove(0);
+            configureImageIcon(itemButton,
+                               getDock().getImageIcon());
         }
     }
 
     public void deselectAndExecuteCommand() {
         deselect();
-        deselectCommand.execute( getIdentifier() );
-    }
-
-    class MouseEventHandler implements MouseOverHandler {
-
-        public MouseEventHandler() {
-        }
-
-        public void onMouseOver( final MouseOverEvent moe ) {
-            if ( openPopup() ) {
-                popup.open();
-            }
-        }
-
+        deselectCommand.execute(getIdentifier());
     }
 
     private boolean openPopup() {
@@ -146,5 +124,23 @@ public class SideDockItem
 
     SideDockItemFocused getPopup() {
         return popup;
+    }
+
+    interface ViewBinder
+            extends
+            UiBinder<Widget, SideDockItem> {
+
+    }
+
+    class MouseEventHandler implements MouseOverHandler {
+
+        public MouseEventHandler() {
+        }
+
+        public void onMouseOver(final MouseOverEvent moe) {
+            if (openPopup()) {
+                popup.open();
+            }
+        }
     }
 }

@@ -38,7 +38,7 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchScreen(identifier = RoleEditorScreen.SCREEN_ID )
+@WorkbenchScreen(identifier = RoleEditorScreen.SCREEN_ID)
 public class RoleEditorScreen {
 
     public static final String SCREEN_ID = "RoleEditorScreen";
@@ -70,7 +70,8 @@ public class RoleEditorScreen {
 
     @OnStartup
     public void onStartup(final PlaceRequest placeRequest) {
-        roleName = placeRequest.getParameter(ROLE_NAME, null);
+        roleName = placeRequest.getParameter(ROLE_NAME,
+                                             null);
         show();
     }
 

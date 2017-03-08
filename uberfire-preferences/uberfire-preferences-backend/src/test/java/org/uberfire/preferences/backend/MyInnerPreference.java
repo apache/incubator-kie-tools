@@ -27,11 +27,11 @@ public class MyInnerPreference implements BasePreference<MyInnerPreference> {
     @Property(bundleKey = "MyInnerPreference.Text")
     String text;
 
-    public void setText( final String text ) {
-        this.text = text;
-    }
-
     public String getText() {
         return text;
+    }
+
+    public void setText(final String text) {
+        this.text = text;
     }
 }

@@ -22,12 +22,12 @@ import org.uberfire.preferences.client.annotations.ComponentKey;
 
 public class PreferenceQualifierUtils {
 
-    public static String getComponentKeyIfExists( final Annotation[] qualifiers ) {
+    public static String getComponentKeyIfExists(final Annotation[] qualifiers) {
         String componentKey = null;
 
-        for ( Annotation annotation : qualifiers ) {
-            if ( annotation.annotationType().equals( ComponentKey.class ) ) {
-                componentKey = ( (ComponentKey) annotation ).value();
+        for (Annotation annotation : qualifiers) {
+            if (annotation.annotationType().equals(ComponentKey.class)) {
+                componentKey = ((ComponentKey) annotation).value();
             }
         }
 

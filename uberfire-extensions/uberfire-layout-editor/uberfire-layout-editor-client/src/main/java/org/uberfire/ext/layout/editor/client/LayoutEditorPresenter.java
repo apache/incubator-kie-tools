@@ -15,6 +15,15 @@
  */
 package org.uberfire.ext.layout.editor.client;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
@@ -24,57 +33,35 @@ import org.uberfire.ext.layout.editor.client.components.container.Container;
 import org.uberfire.ext.layout.editor.client.widgets.LayoutDragComponentGroupPresenter;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
-
 @Dependent
 public class LayoutEditorPresenter {
 
-    public interface View extends UberElement<LayoutEditorPresenter> {
-
-        void setupContainer( UberElement<Container> container );
-
-        void addDraggableComponentGroup( UberElement<LayoutDragComponentGroupPresenter> group );
-
-        void removeDraggableComponentGroup( UberElement<LayoutDragComponentGroupPresenter> id );
-
-    }
-
+    private final View view;
+    protected Map<String, LayoutDragComponentGroupPresenter> layoutDragComponentGroups = new HashMap<>();
+    ManagedInstance<LayoutDragComponentGroupPresenter> layoutDragComponentGroupInstance;
     @Inject
     private Container container;
-
     @Inject
     private Event<NotificationEvent> ufNotification;
 
-    private final View view;
-
-    ManagedInstance<LayoutDragComponentGroupPresenter> layoutDragComponentGroupInstance;
-
-    protected Map<String, LayoutDragComponentGroupPresenter> layoutDragComponentGroups = new HashMap<>();
-
     @Inject
-    public LayoutEditorPresenter( final View view, Container container,
-                                  ManagedInstance<LayoutDragComponentGroupPresenter> layoutDragComponentGroupInstance ) {
+    public LayoutEditorPresenter(final View view,
+                                 Container container,
+                                 ManagedInstance<LayoutDragComponentGroupPresenter> layoutDragComponentGroupInstance) {
         this.view = view;
         this.container = container;
         this.layoutDragComponentGroupInstance = layoutDragComponentGroupInstance;
-        view.init( this );
+        view.init(this);
     }
 
     @PostConstruct
     public void initNew() {
-        view.setupContainer( container.getView() );
+        view.setupContainer(container.getView());
     }
 
     public void clear() {
         List<String> groupNames = new ArrayList<>(layoutDragComponentGroups.keySet());
-        groupNames.forEach( groupName -> removeDraggableGroup( groupName ) );
+        groupNames.forEach(groupName -> removeDraggableGroup(groupName));
         container.reset();
     }
 
@@ -86,55 +73,78 @@ public class LayoutEditorPresenter {
         return container.toLayoutTemplate();
     }
 
-    public void loadLayout( LayoutTemplate layoutTemplate, String emptyTitleText, String emptySubTitleText ) {
-        container.load( layoutTemplate, emptyTitleText, emptySubTitleText );
+    public void loadLayout(LayoutTemplate layoutTemplate,
+                           String emptyTitleText,
+                           String emptySubTitleText) {
+        container.load(layoutTemplate,
+                       emptyTitleText,
+                       emptySubTitleText);
     }
 
-    public void loadEmptyLayout( String layoutName, String emptyTitleText, String emptySubTitleText ) {
-        container.loadEmptyLayout( layoutName, emptyTitleText, emptySubTitleText );
+    public void loadEmptyLayout(String layoutName,
+                                String emptyTitleText,
+                                String emptySubTitleText) {
+        container.loadEmptyLayout(layoutName,
+                                  emptyTitleText,
+                                  emptySubTitleText);
     }
 
-    public void addLayoutProperty( String key, String value ) {
-        container.addProperty( key, value );
+    public void addLayoutProperty(String key,
+                                  String value) {
+        container.addProperty(key,
+                              value);
     }
 
-    public String getLayoutProperty( String key ) {
-        return container.getProperty( key );
+    public String getLayoutProperty(String key) {
+        return container.getProperty(key);
     }
 
-    public void addDraggableComponentGroup( LayoutDragComponentGroup group ) {
+    public void addDraggableComponentGroup(LayoutDragComponentGroup group) {
         LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = createLayoutDragComponentPresenter(
-                group );
-        view.addDraggableComponentGroup( layoutDragComponentGroupPresenter.getView() );
+                group);
+        view.addDraggableComponentGroup(layoutDragComponentGroupPresenter.getView());
     }
 
-    private LayoutDragComponentGroupPresenter createLayoutDragComponentPresenter( LayoutDragComponentGroup group ) {
+    private LayoutDragComponentGroupPresenter createLayoutDragComponentPresenter(LayoutDragComponentGroup group) {
         LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = layoutDragComponentGroupInstance.get();
-        layoutDragComponentGroups.put( group.getName(), layoutDragComponentGroupPresenter );
-        layoutDragComponentGroupPresenter.init( group );
+        layoutDragComponentGroups.put(group.getName(),
+                                      layoutDragComponentGroupPresenter);
+        layoutDragComponentGroupPresenter.init(group);
         return layoutDragComponentGroupPresenter;
     }
 
-    public void addDraggableComponentToGroup( String groupName, String componentId, LayoutDragComponent component ) {
+    public void addDraggableComponentToGroup(String groupName,
+                                             String componentId,
+                                             LayoutDragComponent component) {
         LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = layoutDragComponentGroups
-                .get( groupName );
-        layoutDragComponentGroupPresenter.add( componentId, component );
-
+                .get(groupName);
+        layoutDragComponentGroupPresenter.add(componentId,
+                                              component);
     }
 
-    public void removeDraggableGroup( String groupName ) {
+    public void removeDraggableGroup(String groupName) {
         LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = layoutDragComponentGroups
-                .remove( groupName );
-        if ( layoutDragComponentGroupPresenter != null ) {
+                .remove(groupName);
+        if (layoutDragComponentGroupPresenter != null) {
             view.removeDraggableComponentGroup(layoutDragComponentGroupPresenter.getView());
         }
     }
 
-    public void removeDraggableComponentFromGroup( String groupName, String componentId ) {
+    public void removeDraggableComponentFromGroup(String groupName,
+                                                  String componentId) {
         LayoutDragComponentGroupPresenter layoutDragComponentGroupPresenter = layoutDragComponentGroups
-                .get( groupName );
-        if ( layoutDragComponentGroupPresenter != null ) {
+                .get(groupName);
+        if (layoutDragComponentGroupPresenter != null) {
             layoutDragComponentGroupPresenter.removeDraggableComponentFromGroup(componentId);
         }
+    }
+
+    public interface View extends UberElement<LayoutEditorPresenter> {
+
+        void setupContainer(UberElement<Container> container);
+
+        void addDraggableComponentGroup(UberElement<LayoutDragComponentGroupPresenter> group);
+
+        void removeDraggableComponentGroup(UberElement<LayoutDragComponentGroupPresenter> id);
     }
 }

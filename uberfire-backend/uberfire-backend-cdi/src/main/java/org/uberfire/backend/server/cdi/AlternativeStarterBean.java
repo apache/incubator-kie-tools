@@ -33,7 +33,8 @@ public class AlternativeStarterBean {
     private static final Logger logger = LoggerFactory.getLogger(AlternativeStarterBean.class);
 
     private static final String EJB_METHOD = "ejb";
-    private static final String START_METHOD = System.getProperty( "org.uberfire.start.method", "cdi" );
+    private static final String START_METHOD = System.getProperty("org.uberfire.start.method",
+                                                                  "cdi");
 
     @Inject
     private Instance<Startable> startableBeans;

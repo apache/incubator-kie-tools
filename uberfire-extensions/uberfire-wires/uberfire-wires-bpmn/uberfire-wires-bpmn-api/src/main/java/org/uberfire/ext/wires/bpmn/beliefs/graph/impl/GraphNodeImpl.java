@@ -32,13 +32,13 @@ public class GraphNodeImpl<C, T extends Edge> implements GraphNode<C, T> {
     private List<T> outEdges = new ArrayList<T>();
 
     @Override
-    public void setContent( C content ) {
-        this.content = content;
+    public C getContent() {
+        return content;
     }
 
     @Override
-    public C getContent() {
-        return content;
+    public void setContent(C content) {
+        this.content = content;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class GraphNodeImpl<C, T extends Edge> implements GraphNode<C, T> {
     }
 
     @Override
-    public void setId( int id ) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -70,5 +70,4 @@ public class GraphNodeImpl<C, T extends Edge> implements GraphNode<C, T> {
                 ", outEdges=" + outEdges +
                 '}';
     }
-
 }

@@ -59,20 +59,16 @@ public class DynamicMenuEditorView
         implements DynamicMenuEditorPresenter.View,
                    Editor<DynamicMenuItem> {
 
-    interface ViewBinder
-            extends
-            UiBinder<Widget, DynamicMenuEditorView> {
-
-    }
-
-    interface Driver extends SimpleBeanEditorDriver<DynamicMenuItem, DynamicMenuEditorView> {
-
-    }
-
-    private final Driver driver = GWT.create( Driver.class );
-
-    private static final ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
+    private static final ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    private final Driver driver = GWT.create(Driver.class);
+    //SelectionModel works better with a KeyProvider
+    private final ProvidesKey<DynamicMenuItem> keyProvider = new ProvidesKey<DynamicMenuItem>() {
+        @Override
+        public Object getKey(final DynamicMenuItem item) {
+            return item.getActivityId() + item.getMenuLabel();
+        }
+    };
+    private final SingleSelectionModel<DynamicMenuItem> selectionModel = new SingleSelectionModel<DynamicMenuItem>(keyProvider);
     @UiField
     TextBox activityId;
 
@@ -92,219 +88,214 @@ public class DynamicMenuEditorView
     @UiField
     @Ignore
     HelpBlock menuLabelHelpInline;
-
-    //SelectionModel works better with a KeyProvider
-    private final ProvidesKey<DynamicMenuItem> keyProvider = new ProvidesKey<DynamicMenuItem>() {
-        @Override
-        public Object getKey( final DynamicMenuItem item ) {
-            return item.getActivityId() + item.getMenuLabel();
-        }
-    };
-    private final SingleSelectionModel<DynamicMenuItem> selectionModel = new SingleSelectionModel<DynamicMenuItem>( keyProvider );
-
     @UiField(provided = true)
-    CellTable<DynamicMenuItem> menuItems = new CellTable<DynamicMenuItem>( 500, GWT.<CellTable.Resources>create( CellTable.Resources.class ), keyProvider, null );
-
+    CellTable<DynamicMenuItem> menuItems = new CellTable<DynamicMenuItem>(500,
+                                                                          GWT.<CellTable.Resources>create(CellTable.Resources.class),
+                                                                          keyProvider,
+                                                                          null);
     @UiField
     Button okButton;
-
     @UiField
     Button cancelButton;
-
     private DynamicMenuEditorPresenter presenter;
-
     private DynamicMenuItem editedItem;
 
     @PostConstruct
     public void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
         this.editedItem = null;
     }
 
     @Override
-    public void init( final DynamicMenuEditorPresenter presenter ) {
+    public void init(final DynamicMenuEditorPresenter presenter) {
         this.presenter = presenter;
 
-        driver.initialize( this );
+        driver.initialize(this);
 
-        setMenuItem( new DynamicMenuItem() );
+        setMenuItem(new DynamicMenuItem());
 
-        initTable( menuItems );
+        initTable(menuItems);
     }
 
-    private void initTable( final AbstractCellTable<DynamicMenuItem> dynamicMenuTable ) {
-        dynamicMenuTable.setEmptyTableWidget( new Label( CommonConstants.INSTANCE.MenusNoMenuItems() ) );
+    private void initTable(final AbstractCellTable<DynamicMenuItem> dynamicMenuTable) {
+        dynamicMenuTable.setEmptyTableWidget(new Label(CommonConstants.INSTANCE.MenusNoMenuItems()));
 
         //We need to inform the SelectionModel that the ButtonCell (i.e. Delete) column is excluded from selecting a row
-        final DefaultSelectionEventManager<DynamicMenuItem> manager = DefaultSelectionEventManager.createBlacklistManager( 4 );
-        dynamicMenuTable.setSelectionModel( selectionModel,
-                                            manager );
+        final DefaultSelectionEventManager<DynamicMenuItem> manager = DefaultSelectionEventManager.createBlacklistManager(4);
+        dynamicMenuTable.setSelectionModel(selectionModel,
+                                           manager);
 
         //Furthermore we cannot have a KeyboardSelectionPolicy with a ButtonCell and a SelectionModel
-        dynamicMenuTable.setKeyboardSelectionPolicy( HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.DISABLED );
+        dynamicMenuTable.setKeyboardSelectionPolicy(HasKeyboardSelectionPolicy.KeyboardSelectionPolicy.DISABLED);
 
         {
-            final IconCell iCell = new IconCell( IconType.ARROW_UP );
-            iCell.setTooltip( CommonConstants.INSTANCE.MenusMoveUpHint() );
+            final IconCell iCell = new IconCell(IconType.ARROW_UP);
+            iCell.setTooltip(CommonConstants.INSTANCE.MenusMoveUpHint());
 
-            final Column<DynamicMenuItem, String> iconColumn = new Column<DynamicMenuItem, String>( iCell ) {
-                public String getValue( DynamicMenuItem object ) {
+            final Column<DynamicMenuItem, String> iconColumn = new Column<DynamicMenuItem, String>(iCell) {
+                public String getValue(DynamicMenuItem object) {
                     return "";
                 }
             };
 
-            iconColumn.setFieldUpdater( new FieldUpdater<DynamicMenuItem, String>() {
+            iconColumn.setFieldUpdater(new FieldUpdater<DynamicMenuItem, String>() {
                 @Override
-                public void update( final int index,
-                                    final DynamicMenuItem object,
-                                    final String value ) {
-                    presenter.updateIndex( object,
-                                           index,
-                                           DynamicMenuEditorPresenter.UpdateIndexOperation.UP );
+                public void update(final int index,
+                                   final DynamicMenuItem object,
+                                   final String value) {
+                    presenter.updateIndex(object,
+                                          index,
+                                          DynamicMenuEditorPresenter.UpdateIndexOperation.UP);
                 }
-            } );
+            });
 
-            dynamicMenuTable.addColumn( iconColumn );
-            dynamicMenuTable.setColumnWidth( iconColumn,
-                                             "25px" );
+            dynamicMenuTable.addColumn(iconColumn);
+            dynamicMenuTable.setColumnWidth(iconColumn,
+                                            "25px");
         }
 
         {
-            final IconCell iCell = new IconCell( IconType.ARROW_DOWN );
-            iCell.setTooltip( CommonConstants.INSTANCE.MenusMoveDownHint() );
+            final IconCell iCell = new IconCell(IconType.ARROW_DOWN);
+            iCell.setTooltip(CommonConstants.INSTANCE.MenusMoveDownHint());
 
-            final Column<DynamicMenuItem, String> iconColumn = new Column<DynamicMenuItem, String>( iCell ) {
-                public String getValue( DynamicMenuItem object ) {
+            final Column<DynamicMenuItem, String> iconColumn = new Column<DynamicMenuItem, String>(iCell) {
+                public String getValue(DynamicMenuItem object) {
                     return "";
                 }
             };
 
-            iconColumn.setFieldUpdater( new FieldUpdater<DynamicMenuItem, String>() {
+            iconColumn.setFieldUpdater(new FieldUpdater<DynamicMenuItem, String>() {
                 @Override
-                public void update( final int index,
-                                    final DynamicMenuItem object,
-                                    final String value ) {
-                    presenter.updateIndex( object,
-                                           index,
-                                           DynamicMenuEditorPresenter.UpdateIndexOperation.DOWN );
+                public void update(final int index,
+                                   final DynamicMenuItem object,
+                                   final String value) {
+                    presenter.updateIndex(object,
+                                          index,
+                                          DynamicMenuEditorPresenter.UpdateIndexOperation.DOWN);
                 }
-            } );
+            });
 
-            dynamicMenuTable.addColumn( iconColumn );
-            dynamicMenuTable.setColumnWidth( iconColumn,
-                                             "25px" );
+            dynamicMenuTable.addColumn(iconColumn);
+            dynamicMenuTable.setColumnWidth(iconColumn,
+                                            "25px");
         }
 
         {
             final TextColumn<DynamicMenuItem> activityCol = new TextColumn<DynamicMenuItem>() {
 
                 @Override
-                public String getValue( DynamicMenuItem object ) {
-                    return String.valueOf( object.getActivityId() );
+                public String getValue(DynamicMenuItem object) {
+                    return String.valueOf(object.getActivityId());
                 }
             };
 
-            dynamicMenuTable.addColumn( activityCol,
-                                        CommonConstants.INSTANCE.MenusActivityID() );
+            dynamicMenuTable.addColumn(activityCol,
+                                       CommonConstants.INSTANCE.MenusActivityID());
         }
 
         {
             final TextColumn<DynamicMenuItem> labelCol = new TextColumn<DynamicMenuItem>() {
 
                 @Override
-                public String getValue( DynamicMenuItem object ) {
+                public String getValue(DynamicMenuItem object) {
                     return object.getMenuLabel();
                 }
             };
 
-            dynamicMenuTable.addColumn( labelCol,
-                                        CommonConstants.INSTANCE.MenusLabel() );
+            dynamicMenuTable.addColumn(labelCol,
+                                       CommonConstants.INSTANCE.MenusLabel());
         }
 
         {
-            final ButtonCell buttonCell = new ButtonCell( IconType.REMOVE,
-                                                          ButtonType.DANGER,
-                                                          ButtonSize.EXTRA_SMALL );
+            final ButtonCell buttonCell = new ButtonCell(IconType.REMOVE,
+                                                         ButtonType.DANGER,
+                                                         ButtonSize.EXTRA_SMALL);
 
-            final Column<DynamicMenuItem, String> buttonCol = new Column<DynamicMenuItem, String>( buttonCell ) {
+            final Column<DynamicMenuItem, String> buttonCol = new Column<DynamicMenuItem, String>(buttonCell) {
                 @Override
-                public String getValue( DynamicMenuItem object ) {
+                public String getValue(DynamicMenuItem object) {
                     return CommonConstants.INSTANCE.MenusDelete();
                 }
             };
 
-            buttonCol.setFieldUpdater( new FieldUpdater<DynamicMenuItem, String>() {
+            buttonCol.setFieldUpdater(new FieldUpdater<DynamicMenuItem, String>() {
                 @Override
-                public void update( final int index,
-                                    final DynamicMenuItem object,
-                                    final String value ) {
-                    if ( selectionModel.isSelected( object ) ) {
+                public void update(final int index,
+                                   final DynamicMenuItem object,
+                                   final String value) {
+                    if (selectionModel.isSelected(object)) {
                         selectionModel.clear();
                     }
-                    presenter.removeObject( object );
+                    presenter.removeObject(object);
                 }
-            } );
+            });
 
-            dynamicMenuTable.addColumn( buttonCol );
-            dynamicMenuTable.setColumnWidth( buttonCol,
-                                             "80px" );
+            dynamicMenuTable.addColumn(buttonCol);
+            dynamicMenuTable.setColumnWidth(buttonCol,
+                                            "80px");
         }
 
-        selectionModel.addSelectionChangeHandler( new Handler() {
+        selectionModel.addSelectionChangeHandler(new Handler() {
 
             @Override
-            public void onSelectionChange( SelectionChangeEvent event ) {
+            public void onSelectionChange(SelectionChangeEvent event) {
                 //ListDataProvider raises this event with a null item when a item is removed
-                if ( selectionModel.getSelectedObject() == null ) {
+                if (selectionModel.getSelectedObject() == null) {
                     editedItem = null;
-                    setMenuItem( new DynamicMenuItem() );
+                    setMenuItem(new DynamicMenuItem());
                 } else {
                     editedItem = selectionModel.getSelectedObject();
-                    setMenuItem( new DynamicMenuItem( selectionModel.getSelectedObject().getActivityId(), selectionModel.getSelectedObject().getMenuLabel() ) );
+                    setMenuItem(new DynamicMenuItem(selectionModel.getSelectedObject().getActivityId(),
+                                                    selectionModel.getSelectedObject().getMenuLabel()));
                 }
             }
-        } );
+        });
 
-        presenter.setDataDisplay( dynamicMenuTable );
+        presenter.setDataDisplay(dynamicMenuTable);
     }
 
     @UiHandler("okButton")
-    public void onClick( ClickEvent e ) {
+    public void onClick(ClickEvent e) {
         DynamicMenuItem menuItem = driver.flush();
 
-        if ( isMenuItemValid( menuItem ) ) {
-            if ( editedItem != null ) {
-                editedItem.setActivityId( menuItem.getActivityId() );
-                editedItem.setMenuLabel( menuItem.getMenuLabel() );
+        if (isMenuItemValid(menuItem)) {
+            if (editedItem != null) {
+                editedItem.setActivityId(menuItem.getActivityId());
+                editedItem.setMenuLabel(menuItem.getMenuLabel());
                 menuItem = editedItem;
             }
-            presenter.addMenuItem( menuItem );
-            setMenuItem( new DynamicMenuItem() );
+            presenter.addMenuItem(menuItem);
+            setMenuItem(new DynamicMenuItem());
             selectionModel.clear();
         }
     }
 
     @UiHandler("cancelButton")
-    public void onCancel( ClickEvent e ) {
-        setMenuItem( new DynamicMenuItem() );
+    public void onCancel(ClickEvent e) {
+        setMenuItem(new DynamicMenuItem());
         selectionModel.clear();
     }
 
-    private boolean isMenuItemValid( final DynamicMenuItem menuItem ) {
-        boolean activityIdValidatorResult = presenter.getMenuItemActivityIdValidator().validateFieldInline( menuItem.getActivityId(), activityIdControlGroup, activityIdHelpInline );
-        boolean menuLabelValidatorResult = presenter.getMenuItemLabelValidator( menuItem, editedItem ).validateFieldInline( menuItem.getMenuLabel(), menuLabelControlGroup, menuLabelHelpInline );
+    private boolean isMenuItemValid(final DynamicMenuItem menuItem) {
+        boolean activityIdValidatorResult = presenter.getMenuItemActivityIdValidator().validateFieldInline(menuItem.getActivityId(),
+                                                                                                           activityIdControlGroup,
+                                                                                                           activityIdHelpInline);
+        boolean menuLabelValidatorResult = presenter.getMenuItemLabelValidator(menuItem,
+                                                                               editedItem).validateFieldInline(menuItem.getMenuLabel(),
+                                                                                                               menuLabelControlGroup,
+                                                                                                               menuLabelHelpInline);
 
         return activityIdValidatorResult && menuLabelValidatorResult;
     }
 
-    public void setMenuItem( final DynamicMenuItem menuItem ) {
-        driver.edit( menuItem );
+    public void setMenuItem(final DynamicMenuItem menuItem) {
+        driver.edit(menuItem);
 
-        activityIdControlGroup.setValidationState( ValidationState.NONE );
-        activityIdHelpInline.setText( "" );
+        activityIdControlGroup.setValidationState(ValidationState.NONE);
+        activityIdHelpInline.setText("");
 
-        menuLabelControlGroup.setValidationState( ValidationState.NONE );
-        menuLabelHelpInline.setText( "" );
+        menuLabelControlGroup.setValidationState(ValidationState.NONE);
+        menuLabelHelpInline.setText("");
     }
 
     public String emptyActivityID() {
@@ -325,5 +316,15 @@ public class DynamicMenuEditorView
 
     public String duplicatedMenuLabel() {
         return CommonConstants.INSTANCE.DuplicatedMenuLabel();
+    }
+
+    interface ViewBinder
+            extends
+            UiBinder<Widget, DynamicMenuEditorView> {
+
+    }
+
+    interface Driver extends SimpleBeanEditorDriver<DynamicMenuItem, DynamicMenuEditorView> {
+
     }
 }

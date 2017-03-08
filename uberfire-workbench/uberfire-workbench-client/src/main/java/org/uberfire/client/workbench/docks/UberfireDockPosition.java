@@ -23,17 +23,19 @@ public enum UberfireDockPosition {
         public boolean allowSingleDockItem() {
             return false;
         }
-    }, WEST {
+    },
+    WEST {
         @Override
         public boolean allowSingleDockItem() {
             return true;
         }
-    }, EAST {
+    },
+    EAST {
         @Override
         public boolean allowSingleDockItem() {
             return false;
         }
     };
 
-   public abstract boolean allowSingleDockItem();
+    public abstract boolean allowSingleDockItem();
 }

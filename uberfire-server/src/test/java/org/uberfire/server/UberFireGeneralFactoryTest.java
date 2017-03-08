@@ -16,10 +16,6 @@
 
 package org.uberfire.server;
 
-import static org.junit.Assert.assertSame;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
-
 import javax.enterprise.inject.Instance;
 
 import org.jboss.errai.bus.client.api.QueueSession;
@@ -37,6 +33,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.server.cdi.UberFireGeneralFactory;
 
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 @RunWith(MockitoJUnitRunner.class)
 public class UberFireGeneralFactoryTest {
 
@@ -52,51 +51,53 @@ public class UberFireGeneralFactoryTest {
     @Mock
     private QueueSession threadQueueSession;
 
-    private User sessionUser = new UserImpl( "session" );
+    private User sessionUser = new UserImpl("session");
 
-    private User defaultUser = new UserImpl( "default" );
+    private User defaultUser = new UserImpl("default");
 
     @InjectMocks
     private UberFireGeneralFactory factory;
 
     @Before
     public void setup() {
-        when( authService.getUser() ).thenThrow( new AssertionError( "Should not call authentication service" ) );
-        when( threadMessage.getResource( QueueSession.class, "Session" ) ).thenReturn( threadQueueSession );
-        when( threadQueueSession.getSessionId() ).thenReturn( sessionUser.getIdentifier() );
-        RpcContext.set( null );
+        when(authService.getUser()).thenThrow(new AssertionError("Should not call authentication service"));
+        when(threadMessage.getResource(QueueSession.class,
+                                       "Session")).thenReturn(threadQueueSession);
+        when(threadQueueSession.getSessionId()).thenReturn(sessionUser.getIdentifier());
+        RpcContext.set(null);
     }
 
     @Test
     public void returnDefaultUserOutsideOfSessionThread() throws Exception {
-        when( userInstance.isAmbiguous() ).thenReturn( false );
-        when( userInstance.isUnsatisfied() ).thenReturn( false );
-        when( userInstance.get() ).thenReturn( defaultUser );
+        when(userInstance.isAmbiguous()).thenReturn(false);
+        when(userInstance.isUnsatisfied()).thenReturn(false);
+        when(userInstance.get()).thenReturn(defaultUser);
 
-        SessionInfo sessionInfo = factory.getSessionInfo( authService );
-        assertSame( defaultUser, sessionInfo.getIdentity() );
+        SessionInfo sessionInfo = factory.getSessionInfo(authService);
+        assertSame(defaultUser,
+                   sessionInfo.getIdentity());
     }
 
     @Test
     public void returnAuthenticatedUserInSessionThread() throws Exception {
-        when( userInstance.isAmbiguous() ).thenReturn( false );
-        when( userInstance.isUnsatisfied() ).thenReturn( false );
-        when( userInstance.get() ).thenReturn( defaultUser );
-        reset( authService );
-        when( authService.getUser() ).thenReturn( sessionUser );
-        RpcContext.set( threadMessage );
+        when(userInstance.isAmbiguous()).thenReturn(false);
+        when(userInstance.isUnsatisfied()).thenReturn(false);
+        when(userInstance.get()).thenReturn(defaultUser);
+        reset(authService);
+        when(authService.getUser()).thenReturn(sessionUser);
+        RpcContext.set(threadMessage);
 
-        SessionInfo sessionInfo = factory.getSessionInfo( authService );
-        assertSame( sessionUser, sessionInfo.getIdentity() );
+        SessionInfo sessionInfo = factory.getSessionInfo(authService);
+        assertSame(sessionUser,
+                   sessionInfo.getIdentity());
     }
 
     @Test(expected = IllegalStateException.class)
     public void throwIllegalStateExceptionOutsideOfSessionThreadWithoutDefaultUser() throws Exception {
-        when( userInstance.isAmbiguous() ).thenReturn( false );
-        when( userInstance.isUnsatisfied() ).thenReturn( true );
-        when( userInstance.get() ).thenReturn( defaultUser );
+        when(userInstance.isAmbiguous()).thenReturn(false);
+        when(userInstance.isUnsatisfied()).thenReturn(true);
+        when(userInstance.get()).thenReturn(defaultUser);
 
-        factory.getSessionInfo( authService );
+        factory.getSessionInfo(authService);
     }
-
 }

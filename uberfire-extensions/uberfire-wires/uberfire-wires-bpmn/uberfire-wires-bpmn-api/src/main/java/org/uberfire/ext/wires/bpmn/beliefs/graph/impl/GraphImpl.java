@@ -29,32 +29,32 @@ public class GraphImpl<C, T extends GraphNode> implements Graph<C, T>,
     private GraphStore<T> graphStore;
     private C content;
 
-    public GraphImpl( @MapsTo("graphStore") GraphStore<T> graphStore ) {
+    public GraphImpl(@MapsTo("graphStore") GraphStore<T> graphStore) {
         this.graphStore = graphStore;
     }
 
     @Override
-    public T addNode( T node ) {
-        return graphStore.addNode( node );
+    public T addNode(T node) {
+        return graphStore.addNode(node);
     }
 
-    public T removeNode( int id ) {
-        return graphStore.removeNode( id );
-    }
-
-    @Override
-    public T getNode( int id ) {
-        return graphStore.getNode( id );
+    public T removeNode(int id) {
+        return graphStore.removeNode(id);
     }
 
     @Override
-    public void setContent( C content ) {
-        this.content = content;
+    public T getNode(int id) {
+        return graphStore.getNode(id);
     }
 
     @Override
     public C getContent() {
         return content;
+    }
+
+    @Override
+    public void setContent(C content) {
+        this.content = content;
     }
 
     @Override
@@ -73,5 +73,4 @@ public class GraphImpl<C, T extends GraphNode> implements Graph<C, T>,
                 "graphStore=" + graphStore +
                 '}';
     }
-
 }

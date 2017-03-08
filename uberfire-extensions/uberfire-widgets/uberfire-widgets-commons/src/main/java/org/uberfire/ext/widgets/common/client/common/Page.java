@@ -30,13 +30,15 @@ public abstract class Page {
     private final String label;
     private final PageView view;
 
-    public Page( final IsWidget widget ) {
-        this( widget, "" );
+    public Page(final IsWidget widget) {
+        this(widget,
+             "");
     }
 
-    public Page( final IsWidget widget,
-                 final String label ) {
-        this.view = new PageView( this, widget );
+    public Page(final IsWidget widget,
+                final String label) {
+        this.view = new PageView(this,
+                                 widget);
         this.label = label;
     }
 
@@ -59,21 +61,21 @@ public abstract class Page {
         private final Page presenter;
         private final ScrollPanel sp = new ScrollPanel();
 
-        public PageView( Page presenter,
-                         IsWidget widget ) {
+        public PageView(Page presenter,
+                        IsWidget widget) {
             this.presenter = presenter;
-            sp.setWidget( widget );
-            setWidget( sp );
+            sp.setWidget(widget);
+            setWidget(sp);
         }
 
         @Override
         public void onResize() {
             final Widget parent = getParent();
-            if ( parent != null ) {
+            if (parent != null) {
                 final int width = parent.getOffsetWidth();
                 final int height = parent.getOffsetHeight();
-                sp.setPixelSize( width,
-                                 height );
+                sp.setPixelSize(width,
+                                height);
             }
             super.onResize();
         }
@@ -87,10 +89,7 @@ public abstract class Page {
         }
 
         public ScrollPanel getSp() {
-          return sp;
+            return sp;
         }
-        
-        
-
     }
 }

@@ -23,7 +23,7 @@ public class DefaultCommitContent implements CommitContent {
 
     private final Map<String, File> content;
 
-    public DefaultCommitContent( Map<String, File> content ) {
+    public DefaultCommitContent(Map<String, File> content) {
         this.content = content;
     }
 

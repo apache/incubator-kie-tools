@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.security.client.authz.tree.PermissionNode;
 import org.uberfire.security.client.authz.tree.impl.PermissionLeafNode;
-import org.uberfire.security.client.authz.tree.impl.PermissionResourceNode;
 
 @ApplicationScoped
 public class PermissionWidgetFactory {

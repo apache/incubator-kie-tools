@@ -32,12 +32,12 @@ public class PortableVersionRecord implements VersionRecord {
     private Date date;
     private String uri;
 
-    public PortableVersionRecord( @MapsTo("id") final String id,
-                                  @MapsTo("author") final String author,
-                                  @MapsTo("email") final String email,
-                                  @MapsTo("comment") final String comment,
-                                  @MapsTo("date") final Date date,
-                                  @MapsTo("uri") final String uri ) {
+    public PortableVersionRecord(@MapsTo("id") final String id,
+                                 @MapsTo("author") final String author,
+                                 @MapsTo("email") final String email,
+                                 @MapsTo("comment") final String comment,
+                                 @MapsTo("date") final Date date,
+                                 @MapsTo("uri") final String uri) {
         this.id = id;
         this.author = author;
         this.email = email;
@@ -77,32 +77,32 @@ public class PortableVersionRecord implements VersionRecord {
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         PortableVersionRecord that = (PortableVersionRecord) o;
 
-        if ( author != null ? !author.equals( that.author ) : that.author != null ) {
+        if (author != null ? !author.equals(that.author) : that.author != null) {
             return false;
         }
-        if ( comment != null ? !comment.equals( that.comment ) : that.comment != null ) {
+        if (comment != null ? !comment.equals(that.comment) : that.comment != null) {
             return false;
         }
-        if ( date != null ? !date.equals( that.date ) : that.date != null ) {
+        if (date != null ? !date.equals(that.date) : that.date != null) {
             return false;
         }
-        if ( email != null ? !email.equals( that.email ) : that.email != null ) {
+        if (email != null ? !email.equals(that.email) : that.email != null) {
             return false;
         }
-        if ( id != null ? !id.equals( that.id ) : that.id != null ) {
+        if (id != null ? !id.equals(that.id) : that.id != null) {
             return false;
         }
-        if ( uri != null ? !uri.equals( that.uri ) : that.uri != null ) {
+        if (uri != null ? !uri.equals(that.uri) : that.uri != null) {
             return false;
         }
 
@@ -112,11 +112,11 @@ public class PortableVersionRecord implements VersionRecord {
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + ( author != null ? author.hashCode() : 0 );
-        result = 31 * result + ( email != null ? email.hashCode() : 0 );
-        result = 31 * result + ( comment != null ? comment.hashCode() : 0 );
-        result = 31 * result + ( date != null ? date.hashCode() : 0 );
-        result = 31 * result + ( uri != null ? uri.hashCode() : 0 );
+        result = 31 * result + (author != null ? author.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (comment != null ? comment.hashCode() : 0);
+        result = 31 * result + (date != null ? date.hashCode() : 0);
+        result = 31 * result + (uri != null ? uri.hashCode() : 0);
         return result;
     }
 }

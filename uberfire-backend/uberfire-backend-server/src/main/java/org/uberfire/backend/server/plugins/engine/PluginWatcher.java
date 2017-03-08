@@ -16,11 +16,6 @@
 
 package org.uberfire.backend.server.plugins.engine;
 
-import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
-import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
-
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -33,11 +28,15 @@ import java.nio.file.WatchService;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
-
 import javax.enterprise.context.Dependent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
+import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
 
 /**
  * Monitors the plugins directory for changes and loads/removes plugins using the
@@ -55,9 +54,8 @@ public class PluginWatcher {
     /**
      * Starts the plugins watcher iff the provided plugin directory exists and
      * the watcher hasn't already been started.
-     *
-     * @param pluginDir           the plugin directory to monitor
-     * @param executor            the executor service to submit the watch thread to
+     * @param pluginDir the plugin directory to monitor
+     * @param executor the executor service to submit the watch thread to
      * @param pluginJarProcessor the plugin loader for registering and removing plugins
      */
     void start(final String pluginDir,
@@ -75,9 +73,9 @@ public class PluginWatcher {
 
         final WatchService watchService = FileSystems.getDefault().newWatchService();
         pluginsRootPath.register(watchService,
-                ENTRY_CREATE,
-                ENTRY_MODIFY,
-                ENTRY_DELETE);
+                                 ENTRY_CREATE,
+                                 ENTRY_MODIFY,
+                                 ENTRY_DELETE);
 
         startWatchService(watchService);
     }
@@ -86,7 +84,8 @@ public class PluginWatcher {
         executor.submit(() -> {
             while (active) {
                 try {
-                    final WatchKey watchKey = watchService.poll(5, TimeUnit.SECONDS);
+                    final WatchKey watchKey = watchService.poll(5,
+                                                                TimeUnit.SECONDS);
 
                     if (watchKey != null && active) {
                         final List<WatchEvent<?>> events = watchKey.pollEvents();
@@ -127,9 +126,12 @@ public class PluginWatcher {
     void loadPlugins(final Path file) {
         if (file.getFileName().toString().endsWith(".jar")) {
             try {
-                pluginJarProcessor.loadPlugins(file, true);
+                pluginJarProcessor.loadPlugins(file,
+                                               true);
             } catch (Exception e) {
-                logPluginsWatcherError("Failed to process new plugin " + file.getFileName().toString(), e, !active);
+                logPluginsWatcherError("Failed to process new plugin " + file.getFileName().toString(),
+                                       e,
+                                       !active);
             }
         }
     }
@@ -138,11 +140,15 @@ public class PluginWatcher {
         try {
             pluginJarProcessor.reload();
         } catch (Exception e) {
-            logPluginsWatcherError("Failed to delete plugin " + file.getFileName().toString(), e, !active);
+            logPluginsWatcherError("Failed to delete plugin " + file.getFileName().toString(),
+                                   e,
+                                   !active);
         }
     }
 
-    void logPluginsWatcherError(final String message, final Exception e, final boolean debug) {
+    void logPluginsWatcherError(final String message,
+                                final Exception e,
+                                final boolean debug) {
         if (debug) {
             // Debug level is sufficient in case application is stopping
             LOG.debug(message);
@@ -150,5 +156,4 @@ public class PluginWatcher {
             LOG.error(message);
         }
     }
-
 }

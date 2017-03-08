@@ -35,7 +35,9 @@ public class DotResourceType
     @Override
     public String getDescription() {
         String desc = UberfireConstants.INSTANCE.dotResourceTypeDescription();
-        if ( desc == null || desc.isEmpty() ) return super.getDescription();
+        if (desc == null || desc.isEmpty()) {
+            return super.getDescription();
+        }
         return desc;
     }
 }

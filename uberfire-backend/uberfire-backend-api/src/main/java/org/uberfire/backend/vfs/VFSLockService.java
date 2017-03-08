@@ -34,91 +34,65 @@ public interface VFSLockService {
      * currently authenticated user. If successful, this method associates the
      * created lock with the user's HTTP session so locks can automatically be
      * released when the session ends, expires or is destroyed.
-     * 
-     * @param path
-     *            the path of the file or directory to lock.
+     * @param path the path of the file or directory to lock.
      * @return the {@link LockResult}, indicating success or failure and
-     *         containing the last read {@link LockInfo}.
-     * 
-     * @throws IllegalArgumentException
-     *             If the provided path is invalid or null.
-     * @throws IOException
-     *             If a lock file can't be written or an existing lock can't be
-     *             read.
+     * containing the last read {@link LockInfo}.
+     * @throws IllegalArgumentException If the provided path is invalid or null.
+     * @throws IOException If a lock file can't be written or an existing lock can't be
+     * read.
      */
-    LockResult acquireLock( Path path )
+    LockResult acquireLock(Path path)
             throws IllegalArgumentException, IOException;
 
     /**
      * Deletes the lock file for the specified {@link Path}. The requesting user
      * needs to own the lock for this operation to succeed.
-     * 
-     * @param path
-     *            the path of the file or directory currently assumed locked.
+     * @param path the path of the file or directory currently assumed locked.
      * @return the {@link LockResult}, indicating success or failure and
-     *         containing the last read {@link LockInfo}.
-     * 
-     * @throws IllegalArgumentException
-     *             If the provided path is invalid or null.
-     * @throws IOException
-     *             If a lock file can't be deleted or an existing lock can't be
-     *             read.
+     * containing the last read {@link LockInfo}.
+     * @throws IllegalArgumentException If the provided path is invalid or null.
+     * @throws IOException If a lock file can't be deleted or an existing lock can't be
+     * read.
      */
-    LockResult releaseLock( Path path )
+    LockResult releaseLock(Path path)
             throws IllegalArgumentException, IOException;
-    
+
     /**
      * Deletes the lock file for the specified {@link Path} even if the requesting
      * user does not own the lock.
-     * 
-     * @param path
-     *            the path of the file or directory currently assumed locked.
+     * @param path the path of the file or directory currently assumed locked.
      * @return the {@link LockResult}, indicating success or failure and
-     *         containing the last read {@link LockInfo}.
-     * 
-     * @throws IllegalArgumentException
-     *             If the provided path is invalid or null.
-     * @throws IOException
-     *             If a lock file can't be deleted or an existing lock can't be
-     *             read.
+     * containing the last read {@link LockInfo}.
+     * @throws IllegalArgumentException If the provided path is invalid or null.
+     * @throws IOException If a lock file can't be deleted or an existing lock can't be
+     * read.
      */
-    LockResult forceReleaseLock( Path path )
+    LockResult forceReleaseLock(Path path)
             throws IllegalArgumentException, IOException;
 
     /**
      * Retrieves the lock information for the specified {@link Path}.
-     * 
-     * @param path
-     *            the path of the file or directory.
+     * @param path the path of the file or directory.
      * @return the {@link LockInfo} for the provided {@link Path}.
-     * 
-     * @throws IllegalArgumentException
-     *             If the provided path is invalid or null.
-     * @throws IOException
-     *             If a lock file can't be read.
+     * @throws IllegalArgumentException If the provided path is invalid or null.
+     * @throws IOException If a lock file can't be read.
      */
-    LockInfo retrieveLockInfo( Path path )
+    LockInfo retrieveLockInfo(Path path)
             throws IllegalArgumentException, IOException;
 
     /**
      * Retrieves all locks for children (files or directories) of the provided
      * path.
-     * 
-     * @param path
-     *            the path of the directory.
-     * @param excludeOwnedLocks
-     *            filters the resulting list so it doesn't contain locks owned
-     *            by the currently authenticated user.
+     * @param path the path of the directory.
+     * @param excludeOwnedLocks filters the resulting list so it doesn't contain locks owned
+     * by the currently authenticated user.
      * @return the list of {@link LockInfo}s for children of the provided path
-     *         that are currently locked, or an empty list if no such locks
-     *         exist.
-     * 
-     * @throws IllegalArgumentException
-     *             If the provided path is invalid or null.
-     * @throws IOException
-     *             If a lock file can't be read.
+     * that are currently locked, or an empty list if no such locks
+     * exist.
+     * @throws IllegalArgumentException If the provided path is invalid or null.
+     * @throws IOException If a lock file can't be read.
      */
-    List<LockInfo> retrieveLockInfos( Path path,
-                                      boolean excludeOwnedLocks )
+    List<LockInfo> retrieveLockInfos(Path path,
+                                     boolean excludeOwnedLocks)
             throws IllegalArgumentException, IOException;
 }

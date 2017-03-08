@@ -16,9 +16,6 @@
 
 package org.uberfire.server.cdi;
 
-import static org.jboss.errai.bus.server.api.RpcContext.getMessage;
-import static org.jboss.errai.bus.server.api.RpcContext.getQueueSession;
-
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
@@ -29,6 +26,9 @@ import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.rpc.impl.SessionInfoImpl;
+
+import static org.jboss.errai.bus.server.api.RpcContext.getMessage;
+import static org.jboss.errai.bus.server.api.RpcContext.getQueueSession;
 
 public class UberFireGeneralFactory {
 
@@ -41,27 +41,25 @@ public class UberFireGeneralFactory {
     public SessionInfo getSessionInfo(AuthenticationService authenticationService) {
         String sessionId = getSessionId();
         User user;
-        if ( sessionId == null ) {
+        if (sessionId == null) {
             user = getDefaultUser();
             sessionId = user.getIdentifier();
-        }
-        else {
+        } else {
             user = authenticationService.getUser();
         }
-        return new SessionInfoImpl( sessionId, user );
+        return new SessionInfoImpl(sessionId,
+                                   user);
     }
 
     private User getDefaultUser() {
-        if ( user.isAmbiguous() || user.isUnsatisfied() ) {
-            throw new IllegalStateException( "Cannot get session info outside of servlet thread when no default user is provided." );
-        }
-        else {
+        if (user.isAmbiguous() || user.isUnsatisfied()) {
+            throw new IllegalStateException("Cannot get session info outside of servlet thread when no default user is provided.");
+        } else {
             return user.get();
         }
     }
 
     private String getSessionId() {
-        return (getMessage() != null && getQueueSession() != null ? getQueueSession().getSessionId() : null );
+        return (getMessage() != null && getQueueSession() != null ? getQueueSession().getSessionId() : null);
     }
-
 }

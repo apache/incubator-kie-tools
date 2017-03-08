@@ -25,8 +25,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 public class KeyboardOperationClearCell extends BaseKeyboardOperation {
 
-    public KeyboardOperationClearCell( final GridLayer gridLayer ) {
-        super( gridLayer );
+    public KeyboardOperationClearCell(final GridLayer gridLayer) {
+        super(gridLayer);
     }
 
     @Override
@@ -36,20 +36,19 @@ public class KeyboardOperationClearCell extends BaseKeyboardOperation {
 
     @Override
     @SuppressWarnings("unused")
-    public boolean perform( final GridWidget gridWidget,
-                            final boolean isShiftKeyDown,
-                            final boolean isControlKeyDown ) {
-        clearCells( gridWidget );
+    public boolean perform(final GridWidget gridWidget,
+                           final boolean isShiftKeyDown,
+                           final boolean isControlKeyDown) {
+        clearCells(gridWidget);
         return true;
     }
 
-    protected void clearCells( final GridWidget gridWidget ) {
+    protected void clearCells(final GridWidget gridWidget) {
         final GridData gridModel = gridWidget.getModel();
         final List<GridData.SelectedCell> selectedCells = gridModel.getSelectedCells();
-        for ( GridData.SelectedCell cell : selectedCells ) {
-            gridModel.deleteCell( cell.getRowIndex(),
-                                  cell.getColumnIndex() );
+        for (GridData.SelectedCell cell : selectedCells) {
+            gridModel.deleteCell(cell.getRowIndex(),
+                                 cell.getColumnIndex());
         }
     }
-
 }

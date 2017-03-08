@@ -32,13 +32,12 @@ import org.picketlink.idm.model.basic.User;
 @ApplicationScoped
 public class PicketLinkDefaultUsers {
 
+    private final AtomicBoolean hasInitialized = new AtomicBoolean(false);
     @Inject
     private PartitionManager partitionManager;
 
-    private final AtomicBoolean hasInitialized = new AtomicBoolean( false );
-
-    public void onPreAuthenticateEvent( @Observes PreAuthenticateEvent event ) {
-        if ( !hasInitialized.getAndSet( true ) ) {
+    public void onPreAuthenticateEvent(@Observes PreAuthenticateEvent event) {
+        if (!hasInitialized.getAndSet(true)) {
             setup();
         }
     }
@@ -47,33 +46,40 @@ public class PicketLinkDefaultUsers {
         final IdentityManager identityManager = partitionManager.createIdentityManager();
         final RelationshipManager relationshipManager = partitionManager.createRelationshipManager();
 
-        final User admin = new User( "admin" );
-        final User director = new User( "director" );
-        final User user = new User( "user" );
-        final User guest = new User( "guest" );
+        final User admin = new User("admin");
+        final User director = new User("director");
+        final User user = new User("user");
+        final User guest = new User("guest");
 
-        identityManager.add( admin );
-        identityManager.add( director );
-        identityManager.add( user );
-        identityManager.add( guest );
+        identityManager.add(admin);
+        identityManager.add(director);
+        identityManager.add(user);
+        identityManager.add(guest);
 
-        identityManager.updateCredential( admin, new Password( "admin" ) );
-        identityManager.updateCredential( director, new Password( "director" ) );
-        identityManager.updateCredential( user, new Password( "user" ) );
-        identityManager.updateCredential( guest, new Password( "guest" ) );
+        identityManager.updateCredential(admin,
+                                         new Password("admin"));
+        identityManager.updateCredential(director,
+                                         new Password("director"));
+        identityManager.updateCredential(user,
+                                         new Password("user"));
+        identityManager.updateCredential(guest,
+                                         new Password("guest"));
 
-        final Role roleAdmin = new Role( "admin" );
-        final Role roleAnalyst = new Role( "analyst" );
+        final Role roleAdmin = new Role("admin");
+        final Role roleAnalyst = new Role("analyst");
 
-        identityManager.add( roleAdmin );
-        identityManager.add( roleAnalyst );
+        identityManager.add(roleAdmin);
+        identityManager.add(roleAnalyst);
 
-        relationshipManager.add( new Grant( admin, roleAnalyst ) );
-        relationshipManager.add( new Grant( admin, roleAdmin ) );
+        relationshipManager.add(new Grant(admin,
+                                          roleAnalyst));
+        relationshipManager.add(new Grant(admin,
+                                          roleAdmin));
 
-        relationshipManager.add( new Grant( director, roleAnalyst ) );
+        relationshipManager.add(new Grant(director,
+                                          roleAnalyst));
 
-        relationshipManager.add( new Grant( user, roleAnalyst ) );
+        relationshipManager.add(new Grant(user,
+                                          roleAnalyst));
     }
-
 }

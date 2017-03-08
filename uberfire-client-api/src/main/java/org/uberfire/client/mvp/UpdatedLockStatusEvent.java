@@ -27,9 +27,9 @@ public class UpdatedLockStatusEvent {
     private final boolean locked;
     private final boolean lockedByCurrentUser;
 
-    public UpdatedLockStatusEvent( final Path file,
-                                   final boolean locked,
-                                   final boolean lockedByCurrentUser ) {
+    public UpdatedLockStatusEvent(final Path file,
+                                  final boolean locked,
+                                  final boolean lockedByCurrentUser) {
         this.file = file;
         this.locked = locked;
         this.lockedByCurrentUser = lockedByCurrentUser;
@@ -46,5 +46,4 @@ public class UpdatedLockStatusEvent {
     public boolean isLockedByCurrentUser() {
         return lockedByCurrentUser;
     }
-
 }

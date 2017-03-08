@@ -26,7 +26,7 @@ import org.mockito.Mock;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class FileUploadTest {
 
     @Mock
@@ -40,28 +40,32 @@ public class FileUploadTest {
 
     @Test
     public void testRegularFileName1() {
-        testFileName( "newfile.txt", "newfile.txt" );
+        testFileName("newfile.txt",
+                     "newfile.txt");
     }
 
     @Test
     public void testRegularFileName2() {
-        testFileName( "NewFile.txt", "NewFile.txt" );
+        testFileName("NewFile.txt",
+                     "NewFile.txt");
     }
 
     @Test
     public void testSecuredFileName1() {
-        testFileName( "c:\\fakepath\\newfile.txt", "newfile.txt" );
+        testFileName("c:\\fakepath\\newfile.txt",
+                     "newfile.txt");
     }
 
     @Test
     public void testSecuredFileName2() {
-        testFileName( "C:\\fakepath\\NewFile.txt", "NewFile.txt" );
+        testFileName("C:\\fakepath\\NewFile.txt",
+                     "NewFile.txt");
     }
 
-    private void testFileName( String fileInput, String expected ) {
-        when( file.getValue() ).thenReturn( fileInput );
-        fileUpload.getFileChangeHandler().onChange( mock( ChangeEvent.class ) );
-        verify( fileText ).setValue( expected );
+    private void testFileName(String fileInput,
+                              String expected) {
+        when(file.getValue()).thenReturn(fileInput);
+        fileUpload.getFileChangeHandler().onChange(mock(ChangeEvent.class));
+        verify(fileText).setValue(expected);
     }
-
 }

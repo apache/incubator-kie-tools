@@ -43,58 +43,56 @@ public class EditorPopup extends Modal {
     private Callback<GridCellValue<String>> callback = null;
 
     public EditorPopup() {
-        setTitle( "Edit" );
+        setTitle("Edit");
 
-        textBox.addKeyDownHandler( new KeyDownHandler() {
+        textBox.addKeyDownHandler(new KeyDownHandler() {
             @Override
-            public void onKeyDown( final KeyDownEvent event ) {
-                if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
+            public void onKeyDown(final KeyDownEvent event) {
+                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
                     commit();
                 }
             }
-        } );
+        });
 
-        modalBody.add( textBox );
-        add( modalBody );
+        modalBody.add(textBox);
+        add(modalBody);
 
         final ModalFooter footer = new ModalFooter();
-        final Button okButton = new Button( "OK" );
-        okButton.setIcon( IconType.EDIT );
-        okButton.setType( ButtonType.PRIMARY );
-        okButton.addClickHandler( new ClickHandler() {
+        final Button okButton = new Button("OK");
+        okButton.setIcon(IconType.EDIT);
+        okButton.setType(ButtonType.PRIMARY);
+        okButton.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( final ClickEvent event ) {
+            public void onClick(final ClickEvent event) {
                 commit();
             }
-        } );
+        });
 
-        final Button cancelButton = new Button( "Cancel" );
-        cancelButton.addClickHandler( new ClickHandler() {
+        final Button cancelButton = new Button("Cancel");
+        cancelButton.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( final ClickEvent event ) {
+            public void onClick(final ClickEvent event) {
                 cancel();
             }
-        } );
+        });
 
-        footer.add( okButton );
-        footer.add( cancelButton );
-        add( footer );
+        footer.add(okButton);
+        footer.add(cancelButton);
+        add(footer);
 
-        addShownHandler( ( e ) -> textBox.setFocus( true ) );
+        addShownHandler((e) -> textBox.setFocus(true));
     }
 
     /**
      * Show the popup
-     * @param value
-     *         The value to show in the editor.
-     * @param callback
-     *         Callback to invoke when the popup is "OK'ed".
+     * @param value The value to show in the editor.
+     * @param callback Callback to invoke when the popup is "OK'ed".
      */
-    public void edit( final GridCellValue<String> value,
-                      final Callback<GridCellValue<String>> callback ) {
+    public void edit(final GridCellValue<String> value,
+                     final Callback<GridCellValue<String>> callback) {
         this.value = value;
         this.callback = callback;
-        textBox.setText( value == null ? "" : value.getValue() );
+        textBox.setText(value == null ? "" : value.getValue());
         show();
     }
 
@@ -103,10 +101,9 @@ public class EditorPopup extends Modal {
     }
 
     private void commit() {
-        if ( callback != null ) {
-            callback.callback( new BaseGridCellValue<String>( textBox.getText() ) );
+        if (callback != null) {
+            callback.callback(new BaseGridCellValue<String>(textBox.getText()));
         }
         hide();
     }
-
 }

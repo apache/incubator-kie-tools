@@ -33,43 +33,45 @@ public class HorizontalSplit extends Splitter {
 
     public HorizontalSplit() {
         super();
-        addDomHandler( new MouseMoveHandler() {
-            @Override
-            public void onMouseMove( MouseMoveEvent event ) {
-                if ( mouseDown ) {
-                    double topHeightPct = ( ( event.getClientY() - getContentAbsoluteTop() - offset ) / getContentHeight() ) * 100;
-                    double bottomHeightPct = 100 - topHeightPct;
-                    setTopAreaHeight( topHeightPct );
-                    setBottomHeight( bottomHeightPct );
-                    getElement().getStyle().setTop( topArea.getOffsetHeight() - 6, Style.Unit.PX );
-                    onResize.execute();
-                    event.preventDefault();
-                }
-            }
-        }, MouseMoveEvent.getType() );
+        addDomHandler(new MouseMoveHandler() {
+                          @Override
+                          public void onMouseMove(MouseMoveEvent event) {
+                              if (mouseDown) {
+                                  double topHeightPct = ((event.getClientY() - getContentAbsoluteTop() - offset) / getContentHeight()) * 100;
+                                  double bottomHeightPct = 100 - topHeightPct;
+                                  setTopAreaHeight(topHeightPct);
+                                  setBottomHeight(bottomHeightPct);
+                                  getElement().getStyle().setTop(topArea.getOffsetHeight() - 6,
+                                                                 Style.Unit.PX);
+                                  onResize.execute();
+                                  event.preventDefault();
+                              }
+                          }
+                      },
+                      MouseMoveEvent.getType());
     }
 
     @Override
-    protected void buildOffset( MouseDownEvent event ) {
+    protected void buildOffset(MouseDownEvent event) {
         offset = event.getClientY() - getAbsoluteTop();
     }
 
-    public void init( final Widget topArea,
-                      final Widget bottomArea,
-                      final Widget contentArea,
-                      final Command onResize) {
+    public void init(final Widget topArea,
+                     final Widget bottomArea,
+                     final Widget contentArea,
+                     final Command onResize) {
         this.topArea = topArea;
         this.bottomArea = bottomArea;
         this.contentArea = contentArea;
         this.onResize = onResize;
     }
 
-    private void setBottomHeight( double height ) {
-        bottomArea.setHeight( height + "%" );
+    private void setBottomHeight(double height) {
+        bottomArea.setHeight(height + "%");
     }
 
-    private void setTopAreaHeight( double height ) {
-        topArea.setHeight( height + "%" );
+    private void setTopAreaHeight(double height) {
+        topArea.setHeight(height + "%");
     }
 
     private int getContentHeight() {
@@ -79,5 +81,4 @@ public class HorizontalSplit extends Splitter {
     private int getContentAbsoluteTop() {
         return contentArea.getAbsoluteTop();
     }
-
 }

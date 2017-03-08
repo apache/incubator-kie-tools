@@ -21,6 +21,6 @@ import org.uberfire.mvp.ParameterizedCommand;
 
 public interface VFSServiceProxy {
 
-    void get( final String path,
-              final ParameterizedCommand<Path> parameterizedCommand );
+    void get(final String path,
+             final ParameterizedCommand<Path> parameterizedCommand);
 }

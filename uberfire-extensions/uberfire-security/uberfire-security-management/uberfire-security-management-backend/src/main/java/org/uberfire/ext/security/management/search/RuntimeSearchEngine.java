@@ -16,10 +16,9 @@
 
 package org.uberfire.ext.security.management.search;
 
-import org.uberfire.ext.security.management.api.AbstractEntityManager;
-
 import java.util.Collection;
 
+import org.uberfire.ext.security.management.api.AbstractEntityManager;
 
 public interface RuntimeSearchEngine<T> {
 
@@ -29,6 +28,6 @@ public interface RuntimeSearchEngine<T> {
      * @param request The search constraints. If search pattern is <code>null</code> or empty, the result must contains all the entities from the source collection.
      * @return The search response.
      */
-    AbstractEntityManager.SearchResponse<T> search(Collection<T> entities, AbstractEntityManager.SearchRequest request);
-    
+    AbstractEntityManager.SearchResponse<T> search(Collection<T> entities,
+                                                   AbstractEntityManager.SearchRequest request);
 }

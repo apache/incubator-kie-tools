@@ -46,53 +46,53 @@ public class BaseGridWidgetKeyboardHandler implements KeyDownHandler {
 
     private Set<KeyboardOperation> operations = new HashSet<>();
 
-    public BaseGridWidgetKeyboardHandler( final GridLayer gridLayer ) {
-        this.gridLayer = PortablePreconditions.checkNotNull( "gridLayer",
-                                                             gridLayer );
+    public BaseGridWidgetKeyboardHandler(final GridLayer gridLayer) {
+        this.gridLayer = PortablePreconditions.checkNotNull("gridLayer",
+                                                            gridLayer);
     }
 
-    public void addOperation( final KeyboardOperation... operations ) {
-        for ( KeyboardOperation operation : operations ) {
-            this.operations.add( PortablePreconditions.checkNotNull( "operation",
-                                                                     operation ) );
+    public void addOperation(final KeyboardOperation... operations) {
+        for (KeyboardOperation operation : operations) {
+            this.operations.add(PortablePreconditions.checkNotNull("operation",
+                                                                   operation));
         }
     }
 
     @Override
-    public void onKeyDown( final KeyDownEvent event ) {
+    public void onKeyDown(final KeyDownEvent event) {
         final GridWidget selectedGridWidget = getSelectedGridWidget();
-        if ( selectedGridWidget == null ) {
+        if (selectedGridWidget == null) {
             return;
         }
 
-        final KeyboardOperation operation = getOperation( event );
-        if ( operation == null ) {
+        final KeyboardOperation operation = getOperation(event);
+        if (operation == null) {
             return;
         }
 
-        final boolean redraw = operation.perform( selectedGridWidget,
-                                                  event.isShiftKeyDown(),
-                                                  event.isControlKeyDown() );
+        final boolean redraw = operation.perform(selectedGridWidget,
+                                                 event.isShiftKeyDown(),
+                                                 event.isControlKeyDown());
 
         event.preventDefault();
         event.stopPropagation();
 
-        flushDOMElements( selectedGridWidget );
+        flushDOMElements(selectedGridWidget);
 
-        if ( redraw ) {
+        if (redraw) {
             gridLayer.draw();
         }
     }
 
-    private KeyboardOperation getOperation( final KeyDownEvent event ) {
+    private KeyboardOperation getOperation(final KeyDownEvent event) {
         final int keyCode = event.getNativeKeyCode();
         final boolean isShiftKeyDown = event.isShiftKeyDown();
         final boolean isControlKeyDown = event.isControlKeyDown();
-        for ( KeyboardOperation operation : operations ) {
-            if ( operation.getKeyCode() == keyCode ) {
-                if ( keyDownStateMatches( isShiftKeyDown,
-                                          operation.isShiftKeyDown() ) && keyDownStateMatches( isControlKeyDown,
-                                                                                               operation.isControlKeyDown() ) ) {
+        for (KeyboardOperation operation : operations) {
+            if (operation.getKeyCode() == keyCode) {
+                if (keyDownStateMatches(isShiftKeyDown,
+                                        operation.isShiftKeyDown()) && keyDownStateMatches(isControlKeyDown,
+                                                                                           operation.isControlKeyDown())) {
                     return operation;
                 }
             }
@@ -100,34 +100,33 @@ public class BaseGridWidgetKeyboardHandler implements KeyDownHandler {
         return null;
     }
 
-    private boolean keyDownStateMatches( final boolean actualKeyDownState,
-                                         final TriStateBoolean requiredKeyDownState ) {
-        if ( actualKeyDownState && ( requiredKeyDownState == TriStateBoolean.TRUE || requiredKeyDownState == TriStateBoolean.DONT_CARE ) ) {
+    private boolean keyDownStateMatches(final boolean actualKeyDownState,
+                                        final TriStateBoolean requiredKeyDownState) {
+        if (actualKeyDownState && (requiredKeyDownState == TriStateBoolean.TRUE || requiredKeyDownState == TriStateBoolean.DONT_CARE)) {
             return true;
         }
-        if ( !actualKeyDownState && ( requiredKeyDownState == TriStateBoolean.FALSE || requiredKeyDownState == TriStateBoolean.DONT_CARE ) ) {
+        if (!actualKeyDownState && (requiredKeyDownState == TriStateBoolean.FALSE || requiredKeyDownState == TriStateBoolean.DONT_CARE)) {
             return true;
         }
         return false;
     }
 
-    private void flushDOMElements( final GridWidget selectedGridWidget ) {
+    private void flushDOMElements(final GridWidget selectedGridWidget) {
         final GridData gridModel = selectedGridWidget.getModel();
-        for ( GridColumn<?> column : gridModel.getColumns() ) {
-            if ( column instanceof HasSingletonDOMElementResource ) {
-                ( (HasSingletonDOMElementResource) column ).flush();
-                ( (HasSingletonDOMElementResource) column ).destroyResources();
+        for (GridColumn<?> column : gridModel.getColumns()) {
+            if (column instanceof HasSingletonDOMElementResource) {
+                ((HasSingletonDOMElementResource) column).flush();
+                ((HasSingletonDOMElementResource) column).destroyResources();
             }
         }
     }
 
     private GridWidget getSelectedGridWidget() {
-        for ( GridWidget gridWidget : gridLayer.getGridWidgets() ) {
-            if ( gridWidget.isSelected() ) {
+        for (GridWidget gridWidget : gridLayer.getGridWidgets()) {
+            if (gridWidget.isSelected()) {
                 return gridWidget;
             }
         }
         return null;
     }
-
 }

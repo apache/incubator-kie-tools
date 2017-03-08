@@ -29,10 +29,10 @@ import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 public class TemplatedWorkbenchPanelPresenter extends AbstractWorkbenchPanelPresenter<TemplatedWorkbenchPanelPresenter> {
 
     @Inject
-    public TemplatedWorkbenchPanelPresenter( @Named("TemplatedWorkbenchPanelView") TemplatedWorkbenchPanelView view,
-                                             PerspectiveManager panelManager ) {
-        super( view,
-               panelManager );
+    public TemplatedWorkbenchPanelPresenter(@Named("TemplatedWorkbenchPanelView") TemplatedWorkbenchPanelView view,
+                                            PerspectiveManager panelManager) {
+        super(view,
+              panelManager);
     }
 
     @Override
@@ -54,20 +54,21 @@ public class TemplatedWorkbenchPanelPresenter extends AbstractWorkbenchPanelPres
     }
 
     // could generalize this to a HasActivity interface some day. for now, it's a special case for templated perspectives.
-    public void setActivity( TemplatedActivity activity ) {
-        getPanelView().setActivity( activity );
+    public void setActivity(TemplatedActivity activity) {
+        getPanelView().setActivity(activity);
     }
 
     /**
      * Forwards the request to the first child panel (the one marked as {@link WorkbenchPanel#isDefault}).
      */
     @Override
-    public void addPart( WorkbenchPartPresenter part,
-                         String contextId ) {
-        if ( getPanels().isEmpty() ) {
-            throw new IllegalStateException( "This panel type does not support parts directly; it forwards add part requests"
-                    + " to its first child panel. However, this panel currently has no child panels." );
+    public void addPart(WorkbenchPartPresenter part,
+                        String contextId) {
+        if (getPanels().isEmpty()) {
+            throw new IllegalStateException("This panel type does not support parts directly; it forwards add part requests"
+                                                    + " to its first child panel. However, this panel currently has no child panels.");
         }
-        getPanels().values().iterator().next().addPart( part, contextId );
+        getPanels().values().iterator().next().addPart(part,
+                                                       contextId);
     }
 }

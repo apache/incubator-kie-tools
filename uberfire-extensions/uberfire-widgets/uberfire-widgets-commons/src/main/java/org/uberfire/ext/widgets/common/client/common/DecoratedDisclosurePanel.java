@@ -32,71 +32,74 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Disclosure panel with rounded corners in header.
- * 
+ * <p>
  * Using this class we don't need to set the header and event handlers for the header everywhere we use DisclosurePanels.
  */
 public class DecoratedDisclosurePanel extends Composite
-    implements
-    HasWidgets,
-    HasOpenHandlers<DisclosurePanel>,
-    HasCloseHandlers<DisclosurePanel> {
+        implements
+        HasWidgets,
+        HasOpenHandlers<DisclosurePanel>,
+        HasCloseHandlers<DisclosurePanel> {
 
     private final DisclosurePanel widget = new DisclosurePanel();
 
     private LazyStackPanelHeader header;
-    
-    public DecoratedDisclosurePanel(String headerText, ImageResource headerIcon) {
-        widget.setAnimationEnabled( true );
-        widget.setHeader( createHeader( headerText, headerIcon ) );
-        initWidget( widget );
+
+    public DecoratedDisclosurePanel(String headerText,
+                                    ImageResource headerIcon) {
+        widget.setAnimationEnabled(true);
+        widget.setHeader(createHeader(headerText,
+                                      headerIcon));
+        initWidget(widget);
     }
-    
+
     public DecoratedDisclosurePanel(String headerText) {
-        widget.setAnimationEnabled( true );
-        widget.setHeader( createHeader( headerText ) );
-        initWidget( widget );
+        widget.setAnimationEnabled(true);
+        widget.setHeader(createHeader(headerText));
+        initWidget(widget);
     }
 
     private LazyStackPanelHeader createHeader(String headerText) {
-        header = new LazyStackPanelHeader( headerText );
+        header = new LazyStackPanelHeader(headerText);
         setupEventHandlers();
         return header;
     }
 
-    private LazyStackPanelHeader createHeader(String headerText, ImageResource headerIcon) {
-        header = new LazyStackPanelHeader( headerText, headerIcon );
+    private LazyStackPanelHeader createHeader(String headerText,
+                                              ImageResource headerIcon) {
+        header = new LazyStackPanelHeader(headerText,
+                                          headerIcon);
         setupEventHandlers();
         return header;
     }
-    
+
     private void setupEventHandlers() {
-        widget.addOpenHandler( new OpenHandler<DisclosurePanel>() {
+        widget.addOpenHandler(new OpenHandler<DisclosurePanel>() {
             public void onOpen(OpenEvent<DisclosurePanel> event) {
                 header.expand();
             }
-        } );
-        widget.addCloseHandler( new CloseHandler<DisclosurePanel>() {
+        });
+        widget.addCloseHandler(new CloseHandler<DisclosurePanel>() {
             public void onClose(CloseEvent<DisclosurePanel> event) {
                 header.collapse();
             }
-        } );
-
+        });
     }
 
     public void add(Widget w) {
-        widget.add( w );
+        widget.add(w);
     }
 
     public void setContent(Widget content) {
-        widget.setContent( content );
+        widget.setContent(content);
     }
 
     public HandlerRegistration addOpenHandler(OpenHandler<DisclosurePanel> openHandler) {
-        return widget.addOpenHandler( openHandler );
+        return widget.addOpenHandler(openHandler);
     }
 
     public HandlerRegistration addCloseHandler(CloseHandler<DisclosurePanel> handler) {
-        return widget.addCloseHandler( handler );
+        return widget.addCloseHandler(handler);
     }
 
     public void clear() {
@@ -108,14 +111,14 @@ public class DecoratedDisclosurePanel extends Composite
     }
 
     public boolean remove(Widget w) {
-        return widget.remove( w );
-    }
-
-    public void setOpen(boolean b) {
-        widget.setOpen( b );
+        return widget.remove(w);
     }
 
     public boolean isOpen() {
         return widget.isOpen();
+    }
+
+    public void setOpen(boolean b) {
+        widget.setOpen(b);
     }
 }

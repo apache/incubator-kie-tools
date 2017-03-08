@@ -24,13 +24,13 @@ public class PreferencesCentralInitializationEvent {
 
     private PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy;
 
-    public PreferencesCentralInitializationEvent( final String preferenceIdentifier ) {
+    public PreferencesCentralInitializationEvent(final String preferenceIdentifier) {
         this.preferenceIdentifier = preferenceIdentifier;
         this.customScopeResolutionStrategy = null;
     }
 
-    public PreferencesCentralInitializationEvent( final String preferenceIdentifier,
-                                                  final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy ) {
+    public PreferencesCentralInitializationEvent(final String preferenceIdentifier,
+                                                 final PreferenceScopeResolutionStrategyInfo customScopeResolutionStrategy) {
         this.preferenceIdentifier = preferenceIdentifier;
         this.customScopeResolutionStrategy = customScopeResolutionStrategy;
     }
@@ -48,28 +48,27 @@ public class PreferencesCentralInitializationEvent {
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof PreferencesCentralInitializationEvent ) ) {
+        if (!(o instanceof PreferencesCentralInitializationEvent)) {
             return false;
         }
 
         final PreferencesCentralInitializationEvent that = (PreferencesCentralInitializationEvent) o;
 
-        if ( preferenceIdentifier != null ? !preferenceIdentifier.equals( that.preferenceIdentifier ) : that.preferenceIdentifier != null ) {
+        if (preferenceIdentifier != null ? !preferenceIdentifier.equals(that.preferenceIdentifier) : that.preferenceIdentifier != null) {
             return false;
         }
-        return !( customScopeResolutionStrategy != null ? !customScopeResolutionStrategy.equals( that.customScopeResolutionStrategy ) : that.customScopeResolutionStrategy != null );
-
+        return !(customScopeResolutionStrategy != null ? !customScopeResolutionStrategy.equals(that.customScopeResolutionStrategy) : that.customScopeResolutionStrategy != null);
     }
 
     @Override
     public int hashCode() {
         int result = preferenceIdentifier != null ? preferenceIdentifier.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( customScopeResolutionStrategy != null ? customScopeResolutionStrategy.hashCode() : 0 );
+        result = 31 * result + (customScopeResolutionStrategy != null ? customScopeResolutionStrategy.hashCode() : 0);
         result = ~~result;
         return result;
     }

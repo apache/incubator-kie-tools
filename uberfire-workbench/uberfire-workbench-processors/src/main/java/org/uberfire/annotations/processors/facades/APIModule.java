@@ -16,15 +16,12 @@
 
 package org.uberfire.annotations.processors.facades;
 
-
 /**
  * A collection of type names in the UberFire API module.
  * Due to a bug in Eclipse annotation processor dependencies, we refer to all UberFire type names using Strings,
  * Elements, and TypeMirrors. We cannot refer to the annotation types as types themselves.
  */
 public class APIModule {
-
-    private APIModule() {}
 
     public static final String panelDefinition = "org.uberfire.workbench.model.PanelDefinition";
     public static final String position = "org.uberfire.workbench.model.Position";
@@ -40,6 +37,8 @@ public class APIModule {
     public static final String onStartup = "org.uberfire.lifecycle.OnStartup";
     public static final String onContextAttach = "org.uberfire.lifecycle.OnContextAttach";
     public static final String activatedBy = "org.jboss.errai.ioc.client.api.ActivatedBy";
+    private APIModule() {
+    }
 
     public static String getPanelDefinitionClass() {
         return panelDefinition;
@@ -53,7 +52,7 @@ public class APIModule {
         return onContextAttach;
     }
 
-    public static  String getPlaceRequestClass() {
+    public static String getPlaceRequestClass() {
         return placeRequest;
     }
 
@@ -92,5 +91,4 @@ public class APIModule {
     public static String getOnSaveClass() {
         return onSave;
     }
-
 }

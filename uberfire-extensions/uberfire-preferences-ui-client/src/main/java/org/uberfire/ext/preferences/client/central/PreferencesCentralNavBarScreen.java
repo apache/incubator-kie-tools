@@ -38,18 +38,19 @@ public class PreferencesCentralNavBarScreen {
     private final HierarchyStructurePresenter hierarchyStructurePresenter;
 
     @Inject
-    public PreferencesCentralNavBarScreen( @TreeView final HierarchyStructurePresenter treePresenter ) {
+    public PreferencesCentralNavBarScreen(@TreeView final HierarchyStructurePresenter treePresenter) {
         this.hierarchyStructurePresenter = treePresenter;
     }
 
-    public void init( @Observes final PreferencesCentralInitializationEvent initEvent ) {
+    public void init(@Observes final PreferencesCentralInitializationEvent initEvent) {
         final String preferenceIdentifier = initEvent.getPreferenceIdentifier();
         final PreferenceScopeResolutionStrategyInfo scopeResolutionStrategyInfo = initEvent.getCustomScopeResolutionStrategy();
 
-        if ( scopeResolutionStrategyInfo != null ) {
-            hierarchyStructurePresenter.init( preferenceIdentifier, scopeResolutionStrategyInfo );
+        if (scopeResolutionStrategyInfo != null) {
+            hierarchyStructurePresenter.init(preferenceIdentifier,
+                                             scopeResolutionStrategyInfo);
         } else {
-            hierarchyStructurePresenter.init( preferenceIdentifier );
+            hierarchyStructurePresenter.init(preferenceIdentifier);
         }
     }
 

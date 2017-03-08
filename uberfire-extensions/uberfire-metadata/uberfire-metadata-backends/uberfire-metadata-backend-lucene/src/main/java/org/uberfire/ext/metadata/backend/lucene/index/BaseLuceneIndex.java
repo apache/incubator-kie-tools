@@ -33,87 +33,92 @@ import org.apache.lucene.util.BytesRef;
 public abstract class BaseLuceneIndex implements LuceneIndex {
 
     @Override
-    public void indexDocument( final String id,
-                               final Document doc ) {
+    public void indexDocument(final String id,
+                              final Document doc) {
         try {
-            deleteIfExists( id );
-            writer().addDocument( doc );
-        } catch ( IOException e ) {
-            throw new RuntimeException( e );
+            deleteIfExists(id);
+            writer().addDocument(doc);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public boolean deleteIfExists( final String... docIds ) {
+    public boolean deleteIfExists(final String... docIds) {
         boolean deletedSomething = false;
         final IndexSearcher searcher = nrtSearcher();
         try {
-            final int[] answers = lookupDocIdByPK( searcher, docIds );
-            for ( final int docId : answers ) {
-                if ( docId != -1 ) {
-                    boolean result = writer().tryDeleteDocument( searcher.getIndexReader(), docId );
-                    if ( result ) {
+            final int[] answers = lookupDocIdByPK(searcher,
+                                                  docIds);
+            for (final int docId : answers) {
+                if (docId != -1) {
+                    boolean result = writer().tryDeleteDocument(searcher.getIndexReader(),
+                                                                docId);
+                    if (result) {
                         deletedSomething = true;
                     }
                 }
             }
-        } catch ( Exception ex ) {
+        } catch (Exception ex) {
         } finally {
-            nrtRelease( searcher );
+            nrtRelease(searcher);
         }
         return deletedSomething;
     }
 
     @Override
-    public void rename( final String sourceId,
-                        final Document doc ) {
+    public void rename(final String sourceId,
+                       final Document doc) {
         final IndexSearcher searcher = nrtSearcher();
         try {
-            int docId = lookupDocIdByPK( searcher, sourceId )[ 0 ];
-            if ( docId != -1 ) {
-                writer().tryDeleteDocument( searcher.getIndexReader(), docId );
+            int docId = lookupDocIdByPK(searcher,
+                                        sourceId)[0];
+            if (docId != -1) {
+                writer().tryDeleteDocument(searcher.getIndexReader(),
+                                           docId);
             }
-            indexDocument( sourceId, doc );
-        } catch ( IOException ex ) {
+            indexDocument(sourceId,
+                          doc);
+        } catch (IOException ex) {
         } finally {
-            nrtRelease( searcher );
+            nrtRelease(searcher);
         }
     }
 
-    protected int[] lookupDocIdByPK( final IndexSearcher searcher,
-                                     final String... ids ) throws IOException {
+    protected int[] lookupDocIdByPK(final IndexSearcher searcher,
+                                    final String... ids) throws IOException {
         final List<LeafReaderContext> subReaders = searcher.getIndexReader().leaves();
-        final TermsEnum[] termsEnums = new TermsEnum[ subReaders.size() ];
-        final PostingsEnum[] docsEnums = new PostingsEnum[ subReaders.size() ];
-        for ( int subIDX = 0; subIDX < subReaders.size(); subIDX++ ) {
-            termsEnums[ subIDX ] = subReaders.get( subIDX ).reader().fields().terms("id").iterator();
+        final TermsEnum[] termsEnums = new TermsEnum[subReaders.size()];
+        final PostingsEnum[] docsEnums = new PostingsEnum[subReaders.size()];
+        for (int subIDX = 0; subIDX < subReaders.size(); subIDX++) {
+            termsEnums[subIDX] = subReaders.get(subIDX).reader().fields().terms("id").iterator();
         }
 
-        int[] results = new int[ ids.length ];
+        int[] results = new int[ids.length];
 
-        for ( int i = 0; i < results.length; i++ ) {
-            results[ i ] = -1;
+        for (int i = 0; i < results.length; i++) {
+            results[i] = -1;
         }
-
 
         // for each id given
-        for ( int idx = 0; idx < ids.length; idx++ ) {
+        for (int idx = 0; idx < ids.length; idx++) {
             int base = 0;
-            final BytesRef id = new BytesRef( ids[ idx ] );
+            final BytesRef id = new BytesRef(ids[idx]);
             // for each leaf reader..
-            for ( int subIDX = 0; subIDX < subReaders.size(); subIDX++ ) {
-                final LeafReader subReader = subReaders.get( subIDX ).reader();
-                final TermsEnum termsEnum = termsEnums[ subIDX ];
+            for (int subIDX = 0; subIDX < subReaders.size(); subIDX++) {
+                final LeafReader subReader = subReaders.get(subIDX).reader();
+                final TermsEnum termsEnum = termsEnums[subIDX];
                 // does the enumeration of ("id") terms from our reader contain the "id" field we're looking for?
-                if ( termsEnum.seekExact( id ) ) {
-                    final PostingsEnum docs = docsEnums[ subIDX ] = termsEnum.postings( docsEnums[ subIDX ], 0 );
+                if (termsEnum.seekExact(id)) {
+                    final PostingsEnum docs = docsEnums[subIDX] = termsEnum.postings(docsEnums[subIDX],
+                                                                                     0);
                     // okay, the reader contains it, get the postings ("docs+") for and check that they're there (NP check)
-                    if ( docs != null ) {
+                    if (docs != null) {
                         final int docID = docs.nextDoc();
                         Bits liveDocs = subReader.getLiveDocs();
                         // But wait, maybe some of the docs have been deleted! Check that too..
-                        if ( (liveDocs == null || liveDocs.get(docID)) && docID != DocIdSetIterator.NO_MORE_DOCS ) {
-                            results[ idx ] = base + docID;
+                        if ((liveDocs == null || liveDocs.get(docID)) && docID != DocIdSetIterator.NO_MORE_DOCS) {
+                            results[idx] = base + docID;
                             break;
                         }
                     }
@@ -126,5 +131,4 @@ public abstract class BaseLuceneIndex implements LuceneIndex {
     }
 
     public abstract IndexWriter writer();
-
 }

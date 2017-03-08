@@ -23,9 +23,9 @@ import org.openqa.selenium.WebDriver;
  */
 public class SimplePanelWrapper extends AbstractWorkbenchPanelWrapper {
 
-    public SimplePanelWrapper( WebDriver driver,
-                               String panelId ) {
-        super( driver,
-               panelId );
+    public SimplePanelWrapper(WebDriver driver,
+                              String panelId) {
+        super(driver,
+              panelId);
     }
 }

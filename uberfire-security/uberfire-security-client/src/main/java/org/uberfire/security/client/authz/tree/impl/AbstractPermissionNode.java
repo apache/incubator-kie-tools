@@ -36,9 +36,9 @@ public class AbstractPermissionNode implements PermissionNode {
     private PermissionNode parentNode = null;
     private List<Permission> permissionList = new ArrayList<>();
     private Map<Permission, List<Permission>> dependencyMap = new HashMap<>();
-    private Map<String,Object> propertyMap = new HashMap<>();
-    private Map<String,String> grantNameMap = new HashMap<>();
-    private Map<String,String> denyNameMap = new HashMap<>();
+    private Map<String, Object> propertyMap = new HashMap<>();
+    private Map<String, String> grantNameMap = new HashMap<>();
+    private Map<String, String> denyNameMap = new HashMap<>();
     private String nodeName = null;
     private String nodeFullName = null;
     private boolean expanded = false;
@@ -85,15 +85,22 @@ public class AbstractPermissionNode implements PermissionNode {
     }
 
     @Override
-    public void addPermission(Permission permission, String name) {
-        addPermission(permission, name, name);
+    public void addPermission(Permission permission,
+                              String name) {
+        addPermission(permission,
+                      name,
+                      name);
     }
 
     @Override
-    public void addPermission(Permission permission, String grantName, String denyName) {
+    public void addPermission(Permission permission,
+                              String grantName,
+                              String denyName) {
         permissionList.add(permission);
-        setPermissionGrantName(permission, grantName);
-        setPermissionDenyName(permission, denyName);
+        setPermissionGrantName(permission,
+                               grantName);
+        setPermissionDenyName(permission,
+                              denyName);
     }
 
     @Override
@@ -107,12 +114,15 @@ public class AbstractPermissionNode implements PermissionNode {
     }
 
     @Override
-    public void setProperty(String key, Object value) {
-        propertyMap.put(key, value);
+    public void setProperty(String key,
+                            Object value) {
+        propertyMap.put(key,
+                        value);
     }
 
     @Override
-    public boolean propertyEquals(String key, Object value) {
+    public boolean propertyEquals(String key,
+                                  Object value) {
         return propertyMap.containsKey(key) && propertyMap.get(key).equals(value);
     }
 
@@ -148,8 +158,10 @@ public class AbstractPermissionNode implements PermissionNode {
         return grantNameMap.get(permission.getName());
     }
 
-    public void setPermissionGrantName(Permission permission, String name) {
-        grantNameMap.put(permission.getName(), name);
+    public void setPermissionGrantName(Permission permission,
+                                       String name) {
+        grantNameMap.put(permission.getName(),
+                         name);
     }
 
     @Override
@@ -158,8 +170,10 @@ public class AbstractPermissionNode implements PermissionNode {
         return name != null ? name : grantNameMap.get(permission.getName());
     }
 
-    public void setPermissionDenyName(Permission permission, String name) {
-        denyNameMap.put(permission.getName(), name);
+    public void setPermissionDenyName(Permission permission,
+                                      String name) {
+        denyNameMap.put(permission.getName(),
+                        name);
     }
 
     @Override
@@ -189,8 +203,7 @@ public class AbstractPermissionNode implements PermissionNode {
                 Permission existing = permissions.get(p.getName());
                 if (existing != null) {
                     p.setResult(existing.getResult());
-                }
-                else {
+                } else {
                     PermissionNode parent = getFirstParentWithPermissions();
                     if (parent != null) {
                         for (Permission parentPermission : parent.getPermissionList()) {
@@ -214,12 +227,14 @@ public class AbstractPermissionNode implements PermissionNode {
     }
 
     @Override
-    public void addDependencies(Permission permission, Permission... dependencies) {
+    public void addDependencies(Permission permission,
+                                Permission... dependencies) {
         if (dependencies != null) {
             List<Permission> dependencyList = dependencyMap.get(permission);
             if (dependencyList == null) {
                 dependencyList = new ArrayList<>();
-                dependencyMap.put(permission, dependencyList);
+                dependencyMap.put(permission,
+                                  dependencyList);
             }
             for (Permission dependency : dependencies) {
                 dependencyList.add(dependency);
@@ -250,17 +265,18 @@ public class AbstractPermissionNode implements PermissionNode {
             DefaultLoadOptions options = new DefaultLoadOptions();
             options.setResourceIds(resourceIds);
 
-            getPermissionTreeProvider().loadChildren(this, options, children -> {
-                expanded = true;
-                for (PermissionNode child : children) {
-                    child.setPermissionTree(permissionTree);
-                    child.setParentNode(AbstractPermissionNode.this);
-                    child.updatePermissionList(permissionTree.getPermissions());
-                }
-                callback.afterLoad(children);
-            });
-        }
-        else {
+            getPermissionTreeProvider().loadChildren(this,
+                                                     options,
+                                                     children -> {
+                                                         expanded = true;
+                                                         for (PermissionNode child : children) {
+                                                             child.setPermissionTree(permissionTree);
+                                                             child.setParentNode(AbstractPermissionNode.this);
+                                                             child.updatePermissionList(permissionTree.getPermissions());
+                                                         }
+                                                         callback.afterLoad(children);
+                                                     });
+        } else {
             expanded = true;
             callback.afterLoad(Collections.emptyList());
         }

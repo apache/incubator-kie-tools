@@ -39,18 +39,18 @@ public abstract class AbstractWizard implements
 
     @PostConstruct
     public void setup() {
-        view.init( this );
+        view.init(this);
     }
 
     //Update the status of each belonging to this Wizard
-    public void onStatusChange( final @Observes WizardPageStatusChangeEvent event ) {
+    public void onStatusChange(final @Observes WizardPageStatusChangeEvent event) {
         //Ignore events until the Wizard has been started
-        if ( !isStarted ) {
+        if (!isStarted) {
             return;
         }
         //Ensure event belongs to this Wizard
         final List<WizardPage> wps = getPages();
-        if ( !wps.contains( event.getPage() ) ) {
+        if (!wps.contains(event.getPage())) {
             return;
         }
 
@@ -59,57 +59,56 @@ public abstract class AbstractWizard implements
 
     protected void checkPagesState() {
         final List<WizardPage> wps = getPages();
-        for ( WizardPage wp : wps ) {
-            final int index = wps.indexOf( wp );
-            wp.isComplete( new Callback<Boolean>() {
+        for (WizardPage wp : wps) {
+            final int index = wps.indexOf(wp);
+            wp.isComplete(new Callback<Boolean>() {
                 @Override
-                public void callback( final Boolean result ) {
-                    view.setPageCompletionState( index,
-                                                 Boolean.TRUE.equals( result ) );
+                public void callback(final Boolean result) {
+                    view.setPageCompletionState(index,
+                                                Boolean.TRUE.equals(result));
                 }
-            } );
+            });
         }
 
         //Update the status of this Wizard
-        isComplete( new Callback<Boolean>() {
+        isComplete(new Callback<Boolean>() {
             @Override
-            public void callback( final Boolean result ) {
-                view.setCompletionStatus( Boolean.TRUE.equals( result ) );
+            public void callback(final Boolean result) {
+                view.setCompletionStatus(Boolean.TRUE.equals(result));
             }
-        } );
-
+        });
     }
 
-    public void onPageSelected( final @Observes WizardPageSelectedEvent event ) {
+    public void onPageSelected(final @Observes WizardPageSelectedEvent event) {
         //Ignore events until the Wizard has been started
-        if ( !isStarted ) {
+        if (!isStarted) {
             return;
         }
         final WizardPage page = event.getSelectedPage();
-        final int index = getPages().indexOf( page );
-        view.selectPage( index );
+        final int index = getPages().indexOf(page);
+        view.selectPage(index);
     }
 
     @Override
     public void start() {
         //Go, Go gadget Wizard!
         isStarted = true;
-        view.setTitle( getTitle() );
-        view.setPreferredHeight( getPreferredHeight() );
-        view.setPreferredWidth( getPreferredWidth() );
-        view.setPageTitles( getPages() );
+        view.setTitle(getTitle());
+        view.setPreferredHeight(getPreferredHeight());
+        view.setPreferredWidth(getPreferredWidth());
+        view.setPageTitles(getPages());
 
         //Ensure Wizard's generic Cancel/Finish buttons are set correctly
         checkPagesState();
 
-        view.selectPage( 0 );
+        view.selectPage(0);
         view.show();
     }
 
     @Override
-    public void pageSelected( final int pageNumber ) {
-        final Widget w = getPageWidget( pageNumber );
-        view.setBodyWidget( w );
+    public void pageSelected(final int pageNumber) {
+        final Widget w = getPageWidget(pageNumber);
+        view.setBodyWidget(w);
     }
 
     @Override
@@ -121,5 +120,4 @@ public abstract class AbstractWizard implements
     public void complete() {
         view.hide();
     }
-
 }

@@ -16,9 +16,9 @@
 
 package org.uberfire.ext.security.management.validation;
 
-import org.uberfire.ext.security.management.api.validation.UserValidator;
-
 import java.util.ResourceBundle;
+
+import org.uberfire.ext.security.management.api.validation.UserValidator;
 
 public class UserValidatorImpl extends UserValidator {
 

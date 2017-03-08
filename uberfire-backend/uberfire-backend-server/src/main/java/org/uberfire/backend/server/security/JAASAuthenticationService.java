@@ -18,11 +18,6 @@ package org.uberfire.backend.server.security;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.security.acl.Group;
-import java.util.*;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Alternative;
-import javax.security.auth.Subject;
 import java.util.Collection;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -36,13 +31,12 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
 import org.jboss.errai.security.shared.api.Role;
-import org.jboss.errai.security.shared.api.RoleImpl;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.jboss.errai.security.shared.exception.FailedAuthenticationException;
 import org.jboss.errai.security.shared.service.AuthenticationService;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.backend.server.security.adapter.GroupAdapterAuthorizationSource;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * Implements stateful, thread-local authentication of a user via the JAAS API (
@@ -66,50 +60,58 @@ public class JAASAuthenticationService extends GroupAdapterAuthorizationSource i
     private final String domain;
 
     public JAASAuthenticationService(String domain) {
-        this.domain = PortablePreconditions.checkNotNull( "domain", domain );
+        this.domain = PortablePreconditions.checkNotNull("domain",
+                                                         domain);
     }
 
     @Override
-    public User login( final String username,
-                       final String password ) {
+    public User login(final String username,
+                      final String password) {
         final SecurityManager jsm = System.getSecurityManager();
 
-        if ( jsm != null ) {
+        if (jsm != null) {
             final ClassLoader tccl = Thread.currentThread().getContextClassLoader();
             final ClassLoader cl = this.getClass().getClassLoader();
             try {
                 // RHBPMS-473 - TCCL used in javax.security.auth.login.LoginContext
                 // is not the application CL if JSM is enabled.
                 // Setting TCCL to application CL as workaround
-                Thread.currentThread().setContextClassLoader( cl );
+                Thread.currentThread().setContextClassLoader(cl);
 
-                return executeLogin( username, password );
-            } catch ( final LoginException ex ) {
+                return executeLogin(username,
+                                    password);
+            } catch (final LoginException ex) {
                 throw new FailedAuthenticationException();
             } finally {
                 // RHBPMS-473 - Restore original TCCL
-                if ( tccl != null ) {
-                    Thread.currentThread().setContextClassLoader( tccl );
+                if (tccl != null) {
+                    Thread.currentThread().setContextClassLoader(tccl);
                 }
             }
         } else {
             try {
-                return executeLogin( username, password );
-            } catch ( final LoginException ex ) {
+                return executeLogin(username,
+                                    password);
+            } catch (final LoginException ex) {
                 throw new FailedAuthenticationException();
             }
         }
     }
 
-    private User executeLogin( final String username,
-                               final String password ) throws LoginException {
-        final LoginContext loginContext = createLoginContext( username, password );
+    private User executeLogin(final String username,
+                              final String password) throws LoginException {
+        final LoginContext loginContext = createLoginContext(username,
+                                                             password);
         loginContext.login();
-        List<String> principals = loadEntitiesFromSubjectAndAdapters( username, loginContext.getSubject(), new String[] { rolePrincipleName } );
-        Collection<Role> roles = getRoles( principals );
-        Collection<org.jboss.errai.security.shared.api.Group> groups = getGroups( principals );
-        UserImpl user = new UserImpl( username, roles, groups );
-        userOnThisThread.set( user );
+        List<String> principals = loadEntitiesFromSubjectAndAdapters(username,
+                                                                     loginContext.getSubject(),
+                                                                     new String[]{rolePrincipleName});
+        Collection<Role> roles = getRoles(principals);
+        Collection<org.jboss.errai.security.shared.api.Group> groups = getGroups(principals);
+        UserImpl user = new UserImpl(username,
+                                     roles,
+                                     groups);
+        userOnThisThread.set(user);
         return user;
     }
 
@@ -132,8 +134,11 @@ public class JAASAuthenticationService extends GroupAdapterAuthorizationSource i
         return userOnThisThread.get() != null;
     }
 
-    LoginContext createLoginContext( String username, String password ) throws LoginException {
-        return new LoginContext( domain, new UsernamePasswordCallbackHandler( username, password ) );
+    LoginContext createLoginContext(String username,
+                                    String password) throws LoginException {
+        return new LoginContext(domain,
+                                new UsernamePasswordCallbackHandler(username,
+                                                                    password));
     }
 
     class UsernamePasswordCallbackHandler implements CallbackHandler {
@@ -141,29 +146,31 @@ public class JAASAuthenticationService extends GroupAdapterAuthorizationSource i
         private final String username;
         private final String password;
 
-        public UsernamePasswordCallbackHandler( final String username, final String password ) {
+        public UsernamePasswordCallbackHandler(final String username,
+                                               final String password) {
             this.username = username;
             this.password = password;
         }
 
         @Override
-        public void handle( final Callback[] callbacks ) throws IOException, UnsupportedCallbackException {
-            for ( final Callback callback : callbacks ) {
-                if ( callback instanceof NameCallback ) {
+        public void handle(final Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+            for (final Callback callback : callbacks) {
+                if (callback instanceof NameCallback) {
                     NameCallback nameCB = (NameCallback) callback;
-                    nameCB.setName( username );
-                } else if ( callback instanceof PasswordCallback ) {
+                    nameCB.setName(username);
+                } else if (callback instanceof PasswordCallback) {
                     PasswordCallback passwordCB = (PasswordCallback) callback;
-                    passwordCB.setPassword( password.toCharArray() );
+                    passwordCB.setPassword(password.toCharArray());
                 } else {
                     try {
-                        final Method method = callback.getClass().getMethod( "setObject", Object.class );
-                        method.invoke( callback, password );
-                    } catch ( Exception e ) {
+                        final Method method = callback.getClass().getMethod("setObject",
+                                                                            Object.class);
+                        method.invoke(callback,
+                                      password);
+                    } catch (Exception e) {
                     }
                 }
             }
         }
     }
-
 }

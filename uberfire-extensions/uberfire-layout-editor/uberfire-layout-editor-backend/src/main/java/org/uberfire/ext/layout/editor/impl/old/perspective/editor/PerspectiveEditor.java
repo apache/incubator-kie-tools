@@ -19,8 +19,6 @@ package org.uberfire.ext.layout.editor.impl.old.perspective.editor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 @Deprecated
 public class PerspectiveEditor {
 
@@ -30,8 +28,8 @@ public class PerspectiveEditor {
 
     private List<RowEditor> rows = new ArrayList<RowEditor>();
 
-    public PerspectiveEditor( String name,
-                              List<String> tags ) {
+    public PerspectiveEditor(String name,
+                             List<String> tags) {
 
         this.name = name;
         this.tags = tags;
@@ -40,8 +38,8 @@ public class PerspectiveEditor {
     public PerspectiveEditor() {
     }
 
-    public void addRow( RowEditor rowEditor ) {
-        rows.add( rowEditor );
+    public void addRow(RowEditor rowEditor) {
+        rows.add(rowEditor);
     }
 
     public List<RowEditor> getRows() {
@@ -52,7 +50,7 @@ public class PerspectiveEditor {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -67,35 +65,34 @@ public class PerspectiveEditor {
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + ( tags != null ? tags.hashCode() : 0 );
-        for ( RowEditor row : rows ) {
-            result = 31 * result + ( row != null ? row.hashCode() : 0 );
+        result = 31 * result + (tags != null ? tags.hashCode() : 0);
+        for (RowEditor row : rows) {
+            result = 31 * result + (row != null ? row.hashCode() : 0);
         }
         return result;
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof PerspectiveEditor ) ) {
+        if (!(o instanceof PerspectiveEditor)) {
             return false;
         }
 
         PerspectiveEditor that = (PerspectiveEditor) o;
 
-        if ( name != null ? !name.equals( that.name ) : that.name != null ) {
+        if (name != null ? !name.equals(that.name) : that.name != null) {
             return false;
         }
-        if ( rows != null ? !rows.equals( that.rows ) : that.rows != null ) {
+        if (rows != null ? !rows.equals(that.rows) : that.rows != null) {
             return false;
         }
-        if ( tags != null ? !tags.equals( that.tags ) : that.tags != null ) {
+        if (tags != null ? !tags.equals(that.tags) : that.tags != null) {
             return false;
         }
 
         return true;
     }
-
 }

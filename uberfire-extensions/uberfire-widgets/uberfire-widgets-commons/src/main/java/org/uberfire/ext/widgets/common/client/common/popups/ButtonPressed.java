@@ -17,5 +17,7 @@
 package org.uberfire.ext.widgets.common.client.common.popups;
 
 public enum ButtonPressed {
-    CLOSE, OK, CANCEL
+    CLOSE,
+    OK,
+    CANCEL
 }

@@ -26,7 +26,7 @@ public interface CoreConstants
         extends
         Messages {
 
-    CoreConstants INSTANCE = GWT.create( CoreConstants.class );
+    CoreConstants INSTANCE = GWT.create(CoreConstants.class);
 
     String multipleMatchingActivitiesFound();
 
@@ -46,7 +46,7 @@ public interface CoreConstants
 
     String RepositoryViewRootLabel();
 
-    String ConfirmDeleteRepository0( String repositoryAlias );
+    String ConfirmDeleteRepository0(String repositoryAlias);
 
     String Downloading();
 
@@ -159,16 +159,16 @@ public interface CoreConstants
     String Branches();
 
     String Update();
-    
+
     String GroupId();
-    
+
     String ArtifactId();
-    
+
     String Version();
-    
+
     String GroupIdHolder();
-    
+
     String ArtifactIdHolder();
-    
+
     String VersionHolder();
 }

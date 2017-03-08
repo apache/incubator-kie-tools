@@ -33,10 +33,10 @@ public class PreferenceRootElement {
     public PreferenceRootElement() {
     }
 
-    public PreferenceRootElement( @MapsTo("identifier") final String identifier,
-                                  @MapsTo("category") final String category,
-                                  @MapsTo("iconCss") final String iconCss,
-                                  @MapsTo("bundleKey") final String bundleKey ) {
+    public PreferenceRootElement(@MapsTo("identifier") final String identifier,
+                                 @MapsTo("category") final String category,
+                                 @MapsTo("iconCss") final String iconCss,
+                                 @MapsTo("bundleKey") final String bundleKey) {
         this.identifier = identifier;
         this.category = category;
         this.iconCss = iconCss;
@@ -60,38 +60,37 @@ public class PreferenceRootElement {
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof PreferenceRootElement ) ) {
+        if (!(o instanceof PreferenceRootElement)) {
             return false;
         }
 
         final PreferenceRootElement that = (PreferenceRootElement) o;
 
-        if ( identifier != null ? !identifier.equals( that.identifier ) : that.identifier != null ) {
+        if (identifier != null ? !identifier.equals(that.identifier) : that.identifier != null) {
             return false;
         }
-        if ( category != null ? !category.equals( that.category ) : that.category != null ) {
+        if (category != null ? !category.equals(that.category) : that.category != null) {
             return false;
         }
-        if ( iconCss != null ? !iconCss.equals( that.iconCss ) : that.iconCss != null ) {
+        if (iconCss != null ? !iconCss.equals(that.iconCss) : that.iconCss != null) {
             return false;
         }
-        return !( bundleKey != null ? !bundleKey.equals( that.bundleKey ) : that.bundleKey != null );
-
+        return !(bundleKey != null ? !bundleKey.equals(that.bundleKey) : that.bundleKey != null);
     }
 
     @Override
     public int hashCode() {
         int result = identifier != null ? identifier.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( category != null ? category.hashCode() : 0 );
+        result = 31 * result + (category != null ? category.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( iconCss != null ? iconCss.hashCode() : 0 );
+        result = 31 * result + (iconCss != null ? iconCss.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( bundleKey != null ? bundleKey.hashCode() : 0 );
+        result = 31 * result + (bundleKey != null ? bundleKey.hashCode() : 0);
         result = ~~result;
         return result;
     }

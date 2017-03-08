@@ -19,7 +19,7 @@ package org.uberfire.java.nio.file;
 import org.uberfire.java.nio.IOException;
 import org.uberfire.java.nio.file.attribute.BasicFileAttributes;
 
-import static org.uberfire.commons.validation.Preconditions.*;
+import static org.uberfire.commons.validation.Preconditions.checkNotNull;
 
 /**
  * Simple file tree walker that works in a similar manner to nftw(3C).
@@ -31,8 +31,10 @@ class FileTreeWalker {
     private final FileVisitor<? super Path> visitor;
     private final int maxDepth;
 
-    FileTreeWalker(final FileVisitor<? super Path> visitor, final int maxDepth) {
-        this.visitor = checkNotNull("visitor", visitor);
+    FileTreeWalker(final FileVisitor<? super Path> visitor,
+                   final int maxDepth) {
+        this.visitor = checkNotNull("visitor",
+                                    visitor);
         this.maxDepth = maxDepth;
     }
 
@@ -40,27 +42,33 @@ class FileTreeWalker {
      * Walk file tree starting at the given file
      */
     void walk(final Path start) throws IOException {
-        checkNotNull("start", start);
-        walk(start, 0);
+        checkNotNull("start",
+                     start);
+        walk(start,
+             0);
     }
 
-    private FileVisitResult walk(final Path file, final int depth)
+    private FileVisitResult walk(final Path file,
+                                 final int depth)
             throws IOException {
         IOException exc = null;
         BasicFileAttributes attrs = null;
         try {
-            attrs = Files.readAttributes(file, BasicFileAttributes.class);
+            attrs = Files.readAttributes(file,
+                                         BasicFileAttributes.class);
         } catch (IOException ex) {
             exc = ex;
         }
 
         if (exc != null) {
-            return visitor.visitFileFailed(file, exc);
+            return visitor.visitFileFailed(file,
+                                           exc);
         }
 
         // at maximum depth or file is not a directory
         if (depth >= maxDepth || !attrs.isDirectory()) {
-            return visitor.visitFile(file, attrs);
+            return visitor.visitFile(file,
+                                     attrs);
         }
 
         DirectoryStream<? extends Path> stream = null;
@@ -69,20 +77,23 @@ class FileTreeWalker {
         try {
             stream = Files.newDirectoryStream(file);
         } catch (IOException ex) {
-            return visitor.visitFileFailed(file, ex);
+            return visitor.visitFileFailed(file,
+                                           ex);
         }
 
         IOException postException = null;
 
         try {
-            result = visitor.preVisitDirectory(file, attrs);
+            result = visitor.preVisitDirectory(file,
+                                               attrs);
             if (result != FileVisitResult.CONTINUE) {
                 return result;
             }
 
             try {
                 for (final Path entry : stream) {
-                    result = walk(entry, depth + 1);
+                    result = walk(entry,
+                                  depth + 1);
                     if (result == null || result == FileVisitResult.TERMINATE) {
                         return result;
                     }
@@ -103,6 +114,7 @@ class FileTreeWalker {
             }
         }
 
-        return visitor.postVisitDirectory(file, postException);
+        return visitor.postVisitDirectory(file,
+                                          postException);
     }
 }

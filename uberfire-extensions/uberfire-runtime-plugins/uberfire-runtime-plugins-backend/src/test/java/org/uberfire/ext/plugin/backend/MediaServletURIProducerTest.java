@@ -28,7 +28,8 @@ public class MediaServletURIProducerTest {
     public void testSetup() throws Exception {
         mediaServletURIProducer.setup();
 
-        assertEquals( "plugins/", getMediaServletURI().getURI() );
+        assertEquals("plugins/",
+                     getMediaServletURI().getURI());
     }
 
     private MediaServletURI getMediaServletURI() {

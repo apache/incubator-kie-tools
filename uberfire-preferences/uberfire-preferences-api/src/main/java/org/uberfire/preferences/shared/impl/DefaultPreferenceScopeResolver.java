@@ -35,40 +35,44 @@ public class DefaultPreferenceScopeResolver implements PreferenceScopeResolver {
 
     private final List<PreferenceScope> order;
 
-    public DefaultPreferenceScopeResolver( @MapsTo("order") final List<PreferenceScope> order ) {
+    public DefaultPreferenceScopeResolver(@MapsTo("order") final List<PreferenceScope> order) {
         this.order = order;
     }
 
     @Override
-    public PreferenceScope resolve( final String... scopeTypes ) {
-        if ( scopeTypes != null && scopeTypes.length >= 1 && scopeTypes.length <= 2 ) {
-            if ( scopeTypes.length == 2 ) {
-                return getScopeFromOrder( scopeTypes );
+    public PreferenceScope resolve(final String... scopeTypes) {
+        if (scopeTypes != null && scopeTypes.length >= 1 && scopeTypes.length <= 2) {
+            if (scopeTypes.length == 2) {
+                return getScopeFromOrder(scopeTypes);
             }
 
-            String scopeType = scopeTypes[ 0 ];
+            String scopeType = scopeTypes[0];
 
-            if ( scopeType.equals( DefaultScopes.USER.type() ) ) {
-                return getScopeFromOrder( DefaultScopes.USER.type(), DefaultScopes.ENTIRE_APPLICATION.type() );
-            } else if ( scopeType.equals( DefaultScopes.ALL_USERS.type() ) ) {
-                return getScopeFromOrder( DefaultScopes.ALL_USERS.type(), DefaultScopes.ENTIRE_APPLICATION.type() );
-            } else if ( scopeType.equals( DefaultScopes.COMPONENT.type() ) ) {
-                return getScopeFromOrder( DefaultScopes.ALL_USERS.type(), DefaultScopes.COMPONENT.type() );
-            } else if ( scopeType.equals( DefaultScopes.ENTIRE_APPLICATION.type() ) ) {
-                return getScopeFromOrder( DefaultScopes.ALL_USERS.type(), DefaultScopes.ENTIRE_APPLICATION.type() );
+            if (scopeType.equals(DefaultScopes.USER.type())) {
+                return getScopeFromOrder(DefaultScopes.USER.type(),
+                                         DefaultScopes.ENTIRE_APPLICATION.type());
+            } else if (scopeType.equals(DefaultScopes.ALL_USERS.type())) {
+                return getScopeFromOrder(DefaultScopes.ALL_USERS.type(),
+                                         DefaultScopes.ENTIRE_APPLICATION.type());
+            } else if (scopeType.equals(DefaultScopes.COMPONENT.type())) {
+                return getScopeFromOrder(DefaultScopes.ALL_USERS.type(),
+                                         DefaultScopes.COMPONENT.type());
+            } else if (scopeType.equals(DefaultScopes.ENTIRE_APPLICATION.type())) {
+                return getScopeFromOrder(DefaultScopes.ALL_USERS.type(),
+                                         DefaultScopes.ENTIRE_APPLICATION.type());
             }
         }
 
-        throw new InvalidPreferenceScopeException( "The passed scope types are invalid." );
+        throw new InvalidPreferenceScopeException("The passed scope types are invalid.");
     }
 
-    private PreferenceScope getScopeFromOrder( final String... scopeTypes ) {
-        for ( PreferenceScope scope : order ) {
+    private PreferenceScope getScopeFromOrder(final String... scopeTypes) {
+        for (PreferenceScope scope : order) {
             boolean match = true;
             PreferenceScope currentScope = scope;
 
-            for ( int i = 0; i < scopeTypes.length; i++ ) {
-                if ( currentScope == null || !currentScope.type().equals( scopeTypes[ i ] ) ) {
+            for (int i = 0; i < scopeTypes.length; i++) {
+                if (currentScope == null || !currentScope.type().equals(scopeTypes[i])) {
                     match = false;
                     break;
                 }
@@ -76,11 +80,11 @@ public class DefaultPreferenceScopeResolver implements PreferenceScopeResolver {
                 currentScope = currentScope.childScope();
             }
 
-            if ( match && currentScope == null ) {
+            if (match && currentScope == null) {
                 return scope;
             }
         }
 
-        throw new InvalidPreferenceScopeException( "The passed scope types are invalid." );
+        throw new InvalidPreferenceScopeException("The passed scope types are invalid.");
     }
 }

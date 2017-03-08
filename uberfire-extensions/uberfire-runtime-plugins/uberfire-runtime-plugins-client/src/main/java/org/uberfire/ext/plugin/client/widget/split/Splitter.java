@@ -34,59 +34,62 @@ public abstract class Splitter extends FlowPanel {
     protected boolean mouseDown;
 
     public Splitter() {
-        if ( glassElem == null ) {
+        if (glassElem == null) {
             glassElem = Document.get().createDivElement();
-            glassElem.getStyle().setPosition( Style.Position.ABSOLUTE );
-            glassElem.getStyle().setTop( 0,
-                                         Style.Unit.PX );
-            glassElem.getStyle().setLeft( 0,
-                                          Style.Unit.PX );
-            glassElem.getStyle().setMargin( 0,
-                                            Style.Unit.PX );
-            glassElem.getStyle().setPadding( 0,
-                                             Style.Unit.PX );
-            glassElem.getStyle().setBorderWidth( 0,
-                                                 Style.Unit.PX );
+            glassElem.getStyle().setPosition(Style.Position.ABSOLUTE);
+            glassElem.getStyle().setTop(0,
+                                        Style.Unit.PX);
+            glassElem.getStyle().setLeft(0,
+                                         Style.Unit.PX);
+            glassElem.getStyle().setMargin(0,
+                                           Style.Unit.PX);
+            glassElem.getStyle().setPadding(0,
+                                            Style.Unit.PX);
+            glassElem.getStyle().setBorderWidth(0,
+                                                Style.Unit.PX);
 
             // We need to set the background color or mouse events will go right
             // through the glassElem. If the SplitPanel contains an iframe, the
             // iframe will capture the event and the slider will stop moving.
-            glassElem.getStyle().setProperty( "background",
-                                              "white" );
-            glassElem.getStyle().setOpacity( 0.0 );
+            glassElem.getStyle().setProperty("background",
+                                             "white");
+            glassElem.getStyle().setOpacity(0.0);
         }
 
-        sinkEvents( Event.ONMOUSEDOWN | Event.ONMOUSEUP | Event.ONMOUSEMOVE | Event.ONDBLCLICK );
-        addDomHandler( new MouseDownHandler() {
-            @Override
-            public void onMouseDown( final MouseDownEvent event ) {
-                mouseDown = true;
-                int width = Math.max( Window.getClientWidth(), Document.get().getScrollWidth() );
-                int height = Math.max( Window.getClientHeight(), Document.get().getScrollHeight() );
-                glassElem.getStyle().setHeight( height,
-                                                Style.Unit.PX );
-                glassElem.getStyle().setWidth( width,
-                                               Style.Unit.PX );
-                Document.get().getBody().appendChild( glassElem );
+        sinkEvents(Event.ONMOUSEDOWN | Event.ONMOUSEUP | Event.ONMOUSEMOVE | Event.ONDBLCLICK);
+        addDomHandler(new MouseDownHandler() {
+                          @Override
+                          public void onMouseDown(final MouseDownEvent event) {
+                              mouseDown = true;
+                              int width = Math.max(Window.getClientWidth(),
+                                                   Document.get().getScrollWidth());
+                              int height = Math.max(Window.getClientHeight(),
+                                                    Document.get().getScrollHeight());
+                              glassElem.getStyle().setHeight(height,
+                                                             Style.Unit.PX);
+                              glassElem.getStyle().setWidth(width,
+                                                            Style.Unit.PX);
+                              Document.get().getBody().appendChild(glassElem);
 
-                buildOffset( event );
-                Event.setCapture( getElement() );
-                event.preventDefault();
-            }
-        }, MouseDownEvent.getType() );
+                              buildOffset(event);
+                              Event.setCapture(getElement());
+                              event.preventDefault();
+                          }
+                      },
+                      MouseDownEvent.getType());
 
-        addDomHandler( new MouseUpHandler() {
-            @Override
-            public void onMouseUp( final MouseUpEvent event ) {
-                mouseDown = false;
+        addDomHandler(new MouseUpHandler() {
+                          @Override
+                          public void onMouseUp(final MouseUpEvent event) {
+                              mouseDown = false;
 
-                glassElem.removeFromParent();
+                              glassElem.removeFromParent();
 
-                Event.releaseCapture( getElement() );
-            }
-        }, MouseUpEvent.getType() );
-
+                              Event.releaseCapture(getElement());
+                          }
+                      },
+                      MouseUpEvent.getType());
     }
 
-    protected abstract void buildOffset( MouseDownEvent event );
+    protected abstract void buildOffset(MouseDownEvent event);
 }

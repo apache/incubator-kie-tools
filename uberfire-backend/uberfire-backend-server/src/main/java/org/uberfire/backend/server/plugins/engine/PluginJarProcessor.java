@@ -16,8 +16,6 @@
 
 package org.uberfire.backend.server.plugins.engine;
 
-import static org.apache.commons.lang3.StringUtils.substringAfterLast;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,7 +28,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
@@ -44,6 +41,8 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.plugin.PluginProcessor;
 import org.uberfire.workbench.events.PluginReloadedEvent;
 
+import static org.apache.commons.lang3.StringUtils.substringAfterLast;
+
 /**
  * Processes and activates deployed plugin jars. The plugin jars can contain
  * GWT .js files, Uberfire Runtime Plugins and html templates.
@@ -56,6 +55,7 @@ import org.uberfire.workbench.events.PluginReloadedEvent;
  */
 @Dependent
 public class PluginJarProcessor {
+
     private static final Logger LOG = LoggerFactory.getLogger(PluginJarProcessor.class);
 
     private Instance<PluginProcessor> pluginProcessors;
@@ -73,14 +73,14 @@ public class PluginJarProcessor {
 
     /**
      * Processes and loads the currently deployed plugins.
-     *
-     * @param pluginsDir           the plugin directory, must not be null.
+     * @param pluginsDir the plugin directory, must not be null.
      * @param pluginsDeploymentDir the directory to deploy plugin contents to, must not be null.
      */
     public void init(final String pluginsDir,
                      final String pluginsDeploymentDir) throws IOException {
 
-        this.pluginsDeploymentUrlPath = substringAfterLast(pluginsDeploymentDir, File.separator);
+        this.pluginsDeploymentUrlPath = substringAfterLast(pluginsDeploymentDir,
+                                                           File.separator);
         this.pluginsDeploymentDir = pluginsDeploymentDir;
         this.pluginsDir = pluginsDir;
         loadPlugins();
@@ -92,11 +92,11 @@ public class PluginJarProcessor {
         final File pluginsRoot = new File(pluginsDir);
         if (pluginsRoot.exists()) {
             Collection<File> deployedPlugins = FileUtils.listFiles(pluginsRoot,
-                    new String[]{"jar"},
-                    false);
+                                                                   new String[]{"jar"},
+                                                                   false);
 
             deployedPlugins.forEach(p -> loadPlugins(Paths.get(p.getAbsolutePath()),
-                    false));
+                                                     false));
         }
     }
 
@@ -117,19 +117,21 @@ public class PluginJarProcessor {
      * Unpacks the provided plugin (path pointing to a JAR file), searches for
      * the corresponding plugins files and process the plugin with the
      * corresponding {@link PluginProcessor}.
-     *
-     * @param path          path to a deployed jar file.
+     * @param path path to a deployed jar file.
      * @param notifyClients true if clients should be notified (of added and updated
-     *                      plugins) through CDI events, otherwise false.
+     * plugins) through CDI events, otherwise false.
      */
-    public void loadPlugins(Path path, boolean notifyClients) {
+    public void loadPlugins(Path path,
+                            boolean notifyClients) {
         final List<String> pluginsFiles = extractFilesFromPluginsJar(pluginsDir + File.separator + path.toFile().getName());
 
         if (!pluginsFiles.isEmpty()) {
             for (String pluginName : pluginsFiles) {
                 for (PluginProcessor pluginRegistry : pluginProcessors) {
                     if (pluginRegistry.shouldProcess(pluginName)) {
-                        pluginRegistry.process(pluginName, pluginsDeploymentDir, notifyClients);
+                        pluginRegistry.process(pluginName,
+                                               pluginsDeploymentDir,
+                                               notifyClients);
                     }
                 }
             }
@@ -146,7 +148,7 @@ public class PluginJarProcessor {
             while (enumEntries.hasMoreElements()) {
                 final JarEntry file = (JarEntry) enumEntries.nextElement();
                 String fileName = StringUtils.substringAfterLast(file.getName(),
-                        File.separator);
+                                                                 File.separator);
 
                 if (PluginProcessor.isAValidPluginFileExtension(fileName)) {
                     final File f = new File(pluginsDeploymentDir + File.separator + fileName);
@@ -160,7 +162,6 @@ public class PluginJarProcessor {
 
                     pluginsFiles.add(fileName);
                 }
-
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -168,6 +169,4 @@ public class PluginJarProcessor {
 
         return pluginsFiles;
     }
-
-
 }

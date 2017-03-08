@@ -34,7 +34,8 @@ public class HttpServletRequestProducerExtension implements Extension {
         }
     }
 
-    <X> void processAnnotatedType(@Observes final javax.enterprise.inject.spi.ProcessAnnotatedType<X> pat, BeanManager beanManager) {
+    <X> void processAnnotatedType(@Observes final javax.enterprise.inject.spi.ProcessAnnotatedType<X> pat,
+                                  BeanManager beanManager) {
         if (isHttpRequestSupportAvailable) {
 
             final AnnotatedType<X> annotatedType = pat.getAnnotatedType();

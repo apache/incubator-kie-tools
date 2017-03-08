@@ -34,7 +34,6 @@ import org.uberfire.security.authz.PermissionManager;
 import org.uberfire.security.impl.authz.DefaultPermissionManager;
 import org.uberfire.security.impl.authz.DefaultPermissionTypeRegistry;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -69,13 +68,18 @@ public class ACLSettingsTest {
         permissionManager = spy(new DefaultPermissionManager(new DefaultPermissionTypeRegistry()));
 
         permissionManager.setAuthorizationPolicy(permissionManager.newAuthorizationPolicy()
-                .role("admin").home("HomeAdmin").priority(10)
-                .group("group1").home("HomeGroup1").priority(0)
-                .build()
+                                                         .role("admin").home("HomeAdmin").priority(10)
+                                                         .group("group1").home("HomeGroup1").priority(0)
+                                                         .build()
         );
 
-        presenter = new ACLSettings(view, permissionManager, homePerspectiveDropDown, perspectiveTreeProvider,
-                priorityDropDown, homePerspectiveChangedEvent, priorityChangedEvent);
+        presenter = new ACLSettings(view,
+                                    permissionManager,
+                                    homePerspectiveDropDown,
+                                    perspectiveTreeProvider,
+                                    priorityDropDown,
+                                    homePerspectiveChangedEvent,
+                                    priorityChangedEvent);
 
         when(defaultPerspective.getIdentifier()).thenReturn("DefaultPerspective");
         when(homePerspectiveDropDown.getDefaultPerspective()).thenReturn(defaultPerspective);
@@ -85,7 +89,7 @@ public class ACLSettingsTest {
         when(priorityDropDown.getPriorityName(10)).thenReturn("High");
         when(priorityDropDown.getPriorityName(0)).thenReturn("Normal");
     }
-    
+
     @Test
     public void testShowRole() {
         presenter.show(new RoleImpl("admin"));
@@ -141,8 +145,13 @@ public class ACLSettingsTest {
         reset(view);
 
         permissionManager.setAuthorizationPolicy(permissionManager.newAuthorizationPolicy().build());
-        presenter = new ACLSettings(view, permissionManager, homePerspectiveDropDown, perspectiveTreeProvider,
-                priorityDropDown, homePerspectiveChangedEvent, priorityChangedEvent);
+        presenter = new ACLSettings(view,
+                                    permissionManager,
+                                    homePerspectiveDropDown,
+                                    perspectiveTreeProvider,
+                                    priorityDropDown,
+                                    homePerspectiveChangedEvent,
+                                    priorityChangedEvent);
 
         presenter.show(new RoleImpl("admin"));
 

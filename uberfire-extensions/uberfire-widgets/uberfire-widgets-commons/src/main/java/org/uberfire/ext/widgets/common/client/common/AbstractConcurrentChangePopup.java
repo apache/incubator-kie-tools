@@ -31,58 +31,56 @@ import org.uberfire.mvp.Command;
 
 public abstract class AbstractConcurrentChangePopup extends BaseModal {
 
+    @UiField
+    protected HTML message;
+    private AbstractConcurrentChangePopupWidgetBinder uiBinder = GWT.create(AbstractConcurrentChangePopupWidgetBinder.class);
+
+    protected AbstractConcurrentChangePopup(final String content,
+                                            final Command onIgnore,
+                                            final Command onAction,
+                                            final String buttonText) {
+        setTitle(CommonConstants.INSTANCE.Error());
+
+        add(new ModalBody() {{
+            add(uiBinder.createAndBindUi(AbstractConcurrentChangePopup.this));
+        }});
+        add(new ModalFooterReOpenIgnoreButtons(this,
+                                               onAction,
+                                               onIgnore,
+                                               buttonText));
+
+        message.setHTML(SafeHtmlUtils.fromTrustedString(content));
+    }
+
+    protected AbstractConcurrentChangePopup(final String content,
+                                            final Command onIgnore,
+                                            final Command onReOpen) {
+        this(content,
+             onIgnore,
+             onReOpen,
+             CommonConstants.INSTANCE.ReOpen());
+    }
+
+    protected AbstractConcurrentChangePopup(final String content,
+                                            final Command onForceSave,
+                                            final Command onIgnore,
+                                            final Command onReOpen) {
+        setTitle(CommonConstants.INSTANCE.Error());
+
+        add(new ModalBody() {{
+            add(uiBinder.createAndBindUi(AbstractConcurrentChangePopup.this));
+        }});
+        add(new ModalFooterForceSaveReOpenCancelButtons(this,
+                                                        onForceSave,
+                                                        onReOpen,
+                                                        onIgnore));
+
+        message.setHTML(SafeHtmlUtils.fromTrustedString(content));
+    }
+
     interface AbstractConcurrentChangePopupWidgetBinder
             extends
             UiBinder<Widget, AbstractConcurrentChangePopup> {
 
     }
-
-    private AbstractConcurrentChangePopupWidgetBinder uiBinder = GWT.create( AbstractConcurrentChangePopupWidgetBinder.class );
-
-    @UiField
-    protected HTML message;
-
-    protected AbstractConcurrentChangePopup( final String content,
-                                             final Command onIgnore,
-                                             final Command onAction,
-                                             final String buttonText ) {
-        setTitle( CommonConstants.INSTANCE.Error() );
-
-        add( new ModalBody() {{
-            add( uiBinder.createAndBindUi( AbstractConcurrentChangePopup.this ) );
-        }} );
-        add( new ModalFooterReOpenIgnoreButtons( this,
-                                                 onAction,
-                                                 onIgnore,
-                                                 buttonText ) );
-
-        message.setHTML( SafeHtmlUtils.fromTrustedString( content ) );
-    }
-
-    protected AbstractConcurrentChangePopup( final String content,
-                                             final Command onIgnore,
-                                             final Command onReOpen ) {
-        this( content,
-              onIgnore,
-              onReOpen,
-              CommonConstants.INSTANCE.ReOpen() );
-    }
-
-    protected AbstractConcurrentChangePopup( final String content,
-                                             final Command onForceSave,
-                                             final Command onIgnore,
-                                             final Command onReOpen ) {
-        setTitle( CommonConstants.INSTANCE.Error() );
-
-        add( new ModalBody() {{
-            add( uiBinder.createAndBindUi( AbstractConcurrentChangePopup.this ) );
-        }} );
-        add( new ModalFooterForceSaveReOpenCancelButtons( this,
-                                                          onForceSave,
-                                                          onReOpen,
-                                                          onIgnore ) );
-
-        message.setHTML( SafeHtmlUtils.fromTrustedString( content ) );
-    }
-
 }

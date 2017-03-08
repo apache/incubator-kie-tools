@@ -16,6 +16,13 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.user;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.validation.ConstraintViolation;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -25,27 +32,36 @@ import org.uberfire.ext.security.management.client.widgets.management.explorer.A
 import org.uberfire.ext.security.management.client.widgets.management.explorer.ExplorerViewContext;
 import org.uberfire.mvp.Command;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.validation.ConstraintViolation;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 /**
  * <p>Presenter base class for user's assigned entities editor.</p>
- *
  * @since 0.8.0
  */
 public abstract class UserAssignedEntitiesEditor<T> implements IsWidget {
 
-    ClientUserSystemManager userSystemManager;
-    AbstractEntityExplorer<T> entitiesExplorer;
     public AssignedEntitiesEditor view;
-
+    final Command closeEditorCallback = new Command() {
+        @Override
+        public void execute() {
+            hide();
+        }
+    };
     protected Set<T> entities = new LinkedHashSet<T>();
     protected boolean isEditMode;
-    
+    ClientUserSystemManager userSystemManager;
+    AbstractEntityExplorer<T> entitiesExplorer;
+    final Command saveEditorCallback = new Command() {
+
+        @Override
+        public void execute() {
+            hide();
+
+            final Set<String> selected = entitiesExplorer.getSelectedEntities();
+            entities.clear();
+            onSave(selected);
+            entitiesExplorer.clear();
+        }
+    };
+
     @Inject
     public UserAssignedEntitiesEditor(final ClientUserSystemManager userSystemManager,
                                       final AbstractEntityExplorer<T> entitiesExplorer,
@@ -59,37 +75,41 @@ public abstract class UserAssignedEntitiesEditor<T> implements IsWidget {
     public Widget asWidget() {
         return view.asWidget();
     }
-    
-    
+
     protected abstract String getCancelText();
+
     protected abstract String getAddText();
-    protected abstract String getTitle();
-    protected abstract String getEntityIdentifier(T entity);
     
     
     /*  ******************************************************************************************************
                                  PUBLIC PRESENTER API 
      ****************************************************************************************************** */
-    
-    @PostConstruct
-    public void init() {
-        view.init(this);
-        view.configure(entitiesExplorer.view);
-        view.configureClose(getCancelText(), closeEditorCallback);
-        view.configureSave(getAddText(), saveEditorCallback);
-        entitiesExplorer.setPageSize(10);
-    }
+
+    protected abstract String getTitle();
 
     /*  ******************************************************************************************************
                                  PUBLIC PRESENTER API 
      ****************************************************************************************************** */
-    
+
+    protected abstract String getEntityIdentifier(T entity);
+
+    @PostConstruct
+    public void init() {
+        view.init(this);
+        view.configure(entitiesExplorer.view);
+        view.configureClose(getCancelText(),
+                            closeEditorCallback);
+        view.configureSave(getAddText(),
+                           saveEditorCallback);
+        entitiesExplorer.setPageSize(10);
+    }
+
     public void show(final User user) {
         clear();
         this.isEditMode = false;
         open(user);
     }
-    
+
     public void edit(final User user) {
         clear();
         this.isEditMode = true;
@@ -108,6 +128,11 @@ public abstract class UserAssignedEntitiesEditor<T> implements IsWidget {
     public void setViolations(Set<ConstraintViolation<User>> constraintViolations) {
         //  Currently no violations expected.
     }
+    
+    
+    /*  ******************************************************************************************************
+                                 PRIVATE METHODS AND VALIDATORS
+     ****************************************************************************************************** */
 
     public void hide() {
         view.hide();
@@ -117,15 +142,9 @@ public abstract class UserAssignedEntitiesEditor<T> implements IsWidget {
         entitiesExplorer.clear();
         entities.clear();
     }
-    
-    
-    /*  ******************************************************************************************************
-                                 PRIVATE METHODS AND VALIDATORS
-     ****************************************************************************************************** */
-    
+
     protected ExplorerViewContext getViewContext() {
         return new ExplorerViewContext() {
-
 
             @Override
             public boolean canCreate() {
@@ -163,38 +182,15 @@ public abstract class UserAssignedEntitiesEditor<T> implements IsWidget {
             public Set<String> getConstrainedEntities() {
                 return new HashSet<String>();
             }
-
         };
     }
-    
+
     protected void open(final User user) {
         assert user != null;
         view.show(getTitle() + " " + user.getIdentifier());
     }
-    
+
     protected void onSave(final Set<String> selectedEntities) {
-        
+
     }
-
-    final Command closeEditorCallback = new Command() {
-        @Override
-        public void execute() {
-            hide();
-        }
-    };
-
-    final Command saveEditorCallback = new Command() {
-        
-        @Override
-        public void execute() {
-            hide();
-
-            final Set<String> selected = entitiesExplorer.getSelectedEntities();
-            entities.clear();
-            onSave(selected);
-            entitiesExplorer.clear();
-        }
-        
-    };
-
 }

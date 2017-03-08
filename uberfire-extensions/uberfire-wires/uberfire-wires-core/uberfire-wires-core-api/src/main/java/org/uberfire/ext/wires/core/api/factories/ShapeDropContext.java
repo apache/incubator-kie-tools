@@ -22,6 +22,5 @@ public interface ShapeDropContext<T> {
 
     T getContext();
 
-    void setContext( final T context );
-
+    void setContext(final T context);
 }

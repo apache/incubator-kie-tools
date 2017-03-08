@@ -23,7 +23,6 @@ import org.uberfire.security.authz.PermissionCollection;
 
 /**
  * <p>A group editor</p>
- *
  * @since 0.9.0
  */
 public interface GroupEditor extends Editor<Group, Group> {

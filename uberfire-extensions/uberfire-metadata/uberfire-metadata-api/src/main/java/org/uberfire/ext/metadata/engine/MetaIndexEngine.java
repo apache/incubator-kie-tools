@@ -25,24 +25,24 @@ public interface MetaIndexEngine extends PriorityDisposable {
 
     String FULL_TEXT_FIELD = "fullText";
 
-    boolean freshIndex( final KCluster cluster );
+    boolean freshIndex(final KCluster cluster);
 
-    void startBatch( final KCluster cluster );
+    void startBatch(final KCluster cluster);
 
-    void index( final KObject object );
+    void index(final KObject object);
 
-    void index( final KObject... objects );
+    void index(final KObject... objects);
 
-    void rename( final KObjectKey from,
-                 final KObject to );
+    void rename(final KObjectKey from,
+                final KObject to);
 
-    void delete( final KCluster cluster );
+    void delete(final KCluster cluster);
 
-    void delete( final KObjectKey objectKey );
+    void delete(final KObjectKey objectKey);
 
-    void delete( final KObjectKey... objectsKey );
+    void delete(final KObjectKey... objectsKey);
 
-    void commit( final KCluster cluster );
+    void commit(final KCluster cluster);
 
-    void beforeDispose( final Runnable callback );
+    void beforeDispose(final Runnable callback);
 }

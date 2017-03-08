@@ -47,17 +47,9 @@ public interface PermissionNode {
 
     /**
      * Get the parent node.
-     *
      * @return null if this is a root node
      */
     PermissionNode getParentNode();
-
-    /**
-     * A number indicating at what specific levels this node is placed within the {@link PermissionTree}
-     *
-     * @return A positive integer from 0 to N, where <i>0=root</i>, <i>N=leaf</i>.
-     */
-    int getLevel();
 
     /**
      * Set this node's parent
@@ -65,15 +57,19 @@ public interface PermissionNode {
     void setParentNode(PermissionNode parentNode);
 
     /**
+     * A number indicating at what specific levels this node is placed within the {@link PermissionTree}
+     * @return A positive integer from 0 to N, where <i>0=root</i>, <i>N=leaf</i>.
+     */
+    int getLevel();
+
+    /**
      * Retrieves the name to display for the given node.
-     *
      * @return The name to display in the UI
      */
     String getNodeName();
 
     /**
      * Retrieves the full name to display for the given node.
-     *
      * @return The name to display in the UI
      */
     String getNodeFullName();
@@ -91,24 +87,25 @@ public interface PermissionNode {
 
     /**
      * Updates the node's permission values according to the values specified in the given collection.
-     *
-     * @param  collection The permission collection with the results to apply.
+     * @param collection The permission collection with the results to apply.
      */
     void updatePermissionList(PermissionCollection collection);
 
     /**
      * Add a permission instance to the list
      */
-    void addPermission(Permission permission, String name);
+    void addPermission(Permission permission,
+                       String name);
 
     /**
      * Add a permission instance to the list
      */
-    void addPermission(Permission permission, String grantName, String denyName);
+    void addPermission(Permission permission,
+                       String grantName,
+                       String denyName);
 
     /**
      * Retrieves the name to display for the grant action.
-     *
      * @param permission The {@link Permission} instance
      * @return The name to display in the UI
      */
@@ -116,7 +113,6 @@ public interface PermissionNode {
 
     /**
      * Retrieves the name to display for the deny action.
-     *
      * @param permission The {@link Permission} instance
      * @return The name to display in the UI
      */
@@ -125,17 +121,16 @@ public interface PermissionNode {
     /**
      * Attach to the given {@link Permission} instance a set of permissions which depends on it so that if the
      * permission is denied then all its dependencies must be denied as well.
-     *
+     * <p>
      * <p>For instance, the update and delete permission over a resource depends on the read permission.</p>
-     *
      * @param permission The {@link Permission} instance
      * @param dependencies The set of dependencies
      */
-    void addDependencies(Permission permission, Permission... dependencies);
+    void addDependencies(Permission permission,
+                         Permission... dependencies);
 
     /**
      * Get the dependencies (if any) attached to a given permission instance.
-     *
      * @param permission The permission to check
      * @return A list of permissions
      */
@@ -143,14 +138,12 @@ public interface PermissionNode {
 
     /**
      * Get the expand status
-     *
      * @return true if expanded, false if collapsed
      */
     boolean isExpanded();
 
     /**
      * Get a property attached to this node
-     *
      * @param key The property key
      * @return The value object
      */
@@ -158,35 +151,33 @@ public interface PermissionNode {
 
     /**
      * Attach a property to this node
-     *
      * @param key The property key
      * @param value The value object
      */
-    void setProperty(String key, Object value);
+    void setProperty(String key,
+                     Object value);
 
     /**
      * Check if a property exists and matchs the given value
-     *
      * @param key The property key
      * @param value The value object to check
      */
-    boolean propertyEquals(String key, Object  value);
+    boolean propertyEquals(String key,
+                           Object value);
 
     /**
      * Retrieve the permissions of the specified node that are implied by this node's permissions.
-     *
      * @return A sub-list of {@link Permission} instances
      */
     List<Permission> impliesName(PermissionNode node);
 
     /**
      * Expand the node.
-     *
+     * <p>
      * <p>The children nodes are loaded asynchronously and the consumer instance passed
      * as a parameter is invoked after the loading process is done.</p>
-     *
+     * <p>
      * <p>It does nothing in case the node is already expanded.</p>
-     *
      * @param consumer The callback instance that consumes the children nodes.
      */
     void expand(LoadCallback consumer);

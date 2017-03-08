@@ -42,17 +42,23 @@ import org.uberfire.java.nio.fs.jgit.util.JGitUtil;
 import org.uberfire.java.nio.fs.jgit.util.commands.Squash;
 import org.uberfire.java.nio.fs.jgit.util.exceptions.GitException;
 
-import static org.fest.assertions.api.Assertions.*;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType.*;
-import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.*;
+import static org.fest.assertions.api.Assertions.assertThat;
+import static org.fest.assertions.api.Assertions.fail;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType.DIRECTORY;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType.FILE;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.PathType.NOT_FOUND;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.cloneRepository;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.commit;
+import static org.uberfire.java.nio.fs.jgit.util.JGitUtil.resolveObjectId;
 
 public class JGitSquashingTest extends AbstractTestInfra {
 
-    private Logger logger = LoggerFactory.getLogger( JGitSquashingTest.class );
-
     static {
-        CredentialsProvider.setDefault( new UsernamePasswordCredentialsProvider( "guest", "" ) );
+        CredentialsProvider.setDefault(new UsernamePasswordCredentialsProvider("guest",
+                                                                               ""));
     }
+
+    private Logger logger = LoggerFactory.getLogger(JGitSquashingTest.class);
 
     /*
      * The following test shows how to do a rebase with Fixup to squash a set of commits
@@ -63,88 +69,98 @@ public class JGitSquashingTest extends AbstractTestInfra {
     @Test
     public void rawRebaseWithFixUp() throws IOException, GitAPIException {
 
-        logger.info( ">>>>>>>>>>>>>>>>>>> rawRebaseWithFixUp" );
+        logger.info(">>>>>>>>>>>>>>>>>>> rawRebaseWithFixUp");
 
         final File parentFolder = createTempDirectory();
 
-        final File gitFolder = new File( parentFolder, "myrepo.git" );
+        final File gitFolder = new File(parentFolder,
+                                        "myrepo.git");
 
-        final Git origin = JGitUtil.newRepository( gitFolder, true );
+        final Git origin = JGitUtil.newRepository(gitFolder,
+                                                  true);
 
-        final File gitClonedFolder = new File( parentFolder, "myclone.git" );
+        final File gitClonedFolder = new File(parentFolder,
+                                              "myclone.git");
 
-        final Git clone = cloneRepository( gitClonedFolder, origin.getRepository().getDirectory().toString(), false, CredentialsProvider.getDefault() );
+        final Git clone = cloneRepository(gitClonedFolder,
+                                          origin.getRepository().getDirectory().toString(),
+                                          false,
+                                          CredentialsProvider.getDefault());
 
-        createAddAndCommitFile( clone, "testfile0" );
+        createAddAndCommitFile(clone,
+                               "testfile0");
 
-        Iterable<RevCommit> logs = clone.log().all().setMaxCount( 1 ).call();
+        Iterable<RevCommit> logs = clone.log().all().setMaxCount(1).call();
         Iterator<RevCommit> iterator = logs.iterator();
-        assertThat( iterator.hasNext() ).isTrue();
+        assertThat(iterator.hasNext()).isTrue();
         RevCommit firstCommit = iterator.next();
 
-        createAddAndCommitFile( clone, "testfile1" );
+        createAddAndCommitFile(clone,
+                               "testfile1");
 
-        createAddAndCommitFile( clone, "testfile2" );
+        createAddAndCommitFile(clone,
+                               "testfile2");
 
-        createAddAndCommitFile( clone, "testfile3" );
+        createAddAndCommitFile(clone,
+                               "testfile3");
 
-        logs = clone.log().all().setMaxCount( 1 ).call();
+        logs = clone.log().all().setMaxCount(1).call();
         iterator = logs.iterator();
-        assertThat( iterator.hasNext() ).isTrue();
+        assertThat(iterator.hasNext()).isTrue();
         final RevCommit thirdCommit = iterator.next();
-        createAddAndCommitFile( clone, "testfile4" );
+        createAddAndCommitFile(clone,
+                               "testfile4");
 
         final String squashedCommitMessage = "I'm here to squash some changes";
         final RevCommit lastSquashedCommit = thirdCommit;
         InteractiveHandler handler = new InteractiveHandler() {
-            public void prepareSteps( List<RebaseTodoLine> steps ) {
+            public void prepareSteps(List<RebaseTodoLine> steps) {
                 try {
 
                     int counter = 0;
-                    for ( RebaseTodoLine step : steps ) {
-                        if ( counter == 0 ) {
-                            step.setAction( RebaseTodoLine.Action.PICK );
+                    for (RebaseTodoLine step : steps) {
+                        if (counter == 0) {
+                            step.setAction(RebaseTodoLine.Action.PICK);
                         } else {
-                            step.setAction( RebaseTodoLine.Action.SQUASH );
+                            step.setAction(RebaseTodoLine.Action.SQUASH);
                         }
-                        if ( step.getCommit().prefixCompare( lastSquashedCommit ) == 0 ) {
+                        if (step.getCommit().prefixCompare(lastSquashedCommit) == 0) {
                             break;
                         }
                         counter++;
                     }
-                } catch ( IllegalTodoFileModification ex ) {
-                    logger.error( ex.getLocalizedMessage(), ex );
+                } catch (IllegalTodoFileModification ex) {
+                    logger.error(ex.getLocalizedMessage(),
+                                 ex);
                 }
-
             }
 
             @Override
-            public String modifyCommitMessage( String oldMessage ) {
+            public String modifyCommitMessage(String oldMessage) {
                 return squashedCommitMessage;
             }
         };
 
-        logger.info( "#### Before Rebase" );
+        logger.info("#### Before Rebase");
         int counter = 0;
-        for ( RevCommit commit : clone.log().all().call() ) {
-            logger.info( ">Commit: " + commit.getFullMessage() );
+        for (RevCommit commit : clone.log().all().call()) {
+            logger.info(">Commit: " + commit.getFullMessage());
             counter++;
         }
-        logger.info( "#### Before Rebase Commits: " + counter );
+        logger.info("#### Before Rebase Commits: " + counter);
 
-        RebaseResult rebaseResult = clone.rebase().setUpstream( firstCommit ).runInteractively( handler ).call();
-        assertThat( rebaseResult.getStatus() ).isSameAs( RebaseResult.Status.OK );
+        RebaseResult rebaseResult = clone.rebase().setUpstream(firstCommit).runInteractively(handler).call();
+        assertThat(rebaseResult.getStatus()).isSameAs(RebaseResult.Status.OK);
 
-        logger.info( "#### After Rebase" );
+        logger.info("#### After Rebase");
         counter = 0;
-        for ( RevCommit commit : clone.log().all().call() ) {
-            logger.info( ">Commit: " + commit.getFullMessage() );
+        for (RevCommit commit : clone.log().all().call()) {
+            logger.info(">Commit: " + commit.getFullMessage());
             counter++;
         }
-        logger.info( "#### After Rebase Commits: " + counter );
+        logger.info("#### After Rebase Commits: " + counter);
 
-        logger.info( ">>>>>>>>>>>>>>>>>>> END rawRebaseWithFixUp" );
-
+        logger.info(">>>>>>>>>>>>>>>>>>> END rawRebaseWithFixUp");
     }
 
     /*
@@ -154,119 +170,221 @@ public class JGitSquashingTest extends AbstractTestInfra {
     public void testSquash4Of5Commits() throws IOException, GitAPIException {
 
         final File parentFolder = createTempDirectory();
-        logger.info( ">> Parent Forlder for the Test: " + parentFolder.getAbsolutePath() );
-        final File gitFolder = new File( parentFolder, "my-local-repo.git" );
+        logger.info(">> Parent Forlder for the Test: " + parentFolder.getAbsolutePath());
+        final File gitFolder = new File(parentFolder,
+                                        "my-local-repo.git");
 
-        final Git origin = JGitUtil.newRepository( gitFolder, true );
+        final Git origin = JGitUtil.newRepository(gitFolder,
+                                                  true);
 
-        commit( origin, "master", "salaboy", "salaboy@example.com", "commit 1!", null, null, false, new HashMap<String, File>() {
-            {
-                put( "path/to/file1.txt", tempFile( "initial content file 1" ) );
-            }
-        } );
-        commit( origin, "master", "salaboy", "salaboy@example.com", "commit 2!", null, null, false, new HashMap<String, File>() {
-            {
-                put( "path/to/file2.txt", tempFile( "initial content file 2" ) );
-            }
-        } );
-        Iterable<RevCommit> logs = origin.log().setMaxCount( 1 ).all().call();
+        commit(origin,
+               "master",
+               "salaboy",
+               "salaboy@example.com",
+               "commit 1!",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file1.txt",
+                           tempFile("initial content file 1"));
+                   }
+               });
+        commit(origin,
+               "master",
+               "salaboy",
+               "salaboy@example.com",
+               "commit 2!",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file2.txt",
+                           tempFile("initial content file 2"));
+                   }
+               });
+        Iterable<RevCommit> logs = origin.log().setMaxCount(1).all().call();
         RevCommit secondCommit = logs.iterator().next();
 
-        commit( origin, "master", "salaboy", "salaboy@example.com", "commit 3!", null, null, false, new HashMap<String, File>() {
-            {
-                put( "path/to/file1.txt", tempFile( "new content file 1" ) );
-            }
-        } );
+        commit(origin,
+               "master",
+               "salaboy",
+               "salaboy@example.com",
+               "commit 3!",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file1.txt",
+                           tempFile("new content file 1"));
+                   }
+               });
 
-        commit( origin, "master", "salaboy", "salaboy@example.com", "commit 4!", null, null, false, new HashMap<String, File>() {
-            {
-                put( "path/to/file2.txt", tempFile( "new content file 2" ) );
-            }
-        } );
-        commit( origin, "master", "salaboy", "salaboy@example.com", "commit 5!", null, null, false, new HashMap<String, File>() {
-            {
-                put( "path/to/file3.txt", tempFile( "initial content file 3" ) );
-            }
-        } );
+        commit(origin,
+               "master",
+               "salaboy",
+               "salaboy@example.com",
+               "commit 4!",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file2.txt",
+                           tempFile("new content file 2"));
+                   }
+               });
+        commit(origin,
+               "master",
+               "salaboy",
+               "salaboy@example.com",
+               "commit 5!",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file3.txt",
+                           tempFile("initial content file 3"));
+                   }
+               });
         logs = origin.log().all().call();
         int commitsCount = 0;
-        for ( RevCommit commit : logs ) {
-            logger.info( ">>> Origin Commit: " + commit.getFullMessage() + " - " + commit.toString() );
+        for (RevCommit commit : logs) {
+            logger.info(">>> Origin Commit: " + commit.getFullMessage() + " - " + commit.toString());
             commitsCount++;
         }
-        assertThat( commitsCount ).isEqualTo( 5 );
+        assertThat(commitsCount).isEqualTo(5);
 
-        assertThat( JGitUtil.checkPath( origin, "master", "pathx/" ).getK1() ).isEqualTo( NOT_FOUND );
-        assertThat( JGitUtil.checkPath( origin, "master", "path/to/file1.txt" ).getK1() ).isEqualTo( FILE );
-        assertThat( JGitUtil.checkPath( origin, "master", "path/to/file2.txt" ).getK1() ).isEqualTo( FILE );
-        assertThat( JGitUtil.checkPath( origin, "master", "path/to/file3.txt" ).getK1() ).isEqualTo( FILE );
-        assertThat( JGitUtil.checkPath( origin, "master", "path/to" ).getK1() ).isEqualTo( DIRECTORY );
+        assertThat(JGitUtil.checkPath(origin,
+                                      "master",
+                                      "pathx/").getK1()).isEqualTo(NOT_FOUND);
+        assertThat(JGitUtil.checkPath(origin,
+                                      "master",
+                                      "path/to/file1.txt").getK1()).isEqualTo(FILE);
+        assertThat(JGitUtil.checkPath(origin,
+                                      "master",
+                                      "path/to/file2.txt").getK1()).isEqualTo(FILE);
+        assertThat(JGitUtil.checkPath(origin,
+                                      "master",
+                                      "path/to/file3.txt").getK1()).isEqualTo(FILE);
+        assertThat(JGitUtil.checkPath(origin,
+                                      "master",
+                                      "path/to").getK1()).isEqualTo(DIRECTORY);
 
-        logger.info( "Squashing from " + secondCommit.getName() + "  to HEAD" );
-        new Squash( origin, "master", secondCommit.getName(), "squashed message" ).execute();
+        logger.info("Squashing from " + secondCommit.getName() + "  to HEAD");
+        new Squash(origin,
+                   "master",
+                   secondCommit.getName(),
+                   "squashed message").execute();
 
         commitsCount = 0;
-        for ( RevCommit commit : origin.log().all().call() ) {
-            logger.info( ">>> Final Commit: " + commit.getFullMessage() + " - " + commit.toString() );
+        for (RevCommit commit : origin.log().all().call()) {
+            logger.info(">>> Final Commit: " + commit.getFullMessage() + " - " + commit.toString());
             commitsCount++;
         }
-        assertThat( commitsCount ).isEqualTo( 2 );
-
+        assertThat(commitsCount).isEqualTo(2);
     }
 
     @Test
     public void testFailWhenTryToSquashCommitsFromDifferentBranches() throws IOException, GitAPIException {
 
         final File parentFolder = createTempDirectory();
-        logger.info( ">> Parent Forlder for the Test: " + parentFolder.getAbsolutePath() );
-        final File gitFolder = new File( parentFolder, "my-local-repo.git" );
+        logger.info(">> Parent Forlder for the Test: " + parentFolder.getAbsolutePath());
+        final File gitFolder = new File(parentFolder,
+                                        "my-local-repo.git");
 
-        final Git origin = JGitUtil.newRepository( gitFolder, true );
+        final Git origin = JGitUtil.newRepository(gitFolder,
+                                                  true);
 
-        commit( origin, "master", "aparedes", "aparedes@example.com", "commit 1!", null, null, false, new HashMap<String, File>() {
-            {
-                put( "path/to/file1.txt", tempFile( "initial content file 1" ) );
-            }
-        } );
-        commit( origin, "develop", "salaboy", "salaboy@example.com", "commit 2!", null, null, false, new HashMap<String, File>() {
-            {
-                put( "path/to/file2.txt", tempFile( "initial content file 2" ) );
-            }
-        } );
-        commit( origin, "master", "aparedes", "aparedes@example.com", "commit 3!", null, null, false, new HashMap<String, File>() {
-            {
-                put( "path/to/file3.txt", tempFile( "initial content file 1" ) );
-            }
-        } );
-        commit( origin, "master", "aparedes", "aparedes@example.com", "commit 4!", null, null, false, new HashMap<String, File>() {
-            {
-                put( "path/to/file4.txt", tempFile( "initial content file 1" ) );
-            }
-        } );
+        commit(origin,
+               "master",
+               "aparedes",
+               "aparedes@example.com",
+               "commit 1!",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file1.txt",
+                           tempFile("initial content file 1"));
+                   }
+               });
+        commit(origin,
+               "develop",
+               "salaboy",
+               "salaboy@example.com",
+               "commit 2!",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file2.txt",
+                           tempFile("initial content file 2"));
+                   }
+               });
+        commit(origin,
+               "master",
+               "aparedes",
+               "aparedes@example.com",
+               "commit 3!",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file3.txt",
+                           tempFile("initial content file 1"));
+                   }
+               });
+        commit(origin,
+               "master",
+               "aparedes",
+               "aparedes@example.com",
+               "commit 4!",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file4.txt",
+                           tempFile("initial content file 1"));
+                   }
+               });
 
-        List<RevCommit> masterCommits = getCommitsFromBranch( origin, "master" );
-        List<RevCommit> developCommits = getCommitsFromBranch( origin, "develop" );
+        List<RevCommit> masterCommits = getCommitsFromBranch(origin,
+                                                             "master");
+        List<RevCommit> developCommits = getCommitsFromBranch(origin,
+                                                              "develop");
 
-        assertThat( masterCommits.size() ).isEqualTo( 3 );
-        assertThat( developCommits.size() ).isEqualTo( 1 );
+        assertThat(masterCommits.size()).isEqualTo(3);
+        assertThat(developCommits.size()).isEqualTo(1);
 
         try {
-            new Squash( origin, "master", developCommits.get( 0 ).getName(), "squashed message" ).execute();
-            fail( "If it reaches here the test has failed because he found the commit into the branch" );
-        } catch ( GitException e ) {
-            logger.info( e.getMessage() );
-            assertThat( e ).isNotNull();
+            new Squash(origin,
+                       "master",
+                       developCommits.get(0).getName(),
+                       "squashed message").execute();
+            fail("If it reaches here the test has failed because he found the commit into the branch");
+        } catch (GitException e) {
+            logger.info(e.getMessage());
+            assertThat(e).isNotNull();
         }
-
     }
 
-    private List<RevCommit> getCommitsFromBranch( final Git origin,
-                                                  String branch ) throws GitAPIException, MissingObjectException, IncorrectObjectTypeException {
+    private List<RevCommit> getCommitsFromBranch(final Git origin,
+                                                 String branch) throws GitAPIException, MissingObjectException, IncorrectObjectTypeException {
         List<RevCommit> commits = new ArrayList<>();
-        final ObjectId id = resolveObjectId( origin, branch );
-        for ( RevCommit commit : origin.log().add( id ).call() ) {
-            logger.info( ">>> " + branch + " Commits: " + commit.getFullMessage() + " - " + commit.toString() );
-            commits.add( commit );
+        final ObjectId id = resolveObjectId(origin,
+                                            branch);
+        for (RevCommit commit : origin.log().add(id).call()) {
+            logger.info(">>> " + branch + " Commits: " + commit.getFullMessage() + " - " + commit.toString());
+            commits.add(commit);
         }
         return commits;
     }
@@ -279,62 +397,121 @@ public class JGitSquashingTest extends AbstractTestInfra {
     public void testSquashCommitsWithDifferentPaths() throws IOException, GitAPIException {
 
         final File parentFolder = createTempDirectory();
-        logger.info( ">> Parent Folder for the Test: " + parentFolder.getAbsolutePath() );
-        final File gitFolder = new File( parentFolder, "my-local-repo.git" );
+        logger.info(">> Parent Folder for the Test: " + parentFolder.getAbsolutePath());
+        final File gitFolder = new File(parentFolder,
+                                        "my-local-repo.git");
 
-        final Git origin = JGitUtil.newRepository( gitFolder, true );
+        final Git origin = JGitUtil.newRepository(gitFolder,
+                                                  true);
 
-        commit( origin, "master", "salaboy", "salaboy@example.com", "commit 1!", null, null, false, new HashMap<String, File>() {
-            {
-                put( "file1.txt", tempFile( "initial content file 1" ) );
-            }
-        } );
-        commit( origin, "master", "salaboy", "salaboy@example.com", "commit 2!", null, null, false, new HashMap<String, File>() {
-            {
-                put( "path/to/file2.txt", tempFile( "initial content file 2" ) );
-            }
-        } );
-        Iterable<RevCommit> logs = origin.log().setMaxCount( 1 ).all().call();
+        commit(origin,
+               "master",
+               "salaboy",
+               "salaboy@example.com",
+               "commit 1!",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("file1.txt",
+                           tempFile("initial content file 1"));
+                   }
+               });
+        commit(origin,
+               "master",
+               "salaboy",
+               "salaboy@example.com",
+               "commit 2!",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file2.txt",
+                           tempFile("initial content file 2"));
+                   }
+               });
+        Iterable<RevCommit> logs = origin.log().setMaxCount(1).all().call();
         RevCommit secondCommit = logs.iterator().next();
 
-        commit( origin, "master", "salaboy", "salaboy@example.com", "commit 3!", null, null, false, new HashMap<String, File>() {
-            {
-                put( "file1.txt", tempFile( "new content file 1" ) );
-            }
-        } );
+        commit(origin,
+               "master",
+               "salaboy",
+               "salaboy@example.com",
+               "commit 3!",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("file1.txt",
+                           tempFile("new content file 1"));
+                   }
+               });
 
-        commit( origin, "master", "salaboy", "salaboy@example.com", "commit 4!", null, null, false, new HashMap<String, File>() {
-            {
-                put( "path/to/file2.txt", tempFile( "new content file 2" ) );
-            }
-        } );
-        commit( origin, "master", "salaboy", "salaboy@example.com", "commit 5!", null, null, false, new HashMap<String, File>() {
-            {
-                put( "path/file3.txt", tempFile( "initial content file 3" ) );
-            }
-        } );
+        commit(origin,
+               "master",
+               "salaboy",
+               "salaboy@example.com",
+               "commit 4!",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/to/file2.txt",
+                           tempFile("new content file 2"));
+                   }
+               });
+        commit(origin,
+               "master",
+               "salaboy",
+               "salaboy@example.com",
+               "commit 5!",
+               null,
+               null,
+               false,
+               new HashMap<String, File>() {
+                   {
+                       put("path/file3.txt",
+                           tempFile("initial content file 3"));
+                   }
+               });
 
-        for ( RevCommit commit : origin.log().all().call() ) {
-            logger.info( ">>> Origin Commit: " + commit.getFullMessage() + " - " + commit.toString() );
+        for (RevCommit commit : origin.log().all().call()) {
+            logger.info(">>> Origin Commit: " + commit.getFullMessage() + " - " + commit.toString());
         }
 
-        assertThat( JGitUtil.checkPath( origin, "master", "pathx/" ).getK1() ).isEqualTo( NOT_FOUND );
-        assertThat( JGitUtil.checkPath( origin, "master", "file1.txt" ).getK1() ).isEqualTo( FILE );
-        assertThat( JGitUtil.checkPath( origin, "master", "path/to/file2.txt" ).getK1() ).isEqualTo( FILE );
-        assertThat( JGitUtil.checkPath( origin, "master", "path/file3.txt" ).getK1() ).isEqualTo( FILE );
-        assertThat( JGitUtil.checkPath( origin, "master", "path/to" ).getK1() ).isEqualTo( DIRECTORY );
+        assertThat(JGitUtil.checkPath(origin,
+                                      "master",
+                                      "pathx/").getK1()).isEqualTo(NOT_FOUND);
+        assertThat(JGitUtil.checkPath(origin,
+                                      "master",
+                                      "file1.txt").getK1()).isEqualTo(FILE);
+        assertThat(JGitUtil.checkPath(origin,
+                                      "master",
+                                      "path/to/file2.txt").getK1()).isEqualTo(FILE);
+        assertThat(JGitUtil.checkPath(origin,
+                                      "master",
+                                      "path/file3.txt").getK1()).isEqualTo(FILE);
+        assertThat(JGitUtil.checkPath(origin,
+                                      "master",
+                                      "path/to").getK1()).isEqualTo(DIRECTORY);
 
-        logger.info( "Squashing from " + secondCommit.getName() + "  to HEAD" );
-        new Squash( origin, "master", secondCommit.getName(), "squashed message" ).execute();
+        logger.info("Squashing from " + secondCommit.getName() + "  to HEAD");
+        new Squash(origin,
+                   "master",
+                   secondCommit.getName(),
+                   "squashed message").execute();
 
         int commitsCount = 0;
-        for ( RevCommit commit : origin.log().all().call() ) {
-            logger.info( ">>> Final Commit: " + commit.getFullMessage() + " - " + commit.toString() );
+        for (RevCommit commit : origin.log().all().call()) {
+            logger.info(">>> Final Commit: " + commit.getFullMessage() + " - " + commit.toString());
             commitsCount++;
         }
 
-        assertThat( commitsCount ).isEqualTo( 2 );
-
+        assertThat(commitsCount).isEqualTo(2);
     }
 
     @Test(expected = IllegalStateException.class)
@@ -342,24 +519,29 @@ public class JGitSquashingTest extends AbstractTestInfra {
 
         final File parentFolder = createTempDirectory();
 
-        final File gitFolder = new File( parentFolder, "myrepo.git" );
-        final Git origin = JGitUtil.newRepository( gitFolder, false );
+        final File gitFolder = new File(parentFolder,
+                                        "myrepo.git");
+        final Git origin = JGitUtil.newRepository(gitFolder,
+                                                  false);
 
-        new Squash( origin, "master", null, "squashed message" ).execute();
+        new Squash(origin,
+                   "master",
+                   null,
+                   "squashed message").execute();
     }
 
-    private void createAddAndCommitFile( Git git,
-                                         String file ) throws GitAPIException, IOException {
-        File myfile = new File( git.getRepository().getDirectory().getParent(), file );
+    private void createAddAndCommitFile(Git git,
+                                        String file) throws GitAPIException, IOException {
+        File myfile = new File(git.getRepository().getDirectory().getParent(),
+                               file);
         myfile.createNewFile();
 
         git.add()
-                .addFilepattern( file )
+                .addFilepattern(file)
                 .call();
 
         git.commit()
-                .setMessage( "Added " + file )
+                .setMessage("Added " + file)
                 .call();
-
     }
 }

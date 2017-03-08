@@ -20,10 +20,10 @@ import org.jboss.errai.bus.server.annotations.Remote;
 @Remote
 public interface UserPreferencesService {
 
-    void saveUserPreferences( final UserPreference preferences );
+    void saveUserPreferences(final UserPreference preferences);
 
-    UserPreference loadUserPreferences( final String key,
-                                        final UserPreferencesType type );
+    UserPreference loadUserPreferences(final String key,
+                                       final UserPreferencesType type);
 
-    UserPreference loadUserPreferences( final UserPreference preferences );
+    UserPreference loadUserPreferences(final UserPreference preferences);
 }

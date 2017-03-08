@@ -20,5 +20,5 @@ import org.uberfire.workbench.model.menu.Menus;
 
 public interface HasMenus {
 
-    void addMenus( final Menus menus );
+    void addMenus(final Menus menus);
 }

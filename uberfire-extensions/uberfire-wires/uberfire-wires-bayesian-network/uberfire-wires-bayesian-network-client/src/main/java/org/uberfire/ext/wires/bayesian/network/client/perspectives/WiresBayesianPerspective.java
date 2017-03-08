@@ -48,36 +48,35 @@ public class WiresBayesianPerspective {
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl( SimpleWorkbenchPanelPresenter.class.getName() );
-        perspective.setName( WIRES );
+        PerspectiveDefinition perspective = new PerspectiveDefinitionImpl(SimpleWorkbenchPanelPresenter.class.getName());
+        perspective.setName(WIRES);
 
-        perspective.getRoot().addPart( new PartDefinitionImpl( new DefaultPlaceRequest( BAYESIAN_SCREEN ) ) );
+        perspective.getRoot().addPart(new PartDefinitionImpl(new DefaultPlaceRequest(BAYESIAN_SCREEN)));
 
-        final PanelDefinition layersPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        layersPanel.setMinWidth( MIN_WIDTH_PANEL );
-        layersPanel.setWidth( WIDTH_PANEL );
-        layersPanel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( WIRES_LAYERS_SCREEN ) ) );
+        final PanelDefinition layersPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        layersPanel.setMinWidth(MIN_WIDTH_PANEL);
+        layersPanel.setWidth(WIDTH_PANEL);
+        layersPanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(WIRES_LAYERS_SCREEN)));
 
-        final PanelDefinition templatesPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        templatesPanel.setMinWidth( MIN_WIDTH_PANEL );
-        templatesPanel.setWidth( WIDTH_PANEL );
-        templatesPanel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( WIRES_TEMPLATE_SCREEN ) ) );
+        final PanelDefinition templatesPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        templatesPanel.setMinWidth(MIN_WIDTH_PANEL);
+        templatesPanel.setWidth(WIDTH_PANEL);
+        templatesPanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(WIRES_TEMPLATE_SCREEN)));
 
-        layersPanel.appendChild( CompassPosition.SOUTH,
-                                 templatesPanel );
+        layersPanel.appendChild(CompassPosition.SOUTH,
+                                templatesPanel);
 
-        perspective.getRoot().insertChild( CompassPosition.EAST,
-                                           layersPanel );
+        perspective.getRoot().insertChild(CompassPosition.EAST,
+                                          layersPanel);
 
-        final PanelDefinition variablesPanel = new PanelDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        variablesPanel.setMinWidth( MIN_WIDTH_PANEL );
-        variablesPanel.setWidth( WIDTH_PANEL );
-        variablesPanel.addPart( new PartDefinitionImpl( new DefaultPlaceRequest( BAYESIAN_VARIABLES_SCREEN ) ) );
+        final PanelDefinition variablesPanel = new PanelDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        variablesPanel.setMinWidth(MIN_WIDTH_PANEL);
+        variablesPanel.setWidth(WIDTH_PANEL);
+        variablesPanel.addPart(new PartDefinitionImpl(new DefaultPlaceRequest(BAYESIAN_VARIABLES_SCREEN)));
 
-        perspective.getRoot().insertChild( CompassPosition.SOUTH,
-                                           variablesPanel );
+        perspective.getRoot().insertChild(CompassPosition.SOUTH,
+                                          variablesPanel);
 
         return perspective;
     }
-
 }

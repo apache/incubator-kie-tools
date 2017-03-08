@@ -26,20 +26,28 @@ public class ResourceRefTest {
 
     @Test
     public void testDependencies() {
-        ResourceRef dep1 = new ResourceRef("dep1", () -> "type");
-        ResourceRef ref = new ResourceRef("id", () -> "type", Arrays.asList(dep1));
+        ResourceRef dep1 = new ResourceRef("dep1",
+                                           () -> "type");
+        ResourceRef ref = new ResourceRef("id",
+                                          () -> "type",
+                                          Arrays.asList(dep1));
         assertNotNull(ref.getDependencies());
-        assertEquals(ref.getDependencies().size(), 1);
-        assertEquals(ref.getDependencies().get(0), dep1);
+        assertEquals(ref.getDependencies().size(),
+                     1);
+        assertEquals(ref.getDependencies().get(0),
+                     dep1);
     }
 
     @Test
     public void testEmptyDependencies() {
-        ResourceRef ref = new ResourceRef("id", () -> "type");
+        ResourceRef ref = new ResourceRef("id",
+                                          () -> "type");
         assertNotNull(ref.getIdentifier());
         assertNotNull(ref.getResourceType());
         assertNotNull(ref.getDependencies());
-        assertEquals(ref.getIdentifier(), "id");
-        assertEquals(ref.getResourceType().getName(), "type");
+        assertEquals(ref.getIdentifier(),
+                     "id");
+        assertEquals(ref.getResourceType().getName(),
+                     "type");
     }
 }

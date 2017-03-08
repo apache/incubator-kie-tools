@@ -25,18 +25,18 @@ public class SelectedRange {
     private int width;
     private int height;
 
-    public SelectedRange( final int uiRowIndex,
-                          final int uiColumnIndex ) {
-        this( uiRowIndex,
-              uiColumnIndex,
-              1,
-              1 );
+    public SelectedRange(final int uiRowIndex,
+                         final int uiColumnIndex) {
+        this(uiRowIndex,
+             uiColumnIndex,
+             1,
+             1);
     }
 
-    public SelectedRange( final int uiRowIndex,
-                          final int uiColumnIndex,
-                          final int width,
-                          final int height ) {
+    public SelectedRange(final int uiRowIndex,
+                         final int uiColumnIndex,
+                         final int width,
+                         final int height) {
         this.uiRowIndex = uiRowIndex;
         this.uiColumnIndex = uiColumnIndex;
         this.width = width;
@@ -55,7 +55,7 @@ public class SelectedRange {
         return width;
     }
 
-    public void setWidth( final int width ) {
+    public void setWidth(final int width) {
         this.width = width;
     }
 
@@ -63,32 +63,31 @@ public class SelectedRange {
         return height;
     }
 
-    public void setHeight( final int height ) {
+    public void setHeight(final int height) {
         this.height = height;
     }
 
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof SelectedRange ) ) {
+        if (!(o instanceof SelectedRange)) {
             return false;
         }
 
         SelectedRange that = (SelectedRange) o;
 
-        if ( uiRowIndex != that.uiRowIndex ) {
+        if (uiRowIndex != that.uiRowIndex) {
             return false;
         }
-        if ( uiColumnIndex != that.uiColumnIndex ) {
+        if (uiColumnIndex != that.uiColumnIndex) {
             return false;
         }
-        if ( width != that.width ) {
+        if (width != that.width) {
             return false;
         }
         return height == that.height;
-
     }
 
     @Override

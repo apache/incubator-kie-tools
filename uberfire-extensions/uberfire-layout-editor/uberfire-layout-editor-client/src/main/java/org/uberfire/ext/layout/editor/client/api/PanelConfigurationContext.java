@@ -24,8 +24,11 @@ import org.uberfire.mvp.Command;
  */
 public class PanelConfigurationContext extends ConfigurationContext {
 
-    public PanelConfigurationContext( LayoutComponent component, Command configurationFinish, Command configurationCanceled) {
-        super(component, configurationFinish, configurationCanceled);
+    public PanelConfigurationContext(LayoutComponent component,
+                                     Command configurationFinish,
+                                     Command configurationCanceled) {
+        super(component,
+              configurationFinish,
+              configurationCanceled);
     }
-
 }

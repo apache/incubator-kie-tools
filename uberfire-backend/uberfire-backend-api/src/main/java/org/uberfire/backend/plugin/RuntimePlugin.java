@@ -27,13 +27,14 @@ public class RuntimePlugin {
     public RuntimePlugin() {
     }
 
-    public RuntimePlugin(PluginProcessor.PluginProcessorType type, String pluginName, String pluginContent) {
+    public RuntimePlugin(PluginProcessor.PluginProcessorType type,
+                         String pluginName,
+                         String pluginContent) {
 
         this.type = type;
         this.pluginName = pluginName;
         this.pluginContent = pluginContent;
     }
-
 
     public PluginProcessor.PluginProcessorType getType() {
         return type;
@@ -46,5 +47,4 @@ public class RuntimePlugin {
     public String getPluginName() {
         return pluginName;
     }
-
 }

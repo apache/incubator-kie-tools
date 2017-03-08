@@ -26,7 +26,8 @@ public class HomePerspectiveChangedEvent extends ContextualEvent implements Uber
 
     private PerspectiveActivity perspective;
 
-    public HomePerspectiveChangedEvent(Object context, PerspectiveActivity p) {
+    public HomePerspectiveChangedEvent(Object context,
+                                       PerspectiveActivity p) {
         super(context);
         this.perspective = p;
     }

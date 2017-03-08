@@ -21,16 +21,15 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class CustomObject {
 
+    Long id;
+    String text;
+
     public CustomObject() {
     }
 
-    public CustomObject( final Long id,
-                         final String text ) {
+    public CustomObject(final Long id,
+                        final String text) {
         this.id = id;
         this.text = text;
     }
-
-    Long id;
-
-    String text;
 }

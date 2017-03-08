@@ -31,14 +31,7 @@ public class MarkdownView extends Composite
         RequiresResize,
         MarkdownPresenter.View {
 
-    interface MarkdownViewBinder
-            extends
-            UiBinder<ResizeLayoutPanel, MarkdownView> {
-
-    }
-
     private static MarkdownViewBinder uiBinder = GWT.create(MarkdownViewBinder.class);
-
     @UiField
     protected Markdown markdown;
 
@@ -55,7 +48,13 @@ public class MarkdownView extends Composite
     public void onResize() {
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();
-        setPixelSize(width, height);
+        setPixelSize(width,
+                     height);
     }
 
+    interface MarkdownViewBinder
+            extends
+            UiBinder<ResizeLayoutPanel, MarkdownView> {
+
+    }
 }

@@ -34,23 +34,26 @@ public class FileSystemResourceAdaptorTest {
 
     @Test
     public void testFileSystemToCheckProxyIssuesWithExtraInterfaces() {
-        final FileSystem mockedFS = mock( FileSystem.class );
-        final FileSystem mockedFSId = mock( FileSystem.class, withSettings().extraInterfaces( FileSystemId.class ) );
+        final FileSystem mockedFS = mock(FileSystem.class);
+        final FileSystem mockedFSId = mock(FileSystem.class,
+                                           withSettings().extraInterfaces(FileSystemId.class));
 
-        final Path rootPath = mock( Path.class );
+        final Path rootPath = mock(Path.class);
 
-        when( mockedFS.getRootDirectories() ).thenReturn( Arrays.asList( rootPath ) );
-        when( mockedFSId.getRootDirectories() ).thenReturn( Arrays.asList( rootPath ) );
+        when(mockedFS.getRootDirectories()).thenReturn(Arrays.asList(rootPath));
+        when(mockedFSId.getRootDirectories()).thenReturn(Arrays.asList(rootPath));
 
-        when( rootPath.getFileSystem() ).thenReturn( mockedFSId );
-        when( rootPath.toUri() ).thenReturn( URI.create( "jgit://myrepo" ) );
+        when(rootPath.getFileSystem()).thenReturn(mockedFSId);
+        when(rootPath.toUri()).thenReturn(URI.create("jgit://myrepo"));
 
-        when( ( (FileSystemId) mockedFSId ).id() ).thenReturn( "my-fsid" );
+        when(((FileSystemId) mockedFSId).id()).thenReturn("my-fsid");
 
         {
-            final FileSystemResourceAdaptor fileSystemResourceAdaptor = new FileSystemResourceAdaptor( mockedFS );
-            assertEquals( mockedFSId, fileSystemResourceAdaptor.getFileSystem() );
-            assertEquals( "my-fsid", fileSystemResourceAdaptor.getIdentifier() );
+            final FileSystemResourceAdaptor fileSystemResourceAdaptor = new FileSystemResourceAdaptor(mockedFS);
+            assertEquals(mockedFSId,
+                         fileSystemResourceAdaptor.getFileSystem());
+            assertEquals("my-fsid",
+                         fileSystemResourceAdaptor.getIdentifier());
         }
     }
 }

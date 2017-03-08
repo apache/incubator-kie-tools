@@ -20,10 +20,10 @@ package org.uberfire.ext.widgets.common.client.ace;
  * Callback interface for submitting code completion proposals.
  */
 public interface AceCompletionCallback {
-	/**
-	 * Submit code completion proposals.
-	 * 
-	 * @param proposals the code completion proposals to submit
-	 */
-	public void invokeWithCompletions( AceCompletion[] proposals );
+
+    /**
+     * Submit code completion proposals.
+     * @param proposals the code completion proposals to submit
+     */
+    public void invokeWithCompletions(AceCompletion[] proposals);
 }

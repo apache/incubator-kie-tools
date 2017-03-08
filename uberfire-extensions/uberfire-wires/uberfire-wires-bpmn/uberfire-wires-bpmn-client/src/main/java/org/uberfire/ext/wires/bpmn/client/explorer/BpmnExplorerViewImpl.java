@@ -41,68 +41,67 @@ import org.uberfire.ext.wires.bpmn.client.resources.i18n.BpmnEditorConstants;
 @Dependent
 public class BpmnExplorerViewImpl extends Composite implements BpmnExplorerView {
 
-    interface ViewBinder
-            extends
-            UiBinder<Widget, BpmnExplorerViewImpl> {
-
-    }
-
-    final private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
+    final private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
     @UiField(provided = true)
     CellTable<Path> table = new CellTable<Path>();
-
     private ListDataProvider<Path> dataProvider = new ListDataProvider<Path>();
-
     private BpmnExplorerPresenter presenter;
 
     @PostConstruct
     public void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
-    public void init( final BpmnExplorerPresenter presenter ) {
+    public void init(final BpmnExplorerPresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setContent( final List<Path> files ) {
-        table.setStriped( true );
-        table.setCondensed( true );
-        table.setBordered( true );
-        table.setEmptyTableWidget( new Label( BpmnEditorConstants.INSTANCE.bpmnExplorerNoFilesFound() ) );
+    public void setContent(final List<Path> files) {
+        table.setStriped(true);
+        table.setCondensed(true);
+        table.setBordered(true);
+        table.setEmptyTableWidget(new Label(BpmnEditorConstants.INSTANCE.bpmnExplorerNoFilesFound()));
 
         //Columns
         final TextColumn<Path> urlColumn = new TextColumn<Path>() {
 
             @Override
-            public String getValue( final Path file ) {
+            public String getValue(final Path file) {
                 return file.toURI();
             }
         };
 
-        final ButtonCell openButton = new ButtonCell( IconType.EDIT, ButtonType.PRIMARY, ButtonSize.SMALL );
-        final Column<Path, String> openColumn = new Column<Path, String>( openButton ) {
+        final ButtonCell openButton = new ButtonCell(IconType.EDIT,
+                                                     ButtonType.PRIMARY,
+                                                     ButtonSize.SMALL);
+        final Column<Path, String> openColumn = new Column<Path, String>(openButton) {
             @Override
-            public String getValue( final Path global ) {
+            public String getValue(final Path global) {
                 return BpmnEditorConstants.INSTANCE.bpmnExplorerNoFilesOpen();
             }
         };
-        openColumn.setFieldUpdater( new FieldUpdater<Path, String>() {
-            public void update( final int index,
-                                final Path file,
-                                final String value ) {
-                presenter.openFile( file );
+        openColumn.setFieldUpdater(new FieldUpdater<Path, String>() {
+            public void update(final int index,
+                               final Path file,
+                               final String value) {
+                presenter.openFile(file);
             }
-        } );
+        });
 
-        table.addColumn( urlColumn,
-                         new TextHeader( BpmnEditorConstants.INSTANCE.bpmnExplorerFileUrl() ) );
-        table.addColumn( openColumn );
+        table.addColumn(urlColumn,
+                        new TextHeader(BpmnEditorConstants.INSTANCE.bpmnExplorerFileUrl()));
+        table.addColumn(openColumn);
 
         //Link data
-        dataProvider.addDataDisplay( table );
-        dataProvider.setList( files );
+        dataProvider.addDataDisplay(table);
+        dataProvider.setList(files);
+    }
+
+    interface ViewBinder
+            extends
+            UiBinder<Widget, BpmnExplorerViewImpl> {
+
     }
 }

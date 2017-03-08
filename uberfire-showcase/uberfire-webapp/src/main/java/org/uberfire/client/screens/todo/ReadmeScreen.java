@@ -26,7 +26,7 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchScreen( identifier = "ReadmeScreen", preferredWidth = 400 )
+@WorkbenchScreen(identifier = "ReadmeScreen", preferredWidth = 400)
 public class ReadmeScreen extends AbstractMarkdownScreen {
 
     @Override
@@ -42,17 +42,16 @@ public class ReadmeScreen extends AbstractMarkdownScreen {
     @WorkbenchMenu
     public Menus getMenu() {
         return MenuFactory
-                .newTopLevelMenu( "Validate" )
-                    .respondsWith( () -> Window.alert( "valid!" ) )
+                .newTopLevelMenu("Validate")
+                .respondsWith(() -> Window.alert("valid!"))
                 .endMenu()
-                .newTopLevelMenu( "Build" )
-                    .menus()
-                        .menu( "Build & Deploy" )
-                            .respondsWith( () -> Window.alert( "Build!" ) )
-                        .endMenu()
-                    .endMenus()
+                .newTopLevelMenu("Build")
+                .menus()
+                .menu("Build & Deploy")
+                .respondsWith(() -> Window.alert("Build!"))
+                .endMenu()
+                .endMenus()
                 .endMenu()
                 .build();
     }
-
 }

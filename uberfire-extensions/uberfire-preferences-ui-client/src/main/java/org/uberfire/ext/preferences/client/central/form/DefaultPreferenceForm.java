@@ -29,9 +29,6 @@ import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.preferences.client.event.HierarchyItemFormInitializationEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralSaveEvent;
 import org.uberfire.ext.preferences.client.event.PreferencesCentralUndoChangesEvent;
-import org.uberfire.preferences.shared.PropertyFormType;
-import org.uberfire.preferences.shared.bean.BasePreferencePortable;
-import org.uberfire.preferences.shared.bean.PreferenceHierarchyElement;
 import org.uberfire.ext.properties.editor.model.PropertyEditorCategory;
 import org.uberfire.ext.properties.editor.model.PropertyEditorChangeEvent;
 import org.uberfire.ext.properties.editor.model.PropertyEditorEvent;
@@ -39,42 +36,35 @@ import org.uberfire.ext.properties.editor.model.PropertyEditorFieldInfo;
 import org.uberfire.ext.properties.editor.model.PropertyEditorType;
 import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.preferences.shared.PropertyFormType;
+import org.uberfire.preferences.shared.bean.BasePreferencePortable;
+import org.uberfire.preferences.shared.bean.PreferenceHierarchyElement;
 
 @WorkbenchScreen(identifier = DefaultPreferenceForm.IDENTIFIER)
 public class DefaultPreferenceForm {
 
     public static final String IDENTIFIER = "org.uberfire.ext.preferences.client.central.form.DefaultPreferenceForm";
-
-    public interface View extends UberElement<DefaultPreferenceForm>,
-                                  IsElement {
-
-    }
-
-    private TranslationService translationService;
-
     private final View view;
-
+    private TranslationService translationService;
     private String id;
-
     private String title;
-
     private BasePreferencePortable<?> preference;
-
     private PropertyEditorCategory category;
-
     private PreferenceHierarchyElement<?> hierarchyElement;
 
     @Inject
-    public DefaultPreferenceForm( final View view,
-                                  final TranslationService translationService ) {
+    public DefaultPreferenceForm(final View view,
+                                 final TranslationService translationService) {
         this.view = view;
         this.translationService = translationService;
     }
 
     @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
-        id = placeRequest.getParameter( "id", null );
-        title = placeRequest.getParameter( "title", null );
+    public void onStartup(final PlaceRequest placeRequest) {
+        id = placeRequest.getParameter("id",
+                                       null);
+        title = placeRequest.getParameter("title",
+                                          null);
     }
 
     @WorkbenchPartTitle
@@ -87,64 +77,71 @@ public class DefaultPreferenceForm {
         return view;
     }
 
-    public void hierarchyItemFormInitializationEvent( @Observes HierarchyItemFormInitializationEvent event ) {
-        if ( preference == null && event.getItemId().equals( id ) ) {
+    public void hierarchyItemFormInitializationEvent(@Observes HierarchyItemFormInitializationEvent event) {
+        if (preference == null && event.getItemId().equals(id)) {
             preference = event.getPreference();
             hierarchyElement = event.getHierarchyElement();
-            view.init( this );
+            view.init(this);
         }
     }
 
     public PropertyEditorEvent generatePropertyEditorEvent() {
-        if ( category == null ) {
+        if (category == null) {
             createPropertiesEditorCategory();
         }
 
-        PropertyEditorEvent event = new PropertyEditorEvent( id, category );
+        PropertyEditorEvent event = new PropertyEditorEvent(id,
+                                                            category);
         return event;
     }
 
     private void createPropertiesEditorCategory() {
-        category = new PropertyEditorCategory( "Properties" );
-        category.setIdEvent( id );
+        category = new PropertyEditorCategory("Properties");
+        category.setIdEvent(id);
 
-        for ( Map.Entry<String, PropertyFormType> property : preference.getPropertiesTypes().entrySet() ) {
+        for (Map.Entry<String, PropertyFormType> property : preference.getPropertiesTypes().entrySet()) {
             final String propertyName = property.getKey();
-            final PropertyEditorType propertyType = getPropertyEditorType( property.getValue() );
-            final Object propertyValue = preference.get( propertyName );
+            final PropertyEditorType propertyType = getPropertyEditorType(property.getValue());
+            final Object propertyValue = preference.get(propertyName);
 
-            final PropertyEditorFieldInfo fieldInfo = new PropertyEditorFieldInfo( translationService.format( hierarchyElement.getBundleKeyByProperty().get( property.getKey() ) ),
-                                                                                   propertyValue != null ? propertyValue.toString() : "",
-                                                                                   propertyType );
-            category.withField( fieldInfo.withKey( propertyName ) );
+            final PropertyEditorFieldInfo fieldInfo = new PropertyEditorFieldInfo(translationService.format(hierarchyElement.getBundleKeyByProperty().get(property.getKey())),
+                                                                                  propertyValue != null ? propertyValue.toString() : "",
+                                                                                  propertyType);
+            category.withField(fieldInfo.withKey(propertyName));
         }
     }
 
-    public void propertyChanged( @Observes PropertyEditorChangeEvent event ) {
-        if ( event.getProperty().getEventId().equals( id ) ) {
+    public void propertyChanged(@Observes PropertyEditorChangeEvent event) {
+        if (event.getProperty().getEventId().equals(id)) {
             final String propertyName = event.getProperty().getKey();
-            final PropertyFormType propertyType = preference.getPropertyType( propertyName );
-            final Object newValue = propertyType.fromString( event.getNewValue() );
+            final PropertyFormType propertyType = preference.getPropertyType(propertyName);
+            final Object newValue = propertyType.fromString(event.getNewValue());
 
-            preference.set( propertyName, newValue );
+            preference.set(propertyName,
+                           newValue);
         }
     }
 
-    public void saveEvent( @Observes PreferencesCentralSaveEvent event ) {
+    public void saveEvent(@Observes PreferencesCentralSaveEvent event) {
         createPropertiesEditorCategory();
-        view.init( this );
+        view.init(this);
     }
 
-    public void undoEvent( @Observes PreferencesCentralUndoChangesEvent event ) {
+    public void undoEvent(@Observes PreferencesCentralUndoChangesEvent event) {
         category.undo();
-        view.init( this );
+        view.init(this);
     }
 
     public BasePreferencePortable<?> getPreference() {
         return preference;
     }
 
-    public PropertyEditorType getPropertyEditorType( PropertyFormType propertyFormType ) {
-        return PropertyEditorType.valueOf( propertyFormType.name() );
+    public PropertyEditorType getPropertyEditorType(PropertyFormType propertyFormType) {
+        return PropertyEditorType.valueOf(propertyFormType.name());
+    }
+
+    public interface View extends UberElement<DefaultPreferenceForm>,
+                                  IsElement {
+
     }
 }

@@ -51,18 +51,19 @@ import org.uberfire.workbench.events.ResourceUpdatedEvent;
 public abstract class AbstractIOWatchService implements IOWatchService,
                                                         Filter<WatchEvent<?>> {
 
-    private static final Logger LOG = LoggerFactory.getLogger( AbstractIOWatchService.class );
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractIOWatchService.class);
 
-    private static final Integer AWAIT_TERMINATION_TIMEOUT = Integer.parseInt( System.getProperty( "org.uberfire.watcher.quitetimeout", "3" ) );
+    private static final Integer AWAIT_TERMINATION_TIMEOUT = Integer.parseInt(System.getProperty("org.uberfire.watcher.quitetimeout",
+                                                                                                 "3"));
 
-    private final ExecutorService executorService = Executors.newCachedThreadPool( new DescriptiveThreadFactory() );
+    private final ExecutorService executorService = Executors.newCachedThreadPool(new DescriptiveThreadFactory());
 
     private final List<FileSystem> fileSystems = new ArrayList<FileSystem>();
     private final List<WatchService> watchServices = new ArrayList<WatchService>();
-    protected boolean isDisposed = false;
-
-    private boolean started;
     private final Set<AsyncWatchService> watchThreads = new HashSet<AsyncWatchService>();
+    private final Set<Future<?>> jobs = new CopyOnWriteArraySet<Future<?>>();
+    protected boolean isDisposed = false;
+    private boolean started;
     @Inject
     private Event<ResourceBatchChangesEvent> resourceBatchChanges;
     @Inject
@@ -73,24 +74,22 @@ public abstract class AbstractIOWatchService implements IOWatchService,
     private Event<ResourceDeletedEvent> resourceDeletedEvent;
     @Inject
     private Event<ResourceAddedEvent> resourceAddedEvent;
-
     private IOWatchServiceExecutor executor = null;
 
-    private final Set<Future<?>> jobs = new CopyOnWriteArraySet<Future<?>>();
-
     public AbstractIOWatchService() {
-        final boolean autostart = Boolean.parseBoolean( System.getProperty( "org.uberfire.watcher.autostart", "true" ) );
-        if ( autostart ) {
+        final boolean autostart = Boolean.parseBoolean(System.getProperty("org.uberfire.watcher.autostart",
+                                                                          "true"));
+        if (autostart) {
             start();
         }
     }
 
     public synchronized void start() {
-        if ( !started ) {
+        if (!started) {
             this.started = true;
-            for ( final AsyncWatchService watchThread : watchThreads ) {
+            for (final AsyncWatchService watchThread : watchThreads) {
                 final IOWatchServiceExecutor watchServiceExecutor = getWatchServiceExecutor();
-                jobs.add( executorService.submit( new DescriptiveRunnable() {
+                jobs.add(executorService.submit(new DescriptiveRunnable() {
                     @Override
                     public String getDescription() {
                         return watchThread.getDescription();
@@ -98,9 +97,9 @@ public abstract class AbstractIOWatchService implements IOWatchService,
 
                     @Override
                     public void run() {
-                        watchThread.execute( watchServiceExecutor );
+                        watchThread.execute(watchServiceExecutor);
                     }
-                } ) );
+                }));
             }
             watchThreads.clear();
         }
@@ -109,25 +108,27 @@ public abstract class AbstractIOWatchService implements IOWatchService,
     @PreDestroy
     protected void dispose() {
         isDisposed = true;
-        for ( final WatchService watchService : watchServices ) {
+        for (final WatchService watchService : watchServices) {
             watchService.close();
         }
-        for ( final Future<?> job : jobs ) {
-            if ( !job.isCancelled() && !job.isDone() ) {
-                job.cancel( true );
+        for (final Future<?> job : jobs) {
+            if (!job.isCancelled() && !job.isDone()) {
+                job.cancel(true);
             }
         }
         executorService.shutdown(); // Disable new tasks from being submitted
         try {
             // Wait a while for existing tasks to terminate
-            if ( !executorService.awaitTermination( AWAIT_TERMINATION_TIMEOUT, TimeUnit.SECONDS ) ) {
+            if (!executorService.awaitTermination(AWAIT_TERMINATION_TIMEOUT,
+                                                  TimeUnit.SECONDS)) {
                 executorService.shutdownNow(); // Cancel currently executing tasks
                 // Wait a while for tasks to respond to being cancelled
-                if ( !executorService.awaitTermination( AWAIT_TERMINATION_TIMEOUT, TimeUnit.SECONDS ) ) {
-                    LOG.error( "Thread pool did not terminate" );
+                if (!executorService.awaitTermination(AWAIT_TERMINATION_TIMEOUT,
+                                                      TimeUnit.SECONDS)) {
+                    LOG.error("Thread pool did not terminate");
                 }
             }
-        } catch ( InterruptedException ie ) {
+        } catch (InterruptedException ie) {
             // (Re-)Cancel if current thread also interrupted
             executorService.shutdownNow();
             // Preserve interrupt status
@@ -136,38 +137,40 @@ public abstract class AbstractIOWatchService implements IOWatchService,
     }
 
     @Override
-    public boolean hasWatchService( final FileSystem fs ) {
-        return fileSystems.contains( fs );
+    public boolean hasWatchService(final FileSystem fs) {
+        return fileSystems.contains(fs);
     }
 
     @Override
-    public void addWatchService( final FileSystem fs,
-                                 final WatchService ws ) {
-        fileSystems.add( fs );
-        watchServices.add( ws );
+    public void addWatchService(final FileSystem fs,
+                                final WatchService ws) {
+        fileSystems.add(fs);
+        watchServices.add(ws);
 
         final AsyncWatchService asyncWatchService = new AsyncWatchService() {
             @Override
-            public void execute( final IOWatchServiceExecutor wsExecutor ) {
-                while ( !isDisposed ) {
+            public void execute(final IOWatchServiceExecutor wsExecutor) {
+                while (!isDisposed) {
                     final WatchKey wk;
                     try {
                         wk = ws.take();
-                    } catch ( final Exception ex ) {
+                    } catch (final Exception ex) {
                         break;
                     }
 
                     try {
-                        wsExecutor.execute( wk, AbstractIOWatchService.this );
-                    } catch ( final Exception ex ) {
-                        LOG.error( "Unexpected error during WatchService execution", ex );
+                        wsExecutor.execute(wk,
+                                           AbstractIOWatchService.this);
+                    } catch (final Exception ex) {
+                        LOG.error("Unexpected error during WatchService execution",
+                                  ex);
                     }
 
                     // Reset the key -- this step is critical if you want to
                     // receive further watch events.  If the key is no longer valid,
                     // the directory is inaccessible so exit the loop.
                     boolean valid = wk.reset();
-                    if ( !valid ) {
+                    if (!valid) {
                         break;
                     }
                 }
@@ -179,9 +182,9 @@ public abstract class AbstractIOWatchService implements IOWatchService,
             }
         };
 
-        if ( started ) {
+        if (started) {
             final IOWatchServiceExecutor watchServiceExecutor = getWatchServiceExecutor();
-            executorService.execute( new DescriptiveRunnable() {
+            executorService.execute(new DescriptiveRunnable() {
                 @Override
                 public String getDescription() {
                     return asyncWatchService.getDescription();
@@ -189,29 +192,33 @@ public abstract class AbstractIOWatchService implements IOWatchService,
 
                 @Override
                 public void run() {
-                    asyncWatchService.execute( watchServiceExecutor );
+                    asyncWatchService.execute(watchServiceExecutor);
                 }
-            } );
+            });
         } else {
-            watchThreads.add( asyncWatchService );
+            watchThreads.add(asyncWatchService);
         }
     }
 
-    public void configureOnEvent( @Observes ApplicationStarted applicationStartedEvent ) {
+    public void configureOnEvent(@Observes ApplicationStarted applicationStartedEvent) {
         start();
     }
 
     protected IOWatchServiceExecutor getWatchServiceExecutor() {
-        if ( executor == null ) {
+        if (executor == null) {
             IOWatchServiceExecutor _executor = null;
             try {
-                _executor = InitialContext.doLookup( "java:module/IOWatchServiceExecutorImpl" );
-            } catch ( final Exception ignored ) {
+                _executor = InitialContext.doLookup("java:module/IOWatchServiceExecutorImpl");
+            } catch (final Exception ignored) {
             }
 
-            if ( _executor == null ) {
+            if (_executor == null) {
                 _executor = new IOWatchServiceExecutorImpl();
-                ( (IOWatchServiceExecutorImpl) _executor ).setEvents( resourceBatchChanges, resourceUpdatedEvent, resourceRenamedEvent, resourceDeletedEvent, resourceAddedEvent );
+                ((IOWatchServiceExecutorImpl) _executor).setEvents(resourceBatchChanges,
+                                                                   resourceUpdatedEvent,
+                                                                   resourceRenamedEvent,
+                                                                   resourceDeletedEvent,
+                                                                   resourceAddedEvent);
             }
             executor = _executor;
         }

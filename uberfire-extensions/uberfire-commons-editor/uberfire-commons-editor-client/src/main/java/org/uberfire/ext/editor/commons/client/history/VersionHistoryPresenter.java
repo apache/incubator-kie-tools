@@ -64,12 +64,13 @@ public class VersionHistoryPresenter
             @Override
             protected void onRangeChanged(HasData<VersionRecord> display) {
                 if (records != null) {
-                    updateRowCount(records.size(), true);
-                    updateRowData(0, records);
+                    updateRowCount(records.size(),
+                                   true);
+                    updateRowData(0,
+                                  records);
                 }
             }
         };
-
     }
 
     public void init(final Path path) {
@@ -84,11 +85,12 @@ public class VersionHistoryPresenter
         return new RemoteCallback<List<VersionRecord>>() {
             @Override
             public void callback(List<VersionRecord> records) {
-                view.setup(version, dataProvider);
-                Collections.reverse( records );
+                view.setup(version,
+                           dataProvider);
+                Collections.reverse(records);
                 VersionHistoryPresenter.this.records = records;
                 view.refreshGrid();
-                doOnCurrentVersionRefreshed( version );
+                doOnCurrentVersionRefreshed(version);
             }
         };
     }
@@ -124,15 +126,15 @@ public class VersionHistoryPresenter
         loadContent();
     }
 
-    public void setOnCurrentVersionRefreshed( ParameterizedCommand<VersionRecord> onCurrentVersionRefreshed ) {
+    public void setOnCurrentVersionRefreshed(ParameterizedCommand<VersionRecord> onCurrentVersionRefreshed) {
         this.onCurrentVersionRefreshed = onCurrentVersionRefreshed;
     }
 
-    private void doOnCurrentVersionRefreshed( String version ) {
-        if ( onCurrentVersionRefreshed != null && records != null && version != null ) {
-            for ( VersionRecord record : records ) {
-                if ( version.equals( record.id() ) ) {
-                    onCurrentVersionRefreshed.execute( record );
+    private void doOnCurrentVersionRefreshed(String version) {
+        if (onCurrentVersionRefreshed != null && records != null && version != null) {
+            for (VersionRecord record : records) {
+                if (version.equals(record.id())) {
+                    onCurrentVersionRefreshed.execute(record);
                     break;
                 }
             }

@@ -16,89 +16,89 @@
 package org.uberfire.ext.editor.commons.backend.validation;
 
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
+import static org.junit.Assert.*;
+
 @RunWith(Parameterized.class)
 public class ValidationUtils_ParameterizedJavaIdTest {
-
-    @Parameters
-    public static Object[][] data() {
-        return new Object[][]{{null, false},
-                              {"", false},
-                              {" ", false},
-                              {"\n", false},
-                              {"\\", false},
-                              {"/", false},
-                              {"\r", false},
-                              {"\t", false},
-                              {"\"", false},
-                              {"`", false},
-                              {"?", false},
-                              {"*", false},
-                              {"<", false},
-                              {">", false},
-                              {"|", false},
-                              {":", false},
-
-                              {".", false},
-                              {"..", false},
-                              {". ", false},
-                              {" .", false},
-                              {".-.", false},
-                              {"a.z", false},
-
-                              {"a\nz", false},
-                              {"a\\z", false},
-                              {"a/z", false},
-                              {"a\rz", false},
-                              {"a\tz", false},
-                              {"a\"z", false},
-                              {"a`z", false},
-                              {"a?z", false},
-                              {"a*z", false},
-                              {"a<z", false},
-                              {"a>z", false},
-                              {"a|z", false},
-                              {"a:z", false},
-
-                              {"a ", false},
-                              {" z", false},
-                              {"tchao salut", false},
-
-                              {"0one", false},
-                              {"dash-y", false},
-                              {"Fire!fire!help", false},
-                              {"Fire,help", false},
-                              {"füür", false},
-                              {"anyone()questionmark", false},
-
-                              {"true", false},
-                              {"==", false},
-                              {"null", false},
-                              {"class", false},
-
-                              {String.valueOf((char) 7), false},
-                              {String.valueOf((char) 127), false},
-
-                              {"a", true},
-                              {"classyAndSuperShinyNewCustomThing", true},
-                              {"Misc2", true},
-                              {"under_score", true}};
-    }
 
     @Parameter(0)
     public String input;
     @Parameter(1)
     public boolean valid;
 
+    @Parameters
+    public static Object[][] data() {
+        return new Object[][]{{null, false},
+                {"", false},
+                {" ", false},
+                {"\n", false},
+                {"\\", false},
+                {"/", false},
+                {"\r", false},
+                {"\t", false},
+                {"\"", false},
+                {"`", false},
+                {"?", false},
+                {"*", false},
+                {"<", false},
+                {">", false},
+                {"|", false},
+                {":", false},
+
+                {".", false},
+                {"..", false},
+                {". ", false},
+                {" .", false},
+                {".-.", false},
+                {"a.z", false},
+
+                {"a\nz", false},
+                {"a\\z", false},
+                {"a/z", false},
+                {"a\rz", false},
+                {"a\tz", false},
+                {"a\"z", false},
+                {"a`z", false},
+                {"a?z", false},
+                {"a*z", false},
+                {"a<z", false},
+                {"a>z", false},
+                {"a|z", false},
+                {"a:z", false},
+
+                {"a ", false},
+                {" z", false},
+                {"tchao salut", false},
+
+                {"0one", false},
+                {"dash-y", false},
+                {"Fire!fire!help", false},
+                {"Fire,help", false},
+                {"füür", false},
+                {"anyone()questionmark", false},
+
+                {"true", false},
+                {"==", false},
+                {"null", false},
+                {"class", false},
+
+                {String.valueOf((char) 7), false},
+                {String.valueOf((char) 127), false},
+
+                {"a", true},
+                {"classyAndSuperShinyNewCustomThing", true},
+                {"Misc2", true},
+                {"under_score", true}};
+    }
+
     @Test
     public void isJavaIdentifier() {
-        assertEquals(valid, ValidationUtils.isJavaIdentifier(input));
+        assertEquals(valid,
+                     ValidationUtils.isJavaIdentifier(input));
     }
 }

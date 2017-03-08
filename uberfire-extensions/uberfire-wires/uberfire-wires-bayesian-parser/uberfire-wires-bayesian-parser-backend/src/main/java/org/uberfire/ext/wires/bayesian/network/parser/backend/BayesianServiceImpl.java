@@ -17,11 +17,10 @@
 package org.uberfire.ext.wires.bayesian.network.parser.backend;
 
 import java.io.InputStream;
-
 import javax.enterprise.context.ApplicationScoped;
 
+import com.thoughtworks.xstream.XStream;
 import org.jboss.errai.bus.server.annotations.Service;
-
 import org.uberfire.ext.wires.bayesian.network.parser.client.builder.BayesianBuilder;
 import org.uberfire.ext.wires.bayesian.network.parser.client.model.BayesNetwork;
 import org.uberfire.ext.wires.bayesian.network.parser.client.parser.Bif;
@@ -29,7 +28,6 @@ import org.uberfire.ext.wires.bayesian.network.parser.client.parser.Definition;
 import org.uberfire.ext.wires.bayesian.network.parser.client.parser.Network;
 import org.uberfire.ext.wires.bayesian.network.parser.client.parser.Probability;
 import org.uberfire.ext.wires.bayesian.network.parser.client.service.BayesianService;
-import com.thoughtworks.xstream.XStream;
 
 @Service
 @ApplicationScoped
@@ -42,11 +40,11 @@ public class BayesianServiceImpl implements BayesianService {
 
     @Override
     public Bif xmlToObject(String relativePathtoXmlResource) {
-        InputStream resourceAsStream = loadResource( relativePathtoXmlResource );
-        return processXML( resourceAsStream );
+        InputStream resourceAsStream = loadResource(relativePathtoXmlResource);
+        return processXML(resourceAsStream);
     }
 
-    private Bif processXML( InputStream resourceAsStream ) {
+    private Bif processXML(InputStream resourceAsStream) {
         XStream xstream = new XStream();
         xstream.processAnnotations(Bif.class);
         xstream.processAnnotations(Network.class);
@@ -55,9 +53,8 @@ public class BayesianServiceImpl implements BayesianService {
         return (Bif) xstream.fromXML(resourceAsStream);
     }
 
-    private InputStream loadResource( String xmlFileName ) {
+    private InputStream loadResource(String xmlFileName) {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         return loader.getResourceAsStream(xmlFileName);
     }
-
 }

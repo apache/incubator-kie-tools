@@ -15,26 +15,26 @@
  */
 package org.uberfire.backend.server.plugins.processors;
 
-import org.jboss.errai.cdi.server.scripts.ScriptRegistry;
-import org.uberfire.backend.plugin.PluginProcessor;
-import org.uberfire.workbench.events.PluginAddedEvent;
-import org.uberfire.workbench.events.PluginUpdatedEvent;
-
+import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
+
+import org.jboss.errai.cdi.server.scripts.ScriptRegistry;
+import org.uberfire.backend.plugin.PluginProcessor;
+import org.uberfire.workbench.events.PluginAddedEvent;
+import org.uberfire.workbench.events.PluginUpdatedEvent;
 
 import static org.apache.commons.lang3.StringUtils.substringAfterLast;
 
 @ApplicationScoped
 public class GWTScriptPluginProcessor implements PluginProcessor {
 
-    final Set<String> availablePlugins = new HashSet<>();
     static final String SCRIPT_REGISTRY_KEY = "UF";
+    final Set<String> availablePlugins = new HashSet<>();
     private ScriptRegistry scriptRegistry;
     private Event<PluginAddedEvent> pluginAddedEvent;
     private Event<PluginUpdatedEvent> pluginUpdatedEvent;
@@ -56,9 +56,11 @@ public class GWTScriptPluginProcessor implements PluginProcessor {
         scriptRegistry.removeScripts(SCRIPT_REGISTRY_KEY);
     }
 
-    private void add(String pluginName, String scriptUrl) {
+    private void add(String pluginName,
+                     String scriptUrl) {
         availablePlugins.add(pluginName);
-        scriptRegistry.addScript(SCRIPT_REGISTRY_KEY, scriptUrl);
+        scriptRegistry.addScript(SCRIPT_REGISTRY_KEY,
+                                 scriptUrl);
     }
 
     @Override
@@ -78,12 +80,17 @@ public class GWTScriptPluginProcessor implements PluginProcessor {
     }
 
     @Override
-    public void process(String pluginName, String pluginDeploymentDir, boolean notifyClients) {
+    public void process(String pluginName,
+                        String pluginDeploymentDir,
+                        boolean notifyClients) {
 
-        final String pluginDisplayName = pluginName.replace(PluginProcessorType.GWT.getExtension(), "");
+        final String pluginDisplayName = pluginName.replace(PluginProcessorType.GWT.getExtension(),
+                                                            "");
         if (!isRegistered(pluginName)) {
-            final String url = resolveScriptUrl(pluginName, pluginDeploymentDir);
-            add(pluginName, url);
+            final String url = resolveScriptUrl(pluginName,
+                                                pluginDeploymentDir);
+            add(pluginName,
+                url);
 
             if (notifyClients) {
                 pluginAddedEvent.fire(new PluginAddedEvent(pluginDisplayName));
@@ -95,9 +102,10 @@ public class GWTScriptPluginProcessor implements PluginProcessor {
         }
     }
 
-    String resolveScriptUrl(String pluginName, String pluginDeploymentDir) {
-        String pluginsDeploymentUrlPath = substringAfterLast(pluginDeploymentDir, File.separator);
+    String resolveScriptUrl(String pluginName,
+                            String pluginDeploymentDir) {
+        String pluginsDeploymentUrlPath = substringAfterLast(pluginDeploymentDir,
+                                                             File.separator);
         return pluginsDeploymentUrlPath + "/" + pluginName + "?nocache=" + System.currentTimeMillis();
     }
-
 }

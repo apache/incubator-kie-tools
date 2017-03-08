@@ -21,7 +21,6 @@ import org.uberfire.ext.security.management.client.widgets.management.list.Entit
 
 /**
  * <p>An explorer view contract for showing the assigned users, groups or roles for a given entity.</p>
- * 
  * @since 0.8.0
  */
 public interface AssignedEntitiesExplorer extends IsWidget {
@@ -32,12 +31,12 @@ public interface AssignedEntitiesExplorer extends IsWidget {
      * @param entitiesList The entities list view instance.
      * @return The view implementation.
      */
-    AssignedEntitiesExplorer configure(final String header, final EntitiesList.View entitiesList);
-    
+    AssignedEntitiesExplorer configure(final String header,
+                                       final EntitiesList.View entitiesList);
+
     /**
      * Clears the view..
      * @return The view instance.
      */
     AssignedEntitiesExplorer clear();
-    
 }

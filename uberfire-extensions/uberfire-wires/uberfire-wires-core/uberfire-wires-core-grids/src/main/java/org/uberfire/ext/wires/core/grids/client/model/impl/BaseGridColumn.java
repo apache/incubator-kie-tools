@@ -42,28 +42,28 @@ public class BaseGridColumn<T> implements GridColumn<T> {
     private List<HeaderMetaData> headerMetaData = new ArrayList<HeaderMetaData>();
     private GridColumnRenderer<T> columnRenderer;
 
-    public BaseGridColumn( final HeaderMetaData headerMetaData,
-                           final GridColumnRenderer<T> columnRenderer,
-                           final double width ) {
-        PortablePreconditions.checkNotNull( "headerMetaData",
-                                            headerMetaData );
-        PortablePreconditions.checkNotNull( "columnRenderer",
-                                            columnRenderer );
-        this.headerMetaData.add( headerMetaData );
+    public BaseGridColumn(final HeaderMetaData headerMetaData,
+                          final GridColumnRenderer<T> columnRenderer,
+                          final double width) {
+        PortablePreconditions.checkNotNull("headerMetaData",
+                                           headerMetaData);
+        PortablePreconditions.checkNotNull("columnRenderer",
+                                           columnRenderer);
+        this.headerMetaData.add(headerMetaData);
         this.columnRenderer = columnRenderer;
         this.width = width;
     }
 
-    public BaseGridColumn( final List<HeaderMetaData> headerMetaData,
-                           final GridColumnRenderer<T> columnRenderer,
-                           final double width ) {
-        PortablePreconditions.checkNotNull( "headerMetaData",
-                                            headerMetaData );
-        PortablePreconditions.checkCondition( "headerMetaData has at least one entry",
-                                              headerMetaData.size() > 0 );
-        PortablePreconditions.checkNotNull( "columnRenderer",
-                                            columnRenderer );
-        this.headerMetaData.addAll( headerMetaData );
+    public BaseGridColumn(final List<HeaderMetaData> headerMetaData,
+                          final GridColumnRenderer<T> columnRenderer,
+                          final double width) {
+        PortablePreconditions.checkNotNull("headerMetaData",
+                                           headerMetaData);
+        PortablePreconditions.checkCondition("headerMetaData has at least one entry",
+                                             headerMetaData.size() > 0);
+        PortablePreconditions.checkNotNull("columnRenderer",
+                                           columnRenderer);
+        this.headerMetaData.addAll(headerMetaData);
         this.columnRenderer = columnRenderer;
         this.width = width;
     }
@@ -84,7 +84,7 @@ public class BaseGridColumn<T> implements GridColumn<T> {
     }
 
     @Override
-    public void setWidth( final double width ) {
+    public void setWidth(final double width) {
         this.width = width;
     }
 
@@ -99,20 +99,20 @@ public class BaseGridColumn<T> implements GridColumn<T> {
     }
 
     @Override
-    public void setLink( final GridColumn<?> link ) {
+    public void setLink(final GridColumn<?> link) {
         this.link = link;
     }
 
     @Override
     public int getIndex() {
-        if ( index == -1 ) {
-            throw new IllegalStateException( "Column has not been added to a Grid and hence has no index." );
+        if (index == -1) {
+            throw new IllegalStateException("Column has not been added to a Grid and hence has no index.");
         }
         return index;
     }
 
     @Override
-    public void setIndex( final int index ) {
+    public void setIndex(final int index) {
         this.index = index;
     }
 
@@ -122,7 +122,7 @@ public class BaseGridColumn<T> implements GridColumn<T> {
     }
 
     @Override
-    public void setResizable( final boolean isResizable ) {
+    public void setResizable(final boolean isResizable) {
         this.isResizable = isResizable;
     }
 
@@ -132,7 +132,7 @@ public class BaseGridColumn<T> implements GridColumn<T> {
     }
 
     @Override
-    public void setMovable( final boolean isMovable ) {
+    public void setMovable(final boolean isMovable) {
         this.isMovable = isMovable;
     }
 
@@ -142,7 +142,7 @@ public class BaseGridColumn<T> implements GridColumn<T> {
     }
 
     @Override
-    public void setFloatable( final boolean isFloatable ) {
+    public void setFloatable(final boolean isFloatable) {
         this.isFloatable = isFloatable;
     }
 
@@ -152,7 +152,7 @@ public class BaseGridColumn<T> implements GridColumn<T> {
     }
 
     @Override
-    public void setVisible( final boolean isVisible ) {
+    public void setVisible(final boolean isVisible) {
         this.isVisible = isVisible;
     }
 
@@ -162,7 +162,7 @@ public class BaseGridColumn<T> implements GridColumn<T> {
     }
 
     @Override
-    public void setMinimumWidth( final Double minimumWidth ) {
+    public void setMinimumWidth(final Double minimumWidth) {
         this.minimumWidth = minimumWidth;
     }
 
@@ -172,67 +172,67 @@ public class BaseGridColumn<T> implements GridColumn<T> {
     }
 
     @Override
-    public void setMaximumWidth( final Double maximumWidth ) {
+    public void setMaximumWidth(final Double maximumWidth) {
         this.maximumWidth = maximumWidth;
     }
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof BaseGridColumn ) ) {
+        if (!(o instanceof BaseGridColumn)) {
             return false;
         }
 
         BaseGridColumn that = (BaseGridColumn) o;
 
-        if ( Double.compare( that.width, width ) != 0 ) {
+        if (Double.compare(that.width,
+                           width) != 0) {
             return false;
         }
-        if ( isResizable != that.isResizable ) {
+        if (isResizable != that.isResizable) {
             return false;
         }
-        if ( isMovable != that.isMovable ) {
+        if (isMovable != that.isMovable) {
             return false;
         }
-        if ( isVisible != that.isVisible ) {
+        if (isVisible != that.isVisible) {
             return false;
         }
-        if ( index != that.index ) {
+        if (index != that.index) {
             return false;
         }
-        if ( minimumWidth != null ? !minimumWidth.equals( that.minimumWidth ) : that.minimumWidth != null ) {
+        if (minimumWidth != null ? !minimumWidth.equals(that.minimumWidth) : that.minimumWidth != null) {
             return false;
         }
-        if ( maximumWidth != null ? !maximumWidth.equals( that.maximumWidth ) : that.maximumWidth != null ) {
+        if (maximumWidth != null ? !maximumWidth.equals(that.maximumWidth) : that.maximumWidth != null) {
             return false;
         }
-        if ( link != null ? !link.equals( that.link ) : that.link != null ) {
+        if (link != null ? !link.equals(that.link) : that.link != null) {
             return false;
         }
-        return headerMetaData.equals( that.headerMetaData );
-
+        return headerMetaData.equals(that.headerMetaData);
     }
 
     @Override
     public int hashCode() {
         int result;
         long temp;
-        temp = Double.doubleToLongBits( width );
-        result = (int) ( temp ^ ( temp >>> 32 ) );
+        temp = Double.doubleToLongBits(width);
+        result = (int) (temp ^ (temp >>> 32));
         result = ~~result;
-        result = 31 * result + ( isResizable ? 1 : 0 );
+        result = 31 * result + (isResizable ? 1 : 0);
         result = ~~result;
-        result = 31 * result + ( isMovable ? 1 : 0 );
+        result = 31 * result + (isMovable ? 1 : 0);
         result = ~~result;
-        result = 31 * result + ( isVisible ? 1 : 0 );
+        result = 31 * result + (isVisible ? 1 : 0);
         result = ~~result;
-        result = 31 * result + ( minimumWidth != null ? minimumWidth.hashCode() : 0 );
+        result = 31 * result + (minimumWidth != null ? minimumWidth.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( maximumWidth != null ? maximumWidth.hashCode() : 0 );
+        result = 31 * result + (maximumWidth != null ? maximumWidth.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( link != null ? link.hashCode() : 0 );
+        result = 31 * result + (link != null ? link.hashCode() : 0);
         result = ~~result;
         result = 31 * result + index;
         result = ~~result;

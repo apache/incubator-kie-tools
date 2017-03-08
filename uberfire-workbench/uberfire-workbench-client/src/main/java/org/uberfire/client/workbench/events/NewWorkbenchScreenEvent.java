@@ -22,7 +22,7 @@ public class NewWorkbenchScreenEvent implements UberFireEvent {
 
     private final String screenName;
 
-    public NewWorkbenchScreenEvent( final String screenName ) {
+    public NewWorkbenchScreenEvent(final String screenName) {
         this.screenName = screenName;
     }
 

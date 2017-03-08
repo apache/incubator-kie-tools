@@ -21,24 +21,24 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-
-import org.uberfire.client.workbench.widgets.multipage.Multiple;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditorView;
+import org.uberfire.client.workbench.widgets.multipage.Multiple;
 import org.uberfire.client.workbench.widgets.multipage.Page;
 
 @Dependent
 public class MultiPageEditorImpl implements MultiPageEditor {
 
-    @Inject @Multiple
+    @Inject
+    @Multiple
     private MultiPageEditorViewImpl view;
 
-    public void addPage( final Page page ) {
-        view.addPage( page );
+    public void addPage(final Page page) {
+        view.addPage(page);
     }
 
-    public void selectPage( final int index ) {
-        view.selectPage( index );
+    public void selectPage(final int index) {
+        view.selectPage(index);
     }
 
     public int selectedPage() {
@@ -56,8 +56,10 @@ public class MultiPageEditorImpl implements MultiPageEditor {
     }
 
     @Override
-    public void addWidget( final IsWidget widget, final String label ) {
-        view.addPage( new PageImpl( widget, label ) );
+    public void addWidget(final IsWidget widget,
+                          final String label) {
+        view.addPage(new PageImpl(widget,
+                                  label));
     }
 
     @Override

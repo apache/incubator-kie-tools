@@ -41,7 +41,7 @@ import org.uberfire.rpc.SessionInfo;
 @ApplicationScoped
 public class DeleteServiceImpl implements DeleteService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger( DeleteServiceImpl.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeleteServiceImpl.class);
 
     private IOService ioService;
     private User identity;
@@ -54,11 +54,11 @@ public class DeleteServiceImpl implements DeleteService {
     }
 
     @Inject
-    public DeleteServiceImpl( final @Named("ioStrategy") IOService ioService,
-                              final User identity,
-                              final SessionInfo sessionInfo,
-                              final Instance<DeleteHelper> helpers,
-                              final Instance<DeleteRestrictor> deleteRestrictorBeans ) {
+    public DeleteServiceImpl(final @Named("ioStrategy") IOService ioService,
+                             final User identity,
+                             final SessionInfo sessionInfo,
+                             final Instance<DeleteHelper> helpers,
+                             final Instance<DeleteRestrictor> deleteRestrictorBeans) {
         this.ioService = ioService;
         this.identity = identity;
         this.sessionInfo = sessionInfo;
@@ -67,46 +67,48 @@ public class DeleteServiceImpl implements DeleteService {
     }
 
     @Override
-    public void delete( final Path path,
-                        final String comment ) {
+    public void delete(final Path path,
+                       final String comment) {
 
-        LOGGER.info( "User:" + identity.getIdentifier() + " deleting file [" + path.getFileName() + "]" );
+        LOGGER.info("User:" + identity.getIdentifier() + " deleting file [" + path.getFileName() + "]");
 
-        checkRestrictions( path );
+        checkRestrictions(path);
 
         try {
-            deletePath( path, comment );
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
+            deletePath(path,
+                       comment);
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void deleteIfExists( final Collection<Path> paths,
-                                final String comment ) {
+    public void deleteIfExists(final Collection<Path> paths,
+                               final String comment) {
         try {
-            startBatch( paths );
+            startBatch(paths);
 
-            for ( final Path path : paths ) {
-                LOGGER.info( "User:" + identity.getIdentifier() + " deleting file (if exists) [" + path.getFileName() + "]" );
+            for (final Path path : paths) {
+                LOGGER.info("User:" + identity.getIdentifier() + " deleting file (if exists) [" + path.getFileName() + "]");
 
-                checkRestrictions( path );
-                deletePathIfExists( path, comment );
+                checkRestrictions(path);
+                deletePathIfExists(path,
+                                   comment);
             }
-        } catch ( final RuntimeException e ) {
+        } catch (final RuntimeException e) {
             throw e;
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
         } finally {
-            endBatch( paths );
+            endBatch(paths);
         }
     }
 
     @Override
-    public boolean hasRestriction( final Path path ) {
-        for ( DeleteRestrictor deleteRestrictor : getDeleteRestrictors() ) {
-            final PathOperationRestriction deleteRestriction = deleteRestrictor.hasRestriction( path );
-            if ( deleteRestriction != null ) {
+    public boolean hasRestriction(final Path path) {
+        for (DeleteRestrictor deleteRestrictor : getDeleteRestrictors()) {
+            final PathOperationRestriction deleteRestriction = deleteRestrictor.hasRestriction(path);
+            if (deleteRestriction != null) {
                 return true;
             }
         }
@@ -114,76 +116,74 @@ public class DeleteServiceImpl implements DeleteService {
         return false;
     }
 
-    private void checkRestrictions( final Path path ) {
-        for ( DeleteRestrictor deleteRestrictor : getDeleteRestrictors() ) {
-            final PathOperationRestriction deleteRestriction = deleteRestrictor.hasRestriction( path );
-            if ( deleteRestriction != null ) {
-                throw new RuntimeException( deleteRestriction.getMessage( path ) );
+    private void checkRestrictions(final Path path) {
+        for (DeleteRestrictor deleteRestrictor : getDeleteRestrictors()) {
+            final PathOperationRestriction deleteRestriction = deleteRestrictor.hasRestriction(path);
+            if (deleteRestriction != null) {
+                throw new RuntimeException(deleteRestriction.getMessage(path));
             }
         }
     }
 
-    void deletePath( final Path path,
-                     final String comment ) {
-        final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
+    void deletePath(final Path path,
+                    final String comment) {
+        final org.uberfire.java.nio.file.Path _path = Paths.convert(path);
 
         try {
-            ioService.startBatch( _path.getFileSystem() );
+            ioService.startBatch(_path.getFileSystem());
 
             // Delegate additional changes required for a deletion to applicable Helpers. Helpers are invoked before
             // the deletion as Helpers may depend on the presence of the file; in particular when it is necessary to
             // resolve a Package from a file name.
-            notifyDeleteHelpers( path );
+            notifyDeleteHelpers(path);
 
-            ioService.delete( Paths.convert( path ),
-                              new CommentedOption( sessionInfo != null ? sessionInfo.getId() : "--",
-                                                   identity.getIdentifier(),
-                                                   null,
-                                                   comment ) );
-
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
+            ioService.delete(Paths.convert(path),
+                             new CommentedOption(sessionInfo != null ? sessionInfo.getId() : "--",
+                                                 identity.getIdentifier(),
+                                                 null,
+                                                 comment));
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
         } finally {
             ioService.endBatch();
         }
     }
 
-    void deletePathIfExists( final Path path,
-                             final String comment ) {
+    void deletePathIfExists(final Path path,
+                            final String comment) {
         // Delegate additional changes required for a deletion to applicable Helpers. Helpers are invoked before
         // the deletion as Helpers may depend on the presence of the file; in particular when it is necessary to
         // resolve a Package from a file name.
-        notifyDeleteHelpers( path );
+        notifyDeleteHelpers(path);
 
-        ioService.deleteIfExists( Paths.convert( path ),
-                                  new CommentedOption( sessionInfo.getId(),
-                                                       identity.getIdentifier(),
-                                                       null,
-                                                       comment ),
-                                  StandardDeleteOption.NON_EMPTY_DIRECTORIES
-                                );
-
+        ioService.deleteIfExists(Paths.convert(path),
+                                 new CommentedOption(sessionInfo.getId(),
+                                                     identity.getIdentifier(),
+                                                     null,
+                                                     comment),
+                                 StandardDeleteOption.NON_EMPTY_DIRECTORIES
+        );
     }
 
-    void notifyDeleteHelpers( final Path path ) {
+    void notifyDeleteHelpers(final Path path) {
         final Iterable<DeleteHelper> helpers = getDeleteHelpers();
-        if ( helpers != null ) {
-            for ( DeleteHelper helper : helpers ) {
-                if ( helper.supports( path ) ) {
-                    helper.postProcess( path );
+        if (helpers != null) {
+            for (DeleteHelper helper : helpers) {
+                if (helper.supports(path)) {
+                    helper.postProcess(path);
                 }
             }
         }
     }
 
-    void startBatch( final Collection<Path> paths ) {
-        if ( paths.size() > 1 ) {
-            ioService.startBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
+    void startBatch(final Collection<Path> paths) {
+        if (paths.size() > 1) {
+            ioService.startBatch(Paths.convert(paths.iterator().next()).getFileSystem());
         }
     }
 
-    void endBatch( final Collection<Path> paths ) {
-        if ( paths.size() > 1 ) {
+    void endBatch(final Collection<Path> paths) {
+        if (paths.size() > 1) {
             ioService.endBatch();
         }
     }
@@ -195,5 +195,4 @@ public class DeleteServiceImpl implements DeleteService {
     Iterable<DeleteHelper> getDeleteHelpers() {
         return helpers;
     }
-
 }

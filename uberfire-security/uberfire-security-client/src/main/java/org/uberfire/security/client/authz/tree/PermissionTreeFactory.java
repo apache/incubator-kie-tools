@@ -31,5 +31,6 @@ public interface PermissionTreeFactory {
 
     PermissionTree createPermissionTree(Group group);
 
-    PermissionTree createPermissionTree(User user, VotingStrategy votingStrategy);
+    PermissionTree createPermissionTree(User user,
+                                        VotingStrategy votingStrategy);
 }

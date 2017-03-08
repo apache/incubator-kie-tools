@@ -24,13 +24,13 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-
 public class MaximizeTestScreenWrapper {
 
     private final WebDriver driver;
     private final String id;
 
-    public MaximizeTestScreenWrapper( WebDriver driver, String id ) {
+    public MaximizeTestScreenWrapper(WebDriver driver,
+                                     String id) {
         this.driver = driver;
         this.id = "MaximizeTestScreen-" + id;
     }
@@ -40,7 +40,7 @@ public class MaximizeTestScreenWrapper {
      * widget is not found within the driver's current implicit wait period.
      */
     public WebElement find() {
-        return driver.findElement( By.id( id ) );
+        return driver.findElement(By.id(id));
     }
 
     /**
@@ -55,14 +55,13 @@ public class MaximizeTestScreenWrapper {
      * Returns the size that the screen reports it has.
      */
     public Dimension getReportedSize() {
-        WebElement element = driver.findElement( By.id( id + "-sizeLabel" ) );
+        WebElement element = driver.findElement(By.id(id + "-sizeLabel"));
         String text = element.getText();
-        Matcher matcher = Pattern.compile( "([0-9]+)x([0-9]+)" ).matcher( text );
-        if ( matcher.matches() ) {
-            return new Dimension( Integer.parseInt( matcher.group( 1 ) ),
-                                  Integer.parseInt( matcher.group( 2 ) ) );
+        Matcher matcher = Pattern.compile("([0-9]+)x([0-9]+)").matcher(text);
+        if (matcher.matches()) {
+            return new Dimension(Integer.parseInt(matcher.group(1)),
+                                 Integer.parseInt(matcher.group(2)));
         }
-        throw new IllegalStateException( "Couldn't understand reported size \"" + text + "\"" );
+        throw new IllegalStateException("Couldn't understand reported size \"" + text + "\"");
     }
-
 }

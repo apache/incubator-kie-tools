@@ -26,41 +26,49 @@ import org.uberfire.commons.config.ConfigProperties;
 import org.uberfire.ext.security.management.UberfireRoleManager;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class KCCredentialsUserManagementServiceTest {
 
-    private KCCredentialsUserManagementService tested;
-    
-    @Mock KeyCloakUserManager userManager;
-    @Mock KeyCloakGroupManager groupManager;
+    @Mock
+    KeyCloakUserManager userManager;
+    @Mock
+    KeyCloakGroupManager groupManager;
     @Mock
     CredentialsClientFactory clientFactory;
-    @Mock UberfireRoleManager roleManager;
-    
+    @Mock
+    UberfireRoleManager roleManager;
+    private KCCredentialsUserManagementService tested;
+
     @Before
     public void setup() throws Exception {
-        this.tested = new KCCredentialsUserManagementService(userManager, groupManager, clientFactory, roleManager);
+        this.tested = new KCCredentialsUserManagementService(userManager,
+                                                             groupManager,
+                                                             clientFactory,
+                                                             roleManager);
     }
 
     @Test
     public void testInit() {
         this.tested.init();
-        verify(clientFactory, times(1)).init(any(ConfigProperties.class));
-        verify(userManager, times(1)).init(clientFactory);
-        verify(groupManager, times(1)).init(clientFactory);
+        verify(clientFactory,
+               times(1)).init(any(ConfigProperties.class));
+        verify(userManager,
+               times(1)).init(clientFactory);
+        verify(groupManager,
+               times(1)).init(clientFactory);
     }
 
     @Test
     public void testGetUsersManager() {
-        Assert.assertEquals(userManager, tested.users());
+        Assert.assertEquals(userManager,
+                            tested.users());
     }
 
     @Test
     public void testGetGroupsManager() {
-        Assert.assertEquals(groupManager, tested.groups());
+        Assert.assertEquals(groupManager,
+                            tested.groups());
     }
-    
 }

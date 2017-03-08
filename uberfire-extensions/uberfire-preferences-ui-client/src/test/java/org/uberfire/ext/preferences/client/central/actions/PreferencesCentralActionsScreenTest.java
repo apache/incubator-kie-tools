@@ -61,56 +61,67 @@ public class PreferencesCentralActionsScreenTest {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks( this );
+        MockitoAnnotations.initMocks(this);
 
-        actionsScreen = new PreferencesCentralActionsScreen( view,
-                                                             placeManager,
-                                                             preSaveEvent,
-                                                             saveEvent,
-                                                             undoChangesEvent,
-                                                             notification );
+        actionsScreen = new PreferencesCentralActionsScreen(view,
+                                                            placeManager,
+                                                            preSaveEvent,
+                                                            saveEvent,
+                                                            undoChangesEvent,
+                                                            notification);
 
         params = new HashMap<>();
-        params.put( "screen", "screen" );
-        actionsScreen.initEvent( new PreferencesCentralActionsConfigurationEvent( "screen", null ) );
+        params.put("screen",
+                   "screen");
+        actionsScreen.initEvent(new PreferencesCentralActionsConfigurationEvent("screen",
+                                                                                null));
     }
 
     @Test
     public void fireSaveEventTest() {
         actionsScreen.fireSaveEvent();
 
-        verify( preSaveEvent ).fire( any( PreferencesCentralPreSaveEvent.class ) );
-        verify( saveEvent ).fire( any( PreferencesCentralSaveEvent.class ) );
-        verify( placeManager ).goTo( eq( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER, params ) ) );
+        verify(preSaveEvent).fire(any(PreferencesCentralPreSaveEvent.class));
+        verify(saveEvent).fire(any(PreferencesCentralSaveEvent.class));
+        verify(placeManager).goTo(eq(new DefaultPlaceRequest(AdminPagePerspective.IDENTIFIER,
+                                                             params)));
     }
 
     @Test
     public void fireUndoEventTest() {
         actionsScreen.fireCancelEvent();
 
-        verify( undoChangesEvent ).fire( any( PreferencesCentralUndoChangesEvent.class ) );
-        verify( notification ).fire( any( NotificationEvent.class ) );
-        verify( placeManager ).goTo( eq( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER, params ) ) );
+        verify(undoChangesEvent).fire(any(PreferencesCentralUndoChangesEvent.class));
+        verify(notification).fire(any(NotificationEvent.class));
+        verify(placeManager).goTo(eq(new DefaultPlaceRequest(AdminPagePerspective.IDENTIFIER,
+                                                             params)));
     }
 
     @Test
     public void goBackToAdminPageWithPerspectiveIdentifierToGoBackToTest() {
-        actionsScreen.initEvent( new PreferencesCentralActionsConfigurationEvent( "adminPage", "perspective" ) );
+        actionsScreen.initEvent(new PreferencesCentralActionsConfigurationEvent("adminPage",
+                                                                                "perspective"));
         actionsScreen.goBackToAdminPage();
 
         Map<String, String> params = new HashMap<>();
-        params.put( "screen", "adminPage" );
-        params.put( "perspectiveIdentifierToGoBackTo", "perspective" );
-        verify( placeManager ).goTo( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER, params ) );
+        params.put("screen",
+                   "adminPage");
+        params.put("perspectiveIdentifierToGoBackTo",
+                   "perspective");
+        verify(placeManager).goTo(new DefaultPlaceRequest(AdminPagePerspective.IDENTIFIER,
+                                                          params));
     }
 
     @Test
     public void goBackToAdminPageWithoutPerspectiveIdentifierToGoBackToTest() {
-        actionsScreen.initEvent( new PreferencesCentralActionsConfigurationEvent( "adminPage", null ) );
+        actionsScreen.initEvent(new PreferencesCentralActionsConfigurationEvent("adminPage",
+                                                                                null));
         actionsScreen.goBackToAdminPage();
 
         Map<String, String> params = new HashMap<>();
-        params.put( "screen", "adminPage" );
-        verify( placeManager ).goTo( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER, params ) );
+        params.put("screen",
+                   "adminPage");
+        verify(placeManager).goTo(new DefaultPlaceRequest(AdminPagePerspective.IDENTIFIER,
+                                                          params));
     }
 }

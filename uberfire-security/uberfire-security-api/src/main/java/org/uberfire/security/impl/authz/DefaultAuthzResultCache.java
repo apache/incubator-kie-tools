@@ -26,7 +26,8 @@ public class DefaultAuthzResultCache {
 
     final Map<Permission, Map<String, AuthorizationResult>> internal = new HashMap<>();
 
-    public AuthorizationResult get(final User user, final Permission permission) {
+    public AuthorizationResult get(final User user,
+                                   final Permission permission) {
         Map<String, AuthorizationResult> result = internal.get(permission);
         if (result == null) {
             return null;
@@ -35,14 +36,18 @@ public class DefaultAuthzResultCache {
         return decision == null ? null : decision;
     }
 
-    public void put(final User user, final Permission permission, final AuthorizationResult authzResult) {
+    public void put(final User user,
+                    final Permission permission,
+                    final AuthorizationResult authzResult) {
         if (!internal.containsKey(permission)) {
-            internal.put(permission, new HashMap<>());
+            internal.put(permission,
+                         new HashMap<>());
         }
         final Map<String, AuthorizationResult> result = internal.get(permission);
         AuthorizationResult knowValue = result.get(user.getIdentifier());
         if (!(result.containsKey(user.getIdentifier()) && authzResult.equals(knowValue))) {
-            result.put(user.getIdentifier(), authzResult);
+            result.put(user.getIdentifier(),
+                       authzResult);
         }
     }
 

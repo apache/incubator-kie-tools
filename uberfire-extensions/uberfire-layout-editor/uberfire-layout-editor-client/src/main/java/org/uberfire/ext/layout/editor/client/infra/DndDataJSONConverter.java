@@ -27,60 +27,68 @@ public class DndDataJSONConverter {
     public static final String COMPONENT_TYPE = "type";
     public static final String COMPONENT_PARAMS = "params";
 
-    public String generateDragComponentJSON( LayoutDragComponent dragComponent ) {
+    public String generateDragComponentJSON(LayoutDragComponent dragComponent) {
         JSONObject jsonComponent = new JSONObject();
-        extractBeanClass( dragComponent, jsonComponent );
-        if ( dragComponent instanceof HasDragAndDropSettings ) {
+        extractBeanClass(dragComponent,
+                         jsonComponent);
+        if (dragComponent instanceof HasDragAndDropSettings) {
             JSONObject params = new JSONObject();
 
-            HasDragAndDropSettings sComponent = ( HasDragAndDropSettings ) dragComponent;
+            HasDragAndDropSettings sComponent = (HasDragAndDropSettings) dragComponent;
 
-            for ( String key : sComponent.getSettingsKeys() ) {
-                String value = sComponent.getSettingValue( key );
-                params.put( key, new JSONString( value ) );
+            for (String key : sComponent.getSettingsKeys()) {
+                String value = sComponent.getSettingValue(key);
+                params.put(key,
+                           new JSONString(value));
             }
 
-            jsonComponent.put( COMPONENT_PARAMS, params );
+            jsonComponent.put(COMPONENT_PARAMS,
+                              params);
         }
 
         return jsonComponent.toString();
     }
 
-    private void extractBeanClass( LayoutDragComponent dragComponent, JSONObject jsonComponent ) {
+    private void extractBeanClass(LayoutDragComponent dragComponent,
+                                  JSONObject jsonComponent) {
         LayoutDragComponentHelper layoutDragComponentHelper = getDragHelper();
-        jsonComponent.put( COMPONENT_TYPE, new JSONString( layoutDragComponentHelper.getRealBeanClass( dragComponent ) ) );
+        jsonComponent.put(COMPONENT_TYPE,
+                          new JSONString(layoutDragComponentHelper.getRealBeanClass(dragComponent)));
     }
 
     private LayoutDragComponentHelper getDragHelper() {
-        return IOC.getBeanManager().lookupBean( LayoutDragComponentHelper.class ).getInstance();
+        return IOC.getBeanManager().lookupBean(LayoutDragComponentHelper.class).getInstance();
     }
 
-    public LayoutDragComponent readJSONDragComponent( String json ) {
-        JSONObject jsonObject = JSONParser.parseStrict( json ).isObject();
+    public LayoutDragComponent readJSONDragComponent(String json) {
+        JSONObject jsonObject = JSONParser.parseStrict(json).isObject();
 
-        JSONString typeValue = jsonObject.get( COMPONENT_TYPE ).isString();
-        if ( typeValue != null ) {
+        JSONString typeValue = jsonObject.get(COMPONENT_TYPE).isString();
+        if (typeValue != null) {
             String type = typeValue.stringValue();
 
-            return getLayoutDragComponent( jsonObject, type );
+            return getLayoutDragComponent(jsonObject,
+                                          type);
         }
 
         return null;
     }
 
-    private LayoutDragComponent getLayoutDragComponent( JSONObject jsonObject, String type ) {
-        LayoutDragComponent dragComponent = getLayoutDragComponent( type );
+    private LayoutDragComponent getLayoutDragComponent(JSONObject jsonObject,
+                                                       String type) {
+        LayoutDragComponent dragComponent = getLayoutDragComponent(type);
 
-        if ( dragComponent instanceof HasDragAndDropSettings ) {
-            HasDragAndDropSettings sComponent = ( HasDragAndDropSettings ) dragComponent;
+        if (dragComponent instanceof HasDragAndDropSettings) {
+            HasDragAndDropSettings sComponent = (HasDragAndDropSettings) dragComponent;
 
-            JSONObject params = jsonObject.get( COMPONENT_PARAMS ).isObject();
+            JSONObject params = jsonObject.get(COMPONENT_PARAMS).isObject();
 
-            if ( params != null ) {
-                for ( String key : params.keySet() ) {
-                    JSONString value = params.get( key ).isString();
-                    if ( value != null ) {
-                        sComponent.setSettingValue( key, value.stringValue() );
+            if (params != null) {
+                for (String key : params.keySet()) {
+                    JSONString value = params.get(key).isString();
+                    if (value != null) {
+                        sComponent.setSettingValue(key,
+                                                   value.stringValue());
                     }
                 }
             }
@@ -89,9 +97,9 @@ public class DndDataJSONConverter {
         return dragComponent;
     }
 
-    private LayoutDragComponent getLayoutDragComponent( String type ) {
+    private LayoutDragComponent getLayoutDragComponent(String type) {
         LayoutDragComponentHelper layoutDragComponentHelper = getDragHelper();
-        LayoutDragComponent layoutDragComponent = layoutDragComponentHelper.lookupDragTypeBean( type );
+        LayoutDragComponent layoutDragComponent = layoutDragComponentHelper.lookupDragTypeBean(type);
         return layoutDragComponent;
     }
 }

@@ -23,8 +23,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
 
 public class KeyboardOperationMoveRight extends BaseKeyboardOperation {
 
-    public KeyboardOperationMoveRight( final GridLayer gridLayer ) {
-        super( gridLayer );
+    public KeyboardOperationMoveRight(final GridLayer gridLayer) {
+        super(gridLayer);
     }
 
     @Override
@@ -34,13 +34,12 @@ public class KeyboardOperationMoveRight extends BaseKeyboardOperation {
 
     @Override
     @SuppressWarnings("unused")
-    public boolean perform( final GridWidget gridWidget,
-                            final boolean isShiftKeyDown,
-                            final boolean isControlKeyDown ) {
-        final boolean redraw = gridWidget.adjustSelection( SelectionExtension.RIGHT,
-                                                           isShiftKeyDown );
-        scrollSelectedCellIntoView( gridWidget );
+    public boolean perform(final GridWidget gridWidget,
+                           final boolean isShiftKeyDown,
+                           final boolean isControlKeyDown) {
+        final boolean redraw = gridWidget.adjustSelection(SelectionExtension.RIGHT,
+                                                          isShiftKeyDown);
+        scrollSelectedCellIntoView(gridWidget);
         return redraw;
     }
-
 }

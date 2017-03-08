@@ -37,12 +37,12 @@ public class AdminPageCategoryView implements IsElement,
     private Div content;
 
     @Override
-    public void init( final AdminPageCategoryPresenter presenter ) {
+    public void init(final AdminPageCategoryPresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void add( final AdminPageItemPresenter.View rootItemView ) {
-        content.appendChild( rootItemView.getElement() );
+    public void add(final AdminPageItemPresenter.View rootItemView) {
+        content.appendChild(rootItemView.getElement());
     }
 }

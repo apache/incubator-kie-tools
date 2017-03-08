@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.backend.service.helper.CopyHelper;
-import org.uberfire.ext.editor.commons.backend.service.naming.PathNamingServiceImpl;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.PathNamingService;
 import org.uberfire.ext.editor.commons.service.restriction.PathOperationRestriction;
@@ -46,7 +45,7 @@ import org.uberfire.workbench.events.ResourceCopiedEvent;
 @ApplicationScoped
 public class CopyServiceImpl implements CopyService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger( CopyServiceImpl.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger(CopyServiceImpl.class);
 
     private IOService ioService;
 
@@ -66,13 +65,13 @@ public class CopyServiceImpl implements CopyService {
     }
 
     @Inject
-    public CopyServiceImpl( @Named("ioStrategy") IOService ioService,
-                            User identity,
-                            SessionInfo sessionInfo,
-                            Instance<CopyHelper> helpers,
-                            Event<ResourceCopiedEvent> resourceCopiedEvent,
-                            Instance<CopyRestrictor> copyRestrictorBeans,
-                            PathNamingService pathNamingService ) {
+    public CopyServiceImpl(@Named("ioStrategy") IOService ioService,
+                           User identity,
+                           SessionInfo sessionInfo,
+                           Instance<CopyHelper> helpers,
+                           Event<ResourceCopiedEvent> resourceCopiedEvent,
+                           Instance<CopyRestrictor> copyRestrictorBeans,
+                           PathNamingService pathNamingService) {
         this.ioService = ioService;
         this.identity = identity;
         this.sessionInfo = sessionInfo;
@@ -83,74 +82,87 @@ public class CopyServiceImpl implements CopyService {
     }
 
     @Override
-    public Path copy( final Path path,
-                      final String newName,
-                      final String comment ) {
-        LOGGER.info( "User:" + identity.getIdentifier() + " copying file [" + path.getFileName() + "] to [" + newName + "]" );
+    public Path copy(final Path path,
+                     final String newName,
+                     final String comment) {
+        LOGGER.info("User:" + identity.getIdentifier() + " copying file [" + path.getFileName() + "] to [" + newName + "]");
 
-        checkRestrictions( path );
+        checkRestrictions(path);
 
         try {
-            final Path targetPath = pathNamingService.buildTargetPath( path, newName );
-            return copyPath( path, newName, targetPath, comment );
-        } catch ( final RuntimeException e ) {
+            final Path targetPath = pathNamingService.buildTargetPath(path,
+                                                                      newName);
+            return copyPath(path,
+                            newName,
+                            targetPath,
+                            comment);
+        } catch (final RuntimeException e) {
             throw e;
-        } catch ( Exception e ) {
-            throw new RuntimeException( e );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public Path copy( final Path path,
-                      final String newName,
-                      final Path targetDirectory,
-                      final String comment ) {
-        if ( targetDirectory == null ) {
-            return copy( path, newName, comment );
+    public Path copy(final Path path,
+                     final String newName,
+                     final Path targetDirectory,
+                     final String comment) {
+        if (targetDirectory == null) {
+            return copy(path,
+                        newName,
+                        comment);
         }
 
-        LOGGER.info( "User:" + identity.getIdentifier() + " copying file [" + path.getFileName() + "] to [" + newName + "]" );
+        LOGGER.info("User:" + identity.getIdentifier() + " copying file [" + path.getFileName() + "] to [" + newName + "]");
 
-        checkRestrictions( path );
+        checkRestrictions(path);
 
         try {
-            final Path targetPath = pathNamingService.buildTargetPath( path, targetDirectory, newName );
-            return copyPath( path, newName, targetPath, comment );
-        } catch ( final RuntimeException e ) {
+            final Path targetPath = pathNamingService.buildTargetPath(path,
+                                                                      targetDirectory,
+                                                                      newName);
+            return copyPath(path,
+                            newName,
+                            targetPath,
+                            comment);
+        } catch (final RuntimeException e) {
             throw e;
-        } catch ( Exception e ) {
-            throw new RuntimeException( e );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void copyIfExists( final Collection<Path> paths,
-                              final String newName,
-                              final String comment ) {
+    public void copyIfExists(final Collection<Path> paths,
+                             final String newName,
+                             final String comment) {
         try {
             //Always use a batch as CopyHelpers may be involved with the rename operation
-            startBatch( paths );
+            startBatch(paths);
 
-            for ( final Path path : paths ) {
-                LOGGER.info( "User:" + identity.getIdentifier() + " copying file (if exists) [" + path.getFileName() + "] to [" + newName + "]" );
+            for (final Path path : paths) {
+                LOGGER.info("User:" + identity.getIdentifier() + " copying file (if exists) [" + path.getFileName() + "] to [" + newName + "]");
 
-                checkRestrictions( path );
-                copyPathIfExists( path, newName, comment );
+                checkRestrictions(path);
+                copyPathIfExists(path,
+                                 newName,
+                                 comment);
             }
-        } catch ( final RuntimeException e ) {
+        } catch (final RuntimeException e) {
             throw e;
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
         } finally {
             endBatch();
         }
     }
 
     @Override
-    public boolean hasRestriction( final Path path ) {
-        for ( CopyRestrictor copyRestrictor : getCopyRestrictors() ) {
-            final PathOperationRestriction copyRestriction = copyRestrictor.hasRestriction( path );
-            if ( copyRestriction != null ) {
+    public boolean hasRestriction(final Path path) {
+        for (CopyRestrictor copyRestrictor : getCopyRestrictors()) {
+            final PathOperationRestriction copyRestriction = copyRestrictor.hasRestriction(path);
+            if (copyRestriction != null) {
                 return true;
             }
         }
@@ -158,86 +170,88 @@ public class CopyServiceImpl implements CopyService {
         return false;
     }
 
-    private void checkRestrictions( final Path path ) {
-        for ( CopyRestrictor copyRestrictor : getCopyRestrictors() ) {
-            final PathOperationRestriction copyRestriction = copyRestrictor.hasRestriction( path );
-            if ( copyRestriction != null ) {
-                throw new RuntimeException( copyRestriction.getMessage( path ) );
+    private void checkRestrictions(final Path path) {
+        for (CopyRestrictor copyRestrictor : getCopyRestrictors()) {
+            final PathOperationRestriction copyRestriction = copyRestrictor.hasRestriction(path);
+            if (copyRestriction != null) {
+                throw new RuntimeException(copyRestriction.getMessage(path));
             }
         }
     }
 
-    Path copyPath( final Path path,
-                   final String newName,
-                   final Path targetPath,
-                   final String comment ) {
-        final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
-        final org.uberfire.java.nio.file.Path _target = Paths.convert( targetPath );
+    Path copyPath(final Path path,
+                  final String newName,
+                  final Path targetPath,
+                  final String comment) {
+        final org.uberfire.java.nio.file.Path _path = Paths.convert(path);
+        final org.uberfire.java.nio.file.Path _target = Paths.convert(targetPath);
 
         try {
-            ioService.startBatch( _target.getFileSystem() );
+            ioService.startBatch(_target.getFileSystem());
 
-            ioService.copy( _path,
-                            _target,
-                            new CommentedOption( sessionInfo != null ? sessionInfo.getId() : "--",
-                                                 identity.getIdentifier(),
-                                                 null,
-                                                 comment ) );
+            ioService.copy(_path,
+                           _target,
+                           new CommentedOption(sessionInfo != null ? sessionInfo.getId() : "--",
+                                               identity.getIdentifier(),
+                                               null,
+                                               comment));
 
             //Delegate additional changes required for a copy to applicable Helpers
-            if ( helpers != null ) {
-                for ( CopyHelper helper : helpers ) {
-                    if ( helper.supports( targetPath ) ) {
-                        helper.postProcess( path,
-                                            targetPath );
+            if (helpers != null) {
+                for (CopyHelper helper : helpers) {
+                    if (helper.supports(targetPath)) {
+                        helper.postProcess(path,
+                                           targetPath);
                     }
                 }
             }
-        } catch ( final Exception e ) {
-            throw new RuntimeException( e );
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
         } finally {
             endBatch();
         }
 
-        resourceCopiedEvent.fire( new ResourceCopiedEvent( path,
-                                                           targetPath,
-                                                           comment,
-                                                           sessionInfo != null ? sessionInfo : new SessionInfoImpl( "--", identity ) ) );
+        resourceCopiedEvent.fire(new ResourceCopiedEvent(path,
+                                                         targetPath,
+                                                         comment,
+                                                         sessionInfo != null ? sessionInfo : new SessionInfoImpl("--",
+                                                                                                                 identity)));
 
         return targetPath;
     }
 
-    void copyPathIfExists( final Path path,
-                           final String newName,
-                           final String comment ) {
-        final org.uberfire.java.nio.file.Path _path = Paths.convert( path );
+    void copyPathIfExists(final Path path,
+                          final String newName,
+                          final String comment) {
+        final org.uberfire.java.nio.file.Path _path = Paths.convert(path);
 
-        if ( Files.exists( _path ) ) {
-            final org.uberfire.java.nio.file.Path _target = Paths.convert( pathNamingService.buildTargetPath( path, newName ) );
+        if (Files.exists(_path)) {
+            final org.uberfire.java.nio.file.Path _target = Paths.convert(pathNamingService.buildTargetPath(path,
+                                                                                                            newName));
 
-            ioService.copy( _path,
-                            _target,
-                            new CommentedOption( sessionInfo.getId(),
-                                                 identity.getIdentifier(),
-                                                 null,
-                                                 comment )
-                          );
+            ioService.copy(_path,
+                           _target,
+                           new CommentedOption(sessionInfo.getId(),
+                                               identity.getIdentifier(),
+                                               null,
+                                               comment)
+            );
 
             //Delegate additional changes required for a copy to applicable Helpers
-            if ( _target != null && helpers != null ) {
-                final Path targetPath = Paths.convert( _target );
-                for ( CopyHelper helper : helpers ) {
-                    if ( helper.supports( targetPath ) ) {
-                        helper.postProcess( path,
-                                            targetPath );
+            if (_target != null && helpers != null) {
+                final Path targetPath = Paths.convert(_target);
+                for (CopyHelper helper : helpers) {
+                    if (helper.supports(targetPath)) {
+                        helper.postProcess(path,
+                                           targetPath);
                     }
                 }
             }
         }
     }
 
-    void startBatch( final Collection<Path> paths ) {
-        ioService.startBatch( Paths.convert( paths.iterator().next() ).getFileSystem() );
+    void startBatch(final Collection<Path> paths) {
+        ioService.startBatch(Paths.convert(paths.iterator().next()).getFileSystem());
     }
 
     void endBatch() {

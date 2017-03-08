@@ -25,5 +25,4 @@ public interface PathResolver {
     boolean isDotFile(Path convert);
 
     public Path resolveMainFilePath(Path path) throws URISyntaxException;
-
 }

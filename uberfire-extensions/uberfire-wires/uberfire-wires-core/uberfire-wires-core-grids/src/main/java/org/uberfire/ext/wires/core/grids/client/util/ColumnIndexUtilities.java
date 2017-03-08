@@ -33,14 +33,14 @@ public class ColumnIndexUtilities {
      * @param modelColumnIndex The index a model column represents in a row of data.
      * @return The UI Column index corresponding to model column index.
      */
-    public static int findUiColumnIndex( final List<GridColumn<?>> columns,
-                                         final int modelColumnIndex ) {
-        for ( int uiColumnIndex = 0; uiColumnIndex < columns.size(); uiColumnIndex++ ) {
-            final GridColumn<?> c = columns.get( uiColumnIndex );
-            if ( c.getIndex() == modelColumnIndex ) {
+    public static int findUiColumnIndex(final List<GridColumn<?>> columns,
+                                        final int modelColumnIndex) {
+        for (int uiColumnIndex = 0; uiColumnIndex < columns.size(); uiColumnIndex++) {
+            final GridColumn<?> c = columns.get(uiColumnIndex);
+            if (c.getIndex() == modelColumnIndex) {
                 return uiColumnIndex;
             }
         }
-        throw new IllegalStateException( "Column was not found!" );
+        throw new IllegalStateException("Column was not found!");
     }
 }

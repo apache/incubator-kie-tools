@@ -24,8 +24,7 @@ public interface ClientTypeRegistry {
 
     Collection<ClientResourceType> getRegisteredTypes();
 
-    ClientResourceType resolve( final Path path );
+    ClientResourceType resolve(final Path path);
 
-    String resolveWildcardPattern( final String shortName );
-
+    String resolveWildcardPattern(final String shortName);
 }

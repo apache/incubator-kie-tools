@@ -39,137 +39,136 @@ public class GridWidgetDnDMouseDownHandler implements NodeMouseDownHandler {
     private final GridLayer layer;
     private final GridWidgetDnDHandlersState state;
 
-    public GridWidgetDnDMouseDownHandler( final GridLayer layer,
-                                          final GridWidgetDnDHandlersState state ) {
+    public GridWidgetDnDMouseDownHandler(final GridLayer layer,
+                                         final GridWidgetDnDHandlersState state) {
         this.layer = layer;
         this.state = state;
     }
 
     @Override
-    public void onNodeMouseDown( final NodeMouseDownEvent event ) {
+    public void onNodeMouseDown(final NodeMouseDownEvent event) {
         //The Grid that the pointer is currently over is set by the MouseMoveHandler
-        if ( state.getActiveGridWidget() == null ) {
+        if (state.getActiveGridWidget() == null) {
             return;
         }
 
         //Get the GridWidget for the grid.
         final GridWidget activeGridWidget = state.getActiveGridWidget();
-        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate( activeGridWidget,
-                                                                           new Point2D( event.getX(),
-                                                                                        event.getY() ) );
+        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate(activeGridWidget,
+                                                                          new Point2D(event.getX(),
+                                                                                      event.getY()));
 
         //Move from one of the pending operations to the actual operation, as appropriate.
-        switch ( state.getOperation() ) {
+        switch (state.getOperation()) {
             case COLUMN_RESIZE_PENDING:
-                if ( state.getActiveGridColumns().isEmpty() ) {
+                if (state.getActiveGridColumns().isEmpty()) {
                     return;
                 }
-                state.setEventInitialX( ap.getX() );
-                state.setEventInitialColumnWidth( state.getActiveGridColumns().get( 0 ).getWidth() );
-                state.setOperation( GridWidgetDnDHandlersState.GridWidgetHandlersOperation.COLUMN_RESIZE );
+                state.setEventInitialX(ap.getX());
+                state.setEventInitialColumnWidth(state.getActiveGridColumns().get(0).getWidth());
+                state.setOperation(GridWidgetDnDHandlersState.GridWidgetHandlersOperation.COLUMN_RESIZE);
                 break;
 
             case COLUMN_MOVE_PENDING:
-                if ( state.getActiveGridColumns().isEmpty() ) {
+                if (state.getActiveGridColumns().isEmpty()) {
                     return;
                 }
 
-                showColumnHighlight( state.getActiveGridWidget(),
-                                     state.getActiveGridColumns() );
-                state.setEventInitialX( ap.getX() );
-                state.setOperation( GridWidgetDnDHandlersState.GridWidgetHandlersOperation.COLUMN_MOVE );
+                showColumnHighlight(state.getActiveGridWidget(),
+                                    state.getActiveGridColumns());
+                state.setEventInitialX(ap.getX());
+                state.setOperation(GridWidgetDnDHandlersState.GridWidgetHandlersOperation.COLUMN_MOVE);
                 break;
 
             case ROW_MOVE_PENDING:
-                if ( state.getActiveGridRows().isEmpty() ) {
+                if (state.getActiveGridRows().isEmpty()) {
                     return;
                 }
 
-                showRowHighlight( state.getActiveGridWidget(),
-                                  state.getActiveGridRows() );
-                state.setEventInitialX( ap.getX() );
-                state.setOperation( GridWidgetDnDHandlersState.GridWidgetHandlersOperation.ROW_MOVE );
+                showRowHighlight(state.getActiveGridWidget(),
+                                 state.getActiveGridRows());
+                state.setEventInitialX(ap.getX());
+                state.setOperation(GridWidgetDnDHandlersState.GridWidgetHandlersOperation.ROW_MOVE);
                 break;
 
             case GRID_MOVE_PENDING:
-                state.setOperation( GridWidgetDnDHandlersState.GridWidgetHandlersOperation.GRID_MOVE );
-                activeGridWidget.setDragMode( DragMode.SAME_LAYER );
-                activeGridWidget.setDraggable( true );
-                setCursor( Style.Cursor.MOVE );
+                state.setOperation(GridWidgetDnDHandlersState.GridWidgetHandlersOperation.GRID_MOVE);
+                activeGridWidget.setDragMode(DragMode.SAME_LAYER);
+                activeGridWidget.setDraggable(true);
+                setCursor(Style.Cursor.MOVE);
         }
     }
 
-    private void setCursor( final Style.Cursor cursor ) {
-        layer.getViewport().getElement().getStyle().setCursor( cursor );
-        state.setCursor( cursor );
+    private void setCursor(final Style.Cursor cursor) {
+        layer.getViewport().getElement().getStyle().setCursor(cursor);
+        state.setCursor(cursor);
     }
 
     @SuppressWarnings("unchecked")
-    void showColumnHighlight( final GridWidget view,
-                              final List<GridColumn<?>> activeGridColumns ) {
+    void showColumnHighlight(final GridWidget view,
+                             final List<GridColumn<?>> activeGridColumns) {
         final BaseGridRendererHelper rendererHelper = view.getRendererHelper();
         final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
-        if ( renderingInformation == null ) {
+        if (renderingInformation == null) {
             return;
         }
 
         final Group header = view.getHeader();
         final double headerRowsYOffset = renderingInformation.getHeaderRowsYOffset();
-        final double headerMinY = ( header == null ? headerRowsYOffset : header.getY() + headerRowsYOffset );
+        final double headerMinY = (header == null ? headerRowsYOffset : header.getY() + headerRowsYOffset);
 
         final Bounds bounds = renderingInformation.getBounds();
-        final double activeColumnX = rendererHelper.getColumnOffset( activeGridColumns.get( 0 ) );
-        final double highlightWidth = getHighlightWidth( activeGridColumns );
-        final double highlightHeight = getHighlightHeight( bounds,
-                                                           view,
-                                                           headerMinY );
+        final double activeColumnX = rendererHelper.getColumnOffset(activeGridColumns.get(0));
+        final double highlightWidth = getHighlightWidth(activeGridColumns);
+        final double highlightHeight = getHighlightHeight(bounds,
+                                                          view,
+                                                          headerMinY);
 
-        state.getEventColumnHighlight().setWidth( highlightWidth )
-                .setHeight( highlightHeight )
-                .setX( view.getX() + activeColumnX )
-                .setY( view.getY() + headerMinY );
-        layer.add( state.getEventColumnHighlight() );
+        state.getEventColumnHighlight().setWidth(highlightWidth)
+                .setHeight(highlightHeight)
+                .setX(view.getX() + activeColumnX)
+                .setY(view.getY() + headerMinY);
+        layer.add(state.getEventColumnHighlight());
         layer.getLayer().batch();
     }
 
-    private double getHighlightWidth( final List<GridColumn<?>> activeGridColumns ) {
+    private double getHighlightWidth(final List<GridColumn<?>> activeGridColumns) {
         double highlightWidth = 0;
-        for ( GridColumn<?> activeGridColumn : activeGridColumns ) {
+        for (GridColumn<?> activeGridColumn : activeGridColumns) {
             highlightWidth = highlightWidth + activeGridColumn.getWidth();
         }
         return highlightWidth;
     }
 
-    private double getHighlightHeight( final Bounds bounds,
-                                       final GridWidget view,
-                                       final double headerMinY ) {
-        final double highlightHeight = Math.min( bounds.getY() + bounds.getHeight() - view.getY(),
-                                                 view.getHeight() ) - headerMinY;
+    private double getHighlightHeight(final Bounds bounds,
+                                      final GridWidget view,
+                                      final double headerMinY) {
+        final double highlightHeight = Math.min(bounds.getY() + bounds.getHeight() - view.getY(),
+                                                view.getHeight()) - headerMinY;
         return highlightHeight;
     }
 
-    void showRowHighlight( final GridWidget view,
-                           final List<GridRow> activeGridRows ) {
+    void showRowHighlight(final GridWidget view,
+                          final List<GridRow> activeGridRows) {
         final BaseGridRendererHelper rendererHelper = view.getRendererHelper();
         final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
-        if ( renderingInformation == null ) {
+        if (renderingInformation == null) {
             return;
         }
 
         final Bounds bounds = renderingInformation.getBounds();
-        final GridRow row = activeGridRows.get( 0 );
-        final double rowOffsetY = rendererHelper.getRowOffset( row ) + view.getRenderer().getHeaderHeight();
+        final GridRow row = activeGridRows.get(0);
+        final double rowOffsetY = rendererHelper.getRowOffset(row) + view.getRenderer().getHeaderHeight();
 
-        final double highlightWidth = Math.min( bounds.getX() + bounds.getWidth() - view.getX(),
-                                                view.getWidth() );
+        final double highlightWidth = Math.min(bounds.getX() + bounds.getWidth() - view.getX(),
+                                               view.getWidth());
         final double highlightHeight = row.getHeight();
 
-        state.getEventColumnHighlight().setWidth( highlightWidth )
-                .setHeight( highlightHeight )
-                .setX( view.getX() )
-                .setY( view.getY() + rowOffsetY );
-        layer.add( state.getEventColumnHighlight() );
+        state.getEventColumnHighlight().setWidth(highlightWidth)
+                .setHeight(highlightHeight)
+                .setX(view.getX())
+                .setY(view.getY() + rowOffsetY);
+        layer.add(state.getEventColumnHighlight());
         layer.getLayer().batch();
     }
-
 }

@@ -19,7 +19,7 @@ public class BayesianTemplateSelectedEvent {
 
     private String template;
 
-    public BayesianTemplateSelectedEvent( final String template ) {
+    public BayesianTemplateSelectedEvent(final String template) {
         this.template = template;
     }
 
@@ -27,8 +27,7 @@ public class BayesianTemplateSelectedEvent {
         return template;
     }
 
-    public void setTemplate( final String template ) {
+    public void setTemplate(final String template) {
         this.template = template;
     }
-
 }

@@ -26,7 +26,7 @@ import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchScreen( identifier = "TodoListScreen", preferredWidth = 400 )
+@WorkbenchScreen(identifier = "TodoListScreen", preferredWidth = 400)
 public class TodoListScreen extends AbstractMarkdownScreen {
 
     @Override
@@ -42,23 +42,22 @@ public class TodoListScreen extends AbstractMarkdownScreen {
     @WorkbenchMenu
     public Menus getMenu() {
         return MenuFactory
-                .newTopLevelMenu( "Save" )
-                    .respondsWith( () -> Window.alert( "Saved!" ) )
+                .newTopLevelMenu("Save")
+                .respondsWith(() -> Window.alert("Saved!"))
                 .endMenu()
-                .newTopLevelMenu( "Delete" )
-                    .respondsWith( () -> Window.alert( "Deleted!" ) )
+                .newTopLevelMenu("Delete")
+                .respondsWith(() -> Window.alert("Deleted!"))
                 .endMenu()
-                .newTopLevelMenu( "Edit" )
-                    .menus()
-                        .menu( "Cut" )
-                            .respondsWith( () -> Window.alert( "Cut!" ) )
-                        .endMenu()
-                        .menu( "Paste" )
-                            .respondsWith( () -> Window.alert( "Paste!" ) )
-                        .endMenu()
-                    .endMenus()
+                .newTopLevelMenu("Edit")
+                .menus()
+                .menu("Cut")
+                .respondsWith(() -> Window.alert("Cut!"))
+                .endMenu()
+                .menu("Paste")
+                .respondsWith(() -> Window.alert("Paste!"))
+                .endMenu()
+                .endMenus()
                 .endMenu()
                 .build();
     }
-
 }

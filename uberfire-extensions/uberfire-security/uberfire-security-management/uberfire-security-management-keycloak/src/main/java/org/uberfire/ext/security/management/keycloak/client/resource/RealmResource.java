@@ -29,5 +29,4 @@ public interface RealmResource {
 
     @Path("roles")
     RolesResource roles();
-
 }

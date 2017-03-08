@@ -37,22 +37,22 @@ public interface ShapeFactory<T extends Shape<T>> {
      * @param dragEndCallBack
      * @return
      */
-    ShapeDragProxy getDragProxy( final FactoryHelper helper,
-                                 final ShapeDragProxyPreviewCallback dragPreviewCallback,
-                                 final ShapeDragProxyCompleteCallback dragEndCallBack );
+    ShapeDragProxy getDragProxy(final FactoryHelper helper,
+                                final ShapeDragProxyPreviewCallback dragPreviewCallback,
+                                final ShapeDragProxyCompleteCallback dragEndCallBack);
 
     /**
      * Get a Shape to be created on the Canvas (usually at the end of a drag operation)
      * @return
      */
-    WiresBaseShape getShape( final FactoryHelper helper );
+    WiresBaseShape getShape(final FactoryHelper helper);
 
     /**
      * Does the Factory build the given shape type
      * @param shapeType
      * @return true is the Factor builds the given type
      */
-    boolean builds( final WiresBaseShape shapeType );
+    boolean builds(final WiresBaseShape shapeType);
 
     /**
      * Get description of Shape
@@ -65,5 +65,4 @@ public interface ShapeFactory<T extends Shape<T>> {
      * @return
      */
     Category getCategory();
-
 }

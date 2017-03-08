@@ -27,69 +27,56 @@ public interface CellSelectionManager {
      * Handles selection of a cell by delegating selection to a @{link CellSelectionStrategy} associated
      * with the cell being selected. Different strategies may select an entire row, a range depending
      * upon shift/control key states etc.
-     * @param ap
-     *         Canvas coordinate relative to the GridWidget.
-     * @param isShiftKeyDown
-     *         True if the shift key is pressed.
-     * @param isControlKeyDown
-     *         True if the control key is pressed.
+     * @param ap Canvas coordinate relative to the GridWidget.
+     * @param isShiftKeyDown True if the shift key is pressed.
+     * @param isControlKeyDown True if the control key is pressed.
      * @return true if the selections have changed.
      */
-    boolean selectCell( final Point2D ap,
-                        final boolean isShiftKeyDown,
-                        final boolean isControlKeyDown );
+    boolean selectCell(final Point2D ap,
+                       final boolean isShiftKeyDown,
+                       final boolean isControlKeyDown);
 
     /**
      * Handles selection of a cell by delegating selection to a @{link CellSelectionStrategy} associated
      * with the cell being selected. Different strategies may select an entire row, a range depending
      * upon shift/control key states etc.
-     * @param uiRowIndex
-     *         Index of row as seen in the UI
-     * @param uiColumnIndex
-     *         Index of the column as seen in the UI
-     * @param isShiftKeyDown
-     *         True if the shift key is pressed.
-     * @param isControlKeyDown
-     *         True if the control key is pressed.
+     * @param uiRowIndex Index of row as seen in the UI
+     * @param uiColumnIndex Index of the column as seen in the UI
+     * @param isShiftKeyDown True if the shift key is pressed.
+     * @param isControlKeyDown True if the control key is pressed.
      * @return true if the selections have changed.
      */
-    boolean selectCell( final int uiRowIndex,
-                        final int uiColumnIndex,
-                        final boolean isShiftKeyDown,
-                        final boolean isControlKeyDown );
+    boolean selectCell(final int uiRowIndex,
+                       final int uiColumnIndex,
+                       final boolean isShiftKeyDown,
+                       final boolean isControlKeyDown);
 
     /**
      * Adjusts an existing selection, based on the selection origin, depending on the
      * provided parameters. If the shift key is down the current selected range is extended
      * in the required direction; otherwise the current origin is moved in the required direction.
-     * @param direction
-     *         The proposed direction in which to extend the selection.
-     * @param isShiftKeyDown
-     *         true if the shift key is pressed.
+     * @param direction The proposed direction in which to extend the selection.
+     * @param isShiftKeyDown true if the shift key is pressed.
      * @return true if the selection changed, otherwise false.
      */
-    boolean adjustSelection( final SelectionExtension direction,
-                             final boolean isShiftKeyDown );
+    boolean adjustSelection(final SelectionExtension direction,
+                            final boolean isShiftKeyDown);
 
     /**
      * Handles initiation of editing a cell. If the provided Canvas coordinate
      * does not resolve to a cell in the Grid no operation if performed.
-     * @param ap
-     *         Canvas coordinate relative to the GridWidget.
+     * @param ap Canvas coordinate relative to the GridWidget.
      * @return true if an edit operation was successfully initiated.
      */
-    boolean startEditingCell( final Point2D ap );
+    boolean startEditingCell(final Point2D ap);
 
     /**
      * Handles initiation of editing a cell. If the provided Canvas coordinate
      * does not resolve to a cell in the Grid no operation if performed.
-     * @param uiRowIndex
-     *         Row index of cell being edited.
-     * @param uiColumnIndex
-     *         Column index of cell being edited.
+     * @param uiRowIndex Row index of cell being edited.
+     * @param uiColumnIndex Column index of cell being edited.
      * @return true if an edit operation was successfully initiated.
      */
-    boolean startEditingCell( final int uiRowIndex,
-                              final int uiColumnIndex );
-
+    boolean startEditingCell(final int uiRowIndex,
+                             final int uiColumnIndex);
 }

@@ -26,6 +26,12 @@ import org.uberfire.mvp.impl.DefaultPlaceRequest;
 @ApplicationScoped
 public class PlaceManagerJSExporter implements UberfireJSExporter {
 
+    public static void goTo(final String place) {
+        final SyncBeanManager beanManager = IOC.getBeanManager();
+        final PlaceManager placeManager = beanManager.lookupBean(PlaceManager.class).getInstance();
+        placeManager.goTo(new DefaultPlaceRequest(place));
+    }
+
     @Override
     public void export() {
         publish();
@@ -34,10 +40,4 @@ public class PlaceManagerJSExporter implements UberfireJSExporter {
     private native void publish() /*-{
         $wnd.$goToPlace = @org.uberfire.client.exporter.PlaceManagerJSExporter::goTo(Ljava/lang/String;);
     }-*/;
-
-    public static void goTo( final String place ) {
-        final SyncBeanManager beanManager = IOC.getBeanManager();
-        final PlaceManager placeManager = beanManager.lookupBean( PlaceManager.class ).getInstance();
-        placeManager.goTo( new DefaultPlaceRequest( place ) );
-    }
 }

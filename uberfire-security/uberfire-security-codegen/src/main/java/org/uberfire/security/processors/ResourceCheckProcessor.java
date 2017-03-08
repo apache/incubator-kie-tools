@@ -37,7 +37,7 @@ import org.uberfire.security.client.authz.AuthorizationManagerHelper;
 
 /**
  * <p>Given a method where "project" creation permissions are required like, for instance:</p>
- *
+ * <p>
  * <pre>
  * {@code @SecuredAction(type="project", action="create")
  *    private void enableProjectCreation() {
@@ -45,10 +45,10 @@ import org.uberfire.security.client.authz.AuthorizationManagerHelper;
  *    }
  * }
  * </pre>
- *
+ * <p>
  * <p>This processor class will append the required security check code to ensure the method body
  * is only executed when the user is granted with the proper permission rights.</p>
- *
+ * <p>
  * <p>For resource instance specific checks a parameter of a class implementing {@link Resource}
  * is required. For instance:</p>
  * <pre>
@@ -66,8 +66,24 @@ public class ResourceCheckProcessor extends IOCDecoratorExtension<ResourceCheck>
         super(decoratesWith);
     }
 
+    public static Statement buildCheckStatement(ContextualStatementBuilder authzCall,
+                                                String onGranted,
+                                                String onDenied) {
+        BooleanExpression boolExpr = BooleanExpressionBuilder.create(authzCall).negate();
+        BlockBuilder<ElseBlockBuilder> builder = If.cond(boolExpr);
+        if (onDenied != null && onDenied.trim().length() > 0) {
+            builder.append(Stmt.loadVariable("this").invoke(onDenied));
+        }
+        BlockBuilder<StatementEnd> endBuilder = builder.append(Stmt.returnVoid()).finish().else_();
+        if (onGranted != null && onGranted.trim().length() > 0) {
+            endBuilder.append(Stmt.loadVariable("this").invoke(onGranted));
+        }
+        return endBuilder.finish();
+    }
+
     @Override
-    public void generateDecorator(final Decorable decorable, final FactoryController controller) {
+    public void generateDecorator(final Decorable decorable,
+                                  final FactoryController controller) {
         MetaMethod metaMethod = decorable.getAsMethod();
         ResourceCheck securedResource = metaMethod.getAnnotation(ResourceCheck.class);
         String resourceType = securedResource.type();
@@ -80,8 +96,7 @@ public class ResourceCheckProcessor extends IOCDecoratorExtension<ResourceCheck>
         // The method must return void
         if (!metaMethod.getReturnType().getName().equals("void")) {
             throw new RuntimeException("The @ResourceCheck annotated method \"" +
-                    declaringClass + "#" + metaMethod.getName() + "\" must return void");
-
+                                               declaringClass + "#" + metaMethod.getName() + "\" must return void");
         }
 
         // Infer the check type: global action or resource check
@@ -94,18 +109,26 @@ public class ResourceCheckProcessor extends IOCDecoratorExtension<ResourceCheck>
         // Resource instance check
         if (resourceCheck) {
             MetaParameter p1 = metaMethod.getParameters()[0];
-            Statement stmt = createResourceActionCheck(p1.getName(), resourceAction, onGranted, onDenied);
-            controller.addInvokeBefore(metaMethod, stmt);
+            Statement stmt = createResourceActionCheck(p1.getName(),
+                                                       resourceAction,
+                                                       onGranted,
+                                                       onDenied);
+            controller.addInvokeBefore(metaMethod,
+                                       stmt);
         }
         // Global action check
         else {
             // The resource type is mandatory
             if (resourceType == null || resourceType.trim().length() == 0) {
                 throw new RuntimeException("The @ResourceCheck parameter named \"type\" is missing " +
-                        "\"" + declaringClass + "#" + metaMethod.getName() + "\"");
+                                                   "\"" + declaringClass + "#" + metaMethod.getName() + "\"");
             }
-            Statement stmt = createGlobalActionCheck(resourceType, resourceAction, onGranted, onDenied);
-            controller.addInvokeBefore(metaMethod, stmt);
+            Statement stmt = createGlobalActionCheck(resourceType,
+                                                     resourceAction,
+                                                     onGranted,
+                                                     onDenied);
+            controller.addInvokeBefore(metaMethod,
+                                       stmt);
         }
     }
 
@@ -118,30 +141,27 @@ public class ResourceCheckProcessor extends IOCDecoratorExtension<ResourceCheck>
         return false;
     }
 
-    public Statement createResourceActionCheck(String resourceName, String resourceAction, String onGranted, String onDenied) {
+    public Statement createResourceActionCheck(String resourceName,
+                                               String resourceAction,
+                                               String onGranted,
+                                               String onDenied) {
         return buildCheckStatement(Stmt.invokeStatic(AuthorizationManagerHelper.class,
-                "authorize",
-                Stmt.loadVariable(resourceName),
-                resourceAction), onGranted, onDenied);
+                                                     "authorize",
+                                                     Stmt.loadVariable(resourceName),
+                                                     resourceAction),
+                                   onGranted,
+                                   onDenied);
     }
 
-    public Statement createGlobalActionCheck(String resourceType, String resourceAction, String onGranted, String onDenied) {
+    public Statement createGlobalActionCheck(String resourceType,
+                                             String resourceAction,
+                                             String onGranted,
+                                             String onDenied) {
         return buildCheckStatement(Stmt.invokeStatic(AuthorizationManagerHelper.class,
-                "authorize",
-                resourceType,
-                resourceAction), onGranted, onDenied);
-    }
-
-    public static Statement buildCheckStatement(ContextualStatementBuilder authzCall, String onGranted, String onDenied) {
-        BooleanExpression boolExpr = BooleanExpressionBuilder.create(authzCall).negate();
-        BlockBuilder<ElseBlockBuilder> builder = If.cond(boolExpr);
-        if (onDenied != null && onDenied.trim().length() > 0) {
-            builder.append(Stmt.loadVariable("this").invoke(onDenied));
-        }
-        BlockBuilder<StatementEnd> endBuilder = builder.append(Stmt.returnVoid()).finish().else_();
-        if (onGranted != null && onGranted.trim().length() > 0) {
-            endBuilder.append(Stmt.loadVariable("this").invoke(onGranted));
-        }
-        return endBuilder.finish();
+                                                     "authorize",
+                                                     resourceType,
+                                                     resourceAction),
+                                   onGranted,
+                                   onDenied);
     }
 }

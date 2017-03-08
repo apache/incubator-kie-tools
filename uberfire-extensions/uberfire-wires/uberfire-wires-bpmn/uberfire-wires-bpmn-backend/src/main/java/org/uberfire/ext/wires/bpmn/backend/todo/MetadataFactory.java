@@ -25,8 +25,7 @@ import org.uberfire.ext.wires.bpmn.api.service.todo.Metadata;
  */
 public class MetadataFactory {
 
-    public static Map<String, Object> makeMetadata( final Metadata metadata ) {
+    public static Map<String, Object> makeMetadata(final Metadata metadata) {
         return Collections.EMPTY_MAP;
     }
-
 }

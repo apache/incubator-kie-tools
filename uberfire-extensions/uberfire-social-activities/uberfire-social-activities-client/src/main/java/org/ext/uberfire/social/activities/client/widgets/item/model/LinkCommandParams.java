@@ -28,9 +28,11 @@ public class LinkCommandParams {
 
     private LINK_TYPE linkType = LINK_TYPE.VFS;
 
-    private Map<String, String> linkParams = new HashMap<String, String>(  );
+    private Map<String, String> linkParams = new HashMap<String, String>();
 
-    public LinkCommandParams( String eventType, String link, LINK_TYPE linkType ) {
+    public LinkCommandParams(String eventType,
+                             String link,
+                             LINK_TYPE linkType) {
         this.eventType = eventType;
         this.link = link;
         this.linkType = linkType;
@@ -40,7 +42,7 @@ public class LinkCommandParams {
         return eventType;
     }
 
-    public void setEventType( String eventType ) {
+    public void setEventType(String eventType) {
         this.eventType = eventType;
     }
 
@@ -48,7 +50,7 @@ public class LinkCommandParams {
         return link;
     }
 
-    public void setLink( String link ) {
+    public void setLink(String link) {
         this.link = link;
     }
 
@@ -56,7 +58,7 @@ public class LinkCommandParams {
         return linkType;
     }
 
-    public void setLinkType( LINK_TYPE linkType ) {
+    public void setLinkType(LINK_TYPE linkType) {
         this.linkType = linkType;
     }
 
@@ -68,8 +70,10 @@ public class LinkCommandParams {
         return linkParams;
     }
 
-    public LinkCommandParams withLinkParams( Map<String, String> linkParams ) {
-        if ( linkParams != null ) this.linkParams.putAll( linkParams );
+    public LinkCommandParams withLinkParams(Map<String, String> linkParams) {
+        if (linkParams != null) {
+            this.linkParams.putAll(linkParams);
+        }
         return this;
     }
 }

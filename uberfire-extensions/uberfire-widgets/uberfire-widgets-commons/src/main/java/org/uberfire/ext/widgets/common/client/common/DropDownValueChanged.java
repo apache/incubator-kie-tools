@@ -20,6 +20,7 @@ package org.uberfire.ext.widgets.common.client.common;
  * Well this should be pretty obvious.
  */
 public interface DropDownValueChanged {
-    public void valueChanged( String newText,
-                              String newValue );
+
+    public void valueChanged(String newText,
+                             String newValue);
 }

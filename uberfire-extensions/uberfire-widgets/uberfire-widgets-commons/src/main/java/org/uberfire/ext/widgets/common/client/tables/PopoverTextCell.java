@@ -29,79 +29,82 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.DOM;
 
-import static com.google.gwt.dom.client.BrowserEvents.*;
-
+import static com.google.gwt.dom.client.BrowserEvents.MOUSEOUT;
+import static com.google.gwt.dom.client.BrowserEvents.MOUSEOVER;
 
 /**
  * An extension to the normal TextCell that renders a Bootstrap Popover when text overflows.
  */
 public class PopoverTextCell extends AbstractSafeHtmlCell<String> {
 
-    public enum Placement {
-
-        LEFT,
-        TOP,
-        AUTO,
-        BOTTOM,
-        RIGHT
-
-    }
-
     private Placement placement;
 
-    public PopoverTextCell( final Placement placement ) {
-        super( SimpleSafeHtmlRenderer.getInstance(), MOUSEOVER, MOUSEOUT );
+    public PopoverTextCell(final Placement placement) {
+        super(SimpleSafeHtmlRenderer.getInstance(),
+              MOUSEOVER,
+              MOUSEOUT);
         this.placement = placement;
     }
 
     public PopoverTextCell() {
-        this( Placement.AUTO );
+        this(Placement.AUTO);
     }
 
     @Override
-    protected void render( Context context, SafeHtml data, SafeHtmlBuilder sb ) {
+    protected void render(Context context,
+                          SafeHtml data,
+                          SafeHtmlBuilder sb) {
         hideAllPopover();
         final String content = data.asString();
-        if ( Strings.isNullOrEmpty( content ) ) {
+        if (Strings.isNullOrEmpty(content)) {
             return;
         }
 
         final Element div = DOM.createDiv();
-        div.setId( DOM.createUniqueId() );
-        div.setInnerHTML( content );
-        div.getStyle().setOverflow( Style.Overflow.HIDDEN );
-        div.getStyle().setTextOverflow( Style.TextOverflow.ELLIPSIS );
-        div.getStyle().setWhiteSpace( Style.WhiteSpace.NOWRAP );
+        div.setId(DOM.createUniqueId());
+        div.setInnerHTML(content);
+        div.getStyle().setOverflow(Style.Overflow.HIDDEN);
+        div.getStyle().setTextOverflow(Style.TextOverflow.ELLIPSIS);
+        div.getStyle().setWhiteSpace(Style.WhiteSpace.NOWRAP);
         final String html = div.getString();
-        sb.appendHtmlConstant( html );
+        sb.appendHtmlConstant(html);
 
-        Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
-                initPopover( div.getId(), placement.name().toLowerCase() );
+                initPopover(div.getId(),
+                            placement.name().toLowerCase());
             }
-        } );
+        });
     }
 
     @Override
-    public void onBrowserEvent( final Context context, final Element parent, final String value, final NativeEvent event, final ValueUpdater<String> valueUpdater ) {
-        super.onBrowserEvent( context, parent, value, event, valueUpdater );
+    public void onBrowserEvent(final Context context,
+                               final Element parent,
+                               final String value,
+                               final NativeEvent event,
+                               final ValueUpdater<String> valueUpdater) {
+        super.onBrowserEvent(context,
+                             parent,
+                             value,
+                             event,
+                             valueUpdater);
 
-        final Element element = Element.as( event.getEventTarget() );
+        final Element element = Element.as(event.getEventTarget());
 
-        if ( DivElement.is( element ) == false ) {
+        if (DivElement.is(element) == false) {
             return;
         }
 
-        if ( MOUSEOVER.equals( event.getType() ) ) {
-            Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
+        if (MOUSEOVER.equals(event.getType())) {
+            Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
                 @Override
                 public void execute() {
-                    showPopover( parent.getFirstChildElement().getId() );
+                    showPopover(parent.getFirstChildElement().getId());
                 }
-            } );
-        } else if ( MOUSEOUT.equals( event.getType() ) ) {
-            hidePopover( parent.getFirstChildElement().getId() );
+            });
+        } else if (MOUSEOUT.equals(event.getType())) {
+            hidePopover(parent.getFirstChildElement().getId());
         }
     }
 
@@ -109,15 +112,16 @@ public class PopoverTextCell extends AbstractSafeHtmlCell<String> {
         $wnd.jQuery('.popover').popover('hide');
     }-*/;
 
-    private native void hidePopover( String id ) /*-{
+    private native void hidePopover(String id) /*-{
         $wnd.jQuery('#' + id).popover('hide');
     }-*/;
 
-    private native void showPopover( String id ) /*-{
+    private native void showPopover(String id) /*-{
         $wnd.jQuery('#' + id).popover('show');
     }-*/;
 
-    private native void initPopover( String id, String placement ) /*-{
+    private native void initPopover(String id,
+                                    String placement) /*-{
         var jQueryId = '#' + id;
         var div = $wnd.jQuery(jQueryId);
 
@@ -133,4 +137,13 @@ public class PopoverTextCell extends AbstractSafeHtmlCell<String> {
         });
     }-*/;
 
+    public enum Placement {
+
+        LEFT,
+        TOP,
+        AUTO,
+        BOTTOM,
+        RIGHT
+
+    }
 }

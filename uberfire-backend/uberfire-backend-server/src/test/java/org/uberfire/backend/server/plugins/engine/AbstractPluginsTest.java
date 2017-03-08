@@ -19,22 +19,22 @@ package org.uberfire.backend.server.plugins.engine;
 import java.io.File;
 
 import org.junit.Before;
-import static org.junit.Assert.fail;
+
+import static org.junit.Assert.*;
 
 public abstract class AbstractPluginsTest {
 
     protected String contextRootDir;
     protected String pluginDir;
     protected String pluginDeploymentDir;
-    
+
     @Before
     public void setup() {
         try {
-            contextRootDir = new File( getClass().getClassLoader().getResource("test-app").getFile() ).getParentFile().getAbsolutePath();
-            pluginDir = new File( getClass().getClassLoader().getResource("plugins").getFile() ).getAbsolutePath();
-            pluginDeploymentDir = new File( getClass().getClassLoader().getResource("test-app/test-app.nocache.js").getFile() ).getParentFile().getAbsolutePath();
-        }
-        catch (Exception e) {
+            contextRootDir = new File(getClass().getClassLoader().getResource("test-app").getFile()).getParentFile().getAbsolutePath();
+            pluginDir = new File(getClass().getClassLoader().getResource("plugins").getFile()).getAbsolutePath();
+            pluginDeploymentDir = new File(getClass().getClassLoader().getResource("test-app/test-app.nocache.js").getFile()).getParentFile().getAbsolutePath();
+        } catch (Exception e) {
             e.printStackTrace();
             fail("Test files not found. Make sure the required files are on the classpath.");
         }

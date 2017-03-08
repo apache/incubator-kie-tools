@@ -62,41 +62,39 @@ public class DefaultGridLayer extends Layer implements GridLayer {
 
     //This is helpful when debugging rendering issues to set the bounds smaller than the Viewport
     private static final int PADDING = 0;
-
-    private Set<GridWidget> gridWidgets = new HashSet<GridWidget>();
-    private Map<GridWidgetConnector, Line> gridWidgetConnectors = new HashMap<>();
-    private AbsolutePanel domElementContainer;
-
-    private Bounds bounds;
-
     private final GridWidgetDnDMouseDownHandler mouseDownHandler;
     private final GridWidgetDnDMouseMoveHandler mouseMoveHandler;
     private final GridWidgetDnDMouseUpHandler mouseUpHandler;
     private final GridWidgetDnDHandlersState state = new GridWidgetDnDHandlersState();
-
     private final TransformMediator defaultTransformMediator = new BoundaryTransformMediator();
-    private final DefaultPinnedModeManager pinnedModeManager = new DefaultPinnedModeManager( this );
-
-    private final GridLayerRedrawManager.PrioritizedCommand REDRAW = new GridLayerRedrawManager.PrioritizedCommand( Integer.MIN_VALUE ) {
+    private final DefaultPinnedModeManager pinnedModeManager = new DefaultPinnedModeManager(this);
+    private Set<GridWidget> gridWidgets = new HashSet<GridWidget>();
+    private Map<GridWidgetConnector, Line> gridWidgetConnectors = new HashMap<>();
+    private final GridLayerRedrawManager.PrioritizedCommand REDRAW = new GridLayerRedrawManager.PrioritizedCommand(Integer.MIN_VALUE) {
         @Override
         public void execute() {
             DefaultGridLayer.this.draw();
         }
     };
+    private AbsolutePanel domElementContainer;
+    private Bounds bounds;
 
     public DefaultGridLayer() {
-        this.bounds = new BaseBounds( 0, 0, 0, 0 );
+        this.bounds = new BaseBounds(0,
+                                     0,
+                                     0,
+                                     0);
 
         //Column DnD handlers
-        this.mouseDownHandler = new GridWidgetDnDMouseDownHandler( this,
-                                                                   state );
-        this.mouseMoveHandler = new GridWidgetDnDMouseMoveHandler( this,
-                                                                   state );
-        this.mouseUpHandler = new GridWidgetDnDMouseUpHandler( this,
-                                                               state );
-        addNodeMouseDownHandler( mouseDownHandler );
-        addNodeMouseMoveHandler( mouseMoveHandler );
-        addNodeMouseUpHandler( mouseUpHandler );
+        this.mouseDownHandler = new GridWidgetDnDMouseDownHandler(this,
+                                                                  state);
+        this.mouseMoveHandler = new GridWidgetDnDMouseMoveHandler(this,
+                                                                  state);
+        this.mouseUpHandler = new GridWidgetDnDMouseUpHandler(this,
+                                                              state);
+        addNodeMouseDownHandler(mouseDownHandler);
+        addNodeMouseMoveHandler(mouseMoveHandler);
+        addNodeMouseUpHandler(mouseUpHandler);
 
         //Destroy SingletonDOMElements on MouseDownEvents to ensure they're hidden:-
         // 1) When moving columns
@@ -105,35 +103,35 @@ public class DefaultGridLayer extends Layer implements GridLayer {
         // We do this rather than setFocus on GridPanel as the FocusImplSafari implementation of
         // FocusPanel sets focus at unpredictable times which can lead to SingletonDOMElements
         // loosing focus after they've been attached to the DOM and hence disappearing.
-        addNodeMouseDownHandler( new NodeMouseDownHandler() {
+        addNodeMouseDownHandler(new NodeMouseDownHandler() {
             @Override
-            public void onNodeMouseDown( final NodeMouseDownEvent event ) {
-                for ( GridWidget gridWidget : gridWidgets ) {
-                    for ( GridColumn<?> gridColumn : gridWidget.getModel().getColumns() ) {
-                        if ( gridColumn instanceof HasSingletonDOMElementResource ) {
-                            ( (HasSingletonDOMElementResource) gridColumn ).flush();
-                            ( (HasSingletonDOMElementResource) gridColumn ).destroyResources();
+            public void onNodeMouseDown(final NodeMouseDownEvent event) {
+                for (GridWidget gridWidget : gridWidgets) {
+                    for (GridColumn<?> gridColumn : gridWidget.getModel().getColumns()) {
+                        if (gridColumn instanceof HasSingletonDOMElementResource) {
+                            ((HasSingletonDOMElementResource) gridColumn).flush();
+                            ((HasSingletonDOMElementResource) gridColumn).destroyResources();
                             batch();
                         }
                     }
                 }
             }
-        } );
+        });
     }
 
     @Override
-    public void onNodeMouseDown( final NodeMouseDownEvent event ) {
-        mouseDownHandler.onNodeMouseDown( event );
+    public void onNodeMouseDown(final NodeMouseDownEvent event) {
+        mouseDownHandler.onNodeMouseDown(event);
     }
 
     @Override
-    public void onNodeMouseMove( final NodeMouseMoveEvent event ) {
-        mouseMoveHandler.onNodeMouseMove( event );
+    public void onNodeMouseMove(final NodeMouseMoveEvent event) {
+        mouseMoveHandler.onNodeMouseMove(event);
     }
 
     @Override
-    public void onNodeMouseUp( final NodeMouseUpEvent event ) {
-        mouseUpHandler.onNodeMouseUp( event );
+    public void onNodeMouseUp(final NodeMouseUpEvent event) {
+        mouseUpHandler.onNodeMouseUp(event);
     }
 
     @Override
@@ -146,36 +144,36 @@ public class DefaultGridLayer extends Layer implements GridLayer {
 
     @Override
     public Layer batch() {
-        return batch( REDRAW );
+        return batch(REDRAW);
     }
 
     @Override
-    public Layer batch( final GridLayerRedrawManager.PrioritizedCommand command ) {
-        GridLayerRedrawManager.get().schedule( command );
+    public Layer batch(final GridLayerRedrawManager.PrioritizedCommand command) {
+        GridLayerRedrawManager.get().schedule(command);
         return this;
     }
 
     @Override
     public Set<IPrimitive<?>> getGridWidgetConnectors() {
-        return Collections.unmodifiableSet( new HashSet<>( gridWidgetConnectors.values() ) );
+        return Collections.unmodifiableSet(new HashSet<>(gridWidgetConnectors.values()));
     }
 
     private void updateGridWidgetConnectors() {
-        for ( Map.Entry<GridWidgetConnector, Line> e : gridWidgetConnectors.entrySet() ) {
+        for (Map.Entry<GridWidgetConnector, Line> e : gridWidgetConnectors.entrySet()) {
             final GridWidgetConnector connector = e.getKey();
             final Line line = e.getValue();
             final GridColumn<?> sourceGridColumn = connector.getSourceColumn();
             final GridColumn<?> targetGridColumn = connector.getTargetColumn();
-            final GridWidget sourceGridWidget = getLinkedGridWidget( sourceGridColumn );
-            final GridWidget targetGridWidget = getLinkedGridWidget( targetGridColumn );
+            final GridWidget sourceGridWidget = getLinkedGridWidget(sourceGridColumn);
+            final GridWidget targetGridWidget = getLinkedGridWidget(targetGridColumn);
 
-            final Point2D sp = new Point2D( sourceGridWidget.getX() + sourceGridWidget.getWidth() / 2,
-                                            sourceGridWidget.getY() + sourceGridWidget.getHeight() / 2 );
-            final Point2D ep = new Point2D( targetGridWidget.getX() + targetGridWidget.getWidth() / 2,
-                                            targetGridWidget.getY() + targetGridWidget.getHeight() / 2 );
+            final Point2D sp = new Point2D(sourceGridWidget.getX() + sourceGridWidget.getWidth() / 2,
+                                           sourceGridWidget.getY() + sourceGridWidget.getHeight() / 2);
+            final Point2D ep = new Point2D(targetGridWidget.getX() + targetGridWidget.getWidth() / 2,
+                                           targetGridWidget.getY() + targetGridWidget.getHeight() / 2);
 
-            line.setPoints( new Point2DArray( sp,
-                                              ep ) );
+            line.setPoints(new Point2DArray(sp,
+                                            ep));
         }
     }
 
@@ -186,20 +184,20 @@ public class DefaultGridLayer extends Layer implements GridLayer {
      * @return The Layer
      */
     @Override
-    public Layer add( final IPrimitive<?> child ) {
-        addGridWidget( child );
-        return super.add( child );
+    public Layer add(final IPrimitive<?> child) {
+        addGridWidget(child);
+        return super.add(child);
     }
 
-    private void addGridWidget( final IPrimitive<?> child,
-                                final IPrimitive<?>... children ) {
+    private void addGridWidget(final IPrimitive<?> child,
+                               final IPrimitive<?>... children) {
         final List<IPrimitive<?>> all = new ArrayList<IPrimitive<?>>();
-        all.add( child );
-        all.addAll( Arrays.asList( children ) );
-        for ( IPrimitive<?> c : all ) {
-            if ( c instanceof GridWidget ) {
+        all.add(child);
+        all.addAll(Arrays.asList(children));
+        for (IPrimitive<?> c : all) {
+            if (c instanceof GridWidget) {
                 final GridWidget gridWidget = (GridWidget) c;
-                gridWidgets.add( gridWidget );
+                gridWidgets.add(gridWidget);
                 addGridWidgetConnectors();
             }
         }
@@ -207,39 +205,39 @@ public class DefaultGridLayer extends Layer implements GridLayer {
 
     @Override
     public void refreshGridWidgetConnectors() {
-        for ( Line line : gridWidgetConnectors.values() ) {
-            remove( line );
+        for (Line line : gridWidgetConnectors.values()) {
+            remove(line);
         }
         gridWidgetConnectors.clear();
         addGridWidgetConnectors();
     }
 
     private void addGridWidgetConnectors() {
-        for ( GridWidget gridWidget : gridWidgets ) {
+        for (GridWidget gridWidget : gridWidgets) {
             final GridData gridModel = gridWidget.getModel();
-            for ( GridColumn<?> gridColumn : gridModel.getColumns() ) {
-                if ( gridColumn.isVisible() ) {
-                    if ( gridColumn.isLinked() ) {
-                        final GridWidget linkedGridWidget = getLinkedGridWidget( gridColumn.getLink() );
-                        if ( linkedGridWidget != null ) {
-                            final Point2D sp = new Point2D( gridWidget.getX() + gridWidget.getWidth() / 2,
-                                                            gridWidget.getY() + gridWidget.getHeight() / 2 );
-                            final Point2D ep = new Point2D( linkedGridWidget.getX() + linkedGridWidget.getWidth() / 2,
-                                                            linkedGridWidget.getY() + linkedGridWidget.getHeight() / 2 );
+            for (GridColumn<?> gridColumn : gridModel.getColumns()) {
+                if (gridColumn.isVisible()) {
+                    if (gridColumn.isLinked()) {
+                        final GridWidget linkedGridWidget = getLinkedGridWidget(gridColumn.getLink());
+                        if (linkedGridWidget != null) {
+                            final Point2D sp = new Point2D(gridWidget.getX() + gridWidget.getWidth() / 2,
+                                                           gridWidget.getY() + gridWidget.getHeight() / 2);
+                            final Point2D ep = new Point2D(linkedGridWidget.getX() + linkedGridWidget.getWidth() / 2,
+                                                           linkedGridWidget.getY() + linkedGridWidget.getHeight() / 2);
 
-                            final GridWidgetConnector connector = new GridWidgetConnector( gridColumn,
-                                                                                           gridColumn.getLink() );
+                            final GridWidgetConnector connector = new GridWidgetConnector(gridColumn,
+                                                                                          gridColumn.getLink());
 
-                            if ( !gridWidgetConnectors.containsKey( connector ) ) {
-                                final Line line = new Line( sp,
-                                                            ep )
-                                        .setVisible( !isGridPinned() )
-                                        .setStrokeColor( ColorName.DARKGRAY )
-                                        .setFillColor( ColorName.TAN )
-                                        .setStrokeWidth( 2.0 );
-                                gridWidgetConnectors.put( connector,
-                                                          line );
-                                super.add( line );
+                            if (!gridWidgetConnectors.containsKey(connector)) {
+                                final Line line = new Line(sp,
+                                                           ep)
+                                        .setVisible(!isGridPinned())
+                                        .setStrokeColor(ColorName.DARKGRAY)
+                                        .setFillColor(ColorName.TAN)
+                                        .setStrokeWidth(2.0);
+                                gridWidgetConnectors.put(connector,
+                                                         line);
+                                super.add(line);
                                 line.moveToBottom();
                             }
                         }
@@ -249,11 +247,11 @@ public class DefaultGridLayer extends Layer implements GridLayer {
         }
     }
 
-    private GridWidget getLinkedGridWidget( final GridColumn<?> linkedGridColumn ) {
+    private GridWidget getLinkedGridWidget(final GridColumn<?> linkedGridColumn) {
         GridWidget linkedGridWidget = null;
-        for ( GridWidget gridWidget : gridWidgets ) {
+        for (GridWidget gridWidget : gridWidgets) {
             final GridData gridModel = gridWidget.getModel();
-            if ( gridModel.getColumns().contains( linkedGridColumn ) ) {
+            if (gridModel.getColumns().contains(linkedGridColumn)) {
                 linkedGridWidget = gridWidget;
                 break;
             }
@@ -269,12 +267,12 @@ public class DefaultGridLayer extends Layer implements GridLayer {
      * @return The Layer
      */
     @Override
-    public Layer add( final IPrimitive<?> child,
-                      final IPrimitive<?>... children ) {
-        addGridWidget( child,
-                       children );
-        return super.add( child,
-                          children );
+    public Layer add(final IPrimitive<?> child,
+                     final IPrimitive<?>... children) {
+        addGridWidget(child,
+                      children);
+        return super.add(child,
+                         children);
     }
 
     /**
@@ -285,37 +283,37 @@ public class DefaultGridLayer extends Layer implements GridLayer {
      * @return The Layer
      */
     @Override
-    public Layer remove( final IPrimitive<?> child ) {
-        removeGridWidget( child );
-        return super.remove( child );
+    public Layer remove(final IPrimitive<?> child) {
+        removeGridWidget(child);
+        return super.remove(child);
     }
 
-    private void removeGridWidget( final IPrimitive<?> child,
-                                   final IPrimitive<?>... children ) {
+    private void removeGridWidget(final IPrimitive<?> child,
+                                  final IPrimitive<?>... children) {
         final List<IPrimitive<?>> all = new ArrayList<IPrimitive<?>>();
-        all.add( child );
-        all.addAll( Arrays.asList( children ) );
-        for ( IPrimitive<?> c : all ) {
-            if ( c instanceof GridWidget ) {
+        all.add(child);
+        all.addAll(Arrays.asList(children));
+        for (IPrimitive<?> c : all) {
+            if (c instanceof GridWidget) {
                 final GridWidget gridWidget = (GridWidget) c;
-                gridWidgets.remove( gridWidget );
-                removeGridWidgetConnectors( gridWidget );
+                gridWidgets.remove(gridWidget);
+                removeGridWidgetConnectors(gridWidget);
             }
         }
     }
 
-    private void removeGridWidgetConnectors( final GridWidget gridWidget ) {
+    private void removeGridWidgetConnectors(final GridWidget gridWidget) {
         final GridData gridModel = gridWidget.getModel();
         final List<GridWidgetConnector> removedConnectors = new ArrayList<GridWidgetConnector>();
-        for ( Map.Entry<GridWidgetConnector, Line> e : gridWidgetConnectors.entrySet() ) {
-            if ( gridModel.getColumns().contains( e.getKey().getSourceColumn() ) || gridModel.getColumns().contains( e.getKey().getTargetColumn() ) ) {
-                remove( e.getValue() );
-                removedConnectors.add( e.getKey() );
+        for (Map.Entry<GridWidgetConnector, Line> e : gridWidgetConnectors.entrySet()) {
+            if (gridModel.getColumns().contains(e.getKey().getSourceColumn()) || gridModel.getColumns().contains(e.getKey().getTargetColumn())) {
+                remove(e.getValue());
+                removedConnectors.add(e.getKey());
             }
         }
         //Remove Connectors from HashMap after iteration of EntrySet to avoid ConcurrentModificationException
-        for ( GridWidgetConnector c : removedConnectors ) {
-            gridWidgetConnectors.remove( c );
+        for (GridWidgetConnector c : removedConnectors) {
+            gridWidgetConnectors.remove(c);
         }
     }
 
@@ -327,101 +325,101 @@ public class DefaultGridLayer extends Layer implements GridLayer {
     }
 
     @Override
-    public void select( final GridWidget selectedGridWidget ) {
+    public void select(final GridWidget selectedGridWidget) {
         boolean selectionChanged = false;
-        for ( GridWidget gridWidget : gridWidgets ) {
-            if ( gridWidget.isSelected() ) {
-                if ( !gridWidget.equals( selectedGridWidget ) ) {
+        for (GridWidget gridWidget : gridWidgets) {
+            if (gridWidget.isSelected()) {
+                if (!gridWidget.equals(selectedGridWidget)) {
                     selectionChanged = true;
                     gridWidget.deselect();
                 }
-            } else if ( gridWidget.equals( selectedGridWidget ) ) {
+            } else if (gridWidget.equals(selectedGridWidget)) {
                 selectionChanged = true;
                 gridWidget.select();
             }
         }
-        if ( selectionChanged ) {
+        if (selectionChanged) {
             batch();
         }
     }
 
     @Override
-    public void selectLinkedColumn( final GridColumn<?> selectedGridColumn ) {
-        final GridWidget gridWidget = getLinkedGridWidget( selectedGridColumn );
-        if ( gridWidget == null ) {
+    public void selectLinkedColumn(final GridColumn<?> selectedGridColumn) {
+        final GridWidget gridWidget = getLinkedGridWidget(selectedGridColumn);
+        if (gridWidget == null) {
             return;
         }
 
-        if ( isGridPinned() ) {
-            flipToGridWidget( gridWidget );
+        if (isGridPinned()) {
+            flipToGridWidget(gridWidget);
         } else {
-            scrollToGridWidget( gridWidget );
+            scrollToGridWidget(gridWidget);
         }
     }
 
     @Override
-    public void flipToGridWidget( final GridWidget gridWidget ) {
-        if ( !isGridPinned() ) {
+    public void flipToGridWidget(final GridWidget gridWidget) {
+        if (!isGridPinned()) {
             return;
         }
-        for ( GridWidget gw : gridWidgets ) {
-            gw.setAlpha( gw.equals( gridWidget ) ? 1.0 : 0.0 );
-            gw.setVisible( gw.equals( gridWidget ) );
+        for (GridWidget gw : gridWidgets) {
+            gw.setAlpha(gw.equals(gridWidget) ? 1.0 : 0.0);
+            gw.setVisible(gw.equals(gridWidget));
         }
 
-        final Point2D translation = new Point2D( gridWidget.getX(),
-                                                 gridWidget.getY() ).mul( -1.0 );
+        final Point2D translation = new Point2D(gridWidget.getX(),
+                                                gridWidget.getY()).mul(-1.0);
         final Viewport vp = gridWidget.getViewport();
         final Transform transform = vp.getTransform();
         transform.reset();
-        transform.translate( translation.getX(),
-                             translation.getY() );
+        transform.translate(translation.getX(),
+                            translation.getY());
 
-        updatePinnedContext( gridWidget );
+        updatePinnedContext(gridWidget);
 
-        batch( new GridLayerRedrawManager.PrioritizedCommand( 0 ) {
+        batch(new GridLayerRedrawManager.PrioritizedCommand(0) {
             @Override
             public void execute() {
-                select( gridWidget );
+                select(gridWidget);
             }
-        } );
+        });
     }
 
     @Override
-    public void scrollToGridWidget( final GridWidget gridWidget ) {
-        if ( isGridPinned() ) {
+    public void scrollToGridWidget(final GridWidget gridWidget) {
+        if (isGridPinned()) {
             return;
         }
-        final GridWidgetScrollIntoViewAnimation a = new GridWidgetScrollIntoViewAnimation( gridWidget,
-                                                                                           new Command() {
-                                                                                               @Override
-                                                                                               public void execute() {
-                                                                                                   select( gridWidget );
-                                                                                               }
-                                                                                           } );
+        final GridWidgetScrollIntoViewAnimation a = new GridWidgetScrollIntoViewAnimation(gridWidget,
+                                                                                          new Command() {
+                                                                                              @Override
+                                                                                              public void execute() {
+                                                                                                  select(gridWidget);
+                                                                                              }
+                                                                                          });
         a.run();
     }
 
     @Override
     public Set<GridWidget> getGridWidgets() {
-        return Collections.unmodifiableSet( gridWidgets );
+        return Collections.unmodifiableSet(gridWidgets);
     }
 
     @Override
-    public void enterPinnedMode( final GridWidget gridWidget,
-                                 final Command onStartCommand ) {
-        pinnedModeManager.enterPinnedMode( gridWidget,
-                                           onStartCommand );
+    public void enterPinnedMode(final GridWidget gridWidget,
+                                final Command onStartCommand) {
+        pinnedModeManager.enterPinnedMode(gridWidget,
+                                          onStartCommand);
     }
 
     @Override
-    public void exitPinnedMode( final Command onCompleteCommand ) {
-        pinnedModeManager.exitPinnedMode( onCompleteCommand );
+    public void exitPinnedMode(final Command onCompleteCommand) {
+        pinnedModeManager.exitPinnedMode(onCompleteCommand);
     }
 
     @Override
-    public void updatePinnedContext( final GridWidget gridWidget ) throws IllegalStateException {
-        pinnedModeManager.updatePinnedContext( gridWidget );
+    public void updatePinnedContext(final GridWidget gridWidget) throws IllegalStateException {
+        pinnedModeManager.updatePinnedContext(gridWidget);
     }
 
     @Override
@@ -448,17 +446,17 @@ public class DefaultGridLayer extends Layer implements GridLayer {
     private void updateVisibleBounds() {
         final Viewport viewport = getViewport();
         Transform transform = viewport.getTransform();
-        if ( transform == null ) {
-            viewport.setTransform( transform = new Transform() );
+        if (transform == null) {
+            viewport.setTransform(transform = new Transform());
         }
-        final double x = ( PADDING - transform.getTranslateX() ) / transform.getScaleX();
-        final double y = ( PADDING - transform.getTranslateY() ) / transform.getScaleY();
-        bounds.setX( x );
-        bounds.setY( y );
-        bounds.setHeight( Math.max( 0,
-                                    ( viewport.getHeight() - PADDING * 2 ) / transform.getScaleX() ) );
-        bounds.setWidth( Math.max( 0,
-                                   ( viewport.getWidth() - PADDING * 2 ) / transform.getScaleY() ) );
+        final double x = (PADDING - transform.getTranslateX()) / transform.getScaleX();
+        final double y = (PADDING - transform.getTranslateY()) / transform.getScaleY();
+        bounds.setX(x);
+        bounds.setY(y);
+        bounds.setHeight(Math.max(0,
+                                  (viewport.getHeight() - PADDING * 2) / transform.getScaleX()));
+        bounds.setWidth(Math.max(0,
+                                 (viewport.getWidth() - PADDING * 2) / transform.getScaleY()));
     }
 
     @Override
@@ -467,13 +465,12 @@ public class DefaultGridLayer extends Layer implements GridLayer {
     }
 
     @Override
-    public void setDomElementContainer( final AbsolutePanel domElementContainer ) {
-        this.domElementContainer = domElementContainer;
-    }
-
-    @Override
     public AbsolutePanel getDomElementContainer() {
         return domElementContainer;
     }
 
+    @Override
+    public void setDomElementContainer(final AbsolutePanel domElementContainer) {
+        this.domElementContainer = domElementContainer;
+    }
 }

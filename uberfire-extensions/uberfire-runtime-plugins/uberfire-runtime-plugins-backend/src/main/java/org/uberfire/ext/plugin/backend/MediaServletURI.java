@@ -16,7 +16,7 @@
 
 package org.uberfire.ext.plugin.backend;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotEmpty;
 
 public class MediaServletURI {
 
@@ -25,15 +25,16 @@ public class MediaServletURI {
     public MediaServletURI() {
     }
 
-    public MediaServletURI( final String uri ) {
-        setURI( uri );
+    public MediaServletURI(final String uri) {
+        setURI(uri);
     }
 
     public String getURI() {
         return uri;
     }
 
-    public void setURI( final String uri ) {
-        this.uri = checkNotEmpty( "uri", uri );
+    public void setURI(final String uri) {
+        this.uri = checkNotEmpty("uri",
+                                 uri);
     }
 }

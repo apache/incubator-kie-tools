@@ -32,50 +32,49 @@ public class BatchCommand implements Command {
 
     private List<Command> commands;
 
-    public BatchCommand( final List<Command> commands ) {
-        this.commands = PortablePreconditions.checkNotNull( "commands",
-                                                            commands );
+    public BatchCommand(final List<Command> commands) {
+        this.commands = PortablePreconditions.checkNotNull("commands",
+                                                           commands);
     }
 
-    public BatchCommand( final Command... commands ) {
-        this.commands = Arrays.asList( PortablePreconditions.checkNotNull( "commands",
-                                                                           commands ) );
+    public BatchCommand(final Command... commands) {
+        this.commands = Arrays.asList(PortablePreconditions.checkNotNull("commands",
+                                                                         commands));
     }
 
     @Override
-    public Results apply( final RuleManager ruleManager ) {
+    public Results apply(final RuleManager ruleManager) {
         final Results results = new DefaultResultsImpl();
         final Stack<Command> appliedCommands = new Stack<Command>();
-        for ( Command command : commands ) {
-            results.getMessages().addAll( command.apply( ruleManager ).getMessages() );
-            if ( results.contains( ResultType.ERROR ) ) {
-                for ( Command undo : appliedCommands ) {
-                    undo.undo( ruleManager );
+        for (Command command : commands) {
+            results.getMessages().addAll(command.apply(ruleManager).getMessages());
+            if (results.contains(ResultType.ERROR)) {
+                for (Command undo : appliedCommands) {
+                    undo.undo(ruleManager);
                 }
                 return results;
             } else {
-                appliedCommands.add( command );
+                appliedCommands.add(command);
             }
         }
         return results;
     }
 
     @Override
-    public Results undo( final RuleManager ruleManager ) {
+    public Results undo(final RuleManager ruleManager) {
         final Results results = new DefaultResultsImpl();
         final Stack<Command> appliedCommands = new Stack<Command>();
-        for ( Command command : commands ) {
-            results.getMessages().addAll( command.undo( ruleManager ).getMessages() );
-            if ( results.contains( ResultType.ERROR ) ) {
-                for ( Command cmd : appliedCommands ) {
-                    cmd.apply( ruleManager );
+        for (Command command : commands) {
+            results.getMessages().addAll(command.undo(ruleManager).getMessages());
+            if (results.contains(ResultType.ERROR)) {
+                for (Command cmd : appliedCommands) {
+                    cmd.apply(ruleManager);
                 }
                 return results;
             } else {
-                appliedCommands.add( command );
+                appliedCommands.add(command);
             }
         }
         return results;
     }
-
 }

@@ -32,10 +32,12 @@ import org.uberfire.java.nio.security.FileSystemUser;
 
 public class GitUploadCommand extends BaseGitCommand {
 
-    public GitUploadCommand( final String command,
-                             final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver,
-                             final FileSystemAuthorizer fileSystemAuthorizer ) {
-        super( command, fileSystemAuthorizer, repositoryResolver );
+    public GitUploadCommand(final String command,
+                            final JGitFileSystemProvider.RepositoryResolverImpl<BaseGitCommand> repositoryResolver,
+                            final FileSystemAuthorizer fileSystemAuthorizer) {
+        super(command,
+              fileSystemAuthorizer,
+              repositoryResolver);
     }
 
     @Override
@@ -44,24 +46,25 @@ public class GitUploadCommand extends BaseGitCommand {
     }
 
     @Override
-    protected void execute( final FileSystemUser user,
-                            final Repository repository,
-                            final InputStream in,
-                            final OutputStream out,
-                            final OutputStream err,
-                            final JGitFileSystem fileSystem ) {
-        final UploadPack up = new UploadPack( repository );
+    protected void execute(final FileSystemUser user,
+                           final Repository repository,
+                           final InputStream in,
+                           final OutputStream out,
+                           final OutputStream err,
+                           final JGitFileSystem fileSystem) {
+        final UploadPack up = new UploadPack(repository);
 
-        final PackConfig config = new PackConfig( repository );
-        config.setCompressionLevel( Deflater.BEST_COMPRESSION );
-        up.setPackConfig( config );
+        final PackConfig config = new PackConfig(repository);
+        config.setCompressionLevel(Deflater.BEST_COMPRESSION);
+        up.setPackConfig(config);
 
-        up.setRefFilter( new HiddenBranchRefFilter() );
+        up.setRefFilter(new HiddenBranchRefFilter());
 
         try {
-            up.upload( in, out, err );
-        } catch ( IOException e ) {
+            up.upload(in,
+                      out,
+                      err);
+        } catch (IOException e) {
         }
     }
-
 }

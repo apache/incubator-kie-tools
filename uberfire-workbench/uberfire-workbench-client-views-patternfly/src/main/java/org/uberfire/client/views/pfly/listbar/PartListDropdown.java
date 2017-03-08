@@ -52,7 +52,7 @@ import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.workbench.model.PartDefinition;
 
 public class PartListDropdown extends ListDropdown implements HasSelectionHandlers<PartDefinition>,
-        HasCloseHandlers<PartDefinition> {
+                                                              HasCloseHandlers<PartDefinition> {
 
     public static final String DEBUG_TITLE_PREFIX = "PartList-title-";
 
@@ -65,166 +65,187 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
 
     public PartListDropdown() {
         super();
-        this.addDomHandler( new NoMouseDownHandler(), MouseDownEvent.getType() );
+        this.addDomHandler(new NoMouseDownHandler(),
+                           MouseDownEvent.getType());
     }
 
-    public void setDndManager( final WorkbenchDragAndDropManager dndManager ) {
+    public void setDndManager(final WorkbenchDragAndDropManager dndManager) {
         this.dndManager = dndManager;
     }
 
-    public void addPart( final WorkbenchPartPresenter.View view ) {
+    public void addPart(final WorkbenchPartPresenter.View view) {
         final PartDefinition part = view.getPresenter().getDefinition();
-        partView.put( part, view );
-        buildWidgets( part, view.getPresenter().getTitle(), view.getPresenter().getTitleDecoration() );
+        partView.put(part,
+                     view);
+        buildWidgets(part,
+                     view.getPresenter().getTitle(),
+                     view.getPresenter().getTitleDecoration());
 
-        if ( partTitles.size() == 1 ) {
-            selectPart( part );
+        if (partTitles.size() == 1) {
+            selectPart(part);
         }
     }
 
-    private void buildWidgets( final PartDefinition part,
-                               final String partTitle,
-                               final IsWidget titleDecoration ) {
-        if ( partTitles.containsKey( part ) ) {
-            final DragArea title = partTitles.get( part );
+    private void buildWidgets(final PartDefinition part,
+                              final String partTitle,
+                              final IsWidget titleDecoration) {
+        if (partTitles.containsKey(part)) {
+            final DragArea title = partTitles.get(part);
             title.getElement().getFirstChildElement().removeFromParent();
-            title.add( buildTitleTextWidget( partTitle, titleDecoration ) );
+            title.add(buildTitleTextWidget(partTitle,
+                                           titleDecoration));
         } else {
-            final DragArea title = buildTitleWidget( partTitle, titleDecoration );
-            partTitles.put( part, title );
+            final DragArea title = buildTitleWidget(partTitle,
+                                                    titleDecoration);
+            partTitles.put(part,
+                           title);
         }
 
-        if ( partOptions.containsKey( part ) ) {
-            final ListItem option = partOptions.get( part );
-            option.setText( partTitle );
+        if (partOptions.containsKey(part)) {
+            final ListItem option = partOptions.get(part);
+            option.setText(partTitle);
         } else {
-            final ListItem option = buildTitleDropdownMenuItem( partTitle, part );
-            partOptions.put( part, option );
-            this.add( option );
+            final ListItem option = buildTitleDropdownMenuItem(partTitle,
+                                                               part);
+            partOptions.put(part,
+                            option);
+            this.add(option);
         }
     }
 
-    public void removePart( final PartDefinition part ) {
-        partTitles.remove( part );
-        partView.remove( part );
-        final Widget option = partOptions.remove( part );
-        this.remove( option );
+    public void removePart(final PartDefinition part) {
+        partTitles.remove(part);
+        partView.remove(part);
+        final Widget option = partOptions.remove(part);
+        this.remove(option);
     }
 
-    public void selectPart( final PartDefinition part ) {
-        final Widget title = partTitles.get( part );
-        this.setText( title );
-        for ( final Map.Entry<PartDefinition, ListItem> entry : partOptions.entrySet() ) {
-            if ( entry.getKey().asString().equals( part.asString() ) ) {
-                entry.getValue().addStyleName( "uf-part-list-dropdown-selected" );
+    public void selectPart(final PartDefinition part) {
+        final Widget title = partTitles.get(part);
+        this.setText(title);
+        for (final Map.Entry<PartDefinition, ListItem> entry : partOptions.entrySet()) {
+            if (entry.getKey().asString().equals(part.asString())) {
+                entry.getValue().addStyleName("uf-part-list-dropdown-selected");
             } else {
-                entry.getValue().removeStyleName( "uf-part-list-dropdown-selected" );
+                entry.getValue().removeStyleName("uf-part-list-dropdown-selected");
             }
         }
-        makeDraggable( title, partView.get( part ) );
+        makeDraggable(title,
+                      partView.get(part));
     }
 
-    public void changeTitle( final PartDefinition part,
-                             final String title,
-                             final IsWidget titleDecoration ) {
-        buildWidgets( part, title, titleDecoration );
+    public void changeTitle(final PartDefinition part,
+                            final String title,
+                            final IsWidget titleDecoration) {
+        buildWidgets(part,
+                     title,
+                     titleDecoration);
     }
 
-    private DragArea buildTitleWidget( final String title,
-                                       final IsWidget titleDecoration ) {
-        final SpanElement spanElement = buildTitleTextWidget( title, titleDecoration );
+    private DragArea buildTitleWidget(final String title,
+                                      final IsWidget titleDecoration) {
+        final SpanElement spanElement = buildTitleTextWidget(title,
+                                                             titleDecoration);
         final DragArea dragArea = new DragArea();
-        dragArea.add( spanElement );
-        dragArea.ensureDebugId( DEBUG_TITLE_PREFIX + title );
-        dragArea.addMouseDownHandler( new NoMouseDownHandler() );
+        dragArea.add(spanElement);
+        dragArea.ensureDebugId(DEBUG_TITLE_PREFIX + title);
+        dragArea.addMouseDownHandler(new NoMouseDownHandler());
         return dragArea;
     }
 
-    private SpanElement buildTitleTextWidget( final String title,
-                                              final IsWidget titleDecoration ) {
+    private SpanElement buildTitleTextWidget(final String title,
+                                             final IsWidget titleDecoration) {
         final SpanElement spanElement = Document.get().createSpanElement();
-        spanElement.addClassName( "uf-listbar-panel-header-title-text" );
-        final String titleWidget = ( titleDecoration instanceof Image ) ? titleDecoration.toString() : "";
-        spanElement.setInnerHTML( titleWidget + " " + title.replaceAll( " ", "\u00a0" ) );
-        spanElement.setTitle( title );
+        spanElement.addClassName("uf-listbar-panel-header-title-text");
+        final String titleWidget = (titleDecoration instanceof Image) ? titleDecoration.toString() : "";
+        spanElement.setInnerHTML(titleWidget + " " + title.replaceAll(" ",
+                                                                      "\u00a0"));
+        spanElement.setTitle(title);
         return spanElement;
     }
 
-    private ListItem buildTitleDropdownMenuItem( final String title,
-                                                 final PartDefinition part ) {
+    private ListItem buildTitleDropdownMenuItem(final String title,
+                                                final PartDefinition part) {
         final Span span = new Span();
-        span.add( new Text( title ) );
+        span.add(new Text(title));
         final ListItem li = new ListItem() {
             @Override
-            public void setText( String text ) {
+            public void setText(String text) {
                 span.clear();
-                span.add( new Text( text ) );
+                span.add(new Text(text));
             }
         };
-        li.addDomHandler( new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                SelectionEvent.fire( PartListDropdown.this, part );
-            }
-        }, ClickEvent.getType() );
+        li.addDomHandler(new ClickHandler() {
+                             @Override
+                             public void onClick(ClickEvent event) {
+                                 SelectionEvent.fire(PartListDropdown.this,
+                                                     part);
+                             }
+                         },
+                         ClickEvent.getType());
 
-        final Icon icon = new Icon( IconType.TIMES );
-        icon.addDomHandler( new ClickHandler() {
-            @Override
-            public void onClick( ClickEvent event ) {
-                CloseEvent.fire( PartListDropdown.this, part );
-                //Keep dropdown menu open when removing parts
-                boolean openMenu = PartListDropdown.this.getElement().hasClassName( "open" );
-                if ( openMenu ) {
-                    Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
-                        @Override
-                        public void execute() {
-                            PartListDropdown.this.getElement().addClassName( "open" );
-                        }
-                    } );
-                }
-            }
-        }, ClickEvent.getType() );
-        icon.addStyleName( Styles.PULL_RIGHT );
+        final Icon icon = new Icon(IconType.TIMES);
+        icon.addDomHandler(new ClickHandler() {
+                               @Override
+                               public void onClick(ClickEvent event) {
+                                   CloseEvent.fire(PartListDropdown.this,
+                                                   part);
+                                   //Keep dropdown menu open when removing parts
+                                   boolean openMenu = PartListDropdown.this.getElement().hasClassName("open");
+                                   if (openMenu) {
+                                       Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+                                           @Override
+                                           public void execute() {
+                                               PartListDropdown.this.getElement().addClassName("open");
+                                           }
+                                       });
+                                   }
+                               }
+                           },
+                           ClickEvent.getType());
+        icon.addStyleName(Styles.PULL_RIGHT);
         final Anchor anchor = new Anchor();
-        anchor.add( icon );
-        anchor.add( span );
-        li.add( anchor );
+        anchor.add(icon);
+        anchor.add(span);
+        li.add(anchor);
         return li;
     }
 
     public void enableDragAndDrop() {
         this.dndEnabled = true;
-        if ( noDragHandler != null ) {
+        if (noDragHandler != null) {
             noDragHandler.removeHandler();
             noDragHandler = null;
         }
 
-        for ( final Map.Entry<PartDefinition, DragArea> entry : partTitles.entrySet() ) {
+        for (final Map.Entry<PartDefinition, DragArea> entry : partTitles.entrySet()) {
             final Widget title = entry.getValue();
-            final WorkbenchPartPresenter.View view = partView.get( entry.getKey() );
-            makeDraggable( title, view );
+            final WorkbenchPartPresenter.View view = partView.get(entry.getKey());
+            makeDraggable(title,
+                          view);
         }
     }
 
-    private void makeDraggable( final Widget title,
-                                final WorkbenchPartPresenter.View view ) {
-        if ( this.dndManager == null || this.dndEnabled == false ) {
+    private void makeDraggable(final Widget title,
+                               final WorkbenchPartPresenter.View view) {
+        if (this.dndManager == null || this.dndEnabled == false) {
             return;
         }
-        dndManager.makeDraggable( view, title );
+        dndManager.makeDraggable(view,
+                                 title);
     }
 
     public void disableDragAndDrop() {
         this.dndEnabled = false;
         // Prevent from dragging title element around
-        if ( noDragHandler == null ) {
-            noDragHandler = this.addDomHandler( new DragStartHandler() {
-                @Override
-                public void onDragStart( DragStartEvent event ) {
-                    event.preventDefault();
-                }
-            }, DragStartEvent.getType() );
+        if (noDragHandler == null) {
+            noDragHandler = this.addDomHandler(new DragStartHandler() {
+                                                   @Override
+                                                   public void onDragStart(DragStartEvent event) {
+                                                       event.preventDefault();
+                                                   }
+                                               },
+                                               DragStartEvent.getType());
         }
     }
 
@@ -241,19 +262,21 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
     }
 
     @Override
-    public HandlerRegistration addSelectionHandler( final SelectionHandler<PartDefinition> handler ) {
-        return super.addHandler( handler, SelectionEvent.getType() );
+    public HandlerRegistration addSelectionHandler(final SelectionHandler<PartDefinition> handler) {
+        return super.addHandler(handler,
+                                SelectionEvent.getType());
     }
 
     @Override
-    public HandlerRegistration addCloseHandler( final CloseHandler<PartDefinition> handler ) {
-        return super.addHandler( handler, CloseEvent.getType() );
+    public HandlerRegistration addCloseHandler(final CloseHandler<PartDefinition> handler) {
+        return super.addHandler(handler,
+                                CloseEvent.getType());
     }
 
     private class NoMouseDownHandler implements MouseDownHandler {
 
         @Override
-        public void onMouseDown( MouseDownEvent event ) {
+        public void onMouseDown(MouseDownEvent event) {
 //              Prevents drag from propagating to text elements
             event.preventDefault();
         }

@@ -26,5 +26,4 @@ public interface HasSingletonDOMElementResource extends HasDOMElementResources {
      * Flushes the content of a DOMElement to the underlying model. Releasing and removing the DOMElement.
      */
     void flush();
-
 }

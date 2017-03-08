@@ -26,14 +26,15 @@ public class UberfireDocksInteractionEvent implements UberFireEvent {
 
     private final InteractionType type;
 
-    public UberfireDocksInteractionEvent( UberfireDock targetDock, InteractionType type ) {
+    public UberfireDocksInteractionEvent(UberfireDock targetDock,
+                                         InteractionType type) {
         this.targetDock = targetDock;
         this.targetDockPosition = targetDock.getDockPosition();
         this.type = type;
     }
 
-    public UberfireDocksInteractionEvent( final UberfireDockPosition position,
-                                          final InteractionType type ) {
+    public UberfireDocksInteractionEvent(final UberfireDockPosition position,
+                                         final InteractionType type) {
         this.targetDock = null;
         this.targetDockPosition = position;
         this.type = type;
@@ -51,38 +52,39 @@ public class UberfireDocksInteractionEvent implements UberFireEvent {
         return type;
     }
 
-    public enum InteractionType {
-        SELECTED, DESELECTED, RESIZED;
-    }
-
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( o == null || getClass() != o.getClass() ) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         final UberfireDocksInteractionEvent that = (UberfireDocksInteractionEvent) o;
 
-        if ( targetDock != null ? !targetDock.equals( that.targetDock ) : that.targetDock != null ) {
+        if (targetDock != null ? !targetDock.equals(that.targetDock) : that.targetDock != null) {
             return false;
         }
-        if ( targetDockPosition != that.targetDockPosition ) {
+        if (targetDockPosition != that.targetDockPosition) {
             return false;
         }
         return type == that.type;
-
     }
 
     @Override
     public int hashCode() {
         int result = targetDock != null ? targetDock.hashCode() : 0;
-        result = 31 * result + ( targetDockPosition != null ? targetDockPosition.hashCode() : 0 );
+        result = 31 * result + (targetDockPosition != null ? targetDockPosition.hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( type != null ? type.hashCode() : 0 );
+        result = 31 * result + (type != null ? type.hashCode() : 0);
         result = ~~result;
         return result;
+    }
+
+    public enum InteractionType {
+        SELECTED,
+        DESELECTED,
+        RESIZED;
     }
 }

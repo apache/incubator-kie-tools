@@ -20,5 +20,5 @@ import org.uberfire.ext.security.management.api.validation.RoleValidator;
 
 // Not implemented yet.
 public class RoleValidatorImpl extends RoleValidator {
-    
+
 }

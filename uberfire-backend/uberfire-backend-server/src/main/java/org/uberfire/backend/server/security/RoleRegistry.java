@@ -29,9 +29,8 @@ import org.jboss.errai.security.shared.api.RoleImpl;
  */
 public class RoleRegistry {
 
-    private Set<Role> roles = new HashSet<Role>();
-
     private static RoleRegistry instance = null;
+    private Set<Role> roles = new HashSet<Role>();
 
     private RoleRegistry() {
     }
@@ -40,7 +39,7 @@ public class RoleRegistry {
      * Returns singleton instance of the registry to be able to register roles
      */
     public static RoleRegistry get() {
-        if ( instance == null ) {
+        if (instance == null) {
             instance = new RoleRegistry();
         }
         return instance;
@@ -66,11 +65,11 @@ public class RoleRegistry {
     }
 
     /**
-    /**
+     * /**
      * Returns unmodifiable copy of all reqistered roles
      */
     public Set<Role> getRegisteredRoles() {
-        return Collections.unmodifiableSet( this.roles );
+        return Collections.unmodifiableSet(this.roles);
     }
 
     /**

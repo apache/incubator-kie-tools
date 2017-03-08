@@ -27,7 +27,8 @@ import org.uberfire.client.util.Layouts;
 
 @Dependent
 @Resize
-public class ResizeTabPanel extends TabPanelWithDropdowns implements RequiresResize, ProvidesResize {
+public class ResizeTabPanel extends TabPanelWithDropdowns implements RequiresResize,
+                                                                     ProvidesResize {
 
     @Override
     public void onResize() {
@@ -36,29 +37,31 @@ public class ResizeTabPanel extends TabPanelWithDropdowns implements RequiresRes
         int width = parent.getOffsetWidth();
         int height = parent.getOffsetHeight();
 
-        if ( width == 0 && height == 0 ) {
+        if (width == 0 && height == 0) {
             //it's `invisible` = makes no sense try to resize
             return;
         }
 
         height = height - getTabBarHeight();
-        Layouts.setToFillParent( this );
+        Layouts.setToFillParent(this);
 
         // TabContent is just a container for all the TabPane divs, one of which is made visible at a time.
         // For compatibility with GWT LayoutPanel, we have to set both layers of children to fill their parents.
         // We do it in onResize() to get to the TabPanes no matter how they were added.
-        for ( Widget child : tabContent ) {
-            child.setPixelSize( width, height );
-            Layouts.setToFillParent( child );
-            if ( child instanceof TabPane ) {
+        for (Widget child : tabContent) {
+            child.setPixelSize(width,
+                               height);
+            Layouts.setToFillParent(child);
+            if (child instanceof TabPane) {
                 final TabPane tabPane = (TabPane) child;
-                if ( tabPane.isActive() ) {
-                    for ( int i = 0; i < tabPane.getWidgetCount(); i++ ) {
-                        final Widget tabChild = tabPane.getWidget( i );
-                        tabChild.setPixelSize( width, height );
-                        Layouts.setToFillParent( tabChild );
-                        if ( tabChild instanceof RequiresResize ) {
-                            ( (RequiresResize) tabChild ).onResize();
+                if (tabPane.isActive()) {
+                    for (int i = 0; i < tabPane.getWidgetCount(); i++) {
+                        final Widget tabChild = tabPane.getWidget(i);
+                        tabChild.setPixelSize(width,
+                                              height);
+                        Layouts.setToFillParent(tabChild);
+                        if (tabChild instanceof RequiresResize) {
+                            ((RequiresResize) tabChild).onResize();
                         }
                     }
                 }
@@ -77,12 +80,11 @@ public class ResizeTabPanel extends TabPanelWithDropdowns implements RequiresRes
      * Makes the tab panel look more or less prominent.
      * @param hasFocus if true, the tab panel will look more prominent. If false, the tab panel will look normal.
      */
-    public void setFocus( boolean hasFocus ) {
-        if ( hasFocus ) {
-            tabBar.addStyleName( WorkbenchResources.INSTANCE.CSS().activeNavTabs() );
+    public void setFocus(boolean hasFocus) {
+        if (hasFocus) {
+            tabBar.addStyleName(WorkbenchResources.INSTANCE.CSS().activeNavTabs());
         } else {
-            tabBar.removeStyleName( WorkbenchResources.INSTANCE.CSS().activeNavTabs() );
+            tabBar.removeStyleName(WorkbenchResources.INSTANCE.CSS().activeNavTabs());
         }
     }
-
 }

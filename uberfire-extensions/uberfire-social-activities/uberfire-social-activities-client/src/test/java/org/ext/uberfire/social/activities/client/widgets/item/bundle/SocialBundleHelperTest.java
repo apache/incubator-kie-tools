@@ -24,31 +24,41 @@ public class SocialBundleHelperTest {
 
     @Test
     public void getTranslationFromServiceWithNoPreviouslyFoundTranslationTest() throws DuplicatedTranslationException {
-        final String value = SocialBundleHelper.getTranslationFromService( "key", null, getService() );
-        assertEquals( "value", value );
+        final String value = SocialBundleHelper.getTranslationFromService("key",
+                                                                          null,
+                                                                          getService());
+        assertEquals("value",
+                     value);
     }
 
     @Test
     public void getTranslationFromServiceWithoutValueWithNoPreviouslyFoundTranslationTest() throws DuplicatedTranslationException {
-        final String value = SocialBundleHelper.getTranslationFromService( "key", null, getServiceWithoutValue() );
-        assertNull( value );
+        final String value = SocialBundleHelper.getTranslationFromService("key",
+                                                                          null,
+                                                                          getServiceWithoutValue());
+        assertNull(value);
     }
 
-    @Test( expected = DuplicatedTranslationException.class )
+    @Test(expected = DuplicatedTranslationException.class)
     public void getTranslationFromServiceWithPreviouslyFoundTranslationTest() throws DuplicatedTranslationException {
-        SocialBundleHelper.getTranslationFromService( "key", "previously-found-value", getService() );
+        SocialBundleHelper.getTranslationFromService("key",
+                                                     "previously-found-value",
+                                                     getService());
     }
 
     @Test
     public void getTranslationFromServiceWithoutValueWithPreviouslyFoundTranslationTest() throws DuplicatedTranslationException {
-        final String value = SocialBundleHelper.getTranslationFromService( "key", "previously-found-value", getServiceWithoutValue() );
-        assertEquals( "previously-found-value", value );
+        final String value = SocialBundleHelper.getTranslationFromService("key",
+                                                                          "previously-found-value",
+                                                                          getServiceWithoutValue());
+        assertEquals("previously-found-value",
+                     value);
     }
 
     private SocialBundleService getService() {
         return new SocialBundleService() {
             @Override
-            public String getTranslation( final String key ) {
+            public String getTranslation(final String key) {
                 return "value";
             }
         };
@@ -57,7 +67,7 @@ public class SocialBundleHelperTest {
     private SocialBundleService getServiceWithoutValue() {
         return new SocialBundleService() {
             @Override
-            public String getTranslation( final String key ) {
+            public String getTranslation(final String key) {
                 return null;
             }
         };

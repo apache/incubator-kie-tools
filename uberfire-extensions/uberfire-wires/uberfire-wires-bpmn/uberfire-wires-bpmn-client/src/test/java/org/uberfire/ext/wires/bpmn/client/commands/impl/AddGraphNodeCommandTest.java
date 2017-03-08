@@ -29,7 +29,8 @@ import org.uberfire.ext.wires.bpmn.client.commands.Results;
 import org.uberfire.ext.wires.bpmn.client.rules.RuleManager;
 import org.uberfire.ext.wires.bpmn.client.rules.impl.DefaultRuleManagerImpl;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 
 public class AddGraphNodeCommandTest extends AbstractBaseRuleTest {
 
@@ -38,11 +39,11 @@ public class AddGraphNodeCommandTest extends AbstractBaseRuleTest {
         final ProcessNode process = new ProcessNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : getContainmentRules() ) {
-            ruleManager.addRule( rule );
+        for (Rule rule : getContainmentRules()) {
+            ruleManager.addRule(rule);
         }
-        for ( Rule rule : getCardinalityRules() ) {
-            ruleManager.addRule( rule );
+        for (Rule rule : getCardinalityRules()) {
+            ruleManager.addRule(rule);
         }
 
         final StartProcessNode node1 = new StartProcessNode();
@@ -51,36 +52,36 @@ public class AddGraphNodeCommandTest extends AbstractBaseRuleTest {
         final CommandManager commandManager = new DefaultCommandManagerImpl();
 
         //Add one Node
-        final Results results1 = commandManager.execute( ruleManager,
-                                                         new AddGraphNodeCommand( process,
-                                                                                  node1 ) );
+        final Results results1 = commandManager.execute(ruleManager,
+                                                        new AddGraphNodeCommand(process,
+                                                                                node1));
 
-        assertNotNull( results1 );
-        assertEquals( 0,
-                      results1.getMessages().size() );
+        assertNotNull(results1);
+        assertEquals(0,
+                     results1.getMessages().size());
 
-        assertEquals( 1,
-                      process.size() );
-        assertProcessContainsNodes( process,
-                                    node1 );
+        assertEquals(1,
+                     process.size());
+        assertProcessContainsNodes(process,
+                                   node1);
 
         //Try to add another Node (rules specify maximum as one)
-        final Results results2 = commandManager.execute( ruleManager,
-                                                         new AddGraphNodeCommand( process,
-                                                                                  node2 ) );
+        final Results results2 = commandManager.execute(ruleManager,
+                                                        new AddGraphNodeCommand(process,
+                                                                                node2));
 
-        assertNotNull( results2 );
-        assertEquals( 1,
-                      results2.getMessages().size() );
-        assertEquals( 1,
-                      results2.getMessages( ResultType.ERROR ).size() );
+        assertNotNull(results2);
+        assertEquals(1,
+                     results2.getMessages().size());
+        assertEquals(1,
+                     results2.getMessages(ResultType.ERROR).size());
 
-        assertEquals( 1,
-                      process.size() );
-        assertProcessContainsNodes( process,
-                                    node1 );
-        assertProcessNotContainsNodes( process,
-                                       node2 );
+        assertEquals(1,
+                     process.size());
+        assertProcessContainsNodes(process,
+                                   node1);
+        assertProcessNotContainsNodes(process,
+                                      node2);
     }
 
     @Test
@@ -88,11 +89,11 @@ public class AddGraphNodeCommandTest extends AbstractBaseRuleTest {
         final ProcessNode process = new ProcessNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : getContainmentRules() ) {
-            ruleManager.addRule( rule );
+        for (Rule rule : getContainmentRules()) {
+            ruleManager.addRule(rule);
         }
-        for ( Rule rule : getCardinalityRules() ) {
-            ruleManager.addRule( rule );
+        for (Rule rule : getCardinalityRules()) {
+            ruleManager.addRule(rule);
         }
 
         final EndProcessNode node1 = new EndProcessNode();
@@ -101,36 +102,36 @@ public class AddGraphNodeCommandTest extends AbstractBaseRuleTest {
         final CommandManager commandManager = new DefaultCommandManagerImpl();
 
         //Add one Node
-        final Results results1 = commandManager.execute( ruleManager,
-                                                         new AddGraphNodeCommand( process,
-                                                                                  node1 ) );
+        final Results results1 = commandManager.execute(ruleManager,
+                                                        new AddGraphNodeCommand(process,
+                                                                                node1));
 
-        assertNotNull( results1 );
-        assertEquals( 0,
-                      results1.getMessages().size() );
+        assertNotNull(results1);
+        assertEquals(0,
+                     results1.getMessages().size());
 
-        assertEquals( 1,
-                      process.size() );
-        assertProcessContainsNodes( process,
-                                    node1 );
+        assertEquals(1,
+                     process.size());
+        assertProcessContainsNodes(process,
+                                   node1);
 
         //Try to add another Node (rules specify maximum as one)
-        final Results results2 = commandManager.execute( ruleManager,
-                                                         new AddGraphNodeCommand( process,
-                                                                                  node2 ) );
+        final Results results2 = commandManager.execute(ruleManager,
+                                                        new AddGraphNodeCommand(process,
+                                                                                node2));
 
-        assertNotNull( results2 );
-        assertEquals( 1,
-                      results2.getMessages().size() );
-        assertEquals( 1,
-                      results2.getMessages( ResultType.ERROR ).size() );
+        assertNotNull(results2);
+        assertEquals(1,
+                     results2.getMessages().size());
+        assertEquals(1,
+                     results2.getMessages(ResultType.ERROR).size());
 
-        assertEquals( 1,
-                      process.size() );
-        assertProcessContainsNodes( process,
-                                    node1 );
-        assertProcessNotContainsNodes( process,
-                                       node2 );
+        assertEquals(1,
+                     process.size());
+        assertProcessContainsNodes(process,
+                                   node1);
+        assertProcessNotContainsNodes(process,
+                                      node2);
     }
 
     @Test
@@ -139,26 +140,25 @@ public class AddGraphNodeCommandTest extends AbstractBaseRuleTest {
         final BpmnGraphNode node = new TestDummyNode();
         final RuleManager ruleManager = new DefaultRuleManagerImpl();
 
-        for ( Rule rule : getContainmentRules() ) {
-            ruleManager.addRule( rule );
+        for (Rule rule : getContainmentRules()) {
+            ruleManager.addRule(rule);
         }
-        for ( Rule rule : getCardinalityRules() ) {
-            ruleManager.addRule( rule );
+        for (Rule rule : getCardinalityRules()) {
+            ruleManager.addRule(rule);
         }
 
         final CommandManager commandManager = new DefaultCommandManagerImpl();
-        final Results results = commandManager.execute( ruleManager,
-                                                        new AddGraphNodeCommand( process,
-                                                                                 node ) );
+        final Results results = commandManager.execute(ruleManager,
+                                                       new AddGraphNodeCommand(process,
+                                                                               node));
 
-        assertNotNull( results );
-        assertEquals( 1,
-                      results.getMessages().size() );
-        assertEquals( 1,
-                      results.getMessages( ResultType.ERROR ).size() );
+        assertNotNull(results);
+        assertEquals(1,
+                     results.getMessages().size());
+        assertEquals(1,
+                     results.getMessages(ResultType.ERROR).size());
 
-        assertEquals( 0,
-                      process.size() );
+        assertEquals(0,
+                     process.size());
     }
-
 }

@@ -24,103 +24,103 @@ import java.io.Serializable;
 public enum SelectionExtension {
 
     LEFT(
-            ( int min, int max, int origin ) -> {
-                if ( max > origin ) {
+            (int min, int max, int origin) -> {
+                if (max > origin) {
                     return max - 1;
                 } else {
                     return min - 1;
                 }
             },
-            ( int min, int max, int origin ) -> {
-                if ( max > origin ) {
+            (int min, int max, int origin) -> {
+                if (max > origin) {
                     return max;
                 } else {
                     return min;
                 }
             },
             -1,
-            0 ),
+            0),
     RIGHT(
-            ( int min, int max, int origin ) -> {
-                if ( min < origin ) {
+            (int min, int max, int origin) -> {
+                if (min < origin) {
                     return min + 1;
                 } else {
                     return max + 1;
                 }
             },
-            ( int min, int max, int origin ) -> {
-                if ( max > origin ) {
+            (int min, int max, int origin) -> {
+                if (max > origin) {
                     return max;
                 } else {
                     return min;
                 }
             },
             1,
-            0 ),
+            0),
     UP(
-            ( int min, int max, int origin ) -> {
-                if ( max > origin ) {
+            (int min, int max, int origin) -> {
+                if (max > origin) {
                     return max;
                 } else {
                     return min;
                 }
             },
-            ( int min, int max, int origin ) -> {
-                if ( max > origin ) {
+            (int min, int max, int origin) -> {
+                if (max > origin) {
                     return max - 1;
                 } else {
                     return min - 1;
                 }
             },
             0,
-            -1 ),
+            -1),
     DOWN(
-            ( int min, int max, int origin ) -> {
-                if ( max > origin ) {
+            (int min, int max, int origin) -> {
+                if (max > origin) {
                     return max;
                 } else {
                     return min;
                 }
             },
-            ( int min, int max, int origin ) -> {
-                if ( min < origin ) {
+            (int min, int max, int origin) -> {
+                if (min < origin) {
                     return min + 1;
                 } else {
                     return max + 1;
                 }
             },
             0,
-            1 );
+            1);
 
     private NextIndexCalculator nextXCalculator;
     private NextIndexCalculator nextYCalculator;
     private int deltaX;
     private int deltaY;
 
-    SelectionExtension( final NextIndexCalculator nextXCalculator,
-                        final NextIndexCalculator nextYCalculator,
-                        final int deltaX,
-                        final int deltaY ) {
+    SelectionExtension(final NextIndexCalculator nextXCalculator,
+                       final NextIndexCalculator nextYCalculator,
+                       final int deltaX,
+                       final int deltaY) {
         this.nextXCalculator = nextXCalculator;
         this.nextYCalculator = nextYCalculator;
         this.deltaX = deltaX;
         this.deltaY = deltaY;
     }
 
-    public int getNextX( final int minIndex,
-                         final int maxIndex,
-                         final int originIndex ) {
-        return nextXCalculator.getNext( minIndex,
-                                        maxIndex,
-                                        originIndex );
+    public int getNextX(final int minIndex,
+                        final int maxIndex,
+                        final int originIndex) {
+        return nextXCalculator.getNext(minIndex,
+                                       maxIndex,
+                                       originIndex);
     }
 
-    public int getNextY( final int minIndex,
-                         final int maxIndex,
-                         final int originIndex ) {
-        return nextYCalculator.getNext( minIndex,
-                                        maxIndex,
-                                        originIndex );
+    public int getNextY(final int minIndex,
+                        final int maxIndex,
+                        final int originIndex) {
+        return nextYCalculator.getNext(minIndex,
+                                       maxIndex,
+                                       originIndex);
     }
 
     public int getDeltaX() {
@@ -133,10 +133,9 @@ public enum SelectionExtension {
 
     private interface NextIndexCalculator extends Serializable {
 
-        int getNext( final int minIndex,
-                     final int maxIndex,
-                     final int originIndex );
-
+        int getNext(final int minIndex,
+                    final int maxIndex,
+                    final int originIndex);
     }
 
 }

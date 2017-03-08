@@ -23,9 +23,11 @@ import org.uberfire.backend.vfs.PathFactory;
 
 public class RestoreUtil {
 
-    public ObservablePath createObservablePath(Path path, String uri) {
+    public ObservablePath createObservablePath(Path path,
+                                               String uri) {
         return IOC.getBeanManager().lookupBean(ObservablePath.class).getInstance().wrap(
-                PathFactory.newPathBasedOn(path.getFileName(), uri, path));
+                PathFactory.newPathBasedOn(path.getFileName(),
+                                           uri,
+                                           path));
     }
-
 }

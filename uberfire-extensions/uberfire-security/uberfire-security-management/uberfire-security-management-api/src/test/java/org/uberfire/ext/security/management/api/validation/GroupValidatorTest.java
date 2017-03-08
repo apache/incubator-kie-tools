@@ -16,16 +16,14 @@
 
 package org.uberfire.ext.security.management.api.validation;
 
+import java.util.Set;
+import javax.validation.ConstraintViolation;
+
 import org.jboss.errai.security.shared.api.Group;
 import org.junit.Test;
 
-import javax.validation.ConstraintViolation;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class GroupValidatorTest {
 
@@ -44,11 +42,14 @@ public class GroupValidatorTest {
         final Set<ConstraintViolation<Group>> violations1 = new GroupValidatorTestImpl().validate(blankGroup);
         assertTrue(violations1.size() == 1);
         final ConstraintViolation<Group> violation = violations1.iterator().next();
-        assertEquals(violation.getPropertyPath().iterator().next().getName(), "name");
-        assertEquals(violation.getMessage(), GroupValidator.KEY_NAME_NOT_EMPTY);
+        assertEquals(violation.getPropertyPath().iterator().next().getName(),
+                     "name");
+        assertEquals(violation.getMessage(),
+                     GroupValidator.KEY_NAME_NOT_EMPTY);
     }
-    
+
     public static class GroupValidatorTestImpl extends GroupValidator {
+
         @Override
         public String getMessage(String key) {
             return key;

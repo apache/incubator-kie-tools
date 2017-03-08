@@ -22,7 +22,7 @@ public class RestoreEvent {
 
     private ObservablePath path;
 
-    public RestoreEvent( final ObservablePath path ) {
+    public RestoreEvent(final ObservablePath path) {
         this.path = path;
     }
 

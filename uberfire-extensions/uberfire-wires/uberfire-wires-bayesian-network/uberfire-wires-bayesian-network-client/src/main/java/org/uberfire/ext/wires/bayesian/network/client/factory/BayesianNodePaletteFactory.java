@@ -44,26 +44,26 @@ public class BayesianNodePaletteFactory extends AbstractBaseFactory<Rectangle> {
     }
 
     @Override
-    public WiresBaseShape getShape( final FactoryHelper helper ) {
-        return new EditableBayesianNode( makeShape() );
+    public WiresBaseShape getShape(final FactoryHelper helper) {
+        return new EditableBayesianNode(makeShape());
     }
 
     @Override
-    public boolean builds( final WiresBaseShape shapeType ) {
+    public boolean builds(final WiresBaseShape shapeType) {
         return shapeType instanceof EditableBayesianNode;
     }
 
     @Override
     protected Rectangle makeShape() {
-        final Rectangle rectangle = new Rectangle( SHAPE_SIZE_X,
-                                                   SHAPE_SIZE_Y,
-                                                   5 );
-        rectangle.setX( 0 - ( SHAPE_SIZE_X / 2 ) )
-                .setY( 0 - ( SHAPE_SIZE_Y / 2 ) )
-                .setStrokeColor( ShapesUtils.RGB_STROKE_SHAPE )
-                .setStrokeWidth( ShapesUtils.RGB_STROKE_WIDTH_SHAPE )
-                .setFillColor( ShapesUtils.RGB_FILL_SHAPE )
-                .setDraggable( false );
+        final Rectangle rectangle = new Rectangle(SHAPE_SIZE_X,
+                                                  SHAPE_SIZE_Y,
+                                                  5);
+        rectangle.setX(0 - (SHAPE_SIZE_X / 2))
+                .setY(0 - (SHAPE_SIZE_Y / 2))
+                .setStrokeColor(ShapesUtils.RGB_STROKE_SHAPE)
+                .setStrokeWidth(ShapesUtils.RGB_STROKE_WIDTH_SHAPE)
+                .setFillColor(ShapesUtils.RGB_FILL_SHAPE)
+                .setDraggable(false);
         return rectangle;
     }
 
@@ -76,5 +76,4 @@ public class BayesianNodePaletteFactory extends AbstractBaseFactory<Rectangle> {
     protected double getHeight() {
         return SHAPE_SIZE_Y;
     }
-
 }

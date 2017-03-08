@@ -50,7 +50,7 @@ public class DeletePopUpView implements DeletePopUpPresenter.View,
     private BaseModal modal;
 
     @Override
-    public void init( DeletePopUpPresenter presenter ) {
+    public void init(DeletePopUpPresenter presenter) {
         this.presenter = presenter;
         modalSetup();
         setupComment();
@@ -68,21 +68,26 @@ public class DeletePopUpView implements DeletePopUpPresenter.View,
 
     private void modalSetup() {
         this.modal = new CommonModalBuilder()
-                .addHeader( translate( Constants.DeletePopUpView_ConfirmDelete ) )
-                .addBody( body )
-                .addFooter( footer() )
+                .addHeader(translate(Constants.DeletePopUpView_ConfirmDelete))
+                .addBody(body)
+                .addFooter(footer())
                 .build();
     }
 
     private ModalFooter footer() {
         GenericModalFooter footer = new GenericModalFooter();
-        footer.addButton( translate( Constants.DeletePopUpView_Cancel ), cancelCommand(), ButtonType.DEFAULT );
-        footer.addButton( translate( Constants.DeletePopUpView_Delete ), deleteCommand(), IconType.REMOVE, ButtonType.DANGER );
+        footer.addButton(translate(Constants.DeletePopUpView_Cancel),
+                         cancelCommand(),
+                         ButtonType.DEFAULT);
+        footer.addButton(translate(Constants.DeletePopUpView_Delete),
+                         deleteCommand(),
+                         IconType.REMOVE,
+                         ButtonType.DANGER);
         return footer;
     }
 
-    private String translate( final String key ) {
-        return translationService.format( key );
+    private String translate(final String key) {
+        return translationService.format(key);
     }
 
     private Command deleteCommand() {
@@ -94,7 +99,7 @@ public class DeletePopUpView implements DeletePopUpPresenter.View,
     }
 
     private void setupComment() {
-        body.appendChild( toggleCommentPresenter().getViewElement() );
+        body.appendChild(toggleCommentPresenter().getViewElement());
     }
 
     private ToggleCommentPresenter toggleCommentPresenter() {

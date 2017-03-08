@@ -20,7 +20,6 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 /**
  * <p>Generic exception for user system management API.</p>
- * 
  * @since 0.8.0
  */
 @Portable

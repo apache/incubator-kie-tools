@@ -21,13 +21,21 @@ import org.uberfire.commons.validation.PortablePreconditions;
  * Specify a {@link Configuration} through configurable parameters, or falling
  * back to some frequently used defaults.
  * @param <TreeNode> <p/>
- * <p/>
+ * <p>
  * Adapted from https://code.google.com/p/treelayout/ to be available to GWT clients
- * <p/>
+ * <p>
  * @author Udo Borkowski (ub@abego.org)
  */
 public class DefaultConfiguration<TreeNode> implements
                                             Configuration<TreeNode> {
+
+    private final double gapBetweenLevels;
+    private final double gapBetweenNodes;
+    private final Location location;
+
+    // -----------------------------------------------------------------------
+    // gapBetweenLevels
+    private AlignmentInLevel alignmentInLevel;
 
     /**
      * Specifies the constants to be used for this Configuration.
@@ -36,14 +44,14 @@ public class DefaultConfiguration<TreeNode> implements
      * @param location [default: {@link Configuration.Location#Top Top}]
      * @param alignmentInLevel [default: {@link Configuration.AlignmentInLevel#Center Center}]
      */
-    public DefaultConfiguration( double gapBetweenLevels,
-                                 double gapBetweenNodes,
-                                 Location location,
-                                 AlignmentInLevel alignmentInLevel ) {
-        PortablePreconditions.checkCondition( "gapBetweenLevels must be >= 0",
-                                              gapBetweenLevels >= 0 );
-        PortablePreconditions.checkCondition( "gapBetweenNodes must be >= 0",
-                                              gapBetweenNodes >= 0 );
+    public DefaultConfiguration(double gapBetweenLevels,
+                                double gapBetweenNodes,
+                                Location location,
+                                AlignmentInLevel alignmentInLevel) {
+        PortablePreconditions.checkCondition("gapBetweenLevels must be >= 0",
+                                             gapBetweenLevels >= 0);
+        PortablePreconditions.checkCondition("gapBetweenNodes must be >= 0",
+                                             gapBetweenNodes >= 0);
 
         this.gapBetweenLevels = gapBetweenLevels;
         this.gapBetweenNodes = gapBetweenNodes;
@@ -51,71 +59,60 @@ public class DefaultConfiguration<TreeNode> implements
         this.alignmentInLevel = alignmentInLevel;
     }
 
+    // -----------------------------------------------------------------------
+    // gapBetweenNodes
+
     /**
      * Convenience constructor, using a default for the alignmentInLevel.
-     * <p/>
+     * <p>
      * see
      * {@link #DefaultConfiguration(double, double, Configuration.Location, Configuration.AlignmentInLevel)}
      */
-    public DefaultConfiguration( double gapBetweenLevels,
-                                 double gapBetweenNodes,
-                                 Location location ) {
-        this( gapBetweenLevels,
-              gapBetweenNodes,
-              location,
-              AlignmentInLevel.Center );
+    public DefaultConfiguration(double gapBetweenLevels,
+                                double gapBetweenNodes,
+                                Location location) {
+        this(gapBetweenLevels,
+             gapBetweenNodes,
+             location,
+             AlignmentInLevel.Center);
     }
 
     /**
      * Convenience constructor, using a default for the rootLocation and the
      * alignmentInLevel.
-     * <p/>
+     * <p>
      * see
      * {@link #DefaultConfiguration(double, double, Configuration.Location, Configuration.AlignmentInLevel)}
      */
-    public DefaultConfiguration( double gapBetweenLevels,
-                                 double gapBetweenNodes ) {
-        this( gapBetweenLevels,
-              gapBetweenNodes,
-              Location.Top,
-              AlignmentInLevel.Center );
-    }
-
-    // -----------------------------------------------------------------------
-    // gapBetweenLevels
-
-    private final double gapBetweenLevels;
-
-    @Override
-    public double getGapBetweenLevels( int nextLevel ) {
-        return gapBetweenLevels;
-    }
-
-    // -----------------------------------------------------------------------
-    // gapBetweenNodes
-
-    private final double gapBetweenNodes;
-
-    @Override
-    public double getGapBetweenNodes( TreeNode node1,
-                                      TreeNode node2 ) {
-        return gapBetweenNodes;
+    public DefaultConfiguration(double gapBetweenLevels,
+                                double gapBetweenNodes) {
+        this(gapBetweenLevels,
+             gapBetweenNodes,
+             Location.Top,
+             AlignmentInLevel.Center);
     }
 
     // -----------------------------------------------------------------------
     // location
 
-    private final Location location;
+    @Override
+    public double getGapBetweenLevels(int nextLevel) {
+        return gapBetweenLevels;
+    }
 
     @Override
-    public Location getRootLocation() {
-        return location;
+    public double getGapBetweenNodes(TreeNode node1,
+                                     TreeNode node2) {
+        return gapBetweenNodes;
     }
 
     // -----------------------------------------------------------------------
     // alignmentInLevel
 
-    private AlignmentInLevel alignmentInLevel;
+    @Override
+    public Location getRootLocation() {
+        return location;
+    }
 
     @Override
     public AlignmentInLevel getAlignmentInLevel() {

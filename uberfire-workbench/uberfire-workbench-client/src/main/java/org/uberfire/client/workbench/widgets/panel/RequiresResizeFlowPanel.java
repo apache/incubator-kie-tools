@@ -26,10 +26,10 @@ public class RequiresResizeFlowPanel
 
     @Override
     public void onResize() {
-        for ( int i = 0; i < getWidgetCount(); i++ ) {
-            final Widget activeWidget = getWidget( i );
-            if ( activeWidget instanceof RequiresResize ) {
-                ( (RequiresResize) activeWidget ).onResize();
+        for (int i = 0; i < getWidgetCount(); i++) {
+            final Widget activeWidget = getWidget(i);
+            if (activeWidget instanceof RequiresResize) {
+                ((RequiresResize) activeWidget).onResize();
             }
         }
     }

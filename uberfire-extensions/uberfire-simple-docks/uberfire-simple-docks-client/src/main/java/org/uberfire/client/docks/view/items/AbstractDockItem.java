@@ -34,67 +34,79 @@ public abstract class AbstractDockItem extends Composite {
     private final boolean selected;
     private final UberfireDock dock;
 
-    AbstractDockItem( UberfireDock dock ) {
+    AbstractDockItem(UberfireDock dock) {
         this.dock = dock;
         this.selected = false;
     }
 
-    public static AbstractDockItem create( UberfireDock dock,
-                                           ParameterizedCommand<String> selectCommand,
-                                           ParameterizedCommand<String> deselectCommand ) {
-        if ( dock.getDockPosition() == UberfireDockPosition.SOUTH ) {
-            return new SouthDockItem( dock, selectCommand, deselectCommand );
+    public static AbstractDockItem create(UberfireDock dock,
+                                          ParameterizedCommand<String> selectCommand,
+                                          ParameterizedCommand<String> deselectCommand) {
+        if (dock.getDockPosition() == UberfireDockPosition.SOUTH) {
+            return new SouthDockItem(dock,
+                                     selectCommand,
+                                     deselectCommand);
         } else {
-            return new SideDockItem( dock, selectCommand, deselectCommand );
+            return new SideDockItem(dock,
+                                    selectCommand,
+                                    deselectCommand);
         }
     }
 
-    void configureText( final Button itemButton,
-                        final String text ) {
-        Span itemButtonText = GWT.create( Span.class );
-        itemButtonText.setText( text );
-        itemButton.insert( itemButtonText, 0 );
+    void configureText(final Button itemButton,
+                       final String text) {
+        Span itemButtonText = GWT.create(Span.class);
+        itemButtonText.setText(text);
+        itemButton.insert(itemButtonText,
+                          0);
     }
 
-    void configureIcon( Button itemButton,
-                        ImageResource imageResource ) {
-        if ( getDock().getIconType() != null ) {
-            itemButton.setIcon( getIcon() );
-            itemButton.setIconFixedWidth( true );
-            itemButton.setIconPosition( IconPosition.LEFT );
+    void configureIcon(Button itemButton,
+                       ImageResource imageResource) {
+        if (getDock().getIconType() != null) {
+            itemButton.setIcon(getIcon());
+            itemButton.setIconFixedWidth(true);
+            itemButton.setIconPosition(IconPosition.LEFT);
         } else {
-            configureImageIcon( itemButton, imageResource );
+            configureImageIcon(itemButton,
+                               imageResource);
         }
     }
 
-    void configureImageIcon( final Button itemButton,
-                             final ImageResource imageResource ) {
-        if ( imageResource != null ) {
-            final Image imageIcon = new Image( imageResource );
-            imageIcon.getElement().getStyle().setWidth( 14, Style.Unit.PX );
-            imageIcon.getElement().getStyle().setHeight( 14, Style.Unit.PX );
+    void configureImageIcon(final Button itemButton,
+                            final ImageResource imageResource) {
+        if (imageResource != null) {
+            final Image imageIcon = new Image(imageResource);
+            imageIcon.getElement().getStyle().setWidth(14,
+                                                       Style.Unit.PX);
+            imageIcon.getElement().getStyle().setHeight(14,
+                                                        Style.Unit.PX);
 
-            if ( itemButton.getWidgetCount() > 1 ) {
-                imageIcon.getElement().getStyle().setPosition( Style.Position.ABSOLUTE );
-                imageIcon.getElement().getStyle().setTop( 3, Style.Unit.PX );
-                imageIcon.getElement().getStyle().setLeft( 3, Style.Unit.PX );
+            if (itemButton.getWidgetCount() > 1) {
+                imageIcon.getElement().getStyle().setPosition(Style.Position.ABSOLUTE);
+                imageIcon.getElement().getStyle().setTop(3,
+                                                         Style.Unit.PX);
+                imageIcon.getElement().getStyle().setLeft(3,
+                                                          Style.Unit.PX);
 
-                itemButton.getElement().getStyle().setPaddingLeft( 20, Style.Unit.PX );
-                itemButton.getElement().getStyle().setPosition( Style.Position.RELATIVE );
+                itemButton.getElement().getStyle().setPaddingLeft(20,
+                                                                  Style.Unit.PX);
+                itemButton.getElement().getStyle().setPosition(Style.Position.RELATIVE);
             }
 
-            itemButton.insert( imageIcon, 0 );
+            itemButton.insert(imageIcon,
+                              0);
         }
     }
 
     private IconType getIcon() {
-        if ( dock.getIconType() == null ) {
+        if (dock.getIconType() == null) {
             return null;
         }
 
         try {
-            return IconType.valueOf( dock.getIconType() );
-        } catch ( Exception e ) {
+            return IconType.valueOf(dock.getIconType());
+        } catch (Exception e) {
             return IconType.FOLDER_OPEN;
         }
     }

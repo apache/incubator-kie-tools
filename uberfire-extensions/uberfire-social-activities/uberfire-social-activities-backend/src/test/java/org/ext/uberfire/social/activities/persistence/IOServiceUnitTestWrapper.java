@@ -60,24 +60,24 @@ public class IOServiceUnitTestWrapper implements IOService {
     }
 
     @Override
-    public void startBatch( FileSystem fs ) {
+    public void startBatch(FileSystem fs) {
 
     }
 
     @Override
-    public void startBatch( FileSystem[] fs,
-                            Option... options ) {
+    public void startBatch(FileSystem[] fs,
+                           Option... options) {
 
     }
 
     @Override
-    public void startBatch( FileSystem fs,
-                            Option... options ) {
+    public void startBatch(FileSystem fs,
+                           Option... options) {
 
     }
 
     @Override
-    public void startBatch( FileSystem... fs ) {
+    public void startBatch(FileSystem... fs) {
 
     }
 
@@ -87,20 +87,20 @@ public class IOServiceUnitTestWrapper implements IOService {
     }
 
     @Override
-    public FileAttribute<?>[] convert( Map<String, ?> attrs ) {
-        return new FileAttribute<?>[ 0 ];
+    public FileAttribute<?>[] convert(Map<String, ?> attrs) {
+        return new FileAttribute<?>[0];
     }
 
     @Override
-    public Path get( String first,
-                     String... more ) throws IllegalArgumentException {
+    public Path get(String first,
+                    String... more) throws IllegalArgumentException {
         return null;
     }
 
     @Override
-    public Path get( URI uri ) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
-        Path mock = mock( Path.class );
-        when( mock.toUri() ).thenReturn( uri );
+    public Path get(URI uri) throws IllegalArgumentException, FileSystemNotFoundException, SecurityException {
+        Path mock = mock(Path.class);
+        when(mock.toUri()).thenReturn(uri);
         return mock;
     }
 
@@ -110,340 +110,341 @@ public class IOServiceUnitTestWrapper implements IOService {
     }
 
     @Override
-    public FileSystem getFileSystem( URI uri ) throws IllegalArgumentException, FileSystemNotFoundException, ProviderNotFoundException, SecurityException {
+    public FileSystem getFileSystem(URI uri) throws IllegalArgumentException, FileSystemNotFoundException, ProviderNotFoundException, SecurityException {
         return null;
     }
 
     @Override
-    public FileSystem newFileSystem( URI uri,
-                                     Map<String, ?> env ) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, IOException, SecurityException {
+    public FileSystem newFileSystem(URI uri,
+                                    Map<String, ?> env) throws IllegalArgumentException, FileSystemAlreadyExistsException, ProviderNotFoundException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public void onNewFileSystem( NewFileSystemListener listener ) {
+    public void onNewFileSystem(NewFileSystemListener listener) {
 
     }
 
     @Override
-    public InputStream newInputStream( Path path,
-                                       OpenOption... options ) throws IllegalArgumentException, NoSuchFileException, UnsupportedOperationException, IOException, SecurityException {
+    public InputStream newInputStream(Path path,
+                                      OpenOption... options) throws IllegalArgumentException, NoSuchFileException, UnsupportedOperationException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public OutputStream newOutputStream( Path path,
-                                         OpenOption... options ) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+    public OutputStream newOutputStream(Path path,
+                                        OpenOption... options) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public SeekableByteChannel newByteChannel( Path path,
-                                               OpenOption... options ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+    public SeekableByteChannel newByteChannel(Path path,
+                                              OpenOption... options) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public SeekableByteChannel newByteChannel( Path path,
-                                               Set<? extends OpenOption> options,
-                                               FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+    public SeekableByteChannel newByteChannel(Path path,
+                                              Set<? extends OpenOption> options,
+                                              FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public DirectoryStream<Path> newDirectoryStream( Path dir ) throws IllegalArgumentException, NotDirectoryException, IOException, SecurityException {
+    public DirectoryStream<Path> newDirectoryStream(Path dir) throws IllegalArgumentException, NotDirectoryException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public DirectoryStream<Path> newDirectoryStream( Path dir,
-                                                     DirectoryStream.Filter<Path> filter ) throws IllegalArgumentException, NotDirectoryException, IOException, SecurityException {
+    public DirectoryStream<Path> newDirectoryStream(Path dir,
+                                                    DirectoryStream.Filter<Path> filter) throws IllegalArgumentException, NotDirectoryException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public Path createFile( Path path,
-                            FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+    public Path createFile(Path path,
+                           FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public Path createDirectory( Path dir,
-                                 FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+    public Path createDirectory(Path dir,
+                                FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public Path createDirectories( Path dir,
-                                   FileAttribute<?>... attrs ) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+    public Path createDirectories(Path dir,
+                                  FileAttribute<?>... attrs) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public Path createDirectory( Path dir,
-                                 Map<String, ?> attrs ) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+    public Path createDirectory(Path dir,
+                                Map<String, ?> attrs) throws IllegalArgumentException, UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public Path createDirectories( Path dir,
-                                   Map<String, ?> attrs ) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
+    public Path createDirectories(Path dir,
+                                  Map<String, ?> attrs) throws UnsupportedOperationException, FileAlreadyExistsException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public void delete( Path path,
-                        DeleteOption... options ) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException, SecurityException {
+    public void delete(Path path,
+                       DeleteOption... options) throws IllegalArgumentException, NoSuchFileException, DirectoryNotEmptyException, IOException, SecurityException {
 
     }
 
     @Override
-    public boolean deleteIfExists( Path path,
-                                   DeleteOption... options ) throws IllegalArgumentException, DirectoryNotEmptyException, IOException, SecurityException {
+    public boolean deleteIfExists(Path path,
+                                  DeleteOption... options) throws IllegalArgumentException, DirectoryNotEmptyException, IOException, SecurityException {
         return false;
     }
 
     @Override
-    public Path createTempFile( String prefix,
-                                String suffix,
-                                FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+    public Path createTempFile(String prefix,
+                               String suffix,
+                               FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public Path createTempFile( Path dir,
-                                String prefix,
-                                String suffix,
-                                FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+    public Path createTempFile(Path dir,
+                               String prefix,
+                               String suffix,
+                               FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public Path createTempDirectory( String prefix,
-                                     FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+    public Path createTempDirectory(String prefix,
+                                    FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public Path createTempDirectory( Path dir,
-                                     String prefix,
-                                     FileAttribute<?>... attrs ) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
+    public Path createTempDirectory(Path dir,
+                                    String prefix,
+                                    FileAttribute<?>... attrs) throws IllegalArgumentException, UnsupportedOperationException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public Path copy( Path source,
-                      Path target,
-                      CopyOption... options ) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException, SecurityException {
+    public Path copy(Path source,
+                     Path target,
+                     CopyOption... options) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public Path move( Path source,
-                      Path target,
-                      CopyOption... options ) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException, SecurityException {
+    public Path move(Path source,
+                     Path target,
+                     CopyOption... options) throws UnsupportedOperationException, FileAlreadyExistsException, DirectoryNotEmptyException, AtomicMoveNotSupportedException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public <V extends FileAttributeView> V getFileAttributeView( Path path,
-                                                                 Class<V> type ) throws IllegalArgumentException {
+    public <V extends FileAttributeView> V getFileAttributeView(Path path,
+                                                                Class<V> type) throws IllegalArgumentException {
         return null;
     }
 
     @Override
-    public Map<String, Object> readAttributes( Path path ) throws UnsupportedOperationException, NoSuchFileException, IllegalArgumentException, IOException, SecurityException {
+    public Map<String, Object> readAttributes(Path path) throws UnsupportedOperationException, NoSuchFileException, IllegalArgumentException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public Map<String, Object> readAttributes( Path path,
-                                               String attributes ) throws UnsupportedOperationException, NoSuchFileException, IllegalArgumentException, IOException, SecurityException {
+    public Map<String, Object> readAttributes(Path path,
+                                              String attributes) throws UnsupportedOperationException, NoSuchFileException, IllegalArgumentException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public Path setAttributes( Path path,
-                               FileAttribute<?>... attrs ) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
+    public Path setAttributes(Path path,
+                              FileAttribute<?>... attrs) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public Path setAttributes( Path path,
-                               Map<String, Object> attrs ) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
+    public Path setAttributes(Path path,
+                              Map<String, Object> attrs) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public Path setAttribute( Path path,
-                              String attribute,
-                              Object value ) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
+    public Path setAttribute(Path path,
+                             String attribute,
+                             Object value) throws UnsupportedOperationException, IllegalArgumentException, ClassCastException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public Object getAttribute( Path path,
-                                String attribute ) throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
+    public Object getAttribute(Path path,
+                               String attribute) throws UnsupportedOperationException, IllegalArgumentException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public FileTime getLastModifiedTime( Path path ) throws IllegalArgumentException, IOException, SecurityException {
+    public FileTime getLastModifiedTime(Path path) throws IllegalArgumentException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public long size( Path path ) throws IllegalArgumentException, IOException, SecurityException {
+    public long size(Path path) throws IllegalArgumentException, IOException, SecurityException {
         return 0;
     }
 
     @Override
-    public boolean exists( Path path ) throws IllegalArgumentException, SecurityException {
-        return fileSystem.containsKey( path.toUri().getPath() );
+    public boolean exists(Path path) throws IllegalArgumentException, SecurityException {
+        return fileSystem.containsKey(path.toUri().getPath());
     }
 
     @Override
-    public boolean notExists( Path path ) throws IllegalArgumentException, SecurityException {
+    public boolean notExists(Path path) throws IllegalArgumentException, SecurityException {
         return false;
     }
 
     @Override
-    public boolean isSameFile( Path path,
-                               Path path2 ) throws IllegalArgumentException, IOException, SecurityException {
+    public boolean isSameFile(Path path,
+                              Path path2) throws IllegalArgumentException, IOException, SecurityException {
         return false;
     }
 
     @Override
-    public BufferedReader newBufferedReader( Path path,
-                                             Charset cs ) throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
+    public BufferedReader newBufferedReader(Path path,
+                                            Charset cs) throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public BufferedWriter newBufferedWriter( Path path,
-                                             Charset cs,
-                                             OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException, SecurityException {
+    public BufferedWriter newBufferedWriter(Path path,
+                                            Charset cs,
+                                            OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException, SecurityException {
         return null;
     }
 
     @Override
-    public long copy( InputStream in,
-                      Path target,
-                      CopyOption... options ) throws IOException, FileAlreadyExistsException, DirectoryNotEmptyException, UnsupportedOperationException, SecurityException {
+    public long copy(InputStream in,
+                     Path target,
+                     CopyOption... options) throws IOException, FileAlreadyExistsException, DirectoryNotEmptyException, UnsupportedOperationException, SecurityException {
         return 0;
     }
 
     @Override
-    public long copy( Path source,
-                      OutputStream out ) throws IOException, SecurityException {
+    public long copy(Path source,
+                     OutputStream out) throws IOException, SecurityException {
         return 0;
     }
 
     @Override
-    public byte[] readAllBytes( Path path ) throws IOException, OutOfMemoryError, SecurityException {
-        return new byte[ 0 ];
+    public byte[] readAllBytes(Path path) throws IOException, OutOfMemoryError, SecurityException {
+        return new byte[0];
     }
 
     @Override
-    public List<String> readAllLines( Path path ) throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
+    public List<String> readAllLines(Path path) throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public List<String> readAllLines( Path path,
-                                      Charset cs ) throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
+    public List<String> readAllLines(Path path,
+                                     Charset cs) throws IllegalArgumentException, NoSuchFileException, IOException, SecurityException {
         return null;
     }
 
     @Override
-    public String readAllString( Path path,
-                                 Charset cs ) throws IllegalArgumentException, NoSuchFileException, IOException {
+    public String readAllString(Path path,
+                                Charset cs) throws IllegalArgumentException, NoSuchFileException, IOException {
         return null;
     }
 
     @Override
-    public String readAllString( Path path ) throws IllegalArgumentException, NoSuchFileException, IOException {
-        return fileSystem.get( path.toUri().getPath() );
+    public String readAllString(Path path) throws IllegalArgumentException, NoSuchFileException, IOException {
+        return fileSystem.get(path.toUri().getPath());
     }
 
     @Override
-    public Path write( Path path,
-                       byte[] bytes,
-                       OpenOption... options ) throws IOException, UnsupportedOperationException, SecurityException {
+    public Path write(Path path,
+                      byte[] bytes,
+                      OpenOption... options) throws IOException, UnsupportedOperationException, SecurityException {
         return null;
     }
 
     @Override
-    public Path write( Path path,
-                       byte[] bytes,
-                       Map<String, ?> attrs,
-                       OpenOption... options ) throws IOException, UnsupportedOperationException, SecurityException {
+    public Path write(Path path,
+                      byte[] bytes,
+                      Map<String, ?> attrs,
+                      OpenOption... options) throws IOException, UnsupportedOperationException, SecurityException {
         return null;
     }
 
     @Override
-    public Path write( Path path,
-                       byte[] bytes,
-                       Set<? extends OpenOption> options,
-                       FileAttribute<?>... attrs ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+    public Path write(Path path,
+                      byte[] bytes,
+                      Set<? extends OpenOption> options,
+                      FileAttribute<?>... attrs) throws IllegalArgumentException, IOException, UnsupportedOperationException {
         return null;
     }
 
     @Override
-    public Path write( Path path,
-                       Iterable<? extends CharSequence> lines,
-                       Charset cs,
-                       OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException, SecurityException {
+    public Path write(Path path,
+                      Iterable<? extends CharSequence> lines,
+                      Charset cs,
+                      OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException, SecurityException {
         return null;
     }
 
     @Override
-    public Path write( Path path,
-                       String content,
-                       OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
-        fileSystem.put( path.toUri().getPath(), content );
+    public Path write(Path path,
+                      String content,
+                      OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+        fileSystem.put(path.toUri().getPath(),
+                       content);
         return path;
     }
 
     @Override
-    public Path write( Path path,
-                       String content,
-                       Charset cs,
-                       OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+    public Path write(Path path,
+                      String content,
+                      Charset cs,
+                      OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException {
         return null;
     }
 
     @Override
-    public Path write( Path path,
-                       String content,
-                       Set<? extends OpenOption> options,
-                       FileAttribute<?>... attrs ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+    public Path write(Path path,
+                      String content,
+                      Set<? extends OpenOption> options,
+                      FileAttribute<?>... attrs) throws IllegalArgumentException, IOException, UnsupportedOperationException {
         return null;
     }
 
     @Override
-    public Path write( Path path,
-                       String content,
-                       Charset cs,
-                       Set<? extends OpenOption> options,
-                       FileAttribute<?>... attrs ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+    public Path write(Path path,
+                      String content,
+                      Charset cs,
+                      Set<? extends OpenOption> options,
+                      FileAttribute<?>... attrs) throws IllegalArgumentException, IOException, UnsupportedOperationException {
         return null;
     }
 
     @Override
-    public Path write( Path path,
-                       String content,
-                       Map<String, ?> attrs,
-                       OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+    public Path write(Path path,
+                      String content,
+                      Map<String, ?> attrs,
+                      OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException {
         return null;
     }
 
     @Override
-    public Path write( Path path,
-                       String content,
-                       Charset cs,
-                       Map<String, ?> attrs,
-                       OpenOption... options ) throws IllegalArgumentException, IOException, UnsupportedOperationException {
+    public Path write(Path path,
+                      String content,
+                      Charset cs,
+                      Map<String, ?> attrs,
+                      OpenOption... options) throws IllegalArgumentException, IOException, UnsupportedOperationException {
         return null;
     }
 

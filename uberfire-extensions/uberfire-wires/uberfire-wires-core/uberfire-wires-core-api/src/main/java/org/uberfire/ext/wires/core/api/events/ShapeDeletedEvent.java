@@ -21,12 +21,11 @@ public class ShapeDeletedEvent {
 
     private WiresBaseShape shape;
 
-    public ShapeDeletedEvent( final WiresBaseShape shape ) {
+    public ShapeDeletedEvent(final WiresBaseShape shape) {
         this.shape = shape;
     }
 
     public WiresBaseShape getShape() {
         return shape;
     }
-
 }

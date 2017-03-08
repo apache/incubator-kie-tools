@@ -16,19 +16,18 @@
 
 package org.uberfire.ext.editor.commons.client.history;
 
+import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.workbench.model.menu.EnabledStateChangeListener;
 import org.uberfire.workbench.model.menu.MenuCustom;
 import org.uberfire.workbench.model.menu.MenuPosition;
 import org.uberfire.workbench.model.menu.MenuVisitor;
-
-import com.google.gwt.user.client.ui.Widget;
 
 public class VersionMenuItem
         implements MenuCustom<Widget> {
 
     private VersionMenuDropDownButton button;
 
-    public VersionMenuItem( VersionMenuDropDownButton button ) {
+    public VersionMenuItem(VersionMenuDropDownButton button) {
         this.button = button;
     }
 
@@ -43,8 +42,8 @@ public class VersionMenuItem
     }
 
     @Override
-    public void setEnabled( boolean enabled ) {
-        button.setEnabled( enabled );
+    public void setEnabled(boolean enabled) {
+        button.setEnabled(enabled);
     }
 
     @Override
@@ -68,12 +67,12 @@ public class VersionMenuItem
     }
 
     @Override
-    public void accept( final MenuVisitor visitor ) {
-        visitor.visit( this );
+    public void accept(final MenuVisitor visitor) {
+        visitor.visit(this);
     }
 
     @Override
-    public void addEnabledStateChangeListener( EnabledStateChangeListener listener ) {
+    public void addEnabledStateChangeListener(EnabledStateChangeListener listener) {
 
     }
 
@@ -81,5 +80,4 @@ public class VersionMenuItem
     public String getIdentifier() {
         return null;
     }
-    
 }

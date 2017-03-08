@@ -37,154 +37,153 @@ import org.uberfire.workbench.type.ResourceTypeDefinition;
 public class MockPlaceManager implements PlaceManager {
 
     @Override
-    public void goTo( String identifier ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public void goTo(String identifier) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void goTo( PlaceRequest place ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public void goTo(PlaceRequest place) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void goTo( Path path ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public void goTo(Path path) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void goTo( Path path,
-                      PlaceRequest place ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public void goTo(Path path,
+                     PlaceRequest place) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void goTo( PartDefinition part,
-                      PanelDefinition panel ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public void goTo(PartDefinition part,
+                     PanelDefinition panel) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void goTo( String identifier,
-                      PanelDefinition panel ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public void goTo(String identifier,
+                     PanelDefinition panel) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void goTo( PlaceRequest place,
-                      PanelDefinition panel ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public void goTo(PlaceRequest place,
+                     PanelDefinition panel) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void goTo( Path path,
-                      PanelDefinition panel ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public void goTo(Path path,
+                     PanelDefinition panel) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void goTo( Path path,
-                      PlaceRequest place,
-                      PanelDefinition panel ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public void goTo(Path path,
+                     PlaceRequest place,
+                     PanelDefinition panel) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void goTo( PlaceRequest place,
-                      HasWidgets addTo ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public void goTo(PlaceRequest place,
+                     HasWidgets addTo) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void goTo( PlaceRequest place,
-                      HTMLElement addTo ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public void goTo(PlaceRequest place,
+                     HTMLElement addTo) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public Activity getActivity( PlaceRequest place ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public Activity getActivity(PlaceRequest place) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public PlaceStatus getStatus( String id ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public PlaceStatus getStatus(String id) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public PlaceStatus getStatus( PlaceRequest place ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public PlaceStatus getStatus(PlaceRequest place) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void closePlace( String id ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public void closePlace(String id) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void closePlace( PlaceRequest place ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public void closePlace(PlaceRequest place) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void tryClosePlace( PlaceRequest placeToClose,
-                               Command onAfterClose ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public void tryClosePlace(PlaceRequest placeToClose,
+                              Command onAfterClose) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void forceClosePlace( String id ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public void forceClosePlace(String id) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void forceClosePlace( PlaceRequest place ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public void forceClosePlace(PlaceRequest place) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
     public void closeAllPlaces() {
-        throw new UnsupportedOperationException( "Not implemented." );
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
     public void forceCloseAllPlaces() {
-        throw new UnsupportedOperationException( "Not implemented." );
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
     public boolean closeAllPlacesOrNothing() {
-        throw new UnsupportedOperationException( "Not implemented." );
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void registerOnOpenCallback( PlaceRequest place,
-                                        Command command ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public void registerOnOpenCallback(PlaceRequest place,
+                                       Command command) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void unregisterOnOpenCallback( PlaceRequest place ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public void unregisterOnOpenCallback(PlaceRequest place) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
-    public void executeOnOpenCallback( PlaceRequest place ) {
-        throw new UnsupportedOperationException( "Not implemented." );
+    public void executeOnOpenCallback(PlaceRequest place) {
+        throw new UnsupportedOperationException("Not implemented.");
     }
 
     @Override
     public Collection<SplashScreenActivity> getActiveSplashScreens() {
-        throw new UnsupportedOperationException( "Not implemented." );
-    }
-
-    @Override
-    public Collection<PathPlaceRequest> getActivitiesForResourceType( final ResourceTypeDefinition type ) {
-        throw new UnsupportedOperationException( "Not implemented." );
-    }
-
-    @Override
-    public Command getOpenCallback( PlaceRequest place ) {
         throw new UnsupportedOperationException("Not implemented.");
     }
 
+    @Override
+    public Collection<PathPlaceRequest> getActivitiesForResourceType(final ResourceTypeDefinition type) {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
+
+    @Override
+    public Command getOpenCallback(PlaceRequest place) {
+        throw new UnsupportedOperationException("Not implemented.");
+    }
 }

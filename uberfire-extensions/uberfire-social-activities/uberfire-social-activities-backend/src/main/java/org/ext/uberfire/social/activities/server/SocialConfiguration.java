@@ -34,9 +34,9 @@ public class SocialConfiguration {
 
     @PostConstruct
     public void setup() {
-        final String property = System.getProperty( "org.kie.uberfire.social.activities.enable" );
-        if ( property != null ) {
-            socialEnable = Boolean.parseBoolean( property );
+        final String property = System.getProperty("org.kie.uberfire.social.activities.enable");
+        if (property != null) {
+            socialEnable = Boolean.parseBoolean(property);
         } else {
             socialEnable = Boolean.TRUE;
         }
@@ -45,5 +45,4 @@ public class SocialConfiguration {
     public Boolean isSocialEnable() {
         return socialEnable;
     }
-
 }

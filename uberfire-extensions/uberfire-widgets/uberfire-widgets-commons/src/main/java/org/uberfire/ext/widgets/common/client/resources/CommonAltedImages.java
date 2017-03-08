@@ -27,9 +27,8 @@ public class CommonAltedImages {
     public static final CommonAltedImages INSTANCE = new CommonAltedImages();
 
     public Image close() {
-        final Image image = new Image( CommonImages.INSTANCE.close() );
-        image.setAltText( CommonConstants.INSTANCE.Close() );
+        final Image image = new Image(CommonImages.INSTANCE.close());
+        image.setAltText(CommonConstants.INSTANCE.Close());
         return image;
     }
-
 }

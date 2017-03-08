@@ -32,98 +32,125 @@ import org.uberfire.io.IOService;
 public class SocialTimelineCacheInstancePersistenceUnitTestWrapper extends SocialTimelineCacheInstancePersistence {
 
     public SocialTimelineCacheInstancePersistenceUnitTestWrapper() {
-        super( null, null, null, null, null, null, null, null );
+        super(null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null);
     }
 
     public SocialTimelineCacheInstancePersistenceUnitTestWrapper(SocialSecurityConstraintsManager socialSecurityConstraintsManager) {
-        super( null, null, null, null, null, null, null, socialSecurityConstraintsManager );
+        super(null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              socialSecurityConstraintsManager);
     }
 
-
-    public SocialTimelineCacheInstancePersistenceUnitTestWrapper( Gson gson,
-                                                                  Type gsonCollectionType,
-                                                                  IOService ioService,
-                                                                  SocialEventTypeRepository socialEventTypeRepository,
-                                                                  SocialUserClusterPersistence socialUserService ) {
-        super( gson, gsonCollectionType, ioService, socialEventTypeRepository, socialUserService, null, null, null );
+    public SocialTimelineCacheInstancePersistenceUnitTestWrapper(Gson gson,
+                                                                 Type gsonCollectionType,
+                                                                 IOService ioService,
+                                                                 SocialEventTypeRepository socialEventTypeRepository,
+                                                                 SocialUserClusterPersistence socialUserService) {
+        super(gson,
+              gsonCollectionType,
+              ioService,
+              socialEventTypeRepository,
+              socialUserService,
+              null,
+              null,
+              null);
     }
 
     @Override
-    void cacheControl( SocialUser user ) {
+    void cacheControl(SocialUser user) {
     }
 
     @Override
-    void cacheControl( SocialActivitiesEvent event ) {
+    void cacheControl(SocialActivitiesEvent event) {
     }
 
     @Override
-    public Integer getUserMostRecentFileIndex( SocialUser user ) {
+    public Integer getUserMostRecentFileIndex(SocialUser user) {
         return 5;
     }
 
-    public Integer getTypeMostRecentFileIndex( SocialEventType type ) {
+    public Integer getTypeMostRecentFileIndex(SocialEventType type) {
         return 5;
     }
 
-    SocialEventType findType( SocialActivitiesEvent event ) {
+    SocialEventType findType(SocialActivitiesEvent event) {
         return DefaultTypes.DUMMY_EVENT;
     }
 
     @Override
-    public List<SocialActivitiesEvent> getTimeline( SocialUser socialUser,
-                                                    String timelineFile ) {
+    public List<SocialActivitiesEvent> getTimeline(SocialUser socialUser,
+                                                   String timelineFile) {
 
-        return createFakeTimeline( timelineFile );
+        return createFakeTimeline(timelineFile);
     }
 
     @Override
-    public List<SocialActivitiesEvent> getTimeline( SocialEventType type,
-                                                    String timelineFile ) {
+    public List<SocialActivitiesEvent> getTimeline(SocialEventType type,
+                                                   String timelineFile) {
 
-        return createFakeTimeline( timelineFile );
+        return createFakeTimeline(timelineFile);
     }
 
-    private List<SocialActivitiesEvent> createFakeTimeline( String timelineFile ) {
-        if ( timelineFile.equals( "5" ) ) {
-            return createTimeline( "5", 5 );
+    private List<SocialActivitiesEvent> createFakeTimeline(String timelineFile) {
+        if (timelineFile.equals("5")) {
+            return createTimeline("5",
+                                  5);
         }
-        if ( timelineFile.equals( "4" ) ) {
-            return createTimeline( "4", 5 );
+        if (timelineFile.equals("4")) {
+            return createTimeline("4",
+                                  5);
         }
-        if ( timelineFile.equals( "3" ) ) {
-            return createTimeline( "3", 5 );
+        if (timelineFile.equals("3")) {
+            return createTimeline("3",
+                                  5);
         }
-        if ( timelineFile.equals( "2" ) ) {
-            return createTimeline( "2", 5 );
+        if (timelineFile.equals("2")) {
+            return createTimeline("2",
+                                  5);
         }
-        if ( timelineFile.equals( "1" ) ) {
+        if (timelineFile.equals("1")) {
             //empty timeline
             return new ArrayList<SocialActivitiesEvent>();
         }
-        if ( timelineFile.equals( "0" ) ) {
-            return createTimeline( "0", 5 );
+        if (timelineFile.equals("0")) {
+            return createTimeline("0",
+                                  5);
         }
         throw new RuntimeException();
     }
 
-    private List<SocialActivitiesEvent> createTimeline( String name,
-                                                        int numEvents ) {
+    private List<SocialActivitiesEvent> createTimeline(String name,
+                                                       int numEvents) {
         List<SocialActivitiesEvent> events = new ArrayList<SocialActivitiesEvent>();
-        for ( int i = 0; i < numEvents; i++ ) {
-            events.add( new SocialActivitiesEvent( new SocialUser( name ), DefaultTypes.DUMMY_EVENT, new Date() ).withAdicionalInfo( i + "" ) );
+        for (int i = 0; i < numEvents; i++) {
+            events.add(new SocialActivitiesEvent(new SocialUser(name),
+                                                 DefaultTypes.DUMMY_EVENT,
+                                                 new Date()).withAdicionalInfo(i + ""));
         }
         return events;
     }
 
     @Override
-    public Integer getNumberOfEventsOnFile( SocialUser socialUser,
-                                            String originalFilename ) {
+    public Integer getNumberOfEventsOnFile(SocialUser socialUser,
+                                           String originalFilename) {
         return -1;
     }
 
     @Override
-    public Integer getNumberOfEventsOnFile( SocialEventType type,
-                                            String originalFilename ) {
+    public Integer getNumberOfEventsOnFile(SocialEventType type,
+                                           String originalFilename) {
         return -1;
     }
 }

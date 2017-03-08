@@ -27,14 +27,14 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.themes.Gri
 
 public class ListBoxColumnDOMElementSingletonRenderer extends BaseGridColumnSingletonDOMElementRenderer<String, ListBox, ListBoxDOMElement> {
 
-    public ListBoxColumnDOMElementSingletonRenderer( final ListBoxSingletonDOMElementFactory factory ) {
-        super( factory );
+    public ListBoxColumnDOMElementSingletonRenderer(final ListBoxSingletonDOMElementFactory factory) {
+        super(factory);
     }
 
     @Override
-    public Group renderCell( final GridCell<String> cell,
-                             final GridBodyCellRenderContext context ) {
-        if ( cell == null || cell.getValue() == null ) {
+    public Group renderCell(final GridCell<String> cell,
+                            final GridBodyCellRenderContext context) {
+        if (cell == null || cell.getValue() == null) {
             return null;
         }
 
@@ -43,12 +43,11 @@ public class ListBoxColumnDOMElementSingletonRenderer extends BaseGridColumnSing
 
         final Group g = new Group();
         final Text t = theme.getBodyText()
-                .setText( cell.getValue().getValue() )
-                .setListening( false )
-                .setX( context.getCellWidth() / 2 )
-                .setY( context.getCellHeight() / 2 );
-        g.add( t );
+                .setText(cell.getValue().getValue())
+                .setListening(false)
+                .setX(context.getCellWidth() / 2)
+                .setY(context.getCellHeight() / 2);
+        g.add(t);
         return g;
     }
-
 }

@@ -22,7 +22,6 @@ public class ShapeCategory extends Category {
     public static final ShapeCategory CATEGORY = new ShapeCategory();
 
     private ShapeCategory() {
-        super( "Shapes" );
+        super("Shapes");
     }
-
 }

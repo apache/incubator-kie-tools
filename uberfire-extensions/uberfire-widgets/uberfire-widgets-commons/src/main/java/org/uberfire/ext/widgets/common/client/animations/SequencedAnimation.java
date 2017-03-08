@@ -26,7 +26,7 @@ public abstract class SequencedAnimation extends Animation {
 
     @Override
     public double interpolate(double progress) {
-        return super.interpolate( progress );
+        return super.interpolate(progress);
     }
 
     @Override
@@ -46,5 +46,4 @@ public abstract class SequencedAnimation extends Animation {
 
     @Override
     public abstract void onUpdate(double progress);
-
 }

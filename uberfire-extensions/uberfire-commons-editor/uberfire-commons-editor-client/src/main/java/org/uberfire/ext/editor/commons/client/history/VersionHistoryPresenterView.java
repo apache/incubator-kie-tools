@@ -23,20 +23,17 @@ import org.uberfire.java.nio.base.version.VersionRecord;
 public interface VersionHistoryPresenterView
         extends IsWidget {
 
-
-
-    interface Presenter {
-
-        void onSelect(VersionRecord record);
-
-    }
-
     void refreshGrid();
 
-    void setup(String version, AsyncDataProvider<VersionRecord> dataProvider);
+    void setup(String version,
+               AsyncDataProvider<VersionRecord> dataProvider);
 
     void setPresenter(Presenter presenter);
 
     void showLoading();
 
+    interface Presenter {
+
+        void onSelect(VersionRecord record);
+    }
 }

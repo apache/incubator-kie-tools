@@ -16,18 +16,27 @@
 
 package org.uberfire.ext.layout.editor.impl;
 
+import java.io.IOException;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class LayoutServicesImplTest {
 
     private LayoutServicesImpl layoutServices;
+
+    private static String loadSample(String file) {
+        try {
+            return IOUtils.toString(new LayoutServicesImplTest().getClass().getResourceAsStream(file),
+                                    "UTF-8");
+        } catch (IOException e) {
+            return "";
+        }
+    }
 
     @Before
     public void setup() {
@@ -38,35 +47,27 @@ public class LayoutServicesImplTest {
     @Test
     public void layoutMarshaller12withHTMLComponent() {
         String expected = loadSample("12withHTMLComponent.txt");
-        LayoutTemplate template = layoutServices.convertLayoutFromString( expected);
+        LayoutTemplate template = layoutServices.convertLayoutFromString(expected);
         String actual = layoutServices.convertLayoutToString(template);
-        assertEquals(expected, actual);
+        assertEquals(expected,
+                     actual);
     }
 
     @Test
     public void layoutMarshallerBigLayout() {
         String expected = loadSample("BigLayout.txt");
-        LayoutTemplate template = layoutServices.convertLayoutFromString( expected);
+        LayoutTemplate template = layoutServices.convertLayoutFromString(expected);
         String actual = layoutServices.convertLayoutToString(template);
-        assertEquals(expected, actual);
+        assertEquals(expected,
+                     actual);
     }
 
     @Test
     public void layoutMarshallerSubColumns() {
         String expected = loadSample("SubColumnsLayout.txt");
-        LayoutTemplate template = layoutServices.convertLayoutFromString( expected);
+        LayoutTemplate template = layoutServices.convertLayoutFromString(expected);
         String actual = layoutServices.convertLayoutToString(template);
-        assertEquals(expected, actual);
+        assertEquals(expected,
+                     actual);
     }
-
-
-    private static String loadSample( String file ) {
-        try {
-            return IOUtils.toString(new LayoutServicesImplTest().getClass().getResourceAsStream( file),
-                    "UTF-8");
-        } catch ( IOException e ) {
-            return "";
-        }
-    }
-
 }

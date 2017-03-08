@@ -36,17 +36,17 @@ public class GridBodyColumnRenderContext {
     private final Transform transform;
     private final GridRenderer renderer;
 
-    public GridBodyColumnRenderContext( final double absoluteGridX,
-                                        final double absoluteGridY,
-                                        final double absoluteColumnX,
-                                        final double clipMinY,
-                                        final double clipMinX,
-                                        final int minVisibleRowIndex,
-                                        final int maxVisibleRowIndex,
-                                        final boolean isFloating,
-                                        final GridData model,
-                                        final Transform transform,
-                                        final GridRenderer renderer ) {
+    public GridBodyColumnRenderContext(final double absoluteGridX,
+                                       final double absoluteGridY,
+                                       final double absoluteColumnX,
+                                       final double clipMinY,
+                                       final double clipMinX,
+                                       final int minVisibleRowIndex,
+                                       final int maxVisibleRowIndex,
+                                       final boolean isFloating,
+                                       final GridData model,
+                                       final Transform transform,
+                                       final GridRenderer renderer) {
         this.absoluteGridX = absoluteGridX;
         this.absoluteGridY = absoluteGridY;
         this.absoluteColumnX = absoluteColumnX;
@@ -147,5 +147,4 @@ public class GridBodyColumnRenderContext {
     public GridRenderer getRenderer() {
         return renderer;
     }
-
 }

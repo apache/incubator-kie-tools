@@ -29,7 +29,6 @@ import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
  * A panel with a title bar. Can contain one part at a time. The part's view fills the entire space not used up by
  * the title bar. Adding a new part replaces the existing part. Does not support drag-and-drop rearrangement of
  * parts.
- *
  * @see SimpleDnDWorkbenchPanelPresenter
  */
 @Dependent
@@ -38,35 +37,40 @@ public class SimpleWorkbenchPanelPresenter extends AbstractDockingWorkbenchPanel
     private final PlaceManager placeManager;
 
     @Inject
-    public SimpleWorkbenchPanelPresenter( @Named("SimpleWorkbenchPanelView") final WorkbenchPanelView<SimpleWorkbenchPanelPresenter> view,
-                                          final PerspectiveManager perspectiveManager,
-                                          final PlaceManager placeManager) {
-        super( view, perspectiveManager );
+    public SimpleWorkbenchPanelPresenter(@Named("SimpleWorkbenchPanelView") final WorkbenchPanelView<SimpleWorkbenchPanelPresenter> view,
+                                         final PerspectiveManager perspectiveManager,
+                                         final PlaceManager placeManager) {
+        super(view,
+              perspectiveManager);
         this.placeManager = placeManager;
     }
 
     @Override
-    public void addPart( WorkbenchPartPresenter part ) {
+    public void addPart(WorkbenchPartPresenter part) {
         SinglePartPanelHelper h = createSinglePartPanelHelper();
-        if ( h.hasNoParts() ) {
-            super.addPart( part );
+        if (h.hasNoParts()) {
+            super.addPart(part);
         } else {
-            h.closeFirstPartAndAddNewOne( () -> super.addPart( part ) );
+            h.closeFirstPartAndAddNewOne(() -> super.addPart(part));
         }
     }
 
     @Override
-    public void addPart( WorkbenchPartPresenter part, String contextId ) {
+    public void addPart(WorkbenchPartPresenter part,
+                        String contextId) {
         SinglePartPanelHelper h = createSinglePartPanelHelper();
-        if ( h.hasNoParts() ) {
-            super.addPart( part, contextId );
+        if (h.hasNoParts()) {
+            super.addPart(part,
+                          contextId);
         } else {
-            h.closeFirstPartAndAddNewOne( () -> super.addPart( part, contextId ) );
+            h.closeFirstPartAndAddNewOne(() -> super.addPart(part,
+                                                             contextId));
         }
     }
 
     SinglePartPanelHelper createSinglePartPanelHelper() {
-        return new SinglePartPanelHelper( getPanelView().getParts(), placeManager);
+        return new SinglePartPanelHelper(getPanelView().getParts(),
+                                         placeManager);
     }
 
     @Override

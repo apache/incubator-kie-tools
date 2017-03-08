@@ -34,46 +34,52 @@ public class PreferenceScopeFactoryImpl implements PreferenceScopeFactory {
     }
 
     @Inject
-    public PreferenceScopeFactoryImpl( @Customizable final PreferenceScopeTypes scopeTypes ) {
+    public PreferenceScopeFactoryImpl(@Customizable final PreferenceScopeTypes scopeTypes) {
         this.scopeTypes = scopeTypes;
     }
 
     @Override
-    public PreferenceScope createScope( final String type ) throws InvalidPreferenceScopeException {
-        return createScopeWithoutKey( type, null );
+    public PreferenceScope createScope(final String type) throws InvalidPreferenceScopeException {
+        return createScopeWithoutKey(type,
+                                     null);
     }
 
     @Override
-    public PreferenceScope createScope( final String type,
-                                        final PreferenceScope childScope ) throws InvalidPreferenceScopeException {
-        return createScopeWithoutKey( type, childScope );
+    public PreferenceScope createScope(final String type,
+                                       final PreferenceScope childScope) throws InvalidPreferenceScopeException {
+        return createScopeWithoutKey(type,
+                                     childScope);
     }
 
     @Override
-    public PreferenceScope createScope( final String type,
-                                        final String key ) throws InvalidPreferenceScopeException {
-        return createScopeWithKey( type, key, null );
+    public PreferenceScope createScope(final String type,
+                                       final String key) throws InvalidPreferenceScopeException {
+        return createScopeWithKey(type,
+                                  key,
+                                  null);
     }
 
     @Override
-    public PreferenceScope createScope( final String type,
-                                        final String key,
-                                        final PreferenceScope childScope ) throws InvalidPreferenceScopeException {
-        return createScopeWithKey( type, key, childScope );
+    public PreferenceScope createScope(final String type,
+                                       final String key,
+                                       final PreferenceScope childScope) throws InvalidPreferenceScopeException {
+        return createScopeWithKey(type,
+                                  key,
+                                  childScope);
     }
 
     @Override
-    public PreferenceScope createScope( final PreferenceScope... scopes ) throws InvalidPreferenceScopeException {
+    public PreferenceScope createScope(final PreferenceScope... scopes) throws InvalidPreferenceScopeException {
         PreferenceScope scope = null;
         PreferenceScope currentScope = null;
         PreferenceScope previousScope = null;
 
-        for ( int i = scopes.length - 1; i >= 0; i-- ) {
-            scope = scopes[ i ];
+        for (int i = scopes.length - 1; i >= 0; i--) {
+            scope = scopes[i];
 
-            currentScope = new PreferenceScopeImpl( scope.type(),
-                                                    scope.key(),
-                                                    previousScope );
+            currentScope = new PreferenceScopeImpl(scope.type(),
+                                                   scope.key(),
+                                                   previousScope);
             previousScope = currentScope;
         }
 
@@ -81,30 +87,36 @@ public class PreferenceScopeFactoryImpl implements PreferenceScopeFactory {
     }
 
     @Override
-    public PreferenceScope cloneScope( final PreferenceScope scope ) {
-        if ( scope == null ) {
+    public PreferenceScope cloneScope(final PreferenceScope scope) {
+        if (scope == null) {
             return null;
         }
 
-        return new PreferenceScopeImpl( scope.type(), scope.key(), cloneScope( scope.childScope() ) );
+        return new PreferenceScopeImpl(scope.type(),
+                                       scope.key(),
+                                       cloneScope(scope.childScope()));
     }
 
-    private PreferenceScope createScopeWithoutKey( final String type,
-                                                   final PreferenceScope childScope ) {
-        if ( scopeTypes.typeRequiresKey( type ) ) {
-            throw new InvalidPreferenceScopeException( "This preference scope type requires a key to be built." );
+    private PreferenceScope createScopeWithoutKey(final String type,
+                                                  final PreferenceScope childScope) {
+        if (scopeTypes.typeRequiresKey(type)) {
+            throw new InvalidPreferenceScopeException("This preference scope type requires a key to be built.");
         }
 
-        return new PreferenceScopeImpl( type, scopeTypes.getDefaultKeyFor( type ), childScope );
+        return new PreferenceScopeImpl(type,
+                                       scopeTypes.getDefaultKeyFor(type),
+                                       childScope);
     }
 
-    private PreferenceScope createScopeWithKey( final String type,
-                                                final String key,
-                                                final PreferenceScope childScope ) {
-        if ( !scopeTypes.typeRequiresKey( type ) ) {
-            throw new InvalidPreferenceScopeException( "This preference scope type does not require a key to be built." );
+    private PreferenceScope createScopeWithKey(final String type,
+                                               final String key,
+                                               final PreferenceScope childScope) {
+        if (!scopeTypes.typeRequiresKey(type)) {
+            throw new InvalidPreferenceScopeException("This preference scope type does not require a key to be built.");
         }
 
-        return new PreferenceScopeImpl( type, key, childScope );
+        return new PreferenceScopeImpl(type,
+                                       key,
+                                       childScope);
     }
 }

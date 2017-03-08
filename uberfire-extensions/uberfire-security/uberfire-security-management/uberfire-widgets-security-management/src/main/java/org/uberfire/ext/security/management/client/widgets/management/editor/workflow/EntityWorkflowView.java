@@ -20,20 +20,30 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * <p>The view for a entity workflow edition component.</p>
- * 
  * @since 0.8.0
  */
 public interface EntityWorkflowView extends IsWidget {
+
+    EntityWorkflowView setCallback(Callback callback);
+
+    EntityWorkflowView setWidget(IsWidget widget);
+
+    EntityWorkflowView setCancelButtonVisible(boolean isVisible);
+
+    EntityWorkflowView setSaveButtonEnabled(boolean isEnabled);
+
+    EntityWorkflowView setSaveButtonVisible(boolean isVisible);
+
+    EntityWorkflowView setSaveButtonText(String text);
+
+    EntityWorkflowView showNotification(final String text);
+
+    EntityWorkflowView clearNotification();
+
     interface Callback {
+
         void onSave();
+
         void onCancel();
     }
-    EntityWorkflowView setCallback(Callback callback);
-    EntityWorkflowView setWidget(IsWidget widget);
-    EntityWorkflowView setCancelButtonVisible(boolean isVisible);
-    EntityWorkflowView setSaveButtonEnabled(boolean isEnabled);
-    EntityWorkflowView setSaveButtonVisible(boolean isVisible);
-    EntityWorkflowView setSaveButtonText(String text);
-    EntityWorkflowView showNotification(final String text);
-    EntityWorkflowView clearNotification();
 }

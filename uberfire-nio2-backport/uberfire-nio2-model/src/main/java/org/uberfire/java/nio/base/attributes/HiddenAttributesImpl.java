@@ -29,11 +29,10 @@ public class HiddenAttributesImpl implements HiddenAttributes {
     private final boolean hidden;
     private BasicFileAttributes attributes;
 
-    public HiddenAttributesImpl( final BasicFileAttributes attributes,
-                                 final boolean isHidden ) {
+    public HiddenAttributesImpl(final BasicFileAttributes attributes,
+                                final boolean isHidden) {
         this.attributes = attributes;
         this.hidden = isHidden;
-
     }
 
     @Override

@@ -22,7 +22,11 @@ public class AtomicMoveNotSupportedException extends FileSystemException {
         super();
     }
 
-    public AtomicMoveNotSupportedException(String source, String target, String reason) {
-        super(source, target, reason);
+    public AtomicMoveNotSupportedException(String source,
+                                           String target,
+                                           String reason) {
+        super(source,
+              target,
+              reason);
     }
 }

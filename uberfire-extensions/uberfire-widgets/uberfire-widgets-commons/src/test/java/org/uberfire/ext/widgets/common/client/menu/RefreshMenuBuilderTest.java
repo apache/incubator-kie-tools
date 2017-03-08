@@ -61,5 +61,4 @@ public class RefreshMenuBuilderTest {
 
         verify(supportsRefresh).onRefresh();
     }
-
 }

@@ -16,6 +16,13 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.explorer;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import javax.annotation.PostConstruct;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.constants.LabelType;
@@ -27,27 +34,48 @@ import org.uberfire.ext.security.management.client.widgets.management.events.OnE
 import org.uberfire.ext.security.management.client.widgets.management.list.EntitiesList;
 import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 public abstract class AbstractEntityExplorer<T> implements IsWidget {
 
     protected final static int PAGE_SIZE = 15;
     protected static final String SEARCH_PATTERN_ALL = "";
-    
+    public EntitiesExplorerView view;
     ClientUserSystemManager userSystemManager;
     Event<OnErrorEvent> errorEvent;
     LoadingBox loadingBox;
+    protected final ErrorCallback<Message> errorCallback = new ErrorCallback<Message>() {
+        @Override
+        public boolean error(final Message message,
+                             final Throwable throwable) {
+            showError(throwable);
+            return false;
+        }
+    };
     EntitiesList<T> entitiesList;
-    public EntitiesExplorerView view;
-
     int pageSize = PAGE_SIZE;
     String searchPattern = SEARCH_PATTERN_ALL;
     int currentPage = 1;
+    protected EntitiesExplorerView.ViewCallback viewCallback = new EntitiesExplorerView.ViewCallback() {
+        @Override
+        public void onSearch(final String pattern) {
+            AbstractEntityExplorer.this.searchPattern = pattern != null ? pattern : SEARCH_PATTERN_ALL;
+            AbstractEntityExplorer.this.currentPage = 1;
+            if (pattern == null || pattern.trim().length() == 0) {
+                view.clearSearch();
+            }
+            showSearch();
+        }
+
+        @Override
+        public void onRefresh() {
+            currentPage = 1;
+            showSearch();
+        }
+
+        @Override
+        public void onCreate() {
+            showCreate();
+        }
+    };
     ExplorerViewContext context;
     Set<String> selected;
 
@@ -57,7 +85,7 @@ public abstract class AbstractEntityExplorer<T> implements IsWidget {
                                   final LoadingBox loadingBox,
                                   final EntitiesList<T> entitiesList,
                                   final EntitiesExplorerView view) {
-        
+
         this.userSystemManager = userSystemManager;
         this.errorEvent = errorEvent;
         this.loadingBox = loadingBox;
@@ -79,9 +107,9 @@ public abstract class AbstractEntityExplorer<T> implements IsWidget {
     protected abstract String getEntityId(final T entity);
 
     protected abstract String getEntityName(final T entity);
-    
+
     protected abstract boolean canSearch();
-    
+
     protected abstract boolean canCreate();
 
     protected abstract boolean canRead();
@@ -94,9 +122,10 @@ public abstract class AbstractEntityExplorer<T> implements IsWidget {
     public void init() {
         entitiesList.setPageSize(pageSize);
         entitiesList.setEmptyEntitiesText(getEmptyText());
-        view.configure(getTitle(), entitiesList.view);
+        view.configure(getTitle(),
+                       entitiesList.view);
     }
-    
+
     public void show() {
         show(null);
     }
@@ -104,13 +133,18 @@ public abstract class AbstractEntityExplorer<T> implements IsWidget {
     public void show(final ExplorerViewContext context) {
         // Configure the view context.
         this.context = context;
-        if (this.context == null) this.context = new ExplorerViewContext();
+        if (this.context == null) {
+            this.context = new ExplorerViewContext();
+        }
         this.context.setParent(createParentContext());
         this.selected = this.context.getSelectedEntities();
 
-        if (canSearch()) showSearch();
-        else view.showMessage(LabelType.WARNING, UsersManagementWidgetsConstants.INSTANCE.doesNotHavePrivileges());
-        
+        if (canSearch()) {
+            showSearch();
+        } else {
+            view.showMessage(LabelType.WARNING,
+                             UsersManagementWidgetsConstants.INSTANCE.doesNotHavePrivileges());
+        }
     }
 
     public Set<String> getSelectedEntities() {
@@ -120,14 +154,6 @@ public abstract class AbstractEntityExplorer<T> implements IsWidget {
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
     }
-
-    protected final ErrorCallback<Message> errorCallback = new ErrorCallback<Message>() {
-        @Override
-        public boolean error(final Message message, final Throwable throwable) {
-            showError(throwable);
-            return false;
-        }
-    };
 
     protected EntitiesList.Callback<T> createCallback() {
         return new EntitiesList.Callback<T>() {
@@ -178,9 +204,12 @@ public abstract class AbstractEntityExplorer<T> implements IsWidget {
             }
 
             @Override
-            public void onSelectEntity(String identifier, boolean isSelected) {
+            public void onSelectEntity(String identifier,
+                                       boolean isSelected) {
                 if (isSelected) {
-                    if (selected == null) selected = new HashSet<String>(1);
+                    if (selected == null) {
+                        selected = new HashSet<String>(1);
+                    }
                     AbstractEntityExplorer.this.selected.add(identifier);
                 } else if (selected != null) {
                     AbstractEntityExplorer.this.selected.remove(identifier);
@@ -188,7 +217,8 @@ public abstract class AbstractEntityExplorer<T> implements IsWidget {
             }
 
             @Override
-            public void onChangePage(final int currentPage, final int goToPage) {
+            public void onChangePage(final int currentPage,
+                                     final int goToPage) {
                 AbstractEntityExplorer.this.currentPage = goToPage;
                 AbstractEntityExplorer.this.showSearch();
             }
@@ -196,12 +226,12 @@ public abstract class AbstractEntityExplorer<T> implements IsWidget {
     }
 
     protected void fireReadEvent(final String identifier) {
-        
+
     }
 
     protected EntitiesExplorerView.ViewContext createParentContext() {
         final boolean canSelect = false;
-    
+
         return new EntitiesExplorerView.ViewContext() {
             @Override
             public boolean canSearch() {
@@ -238,30 +268,8 @@ public abstract class AbstractEntityExplorer<T> implements IsWidget {
             public Set<String> getConstrainedEntities() {
                 return new HashSet<String>();
             }
-
         };
     }
-
-    protected EntitiesExplorerView.ViewCallback viewCallback = new EntitiesExplorerView.ViewCallback() {
-        @Override
-        public void onSearch(final String pattern) {
-            AbstractEntityExplorer.this.searchPattern = pattern != null ? pattern : SEARCH_PATTERN_ALL;
-            AbstractEntityExplorer.this.currentPage = 1;
-            if (pattern == null || pattern.trim().length() == 0) view.clearSearch();
-            showSearch();
-        }
-
-        @Override
-        public void onRefresh() {
-            currentPage = 1;
-            showSearch();
-        }
-
-        @Override
-        public void onCreate() {
-            showCreate();
-        }
-    };
 
     protected void showLoadingView() {
         loadingBox.show();
@@ -270,7 +278,7 @@ public abstract class AbstractEntityExplorer<T> implements IsWidget {
     protected Set<String> nullSafe(final Set<String> set) {
         return set != null ? Collections.unmodifiableSet(set) : null;
     }
-    
+
     protected void hideLoadingView() {
         loadingBox.hide();
     }
@@ -279,10 +287,11 @@ public abstract class AbstractEntityExplorer<T> implements IsWidget {
         final String msg = throwable != null ? throwable.getMessage() : UsersManagementWidgetsConstants.INSTANCE.genericError();
         showError(msg);
     }
-    
+
     protected void showError(final String message) {
         hideLoadingView();
-        errorEvent.fire(new OnErrorEvent(AbstractEntityExplorer.this, message));
+        errorEvent.fire(new OnErrorEvent(AbstractEntityExplorer.this,
+                                         message));
     }
 
     public void clear() {
@@ -291,5 +300,4 @@ public abstract class AbstractEntityExplorer<T> implements IsWidget {
         currentPage = 1;
         view.clear();
     }
-
 }

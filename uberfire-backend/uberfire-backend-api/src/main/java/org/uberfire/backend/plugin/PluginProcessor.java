@@ -16,44 +16,13 @@
 
 package org.uberfire.backend.plugin;
 
-
 /**
  * A simple marker to keep track of all plugins processors.
  */
 public interface PluginProcessor {
 
     /**
-     * Checks if this processor should process a given plugin
-     *
-     * @param pluginName the name of the plugin, must not be null.
-     */
-    boolean shouldProcess(String pluginName);
-
-    /**
-     * Removes all plugins from this processor.
-     */
-    void removeAll();
-
-    /**
-     * Processes a deployed plugin and optionally notifies clients
-     *
-     * @param pluginName          the name of the plugin, must not be null.
-     * @param pluginDeploymentDir the directory to deploy plugin contents to, must not be null.
-     * @param notifyClients       trigger a event after plugin processing
-     */
-    void process(String pluginName, String pluginDeploymentDir, boolean notifyClients);
-
-    /**
-     * Checks if a plugin with the given name is registered.
-     *
-     * @param pluginName the name of the plugin, must not be null.
-     * @return true if registered, otherwise false.
-     */
-    boolean isRegistered(String pluginName);
-
-    /**
      * Checks if a plugin file has the valid extension
-     *
      * @param fileName the file name of the plugin
      */
     static boolean isAValidPluginFileExtension(String fileName) {
@@ -66,13 +35,49 @@ public interface PluginProcessor {
         return false;
     }
 
+    /**
+     * Checks if this processor should process a given plugin
+     * @param pluginName the name of the plugin, must not be null.
+     */
+    boolean shouldProcess(String pluginName);
+
+    /**
+     * Removes all plugins from this processor.
+     */
+    void removeAll();
+
+    /**
+     * Processes a deployed plugin and optionally notifies clients
+     * @param pluginName the name of the plugin, must not be null.
+     * @param pluginDeploymentDir the directory to deploy plugin contents to, must not be null.
+     * @param notifyClients trigger a event after plugin processing
+     */
+    void process(String pluginName,
+                 String pluginDeploymentDir,
+                 boolean notifyClients);
+
+    /**
+     * Checks if a plugin with the given name is registered.
+     * @param pluginName the name of the plugin, must not be null.
+     * @return true if registered, otherwise false.
+     */
+    boolean isRegistered(String pluginName);
+
     enum PluginProcessorType {
-        GWT("nocache.js", false), PERSPECTIVE_EDITOR("layout.json", true), HTML_TEMPLATE(".html", true), JS(".js", true);
+        GWT("nocache.js",
+            false),
+        PERSPECTIVE_EDITOR("layout.json",
+                           true),
+        HTML_TEMPLATE(".html",
+                      true),
+        JS(".js",
+           true);
 
         private String extension;
         private boolean isRuntimePlugin;
 
-        PluginProcessorType(String extension, boolean isRuntimePlugin) {
+        PluginProcessorType(String extension,
+                            boolean isRuntimePlugin) {
             this.extension = extension;
             this.isRuntimePlugin = isRuntimePlugin;
         }
@@ -85,5 +90,4 @@ public interface PluginProcessor {
             return isRuntimePlugin;
         }
     }
-
 }

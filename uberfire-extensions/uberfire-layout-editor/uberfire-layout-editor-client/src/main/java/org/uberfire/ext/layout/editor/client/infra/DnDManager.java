@@ -16,14 +16,14 @@
 
 package org.uberfire.ext.layout.editor.client.infra;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.components.columns.Column;
 import org.uberfire.ext.layout.editor.client.components.rows.RowDnDEvent;
 import org.uberfire.ext.layout.editor.client.components.rows.RowDrop;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 
 @ApplicationScoped
 public class DnDManager {
@@ -39,14 +39,17 @@ public class DnDManager {
     private String rowId;
     private Column draggedColumn;
 
-    public void beginRowMove( String rowIdBegin ) {
+    public void beginRowMove(String rowIdBegin) {
         this.rowIdBegin = rowIdBegin;
         this.isOnRowMove = true;
     }
 
-    public void endRowMove( String rowIdEnd, RowDrop.Orientation orientation ) {
-        if ( isOnRowMove ) {
-            rowDnDEvent.fire( new RowDnDEvent( rowIdBegin, rowIdEnd, orientation ) );
+    public void endRowMove(String rowIdEnd,
+                           RowDrop.Orientation orientation) {
+        if (isOnRowMove) {
+            rowDnDEvent.fire(new RowDnDEvent(rowIdBegin,
+                                             rowIdEnd,
+                                             orientation));
             isOnRowMove = false;
         }
     }
@@ -60,11 +63,10 @@ public class DnDManager {
     }
 
     public void endComponentMove() {
-        if ( isOnComponentMove ) {
+        if (isOnComponentMove) {
             isOnComponentMove = false;
         }
     }
-
 
     public boolean isOnRowMove() {
         return isOnRowMove;
@@ -78,7 +80,9 @@ public class DnDManager {
         return !isOnComponentMove();
     }
 
-    public void dragComponent( LayoutComponent layoutComponentMove, String rowId, Column draggedColumn ) {
+    public void dragComponent(LayoutComponent layoutComponentMove,
+                              String rowId,
+                              Column draggedColumn) {
         this.layoutComponentMove = layoutComponentMove;
         this.rowId = rowId;
         this.draggedColumn = draggedColumn;
@@ -96,5 +100,4 @@ public class DnDManager {
     public LayoutComponent getLayoutComponentMove() {
         return layoutComponentMove;
     }
-
 }

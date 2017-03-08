@@ -23,7 +23,6 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.security.auth.Subject;
 
 import org.jboss.errai.security.shared.api.Group;
 import org.jboss.errai.security.shared.api.GroupImpl;
@@ -34,35 +33,40 @@ import org.uberfire.security.authz.adapter.GroupsAdapter;
 @ApplicationScoped
 public class WebSphereGroupsAdapter implements GroupsAdapter {
 
-    private static final Logger logger = LoggerFactory.getLogger( WebSphereGroupsAdapter.class );
+    private static final Logger logger = LoggerFactory.getLogger(WebSphereGroupsAdapter.class);
     private Object registry;
 
     public WebSphereGroupsAdapter() {
         try {
             this.registry = InitialContext.doLookup("UserRegistry");
-        } catch ( NamingException e ) {
-            logger.info( "Unable to look up UserRegistry in JNDI under key 'UserRegistry', disabling websphere adapter" );
+        } catch (NamingException e) {
+            logger.info("Unable to look up UserRegistry in JNDI under key 'UserRegistry', disabling websphere adapter");
         }
     }
 
     @Override
-    public List<Group> getGroups( final String principal, final Object subject ) {
-        if ( registry == null ) {
+    public List<Group> getGroups(final String principal,
+                                 final Object subject) {
+        if (registry == null) {
             return Collections.emptyList();
         }
 
         final List<Group> groups = new ArrayList<Group>();
 
         try {
-            Method method = registry.getClass().getMethod( "getGroupsForUser", new Class[]{ String.class } );
-            List rolesIn = (List) method.invoke( registry, new Object[]{ principal } );
-            if ( rolesIn != null ) {
-                for ( Object o : rolesIn ) {
-                    groups.add( new GroupImpl( o.toString() ) );
+            Method method = registry.getClass().getMethod("getGroupsForUser",
+                                                          new Class[]{String.class});
+            List rolesIn = (List) method.invoke(registry,
+                                                new Object[]{principal});
+            if (rolesIn != null) {
+                for (Object o : rolesIn) {
+                    groups.add(new GroupImpl(o.toString()));
                 }
             }
-        } catch ( Exception e ) {
-            logger.error( "Unable to get groups from registry due to {}", e.getMessage(), e );
+        } catch (Exception e) {
+            logger.error("Unable to get groups from registry due to {}",
+                         e.getMessage(),
+                         e);
         }
 
         return groups;

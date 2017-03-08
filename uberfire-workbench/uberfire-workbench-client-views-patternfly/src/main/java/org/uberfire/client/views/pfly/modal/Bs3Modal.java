@@ -38,7 +38,7 @@ import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.Commands;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * A modal dialog that floats above the workbench. Each instance can only be shown once.
@@ -46,7 +46,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.*;
 @Dependent
 public class Bs3Modal extends Modal {
 
-    private final ModalBody body = GWT.create(  ModalBody.class );
+    private final ModalBody body = GWT.create(ModalBody.class);
 
     /**
      * Used for enforcing the "only show one time" rule.
@@ -58,63 +58,66 @@ public class Bs3Modal extends Modal {
     }
 
     protected void setup() {
-        this.add( body );
-        this.setDataBackdrop( ModalBackdrop.STATIC );
-        this.setFade( true );
-        this.setRemoveOnHide( true );
-        this.getElement().setAttribute( Attributes.ROLE, "dialog" );
-        this.getElement().setAttribute( Attributes.TABINDEX, "-1" );
-        this.addStyleName( WorkbenchResources.INSTANCE.CSS().modal() );
-        this.setId( DOM.createUniqueId() );
+        this.add(body);
+        this.setDataBackdrop(ModalBackdrop.STATIC);
+        this.setFade(true);
+        this.setRemoveOnHide(true);
+        this.getElement().setAttribute(Attributes.ROLE,
+                                       "dialog");
+        this.getElement().setAttribute(Attributes.TABINDEX,
+                                       "-1");
+        this.addStyleName(WorkbenchResources.INSTANCE.CSS().modal());
+        this.setId(DOM.createUniqueId());
     }
 
     @Override
     protected void onAttach() {
         super.onAttach();
-        initFooter( this.getId() );
+        initFooter(this.getId());
     }
 
-    private native void initFooter( final String id ) /*-{
-        var footer = $wnd.jQuery( '#' + id + ' .modal-footer' );
-        if( footer.length == 0 ){
+    private native void initFooter(final String id) /*-{
+        var footer = $wnd.jQuery('#' + id + ' .modal-footer');
+        if (footer.length == 0) {
             this.@org.uberfire.client.views.pfly.modal.Bs3Modal::addDefaultFooter()();
         }
     }-*/;
-
 
     /**
      * Shows this modal dialog above the current workbench.
      * @param afterShown the action to perform once the dialog has been shown. Not null. Use {@link Commands#DO_NOTHING} if you don't have an "after show" action.
      * @param afterClosed the action to perform once the dialog has been dismissed. Not null. Use {@link Commands#DO_NOTHING} if you don't have an "after close" action.
      */
-    public void show( final Command afterShown,
-                      final Command afterClosed ) {
+    public void show(final Command afterShown,
+                     final Command afterClosed) {
 
-        checkNotNull( "afterShown", afterShown );
-        checkNotNull( "afterClosed", afterClosed );
-        this.addShownHandler( new ModalShownHandler() {
+        checkNotNull("afterShown",
+                     afterShown);
+        checkNotNull("afterClosed",
+                     afterClosed);
+        this.addShownHandler(new ModalShownHandler() {
             @Override
-            public void onShown( final ModalShownEvent showEvent ) {
-                if ( afterShown != null ) {
+            public void onShown(final ModalShownEvent showEvent) {
+                if (afterShown != null) {
                     afterShown.execute();
                 }
             }
-        } );
-        this.addHiddenHandler( new ModalHiddenHandler() {
+        });
+        this.addHiddenHandler(new ModalHiddenHandler() {
             @Override
-            public void onHidden( final ModalHiddenEvent hiddenEvent ) {
-                if ( afterClosed != null ) {
+            public void onHidden(final ModalHiddenEvent hiddenEvent) {
+                if (afterClosed != null) {
                     afterClosed.execute();
                 }
             }
-        } );
+        });
         this.show();
     }
 
     @Override
     public void show() {
-        if ( hasBeenShown ) {
-            throw new IllegalStateException( "This modal has already been shown. Create a new instance if you want to show another modal." );
+        if (hasBeenShown) {
+            throw new IllegalStateException("This modal has already been shown. Create a new instance if you want to show another modal.");
         }
         super.show();
     }
@@ -123,21 +126,21 @@ public class Bs3Modal extends Modal {
      * Replaces the contents within the main body area of the modal. By default, the main body area is empty.
      * @param content the new content for the main body area.
      */
-    public void setContent( IsWidget content ) {
+    public void setContent(IsWidget content) {
         body.clear();
-        body.add( content );
+        body.add(content);
     }
 
-    protected void addDefaultFooter(){
-        final Button close = GWT.create( Button.class );
-        close.setText( "OK" );
-        close.setDataDismiss( ButtonDismiss.MODAL );
-        close.setType( ButtonType.PRIMARY );
-        setFooterContent( close );
+    protected void addDefaultFooter() {
+        final Button close = GWT.create(Button.class);
+        close.setText("OK");
+        close.setDataDismiss(ButtonDismiss.MODAL);
+        close.setType(ButtonType.PRIMARY);
+        setFooterContent(close);
     }
 
-    public void setModalTitle( final String title ) {
-        this.setTitle( SafeHtmlUtils.htmlEscape( title ) );
+    public void setModalTitle(final String title) {
+        this.setTitle(SafeHtmlUtils.htmlEscape(title));
     }
 
     /**
@@ -145,17 +148,16 @@ public class Bs3Modal extends Modal {
      * method), the footer contains an OK button that dismisses the dialog when clicked.
      * @param content the new content for the footer area.
      */
-    public void setFooterContent( IsWidget content ) {
-        final ModalFooter footer = GWT.create(  ModalFooter.class );
-        this.add( footer );
-        footer.add( content );
+    public void setFooterContent(IsWidget content) {
+        final ModalFooter footer = GWT.create(ModalFooter.class);
+        this.add(footer);
+        footer.add(content);
     }
 
     /**
      * Sets the pixel height of the main content container.
      */
-    public void setBodyHeight( int height ) {
-        body.setHeight( height + "px" );
+    public void setBodyHeight(int height) {
+        body.setHeight(height + "px");
     }
-
 }

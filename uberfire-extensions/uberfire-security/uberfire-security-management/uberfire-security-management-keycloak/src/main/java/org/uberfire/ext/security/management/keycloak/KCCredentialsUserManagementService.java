@@ -16,20 +16,19 @@
 
 package org.uberfire.ext.security.management.keycloak;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.uberfire.commons.config.ConfigProperties;
 import org.uberfire.ext.security.management.UberfireRoleManager;
 import org.uberfire.ext.security.management.api.GroupManager;
 import org.uberfire.ext.security.management.api.UserManager;
 import org.uberfire.ext.security.management.service.AbstractUserManagementService;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 /**
  * <p>The KeyCloak management service beans used if Credential authentication settings are provided.</p>
- * 
  * @since 0.9.0
  */
 @Dependent
@@ -44,13 +43,13 @@ public class KCCredentialsUserManagementService extends AbstractUserManagementSe
     public KCCredentialsUserManagementService(final KeyCloakUserManager userManager,
                                               final KeyCloakGroupManager groupManager,
                                               final CredentialsClientFactory clientFactory,
-                                              final @Named( "uberfireRoleManager" ) UberfireRoleManager roleManager) {
+                                              final @Named("uberfireRoleManager") UberfireRoleManager roleManager) {
         super(roleManager);
         this.userManager = userManager;
         this.groupManager = groupManager;
         this.clientFactory = clientFactory;
     }
-    
+
     @PostConstruct
     public void init() {
         clientFactory.init(new ConfigProperties(System.getProperties()));
@@ -67,5 +66,4 @@ public class KCCredentialsUserManagementService extends AbstractUserManagementSe
     public GroupManager groups() {
         return groupManager;
     }
-
 }

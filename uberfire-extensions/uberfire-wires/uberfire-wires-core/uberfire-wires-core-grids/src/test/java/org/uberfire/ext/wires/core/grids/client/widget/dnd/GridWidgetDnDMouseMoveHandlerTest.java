@@ -103,325 +103,324 @@ public class GridWidgetDnDMouseMoveHandlerTest {
     @Before
     public void setup() {
         this.uiColumn1 = new RowNumberColumn();
-        this.uiColumn2 = new BaseGridColumn<>( new BaseHeaderMetaData( "title" ),
-                                               columnRenderer,
-                                               100.0 );
+        this.uiColumn2 = new BaseGridColumn<>(new BaseHeaderMetaData("title"),
+                                              columnRenderer,
+                                              100.0);
         this.uiModel = new BaseGridData() {{
-            setHeaderRowCount( 2 );
+            setHeaderRowCount(2);
         }};
-        uiModel.appendColumn( uiColumn1 );
-        uiModel.appendColumn( uiColumn2 );
-        uiModel.appendRow( new BaseGridRow() );
-        uiModel.appendRow( new BaseGridRow() );
-        uiModel.appendRow( new BaseGridRow() );
+        uiModel.appendColumn(uiColumn1);
+        uiModel.appendColumn(uiColumn2);
+        uiModel.appendRow(new BaseGridRow());
+        uiModel.appendRow(new BaseGridRow());
+        uiModel.appendRow(new BaseGridRow());
 
-        this.mediators = new Mediators( viewport );
+        this.mediators = new Mediators(viewport);
 
-        when( renderer.getHeaderHeight() ).thenReturn( 64.0 );
-        when( renderer.getHeaderRowHeight() ).thenReturn( 32.0 );
+        when(renderer.getHeaderHeight()).thenReturn(64.0);
+        when(renderer.getHeaderRowHeight()).thenReturn(32.0);
 
-        when( layer.getViewport() ).thenReturn( viewport );
-        when( viewport.getElement() ).thenReturn( element );
-        when( viewport.getMediators() ).thenReturn( mediators );
-        when( element.getStyle() ).thenReturn( style );
-        when( gridWidget.getModel() ).thenReturn( uiModel );
-        when( gridWidget.getViewport() ).thenReturn( viewport );
-        when( gridWidget.getRenderer() ).thenReturn( renderer );
-        when( gridWidget.getRendererHelper() ).thenReturn( helper );
-        when( gridWidget.getWidth() ).thenReturn( 150.0 );
-        when( gridWidget.getHeight() ).thenReturn( 124.0 );
-        when( gridWidget.getLocation() ).thenReturn( new Point2D( 100,
-                                                                  100 ) );
+        when(layer.getViewport()).thenReturn(viewport);
+        when(viewport.getElement()).thenReturn(element);
+        when(viewport.getMediators()).thenReturn(mediators);
+        when(element.getStyle()).thenReturn(style);
+        when(gridWidget.getModel()).thenReturn(uiModel);
+        when(gridWidget.getViewport()).thenReturn(viewport);
+        when(gridWidget.getRenderer()).thenReturn(renderer);
+        when(gridWidget.getRendererHelper()).thenReturn(helper);
+        when(gridWidget.getWidth()).thenReturn(150.0);
+        when(gridWidget.getHeight()).thenReturn(124.0);
+        when(gridWidget.getLocation()).thenReturn(new Point2D(100,
+                                                              100));
 
-        final BaseGridRendererHelper.RenderingInformation ri = new BaseGridRendererHelper.RenderingInformation( mock( Bounds.class ),
-                                                                                                                uiModel.getColumns(),
-                                                                                                                new BaseGridRendererHelper.RenderingBlockInformation( uiModel.getColumns(),
-                                                                                                                                                                      0.0,
-                                                                                                                                                                      0.0,
-                                                                                                                                                                      0.0,
-                                                                                                                                                                      100 ),
-                                                                                                                new BaseGridRendererHelper.RenderingBlockInformation( Collections.emptyList(),
-                                                                                                                                                                      0.0,
-                                                                                                                                                                      0.0,
-                                                                                                                                                                      0.0,
-                                                                                                                                                                      0.0 ),
-                                                                                                                0,
-                                                                                                                2,
-                                                                                                                new ArrayList<Double>() {{
-                                                                                                                    add( 20.0 );
-                                                                                                                    add( 40.0 );
-                                                                                                                    add( 60.0 );
-                                                                                                                }},
-                                                                                                                false,
-                                                                                                                false,
-                                                                                                                0,
-                                                                                                                2,
-                                                                                                                0 );
-        when( helper.getRenderingInformation() ).thenReturn( ri );
+        final BaseGridRendererHelper.RenderingInformation ri = new BaseGridRendererHelper.RenderingInformation(mock(Bounds.class),
+                                                                                                               uiModel.getColumns(),
+                                                                                                               new BaseGridRendererHelper.RenderingBlockInformation(uiModel.getColumns(),
+                                                                                                                                                                    0.0,
+                                                                                                                                                                    0.0,
+                                                                                                                                                                    0.0,
+                                                                                                                                                                    100),
+                                                                                                               new BaseGridRendererHelper.RenderingBlockInformation(Collections.emptyList(),
+                                                                                                                                                                    0.0,
+                                                                                                                                                                    0.0,
+                                                                                                                                                                    0.0,
+                                                                                                                                                                    0.0),
+                                                                                                               0,
+                                                                                                               2,
+                                                                                                               new ArrayList<Double>() {{
+                                                                                                                   add(20.0);
+                                                                                                                   add(40.0);
+                                                                                                                   add(60.0);
+                                                                                                               }},
+                                                                                                               false,
+                                                                                                               false,
+                                                                                                               0,
+                                                                                                               2,
+                                                                                                               0);
+        when(helper.getRenderingInformation()).thenReturn(ri);
 
         final GridWidgetDnDHandlersState wrappedState = new GridWidgetDnDHandlersState();
-        this.state = spy( wrappedState );
+        this.state = spy(wrappedState);
 
-        final GridWidgetDnDMouseMoveHandler wrapped = new GridWidgetDnDMouseMoveHandler( layer,
-                                                                                         state );
-        this.handler = spy( wrapped );
+        final GridWidgetDnDMouseMoveHandler wrapped = new GridWidgetDnDMouseMoveHandler(layer,
+                                                                                        state);
+        this.handler = spy(wrapped);
     }
 
     @Test
     public void findGridColumnWithEmptyLayer() {
-        when( state.getOperation() ).thenReturn( GridWidgetHandlersOperation.NONE );
+        when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.NONE);
 
-        handler.onNodeMouseMove( event );
+        handler.onNodeMouseMove(event);
 
-        verify( handler,
-                times( 1 ) ).findGridColumn( eq( event ) );
+        verify(handler,
+               times(1)).findGridColumn(eq(event));
 
-        verify( handler,
-                never() ).findMovableColumns( any( GridWidget.class ),
-                                              any( Double.class ),
-                                              any( Double.class ),
-                                              any( Double.class ),
-                                              any( Double.class ) );
-        verify( handler,
-                never() ).findMovableRows( any( GridWidget.class ),
-                                           any( Double.class ),
-                                           any( Double.class ) );
-        verify( handler,
-                never() ).findResizableColumn( any( GridWidget.class ),
-                                               any( Double.class ) );
+        verify(handler,
+               never()).findMovableColumns(any(GridWidget.class),
+                                           any(Double.class),
+                                           any(Double.class),
+                                           any(Double.class),
+                                           any(Double.class));
+        verify(handler,
+               never()).findMovableRows(any(GridWidget.class),
+                                        any(Double.class),
+                                        any(Double.class));
+        verify(handler,
+               never()).findResizableColumn(any(GridWidget.class),
+                                            any(Double.class));
     }
 
     @Test
     public void findGridColumnWithInvisibleGridWidgets() {
-        when( state.getOperation() ).thenReturn( GridWidgetHandlersOperation.NONE );
-        when( gridWidget.isVisible() ).thenReturn( false );
-        when( layer.getGridWidgets() ).thenReturn( new HashSet<GridWidget>() {{
-            add( gridWidget );
-        }} );
+        when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.NONE);
+        when(gridWidget.isVisible()).thenReturn(false);
+        when(layer.getGridWidgets()).thenReturn(new HashSet<GridWidget>() {{
+            add(gridWidget);
+        }});
 
-        handler.onNodeMouseMove( event );
+        handler.onNodeMouseMove(event);
 
-        verify( handler,
-                times( 1 ) ).findGridColumn( eq( event ) );
+        verify(handler,
+               times(1)).findGridColumn(eq(event));
 
-        verify( handler,
-                never() ).findMovableColumns( any( GridWidget.class ),
-                                              any( Double.class ),
-                                              any( Double.class ),
-                                              any( Double.class ),
-                                              any( Double.class ) );
-        verify( handler,
-                never() ).findMovableRows( any( GridWidget.class ),
-                                           any( Double.class ),
-                                           any( Double.class ) );
-        verify( handler,
-                never() ).findResizableColumn( any( GridWidget.class ),
-                                               any( Double.class ) );
+        verify(handler,
+               never()).findMovableColumns(any(GridWidget.class),
+                                           any(Double.class),
+                                           any(Double.class),
+                                           any(Double.class),
+                                           any(Double.class));
+        verify(handler,
+               never()).findMovableRows(any(GridWidget.class),
+                                        any(Double.class),
+                                        any(Double.class));
+        verify(handler,
+               never()).findResizableColumn(any(GridWidget.class),
+                                            any(Double.class));
     }
 
     @Test
     public void findMovableGridWhenNoColumnOrRowOperationIsDetected() {
-        when( state.getOperation() ).thenReturn( GridWidgetHandlersOperation.NONE );
-        when( gridWidget.isVisible() ).thenReturn( true );
-        when( layer.getGridWidgets() ).thenReturn( new HashSet<GridWidget>() {{
-            add( gridWidget );
-        }} );
+        when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.NONE);
+        when(gridWidget.isVisible()).thenReturn(true);
+        when(layer.getGridWidgets()).thenReturn(new HashSet<GridWidget>() {{
+            add(gridWidget);
+        }});
         //This location is top-left of the GridWidget; not within a column move/resize or row move hot-spot
-        when( event.getX() ).thenReturn( 100 );
-        when( event.getY() ).thenReturn( 100 );
+        when(event.getX()).thenReturn(100);
+        when(event.getY()).thenReturn(100);
 
-        handler.onNodeMouseMove( event );
+        handler.onNodeMouseMove(event);
 
-        verify( handler,
-                times( 1 ) ).findGridColumn( eq( event ) );
+        verify(handler,
+               times(1)).findGridColumn(eq(event));
 
-        verify( handler,
-                times( 1 ) ).findMovableColumns( any( GridWidget.class ),
-                                                 any( Double.class ),
-                                                 any( Double.class ),
-                                                 any( Double.class ),
-                                                 any( Double.class ) );
-        verify( handler,
-                never() ).findMovableRows( any( GridWidget.class ),
-                                           any( Double.class ),
-                                           any( Double.class ) );
-        verify( handler,
-                never() ).findResizableColumn( any( GridWidget.class ),
-                                               any( Double.class ) );
+        verify(handler,
+               times(1)).findMovableColumns(any(GridWidget.class),
+                                            any(Double.class),
+                                            any(Double.class),
+                                            any(Double.class),
+                                            any(Double.class));
+        verify(handler,
+               never()).findMovableRows(any(GridWidget.class),
+                                        any(Double.class),
+                                        any(Double.class));
+        verify(handler,
+               never()).findResizableColumn(any(GridWidget.class),
+                                            any(Double.class));
 
-        verify( state,
-                times( 1 ) ).setActiveGridWidget( eq( gridWidget ) );
-        verify( state,
-                times( 1 ) ).setOperation( eq( GridWidgetHandlersOperation.GRID_MOVE_PENDING ) );
+        verify(state,
+               times(1)).setActiveGridWidget(eq(gridWidget));
+        verify(state,
+               times(1)).setOperation(eq(GridWidgetHandlersOperation.GRID_MOVE_PENDING));
     }
 
     @Test
     public void findMovableGridWhenOverDragHandle() {
-        when( state.getOperation() ).thenReturn( GridWidgetHandlersOperation.NONE );
-        when( gridWidget.isVisible() ).thenReturn( true );
-        when( gridWidget.onDragHandle( any( INodeXYEvent.class ) ) ).thenReturn( true );
-        when( layer.getGridWidgets() ).thenReturn( new HashSet<GridWidget>() {{
-            add( gridWidget );
-        }} );
+        when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.NONE);
+        when(gridWidget.isVisible()).thenReturn(true);
+        when(gridWidget.onDragHandle(any(INodeXYEvent.class))).thenReturn(true);
+        when(layer.getGridWidgets()).thenReturn(new HashSet<GridWidget>() {{
+            add(gridWidget);
+        }});
         //This location is top-left of the GridWidget; not within a column move/resize or row move hot-spot
-        when( event.getX() ).thenReturn( 100 );
-        when( event.getY() ).thenReturn( 100 );
+        when(event.getX()).thenReturn(100);
+        when(event.getY()).thenReturn(100);
 
-        handler.onNodeMouseMove( event );
+        handler.onNodeMouseMove(event);
 
-        verify( handler,
-                times( 1 ) ).findGridColumn( eq( event ) );
+        verify(handler,
+               times(1)).findGridColumn(eq(event));
 
-        verify( handler,
-                never() ).findMovableColumns( any( GridWidget.class ),
-                                              any( Double.class ),
-                                              any( Double.class ),
-                                              any( Double.class ),
-                                              any( Double.class ) );
-        verify( handler,
-                never() ).findMovableRows( any( GridWidget.class ),
-                                           any( Double.class ),
-                                           any( Double.class ) );
-        verify( handler,
-                never() ).findResizableColumn( any( GridWidget.class ),
-                                               any( Double.class ) );
+        verify(handler,
+               never()).findMovableColumns(any(GridWidget.class),
+                                           any(Double.class),
+                                           any(Double.class),
+                                           any(Double.class),
+                                           any(Double.class));
+        verify(handler,
+               never()).findMovableRows(any(GridWidget.class),
+                                        any(Double.class),
+                                        any(Double.class));
+        verify(handler,
+               never()).findResizableColumn(any(GridWidget.class),
+                                            any(Double.class));
 
-        verify( state,
-                times( 1 ) ).setActiveGridWidget( eq( gridWidget ) );
-        verify( state,
-                times( 1 ) ).setOperation( eq( GridWidgetHandlersOperation.GRID_MOVE_PENDING ) );
+        verify(state,
+               times(1)).setActiveGridWidget(eq(gridWidget));
+        verify(state,
+               times(1)).setOperation(eq(GridWidgetHandlersOperation.GRID_MOVE_PENDING));
     }
 
     @Test
     public void findMovableColumns() {
-        when( state.getOperation() ).thenReturn( GridWidgetHandlersOperation.NONE );
-        when( gridWidget.isVisible() ).thenReturn( true );
-        when( layer.getGridWidgets() ).thenReturn( new HashSet<GridWidget>() {{
-            add( gridWidget );
-        }} );
+        when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.NONE);
+        when(gridWidget.isVisible()).thenReturn(true);
+        when(layer.getGridWidgets()).thenReturn(new HashSet<GridWidget>() {{
+            add(gridWidget);
+        }});
         //This location is in the GridWidget's header; within a column move hot-spot, but not within a column resize or row move hot-spot
-        when( event.getX() ).thenReturn( 160 );
-        when( event.getY() ).thenReturn( 100 );
+        when(event.getX()).thenReturn(160);
+        when(event.getY()).thenReturn(100);
 
-        handler.onNodeMouseMove( event );
+        handler.onNodeMouseMove(event);
 
-        verify( handler,
-                times( 1 ) ).findGridColumn( eq( event ) );
+        verify(handler,
+               times(1)).findGridColumn(eq(event));
 
-        verify( handler,
-                times( 1 ) ).findMovableColumns( any( GridWidget.class ),
-                                                 any( Double.class ),
-                                                 any( Double.class ),
-                                                 any( Double.class ),
-                                                 any( Double.class ) );
-        verify( handler,
-                never() ).findMovableRows( any( GridWidget.class ),
-                                           any( Double.class ),
-                                           any( Double.class ) );
-        verify( handler,
-                never() ).findResizableColumn( any( GridWidget.class ),
-                                               any( Double.class ) );
+        verify(handler,
+               times(1)).findMovableColumns(any(GridWidget.class),
+                                            any(Double.class),
+                                            any(Double.class),
+                                            any(Double.class),
+                                            any(Double.class));
+        verify(handler,
+               never()).findMovableRows(any(GridWidget.class),
+                                        any(Double.class),
+                                        any(Double.class));
+        verify(handler,
+               never()).findResizableColumn(any(GridWidget.class),
+                                            any(Double.class));
 
-        verify( state,
-                times( 1 ) ).setActiveGridWidget( eq( gridWidget ) );
-        verify( state,
-                times( 1 ) ).setOperation( eq( GridWidgetHandlersOperation.COLUMN_MOVE_PENDING ) );
-        verify( state,
-                times( 1 ) ).setActiveGridColumns( uiColumnsArgumentCaptor.capture() );
+        verify(state,
+               times(1)).setActiveGridWidget(eq(gridWidget));
+        verify(state,
+               times(1)).setOperation(eq(GridWidgetHandlersOperation.COLUMN_MOVE_PENDING));
+        verify(state,
+               times(1)).setActiveGridColumns(uiColumnsArgumentCaptor.capture());
 
         final List<GridColumn<?>> uiColumns = uiColumnsArgumentCaptor.getValue();
-        assertNotNull( uiColumns );
-        assertEquals( 1,
-                      uiColumns.size() );
-        assertTrue( uiColumns.contains( uiColumn2 ) );
+        assertNotNull(uiColumns);
+        assertEquals(1,
+                     uiColumns.size());
+        assertTrue(uiColumns.contains(uiColumn2));
     }
 
     @Test
     public void findResizableColumns() {
-        when( state.getOperation() ).thenReturn( GridWidgetHandlersOperation.NONE );
-        when( gridWidget.isVisible() ).thenReturn( true );
-        when( layer.getGridWidgets() ).thenReturn( new HashSet<GridWidget>() {{
-            add( gridWidget );
-        }} );
+        when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.NONE);
+        when(gridWidget.isVisible()).thenReturn(true);
+        when(layer.getGridWidgets()).thenReturn(new HashSet<GridWidget>() {{
+            add(gridWidget);
+        }});
         //This location is in the GridWidget's body; within a column resize hot-spot, but not within a column move or row move hot-spot
-        when( event.getX() ).thenReturn( 246 );
-        when( event.getY() ).thenReturn( 180 );
+        when(event.getX()).thenReturn(246);
+        when(event.getY()).thenReturn(180);
 
-        handler.onNodeMouseMove( event );
+        handler.onNodeMouseMove(event);
 
-        verify( handler,
-                times( 1 ) ).findGridColumn( eq( event ) );
+        verify(handler,
+               times(1)).findGridColumn(eq(event));
 
-        verify( handler,
-                never() ).findMovableColumns( any( GridWidget.class ),
-                                              any( Double.class ),
-                                              any( Double.class ),
-                                              any( Double.class ),
-                                              any( Double.class ) );
-        verify( handler,
-                times( 1 ) ).findMovableRows( any( GridWidget.class ),
-                                              any( Double.class ),
-                                              any( Double.class ) );
-        verify( handler,
-                times( 1 ) ).findResizableColumn( any( GridWidget.class ),
-                                                  any( Double.class ) );
+        verify(handler,
+               never()).findMovableColumns(any(GridWidget.class),
+                                           any(Double.class),
+                                           any(Double.class),
+                                           any(Double.class),
+                                           any(Double.class));
+        verify(handler,
+               times(1)).findMovableRows(any(GridWidget.class),
+                                         any(Double.class),
+                                         any(Double.class));
+        verify(handler,
+               times(1)).findResizableColumn(any(GridWidget.class),
+                                             any(Double.class));
 
-        verify( state,
-                times( 1 ) ).setActiveGridWidget( eq( gridWidget ) );
-        verify( state,
-                times( 1 ) ).setOperation( eq( GridWidgetHandlersOperation.COLUMN_RESIZE_PENDING ) );
-        verify( state,
-                times( 1 ) ).setActiveGridColumns( uiColumnsArgumentCaptor.capture() );
+        verify(state,
+               times(1)).setActiveGridWidget(eq(gridWidget));
+        verify(state,
+               times(1)).setOperation(eq(GridWidgetHandlersOperation.COLUMN_RESIZE_PENDING));
+        verify(state,
+               times(1)).setActiveGridColumns(uiColumnsArgumentCaptor.capture());
 
         final List<GridColumn<?>> uiColumns = uiColumnsArgumentCaptor.getValue();
-        assertNotNull( uiColumns );
-        assertEquals( 1,
-                      uiColumns.size() );
-        assertTrue( uiColumns.contains( uiColumn2 ) );
+        assertNotNull(uiColumns);
+        assertEquals(1,
+                     uiColumns.size());
+        assertTrue(uiColumns.contains(uiColumn2));
     }
 
     @Test
     public void findMovableRows() {
-        when( state.getOperation() ).thenReturn( GridWidgetHandlersOperation.NONE );
-        when( gridWidget.isVisible() ).thenReturn( true );
-        when( layer.getGridWidgets() ).thenReturn( new HashSet<GridWidget>() {{
-            add( gridWidget );
-        }} );
+        when(state.getOperation()).thenReturn(GridWidgetHandlersOperation.NONE);
+        when(gridWidget.isVisible()).thenReturn(true);
+        when(layer.getGridWidgets()).thenReturn(new HashSet<GridWidget>() {{
+            add(gridWidget);
+        }});
         //This location is in the GridWidget's body; within row 0's move hot-spot, but not within a column move or resize hot-spot
-        when( event.getX() ).thenReturn( 125 );
-        when( event.getY() ).thenReturn( 180 );
+        when(event.getX()).thenReturn(125);
+        when(event.getY()).thenReturn(180);
 
-        handler.onNodeMouseMove( event );
+        handler.onNodeMouseMove(event);
 
-        verify( handler,
-                times( 1 ) ).findGridColumn( eq( event ) );
+        verify(handler,
+               times(1)).findGridColumn(eq(event));
 
-        verify( handler,
-                never() ).findMovableColumns( any( GridWidget.class ),
-                                              any( Double.class ),
-                                              any( Double.class ),
-                                              any( Double.class ),
-                                              any( Double.class ) );
-        verify( handler,
-                times( 1 ) ).findMovableRows( any( GridWidget.class ),
-                                              any( Double.class ),
-                                              any( Double.class ) );
-        verify( handler,
-                times( 1 ) ).findResizableColumn( any( GridWidget.class ),
-                                                  any( Double.class ) );
+        verify(handler,
+               never()).findMovableColumns(any(GridWidget.class),
+                                           any(Double.class),
+                                           any(Double.class),
+                                           any(Double.class),
+                                           any(Double.class));
+        verify(handler,
+               times(1)).findMovableRows(any(GridWidget.class),
+                                         any(Double.class),
+                                         any(Double.class));
+        verify(handler,
+               times(1)).findResizableColumn(any(GridWidget.class),
+                                             any(Double.class));
 
-        verify( state,
-                times( 1 ) ).setActiveGridWidget( eq( gridWidget ) );
-        verify( state,
-                times( 1 ) ).setOperation( eq( GridWidgetHandlersOperation.ROW_MOVE_PENDING ) );
-        verify( state,
-                times( 1 ) ).setActiveGridRows( uiRowsArgumentCaptor.capture() );
+        verify(state,
+               times(1)).setActiveGridWidget(eq(gridWidget));
+        verify(state,
+               times(1)).setOperation(eq(GridWidgetHandlersOperation.ROW_MOVE_PENDING));
+        verify(state,
+               times(1)).setActiveGridRows(uiRowsArgumentCaptor.capture());
 
         final List<GridRow> uiRows = uiRowsArgumentCaptor.getValue();
-        assertNotNull( uiRows );
-        assertEquals( 1,
-                      uiRows.size() );
-        assertTrue( uiRows.contains( uiModel.getRow( 0 ) ) );
+        assertNotNull(uiRows);
+        assertEquals(1,
+                     uiRows.size());
+        assertTrue(uiRows.contains(uiModel.getRow(0)));
     }
-
 }

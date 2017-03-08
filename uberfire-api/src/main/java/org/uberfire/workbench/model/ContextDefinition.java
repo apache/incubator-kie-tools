@@ -15,9 +15,8 @@
  */
 package org.uberfire.workbench.model;
 
-import org.uberfire.mvp.PlaceRequest;
-
 import jsinterop.annotations.JsType;
+import org.uberfire.mvp.PlaceRequest;
 
 /**
  * A Part in the Workbench. Parts are added to Panels.
@@ -35,6 +34,5 @@ public interface ContextDefinition {
      * Set the PlaceRequest that this Part will contain.
      * @param place the place to set
      */
-    public void setPlace( final PlaceRequest place );
-
+    public void setPlace(final PlaceRequest place);
 }

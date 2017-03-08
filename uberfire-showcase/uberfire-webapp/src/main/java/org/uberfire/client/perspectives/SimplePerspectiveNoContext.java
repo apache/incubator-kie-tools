@@ -37,15 +37,15 @@ import org.uberfire.workbench.model.menu.Menus;
  * To test access /showcase.html?standalone=true&perspective=SimplePerspectiveNoContext&header=AppNavBar
  */
 @ApplicationScoped
-@WorkbenchPerspective( identifier = SimplePerspectiveNoContext.SIMPLE_PERSPECTIVE_NO_CONTEXT, isTransient = false )
+@WorkbenchPerspective(identifier = SimplePerspectiveNoContext.SIMPLE_PERSPECTIVE_NO_CONTEXT, isTransient = false)
 public class SimplePerspectiveNoContext {
 
     public static final String SIMPLE_PERSPECTIVE_NO_CONTEXT = "SimplePerspectiveNoContext";
 
     @Perspective
     public PerspectiveDefinition buildPerspective() {
-        final PerspectiveDefinition p = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName() );
-        p.setName( "Simple Perspective No Context" );
+        final PerspectiveDefinition p = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        p.setName("Simple Perspective No Context");
         p.getRoot().addPart("welcome");
         return p;
     }
@@ -53,44 +53,44 @@ public class SimplePerspectiveNoContext {
     @WorkbenchMenu
     public Menus getMenus() {
         return MenuFactory
-                .newTopLevelMenu( "Open" )
-                        .withItems( ShowcaseEntryPoint.getScreens() )
+                .newTopLevelMenu("Open")
+                .withItems(ShowcaseEntryPoint.getScreens())
                 .endMenu()
-                .newTopLevelMenu( "Command" ).respondsWith( new Command() {
+                .newTopLevelMenu("Command").respondsWith(new Command() {
                     @Override
                     public void execute() {
-                        Window.alert( "Command!" );
+                        Window.alert("Command!");
                     }
-                } )
+                })
                 .endMenu()
-                .newTopLevelMenu( "Create New" )
-                    .menus()
-                        .menu( "Command 1" )
-                            .respondsWith( new Command() {
-                            @Override
-                            public void execute() {
-                                Window.alert( "Command 1!" );
-                            }
-                        } )
-                        .endMenu()
-                        .menu( "Command 2" )
-                            .respondsWith( new Command() {
+                .newTopLevelMenu("Create New")
+                .menus()
+                .menu("Command 1")
+                .respondsWith(new Command() {
                     @Override
                     public void execute() {
-                        Window.alert( "Command 2!" );
+                        Window.alert("Command 1!");
                     }
-                } )
-                        .endMenu()
-                    .endMenus()
+                })
                 .endMenu()
-                .newTopLevelMenu( "Find" )
-                    .respondsWith( new Command() {
-                        @Override
-                        public void execute() {
-                            Window.alert( "Find!" );
-                        }
-                    } )
-                    .position( MenuPosition.RIGHT )
+                .menu("Command 2")
+                .respondsWith(new Command() {
+                    @Override
+                    public void execute() {
+                        Window.alert("Command 2!");
+                    }
+                })
+                .endMenu()
+                .endMenus()
+                .endMenu()
+                .newTopLevelMenu("Find")
+                .respondsWith(new Command() {
+                    @Override
+                    public void execute() {
+                        Window.alert("Find!");
+                    }
+                })
+                .position(MenuPosition.RIGHT)
                 .endMenu()
                 .build();
     }

@@ -16,6 +16,7 @@
 
 package org.uberfire.client.workbench.panels.impl;
 
+import com.google.gwt.user.client.ui.SimpleLayoutPanel;
 import org.junit.Before;
 import org.mockito.Answers;
 import org.mockito.Mock;
@@ -23,17 +24,15 @@ import org.uberfire.client.workbench.BeanFactory;
 import org.uberfire.client.workbench.widgets.dnd.WorkbenchDragAndDropManager;
 import org.uberfire.client.workbench.widgets.listbar.ResizeFlowPanel;
 
-import com.google.gwt.user.client.ui.SimpleLayoutPanel;
-
 /**
  * Contains the setup necessary for testing subclasses of {@link AbstractDockingWorkbenchPanelView} with GWTMockito.
  */
 public abstract class AbstractDockingWorkbenchPanelViewTest {
 
-    @Mock(answer=Answers.RETURNS_MOCKS)
+    @Mock(answer = Answers.RETURNS_MOCKS)
     ResizeFlowPanel partViewContainer;
 
-    @Mock(answer=Answers.RETURNS_MOCKS)
+    @Mock(answer = Answers.RETURNS_MOCKS)
     SimpleLayoutPanel topLevelWidget;
 
     @Mock

@@ -51,14 +51,14 @@ public interface GridRendererTheme {
      * @param column The column being rendered.
      * @return A {@link Rectangle} for the header's background.
      */
-    Rectangle getHeaderBackground( final GridColumn<?> column );
+    Rectangle getHeaderBackground(final GridColumn<?> column);
 
     /**
      * Delegates the Header's background Rectangle, used for "linked" columns to sub-classes.
      * @param column The column being rendered.
      * @return A {@link Rectangle} for a header's background for a "linked" column.
      */
-    Rectangle getHeaderLinkBackground( final GridColumn<?> column );
+    Rectangle getHeaderLinkBackground(final GridColumn<?> column);
 
     /**
      * Delegates the Header's grid lines to sub-classes.
@@ -77,7 +77,7 @@ public interface GridRendererTheme {
      * @param column The column being rendered.
      * @return A {@link Rectangle} for the body's background.
      */
-    Rectangle getBodyBackground( final GridColumn<?> column );
+    Rectangle getBodyBackground(final GridColumn<?> column);
 
     /**
      * Delegates the Body's grid lines to sub-classes.
@@ -103,5 +103,4 @@ public interface GridRendererTheme {
      * @return A {@link Line} for the divider.
      */
     Line getGridHeaderBodyDivider();
-
 }

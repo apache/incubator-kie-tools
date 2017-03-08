@@ -49,31 +49,32 @@ public class MaximizeTestPerspective extends AbstractTestPerspectiveActivity {
     public static final String SIMPLE_PANEL_SCREEN_5_ID = "5";
 
     @Inject
-    public MaximizeTestPerspective( PlaceManager placeManager ) {
-        super( placeManager );
+    public MaximizeTestPerspective(PlaceManager placeManager) {
+        super(placeManager);
     }
 
     @Override
     public PerspectiveDefinition getDefaultPerspectiveLayout() {
-        PerspectiveDefinition pd = new PerspectiveDefinitionImpl( MultiListWorkbenchPanelPresenter.class.getName() );
-        pd.getRoot().setElementId( LIST_PANEL_ID );
-        pd.getRoot().addPart( MaximizeTestScreen.class.getName() + "?debugId=1" );
-        pd.getRoot().addPart( MaximizeTestScreen.class.getName() + "?debugId=2" );
+        PerspectiveDefinition pd = new PerspectiveDefinitionImpl(MultiListWorkbenchPanelPresenter.class.getName());
+        pd.getRoot().setElementId(LIST_PANEL_ID);
+        pd.getRoot().addPart(MaximizeTestScreen.class.getName() + "?debugId=1");
+        pd.getRoot().addPart(MaximizeTestScreen.class.getName() + "?debugId=2");
 
-        PanelDefinitionImpl simplePanel = new PanelDefinitionImpl( SimpleDnDWorkbenchPanelPresenter.class.getName() );
-        simplePanel.setHeight( 200 );
-        simplePanel.setElementId( SIMPLE_PANEL_ID );
-        simplePanel.addPart( MaximizeTestScreen.class.getName() + "?debugId=5" );
-        pd.getRoot().appendChild( CompassPosition.SOUTH, simplePanel );
+        PanelDefinitionImpl simplePanel = new PanelDefinitionImpl(SimpleDnDWorkbenchPanelPresenter.class.getName());
+        simplePanel.setHeight(200);
+        simplePanel.setElementId(SIMPLE_PANEL_ID);
+        simplePanel.addPart(MaximizeTestScreen.class.getName() + "?debugId=5");
+        pd.getRoot().appendChild(CompassPosition.SOUTH,
+                                 simplePanel);
 
-        PanelDefinitionImpl tabPanel = new PanelDefinitionImpl( MultiTabWorkbenchPanelPresenter.class.getName() );
-        tabPanel.setElementId( TAB_PANEL_ID );
-        tabPanel.setWidth( 300 );
-        tabPanel.addPart( MaximizeTestScreen.class.getName() + "?debugId=3" );
-        tabPanel.addPart( MaximizeTestScreen.class.getName() + "?debugId=4" );
-        pd.getRoot().appendChild( CompassPosition.WEST, tabPanel );
+        PanelDefinitionImpl tabPanel = new PanelDefinitionImpl(MultiTabWorkbenchPanelPresenter.class.getName());
+        tabPanel.setElementId(TAB_PANEL_ID);
+        tabPanel.setWidth(300);
+        tabPanel.addPart(MaximizeTestScreen.class.getName() + "?debugId=3");
+        tabPanel.addPart(MaximizeTestScreen.class.getName() + "?debugId=4");
+        pd.getRoot().appendChild(CompassPosition.WEST,
+                                 tabPanel);
 
         return pd;
     }
-
 }

@@ -23,13 +23,13 @@ public interface AppsCss extends CssResource {
     @ClassName("tile")
     String tile();
 
-    @ClassName( "iconPanel" )
+    @ClassName("iconPanel")
     String iconPanel();
 
-    @ClassName( "deleteIcon" )
+    @ClassName("deleteIcon")
     String deleteIcon();
 
-    @ClassName( "deletePanel" )
+    @ClassName("deletePanel")
     String deletePanel();
 
     @ClassName("blueTile")
@@ -55,6 +55,4 @@ public interface AppsCss extends CssResource {
 
     @ClassName("breadCrumbs")
     String breadCrumbs();
-
-
 }

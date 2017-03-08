@@ -26,41 +26,34 @@ import org.uberfire.ext.preferences.client.event.PreferencesCentralActionsConfig
 
 public class AdminPageItemPresenter {
 
-    public interface View extends UberElement<AdminPageItemPresenter> {
-
-    }
-
     private final View view;
-
     private final PlaceManager placeManager;
-
     private final Event<PreferencesCentralActionsConfigurationEvent> adminPageConfigurationEvent;
-
     private AdminTool adminTool;
-
     private PreferencesCentralActionsConfigurationEvent preferencesCentralActionsConfigurationEventToFire;
 
     @Inject
-    public AdminPageItemPresenter( final View view,
-                                   final PlaceManager placeManager,
-                                   final Event<PreferencesCentralActionsConfigurationEvent> adminPageConfigurationEvent ) {
+    public AdminPageItemPresenter(final View view,
+                                  final PlaceManager placeManager,
+                                  final Event<PreferencesCentralActionsConfigurationEvent> adminPageConfigurationEvent) {
         this.view = view;
         this.placeManager = placeManager;
         this.adminPageConfigurationEvent = adminPageConfigurationEvent;
     }
 
-    public void setup( final AdminTool adminTool,
-                       final String screen,
-                       final String perspectiveIdentifierToGoBackTo ) {
+    public void setup(final AdminTool adminTool,
+                      final String screen,
+                      final String perspectiveIdentifierToGoBackTo) {
         this.adminTool = adminTool;
-        this.preferencesCentralActionsConfigurationEventToFire = new PreferencesCentralActionsConfigurationEvent( screen, perspectiveIdentifierToGoBackTo );
+        this.preferencesCentralActionsConfigurationEventToFire = new PreferencesCentralActionsConfigurationEvent(screen,
+                                                                                                                 perspectiveIdentifierToGoBackTo);
 
-        view.init( this );
+        view.init(this);
     }
 
     public void enter() {
         adminTool.getOnClickCommand().execute();
-        adminPageConfigurationEvent.fire( preferencesCentralActionsConfigurationEventToFire );
+        adminPageConfigurationEvent.fire(preferencesCentralActionsConfigurationEventToFire);
     }
 
     public AdminTool getAdminTool() {
@@ -69,5 +62,9 @@ public class AdminPageItemPresenter {
 
     public View getView() {
         return view;
+    }
+
+    public interface View extends UberElement<AdminPageItemPresenter> {
+
     }
 }

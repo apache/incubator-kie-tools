@@ -19,10 +19,9 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 
-import org.uberfire.annotations.processors.exceptions.GenerationException;
-
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
+import org.uberfire.annotations.processors.exceptions.GenerationException;
 
 /**
  * A class capable of generating source code using FreeMarker templates
@@ -37,18 +36,18 @@ public abstract class AbstractGenerator {
 
     {
         if (FAIL_FOR_TESTING) {
-            throw new NoClassDefFoundError( "Failing for testing purposes" );
+            throw new NoClassDefFoundError("Failing for testing purposes");
         }
         try {
             synchronized (AbstractGenerator.class) {
                 config = new Configuration();
-                config.setClassForTemplateLoading( getClass(),
-                        "templates" );
-                config.setObjectWrapper( new DefaultObjectWrapper() );
+                config.setClassForTemplateLoading(getClass(),
+                                                  "templates");
+                config.setObjectWrapper(new DefaultObjectWrapper());
             }
         } catch (NoClassDefFoundError ex) {
             if (ex.getCause() == null) {
-                ex.initCause( INITIALIZER_EXCEPTION );
+                ex.initCause(INITIALIZER_EXCEPTION);
             }
             throw ex;
         } catch (ExceptionInInitializerError ex) {
@@ -62,5 +61,4 @@ public abstract class AbstractGenerator {
                                           final String className,
                                           final Element element,
                                           final ProcessingEnvironment processingEnvironment) throws GenerationException;
-
 }

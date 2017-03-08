@@ -48,40 +48,38 @@ public class WiresCanvas extends Composite implements ShapesManager,
 
     public static final int DEFAULT_SIZE_WIDTH = 1000;
     public static final int DEFAULT_SIZE_HEIGHT = 1000;
-
+    protected Layer canvasLayer = new Layer();
+    protected List<WiresBaseShape> shapesInCanvas = new ArrayList<WiresBaseShape>();
     private FocusableLienzoPanel panel;
     private WiresBaseShape selectedShape;
     private ProgressBar progressBar;
 
-    protected Layer canvasLayer = new Layer();
-    protected List<WiresBaseShape> shapesInCanvas = new ArrayList<WiresBaseShape>();
-
     @PostConstruct
     public void init() {
-        panel = new FocusableLienzoPanel( DEFAULT_SIZE_WIDTH,
-                                          DEFAULT_SIZE_HEIGHT );
+        panel = new FocusableLienzoPanel(DEFAULT_SIZE_WIDTH,
+                                         DEFAULT_SIZE_HEIGHT);
 
-        initWidget( panel );
+        initWidget(panel);
 
         //Grid...
-        Line line1 = new Line( 0,
-                               0,
-                               0,
-                               0 ).setStrokeColor( ColorName.BLUE ).setAlpha( 0.5 ); // primary lines
-        Line line2 = new Line( 0,
-                               0,
-                               0,
-                               0 ).setStrokeColor( ColorName.GREEN ).setAlpha( 0.5 ); // secondary dashed-lines
-        line2.setDashArray( 2,
-                            2 );
+        Line line1 = new Line(0,
+                              0,
+                              0,
+                              0).setStrokeColor(ColorName.BLUE).setAlpha(0.5); // primary lines
+        Line line2 = new Line(0,
+                              0,
+                              0,
+                              0).setStrokeColor(ColorName.GREEN).setAlpha(0.5); // secondary dashed-lines
+        line2.setDashArray(2,
+                           2);
 
-        GridLayer gridLayer = new GridLayer( 100,
-                                             line1,
-                                             25,
-                                             line2 );
-        panel.setBackgroundLayer( gridLayer );
+        GridLayer gridLayer = new GridLayer(100,
+                                            line1,
+                                            25,
+                                            line2);
+        panel.setBackgroundLayer(gridLayer);
 
-        panel.getScene().add( canvasLayer );
+        panel.getScene().add(canvasLayer);
     }
 
     public boolean hasProgressBar() {
@@ -92,33 +90,33 @@ public class WiresCanvas extends Composite implements ShapesManager,
         return this.progressBar;
     }
 
-    public void setProgressBar( final ProgressBar progressBar ) {
+    public void setProgressBar(final ProgressBar progressBar) {
         this.progressBar = progressBar;
-        canvasLayer.add( progressBar );
+        canvasLayer.add(progressBar);
         canvasLayer.batch();
     }
 
     @Override
     public List<WiresBaseShape> getShapesInCanvas() {
-        return Collections.unmodifiableList( this.shapesInCanvas );
+        return Collections.unmodifiableList(this.shapesInCanvas);
     }
 
     @Override
-    public void addShape( final WiresBaseShape shape ) {
+    public void addShape(final WiresBaseShape shape) {
         //Attach relevant handlers
-        shape.setSelectionManager( this );
-        if ( shape instanceof RequiresShapesManager ) {
-            ( (RequiresShapesManager) shape ).setShapesManager( this );
+        shape.setSelectionManager(this);
+        if (shape instanceof RequiresShapesManager) {
+            ((RequiresShapesManager) shape).setShapesManager(this);
         }
-        if ( shape instanceof RequiresMagnetManager ) {
-            ( (RequiresMagnetManager) shape ).setMagnetManager( this );
+        if (shape instanceof RequiresMagnetManager) {
+            ((RequiresMagnetManager) shape).setMagnetManager(this);
         }
 
-        canvasLayer.add( shape );
-        shapesInCanvas.add( shape );
+        canvasLayer.add(shape);
+        shapesInCanvas.add(shape);
 
         //Containers are always at the bottom of the render stack
-        if ( shape instanceof WiresContainer ) {
+        if (shape instanceof WiresContainer) {
             shape.moveToBottom();
         }
 
@@ -126,87 +124,87 @@ public class WiresCanvas extends Composite implements ShapesManager,
     }
 
     @Override
-    public void deleteShape( final WiresBaseShape shape ) {
+    public void deleteShape(final WiresBaseShape shape) {
         shape.destroy();
-        deselectShape( shape );
-        canvasLayer.remove( shape );
-        shapesInCanvas.remove( shape );
+        deselectShape(shape);
+        canvasLayer.remove(shape);
+        shapesInCanvas.remove(shape);
         canvasLayer.batch();
     }
 
     @Override
-    public void forceDeleteShape( final WiresBaseShape shape ) {
-        deleteShape( shape );
+    public void forceDeleteShape(final WiresBaseShape shape) {
+        deleteShape(shape);
     }
 
     public void clear() {
         //Detach Shapes in Containers; as destroying a Container automatically destroys it's contained Shapes
         //This sounds as though we need not worry about those, however "shapesInCanvas" this means we cannot
         //simply iterate over "shapesInCanvas" as it's content changes as Shapes are destroyed.
-        for ( WiresShape shape : shapesInCanvas ) {
-            if ( shape instanceof WiresContainer ) {
+        for (WiresShape shape : shapesInCanvas) {
+            if (shape instanceof WiresContainer) {
                 final WiresContainer wc = (WiresContainer) shape;
-                for ( WiresBaseShape bc : wc.getContainedShapes() ) {
-                    wc.detachShape( bc );
+                for (WiresBaseShape bc : wc.getContainedShapes()) {
+                    wc.detachShape(bc);
                 }
             }
         }
 
         //Now it's safe to destroy all Shapes
-        for ( WiresShape shape : shapesInCanvas ) {
+        for (WiresShape shape : shapesInCanvas) {
             shape.destroy();
-            canvasLayer.remove( (IPrimitive<?>) shape );
+            canvasLayer.remove((IPrimitive<?>) shape);
         }
         clearSelection();
         shapesInCanvas.clear();
-        panel.getViewport().setPixelSize( DEFAULT_SIZE_WIDTH,
-                                          DEFAULT_SIZE_HEIGHT );
+        panel.getViewport().setPixelSize(DEFAULT_SIZE_WIDTH,
+                                         DEFAULT_SIZE_HEIGHT);
         panel.getViewport().draw();
     }
 
     @Override
     public void clearSelection() {
         selectedShape = null;
-        for ( WiresShape shape : getShapesInCanvas() ) {
-            shape.setSelected( false );
-            if ( shape instanceof HasControlPoints ) {
-                ( (HasControlPoints) shape ).hideControlPoints();
+        for (WiresShape shape : getShapesInCanvas()) {
+            shape.setSelected(false);
+            if (shape instanceof HasControlPoints) {
+                ((HasControlPoints) shape).hideControlPoints();
             }
-            if ( shape instanceof HasMagnets ) {
-                ( (HasMagnets) shape ).hideMagnetPoints();
+            if (shape instanceof HasMagnets) {
+                ((HasMagnets) shape).hideMagnetPoints();
             }
         }
         canvasLayer.batch();
     }
 
     @Override
-    public void selectShape( final WiresBaseShape shape ) {
-        if ( shape == null ) {
+    public void selectShape(final WiresBaseShape shape) {
+        if (shape == null) {
             return;
         }
-        if ( shape.equals( selectedShape ) ) {
+        if (shape.equals(selectedShape)) {
             return;
         }
         clearSelection();
         selectedShape = shape;
-        selectedShape.setSelected( true );
-        if ( shape instanceof HasControlPoints ) {
-            ( (HasControlPoints) selectedShape ).showControlPoints();
+        selectedShape.setSelected(true);
+        if (shape instanceof HasControlPoints) {
+            ((HasControlPoints) selectedShape).showControlPoints();
         }
         canvasLayer.batch();
     }
 
     @Override
-    public void deselectShape( final WiresBaseShape shape ) {
-        if ( shape == null ) {
+    public void deselectShape(final WiresBaseShape shape) {
+        if (shape == null) {
             return;
         }
         selectedShape = null;
-        if ( shape instanceof HasControlPoints ) {
-            ( (HasControlPoints) shape ).hideControlPoints();
+        if (shape instanceof HasControlPoints) {
+            ((HasControlPoints) shape).hideControlPoints();
         }
-        if ( shape instanceof HasMagnets ) {
-            ( (HasMagnets) shape ).hideMagnetPoints();
+        if (shape instanceof HasMagnets) {
+            ((HasMagnets) shape).hideMagnetPoints();
         }
         canvasLayer.batch();
     }
@@ -223,8 +221,8 @@ public class WiresCanvas extends Composite implements ShapesManager,
 
     @Override
     public void hideAllMagnets() {
-        for ( WiresShape shape : getShapesInCanvas() ) {
-            if ( shape instanceof HasMagnets ) {
+        for (WiresShape shape : getShapesInCanvas()) {
+            if (shape instanceof HasMagnets) {
                 final HasMagnets mShape = (HasMagnets) shape;
                 mShape.hideMagnetPoints();
             }
@@ -232,42 +230,43 @@ public class WiresCanvas extends Composite implements ShapesManager,
     }
 
     @Override
-    public Magnet getMagnet( final WiresShape activeShape,
-                             final double cx,
-                             final double cy ) {
-        if ( activeShape == null ) {
+    public Magnet getMagnet(final WiresShape activeShape,
+                            final double cx,
+                            final double cy) {
+        if (activeShape == null) {
             return null;
         }
 
         Magnet selectedMagnet = null;
         double finalDistance = Double.MAX_VALUE;
-        for ( WiresShape shape : getShapesInCanvas() ) {
-            if ( !shape.getId().equals( activeShape.getId() ) ) {
-                if ( shape instanceof HasMagnets ) {
+        for (WiresShape shape : getShapesInCanvas()) {
+            if (!shape.getId().equals(activeShape.getId())) {
+                if (shape instanceof HasMagnets) {
                     final HasMagnets mShape = (HasMagnets) shape;
-                    if ( shape.contains( cx,
-                                         cy ) ) {
+                    if (shape.contains(cx,
+                                       cy)) {
                         mShape.showMagnetsPoints();
                         final List<Magnet> magnets = mShape.getMagnets();
-                        for ( Magnet magnet : magnets ) {
-                            magnet.setActive( false );
+                        for (Magnet magnet : magnets) {
+                            magnet.setActive(false);
 
                             double deltaX = cx - magnet.getX();
                             double deltaY = cy - magnet.getY();
-                            double distance = Math.sqrt( Math.pow( deltaX, 2 ) + Math.pow( deltaY, 2 ) );
+                            double distance = Math.sqrt(Math.pow(deltaX,
+                                                                 2) + Math.pow(deltaY,
+                                                                               2));
 
-                            if ( finalDistance > distance ) {
+                            if (finalDistance > distance) {
                                 finalDistance = distance;
-                                if ( selectedMagnet != null ) {
-                                    selectedMagnet.setActive( false );
+                                if (selectedMagnet != null) {
+                                    selectedMagnet.setActive(false);
                                 }
                                 selectedMagnet = magnet;
                             }
                         }
-                        if ( selectedMagnet != null ) {
-                            selectedMagnet.setActive( true );
+                        if (selectedMagnet != null) {
+                            selectedMagnet.setActive(true);
                         }
-
                     } else {
                         mShape.hideMagnetPoints();
                     }
@@ -277,5 +276,4 @@ public class WiresCanvas extends Composite implements ShapesManager,
 
         return selectedMagnet;
     }
-
 }

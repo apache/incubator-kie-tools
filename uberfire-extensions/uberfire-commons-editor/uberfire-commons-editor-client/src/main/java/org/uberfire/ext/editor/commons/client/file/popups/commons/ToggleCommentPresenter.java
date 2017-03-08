@@ -26,21 +26,16 @@ import org.uberfire.client.mvp.UberElement;
 @Dependent
 public class ToggleCommentPresenter {
 
-    public interface View extends UberElement<ToggleCommentPresenter> {
-
-        String getComment();
-    }
-
     private View view;
 
     @Inject
-    public ToggleCommentPresenter( View view ) {
+    public ToggleCommentPresenter(View view) {
         this.view = view;
     }
 
     @PostConstruct
     public void setup() {
-        view.init( this );
+        view.init(this);
     }
 
     public Element getViewElement() {
@@ -49,5 +44,10 @@ public class ToggleCommentPresenter {
 
     public String getComment() {
         return view.getComment();
+    }
+
+    public interface View extends UberElement<ToggleCommentPresenter> {
+
+        String getComment();
     }
 }

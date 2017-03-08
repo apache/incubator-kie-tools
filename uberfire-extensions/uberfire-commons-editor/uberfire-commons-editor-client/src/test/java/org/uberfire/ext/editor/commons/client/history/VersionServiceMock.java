@@ -16,7 +16,7 @@
 
 package org.uberfire.ext.editor.commons.client.history;
 
-import java.lang.Override;import java.lang.String;import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -35,21 +35,24 @@ class VersionServiceMock
         this.versions = versions;
     }
 
-    @Override public List<VersionRecord> getVersions(Path path) {
+    @Override
+    public List<VersionRecord> getVersions(Path path) {
         callback.callback(versions);
         return null;
     }
 
-    @Override public Path getPathToPreviousVersion(String uri) {
+    @Override
+    public Path getPathToPreviousVersion(String uri) {
         return null;
     }
 
-    @Override public Path restore(Path path, String comment) {
+    @Override
+    public Path restore(Path path,
+                        String comment) {
         return null;
     }
 
     public void setCallback(RemoteCallback<?> remoteCallback) {
         callback = remoteCallback;
     }
-
 }

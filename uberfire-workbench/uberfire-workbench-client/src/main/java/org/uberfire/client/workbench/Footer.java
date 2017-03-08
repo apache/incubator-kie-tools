@@ -20,7 +20,6 @@ import org.jboss.errai.ioc.client.container.BeanActivator;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.uberfire.client.workbench.events.ApplicationReadyEvent;
 
-
 /**
  * CDI beans that implement Footer are automatically created and added to the bottom of the Workbench screen. They stick
  * to the bottom of the viewport even when the browser window is resized.
@@ -31,6 +30,7 @@ import org.uberfire.client.workbench.events.ApplicationReadyEvent;
  * until your activator obtains the data it needs. (The blocker could be registered in your entry point's
  * {@code @PostConstruct} method).
  */
-public interface Footer extends IsElement, Orderable {
+public interface Footer extends IsElement,
+                                Orderable {
 
 }

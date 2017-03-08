@@ -29,58 +29,53 @@ public class UUIDTest {
 
     @Test
     public void hasFiveGroups() throws
-                                Exception {
+            Exception {
         final String uuid = UUID.uuid();
-        final String[] split = uuid.split( "-" );
-        assertEquals( 5,
-                      split.length );
-
+        final String[] split = uuid.split("-");
+        assertEquals(5,
+                     split.length);
     }
 
     @Test
     public void generateWithGivenLength() throws
-                                          Exception {
-        assertEquals( 12,
-                      UUID.uuid( 12 )
-                              .length() );
-        assertEquals( 6,
-                      UUID.uuid( 6 )
-                              .length() );
-        assertEquals( 100,
-                      UUID.uuid( 100 )
-                              .length() );
-
+            Exception {
+        assertEquals(12,
+                     UUID.uuid(12)
+                             .length());
+        assertEquals(6,
+                     UUID.uuid(6)
+                             .length());
+        assertEquals(100,
+                     UUID.uuid(100)
+                             .length());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void tooLongRadix() throws
-                               Exception {
-        UUID.uuid( 10,
-                   63 );
-
+            Exception {
+        UUID.uuid(10,
+                  63);
     }
 
     @Test
     public void generateWithGivenLengthAndRadix() throws
-                                                  Exception {
-        assertOnlyContainsCharacters( UUID.uuid( 10,
-                                                 2 ),
-                                      "0",
-                                      "1" );
-
+            Exception {
+        assertOnlyContainsCharacters(UUID.uuid(10,
+                                               2),
+                                     "0",
+                                     "1");
     }
 
-    private void assertOnlyContainsCharacters( final String uuid,
-                                               final String... chars ) {
+    private void assertOnlyContainsCharacters(final String uuid,
+                                              final String... chars) {
 
         String tmp = uuid;
-        for ( final String aChar : chars ) {
-            tmp = tmp.replaceAll( aChar,
-                                  "" );
+        for (final String aChar : chars) {
+            tmp = tmp.replaceAll(aChar,
+                                 "");
         }
 
-        assertTrue( "Found illegal characters: " + tmp,
-                    tmp.isEmpty() );
-
+        assertTrue("Found illegal characters: " + tmp,
+                   tmp.isEmpty());
     }
 }

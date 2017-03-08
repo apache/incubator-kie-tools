@@ -20,7 +20,7 @@ public class RevertCommitContent implements CommitContent {
 
     private final String refTree;
 
-    public RevertCommitContent( final String refTree ) {
+    public RevertCommitContent(final String refTree) {
         this.refTree = refTree;
     }
 

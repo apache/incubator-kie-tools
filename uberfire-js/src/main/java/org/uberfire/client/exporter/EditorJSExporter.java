@@ -20,7 +20,6 @@ import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 
@@ -37,10 +36,84 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchEditorActivity;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
-import static org.jboss.errai.ioc.client.QualifierUtil.*;
+import static org.jboss.errai.ioc.client.QualifierUtil.DEFAULT_QUALIFIERS;
 
 @ApplicationScoped
 public class EditorJSExporter implements UberfireJSExporter {
+
+    public static void registerEditor(final Object _obj) {
+        final JavaScriptObject obj = (JavaScriptObject) _obj;
+        if (JSNativeEditor.hasStringProperty(obj,
+                                             "id")) {
+            final SyncBeanManager beanManager = IOC.getBeanManager();
+            final ActivityBeansCache activityBeansCache = beanManager.lookupBean(ActivityBeansCache.class).getInstance();
+
+            final JSNativeEditor newNativeEditor = beanManager.lookupBean(JSNativeEditor.class).getInstance();
+            newNativeEditor.build(obj);
+
+            PlaceManager placeManager = beanManager.lookupBean(PlaceManager.class).getInstance();
+
+            JSEditorActivity activity = JSExporterUtils.findActivityIfExists(beanManager,
+                                                                             newNativeEditor.getId(),
+                                                                             JSEditorActivity.class);
+
+            if (activity == null) {
+                registerNewActivity(beanManager,
+                                    activityBeansCache,
+                                    newNativeEditor,
+                                    placeManager);
+            } else {
+                updateExistentActivity(newNativeEditor,
+                                       activity);
+            }
+        }
+    }
+
+    private static void updateExistentActivity(final JSNativeEditor newNativeEditor,
+                                               final JSEditorActivity activity) {
+        activity.setNativeEditor(newNativeEditor);
+    }
+
+    private static void registerNewActivity(final SyncBeanManager beanManager,
+                                            final ActivityBeansCache activityBeansCache,
+                                            final JSNativeEditor newNativeEditor,
+                                            final PlaceManager placeManager) {
+        final JSEditorActivity activity;
+        activity = new JSEditorActivity(newNativeEditor,
+                                        placeManager);
+
+        final Set<Annotation> qualifiers = new HashSet<Annotation>(Arrays.asList(DEFAULT_QUALIFIERS));
+        final SingletonBeanDef<JSEditorActivity, JSEditorActivity> beanDef = new SingletonBeanDef<JSEditorActivity, JSEditorActivity>(activity,
+                                                                                                                                      JSEditorActivity.class,
+                                                                                                                                      qualifiers,
+                                                                                                                                      newNativeEditor.getId(),
+                                                                                                                                      true,
+                                                                                                                                      WorkbenchEditorActivity.class,
+                                                                                                                                      Activity.class);
+        beanManager.registerBean(beanDef);
+        beanManager.registerBeanTypeAlias(beanDef,
+                                          WorkbenchEditorActivity.class);
+        beanManager.registerBeanTypeAlias(beanDef,
+                                          Activity.class);
+
+        Class<? extends ClientResourceType> resourceTypeClass = getResourceTypeClass(beanManager,
+                                                                                     newNativeEditor);
+        activityBeansCache.addNewEditorActivity(beanManager.lookupBeans(newNativeEditor.getId()).iterator().next(),
+                                                resourceTypeClass);
+    }
+
+    private static Class<? extends ClientResourceType> getResourceTypeClass(SyncBeanManager beanManager,
+                                                                            JSNativeEditor newNativeEditor) {
+
+        Collection<SyncBeanDef<ClientResourceType>> iocBeanDefs = beanManager.lookupBeans(ClientResourceType.class);
+        for (IOCBeanDef<ClientResourceType> iocBeanDef : iocBeanDefs) {
+            String beanClassName = iocBeanDef.getBeanClass().getName();
+            if (beanClassName.equalsIgnoreCase(newNativeEditor.getResourceType())) {
+                return (Class<? extends ClientResourceType>) iocBeanDef.getBeanClass();
+            }
+        }
+        throw new EditorResourceTypeNotFound();
+    }
 
     @Override
     public void export() {
@@ -50,70 +123,6 @@ public class EditorJSExporter implements UberfireJSExporter {
     private native void publish() /*-{
         $wnd.$registerEditor = @org.uberfire.client.exporter.EditorJSExporter::registerEditor(Ljava/lang/Object;);
     }-*/;
-
-    public static void registerEditor( final Object _obj ) {
-        final JavaScriptObject obj = (JavaScriptObject) _obj;
-        if ( JSNativeEditor.hasStringProperty( obj, "id" ) ) {
-            final SyncBeanManager beanManager = IOC.getBeanManager();
-            final ActivityBeansCache activityBeansCache = beanManager.lookupBean( ActivityBeansCache.class ).getInstance();
-
-            final JSNativeEditor newNativeEditor = beanManager.lookupBean( JSNativeEditor.class ).getInstance();
-            newNativeEditor.build( obj );
-
-            PlaceManager placeManager = beanManager.lookupBean( PlaceManager.class ).getInstance();
-
-            JSEditorActivity activity = JSExporterUtils.findActivityIfExists( beanManager,
-                                                                              newNativeEditor.getId(),
-                                                                              JSEditorActivity.class );
-
-            if ( activity == null ) {
-                registerNewActivity( beanManager, activityBeansCache, newNativeEditor, placeManager );
-            } else {
-                updateExistentActivity( newNativeEditor, activity );
-            }
-        }
-    }
-
-    private static void updateExistentActivity( final JSNativeEditor newNativeEditor,
-                                                final JSEditorActivity activity ) {
-        activity.setNativeEditor( newNativeEditor );
-    }
-
-    private static void registerNewActivity( final SyncBeanManager beanManager,
-                                             final ActivityBeansCache activityBeansCache,
-                                             final JSNativeEditor newNativeEditor,
-                                             final PlaceManager placeManager ) {
-        final JSEditorActivity activity;
-        activity = new JSEditorActivity( newNativeEditor, placeManager );
-
-        final Set<Annotation> qualifiers = new HashSet<Annotation>( Arrays.asList( DEFAULT_QUALIFIERS ) );
-        final SingletonBeanDef<JSEditorActivity, JSEditorActivity> beanDef = new SingletonBeanDef<JSEditorActivity, JSEditorActivity>( activity,
-                                                                                                                                       JSEditorActivity.class,
-                                                                                                                                       qualifiers,
-                                                                                                                                       newNativeEditor.getId(),
-                                                                                                                                       true,
-                                                                                                                                       WorkbenchEditorActivity.class,
-                                                                                                                                       Activity.class );
-        beanManager.registerBean( beanDef );
-        beanManager.registerBeanTypeAlias( beanDef, WorkbenchEditorActivity.class );
-        beanManager.registerBeanTypeAlias( beanDef, Activity.class );
-
-        Class<? extends ClientResourceType> resourceTypeClass = getResourceTypeClass( beanManager, newNativeEditor );
-        activityBeansCache.addNewEditorActivity( beanManager.lookupBeans( newNativeEditor.getId() ).iterator().next(), resourceTypeClass );
-    }
-
-    private static Class<? extends ClientResourceType> getResourceTypeClass( SyncBeanManager beanManager,
-                                                                             JSNativeEditor newNativeEditor ) {
-
-        Collection<SyncBeanDef<ClientResourceType>> iocBeanDefs = beanManager.lookupBeans( ClientResourceType.class );
-        for ( IOCBeanDef<ClientResourceType> iocBeanDef : iocBeanDefs ) {
-            String beanClassName = iocBeanDef.getBeanClass().getName();
-            if ( beanClassName.equalsIgnoreCase( newNativeEditor.getResourceType() ) ) {
-                return (Class<? extends ClientResourceType>) iocBeanDef.getBeanClass();
-            }
-        }
-        throw new EditorResourceTypeNotFound();
-    }
 
     public static class EditorResourceTypeNotFound extends RuntimeException {
 

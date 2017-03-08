@@ -28,38 +28,37 @@ import org.uberfire.mvp.Command;
  */
 public class GenericModalFooter extends ModalFooter {
 
-    public void addButton( final String caption,
-                           final Command command,
-                           final ButtonType buttonType ) {
-        final Button button = new Button( caption,
-                                          new ClickHandler() {
-                                              @Override
-                                              public void onClick( ClickEvent event ) {
-                                                  if ( command != null ) {
-                                                      command.execute();
-                                                  }
-                                              }
-                                          } );
-        button.setType( buttonType );
-        this.add( button );
+    public void addButton(final String caption,
+                          final Command command,
+                          final ButtonType buttonType) {
+        final Button button = new Button(caption,
+                                         new ClickHandler() {
+                                             @Override
+                                             public void onClick(ClickEvent event) {
+                                                 if (command != null) {
+                                                     command.execute();
+                                                 }
+                                             }
+                                         });
+        button.setType(buttonType);
+        this.add(button);
     }
 
-    public void addButton( final String caption,
-                           final Command command,
-                           final IconType iconType,
-                           final ButtonType buttonType ) {
-        final Button button = new Button( caption,
-                                          new ClickHandler() {
-                                              @Override
-                                              public void onClick( ClickEvent event ) {
-                                                  if ( command != null ) {
-                                                      command.execute();
-                                                  }
-                                              }
-                                          } );
-        button.setType( buttonType );
-        button.setIcon( iconType );
-        this.add( button );
+    public void addButton(final String caption,
+                          final Command command,
+                          final IconType iconType,
+                          final ButtonType buttonType) {
+        final Button button = new Button(caption,
+                                         new ClickHandler() {
+                                             @Override
+                                             public void onClick(ClickEvent event) {
+                                                 if (command != null) {
+                                                     command.execute();
+                                                 }
+                                             }
+                                         });
+        button.setType(buttonType);
+        button.setIcon(iconType);
+        this.add(button);
     }
-
 }

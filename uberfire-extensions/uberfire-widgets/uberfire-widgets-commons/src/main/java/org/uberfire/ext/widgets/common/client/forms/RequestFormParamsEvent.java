@@ -24,12 +24,11 @@ public class RequestFormParamsEvent {
     public RequestFormParamsEvent() {
     }
 
-    public RequestFormParamsEvent( String action ) {
+    public RequestFormParamsEvent(String action) {
         this.action = action;
     }
 
     public String getAction() {
         return action;
     }
-
 }

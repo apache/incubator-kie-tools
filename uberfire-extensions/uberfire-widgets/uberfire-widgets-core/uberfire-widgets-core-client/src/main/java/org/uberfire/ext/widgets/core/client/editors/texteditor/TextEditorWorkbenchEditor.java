@@ -39,7 +39,7 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.PlaceRequest;
 
 @Dependent
-@WorkbenchEditor(identifier = "TextEditor", supportedTypes = { TextResourceType.class, DotResourceType.class })
+@WorkbenchEditor(identifier = "TextEditor", supportedTypes = {TextResourceType.class, DotResourceType.class})
 public class TextEditorWorkbenchEditor
         extends TextEditorPresenter {
 
@@ -50,35 +50,35 @@ public class TextEditorWorkbenchEditor
     private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
 
     @OnStartup
-    public void onStartup( final Path path,
-                           final PlaceRequest placeRequest ) {
-        vfsServices.call( new RemoteCallback<String>() {
+    public void onStartup(final Path path,
+                          final PlaceRequest placeRequest) {
+        vfsServices.call(new RemoteCallback<String>() {
             @Override
-            public void callback( String response ) {
-                if ( response == null ) {
-                    view.setContent( CoreConstants.INSTANCE.EmptyEntry(),
-                                     getAceEditorMode() );
+            public void callback(String response) {
+                if (response == null) {
+                    view.setContent(CoreConstants.INSTANCE.EmptyEntry(),
+                                    getAceEditorMode());
                 } else {
-                    view.setContent( response,
-                                     getAceEditorMode() );
+                    view.setContent(response,
+                                    getAceEditorMode());
                 }
                 changeTitleWidgetEvent.fire(
                         new ChangeTitleWidgetEvent(
                                 placeRequest,
-                                CoreConstants.INSTANCE.TextEditor() + " [" + path.getFileName() + "]" ) );
-
+                                CoreConstants.INSTANCE.TextEditor() + " [" + path.getFileName() + "]"));
             }
-        } ).readAllString( path );
+        }).readAllString(path);
     }
 
     @OnSave
     public void onSave() {
-        vfsServices.call( new RemoteCallback<Path>() {
+        vfsServices.call(new RemoteCallback<Path>() {
             @Override
-            public void callback( Path response ) {
-                view.setDirty( false );
+            public void callback(Path response) {
+                view.setDirty(false);
             }
-        } ).write( path, view.getContent() );
+        }).write(path,
+                 view.getContent());
     }
 
     @IsDirty
@@ -105,5 +105,4 @@ public class TextEditorWorkbenchEditor
     public IsWidget getWidget() {
         return super.getWidget();
     }
-
 }

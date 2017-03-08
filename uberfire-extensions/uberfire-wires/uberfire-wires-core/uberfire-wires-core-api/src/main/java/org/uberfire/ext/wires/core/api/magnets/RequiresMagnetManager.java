@@ -20,6 +20,5 @@ package org.uberfire.ext.wires.core.api.magnets;
  */
 public interface RequiresMagnetManager {
 
-    void setMagnetManager( final MagnetManager magnetManager );
-
+    void setMagnetManager(final MagnetManager magnetManager);
 }

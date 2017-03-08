@@ -25,16 +25,16 @@ public class InvalidPathException extends IllegalArgumentException {
     public InvalidPathException() {
     }
 
-    public InvalidPathException( String input,
-                                 String reason,
-                                 int index ) {
-        this( input,
-              reason );
+    public InvalidPathException(String input,
+                                String reason,
+                                int index) {
+        this(input,
+             reason);
         this.index = index;
     }
 
-    public InvalidPathException( String input,
-                                 String reason ) {
+    public InvalidPathException(String input,
+                                String reason) {
         this.input = input;
         this.reason = reason;
     }

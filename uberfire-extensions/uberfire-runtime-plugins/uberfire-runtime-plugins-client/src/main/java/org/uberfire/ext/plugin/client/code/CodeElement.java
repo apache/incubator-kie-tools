@@ -27,9 +27,9 @@ import org.uberfire.mvp.ParameterizedCommand;
  */
 public interface CodeElement {
 
-    void addNav( final DropDownMenu parent,
-                 final Button dropdownButton,
-                 final ParameterizedCommand<CodeType> onChange );
+    void addNav(final DropDownMenu parent,
+                final Button dropdownButton,
+                final ParameterizedCommand<CodeType> onChange);
 
     IconType getIcon();
 

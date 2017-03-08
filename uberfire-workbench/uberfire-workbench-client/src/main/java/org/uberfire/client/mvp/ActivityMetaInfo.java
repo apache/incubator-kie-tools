@@ -31,62 +31,58 @@ import org.uberfire.commons.data.Pair;
 
 public class ActivityMetaInfo {
 
-    static Pair<Integer, List<String>> generate(final IOCBeanDef<?> beanDefinition){
+    static Pair<Integer, List<String>> generate(final IOCBeanDef<?> beanDefinition) {
 
         AssociatedResources associatedResources = null;
         DynamicAnnotation dynAssociatedResources = null;
-        
+
         Priority priority = null;
         DynamicAnnotation dynPriority = null;
 
         final Set<Annotation> annotations = beanDefinition.getQualifiers();
         final boolean dynamic = beanDefinition.isDynamic();
-        
-        for ( Annotation a : annotations ) {
+
+        for (Annotation a : annotations) {
             final DynamicAnnotation da = (dynamic) ? (DynamicAnnotation) a : null;
-            if ( a instanceof AssociatedResources )  {
+            if (a instanceof AssociatedResources) {
                 associatedResources = (AssociatedResources) a;
-            }
-            else if (da != null && AssociatedResources.class.getName().equals( da.getName() ) ) {
+            } else if (da != null && AssociatedResources.class.getName().equals(da.getName())) {
                 dynAssociatedResources = da;
-            }            
-            else if ( a instanceof Priority) {
+            } else if (a instanceof Priority) {
                 priority = (Priority) a;
-            }
-            else if (da != null && Priority.class.getName().equals( da.getName() ) ) {
+            } else if (da != null && Priority.class.getName().equals(da.getName())) {
                 dynPriority = da;
             }
         }
 
-        if ( associatedResources == null && dynAssociatedResources == null ) {
+        if (associatedResources == null && dynAssociatedResources == null) {
             return null;
         }
 
         final int priorityValue;
-        if ( priority == null && dynPriority == null ) {
+        if (priority == null && dynPriority == null) {
             priorityValue = 0;
         } else {
             if (dynamic) {
-                priorityValue = Integer.valueOf( dynPriority.getMember( "value" ) );
-            }
-            else {
+                priorityValue = Integer.valueOf(dynPriority.getMember("value"));
+            } else {
                 priorityValue = priority.value();
             }
         }
 
         final List<String> types = new ArrayList<String>();
         if (dynamic) {
-            String resourceTypes = dynAssociatedResources.getMember( "value" );
-            resourceTypes = resourceTypes.substring( 1, resourceTypes.length() - 1 );
-            types.addAll( Arrays.asList( resourceTypes.split( "," ) ) );
-        }
-        else {
-            for ( Class<? extends ClientResourceType> type : associatedResources.value() ) {
-                types.add( type.getName() );
+            String resourceTypes = dynAssociatedResources.getMember("value");
+            resourceTypes = resourceTypes.substring(1,
+                                                    resourceTypes.length() - 1);
+            types.addAll(Arrays.asList(resourceTypes.split(",")));
+        } else {
+            for (Class<? extends ClientResourceType> type : associatedResources.value()) {
+                types.add(type.getName());
             }
         }
 
-        return Pair.newPair( priorityValue, types );
+        return Pair.newPair(priorityValue,
+                            types);
     }
-
 }

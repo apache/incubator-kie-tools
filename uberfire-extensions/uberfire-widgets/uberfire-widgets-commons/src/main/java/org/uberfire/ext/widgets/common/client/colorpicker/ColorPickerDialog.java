@@ -20,51 +20,52 @@ import com.google.gwt.user.client.ui.Widget;
 import org.uberfire.ext.widgets.common.client.colorpicker.dialog.Dialog;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 
-public class 	ColorPickerDialog extends Dialog {
-	private SaturationLightnessPicker slPicker;
-	private HuePicker huePicker;
-	private String color;
+public class ColorPickerDialog extends Dialog {
 
-	@Override
-	protected Widget createDialogArea() {
-		setText(CommonConstants.INSTANCE.ColorPickerTitle());
-		
-		HorizontalPanel panel = new HorizontalPanel();
-		
-		// the pickers
-		slPicker = new SaturationLightnessPicker();
-		panel.add(slPicker);
-		huePicker = new HuePicker();
-		panel.add(huePicker);
+    private SaturationLightnessPicker slPicker;
+    private HuePicker huePicker;
+    private String color;
 
-		// bind saturation/lightness picker and hue picker together
-		huePicker.addHueChangedHandler(new HueChangedHandler() {
-			public void hueChanged(HueChangedEvent event) {
-				slPicker.setHue(event.getHue());
-			}
-		});
+    @Override
+    protected Widget createDialogArea() {
+        setText(CommonConstants.INSTANCE.ColorPickerTitle());
 
-		return panel;
-	}
+        HorizontalPanel panel = new HorizontalPanel();
 
-	public void setColor(String color) {
-		int[] rgb = ColorUtils.getRGB(color);
-		int[] hsl = ColorUtils.rgb2hsl(rgb);
-		huePicker.setHue(hsl[0]);
-		slPicker.setColor(color);
-	}
-	
-	public String getColor() {
-		return color;
-	}
-	
-	@Override
-	protected void buttonClicked(Widget button) {
-		// remember color when "OK" is clicked
-		if (button == getOkButton()) {
-			color = slPicker.getColor();
-		}
-		
-		close(button == getCancelButton());
-	}
+        // the pickers
+        slPicker = new SaturationLightnessPicker();
+        panel.add(slPicker);
+        huePicker = new HuePicker();
+        panel.add(huePicker);
+
+        // bind saturation/lightness picker and hue picker together
+        huePicker.addHueChangedHandler(new HueChangedHandler() {
+            public void hueChanged(HueChangedEvent event) {
+                slPicker.setHue(event.getHue());
+            }
+        });
+
+        return panel;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        int[] rgb = ColorUtils.getRGB(color);
+        int[] hsl = ColorUtils.rgb2hsl(rgb);
+        huePicker.setHue(hsl[0]);
+        slPicker.setColor(color);
+    }
+
+    @Override
+    protected void buttonClicked(Widget button) {
+        // remember color when "OK" is clicked
+        if (button == getOkButton()) {
+            color = slPicker.getColor();
+        }
+
+        close(button == getCancelButton());
+    }
 }

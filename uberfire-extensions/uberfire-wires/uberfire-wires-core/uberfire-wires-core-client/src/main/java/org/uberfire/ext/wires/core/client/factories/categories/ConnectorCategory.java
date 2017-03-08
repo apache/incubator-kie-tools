@@ -22,7 +22,6 @@ public class ConnectorCategory extends Category {
     public static final ConnectorCategory CATEGORY = new ConnectorCategory();
 
     private ConnectorCategory() {
-        super( "Connectors" );
+        super("Connectors");
     }
-
 }

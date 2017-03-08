@@ -25,21 +25,19 @@ import org.gwtbootstrap3.client.ui.Column;
 
 public class PropertyEditorItemWidget extends Composite {
 
+    private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
     @UiField
     Column item;
 
     public PropertyEditorItemWidget() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
-    public void add(Widget widget){
-        item.add( widget );
+    public void add(Widget widget) {
+        item.add(widget);
     }
 
     interface MyUiBinder extends UiBinder<Widget, PropertyEditorItemWidget> {
 
     }
-
-    private static MyUiBinder uiBinder = GWT.create( MyUiBinder.class );
-
 }

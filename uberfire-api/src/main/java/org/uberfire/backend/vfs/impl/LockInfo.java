@@ -31,29 +31,31 @@ public class LockInfo {
     private final Path file;
     private final transient Path lock;
 
-    public LockInfo( @MapsTo("locked") boolean locked,
-                     @MapsTo("lockedBy") String lockedBy,
-                     @MapsTo("file") Path file ) {
+    public LockInfo(@MapsTo("locked") boolean locked,
+                    @MapsTo("lockedBy") String lockedBy,
+                    @MapsTo("file") Path file) {
 
-        this( locked,
-              lockedBy,
-              file,
-              null );
+        this(locked,
+             lockedBy,
+             file,
+             null);
     }
 
-    public LockInfo( boolean locked,
-                     String lockedBy,
-                     Path file,
-                     Path lock ) {
+    public LockInfo(boolean locked,
+                    String lockedBy,
+                    Path file,
+                    Path lock) {
 
         this.locked = locked;
         this.lockedBy = lockedBy;
         this.file = file;
         this.lock = lock;
     }
-    
+
     public static LockInfo unlocked() {
-        return new LockInfo(false, null, null);
+        return new LockInfo(false,
+                            null,
+                            null);
     }
 
     public boolean isLocked() {
@@ -83,26 +85,34 @@ public class LockInfo {
     }
 
     @Override
-    public boolean equals( Object obj ) {
-        if ( this == obj )
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
-        if ( obj == null )
+        }
+        if (obj == null) {
             return false;
-        if ( getClass() != obj.getClass() )
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         LockInfo other = (LockInfo) obj;
-        if ( file == null ) {
-            if ( other.file != null )
+        if (file == null) {
+            if (other.file != null) {
                 return false;
-        } else if ( !file.equals( other.file ) )
+            }
+        } else if (!file.equals(other.file)) {
             return false;
-        if ( locked != other.locked )
+        }
+        if (locked != other.locked) {
             return false;
-        if ( lockedBy == null ) {
-            if ( other.lockedBy != null )
+        }
+        if (lockedBy == null) {
+            if (other.lockedBy != null) {
                 return false;
-        } else if ( !lockedBy.equals( other.lockedBy ) )
+            }
+        } else if (!lockedBy.equals(other.lockedBy)) {
             return false;
+        }
         return true;
     }
 
@@ -110,5 +120,4 @@ public class LockInfo {
     public String toString() {
         return "[file=" + file + ", lockedBy=" + lockedBy + "]";
     }
-    
 }

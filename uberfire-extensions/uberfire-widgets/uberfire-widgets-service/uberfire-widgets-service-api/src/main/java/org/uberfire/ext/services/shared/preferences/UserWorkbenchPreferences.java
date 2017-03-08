@@ -30,19 +30,18 @@ public class UserWorkbenchPreferences extends UserPreference {
     public UserWorkbenchPreferences() {
     }
 
-    public UserWorkbenchPreferences( final String language ) {
+    public UserWorkbenchPreferences(final String language) {
         super();
         super.type = UserPreferencesType.WORKBENCHSETTINGS;
         super.preferenceKey = "settings";
         this.language = language;
-
     }
 
     public Map<String, String> getPerspectiveViewMode() {
         return perspectiveViewMode;
     }
 
-    public void setPerspectiveViewMode( final Map<String, String> perspectiveViewMode ) {
+    public void setPerspectiveViewMode(final Map<String, String> perspectiveViewMode) {
         this.perspectiveViewMode = perspectiveViewMode;
     }
 
@@ -50,25 +49,25 @@ public class UserWorkbenchPreferences extends UserPreference {
         return language;
     }
 
-    public void setLanguage( final String language ) {
+    public void setLanguage(final String language) {
         this.language = language;
     }
 
-    public String getViewMode( final String perspective ) {
-        return perspectiveViewMode.get( perspective );
+    public String getViewMode(final String perspective) {
+        return perspectiveViewMode.get(perspective);
     }
 
-    public void setViewMode( final String perspective,
-                             final String viewMode ) {
-        perspectiveViewMode.put( perspective,
-                                 viewMode);
-    }
-
-    public void setUseWorkbenchInCompactMode( boolean useWorkbenchInCompactMode ) {
-        this.useWorkbenchInCompactMode = useWorkbenchInCompactMode;
+    public void setViewMode(final String perspective,
+                            final String viewMode) {
+        perspectiveViewMode.put(perspective,
+                                viewMode);
     }
 
     public boolean isUseWorkbenchInCompactMode() {
         return useWorkbenchInCompactMode;
+    }
+
+    public void setUseWorkbenchInCompactMode(boolean useWorkbenchInCompactMode) {
+        this.useWorkbenchInCompactMode = useWorkbenchInCompactMode;
     }
 }

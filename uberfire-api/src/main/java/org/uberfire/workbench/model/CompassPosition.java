@@ -25,13 +25,20 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @JsType
 public enum CompassPosition implements Position {
 
-    NONE, //Don't add anywhere
-    NORTH, //North internal edge of a Parent panel
-    SOUTH, //South internal edge of a Parent panel
-    EAST, //East internal edge of a Parent panel
-    WEST, //West internal edge of a Parent panel
-    SELF, //Add to the Parent panel
-    ROOT, //Add to the Workbench root
+    NONE,
+    //Don't add anywhere
+    NORTH,
+    //North internal edge of a Parent panel
+    SOUTH,
+    //South internal edge of a Parent panel
+    EAST,
+    //East internal edge of a Parent panel
+    WEST,
+    //West internal edge of a Parent panel
+    SELF,
+    //Add to the Parent panel
+    ROOT,
+    //Add to the Workbench root
     CENTER; // Add to the panel center
 
     @Override

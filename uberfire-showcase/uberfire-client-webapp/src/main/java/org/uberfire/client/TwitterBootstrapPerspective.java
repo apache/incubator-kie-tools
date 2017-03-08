@@ -16,6 +16,8 @@
 
 package org.uberfire.client;
 
+import javax.inject.Inject;
+
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -26,9 +28,6 @@ import org.uberfire.client.workbench.panels.impl.MultiListWorkbenchPanelPresente
 import org.uberfire.client.workbench.panels.impl.MultiTabWorkbenchPanelPresenter;
 import org.uberfire.client.workbench.panels.impl.SimpleDnDWorkbenchPanelPresenter;
 
-import javax.inject.Inject;
-
-
 @Templated
 @WorkbenchPerspective(identifier = "TwitterBootstrapPerspective")
 public class TwitterBootstrapPerspective implements IsElement {
@@ -36,19 +35,18 @@ public class TwitterBootstrapPerspective implements IsElement {
     @Inject
     @DataField
     @WorkbenchPanel(panelType = MultiTabWorkbenchPanelPresenter.class,
-                    parts = "MoodScreen")
+            parts = "MoodScreen")
     Div tabPanel;
 
     @Inject
     @DataField
     @WorkbenchPanel(panelType = MultiListWorkbenchPanelPresenter.class,
-                    parts = "HelloWorldScreen")
+            parts = "HelloWorldScreen")
     Div listPanel;
 
     @Inject
     @DataField
     @WorkbenchPanel(panelType = SimpleDnDWorkbenchPanelPresenter.class,
-                    parts = "HomeScreen")
+            parts = "HomeScreen")
     Div simplePanel;
-
 }

@@ -36,7 +36,10 @@ public class PermissionCheckImpl implements PermissionCheck {
     protected VotingStrategy votingStrategy;
     protected Boolean result = null;
 
-    public PermissionCheckImpl(PermissionManager permissionManager, String permission, User user, VotingStrategy votingStrategy) {
+    public PermissionCheckImpl(PermissionManager permissionManager,
+                               String permission,
+                               User user,
+                               VotingStrategy votingStrategy) {
         this.permissionManager = permissionManager;
         this.permission = permission;
         this.user = user;
@@ -44,8 +47,11 @@ public class PermissionCheckImpl implements PermissionCheck {
     }
 
     protected void check() {
-        Permission p = permissionManager.createPermission(permission, true);
-        AuthorizationResult authz = permissionManager.checkPermission(p, user, votingStrategy);
+        Permission p = permissionManager.createPermission(permission,
+                                                          true);
+        AuthorizationResult authz = permissionManager.checkPermission(p,
+                                                                      user,
+                                                                      votingStrategy);
         result = !AuthorizationResult.ACCESS_DENIED.equals(authz);
     }
 

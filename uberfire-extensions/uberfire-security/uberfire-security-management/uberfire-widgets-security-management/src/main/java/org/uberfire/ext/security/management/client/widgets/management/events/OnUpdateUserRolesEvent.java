@@ -16,20 +16,20 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.events;
 
-import org.uberfire.workbench.events.UberFireEvent;
-
 import java.util.Set;
+
+import org.uberfire.workbench.events.UberFireEvent;
 
 /**
  * <p>A user is updating assigned user's roles.</p>
- * 
  * @since 0.8.0
  */
 public class OnUpdateUserRolesEvent extends ContextualEvent implements UberFireEvent {
 
     private Set<String> roles;
 
-    public OnUpdateUserRolesEvent(Object context, Set<String> roles) {
+    public OnUpdateUserRolesEvent(Object context,
+                                  Set<String> roles) {
         super(context);
         this.roles = roles;
     }

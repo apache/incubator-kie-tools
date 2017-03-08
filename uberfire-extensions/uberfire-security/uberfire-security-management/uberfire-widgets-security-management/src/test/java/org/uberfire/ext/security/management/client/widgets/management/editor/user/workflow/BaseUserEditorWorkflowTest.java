@@ -16,6 +16,9 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.editor.user.workflow;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.security.shared.api.Group;
@@ -40,9 +43,6 @@ import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
@@ -51,19 +51,28 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
 
-    @Mock EventSourceMock<OnErrorEvent> errorEvent;
-    @Mock EventSourceMock<DeleteUserEvent> deleteUserEvent;
-    @Mock EventSourceMock<SaveUserEvent> saveUserEvent;
-    @Mock ConfirmBox confirmBox;
-    @Mock UserEditor userEditor;
-    @Mock UserEditorDriver userEditorDriver;
-    @Mock ChangePassword changePassword;
-    @Mock LoadingBox loadingBox;
-    @Mock EntityWorkflowView view;
-
+    @Mock
+    EventSourceMock<OnErrorEvent> errorEvent;
+    @Mock
+    EventSourceMock<DeleteUserEvent> deleteUserEvent;
+    @Mock
+    EventSourceMock<SaveUserEvent> saveUserEvent;
+    @Mock
+    ConfirmBox confirmBox;
+    @Mock
+    UserEditor userEditor;
+    @Mock
+    UserEditorDriver userEditorDriver;
+    @Mock
+    ChangePassword changePassword;
+    @Mock
+    LoadingBox loadingBox;
+    @Mock
+    EntityWorkflowView view;
+    @Mock
+    User user;
     private BaseUserEditorWorkflow tested;
-    @Mock User user;
-    
+
     @Before
     public void setup() {
         super.setup();
@@ -94,10 +103,18 @@ public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
             }
         }).when(userManagerService).update(any(User.class));
 
-        tested = new BaseUserEditorWorkflow(userSystemManager, errorEvent, workbenchNotification, deleteUserEvent, saveUserEvent,
-                confirmBox, userEditor, userEditorDriver, changePassword, loadingBox, view) {
+        tested = new BaseUserEditorWorkflow(userSystemManager,
+                                            errorEvent,
+                                            workbenchNotification,
+                                            deleteUserEvent,
+                                            saveUserEvent,
+                                            confirmBox,
+                                            userEditor,
+                                            userEditorDriver,
+                                            changePassword,
+                                            loadingBox,
+                                            view) {
         };
-        
     }
 
     @Test
@@ -105,21 +122,38 @@ public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
         final String userId = "user1";
         tested.isDirty = false;
         tested.doShow(userId);
-        verify(userManagerService, times(1)).get(anyString());
-        verify(view, times(1)).setCancelButtonVisible(true);
-        verify(view, times(1)).setCallback(any(EntityWorkflowView.Callback.class));
-        verify(view, times(1)).setSaveButtonText(anyString());
-        verify(view, times(1)).setWidget(any(IsWidget.class));
-        verify(view, times(1)).setSaveButtonVisible(true);
-        verify(view, times(2)).setSaveButtonEnabled(false);
-        verify(view, times(2)).clearNotification();
-        verify(userEditor, times(1)).clear();
-        verify(loadingBox, times(1)).show();
-        verify(loadingBox, times(1)).hide();
-        verify(userEditorDriver, times(1)).show(user, userEditor);
-        verify(userEditorDriver, times(0)).edit(user, userEditor);
-        verify(view, times(1)).setCancelButtonVisible(false);
-        verify(view, times(1)).setSaveButtonVisible(false);
+        verify(userManagerService,
+               times(1)).get(anyString());
+        verify(view,
+               times(1)).setCancelButtonVisible(true);
+        verify(view,
+               times(1)).setCallback(any(EntityWorkflowView.Callback.class));
+        verify(view,
+               times(1)).setSaveButtonText(anyString());
+        verify(view,
+               times(1)).setWidget(any(IsWidget.class));
+        verify(view,
+               times(1)).setSaveButtonVisible(true);
+        verify(view,
+               times(2)).setSaveButtonEnabled(false);
+        verify(view,
+               times(2)).clearNotification();
+        verify(userEditor,
+               times(1)).clear();
+        verify(loadingBox,
+               times(1)).show();
+        verify(loadingBox,
+               times(1)).hide();
+        verify(userEditorDriver,
+               times(1)).show(user,
+                              userEditor);
+        verify(userEditorDriver,
+               times(0)).edit(user,
+                              userEditor);
+        verify(view,
+               times(1)).setCancelButtonVisible(false);
+        verify(view,
+               times(1)).setSaveButtonVisible(false);
     }
 
     @Test
@@ -127,7 +161,8 @@ public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
         final Command command = mock(Command.class);
         tested.isDirty = false;
         tested.checkDirty(command);
-        verify(command, times(1)).execute();
+        verify(command,
+               times(1)).execute();
         assertNoViewCalls();
     }
 
@@ -136,8 +171,13 @@ public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
         final Command command = mock(Command.class);
         tested.isDirty = true;
         tested.checkDirty(command);
-        verify(confirmBox, times(1)).show(anyString(), anyString(), any(), any());
-        verify(command, times(0)).execute();
+        verify(confirmBox,
+               times(1)).show(anyString(),
+                              anyString(),
+                              any(),
+                              any());
+        verify(command,
+               times(0)).execute();
         assertNoViewCalls();
     }
 
@@ -145,51 +185,84 @@ public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
     public void testSetDirtyTrue() {
         tested.user = user;
         tested.setDirty(true);
-        verify(view, times(0)).setCancelButtonVisible(anyBoolean());
-        verify(view, times(0)).setCallback(any(EntityWorkflowView.Callback.class));
-        verify(view, times(0)).setSaveButtonText(anyString());
-        verify(view, times(0)).setWidget(any(IsWidget.class));
-        verify(view, times(0)).setSaveButtonVisible(anyBoolean());
-        verify(view, times(1)).setSaveButtonEnabled(true);
-        verify(view, times(1)).showNotification(anyString());
-        verify(view, times(0)).clearNotification();
-        verify(loadingBox, times(0)).show();
-        verify(loadingBox, times(0)).hide();
+        verify(view,
+               times(0)).setCancelButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setCallback(any(EntityWorkflowView.Callback.class));
+        verify(view,
+               times(0)).setSaveButtonText(anyString());
+        verify(view,
+               times(0)).setWidget(any(IsWidget.class));
+        verify(view,
+               times(0)).setSaveButtonVisible(anyBoolean());
+        verify(view,
+               times(1)).setSaveButtonEnabled(true);
+        verify(view,
+               times(1)).showNotification(anyString());
+        verify(view,
+               times(0)).clearNotification();
+        verify(loadingBox,
+               times(0)).show();
+        verify(loadingBox,
+               times(0)).hide();
     }
 
     @Test
     public void testSetDirtyFalse() {
         tested.setDirty(false);
-        verify(view, times(0)).setCancelButtonVisible(anyBoolean());
-        verify(view, times(0)).setCallback(any(EntityWorkflowView.Callback.class));
-        verify(view, times(0)).setSaveButtonText(anyString());
-        verify(view, times(0)).setWidget(any(IsWidget.class));
-        verify(view, times(0)).setSaveButtonVisible(anyBoolean());
-        verify(view, times(1)).setSaveButtonEnabled(false);
-        verify(view, times(0)).showNotification(anyString());
-        verify(view, times(1)).clearNotification();
-        verify(loadingBox, times(0)).show();
-        verify(loadingBox, times(0)).hide();
+        verify(view,
+               times(0)).setCancelButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setCallback(any(EntityWorkflowView.Callback.class));
+        verify(view,
+               times(0)).setSaveButtonText(anyString());
+        verify(view,
+               times(0)).setWidget(any(IsWidget.class));
+        verify(view,
+               times(0)).setSaveButtonVisible(anyBoolean());
+        verify(view,
+               times(1)).setSaveButtonEnabled(false);
+        verify(view,
+               times(0)).showNotification(anyString());
+        verify(view,
+               times(1)).clearNotification();
+        verify(loadingBox,
+               times(0)).show();
+        verify(loadingBox,
+               times(0)).hide();
     }
 
     @Test
     public void testEdit() {
         tested.user = user;
         tested.edit();
-        verify(userEditorDriver, times(1)).edit(user, userEditor);
-        verify(userEditorDriver, times(0)).show(user, userEditor);
-        verify(view, times(1)).setCancelButtonVisible(true);
-        verify(view, times(0)).setCallback(any(EntityWorkflowView.Callback.class));
-        verify(view, times(0)).setSaveButtonText(anyString());
-        verify(view, times(0)).setWidget(any(IsWidget.class));
-        verify(view, times(1)).setSaveButtonVisible(true);
-        verify(view, times(1)).setSaveButtonEnabled(false);
-        verify(view, times(0)).showNotification(anyString());
-        verify(view, times(0)).clearNotification();
-        verify(loadingBox, times(0)).show();
-        verify(loadingBox, times(0)).hide();
+        verify(userEditorDriver,
+               times(1)).edit(user,
+                              userEditor);
+        verify(userEditorDriver,
+               times(0)).show(user,
+                              userEditor);
+        verify(view,
+               times(1)).setCancelButtonVisible(true);
+        verify(view,
+               times(0)).setCallback(any(EntityWorkflowView.Callback.class));
+        verify(view,
+               times(0)).setSaveButtonText(anyString());
+        verify(view,
+               times(0)).setWidget(any(IsWidget.class));
+        verify(view,
+               times(1)).setSaveButtonVisible(true);
+        verify(view,
+               times(1)).setSaveButtonEnabled(false);
+        verify(view,
+               times(0)).showNotification(anyString());
+        verify(view,
+               times(0)).clearNotification();
+        verify(loadingBox,
+               times(0)).show();
+        verify(loadingBox,
+               times(0)).hide();
     }
-
 
     @Test
     public void testDoSaveWithoutGroupAssignment() {
@@ -200,18 +273,22 @@ public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
         when(userEditor.canAssignRoles()).thenReturn(false);
         tested.user = user;
         tested.doSave();
-        verify(userManagerService, times(1)).update(any(User.class));
-        verify(loadingBox, times(2)).show();
-        verify(loadingBox, times(2)).hide();
+        verify(userManagerService,
+               times(1)).update(any(User.class));
+        verify(loadingBox,
+               times(2)).show();
+        verify(loadingBox,
+               times(2)).hide();
     }
 
     @Test
     public void testDoShowChangePassword() {
         tested.user = user;
         tested.doChangePassword();
-        verify(changePassword, times(1)).show(anyString(), any(ChangePassword.ChangePasswordCallback.class));
+        verify(changePassword,
+               times(1)).show(anyString(),
+                              any(ChangePassword.ChangePasswordCallback.class));
         assertNoViewCalls();
-        
     }
 
     @Test
@@ -224,38 +301,65 @@ public class BaseUserEditorWorkflowTest extends AbstractSecurityManagementTest {
                 callback.execute();
                 return null;
             }
-        }).when(confirmBox).show(anyString(), anyString(), any(), any());
+        }).when(confirmBox).show(anyString(),
+                                 anyString(),
+                                 any(),
+                                 any());
         tested.doDelete();
-        verify(confirmBox, times(1)).show(anyString(), anyString(), any(), any());
-        verify(userManagerService, times(1)).delete(anyString());
-        verify(loadingBox, times(1)).show();
-        verify(loadingBox, times(1)).hide();
-        verify(deleteUserEvent, times(1)).fire(any(DeleteUserEvent.class));
-        verify(workbenchNotification, times(1)).fire(any(NotificationEvent.class));
-        verify(view, times(0)).setCancelButtonVisible(anyBoolean());
-        verify(view, times(0)).setCallback(any(EntityWorkflowView.Callback.class));
-        verify(view, times(0)).setSaveButtonText(anyString());
-        verify(view, times(0)).setWidget(any(IsWidget.class));
-        verify(view, times(0)).setSaveButtonVisible(anyBoolean());
-        verify(view, times(1)).setSaveButtonEnabled(false);
-        verify(view, times(0)).showNotification(anyString());
-        verify(view, times(2)).clearNotification();
+        verify(confirmBox,
+               times(1)).show(anyString(),
+                              anyString(),
+                              any(),
+                              any());
+        verify(userManagerService,
+               times(1)).delete(anyString());
+        verify(loadingBox,
+               times(1)).show();
+        verify(loadingBox,
+               times(1)).hide();
+        verify(deleteUserEvent,
+               times(1)).fire(any(DeleteUserEvent.class));
+        verify(workbenchNotification,
+               times(1)).fire(any(NotificationEvent.class));
+        verify(view,
+               times(0)).setCancelButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setCallback(any(EntityWorkflowView.Callback.class));
+        verify(view,
+               times(0)).setSaveButtonText(anyString());
+        verify(view,
+               times(0)).setWidget(any(IsWidget.class));
+        verify(view,
+               times(0)).setSaveButtonVisible(anyBoolean());
+        verify(view,
+               times(1)).setSaveButtonEnabled(false);
+        verify(view,
+               times(0)).showNotification(anyString());
+        verify(view,
+               times(2)).clearNotification();
     }
-    
-    
+
     private void assertNoViewCalls() {
-        verify(view, times(0)).setCancelButtonVisible(anyBoolean());
-        verify(view, times(0)).setCallback(any(EntityWorkflowView.Callback.class));
-        verify(view, times(0)).setSaveButtonText(anyString());
-        verify(view, times(0)).setWidget(any(IsWidget.class));
-        verify(view, times(0)).setSaveButtonVisible(anyBoolean());
-        verify(view, times(0)).setSaveButtonEnabled(anyBoolean());
-        verify(view, times(0)).showNotification(anyString());
-        verify(view, times(0)).clearNotification();
-        verify(loadingBox, times(0)).show();
-        verify(loadingBox, times(0)).hide();
+        verify(view,
+               times(0)).setCancelButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setCallback(any(EntityWorkflowView.Callback.class));
+        verify(view,
+               times(0)).setSaveButtonText(anyString());
+        verify(view,
+               times(0)).setWidget(any(IsWidget.class));
+        verify(view,
+               times(0)).setSaveButtonVisible(anyBoolean());
+        verify(view,
+               times(0)).setSaveButtonEnabled(anyBoolean());
+        verify(view,
+               times(0)).showNotification(anyString());
+        verify(view,
+               times(0)).clearNotification();
+        verify(loadingBox,
+               times(0)).show();
+        verify(loadingBox,
+               times(0)).hide();
     }
-    
-    
 }
 

@@ -16,18 +16,17 @@
 
 package org.uberfire.ext.security.management.keycloak.client.auth.adapter;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.keycloak.KeycloakSecurityContext;
 import org.uberfire.ext.security.management.keycloak.client.auth.TokenManager;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Token manager that uses current session's access token (provided by the KC client adapter)
- * 
  * @since 0.9.0.
  */
 public class KCAdapterContextTokenManager implements TokenManager {
-    
+
     private final HttpServletRequest request;
 
     public KCAdapterContextTokenManager(HttpServletRequest request) {
@@ -50,7 +49,6 @@ public class KCAdapterContextTokenManager implements TokenManager {
     }
 
     protected KeycloakSecurityContext getKCSessionContext() {
-        return  (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
+        return (KeycloakSecurityContext) request.getAttribute(KeycloakSecurityContext.class.getName());
     }
-    
 }

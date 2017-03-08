@@ -27,25 +27,24 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.columns.im
 public class RowNumberColumn extends BaseGridColumn<Integer> implements IsRowDragHandle {
 
     public RowNumberColumn() {
-        this( new ArrayList<HeaderMetaData>() {{
-                  add( new BaseHeaderMetaData( "#" ) );
-              }},
-              new IntegerColumnRenderer() );
+        this(new ArrayList<HeaderMetaData>() {{
+                 add(new BaseHeaderMetaData("#"));
+             }},
+             new IntegerColumnRenderer());
     }
 
-    public RowNumberColumn( final List<HeaderMetaData> headerMetaData ) {
-        this( headerMetaData,
-              new IntegerColumnRenderer() );
+    public RowNumberColumn(final List<HeaderMetaData> headerMetaData) {
+        this(headerMetaData,
+             new IntegerColumnRenderer());
     }
 
-    public RowNumberColumn( final List<HeaderMetaData> headerMetaData,
-                            final GridColumnRenderer<Integer> columnRenderer ) {
-        super( headerMetaData,
-               columnRenderer,
-               50.0 );
-        setMovable( false );
-        setResizable( false );
-        setFloatable( true );
+    public RowNumberColumn(final List<HeaderMetaData> headerMetaData,
+                           final GridColumnRenderer<Integer> columnRenderer) {
+        super(headerMetaData,
+              columnRenderer,
+              50.0);
+        setMovable(false);
+        setResizable(false);
+        setFloatable(true);
     }
-
 }

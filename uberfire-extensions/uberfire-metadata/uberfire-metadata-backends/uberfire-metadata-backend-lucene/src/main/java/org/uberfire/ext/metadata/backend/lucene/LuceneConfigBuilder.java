@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.AnalyzerWrapper;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
@@ -34,8 +33,6 @@ import org.uberfire.ext.metadata.backend.lucene.index.directory.DirectoryType;
 import org.uberfire.ext.metadata.backend.lucene.metamodel.InMemoryMetaModelStore;
 import org.uberfire.ext.metadata.backend.lucene.metamodel.NullMetaModelStore;
 import org.uberfire.ext.metadata.engine.MetaModelStore;
-
-import static org.apache.lucene.util.Version.*;
 
 public final class LuceneConfigBuilder {
 
@@ -64,17 +61,17 @@ public final class LuceneConfigBuilder {
         return this;
     }
 
-    public LuceneConfigBuilder usingAnalyzers( final Map<String, Analyzer> analyzers ) {
+    public LuceneConfigBuilder usingAnalyzers(final Map<String, Analyzer> analyzers) {
         this.analyzers = analyzers;
         return this;
     }
 
-    public LuceneConfigBuilder usingAnalyzerWrapperFactory( final CustomAnalyzerWrapperFactory analyzerWrapper ) {
+    public LuceneConfigBuilder usingAnalyzerWrapperFactory(final CustomAnalyzerWrapperFactory analyzerWrapper) {
         this.customAnalyzerWrapperFactory = analyzerWrapper;
         return this;
     }
 
-    public LuceneConfigBuilder usingFieldFactory( final FieldFactory fieldFactory ) {
+    public LuceneConfigBuilder usingFieldFactory(final FieldFactory fieldFactory) {
         this.fieldFactory = fieldFactory;
         return this;
     }
@@ -99,27 +96,27 @@ public final class LuceneConfigBuilder {
     }
 
     public LuceneConfig build() {
-        if ( metaModelStore == null ) {
+        if (metaModelStore == null) {
             withoutMemoryMetaModel();
         }
-        if ( fieldFactory == null ) {
+        if (fieldFactory == null) {
             withDefaultFieldFactory();
         }
-        if ( type == null ) {
+        if (type == null) {
             withDefaultDirectory();
         }
-        if ( analyzers == null ) {
+        if (analyzers == null) {
             withDefaultAnalyzers();
         }
-        if ( analyzer == null ) {
+        if (analyzer == null) {
             withDefaultAnalyzer();
         }
 
-        return new LuceneConfig( metaModelStore,
-                                 fieldFactory,
-                                 new DirectoryFactory( type,
-                                                       analyzer ),
-                                 analyzer );
+        return new LuceneConfig(metaModelStore,
+                                fieldFactory,
+                                new DirectoryFactory(type,
+                                                     analyzer),
+                                analyzer);
     }
 
     public void withDefaultDirectory() {
@@ -128,20 +125,19 @@ public final class LuceneConfigBuilder {
 
     public void withDefaultAnalyzers() {
         this.analyzers = new HashMap<String, Analyzer>();
-        analyzers.put( LuceneIndex.CUSTOM_FIELD_FILENAME,
-                       new FilenameAnalyzer( ) );
+        analyzers.put(LuceneIndex.CUSTOM_FIELD_FILENAME,
+                      new FilenameAnalyzer());
     }
 
     public void withDefaultAnalyzer() {
-        if( this.customAnalyzerWrapperFactory == null ) {
-            this.analyzer = new PerFieldAnalyzerWrapper( new StandardAnalyzer( CharArraySet.EMPTY_SET ),
-                                                         new HashMap<String, Analyzer>() {{
-                                                             putAll( analyzers );
-                                                         }} );
+        if (this.customAnalyzerWrapperFactory == null) {
+            this.analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer(CharArraySet.EMPTY_SET),
+                                                        new HashMap<String, Analyzer>() {{
+                                                            putAll(analyzers);
+                                                        }});
         } else {
-            this.analyzer = this.customAnalyzerWrapperFactory.getAnalyzerWrapper( new StandardAnalyzer(CharArraySet.EMPTY_SET), analyzers);
+            this.analyzer = this.customAnalyzerWrapperFactory.getAnalyzerWrapper(new StandardAnalyzer(CharArraySet.EMPTY_SET),
+                                                                                 analyzers);
         }
-
     }
-
 }

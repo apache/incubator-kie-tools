@@ -16,30 +16,30 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.list;
 
+import java.util.Collection;
+
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Collection;
-
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EntitiesPagedListTest extends EntitiesListTest {
-    
-    private EntitiesPagedList<User> presenter;
+
     private final static int PAGE_SIZE = 5;
+    private EntitiesPagedList<User> presenter;
 
     @Before
     public void setup() {
         super.setup();
-        presenter = new EntitiesPagedList<User>(loadingBox, view);
+        presenter = new EntitiesPagedList<User>(loadingBox,
+                                                view);
         presenter.setPageSize(PAGE_SIZE);
         presenter.setEntityTitleSize(headingSize);
         super.presenter = presenter;
@@ -48,7 +48,8 @@ public class EntitiesPagedListTest extends EntitiesListTest {
     @Test
     public void testClear() throws Exception {
         super.testClear();
-        assertEquals(-1, presenter.currentPage);
+        assertEquals(-1,
+                     presenter.currentPage);
     }
 
     @Test
@@ -64,7 +65,8 @@ public class EntitiesPagedListTest extends EntitiesListTest {
         assertFalse(constraints.isNextPageVisible());
         assertFalse(constraints.isLastPageEnabled());
         assertFalse(constraints.isLastPageVisible());
-        assertEquals(constraints.getCurrentPage(), 1);
+        assertEquals(constraints.getCurrentPage(),
+                     1);
     }
 
     @Test
@@ -80,45 +82,69 @@ public class EntitiesPagedListTest extends EntitiesListTest {
         assertTrue(constraints.isNextPageVisible());
         assertTrue(constraints.isLastPageEnabled());
         assertTrue(constraints.isLastPageVisible());
-        assertEquals(constraints.getCurrentPage(), 2);
+        assertEquals(constraints.getCurrentPage(),
+                     2);
     }
-    
+
     @Test
     public void testShowFirstPage() throws Exception {
         final int size = 10;
         final Collection<User> entities = buildUsersList(size);
-        testShowPage(entities, 1, PAGE_SIZE);
+        testShowPage(entities,
+                     1,
+                     PAGE_SIZE);
     }
 
     @Test
     public void testShowSecondPage() throws Exception {
         final int size = 10;
         final Collection<User> entities = buildUsersList(size);
-        testShowPage(entities, 2, PAGE_SIZE);
+        testShowPage(entities,
+                     2,
+                     PAGE_SIZE);
     }
-    
-    protected void testShowPage(Collection<User> entities, final int page, final int pageSize) throws Exception {
-        final EntitiesList.Callback<User> callback = createEntitiesListCallback(entities, true, true, true);
+
+    protected void testShowPage(Collection<User> entities,
+                                final int page,
+                                final int pageSize) throws Exception {
+        final EntitiesList.Callback<User> callback = createEntitiesListCallback(entities,
+                                                                                true,
+                                                                                true,
+                                                                                true);
         presenter.currentPage = page;
-        presenter.show(entities, callback);
-        assertEquals(presenter.entities, entities);
-        assertEquals(presenter.callback, callback);
-        
+        presenter.show(entities,
+                       callback);
+        assertEquals(presenter.entities,
+                     entities);
+        assertEquals(presenter.callback,
+                     callback);
+
         // Verify loading popup.
-        verify(loadingBox, times(1)).show();
+        verify(loadingBox,
+               times(1)).show();
 
         // Verify view configuration.
-        verify(view, times(1)).configure(anyString(), any(EntitiesList.PaginationConstraints.class));
+        verify(view,
+               times(1)).configure(anyString(),
+                                   any(EntitiesList.PaginationConstraints.class));
 
         // Verify adding entities to the view. 
         int start = pageSize * (page - 1);
         for (int x = 0; x < pageSize; x++) {
-            final int pos = start  + x;
-            verify(view, times(1)).add(x, getUserIdentifier(pos), getUserIdentifier(pos), headingSize, true, true, true, false);
+            final int pos = start + x;
+            verify(view,
+                   times(1)).add(x,
+                                 getUserIdentifier(pos),
+                                 getUserIdentifier(pos),
+                                 headingSize,
+                                 true,
+                                 true,
+                                 true,
+                                 false);
         }
 
         // Verify loading popup.
-        verify(loadingBox, times(1)).hide();
+        verify(loadingBox,
+               times(1)).hide();
     }
-    
 }

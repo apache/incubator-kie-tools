@@ -26,5 +26,4 @@ public class TableEntryPoint {
     public void startApp() {
         UFTableResources.INSTANCE.CSS().ensureInjected();
     }
-
 }

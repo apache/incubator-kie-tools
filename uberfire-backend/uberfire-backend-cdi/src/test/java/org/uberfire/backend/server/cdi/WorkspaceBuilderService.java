@@ -28,17 +28,17 @@ import org.uberfire.backend.server.cdi.workspace.WorkspaceScoped;
 @WorkspaceScoped
 public class WorkspaceBuilderService implements Serializable {
 
-    private Logger logger = LoggerFactory.getLogger( WorkspaceBuilderService.class );
+    private Logger logger = LoggerFactory.getLogger(WorkspaceBuilderService.class);
 
-    public void build( String gav ) {
+    public void build(String gav) {
         try {
-            logger.info( "Building {} ...", gav );
-            Thread.currentThread().sleep( 5000l );
-            logger.info( "Building finished {}", gav );
-        } catch ( InterruptedException e ) {
+            logger.info("Building {} ...",
+                        gav);
+            Thread.currentThread().sleep(5000l);
+            logger.info("Building finished {}",
+                        gav);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
-
 }

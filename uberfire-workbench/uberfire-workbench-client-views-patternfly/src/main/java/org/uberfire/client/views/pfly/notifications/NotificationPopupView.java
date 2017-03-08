@@ -34,23 +34,22 @@ public class NotificationPopupView extends DecoratedPopupPanel {
     private final Alert notification = new Alert();
 
     public NotificationPopupView() {
-        setStyleName( WorkbenchResources.INSTANCE.CSS().notification() );
-        setWidget( notification );
-        notification.setDismissable( true );
+        setStyleName(WorkbenchResources.INSTANCE.CSS().notification());
+        setWidget(notification);
+        notification.setDismissable(true);
     }
 
     /**
      * Set the text to display
      * @param text
      */
-    public void setNotification( final String text ) {
-        notification.setText( text );
-
+    public void setNotification(final String text) {
+        notification.setText(text);
     }
 
-    public void setType( final NotificationEvent.NotificationType type ) {
+    public void setType(final NotificationEvent.NotificationType type) {
         AlertType bs3Type;
-        switch ( type ) {
+        switch (type) {
             case ERROR:
                 bs3Type = AlertType.DANGER;
                 break;
@@ -58,20 +57,20 @@ public class NotificationPopupView extends DecoratedPopupPanel {
                 bs3Type = AlertType.INFO;
                 break;
             default:
-                bs3Type = AlertType.valueOf( type.toString() );
+                bs3Type = AlertType.valueOf(type.toString());
                 break;
         }
-        notification.setType( bs3Type );
+        notification.setType(bs3Type);
     }
 
     /**
      * Set the width of the Notification pop-up
      * @param width
      */
-    public void setNotificationWidth( final String width ) {
+    public void setNotificationWidth(final String width) {
         //Setting the width of the DecoratedPopupPanel causes it to be rendered incorrectly.
         //We therefore set the size of an internal element that holds the actual content.
-        notification.setWidth( width );
+        notification.setWidth(width);
     }
 
     /**
@@ -79,17 +78,16 @@ public class NotificationPopupView extends DecoratedPopupPanel {
      * view and pausing. Once complete the onCompleteCommand will be executed.
      * @param onCompleteCommand
      */
-    public void show( final Command onCompleteCommand ) {
+    public void show(final Command onCompleteCommand) {
 
         //Fade in the notification message
-        final LinearFadeInAnimation fadeInAnimation = new LinearFadeInAnimation( this ) {
+        final LinearFadeInAnimation fadeInAnimation = new LinearFadeInAnimation(this) {
 
             @Override
             public void onStart() {
                 super.onStart();
                 NotificationPopupView.this.show();
             }
-
         };
 
         //Pause. Removal is handled by the NotificationPopupsManager
@@ -100,12 +98,12 @@ public class NotificationPopupView extends DecoratedPopupPanel {
                 super.onComplete();
                 onCompleteCommand.execute();
             }
-
         };
         final Sequencer s = new Sequencer();
-        s.add( fadeInAnimation, 250 );
-        s.add( pauseAnimation, 2000 );
+        s.add(fadeInAnimation,
+              250);
+        s.add(pauseAnimation,
+              2000);
         s.run();
     }
-
 }

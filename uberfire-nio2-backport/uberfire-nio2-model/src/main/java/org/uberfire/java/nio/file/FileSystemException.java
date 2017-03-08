@@ -27,14 +27,14 @@ public class FileSystemException extends IOException {
     public FileSystemException() {
     }
 
-    public FileSystemException( String file ) {
+    public FileSystemException(String file) {
         this.file = file;
     }
 
-    public FileSystemException( String file,
-                                String other,
-                                String reason ) {
-        this( file );
+    public FileSystemException(String file,
+                               String other,
+                               String reason) {
+        this(file);
         this.other = other;
         this.reason = reason;
     }

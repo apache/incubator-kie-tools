@@ -18,7 +18,6 @@ package org.uberfire.client.workbench;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -33,28 +32,27 @@ import org.jboss.errai.ioc.client.container.SyncBeanManager;
 @ApplicationScoped
 public class LayoutSelection {
 
-    @Inject
-    private SyncBeanManager iocManager;
-
     static final AlternativeLayout altLayout = new AlternativeLayout() {
         @Override
         public Class<? extends Annotation> annotationType() {
             return AlternativeLayout.class;
         }
     };
+    @Inject
+    private SyncBeanManager iocManager;
 
     public WorkbenchLayout get() {
         //FIXME: this alternatives process doesn't work
         WorkbenchLayout layout = null;
 
-        Collection<SyncBeanDef<WorkbenchLayout>> beanDefs = iocManager.lookupBeans( WorkbenchLayout.class, altLayout );
-        if ( beanDefs.size() > 0 ) {
+        Collection<SyncBeanDef<WorkbenchLayout>> beanDefs = iocManager.lookupBeans(WorkbenchLayout.class,
+                                                                                   altLayout);
+        if (beanDefs.size() > 0) {
             SyncBeanDef<WorkbenchLayout> alt = beanDefs.iterator().next();
             layout = alt.getInstance();
         } else {
-            layout = iocManager.lookupBean( WorkbenchLayout.class ).getInstance();
+            layout = iocManager.lookupBean(WorkbenchLayout.class).getInstance();
         }
         return layout;
     }
-
 }

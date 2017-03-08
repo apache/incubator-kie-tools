@@ -16,24 +16,23 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.list;
 
-import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Alternative;
-import javax.inject.Inject;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Inject;
+
+import org.uberfire.ext.security.management.client.widgets.popup.LoadingBox;
 
 /**
  * <p>Presenter class for listing entities, with automatic pagination feature management.</p>
  * <p>Notes:</p>
  * <ul>
- *     <li>
- *         <p>By default the <code>onChangePage</code> callback method is not fired, it's handled by this class itself.</p>
- *     </li>
+ * <li>
+ * <p>By default the <code>onChangePage</code> callback method is not fired, it's handled by this class itself.</p>
+ * </li>
  * </ul>
- *
  * @since 0.8.0
  */
 @Dependent
@@ -45,15 +44,20 @@ public class EntitiesPagedList<T> extends EntitiesList<T> {
     protected int currentPage = -1;
 
     @Inject
-    public EntitiesPagedList(LoadingBox loadingBox, View view) {
-        super(loadingBox, view);
+    public EntitiesPagedList(LoadingBox loadingBox,
+                             View view) {
+        super(loadingBox,
+              view);
     }
 
     /*  ******************************************************************************************************
                                  PUBLIC PRESENTER API
      ****************************************************************************************************** */
-    public void show(final Collection<T> entities, final Callback<T> callback) {
-        if (this.currentPage == -1) this.currentPage = 1;
+    public void show(final Collection<T> entities,
+                     final Callback<T> callback) {
+        if (this.currentPage == -1) {
+            this.currentPage = 1;
+        }
         this.entities = entities;
         this.callback = callback;
         show();
@@ -68,12 +72,15 @@ public class EntitiesPagedList<T> extends EntitiesList<T> {
         if (callback != null && getEntities() != null) {
             final int size = getEntities().size();
             EntitiesPagedList.this.totalPages = size / pageSize;
-            final int  start = ( currentPage - 1 ) * pageSize;
+            final int start = (currentPage - 1) * pageSize;
             final boolean hasMorePages = hasMorePages();
-            final int end =  hasMorePages ? (start + pageSize) : size;
-            final List<T> pageEntities = buildPageEntities(start, end);
+            final int end = hasMorePages ? (start + pageSize) : size;
+            final List<T> pageEntities = buildPageEntities(start,
+                                                           end);
             final PaginationConstraints paginationConstraints = buildPaginationConstraints(size);
-            show(pageEntities, paginationConstraints, callback);
+            show(pageEntities,
+                 paginationConstraints,
+                 callback);
         }
     }
 
@@ -84,14 +91,14 @@ public class EntitiesPagedList<T> extends EntitiesList<T> {
      ****************************************************************************************************** */
 
     @Override
-   void onGoToFirstPage() {
-       if (this.currentPage > -1) {
-           this.currentPage = 1;
-           show();
-       } else {
-           super.onGoToFirstPage();
-       }
-   }
+    void onGoToFirstPage() {
+        if (this.currentPage > -1) {
+            this.currentPage = 1;
+            show();
+        } else {
+            super.onGoToFirstPage();
+        }
+    }
 
     @Override
     void onGoToPrevPage() {
@@ -135,8 +142,10 @@ public class EntitiesPagedList<T> extends EntitiesList<T> {
         return entities;
     }
 
-    protected List<T> buildPageEntities(final int  start, final int  end) {
-        return new LinkedList<T>(getEntities()).subList(start, end);
+    protected List<T> buildPageEntities(final int start,
+                                        final int end) {
+        return new LinkedList<T>(getEntities()).subList(start,
+                                                        end);
     }
 
     protected PaginationConstraints buildPaginationConstraints(final int size) {
@@ -198,5 +207,4 @@ public class EntitiesPagedList<T> extends EntitiesList<T> {
     protected boolean hasMorePages() {
         return currentPage < EntitiesPagedList.this.totalPages;
     }
-
 }

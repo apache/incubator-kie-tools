@@ -22,8 +22,8 @@ import java.util.Map;
 
 import org.ext.uberfire.social.activities.client.widgets.timeline.regular.model.SocialTimelineWidgetModel;
 import org.ext.uberfire.social.activities.client.widgets.timeline.simple.model.SimpleSocialTimelineWidgetModel;
-import org.ext.uberfire.social.activities.model.SocialUser;
 import org.ext.uberfire.social.activities.model.SocialActivitiesEvent.LINK_TYPE;
+import org.ext.uberfire.social.activities.model.SocialUser;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.workbench.type.ClientResourceType;
@@ -45,16 +45,16 @@ public class SimpleItemWidgetModel {
     private String eventType;
     private List<ClientResourceType> resourceTypes;
     private ParameterizedCommand<LinkCommandParams> linkCommand;
-    private Map<String, String> linkParams = new HashMap<String, String>(  );
+    private Map<String, String> linkParams = new HashMap<String, String>();
 
-    public SimpleItemWidgetModel( SimpleSocialTimelineWidgetModel model,
-                                  String eventType,
-                                  Date timestamp,
-                                  String linkText,
-                                  String linkURI,
-                                  LINK_TYPE linkType,
-                                  String itemDescription,
-                                  SocialUser socialUser) {
+    public SimpleItemWidgetModel(SimpleSocialTimelineWidgetModel model,
+                                 String eventType,
+                                 Date timestamp,
+                                 String linkText,
+                                 String linkURI,
+                                 LINK_TYPE linkType,
+                                 String itemDescription,
+                                 SocialUser socialUser) {
 
         this.socialUser = socialUser;
         this.resourceTypes = model.getResourceTypes();
@@ -65,35 +65,29 @@ public class SimpleItemWidgetModel {
         this.linkURI = linkURI;
         this.linkType = linkType;
         this.itemDescription = itemDescription;
-
     }
 
-    public boolean shouldIPrintIcon() {
-        return resourceTypes != null && getLinkText() != null;
-    }
-
-    public SimpleItemWidgetModel( String eventType,
-                                  Date timestamp,
-                                  String description,
-                                  String itemDescription,
-                                  SocialUser socialUser) {
+    public SimpleItemWidgetModel(String eventType,
+                                 Date timestamp,
+                                 String description,
+                                 String itemDescription,
+                                 SocialUser socialUser) {
         this.socialUser = socialUser;
         this.eventType = eventType;
         this.timestamp = timestamp;
         this.description = description;
         this.itemDescription = itemDescription;
-
     }
 
-    public SimpleItemWidgetModel( SocialTimelineWidgetModel model,
-                                  String eventType,
-                                  Date timestamp,
-                                  String linkText,
-                                  String linkURI,
-                                  LINK_TYPE linkType,
-                                  String description,
-                                  String itemDescription,
-                                  SocialUser socialUser) {
+    public SimpleItemWidgetModel(SocialTimelineWidgetModel model,
+                                 String eventType,
+                                 Date timestamp,
+                                 String linkText,
+                                 String linkURI,
+                                 LINK_TYPE linkType,
+                                 String description,
+                                 String itemDescription,
+                                 SocialUser socialUser) {
         this.socialUser = socialUser;
         this.placeManager = model.getPlaceManager();
         this.eventType = eventType;
@@ -105,17 +99,20 @@ public class SimpleItemWidgetModel {
         this.itemDescription = itemDescription;
     }
 
-    public SimpleItemWidgetModel( SocialTimelineWidgetModel model,
-                                  String eventType,
-                                  Date timestamp,
-                                  String description,
-                                  String itemDescription ) {
+    public SimpleItemWidgetModel(SocialTimelineWidgetModel model,
+                                 String eventType,
+                                 Date timestamp,
+                                 String description,
+                                 String itemDescription) {
         this.socialUser = model.getSocialUser();
         this.eventType = eventType;
         this.timestamp = timestamp;
         this.description = description;
         this.itemDescription = itemDescription;
+    }
 
+    public boolean shouldIPrintIcon() {
+        return resourceTypes != null && getLinkText() != null;
     }
 
     public String getDescription() {
@@ -123,22 +120,23 @@ public class SimpleItemWidgetModel {
     }
 
     public String getLinkText() {
-        return cleanLinkText( linkText );
+        return cleanLinkText(linkText);
     }
 
-    private String cleanLinkText( String linkText ) {
-        if ( hasExtension( linkText ) ) {
-            return removeExtension( linkText );
+    private String cleanLinkText(String linkText) {
+        if (hasExtension(linkText)) {
+            return removeExtension(linkText);
         }
         return linkText;
     }
 
-    private String removeExtension( String linkText ) {
-        return linkText != null ? linkText.substring( 0, linkText.indexOf( "." ) ) : linkText;
+    private String removeExtension(String linkText) {
+        return linkText != null ? linkText.substring(0,
+                                                     linkText.indexOf(".")) : linkText;
     }
 
-    private boolean hasExtension( String linkText ) {
-        return linkText != null && linkText.indexOf( '.' ) > 0;
+    private boolean hasExtension(String linkText) {
+        return linkText != null && linkText.indexOf('.') > 0;
     }
 
     public SocialUser getSocialUser() {
@@ -173,7 +171,7 @@ public class SimpleItemWidgetModel {
         return title;
     }
 
-    public void setTitle( String title ) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
@@ -189,26 +187,28 @@ public class SimpleItemWidgetModel {
         return linkType == LINK_TYPE.VFS;
     }
 
-    public SimpleItemWidgetModel withLinkCommand( ParameterizedCommand<LinkCommandParams> linkCommand ) {
+    public SimpleItemWidgetModel withLinkCommand(ParameterizedCommand<LinkCommandParams> linkCommand) {
         this.linkCommand = linkCommand;
         return this;
     }
 
-    public SimpleItemWidgetModel withLinkPath( Path linkPath ) {
+    public SimpleItemWidgetModel withLinkPath(Path linkPath) {
         this.linkPath = linkPath;
         return this;
     }
 
-    public SimpleItemWidgetModel withLinkParams( Map<String, String> linkParams ) {
-        if ( linkParams != null ) this.linkParams.putAll( linkParams );
+    public SimpleItemWidgetModel withLinkParams(Map<String, String> linkParams) {
+        if (linkParams != null) {
+            this.linkParams.putAll(linkParams);
+        }
         return this;
     }
 
     public ParameterizedCommand<LinkCommandParams> getLinkCommand() {
-        if(linkCommand==null){
+        if (linkCommand == null) {
             return new ParameterizedCommand<LinkCommandParams>() {
                 @Override
-                public void execute( LinkCommandParams parameters ) {
+                public void execute(LinkCommandParams parameters) {
 
                 }
             };

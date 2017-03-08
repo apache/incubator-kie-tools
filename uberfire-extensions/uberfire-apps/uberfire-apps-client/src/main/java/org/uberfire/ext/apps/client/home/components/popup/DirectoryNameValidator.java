@@ -24,7 +24,7 @@ public class DirectoryNameValidator {
     public static final String VALID_DIR_REGEX = "^([^*\"\\/><?\\\\\\!|;:]*)$";
     private final Directory currentDirectory;
 
-    public DirectoryNameValidator( Directory currentDirectory ) {
+    public DirectoryNameValidator(Directory currentDirectory) {
         this.currentDirectory = currentDirectory;
     }
 
@@ -32,17 +32,16 @@ public class DirectoryNameValidator {
         return CommonConstants.INSTANCE.InvalidDirName();
     }
 
-    public boolean isValid( String dirName ) {
-        if ( dirName == null || dirName.trim().isEmpty() ) {
+    public boolean isValid(String dirName) {
+        if (dirName == null || dirName.trim().isEmpty()) {
             return Boolean.FALSE;
         }
-        if ( !dirName.matches( VALID_DIR_REGEX ) ) {
+        if (!dirName.matches(VALID_DIR_REGEX)) {
             return Boolean.FALSE;
         }
-        if ( currentDirectory.alreadyHasChild( dirName ) ) {
+        if (currentDirectory.alreadyHasChild(dirName)) {
             return Boolean.FALSE;
         }
         return Boolean.TRUE;
     }
-
 }

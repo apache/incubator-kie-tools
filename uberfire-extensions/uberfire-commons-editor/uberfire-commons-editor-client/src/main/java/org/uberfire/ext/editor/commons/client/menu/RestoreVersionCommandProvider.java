@@ -45,23 +45,24 @@ public class RestoreVersionCommandProvider {
     @Inject
     private SavePopUpPresenter savePopUpPresenter;
 
-    public Command getCommand( final Path path ) {
+    public Command getCommand(final Path path) {
         return new Command() {
 
             @Override
             public void execute() {
-                savePopUpPresenter.show( path,
-                                         new ParameterizedCommand<String>() {
+                savePopUpPresenter.show(path,
+                                        new ParameterizedCommand<String>() {
 
-                                             @Override
-                                             public void execute( final String comment ) {
-                                                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Restoring() );
-                                                 versionService.call(
-                                                         getRestorationSuccessCallback(),
-                                                         new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) )
-                                                         .restore( path, comment );
-                                             }
-                                         } );
+                                            @Override
+                                            public void execute(final String comment) {
+                                                busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Restoring());
+                                                versionService.call(
+                                                        getRestorationSuccessCallback(),
+                                                        new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView))
+                                                        .restore(path,
+                                                                 comment);
+                                            }
+                                        });
             }
         };
     }
@@ -70,12 +71,11 @@ public class RestoreVersionCommandProvider {
         return new RemoteCallback<Path>() {
 
             @Override
-            public void callback( final Path restored ) {
+            public void callback(final Path restored) {
                 //TODO {porcelli} close current?
 //                busyIndicatorView.hideBusyIndicator();
 //                restoreEvent.fire( new RestoreEvent( restored ) );
             }
         };
     }
-
 }

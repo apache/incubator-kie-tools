@@ -33,100 +33,99 @@ import org.uberfire.ext.widgets.common.client.resources.CommonImages;
 
 public class LazyStackPanelHeader extends AbstractLazyStackPanelHeader {
 
-    interface LazyStackPanelHeaderBinder
-            extends
-            UiBinder<Widget, LazyStackPanelHeader> {
-
-    }
-
-    private static LazyStackPanelHeaderBinder uiBinder = GWT.create( LazyStackPanelHeaderBinder.class );
-
+    private static LazyStackPanelHeaderBinder uiBinder = GWT.create(LazyStackPanelHeaderBinder.class);
     @UiField
     Image icon;
-
     @UiField
     HorizontalPanel container;
-
     private ClickHandler expandClickHandler = new ClickHandler() {
 
-        public void onClick( ClickEvent event ) {
+        public void onClick(ClickEvent event) {
             onTitleClicked();
         }
     };
 
-    public LazyStackPanelHeader( final String headerText,
-                                 final ImageResource headerIcon ) {
-        this( headerText, new Image( headerIcon ) );
+    public LazyStackPanelHeader(final String headerText,
+                                final ImageResource headerIcon) {
+        this(headerText,
+             new Image(headerIcon));
     }
 
-    public LazyStackPanelHeader( final String headerText,
-                                 final Image headerIcon ) {
+    public LazyStackPanelHeader(final String headerText,
+                                final Image headerIcon) {
         this();
         final Image titleIcon = headerIcon;
-        container.add( titleIcon );
-        final Label titleLabel = new Label( headerText );
-        titleLabel.setStyleName( "guvnor-cursor" );
-        titleLabel.addClickHandler( expandClickHandler );
-        container.add( titleLabel );
+        container.add(titleIcon);
+        final Label titleLabel = new Label(headerText);
+        titleLabel.setStyleName("guvnor-cursor");
+        titleLabel.addClickHandler(expandClickHandler);
+        container.add(titleLabel);
     }
 
-    public LazyStackPanelHeader( String headerText ) {
+    public LazyStackPanelHeader(String headerText) {
         this();
-        final Label titleLabel = new Label( headerText );
-        titleLabel.setStyleName( "guvnor-cursor" );
-        titleLabel.addClickHandler( expandClickHandler );
-        container.add( titleLabel );
+        final Label titleLabel = new Label(headerText);
+        titleLabel.setStyleName("guvnor-cursor");
+        titleLabel.addClickHandler(expandClickHandler);
+        container.add(titleLabel);
     }
 
     public LazyStackPanelHeader() {
 
-        add( uiBinder.createAndBindUi( this ) );
+        add(uiBinder.createAndBindUi(this));
 
-        icon.addClickHandler( expandClickHandler );
+        icon.addClickHandler(expandClickHandler);
 
         setIconImage();
 
-        addOpenHandler( new OpenHandler<AbstractLazyStackPanelHeader>() {
-            public void onOpen( OpenEvent<AbstractLazyStackPanelHeader> event ) {
+        addOpenHandler(new OpenHandler<AbstractLazyStackPanelHeader>() {
+            public void onOpen(OpenEvent<AbstractLazyStackPanelHeader> event) {
                 expanded = true;
                 setIconImage();
             }
-        } );
+        });
 
-        addCloseHandler( new CloseHandler<AbstractLazyStackPanelHeader>() {
-            public void onClose( CloseEvent<AbstractLazyStackPanelHeader> event ) {
+        addCloseHandler(new CloseHandler<AbstractLazyStackPanelHeader>() {
+            public void onClose(CloseEvent<AbstractLazyStackPanelHeader> event) {
                 expanded = false;
                 setIconImage();
             }
-        } );
+        });
     }
 
     public void expand() {
-        if ( !expanded ) {
+        if (!expanded) {
             onTitleClicked();
         }
     }
 
     public void collapse() {
-        if ( expanded ) {
+        if (expanded) {
             onTitleClicked();
         }
     }
 
     private void setIconImage() {
-        if ( expanded ) {
-            icon.setResource( CommonImages.INSTANCE.collapse() );
+        if (expanded) {
+            icon.setResource(CommonImages.INSTANCE.collapse());
         } else {
-            icon.setResource( CommonImages.INSTANCE.expand() );
+            icon.setResource(CommonImages.INSTANCE.expand());
         }
-
     }
 
     private void onTitleClicked() {
-        if ( expanded ) {
-            CloseEvent.fire( this, this );
+        if (expanded) {
+            CloseEvent.fire(this,
+                            this);
         } else {
-            OpenEvent.fire( this, this );
+            OpenEvent.fire(this,
+                           this);
         }
+    }
+
+    interface LazyStackPanelHeaderBinder
+            extends
+            UiBinder<Widget, LazyStackPanelHeader> {
+
     }
 }

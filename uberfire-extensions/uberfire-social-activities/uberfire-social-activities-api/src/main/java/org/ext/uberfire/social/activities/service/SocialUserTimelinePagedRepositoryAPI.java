@@ -17,23 +17,24 @@ package org.ext.uberfire.social.activities.service;
 
 import java.util.Map;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.ext.uberfire.social.activities.model.PagedSocialQuery;
 import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
-import org.ext.uberfire.social.activities.model.SocialUser;
 import org.ext.uberfire.social.activities.model.SocialPaged;
+import org.ext.uberfire.social.activities.model.SocialUser;
+import org.jboss.errai.bus.server.annotations.Remote;
 
 @Remote
 public interface SocialUserTimelinePagedRepositoryAPI {
 
-    PagedSocialQuery getUserTimeline( SocialUser socialUser,
-                                      SocialPaged socialPaged );
+    PagedSocialQuery getUserTimeline(SocialUser socialUser,
+                                     SocialPaged socialPaged);
 
-    PagedSocialQuery getUserTimeline( SocialUser socialUser,
-                                      SocialPaged socialPaged,
-                                      SocialPredicate<SocialActivitiesEvent> predicate );
+    PagedSocialQuery getUserTimeline(SocialUser socialUser,
+                                     SocialPaged socialPaged,
+                                     SocialPredicate<SocialActivitiesEvent> predicate);
 
-    public PagedSocialQuery getUserTimeline( SocialUser socialUser,
-                                             SocialPaged socialPaged,
-                                             Map commandsMap,  SocialPredicate<SocialActivitiesEvent> predicate );
+    public PagedSocialQuery getUserTimeline(SocialUser socialUser,
+                                            SocialPaged socialPaged,
+                                            Map commandsMap,
+                                            SocialPredicate<SocialActivitiesEvent> predicate);
 }

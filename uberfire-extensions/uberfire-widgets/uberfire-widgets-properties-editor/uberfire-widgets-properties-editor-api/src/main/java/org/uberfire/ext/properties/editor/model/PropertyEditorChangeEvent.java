@@ -32,8 +32,8 @@ public class PropertyEditorChangeEvent {
      * @param property the property changed
      * @param newValue the new  value of the field
      */
-    public PropertyEditorChangeEvent( PropertyEditorFieldInfo property,
-                                      String newValue ) {
+    public PropertyEditorChangeEvent(PropertyEditorFieldInfo property,
+                                     String newValue) {
         this.idEvent = property.getEventId();
         this.property = property;
         this.newValue = newValue;

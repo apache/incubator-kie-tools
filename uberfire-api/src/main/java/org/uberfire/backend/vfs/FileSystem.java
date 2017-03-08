@@ -24,5 +24,4 @@ public interface FileSystem {
     List<Path> getRootDirectories();
 
     Set<String> supportedFileAttributeViews();
-
 }

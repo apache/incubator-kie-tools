@@ -23,7 +23,7 @@ public class UsernameProviderMock implements UsernameProvider {
 
     private SessionInfo sessionInfo;
 
-    public UsernameProviderMock( final SessionInfo sessionInfo ) {
+    public UsernameProviderMock(final SessionInfo sessionInfo) {
         this.sessionInfo = sessionInfo;
     }
 

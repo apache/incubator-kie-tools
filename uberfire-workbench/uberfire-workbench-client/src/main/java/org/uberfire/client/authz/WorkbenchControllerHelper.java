@@ -24,7 +24,7 @@ import org.uberfire.client.mvp.WorkbenchScreenActivity;
 
 /**
  * A helper class providing static methods on top of the {@link WorkbenchController} functionality.
- *
+ * <p>
  * <p>Example usage:</p>
  * <pre>
  * {@code import static org.uberfire.client.authz.WorkbenchControllerHelper.*;

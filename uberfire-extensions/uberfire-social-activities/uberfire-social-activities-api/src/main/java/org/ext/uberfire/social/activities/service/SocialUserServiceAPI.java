@@ -15,17 +15,17 @@
 
 package org.ext.uberfire.social.activities.service;
 
-import org.jboss.errai.bus.server.annotations.Remote;
 import org.ext.uberfire.social.activities.model.SocialUser;
+import org.jboss.errai.bus.server.annotations.Remote;
 
 @Remote
 public interface SocialUserServiceAPI {
 
-    void userFollowAnotherUser( String followerUsername,
-                                String followUsername );
+    void userFollowAnotherUser(String followerUsername,
+                               String followUsername);
 
-    void userUnfollowAnotherUser( String followerUsername,
-                                  String followUsername );
+    void userUnfollowAnotherUser(String followerUsername,
+                                 String followUsername);
 
-    void update( SocialUser... users );
+    void update(SocialUser... users);
 }

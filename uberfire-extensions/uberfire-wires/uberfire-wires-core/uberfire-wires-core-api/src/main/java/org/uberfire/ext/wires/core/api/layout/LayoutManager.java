@@ -30,6 +30,5 @@ public interface LayoutManager {
      * @param root Root element of the shapes to layout
      * @return Map of Shape-to-Location information
      */
-    Map<WiresBaseShape, Point2D> getLayoutInformation( final WiresBaseShape root );
-
+    Map<WiresBaseShape, Point2D> getLayoutInformation(final WiresBaseShape root);
 }

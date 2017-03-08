@@ -24,7 +24,7 @@ public interface CoreImages
         extends
         ClientBundle {
 
-    CoreImages INSTANCE = GWT.create( CoreImages.class );
+    CoreImages INSTANCE = GWT.create(CoreImages.class);
 
     @Source("images/open_folder.gif")
     ImageResource openedFolder();
@@ -47,5 +47,4 @@ public interface CoreImages
 
     @Source("images/BPM_FileIcons_text.png")
     ImageResource typeTextFile();
-
 }

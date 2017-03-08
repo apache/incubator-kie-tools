@@ -33,23 +33,30 @@ public class EntitiesExplorerTest {
     @Test
     public void enableClearButtonAfterSearchTest() {
         EntitiesExplorerViewImpl entitiesExplorerView = new EntitiesExplorerViewImpl();
-        entitiesExplorerView.configure("", view);
+        entitiesExplorerView.configure("",
+                                       view);
 
-        verify(entitiesExplorerView.clearSearchButton, times(1)).setEnabled(false);
-        verify(entitiesExplorerView.clearSearchButton, never()).setEnabled(true);
+        verify(entitiesExplorerView.clearSearchButton,
+               times(1)).setEnabled(false);
+        verify(entitiesExplorerView.clearSearchButton,
+               never()).setEnabled(true);
 
         reset(entitiesExplorerView.clearSearchButton);
 
         entitiesExplorerView.doSearch("admin");
 
-        verify(entitiesExplorerView.clearSearchButton, never()).setEnabled(false);
-        verify(entitiesExplorerView.clearSearchButton, times(1)).setEnabled(true);
+        verify(entitiesExplorerView.clearSearchButton,
+               never()).setEnabled(false);
+        verify(entitiesExplorerView.clearSearchButton,
+               times(1)).setEnabled(true);
 
         reset(entitiesExplorerView.clearSearchButton);
 
         entitiesExplorerView.clearSearch();
 
-        verify(entitiesExplorerView.clearSearchButton, times(1)).setEnabled(false);
-        verify(entitiesExplorerView.clearSearchButton, never()).setEnabled(true);
+        verify(entitiesExplorerView.clearSearchButton,
+               times(1)).setEnabled(false);
+        verify(entitiesExplorerView.clearSearchButton,
+               never()).setEnabled(true);
     }
 }

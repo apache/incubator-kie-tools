@@ -45,75 +45,76 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class RuntimePluginBaseEditorTest {
 
+    RemoteCallback<PluginContent> successCallBack;
+    RuntimePluginBaseView baseEditorView = null;
     private PluginServices pluginServices;
     private CallerMock<PluginServices> callerMock;
-    RemoteCallback<PluginContent> successCallBack;
-
-    RuntimePluginBaseView baseEditorView = null;
-
     private RuntimePluginBaseEditor editor;
 
     @Before
     public void setup() {
-        pluginServices = mock( PluginServices.class );
-        callerMock = new CallerMock<PluginServices>( pluginServices );
-        successCallBack = mock( RemoteCallback.class );
-        baseEditorView = mock( RuntimePluginBaseView.class );
-        editor = spy( createRuntimePluginBaseEditor() );
+        pluginServices = mock(PluginServices.class);
+        callerMock = new CallerMock<PluginServices>(pluginServices);
+        successCallBack = mock(RemoteCallback.class);
+        baseEditorView = mock(RuntimePluginBaseView.class);
+        editor = spy(createRuntimePluginBaseEditor());
     }
 
     @Test
     public void loadContentTest() {
 
-        final PluginContent pluginContent = mock( PluginContent.class );
-        when( pluginServices.getPluginContent( Matchers.<Path>any() ) ).thenReturn( pluginContent );
+        final PluginContent pluginContent = mock(PluginContent.class);
+        when(pluginServices.getPluginContent(Matchers.<Path>any())).thenReturn(pluginContent);
 
-        assertNull( editor.getOriginalHash() );
+        assertNull(editor.getOriginalHash());
 
         editor.loadContent();
 
-        verify( pluginServices ).getPluginContent( Matchers.<Path>any() );
-        verify( baseEditorView ).setFramework( anyCollection() );
-        verify( baseEditorView ).setupContent( eq( pluginContent ), Matchers.<ParameterizedCommand<Media>>any() );
-        verify( baseEditorView ).hideBusyIndicator();
+        verify(pluginServices).getPluginContent(Matchers.<Path>any());
+        verify(baseEditorView).setFramework(anyCollection());
+        verify(baseEditorView).setupContent(eq(pluginContent),
+                                            Matchers.<ParameterizedCommand<Media>>any());
+        verify(baseEditorView).hideBusyIndicator();
 
-        assertNotNull( editor.getOriginalHash() );
+        assertNotNull(editor.getOriginalHash());
     }
 
     @Test
     public void pluginSavedTest() {
-        editor.onPluginSaved( mock( PluginSaved.class ) );
-        verify( editor ).registerPlugin( any( Plugin.class ) );
+        editor.onPluginSaved(mock(PluginSaved.class));
+        verify(editor).registerPlugin(any(Plugin.class));
     }
 
     @Test
     public void pluginAddedTest() {
-        editor.onPluginAdded( mock( PluginAdded.class ) );
-        verify( editor ).registerPlugin( any( Plugin.class ) );
+        editor.onPluginAdded(mock(PluginAdded.class));
+        verify(editor).registerPlugin(any(Plugin.class));
     }
 
     @Test
     public void pluginDeletedTest() {
-        editor.onPluginDeleted( mock( PluginDeleted.class ) );
-        verify( editor ).unregisterPlugin( any( String.class ), any( PluginType.class ) );
+        editor.onPluginDeleted(mock(PluginDeleted.class));
+        verify(editor).unregisterPlugin(any(String.class),
+                                        any(PluginType.class));
     }
 
     @Test
     public void pluginRenamedTest() {
-        editor.onPluginRenamed( mock( PluginRenamed.class ) );
-        verify( editor ).unregisterPlugin( any( String.class ), any( PluginType.class ) );
-        verify( editor ).registerPlugin( any( Plugin.class ) );
+        editor.onPluginRenamed(mock(PluginRenamed.class));
+        verify(editor).unregisterPlugin(any(String.class),
+                                        any(PluginType.class));
+        verify(editor).registerPlugin(any(Plugin.class));
     }
 
     @Test
     public void saveCommandTest() {
-        editor.getSaveCommand().execute( "commitMessage" );
-        verify( baseEditorView ).onSave();
+        editor.getSaveCommand().execute("commitMessage");
+        verify(baseEditorView).onSave();
     }
 
     private RuntimePluginBaseEditor createRuntimePluginBaseEditor() {
 
-        return new RuntimePluginBaseEditor( baseEditorView ) {
+        return new RuntimePluginBaseEditor(baseEditorView) {
             @Override
             protected PluginType getPluginType() {
                 return PluginType.DYNAMIC_MENU;
@@ -136,25 +137,27 @@ public class RuntimePluginBaseEditorTest {
 
             @Override
             ObservablePath getCurrentPath() {
-                return mock( ObservablePath.class );
+                return mock(ObservablePath.class);
             }
 
             @Override
             public PluginSimpleContent getContent() {
-                return mock( PluginSimpleContent.class );
+                return mock(PluginSimpleContent.class);
             }
 
             @Override
-            void unregisterPlugin( String name, PluginType type ) {
+            void unregisterPlugin(String name,
+                                  PluginType type) {
             }
 
             @Override
-            void registerPlugin( Plugin plugin ) {
+            void registerPlugin(Plugin plugin) {
             }
 
             @Override
-            protected RemoteCallback<Path> getSaveSuccessCallback( final int newHash ) {
-                return path -> { };
+            protected RemoteCallback<Path> getSaveSuccessCallback(final int newHash) {
+                return path -> {
+                };
             }
         };
     }

@@ -36,76 +36,71 @@ public class VFSLockServiceProxyBackendImpl implements VFSLockServiceProxy {
 
     @Inject
     private Caller<VFSLockService> vfsLockService;
-    
-    @Inject 
+
+    @Inject
     private Logger logger;
 
     @Override
-    public void acquireLock( final Path path,
-                             final ParameterizedCommand<LockResult> parameterizedCommand ) {
+    public void acquireLock(final Path path,
+                            final ParameterizedCommand<LockResult> parameterizedCommand) {
 
-        vfsLockService.call( new RemoteCallback<LockResult>() {
+        vfsLockService.call(new RemoteCallback<LockResult>() {
 
-            @Override
-            public void callback( final LockResult result ) {
-                parameterizedCommand.execute( result );
+                                @Override
+                                public void callback(final LockResult result) {
+                                    parameterizedCommand.execute(result);
+                                }
+                            },
+                            new BusErrorCallback() {
 
-            }
-        }, new BusErrorCallback() {
-            
-            @Override
-            public boolean error( Message message,
-                                  Throwable throwable ) {
-                
-                logger.error( "Error when trying to acquire lock for " + path.toURI() , throwable );
-                parameterizedCommand.execute( LockResult.error() );
-                return false;
-            }
-        } ).acquireLock( path );
+                                @Override
+                                public boolean error(Message message,
+                                                     Throwable throwable) {
 
+                                    logger.error("Error when trying to acquire lock for " + path.toURI(),
+                                                 throwable);
+                                    parameterizedCommand.execute(LockResult.error());
+                                    return false;
+                                }
+                            }).acquireLock(path);
     }
 
     @Override
-    public void releaseLock( final Path path,
-                             final ParameterizedCommand<LockResult> parameterizedCommand ) {
-        
-        vfsLockService.call( new RemoteCallback<LockResult>() {
+    public void releaseLock(final Path path,
+                            final ParameterizedCommand<LockResult> parameterizedCommand) {
+
+        vfsLockService.call(new RemoteCallback<LockResult>() {
 
             @Override
-            public void callback( final LockResult result ) {
-                parameterizedCommand.execute( result );
-
+            public void callback(final LockResult result) {
+                parameterizedCommand.execute(result);
             }
-        } ).releaseLock( path );
-
-    }
-    
-    @Override
-    public void forceReleaseLock( final Path path,
-                                  final ParameterizedCommand<LockResult> parameterizedCommand ) {
-        
-        vfsLockService.call( new RemoteCallback<LockResult>() {
-
-            @Override
-            public void callback( final LockResult result ) {
-                parameterizedCommand.execute( result );
-
-            }
-        } ).forceReleaseLock( path );
+        }).releaseLock(path);
     }
 
     @Override
-    public void retrieveLockInfo( final Path path,
-                                  final ParameterizedCommand<LockInfo> parameterizedCommand ) {
-        
-        vfsLockService.call( new RemoteCallback<LockInfo>() {
+    public void forceReleaseLock(final Path path,
+                                 final ParameterizedCommand<LockResult> parameterizedCommand) {
+
+        vfsLockService.call(new RemoteCallback<LockResult>() {
 
             @Override
-            public void callback( final LockInfo lockInfo ) {
-                parameterizedCommand.execute( lockInfo );
-
+            public void callback(final LockResult result) {
+                parameterizedCommand.execute(result);
             }
-        } ).retrieveLockInfo( path );
+        }).forceReleaseLock(path);
+    }
 
+    @Override
+    public void retrieveLockInfo(final Path path,
+                                 final ParameterizedCommand<LockInfo> parameterizedCommand) {
+
+        vfsLockService.call(new RemoteCallback<LockInfo>() {
+
+            @Override
+            public void callback(final LockInfo lockInfo) {
+                parameterizedCommand.execute(lockInfo);
+            }
+        }).retrieveLockInfo(path);
     }
 }

@@ -30,7 +30,6 @@ import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.ext.preferences.client.admin.page.AdminTool;
-import org.uberfire.mvp.ParameterizedCommand;
 
 @Dependent
 @Templated
@@ -38,54 +37,48 @@ public class AdminPageItemView implements IsElement,
                                           AdminPageItemPresenter.View {
 
     private final TranslationService translationService;
-
-    private AdminPageItemPresenter presenter;
-
     @Inject
     @DataField("item")
     Div item;
-
     @DataField("item-icon")
-    Element icon = DOM.createElement( "i" );
-
+    Element icon = DOM.createElement("i");
     @Inject
     @DataField("item-text")
     Div text;
-
     @Inject
     @DataField("item-counter-container")
     Div counterContainer;
-
     @Inject
     @DataField("item-counter")
     Paragraph counterText;
+    private AdminPageItemPresenter presenter;
 
     @Inject
-    public AdminPageItemView( final TranslationService translationService ) {
+    public AdminPageItemView(final TranslationService translationService) {
         this.translationService = translationService;
     }
 
     @Override
-    public void init( final AdminPageItemPresenter presenter ) {
+    public void init(final AdminPageItemPresenter presenter) {
         this.presenter = presenter;
         final AdminTool adminTool = presenter.getAdminTool();
 
         final String iconCss = adminTool.getIconCss();
-        if ( !iconCss.isEmpty() ) {
-            icon.addClassName( iconCss );
+        if (!iconCss.isEmpty()) {
+            icon.addClassName(iconCss);
         }
 
-        text.setTextContent( adminTool.getTitle() );
+        text.setTextContent(adminTool.getTitle());
 
-        if ( adminTool.hasCounter() ) {
-            adminTool.fetchCounter( counter -> counterText.setTextContent( String.valueOf( counter ) ) );
+        if (adminTool.hasCounter()) {
+            adminTool.fetchCounter(counter -> counterText.setTextContent(String.valueOf(counter)));
         } else {
-            counterContainer.setHidden( true );
+            counterContainer.setHidden(true);
         }
     }
 
     @EventHandler("item")
-    public void enter( ClickEvent event ) {
+    public void enter(ClickEvent event) {
         presenter.enter();
     }
 }

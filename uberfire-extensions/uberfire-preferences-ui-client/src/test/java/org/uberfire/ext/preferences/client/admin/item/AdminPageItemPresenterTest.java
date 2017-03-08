@@ -45,24 +45,31 @@ public class AdminPageItemPresenterTest {
 
     @Before
     public void setup() {
-        presenter = new AdminPageItemPresenter( view, placeManager, adminPageConfigurationEvent );
+        presenter = new AdminPageItemPresenter(view,
+                                               placeManager,
+                                               adminPageConfigurationEvent);
     }
 
     @Test
     public void enterTest() {
-        final Command command = spy( new Command() {
+        final Command command = spy(new Command() {
             @Override
             public void execute() {
             }
-        } );
+        });
 
-        AdminTool adminTool = new AdminTool( "title1", "iconCss1", "category1", command );
+        AdminTool adminTool = new AdminTool("title1",
+                                            "iconCss1",
+                                            "category1",
+                                            command);
 
-        presenter.setup( adminTool, "screen", null );
+        presenter.setup(adminTool,
+                        "screen",
+                        null);
         presenter.enter();
 
-        verify( view ).init( presenter );
-        verify( command ).execute();
-        verify( adminPageConfigurationEvent ).fire( any( PreferencesCentralActionsConfigurationEvent.class ) );
+        verify(view).init(presenter);
+        verify(command).execute();
+        verify(adminPageConfigurationEvent).fire(any(PreferencesCentralActionsConfigurationEvent.class));
     }
 }

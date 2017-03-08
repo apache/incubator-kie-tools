@@ -45,37 +45,36 @@ public class RectangleFactory extends AbstractBaseFactory<Rectangle> {
     }
 
     @Override
-    public WiresBaseShape getShape( final FactoryHelper helper ) {
-        return new WiresRectangle( makeShape() );
+    public WiresBaseShape getShape(final FactoryHelper helper) {
+        return new WiresRectangle(makeShape());
     }
 
     @Override
-    public boolean builds( final WiresBaseShape shapeType ) {
+    public boolean builds(final WiresBaseShape shapeType) {
         return shapeType instanceof WiresRectangle;
     }
 
     @Override
     protected Rectangle makeShape() {
-        final Rectangle rectangle = new Rectangle( SHAPE_SIZE_X,
-                                                   SHAPE_SIZE_Y,
-                                                   5 );
-        rectangle.setX( 0 - ( SHAPE_SIZE_X / 2 ) )
-                .setY( 0 - ( SHAPE_SIZE_Y / 2 ) )
-                .setStrokeColor( ShapesUtils.RGB_STROKE_SHAPE )
-                .setStrokeWidth( ShapesUtils.RGB_STROKE_WIDTH_SHAPE )
-                .setFillColor( ShapesUtils.RGB_FILL_SHAPE )
-                .setDraggable( false );
+        final Rectangle rectangle = new Rectangle(SHAPE_SIZE_X,
+                                                  SHAPE_SIZE_Y,
+                                                  5);
+        rectangle.setX(0 - (SHAPE_SIZE_X / 2))
+                .setY(0 - (SHAPE_SIZE_Y / 2))
+                .setStrokeColor(ShapesUtils.RGB_STROKE_SHAPE)
+                .setStrokeWidth(ShapesUtils.RGB_STROKE_WIDTH_SHAPE)
+                .setFillColor(ShapesUtils.RGB_FILL_SHAPE)
+                .setDraggable(false);
         return rectangle;
     }
 
     @Override
     protected double getWidth() {
-        return SHAPE_SIZE_X + ( ShapesUtils.RGB_STROKE_WIDTH_SHAPE * 2 );
+        return SHAPE_SIZE_X + (ShapesUtils.RGB_STROKE_WIDTH_SHAPE * 2);
     }
 
     @Override
     protected double getHeight() {
-        return SHAPE_SIZE_Y + ( ShapesUtils.RGB_STROKE_WIDTH_SHAPE * 2 );
+        return SHAPE_SIZE_Y + (ShapesUtils.RGB_STROKE_WIDTH_SHAPE * 2);
     }
-
 }

@@ -16,31 +16,48 @@
 
 package org.uberfire.ext.security.management.client.widgets.popup;
 
-
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
 import org.uberfire.mvp.Command;
 
 /**
  * <p>A confirm box view using <code>org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup</code>.</p>
- *
  * @since 0.8.0
  */
 public class ConfirmBoxView implements ConfirmBox.View {
 
     @Override
-    public void show(final String title, final String message, final Command yesCommand,
-                     final Command noCommand, final Command cancelCommand) {
-        YesNoCancelPopup.newYesNoCancelPopup(title, message, yesCommand, noCommand, cancelCommand).show();
+    public void show(final String title,
+                     final String message,
+                     final Command yesCommand,
+                     final Command noCommand,
+                     final Command cancelCommand) {
+        YesNoCancelPopup.newYesNoCancelPopup(title,
+                                             message,
+                                             yesCommand,
+                                             noCommand,
+                                             cancelCommand).show();
     }
 
     @Override
-    public void show(String title, String message, Command yesCommand, Command noCommand) {
-        YesNoCancelPopup.newYesNoCancelPopup(title, message, yesCommand, noCommand, null).show();
+    public void show(String title,
+                     String message,
+                     Command yesCommand,
+                     Command noCommand) {
+        YesNoCancelPopup.newYesNoCancelPopup(title,
+                                             message,
+                                             yesCommand,
+                                             noCommand,
+                                             null).show();
     }
 
     @Override
-    public void show(String title, String message, Command yesCommand) {
-        YesNoCancelPopup.newYesNoCancelPopup(title, message, yesCommand, null, null).show();
+    public void show(String title,
+                     String message,
+                     Command yesCommand) {
+        YesNoCancelPopup.newYesNoCancelPopup(title,
+                                             message,
+                                             yesCommand,
+                                             null,
+                                             null).show();
     }
-
 }

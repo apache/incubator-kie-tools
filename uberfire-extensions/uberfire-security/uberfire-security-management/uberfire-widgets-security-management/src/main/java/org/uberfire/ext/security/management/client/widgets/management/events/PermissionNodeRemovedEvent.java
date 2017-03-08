@@ -28,7 +28,9 @@ public class PermissionNodeRemovedEvent extends ContextualEvent implements UberF
     private PermissionNode childNode;
     private PermissionNode parentNode;
 
-    public PermissionNodeRemovedEvent(ACLEditor aclEditor, PermissionNode parentNode, PermissionNode childNode) {
+    public PermissionNodeRemovedEvent(ACLEditor aclEditor,
+                                      PermissionNode parentNode,
+                                      PermissionNode childNode) {
         super(aclEditor);
         this.parentNode = parentNode;
         this.childNode = childNode;

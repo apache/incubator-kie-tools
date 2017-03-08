@@ -16,21 +16,16 @@
 
 package org.uberfire.ext.layout.editor.impl.old.perspective.editor;
 
-import org.jboss.errai.common.client.api.annotations.Portable;
-
 @Deprecated
 public class HTMLEditor {
 
     private String htmlCode;
 
-    public HTMLEditor(){}
-
-    public HTMLEditor( String htmlCode ) {
-
-        this.htmlCode = htmlCode;
+    public HTMLEditor() {
     }
 
-    public void setHtmlCode( String htmlCode ) {
+    public HTMLEditor(String htmlCode) {
+
         this.htmlCode = htmlCode;
     }
 
@@ -38,18 +33,22 @@ public class HTMLEditor {
         return htmlCode;
     }
 
+    public void setHtmlCode(String htmlCode) {
+        this.htmlCode = htmlCode;
+    }
+
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof HTMLEditor ) ) {
+        if (!(o instanceof HTMLEditor)) {
             return false;
         }
 
         HTMLEditor that = (HTMLEditor) o;
 
-        if ( htmlCode != null ? !htmlCode.equals( that.htmlCode ) : that.htmlCode != null ) {
+        if (htmlCode != null ? !htmlCode.equals(that.htmlCode) : that.htmlCode != null) {
             return false;
         }
 

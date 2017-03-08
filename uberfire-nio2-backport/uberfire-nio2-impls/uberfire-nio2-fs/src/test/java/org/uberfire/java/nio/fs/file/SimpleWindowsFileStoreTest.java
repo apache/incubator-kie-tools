@@ -30,93 +30,108 @@ import org.uberfire.java.nio.file.attribute.FileAttributeView;
 import org.uberfire.java.nio.file.attribute.FileStoreAttributeView;
 import org.uberfire.java.nio.file.attribute.FileTime;
 import org.uberfire.java.nio.file.spi.FileSystemProvider;
-import org.uberfire.java.nio.fs.file.SimpleWindowsFileStore;
-import org.uberfire.java.nio.fs.file.SimpleWindowsFileSystem;
 
-import static org.fest.assertions.api.Assertions.*;
+import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class SimpleWindowsFileStoreTest {
 
-    final FileSystemProvider fsProvider  = mock( FileSystemProvider.class );
-    final File[]             roots       = new File[]{ new File( "c:\\" ), new File( "a:\\" ) };
-    final FileSystem         fileSystem  = new SimpleWindowsFileSystem( roots, fsProvider, "c:\\" );
-    final Path               nonNullPath = GeneralPathImpl.create( fileSystem, "c:\\something", false );
+    final FileSystemProvider fsProvider = mock(FileSystemProvider.class);
+    final File[] roots = new File[]{new File("c:\\"), new File("a:\\")};
+    final FileSystem fileSystem = new SimpleWindowsFileSystem(roots,
+                                                              fsProvider,
+                                                              "c:\\");
+    final Path nonNullPath = GeneralPathImpl.create(fileSystem,
+                                                    "c:\\something",
+                                                    false);
 
     @Test
     public void simpleTests() {
-        final Path path = GeneralPathImpl.create( fileSystem, "something", false );
-        final FileStore fileStore = new SimpleWindowsFileStore( roots, path );
+        final Path path = GeneralPathImpl.create(fileSystem,
+                                                 "something",
+                                                 false);
+        final FileStore fileStore = new SimpleWindowsFileStore(roots,
+                                                               path);
 
-        assertThat( fileStore.name() ).isNotNull().isEqualTo( "c:\\" );
-        assertThat( fileStore.type() ).isNull();
-        assertThat( fileStore.isReadOnly() ).isFalse();
-        assertThat( fileStore.getTotalSpace() ).isEqualTo( 0L );
-        assertThat( fileStore.getUsableSpace() ).isEqualTo( 0L );
+        assertThat(fileStore.name()).isNotNull().isEqualTo("c:\\");
+        assertThat(fileStore.type()).isNull();
+        assertThat(fileStore.isReadOnly()).isFalse();
+        assertThat(fileStore.getTotalSpace()).isEqualTo(0L);
+        assertThat(fileStore.getUsableSpace()).isEqualTo(0L);
 
-        assertThat( fileStore.supportsFileAttributeView( BasicFileAttributeView.class ) ).isTrue();
-        assertThat( fileStore.supportsFileAttributeView( MyFileAttributeView.class ) ).isFalse();
-        assertThat( fileStore.supportsFileAttributeView( MyAlsoInvalidFileAttributeView.class ) ).isFalse();
-        assertThat( fileStore.supportsFileAttributeView( "basic" ) ).isTrue();
-        assertThat( fileStore.supportsFileAttributeView( "any" ) ).isFalse();
-        assertThat( fileStore.supportsFileAttributeView( BasicFileAttributeView.class.getName() ) ).isFalse();
-        assertThat( fileStore.supportsFileAttributeView( MyAlsoInvalidFileAttributeView.class.getName() ) ).isFalse();
-        assertThat( fileStore.getFileStoreAttributeView( FileStoreAttributeView.class ) ).isNull();
+        assertThat(fileStore.supportsFileAttributeView(BasicFileAttributeView.class)).isTrue();
+        assertThat(fileStore.supportsFileAttributeView(MyFileAttributeView.class)).isFalse();
+        assertThat(fileStore.supportsFileAttributeView(MyAlsoInvalidFileAttributeView.class)).isFalse();
+        assertThat(fileStore.supportsFileAttributeView("basic")).isTrue();
+        assertThat(fileStore.supportsFileAttributeView("any")).isFalse();
+        assertThat(fileStore.supportsFileAttributeView(BasicFileAttributeView.class.getName())).isFalse();
+        assertThat(fileStore.supportsFileAttributeView(MyAlsoInvalidFileAttributeView.class.getName())).isFalse();
+        assertThat(fileStore.getFileStoreAttributeView(FileStoreAttributeView.class)).isNull();
 
-        assertThat( fileStore.getAttribute( "name" ) ).isNotNull().isEqualTo( fileStore.name() );
-        assertThat( fileStore.getAttribute( "totalSpace" ) ).isNotNull().isEqualTo( fileStore.getTotalSpace() );
-        assertThat( fileStore.getAttribute( "usableSpace" ) ).isNotNull().isEqualTo( fileStore.getUsableSpace() );
-        assertThat( fileStore.getAttribute( "readOnly" ) ).isNotNull().isEqualTo( fileStore.isReadOnly() );
+        assertThat(fileStore.getAttribute("name")).isNotNull().isEqualTo(fileStore.name());
+        assertThat(fileStore.getAttribute("totalSpace")).isNotNull().isEqualTo(fileStore.getTotalSpace());
+        assertThat(fileStore.getAttribute("usableSpace")).isNotNull().isEqualTo(fileStore.getUsableSpace());
+        assertThat(fileStore.getAttribute("readOnly")).isNotNull().isEqualTo(fileStore.isReadOnly());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void contructorWithNullRootsAndPath() {
-        new SimpleWindowsFileStore( (File[]) null, (Path) null );
+        new SimpleWindowsFileStore((File[]) null,
+                                   (Path) null);
     }
 
     @Test(expected = IllegalStateException.class)
     public void contructorWithEmptyRoots() {
-        new SimpleWindowsFileStore( new File[]{ }, null );
+        new SimpleWindowsFileStore(new File[]{},
+                                   null);
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void getUnallocatedSpaceUnsupportedOp() {
-        new SimpleWindowsFileStore( roots, nonNullPath ).getUnallocatedSpace();
+        new SimpleWindowsFileStore(roots,
+                                   nonNullPath).getUnallocatedSpace();
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void getAttributeUnsupportedOp() {
-        new SimpleWindowsFileStore( roots, nonNullPath ).getAttribute( "someValueHere" );
+        new SimpleWindowsFileStore(roots,
+                                   nonNullPath).getAttribute("someValueHere");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void supportsFileAttributeViewNull1() {
-        new SimpleWindowsFileStore( roots, nonNullPath ).supportsFileAttributeView( (Class<? extends FileAttributeView>) null );
+        new SimpleWindowsFileStore(roots,
+                                   nonNullPath).supportsFileAttributeView((Class<? extends FileAttributeView>) null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void supportsFileAttributeViewNull2() {
-        new SimpleWindowsFileStore( roots, nonNullPath ).supportsFileAttributeView( (String) null );
+        new SimpleWindowsFileStore(roots,
+                                   nonNullPath).supportsFileAttributeView((String) null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void supportsFileAttributeViewEmpty() {
-        new SimpleWindowsFileStore( roots, nonNullPath ).supportsFileAttributeView( "" );
+        new SimpleWindowsFileStore(roots,
+                                   nonNullPath).supportsFileAttributeView("");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void getFileStoreAttributeViewNull() {
-        new SimpleWindowsFileStore( roots, nonNullPath ).getFileStoreAttributeView( null );
+        new SimpleWindowsFileStore(roots,
+                                   nonNullPath).getFileStoreAttributeView(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void getAttributeNull() {
-        new SimpleWindowsFileStore( roots, nonNullPath ).getAttribute( null );
+        new SimpleWindowsFileStore(roots,
+                                   nonNullPath).getAttribute(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void getAttributeEmpty() {
-        new SimpleWindowsFileStore( roots, nonNullPath ).getAttribute( "" );
+        new SimpleWindowsFileStore(roots,
+                                   nonNullPath).getAttribute("");
     }
 
     private static class MyFileAttributeView implements FileAttributeView {
@@ -135,9 +150,9 @@ public class SimpleWindowsFileStoreTest {
         }
 
         @Override
-        public void setTimes( FileTime lastModifiedTime,
-                              FileTime lastAccessTime,
-                              FileTime createTime ) throws IOException {
+        public void setTimes(FileTime lastModifiedTime,
+                             FileTime lastAccessTime,
+                             FileTime createTime) throws IOException {
 
         }
 

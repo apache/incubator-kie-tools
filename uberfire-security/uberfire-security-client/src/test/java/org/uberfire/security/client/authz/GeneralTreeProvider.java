@@ -46,11 +46,15 @@ public class GeneralTreeProvider implements PermissionTreeProvider {
     }
 
     @Override
-    public void loadChildren(PermissionNode parent, LoadOptions options, LoadCallback callback) {
+    public void loadChildren(PermissionNode parent,
+                             LoadOptions options,
+                             LoadCallback callback) {
 
         if (parent.getNodeName().equals("General")) {
             List<PermissionNode> result = new ArrayList<>();
-            result.addAll(buildSettingNodes(null, 1, 2));
+            result.addAll(buildSettingNodes(null,
+                                            1,
+                                            2));
 
             PermissionGroupNode categoryA = new PermissionGroupNode();
             categoryA.setNodeName("Category A");
@@ -58,29 +62,39 @@ public class GeneralTreeProvider implements PermissionTreeProvider {
 
             PermissionGroupNode categoryB = new PermissionGroupNode();
             categoryB.setNodeName("Category B");
-            Permission p = permissionManager.createPermission("general.categoryB", true);
-            categoryB.addPermission(p, "Allow", "Deny");
+            Permission p = permissionManager.createPermission("general.categoryB",
+                                                              true);
+            categoryB.addPermission(p,
+                                    "Allow",
+                                    "Deny");
             result.add(categoryB);
 
             callback.afterLoad(result);
-        }
-        else if (parent.getNodeName().equals("Category A")) {
-            callback.afterLoad(buildSettingNodes("A", 3, 5));
-        }
-        else if (parent.getNodeName().equals("Category B")) {
-            callback.afterLoad(buildSettingNodes("B", 8, 3));
+        } else if (parent.getNodeName().equals("Category A")) {
+            callback.afterLoad(buildSettingNodes("A",
+                                                 3,
+                                                 5));
+        } else if (parent.getNodeName().equals("Category B")) {
+            callback.afterLoad(buildSettingNodes("B",
+                                                 8,
+                                                 3));
         }
     }
 
-    private List<PermissionNode> buildSettingNodes(String id, int from, int n) {
+    private List<PermissionNode> buildSettingNodes(String id,
+                                                   int from,
+                                                   int n) {
         List<PermissionNode> result = new ArrayList<>();
 
-        for (int i=from; i<from+n; i++) {
+        for (int i = from; i < from + n; i++) {
             PermissionLeafNode setting = new PermissionLeafNode();
             setting.setNodeName("Setting " + i);
             String name = "general" + (id != null ? ".category" + id : "") + ".setting" + i;
-            Permission p = permissionManager.createPermission(name, true);
-            setting.addPermission(p, "Allow", "Deny");
+            Permission p = permissionManager.createPermission(name,
+                                                              true);
+            setting.addPermission(p,
+                                  "Allow",
+                                  "Deny");
             result.add(setting);
         }
         return result;

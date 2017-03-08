@@ -19,7 +19,7 @@ package org.uberfire.commons.lifecycle;
 /**
  * The PriorityDisposable interface is used for life-cycle management
  * of resources that requires priority to be disposed.
- * <p/>
+ * <p>
  * Important Note: Due an issue related to multiple Application Server
  * support, all types that implement this interface needs to register itself on
  * PriorityDisposableRegistry (preferable on constructor).
@@ -29,5 +29,4 @@ package org.uberfire.commons.lifecycle;
 public interface PriorityDisposable extends Disposable {
 
     int priority();
-
 }

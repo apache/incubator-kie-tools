@@ -53,7 +53,7 @@ import java.lang.annotation.Target;
  */
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
+@Target({ElementType.TYPE})
 public @interface WorkbenchScreen {
 
     /**
@@ -80,7 +80,7 @@ public @interface WorkbenchScreen {
      * is the trigger to create a new panel, if panel already exists this information is ignored.
      */
     int preferredWidth() default -1;
-    
+
     /**
      * Indicates that this screen can be discovered and loaded at runtime.
      * This is useful when building plugins or extensions where the screen

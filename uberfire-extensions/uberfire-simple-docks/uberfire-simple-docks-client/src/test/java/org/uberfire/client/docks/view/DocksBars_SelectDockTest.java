@@ -16,9 +16,7 @@
 
 package org.uberfire.client.docks.view;
 
-import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,10 +33,10 @@ import org.uberfire.client.workbench.docks.UberfireDocksContainer;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class DocksBars_SelectDockTest {
 
     @Mock
@@ -59,34 +57,38 @@ public class DocksBars_SelectDockTest {
     @Test
     public void testSelectDockParametersArePreserved() throws Exception {
 
-        final DefaultPlaceRequest myPlace = new DefaultPlaceRequest( "myPlace" );
+        final DefaultPlaceRequest myPlace = new DefaultPlaceRequest("myPlace");
 
-        myPlace.addParameter( "my_parameter_key", "my_parameter_value" );
+        myPlace.addParameter("my_parameter_key",
+                             "my_parameter_value");
 
-        docksBars.selectDock( getTargetDock( myPlace ),
-                              getDocksBar() );
+        docksBars.selectDock(getTargetDock(myPlace),
+                             getDocksBar());
 
-        verify( placeManager ).goTo( placeRequestArgumentCaptor.capture(),
-                                     any( FlowPanel.class ) );
+        verify(placeManager).goTo(placeRequestArgumentCaptor.capture(),
+                                  any(FlowPanel.class));
 
         final PlaceRequest placeRequest = placeRequestArgumentCaptor.getValue();
-        assertEquals( "myPlace", placeRequest.getIdentifier() );
-        assertEquals( "my_parameter_value", placeRequest.getParameter( "my_parameter_key", "" ) );
+        assertEquals("myPlace",
+                     placeRequest.getIdentifier());
+        assertEquals("my_parameter_value",
+                     placeRequest.getParameter("my_parameter_key",
+                                               ""));
     }
 
-    private UberfireDock getTargetDock( final DefaultPlaceRequest placeRequest ) {
-        final UberfireDock targetDock = mock( UberfireDock.class );
-        when( targetDock.getPlaceRequest() ).thenReturn( placeRequest );
+    private UberfireDock getTargetDock(final DefaultPlaceRequest placeRequest) {
+        final UberfireDock targetDock = mock(UberfireDock.class);
+        when(targetDock.getPlaceRequest()).thenReturn(placeRequest);
         return targetDock;
     }
 
     private DocksBar getDocksBar() {
-        final DocksBar docksBar = mock( DocksBar.class );
-        when( docksBar.getCollapsedBar() ).thenReturn( mock( DocksCollapsedBar.class ) );
-        final DocksExpandedBar docksExpandedBar = mock( DocksExpandedBar.class );
-        when( docksExpandedBar.targetPanel() ).thenReturn( mock( FlowPanel.class ) );
-        when( docksBar.getExpandedBar() ).thenReturn( docksExpandedBar );
-        when( docksBar.getExpandedBar() ).thenReturn( mock( DocksExpandedBar.class ) );
+        final DocksBar docksBar = mock(DocksBar.class);
+        when(docksBar.getCollapsedBar()).thenReturn(mock(DocksCollapsedBar.class));
+        final DocksExpandedBar docksExpandedBar = mock(DocksExpandedBar.class);
+        when(docksExpandedBar.targetPanel()).thenReturn(mock(FlowPanel.class));
+        when(docksBar.getExpandedBar()).thenReturn(docksExpandedBar);
+        when(docksBar.getExpandedBar()).thenReturn(mock(DocksExpandedBar.class));
         return docksBar;
     }
 }

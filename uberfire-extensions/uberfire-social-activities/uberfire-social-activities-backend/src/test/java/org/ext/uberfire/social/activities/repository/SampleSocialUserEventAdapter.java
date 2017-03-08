@@ -18,7 +18,6 @@ package org.ext.uberfire.social.activities.repository;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
 
 import org.ext.uberfire.social.activities.model.DefaultTypes;
 import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
@@ -40,30 +39,30 @@ public class SampleSocialUserEventAdapter implements SocialAdapter<SampleSocialU
     }
 
     @Override
-    public boolean shouldInterceptThisEvent( Object event ) {
-        if ( event.getClass().getSimpleName().equals( eventToIntercept().getSimpleName() ) ) {
+    public boolean shouldInterceptThisEvent(Object event) {
+        if (event.getClass().getSimpleName().equals(eventToIntercept().getSimpleName())) {
             return true;
         }
         return false;
     }
 
     @Override
-    public SocialActivitiesEvent toSocial( Object object ) {
+    public SocialActivitiesEvent toSocial(Object object) {
         SampleSocialUserEvent event = (SampleSocialUserEvent) object;
-        return new SocialActivitiesEvent(  );
+        return new SocialActivitiesEvent();
     }
 
     @Override
     public List<SocialCommandTypeFilter> getTimelineFilters() {
         ArrayList<SocialCommandTypeFilter> socialCommandTypeFilters = new ArrayList<SocialCommandTypeFilter>();
-        socialCommandTypeFilters.add( new SocialCommandTypeFilter() {
+        socialCommandTypeFilters.add(new SocialCommandTypeFilter() {
             @Override
-            public List<SocialActivitiesEvent> execute( String parameter,
-                                                        List<SocialActivitiesEvent> events ) {
+            public List<SocialActivitiesEvent> execute(String parameter,
+                                                       List<SocialActivitiesEvent> events) {
                 List<SocialActivitiesEvent> newList = new ArrayList<SocialActivitiesEvent>();
-                Integer maxResults = new Integer( parameter );
-                for ( int i = 0; i < maxResults; i++ ) {
-                    newList.add( events.get( i ) );
+                Integer maxResults = new Integer(parameter);
+                for (int i = 0; i < maxResults; i++) {
+                    newList.add(events.get(i));
                 }
                 return newList;
             }
@@ -72,18 +71,20 @@ public class SampleSocialUserEventAdapter implements SocialAdapter<SampleSocialU
             public String getCommandName() {
                 return "max-results";
             }
-        } );
+        });
 
-        socialCommandTypeFilters.add( new SocialCommandTypeFilter() {
+        socialCommandTypeFilters.add(new SocialCommandTypeFilter() {
             @Override
-            public List<SocialActivitiesEvent> execute( String parameter,
-                                                        List<SocialActivitiesEvent> events ) {
+            public List<SocialActivitiesEvent> execute(String parameter,
+                                                       List<SocialActivitiesEvent> events) {
                 List<SocialActivitiesEvent> newList = new ArrayList<SocialActivitiesEvent>();
-                for ( SocialActivitiesEvent event : events ) {
+                for (SocialActivitiesEvent event : events) {
                     String name = event.getSocialUser().getUserName();
-                    SocialUser socialUser = new SocialUser( name + " - filtered" );
-                    SocialActivitiesEvent socialEvent = new SocialActivitiesEvent( socialUser, event.getType(), new Date() );
-                    newList.add( socialEvent );
+                    SocialUser socialUser = new SocialUser(name + " - filtered");
+                    SocialActivitiesEvent socialEvent = new SocialActivitiesEvent(socialUser,
+                                                                                  event.getType(),
+                                                                                  new Date());
+                    newList.add(socialEvent);
                 }
                 return newList;
             }
@@ -92,15 +93,15 @@ public class SampleSocialUserEventAdapter implements SocialAdapter<SampleSocialU
             public String getCommandName() {
                 return "another-filter";
             }
-        } );
+        });
         return socialCommandTypeFilters;
     }
 
     @Override
     public List<String> getTimelineFiltersNames() {
         List<String> names = new ArrayList<String>();
-        names.add( "max-results" );
-        names.add( "another-filter" );
+        names.add("max-results");
+        names.add("another-filter");
         return names;
     }
 }

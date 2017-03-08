@@ -24,7 +24,6 @@ public interface LoadOptions {
 
     /**
      * A string pattern used to match the nodes to load.
-     *
      * @return A string used to compare against the node name.
      * If null or empty then this option is ruled out.
      */
@@ -32,7 +31,6 @@ public interface LoadOptions {
 
     /**
      * The resource identifiers to take into account when loading the children nodes.
-     *
      * @return A collection of ids
      * If null or empty then this option is ruled out.
      */
@@ -40,9 +38,8 @@ public interface LoadOptions {
 
     /**
      * The maximum number of nodes to load.
-     *
+     * <p>
      * <p>NOTE: It can only be used in combination with the {@link #getNodeNamePattern()} option.</p>
-     *
      * @return A positive integer. If 0 or negative integer then all nodes are loaded.
      */
     int getMaxNodes();

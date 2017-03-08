@@ -18,16 +18,12 @@ package org.uberfire.client.workbench.docks;
 
 import java.util.Map;
 
-import org.uberfire.mvp.Command;
-
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-
 /**
  * Uberfire Dock Support
  */
 public interface UberfireDocks {
 
-    void configure(Map<String,String> configurations);
+    void configure(Map<String, String> configurations);
 
     void add(UberfireDock... docks);
 
@@ -35,8 +31,9 @@ public interface UberfireDocks {
 
     void expand(UberfireDock dock);
 
-    void disable(UberfireDockPosition position, String perspectiveName);
+    void disable(UberfireDockPosition position,
+                 String perspectiveName);
 
-    void enable(UberfireDockPosition position, String perspectiveName);
-
+    void enable(UberfireDockPosition position,
+                String perspectiveName);
 }

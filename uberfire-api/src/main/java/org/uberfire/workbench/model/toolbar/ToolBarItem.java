@@ -15,10 +15,9 @@
  */
 package org.uberfire.workbench.model.toolbar;
 
+import jsinterop.annotations.JsType;
 import org.uberfire.mvp.Command;
 import org.uberfire.security.authz.RuntimeFeatureResource;
-
-import jsinterop.annotations.JsType;
 
 /**
  * Meta-data for a Workbench Tool Bar Item including permissions. The default is
@@ -47,7 +46,7 @@ public interface ToolBarItem
     /**
      * @param enabled the enabled to set
      */
-    void setEnabled( boolean enabled );
+    void setEnabled(boolean enabled);
 
     /**
      * @return The command associated with the Tool Bar Item

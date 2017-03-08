@@ -39,13 +39,15 @@ public class DefaultPreferenceScopeResolutionStrategy implements PreferenceScope
     protected DefaultPreferenceScopeResolutionStrategy() {
     }
 
-    public DefaultPreferenceScopeResolutionStrategy( final PreferenceScopeFactory scopeFactory,
-                                                     final String componentKey ) {
-        final List<PreferenceScope> order = getScopeOrder( scopeFactory, componentKey );
-        final PreferenceScope defaultScope = getDefaultScope( order );
+    public DefaultPreferenceScopeResolutionStrategy(final PreferenceScopeFactory scopeFactory,
+                                                    final String componentKey) {
+        final List<PreferenceScope> order = getScopeOrder(scopeFactory,
+                                                          componentKey);
+        final PreferenceScope defaultScope = getDefaultScope(order);
 
-        info = new PreferenceScopeResolutionStrategyInfo( order, defaultScope );
-        resolver = new DefaultPreferenceScopeResolver( order );
+        info = new PreferenceScopeResolutionStrategyInfo(order,
+                                                         defaultScope);
+        resolver = new DefaultPreferenceScopeResolver(order);
     }
 
     @Override
@@ -58,53 +60,65 @@ public class DefaultPreferenceScopeResolutionStrategy implements PreferenceScope
         return resolver;
     }
 
-    public PreferenceScope getDefaultScope( final List<PreferenceScope> order ) {
-        return order.get( 0 );
+    public PreferenceScope getDefaultScope(final List<PreferenceScope> order) {
+        return order.get(0);
     }
 
-    private List<PreferenceScope> getScopeOrder( final PreferenceScopeFactory scopeFactory,
-                                                 final String componentKey ) {
+    private List<PreferenceScope> getScopeOrder(final PreferenceScopeFactory scopeFactory,
+                                                final String componentKey) {
         List<PreferenceScope> order = new ArrayList<>();
 
-        addUserComponentScope( order, scopeFactory, componentKey );
-        addUserEntireApplicationScope( order, scopeFactory );
-        addAllUsersComponentScope( order, scopeFactory, componentKey );
-        addAllUsersEntireApplicationScope( order, scopeFactory );
+        addUserComponentScope(order,
+                              scopeFactory,
+                              componentKey);
+        addUserEntireApplicationScope(order,
+                                      scopeFactory);
+        addAllUsersComponentScope(order,
+                                  scopeFactory,
+                                  componentKey);
+        addAllUsersEntireApplicationScope(order,
+                                          scopeFactory);
 
         return order;
     }
 
-    private void addUserComponentScope( List<PreferenceScope> order,
-                                        final PreferenceScopeFactory scopeFactory,
-                                        final String componentKey ) {
-        if ( componentKey != null ) {
-            final PreferenceScope userScope = scopeFactory.createScope( DefaultScopes.USER.type() );
-            final PreferenceScope componentScope = scopeFactory.createScope( DefaultScopes.COMPONENT.type(), componentKey );
-            order.add( scopeFactory.createScope( userScope, componentScope ) );
+    private void addUserComponentScope(List<PreferenceScope> order,
+                                       final PreferenceScopeFactory scopeFactory,
+                                       final String componentKey) {
+        if (componentKey != null) {
+            final PreferenceScope userScope = scopeFactory.createScope(DefaultScopes.USER.type());
+            final PreferenceScope componentScope = scopeFactory.createScope(DefaultScopes.COMPONENT.type(),
+                                                                            componentKey);
+            order.add(scopeFactory.createScope(userScope,
+                                               componentScope));
         }
     }
 
-    private void addUserEntireApplicationScope( List<PreferenceScope> order,
-                                                final PreferenceScopeFactory scopeFactory ) {
-        final PreferenceScope userScope = scopeFactory.createScope( DefaultScopes.USER.type() );
-        final PreferenceScope entireApplicationScope = scopeFactory.createScope( DefaultScopes.ENTIRE_APPLICATION.type() );
-        order.add( scopeFactory.createScope( userScope, entireApplicationScope ) );
+    private void addUserEntireApplicationScope(List<PreferenceScope> order,
+                                               final PreferenceScopeFactory scopeFactory) {
+        final PreferenceScope userScope = scopeFactory.createScope(DefaultScopes.USER.type());
+        final PreferenceScope entireApplicationScope = scopeFactory.createScope(DefaultScopes.ENTIRE_APPLICATION.type());
+        order.add(scopeFactory.createScope(userScope,
+                                           entireApplicationScope));
     }
 
-    private void addAllUsersComponentScope( List<PreferenceScope> order,
-                                            final PreferenceScopeFactory scopeFactory,
-                                            final String componentKey ) {
-        if ( componentKey != null ) {
-            final PreferenceScope allUsersScope = scopeFactory.createScope( DefaultScopes.ALL_USERS.type() );
-            final PreferenceScope componentScope = scopeFactory.createScope( DefaultScopes.COMPONENT.type(), componentKey );
-            order.add( scopeFactory.createScope( allUsersScope, componentScope ) );
+    private void addAllUsersComponentScope(List<PreferenceScope> order,
+                                           final PreferenceScopeFactory scopeFactory,
+                                           final String componentKey) {
+        if (componentKey != null) {
+            final PreferenceScope allUsersScope = scopeFactory.createScope(DefaultScopes.ALL_USERS.type());
+            final PreferenceScope componentScope = scopeFactory.createScope(DefaultScopes.COMPONENT.type(),
+                                                                            componentKey);
+            order.add(scopeFactory.createScope(allUsersScope,
+                                               componentScope));
         }
     }
 
-    private void addAllUsersEntireApplicationScope( List<PreferenceScope> order,
-                                                    final PreferenceScopeFactory scopeFactory ) {
-        final PreferenceScope allUsersScope = scopeFactory.createScope( DefaultScopes.ALL_USERS.type() );
-        final PreferenceScope entireApplicationScope = scopeFactory.createScope( DefaultScopes.ENTIRE_APPLICATION.type() );
-        order.add( scopeFactory.createScope( allUsersScope, entireApplicationScope ) );
+    private void addAllUsersEntireApplicationScope(List<PreferenceScope> order,
+                                                   final PreferenceScopeFactory scopeFactory) {
+        final PreferenceScope allUsersScope = scopeFactory.createScope(DefaultScopes.ALL_USERS.type());
+        final PreferenceScope entireApplicationScope = scopeFactory.createScope(DefaultScopes.ENTIRE_APPLICATION.type());
+        order.add(scopeFactory.createScope(allUsersScope,
+                                           entireApplicationScope));
     }
 }

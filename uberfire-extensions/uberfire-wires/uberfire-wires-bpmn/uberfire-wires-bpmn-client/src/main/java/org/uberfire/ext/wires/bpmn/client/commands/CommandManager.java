@@ -28,14 +28,13 @@ public interface CommandManager {
      * @param command
      * @return
      */
-    Results execute( final RuleManager ruleManager,
-                     final Command command );
+    Results execute(final RuleManager ruleManager,
+                    final Command command);
 
     /**
      * Undo the most recent command
      * @param ruleManager
      * @return
      */
-    Results undo( final RuleManager ruleManager );
-
+    Results undo(final RuleManager ruleManager);
 }

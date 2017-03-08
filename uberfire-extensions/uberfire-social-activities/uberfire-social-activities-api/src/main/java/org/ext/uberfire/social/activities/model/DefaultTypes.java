@@ -19,5 +19,5 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public enum DefaultTypes implements SocialEventType {
-   DUMMY_EVENT
+    DUMMY_EVENT
 }

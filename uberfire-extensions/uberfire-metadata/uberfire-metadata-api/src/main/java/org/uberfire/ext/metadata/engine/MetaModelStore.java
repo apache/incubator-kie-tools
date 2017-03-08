@@ -24,9 +24,9 @@ import org.uberfire.ext.metadata.model.schema.MetaObject;
  */
 public interface MetaModelStore extends Disposable {
 
-    void add( MetaObject metaObject );
+    void add(MetaObject metaObject);
 
-    void update( final MetaObject metaObject );
+    void update(final MetaObject metaObject);
 
-    MetaObject getMetaObject( final String type );
+    MetaObject getMetaObject(final String type);
 }

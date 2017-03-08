@@ -20,28 +20,27 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.ioc.client.api.ActivatedBy;
 import org.uberfire.client.workbench.Footer;
 import org.uberfire.wbtest.client.api.UncaughtExceptionAlerter;
 
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
-
 @ApplicationScoped
-@ActivatedBy( HeaderFooterActivator.class )
+@ActivatedBy(HeaderFooterActivator.class)
 public class BottomFooter implements Footer {
 
     private final HorizontalPanel panel = new HorizontalPanel();
-    private final Label label = new Label( "This is the bottom footer (order=5)" );
+    private final Label label = new Label("This is the bottom footer (order=5)");
 
     @Inject
     private UncaughtExceptionAlerter uncaughtExceptionAlerter;
 
     @PostConstruct
     private void setup() {
-        panel.add( label );
-        panel.add( uncaughtExceptionAlerter );
+        panel.add(label);
+        panel.add(uncaughtExceptionAlerter);
     }
 
     @Override
@@ -58,5 +57,4 @@ public class BottomFooter implements Footer {
     public Widget asWidget() {
         return panel;
     }
-
 }

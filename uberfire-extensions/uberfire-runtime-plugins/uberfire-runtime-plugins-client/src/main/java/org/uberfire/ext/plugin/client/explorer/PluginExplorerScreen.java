@@ -53,45 +53,33 @@ import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 
 @Dependent
-@WorkbenchScreen( identifier = "Plugins Explorer" )
+@WorkbenchScreen(identifier = "Plugins Explorer")
 public class PluginExplorerScreen
         extends Composite {
 
-    interface ViewBinder
-            extends
-            UiBinder<Widget, PluginExplorerScreen> {
-
-    }
-
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
-    private CommonConstants constants = CommonConstants.INSTANCE;
-
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
     @UiField
     FlowPanel htmlPanel;
-
+    private CommonConstants constants = CommonConstants.INSTANCE;
     @Inject
     private NewPluginPopUp newPluginPopUp;
-
     @Inject
     private PluginNavList pluginNavList;
-
     @Inject
     private Caller<PluginServices> pluginServices;
-
     @Inject
     private PluginController pluginController;
 
     @PostConstruct
     public void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        pluginServices.call( new RemoteCallback<Collection<Plugin>>() {
+        initWidget(uiBinder.createAndBindUi(this));
+        pluginServices.call(new RemoteCallback<Collection<Plugin>>() {
             @Override
-            public void callback( final Collection<Plugin> plugins ) {
-                pluginNavList.setup( plugins );
+            public void callback(final Collection<Plugin> plugins) {
+                pluginNavList.setup(plugins);
             }
-        } ).listPlugins();
-        htmlPanel.add( pluginNavList );
+        }).listPlugins();
+        htmlPanel.add(pluginNavList);
     }
 
     @WorkbenchPartTitle
@@ -102,17 +90,17 @@ public class PluginExplorerScreen
     @WorkbenchMenu
     public Menus buildMenu() {
         return MenuFactory
-                .newTopLevelCustomMenu( new MenuFactory.CustomMenuBuilder() {
+                .newTopLevelCustomMenu(new MenuFactory.CustomMenuBuilder() {
                     @Override
-                    public void push( MenuFactory.CustomMenuBuilder element ) {
+                    public void push(MenuFactory.CustomMenuBuilder element) {
                     }
 
                     @Override
                     public MenuItem build() {
                         return new BaseMenuCustom<IsWidget>() {
                             @Override
-                            public void accept( MenuVisitor visitor ) {
-                                visitor.visit( this );
+                            public void accept(MenuVisitor visitor) {
+                                visitor.visit(this);
                             }
 
                             @Override
@@ -121,31 +109,55 @@ public class PluginExplorerScreen
                             }
                         };
                     }
-                } ).endMenu().build();
+                }).endMenu().build();
     }
 
     public IsWidget getNewButton() {
         ButtonGroup buttonGroup = new ButtonGroup();
-        buttonGroup.addStyleName( "pull-right" );
-        buttonGroup.add( new Button() {{
-            setSize( ButtonSize.SMALL );
-            setDataToggle( Toggle.DROPDOWN );
-        }} );
+        buttonGroup.addStyleName("pull-right");
+        buttonGroup.add(new Button() {{
+            setSize(ButtonSize.SMALL);
+            setDataToggle(Toggle.DROPDOWN);
+        }});
         DropDownMenu dropDownMenu = new DropDownMenu();
-        addNewAnchorLink(dropDownMenu, CommonConstants.INSTANCE.NewPerspective(), PluginType.PERSPECTIVE_LAYOUT, pluginController.canCreatePerspectives());
-        addNewAnchorLink(dropDownMenu, CommonConstants.INSTANCE.NewScreen(), PluginType.SCREEN, true);
-        addNewAnchorLink(dropDownMenu, CommonConstants.INSTANCE.NewEditor(), PluginType.EDITOR, true);
-        addNewAnchorLink(dropDownMenu, CommonConstants.INSTANCE.NewSplashScreen(), PluginType.SPLASH, true);
-        addNewAnchorLink(dropDownMenu, CommonConstants.INSTANCE.NewDynamicMenu(), PluginType.DYNAMIC_MENU, true);
+        addNewAnchorLink(dropDownMenu,
+                         CommonConstants.INSTANCE.NewPerspective(),
+                         PluginType.PERSPECTIVE_LAYOUT,
+                         pluginController.canCreatePerspectives());
+        addNewAnchorLink(dropDownMenu,
+                         CommonConstants.INSTANCE.NewScreen(),
+                         PluginType.SCREEN,
+                         true);
+        addNewAnchorLink(dropDownMenu,
+                         CommonConstants.INSTANCE.NewEditor(),
+                         PluginType.EDITOR,
+                         true);
+        addNewAnchorLink(dropDownMenu,
+                         CommonConstants.INSTANCE.NewSplashScreen(),
+                         PluginType.SPLASH,
+                         true);
+        addNewAnchorLink(dropDownMenu,
+                         CommonConstants.INSTANCE.NewDynamicMenu(),
+                         PluginType.DYNAMIC_MENU,
+                         true);
         buttonGroup.add(dropDownMenu);
         return buttonGroup;
     }
 
-    private void addNewAnchorLink(DropDownMenu dropDownMenu, String text, PluginType pluginType, boolean available) {
+    private void addNewAnchorLink(DropDownMenu dropDownMenu,
+                                  String text,
+                                  PluginType pluginType,
+                                  boolean available) {
         if (available) {
             AnchorListItem anchor = new AnchorListItem(text);
             anchor.addClickHandler(event -> newPluginPopUp.show(pluginType));
             dropDownMenu.add(anchor);
         }
+    }
+
+    interface ViewBinder
+            extends
+            UiBinder<Widget, PluginExplorerScreen> {
+
     }
 }

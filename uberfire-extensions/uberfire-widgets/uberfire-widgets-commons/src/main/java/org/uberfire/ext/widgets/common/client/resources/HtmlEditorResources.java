@@ -22,20 +22,20 @@ import com.google.gwt.resources.client.TextResource;
 
 public interface HtmlEditorResources extends ClientBundle {
 
-    HtmlEditorResources INSTANCE = GWT.create( HtmlEditorResources.class );
+    HtmlEditorResources INSTANCE = GWT.create(HtmlEditorResources.class);
 
-    @Source({ "js/wysihtml/wysihtml.min.js" })
+    @Source({"js/wysihtml/wysihtml.min.js"})
     TextResource wysihtml();
 
-    @Source({ "js/wysihtml/wysihtml.all-commands.min.js" })
+    @Source({"js/wysihtml/wysihtml.all-commands.min.js"})
     TextResource wysihtmlAllCommands();
 
-    @Source({ "js/wysihtml/wysihtml.table_editing.min.js" })
+    @Source({"js/wysihtml/wysihtml.table_editing.min.js"})
     TextResource wysihtmlTableEditing();
 
-    @Source({ "js/wysihtml/wysihtml.toolbar.min.js" })
+    @Source({"js/wysihtml/wysihtml.toolbar.min.js"})
     TextResource wysihtmlToolbar();
 
-    @Source({ "js/wysihtml/parser_rules/advanced_and_extended.js" })
+    @Source({"js/wysihtml/parser_rules/advanced_and_extended.js"})
     TextResource parserRules();
 }

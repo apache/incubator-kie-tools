@@ -24,5 +24,4 @@ public class Pause extends SequencedAnimation {
     public void onUpdate(double progress) {
         //Do nothing. This animation simply acts as a delay
     }
-
 }

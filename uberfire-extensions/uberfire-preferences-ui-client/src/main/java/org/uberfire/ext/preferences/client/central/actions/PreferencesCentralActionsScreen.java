@@ -43,36 +43,22 @@ import org.uberfire.workbench.model.CompassPosition;
 public class PreferencesCentralActionsScreen {
 
     public static final String IDENTIFIER = "PreferencesCentralActionsScreen";
-
-    public interface View extends HierarchyStructureView,
-                                  UberElement<PreferencesCentralActionsScreen> {
-
-        String getChangesUndoneMessage();
-    }
-
     private final View view;
-
     private final PlaceManager placeManager;
-
     private final Event<PreferencesCentralPreSaveEvent> preSaveEvent;
-
     private final Event<PreferencesCentralSaveEvent> saveEvent;
-
     private final Event<PreferencesCentralUndoChangesEvent> undoChangesEvent;
-
     private final Event<NotificationEvent> notification;
-
     private String adminPageScreenToGoBack;
-
     private String perspectiveIdentifierToGoBackTo;
 
     @Inject
-    public PreferencesCentralActionsScreen( final View view,
-                                            final PlaceManager placeManager,
-                                            final Event<PreferencesCentralPreSaveEvent> preSaveEvent,
-                                            final Event<PreferencesCentralSaveEvent> saveEvent,
-                                            final Event<PreferencesCentralUndoChangesEvent> undoChangesEvent,
-                                            final Event<NotificationEvent> notification ) {
+    public PreferencesCentralActionsScreen(final View view,
+                                           final PlaceManager placeManager,
+                                           final Event<PreferencesCentralPreSaveEvent> preSaveEvent,
+                                           final Event<PreferencesCentralSaveEvent> saveEvent,
+                                           final Event<PreferencesCentralUndoChangesEvent> undoChangesEvent,
+                                           final Event<NotificationEvent> notification) {
         this.view = view;
         this.placeManager = placeManager;
         this.preSaveEvent = preSaveEvent;
@@ -83,33 +69,37 @@ public class PreferencesCentralActionsScreen {
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
-    public void initEvent( @Observes final PreferencesCentralActionsConfigurationEvent event ) {
+    public void initEvent(@Observes final PreferencesCentralActionsConfigurationEvent event) {
         adminPageScreenToGoBack = event.getAdminPageScreenToGoBack();
         perspectiveIdentifierToGoBackTo = event.getPerspectiveIdentifierToGoBackTo();
     }
 
     public void fireSaveEvent() {
-        preSaveEvent.fire( new PreferencesCentralPreSaveEvent() );
-        saveEvent.fire( new PreferencesCentralSaveEvent() );
+        preSaveEvent.fire(new PreferencesCentralPreSaveEvent());
+        saveEvent.fire(new PreferencesCentralSaveEvent());
         goBackToAdminPage();
     }
 
     public void fireCancelEvent() {
-        undoChangesEvent.fire( new PreferencesCentralUndoChangesEvent() );
-        notification.fire( new NotificationEvent( view.getChangesUndoneMessage(), NotificationEvent.NotificationType.DEFAULT ) );
+        undoChangesEvent.fire(new PreferencesCentralUndoChangesEvent());
+        notification.fire(new NotificationEvent(view.getChangesUndoneMessage(),
+                                                NotificationEvent.NotificationType.DEFAULT));
         goBackToAdminPage();
     }
 
     void goBackToAdminPage() {
         Map<String, String> params = new HashMap<>();
-        params.put( "screen", adminPageScreenToGoBack );
-        if ( perspectiveIdentifierToGoBackTo != null ) {
-            params.put( "perspectiveIdentifierToGoBackTo", perspectiveIdentifierToGoBackTo );
+        params.put("screen",
+                   adminPageScreenToGoBack);
+        if (perspectiveIdentifierToGoBackTo != null) {
+            params.put("perspectiveIdentifierToGoBackTo",
+                       perspectiveIdentifierToGoBackTo);
         }
-        placeManager.goTo( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER, params ) );
+        placeManager.goTo(new DefaultPlaceRequest(AdminPagePerspective.IDENTIFIER,
+                                                  params));
     }
 
     @WorkbenchPartTitle
@@ -125,5 +115,11 @@ public class PreferencesCentralActionsScreen {
     @DefaultPosition
     public CompassPosition getDefaultPosition() {
         return CompassPosition.SOUTH;
+    }
+
+    public interface View extends HierarchyStructureView,
+                                  UberElement<PreferencesCentralActionsScreen> {
+
+        String getChangesUndoneMessage();
     }
 }

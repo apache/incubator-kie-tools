@@ -18,10 +18,9 @@ package org.uberfire.client.screen;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import jsinterop.annotations.JsType;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
-
-import jsinterop.annotations.JsType;
 
 @ApplicationScoped
 @JsType
@@ -58,7 +57,7 @@ public class DynamicResourceType implements ClientResourceType {
     }
 
     @Override
-    public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( "." + getSuffix() );
+    public boolean accept(final Path path) {
+        return path.getFileName().endsWith("." + getSuffix());
     }
 }

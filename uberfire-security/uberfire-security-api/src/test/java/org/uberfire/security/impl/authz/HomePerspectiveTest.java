@@ -51,47 +51,58 @@ public class HomePerspectiveTest {
         permissionManager = new DefaultPermissionManager(new DefaultPermissionTypeRegistry());
         permissionManager.setAuthorizationPolicy(
                 authorizationPolicy = spy(permissionManager.newAuthorizationPolicy()
-                        .bydefault().home("H")
-                        .role("admin").home("A").priority(10)
-                        .role("user").home("U").priority(0)
-                        .role("manager").home("M").priority(5)
-                        .build()));
+                                                  .bydefault().home("H")
+                                                  .role("admin").home("A").priority(10)
+                                                  .role("user").home("U").priority(0)
+                                                  .role("manager").home("M").priority(5)
+                                                  .build()));
     }
 
     @Test
     public void testUserWithoutRoles() {
         User userMock = createUserMock();
         String home = authorizationPolicy.getHomePerspective(userMock);
-        assertEquals(home, "H");
+        assertEquals(home,
+                     "H");
     }
 
     @Test
     public void testSingleRoleHome() {
         User userMock = createUserMock("admin");
         String home = authorizationPolicy.getHomePerspective(userMock);
-        assertEquals(home, "A");
+        assertEquals(home,
+                     "A");
 
         userMock = createUserMock("manager");
         home = authorizationPolicy.getHomePerspective(userMock);
-        assertEquals(home, "M");
+        assertEquals(home,
+                     "M");
 
         userMock = createUserMock("user");
         home = authorizationPolicy.getHomePerspective(userMock);
-        assertEquals(home, "U");
+        assertEquals(home,
+                     "U");
     }
 
     @Test
     public void testHighestPriorityWins() {
-        User userMock = createUserMock("admin", "user");
+        User userMock = createUserMock("admin",
+                                       "user");
         String home = authorizationPolicy.getHomePerspective(userMock);
-        assertEquals(home, "A");
+        assertEquals(home,
+                     "A");
 
-        userMock = createUserMock("admin", "user", "manager");
+        userMock = createUserMock("admin",
+                                  "user",
+                                  "manager");
         home = authorizationPolicy.getHomePerspective(userMock);
-        assertEquals(home, "A");
+        assertEquals(home,
+                     "A");
 
-        userMock = createUserMock("user", "manager");
+        userMock = createUserMock("user",
+                                  "manager");
         home = authorizationPolicy.getHomePerspective(userMock);
-        assertEquals(home, "M");
+        assertEquals(home,
+                     "M");
     }
 }

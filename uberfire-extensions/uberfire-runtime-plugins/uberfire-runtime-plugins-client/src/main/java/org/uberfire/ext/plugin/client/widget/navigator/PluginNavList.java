@@ -16,20 +16,25 @@
 
 package org.uberfire.ext.plugin.client.widget.navigator;
 
-import static org.uberfire.ext.plugin.type.TypeConverterUtil.fromResourceType;
-
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.LinkedGroup;
 import org.gwtbootstrap3.client.ui.LinkedGroupItem;
 import org.gwtbootstrap3.client.ui.ListGroupItem;
@@ -53,34 +58,20 @@ import org.uberfire.ext.plugin.model.PluginType;
 import org.uberfire.ext.widgets.common.client.accordion.TriggerWidget;
 import org.uberfire.mvp.impl.PathPlaceRequest;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
+import static org.uberfire.ext.plugin.type.TypeConverterUtil.fromResourceType;
 
 @Dependent
 public class PluginNavList extends Composite {
 
-    interface ViewBinder
-            extends
-            UiBinder<Widget, PluginNavList> {
-
-    }
-
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
-
     private static final Comparator<String> PLUGIN_NAME_COMPARATOR = new Comparator<String>() {
         @Override
-        public int compare( final String o1,
-                            final String o2 ) {
-            return o1.compareToIgnoreCase( o2 );
+        public int compare(final String o1,
+                           final String o2) {
+            return o1.compareToIgnoreCase(o2);
         }
     };
-
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    private final Map<PluginType, LinkedGroup> listGroups = new HashMap<PluginType, LinkedGroup>();
     @UiField
     PanelGroup pluginsList;
 
@@ -98,130 +89,142 @@ public class PluginNavList extends Composite {
 
     private Map<String, Widget> pluginRef = new HashMap<String, Widget>();
 
-    private final Map<PluginType, LinkedGroup> listGroups = new HashMap<PluginType, LinkedGroup>();
-
     @PostConstruct
     public void init() {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        pluginsList.setId( DOM.createUniqueId() );
+        initWidget(uiBinder.createAndBindUi(this));
+        pluginsList.setId(DOM.createUniqueId());
     }
 
-    public void setup( final Collection<Plugin> plugins ) {
-        final Map<ClientResourceType, Set<Activity>> classified = pluginsInfo.getClassifiedPlugins( plugins );
+    public void setup(final Collection<Plugin> plugins) {
+        final Map<ClientResourceType, Set<Activity>> classified = pluginsInfo.getClassifiedPlugins(plugins);
         final Map<ClientResourceType, String> labelsByResourceType = pluginsInfo.getPluginsTypeLabels();
 
         pluginsList.clear();
 
-        for ( final Map.Entry<ClientResourceType, Set<Activity>> entry : classified.entrySet() ) {
+        for (final Map.Entry<ClientResourceType, Set<Activity>> entry : classified.entrySet()) {
             final LinkedGroup itemsNavList = new LinkedGroup();
-            final PluginType type = fromResourceType( entry.getKey() );
+            final PluginType type = fromResourceType(entry.getKey());
 
             final PanelCollapse collapse = new PanelCollapse();
 
-            listGroups.put( type, itemsNavList );
+            listGroups.put(type,
+                           itemsNavList);
 
             //Sort Activities by Name. A TreeMap supports sorting on insertion by natural ordering of its keys
-            final Map<String, Activity> activities = new TreeMap<String, Activity>( PLUGIN_NAME_COMPARATOR );
-            for ( final Activity item : entry.getValue() ) {
-                if ( !thereIsAlreadyAPluginWithSameName( item, activities ) ) {
-                    activities.put( item.getName(), item );
+            final Map<String, Activity> activities = new TreeMap<String, Activity>(PLUGIN_NAME_COMPARATOR);
+            for (final Activity item : entry.getValue()) {
+                if (!thereIsAlreadyAPluginWithSameName(item,
+                                                       activities)) {
+                    activities.put(item.getName(),
+                                   item);
                 }
             }
-            for ( final Activity item : activities.values() ) {
-                Widget itemNavLink = makeItemNavLink( item );
+            for (final Activity item : activities.values()) {
+                Widget itemNavLink = makeItemNavLink(item);
                 if (itemNavLink != null) {
-                    itemsNavList.add( itemNavLink );
+                    itemsNavList.add(itemNavLink);
                 }
             }
 
             final PanelBody body = new PanelBody();
 
-            body.add( itemsNavList );
-            collapse.add( body );
+            body.add(itemsNavList);
+            collapse.add(body);
 
-            pluginsList.add( new Panel() {{
-                add( new TriggerWidget( entry.getKey().getIcon(), labelsByResourceType.get( entry.getKey() ) ) {{
-                    setDataToggle( Toggle.COLLAPSE );
-                    setDataParent( pluginsList.getId() );
-                    setDataTargetWidget( collapse );
-                }} );
-                add( collapse );
-            }} );
+            pluginsList.add(new Panel() {{
+                add(new TriggerWidget(entry.getKey().getIcon(),
+                                      labelsByResourceType.get(entry.getKey())) {{
+                    setDataToggle(Toggle.COLLAPSE);
+                    setDataParent(pluginsList.getId());
+                    setDataTargetWidget(collapse);
+                }});
+                add(collapse);
+            }});
         }
     }
 
-    private boolean thereIsAlreadyAPluginWithSameName( Activity item,
-                                                       Map<String, Activity> activities ) {
-        final Activity activity = activities.get( item.getName() );
+    private boolean thereIsAlreadyAPluginWithSameName(Activity item,
+                                                      Map<String, Activity> activities) {
+        final Activity activity = activities.get(item.getName());
         return activity != null && activity instanceof Plugin;
     }
 
-    private Widget makeItemNavLink( final Activity activity ) {
-        if ( !pluginController.canRead( activity ) ) {
+    private Widget makeItemNavLink(final Activity activity) {
+        if (!pluginController.canRead(activity)) {
             return null;
         }
         final Widget nav;
-        if ( activity instanceof Plugin ) {
+        if (activity instanceof Plugin) {
             nav = new LinkedGroupItem() {{
-                setText( activity.getName() );
-                getElement().getStyle().setProperty( "textDecoration", "underline" );
-                addClickHandler( new ClickHandler() {
+                setText(activity.getName());
+                getElement().getStyle().setProperty("textDecoration",
+                                                    "underline");
+                addClickHandler(new ClickHandler() {
                     @Override
-                    public void onClick( final ClickEvent event ) {
-                        placeManager.goTo( new PathPlaceRequest( ( (Plugin) activity ).getPath() ).addParameter( "name", activity.getName() ) );
+                    public void onClick(final ClickEvent event) {
+                        placeManager.goTo(new PathPlaceRequest(((Plugin) activity).getPath()).addParameter("name",
+                                                                                                           activity.getName()));
                     }
-                } );
+                });
             }};
         } else {
             nav = new ListGroupItem() {{
-                setText( activity.getName() );
+                setText(activity.getName());
             }};
         }
-        pluginRef.put( activity.getName(), nav );
+        pluginRef.put(activity.getName(),
+                      nav);
 
-        return pluginRef.get( activity.getName() );
+        return pluginRef.get(activity.getName());
     }
 
-    public void onPlugInAdded( @Observes final PluginAdded pluginAdded ) {
-        addNewPlugin( pluginAdded );
+    public void onPlugInAdded(@Observes final PluginAdded pluginAdded) {
+        addNewPlugin(pluginAdded);
     }
 
-    public void addNewPlugin( final BasePluginEvent newPlugin ) {
+    public void addNewPlugin(final BasePluginEvent newPlugin) {
         //Sort Widgets by Plugin Name. A TreeMap supports sorting on insertion by natural ordering of its keys
-        final Map<String, Widget> sortedNavList = new TreeMap<String, Widget>( PLUGIN_NAME_COMPARATOR );
-        final LinkedGroup navList = listGroups.get( newPlugin.getPlugin().getType() );
-        for ( int i = 0; i < navList.getWidgetCount(); i++ ) {
-            final Widget w = navList.getWidget( i );
-            for ( Map.Entry<String, Widget> e : pluginRef.entrySet() ) {
-                if ( e.getValue().equals( w ) ) {
-                    sortedNavList.put( e.getKey(), e.getValue() );
+        final Map<String, Widget> sortedNavList = new TreeMap<String, Widget>(PLUGIN_NAME_COMPARATOR);
+        final LinkedGroup navList = listGroups.get(newPlugin.getPlugin().getType());
+        for (int i = 0; i < navList.getWidgetCount(); i++) {
+            final Widget w = navList.getWidget(i);
+            for (Map.Entry<String, Widget> e : pluginRef.entrySet()) {
+                if (e.getValue().equals(w)) {
+                    sortedNavList.put(e.getKey(),
+                                      e.getValue());
                 }
             }
         }
-        Widget itemNavLink = makeItemNavLink( newPlugin.getPlugin() );
-        if ( itemNavLink != null ) {
-            sortedNavList.put( newPlugin.getPlugin().getName(), itemNavLink );
+        Widget itemNavLink = makeItemNavLink(newPlugin.getPlugin());
+        if (itemNavLink != null) {
+            sortedNavList.put(newPlugin.getPlugin().getName(),
+                              itemNavLink);
         }
 
         navList.clear();
-        for ( Widget w : sortedNavList.values() ) {
-            navList.add( w );
+        for (Widget w : sortedNavList.values()) {
+            navList.add(w);
         }
     }
 
-    public void onPlugInRenamed( @Observes final PluginRenamed pluginRenamed ) {
-        final Widget nav = pluginRef.get( pluginRenamed.getOldPluginName() );
-        if ( nav != null ) {
+    public void onPlugInRenamed(@Observes final PluginRenamed pluginRenamed) {
+        final Widget nav = pluginRef.get(pluginRenamed.getOldPluginName());
+        if (nav != null) {
             nav.removeFromParent();
         }
-        addNewPlugin( pluginRenamed );
+        addNewPlugin(pluginRenamed);
     }
 
-    public void onPlugInDeleted( @Observes final PluginDeleted pluginDeleted ) {
-        final Widget nav = pluginRef.get( pluginDeleted.getPlugin().getName() );
-        if ( nav != null ) {
+    public void onPlugInDeleted(@Observes final PluginDeleted pluginDeleted) {
+        final Widget nav = pluginRef.get(pluginDeleted.getPlugin().getName());
+        if (nav != null) {
             nav.removeFromParent();
         }
     }
 
+    interface ViewBinder
+            extends
+            UiBinder<Widget, PluginNavList> {
+
+    }
 }

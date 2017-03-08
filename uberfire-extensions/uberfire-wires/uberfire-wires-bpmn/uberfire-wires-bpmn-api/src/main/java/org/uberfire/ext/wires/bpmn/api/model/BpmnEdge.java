@@ -28,5 +28,4 @@ public interface BpmnEdge extends Copyable<BpmnEdge>,
      * @return
      */
     Role getRole();
-
 }

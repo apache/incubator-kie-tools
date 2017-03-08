@@ -30,8 +30,9 @@ public class SplashListWrapper {
 
     private final WebElement splashList;
 
-    public SplashListWrapper( WebDriver driver, String elementId ) {
-        splashList = driver.findElement( By.id( elementId ) );
+    public SplashListWrapper(WebDriver driver,
+                             String elementId) {
+        splashList = driver.findElement(By.id(elementId));
     }
 
     /**
@@ -40,11 +41,11 @@ public class SplashListWrapper {
      */
     public List<String> getContents() {
         List<String> contents = new ArrayList<String>();
-        splashList.findElement( By.className( "dropdown-toggle" ) ).click();
-        for ( WebElement e : splashList.findElements( By.tagName( "li" ) ) ) {
-            contents.add( e.getText() );
+        splashList.findElement(By.className("dropdown-toggle")).click();
+        for (WebElement e : splashList.findElements(By.tagName("li"))) {
+            contents.add(e.getText());
         }
-        splashList.findElement( By.className( "dropdown-toggle" ) ).click();
+        splashList.findElement(By.className("dropdown-toggle")).click();
         return contents;
     }
 }

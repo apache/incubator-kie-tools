@@ -51,123 +51,123 @@ public class BayesianFactory extends BaseFactory {
     private String[][] colors;
     private List<EditableBayesianNode> bayesianNodes = new ArrayList<EditableBayesianNode>();
 
-    public void init( final String xml03File ) {
-        bayesianService.call( new RemoteCallback<BayesNetwork>() {
-                                  @Override
-                                  public void callback( final BayesNetwork response ) {
-                                      bayesianNodes.clear();
-                                      for ( BayesVariable bay : response.getNodos() ) {
-                                          drawBayesianNode( bay );
-                                      }
-                                      readyEvent.fire( new RenderBayesianNetworkEvent( bayesianNodes ) );
+    public void init(final String xml03File) {
+        bayesianService.call(new RemoteCallback<BayesNetwork>() {
+                                 @Override
+                                 public void callback(final BayesNetwork response) {
+                                     bayesianNodes.clear();
+                                     for (BayesVariable bay : response.getNodos()) {
+                                         drawBayesianNode(bay);
+                                     }
+                                     readyEvent.fire(new RenderBayesianNetworkEvent(bayesianNodes));
+                                 }
+                             },
+                             new ErrorCallback<Object>() {
 
-                                  }
-                              }, new ErrorCallback<Object>() {
-
-                                  @Override
-                                  public boolean error( Object message,
-                                                        Throwable throwable ) {
-                                      Window.alert( "Sorry.. the " + xml03File + " could not be read.." );
-                                      ProgressBar.setInfinite( false );
-                                      return false;
-                                  }
-                              }
-                            ).buildXml03( BayesianUtils.XML3_RESOURCE_PATH + xml03File );
+                                 @Override
+                                 public boolean error(Object message,
+                                                      Throwable throwable) {
+                                     Window.alert("Sorry.. the " + xml03File + " could not be read..");
+                                     ProgressBar.setInfinite(false);
+                                     return false;
+                                 }
+                             }
+        ).buildXml03(BayesianUtils.XML3_RESOURCE_PATH + xml03File);
     }
 
-    private void drawBayesianNode( BayesVariable node ) {
+    private void drawBayesianNode(BayesVariable node) {
         colors = BayesianUtils.getNodeColors();
         double position[][] = node.getPosition();
-        int positionX = (int) ( BayesianUtils.POSITION_X_BASE + Math.round( position[ 0 ][ 0 ] ) );
-        int positionY = (int) ( BayesianUtils.POSITION_Y_BASE + Math.round( position[ 0 ][ 1 ] ) );
-        String fillNodeColor = colors[ 0 ][ 0 ];
+        int positionX = (int) (BayesianUtils.POSITION_X_BASE + Math.round(position[0][0]));
+        int positionY = (int) (BayesianUtils.POSITION_Y_BASE + Math.round(position[0][1]));
+        String fillNodeColor = colors[0][0];
 
-        EditableBayesianNode bayesianNode = new EditableBayesianNode( BayesianUtils.WIDTH_NODE,
-                                                                      BayesianUtils.HEIGHT_NODE,
-                                                                      positionX,
-                                                                      positionY,
-                                                                      fillNodeColor,
-                                                                      node );
+        EditableBayesianNode bayesianNode = new EditableBayesianNode(BayesianUtils.WIDTH_NODE,
+                                                                     BayesianUtils.HEIGHT_NODE,
+                                                                     positionX,
+                                                                     positionY,
+                                                                     fillNodeColor,
+                                                                     node);
 
-        this.setHeader( node,
-                        bayesianNode );
-        this.setPorcentualBar( node,
-                               bayesianNode );
+        this.setHeader(node,
+                       bayesianNode);
+        this.setPorcentualBar(node,
+                              bayesianNode);
 
         bayesianNode.buildNode();
 
-        bayesianNodes.add( bayesianNode );
+        bayesianNodes.add(bayesianNode);
     }
 
-    private void setHeader( BayesVariable node,
-                            EditableBayesianNode bayesianNode ) {
-        bayesianNode.setHeader( new Rectangle( bayesianNode.getWidth(),
-                                               BayesianUtils.HEIGHT_HEADER ) );
-        bayesianNode.getHeader().setFillColor( colors[ 0 ][ 1 ] );
-        bayesianNode.getHeader().setX( bayesianNode.getHeader().getX() );
-        bayesianNode.setTextHeader( drawText( node.getName(),
-                                              BayesianUtils.FONT_SIZE_HEADER_NODE,
-                                              BayesianUtils.LABEL_POSITION_X_DEFAULT,
-                                              BayesianUtils.LABEL_POSITION_Y_DEFAULT ) );
+    private void setHeader(BayesVariable node,
+                           EditableBayesianNode bayesianNode) {
+        bayesianNode.setHeader(new Rectangle(bayesianNode.getWidth(),
+                                             BayesianUtils.HEIGHT_HEADER));
+        bayesianNode.getHeader().setFillColor(colors[0][1]);
+        bayesianNode.getHeader().setX(bayesianNode.getHeader().getX());
+        bayesianNode.setTextHeader(drawText(node.getName(),
+                                            BayesianUtils.FONT_SIZE_HEADER_NODE,
+                                            BayesianUtils.LABEL_POSITION_X_DEFAULT,
+                                            BayesianUtils.LABEL_POSITION_Y_DEFAULT));
     }
 
-    private void setPorcentualBar( BayesVariable node,
-                                   EditableBayesianNode bayesianNode ) {
-        String fillColor = colors[ 0 ][ 1 ];
+    private void setPorcentualBar(BayesVariable node,
+                                  EditableBayesianNode bayesianNode) {
+        String fillColor = colors[0][1];
         int widthFill;
         int positionY = 18;
-        positionY = ( node.getOutcomes().size() > 3 ) ? positionY - 10 : positionY;
+        positionY = (node.getOutcomes().size() > 3) ? positionY - 10 : positionY;
         String borderColor = fillColor;
 
         List<Rectangle> componentsProgressBar = Lists.newArrayList();
         Text labelPorcentual;
         Map<Text, List<Rectangle>> porcentualsBar = Maps.newHashMap();
-        for ( int i = 0; i < node.getOutcomes().size(); i++ ) {
+        for (int i = 0; i < node.getOutcomes().size(); i++) {
             // Porcentual bar
             positionY += 14;
-            labelPorcentual = this.drawText( node.getOutcomes().get( i ),
-                                             BayesianUtils.FONT_SIZE_PORCENTUAL_BAR,
-                                             BayesianUtils.LABEL_POSITION_X_DEFAULT,
-                                             positionY + 7 );
-            componentsProgressBar.add( this.drawComponent( Color.rgbToBrowserHexColor( 255,
-                                                                                       255,
-                                                                                       255 ),
-                                                           BayesianUtils.POSITION_X_PORCENTUAL_BAR,
-                                                           positionY,
-                                                           BayesianUtils.WIDTH_PORCENTUAL_BAR,
-                                                           BayesianUtils.HEIGHT_PORCENTUAL_BAR,
-                                                           borderColor,
-                                                           3 ) );
+            labelPorcentual = this.drawText(node.getOutcomes().get(i),
+                                            BayesianUtils.FONT_SIZE_PORCENTUAL_BAR,
+                                            BayesianUtils.LABEL_POSITION_X_DEFAULT,
+                                            positionY + 7);
+            componentsProgressBar.add(this.drawComponent(Color.rgbToBrowserHexColor(255,
+                                                                                    255,
+                                                                                    255),
+                                                         BayesianUtils.POSITION_X_PORCENTUAL_BAR,
+                                                         positionY,
+                                                         BayesianUtils.WIDTH_PORCENTUAL_BAR,
+                                                         BayesianUtils.HEIGHT_PORCENTUAL_BAR,
+                                                         borderColor,
+                                                         3));
             // fill bar
-            widthFill = calculatePorcentage( node.getProbabilities(),
-                                             BayesianUtils.WIDTH_PORCENTUAL_BAR, i );
-            componentsProgressBar.add( drawComponent( fillColor,
-                                                      BayesianUtils.POSITION_X_PORCENTUAL_BAR,
-                                                      positionY,
-                                                      widthFill,
-                                                      BayesianUtils.HEIGHT_PORCENTUAL_BAR,
-                                                      borderColor,
-                                                      0 ) );
-            bayesianNode.getPorcentualsBar().put( labelPorcentual,
-                                                  componentsProgressBar );
+            widthFill = calculatePorcentage(node.getProbabilities(),
+                                            BayesianUtils.WIDTH_PORCENTUAL_BAR,
+                                            i);
+            componentsProgressBar.add(drawComponent(fillColor,
+                                                    BayesianUtils.POSITION_X_PORCENTUAL_BAR,
+                                                    positionY,
+                                                    widthFill,
+                                                    BayesianUtils.HEIGHT_PORCENTUAL_BAR,
+                                                    borderColor,
+                                                    0));
+            bayesianNode.getPorcentualsBar().put(labelPorcentual,
+                                                 componentsProgressBar);
 
-            porcentualsBar.put( labelPorcentual,
-                                componentsProgressBar );
+            porcentualsBar.put(labelPorcentual,
+                               componentsProgressBar);
         }
-        bayesianNode.setPorcentualBars( porcentualsBar );
+        bayesianNode.setPorcentualBars(porcentualsBar);
     }
 
-    private int calculatePorcentage( double probabilities[][],
-                                     int maxWidthFill,
-                                     int position ) {
+    private int calculatePorcentage(double probabilities[][],
+                                    int maxWidthFill,
+                                    int position) {
         double porcentual = 0;
-        if ( position == 0 ) {
-            porcentual = probabilities[ 0 ][ 0 ];
-        } else if ( position == 1 ) {
-            porcentual = probabilities[ 0 ][ 1 ];
+        if (position == 0) {
+            porcentual = probabilities[0][0];
+        } else if (position == 1) {
+            porcentual = probabilities[0][1];
         }
         porcentual *= 100;
-        return (int) ( ( porcentual * maxWidthFill ) / 100 );
+        return (int) ((porcentual * maxWidthFill) / 100);
     }
-
 }

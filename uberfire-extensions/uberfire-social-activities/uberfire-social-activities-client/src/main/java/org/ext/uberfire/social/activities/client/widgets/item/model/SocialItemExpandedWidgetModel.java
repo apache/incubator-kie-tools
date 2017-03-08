@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.ext.uberfire.social.activities.client.widgets.timeline.regular.model.SocialTimelineWidgetModel;
 import org.ext.uberfire.social.activities.client.widgets.timeline.regular.model.UpdateItem;
-import org.uberfire.mvp.Command;
 
 public class SocialItemExpandedWidgetModel {
 
@@ -27,9 +26,9 @@ public class SocialItemExpandedWidgetModel {
     private final List<UpdateItem> updateItems;
     private final SocialTimelineWidgetModel model;
 
-    public SocialItemExpandedWidgetModel( String fileName,
-                                          List<UpdateItem> updateItems,
-                                          SocialTimelineWidgetModel model ) {
+    public SocialItemExpandedWidgetModel(String fileName,
+                                         List<UpdateItem> updateItems,
+                                         SocialTimelineWidgetModel model) {
         this.fileName = fileName;
         this.updateItems = updateItems;
         this.model = model;
@@ -46,5 +45,4 @@ public class SocialItemExpandedWidgetModel {
     public SocialTimelineWidgetModel getModel() {
         return model;
     }
-
 }

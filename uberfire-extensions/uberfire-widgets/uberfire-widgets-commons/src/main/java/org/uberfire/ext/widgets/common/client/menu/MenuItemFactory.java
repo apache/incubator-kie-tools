@@ -48,30 +48,6 @@ public class MenuItemFactory {
     }
 
     /**
-     * Container for @{link MenuCustom} and {@link MenuItemView}
-     * @param <T> Type of view.
-     */
-    public static class MenuItemViewHolder<T extends MenuItemView> {
-
-        private final MenuItem item;
-        private final T view;
-
-        public MenuItemViewHolder(final MenuItem item,
-                                  final T view) {
-            this.item = item;
-            this.view = view;
-        }
-
-        public MenuItem getMenuItem() {
-            return item;
-        }
-
-        public T getMenuItemView() {
-            return view;
-        }
-    }
-
-    /**
      * Makes a {@link MenuCustom} and associated {@link MenuItemWithIconView} that can be used
      * to replace the default Views created by {@link ListBarWidgetImpl} if an icon is also required.
      * If an icon is not required the caption is indented to the position that it would adopt if an
@@ -227,5 +203,29 @@ public class MenuItemFactory {
 
         return new MenuItemViewHolder<>(item,
                                         view);
+    }
+
+    /**
+     * Container for @{link MenuCustom} and {@link MenuItemView}
+     * @param <T> Type of view.
+     */
+    public static class MenuItemViewHolder<T extends MenuItemView> {
+
+        private final MenuItem item;
+        private final T view;
+
+        public MenuItemViewHolder(final MenuItem item,
+                                  final T view) {
+            this.item = item;
+            this.view = view;
+        }
+
+        public MenuItem getMenuItem() {
+            return item;
+        }
+
+        public T getMenuItemView() {
+            return view;
+        }
     }
 }

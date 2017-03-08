@@ -25,7 +25,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.errai.bus.server.annotations.Service;
 import org.ext.uberfire.social.activities.adapters.CommandTimelineFilter;
 import org.ext.uberfire.social.activities.model.SocialActivitiesEvent;
 import org.ext.uberfire.social.activities.model.SocialEventType;
@@ -35,6 +34,7 @@ import org.ext.uberfire.social.activities.service.SocialPredicate;
 import org.ext.uberfire.social.activities.service.SocialRouterAPI;
 import org.ext.uberfire.social.activities.service.SocialTimeLineRepositoryAPI;
 import org.ext.uberfire.social.activities.service.SocialTimelinePersistenceAPI;
+import org.jboss.errai.bus.server.annotations.Service;
 
 @Service
 @ApplicationScoped
@@ -54,107 +54,119 @@ public class SocialTimeLineRepository implements SocialTimeLineRepositoryAPI {
     CommandTimelineFilter commandTimelineFilter;
 
     @Override
-    public List<SocialActivitiesEvent> getLastEventTimeline( String adapterName ) {
+    public List<SocialActivitiesEvent> getLastEventTimeline(String adapterName) {
 
-        return getLastEventTimeline( adapterName, new HashMap() );
+        return getLastEventTimeline(adapterName,
+                                    new HashMap());
     }
 
     @Override
-    public List<SocialActivitiesEvent> getLastEventTimeline( String adapterName,
-                                                             Map commandsMap ) {
+    public List<SocialActivitiesEvent> getLastEventTimeline(String adapterName,
+                                                            Map commandsMap) {
 
-        SocialAdapter socialAdapter = socialRouterAPI.getSocialAdapter( adapterName );
+        SocialAdapter socialAdapter = socialRouterAPI.getSocialAdapter(adapterName);
 
-        return getLastEventTimeline( socialAdapter, commandsMap );
+        return getLastEventTimeline(socialAdapter,
+                                    commandsMap);
     }
 
     @Override
-    public List<SocialActivitiesEvent> getLastEventTimeline( SocialAdapter type,
-                                                             Map commandsMap ) {
-        List<SocialActivitiesEvent> socialActivitiesEvents = socialTimelinePersistence.getLastEvents( type.socialEventType() );
+    public List<SocialActivitiesEvent> getLastEventTimeline(SocialAdapter type,
+                                                            Map commandsMap) {
+        List<SocialActivitiesEvent> socialActivitiesEvents = socialTimelinePersistence.getLastEvents(type.socialEventType());
 
-        if ( socialActivitiesEvents == null ) {
+        if (socialActivitiesEvents == null) {
             socialActivitiesEvents = new ArrayList<SocialActivitiesEvent>();
         }
-        if ( shouldExecuteAdapters( commandsMap, socialActivitiesEvents ) ) {
-            socialActivitiesEvents = commandTimelineFilter.executeTypeCommandsOn( type, commandsMap, socialActivitiesEvents );
+        if (shouldExecuteAdapters(commandsMap,
+                                  socialActivitiesEvents)) {
+            socialActivitiesEvents = commandTimelineFilter.executeTypeCommandsOn(type,
+                                                                                 commandsMap,
+                                                                                 socialActivitiesEvents);
         }
 
-        sortListByDate( socialActivitiesEvents );
+        sortListByDate(socialActivitiesEvents);
 
         return socialActivitiesEvents;
     }
 
-    private void sortListByDate( List<SocialActivitiesEvent> socialActivitiesEvents ) {
-        Collections.sort( socialActivitiesEvents, new Comparator<SocialActivitiesEvent>() {
-            @Override
-            public int compare( SocialActivitiesEvent o1,
-                                SocialActivitiesEvent o2 ) {
-                return o1.getTimestamp().compareTo( o2.getTimestamp() );
-            }
-        } );
+    private void sortListByDate(List<SocialActivitiesEvent> socialActivitiesEvents) {
+        Collections.sort(socialActivitiesEvents,
+                         new Comparator<SocialActivitiesEvent>() {
+                             @Override
+                             public int compare(SocialActivitiesEvent o1,
+                                                SocialActivitiesEvent o2) {
+                                 return o1.getTimestamp().compareTo(o2.getTimestamp());
+                             }
+                         });
     }
 
     @Override
-    public void saveTypeEvent( SocialActivitiesEvent event ) {
-        socialTimelinePersistence.persist( event );
+    public void saveTypeEvent(SocialActivitiesEvent event) {
+        socialTimelinePersistence.persist(event);
     }
 
     @Override
-    public void saveUserEvent( SocialActivitiesEvent event ) {
+    public void saveUserEvent(SocialActivitiesEvent event) {
         SocialUser eventUser = event.getSocialUser();
-        addEventToTimeline( event, eventUser );
-        for ( String followerName : eventUser.getFollowersName() ) {
-            SocialUser follower = socialUserRepository.findSocialUser( followerName );
-            addEventToTimeline( event, follower );
+        addEventToTimeline(event,
+                           eventUser);
+        for (String followerName : eventUser.getFollowersName()) {
+            SocialUser follower = socialUserRepository.findSocialUser(followerName);
+            addEventToTimeline(event,
+                               follower);
         }
     }
 
-    private void addEventToTimeline( SocialActivitiesEvent event,
-                                     SocialUser user ) {
-        socialTimelinePersistence.persist( user, event );
+    private void addEventToTimeline(SocialActivitiesEvent event,
+                                    SocialUser user) {
+        socialTimelinePersistence.persist(user,
+                                          event);
     }
 
     @Override
-    public Integer numberOfPages( SocialEventType type ) {
-        return socialTimelinePersistence.numberOfPages( type );
+    public Integer numberOfPages(SocialEventType type) {
+        return socialTimelinePersistence.numberOfPages(type);
     }
 
     @Override
-    public List<SocialActivitiesEvent> getLastUserTimeline( SocialUser user ) {
-        return getLastUserTimeline( user, new HashMap() );
+    public List<SocialActivitiesEvent> getLastUserTimeline(SocialUser user) {
+        return getLastUserTimeline(user,
+                                   new HashMap());
     }
 
     @Override
-    public List<SocialActivitiesEvent> getLastUserTimeline( SocialUser user,
-                                                            SocialPredicate<SocialActivitiesEvent> predicate ) {
+    public List<SocialActivitiesEvent> getLastUserTimeline(SocialUser user,
+                                                           SocialPredicate<SocialActivitiesEvent> predicate) {
         List<SocialActivitiesEvent> filteredList = new ArrayList<SocialActivitiesEvent>();
-        List<SocialActivitiesEvent> lastUserTimeline = getLastUserTimeline( user, new HashMap() );
-        for ( SocialActivitiesEvent socialActivitiesEvent : lastUserTimeline ) {
-            if ( predicate.test( socialActivitiesEvent ) ) {
-                filteredList.add( socialActivitiesEvent );
+        List<SocialActivitiesEvent> lastUserTimeline = getLastUserTimeline(user,
+                                                                           new HashMap());
+        for (SocialActivitiesEvent socialActivitiesEvent : lastUserTimeline) {
+            if (predicate.test(socialActivitiesEvent)) {
+                filteredList.add(socialActivitiesEvent);
             }
         }
         return filteredList;
     }
 
     @Override
-    public List<SocialActivitiesEvent> getLastUserTimeline( SocialUser user,
-                                                            Map commandsMap ) {
-        List<SocialActivitiesEvent> userEvents = socialTimelinePersistence.getLastEvents( user );
-        if ( userEvents == null ) {
+    public List<SocialActivitiesEvent> getLastUserTimeline(SocialUser user,
+                                                           Map commandsMap) {
+        List<SocialActivitiesEvent> userEvents = socialTimelinePersistence.getLastEvents(user);
+        if (userEvents == null) {
             userEvents = new ArrayList<SocialActivitiesEvent>();
         }
-        if ( shouldExecuteAdapters( commandsMap, userEvents ) ) {
-            userEvents = commandTimelineFilter.executeUserCommandsOn( userEvents, commandsMap );
+        if (shouldExecuteAdapters(commandsMap,
+                                  userEvents)) {
+            userEvents = commandTimelineFilter.executeUserCommandsOn(userEvents,
+                                                                     commandsMap);
         }
-        sortListByDate( userEvents );
+        sortListByDate(userEvents);
         return userEvents;
     }
 
-    private boolean shouldExecuteAdapters( Map commandsMap,
-                                           List<SocialActivitiesEvent> events ) {
+    private boolean shouldExecuteAdapters(Map commandsMap,
+                                          List<SocialActivitiesEvent> events) {
         return !events.isEmpty() && commandsMap.size() > 0;
     }
-
 }

@@ -16,7 +16,6 @@
 
 package org.uberfire.ext.security.management.client.widgets.management.events;
 
-import org.uberfire.client.mvp.PerspectiveActivity;
 import org.uberfire.workbench.events.UberFireEvent;
 
 /**
@@ -26,7 +25,8 @@ public class PriorityChangedEvent extends ContextualEvent implements UberFireEve
 
     private int priority;
 
-    public PriorityChangedEvent(Object context, int p) {
+    public PriorityChangedEvent(Object context,
+                                int p) {
         super(context);
         this.priority = p;
     }

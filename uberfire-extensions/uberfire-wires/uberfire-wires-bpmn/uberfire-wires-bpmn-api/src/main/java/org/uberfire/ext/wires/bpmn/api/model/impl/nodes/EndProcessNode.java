@@ -35,29 +35,29 @@ import org.uberfire.ext.wires.bpmn.beliefs.graph.impl.GraphNodeImpl;
 public class EndProcessNode extends GraphNodeImpl<Content, BpmnEdge> implements BpmnGraphNode {
 
     private Set<Role> roles = new HashSet<Role>() {{
-        add( new DefaultRoleImpl( "all" ) );
-        add( new DefaultRoleImpl( "Endevents_all" ) );
-        add( new DefaultRoleImpl( "sequence_end" ) );
-        add( new DefaultRoleImpl( "to_task_event" ) );
-        add( new DefaultRoleImpl( "from_task_event" ) );
-        add( new DefaultRoleImpl( "fromtoall" ) );
-        add( new DefaultRoleImpl( "EndEventsMorph" ) );
+        add(new DefaultRoleImpl("all"));
+        add(new DefaultRoleImpl("Endevents_all"));
+        add(new DefaultRoleImpl("sequence_end"));
+        add(new DefaultRoleImpl("to_task_event"));
+        add(new DefaultRoleImpl("from_task_event"));
+        add(new DefaultRoleImpl("fromtoall"));
+        add(new DefaultRoleImpl("EndEventsMorph"));
     }};
 
     private Set<Property> properties = new HashSet<Property>();
 
     public EndProcessNode() {
-        setContent( new DefaultContentImpl( "EndNoneEvent",
-                                            "EndNoneEvent",
-                                            "The untyped end event typically marks the standard end of a process.",
-                                            roles,
-                                            properties ) );
+        setContent(new DefaultContentImpl("EndNoneEvent",
+                                          "EndNoneEvent",
+                                          "The untyped end event typically marks the standard end of a process.",
+                                          roles,
+                                          properties));
     }
 
     @Override
     public EndProcessNode copy() {
         final EndProcessNode copy = new EndProcessNode();
-        copy.setContent( this.getContent().copy() );
+        copy.setContent(this.getContent().copy());
         return copy;
     }
 
@@ -68,5 +68,4 @@ public class EndProcessNode extends GraphNodeImpl<Content, BpmnEdge> implements 
                 ", properties=" + properties +
                 '}';
     }
-
 }

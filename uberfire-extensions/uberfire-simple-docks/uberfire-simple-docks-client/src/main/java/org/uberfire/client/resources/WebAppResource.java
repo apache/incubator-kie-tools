@@ -23,9 +23,8 @@ public interface WebAppResource
         extends
         ClientBundle {
 
-    WebAppResource INSTANCE = GWT.create( WebAppResource.class );
+    WebAppResource INSTANCE = GWT.create(WebAppResource.class);
 
     @Source("css/docks.css")
     DocksCss CSS();
-
 }

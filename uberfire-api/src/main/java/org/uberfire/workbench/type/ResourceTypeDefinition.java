@@ -16,9 +16,8 @@
 
 package org.uberfire.workbench.type;
 
-import org.uberfire.backend.vfs.Path;
-
 import jsinterop.annotations.JsType;
+import org.uberfire.backend.vfs.Path;
 
 /**
  * Definition of a Resource Type
@@ -68,5 +67,5 @@ public interface ResourceTypeDefinition {
      * Indicates if the current parameter path matched the current resource type
      * @return true if matches, otherwise false
      */
-    boolean accept( final Path path );
+    boolean accept(final Path path);
 }

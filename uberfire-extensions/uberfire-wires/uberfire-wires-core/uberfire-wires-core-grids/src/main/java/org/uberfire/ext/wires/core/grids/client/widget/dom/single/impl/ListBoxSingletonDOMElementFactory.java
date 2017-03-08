@@ -29,47 +29,46 @@ import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.GridLienzoPane
  */
 public class ListBoxSingletonDOMElementFactory extends BaseSingletonDOMElementFactory<String, ListBox, ListBoxDOMElement> {
 
-    public ListBoxSingletonDOMElementFactory( final GridLienzoPanel gridPanel,
-                                              final GridLayer gridLayer,
-                                              final GridWidget gridWidget ) {
-        super( gridPanel,
-               gridLayer,
-               gridWidget );
+    public ListBoxSingletonDOMElementFactory(final GridLienzoPanel gridPanel,
+                                             final GridLayer gridLayer,
+                                             final GridWidget gridWidget) {
+        super(gridPanel,
+              gridLayer,
+              gridWidget);
     }
 
     @Override
     public ListBox createWidget() {
         return new ListBox() {{
-            addKeyDownHandler( ( e ) -> e.stopPropagation() );
-            addMouseDownHandler( ( e ) -> e.stopPropagation() );
+            addKeyDownHandler((e) -> e.stopPropagation());
+            addMouseDownHandler((e) -> e.stopPropagation());
         }};
     }
 
     @Override
-    public ListBoxDOMElement createDomElement( final GridLayer gridLayer,
-                                               final GridWidget gridWidget,
-                                               final GridBodyCellRenderContext context ) {
+    public ListBoxDOMElement createDomElement(final GridLayer gridLayer,
+                                              final GridWidget gridWidget,
+                                              final GridBodyCellRenderContext context) {
         this.widget = createWidget();
-        this.e = new ListBoxDOMElement( widget,
-                                        gridLayer,
-                                        gridWidget );
-        widget.addBlurHandler( new BlurHandler() {
+        this.e = new ListBoxDOMElement(widget,
+                                       gridLayer,
+                                       gridWidget);
+        widget.addBlurHandler(new BlurHandler() {
             @Override
-            public void onBlur( final BlurEvent event ) {
+            public void onBlur(final BlurEvent event) {
                 destroyResources();
                 gridLayer.batch();
-                gridPanel.setFocus( true );
+                gridPanel.setFocus(true);
             }
-        } );
+        });
         return e;
     }
 
     @Override
     protected String getValue() {
-        if ( widget != null ) {
-            return widget.getValue( widget.getSelectedIndex() );
+        if (widget != null) {
+            return widget.getValue(widget.getSelectedIndex());
         }
         return null;
     }
-
 }

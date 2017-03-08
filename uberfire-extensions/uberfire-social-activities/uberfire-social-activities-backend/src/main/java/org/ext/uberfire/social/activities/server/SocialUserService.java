@@ -20,12 +20,12 @@ import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.errai.bus.server.annotations.Service;
 import org.ext.uberfire.social.activities.events.SocialUserFollowedEvent;
 import org.ext.uberfire.social.activities.events.SocialUserUnFollowedEvent;
 import org.ext.uberfire.social.activities.model.SocialUser;
 import org.ext.uberfire.social.activities.service.SocialUserPersistenceAPI;
 import org.ext.uberfire.social.activities.service.SocialUserServiceAPI;
+import org.jboss.errai.bus.server.annotations.Service;
 
 @Service
 @ApplicationScoped
@@ -42,28 +42,31 @@ public class SocialUserService implements SocialUserServiceAPI {
     private SocialUserPersistenceAPI socialUserPersistenceAPI;
 
     @Override
-    public void userFollowAnotherUser( String followerUsername,
-                                       String followUsername ) {
-        SocialUser follower = socialUserPersistenceAPI.getSocialUser( followerUsername );
-        SocialUser follow = socialUserPersistenceAPI.getSocialUser( followUsername );
-        follower.follow( follow );
-        socialUserPersistenceAPI.updateUsers( follower, follow );
-        followedEvent.fire( new SocialUserFollowedEvent( follower, follow ) );
+    public void userFollowAnotherUser(String followerUsername,
+                                      String followUsername) {
+        SocialUser follower = socialUserPersistenceAPI.getSocialUser(followerUsername);
+        SocialUser follow = socialUserPersistenceAPI.getSocialUser(followUsername);
+        follower.follow(follow);
+        socialUserPersistenceAPI.updateUsers(follower,
+                                             follow);
+        followedEvent.fire(new SocialUserFollowedEvent(follower,
+                                                       follow));
     }
 
     @Override
-    public void userUnfollowAnotherUser( String followerUsername,
-                                         String followUsername ) {
-        SocialUser follower = socialUserPersistenceAPI.getSocialUser( followerUsername );
-        SocialUser user = socialUserPersistenceAPI.getSocialUser( followUsername );
-        follower.unfollow( user );
-        socialUserPersistenceAPI.updateUsers( follower, user );
-        unFollowedEvent.fire( new SocialUserUnFollowedEvent( follower, user ) );
+    public void userUnfollowAnotherUser(String followerUsername,
+                                        String followUsername) {
+        SocialUser follower = socialUserPersistenceAPI.getSocialUser(followerUsername);
+        SocialUser user = socialUserPersistenceAPI.getSocialUser(followUsername);
+        follower.unfollow(user);
+        socialUserPersistenceAPI.updateUsers(follower,
+                                             user);
+        unFollowedEvent.fire(new SocialUserUnFollowedEvent(follower,
+                                                           user));
     }
 
     @Override
-    public void update( SocialUser... users) {
-        socialUserPersistenceAPI.updateUsers( users );
+    public void update(SocialUser... users) {
+        socialUserPersistenceAPI.updateUsers(users);
     }
-
 }

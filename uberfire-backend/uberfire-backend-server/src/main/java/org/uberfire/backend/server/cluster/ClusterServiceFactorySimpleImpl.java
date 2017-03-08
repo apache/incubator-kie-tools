@@ -26,18 +26,18 @@ import org.uberfire.io.impl.cluster.helix.ClusterServiceHelix;
  */
 public class ClusterServiceFactorySimpleImpl implements ClusterServiceFactory {
 
-    private ClusterService clusterService;
     private final String clusterName;
     private final String zkAddress;
     private final String localId;
     private final String resourceName;
     private final boolean autostart;
+    private ClusterService clusterService;
 
-    public ClusterServiceFactorySimpleImpl( final String clusterName,
-                                            final String zkAddress,
-                                            final String localId,
-                                            final String resourceName,
-                                            final boolean autostart ) {
+    public ClusterServiceFactorySimpleImpl(final String clusterName,
+                                           final String zkAddress,
+                                           final String localId,
+                                           final String resourceName,
+                                           final boolean autostart) {
         this.clusterName = clusterName;
         this.zkAddress = zkAddress;
         this.localId = localId;
@@ -46,11 +46,15 @@ public class ClusterServiceFactorySimpleImpl implements ClusterServiceFactory {
     }
 
     @Override
-    public synchronized ClusterService build( final MessageHandlerResolver resolver ) {
-        if ( clusterService == null ) {
-            clusterService = new ClusterServiceHelix( clusterName, zkAddress, localId, resourceName, resolver );
+    public synchronized ClusterService build(final MessageHandlerResolver resolver) {
+        if (clusterService == null) {
+            clusterService = new ClusterServiceHelix(clusterName,
+                                                     zkAddress,
+                                                     localId,
+                                                     resourceName,
+                                                     resolver);
         } else {
-            clusterService.addMessageHandlerResolver( resolver );
+            clusterService.addMessageHandlerResolver(resolver);
         }
         return clusterService;
     }
@@ -59,5 +63,4 @@ public class ClusterServiceFactorySimpleImpl implements ClusterServiceFactory {
     public boolean isAutoStart() {
         return autostart;
     }
-
 }

@@ -22,7 +22,6 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.uberfire.ext.editor.commons.client.EditorTitle;
 
 import static org.mockito.Mockito.*;
 
@@ -37,16 +36,19 @@ public class HtmlEditorViewTest {
 
     @Before
     public void setup() {
-        final TranslationService translationService = mock( TranslationService.class );
+        final TranslationService translationService = mock(TranslationService.class);
 
-        libraryLoader = mock( HtmlEditorLibraryLoader.class );
-        view = spy( new HtmlEditorView( translationService, libraryLoader ) );
-        doNothing().when( view ).configureScreenComponents( anyString(), anyString() );
-        view.htmlEditor = mock( Div.class );
-        doReturn( "content" ).when( view.htmlEditor ).getInnerHTML();
-        presenter = spy( new HtmlEditorPresenter( view ) );
+        libraryLoader = mock(HtmlEditorLibraryLoader.class);
+        view = spy(new HtmlEditorView(translationService,
+                                      libraryLoader));
+        doNothing().when(view).configureScreenComponents(anyString(),
+                                                         anyString());
+        view.htmlEditor = mock(Div.class);
+        doReturn("content").when(view.htmlEditor).getInnerHTML();
+        presenter = spy(new HtmlEditorPresenter(view));
 
-        doNothing().when( view ).loadEditor( anyString(), anyString() );
+        doNothing().when(view).loadEditor(anyString(),
+                                          anyString());
     }
 
     @Test
@@ -54,13 +56,16 @@ public class HtmlEditorViewTest {
         presenter.load();
         presenter.load();
 
-        verify( view, times( 1 ) ).loadEditor( anyString(), anyString() );
+        verify(view,
+               times(1)).loadEditor(anyString(),
+                                    anyString());
     }
 
     @Test
     public void synchronizeViewWhenReturningContent() {
         presenter.getContent();
 
-        verify( view, times( 1 ) ).synchronizeView();
+        verify(view,
+               times(1)).synchronizeView();
     }
 }

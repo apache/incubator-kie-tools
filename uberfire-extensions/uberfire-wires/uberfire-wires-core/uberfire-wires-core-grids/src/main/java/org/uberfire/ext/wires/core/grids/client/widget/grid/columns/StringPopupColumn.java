@@ -32,35 +32,34 @@ public class StringPopupColumn extends BaseGridColumn<String> {
 
     private final EditorPopup editor = new EditorPopup();
 
-    public StringPopupColumn( final List<GridColumn.HeaderMetaData> headerMetaData,
-                              final GridColumnRenderer<String> columnRenderer,
-                              final double width ) {
-        super( headerMetaData,
-               columnRenderer,
-               width );
+    public StringPopupColumn(final List<GridColumn.HeaderMetaData> headerMetaData,
+                             final GridColumnRenderer<String> columnRenderer,
+                             final double width) {
+        super(headerMetaData,
+              columnRenderer,
+              width);
     }
 
-    public StringPopupColumn( final GridColumn.HeaderMetaData headerMetaData,
-                              final GridColumnRenderer<String> columnRenderer,
-                              final double width ) {
-        super( headerMetaData,
-               columnRenderer,
-               width );
+    public StringPopupColumn(final GridColumn.HeaderMetaData headerMetaData,
+                             final GridColumnRenderer<String> columnRenderer,
+                             final double width) {
+        super(headerMetaData,
+              columnRenderer,
+              width);
     }
 
     @Override
-    public void edit( final GridCell<String> cell,
-                      final GridBodyCellRenderContext context,
-                      final Callback<GridCellValue<String>> callback ) {
-        editor.edit( assertCell( cell ).getValue(),
-                     callback );
+    public void edit(final GridCell<String> cell,
+                     final GridBodyCellRenderContext context,
+                     final Callback<GridCellValue<String>> callback) {
+        editor.edit(assertCell(cell).getValue(),
+                    callback);
     }
 
-    private GridCell<String> assertCell( final GridCell<String> cell ) {
-        if ( cell != null ) {
+    private GridCell<String> assertCell(final GridCell<String> cell) {
+        if (cell != null) {
             return cell;
         }
-        return new BaseGridCell<String>( new BaseGridCellValue<String>( "" ) );
+        return new BaseGridCell<String>(new BaseGridCellValue<String>(""));
     }
-
 }

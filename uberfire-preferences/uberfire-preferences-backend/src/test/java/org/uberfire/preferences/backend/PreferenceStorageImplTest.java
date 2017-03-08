@@ -26,6 +26,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uberfire.backend.server.io.object.ObjectStorage;
 import org.uberfire.backend.server.io.object.ObjectStorageImpl;
+import org.uberfire.io.IOService;
+import org.uberfire.java.nio.file.FileSystem;
+import org.uberfire.mocks.FileSystemTestingUtils;
+import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.preferences.shared.PreferenceScope;
 import org.uberfire.preferences.shared.PreferenceScopeTypes;
 import org.uberfire.preferences.shared.impl.DefaultPreferenceScopeResolutionStrategy;
@@ -35,10 +39,6 @@ import org.uberfire.preferences.shared.impl.PreferenceScopeFactoryImpl;
 import org.uberfire.preferences.shared.impl.PreferenceScopeImpl;
 import org.uberfire.preferences.shared.impl.PreferenceScopeResolutionStrategyInfo;
 import org.uberfire.preferences.shared.impl.PreferenceScopedValue;
-import org.uberfire.io.IOService;
-import org.uberfire.java.nio.file.FileSystem;
-import org.uberfire.mocks.FileSystemTestingUtils;
-import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.rpc.SessionInfo;
 
 import static org.junit.Assert.*;
@@ -48,20 +48,22 @@ import static org.mockito.Mockito.*;
 
 public class PreferenceStorageImplTest {
 
-    private static FileSystemTestingUtils fileSystemTestingUtils = new FileSystemTestingUtils();
-
     private static final String allUsersScopeType = DefaultScopes.ALL_USERS.type();
     private static final String entireApplicationScopeType = DefaultScopes.ENTIRE_APPLICATION.type();
     private static final String userScopeType = DefaultScopes.USER.type();
-
     private static final String allUsersScopeKey = allUsersScopeType;
     private static final String entireApplicationScopeKey = entireApplicationScopeType;
     private static final String userScopeKey = "my-user";
-
-    private static final PreferenceScopeImpl allUsersScope = new PreferenceScopeImpl( allUsersScopeType, allUsersScopeKey, null );
-    private static final PreferenceScopeImpl entireApplicationScope = new PreferenceScopeImpl( entireApplicationScopeType, entireApplicationScopeKey, null );
-    private static final PreferenceScopeImpl userScope = new PreferenceScopeImpl( userScopeType, userScopeKey, null );
-
+    private static final PreferenceScopeImpl allUsersScope = new PreferenceScopeImpl(allUsersScopeType,
+                                                                                     allUsersScopeKey,
+                                                                                     null);
+    private static final PreferenceScopeImpl entireApplicationScope = new PreferenceScopeImpl(entireApplicationScopeType,
+                                                                                              entireApplicationScopeKey,
+                                                                                              null);
+    private static final PreferenceScopeImpl userScope = new PreferenceScopeImpl(userScopeType,
+                                                                                 userScopeKey,
+                                                                                 null);
+    private static FileSystemTestingUtils fileSystemTestingUtils = new FileSystemTestingUtils();
     private PreferenceScope userEntireApplicationScope, allUsersEntireApplicationScope;
 
     private PreferenceStorageImpl preferenceStorageServiceBackendImpl;
@@ -79,23 +81,25 @@ public class PreferenceStorageImplTest {
 
         final SessionInfo sessionInfo = mockSessionInfo();
         final FileSystem fileSystem = mockFileSystem();
-        final IOService ioService = mockIoService( fileSystem );
+        final IOService ioService = mockIoService(fileSystem);
 
-        ObjectStorage objectStorage = new ObjectStorageImpl( ioService );
+        ObjectStorage objectStorage = new ObjectStorageImpl(ioService);
 
-        scopeTypes = new DefaultPreferenceScopeTypes( new ServerUsernameProvider( sessionInfo ) );
-        scopeFactory = new PreferenceScopeFactoryImpl( scopeTypes );
-        scopeResolutionStrategyInfo = new DefaultPreferenceScopeResolutionStrategy( scopeFactory,
-                                                                                    null ).getInfo();
-        preferenceStorageServiceBackendImpl = new PreferenceStorageImpl( ioService,
-                                                                         sessionInfo,
-                                                                         scopeTypes,
-                                                                         scopeFactory,
-                                                                         objectStorage );
+        scopeTypes = new DefaultPreferenceScopeTypes(new ServerUsernameProvider(sessionInfo));
+        scopeFactory = new PreferenceScopeFactoryImpl(scopeTypes);
+        scopeResolutionStrategyInfo = new DefaultPreferenceScopeResolutionStrategy(scopeFactory,
+                                                                                   null).getInfo();
+        preferenceStorageServiceBackendImpl = new PreferenceStorageImpl(ioService,
+                                                                        sessionInfo,
+                                                                        scopeTypes,
+                                                                        scopeFactory,
+                                                                        objectStorage);
         preferenceStorageServiceBackendImpl.init();
 
-        userEntireApplicationScope = scopeFactory.createScope( userScope, entireApplicationScope );
-        allUsersEntireApplicationScope = scopeFactory.createScope( allUsersScope, entireApplicationScope );
+        userEntireApplicationScope = scopeFactory.createScope(userScope,
+                                                              entireApplicationScope);
+        allUsersEntireApplicationScope = scopeFactory.createScope(allUsersScope,
+                                                                  entireApplicationScope);
     }
 
     @After
@@ -108,10 +112,10 @@ public class PreferenceStorageImplTest {
         final PreferenceScope scope = userEntireApplicationScope;
         final String key = "my.preference.key";
 
-        final boolean preferenceExists = preferenceStorageServiceBackendImpl.exists( scope,
-                                                                                     key );
+        final boolean preferenceExists = preferenceStorageServiceBackendImpl.exists(scope,
+                                                                                    key);
 
-        assertFalse( preferenceExists );
+        assertFalse(preferenceExists);
     }
 
     @Test
@@ -120,23 +124,23 @@ public class PreferenceStorageImplTest {
         final String key = "my.preference.key";
         final long value = 23L;
 
-        preferenceStorageServiceBackendImpl.write( scope,
-                                                   key,
-                                                   value );
-        final boolean preferenceExists = preferenceStorageServiceBackendImpl.exists( scope,
-                                                                                     key );
+        preferenceStorageServiceBackendImpl.write(scope,
+                                                  key,
+                                                  value);
+        final boolean preferenceExists = preferenceStorageServiceBackendImpl.exists(scope,
+                                                                                    key);
 
-        assertTrue( preferenceExists );
+        assertTrue(preferenceExists);
     }
 
     @Test
     public void unexistentPreferenceDoesNotExistUsingScopeResolutionStrategyTest() {
         final String key = "my.preference.key";
 
-        final boolean preferenceExists = preferenceStorageServiceBackendImpl.exists( scopeResolutionStrategyInfo,
-                                                                                     key );
+        final boolean preferenceExists = preferenceStorageServiceBackendImpl.exists(scopeResolutionStrategyInfo,
+                                                                                    key);
 
-        assertFalse( preferenceExists );
+        assertFalse(preferenceExists);
     }
 
     @Test
@@ -145,13 +149,13 @@ public class PreferenceStorageImplTest {
         final String key = "my.preference.key";
         final long value = 23L;
 
-        preferenceStorageServiceBackendImpl.write( scope,
-                                                   key,
-                                                   value );
-        final boolean preferenceExists = preferenceStorageServiceBackendImpl.exists( scopeResolutionStrategyInfo,
-                                                                                     key );
+        preferenceStorageServiceBackendImpl.write(scope,
+                                                  key,
+                                                  value);
+        final boolean preferenceExists = preferenceStorageServiceBackendImpl.exists(scopeResolutionStrategyInfo,
+                                                                                    key);
 
-        assertTrue( preferenceExists );
+        assertTrue(preferenceExists);
     }
 
     @Test
@@ -160,188 +164,206 @@ public class PreferenceStorageImplTest {
         final String key = "my.preference.key";
         final long value = 23L;
 
-        preferenceStorageServiceBackendImpl.write( scope,
-                                                   key,
-                                                   value );
-        final boolean preferenceExists = preferenceStorageServiceBackendImpl.exists( scopeResolutionStrategyInfo,
-                                                                                     key );
+        preferenceStorageServiceBackendImpl.write(scope,
+                                                  key,
+                                                  value);
+        final boolean preferenceExists = preferenceStorageServiceBackendImpl.exists(scopeResolutionStrategyInfo,
+                                                                                    key);
 
-        assertTrue( preferenceExists );
+        assertTrue(preferenceExists);
     }
 
     @Test
     public void writeReadLongTest() {
         final PreferenceScope scope = userEntireApplicationScope;
 
-        preferenceStorageServiceBackendImpl.write( scope,
-                                                   "my.preference.key",
-                                                   23L );
-        final long value = preferenceStorageServiceBackendImpl.read( scope,
-                                                                     "my.preference.key" );
+        preferenceStorageServiceBackendImpl.write(scope,
+                                                  "my.preference.key",
+                                                  23L);
+        final long value = preferenceStorageServiceBackendImpl.read(scope,
+                                                                    "my.preference.key");
 
-        assertEquals( 23, value );
+        assertEquals(23,
+                     value);
     }
 
     @Test
     public void writeReadStringTest() {
         final PreferenceScope scope = userEntireApplicationScope;
 
-        preferenceStorageServiceBackendImpl.write( scope,
-                                                   "my.preference.key",
-                                                   "text" );
-        final String value = preferenceStorageServiceBackendImpl.read( scope,
-                                                                       "my.preference.key" );
+        preferenceStorageServiceBackendImpl.write(scope,
+                                                  "my.preference.key",
+                                                  "text");
+        final String value = preferenceStorageServiceBackendImpl.read(scope,
+                                                                      "my.preference.key");
 
-        assertEquals( "text", value );
+        assertEquals("text",
+                     value);
     }
 
     @Test
     public void writeReadBooleanTest() {
         final PreferenceScope scope = userEntireApplicationScope;
 
-        preferenceStorageServiceBackendImpl.write( scope,
-                                                   "my.preference.key.true",
-                                                   true );
-        preferenceStorageServiceBackendImpl.write( scope,
-                                                   "my.preference.key.false",
-                                                   false );
-        final boolean value1 = preferenceStorageServiceBackendImpl.read( scope,
-                                                                         "my.preference.key.true" );
-        final boolean value2 = preferenceStorageServiceBackendImpl.read( scope,
-                                                                         "my.preference.key.false" );
+        preferenceStorageServiceBackendImpl.write(scope,
+                                                  "my.preference.key.true",
+                                                  true);
+        preferenceStorageServiceBackendImpl.write(scope,
+                                                  "my.preference.key.false",
+                                                  false);
+        final boolean value1 = preferenceStorageServiceBackendImpl.read(scope,
+                                                                        "my.preference.key.true");
+        final boolean value2 = preferenceStorageServiceBackendImpl.read(scope,
+                                                                        "my.preference.key.false");
 
-        assertEquals( true, value1 );
-        assertEquals( false, value2 );
+        assertEquals(true,
+                     value1);
+        assertEquals(false,
+                     value2);
     }
 
     @Test
     public void writeReadCustomObjectTest() {
         final PreferenceScope scope = userEntireApplicationScope;
-        CustomObject customObject = new CustomObject( 61L, "some text" );
+        CustomObject customObject = new CustomObject(61L,
+                                                     "some text");
 
-        preferenceStorageServiceBackendImpl.write( scope,
-                                                   "my.preference.key",
-                                                   customObject );
-        final CustomObject value = preferenceStorageServiceBackendImpl.read( scope,
-                                                                             "my.preference.key" );
+        preferenceStorageServiceBackendImpl.write(scope,
+                                                  "my.preference.key",
+                                                  customObject);
+        final CustomObject value = preferenceStorageServiceBackendImpl.read(scope,
+                                                                            "my.preference.key");
 
-        assertEquals( customObject.id, value.id );
-        assertEquals( customObject.text, value.text );
+        assertEquals(customObject.id,
+                     value.id);
+        assertEquals(customObject.text,
+                     value.text);
     }
 
     @Test
     public void readNonexistentPreferenceFromSpecificScopeTest() {
         final PreferenceScope scope = userEntireApplicationScope;
 
-        final String value = preferenceStorageServiceBackendImpl.read( scope,
-                                                                       "my.nonexistent.preference.key" );
+        final String value = preferenceStorageServiceBackendImpl.read(scope,
+                                                                      "my.nonexistent.preference.key");
 
-        assertNull( value );
+        assertNull(value);
     }
 
     @Test
     public void readNonexistentPreferenceWithResolutionStrategyTest() {
-        final String value = preferenceStorageServiceBackendImpl.read( scopeResolutionStrategyInfo,
-                                                                       "my.nonexistent.preference.key" );
+        final String value = preferenceStorageServiceBackendImpl.read(scopeResolutionStrategyInfo,
+                                                                      "my.nonexistent.preference.key");
 
-        assertNull( value );
+        assertNull(value);
     }
 
     @Test
     public void writeGlobalAndUserReadUserWithResolutionStrategyTest() {
-        preferenceStorageServiceBackendImpl.write( userEntireApplicationScope,
-                                                   "my.preference.key",
-                                                   "user_value" );
-        preferenceStorageServiceBackendImpl.write( allUsersEntireApplicationScope,
-                                                   "my.preference.key",
-                                                   "global_value" );
-        final String value = preferenceStorageServiceBackendImpl.read( scopeResolutionStrategyInfo,
-                                                                       "my.preference.key" );
+        preferenceStorageServiceBackendImpl.write(userEntireApplicationScope,
+                                                  "my.preference.key",
+                                                  "user_value");
+        preferenceStorageServiceBackendImpl.write(allUsersEntireApplicationScope,
+                                                  "my.preference.key",
+                                                  "global_value");
+        final String value = preferenceStorageServiceBackendImpl.read(scopeResolutionStrategyInfo,
+                                                                      "my.preference.key");
 
-        assertEquals( "user_value", value );
+        assertEquals("user_value",
+                     value);
     }
 
     @Test
     public void writeGlobalReadGlobalWithResolutionStrategyTest() {
-        preferenceStorageServiceBackendImpl.write( allUsersEntireApplicationScope,
-                                                   "my.preference.key",
-                                                   "global_value" );
-        final String value = preferenceStorageServiceBackendImpl.read( scopeResolutionStrategyInfo,
-                                                                       "my.preference.key" );
+        preferenceStorageServiceBackendImpl.write(allUsersEntireApplicationScope,
+                                                  "my.preference.key",
+                                                  "global_value");
+        final String value = preferenceStorageServiceBackendImpl.read(scopeResolutionStrategyInfo,
+                                                                      "my.preference.key");
 
-        assertEquals( "global_value", value );
+        assertEquals("global_value",
+                     value);
     }
 
     @Test
     public void writeUserReadUserWithResolutionStrategyTest() {
-        preferenceStorageServiceBackendImpl.write( userEntireApplicationScope,
-                                                   "my.preference.key",
-                                                   "user_value" );
-        final String value = preferenceStorageServiceBackendImpl.read( scopeResolutionStrategyInfo,
-                                                                       "my.preference.key" );
+        preferenceStorageServiceBackendImpl.write(userEntireApplicationScope,
+                                                  "my.preference.key",
+                                                  "user_value");
+        final String value = preferenceStorageServiceBackendImpl.read(scopeResolutionStrategyInfo,
+                                                                      "my.preference.key");
 
-        assertEquals( "user_value", value );
+        assertEquals("user_value",
+                     value);
     }
 
     @Test
     public void readFromSpecificScopeTest() {
-        preferenceStorageServiceBackendImpl.write( userEntireApplicationScope,
-                                                   "my.preference.key",
-                                                   "value" );
-        final String value = preferenceStorageServiceBackendImpl.read( userEntireApplicationScope,
-                                                                       "my.preference.key" );
+        preferenceStorageServiceBackendImpl.write(userEntireApplicationScope,
+                                                  "my.preference.key",
+                                                  "value");
+        final String value = preferenceStorageServiceBackendImpl.read(userEntireApplicationScope,
+                                                                      "my.preference.key");
 
-        assertEquals( "value", value );
+        assertEquals("value",
+                     value);
     }
 
     @Test
     public void readWithResolutionStrategyTest() {
-        preferenceStorageServiceBackendImpl.write( allUsersEntireApplicationScope,
-                                                   "my.preference.key",
-                                                   "value" );
-        final String value = preferenceStorageServiceBackendImpl.read( scopeResolutionStrategyInfo,
-                                                                       "my.preference.key" );
+        preferenceStorageServiceBackendImpl.write(allUsersEntireApplicationScope,
+                                                  "my.preference.key",
+                                                  "value");
+        final String value = preferenceStorageServiceBackendImpl.read(scopeResolutionStrategyInfo,
+                                                                      "my.preference.key");
 
-        assertEquals( "value", value );
+        assertEquals("value",
+                     value);
     }
 
     @Test
     public void writeGlobalAndUserReadWithScopeUserWithResolutionStrategyTest() {
-        preferenceStorageServiceBackendImpl.write( userEntireApplicationScope,
-                                                   "my.preference.key",
-                                                   "user_value" );
-        preferenceStorageServiceBackendImpl.write( allUsersEntireApplicationScope,
-                                                   "my.preference.key",
-                                                   "global_value" );
-        final PreferenceScopedValue<String> scopedValue = preferenceStorageServiceBackendImpl.readWithScope( scopeResolutionStrategyInfo,
-                                                                                                             "my.preference.key" );
+        preferenceStorageServiceBackendImpl.write(userEntireApplicationScope,
+                                                  "my.preference.key",
+                                                  "user_value");
+        preferenceStorageServiceBackendImpl.write(allUsersEntireApplicationScope,
+                                                  "my.preference.key",
+                                                  "global_value");
+        final PreferenceScopedValue<String> scopedValue = preferenceStorageServiceBackendImpl.readWithScope(scopeResolutionStrategyInfo,
+                                                                                                            "my.preference.key");
 
-        assertEquals( "user_value", scopedValue.getValue() );
-        assertEquals( userEntireApplicationScope.key(), scopedValue.getScope().key() );
+        assertEquals("user_value",
+                     scopedValue.getValue());
+        assertEquals(userEntireApplicationScope.key(),
+                     scopedValue.getScope().key());
     }
 
     @Test
     public void writeGlobalReadWithScopeGlobalWithResolutionStrategyTest() {
-        preferenceStorageServiceBackendImpl.write( allUsersEntireApplicationScope,
-                                                   "my.preference.key",
-                                                   "global_value" );
-        final PreferenceScopedValue<String> scopedValue = preferenceStorageServiceBackendImpl.readWithScope( scopeResolutionStrategyInfo,
-                                                                                                             "my.preference.key" );
+        preferenceStorageServiceBackendImpl.write(allUsersEntireApplicationScope,
+                                                  "my.preference.key",
+                                                  "global_value");
+        final PreferenceScopedValue<String> scopedValue = preferenceStorageServiceBackendImpl.readWithScope(scopeResolutionStrategyInfo,
+                                                                                                            "my.preference.key");
 
-        assertEquals( "global_value", scopedValue.getValue() );
-        assertEquals( allUsersEntireApplicationScope.key(), scopedValue.getScope().key() );
+        assertEquals("global_value",
+                     scopedValue.getValue());
+        assertEquals(allUsersEntireApplicationScope.key(),
+                     scopedValue.getScope().key());
     }
 
     @Test
     public void writeUserReadWithScopeUserUsingResolutionStrategyTest() {
-        preferenceStorageServiceBackendImpl.write( userEntireApplicationScope,
-                                                   "my.preference.key",
-                                                   "user_value" );
-        final PreferenceScopedValue<String> scopedValue = preferenceStorageServiceBackendImpl.readWithScope( scopeResolutionStrategyInfo,
-                                                                                                             "my.preference.key" );
+        preferenceStorageServiceBackendImpl.write(userEntireApplicationScope,
+                                                  "my.preference.key",
+                                                  "user_value");
+        final PreferenceScopedValue<String> scopedValue = preferenceStorageServiceBackendImpl.readWithScope(scopeResolutionStrategyInfo,
+                                                                                                            "my.preference.key");
 
-        assertEquals( "user_value", scopedValue.getValue() );
-        assertEquals( userEntireApplicationScope.key(), scopedValue.getScope().key() );
+        assertEquals("user_value",
+                     scopedValue.getValue());
+        assertEquals(userEntireApplicationScope.key(),
+                     scopedValue.getScope().key());
     }
 
     @Test
@@ -349,121 +371,131 @@ public class PreferenceStorageImplTest {
         String value;
 
         // create preference defined for global and user scopes
-        preferenceStorageServiceBackendImpl.write( userEntireApplicationScope,
-                                                   "my.preference.key",
-                                                   "user_value" );
-        preferenceStorageServiceBackendImpl.write( allUsersEntireApplicationScope,
-                                                   "my.preference.key",
-                                                   "global_value" );
-        value = preferenceStorageServiceBackendImpl.read( scopeResolutionStrategyInfo,
-                                                          "my.preference.key" );
-        assertEquals( "user_value", value );
+        preferenceStorageServiceBackendImpl.write(userEntireApplicationScope,
+                                                  "my.preference.key",
+                                                  "user_value");
+        preferenceStorageServiceBackendImpl.write(allUsersEntireApplicationScope,
+                                                  "my.preference.key",
+                                                  "global_value");
+        value = preferenceStorageServiceBackendImpl.read(scopeResolutionStrategyInfo,
+                                                         "my.preference.key");
+        assertEquals("user_value",
+                     value);
 
         // delete preference from user scope
-        preferenceStorageServiceBackendImpl.delete( userEntireApplicationScope,
-                                                    "my.preference.key" );
-        value = preferenceStorageServiceBackendImpl.read( scopeResolutionStrategyInfo,
-                                                          "my.preference.key" );
-        assertEquals( "global_value", value );
+        preferenceStorageServiceBackendImpl.delete(userEntireApplicationScope,
+                                                   "my.preference.key");
+        value = preferenceStorageServiceBackendImpl.read(scopeResolutionStrategyInfo,
+                                                         "my.preference.key");
+        assertEquals("global_value",
+                     value);
 
         // delete preference from global scope
-        preferenceStorageServiceBackendImpl.delete( allUsersEntireApplicationScope,
-                                                    "my.preference.key" );
-        value = preferenceStorageServiceBackendImpl.read( scopeResolutionStrategyInfo,
-                                                          "my.preference.key" );
-        assertNull( value );
+        preferenceStorageServiceBackendImpl.delete(allUsersEntireApplicationScope,
+                                                   "my.preference.key");
+        value = preferenceStorageServiceBackendImpl.read(scopeResolutionStrategyInfo,
+                                                         "my.preference.key");
+        assertNull(value);
     }
 
     @Test
     public void allKeysWithKeysTest() {
         // global preferences
-        preferenceStorageServiceBackendImpl.write( allUsersEntireApplicationScope,
-                                                   "my.first.global.preference.key",
-                                                   "global_value1" );
-        preferenceStorageServiceBackendImpl.write( allUsersEntireApplicationScope,
-                                                   "my.second.global.preference.key",
-                                                   "global_value2" );
-        preferenceStorageServiceBackendImpl.write( allUsersEntireApplicationScope,
-                                                   "my.third.global.preference.key",
-                                                   "global_value3" );
+        preferenceStorageServiceBackendImpl.write(allUsersEntireApplicationScope,
+                                                  "my.first.global.preference.key",
+                                                  "global_value1");
+        preferenceStorageServiceBackendImpl.write(allUsersEntireApplicationScope,
+                                                  "my.second.global.preference.key",
+                                                  "global_value2");
+        preferenceStorageServiceBackendImpl.write(allUsersEntireApplicationScope,
+                                                  "my.third.global.preference.key",
+                                                  "global_value3");
 
         // user preferences
-        preferenceStorageServiceBackendImpl.write( userEntireApplicationScope,
-                                                   "my.first.user.preference.key",
-                                                   "user_value1" );
-        preferenceStorageServiceBackendImpl.write( userEntireApplicationScope,
-                                                   "my.second.user.preference.key",
-                                                   "user_value2" );
+        preferenceStorageServiceBackendImpl.write(userEntireApplicationScope,
+                                                  "my.first.user.preference.key",
+                                                  "user_value1");
+        preferenceStorageServiceBackendImpl.write(userEntireApplicationScope,
+                                                  "my.second.user.preference.key",
+                                                  "user_value2");
 
-        final Collection<String> globalKeys = preferenceStorageServiceBackendImpl.allKeys( allUsersEntireApplicationScope );
-        final Collection<String> userKeys = preferenceStorageServiceBackendImpl.allKeys( userEntireApplicationScope );
+        final Collection<String> globalKeys = preferenceStorageServiceBackendImpl.allKeys(allUsersEntireApplicationScope);
+        final Collection<String> userKeys = preferenceStorageServiceBackendImpl.allKeys(userEntireApplicationScope);
 
-        assertNotNull( globalKeys );
-        assertEquals( 3, globalKeys.size() );
-        assertTrue( globalKeys.contains( "my.first.global.preference.key" ) );
-        assertTrue( globalKeys.contains( "my.second.global.preference.key" ) );
-        assertTrue( globalKeys.contains( "my.third.global.preference.key" ) );
+        assertNotNull(globalKeys);
+        assertEquals(3,
+                     globalKeys.size());
+        assertTrue(globalKeys.contains("my.first.global.preference.key"));
+        assertTrue(globalKeys.contains("my.second.global.preference.key"));
+        assertTrue(globalKeys.contains("my.third.global.preference.key"));
 
-        assertNotNull( userKeys );
-        assertEquals( 2, userKeys.size() );
-        assertTrue( userKeys.contains( "my.first.user.preference.key" ) );
-        assertTrue( userKeys.contains( "my.second.user.preference.key" ) );
+        assertNotNull(userKeys);
+        assertEquals(2,
+                     userKeys.size());
+        assertTrue(userKeys.contains("my.first.user.preference.key"));
+        assertTrue(userKeys.contains("my.second.user.preference.key"));
     }
 
     @Test
     public void allKeysWithNoKeysTest() {
-        final Collection<String> keys = preferenceStorageServiceBackendImpl.allKeys( allUsersEntireApplicationScope );
+        final Collection<String> keys = preferenceStorageServiceBackendImpl.allKeys(allUsersEntireApplicationScope);
 
-        assertNotNull( keys );
-        assertEquals( "There should not exist any keys.", 0, keys.size() );
+        assertNotNull(keys);
+        assertEquals("There should not exist any keys.",
+                     0,
+                     keys.size());
     }
 
     @Test
     public void buildScopePathForAllUsersEntireApplicationScope() {
-        final String path = preferenceStorageServiceBackendImpl.buildScopePath( allUsersEntireApplicationScope );
+        final String path = preferenceStorageServiceBackendImpl.buildScopePath(allUsersEntireApplicationScope);
 
-        assertEquals( "/config/all-users/all-users/entire-application/entire-application/", path );
+        assertEquals("/config/all-users/all-users/entire-application/entire-application/",
+                     path);
     }
 
     @Test
     public void buildScopePathForUserScope() {
-        final String path = preferenceStorageServiceBackendImpl.buildScopePath( userEntireApplicationScope );
+        final String path = preferenceStorageServiceBackendImpl.buildScopePath(userEntireApplicationScope);
 
-        assertEquals( "/config/user/my-user/entire-application/entire-application/", path );
+        assertEquals("/config/user/my-user/entire-application/entire-application/",
+                     path);
     }
 
     @Test
     public void buildStoragePathForUserScope() {
-        final String path = preferenceStorageServiceBackendImpl.buildScopedPreferencePath( userEntireApplicationScope,
-                                                                                           "my.preference.key" );
+        final String path = preferenceStorageServiceBackendImpl.buildScopedPreferencePath(userEntireApplicationScope,
+                                                                                          "my.preference.key");
 
-        assertEquals( "/config/user/my-user/entire-application/entire-application/my.preference.key.preferences", path );
+        assertEquals("/config/user/my-user/entire-application/entire-application/my.preference.key.preferences",
+                     path);
     }
 
     @Test
     public void buildStoragePathForGlobalScope() {
-        final String path = preferenceStorageServiceBackendImpl.buildScopedPreferencePath( allUsersEntireApplicationScope,
-                                                                                           "my.preference.key" );
+        final String path = preferenceStorageServiceBackendImpl.buildScopedPreferencePath(allUsersEntireApplicationScope,
+                                                                                          "my.preference.key");
 
-        assertEquals( "/config/all-users/all-users/entire-application/entire-application/my.preference.key.preferences", path );
+        assertEquals("/config/all-users/all-users/entire-application/entire-application/my.preference.key.preferences",
+                     path);
     }
 
     private SessionInfo mockSessionInfo() {
-        return new SessionInfoMock( userScopeKey );
+        return new SessionInfoMock(userScopeKey);
     }
 
     private FileSystem mockFileSystem() {
         return fileSystemTestingUtils.getFileSystem();
     }
 
-    private IOService mockIoService( final FileSystem fileSystem ) {
-        final IOService ioService = spy( fileSystemTestingUtils.getIoService() );
+    private IOService mockIoService(final FileSystem fileSystem) {
+        final IOService ioService = spy(fileSystemTestingUtils.getIoService());
 
-        doNothing().when( ioService ).startBatch( any( FileSystem.class ) );
-        doNothing().when( ioService ).endBatch();
-        doReturn( fileSystem ).when( ioService ).newFileSystem( any( URI.class ), anyMap() );
+        doNothing().when(ioService).startBatch(any(FileSystem.class));
+        doNothing().when(ioService).endBatch();
+        doReturn(fileSystem).when(ioService).newFileSystem(any(URI.class),
+                                                           anyMap());
 
         return ioService;
     }
-
 }

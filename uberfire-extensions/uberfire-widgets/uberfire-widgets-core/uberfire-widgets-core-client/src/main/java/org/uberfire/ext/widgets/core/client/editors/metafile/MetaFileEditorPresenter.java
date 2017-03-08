@@ -22,9 +22,6 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
-import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorPresenter;
-import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.VFSService;
@@ -32,6 +29,9 @@ import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.workbench.type.DotResourceType;
+import org.uberfire.ext.widgets.common.client.ace.AceEditorMode;
+import org.uberfire.ext.widgets.core.client.editors.texteditor.TextEditorPresenter;
+import org.uberfire.ext.widgets.core.client.resources.i18n.CoreConstants;
 import org.uberfire.lifecycle.IsDirty;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnOpen;
@@ -39,7 +39,7 @@ import org.uberfire.lifecycle.OnSave;
 import org.uberfire.lifecycle.OnStartup;
 
 @Dependent
-@WorkbenchEditor(identifier = "MetaFileTextEditor", supportedTypes = { DotResourceType.class }, priority = Integer.MAX_VALUE - 100)
+@WorkbenchEditor(identifier = "MetaFileTextEditor", supportedTypes = {DotResourceType.class}, priority = Integer.MAX_VALUE - 100)
 public class MetaFileEditorPresenter {
 
     @Inject
@@ -51,30 +51,31 @@ public class MetaFileEditorPresenter {
     private Path path;
 
     @OnStartup
-    public void onStartup( final ObservablePath path ) {
+    public void onStartup(final ObservablePath path) {
         this.path = path;
-        vfsServices.call( new RemoteCallback<String>() {
+        vfsServices.call(new RemoteCallback<String>() {
             @Override
-            public void callback( String response ) {
-                if ( response == null ) {
-                    view.setContent( CoreConstants.INSTANCE.EmptyEntry(),
-                                     AceEditorMode.TEXT );
+            public void callback(String response) {
+                if (response == null) {
+                    view.setContent(CoreConstants.INSTANCE.EmptyEntry(),
+                                    AceEditorMode.TEXT);
                 } else {
-                    view.setContent( response,
-                                     AceEditorMode.TEXT );
+                    view.setContent(response,
+                                    AceEditorMode.TEXT);
                 }
             }
-        } ).readAllString( path );
+        }).readAllString(path);
     }
 
     @OnSave
     public void onSave() {
-        vfsServices.call( new RemoteCallback<Path>() {
+        vfsServices.call(new RemoteCallback<Path>() {
             @Override
-            public void callback( Path response ) {
-                view.setDirty( false );
+            public void callback(Path response) {
+                view.setDirty(false);
             }
-        } ).write( path, view.getContent() );
+        }).write(path,
+                 view.getContent());
     }
 
     @IsDirty
@@ -101,5 +102,4 @@ public class MetaFileEditorPresenter {
     public IsWidget getWidget() {
         return view;
     }
-
 }

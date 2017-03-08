@@ -27,8 +27,7 @@ public class MathUtilities {
      * @param value A value to be checked.
      * @return true if the value is "almost" one.
      */
-    public static boolean isOne( final double value ) {
+    public static boolean isOne(final double value) {
         return value >= 1.0 - EPSILON && value <= 1.0 + EPSILON;
     }
-
 }

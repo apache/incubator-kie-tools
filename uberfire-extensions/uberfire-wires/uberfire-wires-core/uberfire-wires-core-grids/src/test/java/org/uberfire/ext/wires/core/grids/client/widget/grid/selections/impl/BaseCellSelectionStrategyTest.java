@@ -39,34 +39,32 @@ public abstract class BaseCellSelectionStrategyTest {
         this.strategy = getStrategy();
         this.uiModel = new BaseGridData();
 
-        gc1 = new BaseGridTest.MockMergableGridColumn<>( "col1",
-                                                         100 );
-        gc2 = new BaseGridTest.MockMergableGridColumn<>( "col2",
-                                                         100 );
-        uiModel.appendColumn( gc1 );
-        uiModel.appendColumn( gc2 );
+        gc1 = new BaseGridTest.MockMergableGridColumn<>("col1",
+                                                        100);
+        gc2 = new BaseGridTest.MockMergableGridColumn<>("col2",
+                                                        100);
+        uiModel.appendColumn(gc1);
+        uiModel.appendColumn(gc2);
 
-        uiModel.appendRow( new BaseGridRow() );
-        uiModel.appendRow( new BaseGridRow() );
-        uiModel.appendRow( new BaseGridRow() );
-        uiModel.appendRow( new BaseGridRow() );
+        uiModel.appendRow(new BaseGridRow());
+        uiModel.appendRow(new BaseGridRow());
+        uiModel.appendRow(new BaseGridRow());
+        uiModel.appendRow(new BaseGridRow());
 
         // [0,0 : a0] [0,1 : a1]
         // [1,0 : a0] [1,1 : a1]
         // [2,0 : b0] [2,1 : b1]
         // [3,0 : b0] [3,1 : b1]
 
-        for ( int rowIndex = 0; rowIndex < uiModel.getRowCount(); rowIndex++ ) {
-            for ( int columnIndex = 0; columnIndex < uiModel.getColumnCount(); columnIndex++ ) {
-                final String value = ( rowIndex < 2 ? "a" : "b" ) + columnIndex;
-                uiModel.setCell( rowIndex,
-                                 columnIndex,
-                                 new BaseGridCellValue<>( value ) );
+        for (int rowIndex = 0; rowIndex < uiModel.getRowCount(); rowIndex++) {
+            for (int columnIndex = 0; columnIndex < uiModel.getColumnCount(); columnIndex++) {
+                final String value = (rowIndex < 2 ? "a" : "b") + columnIndex;
+                uiModel.setCell(rowIndex,
+                                columnIndex,
+                                new BaseGridCellValue<>(value));
             }
         }
-
     }
 
     protected abstract CellSelectionStrategy getStrategy();
-
 }

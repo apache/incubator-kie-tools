@@ -22,7 +22,6 @@ public class ContainerCategory extends Category {
     public static final ContainerCategory CATEGORY = new ContainerCategory();
 
     private ContainerCategory() {
-        super( "Containers" );
+        super("Containers");
     }
-
 }
