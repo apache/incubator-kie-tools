@@ -973,17 +973,6 @@
       <artifactId>org.eclipse.sisu.inject</artifactId>
       <scope>runtime</scope>
     </dependency>
-    <dependency>
-      <groupId>org.sonatype.sisu</groupId>
-      <artifactId>sisu-guice</artifactId>
-      <classifier>no_aop</classifier>
-      <exclusions>
-        <exclusion>
-          <groupId>org.sonatype.sisu</groupId>
-          <artifactId>sisu-guava</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
   </dependencies>
 
   <build>
