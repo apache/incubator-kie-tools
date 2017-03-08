@@ -38,7 +38,9 @@ public interface LibraryService {
 
     LibraryInfo getLibraryInfo( Repository selectedRepository );
 
-    KieProject createProject( String projectName, String selectOu, String baseURL );
+    KieProject createProject(final String projectName,
+                             final Repository selectedRepository,
+                             final String baseURL);
 
     Boolean thereIsAProjectInTheWorkbench();
 

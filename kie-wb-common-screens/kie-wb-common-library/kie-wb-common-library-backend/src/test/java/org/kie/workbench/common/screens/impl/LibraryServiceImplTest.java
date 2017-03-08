@@ -203,16 +203,22 @@ public class LibraryServiceImplTest {
 
     @Test
     public void newProjectTest() {
-        when( preferences.getOuIdentifier() ).thenReturn( "ou2" );
+        when( preferences.getOuIdentifier() ).thenReturn( "ou2" );  
         when( preferences.getRepositoryAlias() ).thenReturn( "repo-alias" );
         when( preferences.getOuAlias() ).thenReturn( "team" );
         when( preferences.getProjectDefaultBranch() ).thenReturn( "master" );
         when( preferences.getProjectGroupId() ).thenReturn( "projectGroupID" );
         when( preferences.getProjectVersion() ).thenReturn( "1.0" );
 
-        libraryService.createProject( "projectName", "ou2", "baseURL" );
+        final Repository repository = mock(Repository.class);
+        final Path projectRootPath = mock(Path.class);
+        when(repository.getRoot()).thenReturn(projectRootPath);
 
-        verify( kieProjectService ).newProject( eq( repo2Default.getRoot() ), any(), eq( "baseURL" ), any() );
+        libraryService.createProject("projectName",
+                                     repository,
+                                     "baseURL" );
+
+        verify( kieProjectService ).newProject( eq( projectRootPath ), any(), eq( "baseURL" ), any() );
     }
 
     @Test

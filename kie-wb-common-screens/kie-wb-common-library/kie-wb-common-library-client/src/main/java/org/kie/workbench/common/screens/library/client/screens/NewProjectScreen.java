@@ -109,7 +109,7 @@ public class NewProjectScreen {
         busyIndicatorView.showBusyIndicator( ts.getTranslation( LibraryConstants.NewProjectScreen_Saving ) );
         libraryService.call( getSuccessCallback(),
                              getErrorCallBack() ).createProject( projectName,
-                                                                 libraryPlaces.getSelectedOrganizationalUnit().getIdentifier(),
+                                                                 libraryPlaces.getSelectedRepository(),
                                                                  getBaseURL() );
     }
 

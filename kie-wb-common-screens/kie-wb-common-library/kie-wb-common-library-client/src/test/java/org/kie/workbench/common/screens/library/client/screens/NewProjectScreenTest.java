@@ -39,7 +39,7 @@ import org.uberfire.mocks.SessionInfoMock;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.jgroups.util.Util.*;
+import static org.jgroups.util.Util.assertEquals;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -78,70 +78,87 @@ public class NewProjectScreenTest {
 
     @Before
     public void setup() {
-        libraryServiceCaller = new CallerMock<>( libraryService );
+        libraryServiceCaller = new CallerMock<>(libraryService);
         sessionInfo = new SessionInfoMock();
 
-        final OrganizationalUnit selectedOrganizationalUnit = mock( OrganizationalUnit.class );
-        doReturn( "selectedOrganizationalUnit" ).when( selectedOrganizationalUnit ).getIdentifier();
-        doReturn( selectedOrganizationalUnit ).when( libraryPlaces ).getSelectedOrganizationalUnit();
+        final OrganizationalUnit selectedOrganizationalUnit = mock(OrganizationalUnit.class);
+        doReturn("selectedOrganizationalUnit").when(selectedOrganizationalUnit).getIdentifier();
+        doReturn(selectedOrganizationalUnit).when(libraryPlaces).getSelectedOrganizationalUnit();
 
-        newProjectScreen = spy( new NewProjectScreen( libraryServiceCaller,
-                                                      placeManager,
-                                                      busyIndicatorView,
-                                                      notificationEvent,
-                                                      libraryPlaces,
-                                                      view,
-                                                      ts,
-                                                      sessionInfo,
-                                                      newProjectEvent ) );
+        newProjectScreen = spy(new NewProjectScreen(libraryServiceCaller,
+                                                    placeManager,
+                                                    busyIndicatorView,
+                                                    notificationEvent,
+                                                    libraryPlaces,
+                                                    view,
+                                                    ts,
+                                                    sessionInfo,
+                                                    newProjectEvent));
 
-        doReturn( "baseUrl" ).when( newProjectScreen ).getBaseURL();
+        doReturn("baseUrl").when(newProjectScreen).getBaseURL();
 
-        libraryInfo = new LibraryInfo( "master", new HashSet<>() );
-        doReturn( libraryInfo ).when( libraryService ).getLibraryInfo( any( Repository.class ) );
+        libraryInfo = new LibraryInfo("master",
+                                      new HashSet<>());
+        doReturn(libraryInfo).when(libraryService).getLibraryInfo(any(Repository.class));
 
         newProjectScreen.load();
     }
 
     @Test
     public void loadTest() {
-        verify( view ).init( newProjectScreen );
-        assertEquals( libraryInfo, newProjectScreen.libraryInfo );
+        verify(view).init(newProjectScreen);
+        assertEquals(libraryInfo,
+                     newProjectScreen.libraryInfo);
     }
 
     @Test
     public void cancelTest() {
         newProjectScreen.cancel();
 
-        verify( libraryPlaces ).goToLibrary();
-        verify( placeManager ).closePlace( LibraryPlaces.NEW_PROJECT_SCREEN );
+        verify(libraryPlaces).goToLibrary();
+        verify(placeManager).closePlace(LibraryPlaces.NEW_PROJECT_SCREEN);
+    }
+
+    @Test
+    public void newProjectIsCreatedIntoSelectedRepository() throws Exception {
+        final Repository repository = mock(Repository.class);
+        when(libraryPlaces.getSelectedRepository()).thenReturn(repository);
+
+        newProjectScreen.createProject("test");
+
+        verify(libraryService).createProject("test",
+                                             repository,
+                                             "baseUrl");
     }
 
     @Test
     public void createProjectSuccessfullyTest() {
-        newProjectScreen.createProject( "projectName" );
+        newProjectScreen.createProject("projectName");
 
-        verify( busyIndicatorView ).showBusyIndicator( anyString() );
-        verify( newProjectEvent ).fire( any( NewProjectEvent.class ) );
-        verify( busyIndicatorView ).hideBusyIndicator();
-        verify( notificationEvent ).fire( any( NotificationEvent.class ) );
-        verify( libraryPlaces ).goToProject( any( ProjectInfo.class ) );
-        verify( placeManager ).closePlace( LibraryPlaces.NEW_PROJECT_SCREEN );
+        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(newProjectEvent).fire(any(NewProjectEvent.class));
+        verify(busyIndicatorView).hideBusyIndicator();
+        verify(notificationEvent).fire(any(NotificationEvent.class));
+        verify(libraryPlaces).goToProject(any(ProjectInfo.class));
+        verify(placeManager).closePlace(LibraryPlaces.NEW_PROJECT_SCREEN);
     }
 
     @Test
     public void createProjectFailedTest() {
-        doThrow( new RuntimeException() ).when( libraryService ).createProject( anyString(),
-                                                                                anyString(),
-                                                                                anyString() );
+        doThrow(new RuntimeException()).when(libraryService).createProject(anyString(),
+                                                                           any(Repository.class),
+                                                                           anyString());
 
-        newProjectScreen.createProject( "projectName" );
+        newProjectScreen.createProject("projectName");
 
-        verify( busyIndicatorView ).showBusyIndicator( anyString() );
-        verify( newProjectEvent, never() ).fire( any( NewProjectEvent.class ) );
-        verify( busyIndicatorView ).hideBusyIndicator();
-        verify( notificationEvent ).fire( any( NotificationEvent.class ) );
-        verify( libraryPlaces, never() ).goToProject( any( ProjectInfo.class ) );
-        verify( placeManager, never() ).closePlace( LibraryPlaces.NEW_PROJECT_SCREEN );
+        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(newProjectEvent,
+               never()).fire(any(NewProjectEvent.class));
+        verify(busyIndicatorView).hideBusyIndicator();
+        verify(notificationEvent).fire(any(NotificationEvent.class));
+        verify(libraryPlaces,
+               never()).goToProject(any(ProjectInfo.class));
+        verify(placeManager,
+               never()).closePlace(LibraryPlaces.NEW_PROJECT_SCREEN);
     }
 }

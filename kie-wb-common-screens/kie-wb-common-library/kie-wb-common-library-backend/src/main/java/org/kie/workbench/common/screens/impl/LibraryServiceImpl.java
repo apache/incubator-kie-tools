@@ -17,7 +17,6 @@
 package org.kie.workbench.common.screens.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -142,11 +141,9 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
-    public KieProject createProject( final String projectName,
-                                     final String selectedOrganizationalUnitIdentifier,
-                                     final String baseURL ) {
-        final OrganizationalUnit selectedOrganizationalUnit = getOrganizationalUnit( selectedOrganizationalUnitIdentifier, getOrganizationalUnits() ).get();
-        final Repository selectedRepository = getDefaultRepository( selectedOrganizationalUnit );
+    public KieProject createProject(final String projectName,
+                                    final Repository selectedRepository,
+                                    final String baseURL) {
         final Path selectedRepositoryRootPath = selectedRepository.getRoot();
         final LibraryPreferences preferences = getPreferences();
 
