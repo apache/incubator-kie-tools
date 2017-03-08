@@ -13,28 +13,44 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
- *  
+ *
  */
 
 package com.ait.lienzo.client.core.shape.wires;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.event.NodeDragMoveEvent;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.MultiPath;
+import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.shape.wires.event.WiresResizeEndEvent;
+import com.ait.lienzo.client.core.shape.wires.handlers.HasDragControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
+import com.ait.lienzo.client.core.util.ScratchPad;
+import com.ait.lienzo.client.widget.DragContext;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
 
 @RunWith(LienzoMockitoTestRunner.class)
 public class WiresManagerTest
@@ -96,6 +112,49 @@ public class WiresManagerTest
         verify(shape, times(1)).addWiresShapeHandler(eq( handlerRegistrationManager ), any(WiresShape.WiresShapeHandler.class));
         verify(layer, times(1)).add(eq(shape.getGroup()));
         verify(handlerRegistrationManager, times(3)).register(any(HandlerRegistration.class));
+    }
+
+    @Test
+    public void testResizeShape()
+    {
+        Viewport viewport = mock(Viewport.class);
+        when(viewport.getOverLayer()).thenReturn(mock(Layer.class));
+        when(layer.getViewport()).thenReturn(viewport);
+        when(layer.getLayer()).thenReturn(layer);
+
+        ScratchPad pad = mock(ScratchPad.class);
+        when(layer.getScratchPad()).thenReturn(pad);
+        when(pad.getWidth()).thenReturn(10);
+        when(pad.getHeight()).thenReturn(10);
+
+        Context2D context2D = mock(Context2D.class);
+        when(pad.getContext()).thenReturn(context2D);
+
+
+        IContainmentAcceptor containmentAcceptor = mock(IContainmentAcceptor.class);
+        tested.setContainmentAcceptor(containmentAcceptor);
+
+        IDockingAcceptor dockingAcceptor = mock(IDockingAcceptor.class);
+        tested.setDockingAcceptor(dockingAcceptor);
+
+        WiresManager spied = spy(tested);
+        HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
+        doReturn(handlerRegistrationManager).when(spied).createHandlerRegistrationManager();
+        WiresShape shape = spy(new WiresShape(new MultiPath().rect(0, 0, 10, 10)));
+
+        Group group = spy(shape.getGroup());
+        when(shape.getGroup()).thenReturn(group);
+        WiresShapeControl shapeControl = spied.register(shape);
+
+        // group.getBoundingBoxAttributes are used for box calculation during shape registration and store calculated values in double primitives
+        verify(group).getBoundingBoxAttributes();
+        shape.getHandlerManager().fireEvent(new WiresResizeEndEvent(shape, new NodeDragMoveEvent(mock(DragContext.class)), 1, 1, 11, 11));
+        // group.getBoundingBoxAttributes are used for box calculation during shape registration AND trigger re-calculation during shape resize
+        verify(group, times(2)).getBoundingBoxAttributes();
+
+        // Not possible to check used values during drag and drop for now. AlignAndDistributeControls stores calculated primitives (numbers with type double) after registration/re-sizing.
+        // But calculations based on AlignAndDistribute#getBoundingBox(group); method  and use plain JSO for calculations, so we will have 0 for any calculations in our's tests.
+        shapeControl.dragStart(mock(HasDragControl.Context.class));
     }
 
     @Test
