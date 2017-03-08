@@ -77,9 +77,9 @@ public class GridWidgetColumnFactoryImplTest extends BaseConverterTest {
     public void setup() {
         super.setup();
         factory = new GridWidgetColumnFactoryImpl();
-        factory.setConverters( getConverters() );
+        factory.setConverters(getConverters());
 
-        when( model.getHitPolicy() ).thenReturn( GuidedDecisionTable52.HitPolicy.NONE );
+        when(model.getHitPolicy()).thenReturn(GuidedDecisionTable52.HitPolicy.NONE);
 
         access = new GuidedDecisionTablePresenter.Access();
     }
@@ -96,9 +96,9 @@ public class GridWidgetColumnFactoryImplTest extends BaseConverterTest {
 
     @Override
     protected GuidedDecisionTableView.Presenter getPresenter() {
-        when( dtPresenter.getModellerPresenter() ).thenReturn( dtModellerPresenter );
-        when( dtModellerPresenter.getView() ).thenReturn( dtModellerView );
-        when( dtModellerView.getGridLayerView() ).thenReturn( gridLayer );
+        when(dtPresenter.getModellerPresenter()).thenReturn(dtModellerPresenter);
+        when(dtModellerPresenter.getView()).thenReturn(dtModellerView);
+        when(dtModellerView.getGridLayerView()).thenReturn(gridLayer);
 
         return dtPresenter;
     }
@@ -107,130 +107,150 @@ public class GridWidgetColumnFactoryImplTest extends BaseConverterTest {
     public void columnResizingListenerSetup_RowNumberColumn() {
         final BaseColumn column = new RowNumberCol52();
 
-        final GridColumn<?> uiColumn = factory.convertColumn( column,
-                                                              access,
-                                                              gridWidget );
+        final GridColumn<?> uiColumn = factory.convertColumn(column,
+                                                             access,
+                                                             gridWidget);
 
-        assertFalse( uiColumn instanceof BaseUiColumn );
+        assertFalse(uiColumn instanceof BaseUiColumn);
     }
 
     @Test
     public void columnResizingListenerSetup_DescriptionColumn() {
         final BaseColumn column = new DescriptionCol52();
 
-        final GridColumn<?> uiColumn = factory.convertColumn( column,
-                                                              access,
-                                                              gridWidget );
+        final GridColumn<?> uiColumn = factory.convertColumn(column,
+                                                             access,
+                                                             gridWidget);
 
-        assertTrue( uiColumn instanceof BaseUiColumn );
+        assertTrue(uiColumn instanceof BaseUiColumn);
 
-        uiColumn.setWidth( 200.0 );
-        assertEquals( 200,
-                      column.getWidth() );
+        uiColumn.setWidth(200.0);
+        assertEquals(200,
+                     column.getWidth());
     }
 
     @Test
     public void columnResizingListenerSetup_MetadataColumn() {
         final MetadataCol52 column = new MetadataCol52();
-        column.setMetadata( "metadata" );
+        column.setMetadata("metadata");
 
-        final GridColumn<?> uiColumn = factory.convertColumn( column,
-                                                              access,
-                                                              gridWidget );
+        final GridColumn<?> uiColumn = factory.convertColumn(column,
+                                                             access,
+                                                             gridWidget);
 
-        assertTrue( uiColumn instanceof BaseUiColumn );
+        assertTrue(uiColumn instanceof BaseUiColumn);
 
-        uiColumn.setWidth( 200.0 );
-        assertEquals( 200,
-                      column.getWidth() );
+        uiColumn.setWidth(200.0);
+        assertEquals(200,
+                     column.getWidth());
     }
 
     @Test
     public void columnResizingListenerSetup_AttributeColumn() {
         final AttributeCol52 column = new AttributeCol52();
-        column.setAttribute( RuleAttributeWidget.SALIENCE_ATTR );
+        column.setAttribute(RuleAttributeWidget.SALIENCE_ATTR);
 
-        final GridColumn<?> uiColumn = factory.convertColumn( column,
-                                                              access,
-                                                              gridWidget );
+        final GridColumn<?> uiColumn = factory.convertColumn(column,
+                                                             access,
+                                                             gridWidget);
 
-        assertTrue( uiColumn instanceof BaseUiColumn );
+        assertTrue(uiColumn instanceof BaseUiColumn);
 
-        uiColumn.setWidth( 200.0 );
-        assertEquals( 200,
-                      column.getWidth() );
+        uiColumn.setWidth(200.0);
+        assertEquals(200,
+                     column.getWidth());
     }
 
     @Test
     public void columnResizingListenerSetup_ConditionColumn() {
-        final Pattern52 pattern = mock( Pattern52.class );
+        final Pattern52 pattern = mock(Pattern52.class);
         final ConditionCol52 column = new ConditionCol52();
-        column.setFactField( "MyField" );
-        column.setHeader( "MyColumn" );
+        column.setFactField("MyField");
+        column.setHeader("MyColumn");
 
-        when( model.getPattern( eq( column ) ) ).thenReturn( pattern );
-        when( pattern.getFactType() ).thenReturn( "MyFact" );
-        when( oracle.getFieldType( "MyFact",
-                                   "MyField" ) ).thenReturn( DataType.TYPE_STRING );
+        when(model.getPattern(eq(column))).thenReturn(pattern);
+        when(pattern.getFactType()).thenReturn("MyFact");
+        when(oracle.getFieldType("MyFact",
+                                 "MyField")).thenReturn(DataType.TYPE_STRING);
 
-        final GridColumn<?> uiColumn = factory.convertColumn( column,
-                                                              access,
-                                                              gridWidget );
+        final GridColumn<?> uiColumn = factory.convertColumn(column,
+                                                             access,
+                                                             gridWidget);
 
-        assertTrue( uiColumn instanceof BaseUiColumn );
+        assertTrue(uiColumn instanceof BaseUiColumn);
 
-        uiColumn.setWidth( 200.0 );
-        assertEquals( 200,
-                      column.getWidth() );
+        uiColumn.setWidth(200.0);
+        assertEquals(200,
+                     column.getWidth());
     }
 
     @Test
     public void columnResizingListenerSetup_ActionSetFieldColumn() {
-        final Pattern52 pattern = mock( Pattern52.class );
+        final Pattern52 pattern = mock(Pattern52.class);
         final ActionSetFieldCol52 column = new ActionSetFieldCol52();
-        column.setFactField( "MyField" );
-        column.setHeader( "MyColumn" );
-        column.setBoundName( "$f" );
+        column.setFactField("MyField");
+        column.setHeader("MyColumn");
+        column.setBoundName("$f");
 
-        when( model.getConditions() ).thenReturn( new ArrayList<CompositeColumn<? extends BaseColumn>>() {{
-            add( pattern );
-        }} );
-        when( pattern.getFactType() ).thenReturn( "MyFact" );
-        when( pattern.getBoundName() ).thenReturn( "$f" );
-        when( pattern.isBound() ).thenReturn( true );
-        when( oracle.getFieldType( "MyFact",
-                                   "MyField" ) ).thenReturn( DataType.TYPE_STRING );
+        when(model.getConditions()).thenReturn(new ArrayList<CompositeColumn<? extends BaseColumn>>() {{
+            add(pattern);
+        }});
+        when(pattern.getFactType()).thenReturn("MyFact");
+        when(pattern.getBoundName()).thenReturn("$f");
+        when(pattern.isBound()).thenReturn(true);
+        when(oracle.getFieldType("MyFact",
+                                 "MyField")).thenReturn(DataType.TYPE_STRING);
 
-        final GridColumn<?> uiColumn = factory.convertColumn( column,
-                                                              access,
-                                                              gridWidget );
+        final GridColumn<?> uiColumn = factory.convertColumn(column,
+                                                             access,
+                                                             gridWidget);
 
-        assertTrue( uiColumn instanceof BaseUiColumn );
+        assertTrue(uiColumn instanceof BaseUiColumn);
 
-        uiColumn.setWidth( 200.0 );
-        assertEquals( 200,
-                      column.getWidth() );
+        uiColumn.setWidth(200.0);
+        assertEquals(200,
+                     column.getWidth());
     }
 
     @Test
     public void columnResizingListenerSetup_ActionInsertFactColumn() {
         final ActionInsertFactCol52 column = new ActionInsertFactCol52();
-        column.setFactType( "MyFact" );
-        column.setFactField( "MyField" );
-        column.setHeader( "MyColumn" );
+        column.setFactType("MyFact");
+        column.setFactField("MyField");
+        column.setHeader("MyColumn");
 
-        when( oracle.getFieldType( "MyFact",
-                                   "MyField" ) ).thenReturn( DataType.TYPE_STRING );
+        when(oracle.getFieldType("MyFact",
+                                 "MyField")).thenReturn(DataType.TYPE_STRING);
 
-        final GridColumn<?> uiColumn = factory.convertColumn( column,
-                                                              access,
-                                                              gridWidget );
+        final GridColumn<?> uiColumn = factory.convertColumn(column,
+                                                             access,
+                                                             gridWidget);
 
-        assertTrue( uiColumn instanceof BaseUiColumn );
+        assertTrue(uiColumn instanceof BaseUiColumn);
 
-        uiColumn.setWidth( 200.0 );
-        assertEquals( 200,
-                      column.getWidth() );
+        uiColumn.setWidth(200.0);
+        assertEquals(200,
+                     column.getWidth());
     }
 
+    @Test
+    public void testHiddenColumn_ConditionColumn() {
+        final Pattern52 pattern = mock(Pattern52.class);
+        final ConditionCol52 column = new ConditionCol52();
+        column.setFactField("MyField");
+        column.setHeader("MyColumn");
+        column.setHideColumn(true);
+
+        when(model.getPattern(eq(column))).thenReturn(pattern);
+        when(pattern.getFactType()).thenReturn("MyFact");
+        when(oracle.getFieldType("MyFact",
+                                 "MyField")).thenReturn(DataType.TYPE_STRING);
+
+        final GridColumn<?> uiColumn = factory.convertColumn(column,
+                                                             access,
+                                                             gridWidget);
+
+        assertEquals(false,
+                     uiColumn.isVisible());
+    }
 }
