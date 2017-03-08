@@ -18,8 +18,10 @@ package org.drools.workbench.screens.globals.client;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.drools.workbench.screens.globals.client.resources.GlobalsEditorResources;
+import org.jboss.errai.ui.shared.api.annotations.Bundle;
 
 @EntryPoint
+@Bundle("resources/i18n/GlobalsEditorConstants.properties")
 public class GlobalsEditorEntryPoint {
 
     @AfterInitialization

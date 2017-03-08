@@ -27,6 +27,7 @@ import org.drools.workbench.screens.globals.model.GlobalsModel;
 import org.drools.workbench.screens.globals.service.GlobalsEditorService;
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
@@ -53,9 +54,12 @@ public class NewGlobalHandler extends DefaultNewResourceHandler {
     @Inject
     private BusyIndicatorView busyIndicatorView;
 
+    @Inject
+    private TranslationService translationService;
+
     @Override
     public String getDescription() {
-        return GlobalsEditorConstants.INSTANCE.newGlobalDescription();
+        return translationService.getTranslation( GlobalsEditorConstants.NewGlobalHandlerNewGlobalDescription );
     }
 
     @Override

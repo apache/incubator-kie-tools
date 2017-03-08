@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss, by Red Hat, Inc
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.screens.globals.backend.server.util.indexing;
+package org.drools.workbench.screens.globals.backend.server.indexing;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.Query;
 import org.drools.workbench.screens.globals.type.GlobalResourceTypeDefinition;
 import org.junit.Test;

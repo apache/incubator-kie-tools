@@ -17,132 +17,110 @@
 package org.drools.workbench.screens.globals.client.editor;
 
 import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Widget;
-import org.drools.workbench.screens.globals.client.resources.i18n.GlobalsEditorConstants;
-import org.gwtbootstrap3.client.ui.FormGroup;
-import org.gwtbootstrap3.client.ui.HelpBlock;
-import org.gwtbootstrap3.client.ui.ListBox;
-import org.gwtbootstrap3.client.ui.ModalBody;
-import org.gwtbootstrap3.client.ui.TextBox;
-import org.gwtbootstrap3.client.ui.constants.ValidationState;
-import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
-import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKCancelButtons;
+import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.mvp.Command;
 
-public class AddGlobalPopup extends BaseModal {
+@Dependent
+public class AddGlobalPopup implements AddGlobalPopupView.Presenter {
 
-    interface AddGlobalPopupBinder
-            extends
-            UiBinder<Widget, AddGlobalPopup> {
+    private AddGlobalPopupView view;
 
+    private Command addCommand;
+
+    private Command cancelCommand;
+
+    @Inject
+    public AddGlobalPopup( final AddGlobalPopupView view ) {
+        this.view = view;
     }
 
-    private static AddGlobalPopupBinder uiBinder = GWT.create( AddGlobalPopupBinder.class );
-
-    @UiField
-    FormGroup aliasGroup;
-
-    @UiField
-    TextBox aliasTextBox;
-
-    @UiField
-    HelpBlock aliasHelpInline;
-
-    @UiField
-    FormGroup classNameGroup;
-
-    @UiField
-    ListBox classNameListBox;
-
-    @UiField
-    HelpBlock classNameHelpInline;
-
-    private Command callbackCommand;
-
-    private final Command okCommand = new Command() {
-        @Override
-        public void execute() {
-            onOKButtonClick();
-        }
-    };
-
-    private final Command cancelCommand = new Command() {
-        @Override
-        public void execute() {
-            hide();
-        }
-    };
-
-    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand,
-                                                                                      cancelCommand );
-
-    public AddGlobalPopup() {
-        setTitle( GlobalsEditorConstants.INSTANCE.addGlobalPopupTitle() );
-
-        add( new ModalBody() {{
-            add( uiBinder.createAndBindUi( AddGlobalPopup.this ) );
-        }} );
-        add( footer );
-
-        aliasTextBox.addKeyPressHandler( new KeyPressHandler() {
-            @Override
-            public void onKeyPress( final KeyPressEvent event ) {
-                aliasGroup.setValidationState( ValidationState.NONE );
-                aliasHelpInline.setText( "" );
-            }
-        } );
-    }
-
-    private void onOKButtonClick() {
-        boolean hasError = false;
-        if ( aliasTextBox.getText() == null || aliasTextBox.getText().trim().isEmpty() ) {
-            aliasGroup.setValidationState( ValidationState.ERROR );
-            aliasHelpInline.setText( GlobalsEditorConstants.INSTANCE.aliasIsMandatory() );
-            hasError = true;
-        } else {
-            aliasGroup.setValidationState( ValidationState.NONE );
-        }
-
-        if ( classNameListBox.getSelectedIndex() < 0 ) {
-            classNameGroup.setValidationState( ValidationState.ERROR );
-            classNameHelpInline.setText( GlobalsEditorConstants.INSTANCE.classNameIsMandatory() );
-            hasError = true;
-        } else {
-            classNameGroup.setValidationState( ValidationState.NONE );
-        }
-
-        if ( hasError ) {
-            return;
-        }
-
-        if ( callbackCommand != null ) {
-            callbackCommand.execute();
-        }
-        hide();
+    @PostConstruct
+    public void init() {
+        view.init( this );
     }
 
     public String getAlias() {
-        return aliasTextBox.getText();
+        return view.getInsertedAlias();
     }
 
     public String getClassName() {
-        return classNameListBox.getSelectedValue();
+        return view.getSelectedClassName();
     }
 
-    public void setContent( final Command callbackCommand,
-                            final List<String> fullyQualifiedClassNames ) {
-        this.callbackCommand = callbackCommand;
-        this.classNameListBox.clear();
-        this.aliasTextBox.setText( "" );
-        for ( String className : fullyQualifiedClassNames ) {
-            classNameListBox.addItem( className );
+    public void show( final Command addCommand,
+                      final Command cancelCommand,
+                      final List<String> fullyQualifiedClassNames ) {
+        this.addCommand = PortablePreconditions.checkNotNull( "addCommand",
+                                                              addCommand );
+        this.cancelCommand = PortablePreconditions.checkNotNull( "cancelCommand",
+                                                                 cancelCommand );
+        PortablePreconditions.checkNotNull( "fullyQualifiedClassNames",
+                                            fullyQualifiedClassNames );
+
+        view.clear();
+        view.setClassNames( fullyQualifiedClassNames );
+        view.show();
+    }
+
+    @Override
+    public void onAliasInputChanged() {
+        checkAliasValidationErrors();
+    }
+
+    @Override
+    public void onClassNameSelectChanged() {
+        checkClassNameValidationErrors();
+    }
+
+    private boolean checkAliasValidationErrors() {
+        if ( aliasValidationErrorsPresent() ) {
+            view.showAliasValidationError();
+            return true;
+        } else {
+            view.hideAliasValidationError();
+        }
+
+        return false;
+    }
+
+    private boolean checkClassNameValidationErrors() {
+        if ( classNameValidationErrorsPresent() ) {
+            view.showClassNameValidationError();
+            return true;
+        } else {
+            view.hideClassNameValidationError();
+        }
+
+        return false;
+    }
+
+    private boolean aliasValidationErrorsPresent() {
+        String aliasValue = getAlias();
+
+        return aliasValue == null || aliasValue.isEmpty();
+    }
+
+    private boolean classNameValidationErrorsPresent() {
+        String classNameValue = getClassName();
+
+        return classNameValue == null || classNameValue.isEmpty();
+    }
+
+    @Override
+    public void onAddButtonClicked() {
+        if ( !checkAliasValidationErrors() && !checkClassNameValidationErrors() ) {
+            addCommand.execute();
+            view.hide();
         }
     }
 
+    @Override
+    public void onCancelButtonClicked() {
+        cancelCommand.execute();
+        view.hide();
+    }
 }

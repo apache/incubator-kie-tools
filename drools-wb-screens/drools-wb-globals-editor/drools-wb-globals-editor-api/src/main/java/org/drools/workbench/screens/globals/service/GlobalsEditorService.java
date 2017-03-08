@@ -46,4 +46,9 @@ public interface GlobalsEditorService
 
     GlobalsEditorContent loadContent( final Path path );
 
+    Path generate( final Path context,
+                   final String fileName,
+                   final GlobalsModel content,
+                   final String comment );
+
 }

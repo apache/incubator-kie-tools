@@ -17,11 +17,11 @@
 package org.drools.workbench.screens.globals.backend.server;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.screens.globals.backend.server.util.GlobalsPersistence;
@@ -30,6 +30,7 @@ import org.drools.workbench.screens.globals.model.GlobalsModel;
 import org.drools.workbench.screens.globals.service.GlobalsEditorService;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.metadata.MetadataBuilder;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.backend.validation.GenericValidator;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOPackageCacheEvent;
@@ -45,7 +46,6 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.service.CopyService;
 import org.uberfire.ext.editor.commons.service.DeleteService;
 import org.uberfire.ext.editor.commons.service.RenameService;
-import org.uberfire.io.IOService;
 import org.uberfire.java.nio.file.FileAlreadyExistsException;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.workbench.events.ResourceOpenedEvent;
@@ -57,8 +57,7 @@ public class GlobalsEditorServiceImpl
         implements GlobalsEditorService {
 
     @Inject
-    @Named("ioStrategy")
-    private IOService ioService;
+    protected CommentedOptionFactory commentedOptionFactory;
 
     @Inject
     private CopyService copyService;
@@ -81,9 +80,6 @@ public class GlobalsEditorServiceImpl
     @Inject
     private GenericValidator genericValidator;
 
-    @Inject
-    private CommentedOptionFactory commentedOptionFactory;
-
     private SafeSessionInfo safeSessionInfo;
 
     public GlobalsEditorServiceImpl() {
@@ -99,6 +95,30 @@ public class GlobalsEditorServiceImpl
                         final String fileName,
                         final GlobalsModel content,
                         final String comment ) {
+        return createInternal( context,
+                               fileName,
+                               content,
+                               comment,
+                               false );
+    }
+
+    @Override
+    public Path generate( Path context,
+                          String fileName,
+                          GlobalsModel content,
+                          String comment ) {
+        return createInternal( context,
+                               fileName,
+                               content,
+                               comment,
+                               true );
+    }
+
+    private Path createInternal( final Path context,
+                                 final String fileName,
+                                 final GlobalsModel content,
+                                 final String comment,
+                                 final boolean generate ) {
         try {
             final Package pkg = projectService.resolvePackage( context );
             final String packageName = ( pkg == null ? null : pkg.getPackageName() );
@@ -111,12 +131,20 @@ public class GlobalsEditorServiceImpl
                 throw new FileAlreadyExistsException( nioPath.toString() );
             }
 
-            ioService.write( nioPath,
-                             GlobalsPersistence.getInstance().marshal( content ),
-                             commentedOptionFactory.makeCommentedOption( comment ) );
+            if ( generate ) {
+                Metadata metadata = MetadataBuilder.newMetadata().withGenerated( true ).build();
+                ioService.write( nioPath,
+                                 GlobalsPersistence.getInstance().marshal( content ),
+                                 metadataService.configAttrs( new HashMap<>(),
+                                                              metadata ),
+                                 commentedOptionFactory.makeCommentedOption( comment ) );
+            } else {
+                ioService.write( nioPath,
+                                 GlobalsPersistence.getInstance().marshal( content ),
+                                 commentedOptionFactory.makeCommentedOption( comment ) );
+            }
 
             return newPath;
-
         } catch ( Exception e ) {
             throw ExceptionUtilities.handleException( e );
         }

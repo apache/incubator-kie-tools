@@ -17,20 +17,14 @@ package org.drools.workbench.screens.globals.client.editor;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.TextHeader;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import org.drools.workbench.screens.globals.client.resources.i18n.GlobalsEditorConstants;
 import org.drools.workbench.screens.globals.model.Global;
@@ -41,47 +35,58 @@ import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.gwt.ButtonCell;
 import org.gwtbootstrap3.client.ui.gwt.CellTable;
-import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
+import org.uberfire.mvp.Command;
 
-/**
- * The Globals Editor View implementation
- */
+@Templated
+@Dependent
 public class GlobalsEditorViewImpl
         extends KieEditorViewImpl
         implements GlobalsEditorView {
 
-    interface GlobalsEditorViewBinder
-            extends
-            UiBinder<Widget, GlobalsEditorViewImpl> {
+    @DataField("generatedLabel")
+    Label generatedLabel;
 
-    }
-
-    private static GlobalsEditorViewBinder uiBinder = GWT.create( GlobalsEditorViewBinder.class );
-
-    @UiField
+    @DataField("addGlobalButton")
     Button addGlobalButton;
 
-    @UiField(provided = true)
-    CellTable<Global> table = new CellTable<Global>();
+    @DataField("globalsTable")
+    CellTable<Global> table = new CellTable<>();
 
-    @Inject
     private AddGlobalPopup addGlobalPopup;
 
-    private List<Global> globals = new ArrayList<Global>();
-    private ListDataProvider<Global> dataProvider = new ListDataProvider<Global>();
+    private TranslationService translationService;
+
+    private ButtonCell deleteGlobalButton;
+
+    private List<Global> globals = new ArrayList<>();
+    private ListDataProvider<Global> dataProvider = new ListDataProvider<>();
     private final Command addGlobalCommand = makeAddGlobalCommand();
 
     private List<String> fullyQualifiedClassNames;
 
-    private boolean isReadOnly = false;
-
     public GlobalsEditorViewImpl() {
-        setup();
-        initWidget( uiBinder.createAndBindUi( this ) );
+    }
 
-        //Disable until content is loaded
-        addGlobalButton.setEnabled(false);
+    @Inject
+    public GlobalsEditorViewImpl( final Label generatedLabel,
+                                  final Button addGlobalButton,
+                                  final AddGlobalPopup addGlobalPopup,
+                                  final TranslationService translationService) {
+        this.generatedLabel = generatedLabel;
+        this.addGlobalButton = addGlobalButton;
+        this.addGlobalPopup = addGlobalPopup;
+        this.translationService = translationService;
+
+        setup();
+
+        // Hide/disable the following until content is loaded
+        generatedLabel.setVisible( false );
+        addGlobalButton.setEnabled( false );
     }
 
     private void setup() {
@@ -89,7 +94,7 @@ public class GlobalsEditorViewImpl
         table.setStriped( true );
         table.setCondensed( true );
         table.setBordered( true );
-        table.setEmptyTableWidget( new Label( GlobalsEditorConstants.INSTANCE.noGlobalsDefined() ) );
+        table.setEmptyTableWidget( new Label( translationService.getTranslation( GlobalsEditorConstants.GlobalsEditorViewImplNoGlobalsDefined ) ) );
 
         //Columns
         final TextColumn<Global> aliasColumn = new TextColumn<Global>() {
@@ -108,66 +113,64 @@ public class GlobalsEditorViewImpl
             }
         };
 
-        final ButtonCell deleteGlobalButton = new ButtonCell( IconType.MINUS, ButtonType.DANGER, ButtonSize.SMALL );
+        deleteGlobalButton = new ButtonCell( IconType.MINUS,
+                                             ButtonType.DANGER,
+                                             ButtonSize.SMALL );
         final Column<Global, String> deleteGlobalColumn = new Column<Global, String>( deleteGlobalButton ) {
             @Override
             public String getValue( final Global global ) {
-                return GlobalsEditorConstants.INSTANCE.remove();
+                return translationService.getTranslation( GlobalsEditorConstants.GlobalsEditorViewImplRemove );
             }
         };
-        deleteGlobalColumn.setFieldUpdater( new FieldUpdater<Global, String>() {
-            public void update( final int index,
-                                final Global global,
-                                final String value ) {
-                if ( isReadOnly ) {
-                    return;
-                }
-                if ( Window.confirm( GlobalsEditorConstants.INSTANCE.promptForRemovalOfGlobal0( global.getAlias() ) ) ) {
-                    dataProvider.getList().remove( index );
-                }
+        deleteGlobalColumn.setFieldUpdater( ( index, global, value ) -> {
+            if ( Window.confirm( translationService.format( GlobalsEditorConstants.GlobalsEditorViewImplPromptForRemovalOfGlobal,
+                                                            global.getAlias() ) ) ) {
+                dataProvider.getList().remove( index );
             }
         } );
 
         table.addColumn( aliasColumn,
-                         new TextHeader( GlobalsEditorConstants.INSTANCE.alias() ) );
+                         new TextHeader( translationService.getTranslation( GlobalsEditorConstants.GlobalsEditorViewImplAlias ) ) );
         table.addColumn( classNameColumn,
-                         new TextHeader( GlobalsEditorConstants.INSTANCE.className() ) );
+                         new TextHeader( translationService.getTranslation( GlobalsEditorConstants.GlobalsEditorViewImplClassName ) ) );
         table.addColumn( deleteGlobalColumn,
-                         GlobalsEditorConstants.INSTANCE.remove() );
+                         translationService.getTranslation( GlobalsEditorConstants.GlobalsEditorViewImplRemove ) );
 
         //Link data
         dataProvider.addDataDisplay( table );
         dataProvider.setList( globals );
+
+        generatedLabel.setText( translationService.getTranslation( GlobalsEditorConstants.GlobalsEditorViewImplAutoGeneratedFile ) );
+        addGlobalButton.setText( translationService.getTranslation( GlobalsEditorConstants.GlobalsEditorViewImplAdd ) );
+        addGlobalButton.setIcon( IconType.PLUS );
     }
 
     @Override
     public void setContent( final List<Global> globals,
                             final List<String> fullyQualifiedClassNames,
-                            final boolean isReadOnly ) {
+                            final boolean isReadOnly,
+                            final boolean isGenerated ) {
         this.globals = globals;
         this.fullyQualifiedClassNames = fullyQualifiedClassNames;
         this.dataProvider.setList( globals );
-        this.addGlobalButton.setEnabled( !isReadOnly );
-        this.isReadOnly = isReadOnly;
+        this.generatedLabel.setVisible( isGenerated );
+        this.addGlobalButton.setEnabled( !isReadOnly && !isGenerated );
+        this.deleteGlobalButton.setEnabled( !isReadOnly && !isGenerated );
     }
 
-    @UiHandler("addGlobalButton")
+    @EventHandler("addGlobalButton")
     public void onClickAddGlobalButton( final ClickEvent event ) {
-        addGlobalPopup.setContent( addGlobalCommand,
-                                   fullyQualifiedClassNames );
-        addGlobalPopup.show();
+        addGlobalPopup.show( addGlobalCommand,
+                             () -> {},
+                             fullyQualifiedClassNames );
     }
 
     private Command makeAddGlobalCommand() {
-        return new Command() {
-
-            @Override
-            public void execute() {
-                final String alias = addGlobalPopup.getAlias();
-                final String className = addGlobalPopup.getClassName();
-                dataProvider.getList().add( new Global( alias,
-                                                        className ) );
-            }
+        return () -> {
+            final String alias = addGlobalPopup.getAlias();
+            final String className = addGlobalPopup.getClassName();
+            dataProvider.getList().add( new Global( alias,
+                                                    className ) );
         };
     }
 }
