@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -300,6 +301,16 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
             // handlers ( f.i. using canvas#removeShape() method ).
             getCanvas().getLayer().removeShape(childShape.getShapeView());
         }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Optional<Element> getElementAt(final double x,
+                                          final double y) {
+        final Optional<Shape> shape = getCanvas().getShapeAt(x,
+                                                             y);
+        return shape.flatMap(s -> Optional.of(GraphUtils.getNode(getGraphExecutionContext(),
+                                                                 s.getUUID())));
     }
 
     protected boolean isCanvasRoot(final String pUUID) {

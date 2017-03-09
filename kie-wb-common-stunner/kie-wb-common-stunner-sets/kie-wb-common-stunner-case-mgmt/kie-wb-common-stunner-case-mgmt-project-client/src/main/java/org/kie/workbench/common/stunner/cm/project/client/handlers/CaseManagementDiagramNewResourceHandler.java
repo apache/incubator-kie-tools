@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.cm.project.client.type.CaseManagementDia
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.project.client.handlers.AbstractProjectDiagramNewResourceHandler;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 
 @ApplicationScoped
 public class CaseManagementDiagramNewResourceHandler extends AbstractProjectDiagramNewResourceHandler<CaseManagementDiagramResourceType> {
@@ -33,15 +34,18 @@ public class CaseManagementDiagramNewResourceHandler extends AbstractProjectDiag
     protected CaseManagementDiagramNewResourceHandler() {
         this(null,
              null,
+             null,
              null);
     }
 
     @Inject
     public CaseManagementDiagramNewResourceHandler(final DefinitionManager definitionManager,
                                                    final ClientProjectDiagramService projectDiagramServices,
+                                                   final BusyIndicatorView indicatorView,
                                                    final CaseManagementDiagramResourceType projectDiagramResourceType) {
         super(definitionManager,
               projectDiagramServices,
+              indicatorView,
               projectDiagramResourceType);
     }
 

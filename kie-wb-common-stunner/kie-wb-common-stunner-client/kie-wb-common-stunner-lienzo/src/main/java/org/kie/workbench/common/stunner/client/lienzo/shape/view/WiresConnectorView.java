@@ -74,7 +74,8 @@ public class WiresConnectorView<T> extends WiresConnector
     @SuppressWarnings("unchecked")
     public T setUUID(final String uuid) {
         this.uuid = uuid;
-        this.getGroup().setUserData(UUID_PREFIX + uuid);
+        WiresUtils.assertShapeUUID(this.getGroup(),
+                                   uuid);
         return (T) this;
     }
 

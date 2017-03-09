@@ -48,5 +48,4 @@ public class LienzoToolboxCommandFactory extends ToolboxCommandFactory {
         c.setIcon(SVGUtils.createSVGIcon(SVGUtils.getTrashIcon()));
         return c;
     }
-
 }

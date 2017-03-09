@@ -108,7 +108,7 @@ public class CanvasFactoryImpl implements CanvasFactory<AbstractCanvas, Abstract
                              final ManagedInstance<SelectionControl> selectionControls,
                              final ManagedInstance<DragControl> dragControls,
                              final ManagedInstance<ToolboxControl> toolboxControls,
-                             final @Observer ManagedInstance<ElementBuilderControl> elementBuilderControls,
+                             final @Default @Observer ManagedInstance<ElementBuilderControl> elementBuilderControls,
                              final ManagedInstance<NodeBuilderControl> nodeBuilderControls,
                              final ManagedInstance<EdgeBuilderControl> edgeBuilderControls,
                              final ManagedInstance<ZoomControl> zoomControls,

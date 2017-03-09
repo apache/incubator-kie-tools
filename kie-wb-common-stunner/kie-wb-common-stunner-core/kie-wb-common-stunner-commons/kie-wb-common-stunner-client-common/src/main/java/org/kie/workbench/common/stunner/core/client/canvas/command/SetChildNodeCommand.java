@@ -23,8 +23,8 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public class SetChildNodeCommand extends AbstractCanvasGraphCommand {
 
-    private final Node parent;
-    private final Node candidate;
+    protected final Node parent;
+    protected final Node candidate;
 
     public SetChildNodeCommand(final Node parent,
                                final Node candidate) {

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -254,6 +256,36 @@ public class BaseCanvasHandlerTest {
                            candidate);
         verify(layer,
                times(1)).removeShape(eq(shapeView));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void getElementAtWhenCanvasHasShapeAtPosition() {
+        final Optional<Shape> oShape = Optional.of(mock(Shape.class));
+        final Index index = mock(Index.class);
+        final Node n = mock(Node.class);
+        when(canvas.getShapeAt(anyDouble(),
+                               anyDouble())).thenReturn(oShape);
+        when(commandExecutionContext.getGraphIndex()).thenReturn(index);
+        when(index.getNode(anyString())).thenReturn(n);
+
+        final Optional<Element> oElement = tested.getElementAt(0.0,
+                                                               0.0);
+        assertTrue(oElement.isPresent());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void getElementAtWhenCanvasDoesNotHaveShapeAtPosition() {
+        final Optional<Shape> oShape = Optional.empty();
+        final Index index = mock(Index.class);
+        when(canvas.getShapeAt(anyDouble(),
+                               anyDouble())).thenReturn(oShape);
+        when(commandExecutionContext.getGraphIndex()).thenReturn(index);
+
+        final Optional<Element> oElement = tested.getElementAt(0.0,
+                                                               0.0);
+        assertFalse(oElement.isPresent());
     }
 
     @Test

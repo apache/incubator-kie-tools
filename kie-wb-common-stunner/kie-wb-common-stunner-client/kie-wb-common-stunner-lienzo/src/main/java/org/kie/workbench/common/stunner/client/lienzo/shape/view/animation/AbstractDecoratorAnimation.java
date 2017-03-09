@@ -42,7 +42,6 @@ public abstract class AbstractDecoratorAnimation<S extends Shape> extends Abstra
         this.strokeAlpha = strokeAlpha;
     }
 
-
     @Override
     public void run() {
         getDecorator().animate(

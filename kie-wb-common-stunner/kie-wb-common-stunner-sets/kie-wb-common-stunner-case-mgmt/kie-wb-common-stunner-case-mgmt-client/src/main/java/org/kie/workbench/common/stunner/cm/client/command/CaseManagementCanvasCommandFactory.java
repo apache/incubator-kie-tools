@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.cm.client.command;
 
+import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -40,25 +41,54 @@ public class CaseManagementCanvasCommandFactory extends CanvasCommandFactory {
     }
 
     @Override
-    public DrawCanvasCommand draw() {
-        return new DrawCanvasCommand();
+    public CaseManagementDrawCommand draw() {
+        return new CaseManagementDrawCommand();
     }
 
     @Override
-    public AddChildNodeCommand addChildNode(final Node parent,
-                                            final Node candidate,
-                                            final String shapeSetId) {
-        return new AddChildNodeCommand(parent,
-                                       candidate,
-                                       shapeSetId);
+    public CaseManagementAddChildCommand addChildNode(final Node parent,
+                                                      final Node child,
+                                                      final String shapeSetId) {
+        return new CaseManagementAddChildCommand(parent,
+                                                 child,
+                                                 shapeSetId);
     }
 
     @Override
-    public UpdateElementPositionCommand updatePosition(final Node<View<?>, Edge> element,
-                                                       final Double x,
-                                                       final Double y) {
-        return new UpdateElementPositionCommand(element,
-                                                x,
-                                                y);
+    public CaseManagementSetChildCommand setChildNode(final Node parent,
+                                                      final Node child) {
+        return new CaseManagementSetChildCommand(parent,
+                                                 child);
+    }
+
+    public CaseManagementSetChildCommand setChildNode(final Node parent,
+                                                      final Node child,
+                                                      final Optional<Integer> index,
+                                                      final Optional<Node> originalParent,
+                                                      final Optional<Integer> originalIndex) {
+        return new CaseManagementSetChildCommand(parent,
+                                                 child,
+                                                 index,
+                                                 originalParent,
+                                                 originalIndex);
+    }
+
+    @Override
+    public CaseManagementRemoveChildCommand removeChild(final Node parent,
+                                                        final Node candidate) {
+        return new CaseManagementRemoveChildCommand(parent,
+                                                    candidate);
+    }
+
+    @Override
+    //This command is used to update a Node location following 'Drag', 'Resize' or 'Add from Palette' operations
+    //Case Management does not update the location of any Nodes, preserving the layout information that may have
+    //been set using the full BPMN2 editor. This command equates to a NOP for Case Management.
+    public CaseManagementUpdatePositionCommand updatePosition(final Node<View<?>, Edge> element,
+                                                              final Double x,
+                                                              final Double y) {
+        return new CaseManagementUpdatePositionCommand(element,
+                                                       x,
+                                                       y);
     }
 }

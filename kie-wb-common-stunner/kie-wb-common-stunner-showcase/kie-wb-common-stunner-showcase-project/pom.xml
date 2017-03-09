@@ -42,6 +42,12 @@
       <groupId>org.jboss.errai</groupId>
       <artifactId>errai-cdi-jboss</artifactId>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>ant</groupId>
+          <artifactId>ant</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!--Specs & Others. -->
@@ -90,6 +96,12 @@
     <dependency>
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-metadata-backend-lucene</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>jakarta-regexp</groupId>
+          <artifactId>jakarta-regexp</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>

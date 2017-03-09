@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
@@ -42,8 +43,9 @@ import org.kie.workbench.common.stunner.core.rule.model.ModelContainmentRuleMana
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
-@Dependent
+@Default
 @Observer
+@Dependent
 public class ObserverBuilderControl extends AbstractElementBuilderControl
         implements ElementBuilderControl<AbstractCanvasHandler> {
 

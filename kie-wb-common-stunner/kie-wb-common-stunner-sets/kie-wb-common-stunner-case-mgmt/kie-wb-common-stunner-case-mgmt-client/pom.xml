@@ -88,6 +88,16 @@
       <artifactId>kie-wb-common-stunner-case-mgmt-api</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-bpmn-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-bpmn-client</artifactId>
+    </dependency>
+
     <!-- GWT and GWT Extensions -->
     <dependency>
       <groupId>com.google.gwt</groupId>
@@ -176,6 +186,12 @@
     <dependency>
       <groupId>com.google.gwt.gwtmockito</groupId>
       <artifactId>gwtmockito</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.ahome-it</groupId>
+      <artifactId>lienzo-tests</artifactId>
       <scope>test</scope>
     </dependency>
 

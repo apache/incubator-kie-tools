@@ -70,6 +70,13 @@ public class ContainmentRuleGenerator extends AbstractGenerator {
                 break;
             }
         }
+
+        processingContext.getContainmentRuleElementsProcessed().add(element);
+
+        if (roles == null) {
+            return null;
+        }
+
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("ruleId",
                  ruleId);

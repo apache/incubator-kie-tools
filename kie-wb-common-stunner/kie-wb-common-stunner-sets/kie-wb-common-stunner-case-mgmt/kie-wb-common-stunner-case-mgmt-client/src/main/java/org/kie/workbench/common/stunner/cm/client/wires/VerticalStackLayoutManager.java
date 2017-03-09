@@ -24,8 +24,8 @@ import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
 public class VerticalStackLayoutManager extends AbstractNestedLayoutHandler {
 
-    private static final double PADDING_X = 0.0;
-    private static final double PADDING_Y = 15.0;
+    static final double PADDING_X = 0.0;
+    static final double PADDING_Y = 15.0;
 
     @Override
     protected void orderChildren(final WiresShape shape,
@@ -51,9 +51,9 @@ public class VerticalStackLayoutManager extends AbstractNestedLayoutHandler {
 
         final int currentIndex = container.getChildShapes().toList().indexOf(shape);
         if (currentIndex != targetIndex) {
-            if (container instanceof AbstractCaseModellerShape) {
-                ((AbstractCaseModellerShape) container).addShape(shape,
-                                                                 targetIndex);
+            if (container instanceof AbstractCaseManagementShape) {
+                ((AbstractCaseManagementShape) container).addShape(shape,
+                                                                   targetIndex);
             }
         }
     }

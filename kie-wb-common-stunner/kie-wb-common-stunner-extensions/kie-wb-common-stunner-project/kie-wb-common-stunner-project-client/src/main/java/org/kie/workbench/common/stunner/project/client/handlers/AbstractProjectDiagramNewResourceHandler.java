@@ -29,7 +29,7 @@ import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
-import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
@@ -41,13 +41,16 @@ public abstract class AbstractProjectDiagramNewResourceHandler<R extends ClientR
 
     private final DefinitionManager definitionManager;
     private final ClientProjectDiagramService projectDiagramServices;
+    private final BusyIndicatorView indicatorView;
     private final R projectDiagramResourceType;
 
     public AbstractProjectDiagramNewResourceHandler(final DefinitionManager definitionManager,
                                                     final ClientProjectDiagramService projectDiagramServices,
+                                                    final BusyIndicatorView indicatorView,
                                                     final R projectDiagramResourceType) {
         this.definitionManager = definitionManager;
         this.projectDiagramServices = projectDiagramServices;
+        this.indicatorView = indicatorView;
         this.projectDiagramResourceType = projectDiagramResourceType;
     }
 
@@ -64,7 +67,7 @@ public abstract class AbstractProjectDiagramNewResourceHandler<R extends ClientR
     public void create(final Package pkg,
                        final String name,
                        final NewResourcePresenter presenter) {
-        BusyPopup.showMessage("Loading...");
+        indicatorView.showBusyIndicator("Loading...");
         final Path path = pkg.getPackageMainResourcesPath();
         final Class<?> type = getDefinitionSetType();
         final String setId = getId(type);
@@ -78,10 +81,10 @@ public abstract class AbstractProjectDiagramNewResourceHandler<R extends ClientR
                                       new ServiceCallback<Path>() {
                                           @Override
                                           public void onSuccess(final Path path) {
-                                              BusyPopup.close();
+                                              indicatorView.hideBusyIndicator();
                                               presenter.complete();
                                               notifySuccess();
-                                              newResourceSuccessEvent.fire( new NewResourceSuccessEvent( path ) );
+                                              newResourceSuccessEvent.fire(new NewResourceSuccessEvent(path));
                                               PlaceRequest place = new PathPlaceRequest(path,
                                                                                         getEditorIdentifier());
                                               placeManager.goTo(place);
@@ -104,7 +107,7 @@ public abstract class AbstractProjectDiagramNewResourceHandler<R extends ClientR
         log(Level.SEVERE,
             msg);
         ErrorPopup.showMessage(msg);
-        BusyPopup.close();
+        indicatorView.hideBusyIndicator();
     }
 
     private void log(final Level level,

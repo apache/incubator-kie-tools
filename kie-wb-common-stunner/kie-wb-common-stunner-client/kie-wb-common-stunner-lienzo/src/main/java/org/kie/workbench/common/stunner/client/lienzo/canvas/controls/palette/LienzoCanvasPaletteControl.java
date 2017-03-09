@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.client.lienzo.canvas.controls.palette;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
@@ -48,7 +49,7 @@ public class LienzoCanvasPaletteControl extends AbstractCanvasPaletteControl {
 
     @Inject
     public LienzoCanvasPaletteControl(final LienzoDefinitionSetPaletteFactory paletteFactory,
-                                      final @Element ElementBuilderControl<AbstractCanvasHandler> elementBuilderControl,
+                                      final @Element @Default ElementBuilderControl<AbstractCanvasHandler> elementBuilderControl,
                                       final ClientFactoryService factoryServices,
                                       final ShapeManager shapeManager,
                                       final Event<CanvasElementSelectedEvent> elementSelectedEvent) {

@@ -27,13 +27,13 @@ import com.ait.lienzo.client.core.types.Point2D;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.controls.AbstractContainmentBasedControl;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
+import org.kie.workbench.common.stunner.cm.client.command.CaseManagementCanvasCommandFactory;
+import org.kie.workbench.common.stunner.cm.client.wires.CaseManagementContainmentStateHolder;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
@@ -43,11 +43,16 @@ import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 public class CaseManagementContainmentAcceptorControlImpl extends AbstractContainmentBasedControl
         implements ContainmentAcceptorControl<AbstractCanvasHandler> {
 
-    private CanvasCommandFactory canvasCommandFactory;
+    private final IContainmentAcceptor CONTAINMENT_ACCEPTOR = new CanvasManagementContainmentAcceptor();
+
+    private final CaseManagementCanvasCommandFactory canvasCommandFactory;
+    private final CaseManagementContainmentStateHolder state;
 
     @Inject
-    public CaseManagementContainmentAcceptorControlImpl(final @CaseManagementEditor CanvasCommandFactory canvasCommandFactory) {
+    public CaseManagementContainmentAcceptorControlImpl(final @CaseManagementEditor CaseManagementCanvasCommandFactory canvasCommandFactory,
+                                                        final CaseManagementContainmentStateHolder state) {
         this.canvasCommandFactory = canvasCommandFactory;
+        this.state = state;
     }
 
     @Override
@@ -72,6 +77,18 @@ public class CaseManagementContainmentAcceptorControlImpl extends AbstractContai
                                                  child);
     }
 
+    protected Command<AbstractCanvasHandler, CanvasViolation> getSetEdgeCommand(final Node parent,
+                                                                                final Node child,
+                                                                                final Optional<Integer> index,
+                                                                                final Optional<Node> originalParent,
+                                                                                final Optional<Integer> originalIndex) {
+        return canvasCommandFactory.setChildNode(parent,
+                                                 child,
+                                                 index,
+                                                 originalParent,
+                                                 originalIndex);
+    }
+
     @Override
     protected Command<AbstractCanvasHandler, CanvasViolation> getDeleteEdgeCommand(final Node parent,
                                                                                    final Node child) {
@@ -79,15 +96,8 @@ public class CaseManagementContainmentAcceptorControlImpl extends AbstractContai
                                                 child);
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public boolean accept(final Node parent,
-                          final Node child) {
-        //The assumption is that if "allowed" passed then "accept" has already been validated
-        return true;
-    }
+    class CanvasManagementContainmentAcceptor implements IContainmentAcceptor {
 
-    private final IContainmentAcceptor CONTAINMENT_ACCEPTOR = new IContainmentAcceptor() {
         @Override
         public boolean containmentAllowed(final WiresContainer wiresContainer,
                                           final WiresShape wiresShape) {
@@ -106,108 +116,98 @@ public class CaseManagementContainmentAcceptorControlImpl extends AbstractContai
         @Override
         public boolean acceptContainment(final WiresContainer wiresContainer,
                                          final WiresShape wiresShape) {
+            // Check containment is allowed. This (almost) replicates AbstractContainmentBasedControl.accept()
+            // that has the additional check whether a Child can be removed from a Container; but for Case Management
+            // that is not a concern.
+            final boolean isAccept = containmentAllowed(wiresContainer,
+                                                        wiresShape);
 
             // We have some interesting fun here; "accept" is called before the child WiresShape has been
             // added to the parent WiresShape or in the correct position (index) as determined by the parent's
             // ILayoutHandler. We therefore delay execution of the Command to mutate the Graph until the
             // WiresContainer has completed positioning the child.
-            wiresContainer.setLayoutHandler(new InterceptingLayoutHandler(wiresContainer,
-                                                                          makeGraphMutationCommand(wiresContainer,
-                                                                                                   wiresShape)));
-
-            return true;
-        }
-    };
-
-    protected Optional<Command<AbstractCanvasHandler, CanvasViolation>> makeGraphMutationCommand(final WiresContainer wiresContainer,
-                                                                                                 final WiresShape wiresShape) {
-        final Node childNode = WiresUtils.getNode(getCanvasHandler(),
-                                                  wiresShape);
-        final Node parentNode = WiresUtils.getNode(getCanvasHandler(),
-                                                   wiresContainer);
-
-        if (parentNode == null && childNode == null) {
-            return Optional.empty();
-        }
-        final Edge childEdge = getTheEdge(childNode);
-        final boolean isSameParent = isSameParent(parentNode,
-                                                  childEdge);
-        final CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation> builder = new CompositeCommandImpl
-                .CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
-                .reverse();
-
-        if (isSameParent) {
-            //TODO {manstis}
-            //Given [A->B->C]
-            // - A moves after C
-            //    - need to delete A->B
-            //    - need to add C->A
-
-        } else {
-            //TODO {manstis}
-            //Given [A->B->C] and [D]
-            // - B moves after D
-            //    - need to delete A->B and B->C
-            //    - need to add A->C
-            //    - need to add D->B
-
-            // Remove current relationship.
-            if (null != childEdge && null != childEdge.getSourceNode()) {
-                builder.addCommand(getDeleteEdgeCommand(childEdge.getSourceNode(),
-                                                        childNode));
+            if (isAccept) {
+                wiresContainer.setLayoutHandler(new InterceptingLayoutHandler(wiresContainer));
             }
-            // Add a new relationship.
-            builder.addCommand(getAddEdgeCommand(parentNode,
-                                                 childNode));
+            return isAccept;
         }
-
-        return Optional.of(builder.build());
     }
 
-    private class InterceptingLayoutHandler implements ILayoutHandler {
+    class InterceptingLayoutHandler implements ILayoutHandler {
 
         private final WiresContainer container;
         private final ILayoutHandler layout;
-        private final Optional<Command<AbstractCanvasHandler, CanvasViolation>> optCommand;
 
-        private InterceptingLayoutHandler(final WiresContainer container,
-                                          final Optional<Command<AbstractCanvasHandler, CanvasViolation>> optCommand) {
+        private InterceptingLayoutHandler(final WiresContainer container) {
             this.container = container;
             this.layout = container.getLayoutHandler();
-            this.optCommand = optCommand;
         }
 
         @Override
         public void add(final WiresShape shape,
                         final WiresContainer container,
                         final Point2D mouseRelativeLoc) {
-            this.layout.add(shape,
-                            container,
-                            mouseRelativeLoc);
+            try {
+
+                this.layout.add(shape,
+                                container,
+                                mouseRelativeLoc);
+
+                final WiresContainer newContainer = shape.getParent();
+                final Optional<Integer> newIndex = Optional.of(newContainer.getChildShapes().toList().indexOf(shape));
+                final Optional<WiresContainer> originalContainer = state.getOriginalParent();
+                final Optional<Integer> originalIndex = state.getOriginalIndex();
+
+                getCommandManager().execute(getCanvasHandler(),
+                                            makeAddMutationCommand(shape,
+                                                                   newContainer,
+                                                                   newIndex,
+                                                                   originalContainer,
+                                                                   originalIndex));
+            } finally {
+                this.container.setLayoutHandler(layout);
+            }
         }
 
         @Override
         public void remove(final WiresShape shape,
                            final WiresContainer container) {
-            this.layout.remove(shape,
-                               container);
+            try {
+                this.layout.remove(shape,
+                                   container);
+            } finally {
+                this.container.setLayoutHandler(layout);
+            }
+        }
+
+        protected Command<AbstractCanvasHandler, CanvasViolation> makeAddMutationCommand(final WiresShape shape,
+                                                                                         final WiresContainer container,
+                                                                                         final Optional<Integer> index,
+                                                                                         final Optional<WiresContainer> originalContainer,
+                                                                                         final Optional<Integer> originalIndex) {
+            final Node parent = WiresUtils.getNode(getCanvasHandler(),
+                                                   container);
+            final Node child = WiresUtils.getNode(getCanvasHandler(),
+                                                  shape);
+            final Optional<Node> originalParent = originalContainer.flatMap((c) -> Optional.ofNullable(WiresUtils.getNode(getCanvasHandler(),
+                                                                                                                          c)));
+
+            // Set relationship.
+            return getSetEdgeCommand(parent,
+                                     child,
+                                     index,
+                                     originalParent,
+                                     originalIndex);
         }
 
         @Override
         public void requestLayout(final WiresContainer container) {
             this.layout.requestLayout(container);
-            this.container.setLayoutHandler(layout);
-            executeCommand();
         }
 
         @Override
         public void layout(final WiresContainer container) {
             this.layout.layout(container);
-        }
-
-        private void executeCommand() {
-            this.optCommand.ifPresent(cmd -> getCommandManager().execute(getCanvasHandler(),
-                                                                         cmd));
         }
     }
 }

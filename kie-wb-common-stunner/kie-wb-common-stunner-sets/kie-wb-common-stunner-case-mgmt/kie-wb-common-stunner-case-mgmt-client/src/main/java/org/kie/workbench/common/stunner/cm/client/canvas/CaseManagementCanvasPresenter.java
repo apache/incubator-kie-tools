@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.cm.client.canvas;
 
+import java.util.logging.Level;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -25,12 +26,14 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.widgets.canvas.view.LienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.canvas.wires.WiresCanvasPresenter;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
+import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasDrawnEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeAddedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
 
 @Dependent
 @CaseManagementEditor
@@ -64,5 +67,19 @@ public class CaseManagementCanvasPresenter extends WiresCanvasPresenter {
               layer,
               view,
               lienzoPanel);
+    }
+
+    @SuppressWarnings("unchecked")
+    public Canvas addChildShape(final Shape parent,
+                                final Shape child,
+                                final int index) {
+        final CaseManagementCanvasView caseManagementCanvasView = (CaseManagementCanvasView) view;
+        caseManagementCanvasView.addChildShape(parent.getShapeView(),
+                                               child.getShapeView(),
+                                               index);
+
+        log(Level.FINE,
+            "Adding child [" + child.getUUID() + "] into parent [" + parent.getUUID() + "]");
+        return this;
     }
 }

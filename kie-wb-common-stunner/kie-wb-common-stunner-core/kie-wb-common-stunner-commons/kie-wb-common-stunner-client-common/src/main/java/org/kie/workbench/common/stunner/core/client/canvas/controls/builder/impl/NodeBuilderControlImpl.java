@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.imp
 
 import java.util.List;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
@@ -67,7 +68,7 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
     public NodeBuilderControlImpl(final ClientDefinitionManager clientDefinitionManager,
                                   final ShapeManager shapeManager,
                                   final CanvasCommandFactory commandFactory,
-                                  final @Element AbstractElementBuilderControl elementBuilderControl,
+                                  final @Default @Element AbstractElementBuilderControl elementBuilderControl,
                                   final EdgeMagnetsHelper magnetsHelper) {
         this.clientDefinitionManager = clientDefinitionManager;
         this.shapeManager = shapeManager;

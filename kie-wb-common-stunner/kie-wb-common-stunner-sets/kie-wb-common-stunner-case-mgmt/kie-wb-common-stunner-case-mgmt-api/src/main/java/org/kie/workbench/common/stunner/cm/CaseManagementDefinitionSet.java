@@ -19,13 +19,20 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.stunner.cm.definition.CaseManagementAdhocSubprocess;
-import org.kie.workbench.common.stunner.cm.definition.CaseManagementBusinessRuleTask;
-import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
-import org.kie.workbench.common.stunner.cm.definition.CaseManagementNoneTask;
-import org.kie.workbench.common.stunner.cm.definition.CaseManagementReusableSubprocess;
-import org.kie.workbench.common.stunner.cm.definition.CaseManagementScriptTask;
-import org.kie.workbench.common.stunner.cm.definition.CaseManagementUserTask;
+import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
+import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.Lane;
+import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
+import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
+import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
+import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.cm.factory.CaseManagementGraphFactory;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet;
@@ -41,13 +48,21 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
         graphFactory = CaseManagementGraphFactory.class,
         qualifier = CaseManagementEditor.class,
         definitions = {
-                CaseManagementDiagram.class,
-                CaseManagementAdhocSubprocess.class,
-                CaseManagementReusableSubprocess.class,
-                CaseManagementNoneTask.class,
-                CaseManagementBusinessRuleTask.class,
-                CaseManagementScriptTask.class,
-                CaseManagementUserTask.class
+                BPMNDiagram.class,
+                Lane.class,
+                NoneTask.class,
+                UserTask.class,
+                ScriptTask.class,
+                BusinessRuleTask.class,
+                StartNoneEvent.class,
+                EndNoneEvent.class,
+                EndTerminateEvent.class,
+                // TODO: Removed for M1 ( no form properties available for it yet ) - IntermediateTimerEvent.class,
+                ParallelGateway.class,
+                ExclusiveDatabasedGateway.class,
+                AdHocSubprocess.class,
+                ReusableSubprocess.class,
+                SequenceFlow.class
         },
         builder = CaseManagementDefinitionSet.CaseManagementDefinitionSetBuilder.class
 )

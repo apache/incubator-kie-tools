@@ -166,6 +166,24 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-testing-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.ahome-it</groupId>
+      <artifactId>lienzo-tests</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>apache-jsp</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
 </project>

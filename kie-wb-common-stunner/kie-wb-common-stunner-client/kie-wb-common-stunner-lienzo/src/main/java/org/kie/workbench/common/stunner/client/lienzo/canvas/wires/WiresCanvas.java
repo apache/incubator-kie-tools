@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.wires;
 
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.event.Event;
@@ -28,6 +29,8 @@ import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.widget.LienzoPanel;
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.client.lienzo.Lienzo;
+import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
+import org.kie.workbench.common.stunner.client.lienzo.util.LienzoLayerUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEvent;
@@ -35,6 +38,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasDrawnEven
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeAddedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
+import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.lienzo.wires.handlers.impl.WiresControlFactoryImpl;
 
 /**
@@ -82,8 +86,22 @@ public abstract class WiresCanvas extends AbstractCanvas<WiresCanvas.View> {
         return view.getWiresManager();
     }
 
-    private void log(final Level level,
-                     final String message) {
+    @Override
+    public Optional<Shape> getShapeAt(double x,
+                                      double y) {
+        if (x > -1 && y > -1) {
+            //Layer is guaranteed to be LienzoLayer. Look at the constructor injection.
+            final LienzoLayer lienzoLayer = (LienzoLayer) getLayer();
+            final String uuid = LienzoLayerUtils.getUUID_At(lienzoLayer,
+                                                            x,
+                                                            y);
+            return Optional.ofNullable(getShape(uuid));
+        }
+        return Optional.empty();
+    }
+
+    protected void log(final Level level,
+                       final String message) {
         if (LogConfiguration.loggingIsEnabled()) {
             LOGGER.log(level,
                        message);

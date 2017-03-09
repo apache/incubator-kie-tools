@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.processors;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -41,6 +42,8 @@ public class ProcessingContext {
     private final Set<Element> propertyElements = new LinkedHashSet<>();
     private final Map<PropertyMetaTypes, String> metaPropertyTypes = new LinkedHashMap<>();
     private final ProcessingMorphingAnnotations morphingAnnotations = new ProcessingMorphingAnnotations();
+    private final Set<Element> containmentRuleElementsProcessed = new HashSet<>();
+    private final Set<Element> dockingRuleElementsProcessed = new HashSet<>();
 
     public synchronized static ProcessingContext getInstance() {
         if (null == context) {
@@ -111,5 +114,13 @@ public class ProcessingContext {
 
     public Set<Element> getPropertyElements() {
         return propertyElements;
+    }
+
+    public Set<Element> getContainmentRuleElementsProcessed() {
+        return containmentRuleElementsProcessed;
+    }
+
+    public Set<Element> getDockingRuleElementsProcessed() {
+        return dockingRuleElementsProcessed;
     }
 }

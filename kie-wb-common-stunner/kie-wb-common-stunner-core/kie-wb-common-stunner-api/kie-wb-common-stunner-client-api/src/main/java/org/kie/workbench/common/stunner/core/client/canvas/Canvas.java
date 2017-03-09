@@ -17,12 +17,13 @@
 package org.kie.workbench.common.stunner.core.client.canvas;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 
 /**
  * A canvas type for displaying shapes.
- * <p>
+ * <p/>
  * This default Canvas type provides methods for managing shapes using a single Layer for the diagram's representation.
  * Implementations could provide a multi-layer solution, but most of the Stunner's components and beans consider
  * a single layer approach.
@@ -60,6 +61,15 @@ public interface Canvas<S extends Shape> {
      * Delete a Shape from the Canvas. Implementations may prompt the User for confirmation.
      */
     Canvas deleteShape(final S shape);
+
+    /**
+     * Gets the Shape at the specified Canvas coordinates
+     * @param x The X canvas coordinate
+     * @param y The Y canvas coordinate
+     * @return Element at the coordinate
+     */
+    Optional<S> getShapeAt(final double x,
+                           final double y);
 
     /**
      * Clears the canvas.

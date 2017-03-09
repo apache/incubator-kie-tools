@@ -27,8 +27,8 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
  */
 public class RemoveChildCommand extends AbstractCanvasGraphCommand {
 
-    private final Node parent;
-    private final Node child;
+    protected final Node parent;
+    protected final Node child;
 
     public RemoveChildCommand(final Node parent,
                               final Node child) {

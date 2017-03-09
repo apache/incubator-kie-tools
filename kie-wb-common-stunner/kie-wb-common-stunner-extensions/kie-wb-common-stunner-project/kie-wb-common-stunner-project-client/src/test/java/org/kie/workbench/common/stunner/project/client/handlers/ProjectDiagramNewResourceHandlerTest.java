@@ -31,6 +31,7 @@ import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -47,6 +48,8 @@ public class ProjectDiagramNewResourceHandlerTest {
     DefinitionManager definitionManager;
     @Mock
     ClientProjectDiagramService projectDiagramServices;
+    @Mock
+    BusyIndicatorView indicatorView;
     @Mock
     ClientResourceType projectDiagramResourceType;
     @Mock
@@ -85,6 +88,7 @@ public class ProjectDiagramNewResourceHandlerTest {
         when(projectDiagramResourceType.getPrefix()).thenReturn("");
         this.tested = new ProjectDiagramNewResourceHandlerStub(definitionManager,
                                                                projectDiagramServices,
+                                                               indicatorView,
                                                                projectDiagramResourceType);
     }
 
@@ -111,9 +115,11 @@ public class ProjectDiagramNewResourceHandlerTest {
 
         public ProjectDiagramNewResourceHandlerStub(DefinitionManager definitionManager,
                                                     ClientProjectDiagramService projectDiagramServices,
+                                                    BusyIndicatorView indicatorView,
                                                     ClientResourceType projectDiagramResourceType) {
             super(definitionManager,
                   projectDiagramServices,
+                  indicatorView,
                   projectDiagramResourceType);
         }
 

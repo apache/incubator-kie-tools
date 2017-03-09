@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 @ApplicationScoped
 public class CaseManagementBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactory {
 
-    private final static Map<String, IconResource> CATEGORY_RERNDERERS_SETTINGS = new HashMap<String, IconResource>() {{
+    private final static Map<String, IconResource> CATEGORY_RENDERERS_SETTINGS = new HashMap<String, IconResource>() {{
         put(Categories.SUBPROCESSES,
             new IconResource(IconType.STAR));
         put(Categories.ACTIVITIES,
@@ -61,7 +61,7 @@ public class CaseManagementBS3PaletteViewFactory extends BindableBS3PaletteGlyph
 
     @Override
     protected Map<String, IconResource> getCategoryIconResources() {
-        return CATEGORY_RERNDERERS_SETTINGS;
+        return CATEGORY_RENDERERS_SETTINGS;
     }
 
     @Override

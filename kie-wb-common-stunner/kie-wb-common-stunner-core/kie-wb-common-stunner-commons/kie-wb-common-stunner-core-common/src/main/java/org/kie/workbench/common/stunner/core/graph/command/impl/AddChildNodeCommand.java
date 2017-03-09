@@ -116,7 +116,7 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
     }
 
     @SuppressWarnings("unchecked")
-    private Node<?, Edge> getParent(final GraphCommandExecutionContext context) {
+    protected Node<?, Edge> getParent(final GraphCommandExecutionContext context) {
         if (null == parent) {
             parent = checkNodeNotNull(context,
                                       parentUUID);

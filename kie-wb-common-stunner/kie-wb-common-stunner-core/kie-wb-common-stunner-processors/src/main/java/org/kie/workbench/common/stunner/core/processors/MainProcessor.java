@@ -36,6 +36,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.MirroredTypeException;
 import javax.lang.model.type.MirroredTypesException;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
@@ -293,12 +294,22 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                               e,
                               roundEnv);
         }
-        for (Element e : roundEnv.getElementsAnnotatedWith(elementUtils.getTypeElement(ANNOTATION_RULE_CAN_CONTAIN))) {
+        final Set<? extends Element> containRules = new LinkedHashSet<Element>() {{
+            addAll(roundEnv.getElementsAnnotatedWith(elementUtils.getTypeElement(ANNOTATION_RULE_CAN_CONTAIN)));
+            addAll(processingContext.getDefinitionElements());
+            removeAll(processingContext.getContainmentRuleElementsProcessed());
+        }};
+        for (Element e : containRules) {
             processContainmentRules(set,
                                     e,
                                     roundEnv);
         }
-        for (Element e : roundEnv.getElementsAnnotatedWith(elementUtils.getTypeElement(ANNOTATION_RULE_CAN_DOCK))) {
+        final Set<? extends Element> dockRules = new LinkedHashSet<Element>() {{
+            addAll(roundEnv.getElementsAnnotatedWith(elementUtils.getTypeElement(ANNOTATION_RULE_CAN_DOCK)));
+            addAll(processingContext.getDefinitionElements());
+            removeAll(processingContext.getDockingRuleElementsProcessed());
+        }};
+        for (Element e : dockRules) {
             processDockingRules(set,
                                 e,
                                 roundEnv);
@@ -367,7 +378,10 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
             }
             Set<String> defIds = new LinkedHashSet<>();
             for (TypeMirror mirror : mirrors) {
-                // TODO: [Roger] Add definition classes found in this definition set into the processingContext#definitionElements
+                if (mirror.getKind().equals(TypeKind.DECLARED)) {
+                    final TypeElement t = (TypeElement) ((DeclaredType) mirror).asElement();
+                    processingContext.getDefinitionElements().add(t);
+                }
                 String fqcn = mirror.toString();
                 defIds.add(fqcn);
             }

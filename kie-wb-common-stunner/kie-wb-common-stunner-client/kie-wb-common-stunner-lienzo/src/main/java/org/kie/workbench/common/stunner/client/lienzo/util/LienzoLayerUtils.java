@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.client.lienzo.util;
 
 import com.ait.lienzo.client.core.shape.Shape;
 import org.kie.workbench.common.stunner.client.lienzo.LienzoLayer;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 
 public class LienzoLayerUtils {
 
@@ -50,13 +50,10 @@ public class LienzoLayerUtils {
     }
 
     private static boolean hasUUID(final com.ait.lienzo.client.core.shape.Node<?> node) {
-        return node != null && node.getUserData() != null && (node.getUserData() instanceof String) &&
-                (((String) node.getUserData()).startsWith(ShapeView.UUID_PREFIX));
+        return WiresUtils.getShapeUUID(node) != null;
     }
 
     private static String getNodeViewUUID(final com.ait.lienzo.client.core.shape.Node<?> node) {
-        final String userData = (String) node.getUserData();
-        return userData.substring(ShapeView.UUID_PREFIX.length(),
-                                  userData.length() - 1);
+        return WiresUtils.getShapeUUID(node);
     }
 }

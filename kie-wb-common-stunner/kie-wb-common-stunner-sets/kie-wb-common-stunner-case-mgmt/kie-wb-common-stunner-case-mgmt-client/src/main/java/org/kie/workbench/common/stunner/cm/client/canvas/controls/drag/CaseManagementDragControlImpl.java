@@ -20,10 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasGrid;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControlImpl;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -48,5 +45,9 @@ public class CaseManagementDragControlImpl extends DragControlImpl {
     @Override
     protected void doDragEnd(final Element element) {
         //Case Modeller does not update Node's positions
+    }
+
+    double[] getDragShapeSize() {
+        return dragShapeSize;
     }
 }

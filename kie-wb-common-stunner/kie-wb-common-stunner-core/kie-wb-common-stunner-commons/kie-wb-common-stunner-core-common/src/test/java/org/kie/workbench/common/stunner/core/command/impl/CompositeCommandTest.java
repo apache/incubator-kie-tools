@@ -48,7 +48,7 @@ public class CompositeCommandTest {
     @SuppressWarnings("unchecked")
     public void testInitialize() {
         assertFalse(tested.isInitialized());
-        tested.initialize(commandExecutionContext);
+        tested.ensureInitialized(commandExecutionContext);
         assertTrue(tested.isInitialized());
     }
 

@@ -21,14 +21,24 @@ import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
+import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.Categories;
+import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.Lane;
+import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
+import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
+import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
+import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
+import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
-import org.kie.workbench.common.stunner.cm.definition.CaseManagementAdhocSubprocess;
-import org.kie.workbench.common.stunner.cm.definition.CaseManagementBaseSubprocess;
-import org.kie.workbench.common.stunner.cm.definition.CaseManagementBaseTask;
-import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
-import org.kie.workbench.common.stunner.cm.definition.CaseManagementNoneTask;
-import org.kie.workbench.common.stunner.cm.definition.CaseManagementReusableSubprocess;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.BindableDefSetPaletteDefinitionFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
@@ -48,17 +58,21 @@ public class CaseManagementPaletteDefinitionFactory extends BindableDefSetPalett
 
     private static final Map<String, Class<?>> CAT_DEF_IDS = new HashMap<String, Class<?>>(1) {{
         put(Categories.ACTIVITIES,
-            CaseManagementNoneTask.class);
+            UserTask.class);
+        put(Categories.ACTIVITIES,
+            ScriptTask.class);
+        put(Categories.ACTIVITIES,
+            BusinessRuleTask.class);
         put(Categories.SUBPROCESSES,
-            CaseManagementAdhocSubprocess.class);
+            AdHocSubprocess.class);
         put(Categories.SUBPROCESSES,
-            CaseManagementReusableSubprocess.class);
+            ReusableSubprocess.class);
     }};
 
     private static final Map<String, String> MORPH_GROUP_TITLES = new HashMap<String, String>(2) {{
-        put(CaseManagementBaseSubprocess.class.getName(),
+        put(BaseSubprocess.class.getName(),
             STAGES);
-        put(CaseManagementBaseTask.class.getName(),
+        put(BaseTask.class.getName(),
             ACTIVITIES);
     }};
 
@@ -72,11 +86,16 @@ public class CaseManagementPaletteDefinitionFactory extends BindableDefSetPalett
     @Override
     protected void configureBuilder() {
         super.configureBuilder();
-        // Exclude CaseManagementDiagram from palette model.
-        excludeDefinition(CaseManagementDiagram.class);
-        // Exclude the none task from palette, it will be available by dragging from the main Activities category.
-        excludeDefinition(CaseManagementNoneTask.class);
-        // TODO: Exclude connectors category from being present on the palette model - Dropping connectors from palette produces an error right now, must fix it on lienzo side.
+        excludeDefinition(BPMNDiagram.class);
+        excludeDefinition(Lane.class);
+        excludeDefinition(NoneTask.class);
+        excludeDefinition(StartNoneEvent.class);
+        excludeDefinition(EndNoneEvent.class);
+        excludeDefinition(EndTerminateEvent.class);
+        excludeDefinition(ParallelGateway.class);
+        excludeDefinition(ExclusiveDatabasedGateway.class);
+        excludeDefinition(SequenceFlow.class);
+
         excludeCategory(Categories.CONNECTING_OBJECTS);
     }
 

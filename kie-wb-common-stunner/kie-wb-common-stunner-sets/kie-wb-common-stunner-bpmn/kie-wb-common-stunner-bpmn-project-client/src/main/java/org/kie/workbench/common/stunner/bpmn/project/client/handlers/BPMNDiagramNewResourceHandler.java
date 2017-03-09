@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramReso
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.project.client.handlers.AbstractProjectDiagramNewResourceHandler;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
+import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 
 @ApplicationScoped
 public class BPMNDiagramNewResourceHandler extends AbstractProjectDiagramNewResourceHandler<BPMNDiagramResourceType> {
@@ -32,15 +33,18 @@ public class BPMNDiagramNewResourceHandler extends AbstractProjectDiagramNewReso
     protected BPMNDiagramNewResourceHandler() {
         this(null,
              null,
+             null,
              null);
     }
 
     @Inject
     public BPMNDiagramNewResourceHandler(final DefinitionManager definitionManager,
                                          final ClientProjectDiagramService projectDiagramServices,
+                                         final BusyIndicatorView indicatorView,
                                          final BPMNDiagramResourceType projectDiagramResourceType) {
         super(definitionManager,
               projectDiagramServices,
+              indicatorView,
               projectDiagramResourceType);
     }
 

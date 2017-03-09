@@ -30,6 +30,28 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 
 public final class WiresUtils {
 
+    public static class UserData {
+
+        private String uuid;
+        private String group;
+
+        public String getUuid() {
+            return uuid;
+        }
+
+        public void setUuid(String uuid) {
+            this.uuid = uuid;
+        }
+
+        public String getGroup() {
+            return group;
+        }
+
+        public void setGroup(String group) {
+            this.group = group;
+        }
+    }
+
     public static Point2D getAbsolute(final IDrawable<?> shape) {
         final com.ait.lienzo.client.core.types.Point2D p = com.ait.lienzo.client.core.shape.wires.WiresUtils.getLocation(shape);
         return new Point2D(p.getX(),
@@ -82,5 +104,61 @@ public final class WiresUtils {
 
     public static boolean isWiresConnector(final ShapeView<?> shapeView) {
         return shapeView instanceof WiresConnector;
+    }
+
+    public static boolean isWiresShape(final WiresContainer wiresShape) {
+        return isWiresLayer(wiresShape) ||
+                (null != wiresShape
+                        && null != wiresShape.getContainer().getUserData()
+                        && WiresCanvas.WIRES_CANVAS_GROUP_ID.equals(getShapeGroup(wiresShape.getContainer())));
+    }
+
+    public static boolean isWiresLayer(final WiresContainer wiresShape) {
+        return null != wiresShape && wiresShape instanceof WiresLayer;
+    }
+
+    public static void assertShapeUUID(final IDrawable<?> shape,
+                                       final String uuid) {
+        final UserData ud = assertUserData(shape);
+        ud.setUuid(uuid);
+    }
+
+    private static UserData assertUserData(final IDrawable<?> shape) {
+        Object o = shape.getUserData();
+        if (o == null) {
+            o = new UserData();
+            shape.setUserData(o);
+        } else if (!(o instanceof UserData)) {
+            throw new IllegalStateException("WiresShape expected to have 'UserData' user data.");
+        }
+        return (UserData) o;
+    }
+
+    public static String getShapeUUID(final IDrawable<?> shape) {
+        Object o = shape.getUserData();
+        if (o == null) {
+            return null;
+        } else if (!(o instanceof UserData)) {
+            throw new IllegalStateException("WiresShape expected to have 'UserData' user data.");
+        }
+        final UserData ud = (UserData) o;
+        return ud.getUuid();
+    }
+
+    public static void assertShapeGroup(final IDrawable<?> shape,
+                                        final String group) {
+        final UserData ud = assertUserData(shape);
+        ud.setGroup(group);
+    }
+
+    public static String getShapeGroup(final IDrawable<?> shape) {
+        Object o = shape.getUserData();
+        if (o == null) {
+            return null;
+        } else if (!(o instanceof UserData)) {
+            throw new IllegalStateException("WiresShape expected to have 'UserData' user data.");
+        }
+        final UserData ud = (UserData) o;
+        return ud.getGroup();
     }
 }

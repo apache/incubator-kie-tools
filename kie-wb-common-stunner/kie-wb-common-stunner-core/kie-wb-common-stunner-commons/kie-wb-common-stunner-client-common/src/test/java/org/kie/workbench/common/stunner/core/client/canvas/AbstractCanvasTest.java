@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas;
 
+import java.util.Optional;
 import javax.enterprise.event.Event;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -264,6 +265,12 @@ public class AbstractCanvasTest {
         public Canvas initialize(final int width,
                                  final int height) {
             return this;
+        }
+
+        @Override
+        public Optional<Shape> getShapeAt(final double x,
+                                          final double y) {
+            return Optional.empty();
         }
     }
 }

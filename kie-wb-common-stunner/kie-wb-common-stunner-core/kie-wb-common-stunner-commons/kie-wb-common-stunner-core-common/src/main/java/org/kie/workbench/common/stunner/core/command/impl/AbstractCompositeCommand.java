@@ -110,7 +110,6 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
 
     protected AbstractCompositeCommand<T, V> initialize(final T context) {
         // Nothing to do by default. Implementation can add commands here.
-        this.initialized = true;
         return this;
     }
 
@@ -130,6 +129,7 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
     protected void ensureInitialized(final T context) {
         if (!isInitialized()) {
             initialize(context);
+            initialized=true;
         }
     }
 

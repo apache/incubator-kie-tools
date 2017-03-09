@@ -46,14 +46,16 @@ public class WiresCanvasView extends CanvasView implements WiresCanvas.View {
             WiresShape wiresShape = (WiresShape) shapeView;
             wiresManager.register(wiresShape);
             wiresManager.getMagnetManager().createMagnets(wiresShape);
-            wiresShape.getContainer().setUserData(WiresCanvas.WIRES_CANVAS_GROUP_ID);
+            WiresUtils.assertShapeGroup(wiresShape.getGroup(),
+                                        WiresCanvas.WIRES_CANVAS_GROUP_ID);
         } else if (WiresUtils.isWiresConnector(shapeView)) {
             WiresConnector wiresConnector = (WiresConnector) shapeView;
             final WiresConnectorControl connectorControl = wiresManager.register(wiresConnector);
             if (shapeView instanceof WiresConnectorView) {
                 ((WiresConnectorView) shapeView).setControl(connectorControl);
             }
-            wiresConnector.getGroup().setUserData(WiresCanvas.WIRES_CANVAS_GROUP_ID);
+            WiresUtils.assertShapeGroup(wiresConnector.getGroup(),
+                                        WiresCanvas.WIRES_CANVAS_GROUP_ID);
         } else {
             super.addShape(shapeView);
         }

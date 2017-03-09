@@ -70,6 +70,13 @@ public class DockingRuleGenerator extends AbstractGenerator {
                 break;
             }
         }
+
+        processingContext.getDockingRuleElementsProcessed().add(element);
+
+        if (roles == null) {
+            return null;
+        }
+
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("ruleId",
                  ruleId);

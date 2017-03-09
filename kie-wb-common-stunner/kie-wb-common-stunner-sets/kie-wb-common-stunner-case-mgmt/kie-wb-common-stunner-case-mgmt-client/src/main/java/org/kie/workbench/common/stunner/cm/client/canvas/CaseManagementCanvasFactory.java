@@ -24,7 +24,9 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.ait.lienzo.client.core.shape.wires.handlers.WiresControlFactory;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -35,6 +37,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.Canv
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Observer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
@@ -68,6 +71,7 @@ public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas
     private final ManagedInstance<PanControl> panControls;
     private final ManagedInstance<AbstractCanvas> canvasInstances;
     private final ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances;
+    private final WiresControlFactory caseManagementControlFactory;
 
     private final Map<Class<? extends CanvasControl>, ManagedInstance> controls = new HashMap<>(15);
 
@@ -86,25 +90,27 @@ public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas
              null,
              null,
              null,
+             null,
              null);
     }
 
     @Inject
     public CaseManagementCanvasFactory(final ManagedInstance<CanvasValidationControl> validationControls,
-                                       final ManagedInstance<CanvasPaletteControl> paletteControls,
+                                       final @CaseManagementEditor ManagedInstance<CanvasPaletteControl> paletteControls,
                                        final ManagedInstance<ConnectionAcceptorControl> connectionAcceptorControls,
                                        final @CaseManagementEditor ManagedInstance<ContainmentAcceptorControl> containmentAcceptorControls,
                                        final ManagedInstance<DockingAcceptorControl> dockingAcceptorControls,
                                        final ManagedInstance<CanvasNameEditionControl> nameEditionControls,
                                        final ManagedInstance<SelectionControl> selectionControls,
                                        final @CaseManagementEditor ManagedInstance<DragControl> dragControls,
-                                       final @CaseManagementEditor ManagedInstance<ElementBuilderControl> elementBuilderControls,
-                                       final ManagedInstance<NodeBuilderControl> nodeBuilderControls,
+                                       final @CaseManagementEditor @Observer ManagedInstance<ElementBuilderControl> elementBuilderControls,
+                                       final @CaseManagementEditor ManagedInstance<NodeBuilderControl> nodeBuilderControls,
                                        final ManagedInstance<EdgeBuilderControl> edgeBuilderControls,
                                        final ManagedInstance<ZoomControl> zoomControls,
                                        final ManagedInstance<PanControl> panControls,
                                        final @CaseManagementEditor ManagedInstance<AbstractCanvas> canvasInstances,
-                                       final @CaseManagementEditor ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances) {
+                                       final @CaseManagementEditor ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances,
+                                       final @CaseManagementEditor WiresControlFactory caseManagementControlFactory) {
         this.validationControls = validationControls;
         this.paletteControls = paletteControls;
         this.connectionAcceptorControls = connectionAcceptorControls;
@@ -120,6 +126,7 @@ public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas
         this.panControls = panControls;
         this.canvasInstances = canvasInstances;
         this.canvasHandlerInstances = canvasHandlerInstances;
+        this.caseManagementControlFactory = caseManagementControlFactory;
     }
 
     @PostConstruct
@@ -154,7 +161,9 @@ public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas
 
     @Override
     public AbstractCanvas newCanvas() {
-        return canvasInstances.get();
+        final AbstractCanvas canvas = canvasInstances.get();
+        ((WiresCanvas) canvas).getWiresManager().setWiresControlFactory(caseManagementControlFactory);
+        return canvas;
     }
 
     @Override

@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.client.canvas;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.listener.CanvasElementListener;
@@ -111,6 +112,15 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
      */
     public abstract void removeChild(final Element parent,
                                      final Element child);
+
+    /**
+     * Gets the Element at the specified Canvas coordinates
+     * @param x The X canvas coordinate
+     * @param y The Y canvas coordinate
+     * @return Element at the coordinate
+     */
+    public abstract Optional<Element> getElementAt(final double x,
+                                                   final double y);
 
     /**
      * This method sets the given <code>child</code> instance as docked child for the given

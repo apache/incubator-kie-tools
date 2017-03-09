@@ -21,7 +21,9 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.client.widgets.canvas.wires.WiresCanvasView;
+import org.kie.workbench.common.stunner.cm.client.wires.AbstractCaseManagementShape;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 @Dependent
@@ -34,7 +36,8 @@ public class CaseManagementCanvasView extends WiresCanvasView {
             WiresShape wiresShape = (WiresShape) shapeView;
             wiresManager.register(wiresShape,
                                   false);
-            wiresShape.getContainer().setUserData(WiresCanvas.WIRES_CANVAS_GROUP_ID);
+            WiresUtils.assertShapeGroup(wiresShape.getGroup(),
+                                        WiresCanvas.WIRES_CANVAS_GROUP_ID);
         } else if (WiresUtils.isWiresConnector(shapeView)) {
             //Don't render connectors
 
@@ -42,6 +45,16 @@ public class CaseManagementCanvasView extends WiresCanvasView {
             super.addShape(shapeView);
         }
 
+        return this;
+    }
+
+    public AbstractCanvas.View addChildShape(final ShapeView<?> parent,
+                                             final ShapeView<?> child,
+                                             final int index) {
+        final AbstractCaseManagementShape parentShape = (AbstractCaseManagementShape) parent;
+        final AbstractCaseManagementShape childShape = (AbstractCaseManagementShape) child;
+        parentShape.addShape(childShape,
+                             index);
         return this;
     }
 }

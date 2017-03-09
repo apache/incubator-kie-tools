@@ -18,8 +18,6 @@ package org.kie.workbench.common.stunner.cm.client.session;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
-import org.kie.workbench.common.stunner.cm.client.wires.CaseModellerControlFactoryImpl;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -56,9 +54,7 @@ public class CaseManagementClientFullSession extends AbstractClientFullSession {
                                            final CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager,
                                            final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
                                            final @Request SessionCommandManager<AbstractCanvasHandler> requestCommandManager,
-                                           final RegistryFactory registryFactory,
-                                           final CanvasPaletteControl<AbstractCanvasHandler> canvasPaletteControl,
-                                           final CanvasNameEditionControl<AbstractCanvasHandler, Element> canvasNameEditionControl) {
+                                           final RegistryFactory registryFactory) {
         super(factory.newCanvas(),
               factory.newCanvasHandler(),
               factory.newControl(CanvasValidationControl.class),
@@ -74,20 +70,21 @@ public class CaseManagementClientFullSession extends AbstractClientFullSession {
               factory.newControl(ContainmentAcceptorControl.class),
               factory.newControl(DockingAcceptorControl.class),
               factory.newControl(ElementBuilderControl.class));
+
         this.canvasPaletteControl = factory.newControl(CanvasPaletteControl.class);
         this.canvasNameEditionControl = factory.newControl(CanvasNameEditionControl.class);
+
         getRegistrationHandler().registerCanvasHandlerControl(canvasPaletteControl);
         canvasPaletteControl.setCommandManagerProvider(() -> sessionCommandManager);
         getRegistrationHandler().registerCanvasHandlerControl(canvasNameEditionControl);
         canvasNameEditionControl.setCommandManagerProvider(() -> sessionCommandManager);
-        ((WiresCanvas) getCanvas()).getWiresManager().setWiresControlFactory(new CaseModellerControlFactoryImpl());
     }
 
-    public CanvasPaletteControl<AbstractCanvasHandler> getPaletteControl() {
+    CanvasPaletteControl<AbstractCanvasHandler> getCanvasPaletteControl() {
         return canvasPaletteControl;
     }
 
-    public CanvasNameEditionControl<AbstractCanvasHandler, Element> getCanvasNameEditionControl() {
+    CanvasNameEditionControl<AbstractCanvasHandler, Element> getCanvasNameEditionControl() {
         return canvasNameEditionControl;
     }
 }

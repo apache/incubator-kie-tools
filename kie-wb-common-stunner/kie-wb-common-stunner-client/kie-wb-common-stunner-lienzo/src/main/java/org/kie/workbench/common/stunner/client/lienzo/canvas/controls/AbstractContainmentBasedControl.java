@@ -21,10 +21,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.ait.lienzo.client.core.shape.wires.WiresContainer;
-import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -152,7 +152,7 @@ public abstract class AbstractContainmentBasedControl
 
     protected boolean isAccept(final WiresContainer wiresContainer,
                                final WiresShape wiresShape) {
-        if (!isEnabled() || !isWiresShape(wiresContainer) || !isWiresShape(wiresShape)) {
+        if (!isEnabled() || !WiresUtils.isWiresShape(wiresContainer) || !WiresUtils.isWiresShape(wiresShape)) {
             return false;
         }
         return true;
@@ -191,16 +191,6 @@ public abstract class AbstractContainmentBasedControl
             }
         }
         return null;
-    }
-
-    private boolean isWiresShape(final WiresContainer wiresShape) {
-        return isWiresLayer(wiresShape) ||
-                (null != wiresShape && null != wiresShape.getContainer().getUserData() &&
-                        wiresShape.getContainer().getUserData().equals(WiresCanvas.WIRES_CANVAS_GROUP_ID));
-    }
-
-    private boolean isWiresLayer(final WiresContainer wiresShape) {
-        return null != wiresShape && wiresShape instanceof WiresLayer;
     }
 
     protected boolean isAccept(final CommandResult<CanvasViolation> result) {

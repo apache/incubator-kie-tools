@@ -32,11 +32,8 @@ import com.ait.lienzo.client.core.types.PatternGradient;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.RadialGradient;
 import com.ait.lienzo.client.core.util.Geometry;
-import com.ait.lienzo.client.core.util.ScratchPad;
-import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
-public class WiresDockingAndContainmentControlImpl
-        implements WiresDockingAndContainmentControl {
+public class WiresDockingAndContainmentControlImpl implements WiresDockingAndContainmentControl {
 
     protected WiresShape m_shape;
 
@@ -336,22 +333,10 @@ public class WiresDockingAndContainmentControlImpl
         m_picker = null;
     }
 
-    protected ColorMapBackedPicker makeColorMapBackedPicker(final NFastArrayList<WiresShape> children,
-                                                            final ScratchPad scratchPad,
-                                                            final WiresShape shape,
-                                                            final boolean isDockingAllowed,
-                                                            final int hotSpotSize) {
-        return new ColorMapBackedPicker(children,
-                                        scratchPad,
-                                        shape,
-                                        isDockingAllowed,
-                                        hotSpotSize);
-    }
-
     protected ColorMapBackedPicker makeColorMapBackedPicker(final WiresLayer m_layer,
                                                             final WiresContainer m_parent,
                                                             final WiresShape m_shape) {
-        return makeColorMapBackedPicker(m_layer.getChildShapes(),
+        return new ColorMapBackedPicker(m_layer.getChildShapes(),
                                         m_layer.getLayer().getScratchPad(),
                                         m_shape,
                                         m_shape.getDockingAcceptor().dockingAllowed(m_parent,
