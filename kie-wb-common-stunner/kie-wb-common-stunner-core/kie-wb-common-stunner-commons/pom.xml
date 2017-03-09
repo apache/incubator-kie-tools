@@ -30,6 +30,10 @@
   <description>Kie Workbench - Common - Stunner - Commons</description>
   <packaging>pom</packaging>
 
+  <properties>
+    <jacoco.line.coveredratio.minimum>0.1</jacoco.line.coveredratio.minimum>
+  </properties>
+
   <modules>
     <module>kie-wb-common-stunner-core-common</module>
     <module>kie-wb-common-stunner-backend-common</module>

@@ -30,6 +30,10 @@
   <description>Kie Workbench - Common - Stunner - Client Widgets</description>
   <packaging>jar</packaging>
 
+  <properties>
+    <jacoco.line.coveredratio.minimum>0.0</jacoco.line.coveredratio.minimum>
+  </properties>
+
   <dependencies>
 
     <!-- Stunner. -->

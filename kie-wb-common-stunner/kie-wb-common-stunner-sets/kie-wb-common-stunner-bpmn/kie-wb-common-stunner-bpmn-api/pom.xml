@@ -30,6 +30,10 @@
   <description>Kie Workbench - Common - Stunner - BPMN Definition Set - API</description>
   <packaging>jar</packaging>
 
+  <properties>
+    <jacoco.line.coveredratio.minimum>0.0</jacoco.line.coveredratio.minimum>
+  </properties>
+
   <dependencies>
 
     <dependency>

@@ -43,6 +43,7 @@
 
   <properties>
     <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
+    <jacoco.haltOnFailure>true</jacoco.haltOnFailure>
   </properties>
 
   <build>

@@ -29,6 +29,10 @@
   <name>Kie Workbench - Common - Stunner - Forms Client</name>
   <description>Kie Workbench - Common - Stunner - Forms Client</description>
 
+  <properties>
+    <jacoco.line.coveredratio.minimum>0.2</jacoco.line.coveredratio.minimum>
+  </properties>
+
   <dependencies>
 
     <dependency>
