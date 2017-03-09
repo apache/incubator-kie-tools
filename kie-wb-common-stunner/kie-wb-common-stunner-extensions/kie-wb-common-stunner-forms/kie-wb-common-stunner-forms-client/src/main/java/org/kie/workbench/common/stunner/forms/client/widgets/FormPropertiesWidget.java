@@ -33,7 +33,10 @@ import org.jboss.errai.databinding.client.BindableProxyFactory;
 import org.jboss.errai.databinding.client.HasProperties;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
+import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
+import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFormRenderingContext;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
@@ -50,6 +53,8 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
+import org.kie.workbench.common.stunner.forms.context.PathAwareFormContext;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
@@ -66,9 +71,11 @@ public class FormPropertiesWidget implements IsWidget {
 
     private ClientSession session;
     private FormFeaturesSessionProvider featuresSessionProvider;
+    private final DynamicFormModelGenerator modelGenerator;
 
     protected FormPropertiesWidget() {
         this(null,
+             null,
              null,
              null,
              null);
@@ -78,10 +85,12 @@ public class FormPropertiesWidget implements IsWidget {
     public FormPropertiesWidget(final DefinitionUtils definitionUtils,
                                 final CanvasCommandFactory commandFactory,
                                 final DynamicFormRenderer formRenderer,
+                                final DynamicFormModelGenerator modelGenerator,
                                 final Event<FormPropertiesOpened> propertiesOpenedEvent) {
         this.definitionUtils = definitionUtils;
         this.commandFactory = commandFactory;
         this.formRenderer = formRenderer;
+        this.modelGenerator = modelGenerator;
         this.propertiesOpenedEvent = propertiesOpenedEvent;
     }
 
@@ -180,28 +189,29 @@ public class FormPropertiesWidget implements IsWidget {
                 getCanvasHandler().getGraphIndex().get(uuid) : null;
         if (null != element) {
             final Object definition = element.getContent().getDefinition();
-            BindableProxy proxy = (BindableProxy) BindableProxyFactory.getBindableProxy(definition);
-            formRenderer.renderDefaultForm(proxy.deepUnwrap(),
-                                           renderMode,
-                                           () -> {
-                                               formRenderer.addFieldChangeHandler((fieldName, newValue) -> {
-                                                   try {
-                                                       final HasProperties hasProperties = (HasProperties) DataBinder.forModel(definition).getModel();
-                                                       String pId = getModifiedPropertyId(hasProperties,
-                                                                                          fieldName);
-                                                       FormPropertiesWidget.this.executeUpdateProperty(element,
-                                                                                                       pId,
-                                                                                                       newValue);
-                                                   } catch (Exception ex) {
-                                                       log(Level.SEVERE,
-                                                           "Something wrong happened refreshing the canvas for field '" + fieldName + "': " + ex.getCause());
-                                                   } finally {
-                                                       if (null != callback) {
-                                                           callback.execute();
-                                                       }
-                                                   }
-                                               });
-                                           });
+            final BindableProxy<?> proxy = (BindableProxy<?>) BindableProxyFactory.getBindableProxy(definition);
+            final Path diagramPath = session.getCanvasHandler().getDiagram().getMetadata().getPath();
+            final StaticModelFormRenderingContext generatedCtx = modelGenerator.getContextForModel( proxy.deepUnwrap() );
+            final FormRenderingContext<?> pathAwareCtx = new PathAwareFormContext<>( generatedCtx, diagramPath );
+            formRenderer.render( pathAwareCtx );
+            formRenderer.addFieldChangeHandler((fieldName, newValue) -> {
+                try {
+                    final HasProperties hasProperties = (HasProperties) DataBinder.forModel(definition).getModel();
+                    final String pId = getModifiedPropertyId(hasProperties,
+                                                       fieldName);
+                    FormPropertiesWidget.this.executeUpdateProperty(element,
+                                                                    pId,
+                                                                    newValue);
+                } catch (final Exception ex) {
+                    log(Level.SEVERE,
+                        "Something wrong happened refreshing the canvas for field '" + fieldName + "': " + ex.getCause());
+                } finally {
+                    if (null != callback) {
+                        callback.execute();
+                    }
+                }
+            });
+
             final String name = definitionUtils.getName(definition);
             propertiesOpenedEvent.fire(new FormPropertiesOpened(session,
                                                                 uuid,

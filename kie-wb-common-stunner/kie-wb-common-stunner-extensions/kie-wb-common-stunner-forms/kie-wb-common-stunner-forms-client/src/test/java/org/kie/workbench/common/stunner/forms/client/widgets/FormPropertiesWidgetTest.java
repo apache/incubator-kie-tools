@@ -18,12 +18,19 @@ package org.kie.workbench.common.stunner.forms.client.widgets;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
 import javax.enterprise.event.Event;
 
+import org.jboss.errai.databinding.client.BindableProxy;
+import org.jboss.errai.databinding.client.BindableProxyFactory;
+import org.jboss.errai.databinding.client.BindableProxyProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
+import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
+import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
@@ -35,11 +42,21 @@ import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.FormPropertiesOpened;
+import org.kie.workbench.common.stunner.forms.context.PathAware;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FormPropertiesWidgetTest {
@@ -73,11 +90,20 @@ public class FormPropertiesWidgetTest {
     Object nodeDefObject;
     @Mock
     Index graphIndex;
+    @Mock
+    DynamicFormModelGenerator modelGenerator;
+    @Mock
+    Path path;
+    @Mock
+    BindableProxyProvider proxyProvider;
+    @Mock
+    BindableProxy<Object> proxy;
+    Object unmockedDef = new Object();
 
     private FormPropertiesWidget tested;
 
     @Before
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void setup() throws Exception {
         when(session.getSelectionControl()).thenReturn(selectionControl);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
@@ -89,9 +115,14 @@ public class FormPropertiesWidgetTest {
         when(node.getUUID()).thenReturn(ROOT_UUID);
         when(node.getContent()).thenReturn(nodeContent);
         when(nodeContent.getDefinition()).thenReturn(nodeDefObject);
+        BindableProxyFactory.addBindableProxy(Object.class, proxyProvider);
+        when(proxyProvider.getBindableProxy()).thenReturn((BindableProxy) proxy);
+        when(proxyProvider.getBindableProxy(unmockedDef)).thenReturn((BindableProxy) proxy);
+        when(proxy.deepUnwrap()).thenReturn(unmockedDef);
         this.tested = new FormPropertiesWidget(definitionUtils,
                                                commandFactory,
                                                formRenderer,
+                                               modelGenerator,
                                                propertiesOpenedEvent);
     }
 
@@ -139,5 +170,20 @@ public class FormPropertiesWidgetTest {
         tested
                 .bind(session)
                 .show(callback);
+    }
+
+    @Test
+    public void testFormContextIsPathAware() throws Exception {
+        final ArgumentCaptor<FormRenderingContext> contextCaptor = ArgumentCaptor.forClass(FormRenderingContext.class);
+        when(metadata.getPath()).thenReturn(path);
+        when(nodeContent.getDefinition()).thenReturn(unmockedDef);
+
+        tested
+            .bind(session)
+            .showByUUID(ROOT_UUID, RenderMode.EDIT_MODE);
+
+        verify(formRenderer).render(contextCaptor.capture());
+        assertTrue("FormRenderingContext was not PathAware.", contextCaptor.getValue() instanceof PathAware);
+        assertSame(path, ((PathAware) contextCaptor.getValue()).getPath());
     }
 }
