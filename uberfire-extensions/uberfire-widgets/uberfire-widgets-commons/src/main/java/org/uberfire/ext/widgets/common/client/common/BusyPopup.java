@@ -31,8 +31,8 @@ import org.uberfire.ext.widgets.common.client.animations.LinearFadeOutAnimation;
  */
 public class BusyPopup extends DecoratedPopupPanel {
 
-    private static final BusyPopup INSTANCE = new BusyPopup();
     private static LoadingViewBinder uiBinder = GWT.create(LoadingViewBinder.class);
+    private static final BusyPopup INSTANCE = new BusyPopup();
 
     private static Timer deferredShowTimer = new Timer() {
         @Override
