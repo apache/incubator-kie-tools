@@ -20,11 +20,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -32,10 +30,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.SimplePager;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.RangeChangeEvent;
 import org.drools.workbench.models.datamodel.auditlog.AuditLog;
 import org.drools.workbench.models.datamodel.auditlog.AuditLogEntry;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
@@ -62,9 +58,6 @@ public class AuditLogViewImpl extends BaseModal
         AuditLogView {
 
     private final AuditLog auditLog;
-
-    /* The 500px width constant. */
-    private static final String P500 = "500px";
 
     /**
      * The page size constant value.
@@ -113,27 +106,22 @@ public class AuditLogViewImpl extends BaseModal
 
     }
 
-    private static AuditLogViewImplBinder uiBinder = GWT.create( AuditLogViewImplBinder.class );
+    private static AuditLogViewImplBinder uiBinder = GWT.create(AuditLogViewImplBinder.class);
 
-    public AuditLogViewImpl( final AuditLog auditLog,
-                             final User identity ) {
+    public AuditLogViewImpl(final AuditLog auditLog,
+                            final User identity) {
         this.auditLog = auditLog;
         this.identity = identity;
 
-        setTitle( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog() );
-        setDataBackdrop( ModalBackdrop.STATIC );
-        setDataKeyboard( true );
-        setFade( true );
-        setRemoveOnHide( true );
-        setWidth( 1000 + "px" );
+        setTitle(GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLog());
+        setDataBackdrop(ModalBackdrop.STATIC);
+        setDataKeyboard(true);
+        setFade(true);
+        setRemoveOnHide(true);
+        setWidth(1000 + "px");
 
-        setBody( uiBinder.createAndBindUi( AuditLogViewImpl.this ) );
-        add( new ModalFooterOKButton( new Command() {
-            @Override
-            public void execute() {
-                hide();
-            }
-        } ) );
+        setBody(uiBinder.createAndBindUi(AuditLogViewImpl.this));
+        add(new ModalFooterOKButton(this::hide));
 
         setup();
     }
@@ -145,122 +133,111 @@ public class AuditLogViewImpl extends BaseModal
     }
 
     void refreshDataProvider() {
-        dlp.setList( filterDeletedEntries( auditLog ) );
+        dlp.setList(filterDeletedEntries(auditLog));
     }
 
     public void setup() {
         // BZ-996917: Use a the gwtboostrap style "row-fluid" to allow display some events in the same row.
-        eventTypes.setStyleName( Styles.ROW );
+        eventTypes.setStyleName(Styles.ROW);
 
         // Fill panel with available events.
-        for ( Map.Entry<String, Boolean> e : auditLog.getAuditLogFilter().getAcceptedTypes().entrySet() ) {
-            eventTypes.add( makeEventTypeCheckBox( e.getKey(),
-                                                   e.getValue() ) );
+        for (Map.Entry<String, Boolean> e : auditLog.getAuditLogFilter().getAcceptedTypes().entrySet()) {
+            eventTypes.add(makeEventTypeCheckBox(e.getKey(),
+                                                 e.getValue()));
         }
 
         // Create the GWT Cell Table as events container.
         // BZ-996942: Set custom width and table css style.
-        events = new CellTable<AuditLogEntry>();
-        events.setWidth( "100%" );
-        events.addStyleName( Styles.TABLE );
+        events = new CellTable<>();
+        events.setWidth("100%");
+        events.addStyleName(Styles.TABLE);
 
-        dlp = new ListDataProvider<AuditLogEntry>();
-        dlp.addDataDisplay( events );
+        dlp = new ListDataProvider<AuditLogEntry>() {
 
-        AuditLogEntrySummaryColumn summaryColumn = new AuditLogEntrySummaryColumn( style.auditLogDetailLabel(), style.auditLogDetailValue() );
+            @Override
+            public void setList(final List<AuditLogEntry> listToWrap) {
+                super.setList(listToWrap);
+                cellTablePagination.rebuild(pager);
+            }
+        };
+        dlp.addDataDisplay(events);
+
+        AuditLogEntrySummaryColumn summaryColumn = new AuditLogEntrySummaryColumn(style.auditLogDetailLabel(),
+                                                                                  style.auditLogDetailValue());
         AuditLogEntryCommentColumn commentColumn = new AuditLogEntryCommentColumn();
 
-        events.addColumn( summaryColumn );
-        events.addColumn( commentColumn );
+        events.addColumn(summaryColumn);
+        events.addColumn(commentColumn);
 
-        events.setColumnWidth( summaryColumn,
-                               60.0,
-                               Unit.PCT );
-        events.setColumnWidth( commentColumn,
-                               40.0,
-                               Unit.PCT );
+        events.setColumnWidth(summaryColumn,
+                              60.0,
+                              Unit.PCT);
+        events.setColumnWidth(commentColumn,
+                              40.0,
+                              Unit.PCT);
 
         //If the current user is not an Administrator include the delete comment column
-        if ( identity.getRoles().contains( new RoleImpl( AppRoles.ADMIN.getName() ) ) ) {
+        if (identity.getRoles().contains(new RoleImpl(AppRoles.ADMIN.getName()))) {
 
             AuditLogEntryDeleteCommentColumn deleteCommentColumn = new AuditLogEntryDeleteCommentColumn();
-            deleteCommentColumn.setFieldUpdater( new FieldUpdater<AuditLogEntry, SafeHtml>() {
-
-                public void update( int index,
-                                    AuditLogEntry row,
-                                    SafeHtml value ) {
-                    row.setDeleted( true );
-                    dlp.setList( filterDeletedEntries( auditLog ) );
-                    dlp.refresh();
-                }
-
-            } );
-            events.addColumn( deleteCommentColumn );
-            events.setColumnWidth( commentColumn,
-                                   35.0,
-                                   Unit.PCT );
-            events.setColumnWidth( deleteCommentColumn,
-                                   5.0,
-                                   Unit.PCT );
+            deleteCommentColumn.setFieldUpdater((int index,
+                                                 AuditLogEntry row,
+                                                 SafeHtml value) -> {
+                row.setDeleted(true);
+                dlp.setList(filterDeletedEntries(auditLog));
+                dlp.refresh();
+            });
+            events.addColumn(deleteCommentColumn);
+            events.setColumnWidth(commentColumn,
+                                  35.0,
+                                  Unit.PCT);
+            events.setColumnWidth(deleteCommentColumn,
+                                  5.0,
+                                  Unit.PCT);
         }
 
-        events.setEmptyTableWidget( new Label( GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogNoEntries() ) );
-        events.setKeyboardPagingPolicy( KeyboardPagingPolicy.CHANGE_PAGE );
-        events.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.DISABLED );
-        events.setPageSize( PAGE_SIZE );
+        events.setEmptyTableWidget(new Label(GuidedDecisionTableConstants.INSTANCE.DecisionTableAuditLogNoEntries()));
+        events.setKeyboardPagingPolicy(KeyboardPagingPolicy.CHANGE_PAGE);
+        events.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
+        events.setPageSize(PAGE_SIZE);
 
         // Configure the simple pager.
-        pager.setDisplay( events );
-        pager.setPageSize( PAGE_SIZE );
-
-        events.addRangeChangeHandler( new RangeChangeEvent.Handler() {
-            @Override
-            public void onRangeChange( final RangeChangeEvent event ) {
-                cellTablePagination.rebuild( pager );
-            }
-        } );
-
-        cellTablePagination.rebuild( pager );
+        pager.setDisplay(events);
+        pager.setPageSize(PAGE_SIZE);
 
         // Add the table to the container.
-        eventsContainer.add( events );
+        eventsContainer.add(events);
     }
 
-    private Widget makeEventTypeCheckBox( final String eventType,
-                                          final Boolean isEnabled ) {
-        final CheckBox chkEventType = new CheckBox( AuditLogEntryCellHelper.getEventTypeDisplayText( eventType ) );
-        chkEventType.setValue( Boolean.TRUE.equals( isEnabled ) );
-        chkEventType.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
-
-            @Override
-            public void onValueChange( ValueChangeEvent<Boolean> event ) {
-                auditLog.getAuditLogFilter().getAcceptedTypes().put( eventType,
-                                                                     event.getValue() );
-            }
-
-        } );
+    private Widget makeEventTypeCheckBox(final String eventType,
+                                         final Boolean isEnabled) {
+        final CheckBox chkEventType = new CheckBox(AuditLogEntryCellHelper.getEventTypeDisplayText(eventType));
+        chkEventType.setValue(Boolean.TRUE.equals(isEnabled));
+        chkEventType.addValueChangeHandler((ValueChangeEvent<Boolean> event) -> {
+            auditLog.getAuditLogFilter().getAcceptedTypes().put(eventType,
+                                                                event.getValue());
+        });
 
         // BZ-996942: Use one column layout.
-        chkEventType.setWordWrap( false );
+        chkEventType.setWordWrap(false);
 
-        return new Column( ColumnSize.MD_2 ) {{
-            add( chkEventType );
+        return new Column(ColumnSize.MD_2) {{
+            add(chkEventType);
         }};
     }
 
-    private List<AuditLogEntry> filterDeletedEntries( final List<AuditLogEntry> entries ) {
-        if ( !identity.getRoles().contains( new RoleImpl( AppRoles.ADMIN.getName() ) ) ) {
+    private List<AuditLogEntry> filterDeletedEntries(final List<AuditLogEntry> entries) {
+        if (!identity.getRoles().contains(new RoleImpl(AppRoles.ADMIN.getName()))) {
             return entries;
         }
-        final List<AuditLogEntry> filteredEntries = new ArrayList<AuditLogEntry>();
+        final List<AuditLogEntry> filteredEntries = new ArrayList<>();
         final Iterator<AuditLogEntry> i = entries.iterator();
-        while ( i.hasNext() ) {
+        while (i.hasNext()) {
             final AuditLogEntry entry = i.next();
-            if ( !entry.isDeleted() ) {
-                filteredEntries.add( entry );
+            if (!entry.isDeleted()) {
+                filteredEntries.add(entry);
             }
         }
         return filteredEntries;
     }
-
 }
