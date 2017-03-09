@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Optional;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.drools.workbench.models.datamodel.oracle.DataType;
@@ -105,7 +106,17 @@ public class ConditionPopupTest {
                    false,
                    false);
 
-        popup.view = spy(new ConditionPopupView(popup));
+        popup.view = spy(new ConditionPopupView(popup){
+
+            @Override
+            protected Image getEditImage(){
+                return mock(Image.class);
+            }
+            @Override
+            protected Image getDisabledImage(){
+                return mock(Image.class);
+            }
+        });
     }
 
     private void setUpPopup(final GuidedDecisionTable52 model,
@@ -120,7 +131,12 @@ public class ConditionPopupTest {
                                             pattern,
                                             column,
                                             isNew,
-                                            isReadOnly));
+                                            isReadOnly){
+            @Override
+            protected ConditionPopupView getWidgets(){
+                return mock(ConditionPopupView.class);
+            }
+        });
     }
 
     @Test
@@ -320,7 +336,12 @@ public class ConditionPopupTest {
                    false,
                    false);
 
-        popup.view = spy(new ConditionPopupView(popup));
+        popup.view = spy(new ConditionPopupView(popup){
+            @Override
+            protected Image getEditImage(){ return mock(Image.class); }
+            @Override
+            protected Image getDisabledImage(){ return mock(Image.class); }
+        });
 
         popup.applyChanges();
         verify(popup.view).warnAboutMissingColumnHeaderDescription();
@@ -335,7 +356,12 @@ public class ConditionPopupTest {
                    false,
                    false);
 
-        popup.view = spy(new ConditionPopupView(popup));
+        popup.view = spy(new ConditionPopupView(popup){
+            @Override
+            protected Image getEditImage(){ return mock(Image.class); }
+            @Override
+            protected Image getDisabledImage(){ return mock(Image.class); }
+        });
 
         popup.applyChanges();
         verify(popup.view).warnAboutMissingFactField();
@@ -350,7 +376,12 @@ public class ConditionPopupTest {
                    false,
                    false);
 
-        popup.view = spy(new ConditionPopupView(popup));
+        popup.view = spy(new ConditionPopupView(popup){
+            @Override
+            protected Image getEditImage(){ return mock(Image.class); }
+            @Override
+            protected Image getDisabledImage(){ return mock(Image.class); }
+        });
 
         popup.applyChanges();
         verify(popup.view).warnAboutMissingOperator();
@@ -384,7 +415,12 @@ public class ConditionPopupTest {
                    false,
                    false);
 
-        popup.view = spy(new ConditionPopupView(popup));
+        popup.view = spy(new ConditionPopupView(popup){
+            @Override
+            protected Image getEditImage(){ return mock(Image.class); }
+            @Override
+            protected Image getDisabledImage(){ return mock(Image.class); }
+        });
 
         popup.applyChanges();
         verify(popup.view,
@@ -400,7 +436,12 @@ public class ConditionPopupTest {
                    false,
                    false);
 
-        popup.view = spy(new ConditionPopupView(popup));
+        popup.view = spy(new ConditionPopupView(popup){
+            @Override
+            protected Image getEditImage(){ return mock(Image.class); }
+            @Override
+            protected Image getDisabledImage(){ return mock(Image.class); }
+        });
 
         popup.applyChanges();
         verify(popup.view,
@@ -416,7 +457,12 @@ public class ConditionPopupTest {
                    false,
                    false);
 
-        popup.view = spy(new ConditionPopupView(popup));
+        popup.view = spy(new ConditionPopupView(popup){
+            @Override
+            protected Image getEditImage(){ return mock(Image.class); }
+            @Override
+            protected Image getDisabledImage(){ return mock(Image.class); }
+        });
 
         popup.applyChanges();
         verify(popup.view,
@@ -440,7 +486,12 @@ public class ConditionPopupTest {
                    true,
                    false);
 
-        popup.view = spy(new ConditionPopupView(popup));
+        popup.view = spy(new ConditionPopupView(popup){
+            @Override
+            protected Image getEditImage(){ return mock(Image.class); }
+            @Override
+            protected Image getDisabledImage(){ return mock(Image.class); }
+        });
 
         popup.applyChanges();
         verify(popup.view).warnAboutAlreadyUsedColumnHeaderName();

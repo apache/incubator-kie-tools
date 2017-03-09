@@ -285,15 +285,23 @@ public class ActionSetFieldPopup extends FormStylePopup {
     }
 
     private Image createDisabledEditButton() {
-        Image disabledChangePattern = GuidedDecisionTableImageResources508.INSTANCE.EditDisabled();
+        Image disabledChangePattern = getEditDisabledImage();
         disabledChangePattern.setAltText( GuidedDecisionTableConstants.INSTANCE.ChooseABoundFactThatThisColumnPertainsTo() );
         return disabledChangePattern;
     }
 
+    protected Image getEditDisabledImage() {
+        return GuidedDecisionTableImageResources508.INSTANCE.EditDisabled();
+    }
+
     private Image createEnabledEditButton() {
-        Image enabledChangePattern = GuidedDecisionTableImageResources508.INSTANCE.Edit();
+        Image enabledChangePattern = getEditImage();
         enabledChangePattern.setAltText( GuidedDecisionTableConstants.INSTANCE.ChooseABoundFactThatThisColumnPertainsTo() );
         return enabledChangePattern;
+    }
+
+    protected Image getEditImage() {
+        return GuidedDecisionTableImageResources508.INSTANCE.Edit();
     }
 
     private boolean allowEmptyValues() {

@@ -35,8 +35,13 @@ public abstract class AttributeSelectorPopup extends FormStylePopup {
     protected ListBox list;
 
     public AttributeSelectorPopup() {
-        super( GuidedRuleEditorImages508.INSTANCE.Configure(),
+        this( GuidedRuleEditorImages508.INSTANCE.Configure(),
                GuidedRuleEditorResources.CONSTANTS.AddAnOptionToTheRule() );
+    }
+
+    public AttributeSelectorPopup( final Image icon,
+                                   final String title ) {
+        super(icon, title);
     }
 
     protected final void initialize() {
@@ -104,7 +109,7 @@ public abstract class AttributeSelectorPopup extends FormStylePopup {
 
     protected abstract void handleAttributeAddition( final String attributeName );
 
-    private Image getAddButton() {
+    protected Image getAddButton() {
         final Image addbutton = GuidedRuleEditorImages508.INSTANCE.NewItem();
         addbutton.setAltText( GuidedRuleEditorResources.CONSTANTS.AddMetadataToTheRule() );
         addbutton.setTitle( GuidedRuleEditorResources.CONSTANTS.AddMetadataToTheRule() );

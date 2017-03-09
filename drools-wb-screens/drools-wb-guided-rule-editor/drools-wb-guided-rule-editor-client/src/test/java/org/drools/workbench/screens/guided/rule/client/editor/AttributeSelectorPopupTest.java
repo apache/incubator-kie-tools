@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
@@ -43,7 +44,7 @@ import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-@WithClassesToStub({GuidedRuleEditorImages508.class, Heading.class})
+@WithClassesToStub({Heading.class})
 @RunWith(GwtMockitoTestRunner.class)
 public class AttributeSelectorPopupTest {
 
@@ -119,6 +120,10 @@ public class AttributeSelectorPopupTest {
 
     private static class MockAttributeSelectorPopup extends AttributeSelectorPopup {
 
+        public MockAttributeSelectorPopup(){
+            super(mock(Image.class),"titleMock");
+        }
+
         @Override
         protected String[] getAttributes() {
             return attributes;
@@ -147,6 +152,11 @@ public class AttributeSelectorPopupTest {
         @Override
         protected void handleMetadataAddition(String metadataName) {
             // mock, do nothing
+        }
+
+        @Override
+        protected Image getAddButton(){
+            return mock(Image.class);
         }
     }
 }

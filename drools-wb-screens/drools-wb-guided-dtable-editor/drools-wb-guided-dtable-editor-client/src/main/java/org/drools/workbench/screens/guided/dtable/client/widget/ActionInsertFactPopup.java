@@ -278,9 +278,9 @@ public class ActionInsertFactPopup extends FormStylePopup {
     }
 
     private ImageButton createEditFieldButton() {
-        Image edit = GuidedDecisionTableImageResources508.INSTANCE.Edit();
+        Image edit = getEditImage();
         edit.setAltText( GuidedDecisionTableConstants.INSTANCE.EditTheFieldThatThisColumnOperatesOn() );
-        Image editDisabled = GuidedDecisionTableImageResources508.INSTANCE.EditDisabled();
+        Image editDisabled = getEditDisabledImage();
         editDisabled.setAltText( GuidedDecisionTableConstants.INSTANCE.EditTheFieldThatThisColumnOperatesOn() );
         return new ImageButton( edit,
                                 editDisabled,
@@ -293,9 +293,9 @@ public class ActionInsertFactPopup extends FormStylePopup {
     }
 
     private ImageButton createChangePatternButton() {
-        Image edit = GuidedDecisionTableImageResources508.INSTANCE.Edit();
+        Image edit = getEditImage();
         edit.setAltText( GuidedDecisionTableConstants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo() );
-        Image editDisabled = GuidedDecisionTableImageResources508.INSTANCE.EditDisabled();
+        Image editDisabled = getEditDisabledImage();
         editDisabled.setAltText( GuidedDecisionTableConstants.INSTANCE.ChooseAPatternThatThisColumnAddsDataTo() );
 
         return new ImageButton( edit,
@@ -306,6 +306,14 @@ public class ActionInsertFactPopup extends FormStylePopup {
                                         showChangePattern( w );
                                     }
                                 } );
+    }
+
+    protected Image getEditDisabledImage() {
+        return GuidedDecisionTableImageResources508.INSTANCE.EditDisabled();
+    }
+
+    protected Image getEditImage() {
+        return GuidedDecisionTableImageResources508.INSTANCE.Edit();
     }
 
     private boolean allowEmptyValues() {

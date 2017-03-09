@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.widget;
 
 import java.util.HashMap;
 
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.drools.workbench.models.datamodel.oracle.DataType;
@@ -39,7 +40,7 @@ import org.uberfire.ext.widgets.common.client.common.ImageButton;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-@WithClassesToStub({ Text.class, GuidedDecisionTableImageResources508.class })
+@WithClassesToStub({ Text.class })
 public class ActionSetFieldPopupTest {
 
     @Mock
@@ -71,7 +72,17 @@ public class ActionSetFieldPopupTest {
                                                    refreshGrid,
                                                    column,
                                                    isNew,
-                                                   isReadOnly ) );
+                                                   isReadOnly ) {
+            @Override
+            protected Image getEditImage() { return mock(Image.class); }
+
+            @Override
+            protected Image getEditDisabledImage() {
+                return mock (Image.class);
+            }
+
+        });
+
         this.popup.editField = mock( ImageButton.class );
     }
 

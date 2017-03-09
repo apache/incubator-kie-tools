@@ -26,11 +26,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.HasCEPWindow;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52.TableFormat;
@@ -102,22 +98,30 @@ public class ConditionPopupView extends FormStylePopup {
 
         this.presenter = presenter;
 
-        changePattern = new ImageButton( GuidedDecisionTableImageResources508.INSTANCE.Edit(),
-                GuidedDecisionTableImageResources508.INSTANCE.EditDisabled(),
+        changePattern = new ImageButton(getEditImage(),
+                getDisabledImage(),
                 GuidedDecisionTableConstants.INSTANCE.ChooseAnExistingPatternThatThisColumnAddsTo()
         );
 
-        editField = new ImageButton( GuidedDecisionTableImageResources508.INSTANCE.Edit(),
-                GuidedDecisionTableImageResources508.INSTANCE.EditDisabled(),
+        editField = new ImageButton(getEditImage(),
+                getDisabledImage(),
                 GuidedDecisionTableConstants.INSTANCE.EditTheFieldThatThisColumnOperatesOn() );
 
-        editOp = new ImageButton( GuidedDecisionTableImageResources508.INSTANCE.Edit(),
-                GuidedDecisionTableImageResources508.INSTANCE.EditDisabled(),
+        editOp = new ImageButton(getEditImage(),
+                getDisabledImage(),
                 GuidedDecisionTableConstants.INSTANCE.EditTheOperatorThatIsUsedToCompareDataWithThisField() );
 
         entryPointName = new TextBox();
         header = new TextBox();
         valueListWidget = new TextBox();
+    }
+
+    protected Image getDisabledImage() {
+        return GuidedDecisionTableImageResources508.INSTANCE.EditDisabled();
+    }
+
+    protected Image getEditImage() {
+        return GuidedDecisionTableImageResources508.INSTANCE.Edit();
     }
 
     public void initializeView() {

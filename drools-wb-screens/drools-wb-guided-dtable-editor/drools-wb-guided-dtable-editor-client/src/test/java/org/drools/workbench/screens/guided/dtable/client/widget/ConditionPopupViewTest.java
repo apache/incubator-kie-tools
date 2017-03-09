@@ -6,6 +6,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -36,11 +37,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 
 @WithClassesToStub( {Modal.class,
                      GuidedDecisionTableImageResources508.class,
@@ -121,7 +119,16 @@ public class ConditionPopupViewTest {
         when( presenter.getEditingPattern() ).thenReturn( pattern52 );
         when( presenter.getConstraintValueType() ).thenReturn( BaseSingleFieldConstraint.TYPE_LITERAL );
         when( presenter.getTableFormat() ).thenReturn( GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY );
-        view = spy( new ConditionPopupView( presenter ) );
+        view = spy( new ConditionPopupView( presenter ) {
+            @Override
+            protected Image getEditImage(){
+                return mock(Image.class);
+            }
+            @Override
+            protected Image getDisabledImage(){
+                return mock(Image.class);
+            }
+        });
     }
 
 

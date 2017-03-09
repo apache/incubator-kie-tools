@@ -129,8 +129,12 @@ public class ConditionPopup {
                                                        isReadOnly,
                                                        allowEmptyValues());
 
-        view = new ConditionPopupView(this);
+        view = getWidgets();
         view.initializeView();
+    }
+
+    protected ConditionPopupView getWidgets() {
+        return new ConditionPopupView(this);
     }
 
     public void show() {

@@ -18,12 +18,12 @@ package org.drools.workbench.screens.guided.dtable.client.widget;
 
 import java.util.HashMap;
 
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import com.google.gwtmockito.WithClassesToStub;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTableView;
 import org.gwtbootstrap3.client.ui.html.Text;
 import org.junit.BeforeClass;
@@ -36,7 +36,7 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-@WithClassesToStub({ Text.class, GuidedDecisionTableImageResources508.class })
+@WithClassesToStub({ Text.class })
 public class ActionInsertFactPopupTest {
 
     @Mock
@@ -68,7 +68,17 @@ public class ActionInsertFactPopupTest {
                                                      refreshGrid,
                                                      column,
                                                      isNew,
-                                                     isReadOnly ) );
+                                                     isReadOnly) {
+            @Override
+            protected Image getEditImage() {
+                return mock(Image.class);
+            }
+
+            @Override
+            protected Image getEditDisabledImage() {
+                return mock (Image.class);
+            }
+        } );
     }
 
     @Test
