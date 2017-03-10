@@ -65,137 +65,206 @@ public class LibraryToolbarPresenterTest {
 
     private Command callback;
 
+    private ArrayList<String> selectedRepositoryBranches;
+
     @Before
     public void setup() {
-        libraryServiceCaller = new CallerMock<>( libraryService );
-        presenter = new LibraryToolbarPresenter( view,
-                                                 libraryServiceCaller,
-                                                 libraryPreferences,
-                                                 placeManager,
-                                                 libraryPlaces );
+        libraryServiceCaller = new CallerMock<>(libraryService);
+        presenter = new LibraryToolbarPresenter(view,
+                                                libraryServiceCaller,
+                                                libraryPreferences,
+                                                placeManager,
+                                                libraryPlaces);
 
-        selectedOrganizationalUnit = mock( OrganizationalUnit.class );
-        doReturn( "organizationalUnit1" ).when( selectedOrganizationalUnit ).getIdentifier();
-        OrganizationalUnit organizationalUnit2 = mock( OrganizationalUnit.class );
-        doReturn( "organizationalUnit2" ).when( organizationalUnit2 ).getIdentifier();
+        selectedOrganizationalUnit = mock(OrganizationalUnit.class);
+        doReturn("organizationalUnit1").when(selectedOrganizationalUnit).getIdentifier();
+        OrganizationalUnit organizationalUnit2 = mock(OrganizationalUnit.class);
+        doReturn("organizationalUnit2").when(organizationalUnit2).getIdentifier();
         List<OrganizationalUnit> organizationalUnits = new ArrayList<>();
-        organizationalUnits.add( selectedOrganizationalUnit );
-        organizationalUnits.add( organizationalUnit2 );
+        organizationalUnits.add(selectedOrganizationalUnit);
+        organizationalUnits.add(organizationalUnit2);
 
-        selectedRepository = mock( Repository.class );
-        doReturn( "repository1" ).when( selectedRepository ).getAlias();
-        Repository repository2 = mock( Repository.class );
-        doReturn( "repository2" ).when( repository2 ).getAlias();
+        selectedRepository = mock(Repository.class);
+        selectedRepositoryBranches = new ArrayList<>();
+        selectedRepositoryBranches.add("master");
+        when(selectedRepository.getDefaultBranch()).thenReturn("master");
+        when(selectedRepository.getBranches()).thenReturn(selectedRepositoryBranches);
+        doReturn("repository1").when(selectedRepository).getAlias();
+        Repository repository2 = mock(Repository.class);
+        doReturn("repository2").when(repository2).getAlias();
+        doReturn("defaultBranch").when(repository2).getDefaultBranch();
         List<Repository> repositories = new ArrayList<>();
-        repositories.add( selectedRepository );
-        repositories.add( repository2 );
+        repositories.add(selectedRepository);
+        repositories.add(repository2);
 
         final OrganizationalUnitRepositoryInfo organizationalUnitRepositoryInfo
-                = new OrganizationalUnitRepositoryInfo( organizationalUnits,
-                                                        selectedOrganizationalUnit,
-                                                        repositories,
-                                                        selectedRepository );
+                = new OrganizationalUnitRepositoryInfo(organizationalUnits,
+                                                       selectedOrganizationalUnit,
+                                                       repositories,
+                                                       selectedRepository);
 
-        doReturn( organizationalUnitRepositoryInfo )
-                .when( libraryService ).getDefaultOrganizationalUnitRepositoryInfo();
-        doReturn( organizationalUnitRepositoryInfo )
-                .when( libraryService ).getOrganizationalUnitRepositoryInfo( organizationalUnit2 );
+        doReturn(organizationalUnitRepositoryInfo)
+                .when(libraryService).getDefaultOrganizationalUnitRepositoryInfo();
+        doReturn(organizationalUnitRepositoryInfo)
+                .when(libraryService).getOrganizationalUnitRepositoryInfo(organizationalUnit2);
 
-        callback = mock( Command.class );
+        callback = mock(Command.class);
     }
 
     @Test
     public void initTest() {
-        presenter.init( callback );
+        presenter.init(callback);
 
-        assertEquals( selectedOrganizationalUnit, presenter.getSelectedOrganizationalUnit() );
-        assertEquals( selectedRepository, presenter.getSelectedRepository() );
+        assertEquals(selectedOrganizationalUnit,
+                     presenter.getSelectedOrganizationalUnit());
+        assertEquals(selectedRepository,
+                     presenter.getSelectedRepository());
+        assertEquals("master",
+                     presenter.getSelectedBranch());
 
-        verify( view ).init( presenter );
+        verify(view).init(presenter);
 
-        verify( view ).clearOrganizationalUnits();
-        verify( view ).addOrganizationUnit( "organizationalUnit1" );
-        verify( view ).addOrganizationUnit( "organizationalUnit2" );
-        verify( view ).setSelectedOrganizationalUnit( "organizationalUnit1" );
+        verify(view).clearOrganizationalUnits();
+        verify(view).addOrganizationUnit("organizationalUnit1");
+        verify(view).addOrganizationUnit("organizationalUnit2");
+        verify(view).setSelectedOrganizationalUnit("organizationalUnit1");
 
-        verify( view ).clearRepositories();
-        verify( view ).addRepository( "repository1" );
-        verify( view ).addRepository( "repository2" );
-        verify( view ).setSelectedRepository( "repository1" );
+        verify(view).clearRepositories();
+        verify(view).addRepository("repository1");
+        verify(view).addRepository("repository2");
+        verify(view).setSelectedRepository("repository1");
 
-        verify( callback ).execute();
+        verify(callback).execute();
+    }
+
+    @Test
+    public void showBranchSelectorOnInit() throws Exception {
+        presenter.init(callback);
+
+        verify(view).setBranchSelectorVisibility(false);
+    }
+
+    @Test
+    public void hideBranchSelectorOnInit() throws Exception {
+        selectedRepositoryBranches.add("dev");
+
+        presenter.init(callback);
+
+        verify(view).setBranchSelectorVisibility(true);
     }
 
     @Test
     public void updateSelectedOrganizationalUnitFailedTest() {
-        presenter.init( callback );
-        Mockito.reset( view );
+        presenter.init(callback);
+        Mockito.reset(view);
 
-        doReturn( false ).when( placeManager ).closeAllPlacesOrNothing();
-        doReturn( "organizationalUnit2" ).when( view ).getSelectedOrganizationalUnit();
-        doReturn( "repository2" ).when( view ).getSelectedRepository();
+        doReturn(false).when(placeManager).closeAllPlacesOrNothing();
+        doReturn("organizationalUnit2").when(view).getSelectedOrganizationalUnit();
+        doReturn("repository2").when(view).getSelectedRepository();
 
-        presenter.updateSelectedOrganizationalUnit();
+        presenter.onUpdateSelectedOrganizationalUnit();
 
-        assertEquals( "organizationalUnit1", presenter.getSelectedOrganizationalUnit().getIdentifier() );
-        assertEquals( "repository1", presenter.getSelectedRepository().getAlias() );
+        assertEquals("organizationalUnit1",
+                     presenter.getSelectedOrganizationalUnit().getIdentifier());
+        assertEquals("repository1",
+                     presenter.getSelectedRepository().getAlias());
+        assertEquals("master",
+                     presenter.getSelectedBranch());
     }
 
     @Test
     public void updateSelectedOrganizationalUnitSucceededTest() {
-        presenter.init( callback );
-        Mockito.reset( view );
+        presenter.init(callback);
+        Mockito.reset(view);
 
-        doReturn( true ).when( placeManager ).closeAllPlacesOrNothing();
-        doReturn( "organizationalUnit2" ).when( view ).getSelectedOrganizationalUnit();
-        doReturn( "repository2" ).when( view ).getSelectedRepository();
+        doReturn(true).when(placeManager).closeAllPlacesOrNothing();
+        doReturn("organizationalUnit2").when(view).getSelectedOrganizationalUnit();
+        doReturn("repository2").when(view).getSelectedRepository();
 
-        presenter.updateSelectedOrganizationalUnit();
+        presenter.onUpdateSelectedOrganizationalUnit();
 
-        assertEquals( "organizationalUnit2", presenter.getSelectedOrganizationalUnit().getIdentifier() );
-        assertEquals( "repository2", presenter.getSelectedRepository().getAlias() );
+        assertEquals("organizationalUnit2",
+                     presenter.getSelectedOrganizationalUnit().getIdentifier());
+        assertEquals("repository2",
+                     presenter.getSelectedRepository().getAlias());
 
-        verify( libraryPlaces ).goToLibrary();
+        verify(libraryPlaces).goToLibrary();
 
-        verify( view ).clearRepositories();
-        verify( view ).addRepository( "repository1" );
-        verify( view ).addRepository( "repository2" );
-        verify( view ).setSelectedRepository( "repository1" );
+        verify(view).clearRepositories();
+        verify(view).addRepository("repository1");
+        verify(view).addRepository("repository2");
+        verify(view).setSelectedRepository("repository1");
     }
 
     @Test
     public void updateSelectedRepositoryFailedTest() {
-        presenter.init( callback );
-        Mockito.reset( view );
+        presenter.init(callback);
+        Mockito.reset(view);
 
-        doReturn( false ).when( placeManager ).closeAllPlacesOrNothing();
-        doReturn( "organizationalUnit1" ).when( view ).getSelectedOrganizationalUnit();
-        doReturn( "repository2" ).when( view ).getSelectedRepository();
+        doReturn(false).when(placeManager).closeAllPlacesOrNothing();
+        doReturn("organizationalUnit1").when(view).getSelectedOrganizationalUnit();
+        doReturn("repository2").when(view).getSelectedRepository();
 
-        presenter.updateSelectedRepository();
+        presenter.onUpdateSelectedRepository();
 
-        assertEquals( "organizationalUnit1", presenter.getSelectedOrganizationalUnit().getIdentifier() );
-        assertEquals( "repository1", presenter.getSelectedRepository().getAlias() );
+        assertEquals("organizationalUnit1",
+                     presenter.getSelectedOrganizationalUnit().getIdentifier());
+        assertEquals("repository1",
+                     presenter.getSelectedRepository().getAlias());
     }
 
     @Test
     public void updateSelectedRepositorySucceededTest() {
-        presenter.init( callback );
-        Mockito.reset( view );
+        presenter.init(callback);
+        Mockito.reset(view);
 
-        doReturn( true ).when( placeManager ).closeAllPlacesOrNothing();
-        doReturn( "organizationalUnit1" ).when( view ).getSelectedOrganizationalUnit();
-        doReturn( "repository2" ).when( view ).getSelectedRepository();
+        doReturn(true).when(placeManager).closeAllPlacesOrNothing();
+        doReturn("organizationalUnit1").when(view).getSelectedOrganizationalUnit();
+        doReturn("repository2").when(view).getSelectedRepository();
 
-        presenter.updateSelectedRepository();
+        presenter.onUpdateSelectedRepository();
 
-        assertEquals( "organizationalUnit1", presenter.getSelectedOrganizationalUnit().getIdentifier() );
-        assertEquals( "repository2", presenter.getSelectedRepository().getAlias() );
+        assertEquals("organizationalUnit1",
+                     presenter.getSelectedOrganizationalUnit().getIdentifier());
+        assertEquals("repository2",
+                     presenter.getSelectedRepository().getAlias());
+        assertEquals("defaultBranch",
+                     presenter.getSelectedBranch());
 
-        verify( libraryPlaces ).goToLibrary();
+        verify(libraryPlaces).goToLibrary();
 
-        verify( view, never() ).clearRepositories();
-        verify( view, never() ).addRepository( anyString() );
-        verify( view, never() ).setSelectedRepository( anyString() );
+        verify(view,
+               never()).clearRepositories();
+        verify(view,
+               never()).addRepository(anyString());
+        verify(view,
+               never()).setSelectedRepository(anyString());
+        verify(view).setSelectedBranch("defaultBranch");
+    }
+
+    @Test
+    public void updateSelectedBranch() throws Exception {
+        selectedRepositoryBranches.add("dev");
+
+        presenter.init(callback);
+        Mockito.reset(view);
+
+        doReturn(true).when(placeManager).closeAllPlacesOrNothing();
+        doReturn("organizationalUnit1").when(view).getSelectedOrganizationalUnit();
+        doReturn("repository1").when(view).getSelectedRepository();
+        doReturn("dev").when(view).getSelectedBranch();
+
+        presenter.onUpdateSelectedBranch();
+
+        verify(libraryPlaces).goToLibrary();
+
+        verify(view,
+               never()).clearRepositories();
+        verify(view,
+               never()).addRepository(anyString());
+        verify(view,
+               never()).setSelectedRepository(anyString());
+        verify(view,
+               never()).setSelectedBranch("dev");
     }
 }

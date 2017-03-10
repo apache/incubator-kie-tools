@@ -58,226 +58,213 @@ public class ExamplesWizardTest {
     private static final String EXAMPLE_REPOSITORY1 = "https://github.com/guvnorngtestuser1/guvnorng-playground.git";
     private static final String EXAMPLE_ORGANIZATIONAL_UNIT1 = "ou1";
     private static final String EXAMPLE_ORGANIZATIONAL_UNIT2 = "ou2";
-
+    private final WizardView mockView = mock(WizardView.class);
+    private final ExampleRepository repository = new ExampleRepository(EXAMPLE_REPOSITORY1);
+    private final Set<ExampleOrganizationalUnit> organizationalUnits = new HashSet<ExampleOrganizationalUnit>() {{
+        add(new ExampleOrganizationalUnit(EXAMPLE_ORGANIZATIONAL_UNIT1));
+        add(new ExampleOrganizationalUnit(EXAMPLE_ORGANIZATIONAL_UNIT2));
+    }};
     @Mock
     private RepositoryPage repositoryPage;
-
     @Mock
     private ProjectPage projectPage;
-
     @Mock
     private OUPage organizationalUnitPage;
-
     @Mock
     private BusyIndicatorView busyIndicatorView;
-
-    private ExamplesService examplesService = mock( ExamplesService.class );
-    private Caller<ExamplesService> examplesServiceCaller = new CallerMock<ExamplesService>( examplesService );
-
+    private ExamplesService examplesService = mock(ExamplesService.class);
+    private Caller<ExamplesService> examplesServiceCaller = new CallerMock<ExamplesService>(examplesService);
     @Spy
     private Event<ProjectContextChangeEvent> event = new EventSourceMock<ProjectContextChangeEvent>() {
         @Override
-        public void fire( final ProjectContextChangeEvent event ) {
+        public void fire(final ProjectContextChangeEvent event) {
             //Do nothing. Default implementation throws an exception.
         }
     };
-
     @Mock
     private TranslationService translator;
-
     @Captor
     private ArgumentCaptor<ExampleRepository> repositoryArgumentCaptor;
-
     @Captor
     private ArgumentCaptor<Set<ExampleOrganizationalUnit>> organizationalUnitsArgumentCaptor;
-
     @Mock
     private Callback<Boolean> callback;
-
-    private final WizardView mockView = mock( WizardView.class );
-
-    private final ExampleRepository repository = new ExampleRepository( EXAMPLE_REPOSITORY1 );
-
-    private final Set<ExampleOrganizationalUnit> organizationalUnits = new HashSet<ExampleOrganizationalUnit>() {{
-        add( new ExampleOrganizationalUnit( EXAMPLE_ORGANIZATIONAL_UNIT1 ) );
-        add( new ExampleOrganizationalUnit( EXAMPLE_ORGANIZATIONAL_UNIT2 ) );
-    }};
-    private ExamplesMetaData metaData = new ExamplesMetaData( repository,
-                                                              organizationalUnits );
+    private ExamplesMetaData metaData = new ExamplesMetaData(repository,
+                                                             organizationalUnits);
 
     private ExamplesWizard wizard;
 
     @Before
     public void setup() {
-        wizard = new ExamplesWizard( repositoryPage,
-                                     projectPage,
-                                     organizationalUnitPage,
-                                     busyIndicatorView,
-                                     examplesServiceCaller,
-                                     event,
-                                     translator ) {
+        wizard = new ExamplesWizard(repositoryPage,
+                                    projectPage,
+                                    organizationalUnitPage,
+                                    busyIndicatorView,
+                                    examplesServiceCaller,
+                                    event,
+                                    translator) {
             {
                 this.view = mockView;
             }
         };
-        when( examplesService.getMetaData() ).thenReturn( metaData );
+        when(examplesService.getMetaData()).thenReturn(metaData);
     }
 
     @Test
     public void testStart() {
-        final ArgumentCaptor<ExamplesWizardModel> modelArgumentCaptor = ArgumentCaptor.forClass( ExamplesWizardModel.class );
+        final ArgumentCaptor<ExamplesWizardModel> modelArgumentCaptor = ArgumentCaptor.forClass(ExamplesWizardModel.class);
 
         wizard.start();
-        verify( repositoryPage,
-                times( 1 ) ).initialise();
-        verify( projectPage,
-                times( 1 ) ).initialise();
-        verify( organizationalUnitPage,
-                times( 1 ) ).initialise();
-        verify( repositoryPage,
-                times( 1 ) ).setModel( modelArgumentCaptor.capture() );
-        verify( projectPage,
-                times( 1 ) ).setModel( modelArgumentCaptor.getValue() );
-        verify( organizationalUnitPage,
-                times( 1 ) ).setModel( modelArgumentCaptor.getValue() );
-        verify( repositoryPage,
-                times( 1 ) ).setPlaygroundRepository( repositoryArgumentCaptor.capture() );
-        verify( organizationalUnitPage,
-                times( 1 ) ).setOrganizationalUnits( organizationalUnitsArgumentCaptor.capture() );
+        verify(repositoryPage,
+               times(1)).initialise();
+        verify(projectPage,
+               times(1)).initialise();
+        verify(organizationalUnitPage,
+               times(1)).initialise();
+        verify(repositoryPage,
+               times(1)).setModel(modelArgumentCaptor.capture());
+        verify(projectPage,
+               times(1)).setModel(modelArgumentCaptor.getValue());
+        verify(organizationalUnitPage,
+               times(1)).setModel(modelArgumentCaptor.getValue());
+        verify(repositoryPage,
+               times(1)).setPlaygroundRepository(repositoryArgumentCaptor.capture());
+        verify(organizationalUnitPage,
+               times(1)).setOrganizationalUnits(organizationalUnitsArgumentCaptor.capture());
 
-        assertEquals( repository,
-                      repositoryArgumentCaptor.getValue() );
-        assertEquals( organizationalUnits,
-                      organizationalUnitsArgumentCaptor.getValue() );
+        assertEquals(repository,
+                     repositoryArgumentCaptor.getValue());
+        assertEquals(organizationalUnits,
+                     organizationalUnitsArgumentCaptor.getValue());
     }
 
     @Test
     public void testClose() {
         wizard.close();
 
-        verify( repositoryPage,
-                times( 1 ) ).destroy();
-        verify( projectPage,
-                times( 1 ) ).destroy();
-        verify( organizationalUnitPage,
-                times( 1 ) ).destroy();
+        verify(repositoryPage,
+               times(1)).destroy();
+        verify(projectPage,
+               times(1)).destroy();
+        verify(organizationalUnitPage,
+               times(1)).destroy();
     }
 
     @Test
     public void testGetPageWidget() {
-        wizard.getPageWidget( 0 );
-        verify( repositoryPage,
-                times( 1 ) ).prepareView();
-        verify( repositoryPage,
-                times( 1 ) ).asWidget();
+        wizard.getPageWidget(0);
+        verify(repositoryPage,
+               times(1)).prepareView();
+        verify(repositoryPage,
+               times(1)).asWidget();
 
-        wizard.getPageWidget( 1 );
-        verify( projectPage,
-                times( 1 ) ).prepareView();
-        verify( projectPage,
-                times( 1 ) ).asWidget();
+        wizard.getPageWidget(1);
+        verify(projectPage,
+               times(1)).prepareView();
+        verify(projectPage,
+               times(1)).asWidget();
 
-        wizard.getPageWidget( 2 );
-        verify( organizationalUnitPage,
-                times( 1 ) ).prepareView();
-        verify( organizationalUnitPage,
-                times( 1 ) ).asWidget();
+        wizard.getPageWidget(2);
+        verify(organizationalUnitPage,
+               times(1)).prepareView();
+        verify(organizationalUnitPage,
+               times(1)).asWidget();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testIsComplete_RepositoryPageIncomplete() {
-        doAnswer( new Answer<Boolean>() {
+        doAnswer(new Answer<Boolean>() {
             @Override
-            public Boolean answer( final InvocationOnMock invocation ) throws Throwable {
-                final Callback<Boolean> callback = (Callback<Boolean>) invocation.getArguments()[ 0 ];
-                callback.callback( false );
+            public Boolean answer(final InvocationOnMock invocation) throws Throwable {
+                final Callback<Boolean> callback = (Callback<Boolean>) invocation.getArguments()[0];
+                callback.callback(false);
                 return null;
             }
-        } ).when( repositoryPage ).isComplete( any( Callback.class ) );
+        }).when(repositoryPage).isComplete(any(Callback.class));
 
-        wizard.isComplete( callback );
+        wizard.isComplete(callback);
 
-        verify( callback,
-                times( 1 ) ).callback( eq( true ) );
-        verify( callback,
-                times( 1 ) ).callback( eq( false ) );
+        verify(callback,
+               times(1)).callback(eq(true));
+        verify(callback,
+               times(1)).callback(eq(false));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testIsComplete_ProjectPageIncomplete() {
-        doAnswer( new Answer<Boolean>() {
+        doAnswer(new Answer<Boolean>() {
             @Override
-            public Boolean answer( final InvocationOnMock invocation ) throws Throwable {
-                final Callback<Boolean> callback = (Callback<Boolean>) invocation.getArguments()[ 0 ];
-                callback.callback( false );
+            public Boolean answer(final InvocationOnMock invocation) throws Throwable {
+                final Callback<Boolean> callback = (Callback<Boolean>) invocation.getArguments()[0];
+                callback.callback(false);
                 return null;
             }
-        } ).when( projectPage ).isComplete( any( Callback.class ) );
+        }).when(projectPage).isComplete(any(Callback.class));
 
-        wizard.isComplete( callback );
+        wizard.isComplete(callback);
 
-        verify( callback,
-                times( 1 ) ).callback( eq( true ) );
-        verify( callback,
-                times( 1 ) ).callback( eq( false ) );
+        verify(callback,
+               times(1)).callback(eq(true));
+        verify(callback,
+               times(1)).callback(eq(false));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testIsComplete_OrganizationalUnitPageIncomplete() {
-        doAnswer( new Answer<Boolean>() {
+        doAnswer(new Answer<Boolean>() {
             @Override
-            public Boolean answer( final InvocationOnMock invocation ) throws Throwable {
-                final Callback<Boolean> callback = (Callback<Boolean>) invocation.getArguments()[ 0 ];
-                callback.callback( false );
+            public Boolean answer(final InvocationOnMock invocation) throws Throwable {
+                final Callback<Boolean> callback = (Callback<Boolean>) invocation.getArguments()[0];
+                callback.callback(false);
                 return null;
             }
-        } ).when( organizationalUnitPage ).isComplete( any( Callback.class ) );
+        }).when(organizationalUnitPage).isComplete(any(Callback.class));
 
-        wizard.isComplete( callback );
+        wizard.isComplete(callback);
 
-        verify( callback,
-                times( 1 ) ).callback( eq( true ) );
-        verify( callback,
-                times( 1 ) ).callback( eq( false ) );
+        verify(callback,
+               times(1)).callback(eq(true));
+        verify(callback,
+               times(1)).callback(eq(false));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testIsComplete_AllPagesComplete() {
-        doAnswer( new Answer<Boolean>() {
+        doAnswer(new Answer<Boolean>() {
             @Override
-            public Boolean answer( final InvocationOnMock invocation ) throws Throwable {
-                final Callback<Boolean> callback = (Callback<Boolean>) invocation.getArguments()[ 0 ];
-                callback.callback( true );
+            public Boolean answer(final InvocationOnMock invocation) throws Throwable {
+                final Callback<Boolean> callback = (Callback<Boolean>) invocation.getArguments()[0];
+                callback.callback(true);
                 return null;
             }
-        } ).when( repositoryPage ).isComplete( any( Callback.class ) );
-        doAnswer( new Answer<Boolean>() {
+        }).when(repositoryPage).isComplete(any(Callback.class));
+        doAnswer(new Answer<Boolean>() {
             @Override
-            public Boolean answer( final InvocationOnMock invocation ) throws Throwable {
-                final Callback<Boolean> callback = (Callback<Boolean>) invocation.getArguments()[ 0 ];
-                callback.callback( true );
+            public Boolean answer(final InvocationOnMock invocation) throws Throwable {
+                final Callback<Boolean> callback = (Callback<Boolean>) invocation.getArguments()[0];
+                callback.callback(true);
                 return null;
             }
-        } ).when( projectPage ).isComplete( any( Callback.class ) );
-        doAnswer( new Answer<Boolean>() {
+        }).when(projectPage).isComplete(any(Callback.class));
+        doAnswer(new Answer<Boolean>() {
             @Override
-            public Boolean answer( final InvocationOnMock invocation ) throws Throwable {
-                final Callback<Boolean> callback = (Callback<Boolean>) invocation.getArguments()[ 0 ];
-                callback.callback( true );
+            public Boolean answer(final InvocationOnMock invocation) throws Throwable {
+                final Callback<Boolean> callback = (Callback<Boolean>) invocation.getArguments()[0];
+                callback.callback(true);
                 return null;
             }
-        } ).when( organizationalUnitPage ).isComplete( any( Callback.class ) );
+        }).when(organizationalUnitPage).isComplete(any(Callback.class));
 
-        wizard.isComplete( callback );
+        wizard.isComplete(callback);
 
-        verify( callback,
-                times( 1 ) ).callback( eq( true ) );
-        verify( callback,
-                never() ).callback( eq( false ) );
+        verify(callback,
+               times(1)).callback(eq(true));
+        verify(callback,
+               never()).callback(eq(false));
     }
 
     @Test
@@ -286,16 +273,16 @@ public class ExamplesWizardTest {
         wizard.start();
         wizard.complete();
 
-        verify( busyIndicatorView,
-                times( 1 ) ).showBusyIndicator( any( String.class ) );
-        verify( busyIndicatorView,
-                times( 1 ) ).hideBusyIndicator();
-        verify( examplesService,
-                times( 1 ) ).setupExamples( any( ExampleOrganizationalUnit.class ),
-                                            any( ExampleTargetRepository.class ),
-                                            any( List.class ) );
-        verify( event,
-                times( 1 ) ).fire( any( ProjectContextChangeEvent.class ) );
+        verify(busyIndicatorView,
+               times(1)).showBusyIndicator(any(String.class));
+        verify(busyIndicatorView,
+               times(1)).hideBusyIndicator();
+        verify(examplesService,
+               times(1)).setupExamples(any(ExampleOrganizationalUnit.class),
+                                       any(ExampleTargetRepository.class),
+                                       anyString(),
+                                       any(List.class));
+        verify(event,
+               times(1)).fire(any(ProjectContextChangeEvent.class));
     }
-
 }

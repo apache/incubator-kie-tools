@@ -99,7 +99,8 @@ public class NewProjectScreenTest {
 
         libraryInfo = new LibraryInfo("master",
                                       new HashSet<>());
-        doReturn(libraryInfo).when(libraryService).getLibraryInfo(any(Repository.class));
+        doReturn(libraryInfo).when(libraryService).getLibraryInfo(any(Repository.class),
+                                                                  anyString());
 
         newProjectScreen.load();
     }

@@ -22,25 +22,13 @@ import org.uberfire.client.mvp.UberView;
 
 public interface RepositoryPageView extends UberView<RepositoryPage> {
 
-    interface Presenter {
-
-        void setPlaygroundRepository( final ExampleRepository repository );
-
-        void playgroundRepositorySelected();
-
-        void customRepositorySelected();
-
-        void customRepositoryValueChanged();
-
-    }
-
     void initialise();
 
-    void setPlaceHolder( final String placeHolder );
+    void setPlaceHolder(final String placeHolder);
 
-    void setUrlGroupType( final ValidationState state );
+    void setUrlGroupType(final ValidationState state);
 
-    void showUrlHelpMessage( final String message );
+    void showUrlHelpMessage(final String message);
 
     void hideUrlHelpMessage();
 
@@ -56,6 +44,16 @@ public interface RepositoryPageView extends UberView<RepositoryPage> {
 
     String getCustomRepositoryValue();
 
-    void setCustomRepositoryValue( final String value );
+    void setCustomRepositoryValue(final String value);
 
+    interface Presenter {
+
+        void setPlaygroundRepository(final ExampleRepository repository);
+
+        void playgroundRepositorySelected();
+
+        void onCustomRepositorySelected();
+
+        void onCustomRepositoryValueChanged();
+    }
 }

@@ -34,9 +34,10 @@ public interface LibraryService {
 
     OrganizationalUnitRepositoryInfo getDefaultOrganizationalUnitRepositoryInfo();
 
-    OrganizationalUnitRepositoryInfo getOrganizationalUnitRepositoryInfo( OrganizationalUnit selectedOrganizationalUnit );
+    OrganizationalUnitRepositoryInfo getOrganizationalUnitRepositoryInfo(final OrganizationalUnit selectedOrganizationalUnit);
 
-    LibraryInfo getLibraryInfo( Repository selectedRepository );
+    LibraryInfo getLibraryInfo(final Repository selectedRepository,
+                               final String branch);
 
     KieProject createProject(final String projectName,
                              final Repository selectedRepository,
@@ -44,15 +45,17 @@ public interface LibraryService {
 
     Boolean thereIsAProjectInTheWorkbench();
 
-    List<AssetInfo> getProjectAssets( Project project );
+    List<AssetInfo> getProjectAssets(final Project project);
 
-    Boolean hasProjects( Repository repository );
+    Boolean hasProjects(final Repository repository,
+                        final String branch);
 
-    Boolean hasAssets( Project project );
+    Boolean hasAssets(final Project project);
 
     Set<ExampleProject> getExampleProjects();
 
-    Project importProject( OrganizationalUnit organizationalUnit,
-                           Repository repository,
-                           ExampleProject exampleProject );
+    Project importProject(final OrganizationalUnit organizationalUnit,
+                          final Repository repository,
+                          final String branch,
+                          final ExampleProject exampleProject);
 }

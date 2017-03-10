@@ -18,7 +18,6 @@ package org.kie.workbench.common.screens.examples.client.wizard.pages.repository
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
 import javax.enterprise.event.Event;
 
 import org.gwtbootstrap3.client.ui.constants.ValidationState;
@@ -54,13 +53,13 @@ public class RepositoryPageTest {
     @Mock
     private TranslationService translator;
 
-    private ExamplesService examplesService = mock( ExamplesService.class );
-    private Caller<ExamplesService> examplesServiceCaller = new CallerMock<ExamplesService>( examplesService );
+    private ExamplesService examplesService = mock(ExamplesService.class);
+    private Caller<ExamplesService> examplesServiceCaller = new CallerMock<ExamplesService>(examplesService);
 
     @Spy
     private Event<WizardPageStatusChangeEvent> pageStatusChangedEvent = new EventSourceMock<WizardPageStatusChangeEvent>() {
         @Override
-        public void fire( final WizardPageStatusChangeEvent event ) {
+        public void fire(final WizardPageStatusChangeEvent event) {
             //Do nothing. Default implementation throws an exception.
         }
     };
@@ -74,17 +73,16 @@ public class RepositoryPageTest {
 
     @Before
     public void setup() {
-        page = new RepositoryPage( view,
-                                   translator,
-                                   examplesServiceCaller,
-                                   pageStatusChangedEvent ) {
+        page = new RepositoryPage(view,
+                                  translator,
+                                  examplesServiceCaller,
+                                  pageStatusChangedEvent) {
             @Override
-            boolean isUrlValid( final String url ) {
+            boolean isUrlValid(final String url) {
                 try {
                     //The Presenter uses GWT's URL utilities not available in regular Mockito tests
-                    new URL( url );
-
-                } catch ( MalformedURLException mfe ) {
+                    new URL(url);
+                } catch (MalformedURLException mfe) {
                     return false;
                 }
                 return true;
@@ -92,145 +90,144 @@ public class RepositoryPageTest {
         };
 
         model = new ExamplesWizardModel();
-        page.setModel( model );
+        page.setModel(model);
     }
 
     @Test
     public void testInit() {
         page.init();
-        verify( view,
-                times( 1 ) ).init( eq( page ) );
-        verify( view,
-                times( 1 ) ).setPlaceHolder( any( String.class ) );
+        verify(view,
+               times(1)).init(eq(page));
+        verify(view,
+               times(1)).setPlaceHolder(any(String.class));
     }
 
     @Test
     public void testInitialise() {
         page.initialise();
-        verify( view,
-                times( 1 ) ).initialise();
+        verify(view,
+               times(1)).initialise();
     }
 
     @Test
     public void testAsWidget() {
         page.asWidget();
-        verify( view,
-                times( 1 ) ).asWidget();
+        verify(view,
+               times(1)).asWidget();
     }
 
     @Test
     public void testSetPlaygroundRepository_Null() {
-        page.setPlaygroundRepository( null );
-        verify( view,
-                times( 1 ) ).showRepositoryUrlInputForm();
-        verify( view,
-                times( 1 ) ).setCustomRepositoryOption();
-        verify( view,
-                times( 1 ) ).disableStockRepositoryOption();
+        page.setPlaygroundRepository(null);
+        verify(view,
+               times(1)).showRepositoryUrlInputForm();
+        verify(view,
+               times(1)).setCustomRepositoryOption();
+        verify(view,
+               times(1)).disableStockRepositoryOption();
     }
 
     @Test
     public void testSetPlaygroundRepository() {
-        ExampleRepository repository = new ExampleRepository( EXAMPLE_REPOSITORY );
-        page.setPlaygroundRepository( repository );
+        ExampleRepository repository = new ExampleRepository(EXAMPLE_REPOSITORY);
+        page.setPlaygroundRepository(repository);
 
-        verify( view,
-                times( 1 ) ).hideRepositoryUrlInputForm();
-        verify( view,
-                times( 1 ) ).setStockRepositoryOption();
+        verify(view,
+               times(1)).hideRepositoryUrlInputForm();
+        verify(view,
+               times(1)).setStockRepositoryOption();
     }
 
     @Test
     public void testPlaygroundRepositorySelected() {
         page.playgroundRepositorySelected();
-        verify( view,
-                times( 1 ) ).hideRepositoryUrlInputForm();
-        verify( view,
-                times( 1 ) ).setCustomRepositoryValue( null );
-        verify( pageStatusChangedEvent,
-                times( 1 ) ).fire( any( WizardPageStatusChangeEvent.class ) );
+        verify(view,
+               times(1)).hideRepositoryUrlInputForm();
+        verify(view,
+               times(1)).setCustomRepositoryValue(null);
+        verify(pageStatusChangedEvent,
+               times(1)).fire(any(WizardPageStatusChangeEvent.class));
     }
 
     @Test
     public void testCustomRepositorySelected() {
-        page.customRepositorySelected();
-        verify( view,
-                times( 1 ) ).showRepositoryUrlInputForm();
+        page.onCustomRepositorySelected();
+        verify(view,
+               times(1)).showRepositoryUrlInputForm();
     }
 
     @Test
     public void testCustomRepositoryValueChanged() {
-        page.customRepositoryValueChanged();
-        verify( pageStatusChangedEvent,
-                times( 1 ) ).fire( any( WizardPageStatusChangeEvent.class ) );
+        page.onCustomRepositoryValueChanged();
+        verify(pageStatusChangedEvent,
+               times(1)).fire(any(WizardPageStatusChangeEvent.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testIsComplete_NullRepository() {
-        final Callback<Boolean> callback = mock( Callback.class );
-        page.isComplete( callback );
+        final Callback<Boolean> callback = mock(Callback.class);
+        page.isComplete(callback);
 
-        verify( callback,
-                times( 1 ) ).callback( eq( false ) );
-        verify( view,
-                times( 1 ) ).setUrlGroupType( eq( ValidationState.ERROR ) );
-        verify( view,
-                times( 1 ) ).showUrlHelpMessage( any( String.class ) );
+        verify(callback,
+               times(1)).callback(eq(false));
+        verify(view,
+               times(1)).setUrlGroupType(eq(ValidationState.ERROR));
+        verify(view,
+               times(1)).showUrlHelpMessage(any(String.class));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testIsComplete_EmptyRepositoryUrl() {
-        final ExampleRepository repository = new ExampleRepository( "" );
-        model.setSelectedRepository( repository );
-        final Callback<Boolean> callback = mock( Callback.class );
-        page.isComplete( callback );
+        final ExampleRepository repository = new ExampleRepository("");
+        model.setSelectedRepository(repository);
+        final Callback<Boolean> callback = mock(Callback.class);
+        page.isComplete(callback);
 
-        verify( callback,
-                times( 1 ) ).callback( eq( false ) );
-        verify( view,
-                times( 1 ) ).setUrlGroupType( eq( ValidationState.ERROR ) );
-        verify( view,
-                times( 1 ) ).showUrlHelpMessage( any( String.class ) );
+        verify(callback,
+               times(1)).callback(eq(false));
+        verify(view,
+               times(1)).setUrlGroupType(eq(ValidationState.ERROR));
+        verify(view,
+               times(1)).showUrlHelpMessage(any(String.class));
 
-        assertFalse( repository.isUrlValid() );
+        assertFalse(repository.isUrlValid());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testIsComplete_InvalidRepositoryUrl() {
-        final ExampleRepository repository = new ExampleRepository( "cheese" );
-        model.setSelectedRepository( repository );
-        final Callback<Boolean> callback = mock( Callback.class );
-        page.isComplete( callback );
+        final ExampleRepository repository = new ExampleRepository("cheese");
+        model.setSelectedRepository(repository);
+        final Callback<Boolean> callback = mock(Callback.class);
+        page.isComplete(callback);
 
-        verify( callback,
-                times( 1 ) ).callback( eq( false ) );
-        verify( view,
-                times( 1 ) ).setUrlGroupType( eq( ValidationState.ERROR ) );
-        verify( view,
-                times( 1 ) ).showUrlHelpMessage( any( String.class ) );
+        verify(callback,
+               times(1)).callback(eq(false));
+        verify(view,
+               times(1)).setUrlGroupType(eq(ValidationState.ERROR));
+        verify(view,
+               times(1)).showUrlHelpMessage(any(String.class));
 
-        assertFalse( repository.isUrlValid() );
+        assertFalse(repository.isUrlValid());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testIsComplete_ValidRepositoryUrl() {
-        final ExampleRepository repository = new ExampleRepository( EXAMPLE_REPOSITORY );
-        model.setSelectedRepository( repository );
-        final Callback<Boolean> callback = mock( Callback.class );
-        page.isComplete( callback );
+        final ExampleRepository repository = new ExampleRepository(EXAMPLE_REPOSITORY);
+        model.setSelectedRepository(repository);
+        final Callback<Boolean> callback = mock(Callback.class);
+        page.isComplete(callback);
 
-        verify( callback,
-                times( 1 ) ).callback( eq( true ) );
-        verify( view,
-                times( 1 ) ).setUrlGroupType( eq( ValidationState.NONE ) );
-        verify( view,
-                times( 1 ) ).hideUrlHelpMessage();
+        verify(callback,
+               times(1)).callback(eq(true));
+        verify(view,
+               times(1)).setUrlGroupType(eq(ValidationState.NONE));
+        verify(view,
+               times(1)).hideUrlHelpMessage();
 
-        assertTrue( repository.isUrlValid() );
+        assertTrue(repository.isUrlValid());
     }
-
 }

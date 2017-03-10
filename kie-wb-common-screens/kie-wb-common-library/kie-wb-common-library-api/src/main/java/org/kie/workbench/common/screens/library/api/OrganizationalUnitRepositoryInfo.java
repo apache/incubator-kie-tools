@@ -26,18 +26,18 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public class OrganizationalUnitRepositoryInfo {
 
-    private Collection<OrganizationalUnit> organizationalUnits;
+    private final Collection<OrganizationalUnit> organizationalUnits;
 
-    private OrganizationalUnit selectedOrganizationalUnit;
+    private final OrganizationalUnit selectedOrganizationalUnit;
 
-    private Collection<Repository> repositories;
+    private final Collection<Repository> repositories;
 
-    private Repository selectedRepository;
+    private final Repository selectedRepository;
 
-    public OrganizationalUnitRepositoryInfo( @MapsTo( "organizationalUnits" ) final Collection<OrganizationalUnit> organizationalUnits,
-                                             @MapsTo( "selectedOrganizationalUnit" ) final OrganizationalUnit selectedOrganizationalUnit,
-                                             @MapsTo( "repositories" ) final Collection<Repository> repositories,
-                                             @MapsTo( "repository" ) final Repository repository ) {
+    public OrganizationalUnitRepositoryInfo(@MapsTo("organizationalUnits") final Collection<OrganizationalUnit> organizationalUnits,
+                                            @MapsTo("selectedOrganizationalUnit") final OrganizationalUnit selectedOrganizationalUnit,
+                                            @MapsTo("repositories") final Collection<Repository> repositories,
+                                            @MapsTo("repository") final Repository repository) {
         this.organizationalUnits = organizationalUnits;
         this.selectedOrganizationalUnit = selectedOrganizationalUnit;
         this.repositories = repositories;
@@ -52,10 +52,6 @@ public class OrganizationalUnitRepositoryInfo {
         return selectedOrganizationalUnit;
     }
 
-    public void setSelectedOrganizationalUnit( final OrganizationalUnit selectedOrganizationalUnit ) {
-        this.selectedOrganizationalUnit = selectedOrganizationalUnit;
-    }
-
     public Collection<Repository> getRepositories() {
         return repositories;
     }
@@ -64,43 +60,38 @@ public class OrganizationalUnitRepositoryInfo {
         return selectedRepository;
     }
 
-    public void setSelectedRepository( final Repository selectedRepository ) {
-        this.selectedRepository = selectedRepository;
-    }
-
     @Override
-    public boolean equals( final Object o ) {
-        if ( this == o ) {
+    public boolean equals(final Object o) {
+        if (this == o) {
             return true;
         }
-        if ( !( o instanceof OrganizationalUnitRepositoryInfo ) ) {
+        if (!(o instanceof OrganizationalUnitRepositoryInfo)) {
             return false;
         }
 
         final OrganizationalUnitRepositoryInfo that = (OrganizationalUnitRepositoryInfo) o;
 
-        if ( getOrganizationalUnits() != null ? !getOrganizationalUnits().equals( that.getOrganizationalUnits() ) : that.getOrganizationalUnits() != null ) {
+        if (getOrganizationalUnits() != null ? !getOrganizationalUnits().equals(that.getOrganizationalUnits()) : that.getOrganizationalUnits() != null) {
             return false;
         }
-        if ( getSelectedOrganizationalUnit() != null ? !getSelectedOrganizationalUnit().equals( that.getSelectedOrganizationalUnit() ) : that.getSelectedOrganizationalUnit() != null ) {
+        if (getSelectedOrganizationalUnit() != null ? !getSelectedOrganizationalUnit().equals(that.getSelectedOrganizationalUnit()) : that.getSelectedOrganizationalUnit() != null) {
             return false;
         }
-        if ( getRepositories() != null ? !getRepositories().equals( that.getRepositories() ) : that.getRepositories() != null ) {
+        if (getRepositories() != null ? !getRepositories().equals(that.getRepositories()) : that.getRepositories() != null) {
             return false;
         }
-        return !( getSelectedRepository() != null ? !getSelectedRepository().equals( that.getSelectedRepository() ) : that.getSelectedRepository() != null );
-
+        return !(getSelectedRepository() != null ? !getSelectedRepository().equals(that.getSelectedRepository()) : that.getSelectedRepository() != null);
     }
 
     @Override
     public int hashCode() {
         int result = getOrganizationalUnits() != null ? getOrganizationalUnits().hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( getSelectedOrganizationalUnit() != null ? getSelectedOrganizationalUnit().hashCode() : 0 );
+        result = 31 * result + (getSelectedOrganizationalUnit() != null ? getSelectedOrganizationalUnit().hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( getRepositories() != null ? getRepositories().hashCode() : 0 );
+        result = 31 * result + (getRepositories() != null ? getRepositories().hashCode() : 0);
         result = ~~result;
-        result = 31 * result + ( getSelectedRepository() != null ? getSelectedRepository().hashCode() : 0 );
+        result = 31 * result + (getSelectedRepository() != null ? getSelectedRepository().hashCode() : 0);
         result = ~~result;
         return result;
     }

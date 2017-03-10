@@ -73,90 +73,102 @@ public class ExamplesUtilsTest {
 
     @Before
     public void setup() {
-        libraryServiceCaller = new CallerMock<>( libraryService );
-        examplesUtils = new ExamplesUtils( sessionInfo,
-                                           ts,
-                                           libraryPlaces,
-                                           libraryServiceCaller,
-                                           busyIndicatorView,
-                                           notificationEvent,
-                                           newProjectEvent );
+        libraryServiceCaller = new CallerMock<>(libraryService);
+        examplesUtils = new ExamplesUtils(sessionInfo,
+                                          ts,
+                                          libraryPlaces,
+                                          libraryServiceCaller,
+                                          busyIndicatorView,
+                                          notificationEvent,
+                                          newProjectEvent);
     }
 
     @Test
     public void getExampleProjectsTest() {
-        final ParameterizedCommand<Set<ExampleProject>> callback = mock( ParameterizedCommand.class );
+        final ParameterizedCommand<Set<ExampleProject>> callback = mock(ParameterizedCommand.class);
         final Set<ExampleProject> exampleProjects = new HashSet<>();
 
-        doReturn( exampleProjects ).when( libraryService ).getExampleProjects();
+        doReturn(exampleProjects).when(libraryService).getExampleProjects();
 
-        examplesUtils.getExampleProjects( callback );
+        examplesUtils.getExampleProjects(callback);
 
-        verify( libraryService, times( 1 ) ).getExampleProjects();
-        verify( callback, times( 1 ) ).execute( anySet() );
+        verify(libraryService,
+               times(1)).getExampleProjects();
+        verify(callback,
+               times(1)).execute(anySet());
 
-        examplesUtils.getExampleProjects( callback );
+        examplesUtils.getExampleProjects(callback);
 
-        verify( libraryService, times( 1 ) ).getExampleProjects();
-        verify( callback, times( 2 ) ).execute( anySet() );
+        verify(libraryService,
+               times(1)).getExampleProjects();
+        verify(callback,
+               times(2)).execute(anySet());
     }
 
     @Test
     public void importProjectSuccessfullyTest() {
-        final ArgumentCaptor<ProjectInfo> projectInfoArgumentCaptor = ArgumentCaptor.forClass( ProjectInfo.class );
+        final ArgumentCaptor<ProjectInfo> projectInfoArgumentCaptor = ArgumentCaptor.forClass(ProjectInfo.class);
 
-        final OrganizationalUnit organizationalUnit = mock( OrganizationalUnit.class );
-        final Repository repository = mock( Repository.class );
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        final Repository repository = mock(Repository.class);
         final String branch = "master";
-        final ExampleProject exampleProject = mock( ExampleProject.class );
-        final Project project = mock( Project.class );
+        final ExampleProject exampleProject = mock(ExampleProject.class);
+        final Project project = mock(Project.class);
 
-        doReturn( organizationalUnit ).when( libraryPlaces ).getSelectedOrganizationalUnit();
-        doReturn( repository ).when( libraryPlaces ).getSelectedRepository();
-        doReturn( branch ).when( libraryPlaces ).getSelectedBranch();
-        doReturn( project ).when( libraryService ).importProject( organizationalUnit,
-                                                                  repository,
-                                                                  exampleProject );
+        doReturn(organizationalUnit).when(libraryPlaces).getSelectedOrganizationalUnit();
+        doReturn(repository).when(libraryPlaces).getSelectedRepository();
+        doReturn(branch).when(libraryPlaces).getSelectedBranch();
+        doReturn(project).when(libraryService).importProject(organizationalUnit,
+                                                             repository,
+                                                             "master",
+                                                             exampleProject);
 
-        examplesUtils.importProject( exampleProject );
+        examplesUtils.importProject(exampleProject);
 
-        verify( busyIndicatorView ).showBusyIndicator( anyString() );
-        verify( busyIndicatorView ).hideBusyIndicator();
-        verify( notificationEvent ).fire( any( NotificationEvent.class ) );
-        verify( newProjectEvent ).fire( any( NewProjectEvent.class ) );
-        verify( libraryPlaces ).goToProject( projectInfoArgumentCaptor.capture() );
+        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(busyIndicatorView).hideBusyIndicator();
+        verify(notificationEvent).fire(any(NotificationEvent.class));
+        verify(newProjectEvent).fire(any(NewProjectEvent.class));
+        verify(libraryPlaces).goToProject(projectInfoArgumentCaptor.capture());
 
         final ProjectInfo projectInfo = projectInfoArgumentCaptor.getValue();
 
-        assertEquals( organizationalUnit, projectInfo.getOrganizationalUnit() );
-        assertEquals( repository, projectInfo.getRepository() );
-        assertEquals( branch, projectInfo.getBranch() );
-        assertEquals( project, projectInfo.getProject() );
+        assertEquals(organizationalUnit,
+                     projectInfo.getOrganizationalUnit());
+        assertEquals(repository,
+                     projectInfo.getRepository());
+        assertEquals(branch,
+                     projectInfo.getBranch());
+        assertEquals(project,
+                     projectInfo.getProject());
     }
 
     @Test
     public void importProjectFailTest() {
-        final ArgumentCaptor<ProjectInfo> projectInfoArgumentCaptor = ArgumentCaptor.forClass( ProjectInfo.class );
+        final ArgumentCaptor<ProjectInfo> projectInfoArgumentCaptor = ArgumentCaptor.forClass(ProjectInfo.class);
 
-        final OrganizationalUnit organizationalUnit = mock( OrganizationalUnit.class );
-        final Repository repository = mock( Repository.class );
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        final Repository repository = mock(Repository.class);
         final String branch = "master";
-        final ExampleProject exampleProject = mock( ExampleProject.class );
-        final Project project = mock( Project.class );
+        final ExampleProject exampleProject = mock(ExampleProject.class);
+        final Project project = mock(Project.class);
 
-        doReturn( organizationalUnit ).when( libraryPlaces ).getSelectedOrganizationalUnit();
-        doReturn( repository ).when( libraryPlaces ).getSelectedRepository();
-        doReturn( branch ).when( libraryPlaces ).getSelectedBranch();
-        doThrow( new RuntimeException() ).when( libraryService ).importProject( organizationalUnit,
-                                                                                repository,
-                                                                                exampleProject );
+        doReturn(organizationalUnit).when(libraryPlaces).getSelectedOrganizationalUnit();
+        doReturn(repository).when(libraryPlaces).getSelectedRepository();
+        doReturn(branch).when(libraryPlaces).getSelectedBranch();
+        doThrow(new RuntimeException()).when(libraryService).importProject(organizationalUnit,
+                                                                           repository,
+                                                                           "master",
+                                                                           exampleProject);
 
-        examplesUtils.importProject( exampleProject );
+        examplesUtils.importProject(exampleProject);
 
-        verify( busyIndicatorView ).showBusyIndicator( anyString() );
-        verify( busyIndicatorView ).hideBusyIndicator();
-        verify( notificationEvent ).fire( any( NotificationEvent.class ) );
-        verify( newProjectEvent, never() ).fire( any( NewProjectEvent.class ) );
-        verify( libraryPlaces, never() ).goToProject( any( ProjectInfo.class ) );
+        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(busyIndicatorView).hideBusyIndicator();
+        verify(notificationEvent).fire(any(NotificationEvent.class));
+        verify(newProjectEvent,
+               never()).fire(any(NewProjectEvent.class));
+        verify(libraryPlaces,
+               never()).goToProject(any(ProjectInfo.class));
     }
 }

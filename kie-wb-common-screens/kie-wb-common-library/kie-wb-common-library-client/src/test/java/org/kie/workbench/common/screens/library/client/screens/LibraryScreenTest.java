@@ -75,111 +75,121 @@ public class LibraryScreenTest {
 
     @Before
     public void setup() {
-        libraryServiceCaller = new CallerMock<>( libraryService );
+        libraryServiceCaller = new CallerMock<>(libraryService);
 
-        exampleProject1 = mock( ExampleProject.class );
-        exampleProject2 = mock( ExampleProject.class );
+        exampleProject1 = mock(ExampleProject.class);
+        exampleProject2 = mock(ExampleProject.class);
 
         final Set<ExampleProject> exampleProjects = new HashSet<>();
-        exampleProjects.add( exampleProject1 );
-        exampleProjects.add( exampleProject2 );
+        exampleProjects.add(exampleProject1);
+        exampleProjects.add(exampleProject2);
 
-        doAnswer( invocationOnMock -> {
-            final ParameterizedCommand<Set<ExampleProject>> callback = (ParameterizedCommand<Set<ExampleProject>>) invocationOnMock.getArguments()[ 0 ];
-            callback.execute( exampleProjects );
+        doAnswer(invocationOnMock -> {
+            final ParameterizedCommand<Set<ExampleProject>> callback = (ParameterizedCommand<Set<ExampleProject>>) invocationOnMock.getArguments()[0];
+            callback.execute(exampleProjects);
             return null;
-        } ).when( examplesUtils ).getExampleProjects( any( ParameterizedCommand.class ) );
+        }).when(examplesUtils).getExampleProjects(any(ParameterizedCommand.class));
 
-        libraryScreen = spy( new LibraryScreen( view,
-                                                placeManager,
-                                                libraryPlaces,
-                                                projectDetailEvent,
-                                                libraryServiceCaller,
-                                                examplesUtils ) );
+        libraryScreen = spy(new LibraryScreen(view,
+                                              placeManager,
+                                              libraryPlaces,
+                                              projectDetailEvent,
+                                              libraryServiceCaller,
+                                              examplesUtils));
 
-        project1 = mock( Project.class );
-        doReturn( "project1Name" ).when( project1 ).getProjectName();
-        project2 = mock( Project.class );
-        doReturn( "project2Name" ).when( project2 ).getProjectName();
-        project3 = mock( Project.class );
-        doReturn( "project3Name" ).when( project3 ).getProjectName();
+        project1 = mock(Project.class);
+        doReturn("project1Name").when(project1).getProjectName();
+        project2 = mock(Project.class);
+        doReturn("project2Name").when(project2).getProjectName();
+        project3 = mock(Project.class);
+        doReturn("project3Name").when(project3).getProjectName();
 
         final Set<Project> projects = new HashSet<>();
-        projects.add( project1 );
-        projects.add( project2 );
-        projects.add( project3 );
+        projects.add(project1);
+        projects.add(project2);
+        projects.add(project3);
 
-        final LibraryInfo libraryInfo = new LibraryInfo( "master", projects );
-        doReturn( libraryInfo ).when( libraryService ).getLibraryInfo( any( Repository.class ) );
+        final LibraryInfo libraryInfo = new LibraryInfo("master",
+                                                        projects);
+        doReturn(libraryInfo).when(libraryService).getLibraryInfo(any(Repository.class),
+                                                                  anyString());
 
         libraryScreen.setup();
     }
 
+
     @Test
     public void setupTest() {
-        verify( view ).clearFilterText();
-        verify( view ).clearProjects();
-        verify( placeManager ).closePlace( LibraryPlaces.EMPTY_LIBRARY_SCREEN );
+        verify(view).clearFilterText();
+        verify(view).clearProjects();
+        verify(placeManager).closePlace(LibraryPlaces.EMPTY_LIBRARY_SCREEN);
 
-        verify( view, times( 3 ) ).addProject( anyString(),
-                                               any( Command.class ),
-                                               any( Command.class ) );
+        verify(view,
+               times(3)).addProject(anyString(),
+                                    any(Command.class),
+                                    any(Command.class));
 
-        verify( view, times( 1 ) ).addProject( eq( "project1Name" ),
-                                               any( Command.class ),
-                                               any( Command.class ) );
-        verify( view, times( 1 ) ).addProject( eq( "project2Name" ),
-                                               any( Command.class ),
-                                               any( Command.class ) );
-        verify( view, times( 1 ) ).addProject( eq( "project3Name" ),
-                                               any( Command.class ),
-                                               any( Command.class ) );
+        verify(view,
+               times(1)).addProject(eq("project1Name"),
+                                    any(Command.class),
+                                    any(Command.class));
+        verify(view,
+               times(1)).addProject(eq("project2Name"),
+                                    any(Command.class),
+                                    any(Command.class));
+        verify(view,
+               times(1)).addProject(eq("project3Name"),
+                                    any(Command.class),
+                                    any(Command.class));
     }
 
     @Test
     public void newProjectTest() {
         libraryScreen.newProject();
 
-        verify( libraryPlaces ).goToNewProject();
+        verify(libraryPlaces).goToNewProject();
     }
 
     @Test
     public void importProjectTest() {
-        final ExampleProject exampleProject = mock( ExampleProject.class );
+        final ExampleProject exampleProject = mock(ExampleProject.class);
 
-        libraryScreen.importProject( exampleProject );
+        libraryScreen.importProject(exampleProject);
 
-        verify( examplesUtils ).importProject( exampleProject );
+        verify(examplesUtils).importProject(exampleProject);
     }
 
     @Test
     public void updateImportProjectsTest() {
         libraryScreen.updateImportProjects();
 
-        verify( view ).clearImportProjectsContainer();
+        verify(view).clearImportProjectsContainer();
 
-        verify( view, times( 2 ) ).addProjectToImport( any( ExampleProject.class ) );
-        verify( view ).addProjectToImport( exampleProject1 );
-        verify( view ).addProjectToImport( exampleProject2 );
+        verify(view,
+               times(2)).addProjectToImport(any(ExampleProject.class));
+        verify(view).addProjectToImport(exampleProject1);
+        verify(view).addProjectToImport(exampleProject2);
     }
 
     @Test
     public void selectCommandTest() {
-        libraryScreen.selectCommand( project1 ).execute();
+        libraryScreen.selectCommand(project1).execute();
 
-        verify( libraryPlaces ).goToProject( any( ProjectInfo.class ) );
+        verify(libraryPlaces).goToProject(any(ProjectInfo.class));
     }
 
     @Test
     public void detailsCommandTest() {
-        libraryScreen.detailsCommand( project1 ).execute();
+        libraryScreen.detailsCommand(project1).execute();
 
-        verify( projectDetailEvent ).fire( any( ProjectDetailEvent.class ) );
+        verify(projectDetailEvent).fire(any(ProjectDetailEvent.class));
     }
 
     @Test
     public void filterProjectsTest() {
-        assertEquals( 3, libraryScreen.libraryInfo.getProjects().size() );
-        assertEquals( 1, libraryScreen.filterProjects( "project1" ).size() );
+        assertEquals(3,
+                     libraryScreen.libraryInfo.getProjects().size());
+        assertEquals(1,
+                     libraryScreen.filterProjects("project1").size());
     }
 }

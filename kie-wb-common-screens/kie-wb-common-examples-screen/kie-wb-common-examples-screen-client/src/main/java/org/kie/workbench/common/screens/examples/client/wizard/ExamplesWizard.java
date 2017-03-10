@@ -67,16 +67,16 @@ public class ExamplesWizard extends AbstractWizard {
     }
 
     @Inject
-    public ExamplesWizard( final RepositoryPage repositoryPage,
-                           final ProjectPage projectPage,
-                           final OUPage organizationalUnitPage,
-                           final BusyIndicatorView busyIndicatorView,
-                           final Caller<ExamplesService> examplesService,
-                           final Event<ProjectContextChangeEvent> event,
-                           final TranslationService translator ) {
-        pages.add( repositoryPage );
-        pages.add( projectPage );
-        pages.add( organizationalUnitPage );
+    public ExamplesWizard(final RepositoryPage repositoryPage,
+                          final ProjectPage projectPage,
+                          final OUPage organizationalUnitPage,
+                          final BusyIndicatorView busyIndicatorView,
+                          final Caller<ExamplesService> examplesService,
+                          final Event<ProjectContextChangeEvent> event,
+                          final TranslationService translator) {
+        pages.add(repositoryPage);
+        pages.add(projectPage);
+        pages.add(organizationalUnitPage);
         this.repositoryPage = repositoryPage;
         this.organizationalUnitPage = organizationalUnitPage;
         this.busyIndicatorView = busyIndicatorView;
@@ -88,26 +88,26 @@ public class ExamplesWizard extends AbstractWizard {
     @Override
     public void start() {
         model = new ExamplesWizardModel();
-        for ( WizardPage page : pages ) {
+        for (WizardPage page : pages) {
             page.initialise();
-            ( (ExamplesWizardPage) page ).setModel( model );
+            ((ExamplesWizardPage) page).setModel(model);
         }
-        examplesService.call( new RemoteCallback<ExamplesMetaData>() {
+        examplesService.call(new RemoteCallback<ExamplesMetaData>() {
             @Override
-            public void callback( final ExamplesMetaData metaData ) {
+            public void callback(final ExamplesMetaData metaData) {
                 final ExampleRepository repository = metaData.getRepository();
-                repositoryPage.setPlaygroundRepository( repository );
+                repositoryPage.setPlaygroundRepository(repository);
                 final Set<ExampleOrganizationalUnit> organizationalUnits = metaData.getOrganizationalUnits();
-                organizationalUnitPage.setOrganizationalUnits( organizationalUnits );
+                organizationalUnitPage.setOrganizationalUnits(organizationalUnits);
                 ExamplesWizard.super.start();
             }
-        } ).getMetaData();
+        }).getMetaData();
     }
 
     @Override
     public void close() {
-        for ( WizardPage page : pages ) {
-            ( (ExamplesWizardPage) page ).destroy();
+        for (WizardPage page : pages) {
+            ((ExamplesWizardPage) page).destroy();
         }
         super.close();
     }
@@ -118,15 +118,15 @@ public class ExamplesWizard extends AbstractWizard {
     }
 
     @Override
-    public Widget getPageWidget( final int pageNumber ) {
-        WizardPage page = pages.get( pageNumber );
+    public Widget getPageWidget(final int pageNumber) {
+        WizardPage page = pages.get(pageNumber);
         page.prepareView();
         return page.asWidget();
     }
 
     @Override
     public String getTitle() {
-        final String title = translator.format( ExamplesScreenConstants.ExamplesWizard_WizardTitle );
+        final String title = translator.format(ExamplesScreenConstants.ExamplesWizard_WizardTitle);
         return title != null && !title.isEmpty() ? title : "Import Example";
     }
 
@@ -141,37 +141,37 @@ public class ExamplesWizard extends AbstractWizard {
     }
 
     @Override
-    public void isComplete( final Callback<Boolean> callback ) {
-        callback.callback( true );
+    public void isComplete(final Callback<Boolean> callback) {
+        callback.callback(true);
 
         //only when all pages are complete we can say the wizard is complete.
-        for ( WizardPage page : this.pages ) {
-            page.isComplete( new Callback<Boolean>() {
+        for (WizardPage page : this.pages) {
+            page.isComplete(new Callback<Boolean>() {
                 @Override
-                public void callback( final Boolean result ) {
-                    if ( Boolean.FALSE.equals( result ) ) {
-                        callback.callback( false );
+                public void callback(final Boolean result) {
+                    if (Boolean.FALSE.equals(result)) {
+                        callback.callback(false);
                     }
                 }
-            } );
+            });
         }
     }
 
     @Override
     public void complete() {
-        busyIndicatorView.showBusyIndicator( translator.format( ExamplesScreenConstants.ExamplesWizard_SettingUpExamples ) );
-        examplesService.call( new RemoteCallback<ProjectContextChangeEvent>() {
+        busyIndicatorView.showBusyIndicator(translator.format(ExamplesScreenConstants.ExamplesWizard_SettingUpExamples));
+        examplesService.call(new RemoteCallback<ProjectContextChangeEvent>() {
 
-                                  @Override
-                                  public void callback( final ProjectContextChangeEvent context ) {
-                                      busyIndicatorView.hideBusyIndicator();
-                                      ExamplesWizard.super.complete();
-                                      event.fire( context );
-                                  }
-                              },
-                              new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).setupExamples( model.getTargetOrganizationalUnit(),
-                                                                                                             model.getTargetRepository(),
-                                                                                                             model.getProjects() );
+                                 @Override
+                                 public void callback(final ProjectContextChangeEvent context) {
+                                     busyIndicatorView.hideBusyIndicator();
+                                     ExamplesWizard.super.complete();
+                                     event.fire(context);
+                                 }
+                             },
+                             new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).setupExamples(model.getTargetOrganizationalUnit(),
+                                                                                                        model.getTargetRepository(),
+                                                                                                        model.getSelectedBranch(),
+                                                                                                        model.getProjects());
     }
-
 }

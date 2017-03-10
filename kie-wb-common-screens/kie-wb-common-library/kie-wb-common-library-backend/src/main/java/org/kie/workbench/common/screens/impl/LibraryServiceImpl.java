@@ -64,7 +64,7 @@ import org.uberfire.java.nio.file.attribute.FileTime;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
-import static org.uberfire.commons.validation.PortablePreconditions.*;
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Service
 @ApplicationScoped
@@ -94,16 +94,16 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Inject
-    public LibraryServiceImpl( final OrganizationalUnitService ouService,
-                               final RepositoryService repositoryService,
-                               final KieProjectService kieProjectService,
-                               final LibraryPreferences preferences,
-                               final AuthorizationManager authorizationManager,
-                               final SessionInfo sessionInfo,
-                               final ExplorerServiceHelper explorerServiceHelper,
-                               final KieProjectService projectService,
-                               final ExamplesService examplesService,
-                               @Named("ioStrategy") final IOService ioService ) {
+    public LibraryServiceImpl(final OrganizationalUnitService ouService,
+                              final RepositoryService repositoryService,
+                              final KieProjectService kieProjectService,
+                              final LibraryPreferences preferences,
+                              final AuthorizationManager authorizationManager,
+                              final SessionInfo sessionInfo,
+                              final ExplorerServiceHelper explorerServiceHelper,
+                              final KieProjectService projectService,
+                              final ExamplesService examplesService,
+                              @Named("ioStrategy") final IOService ioService) {
         this.ouService = ouService;
         this.repositoryService = repositoryService;
         this.kieProjectService = kieProjectService;
@@ -118,26 +118,30 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     public OrganizationalUnitRepositoryInfo getDefaultOrganizationalUnitRepositoryInfo() {
-        return getOrganizationalUnitRepositoryInfo( getDefaultOrganizationalUnit() );
+        return getOrganizationalUnitRepositoryInfo(getDefaultOrganizationalUnit());
     }
 
     @Override
-    public OrganizationalUnitRepositoryInfo getOrganizationalUnitRepositoryInfo( final OrganizationalUnit selectedOrganizationalUnit ) {
-        final Repository selectedRepository = getDefaultRepository( selectedOrganizationalUnit );
+    public OrganizationalUnitRepositoryInfo getOrganizationalUnitRepositoryInfo(final OrganizationalUnit selectedOrganizationalUnit) {
+        final Repository selectedRepository = getDefaultRepository(selectedOrganizationalUnit);
         final List<OrganizationalUnit> organizationalUnits = getOrganizationalUnits();
-        final OrganizationalUnit organizationalUnit = getOrganizationalUnit( selectedOrganizationalUnit.getIdentifier(), organizationalUnits ).get();
-        final List<Repository> repositories = new ArrayList<>( organizationalUnit.getRepositories() );
+        final OrganizationalUnit organizationalUnit = getOrganizationalUnit(selectedOrganizationalUnit.getIdentifier(),
+                                                                            organizationalUnits).get();
+        final List<Repository> repositories = new ArrayList<>(organizationalUnit.getRepositories());
 
-        return new OrganizationalUnitRepositoryInfo( organizationalUnits,
-                                                     organizationalUnit,
-                                                     repositories,
-                                                     selectedRepository );
+        return new OrganizationalUnitRepositoryInfo(organizationalUnits,
+                                                    organizationalUnit,
+                                                    repositories,
+                                                    selectedRepository);
     }
 
     @Override
-    public LibraryInfo getLibraryInfo( final Repository selectedRepository ) {
-        final Set<Project> projects = getProjects( selectedRepository );
-        return new LibraryInfo( "master", projects );
+    public LibraryInfo getLibraryInfo(final Repository selectedRepository,
+                                      final String branch) {
+        final Set<Project> projects = getProjects(selectedRepository,
+                                                  branch);
+        return new LibraryInfo(branch,
+                               projects);
     }
 
     @Override
@@ -147,11 +151,17 @@ public class LibraryServiceImpl implements LibraryService {
         final Path selectedRepositoryRootPath = selectedRepository.getRoot();
         final LibraryPreferences preferences = getPreferences();
 
-        final GAV gav = createGAV( projectName, preferences );
-        final POM pom = createPOM( projectName, preferences, gav );
+        final GAV gav = createGAV(projectName,
+                                  preferences);
+        final POM pom = createPOM(projectName,
+                                  preferences,
+                                  gav);
         final DeploymentMode mode = DeploymentMode.VALIDATED;
 
-        final KieProject kieProject = kieProjectService.newProject( selectedRepositoryRootPath, pom, baseURL, mode );
+        final KieProject kieProject = kieProjectService.newProject(selectedRepositoryRootPath,
+                                                                   pom,
+                                                                   baseURL,
+                                                                   mode);
 
         return kieProject;
     }
@@ -159,64 +169,77 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public Boolean thereIsAProjectInTheWorkbench() {
         return getOrganizationalUnits().stream()
-                .flatMap( organizationalUnit -> organizationalUnit.getRepositories().stream()
-                        .filter( repository -> authorizationManager.authorize( repository, sessionInfo.getIdentity() ) ) )
-                .flatMap( repository -> repository.getBranches().stream()
-                        .map( branch -> kieProjectService.getProjects( repository, branch ) ) )
-                .anyMatch( projects -> projects != null && !projects.isEmpty() );
+                .flatMap(organizationalUnit -> organizationalUnit.getRepositories().stream()
+                        .filter(repository -> authorizationManager.authorize(repository,
+                                                                             sessionInfo.getIdentity())))
+                .flatMap(repository -> repository.getBranches().stream()
+                        .map(branch -> kieProjectService.getProjects(repository,
+                                                                     branch)))
+                .anyMatch(projects -> projects != null && !projects.isEmpty());
     }
 
     @Override
-    public List<AssetInfo> getProjectAssets( final Project project ) {
-        checkNotNull( "project", project );
-        final Package defaultPackage = projectService.resolveDefaultPackage( project );
-        final List<FolderItem> assets = explorerServiceHelper.getAssetsRecursively( defaultPackage, new ActiveOptions( Option.BUSINESS_CONTENT ) );
+    public List<AssetInfo> getProjectAssets(final Project project) {
+        checkNotNull("project",
+                     project);
+        final Package defaultPackage = projectService.resolveDefaultPackage(project);
+        final List<FolderItem> assets = explorerServiceHelper.getAssetsRecursively(defaultPackage,
+                                                                                   new ActiveOptions(Option.BUSINESS_CONTENT));
 
         return assets.stream()
-                .map( asset -> {
-                    final FileTime lastModifiedFileTime = (FileTime) getAttribute( asset, LibraryService.LAST_MODIFIED_TIME ).get();
-                    final FileTime createdFileTime = (FileTime) getAttribute( asset, LibraryService.CREATED_TIME ).get();
-                    final Date lastModifiedTime = new Date( lastModifiedFileTime.toMillis() );
-                    final Date createdTime = new Date( createdFileTime.toMillis() );
+                .map(asset -> {
+                    final FileTime lastModifiedFileTime = (FileTime) getAttribute(asset,
+                                                                                  LibraryService.LAST_MODIFIED_TIME).get();
+                    final FileTime createdFileTime = (FileTime) getAttribute(asset,
+                                                                             LibraryService.CREATED_TIME).get();
+                    final Date lastModifiedTime = new Date(lastModifiedFileTime.toMillis());
+                    final Date createdTime = new Date(createdFileTime.toMillis());
 
-                    return new AssetInfo( asset, lastModifiedTime, createdTime );
-                } )
-                .collect( Collectors.toList() );
+                    return new AssetInfo(asset,
+                                         lastModifiedTime,
+                                         createdTime);
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Boolean hasProjects( final Repository repository ) {
-        return !getProjects( repository ).isEmpty();
+    public Boolean hasProjects(final Repository repository,
+                               final String branch) {
+        return !getProjects(repository,
+                            branch).isEmpty();
     }
 
     @Override
-    public Boolean hasAssets( final Project project ) {
-        checkNotNull( "project", project );
-        final Package defaultPackage = projectService.resolveDefaultPackage( project );
-        return explorerServiceHelper.hasAssets( defaultPackage );
+    public Boolean hasAssets(final Project project) {
+        checkNotNull("project",
+                     project);
+        final Package defaultPackage = projectService.resolveDefaultPackage(project);
+        return explorerServiceHelper.hasAssets(defaultPackage);
     }
 
     @Override
     public Set<ExampleProject> getExampleProjects() {
         final String importProjectsUrl = getPreferences().getImportProjectsUrl();
-        final ExampleRepository repository = importProjectsUrl == null  || importProjectsUrl.isEmpty()
+        final ExampleRepository repository = importProjectsUrl == null || importProjectsUrl.isEmpty()
                 ? examplesService.getPlaygroundRepository()
-                : new ExampleRepository( importProjectsUrl );
+                : new ExampleRepository(importProjectsUrl);
 
-        return examplesService.getProjects( repository );
+        return examplesService.getProjects(repository);
     }
 
     @Override
-    public Project importProject( final OrganizationalUnit organizationalUnit,
-                                  final Repository repository,
-                                  final ExampleProject exampleProject ) {
-        final ExampleOrganizationalUnit exampleOrganizationalUnit = new ExampleOrganizationalUnit( organizationalUnit.getName() );
-        final ExampleTargetRepository exampleRepository = new ExampleTargetRepository( repository.getAlias() );
-        final List<ExampleProject> exampleProjects = Collections.singletonList( exampleProject );
+    public Project importProject(final OrganizationalUnit organizationalUnit,
+                                 final Repository repository,
+                                 final String branch,
+                                 final ExampleProject exampleProject) {
+        final ExampleOrganizationalUnit exampleOrganizationalUnit = new ExampleOrganizationalUnit(organizationalUnit.getName());
+        final ExampleTargetRepository exampleRepository = new ExampleTargetRepository(repository.getAlias());
+        final List<ExampleProject> exampleProjects = Collections.singletonList(exampleProject);
 
-        final ProjectContextChangeEvent projectContextChangeEvent = examplesService.setupExamples( exampleOrganizationalUnit,
-                                                                                                   exampleRepository,
-                                                                                                   exampleProjects );
+        final ProjectContextChangeEvent projectContextChangeEvent = examplesService.setupExamples(exampleOrganizationalUnit,
+                                                                                                  exampleRepository,
+                                                                                                  branch,
+                                                                                                  exampleProjects);
 
         return projectContextChangeEvent.getProject();
     }
@@ -226,106 +249,115 @@ public class LibraryServiceImpl implements LibraryService {
         return preferences;
     }
 
-    POM createPOM( final String projectName,
-                   final LibraryPreferences preferences,
-                   final GAV gav ) {
-        return new POM( projectName, preferences.getProjectDescription(), gav );
+    POM createPOM(final String projectName,
+                  final LibraryPreferences preferences,
+                  final GAV gav) {
+        return new POM(projectName,
+                       preferences.getProjectDescription(),
+                       gav);
     }
 
-    GAV createGAV( final String projectName,
-                   final LibraryPreferences preferences ) {
-        return new GAV( preferences.getProjectGroupId(), projectName, preferences.getProjectVersion() );
+    GAV createGAV(final String projectName,
+                  final LibraryPreferences preferences) {
+        return new GAV(preferences.getProjectGroupId(),
+                       projectName,
+                       preferences.getProjectVersion());
     }
 
-    private Optional<Object> getAttribute( final FolderItem asset,
-                                           final String attribute ) {
-        final Map<String, Object> attributes = ioService.readAttributes( Paths.convert( (Path) asset.getItem() ) );
+    private Optional<Object> getAttribute(final FolderItem asset,
+                                          final String attribute) {
+        final Map<String, Object> attributes = ioService.readAttributes(Paths.convert((Path) asset.getItem()));
         return attributes.entrySet().stream()
-                .filter( entry -> attribute.equals( entry.getKey() ) )
-                .map( Map.Entry::getValue )
+                .filter(entry -> attribute.equals(entry.getKey()))
+                .map(Map.Entry::getValue)
                 .findFirst();
     }
 
     private List<OrganizationalUnit> getOrganizationalUnits() {
-        return new ArrayList<>( ouService.getOrganizationalUnits() );
+        return new ArrayList<>(ouService.getOrganizationalUnits());
     }
 
-    private Set<Project> getProjects( final Repository repository ) {
-        return kieProjectService.getProjects( repository, getPreferences().getProjectDefaultBranch() );
+    private Set<Project> getProjects(final Repository repository,
+                                     final String branch) {
+        return kieProjectService.getProjects(repository,
+                                             branch);
     }
 
     private OrganizationalUnit getDefaultOrganizationalUnit() {
         final List<OrganizationalUnit> organizationalUnits = getOrganizationalUnits();
         final LibraryPreferences preferences = getPreferences();
         final String defaultOUIdentifier = preferences.getOuIdentifier();
-        final Optional<OrganizationalUnit> defaultOU = getOrganizationalUnit( defaultOUIdentifier, organizationalUnits );
+        final Optional<OrganizationalUnit> defaultOU = getOrganizationalUnit(defaultOUIdentifier,
+                                                                             organizationalUnits);
 
-        if ( defaultOU.isPresent() ) {
+        if (defaultOU.isPresent()) {
             return defaultOU.get();
-        } else if ( !organizationalUnits.isEmpty() ) {
-            return organizationalUnits.get( 0 );
+        } else if (!organizationalUnits.isEmpty()) {
+            return organizationalUnits.get(0);
         } else {
             return createDefaultOrganizationalUnit();
         }
     }
 
-    private Repository getDefaultRepository( final OrganizationalUnit ou ) {
-        final String primaryDefaultRepositoryName = getPrimaryDefaultRepositoryName( ou );
-        final String secondaryDefaultRepositoryName = getSecondaryDefaultRepositoryName( ou );
+    private Repository getDefaultRepository(final OrganizationalUnit ou) {
+        final String primaryDefaultRepositoryName = getPrimaryDefaultRepositoryName(ou);
+        final String secondaryDefaultRepositoryName = getSecondaryDefaultRepositoryName(ou);
 
-        final List<Repository> repositories = new ArrayList<>( ou.getRepositories() );
+        final List<Repository> repositories = new ArrayList<>(ou.getRepositories());
         final Optional<Repository> primaryRepository = repositories.stream()
-                .filter( r -> r.getAlias().equalsIgnoreCase( primaryDefaultRepositoryName ) )
+                .filter(r -> r.getAlias().equalsIgnoreCase(primaryDefaultRepositoryName))
                 .findAny();
         final Optional<Repository> secondaryRepository = repositories.stream()
-                .filter( r -> r.getAlias().equalsIgnoreCase( secondaryDefaultRepositoryName ) )
+                .filter(r -> r.getAlias().equalsIgnoreCase(secondaryDefaultRepositoryName))
                 .findAny();
 
-        if ( primaryRepository.isPresent() ) {
+        if (primaryRepository.isPresent()) {
             return primaryRepository.get();
-        } else if ( secondaryRepository.isPresent() ) {
+        } else if (secondaryRepository.isPresent()) {
             return secondaryRepository.get();
-        } else if ( !repositories.isEmpty() ) {
-            return repositories.get( 0 );
+        } else if (!repositories.isEmpty()) {
+            return repositories.get(0);
         } else {
-            if ( repositoryService.getRepository( primaryDefaultRepositoryName ) == null ) {
-                return createDefaultRepository( ou, primaryDefaultRepositoryName );
+            if (repositoryService.getRepository(primaryDefaultRepositoryName) == null) {
+                return createDefaultRepository(ou,
+                                               primaryDefaultRepositoryName);
             } else {
-                return createDefaultRepository( ou, secondaryDefaultRepositoryName );
+                return createDefaultRepository(ou,
+                                               secondaryDefaultRepositoryName);
             }
         }
     }
 
     private OrganizationalUnit createDefaultOrganizationalUnit() {
         final LibraryPreferences preferences = getPreferences();
-        return ouService.createOrganizationalUnit( preferences.getOuIdentifier(),
-                                                   preferences.getOuOwner(),
-                                                   preferences.getOuGroupId() );
+        return ouService.createOrganizationalUnit(preferences.getOuIdentifier(),
+                                                  preferences.getOuOwner(),
+                                                  preferences.getOuGroupId());
     }
 
-    private Repository createDefaultRepository( final OrganizationalUnit ou,
-                                                final String repositoryName ) {
+    private Repository createDefaultRepository(final OrganizationalUnit ou,
+                                               final String repositoryName) {
         final String scheme = getPreferences().getRepositoryDefaultScheme();
         final RepositoryEnvironmentConfigurations configuration = getDefaultRepositoryEnvironmentConfigurations();
 
-        return repositoryService.createRepository( ou,
-                                                   scheme,
-                                                   repositoryName,
-                                                   configuration );
+        return repositoryService.createRepository(ou,
+                                                  scheme,
+                                                  repositoryName,
+                                                  configuration);
     }
 
-    private Optional<OrganizationalUnit> getOrganizationalUnit( final String identifier,
-                                                                final Collection<OrganizationalUnit> organizationalUnits ) {
+    private Optional<OrganizationalUnit> getOrganizationalUnit(final String identifier,
+                                                               final Collection<OrganizationalUnit> organizationalUnits) {
         return organizationalUnits.stream()
-                .filter( p -> p.getIdentifier().equalsIgnoreCase( identifier ) )
+                .filter(p -> p.getIdentifier().equalsIgnoreCase(identifier))
                 .findFirst();
     }
 
-    private String getPrimaryDefaultRepositoryName( final OrganizationalUnit ou ) {
+    private String getPrimaryDefaultRepositoryName(final OrganizationalUnit ou) {
         return getPreferences().getRepositoryAlias();
     }
 
-    private String getSecondaryDefaultRepositoryName( final OrganizationalUnit ou ) {
+    private String getSecondaryDefaultRepositoryName(final OrganizationalUnit ou) {
         return ou.getIdentifier() + "-" + getPreferences().getRepositoryAlias();
     }
 

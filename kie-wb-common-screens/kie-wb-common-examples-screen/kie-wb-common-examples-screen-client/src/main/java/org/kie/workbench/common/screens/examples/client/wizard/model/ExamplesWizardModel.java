@@ -24,23 +24,27 @@ import org.uberfire.commons.validation.PortablePreconditions;
 public class ExamplesWizardModel extends ExamplesModel {
 
     private ExampleRepository selectedRepository;
+    private String selectedBranch;
 
     public ExampleRepository getSelectedRepository() {
         return selectedRepository;
     }
 
-    public void setSelectedRepository( final ExampleRepository selectedRepository ) {
+    public void setSelectedRepository(final ExampleRepository selectedRepository) {
         this.selectedRepository = selectedRepository;
     }
 
-    public void addProject( final ExampleProject project ) {
-        getProjects().add( PortablePreconditions.checkNotNull( "project",
-                                                               project ) );
+    public String getSelectedBranch() {
+        return selectedBranch;
     }
 
-    public void removeProject( final ExampleProject project ) {
-        getProjects().remove( PortablePreconditions.checkNotNull( "project",
-                                                                  project ) );
+    public void addProject(final ExampleProject project) {
+        getProjects().add(PortablePreconditions.checkNotNull("project",
+                                                             project));
     }
 
+    public void removeProject(final ExampleProject project) {
+        getProjects().remove(PortablePreconditions.checkNotNull("project",
+                                                                project));
+    }
 }

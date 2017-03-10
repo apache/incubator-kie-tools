@@ -55,13 +55,13 @@ public class ExamplesUtils {
     private Set<ExampleProject> exampleProjects;
 
     @Inject
-    public ExamplesUtils( final SessionInfo sessionInfo,
-                          final TranslationService ts,
-                          final LibraryPlaces libraryPlaces,
-                          final Caller<LibraryService> libraryService,
-                          final BusyIndicatorView busyIndicatorView,
-                          final Event<NotificationEvent> notificationEvent,
-                          final Event<NewProjectEvent> newProjectEvent ) {
+    public ExamplesUtils(final SessionInfo sessionInfo,
+                         final TranslationService ts,
+                         final LibraryPlaces libraryPlaces,
+                         final Caller<LibraryService> libraryService,
+                         final BusyIndicatorView busyIndicatorView,
+                         final Event<NotificationEvent> notificationEvent,
+                         final Event<NewProjectEvent> newProjectEvent) {
         this.sessionInfo = sessionInfo;
         this.ts = ts;
         this.libraryPlaces = libraryPlaces;
@@ -75,47 +75,48 @@ public class ExamplesUtils {
         this.exampleProjects = null;
     }
 
-    public void getExampleProjects( final ParameterizedCommand<Set<ExampleProject>> callback ) {
-        if ( exampleProjects == null ) {
-            libraryService.call( new RemoteCallback<Set<ExampleProject>>() {
+    public void getExampleProjects(final ParameterizedCommand<Set<ExampleProject>> callback) {
+        if (exampleProjects == null) {
+            libraryService.call(new RemoteCallback<Set<ExampleProject>>() {
                 @Override
-                public void callback( final Set<ExampleProject> exampleProjects ) {
+                public void callback(final Set<ExampleProject> exampleProjects) {
                     ExamplesUtils.this.exampleProjects = exampleProjects;
-                    callback.execute( exampleProjects );
+                    callback.execute(exampleProjects);
                 }
-            } ).getExampleProjects();
+            }).getExampleProjects();
         } else {
-            callback.execute( exampleProjects );
+            callback.execute(exampleProjects);
         }
     }
 
-    public void importProject( final ExampleProject exampleProject ) {
-        busyIndicatorView.showBusyIndicator( ts.getTranslation( LibraryConstants.Importing ) );
-        libraryService.call( ( Project project ) -> {
-            busyIndicatorView.hideBusyIndicator();
-            notificationEvent.fire( new NotificationEvent( ts.getTranslation( LibraryConstants.ProjectImportedSuccessfully ),
-                                                           NotificationEvent.NotificationType.SUCCESS ) );
+    public void importProject(final ExampleProject exampleProject) {
+        busyIndicatorView.showBusyIndicator(ts.getTranslation(LibraryConstants.Importing));
+        libraryService.call((Project project) -> {
+                                busyIndicatorView.hideBusyIndicator();
+                                notificationEvent.fire(new NotificationEvent(ts.getTranslation(LibraryConstants.ProjectImportedSuccessfully),
+                                                                             NotificationEvent.NotificationType.SUCCESS));
 
-            newProjectEvent.fire( new NewProjectEvent( project,
-                                                       sessionInfo.getId(),
-                                                       sessionInfo.getIdentity().getIdentifier() ) );
-            goToProject( project );
-
-        }, ( o, throwable ) -> {
-            busyIndicatorView.hideBusyIndicator();
-            notificationEvent.fire( new NotificationEvent( ts.getTranslation( LibraryConstants.ProjectImportError ),
-                                                           NotificationEvent.NotificationType.ERROR ) );
-            return false;
-        } ).importProject( libraryPlaces.getSelectedOrganizationalUnit(),
-                           libraryPlaces.getSelectedRepository(),
-                           exampleProject );
+                                newProjectEvent.fire(new NewProjectEvent(project,
+                                                                         sessionInfo.getId(),
+                                                                         sessionInfo.getIdentity().getIdentifier()));
+                                goToProject(project);
+                            },
+                            (o, throwable) -> {
+                                busyIndicatorView.hideBusyIndicator();
+                                notificationEvent.fire(new NotificationEvent(ts.getTranslation(LibraryConstants.ProjectImportError),
+                                                                             NotificationEvent.NotificationType.ERROR));
+                                return false;
+                            }).importProject(libraryPlaces.getSelectedOrganizationalUnit(),
+                                             libraryPlaces.getSelectedRepository(),
+                                             libraryPlaces.getSelectedBranch(),
+                                             exampleProject);
     }
 
-    private void goToProject( Project project ) {
-        final ProjectInfo projectInfo = new ProjectInfo( libraryPlaces.getSelectedOrganizationalUnit(),
-                                                         libraryPlaces.getSelectedRepository(),
-                                                         libraryPlaces.getSelectedBranch(),
-                                                         project );
-        libraryPlaces.goToProject( projectInfo );
+    private void goToProject(Project project) {
+        final ProjectInfo projectInfo = new ProjectInfo(libraryPlaces.getSelectedOrganizationalUnit(),
+                                                        libraryPlaces.getSelectedRepository(),
+                                                        libraryPlaces.getSelectedBranch(),
+                                                        project);
+        libraryPlaces.goToProject(projectInfo);
     }
 }

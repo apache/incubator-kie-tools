@@ -37,12 +37,12 @@ public interface ExamplesService extends PriorityDisposable {
 
     ExampleRepository getPlaygroundRepository();
 
-    Set<ExampleProject> getProjects( final ExampleRepository repository );
+    Set<ExampleProject> getProjects(final ExampleRepository repository);
 
-    boolean validateRepositoryName( final String name );
+    boolean validateRepositoryName(final String name);
 
-    ProjectContextChangeEvent setupExamples( final ExampleOrganizationalUnit exampleTargetOU,
-                                             final ExampleTargetRepository exampleTarget,
-                                             final List<ExampleProject> exampleProjects );
-
+    ProjectContextChangeEvent setupExamples(final ExampleOrganizationalUnit exampleTargetOU,
+                                            final ExampleTargetRepository exampleTarget,
+                                            final String branch,
+                                            final List<ExampleProject> exampleProjects);
 }

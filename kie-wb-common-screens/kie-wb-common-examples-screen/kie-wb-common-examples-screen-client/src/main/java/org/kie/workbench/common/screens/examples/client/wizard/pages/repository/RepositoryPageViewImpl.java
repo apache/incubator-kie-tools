@@ -61,64 +61,65 @@ public class RepositoryPageViewImpl extends Composite implements RepositoryPageV
     private RepositoryPage presenter;
 
     @Override
-    public void init( final RepositoryPage presenter ) {
+    public void init(final RepositoryPage presenter) {
         this.presenter = presenter;
     }
 
     @Override
     public void initialise() {
-        repositoryUrlInput.setValue( "" );
+        repositoryUrlInput.setValue("");
     }
 
     @Override
-    public void setPlaceHolder( final String placeHolder ) {
-        repositoryUrlInput.setAttribute( "placeholder", placeHolder );
+    public void setPlaceHolder(final String placeHolder) {
+        repositoryUrlInput.setAttribute("placeholder",
+                                        placeHolder);
     }
 
     @Override
-    public void setUrlGroupType( final ValidationState state ) {
-        StyleHelper.addUniqueEnumStyleName( repositoryGroup,
-                                            ValidationState.class,
-                                            state );
+    public void setUrlGroupType(final ValidationState state) {
+        StyleHelper.addUniqueEnumStyleName(repositoryGroup,
+                                           ValidationState.class,
+                                           state);
     }
 
     @Override
-    public void showUrlHelpMessage( final String message ) {
-        repositoryHelp.getStyle().setVisibility( Style.Visibility.VISIBLE );
-        repositoryHelp.setInnerText( message );
+    public void showUrlHelpMessage(final String message) {
+        repositoryHelp.getStyle().setVisibility(Style.Visibility.VISIBLE);
+        repositoryHelp.setInnerText(message);
     }
 
     @Override
     public void hideUrlHelpMessage() {
-        repositoryHelp.getStyle().setVisibility( Style.Visibility.HIDDEN );
-        repositoryHelp.setInnerText( "" );
+        repositoryHelp.getStyle().setVisibility(Style.Visibility.HIDDEN);
+        repositoryHelp.setInnerText("");
     }
 
     @Override
     public void setStockRepositoryOption() {
-        stockRadio.setChecked( true );
-        customRadio.setChecked( false );
+        stockRadio.setChecked(true);
+        customRadio.setChecked(false);
     }
 
     @Override
     public void disableStockRepositoryOption() {
-        stockRadio.setDisabled( true );
+        stockRadio.setDisabled(true);
     }
 
     @Override
     public void setCustomRepositoryOption() {
-        customRadio.setChecked( true );
-        stockRadio.setChecked( false );
+        customRadio.setChecked(true);
+        stockRadio.setChecked(false);
     }
 
     @Override
     public void showRepositoryUrlInputForm() {
-        repositoryGroup.getStyle().setVisibility( Style.Visibility.VISIBLE );
+        repositoryGroup.getStyle().setVisibility(Style.Visibility.VISIBLE);
     }
 
     @Override
     public void hideRepositoryUrlInputForm() {
-        repositoryGroup.getStyle().setVisibility( Style.Visibility.HIDDEN );
+        repositoryGroup.getStyle().setVisibility(Style.Visibility.HIDDEN);
     }
 
     @Override
@@ -127,22 +128,22 @@ public class RepositoryPageViewImpl extends Composite implements RepositoryPageV
     }
 
     @Override
-    public void setCustomRepositoryValue( final String value ) {
-        repositoryUrlInput.setValue( value );
+    public void setCustomRepositoryValue(final String value) {
+        repositoryUrlInput.setValue(value);
     }
 
     @EventHandler("stockRadio")
-    public void handleStockRadioClick( ClickEvent event ) {
+    public void handleStockRadioClick(ClickEvent event) {
         presenter.playgroundRepositorySelected();
     }
 
     @EventHandler("customRadio")
-    public void handleCustomRadioClick( ClickEvent event ) {
-        presenter.customRepositorySelected();
+    public void handleCustomRadioClick(ClickEvent event) {
+        presenter.onCustomRepositorySelected();
     }
 
     @EventHandler("repositoryUrlInput")
-    public void handleRepositoryUrlInputValueChange( ChangeEvent event ) {
-        presenter.customRepositoryValueChanged();
+    public void handleRepositoryUrlInputValueChange(ChangeEvent event) {
+        presenter.onCustomRepositoryValueChanged();
     }
 }

@@ -48,6 +48,7 @@ public class NewProjectScreen {
 
     }
 
+    LibraryInfo libraryInfo;
     private Caller<LibraryService> libraryService;
 
     private PlaceManager placeManager;
@@ -66,18 +67,16 @@ public class NewProjectScreen {
 
     private Event<NewProjectEvent> newProjectEvent;
 
-    LibraryInfo libraryInfo;
-
     @Inject
-    public NewProjectScreen( final Caller<LibraryService> libraryService,
-                             final PlaceManager placeManager,
-                             final BusyIndicatorView busyIndicatorView,
-                             final Event<NotificationEvent> notificationEvent,
-                             final LibraryPlaces libraryPlaces,
-                             final View view,
-                             final TranslationService ts,
-                             final SessionInfo sessionInfo,
-                             final Event<NewProjectEvent> newProjectEvent ) {
+    public NewProjectScreen(final Caller<LibraryService> libraryService,
+                            final PlaceManager placeManager,
+                            final BusyIndicatorView busyIndicatorView,
+                            final Event<NotificationEvent> notificationEvent,
+                            final LibraryPlaces libraryPlaces,
+                            final View view,
+                            final TranslationService ts,
+                            final SessionInfo sessionInfo,
+                            final Event<NewProjectEvent> newProjectEvent) {
         this.libraryService = libraryService;
         this.placeManager = placeManager;
         this.busyIndicatorView = busyIndicatorView;
@@ -91,67 +90,69 @@ public class NewProjectScreen {
 
     @OnStartup
     public void load() {
-        view.init( this );
-        libraryService.call( new RemoteCallback<LibraryInfo>() {
+        view.init(this);
+        libraryService.call(new RemoteCallback<LibraryInfo>() {
             @Override
-            public void callback( LibraryInfo libraryInfo ) {
+            public void callback(LibraryInfo libraryInfo) {
                 NewProjectScreen.this.libraryInfo = libraryInfo;
             }
-        } ).getLibraryInfo( libraryPlaces.getSelectedRepository() );
+        }).getLibraryInfo(libraryPlaces.getSelectedRepository(),
+                          libraryPlaces.getSelectedBranch());
     }
 
     public void cancel() {
         libraryPlaces.goToLibrary();
-        placeManager.closePlace( LibraryPlaces.NEW_PROJECT_SCREEN );
+        placeManager.closePlace(LibraryPlaces.NEW_PROJECT_SCREEN);
     }
 
-    public void createProject( String projectName ) {
-        busyIndicatorView.showBusyIndicator( ts.getTranslation( LibraryConstants.NewProjectScreen_Saving ) );
-        libraryService.call( getSuccessCallback(),
-                             getErrorCallBack() ).createProject( projectName,
-                                                                 libraryPlaces.getSelectedRepository(),
-                                                                 getBaseURL() );
+    public void createProject(String projectName) {
+        busyIndicatorView.showBusyIndicator(ts.getTranslation(LibraryConstants.NewProjectScreen_Saving));
+        libraryService.call(getSuccessCallback(),
+                            getErrorCallBack()).createProject(projectName,
+                                                              libraryPlaces.getSelectedRepository(),
+                                                              getBaseURL());
     }
 
     private RemoteCallback<KieProject> getSuccessCallback() {
         return project -> {
-            newProjectEvent.fire( new NewProjectEvent( project,
-                                                       sessionInfo.getId(),
-                                                       sessionInfo.getIdentity().getIdentifier() ) );
+            newProjectEvent.fire(new NewProjectEvent(project,
+                                                     sessionInfo.getId(),
+                                                     sessionInfo.getIdentity().getIdentifier()));
             hideLoadingBox();
             notifySuccess();
-            goToProject( project );
-            placeManager.closePlace( LibraryPlaces.NEW_PROJECT_SCREEN );
+            goToProject(project);
+            placeManager.closePlace(LibraryPlaces.NEW_PROJECT_SCREEN);
         };
     }
 
     private ErrorCallback<?> getErrorCallBack() {
-        return ( o, throwable ) -> {
+        return (o, throwable) -> {
             hideLoadingBox();
             notificationEvent
-                    .fire( new NotificationEvent( ts.getTranslation( LibraryConstants.NewProjectScreen_Error ),
-                                                  NotificationEvent.NotificationType.ERROR ) );
+                    .fire(new NotificationEvent(ts.getTranslation(LibraryConstants.NewProjectScreen_Error),
+                                                NotificationEvent.NotificationType.ERROR));
             return false;
         };
     }
 
     String getBaseURL() {
         final String url = GWT.getModuleBaseURL();
-        final String baseUrl = url.replace( GWT.getModuleName() + "/", "" );
+        final String baseUrl = url.replace(GWT.getModuleName() + "/",
+                                           "");
         return baseUrl;
     }
 
-    private void goToProject( KieProject project ) {
-        final ProjectInfo projectInfo = new ProjectInfo( libraryPlaces.getSelectedOrganizationalUnit(),
-                                                         libraryPlaces.getSelectedRepository(),
-                                                         libraryInfo.getSelectedBranch(),
-                                                         project );
-        libraryPlaces.goToProject( projectInfo );
+    private void goToProject(KieProject project) {
+        final ProjectInfo projectInfo = new ProjectInfo(libraryPlaces.getSelectedOrganizationalUnit(),
+                                                        libraryPlaces.getSelectedRepository(),
+                                                        libraryInfo.getSelectedBranch(),
+                                                        project);
+        libraryPlaces.goToProject(projectInfo);
     }
 
     private void notifySuccess() {
-        notificationEvent.fire( new NotificationEvent( ts.getTranslation( LibraryConstants.Project_Created ),
-                                                       NotificationEvent.NotificationType.SUCCESS ) );
+        notificationEvent.fire(new NotificationEvent(ts.getTranslation(LibraryConstants.Project_Created),
+                                                     NotificationEvent.NotificationType.SUCCESS));
     }
 
     private void hideLoadingBox() {
@@ -160,7 +161,7 @@ public class NewProjectScreen {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return ts.getTranslation( LibraryConstants.NewProjectScreen );
+        return ts.getTranslation(LibraryConstants.NewProjectScreen);
     }
 
     @WorkbenchPartView
