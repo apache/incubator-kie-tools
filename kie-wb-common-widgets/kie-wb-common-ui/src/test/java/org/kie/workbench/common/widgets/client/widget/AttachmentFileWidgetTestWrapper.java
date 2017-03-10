@@ -16,28 +16,34 @@
 
 package org.kie.workbench.common.widgets.client.widget;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AttachmentFileWidgetTestWrapper extends AttachmentFileWidget {
 
     boolean initialized;
     boolean isValid;
 
+    List<String> shownMessages;
+
     public AttachmentFileWidgetTestWrapper() {
-        super( false );
+        super(false);
+        shownMessages = new ArrayList<>();
     }
 
     @Override
-    void setup( final boolean addFileUpload ) {
-        if ( initialized ) {
-            super.setup( addFileUpload );
+    void setup(final boolean addFileUpload) {
+        if (initialized) {
+            super.setup(addFileUpload);
         }
     }
 
-    void forceInitForm( final boolean addFileUpload ) {
+    void forceInitForm(final boolean addFileUpload) {
         this.initialized = true;
-        setup( addFileUpload );
+        setup(addFileUpload);
     }
 
-    void setValid( final boolean isValid ) {
+    void setValid(final boolean isValid) {
         this.isValid = isValid;
     }
 
@@ -46,4 +52,12 @@ public class AttachmentFileWidgetTestWrapper extends AttachmentFileWidget {
         return isValid;
     }
 
+    @Override
+    public void showMessage(String message) {
+        shownMessages.add(message);
+    }
+
+    public List<String> getShownMessages() {
+        return shownMessages;
+    }
 }

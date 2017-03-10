@@ -25,11 +25,15 @@ import org.gwtbootstrap3.client.ui.base.form.AbstractForm.SubmitHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.widgets.common.client.common.FileUploadFormEncoder;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -54,47 +58,69 @@ public class AttachmentFileWidgetTest {
     @Mock
     private Path path;
 
+    @Mock
+    Form.SubmitCompleteEvent event;
+
+    @Captor
+    ArgumentCaptor<SubmitCompleteHandler> submitCompleteCaptor;
+
     @Before
     public void setup() {
-        editor.forceInitForm( false );
+        editor.forceInitForm(false);
     }
 
     @Test
     public void formCharsetAdded() {
-        verify( formEncoder,
-                times( 1 ) ).addUtf8Charset( form );
+        verify(formEncoder,
+               times(1)).addUtf8Charset(form);
     }
 
     @Test
     public void formSubmitHandlersSet() {
-        verify( form,
-                never() ).addSubmitHandler( any( SubmitHandler.class ) );
-        verify( form,
-                times( 1 ) ).addSubmitCompleteHandler( any( SubmitCompleteHandler.class ) );
+        verify(form,
+               never()).addSubmitHandler(any(SubmitHandler.class));
+        verify(form,
+               times(1)).addSubmitCompleteHandler(any(SubmitCompleteHandler.class));
     }
 
     @Test
     public void formSubmitValidState() {
-        editor.setValid( true );
-        editor.submit( path,
-                       "filename",
-                       "targetUrl",
-                       successCallback,
-                       errorCallback );
-        verify( form,
-                times( 1 ) ).submit();
+        editor.setValid(true);
+        editor.submit(path,
+                      "filename",
+                      "targetUrl",
+                      successCallback,
+                      errorCallback);
+        verify(form,
+               times(1)).submit();
     }
 
     @Test
     public void formSubmitInvalidState() {
-        editor.setValid( false );
-        editor.submit( path,
-                       "filename",
-                       "targetUrl",
-                       successCallback,
-                       errorCallback );
-        verify( form,
-                never() ).submit();
+        editor.setValid(false);
+        editor.submit(path,
+                      "filename",
+                      "targetUrl",
+                      successCallback,
+                      errorCallback);
+        verify(form,
+               never()).submit();
     }
 
+    @Test
+    public void testSubmitCompleteInvalidXlsContent() throws Exception {
+        when(event.getResults()).thenReturn("DecisionTableParseException");
+        editor.setValid(true);
+        editor.submit(path,
+                      "filename",
+                      "targetUrl",
+                      successCallback,
+                      errorCallback);
+        verify(form).addSubmitCompleteHandler(submitCompleteCaptor.capture());
+        submitCompleteCaptor.getValue().onSubmitComplete(event);
+        assertEquals(1,
+                     editor.getShownMessages().size());
+        assertEquals(CommonConstants.INSTANCE.UploadGenericError(),
+                     editor.getShownMessages().get(0));
+    }
 }
