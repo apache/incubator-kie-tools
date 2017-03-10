@@ -156,14 +156,16 @@ Let's create our first perspective, using Uberfire Templated Perspectives.
 
 First, we need to create the perspective Errai UI template, named "MoodPerspective.html" on org.uberfire.client.perspectives package:
 ```
-<div>
-    <div id="home1">
-        <span><b>Our MoodScreen</b></span>
-        <div data-field="moodScreen"></div>
-    </div>
-    <div id="home2">
-        <span><b>Mood Listener</b></span>
-        <div data-field="moodListener"></div>
+<div class="fluid-container uf-perspective-container">
+    <div class="fluid-row uf-perspective-row-12">
+        <div class="col-md-6 uf-perspective-col">
+            <span><b>Our MoodScreen</b></span>
+            <div data-field="moodScreen"></div>
+        </div>
+        <div class="col-md-6 uf-perspective-col">
+            <span><b>Mood Listener</b></span>
+            <div data-field="moodListener"></div>
+        </div>
     </div>
 </div>
 ```
@@ -173,24 +175,28 @@ Now, let's create the Perspective class MoodPerspective on org.uberfire.client.p
 ```
 package org.uberfire.client.perspectives;
 
-import com.google.gwt.user.client.ui.Composite;
+import javax.inject.Inject;
+
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.annotations.WorkbenchPanel;
 import org.uberfire.client.annotations.WorkbenchPerspective;
-import org.uberfire.client.workbench.panels.UFFlowPanel;
 
 @Templated
 @WorkbenchPerspective(identifier = "MoodPerspective")
-public class MoodPerspective extends Composite {
+public class MoodPerspective implements IsElement {
 
+    @Inject
     @DataField
     @WorkbenchPanel(parts = "MoodScreen")
-    UFFlowPanel moodScreen = new UFFlowPanel( 100 );
+    Div moodScreen;
 
+    @Inject
     @DataField
     @WorkbenchPanel(parts = "MoodListenerScreen")
-    UFFlowPanel moodListener = new UFFlowPanel( 100 );
+    Div moodListener;
 }
 ```
 ### Adding MoodPerspective
@@ -232,7 +238,7 @@ Did you notice the CDI event raised by MoodScreen? If no, take a look at moodFor
 Now let’s do something in response to the event we fire in MoodListenerScreen when the user presses Enter. To do this we’ll add a CDI observer method at MoodListenerScreen:
 ```
 public void onMoodChange( @Observes Mood mood ) {
-        moodTextBox.setText( "You are feeling " + mood.getText() );
+        moodTextBox.setValue( "You are feeling " + mood.getText() );
 }
 ```
 Build and run your App again (mvn gwt: clean gwt:compile gwt:run), write a text on "How do  you fell" textbox and press enter to see screens communicating:

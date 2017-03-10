@@ -126,7 +126,7 @@ public class ProjectsView implements ProjectsPresenter.View, IsElement {
     <label>Project View</label>
 </div>
 ```
-For now, this view only has a label with the text "Project View". "Div view" is the property that will be referenced by the presenter as the root element of this template.
+For now, this view only has a label with the text "Project View". 
 
 ###Creating Tasks Screen
 Our second screen is the Task Screen. Let's create it (inside org.uberfire.client.screens package):
@@ -319,13 +319,13 @@ import javax.inject.Inject;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 
 @ApplicationScoped
 @WorkbenchScreen(identifier = "ProjectsPresenter")
 public class ProjectsPresenter {
 
-    public interface View extends UberView<ProjectsPresenter> {
+    public interface View extends UberElement<ProjectsPresenter> {
 
         void clearProjects();
 
@@ -342,7 +342,7 @@ public class ProjectsPresenter {
     }
 
     @WorkbenchPartView
-    public UberView<ProjectsPresenter> getView() {
+    public UberElement<ProjectsPresenter> getView() {
         return view;
     }
 
@@ -378,6 +378,7 @@ import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.UnorderedList;
+import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.SinkNative;
@@ -390,12 +391,8 @@ import static org.jboss.errai.common.client.dom.DOMUtil.removeAllChildren;
 
 @Dependent
 @Templated
-public class ProjectsView implements ProjectsPresenter.View {
-
-    @Inject
-    @DataField( "projects-view" )
-    Div view;
-
+public class ProjectsView implements ProjectsPresenter.View,
+                                     IsElement {
     @Inject
     @DataField( "new-project" )
     Button newProject;
@@ -428,11 +425,6 @@ public class ProjectsView implements ProjectsPresenter.View {
         removeAllChildren( projectsList );
     }
 
-
-    @Override
-    public HTMLElement getElement() {
-        return view;
-    }
 
 }
 ```
@@ -887,7 +879,7 @@ import javax.inject.Inject;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 import org.uberfire.client.screens.popup.NewFolderPresenter;
 import org.uberfire.shared.events.ProjectSelectedEvent;
 
@@ -895,7 +887,7 @@ import org.uberfire.shared.events.ProjectSelectedEvent;
 @WorkbenchScreen(identifier = "TasksPresenter")
 public class TasksPresenter {
 
-    public interface View extends UberView<TasksPresenter> {
+    public interface View extends UberElement<TasksPresenter> {
 
         void activateNewFolder();
 
@@ -920,7 +912,7 @@ public class TasksPresenter {
     }
 
     @WorkbenchPartView
-    public UberView<TasksPresenter> getView() {
+    public UberElement<TasksPresenter> getView() {
         return view;
     }
 
@@ -1190,7 +1182,7 @@ import javax.inject.Inject;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
-import org.uberfire.client.mvp.UberView;
+import org.uberfire.client.mvp.UberElement;
 import org.uberfire.client.screens.popup.NewFolderPresenter;
 import org.uberfire.shared.events.ProjectSelectedEvent;
 import org.uberfire.shared.model.Folder;
@@ -1199,7 +1191,7 @@ import org.uberfire.shared.model.Folder;
 @WorkbenchScreen(identifier = "TasksPresenter")
 public class TasksPresenter {
 
-    public interface View extends UberView<TasksPresenter> {
+    public interface View extends UberElement<TasksPresenter> {
 
         void activateNewFolder();
 
@@ -1226,7 +1218,7 @@ public class TasksPresenter {
     }
 
     @WorkbenchPartView
-    public UberView<TasksPresenter> getView() {
+    public UberElement<TasksPresenter> getView() {
         return view;
     }
 
@@ -1333,10 +1325,6 @@ public class TasksView implements TasksPresenter.View, IsElement {
 
     @Inject
     Document document;
-
-    @Inject
-    @DataField( "view" )
-    Div view;
 
     @Inject
     @DataField( "new-folder" )
@@ -1595,7 +1583,6 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.UberElement;
-import org.uberfire.client.mvp.UberView;
 import org.uberfire.lifecycle.OnOpen;
 import org.uberfire.shared.events.TaskCreated;
 import org.uberfire.shared.events.TaskDone;
