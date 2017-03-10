@@ -53,10 +53,15 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.io.IOService;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DecisionTableXLSToDecisionTableGuidedConverterTest {
@@ -120,133 +125,134 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
 
     private static void setupPreferences() {
         final Map<String, String> preferences = new HashMap<String, String>() {{
-            put( ApplicationPreferences.DATE_FORMAT,
-                 "dd/mm/yyyy" );
+            put(ApplicationPreferences.DATE_FORMAT,
+                "dd/mm/yyyy");
         }};
-        ApplicationPreferences.setUp( preferences );
+        ApplicationPreferences.setUp(preferences);
     }
 
     private static void setupSystemProperties() {
-        System.setProperty( "org.uberfire.nio.git.daemon.enabled",
-                            "false" );
-        System.setProperty( "org.uberfire.nio.git.ssh.enabled",
-                            "false" );
-        System.setProperty( "org.uberfire.sys.repo.monitor.disabled",
-                            "true" );
+        System.setProperty("org.uberfire.nio.git.daemon.enabled",
+                           "false");
+        System.setProperty("org.uberfire.nio.git.ssh.enabled",
+                           "false");
+        System.setProperty("org.uberfire.sys.repo.monitor.disabled",
+                           "true");
     }
 
     @Before
     public void setupMocks() {
-        converter = new DecisionTableXLSToDecisionTableGuidedConverter( ioService,
-                                                                        drlService,
-                                                                        guidedDecisionTableService,
-                                                                        globalsService,
-                                                                        projectService,
-                                                                        importsService,
-                                                                        metadataService,
-                                                                        modellerService,
-                                                                        dataModelService,
-                                                                        appConfigService,
-                                                                        xlsDTableType,
-                                                                        xlsxDTableType,
-                                                                        guidedDTableType,
-                                                                        drlType,
-                                                                        globalsType );
-        when( path.toURI() ).thenReturn( "default://project0/src/main/resources/p0/source.xls" );
-        when( path.getFileName() ).thenReturn( "source.xls" );
-        when( dataModelService.getDataModel( eq( path ) ) ).thenReturn( dmo );
+        converter = new DecisionTableXLSToDecisionTableGuidedConverter(ioService,
+                                                                       drlService,
+                                                                       guidedDecisionTableService,
+                                                                       globalsService,
+                                                                       projectService,
+                                                                       importsService,
+                                                                       metadataService,
+                                                                       modellerService,
+                                                                       dataModelService,
+                                                                       appConfigService,
+                                                                       xlsDTableType,
+                                                                       xlsxDTableType,
+                                                                       guidedDTableType,
+                                                                       drlType,
+                                                                       globalsType);
+        when(path.toURI()).thenReturn("default://project0/src/main/resources/p0/source.xls");
+        when(path.getFileName()).thenReturn("source.xls");
+        when(dataModelService.getDataModel(eq(path))).thenReturn(dmo);
 
-        when( dmo.getPackageName() ).thenReturn( "org.test" );
-        when( dmo.getProjectModelFields() ).thenReturn( packageModelFields );
+        when(dmo.getPackageName()).thenReturn("org.test");
+        when(dmo.getProjectModelFields()).thenReturn(packageModelFields);
 
-        when( projectService.resolveProject( any( Path.class ) ) ).thenReturn( project );
-        when( project.getImportsPath() ).thenReturn( expectedProjectImportsPath );
-        when( expectedProjectImportsPath.toURI() ).thenReturn( "default://project0/project.imports" );
+        when(projectService.resolveProject(any(Path.class))).thenReturn(project);
+        when(project.getImportsPath()).thenReturn(expectedProjectImportsPath);
+        when(expectedProjectImportsPath.toURI()).thenReturn("default://project0/project.imports");
     }
 
     @Test
     //https://bugzilla.redhat.com/show_bug.cgi?id=1310208
     public void testGlobalGeneration() {
-        final InputStream is = this.getClass().getResourceAsStream( "BZ1310208.xls" );
-        when( ioService.newInputStream( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( is );
-        final ConversionResult result = converter.convert( path );
-        assertNotNull( result );
+        final InputStream is = this.getClass().getResourceAsStream("BZ1310208.xls");
+        when(ioService.newInputStream(any(org.uberfire.java.nio.file.Path.class))).thenReturn(is);
+        final ConversionResult result = converter.convert(path);
+        assertNotNull(result);
 
-        final ArgumentCaptor<GlobalsModel> globalsModelArgumentCaptor = ArgumentCaptor.forClass( GlobalsModel.class );
-        verify( globalsService,
-                times( 1 ) ).create( any( Path.class ),
-                                     any( String.class ),
-                                     globalsModelArgumentCaptor.capture(),
-                                     any( String.class ) );
-        assertNotNull( globalsModelArgumentCaptor.getValue() );
+        final ArgumentCaptor<GlobalsModel> globalsModelArgumentCaptor = ArgumentCaptor.forClass(GlobalsModel.class);
+        verify(globalsService,
+               times(1)).create(any(Path.class),
+                                any(String.class),
+                                globalsModelArgumentCaptor.capture(),
+                                any(String.class));
+        assertNotNull(globalsModelArgumentCaptor.getValue());
         final GlobalsModel globalsModel = globalsModelArgumentCaptor.getValue();
-        assertEquals( 1,
-                      globalsModel.getGlobals().size() );
-        assertEquals( "list",
-                      globalsModel.getGlobals().get( 0 ).getAlias() );
-        assertEquals( "java.util.List",
-                      globalsModel.getGlobals().get( 0 ).getClassName() );
+        assertEquals(1,
+                     globalsModel.getGlobals().size());
+        assertEquals("list",
+                     globalsModel.getGlobals().get(0).getAlias());
+        assertEquals("java.util.List",
+                     globalsModel.getGlobals().get(0).getClassName());
 
-        verify( guidedDecisionTableService,
-                times( 1 ) ).create( any( Path.class ),
-                                     any( String.class ),
-                                     any( GuidedDecisionTable52.class ),
-                                     any( String.class ) );
+        verify(guidedDecisionTableService,
+               times(1)).create(any(Path.class),
+                                any(String.class),
+                                any(GuidedDecisionTable52.class),
+                                any(String.class));
 
-        verify( drlService,
-                never() ).create( any( Path.class ),
-                                  any( String.class ),
-                                  any( String.class ),
-                                  any( String.class ) );
+        verify(drlService,
+               never()).create(any(Path.class),
+                               any(String.class),
+                               any(String.class),
+                               any(String.class));
     }
 
     @Test
     //https://issues.jboss.org/browse/GUVNOR-2478
     public void testImportGeneration() {
-        final InputStream is = this.getClass().getResourceAsStream( "GUVNOR-2478.xls" );
-        when( ioService.newInputStream( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( is );
-        final ConversionResult result = converter.convert( path );
-        assertNotNull( result );
+        final InputStream is = this.getClass().getResourceAsStream("GUVNOR-2478.xls");
+        when(ioService.newInputStream(any(org.uberfire.java.nio.file.Path.class))).thenReturn(is);
+        final ConversionResult result = converter.convert(path);
+        assertNotNull(result);
 
-        final ArgumentCaptor<Path> projectImportsPathArgumentCaptor = ArgumentCaptor.forClass( Path.class );
-        final ArgumentCaptor<ProjectImports> projectImportsArgumentCaptor = ArgumentCaptor.forClass( ProjectImports.class );
-        verify( importsService,
-                times( 1 ) ).save( projectImportsPathArgumentCaptor.capture(),
-                                   projectImportsArgumentCaptor.capture(),
-                                   any( Metadata.class ),
-                                   any( String.class ) );
-        assertNotNull( projectImportsPathArgumentCaptor.getValue() );
+        final ArgumentCaptor<Path> projectImportsPathArgumentCaptor = ArgumentCaptor.forClass(Path.class);
+        final ArgumentCaptor<ProjectImports> projectImportsArgumentCaptor = ArgumentCaptor.forClass(ProjectImports.class);
+        verify(importsService,
+               times(1)).save(projectImportsPathArgumentCaptor.capture(),
+                              projectImportsArgumentCaptor.capture(),
+                              any(Metadata.class),
+                              any(String.class));
+        assertNotNull(projectImportsPathArgumentCaptor.getValue());
         final Path actualProjectImportsPath = projectImportsPathArgumentCaptor.getValue();
-        assertEquals( expectedProjectImportsPath.toURI(),
-                      actualProjectImportsPath.toURI() );
+        assertEquals(expectedProjectImportsPath.toURI(),
+                     actualProjectImportsPath.toURI());
 
-        assertNotNull( projectImportsArgumentCaptor.getValue() );
+        assertNotNull(projectImportsArgumentCaptor.getValue());
         final ProjectImports projectImports = projectImportsArgumentCaptor.getValue();
-        assertEquals( 1,
-                      projectImports.getImports().getImports().size() );
-        assertEquals( "java.util.List",
-                      projectImports.getImports().getImports().get( 0 ).getType() );
+        assertEquals(1,
+                     projectImports.getImports().getImports().size());
+        assertEquals("java.util.List",
+                     projectImports.getImports().getImports().get(0).getType());
 
-        verify( guidedDecisionTableService,
-                times( 1 ) ).create( any( Path.class ),
-                                     any( String.class ),
-                                     any( GuidedDecisionTable52.class ),
-                                     any( String.class ) );
+        verify(guidedDecisionTableService,
+               times(1)).create(any(Path.class),
+                                any(String.class),
+                                any(GuidedDecisionTable52.class),
+                                any(String.class));
     }
 
     @Test
     //https://issues.jboss.org/browse/GUVNOR-2696
     public void checkConversionOfXLSXFiles() {
-        final InputStream is = this.getClass().getResourceAsStream( "GUVNOR-2696.xlsx" );
-        when( ioService.newInputStream( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( is );
-        final ConversionResult result = converter.convert( path );
-        assertNotNull( result );
+        final InputStream is = this.getClass().getResourceAsStream("GUVNOR-2696.xlsx");
+        when(ioService.newInputStream(any(org.uberfire.java.nio.file.Path.class))).thenReturn(is);
+        final ConversionResult result = converter.convert(path);
+        assertNotNull(result);
+        assertEquals(1, result.getMessages().size());
+        assertTrue(result.getMessages().get(0).getMessage().startsWith("Created Guided Decision Table 'Weather"));
 
-        verify( guidedDecisionTableService,
-                times( 1 ) ).create( any( Path.class ),
-                                     any( String.class ),
-                                     any( GuidedDecisionTable52.class ),
-                                     any( String.class ) );
+        verify(guidedDecisionTableService,
+               times(1)).create(any(Path.class),
+                                any(String.class),
+                                any(GuidedDecisionTable52.class),
+                                any(String.class));
     }
-
 }
