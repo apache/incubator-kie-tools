@@ -25,10 +25,10 @@ import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.EdgeBuildRequest;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
@@ -49,7 +49,7 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
 
     private final ClientDefinitionManager clientDefinitionManager;
     private final ShapeManager shapeManager;
-    private final CanvasCommandFactory commandFactory;
+    private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
     private final EdgeMagnetsHelper magnetsHelper;
     private RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
@@ -63,7 +63,7 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
     @Inject
     public EdgeBuilderControlImpl(final ClientDefinitionManager clientDefinitionManager,
                                   final ShapeManager shapeManager,
-                                  final CanvasCommandFactory commandFactory,
+                                  final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
                                   final EdgeMagnetsHelper magnetsHelper) {
         this.clientDefinitionManager = clientDefinitionManager;
         this.shapeManager = shapeManager;

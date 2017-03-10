@@ -20,7 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -44,7 +44,7 @@ public class NameEditBoxWidgetTest {
     private DefinitionUtils definitionUtils;
 
     @Mock
-    private CanvasCommandFactory canvasCommandFactory;
+    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     @Mock
     private NameEditBoxWidgetView view;

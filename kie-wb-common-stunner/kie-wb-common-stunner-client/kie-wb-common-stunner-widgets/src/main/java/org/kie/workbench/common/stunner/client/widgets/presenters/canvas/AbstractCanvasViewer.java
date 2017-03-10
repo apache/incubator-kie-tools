@@ -119,8 +119,10 @@ public abstract class AbstractCanvasViewer<T, H extends AbstractCanvasHandler, V
                                                                 height,
                                                                 toWidth,
                                                                 toHeight);
-            if (0 != Double.compare(1,sfactor[0])
-                    || 0 != Double.compare(1, sfactor[1])) {
+            if (0 != Double.compare(1,
+                                    sfactor[0])
+                    || 0 != Double.compare(1,
+                                           sfactor[1])) {
                 final double[] factor = getScaleFactor(sfactor,
                                                        keepAspectRatio);
                 // Scale the canvas/layer using scale method from the zoom control.

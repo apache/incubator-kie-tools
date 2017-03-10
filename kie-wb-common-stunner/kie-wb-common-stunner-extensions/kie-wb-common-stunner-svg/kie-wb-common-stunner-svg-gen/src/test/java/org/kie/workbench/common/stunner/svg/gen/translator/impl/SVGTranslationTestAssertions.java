@@ -36,13 +36,25 @@ public class SVGTranslationTestAssertions {
     public static final String SVG_TEST_PATH = "org/kie/workbench/common/stunner/svg/gen/svg-elements-test.svg";
 
     public static void assertPath(final MultiPathDefinition pathDefinition) {
-        assertEquals("M150 0 L75 200 L225 200 Z", pathDefinition.getPath());
-        assertEquals("p1", pathDefinition.getId());
-        assertEquals(1d, pathDefinition.getAlpha(), 0d);
-        assertEquals(0d, pathDefinition.getX(), 0d);
-        assertEquals(0d, pathDefinition.getY(), 0d);
+        assertEquals("M150 0 L75 200 L225 200 Z",
+                     pathDefinition.getPath());
+        assertEquals("p1",
+                     pathDefinition.getId());
+        assertEquals(1d,
+                     pathDefinition.getAlpha(),
+                     0d);
+        assertEquals(0d,
+                     pathDefinition.getX(),
+                     0d);
+        assertEquals(0d,
+                     pathDefinition.getY(),
+                     0d);
         final TransformDefinition transformDefinition = pathDefinition.getTransformDefinition();
-        assertTransformDef(transformDefinition, 0.25d, 0.25d, 10d, 10d);
+        assertTransformDef(transformDefinition,
+                           0.25d,
+                           0.25d,
+                           10d,
+                           10d);
         final StyleDefinition styleDefinition = pathDefinition.getStyleDefinition();
         assertStyleDef(styleDefinition,
                        1d,
@@ -55,15 +67,32 @@ public class SVGTranslationTestAssertions {
 
     public static void assertRectangle(final RectDefinition rectDefinition) {
         assertNotNull(rectDefinition);
-        assertEquals("r1", rectDefinition.getId());
-        assertEquals(1d, rectDefinition.getAlpha(), 0d);
-        assertEquals(1d, rectDefinition.getX(), 0d);
-        assertEquals(2d, rectDefinition.getY(), 0d);
-        assertEquals(200d, rectDefinition.getWidth(), 0d);
-        assertEquals(230d, rectDefinition.getHeight(), 0d);
-        assertEquals(15d, rectDefinition.getCornerRadius(), 0d);
+        assertEquals("r1",
+                     rectDefinition.getId());
+        assertEquals(1d,
+                     rectDefinition.getAlpha(),
+                     0d);
+        assertEquals(1d,
+                     rectDefinition.getX(),
+                     0d);
+        assertEquals(2d,
+                     rectDefinition.getY(),
+                     0d);
+        assertEquals(200d,
+                     rectDefinition.getWidth(),
+                     0d);
+        assertEquals(230d,
+                     rectDefinition.getHeight(),
+                     0d);
+        assertEquals(15d,
+                     rectDefinition.getCornerRadius(),
+                     0d);
         final TransformDefinition transformDefinition = rectDefinition.getTransformDefinition();
-        assertTransformDef(transformDefinition, 0.5d, 0.5d, 25d, 30d);
+        assertTransformDef(transformDefinition,
+                           0.5d,
+                           0.5d,
+                           25d,
+                           30d);
         final StyleDefinition styleDefinition = rectDefinition.getStyleDefinition();
         assertStyleDef(styleDefinition,
                        1d,
@@ -76,13 +105,26 @@ public class SVGTranslationTestAssertions {
 
     public static void assertCircle(final CircleDefinition circleDefinition) {
         assertNotNull(circleDefinition);
-        assertEquals("c1", circleDefinition.getId());
-        assertEquals(1d, circleDefinition.getAlpha(), 0d);
-        assertEquals(50d, circleDefinition.getX(), 0d);
-        assertEquals(51d, circleDefinition.getY(), 0d);
-        assertEquals(40d, circleDefinition.getRadius(), 0d);
+        assertEquals("c1",
+                     circleDefinition.getId());
+        assertEquals(1d,
+                     circleDefinition.getAlpha(),
+                     0d);
+        assertEquals(50d,
+                     circleDefinition.getX(),
+                     0d);
+        assertEquals(51d,
+                     circleDefinition.getY(),
+                     0d);
+        assertEquals(40d,
+                     circleDefinition.getRadius(),
+                     0d);
         final TransformDefinition transformDefinition = circleDefinition.getTransformDefinition();
-        assertTransformDef(transformDefinition, 0.85d, 0.67d, 4.5d, 2.39d);
+        assertTransformDef(transformDefinition,
+                           0.85d,
+                           0.67d,
+                           4.5d,
+                           2.39d);
         final StyleDefinition styleDefinition = circleDefinition.getStyleDefinition();
         assertStyleDef(styleDefinition,
                        1d,
@@ -95,20 +137,28 @@ public class SVGTranslationTestAssertions {
 
     public static void assertGroupRef(final GroupDefinition groupDefinition) {
         assertNotNull(groupDefinition);
-        assertEquals("g1", groupDefinition.getId());
-        assertEquals(0d, groupDefinition.getAlpha(), 0d);
-        assertEquals(77d, groupDefinition.getX(), 0d);
-        assertEquals(88d, groupDefinition.getY(), 0d);
+        assertEquals("g1",
+                     groupDefinition.getId());
+        assertEquals(0d,
+                     groupDefinition.getAlpha(),
+                     0d);
+        assertEquals(77d,
+                     groupDefinition.getX(),
+                     0d);
+        assertEquals(88d,
+                     groupDefinition.getY(),
+                     0d);
     }
-
 
     public static void assertViewRef(final ViewRefDefinition viewRefDefinition) {
         assertNotNull(viewRefDefinition);
-        assertEquals("Layer_1", viewRefDefinition.getViewId());
-        assertEquals("another-svg.svg", viewRefDefinition.getViewName());
-        assertEquals("g1", viewRefDefinition.getParent());
+        assertEquals("Layer_1",
+                     viewRefDefinition.getViewId());
+        assertEquals("another-svg.svg",
+                     viewRefDefinition.getViewName());
+        assertEquals("g1",
+                     viewRefDefinition.getParent());
     }
-
 
     public static void assertStyleDef(final StyleDefinition styleDefinition,
                                       final double alpha,
@@ -123,12 +173,22 @@ public class SVGTranslationTestAssertions {
         final String sc = styleDefinition.getStrokeColor();
         final double sa = styleDefinition.getStrokeAlpha();
         final double sw = styleDefinition.getStrokeWidth();
-        assertEquals(alpha, a, 0d);
-        assertEquals(fillColor, fc);
-        assertEquals(fillAlpha, fa, 0d);
-        assertEquals(strokeColor, sc);
-        assertEquals(strokeAlpha, sa, 0d);
-        assertEquals(strokeWidth, sw, 0d);
+        assertEquals(alpha,
+                     a,
+                     0d);
+        assertEquals(fillColor,
+                     fc);
+        assertEquals(fillAlpha,
+                     fa,
+                     0d);
+        assertEquals(strokeColor,
+                     sc);
+        assertEquals(strokeAlpha,
+                     sa,
+                     0d);
+        assertEquals(strokeWidth,
+                     sw,
+                     0d);
     }
 
     public static void assertTransformDef(final TransformDefinition transformDefinition,
@@ -140,10 +200,17 @@ public class SVGTranslationTestAssertions {
         final double sy = transformDefinition.getScaleY();
         final double tx = transformDefinition.getTranslateX();
         final double ty = transformDefinition.getTranslateY();
-        assertEquals(scaleX, sx, 0d);
-        assertEquals(scaleY, sy, 0d);
-        assertEquals(translateX, tx, 0d);
-        assertEquals(translateY, ty, 0d);
+        assertEquals(scaleX,
+                     sx,
+                     0d);
+        assertEquals(scaleY,
+                     sy,
+                     0d);
+        assertEquals(translateX,
+                     tx,
+                     0d);
+        assertEquals(translateY,
+                     ty,
+                     0d);
     }
-
 }

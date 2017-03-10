@@ -51,6 +51,7 @@ public class SVGDocumentTranslatorTest {
     public static void init() throws Exception {
         root = parse(loadStream(SVGTranslationTestAssertions.SVG_TEST_PATH));
     }
+
     @Before
     public void setup() throws Exception {
         translator = ViewGenerators.newTranslator();
@@ -67,10 +68,18 @@ public class SVGDocumentTranslatorTest {
         final double minY = viewBox.getMinY();
         final double width = viewBox.getWidth();
         final double height = viewBox.getHeight();
-        assertEquals(minX, 0d, 0d);
-        assertEquals(minY, 0d, 0d);
-        assertEquals(width, 448d, 0d);
-        assertEquals(height, 448d, 0d);
+        assertEquals(minX,
+                     0d,
+                     0d);
+        assertEquals(minY,
+                     0d,
+                     0d);
+        assertEquals(width,
+                     448d,
+                     0d);
+        assertEquals(height,
+                     448d,
+                     0d);
         // View definition's main shape.
         final PrimitiveDefinition mainShapeDef = viewDefinition.getMain();
         assertNotNull(mainShapeDef);
@@ -111,5 +120,4 @@ public class SVGDocumentTranslatorTest {
     private static InputStream loadStream(final String path) {
         return Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
     }
-
 }

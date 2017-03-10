@@ -45,56 +45,74 @@ public class SVGShapeImplTest {
     @Before
     public void setup() throws Exception {
         this.tested = new SVGShapeImpl(view);
-        this.mocked = new SVGShapeImpl(view, lienzoShape);
+        this.mocked = new SVGShapeImpl(view,
+                                       lienzoShape);
     }
 
     @Test
     public void testView() {
-        assertEquals(view, tested.getShapeView());
+        assertEquals(view,
+                     tested.getShapeView());
     }
 
     @Test
     public void testUUID() {
         final String uuid = "uuid1";
         tested.setUUID(uuid);
-        assertEquals(uuid, tested.getUUID());
+        assertEquals(uuid,
+                     tested.getUUID());
     }
 
     @Test
     public void testBeforeDraw() {
         mocked.beforeDraw();
-        verify(lienzoShape, times(1)).beforeDraw();
-        verify(lienzoShape, times(0)).afterDraw();
-        verify(lienzoShape, times(0)).applyState(any(ShapeState.class));
-        verify(lienzoShape, times(0)).destroy();
+        verify(lienzoShape,
+               times(1)).beforeDraw();
+        verify(lienzoShape,
+               times(0)).afterDraw();
+        verify(lienzoShape,
+               times(0)).applyState(any(ShapeState.class));
+        verify(lienzoShape,
+               times(0)).destroy();
     }
 
     @Test
     public void testAfterDraw() {
         mocked.afterDraw();
-        verify(lienzoShape, times(1)).afterDraw();
-        verify(lienzoShape, times(0)).beforeDraw();
-        verify(lienzoShape, times(0)).applyState(any(ShapeState.class));
-        verify(lienzoShape, times(0)).destroy();
+        verify(lienzoShape,
+               times(1)).afterDraw();
+        verify(lienzoShape,
+               times(0)).beforeDraw();
+        verify(lienzoShape,
+               times(0)).applyState(any(ShapeState.class));
+        verify(lienzoShape,
+               times(0)).destroy();
     }
 
     @Test
     public void testApplyState() {
         final ShapeState state = ShapeState.SELECTED;
         mocked.applyState(state);
-        verify(lienzoShape, times(1)).applyState(eq(state));
-        verify(lienzoShape, times(0)).beforeDraw();
-        verify(lienzoShape, times(0)).afterDraw();
-        verify(lienzoShape, times(0)).destroy();
+        verify(lienzoShape,
+               times(1)).applyState(eq(state));
+        verify(lienzoShape,
+               times(0)).beforeDraw();
+        verify(lienzoShape,
+               times(0)).afterDraw();
+        verify(lienzoShape,
+               times(0)).destroy();
     }
 
     @Test
     public void testDestroy() {
         mocked.destroy();
-        verify(lienzoShape, times(1)).destroy();
-        verify(lienzoShape, times(0)).applyState(any(ShapeState.class));
-        verify(lienzoShape, times(0)).afterDraw();
-        verify(lienzoShape, times(0)).beforeDraw();
+        verify(lienzoShape,
+               times(1)).destroy();
+        verify(lienzoShape,
+               times(0)).applyState(any(ShapeState.class));
+        verify(lienzoShape,
+               times(0)).afterDraw();
+        verify(lienzoShape,
+               times(0)).beforeDraw();
     }
-
 }

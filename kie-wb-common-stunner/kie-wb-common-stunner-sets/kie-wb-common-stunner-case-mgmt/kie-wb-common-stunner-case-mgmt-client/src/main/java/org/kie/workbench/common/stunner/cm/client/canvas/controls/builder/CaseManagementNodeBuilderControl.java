@@ -22,10 +22,11 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.AbstractElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Element;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.NodeBuilderControlImpl;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.shape.util.EdgeMagnetsHelper;
 
 @Dependent
@@ -35,7 +36,7 @@ public class CaseManagementNodeBuilderControl extends NodeBuilderControlImpl {
     @Inject
     public CaseManagementNodeBuilderControl(final ClientDefinitionManager clientDefinitionManager,
                                             final ShapeManager shapeManager,
-                                            final @CaseManagementEditor CanvasCommandFactory commandFactory,
+                                            final @CaseManagementEditor CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
                                             final @Element @CaseManagementEditor AbstractElementBuilderControl elementBuilderControl,
                                             final EdgeMagnetsHelper magnetsHelper) {
         super(clientDefinitionManager,

@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
 /**
  * A viewer type for diagram instances based on any subtypes for <code>Diagram</code> and <code>AbstractCanvasHandler</code>.
- * <p>
+ * <p/>
  * The goal for a diagram viewer is to provide a DOM element that can be easily attached to other components
  * and encapsulates the components and logic necessary in order to open a diagram instance in a canvas.
  * It also must provide:
@@ -33,12 +33,12 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
  * - A selection control enabled for this viewer's canvas handler instance.
  * Note the interaction with the selection control and other contexts, such as CDI, depends on its implementation.
  * Subtypes can provide additional controls.
- * <p>
+ * <p/>
  * The main usage for this component is as:
  * 1.- Load a diagram instance from backend using any of the Stunner's client services.
  * 2.- Create an injection point for <code>DiagramPresenterFactory</code>
  * 3.- Use the factory methods to create the right diagram viewer instance type for a given Diagram.
- * <p>
+ * <p/>
  * In case the default Stunner's behaviors, features and views do not fit a concrete Definition Set requirements,
  * different DiagramViewer types could be necessary for custom behaviors,
  * @param <D> The diagram type.

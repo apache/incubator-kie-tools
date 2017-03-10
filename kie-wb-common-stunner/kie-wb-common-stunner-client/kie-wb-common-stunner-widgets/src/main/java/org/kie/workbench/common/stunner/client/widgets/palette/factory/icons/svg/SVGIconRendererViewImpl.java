@@ -26,9 +26,7 @@ import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.jboss.errai.ui.shared.wrapper.ElementWrapper;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconRenderer;
-import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 
 @Templated
 @Dependent
@@ -57,11 +55,12 @@ public class SVGIconRendererViewImpl implements SVGIconRendererView,
     public void render() {
 
         String svgContent = presenter.getSVGContent();
-        if ( svgContent != null ) {
-            icon.setInnerHTML( svgContent );
+        if (svgContent != null) {
+            icon.setInnerHTML(svgContent);
         } else {
             Image image = new Image(presenter.getIconResource().getResource().getSafeUri());
-            DOMUtil.appendWidgetToElement(icon, image);
+            DOMUtil.appendWidgetToElement(icon,
+                                          image);
         }
 
         resize();

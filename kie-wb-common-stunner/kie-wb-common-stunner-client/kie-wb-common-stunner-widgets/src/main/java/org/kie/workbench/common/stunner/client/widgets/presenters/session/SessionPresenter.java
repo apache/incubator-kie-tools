@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
 /**
  * A session's presenter type for generic client session instances.
- * <p>
+ * <p/>
  * A session presenter is a client side component that has same goals as a SessionViewer/Editor, so displaying a diagram
  * and handling the different controls for either viewing or authoring purposes, but it provides some additional
  * features:

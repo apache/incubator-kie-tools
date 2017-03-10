@@ -45,27 +45,34 @@ public class SVGBasicShapeViewImplTest {
 
     @Before
     public void setup() throws Exception {
-        this.theShape = new Rectangle(50, 50);
+        this.theShape = new Rectangle(50,
+                                      50);
         this.svgParent = new Group().setID("theParent");
         this.childContainer = spy(new Group().setID("childGroup"));
         when(child.getContainer()).thenReturn((IContainer) childContainer);
-        this.tested = new SVGBasicShapeViewImpl("svg-test1", theShape, 100, 340);
+        this.tested = new SVGBasicShapeViewImpl("svg-test1",
+                                                theShape,
+                                                100,
+                                                340);
         tested.addChild(svgParent);
     }
 
     @Test
     public void testGetters() {
-        assertEquals("svg-test1", tested.getName());
-        assertEquals(theShape, tested.getShape());
+        assertEquals("svg-test1",
+                     tested.getName());
+        assertEquals(theShape,
+                     tested.getShape());
     }
-
 
     @Test
     public void testSVGChild() {
-        tested.addSVGChild("theParent", child);
+        tested.addSVGChild("theParent",
+                           child);
         final Collection<SVGBasicShapeView> svgChildren = tested.getSVGChildren();
-        assertEquals(1, svgChildren.size());
-        assertEquals(child, svgChildren.iterator().next());
+        assertEquals(1,
+                     svgChildren.size());
+        assertEquals(child,
+                     svgChildren.iterator().next());
     }
-
 }

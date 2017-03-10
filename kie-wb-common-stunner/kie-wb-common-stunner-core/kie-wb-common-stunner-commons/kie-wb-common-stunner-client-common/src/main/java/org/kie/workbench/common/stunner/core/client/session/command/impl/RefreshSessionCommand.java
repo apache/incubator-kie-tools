@@ -22,7 +22,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientDiagramService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -46,23 +45,19 @@ public class RefreshSessionCommand extends AbstractClientSessionCommand<ClientFu
     private static Logger LOGGER = Logger.getLogger(RefreshSessionCommand.class.getName());
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private final CanvasCommandFactory commandFactory;
     private final ClientDiagramService clientDiagramService;
 
     protected RefreshSessionCommand() {
         this(null,
-             null,
              null);
     }
 
     @Inject
     public RefreshSessionCommand(final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                 final CanvasCommandFactory commandFactory,
                                  final ClientDiagramService clientDiagramService) {
         super(false);
         this.sessionCommandManager = sessionCommandManager;
         this.clientDiagramService = clientDiagramService;
-        this.commandFactory = commandFactory;
     }
 
     @Override

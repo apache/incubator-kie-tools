@@ -26,10 +26,10 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 /**
  * A mutable Shape Definition type  for nodes that handles a
  * SVGShapeView type. or any of its subtypes.
- * <p>
+ * <p/>
  * This type allows runtime updates and it can be composed
  * by other SVGShapeView instances.
- * <p>
+ * <p/>
  * Once the SVG shape view instance has been built, this type
  * provides the binding between the definition and the view instance
  * for different attributes. The size for the view can be

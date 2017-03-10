@@ -33,9 +33,9 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
 /**
  * A generic session's presenter instance for read-only purposes.
- * <p>
+ * <p/>
  * It provides a viewer Toolbar instance type, but does not provide a Palette to ensure view only mode.
- * <p>
+ * <p/>
  * It aggregates a custom session viewer type which provides binds the editors's diagram instance and the
  * different editors' controls with the diagram and controls for the given session.
  * @see <a>org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerImpl</a>

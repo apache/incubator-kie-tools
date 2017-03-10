@@ -23,25 +23,25 @@ import org.kie.workbench.common.stunner.svg.gen.exception.GeneratorException;
 /**
  * Main entry point for generating the sources for Stunner's SVG view stuff
  * from a given set of source files.
- * <p>
+ * <p/>
  * The generation process relies on the following types and components:
- * <p>
+ * <p/>
  * - SVG view model
  * There exist a model for the SVG view entities that have to be generated. For each supported
  * SVG element is should exist a model bean type for it.
  * @See {@link org/kie/workbench/common/stunner/svg/gen/model}
- * <p>
+ * <p/>
  * - SVG view translators
  * Once parsed the SVG definition and given an XML DOM model,
  * the translators produce the SVG view model instances by parsing each element's attributes.
  * @See {@link org/kie/workbench/common/stunner/svg/gen/translator}
- * <p>
+ * <p/>
  * - SVG view code-generators
  * Once SVG has been parsed, and there exist an SVG view model domain, which contains the translations
  * for the supported SVG elements and attributes, the code generators produce the different pieces of cdoe
  * to finally achieve building an instance of an SVG view factory.
  * @See {@link org/kie/workbench/common/stunner/svg/gen/codegen}
- * <p>
+ * <p/>
  * Main use case for generating SVG views at compile time is by using the annotations
  * provided on the SVG client module and let the annotation processors initialize and run the
  * generation process, but it can be used from any other components or integrated

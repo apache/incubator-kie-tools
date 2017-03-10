@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.client.widgets.palette.factory;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.validation.client.impl.Group;
 import org.kie.workbench.common.stunner.client.lienzo.util.LienzoPanelUtils;
-import org.kie.workbench.common.stunner.client.widgets.canvas.view.LienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconRenderer;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconResource;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.PaletteIconSettings;
@@ -50,14 +49,15 @@ class BS3PaletteGlyphViewFactory implements BS3PaletteViewFactory {
     @Override
     public PaletteIconSettings getDefinitionIconSettings(String defSetId,
                                                          String itemId) {
-        IsWidget panel =  getDefinitionView( defSetId, itemId);
+        IsWidget panel = getDefinitionView(defSetId,
+                                           itemId);
 
         return new PaletteIconSettings(LienzoPanelIconRenderer.class,
                                        new IconResource<>(panel));
     }
 
     protected IsWidget getDefinitionView(final String defSetId,
-                                      final String defId) {
+                                         final String defId) {
         final Glyph<Group> glyph = getGlyph(defSetId,
                                             defId,
                                             DEFAULT_DEFINITION_GLYPH_SIZE,

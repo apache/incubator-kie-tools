@@ -20,7 +20,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 /**
  * A Shape type provides the bride between the canvas handler and the shape view.
- * <p>
+ * <p/>
  * It should not contain any specific view code, so this way the same Shape can handle different views.
  * This type of shape is not mutable by default, so the shape attributes are not changed as per
  * model updates. Once it gets rendered, it will not change anymore, rather than

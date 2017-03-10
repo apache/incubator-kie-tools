@@ -25,12 +25,13 @@ import org.kie.workbench.common.stunner.cm.client.shape.NullShape;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandlerImpl;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementAddedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
@@ -61,7 +62,7 @@ public class CaseManagementCanvasHandler<D extends Diagram, C extends WiresCanva
                                        final Event<CanvasElementRemovedEvent> canvasElementRemovedEvent,
                                        final Event<CanvasElementUpdatedEvent> canvasElementUpdatedEvent,
                                        final Event<CanvasElementsClearEvent> canvasElementsClearEvent,
-                                       final @CaseManagementEditor CanvasCommandFactory canvasCommandFactory) {
+                                       final @CaseManagementEditor CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
         super(clientDefinitionManager,
               canvasCommandFactory,
               clientFactoryServices,

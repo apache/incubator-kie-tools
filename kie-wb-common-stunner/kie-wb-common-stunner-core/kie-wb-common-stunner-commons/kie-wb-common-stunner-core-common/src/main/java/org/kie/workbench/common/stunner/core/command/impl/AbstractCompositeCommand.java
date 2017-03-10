@@ -129,7 +129,7 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
     protected void ensureInitialized(final T context) {
         if (!isInitialized()) {
             initialize(context);
-            initialized=true;
+            initialized = true;
         }
     }
 

@@ -44,13 +44,12 @@ public abstract class DelegateShapeFactory<W, C, S extends Shape> implements Sha
         return getFactory(definitionId).getDescription(definitionId);
     }
 
-
     @Override
     @SuppressWarnings("unchecked")
     public S build(final W definition,
                    final C context) {
         return (S) getFactoryForDefinition(definition).build(definition,
-                                      context);
+                                                             context);
     }
 
     @Override
@@ -58,8 +57,8 @@ public abstract class DelegateShapeFactory<W, C, S extends Shape> implements Sha
                        final double width,
                        final double height) {
         return getFactory(definitionId).glyph(definitionId,
-                                  width,
-                                  height);
+                                              width,
+                                              height);
     }
 
     private ShapeDefFactory getFactoryForDefinition(final Object definition) {

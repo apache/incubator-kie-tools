@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
 /**
  * A preview presenter type for generic client session instances.
- * <p>
+ * <p/>
  * The goal for the session preview presenter is to replicate the active session's diagram, canvas and handler states
  * into another different canvas instance, which is handled by a proxy canvas handler type. Having different canvas
  * instances replicated can be useful for goals such as:
@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
  * without affecting the session's canvas.
  * - Possibility to use different canvas control instances for the preview's presenter, so for example, different
  * mediators (zoom, pan) and other behaviors can be done separately on each canvas.
- * <p>
+ * <p/>
  * As it inherits from a Viewer type, it provides by default a zoom control enabled for this viewer session's canvas instance.
  * @param <S> The session type.
  * @param <D> The diagram type.

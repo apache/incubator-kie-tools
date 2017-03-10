@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette.categories.items;
 
-import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconRenderer;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionPaletteItem;
 import org.uberfire.client.mvp.UberElement;

@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSu
 
 /**
  * The lienzo view implementation for the Ring shape.
- * <p>
+ * <p/>
  * TODO: Disabling for now the resize for rings - ARC resize is not implemented yet on lienzo side.
  */
 public class RingView extends WiresContainerShapeView<RingView>

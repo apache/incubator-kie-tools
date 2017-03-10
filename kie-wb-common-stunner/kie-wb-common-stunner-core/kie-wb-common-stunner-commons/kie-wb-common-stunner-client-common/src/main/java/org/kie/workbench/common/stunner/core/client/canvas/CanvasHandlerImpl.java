@@ -24,11 +24,11 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementAddedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
@@ -60,7 +60,7 @@ import org.uberfire.mvp.ParameterizedCommand;
 public class CanvasHandlerImpl<D extends Diagram, C extends AbstractCanvas> extends BaseCanvasHandler<D, C> {
 
     private final ClientFactoryService clientFactoryServices;
-    private final CanvasCommandFactory commandFactory;
+    private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
     private final GraphIndexBuilder<? extends MutableIndex<Node, Edge>> indexBuilder;
     private final GraphRulesManager graphRulesManager;
     private final ModelRulesManager modelRulesManager;
@@ -73,7 +73,7 @@ public class CanvasHandlerImpl<D extends Diagram, C extends AbstractCanvas> exte
 
     @Inject
     public CanvasHandlerImpl(final ClientDefinitionManager clientDefinitionManager,
-                             final CanvasCommandFactory commandFactory,
+                             final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
                              final ClientFactoryService clientFactoryServices,
                              final GraphRulesManager graphRulesManager,
                              final ModelRulesManager modelRulesManager,

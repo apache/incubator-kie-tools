@@ -25,12 +25,12 @@ import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequest;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequestImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.NodeBuildRequest;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -52,7 +52,7 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
 
     private final ClientDefinitionManager clientDefinitionManager;
     private final ShapeManager shapeManager;
-    private final CanvasCommandFactory commandFactory;
+    private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
     private final AbstractElementBuilderControl elementBuilderControl;
     private final EdgeMagnetsHelper magnetsHelper;
 
@@ -67,7 +67,7 @@ public class NodeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
     @Inject
     public NodeBuilderControlImpl(final ClientDefinitionManager clientDefinitionManager,
                                   final ShapeManager shapeManager,
-                                  final CanvasCommandFactory commandFactory,
+                                  final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
                                   final @Default @Element AbstractElementBuilderControl elementBuilderControl,
                                   final EdgeMagnetsHelper magnetsHelper) {
         this.clientDefinitionManager = clientDefinitionManager;

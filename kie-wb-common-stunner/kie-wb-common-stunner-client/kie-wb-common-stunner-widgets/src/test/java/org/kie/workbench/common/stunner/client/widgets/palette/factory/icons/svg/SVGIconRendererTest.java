@@ -29,9 +29,8 @@ import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.Abs
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SVGIconRendererTest extends AbstractIconRendererTest<SVGIconRenderer, DataResource, SVGIconRendererView> {
@@ -59,23 +58,25 @@ public class SVGIconRendererTest extends AbstractIconRendererTest<SVGIconRendere
     @Test
     public void testReadSVGContent() throws Exception {
 
-        initDataURI(SVG_DATA_URI_PREFFIX, this.getClass().getResourceAsStream("/images/svg.svg"));
+        initDataURI(SVG_DATA_URI_PREFFIX,
+                    this.getClass().getResourceAsStream("/images/svg.svg"));
 
-        assertNotNull( renderer.getSVGContent() );
+        assertNotNull(renderer.getSVGContent());
     }
 
     @Test
     public void testReadJPGContent() throws Exception {
 
-        initDataURI(JPG_DATA_URI_PREFFIX, this.getClass().getResourceAsStream("/images/jpg.jpg"));
+        initDataURI(JPG_DATA_URI_PREFFIX,
+                    this.getClass().getResourceAsStream("/images/jpg.jpg"));
 
-        assertNull( renderer.getSVGContent() );
+        assertNull(renderer.getSVGContent());
     }
 
-
-    protected void initDataURI(final String header, final InputStream imageStream) throws Exception {
+    protected void initDataURI(final String header,
+                               final InputStream imageStream) throws Exception {
         renderer.render(resource);
-        when( resource.getResource() ).thenReturn(dataResource);
+        when(resource.getResource()).thenReturn(dataResource);
         when(dataResource.getSafeUri()).thenReturn(safeUri);
         StringBuilder sb = new StringBuilder();
         sb.append(header);

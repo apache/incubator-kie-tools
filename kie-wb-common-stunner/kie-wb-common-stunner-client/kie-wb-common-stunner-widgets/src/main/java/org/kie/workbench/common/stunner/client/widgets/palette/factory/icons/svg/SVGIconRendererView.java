@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.sv
 
 import com.google.gwt.resources.client.DataResource;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconRendererView;
-import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconResource;
 
 public interface SVGIconRendererView extends IconRendererView<SVGIconRenderer, DataResource> {
 

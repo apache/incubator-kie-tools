@@ -142,7 +142,7 @@
 .kie-palette-flyout {
     background-color: #fff;
     border-color: #bbb;
-    border:none;
+    border: none;
     left: calc(90px);
     max-height: 100vh;
     min-height: 100%;

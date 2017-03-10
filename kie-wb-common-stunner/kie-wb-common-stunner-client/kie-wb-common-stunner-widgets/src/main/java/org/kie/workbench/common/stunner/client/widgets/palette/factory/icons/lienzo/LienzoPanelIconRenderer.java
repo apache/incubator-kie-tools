@@ -20,7 +20,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.stunner.client.widgets.canvas.view.LienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.AbstractIconRenderer;
 
 @Dependent

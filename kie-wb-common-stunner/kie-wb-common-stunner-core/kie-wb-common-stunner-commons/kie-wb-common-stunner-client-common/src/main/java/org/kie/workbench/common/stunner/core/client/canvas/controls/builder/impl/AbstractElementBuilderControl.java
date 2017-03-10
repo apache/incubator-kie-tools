@@ -25,11 +25,11 @@ import java.util.logging.Logger;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.request.ElementBuildRequest;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
@@ -59,7 +59,7 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
 
     private final ClientDefinitionManager clientDefinitionManager;
     private final ClientFactoryService clientFactoryServices;
-    private final CanvasCommandFactory canvasCommandFactory;
+    private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private final GraphUtils graphUtils;
     private final ModelContainmentRuleManager modelContainmentRuleManager;
     private final ModelCardinalityRuleManager modelCardinalityRuleManager;
@@ -72,7 +72,7 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
                                          final GraphUtils graphUtils,
                                          final ModelContainmentRuleManager modelContainmentRuleManager,
                                          final ModelCardinalityRuleManager modelCardinalityRuleManager,
-                                         final CanvasCommandFactory canvasCommandFactory,
+                                         final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                          final GraphBoundsIndexer graphBoundsIndexer,
                                          final CanvasLayoutUtils canvasLayoutUtils) {
         this.clientDefinitionManager = clientDefinitionManager;

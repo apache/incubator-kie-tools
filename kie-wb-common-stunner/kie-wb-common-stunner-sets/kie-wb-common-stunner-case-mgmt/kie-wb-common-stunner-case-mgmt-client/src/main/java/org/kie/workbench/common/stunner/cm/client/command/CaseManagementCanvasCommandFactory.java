@@ -21,7 +21,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.command.DefaultCanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -29,11 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.Tree
 
 @ApplicationScoped
 @CaseManagementEditor
-public class CaseManagementCanvasCommandFactory extends CanvasCommandFactory {
-
-    protected CaseManagementCanvasCommandFactory() {
-        super(null);
-    }
+public class CaseManagementCanvasCommandFactory extends DefaultCanvasCommandFactory {
 
     @Inject
     public CaseManagementCanvasCommandFactory(final TreeWalkTraverseProcessor treeWalkTraverseProcessor) {
@@ -41,31 +39,31 @@ public class CaseManagementCanvasCommandFactory extends CanvasCommandFactory {
     }
 
     @Override
-    public CaseManagementDrawCommand draw() {
+    public CanvasCommand<AbstractCanvasHandler> draw() {
         return new CaseManagementDrawCommand();
     }
 
     @Override
-    public CaseManagementAddChildCommand addChildNode(final Node parent,
-                                                      final Node child,
-                                                      final String shapeSetId) {
+    public CanvasCommand<AbstractCanvasHandler> addChildNode(final Node parent,
+                                                             final Node child,
+                                                             final String shapeSetId) {
         return new CaseManagementAddChildCommand(parent,
                                                  child,
                                                  shapeSetId);
     }
 
     @Override
-    public CaseManagementSetChildCommand setChildNode(final Node parent,
-                                                      final Node child) {
+    public CanvasCommand<AbstractCanvasHandler> setChildNode(final Node parent,
+                                                             final Node child) {
         return new CaseManagementSetChildCommand(parent,
                                                  child);
     }
 
-    public CaseManagementSetChildCommand setChildNode(final Node parent,
-                                                      final Node child,
-                                                      final Optional<Integer> index,
-                                                      final Optional<Node> originalParent,
-                                                      final Optional<Integer> originalIndex) {
+    public CanvasCommand<AbstractCanvasHandler> setChildNode(final Node parent,
+                                                             final Node child,
+                                                             final Optional<Integer> index,
+                                                             final Optional<Node> originalParent,
+                                                             final Optional<Integer> originalIndex) {
         return new CaseManagementSetChildCommand(parent,
                                                  child,
                                                  index,
@@ -74,8 +72,8 @@ public class CaseManagementCanvasCommandFactory extends CanvasCommandFactory {
     }
 
     @Override
-    public CaseManagementRemoveChildCommand removeChild(final Node parent,
-                                                        final Node candidate) {
+    public CanvasCommand<AbstractCanvasHandler> removeChild(final Node parent,
+                                                            final Node candidate) {
         return new CaseManagementRemoveChildCommand(parent,
                                                     candidate);
     }
@@ -84,9 +82,9 @@ public class CaseManagementCanvasCommandFactory extends CanvasCommandFactory {
     //This command is used to update a Node location following 'Drag', 'Resize' or 'Add from Palette' operations
     //Case Management does not update the location of any Nodes, preserving the layout information that may have
     //been set using the full BPMN2 editor. This command equates to a NOP for Case Management.
-    public CaseManagementUpdatePositionCommand updatePosition(final Node<View<?>, Edge> element,
-                                                              final Double x,
-                                                              final Double y) {
+    public CanvasCommand<AbstractCanvasHandler> updatePosition(final Node<View<?>, Edge> element,
+                                                               final Double x,
+                                                               final Double y) {
         return new CaseManagementUpdatePositionCommand(element,
                                                        x,
                                                        y);

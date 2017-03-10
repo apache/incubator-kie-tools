@@ -21,8 +21,8 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.Window;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.Context;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.components.glyph.DefinitionGlyphTooltip;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 @Dependent
 public class RemoveToolboxCommand<I> extends AbstractActionToolboxCommand<I> {
 
-    private final CanvasCommandFactory commandFactory;
+    private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
 
     protected RemoveToolboxCommand() {
         this(null,
@@ -40,7 +40,7 @@ public class RemoveToolboxCommand<I> extends AbstractActionToolboxCommand<I> {
 
     @Inject
     public RemoveToolboxCommand(final DefinitionGlyphTooltip<?> glyphTooltip,
-                                final CanvasCommandFactory commandFactory) {
+                                final CanvasCommandFactory<AbstractCanvasHandler> commandFactory) {
         super(glyphTooltip);
         this.commandFactory = commandFactory;
     }

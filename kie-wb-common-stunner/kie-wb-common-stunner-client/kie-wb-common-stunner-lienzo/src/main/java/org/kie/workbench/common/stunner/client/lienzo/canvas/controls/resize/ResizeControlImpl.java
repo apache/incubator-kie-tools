@@ -26,9 +26,9 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
@@ -62,7 +62,7 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
 
     private static Logger LOGGER = Logger.getLogger(ResizeControlImpl.class.getName());
 
-    private final CanvasCommandFactory canvasCommandFactory;
+    private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
     protected ResizeControlImpl() {
@@ -70,7 +70,7 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
     }
 
     @Inject
-    public ResizeControlImpl(final CanvasCommandFactory canvasCommandFactory) {
+    public ResizeControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
         this.canvasCommandFactory = canvasCommandFactory;
     }
 

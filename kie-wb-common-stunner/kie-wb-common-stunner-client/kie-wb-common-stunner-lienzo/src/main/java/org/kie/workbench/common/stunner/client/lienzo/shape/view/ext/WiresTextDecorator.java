@@ -36,10 +36,10 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewHandler
 /**
  * A helper class for handling the wires shapes' text primitive
  * that is used to display the shape's name.
- * <p>
+ * <p/>
  * It handles common logic for ShapeViews that implement <code>HasText</code>
  * type, can be reused for shapes or connectors.
- * <p>
+ * <p/>
  * It also decorates a text instance with a rectangle, which by default
  * is not fill and so not visible, but provides an area to listen for
  * mouse events and it can be updated and displayed as some point

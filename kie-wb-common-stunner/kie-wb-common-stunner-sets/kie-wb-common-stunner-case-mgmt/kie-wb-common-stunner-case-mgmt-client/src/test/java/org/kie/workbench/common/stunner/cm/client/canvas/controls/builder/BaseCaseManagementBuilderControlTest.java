@@ -21,9 +21,10 @@ import java.util.Optional;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.cm.client.canvas.CaseManagementCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.AbstractElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
@@ -52,7 +53,7 @@ public abstract class BaseCaseManagementBuilderControlTest {
     protected ModelCardinalityRuleManager modelCardinalityRuleManager;
 
     @Mock
-    protected CanvasCommandFactory canvasCommandFactory;
+    protected CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     @Mock
     protected GraphBoundsIndexer graphBoundsIndexer;

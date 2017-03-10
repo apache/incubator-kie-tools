@@ -28,7 +28,7 @@ import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull
 /**
  * Clears the state for all canvas shapes by setting each
  * one's state the value <code>NONE</code>.
- * <p>
+ * <p/>
  * This way selected, highlighted or invalid states for current canvas
  * shapes will be clear.
  */

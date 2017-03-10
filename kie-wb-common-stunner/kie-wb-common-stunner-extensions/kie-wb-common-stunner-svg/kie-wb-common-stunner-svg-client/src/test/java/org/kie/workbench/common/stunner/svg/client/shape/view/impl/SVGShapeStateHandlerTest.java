@@ -70,28 +70,41 @@ public class SVGShapeStateHandlerTest {
 
     @Test
     public void testState1() {
-        tested.registerStateHolder(ShapeState.SELECTED, STATE_HOLDER1);
+        tested.registerStateHolder(ShapeState.SELECTED,
+                                   STATE_HOLDER1);
         final boolean result = tested.applyState(ShapeState.SELECTED);
         assertTrue(result);
-        verify(view, times(1)).setAlpha(eq(1d));
-        verify(view, times(1)).setFillColor(eq("#FF55AA"));
-        verify(view, times(1)).setFillAlpha(eq(0.8d));
-        verify(view, times(1)).setStrokeColor(eq("#0099FF"));
-        verify(view, times(1)).setStrokeAlpha(eq(0.5d));
-        verify(view, times(1)).setStrokeWidth(eq(5d));
+        verify(view,
+               times(1)).setAlpha(eq(1d));
+        verify(view,
+               times(1)).setFillColor(eq("#FF55AA"));
+        verify(view,
+               times(1)).setFillAlpha(eq(0.8d));
+        verify(view,
+               times(1)).setStrokeColor(eq("#0099FF"));
+        verify(view,
+               times(1)).setStrokeAlpha(eq(0.5d));
+        verify(view,
+               times(1)).setStrokeWidth(eq(5d));
     }
 
     @Test
     public void testState2() {
-        tested.registerStateHolder(ShapeState.INVALID, STATE_HOLDER2);
+        tested.registerStateHolder(ShapeState.INVALID,
+                                   STATE_HOLDER2);
         final boolean result = tested.applyState(ShapeState.INVALID);
         assertTrue(result);
-        verify(view, times(1)).setAlpha(eq(1d));
-        verify(view, times(0)).setFillColor(anyString());
-        verify(view, times(1)).setFillAlpha(eq(0.4d));
-        verify(view, times(1)).setStrokeColor(eq("#0099FF"));
-        verify(view, times(0)).setStrokeAlpha(anyDouble());
-        verify(view, times(0)).setStrokeWidth(anyDouble());
+        verify(view,
+               times(1)).setAlpha(eq(1d));
+        verify(view,
+               times(0)).setFillColor(anyString());
+        verify(view,
+               times(1)).setFillAlpha(eq(0.4d));
+        verify(view,
+               times(1)).setStrokeColor(eq("#0099FF"));
+        verify(view,
+               times(0)).setStrokeAlpha(anyDouble());
+        verify(view,
+               times(0)).setStrokeWidth(anyDouble());
     }
-
 }

@@ -16,10 +16,13 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
+import java.lang.annotation.Annotation;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl.DiagramPreviewProxy;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
@@ -32,16 +35,17 @@ import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandlerProxy;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -59,27 +63,33 @@ public class SessionPreviewImpl
     private static final int DEFAULT_WIDTH = 300;
     private static final int DEFAULT_HEIGHT = 300;
 
-    private final DiagramPreviewProxy<Diagram> diagramPreview;
-    private final CanvasCommandManager<CanvasHandlerProxy> canvasCommandManager;
-    private final ShapeManager shapeManager;
+    private DiagramPreviewProxy<Diagram> diagramPreview;
+    private CanvasCommandManager<CanvasHandlerProxy> canvasCommandManager;
+    private ShapeManager shapeManager;
     private AbstractCanvas canvas;
     private ZoomControl<AbstractCanvas> zoomControl;
+
+    private DefinitionUtils definitionUtils;
+    private ManagedInstance<CanvasCommandFactory> canvasCommandFactories;
 
     @Inject
     @SuppressWarnings("unchecked")
     public SessionPreviewImpl(final DefinitionManager definitionManager,
+                              final DefinitionUtils definitionUtils,
                               final GraphUtils graphUtils,
                               final ShapeManager shapeManager,
-                              final CanvasCommandFactory canvasCommandFactory,
+                              final @Any ManagedInstance<CanvasCommandFactory> canvasCommandFactories,
                               final SelectionControl<CanvasHandlerProxy, ?> selectionControl,
                               final CanvasCommandManager<CanvasHandlerProxy> canvasCommandManager,
                               final WidgetWrapperView view) {
+        this.definitionUtils = definitionUtils;
+        this.canvasCommandFactories = canvasCommandFactories;
+
         this.diagramPreview =
                 new DiagramPreviewProxy<Diagram>(definitionManager,
                                                  graphUtils,
                                                  shapeManager,
                                                  view,
-                                                 canvasCommandFactory,
                                                  selectionControl) {
                     @Override
                     public <C extends Canvas> ZoomControl<C> getZoomControl() {
@@ -108,9 +118,15 @@ public class SessionPreviewImpl
                     }
 
                     @Override
+                    protected CanvasCommandFactory getCanvasCommandFactory() {
+                        return SessionPreviewImpl.this.getCanvasCommandFactory();
+                    }
+
+                    @Override
                     protected void enableControls() {
                         zoomControl.enable(canvas);
-                        zoomControl.setMinScale(0).setMaxScale(1);
+                        zoomControl.setMinScale(0);
+                        zoomControl.setMaxScale(1);
                     }
 
                     @Override
@@ -127,6 +143,16 @@ public class SessionPreviewImpl
         this.zoomControl = null;
         this.shapeManager = shapeManager;
         this.canvasCommandManager = canvasCommandManager;
+    }
+
+    CanvasCommandFactory getCanvasCommandFactory() {
+        final String defSetId = getDiagram().getMetadata().getDefinitionSetId();
+        final Annotation qualifier = definitionUtils.getQualifier(defSetId);
+        final ManagedInstance<CanvasCommandFactory> customInstances = canvasCommandFactories.select(qualifier);
+        if (customInstances.isUnsatisfied()) {
+            return canvasCommandFactories.select(DefinitionManager.DEFAULT_QUALIFIER).get();
+        }
+        return customInstances.get();
     }
 
     @Override
@@ -199,9 +225,8 @@ public class SessionPreviewImpl
      * a higher width and darker color for the line stroke.
      */
     private void updateCanvasDecorator(final AbstractCanvas.View canvasView) {
-        canvasView
-                .setDecoratorStrokeWidth(2)
-                .setDecoratorStrokeAlpha(0.8)
-                .setDecoratorStrokeColor("#404040");
+        canvasView.setDecoratorStrokeWidth(2);
+        canvasView.setDecoratorStrokeAlpha(0.8);
+        canvasView.setDecoratorStrokeColor("#404040");
     }
 }

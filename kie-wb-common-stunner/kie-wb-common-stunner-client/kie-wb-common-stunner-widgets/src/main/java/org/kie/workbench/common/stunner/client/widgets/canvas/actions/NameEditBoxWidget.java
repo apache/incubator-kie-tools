@@ -22,8 +22,8 @@ import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPropertyCommand;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -34,7 +34,7 @@ public class NameEditBoxWidget implements NameEditBoxWidgetView.Presenter {
 
     private final NameEditBoxWidgetView view;
     private final DefinitionUtils definitionUtils;
-    private final CanvasCommandFactory canvasCommandFactory;
+    private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private AbstractCanvasHandler canvasHandler;
     private CommandManagerProvider<AbstractCanvasHandler> provider;
     private Command closeCallback;
@@ -43,7 +43,7 @@ public class NameEditBoxWidget implements NameEditBoxWidgetView.Presenter {
 
     @Inject
     public NameEditBoxWidget(final DefinitionUtils definitionUtils,
-                             final CanvasCommandFactory canvasCommandFactory,
+                             final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                              final NameEditBoxWidgetView view) {
         this.definitionUtils = definitionUtils;
         this.canvasCommandFactory = canvasCommandFactory;
@@ -93,9 +93,9 @@ public class NameEditBoxWidget implements NameEditBoxWidgetView.Presenter {
             final Object def = element.getContent().getDefinition();
             final String nameId = definitionUtils.getNameIdentifier(def);
             if (null != nameId) {
-                UpdateElementPropertyCommand command = canvasCommandFactory.updatePropertyValue(element,
-                                                                                                nameId,
-                                                                                                this.nameValue);
+                CanvasCommand<AbstractCanvasHandler> command = canvasCommandFactory.updatePropertyValue(element,
+                                                                                                        nameId,
+                                                                                                        this.nameValue);
                 provider.getCommandManager().execute(canvasHandler,
                                                      command);
             }

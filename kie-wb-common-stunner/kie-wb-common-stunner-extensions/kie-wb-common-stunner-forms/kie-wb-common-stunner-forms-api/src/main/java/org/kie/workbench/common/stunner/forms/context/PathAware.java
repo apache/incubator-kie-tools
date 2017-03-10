@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.kie.workbench.common.stunner.forms.context;
 
 import org.uberfire.backend.vfs.Path;
@@ -23,5 +22,6 @@ import org.uberfire.backend.vfs.Path;
  * Indicates an object is associated with some resource {@link Path}.
  */
 public interface PathAware {
+
     Path getPath();
 }

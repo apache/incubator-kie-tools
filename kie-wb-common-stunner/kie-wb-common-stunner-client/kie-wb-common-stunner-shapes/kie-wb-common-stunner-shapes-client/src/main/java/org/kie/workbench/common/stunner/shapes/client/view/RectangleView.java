@@ -24,7 +24,7 @@ import org.kie.workbench.common.stunner.lienzo.util.LienzoPaths;
 
 /**
  * The lienzo view implementation for the Rectangle shape.
- * <p>
+ * <p/>
  * TODO: Disabling for now the resize for rectangles when they're using a corner radius value different
  * from zero - ARC resize is not implemented yet on lienzo side, and the corners are built using ARCs.
  * See <a>org.kie.workbench.common.stunner.lienzo.util.LienzoPaths#rectangle</a>.

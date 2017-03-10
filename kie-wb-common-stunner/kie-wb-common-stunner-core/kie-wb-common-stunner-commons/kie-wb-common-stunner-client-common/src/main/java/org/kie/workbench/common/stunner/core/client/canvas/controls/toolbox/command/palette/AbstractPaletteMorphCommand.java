@@ -25,10 +25,10 @@ import javax.enterprise.event.Event;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.Context;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.components.drag.NodeDragProxy;
 import org.kie.workbench.common.stunner.core.client.components.palette.Palette;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.GlyphPaletteItem;
@@ -45,13 +45,13 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 public abstract class AbstractPaletteMorphCommand<I> extends AbstractPaletteCommand<I> {
 
     protected final DefinitionUtils definitionUtils;
-    protected final CanvasCommandFactory commandFactory;
+    protected final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
     protected final Event<CanvasElementSelectedEvent> elementSelectedEvent;
 
     protected final Map<String, MorphDefinition> morphDefinitions = new HashMap<>();
 
     public AbstractPaletteMorphCommand(final DefinitionUtils definitionUtils,
-                                       final CanvasCommandFactory commandFactory,
+                                       final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
                                        final ClientFactoryService clientFactoryServices,
                                        final CommonLookups commonLookups,
                                        final ShapeManager shapeManager,

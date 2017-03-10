@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
 /**
  * A session's diagram presenter type for Diagrams of type <code>Diagram</code>.
- * <p>
+ * <p/>
  * This type reduces the number of bean instances resolved for a SessionPresenter type to the ones
  * specific only for Diagrams of type <code>Diagram</code>.
  * @param <S> The session type.

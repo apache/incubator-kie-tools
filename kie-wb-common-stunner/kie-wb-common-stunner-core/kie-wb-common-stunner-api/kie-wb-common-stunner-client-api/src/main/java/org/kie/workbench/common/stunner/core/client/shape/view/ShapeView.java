@@ -64,7 +64,6 @@ public interface ShapeView<T> {
      */
     T setShapeY(final double y);
 
-
     /**
      * Returns the shape's opacity.
      */

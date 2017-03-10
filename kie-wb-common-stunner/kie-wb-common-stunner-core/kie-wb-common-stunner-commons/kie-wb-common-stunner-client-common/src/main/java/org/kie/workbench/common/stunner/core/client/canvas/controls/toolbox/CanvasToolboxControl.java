@@ -101,7 +101,8 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
     public void register(final Element element) {
         if (checkNotRegistered(element) && hasToolboxControls(element)) {
             // Register the element's identifier for further toolbox lazy loading.
-            toolboxMap.put(element.getUUID(), new LinkedList<>());
+            toolboxMap.put(element.getUUID(),
+                           new LinkedList<>());
             // If shape view can be drag, hide the shape's toolbox/es when drag starts.
             final Shape shape = canvasHandler.getCanvas().getShape(element.getUUID());
             if (shape instanceof NodeShape) {
@@ -135,7 +136,7 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
      * Once an element has been updated, the toolbox/es should be re-built, as
      * rule evaluations have to be evaluated against latest status
      * and latest graph structure.
-     * <p>
+     * <p/>
      * TODO:
      * - bug -> applies the new toolbox buttons after any further op with the node, but not the 1st time.
      * - improve by not recreating instances, just adding/removing buttons.
@@ -160,7 +161,6 @@ public class CanvasToolboxControl extends AbstractCanvasHandlerRegistrationContr
             load(canvasHandler.getGraphIndex().getNode(uuid));
         }
         return toolboxMap.get(uuid);
-
     }
 
     @SuppressWarnings("unchecked")

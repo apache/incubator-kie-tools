@@ -59,7 +59,7 @@ public class ColorPickerWidget extends Composite implements HasValue<String> {
     }
 
     protected void showColorDialog(final UIObject owner) {
-        if ( readOnly ) {
+        if (readOnly) {
             return;
         }
         final ColorPickerDialog dlg = new ColorPickerDialog();

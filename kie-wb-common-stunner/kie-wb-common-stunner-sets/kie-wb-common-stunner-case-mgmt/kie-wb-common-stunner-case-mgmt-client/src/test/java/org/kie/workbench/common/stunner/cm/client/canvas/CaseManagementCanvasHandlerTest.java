@@ -25,12 +25,13 @@ import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementTaskSh
 import org.kie.workbench.common.stunner.cm.client.shape.view.ActivityView;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Layer;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementAddedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementUpdatedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.shape.impl.AbstractElementShape;
@@ -104,7 +105,7 @@ public class CaseManagementCanvasHandlerTest {
     private EventSourceMock<CanvasElementsClearEvent> canvasElementsClearEvent;
 
     @Mock
-    private CanvasCommandFactory canvasCommandFactory;
+    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     @Mock
     private CaseManagementCanvasPresenter canvas;

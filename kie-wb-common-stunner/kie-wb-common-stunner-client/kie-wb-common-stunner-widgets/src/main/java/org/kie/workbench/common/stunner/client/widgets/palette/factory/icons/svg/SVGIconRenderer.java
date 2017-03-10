@@ -37,14 +37,14 @@ public class SVGIconRenderer extends AbstractIconRenderer<DataResource, SVGIconR
     public String getSVGContent() {
         String dataUri = iconResource.getResource().getSafeUri().asString();
 
-        if( dataUri.startsWith( SVG_DATA_URI_START ) ) {
+        if (dataUri.startsWith(SVG_DATA_URI_START)) {
             try {
                 String content = dataUri.substring(SVG_DATA_URI_START.length());
 
                 return new String(Base64Util.decode(content));
             } catch (Exception ex) {
-                Console.warn( "[SVGIconRenderer] Impossible to get SVG content for '" + dataUri + "'" );
-                Console.warn( "[SVGIconRenderer] Error: " + ex.getMessage() );
+                Console.warn("[SVGIconRenderer] Impossible to get SVG content for '" + dataUri + "'");
+                Console.warn("[SVGIconRenderer] Error: " + ex.getMessage());
             }
         }
 

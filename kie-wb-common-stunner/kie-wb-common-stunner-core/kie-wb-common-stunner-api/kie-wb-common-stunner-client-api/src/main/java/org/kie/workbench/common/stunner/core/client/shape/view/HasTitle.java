@@ -43,5 +43,4 @@ public interface HasTitle<T> {
     T setTitleAlpha(final double alpha);
 
     T moveTitleToTop();
-
 }

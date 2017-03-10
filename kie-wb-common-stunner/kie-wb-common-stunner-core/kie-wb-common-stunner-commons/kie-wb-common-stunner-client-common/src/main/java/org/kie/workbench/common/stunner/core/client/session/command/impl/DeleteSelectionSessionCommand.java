@@ -26,10 +26,10 @@ import javax.inject.Inject;
 import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyDownEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.keyboard.KeyboardEvent;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
@@ -52,7 +52,7 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
 
     private final SessionManager clientSessionManager;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
-    private final CanvasCommandFactory canvasCommandFactory;
+    private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     protected DeleteSelectionSessionCommand() {
         this(null,
@@ -63,7 +63,7 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
     @Inject
     public DeleteSelectionSessionCommand(final SessionManager clientSessionManager,
                                          final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
-                                         final CanvasCommandFactory canvasCommandFactory) {
+                                         final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
         super(false);
         this.clientSessionManager = clientSessionManager;
         this.sessionCommandManager = sessionCommandManager;

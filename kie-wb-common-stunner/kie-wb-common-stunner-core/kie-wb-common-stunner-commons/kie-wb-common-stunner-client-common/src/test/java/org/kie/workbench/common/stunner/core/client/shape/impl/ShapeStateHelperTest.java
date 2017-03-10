@@ -71,17 +71,21 @@ public class ShapeStateHelperTest {
     public void testApplyNoneState() {
         testApplyState(ShapeState.SELECTED);
         tested.applyState(ShapeState.NONE);
-        verify(shapeView, times(1)).setStrokeColor(eq(STROKE_COLOR_0));
-        verify(shapeView, times(1)).setStrokeWidth(eq(STROKE_WIDTH_0));
-        verify(shapeView, times(1)).setStrokeAlpha(eq(STROKE_ALPHA_0));
+        verify(shapeView,
+               times(1)).setStrokeColor(eq(STROKE_COLOR_0));
+        verify(shapeView,
+               times(1)).setStrokeWidth(eq(STROKE_WIDTH_0));
+        verify(shapeView,
+               times(1)).setStrokeAlpha(eq(STROKE_ALPHA_0));
     }
 
     private void testApplyState(final ShapeState state) {
         tested.applyState(state);
-        verify(shapeView, times(1)).setStrokeColor(eq(state.getColor()));
-        verify(shapeView, times(1)).setStrokeWidth(eq(ShapeStateHelper.ACTIVE_STROKE_WIDTH));
-        verify(shapeView, times(1)).setStrokeAlpha(eq(ShapeStateHelper.ACTIVE_STROKE_ALPHA));
-
+        verify(shapeView,
+               times(1)).setStrokeColor(eq(state.getColor()));
+        verify(shapeView,
+               times(1)).setStrokeWidth(eq(ShapeStateHelper.ACTIVE_STROKE_WIDTH));
+        verify(shapeView,
+               times(1)).setStrokeAlpha(eq(ShapeStateHelper.ACTIVE_STROKE_ALPHA));
     }
-
 }

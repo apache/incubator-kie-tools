@@ -38,10 +38,10 @@ import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.StaticModelFormRenderingContext;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientReadOnlySession;
@@ -65,7 +65,7 @@ public class FormPropertiesWidget implements IsWidget {
     private static Logger LOGGER = Logger.getLogger(FormPropertiesWidget.class.getName());
 
     private final DefinitionUtils definitionUtils;
-    private final CanvasCommandFactory commandFactory;
+    private final CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
     private final DynamicFormRenderer formRenderer;
     private final Event<FormPropertiesOpened> propertiesOpenedEvent;
 
@@ -83,7 +83,7 @@ public class FormPropertiesWidget implements IsWidget {
 
     @Inject
     public FormPropertiesWidget(final DefinitionUtils definitionUtils,
-                                final CanvasCommandFactory commandFactory,
+                                final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
                                 final DynamicFormRenderer formRenderer,
                                 final DynamicFormModelGenerator modelGenerator,
                                 final Event<FormPropertiesOpened> propertiesOpenedEvent) {
@@ -191,14 +191,15 @@ public class FormPropertiesWidget implements IsWidget {
             final Object definition = element.getContent().getDefinition();
             final BindableProxy<?> proxy = (BindableProxy<?>) BindableProxyFactory.getBindableProxy(definition);
             final Path diagramPath = session.getCanvasHandler().getDiagram().getMetadata().getPath();
-            final StaticModelFormRenderingContext generatedCtx = modelGenerator.getContextForModel( proxy.deepUnwrap() );
-            final FormRenderingContext<?> pathAwareCtx = new PathAwareFormContext<>( generatedCtx, diagramPath );
-            formRenderer.render( pathAwareCtx );
+            final StaticModelFormRenderingContext generatedCtx = modelGenerator.getContextForModel(proxy.deepUnwrap());
+            final FormRenderingContext<?> pathAwareCtx = new PathAwareFormContext<>(generatedCtx,
+                                                                                    diagramPath);
+            formRenderer.render(pathAwareCtx);
             formRenderer.addFieldChangeHandler((fieldName, newValue) -> {
                 try {
                     final HasProperties hasProperties = (HasProperties) DataBinder.forModel(definition).getModel();
                     final String pId = getModifiedPropertyId(hasProperties,
-                                                       fieldName);
+                                                             fieldName);
                     FormPropertiesWidget.this.executeUpdateProperty(element,
                                                                     pId,
                                                                     newValue);

@@ -23,13 +23,13 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 /**
  * A Shape Definition type that handles SVGShapeView types.
- * <p>
+ * <p/>
  * The SVGShapeView instances are usually generated at compile by parsing
  * and translating SVG images into the concrete view's domain.
  * @param <W> The bean type.
  * @See {@link SVGViewFactory}
  * @See {@link SVGSource}
- * <p>
+ * <p/>
  * This shape definition type provides the binding between
  * a runtime definition and an SVGShapeView instance.
  */

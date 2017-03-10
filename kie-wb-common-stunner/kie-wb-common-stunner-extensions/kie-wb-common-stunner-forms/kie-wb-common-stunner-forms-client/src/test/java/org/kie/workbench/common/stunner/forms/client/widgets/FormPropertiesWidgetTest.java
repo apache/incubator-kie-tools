@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.forms.client.widgets;
 
 import java.util.ArrayList;
 import java.util.Collection;
-
 import javax.enterprise.event.Event;
 
 import org.jboss.errai.databinding.client.BindableProxy;
@@ -32,8 +31,8 @@ import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContex
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -49,14 +48,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mvp.Command;
 
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FormPropertiesWidgetTest {
@@ -67,7 +62,7 @@ public class FormPropertiesWidgetTest {
     @Mock
     DefinitionUtils definitionUtils;
     @Mock
-    CanvasCommandFactory commandFactory;
+    CanvasCommandFactory<AbstractCanvasHandler> commandFactory;
     @Mock
     DynamicFormRenderer formRenderer;
     @Mock
@@ -103,7 +98,7 @@ public class FormPropertiesWidgetTest {
     private FormPropertiesWidget tested;
 
     @Before
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void setup() throws Exception {
         when(session.getSelectionControl()).thenReturn(selectionControl);
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
@@ -115,7 +110,8 @@ public class FormPropertiesWidgetTest {
         when(node.getUUID()).thenReturn(ROOT_UUID);
         when(node.getContent()).thenReturn(nodeContent);
         when(nodeContent.getDefinition()).thenReturn(nodeDefObject);
-        BindableProxyFactory.addBindableProxy(Object.class, proxyProvider);
+        BindableProxyFactory.addBindableProxy(Object.class,
+                                              proxyProvider);
         when(proxyProvider.getBindableProxy()).thenReturn((BindableProxy) proxy);
         when(proxyProvider.getBindableProxy(unmockedDef)).thenReturn((BindableProxy) proxy);
         when(proxy.deepUnwrap()).thenReturn(unmockedDef);
@@ -179,11 +175,14 @@ public class FormPropertiesWidgetTest {
         when(nodeContent.getDefinition()).thenReturn(unmockedDef);
 
         tested
-            .bind(session)
-            .showByUUID(ROOT_UUID, RenderMode.EDIT_MODE);
+                .bind(session)
+                .showByUUID(ROOT_UUID,
+                            RenderMode.EDIT_MODE);
 
         verify(formRenderer).render(contextCaptor.capture());
-        assertTrue("FormRenderingContext was not PathAware.", contextCaptor.getValue() instanceof PathAware);
-        assertSame(path, ((PathAware) contextCaptor.getValue()).getPath());
+        assertTrue("FormRenderingContext was not PathAware.",
+                   contextCaptor.getValue() instanceof PathAware);
+        assertSame(path,
+                   ((PathAware) contextCaptor.getValue()).getPath());
     }
 }

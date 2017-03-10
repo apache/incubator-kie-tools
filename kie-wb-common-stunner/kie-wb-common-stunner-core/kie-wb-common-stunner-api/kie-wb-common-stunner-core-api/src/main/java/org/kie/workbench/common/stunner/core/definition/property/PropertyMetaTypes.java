@@ -38,7 +38,8 @@ public enum PropertyMetaTypes {
      * If the shape supports resize and it is resized on client side, these properties will be
      * updated with the values for the new bounding box area.
      */
-    WIDTH, HEIGHT,
+    WIDTH,
+    HEIGHT,
     /**
      * Whatever shape is being representing some Definition bean instance, Stunner considers
      * the size for the shape as the area of its bounding box.

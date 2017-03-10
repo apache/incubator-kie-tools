@@ -21,7 +21,7 @@ import org.kie.workbench.common.stunner.core.definition.shape.MutableShapeDef;
 /**
  * An SVG Shape Definition type that allows runtime updates
  * and can be composed by other SVG shape view instances.
- * <p>
+ * <p/>
  * Once the SVG shape view instance has been built, this type
  * provides the binding between the definition and the view instance
  * for different attributes. The size for the view can be

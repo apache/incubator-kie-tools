@@ -23,9 +23,9 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandlerProxy;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
@@ -43,14 +43,12 @@ public abstract class DiagramPreviewProxy<D extends Diagram> extends AbstractDia
                                final GraphUtils graphUtils,
                                final ShapeManager shapeManager,
                                final WidgetWrapperView view,
-                               final CanvasCommandFactory canvasCommandFactory,
                                final SelectionControl<CanvasHandlerProxy, ?> selectionControl) {
         this.viewer =
                 new DiagramViewerProxy<D>(definitionManager,
                                           graphUtils,
                                           shapeManager,
                                           view,
-                                          canvasCommandFactory,
                                           selectionControl) {
                     @Override
                     public <C extends Canvas> ZoomControl<C> getZoomControl() {
@@ -81,12 +79,19 @@ public abstract class DiagramPreviewProxy<D extends Diagram> extends AbstractDia
                     protected AbstractCanvasHandler<D, ?> getProxiedHandler() {
                         return DiagramPreviewProxy.this.getProxiedHandler();
                     }
+
+                    @Override
+                    protected CanvasCommandFactory<AbstractCanvasHandler> getCanvasCommandFactory() {
+                        return DiagramPreviewProxy.this.getCanvasCommandFactory();
+                    }
                 };
     }
 
     protected abstract AbstractCanvas getCanvas();
 
     protected abstract AbstractCanvasHandler<D, ?> getProxiedHandler();
+
+    protected abstract CanvasCommandFactory<AbstractCanvasHandler> getCanvasCommandFactory();
 
     protected abstract void enableControls();
 

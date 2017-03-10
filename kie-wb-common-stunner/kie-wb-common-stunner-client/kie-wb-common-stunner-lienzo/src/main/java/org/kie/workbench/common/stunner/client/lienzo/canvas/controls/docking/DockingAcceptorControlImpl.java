@@ -26,8 +26,8 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.controls.AbstractCo
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -39,10 +39,10 @@ public class DockingAcceptorControlImpl extends AbstractContainmentBasedControl
         implements DockingAcceptorControl<AbstractCanvasHandler> {
 
     private static final int HOTSPOT = 10;
-    private CanvasCommandFactory canvasCommandFactory;
+    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     @Inject
-    public DockingAcceptorControlImpl(final CanvasCommandFactory canvasCommandFactory) {
+    public DockingAcceptorControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
         this.canvasCommandFactory = canvasCommandFactory;
     }
 

@@ -25,7 +25,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 /**
  * An util class that handles the different calls to a ShapeView.
- * <p>
+ * <p/>
  * It adds some checks and constraints that can be used  across different implementation
  * for updating the views.
  * @param <V>
@@ -47,7 +47,7 @@ public class ShapeViewHandler<V extends ShapeView> {
     }
 
     public void applyAlpha(final Double alpha,
-                               final MutationContext mutationContext) {
+                           final MutationContext mutationContext) {
         if (null != alpha) {
             getShapeView().setAlpha(alpha);
         }

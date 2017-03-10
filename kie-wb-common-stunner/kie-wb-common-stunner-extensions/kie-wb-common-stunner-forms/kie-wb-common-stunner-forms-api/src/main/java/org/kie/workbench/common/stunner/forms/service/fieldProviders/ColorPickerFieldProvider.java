@@ -22,6 +22,7 @@ import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldDefinition;
 import org.kie.workbench.common.stunner.forms.model.ColorPickerFieldType;
 
 public class ColorPickerFieldProvider extends BasicTypeFieldProvider<ColorPickerFieldDefinition> {
+
     @Override
     public int getPriority() {
         return 100;
@@ -29,11 +30,11 @@ public class ColorPickerFieldProvider extends BasicTypeFieldProvider<ColorPicker
 
     @Override
     protected void doRegisterFields() {
-        registerPropertyType( String.class );
+        registerPropertyType(String.class);
     }
 
     @Override
-    public ColorPickerFieldDefinition createFieldByType( FieldDataType typeInfo ) {
+    public ColorPickerFieldDefinition createFieldByType(FieldDataType typeInfo) {
         return getDefaultField();
     }
 

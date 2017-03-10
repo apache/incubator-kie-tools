@@ -22,7 +22,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 /**
  * An extension of a Mutable Shape type whic bean is an element of a graph structure.
- * <p>
+ * <p/>
  * This type do not care about nodes or edges, it just considers that the instance
  * is a graph element using a View content type.
  * @param <W> The graph element type.

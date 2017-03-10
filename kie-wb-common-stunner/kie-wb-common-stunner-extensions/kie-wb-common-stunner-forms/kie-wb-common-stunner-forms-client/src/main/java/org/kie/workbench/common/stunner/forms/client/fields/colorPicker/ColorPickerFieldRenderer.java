@@ -41,7 +41,7 @@ public class ColorPickerFieldRenderer extends FieldRenderer<ColorPickerFieldDefi
 
     @Override
     public void initInputWidget() {
-        colorPicker.setReadOnly( !renderingContext.getRenderMode().equals(RenderMode.EDIT_MODE));
+        colorPicker.setReadOnly(!renderingContext.getRenderMode().equals(RenderMode.EDIT_MODE));
     }
 
     @Override

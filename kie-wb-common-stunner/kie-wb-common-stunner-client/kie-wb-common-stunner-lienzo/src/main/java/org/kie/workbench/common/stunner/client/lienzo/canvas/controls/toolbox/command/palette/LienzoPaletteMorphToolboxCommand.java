@@ -31,11 +31,11 @@ import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.client.canvas.Transform;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.Context;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox.command.palette.AbstractPaletteMorphCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.components.drag.NodeDragProxy;
 import org.kie.workbench.common.stunner.core.client.components.glyph.GlyphTooltip;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionsPalette;
@@ -54,7 +54,7 @@ public class LienzoPaletteMorphToolboxCommand extends AbstractPaletteMorphComman
 
     @Inject
     public LienzoPaletteMorphToolboxCommand(final DefinitionUtils definitionUtils,
-                                            final CanvasCommandFactory commandFactory,
+                                            final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
                                             final ClientFactoryService clientFactoryServices,
                                             final CommonLookups commonLookups,
                                             final ShapeManager shapeManager,

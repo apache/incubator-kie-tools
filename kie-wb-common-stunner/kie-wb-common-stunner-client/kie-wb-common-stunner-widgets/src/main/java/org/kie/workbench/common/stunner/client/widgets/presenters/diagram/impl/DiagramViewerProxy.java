@@ -23,8 +23,8 @@ import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandlerProxy;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
@@ -43,7 +43,6 @@ public abstract class DiagramViewerProxy<D extends Diagram>
     private final DefinitionManager definitionManager;
     private final GraphUtils graphUtils;
     private final ShapeManager shapeManager;
-    private final CanvasCommandFactory canvasCommandFactory;
     private final SelectionControl<CanvasHandlerProxy, ?> selectionControl;
     private CanvasHandlerProxy proxy;
 
@@ -51,17 +50,17 @@ public abstract class DiagramViewerProxy<D extends Diagram>
                               final GraphUtils graphUtils,
                               final ShapeManager shapeManager,
                               final WidgetWrapperView view,
-                              final CanvasCommandFactory canvasCommandFactory,
                               final SelectionControl<CanvasHandlerProxy, ?> selectionControl) {
         super(view);
         this.definitionManager = definitionManager;
         this.graphUtils = graphUtils;
         this.shapeManager = shapeManager;
-        this.canvasCommandFactory = canvasCommandFactory;
         this.selectionControl = selectionControl;
     }
 
     protected abstract AbstractCanvasHandler getProxiedHandler();
+
+    protected abstract CanvasCommandFactory<AbstractCanvasHandler> getCanvasCommandFactory();
 
     @Override
     public void open(final D item,
@@ -106,7 +105,7 @@ public abstract class DiagramViewerProxy<D extends Diagram>
         return (WiresCanvasPresenter) getCanvas();
     }
 
-    private class DiagramCanvasHandlerProxy<D extends Diagram, C extends AbstractCanvas> extends CanvasHandlerProxy<D, C> {
+    public class DiagramCanvasHandlerProxy<D extends Diagram, C extends AbstractCanvas> extends CanvasHandlerProxy<D, C> {
 
         public DiagramCanvasHandlerProxy(final DefinitionManager definitionManager,
                                          final GraphUtils graphUtils,
@@ -118,6 +117,7 @@ public abstract class DiagramViewerProxy<D extends Diagram>
 
         @Override
         protected void draw(final ParameterizedCommand<CommandResult<?>> loadCallback) {
+            final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory = getCanvasCommandFactory();
             loadCallback.execute(canvasCommandFactory.draw().execute(this));
         }
 

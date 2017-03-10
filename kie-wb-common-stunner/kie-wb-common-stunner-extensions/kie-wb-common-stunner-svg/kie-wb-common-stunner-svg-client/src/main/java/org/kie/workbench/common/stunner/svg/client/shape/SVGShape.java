@@ -24,13 +24,13 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 
 /**
  * A shape type that handles view instnaces for SVGShapeView type or any of its subtypes.
- * <p>
+ * <p/>
  * The SVGShapeView instances are usually generated at compile by parsing
  * and translating SVG images into the concrete view's domain.
  * @param <V> The SVGShapeView type.
  * @See {@link SVGViewFactory}
  * @See {@link SVGSource}
- * <p>
+ * <p/>
  * An SVG shape that is not updated as with model updates.
  * This shape will always display the same svg view.
  */

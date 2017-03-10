@@ -29,9 +29,9 @@ import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 
 /**
  * The default Shape implementation for edges with ViewContent type, so basically connectors.
- * <p>
+ * <p/>
  * It acts as the bridge between the edge and the shape view.
- * <p>
+ * <p/>
  * This implementation relies on ShapeDefinitions. This way provides the bridge between the edge and it's
  * bean definition instance, and delegates the interaction logic between the definition instance and the shape's
  * view to a ShapeDefViewHandler type.

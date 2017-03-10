@@ -23,9 +23,9 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasCommandExecutedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.command.CanvasUndoCommandExecutedEvent;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
@@ -50,7 +50,7 @@ public class ClearSessionCommand extends AbstractClientSessionCommand<ClientFull
 
     private static Logger LOGGER = Logger.getLogger(ClearSessionCommand.class.getName());
 
-    private final CanvasCommandFactory canvasCommandFactory;
+    private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
 
     protected ClearSessionCommand() {
@@ -59,7 +59,7 @@ public class ClearSessionCommand extends AbstractClientSessionCommand<ClientFull
     }
 
     @Inject
-    public ClearSessionCommand(final CanvasCommandFactory canvasCommandFactory,
+    public ClearSessionCommand(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                final @Session SessionCommandManager<AbstractCanvasHandler> sessionCommandManager) {
         super(false);
         this.canvasCommandFactory = canvasCommandFactory;

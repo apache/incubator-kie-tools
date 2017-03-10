@@ -20,7 +20,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 
 /**
  * An extension of the Shape type that can be updated at runtime as per some bean.
- * <p>
+ * <p/>
  * Once the bean instance, which is being represented by this shape, is being
  * updated, this shape can change its view attributes in order to display whatever new property values
  * display.

@@ -20,8 +20,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControlImpl;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
@@ -31,7 +32,7 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 public class CaseManagementDragControlImpl extends DragControlImpl {
 
     @Inject
-    public CaseManagementDragControlImpl(final @CaseManagementEditor CanvasCommandFactory canvasCommandFactory) {
+    public CaseManagementDragControlImpl(final @CaseManagementEditor CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
         super(canvasCommandFactory);
     }
 

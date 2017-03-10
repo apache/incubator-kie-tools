@@ -63,8 +63,8 @@ public class DefaultLuceneConfigProducer {
         return new HashMap<String, Analyzer>() {{
             put(ProjectRootPathIndexTerm.TERM,
                 new FilenameAnalyzer());
-            put( ProjectNameIndexTerm.TERM,
-                 new LowerCaseOnlyAnalyzer());
+            put(ProjectNameIndexTerm.TERM,
+                new LowerCaseOnlyAnalyzer());
             put(PackageNameIndexTerm.TERM,
                 new LowerCaseOnlyAnalyzer());
         }};

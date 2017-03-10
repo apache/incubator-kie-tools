@@ -82,16 +82,23 @@ public class SVGMutableShapeImplTest {
         viewChildren.add(child1);
         viewChildren.add(child2);
         viewChildren.add(child3);
-        this.tested = new SVGMutableShapeImpl<>(shapeDef, view);
+        this.tested = new SVGMutableShapeImpl<>(shapeDef,
+                                                view);
     }
 
     @Test
     public void testApplyCustomSVGProperties() {
-        tested.applyProperties(node,MutationContext.STATIC);
-        verify(view, times(1)).setSize(eq(100d), eq(100d));
-        verify(child1, times(1)).setAlpha(eq(1d));
-        verify(child2, times(1)).setAlpha(eq(0d));
-        verify(child3, times(1)).setAlpha(eq(1d));
+        tested.applyProperties(node,
+                               MutationContext.STATIC);
+        verify(view,
+               times(1)).setSize(eq(100d),
+                                 eq(100d));
+        verify(child1,
+               times(1)).setAlpha(eq(1d));
+        verify(child2,
+               times(1)).setAlpha(eq(0d));
+        verify(child3,
+               times(1)).setAlpha(eq(1d));
     }
 
     private SVGMutableShapeDef<Object, ?> shapeDef = new SVGMutableShapeDef<Object, Object>() {

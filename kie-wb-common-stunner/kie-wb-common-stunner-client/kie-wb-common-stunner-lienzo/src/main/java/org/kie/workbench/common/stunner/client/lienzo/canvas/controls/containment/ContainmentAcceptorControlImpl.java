@@ -26,8 +26,8 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.controls.AbstractCo
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -38,10 +38,10 @@ import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 public class ContainmentAcceptorControlImpl extends AbstractContainmentBasedControl
         implements ContainmentAcceptorControl<AbstractCanvasHandler> {
 
-    private CanvasCommandFactory canvasCommandFactory;
+    private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
 
     @Inject
-    public ContainmentAcceptorControlImpl(final CanvasCommandFactory canvasCommandFactory) {
+    public ContainmentAcceptorControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
         this.canvasCommandFactory = canvasCommandFactory;
     }
 

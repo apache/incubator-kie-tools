@@ -24,9 +24,9 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.command.UpdateElementPositionCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AbstractCanvasHandlerRegistrationControl;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -56,7 +56,7 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
 
     private static final int delta = 10;
 
-    private final CanvasCommandFactory canvasCommandFactory;
+    private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
     protected final double[] dragShapeSize = new double[]{0, 0};
@@ -66,7 +66,7 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
     }
 
     @Inject
-    public DragControlImpl(final CanvasCommandFactory canvasCommandFactory) {
+    public DragControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
         this.canvasCommandFactory = canvasCommandFactory;
     }
 
@@ -134,7 +134,6 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
     }
 
     protected void doDragStart(final Element element) {
-        final AbstractCanvas<?> canvas = canvasHandler.getAbstractCanvas();
         final double[] size = GraphUtils.getNodeSize((View) element.getContent());
         dragShapeSize[0] = size[0];
         dragShapeSize[1] = size[1];
@@ -161,10 +160,9 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
     public CommandResult<CanvasViolation> move(final Element element,
                                                final double tx,
                                                final double ty) {
-        final UpdateElementPositionCommand c = canvasCommandFactory
-                .updatePosition((Node<View<?>, Edge>) element,
-                                tx,
-                                ty);
+        final CanvasCommand<AbstractCanvasHandler> c = canvasCommandFactory.updatePosition((Node<View<?>, Edge>) element,
+                                                                                           tx,
+                                                                                           ty);
         CommandResult<CanvasViolation> result = getCommandManager().allow(canvasHandler,
                                                                           c);
         if (!CommandUtils.isError(result)) {

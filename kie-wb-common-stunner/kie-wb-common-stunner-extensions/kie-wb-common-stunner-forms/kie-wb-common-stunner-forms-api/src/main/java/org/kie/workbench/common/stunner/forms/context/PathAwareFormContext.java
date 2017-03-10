@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.kie.workbench.common.stunner.forms.context;
 
 import java.util.Map;
@@ -27,20 +26,21 @@ import org.kie.workbench.common.forms.model.FormDefinition;
 import org.uberfire.backend.vfs.Path;
 
 /**
- * <p>
+ * <p/>
  * A {@link FormRenderingContext} that is {@link PathAware}.
- *
- * <p>
+ * <p/>
+ * <p/>
  * Allows backend form providers to resolve the project from a context using the project service.
  */
 @Portable
-public class PathAwareFormContext<T> implements FormRenderingContext<T>, PathAware {
+public class PathAwareFormContext<T> implements FormRenderingContext<T>,
+                                                PathAware {
 
     private final FormRenderingContext<T> wrapped;
     private final Path path;
 
-    public PathAwareFormContext( @MapsTo( "wrapped" ) final FormRenderingContext<T> wrapped,
-                                 @MapsTo( "path" ) final Path path ) {
+    public PathAwareFormContext(@MapsTo("wrapped") final FormRenderingContext<T> wrapped,
+                                @MapsTo("path") final Path path) {
         this.wrapped = wrapped;
         this.path = path;
     }
@@ -51,13 +51,13 @@ public class PathAwareFormContext<T> implements FormRenderingContext<T>, PathAwa
     }
 
     @Override
-    public void setRootForm( final FormDefinition rootForm ) {
-        wrapped.setRootForm( rootForm );
+    public void setRootForm(final FormDefinition rootForm) {
+        wrapped.setRootForm(rootForm);
     }
 
     @Override
-    public void setModel( final T model ) {
-        wrapped.setModel( model );
+    public void setModel(final T model) {
+        wrapped.setModel(model);
     }
 
     @Override
@@ -66,8 +66,8 @@ public class PathAwareFormContext<T> implements FormRenderingContext<T>, PathAwa
     }
 
     @Override
-    public void setRenderMode( final RenderMode renderMode ) {
-        wrapped.setRenderMode( renderMode );
+    public void setRenderMode(final RenderMode renderMode) {
+        wrapped.setRenderMode(renderMode);
     }
 
     @Override
@@ -81,8 +81,8 @@ public class PathAwareFormContext<T> implements FormRenderingContext<T>, PathAwa
     }
 
     @Override
-    public void setParentContext( final FormRenderingContext parentContext ) {
-        wrapped.setParentContext( parentContext );
+    public void setParentContext(final FormRenderingContext parentContext) {
+        wrapped.setParentContext(parentContext);
     }
 
     @Override
@@ -91,15 +91,16 @@ public class PathAwareFormContext<T> implements FormRenderingContext<T>, PathAwa
     }
 
     @Override
-    public FormRenderingContext getCopyFor( final String formKey,
-                                            final T model ) {
-        final FormRenderingContext<?> wrappedCopy = wrapped.getCopyFor( formKey, model );
-        return new PathAwareFormContext<>( wrappedCopy, path );
+    public FormRenderingContext getCopyFor(final String formKey,
+                                           final T model) {
+        final FormRenderingContext<?> wrappedCopy = wrapped.getCopyFor(formKey,
+                                                                       model);
+        return new PathAwareFormContext<>(wrappedCopy,
+                                          path);
     }
 
     @Override
     public Path getPath() {
         return path;
     }
-
 }

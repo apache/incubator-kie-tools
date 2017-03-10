@@ -23,11 +23,12 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.api.ClientDefinitionManager;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.Observer;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl.ObserverBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasElementSelectedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -60,7 +61,7 @@ public class CaseManagementObserverBuilderControl extends ObserverBuilderControl
                                                 final GraphUtils graphUtils,
                                                 final ModelContainmentRuleManager modelContainmentRuleManager,
                                                 final ModelCardinalityRuleManager modelCardinalityRuleManager,
-                                                final @CaseManagementEditor CanvasCommandFactory canvasCommandFactory,
+                                                final @CaseManagementEditor CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                                 final GraphBoundsIndexer graphBoundsIndexer,
                                                 final CanvasLayoutUtils canvasLayoutUtils,
                                                 final Event<CanvasElementSelectedEvent> elementSelectedEvent) {

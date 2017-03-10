@@ -50,5 +50,4 @@ public class NullShape<W extends BPMNDefinition> extends AbstractElementShape<W,
     public void applyState(final ShapeState shapeState) {
         //A NullShape should not be rendered; and represents a BPMN2 node that is not rendered for Case Management
     }
-
 }

@@ -53,16 +53,20 @@ public class SVGChildViewHandlerTest {
         this.svgParentContainer = new Group().setID("parentGroup");
         when(child.getContainer()).thenReturn((IContainer) childContainer);
         this.svgContainer = new Group();
-        this.svgContainer.add(new Rectangle(50, 50));
+        this.svgContainer.add(new Rectangle(50,
+                                            50));
         this.svgContainer.add(svgParentContainer);
         this.svgContainer.add(new Circle(50));
-        this.tested = new SVGChildViewHandler(svgContainer, WIDTH, HEIGHT);
+        this.tested = new SVGChildViewHandler(svgContainer,
+                                              WIDTH,
+                                              HEIGHT);
     }
 
     @Test
     public void testAddSVGChild() {
-        tested.addSVGChild("parentGroup", child);
-        final boolean[] hasChild = { false };
+        tested.addSVGChild("parentGroup",
+                           child);
+        final boolean[] hasChild = {false};
         svgParentContainer.getChildNodes().forEach(c -> {
             if ("childGroup".equals(c.getID())) {
                 hasChild[0] = true;
@@ -70,17 +74,18 @@ public class SVGChildViewHandlerTest {
         });
         assertTrue(hasChild[0]);
         final Collection<SVGBasicShapeView> svgChildren = tested.getSVGChildren();
-        assertEquals(1, svgChildren.size());
-        assertEquals(child, svgChildren.iterator().next());
-
+        assertEquals(1,
+                     svgChildren.size());
+        assertEquals(child,
+                     svgChildren.iterator().next());
     }
 
     @Test
     public void testClear() {
-        tested.addSVGChild("parentGroup", child);
+        tested.addSVGChild("parentGroup",
+                           child);
         tested.clear();
         final Collection<SVGBasicShapeView> svgChildren = tested.getSVGChildren();
         assertTrue(svgChildren.isEmpty());
     }
-
 }

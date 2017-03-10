@@ -30,9 +30,9 @@ import com.google.gwt.logging.client.LogConfiguration;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasHighlight;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -46,14 +46,14 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
 
     private static Logger LOGGER = Logger.getLogger(ConnectionAcceptorControlImpl.class.getName());
 
-    CanvasCommandFactory canvasCommandFactory;
+    CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private CommandManagerProvider<AbstractCanvasHandler> provider;
 
     private AbstractCanvasHandler canvasHandler;
     private CanvasHighlight canvasHighlight;
 
     @Inject
-    public ConnectionAcceptorControlImpl(final CanvasCommandFactory canvasCommandFactory) {
+    public ConnectionAcceptorControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
         this.canvasCommandFactory = canvasCommandFactory;
     }
 

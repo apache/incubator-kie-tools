@@ -58,7 +58,8 @@ public class SVGGeneratorImplTest {
     @Before
     public void setup() throws Exception {
         when(translator.translate(any(Document.class))).thenReturn(viewDefinition);
-        tested = new SVGGeneratorImpl(translator, viewFactoryGenerator);
+        tested = new SVGGeneratorImpl(translator,
+                                      viewFactoryGenerator);
     }
 
     @Test
@@ -67,19 +68,27 @@ public class SVGGeneratorImplTest {
             @Override
             public StringBuffer answer(final InvocationOnMock invocationOnMock) throws Throwable {
                 final ViewFactory factoryArgument = (ViewFactory) invocationOnMock.getArguments()[0];
-                assertEquals(SVG_NAME, factoryArgument.getSimpleName());
-                assertEquals(SVG_PKG, factoryArgument.getPackage());
-                assertEquals(SVG_FQCN, factoryArgument.getImplementedType());
+                assertEquals(SVG_NAME,
+                             factoryArgument.getSimpleName());
+                assertEquals(SVG_PKG,
+                             factoryArgument.getPackage());
+                assertEquals(SVG_FQCN,
+                             factoryArgument.getImplementedType());
                 assertTrue(factoryArgument.getViewDefinitions().size() == 1);
-                assertEquals(viewDefinition, factoryArgument.getViewDefinitions().get(0));
+                assertEquals(viewDefinition,
+                             factoryArgument.getViewDefinitions().get(0));
                 return new StringBuffer("done");
             }
         }).when(viewFactoryGenerator).generate(any(ViewFactory.class));
-        final SVGGeneratorRequest request = new SVGGeneratorRequest(SVG_NAME, SVG_PKG, SVG_FQCN);
-        request.getViewSources().put(SVG_CANCEL_NAME, SVG_CANCEL_PATH);
+        final SVGGeneratorRequest request = new SVGGeneratorRequest(SVG_NAME,
+                                                                    SVG_PKG,
+                                                                    SVG_FQCN);
+        request.getViewSources().put(SVG_CANCEL_NAME,
+                                     SVG_CANCEL_PATH);
         final StringBuffer result = tested.generate(request);
-        verify(viewDefinition, times(1)).setName(eq(SVG_CANCEL_NAME));
-        verify(viewFactoryGenerator, times(1)).generate(any(ViewFactory.class));
+        verify(viewDefinition,
+               times(1)).setName(eq(SVG_CANCEL_NAME));
+        verify(viewFactoryGenerator,
+               times(1)).generate(any(ViewFactory.class));
     }
-
 }

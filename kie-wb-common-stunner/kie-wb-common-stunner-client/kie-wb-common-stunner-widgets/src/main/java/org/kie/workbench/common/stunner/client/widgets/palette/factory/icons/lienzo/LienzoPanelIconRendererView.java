@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.lienzo;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.stunner.client.widgets.canvas.view.LienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconRendererView;
 
 public interface LienzoPanelIconRendererView extends IconRendererView<LienzoPanelIconRenderer, IsWidget> {

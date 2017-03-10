@@ -22,7 +22,7 @@ import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
 /**
  * This class provides a helper method to limit s the number of visible control points to use when resizing by making only
  * visible the lower right CP. See next comments to understand the reason for this.
- * <p>
+ * <p/>
  * Right now all wires shape resize on lienzo can be done by 4 CPs, as example see next rectangle shape:
  * 0----1
  * |    |
@@ -40,12 +40,12 @@ import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
  * +-3----2
  * As you can see, the shape path parts will be rendered for the right "size" but the shape group's
  * coordinates will remain as last CP #0 position. So at this point the CP #0 X coordinate is lower than 0.
- * <p>
+ * <p/>
  * Stunner expects that the shape group's coordinates would be always relative to the top left
  * CP for the shape, as other process modelers expect for rendering the BPMN DI.
  * So currently stunner only shows the CP #2 for resizing goals to ensure the shape group's coordinates
  * are not being updated.
- * <p>
+ * <p/>
  * TODO: Review this resize behavior on lienzo side, once clarified this probably can be removed.
  * TODO: Keep in mind this only applies with current lienzo release, as it always considers 4 resize
  * control points available for all shapes.

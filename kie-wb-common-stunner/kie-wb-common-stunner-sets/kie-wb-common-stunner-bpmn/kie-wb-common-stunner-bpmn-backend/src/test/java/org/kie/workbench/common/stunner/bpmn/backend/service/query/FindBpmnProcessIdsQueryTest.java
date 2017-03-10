@@ -40,20 +40,25 @@ public class FindBpmnProcessIdsQueryTest {
             query.validateTerms(queryTerms);
             fail("The required resources term is missing, but no exception was thrown.");
         } catch (IllegalArgumentException iae) {
-            assertTrue("Incorrect error message: " + iae.getMessage(), iae.getMessage().contains("Expected 'ValueResourceIndexTerm' term was not found."));
+            assertTrue("Incorrect error message: " + iae.getMessage(),
+                       iae.getMessage().contains("Expected 'ValueResourceIndexTerm' term was not found."));
         }
 
         queryTerms = new HashSet<>();
-        queryTerms.add(new ValueResourceIndexTerm("not-bpmn2-resources", ResourceType.JAVA));
+        queryTerms.add(new ValueResourceIndexTerm("not-bpmn2-resources",
+                                                  ResourceType.JAVA));
         try {
             query.validateTerms(queryTerms);
             fail("The required resources term is missing, but no exception was thrown.");
         } catch (IllegalArgumentException iae) {
-            assertTrue("Incorrect error message: " + iae.getMessage(), iae.getMessage().contains(ERROR_MSG));
+            assertTrue("Incorrect error message: " + iae.getMessage(),
+                       iae.getMessage().contains(ERROR_MSG));
         }
 
         queryTerms = new HashSet<>();
-        queryTerms.add(new ValueResourceIndexTerm("*", ResourceType.BPMN2, ValueIndexTerm.TermSearchType.WILDCARD));
+        queryTerms.add(new ValueResourceIndexTerm("*",
+                                                  ResourceType.BPMN2,
+                                                  ValueIndexTerm.TermSearchType.WILDCARD));
         try {
             query.validateTerms(queryTerms);
         } catch (IllegalArgumentException iae) {

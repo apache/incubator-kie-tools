@@ -23,7 +23,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 /**
  * A concrete extension of a Graph Shape type for Edges.
- * <p>
+ * <p/>
  * Notice that the canvas representations for edges are not just connectors, edges
  * can be of other types, it depends on the graph element's content.
  * @param <W> The edge type.
