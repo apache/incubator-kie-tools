@@ -16,14 +16,15 @@
 
 package org.kie.workbench.common.screens.library.client.util;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
+import org.kie.workbench.common.widgets.client.handlers.NewProjectHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 @Dependent
 public class ResourceUtils {
@@ -31,26 +32,30 @@ public class ResourceUtils {
     private Classifier classifier;
 
     @Inject
-    public ResourceUtils( final Classifier classifier ) {
+    public ResourceUtils(final Classifier classifier) {
         this.classifier = classifier;
     }
 
-    public String getBaseFileName( final Path path ) {
-        final ClientResourceType resourceType = classifier.findResourceType( path );
-        final String baseName = Utils.getBaseFileName( path.getFileName(), resourceType.getSuffix() );
+    public String getBaseFileName(final Path path) {
+        final ClientResourceType resourceType = classifier.findResourceType(path);
+        final String baseName = Utils.getBaseFileName(path.getFileName(), resourceType.getSuffix());
 
         return baseName;
     }
 
-    public static boolean isProjectHandler( final NewResourceHandler handler ) {
-        return handler.getClass().getName().contains( "NewProjectHandler" );
+    public static boolean isProjectHandler(final NewResourceHandler handler) {
+        return handler instanceof NewProjectHandler;
     }
 
-    public static boolean isPackageHandler( final NewResourceHandler handler ) {
-        return handler.getClass().getName().contains( "NewPackageHandler" );
+    public static boolean isDefaultProjectHandler(final NewResourceHandler handler) {
+        return handler.getClass().getName().contains("org.kie.workbench.common.screens.projecteditor.client.handlers.NewProjectHandler");
     }
 
-    public static boolean isUploadHandler( final NewResourceHandler handler ) {
-        return handler.getClass().getName().contains( "NewFileUploader" );
+    public static boolean isPackageHandler(final NewResourceHandler handler) {
+        return handler.getClass().getName().contains("NewPackageHandler");
+    }
+
+    public static boolean isUploadHandler(final NewResourceHandler handler) {
+        return handler.getClass().getName().contains("NewFileUploader");
     }
 }

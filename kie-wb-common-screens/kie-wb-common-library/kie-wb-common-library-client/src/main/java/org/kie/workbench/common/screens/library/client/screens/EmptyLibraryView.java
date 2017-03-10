@@ -15,12 +15,8 @@
  */
 package org.kie.workbench.common.screens.library.client.screens;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import com.google.gwt.user.client.Event;
 import org.jboss.errai.common.client.dom.Anchor;
-import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Heading;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
@@ -33,10 +29,14 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.widgets.ImportExampleButtonWidget;
+import org.kie.workbench.common.screens.library.client.widgets.NewProjectButtonWidget;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 @Templated
 public class EmptyLibraryView implements EmptyLibraryScreen.View,
-                                         IsElement {
+        IsElement {
 
     private EmptyLibraryScreen presenter;
 
@@ -45,6 +45,9 @@ public class EmptyLibraryView implements EmptyLibraryScreen.View,
 
     @Inject
     private ManagedInstance<ImportExampleButtonWidget> importExampleButtonWidgets;
+
+    @Inject
+    private NewProjectButtonWidget newProjectButtonWidget;
 
     @Inject
     @Named("h1")
@@ -60,43 +63,38 @@ public class EmptyLibraryView implements EmptyLibraryScreen.View,
     Anchor newProjectLink;
 
     @Inject
-    @DataField("new-project")
-    Button newProject;
+    @DataField("new-project-button-container")
+    Div newProjectButtonContainer;
 
     @Override
-    public void init( EmptyLibraryScreen presenter ) {
+    public void init(EmptyLibraryScreen presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setup( String username ) {
-        welcome.setInnerHTML( ts.getTranslation( LibraryConstants.EmptyLibraryView_Welcome ) + " " + username + "." );
+    public void setup(String username) {
+        welcome.setInnerHTML(ts.getTranslation(LibraryConstants.EmptyLibraryView_Welcome) + " " + username + ".");
+        newProjectButtonContainer.appendChild(newProjectButtonWidget.getView().getElement());
     }
 
     @Override
-    public void addProjectToImport( final ExampleProject exampleProject ) {
+    public void addProjectToImport(final ExampleProject exampleProject) {
         final ImportExampleButtonWidget importExampleButton = importExampleButtonWidgets.get();
-        importExampleButton.init( exampleProject.getName(),
-                                  exampleProject.getDescription(),
-                                  () -> presenter.importProject( exampleProject ) );
+        importExampleButton.init(exampleProject.getName(),
+                exampleProject.getDescription(),
+                () -> presenter.importProject(exampleProject));
 
-        importContainer.appendChild( importExampleButton.getElement() );
+        importContainer.appendChild(importExampleButton.getElement());
     }
 
     @Override
     public void clearImportProjectsContainer() {
-        importContainer.setInnerHTML( "" );
-    }
-
-    @SinkNative(Event.ONCLICK)
-    @EventHandler("new-project")
-    public void newProject( Event e ) {
-        presenter.newProject();
+        importContainer.setInnerHTML("");
     }
 
     @SinkNative(Event.ONCLICK)
     @EventHandler("new-project-link")
-    public void newProjectLink( Event e ) {
+    public void newProjectLink(Event e) {
         presenter.newProject();
     }
 }
