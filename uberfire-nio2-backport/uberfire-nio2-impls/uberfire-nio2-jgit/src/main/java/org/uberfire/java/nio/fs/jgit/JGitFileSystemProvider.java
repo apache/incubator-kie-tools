@@ -192,6 +192,12 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                                                Disposable {
 
     public static final String GIT_ENV_KEY_DEFAULT_REMOTE_NAME = DEFAULT_REMOTE_NAME;
+
+    public static final String GIT_DAEMON_ENABLED = "org.uberfire.nio.git.daemon.enabled";
+    public static final String GIT_SSH_ENABLED = "org.uberfire.nio.git.ssh.enabled";
+    public static final String GIT_NIO_DIR = "org.uberfire.nio.git.dir";
+    public static final String GIT_NIO_DIR_NAME = "org.uberfire.nio.git.dirname";
+
     /**
      * Specifies the list mode for the repository parent directory. Must match one of the enum constants defined in
      * {@link ListMode}.
@@ -364,9 +370,11 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
 
         final ConfigProperty hookDirProp = config.get("org.uberfire.nio.git.hooks",
                                                       null);
-        final ConfigProperty bareReposDirProp = config.get("org.uberfire.nio.git.dir",
+        final ConfigProperty bareReposDirProp = config.get(GIT_NIO_DIR,
                                                            currentDirectory);
-        final ConfigProperty enabledProp = config.get("org.uberfire.nio.git.daemon.enabled",
+        final ConfigProperty reposDirNameProp = config.get(GIT_NIO_DIR_NAME,
+                                                           REPOSITORIES_CONTAINER_DIR);
+        final ConfigProperty enabledProp = config.get(GIT_DAEMON_ENABLED,
                                                       DAEMON_DEFAULT_ENABLED);
         final ConfigProperty hostProp = config.get("org.uberfire.nio.git.daemon.host",
                                                    DEFAULT_HOST_ADDR);
@@ -374,7 +382,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
                                                        hostProp.isDefault() ? DEFAULT_HOST_NAME : hostProp.getValue());
         final ConfigProperty portProp = config.get("org.uberfire.nio.git.daemon.port",
                                                    DAEMON_DEFAULT_PORT);
-        final ConfigProperty sshEnabledProp = config.get("org.uberfire.nio.git.ssh.enabled",
+        final ConfigProperty sshEnabledProp = config.get(GIT_SSH_ENABLED,
                                                          SSH_DEFAULT_ENABLED);
         final ConfigProperty sshHostProp = config.get("org.uberfire.nio.git.ssh.host",
                                                       DEFAULT_HOST_ADDR);
@@ -414,7 +422,7 @@ public class JGitFileSystemProvider implements SecuredFileSystemProvider,
         }
 
         gitReposParentDir = new File(bareReposDirProp.getValue(),
-                                     REPOSITORIES_CONTAINER_DIR);
+                                     reposDirNameProp.getValue());
         commitLimit = commitLimitProp.getIntValue();
 
         daemonEnabled = enabledProp.getBooleanValue();

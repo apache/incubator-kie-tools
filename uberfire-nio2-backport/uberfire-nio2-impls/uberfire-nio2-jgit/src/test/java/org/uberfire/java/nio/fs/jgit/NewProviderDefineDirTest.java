@@ -19,77 +19,64 @@ package org.uberfire.java.nio.fs.jgit;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 
-import org.eclipse.jgit.util.FileUtils;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider.GIT_NIO_DIR;
+import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider.GIT_NIO_DIR_NAME;
+import static org.uberfire.java.nio.fs.jgit.JGitFileSystemProvider.REPOSITORIES_CONTAINER_DIR;
 
-public class NewProviderDefineDirTest {
+@RunWith(Parameterized.class)
+public class NewProviderDefineDirTest extends AbstractTestInfra {
 
-    protected static final Map<String, Object> EMPTY_ENV = Collections.emptyMap();
+    private String dirPathName;
+    private File tempDir;
 
-    private static final List<File> tempFiles = new ArrayList<File>();
-
-    protected static File createTempDirectory()
-            throws IOException {
-        final File temp = File.createTempFile("temp",
-                                              Long.toString(System.nanoTime()));
-        if (!(temp.delete())) {
-            throw new IOException("Could not delete temp file: " + temp.getAbsolutePath());
-        }
-
-        if (!(temp.mkdir())) {
-            throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
-        }
-
-        tempFiles.add(temp);
-
-        return temp;
+    public NewProviderDefineDirTest(final String dirPathName) {
+        this.dirPathName = dirPathName;
     }
 
-    @AfterClass
-    @BeforeClass
-    public static void cleanup() {
-        for (final File tempFile : tempFiles) {
-            try {
-                FileUtils.delete(tempFile,
-                                 FileUtils.RECURSIVE);
-            } catch (IOException e) {
-            }
+    @Parameterized.Parameters(name = "{index}: dir name: {0}")
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{{REPOSITORIES_CONTAINER_DIR}, {".tempgit"}});
+    }
+
+    @Override
+    public Map<String, String> getGitPreferences() {
+        try {
+            tempDir = createTempDirectory();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
+        Map<String, String> gitPrefs = super.getGitPreferences();
+        gitPrefs.put(GIT_NIO_DIR,
+                     tempDir.toString());
+        if (REPOSITORIES_CONTAINER_DIR.equals(dirPathName) == false) {
+            gitPrefs.put(GIT_NIO_DIR_NAME,
+                         dirPathName);
+        }
+        return gitPrefs;
     }
 
     @Test
-    @Ignore
     public void testUsingProvidedPath() throws IOException {
-
-        final File dir = createTempDirectory();
-
-        Map<String, String> gitPrefs = new HashMap<String, String>();
-        gitPrefs.put("org.uberfire.nio.git.dir",
-                     dir.toString());
-        final JGitFileSystemProvider provider = new JGitFileSystemProvider(gitPrefs);
-
         final URI newRepo = URI.create("git://repo-name");
 
         provider.newFileSystem(newRepo,
                                EMPTY_ENV);
 
-        final String[] names = dir.list();
+        final String[] names = tempDir.list();
 
-        assertThat(names).isNotEmpty().contains(".niogit");
+        assertThat(names).isNotEmpty().contains(dirPathName);
 
-        final String[] repos = new File(dir,
-                                        ".niogit").list();
+        final String[] repos = new File(tempDir,
+                                        dirPathName).list();
 
         assertThat(repos).isNotEmpty().contains("repo-name.git");
     }
