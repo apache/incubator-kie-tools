@@ -16,10 +16,6 @@
   <name>Kie Workbench - Common</name>
   <description>Kie Workbench - Common</description>
 
-  <properties>
-    <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
-  </properties>
-
   <modules>
     <module>kie-wb-common-widgets</module>
     <module>kie-wb-common-screens</module>
