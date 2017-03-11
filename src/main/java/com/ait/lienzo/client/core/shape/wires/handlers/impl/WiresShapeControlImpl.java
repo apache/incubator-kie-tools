@@ -86,12 +86,13 @@ public class WiresShapeControlImpl implements WiresShapeControl
     }
 
     @Override
-    public void dragEnd(final Context context)
+    public boolean dragEnd(final Context context)
     {
+        boolean result = true;
 
         if (m_dockingAndContainmentControl != null)
         {
-            m_dockingAndContainmentControl.dragEnd(context);
+           result = m_dockingAndContainmentControl.dragEnd(context);
         }
 
         if (m_alignAndDistributeHandler != null)
@@ -99,6 +100,7 @@ public class WiresShapeControlImpl implements WiresShapeControl
             m_alignAndDistributeHandler.dragEnd();
         }
 
+        return result;
     }
 
     @Override

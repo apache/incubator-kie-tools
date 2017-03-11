@@ -149,8 +149,8 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
     }
 
     @Override
-    public void dragEnd( final Context context ) {
-        addShapeToParent();
+    public boolean dragEnd( final Context context ) {
+        return addShapeToParent();
     }
 
     @Override
@@ -229,6 +229,11 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
                     parentPart = null;
                 }
                 batch = true;
+            } else {
+                // The parent is the layer itself.
+                // Fire the containment acceptor allow evaluation. No visual
+                // If containment not allowed, no feedback by default.
+                m_layer.getContainmentAcceptor().containmentAllowed(m_layer, m_shape);
             }
 
             if (batch)
@@ -321,7 +326,7 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
         }
     }
 
-    protected void addShapeToParent()
+    protected boolean addShapeToParent()
     {
         Point2D absLoc = WiresUtils.getLocation( m_shape.getGroup() );
 
@@ -335,6 +340,8 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
             m_path.removeFromParent();
             m_layer.getLayer().getOverLayer().batch();
         }
+
+        boolean accepted = true;
 
         if (m_parentPart == null || m_parentPart.getShapePart() == PickerPart.ShapePart.BODY)
         {
@@ -361,6 +368,10 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
 
                 m_layer.getLayer().batch();
             }
+            else
+            {
+                accepted = false;
+            }
         }
         else if (m_parentPart != null && m_parentPart.getShapePart() != PickerPart.ShapePart.BODY && m_parent.getDockingAcceptor().acceptDocking(m_parent, m_shape))
         {
@@ -385,6 +396,7 @@ public class WiresDockingAndContainmentControlImpl implements WiresDockingAndCon
         m_priorFillChanged = false;
         m_priorFillGradient = null;
         m_picker = null;
+        return accepted;
     }
 
     protected ColorMapBackedPicker makeColorMapBackedPicker(final NFastArrayList<WiresShape> children,

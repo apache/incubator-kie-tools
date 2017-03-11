@@ -18,7 +18,7 @@ public interface HasDragControl {
 
     void dragMove( Context context );
 
-    void dragEnd( Context context );
+    boolean dragEnd( Context context );
 
     boolean dragAdjust( Point2D dxy );
 }

@@ -77,7 +77,7 @@ public class WiresConnectorControlImpl implements WiresConnectorControl {
     }
 
     @Override
-    public void dragEnd( final Context context ) {
+    public boolean dragEnd( final Context context ) {
 
         m_connector.getGroup().setX( 0 ).setY( 0 );
 
@@ -101,6 +101,7 @@ public class WiresConnectorControlImpl implements WiresConnectorControl {
 
         m_startPoints = null;
 
+        return true;
     }
 
     @Override
