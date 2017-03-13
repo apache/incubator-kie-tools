@@ -5254,7 +5254,7 @@ public class Bpmn2JsonUnmarshaller {
     protected void applyBusinessRuleTaskProperties(BusinessRuleTask task,
                                                    Map<String, String> properties) {
         if (properties.get("ruleflowgroup") != null && properties.get("ruleflowgroup").length() > 0) {
-            // add droolsjbpm-specific attribute "ruleFlowGroup"
+            // add kiegroup-specific attribute "ruleFlowGroup"
             ExtendedMetaData metadata = ExtendedMetaData.INSTANCE;
             EAttributeImpl extensionAttribute = (EAttributeImpl) metadata.demandFeature(
                     "http://www.jboss.org/drools",
@@ -5660,7 +5660,7 @@ public class Bpmn2JsonUnmarshaller {
         if (properties.get("taskname") != null && properties.get("taskname").length() > 0) {
             if (isCustomElement(properties.get("tasktype"),
                                 preProcessingData)) {
-                // add droolsjbpm-specific attribute "taskName"
+                // add kiegroup-specific attribute "taskName"
                 ExtendedMetaData metadata = ExtendedMetaData.INSTANCE;
                 EAttributeImpl extensionAttribute = (EAttributeImpl) metadata.demandFeature(
                         "http://www.jboss.org/drools",
