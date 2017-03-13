@@ -81,7 +81,7 @@ public class JcrExporter {
             categoryExporter.exportAll();
             moduleAssetExporter.exportAll();
 
-            // TODO Refresh the index at the end, similar as in https://github.com/droolsjbpm/kie-commons/blob/master/kieora/kieora-commons-io/src/test/java/org/kie/kieora/io/BatchIndexTest.java
+            // TODO Refresh the index at the end, similar as in https://github.com/kiegroup/kie-commons/blob/master/kieora/kieora-commons-io/src/test/java/org/kie/kieora/io/BatchIndexTest.java
             endContexts();
             logger.info( "Export from JCR ended." );
         } catch ( Throwable t ) {
