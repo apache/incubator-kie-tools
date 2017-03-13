@@ -24,7 +24,7 @@ import org.uberfire.commons.validation.PortablePreconditions;
 public class ExamplesWizardModel extends ExamplesModel {
 
     private ExampleRepository selectedRepository;
-    private String selectedBranch;
+    private String selectedBranch = "master";
 
     public ExampleRepository getSelectedRepository() {
         return selectedRepository;
@@ -36,6 +36,10 @@ public class ExamplesWizardModel extends ExamplesModel {
 
     public String getSelectedBranch() {
         return selectedBranch;
+    }
+
+    public void setSelectedBranch(final String selectedBranch) {
+        this.selectedBranch = selectedBranch;
     }
 
     public void addProject(final ExampleProject project) {
