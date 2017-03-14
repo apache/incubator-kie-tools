@@ -29,6 +29,7 @@ public class MessageConsoleWhiteListImpl
     private List<String> allowedPerspectives = new ArrayList<String>();
 
     public MessageConsoleWhiteListImpl() {
+        allowedPerspectives.add( "LibraryPerspective" );
         allowedPerspectives.add( "AuthoringPerspective" );
         allowedPerspectives.add( "AuthoringPerspectiveNoContext" );
     }
