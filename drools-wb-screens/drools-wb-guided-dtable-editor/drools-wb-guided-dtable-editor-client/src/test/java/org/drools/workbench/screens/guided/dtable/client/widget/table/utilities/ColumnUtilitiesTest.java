@@ -16,6 +16,7 @@
 package org.drools.workbench.screens.guided.dtable.client.widget.table.utilities;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
@@ -50,64 +51,90 @@ public class ColumnUtilitiesTest {
 
     @Before
     public void setUp() {
-        utilities = new ColumnUtilities( model,
-                                         oracle );
+        utilities = new ColumnUtilities(model,
+                                        oracle);
         pattern = new Pattern52();
         column = new ConditionCol52();
-        when( model.getPattern( column ) ).thenReturn( pattern );
+        when(model.getPattern(column)).thenReturn(pattern);
     }
 
     @Test
     public void getTypeSafeType_operatorIn() {
-        column.setOperator( "in" );
+        column.setOperator("in");
         check();
     }
 
     @Test
     public void getTypeSafeType_operatorNotIn() {
-        column.setOperator( "not in" );
+        column.setOperator("not in");
         check();
     }
 
     @Test
     public void unknownDataTypeDefaultsToString() {
-        assertEquals( DataType.TYPE_STRING,
-                      utilities.getType( column ) );
+        assertEquals(DataType.TYPE_STRING,
+                     utilities.getType(column));
     }
 
     @Test
     public void knownDataTypeWithoutOperator() {
-        pattern.setFactType( FACT_TYPE );
-        column.setFactField( FIELD_NAME );
-        column.setOperator( null );
+        pattern.setFactType(FACT_TYPE);
+        column.setFactField(FIELD_NAME);
+        column.setOperator(null);
 
-        assertEquals( DataType.TYPE_STRING,
-                      utilities.getType( column ) );
+        assertEquals(DataType.TYPE_STRING,
+                     utilities.getType(column));
     }
 
     @Test
     public void knownDataTypeWithOperator() {
-        pattern.setFactType( FACT_TYPE );
-        column.setFactField( FIELD_NAME );
-        column.setOperator( "==" );
-        when( oracle.getFieldType( eq( FACT_TYPE ),
-                                   eq( FIELD_NAME ) ) ).thenReturn( DataType.TYPE_NUMERIC_INTEGER );
+        pattern.setFactType(FACT_TYPE);
+        column.setFactField(FIELD_NAME);
+        column.setOperator("==");
+        when(oracle.getFieldType(eq(FACT_TYPE),
+                                 eq(FIELD_NAME))).thenReturn(DataType.TYPE_NUMERIC_INTEGER);
 
-        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
-                      utilities.getType( column ) );
+        assertEquals(DataType.TYPE_NUMERIC_INTEGER,
+                     utilities.getType(column));
+    }
+
+    @Test
+    public void testCanAcceptOtherwisePredicate() throws Exception {
+        column.setConstraintValueType(BaseSingleFieldConstraint.TYPE_PREDICATE);
+        assertFalse(ColumnUtilities.canAcceptOtherwiseValues(column));
+    }
+
+    @Test
+    public void testCanAcceptOtherwiseEqual() throws Exception {
+        column.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        column.setOperator("==");
+        assertTrue(ColumnUtilities.canAcceptOtherwiseValues(column));
+    }
+
+    @Test
+    public void testCanAcceptOtherwiseNotEqual() throws Exception {
+        column.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        column.setOperator("!=");
+        assertTrue(ColumnUtilities.canAcceptOtherwiseValues(column));
+    }
+
+    @Test
+    public void testCanAcceptOtherwiseWrongOperator() throws Exception {
+        column.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        column.setOperator("<");
+        assertFalse(ColumnUtilities.canAcceptOtherwiseValues(column));
     }
 
     private void check() {
-        assertEquals( DataType.DataTypes.STRING,
-                      utilities.getTypeSafeType( pattern,
-                                                 column ) );
-        assertEquals( DataType.DataTypes.STRING,
-                      utilities.getTypeSafeType( column ) );
-        assertEquals( DataType.TYPE_STRING,
-                      utilities.getType( column ) );
-        verify( oracle,
-                never() ).getFieldType( anyString(),
-                                        anyString() );
+        assertEquals(DataType.DataTypes.STRING,
+                     utilities.getTypeSafeType(pattern,
+                                               column));
+        assertEquals(DataType.DataTypes.STRING,
+                     utilities.getTypeSafeType(column));
+        assertEquals(DataType.TYPE_STRING,
+                     utilities.getType(column));
+        verify(oracle,
+               never()).getFieldType(anyString(),
+                                     anyString());
     }
-
 }

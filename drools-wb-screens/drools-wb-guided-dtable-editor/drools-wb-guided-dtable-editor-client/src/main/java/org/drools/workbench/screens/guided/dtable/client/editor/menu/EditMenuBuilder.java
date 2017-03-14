@@ -23,15 +23,14 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
-import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DescriptionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.RowNumberCol52;
 import org.drools.workbench.screens.guided.dtable.client.editor.clipboard.Clipboard;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableErraiConstants;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.DecisionTableSelectionsChangedEvent;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.uberfire.ext.widgets.common.client.menu.MenuItemFactory;
@@ -240,7 +239,7 @@ public class EditMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuB
         final GridData.SelectedCell selection = selections.get(0);
         final int columnIndex = findUiColumnIndex(selection.getColumnIndex());
         final BaseColumn column = activeDecisionTable.getModel().getExpandedColumns().get(columnIndex);
-        isOtherwiseEnabled = isOtherwiseEnabled && canAcceptOtherwiseValues(column);
+        isOtherwiseEnabled = isOtherwiseEnabled && ColumnUtilities.canAcceptOtherwiseValues(column);
         return isOtherwiseEnabled;
     }
 
@@ -266,30 +265,5 @@ public class EditMenuBuilder extends BaseMenu implements MenuFactory.CustomMenuB
             }
         }
         throw new IllegalStateException("Column was not found!");
-    }
-
-    // Check whether the given column can accept "otherwise" values
-    private boolean canAcceptOtherwiseValues(final BaseColumn column) {
-        if (!(column instanceof ConditionCol52)) {
-            return false;
-        }
-        final ConditionCol52 cc = (ConditionCol52) column;
-
-        //Check column contains literal values and uses the equals operator
-        if (cc.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_LITERAL) {
-            return false;
-        }
-
-        //Check operator is supported
-        if (cc.getOperator() == null) {
-            return false;
-        }
-        if (cc.getOperator().equals("==")) {
-            return true;
-        }
-        if (cc.getOperator().equals("!=")) {
-            return true;
-        }
-        return false;
     }
 }

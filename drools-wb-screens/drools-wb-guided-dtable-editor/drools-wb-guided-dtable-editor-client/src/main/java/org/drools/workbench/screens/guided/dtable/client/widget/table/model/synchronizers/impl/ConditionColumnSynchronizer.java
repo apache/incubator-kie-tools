@@ -37,6 +37,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.LimitedEntryCol;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.gwt.BoundFactsChangedEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 
 import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.impl.ConditionColumnSynchronizer.PatternConditionMetaData;
 
@@ -439,7 +440,7 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
                                                                               diffs);
 
         //Clear "otherwise" if the column cannot accept them
-        if (isOperatorUpdated && !canAcceptOtherwiseValues(editedColumn)) {
+        if (isOperatorUpdated && !ColumnUtilities.canAcceptOtherwiseValues(editedColumn)) {
             removeOtherwiseStates(originalColumn);
         }
 
@@ -454,26 +455,6 @@ public class ConditionColumnSynchronizer extends BaseColumnSynchronizer<PatternC
             updateCellsForOptionValueList(originalColumn,
                                           editedColumn);
         }
-    }
-
-    // Check whether the given column can accept "otherwise" values
-    private boolean canAcceptOtherwiseValues(final ConditionCol52 column) {
-        //Check column contains literal values and uses the equals operator
-        if (column.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_LITERAL) {
-            return false;
-        }
-
-        //Check operator is supported
-        if (column.getOperator() == null) {
-            return false;
-        }
-        if (column.getOperator().equals("==")) {
-            return true;
-        }
-        if (column.getOperator().equals("!=")) {
-            return true;
-        }
-        return false;
     }
 
     //Remove Otherwise state from column cells
