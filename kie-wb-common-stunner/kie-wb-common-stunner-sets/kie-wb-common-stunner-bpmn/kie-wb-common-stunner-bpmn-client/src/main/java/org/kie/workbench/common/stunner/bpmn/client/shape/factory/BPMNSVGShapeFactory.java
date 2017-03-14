@@ -27,6 +27,8 @@ import org.kie.workbench.common.stunner.bpmn.client.shape.def.GatewayShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.LaneShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.SequenceFlowConnectorDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.StartNoneEventShapeDef;
+import org.kie.workbench.common.stunner.bpmn.client.shape.def.StartSignalEventShapeDef;
+import org.kie.workbench.common.stunner.bpmn.client.shape.def.StartTimerEventShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.SubprocessShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.TaskShapeDef;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
@@ -41,6 +43,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -90,6 +94,10 @@ public class BPMNSVGShapeFactory
                                     new TaskShapeDef());
         svgShapeFactory.addShapeDef(StartNoneEvent.class,
                                     new StartNoneEventShapeDef());
+        svgShapeFactory.addShapeDef(StartSignalEvent.class,
+                                    new StartSignalEventShapeDef());
+        svgShapeFactory.addShapeDef(StartTimerEvent.class,
+                                    new StartTimerEventShapeDef());
         svgShapeFactory.addShapeDef(BPMNDiagram.class,
                                     new BPMNDiagramShapeDef());
         svgShapeFactory.addShapeDef(BusinessRuleTask.class,
