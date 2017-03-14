@@ -15,6 +15,9 @@
  */
 package org.kie.workbench.common.screens.library.client.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -62,6 +65,17 @@ public class LibraryPlaces {
     public static final String PROJECT_DETAIL_SCREEN = "ProjectsDetailScreen";
     public static final String PROJECT_SETTINGS = "projectScreen";
     public static final String PROJECT_EXPLORER = "org.kie.guvnor.explorer";
+
+    public static final List<String> LIBRARY_PLACES = Collections.unmodifiableList(new ArrayList<String>(7) {{
+        add(NEW_PROJECT_SCREEN);
+        add(EMPTY_LIBRARY_SCREEN);
+        add(LIBRARY_SCREEN);
+        add(EMPTY_PROJECT_SCREEN);
+        add(PROJECT_SCREEN);
+        add(PROJECT_DETAIL_SCREEN);
+        add(PROJECT_SETTINGS);
+        add(PROJECT_EXPLORER);
+    }});
 
     private UberfireBreadcrumbs breadcrumbs;
 
@@ -186,13 +200,7 @@ public class LibraryPlaces {
     }
 
     private boolean isLibraryPlace(final PlaceRequest place) {
-        return place.getIdentifier().equals(NEW_PROJECT_SCREEN)
-                || place.getIdentifier().equals(EMPTY_LIBRARY_SCREEN)
-                || place.getIdentifier().equals(LIBRARY_SCREEN)
-                || place.getIdentifier().equals(EMPTY_PROJECT_SCREEN)
-                || place.getIdentifier().equals(PROJECT_SCREEN)
-                || place.getIdentifier().equals(PROJECT_DETAIL_SCREEN)
-                || place.getIdentifier().equals(PROJECT_SETTINGS);
+        return LIBRARY_PLACES.contains(place.getIdentifier());
     }
 
     public void newResourceCreated(@Observes final NewResourceSuccessEvent newResourceSuccessEvent) {
@@ -292,6 +300,7 @@ public class LibraryPlaces {
                     final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
                     part.setSelectable(false);
 
+                    closeLibraryPlaces();
                     placeManager.goTo(part,
                                       libraryPerspective.getRootPanel());
 
@@ -316,8 +325,10 @@ public class LibraryPlaces {
             final PartDefinitionImpl part = new PartDefinitionImpl(projectScreen);
             part.setSelectable(false);
 
+            closeLibraryPlaces();
             placeManager.goTo(part,
                               libraryPerspective.getRootPanel());
+
             projectDetailEvent.fire(new ProjectDetailEvent(projectInfo));
             projectContextChangeEvent.fire(new ProjectContextChangeEvent(projectInfo.getOrganizationalUnit(),
                                                                          projectInfo.getRepository(),
@@ -345,6 +356,7 @@ public class LibraryPlaces {
         final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
         part.setSelectable(false);
 
+        closeLibraryPlaces();
         placeManager.goTo(part,
                           libraryPerspective.getRootPanel());
         setupLibraryBreadCrumbsForNewProject();
@@ -381,5 +393,9 @@ public class LibraryPlaces {
 
     private String getOURepoLabel() {
         return getSelectedOrganizationalUnit().getName() + " (" + getSelectedRepository().getAlias() + ")";
+    }
+
+    void closeLibraryPlaces() {
+        LIBRARY_PLACES.forEach(place -> placeManager.closePlace(place));
     }
 }

@@ -285,8 +285,40 @@ public class LibraryPlacesTest {
 
         libraryPlaces.goToLibrary();
 
+        verify(libraryPlaces).closeLibraryPlaces();
         verify(placeManager).goTo(eq(part), any(PanelDefinition.class));
         verify(libraryPlaces).setupLibraryBreadCrumbs();
         verify(projectContextChangeEvent).fire(any(ProjectContextChangeEvent.class));
+    }
+
+    @Test
+    public void goToNewProjectTest() {
+        final DefaultPlaceRequest placeRequest = new DefaultPlaceRequest(LibraryPlaces.NEW_PROJECT_SCREEN);
+        final PartDefinitionImpl part = new PartDefinitionImpl(placeRequest);
+        part.setSelectable(false);
+
+        libraryPlaces.goToNewProject();
+
+        verify(libraryPlaces).closeLibraryPlaces();
+        verify(placeManager).goTo(eq(part), any(PanelDefinition.class));
+        verify(libraryPlaces).setupLibraryBreadCrumbsForNewProject();
+    }
+
+    @Test
+    public void goToProjectTest() {
+        final PlaceRequest projectScreen = new ConditionalPlaceRequest(LibraryPlaces.PROJECT_SCREEN)
+                .when(p -> false)
+                .orElse(new DefaultPlaceRequest(LibraryPlaces.EMPTY_PROJECT_SCREEN));
+        final PartDefinitionImpl part = new PartDefinitionImpl(projectScreen);
+        part.setSelectable(false);
+        final ProjectInfo projectInfo = mock(ProjectInfo.class);
+
+        libraryPlaces.goToProject(projectInfo);
+
+        verify(libraryPlaces).closeLibraryPlaces();
+        verify(placeManager).goTo(eq(part), any(PanelDefinition.class));
+        verify(projectDetailEvent).fire(any(ProjectDetailEvent.class));
+        verify(projectContextChangeEvent).fire(any(ProjectContextChangeEvent.class));
+        verify(libraryPlaces).setupLibraryBreadCrumbsForProject(projectInfo);
     }
 }
