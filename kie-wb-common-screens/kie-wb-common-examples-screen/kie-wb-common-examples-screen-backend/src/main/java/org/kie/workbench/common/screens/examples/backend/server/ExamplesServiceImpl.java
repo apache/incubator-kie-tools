@@ -19,6 +19,7 @@ package org.kie.workbench.common.screens.examples.backend.server;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
+import java.nio.file.FileSystems;
 import java.nio.file.SimpleFileVisitor;
 import java.util.Collection;
 import java.util.Collections;
@@ -265,15 +266,19 @@ public class ExamplesServiceImpl implements ExamplesService {
         }
     }
 
-    private String getExampleAlias(final String repositoryURL) {
+    String getExampleAlias(final String repositoryURL) {
         String alias = repositoryURL;
-        alias = alias.substring(alias.lastIndexOf('/') + 1);
+        alias = alias.substring(alias.lastIndexOf(getFileSeparator()) + 1);
         final int lastDotIndex = alias.lastIndexOf('.');
         if (lastDotIndex > 0) {
             alias = alias.substring(0,
                                     lastDotIndex);
         }
         return "examples-" + alias;
+    }
+
+    String getFileSeparator() {
+        return FileSystems.getDefault().getSeparator();
     }
 
     private Set<ExampleProject> convert(final Set<Project> projects) {

@@ -47,7 +47,6 @@ import org.kie.workbench.common.screens.examples.model.ExampleProject;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
 import org.kie.workbench.common.screens.examples.model.ExampleTargetRepository;
 import org.kie.workbench.common.screens.examples.model.ExamplesMetaData;
-import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.Mock;
@@ -102,19 +101,19 @@ public class ExamplesServiceImplTest {
     @Mock
     private User user;
 
-    private ExamplesService service;
+    private ExamplesServiceImpl service;
 
     @Before
     public void setup() {
-        service = new ExamplesServiceImpl(ioService,
-                                          configurationFactory,
-                                          repositoryFactory,
-                                          projectService,
-                                          repositoryService,
-                                          ouService,
-                                          metadataService,
-                                          newProjectEvent,
-                                          sessionInfo);
+        service = spy(new ExamplesServiceImpl(ioService,
+                                              configurationFactory,
+                                              repositoryFactory,
+                                              projectService,
+                                              repositoryService,
+                                              ouService,
+                                              metadataService,
+                                              newProjectEvent,
+                                              sessionInfo));
         when(ouService.getOrganizationalUnits()).thenReturn(new HashSet<OrganizationalUnit>() {{
             add(new OrganizationalUnitImpl("ou1Name",
                                            "ou1Owner",
@@ -482,5 +481,29 @@ public class ExamplesServiceImplTest {
                times(1)).endBatch();
         verify(newProjectEvent,
                times(2)).fire(any(NewProjectEvent.class));
+    }
+
+    @Test
+    public void testGetExampleAliasOnWindows() {
+        doReturn("\\").when(service).getFileSeparator();
+
+        final String repositoryURL = "C:\\folder\\repo.git";
+
+        final String alias = service.getExampleAlias(repositoryURL);
+
+        assertEquals("examples-repo",
+                     alias);
+    }
+
+    @Test
+    public void testGetExampleAliasOnUnix() {
+        doReturn("/").when(service).getFileSeparator();
+
+        final String repositoryURL = "/home/user/folder/repo.git";
+
+        final String alias = service.getExampleAlias(repositoryURL);
+
+        assertEquals("examples-repo",
+                     alias);
     }
 }
