@@ -31,7 +31,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.screens.dtablexls.client.resources.i18n.DecisionTableXLSEditorConstants;
 import org.gwtbootstrap3.client.ui.Button;
 import org.jboss.errai.bus.client.api.ClientMessageBus;
-import org.jboss.errai.bus.client.framework.ClientMessageBusImpl;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
@@ -50,7 +49,7 @@ public class DecisionTableXLSEditorViewImpl
 
     }
 
-    private static ViewBinder uiBinder = GWT.create( ViewBinder.class );
+    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
 
     //This is not part of the UiBinder definition as it is created dependent upon the file-type being uploaded
     AttachmentFileWidget uploadWidget;
@@ -70,80 +69,84 @@ public class DecisionTableXLSEditorViewImpl
     private DecisionTableXLSEditorView.Presenter presenter;
 
     public DecisionTableXLSEditorViewImpl() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     @Override
-    public void init( final DecisionTableXLSEditorView.Presenter presenter ) {
+    public void init(final DecisionTableXLSEditorView.Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setupUploadWidget( final ClientResourceType resourceTypeDefinition ) {
-        uploadWidget = new AttachmentFileWidget( new String[]{ resourceTypeDefinition.getSuffix() }, true );
+    public void setupUploadWidget(final ClientResourceType resourceTypeDefinition) {
+        uploadWidget = constructUploadWidget(resourceTypeDefinition);
 
         uploadWidgetContainer.clear();
-        uploadWidgetContainer.setWidget( uploadWidget );
+        uploadWidgetContainer.setWidget(uploadWidget);
 
-        uploadWidget.addClickHandler( new ClickHandler() {
+        uploadWidget.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( final ClickEvent event ) {
-                BusyPopup.showMessage( DecisionTableXLSEditorConstants.INSTANCE.Uploading() );
+            public void onClick(final ClickEvent event) {
+                BusyPopup.showMessage(DecisionTableXLSEditorConstants.INSTANCE.Uploading());
                 presenter.onUpload();
             }
-        } );
+        });
     }
 
-    public void setPath( final Path path ) {
-        downloadButton.addClickHandler( new ClickHandler() {
+    protected AttachmentFileWidget constructUploadWidget(final ClientResourceType resourceTypeDefinition) {
+        return new AttachmentFileWidget(new String[]{resourceTypeDefinition.getSuffix()},
+                                        true);
+    }
+
+    public void setPath(final Path path) {
+        downloadButton.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( final ClickEvent event ) {
-                Window.open( getDownloadUrl( path ),
-                             "downloading",
-                             "resizable=no,scrollbars=yes,status=no" );
+            public void onClick(final ClickEvent event) {
+                Window.open(getDownloadUrl(path),
+                            "downloading",
+                            "resizable=no,scrollbars=yes,status=no");
             }
-        } );
+        });
     }
 
     @Override
-    public void submit( final Path path ) {
-        uploadWidget.submit( path,
-                             getServletUrl(),
-                             new Command() {
+    public void submit(final Path path) {
+        uploadWidget.submit(path,
+                            getServletUrl(),
+                            new Command() {
 
-                                 @Override
-                                 public void execute() {
-                                     BusyPopup.close();
-                                     notifySuccess();
-                                 }
+                                @Override
+                                public void execute() {
+                                    BusyPopup.close();
+                                    notifySuccess();
+                                }
+                            },
+                            new Command() {
 
-                             },
-                             new Command() {
-
-                                 @Override
-                                 public void execute() {
-                                     BusyPopup.close();
-                                 }
-
-                             }
-                           );
+                                @Override
+                                public void execute() {
+                                    BusyPopup.close();
+                                }
+                            }
+        );
     }
 
     @Override
-    public void setReadOnly( final boolean isReadOnly ) {
-        uploadWidget.setEnabled( !isReadOnly );
+    public void setReadOnly(final boolean isReadOnly) {
+        uploadWidget.setEnabled(!isReadOnly);
     }
 
     private void notifySuccess() {
-        notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCreatedSuccessfully() ) );
+        notificationEvent.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCreatedSuccessfully()));
     }
 
-    String getDownloadUrl( final Path path ) {
-        return URLHelper.getDownloadUrl( path, getClientId() );
+    String getDownloadUrl(final Path path) {
+        return URLHelper.getDownloadUrl(path,
+                                        getClientId());
     }
 
     String getServletUrl() {
-        return URLHelper.getServletUrl( getClientId() );
+        return URLHelper.getServletUrl(getClientId());
     }
 
     String getClientId() {

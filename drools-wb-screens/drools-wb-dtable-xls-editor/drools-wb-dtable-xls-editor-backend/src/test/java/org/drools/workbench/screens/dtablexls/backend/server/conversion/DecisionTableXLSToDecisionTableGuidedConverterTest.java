@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.template.parser.DecisionTableParseException;
 import org.drools.workbench.models.datamodel.oracle.ModelField;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.guided.dtable.shared.conversion.ConversionResult;
@@ -246,7 +247,8 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
         when(ioService.newInputStream(any(org.uberfire.java.nio.file.Path.class))).thenReturn(is);
         final ConversionResult result = converter.convert(path);
         assertNotNull(result);
-        assertEquals(1, result.getMessages().size());
+        assertEquals(1,
+                     result.getMessages().size());
         assertTrue(result.getMessages().get(0).getMessage().startsWith("Created Guided Decision Table 'Weather"));
 
         verify(guidedDecisionTableService,
@@ -254,5 +256,12 @@ public class DecisionTableXLSToDecisionTableGuidedConverterTest {
                                 any(String.class),
                                 any(GuidedDecisionTable52.class),
                                 any(String.class));
+    }
+
+    @Test(expected = DecisionTableParseException.class)
+    public void checkConversionOfXLSWithInvalidContent() {
+        final InputStream is = this.getClass().getResourceAsStream("wrong_file.xls");
+        when(ioService.newInputStream(any(org.uberfire.java.nio.file.Path.class))).thenReturn(is);
+        converter.convert(path);
     }
 }

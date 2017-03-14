@@ -16,18 +16,43 @@
 
 package org.drools.workbench.screens.dtablexls.client.editor;
 
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.widgets.client.widget.AttachmentFileWidget;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.workbench.type.ClientResourceType;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DecisionTableXLSEditorViewImplTest {
 
+    private static final String SERVLET_URL = "dtablexls/file?clientId=123";
     private DecisionTableXLSEditorViewImpl view;
+
+    @Mock
+    AttachmentFileWidget attachmentFileWidget;
+
+    @Mock
+    ClientResourceType type;
+
+    @Mock
+    DecisionTableXLSEditorPresenter presenter;
+
+    @Captor
+    ArgumentCaptor<ClickHandler> clickCaptor;
 
     @Before
     public void setup() {
@@ -37,17 +62,46 @@ public class DecisionTableXLSEditorViewImplTest {
             String getClientId() {
                 return "123";
             }
+
+            @Override
+            protected AttachmentFileWidget constructUploadWidget(ClientResourceType resourceTypeDefinition) {
+                return attachmentFileWidget;
+            }
         };
+
+        view.init(presenter);
     }
 
     @Test
     public void testGetDownloadUrl() throws Exception {
-        assertEquals( "dtablexls/file?clientId=123&attachmentPath=", view.getDownloadUrl( path() ) );
+        assertEquals(SERVLET_URL + "&attachmentPath=",
+                     view.getDownloadUrl(path()));
     }
 
     @Test
     public void getServletUrl() throws Exception {
-        assertEquals( "dtablexls/file?clientId=123", view.getServletUrl() );
+        assertEquals(SERVLET_URL,
+                     view.getServletUrl());
+    }
+
+    @Test
+    public void testUploadWidgetClickHandler() throws Exception {
+        doCallRealMethod().when(presenter).onUpload();
+        view.setupUploadWidget(type);
+        verify(attachmentFileWidget).addClickHandler(clickCaptor.capture());
+        clickCaptor.getValue().onClick(null);
+        verify(presenter).submit();
+    }
+
+    @Test
+    public void testSubmit() throws Exception {
+        Path path = mock(Path.class);
+        view.setupUploadWidget(type);
+        view.submit(path);
+        verify(attachmentFileWidget).submit(eq(path),
+                                            eq(SERVLET_URL),
+                                            any(Command.class),
+                                            any(Command.class));
     }
 
     private Path path() {
@@ -63,7 +117,7 @@ public class DecisionTableXLSEditorViewImplTest {
             }
 
             @Override
-            public int compareTo( final Path o ) {
+            public int compareTo(final Path o) {
                 return 0;
             }
         };
