@@ -424,19 +424,17 @@ public class WiresShapeControlHandleList implements IControlHandleList
             return;
         }
 
-        for (WiresShape shape : m_wires_shape.getChildShapes())
+        // For usability goals let's ensure children shape's controls are hidden as
+        // with the parent one.
+        if (!visible)
         {
-            if (shape.getControls() == null)
+            for (WiresShape shape : m_wires_shape.getChildShapes())
             {
-                continue;
-            }
+                if (shape.getControls() == null)
+                {
+                    continue;
+                }
 
-            if (visible)
-            {
-                shape.getControls().show();
-            }
-            else
-            {
                 shape.getControls().hide();
             }
         }
