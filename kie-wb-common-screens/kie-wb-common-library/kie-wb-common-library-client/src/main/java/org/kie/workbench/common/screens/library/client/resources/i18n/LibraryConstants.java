@@ -74,4 +74,7 @@ public class LibraryConstants {
     @TranslationKey(defaultValue = "")
     public static final String OtherProjects = "OtherProjects";
 
+    @TranslationKey(defaultValue = "")
+    public static final String ProjectDeleted = "ProjectDeleted";
+
 }

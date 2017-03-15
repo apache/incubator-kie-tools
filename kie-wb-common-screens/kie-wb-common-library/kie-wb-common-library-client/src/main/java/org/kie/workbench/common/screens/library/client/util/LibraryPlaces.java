@@ -25,6 +25,8 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
+import org.guvnor.common.services.project.events.DeleteProjectEvent;
+import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
@@ -51,6 +53,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.ConditionalPlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
 @ApplicationScoped
@@ -74,7 +77,6 @@ public class LibraryPlaces {
         add(PROJECT_SCREEN);
         add(PROJECT_DETAIL_SCREEN);
         add(PROJECT_SETTINGS);
-        add(PROJECT_EXPLORER);
     }});
 
     private UberfireBreadcrumbs breadcrumbs;
@@ -105,6 +107,8 @@ public class LibraryPlaces {
 
     private ExamplesUtils examplesUtils;
 
+    private Event<NotificationEvent> notificationEvent;
+
     private boolean docksReady = false;
 
     private boolean docksHidden = true;
@@ -123,7 +127,8 @@ public class LibraryPlaces {
                          final AuthoringWorkbenchDocks docks,
                          final LibraryPreferences libraryPreferences,
                          final Event<ProjectContextChangeEvent> projectContextChangeEvent,
-                         final ExamplesUtils examplesUtils) {
+                         final ExamplesUtils examplesUtils,
+                         final Event<NotificationEvent> notificationEvent) {
         this.breadcrumbs = breadcrumbs;
         this.ts = ts;
         this.projectDetailEvent = projectDetailEvent;
@@ -138,6 +143,7 @@ public class LibraryPlaces {
         this.libraryPreferences = libraryPreferences;
         this.projectContextChangeEvent = projectContextChangeEvent;
         this.examplesUtils = examplesUtils;
+        this.notificationEvent = notificationEvent;
     }
 
     public ProjectInfo getProjectInfo() {
@@ -204,17 +210,33 @@ public class LibraryPlaces {
     }
 
     public void newResourceCreated(@Observes final NewResourceSuccessEvent newResourceSuccessEvent) {
-        assetDetailEvent.fire(new AssetDetailEvent(getProjectInfo(),
-                                                   newResourceSuccessEvent.getPath()));
+        if (placeManager.getStatus(LIBRARY_PERSPECTIVE).equals(PlaceStatus.OPEN)) {
+            assetDetailEvent.fire(new AssetDetailEvent(getProjectInfo(),
+                                                       newResourceSuccessEvent.getPath()));
+        }
     }
 
     public void assetRenamedAccepted(@Observes final ConcurrentRenameAcceptedEvent concurrentRenameAcceptedEvent) {
-        final ProjectInfo projectInfo = getProjectInfo();
-        final ObservablePath path = concurrentRenameAcceptedEvent.getPath();
-        goToAsset(projectInfo,
-                  path);
-        setupLibraryBreadCrumbsForAsset(projectInfo,
-                                        path);
+        if (placeManager.getStatus(LIBRARY_PERSPECTIVE).equals(PlaceStatus.OPEN)) {
+            final ProjectInfo projectInfo = getProjectInfo();
+            final ObservablePath path = concurrentRenameAcceptedEvent.getPath();
+            goToAsset(projectInfo,
+                      path);
+            setupLibraryBreadCrumbsForAsset(projectInfo,
+                                            path);
+        }
+    }
+
+    public void projectDeleted(@Observes final DeleteProjectEvent deleteProjectEvent) {
+        if (placeManager.getStatus(LIBRARY_PERSPECTIVE).equals(PlaceStatus.OPEN)) {
+            final Project activeProject = projectContext.getActiveProject();
+
+            if (deleteProjectEvent.getProject().equals(activeProject)) {
+                goToLibrary();
+                notificationEvent.fire(new NotificationEvent(ts.getTranslation(LibraryConstants.ProjectDeleted),
+                                                             NotificationEvent.NotificationType.DEFAULT));
+            }
+        }
     }
 
     public void assetSelected(@Observes final AssetDetailEvent assetDetails) {

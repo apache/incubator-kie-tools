@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.library.client.util;
 
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
+import org.guvnor.common.services.project.events.DeleteProjectEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
@@ -48,6 +49,7 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.ConditionalPlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.mvp.impl.PathPlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.PanelDefinition;
 import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 
@@ -100,6 +102,9 @@ public class LibraryPlacesTest {
     @Mock
     private ExamplesUtils examplesUtils;
 
+    @Mock
+    private Event<NotificationEvent> notificationEvent;
+
     private LibraryPlaces libraryPlaces;
 
     private OrganizationalUnit activeOrganizationalUnit;
@@ -135,7 +140,8 @@ public class LibraryPlacesTest {
                 docks,
                 libraryPreferences,
                 projectContextChangeEvent,
-                examplesUtils));
+                examplesUtils,
+                notificationEvent));
 
         activeOrganizationalUnit = mock(OrganizationalUnit.class);
         activeRepository = mock(Repository.class);
@@ -320,5 +326,36 @@ public class LibraryPlacesTest {
         verify(projectDetailEvent).fire(any(ProjectDetailEvent.class));
         verify(projectContextChangeEvent).fire(any(ProjectContextChangeEvent.class));
         verify(libraryPlaces).setupLibraryBreadCrumbsForProject(projectInfo);
+    }
+
+    @Test
+    public void projectDeletedRedirectsToLibraryWhenItIsOpenedTest() {
+        final Project activeProject = mock(Project.class);
+        final DeleteProjectEvent deleteProjectEvent = mock(DeleteProjectEvent.class);
+
+        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        doReturn(activeProject).when(projectContext).getActiveProject();
+        doReturn(activeProject).when(deleteProjectEvent).getProject();
+
+        libraryPlaces.projectDeleted(deleteProjectEvent);
+
+        verify(libraryPlaces).goToLibrary();
+        verify(notificationEvent).fire(any());
+    }
+
+    @Test
+    public void projectDeletedDoesNotRedirectToLibraryWhenItIsNotOpenedTest() {
+        final Project activeProject = mock(Project.class);
+        final Project deletedProject = mock(Project.class);
+        final DeleteProjectEvent deleteProjectEvent = mock(DeleteProjectEvent.class);
+
+        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
+        doReturn(activeProject).when(projectContext).getActiveProject();
+        doReturn(deletedProject).when(deleteProjectEvent).getProject();
+
+        libraryPlaces.projectDeleted(deleteProjectEvent);
+
+        verify(libraryPlaces, never()).goToLibrary();
+        verify(notificationEvent, never()).fire(any());
     }
 }
