@@ -236,7 +236,7 @@ public class WiresShapeControlHandleListTest
         tested.show();
         verify(controlHandleList).showOn(any(Group.class));
         verify(controlHandleList, never()).hide();
-        verify(controls).show();
+        verify(controls, never()).show();
         verify(controls, never()).hide();
     }
 
@@ -266,7 +266,7 @@ public class WiresShapeControlHandleListTest
 
         verify(controlHandleList).showOn(any(Group.class));
         verify(controlHandleList, never()).hide();
-        verify(controls, times(2)).show();
+        verify(controls, never()).show();
         verify(controls, never()).hide();
     }
 
