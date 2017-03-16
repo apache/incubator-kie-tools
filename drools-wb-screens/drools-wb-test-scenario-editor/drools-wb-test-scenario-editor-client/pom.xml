@@ -137,6 +137,12 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-testing-utils</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- GWT and GWT Extensions -->
     <dependency>
       <groupId>com.google.gwt</groupId>

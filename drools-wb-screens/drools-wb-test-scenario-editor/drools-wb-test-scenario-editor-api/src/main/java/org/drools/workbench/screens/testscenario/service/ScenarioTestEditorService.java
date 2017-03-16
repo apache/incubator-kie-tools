@@ -48,9 +48,10 @@ public interface ScenarioTestEditorService
     public static final String TEST_SCENARIO_EDITOR_SETTINGS = "test-scenario-editor-settings";
     public static final String TEST_SCENARIO_EDITOR_MAX_RULE_FIRINGS = "max-rule-firings";
 
-    TestScenarioModelContent loadContent( Path path );
+    TestScenarioModelContent loadContent( final Path path );
 
-    TestScenarioResult runScenario(Path path,
-                                   Scenario scenario);
+    TestScenarioResult runScenario(final String userName,
+                                   final Path path,
+                                   final Scenario scenario);
 
 }

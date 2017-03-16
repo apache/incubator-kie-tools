@@ -16,9 +16,12 @@
 
 package org.drools.workbench.screens.testscenario.client;
 
+import java.lang.annotation.Annotation;
+import java.util.Collections;
 import java.util.HashSet;
 import javax.enterprise.event.Event;
 
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.imports.HasImports;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.screens.testscenario.client.type.TestScenarioResourceType;
@@ -32,6 +35,7 @@ import org.guvnor.common.services.shared.test.TestService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,53 +45,82 @@ import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOr
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditor;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
+import org.uberfire.ext.editor.commons.client.resources.i18n.CommonConstants;
+import org.uberfire.mocks.CallerMock;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(GwtMockitoTestRunner.class)
 public class ScenarioEditorPresenterTest {
 
-    @Mock private KieEditorWrapperView    kieView;
-    @Mock private ScenarioEditorView      view;
-    @Mock private VersionRecordManager    versionRecordManager;
-    @Mock private OverviewWidgetPresenter overviewWidget;
-    @Mock private MultiPageEditor         multiPage;
-    @Mock private ImportsWidgetPresenter importsWidget;
+    @Mock
+    CommonConstants commonConstants;
 
-    private ScenarioTestEditorServiceCallerMock service;
+    @Captor
+    private ArgumentCaptor<Scenario> scenarioArgumentCaptor;
 
-    private ScenarioEditorPresenter      editor;
+    @Mock
+    private KieEditorWrapperView kieView;
+
+    @Mock
+    private ScenarioEditorView view;
+
+    @Mock
+    private VersionRecordManager versionRecordManager;
+
+    @Mock
+    private OverviewWidgetPresenter overviewWidget;
+
+    @Mock
+    private MultiPageEditor multiPage;
+
+    @Mock
+    private ImportsWidgetPresenter importsWidget;
+
+    @Mock
+    private User user;
+
+    @Mock
+    private ScenarioTestEditorService service;
+
+    @Mock
+    private TestService testService;
+
+    private ScenarioEditorPresenter editor;
     private ScenarioEditorView.Presenter presenter;
-    private Scenario                     scenario;
-
+    private Scenario scenario;
     private Overview overview;
     private Scenario scenarioRunResult = null;
 
     @Before
     public void setUp() throws Exception {
 
-        AsyncPackageDataModelOracleFactory modelOracleFactory = mock(AsyncPackageDataModelOracleFactory.class);
-        service = new ScenarioTestEditorServiceCallerMock();
+        final AsyncPackageDataModelOracleFactory modelOracleFactory = mock(AsyncPackageDataModelOracleFactory.class);
+
         editor = new ScenarioEditorPresenter(view,
+                                             user,
                                              importsWidget,
-                                             service,
-                                             new TestServiceCallerMock(),
+                                             new CallerMock<>(service),
+                                             new CallerMock<>(testService),
                                              new TestScenarioResourceType(),
                                              modelOracleFactory) {
             {
                 kieView = ScenarioEditorPresenterTest.this.kieView;
                 versionRecordManager = ScenarioEditorPresenterTest.this.versionRecordManager;
                 overviewWidget = ScenarioEditorPresenterTest.this.overviewWidget;
-
+                notification = makeNotificationEvent();
             }
 
             protected void makeMenuBar() {
@@ -100,11 +133,26 @@ public class ScenarioEditorPresenterTest {
         scenario = new Scenario();
         overview = new Overview();
 
-        AsyncPackageDataModelOracle dmo = mock(AsyncPackageDataModelOracle.class);
+        when(user.getIdentifier()).thenReturn("userName");
+
+        final TestScenarioModelContent testScenarioModelContent = new TestScenarioModelContent(scenario,
+                                                                                               overview,
+                                                                                               "org.test",
+                                                                                               new PackageDataModelOracleBaselinePayload());
+
+        when(service.loadContent(any(Path.class))).thenReturn(testScenarioModelContent);
+
+        final TestScenarioResult result = new TestScenarioResult(scenarioRunResult,
+                                                                 Collections.EMPTY_SET);
+        when(service.runScenario(eq("userName"),
+                                 any(Path.class),
+                                 eq(scenario))).thenReturn(result);
+
+        final AsyncPackageDataModelOracle dmo = mock(AsyncPackageDataModelOracle.class);
         when(modelOracleFactory.makeAsyncPackageDataModelOracle(any(Path.class),
                                                                 any(HasImports.class),
                                                                 any(PackageDataModelOracleBaselinePayload.class))
-            ).thenReturn(dmo);
+        ).thenReturn(dmo);
     }
 
     @Test
@@ -114,12 +162,14 @@ public class ScenarioEditorPresenterTest {
 
     @Test
     public void testRunScenarioAndSave() throws Exception {
-        ObservablePath path = mock(ObservablePath.class);
-        PlaceRequest placeRequest = mock(PlaceRequest.class);
+
+        final ObservablePath path = mock(ObservablePath.class);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
         when(versionRecordManager.getCurrentPath()).thenReturn(path);
 
-        editor.onStartup(path, placeRequest);
+        editor.onStartup(path,
+                         placeRequest);
 
         reset(view);
         reset(importsWidget);
@@ -135,148 +185,74 @@ public class ScenarioEditorPresenterTest {
 
         editor.save("Commit message");
 
-        assertEquals(scenarioRunResult, service.savedScenario);
+        verify(service).save(any(Path.class),
+                             scenarioArgumentCaptor.capture(),
+                             any(Metadata.class),
+                             anyString());
 
+        assertEquals(scenarioRunResult,
+                     scenarioArgumentCaptor.getValue());
     }
 
     @Test
     public void testEmptyScenario() throws Exception {
 
-        ObservablePath path = mock(ObservablePath.class);
-        PlaceRequest placeRequest = mock(PlaceRequest.class);
+        final ObservablePath path = mock(ObservablePath.class);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
         when(versionRecordManager.getCurrentPath()).thenReturn(path);
 
-        editor.onStartup(path, placeRequest);
+        editor.onStartup(path,
+                         placeRequest);
 
-        verify(view).renderFixtures(eq(path), any(AsyncPackageDataModelOracle.class), eq(scenario));
-
+        verify(view).renderFixtures(eq(path),
+                                    any(AsyncPackageDataModelOracle.class),
+                                    eq(scenario));
     }
 
     @Test
     public void testRunScenario() throws Exception {
-        ObservablePath path = mock(ObservablePath.class);
-        PlaceRequest placeRequest = mock(PlaceRequest.class);
+        final ObservablePath path = mock(ObservablePath.class);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
         when(versionRecordManager.getCurrentPath()).thenReturn(path);
 
-        editor.onStartup(path, placeRequest);
+        editor.onStartup(path,
+                         placeRequest);
 
-        verify(view).initKSessionSelector(eq(path), any(Scenario.class));
+        verify(view).initKSessionSelector(eq(path),
+                                          any(Scenario.class));
 
         reset(view);
 
         presenter.onRunScenario();
 
-        InOrder inOrder = inOrder( view );
-        inOrder.verify( view )
+        InOrder inOrder = inOrder(view);
+        inOrder.verify(view)
                 .showResults();
-        inOrder.verify( view )
-                .showAuditView( anySet() );
-        inOrder.verify( view )
-                .initKSessionSelector( eq( path ),
-                                       any( Scenario.class ) );
-
+        inOrder.verify(view)
+                .showAuditView(anySet());
+        inOrder.verify(view)
+                .initKSessionSelector(eq(path),
+                                      any(Scenario.class));
     }
 
-    class ScenarioTestEditorServiceCallerMock
-            implements Caller<ScenarioTestEditorService> {
-
-        RemoteCallback remoteCallback;
-
-        ScenarioTestEditorService service = new ScenarioTestEditorServiceMock();
-
-        Scenario savedScenario = null;
-
-        @Override public ScenarioTestEditorService call() {
-            return service;
-        }
-
-        @Override public ScenarioTestEditorService call(RemoteCallback<?> remoteCallback) {
-            return call(remoteCallback, null);
-        }
-
-        @Override public ScenarioTestEditorService call(RemoteCallback<?> remoteCallback, ErrorCallback<?> errorCallback) {
-            this.remoteCallback = remoteCallback;
-            return service;
-        }
-
-        private class ScenarioTestEditorServiceMock implements ScenarioTestEditorService {
-
-            @Override public TestScenarioModelContent loadContent(Path path) {
-                TestScenarioModelContent testScenarioModelContent = new TestScenarioModelContent(scenario, overview, "org.test", new PackageDataModelOracleBaselinePayload());
-                remoteCallback.callback(testScenarioModelContent);
-                return testScenarioModelContent;
+    private Event<NotificationEvent> makeNotificationEvent() {
+        return new Event<NotificationEvent>() {
+            @Override
+            public void fire(NotificationEvent notificationEvent) {
             }
 
-            @Override public TestScenarioResult runScenario(Path path, Scenario scenario) {
-                TestScenarioResult result = new TestScenarioResult(scenarioRunResult,
-                                                                   new HashSet<String>());
-                remoteCallback.callback(result);
+            @Override
+            public Event<NotificationEvent> select(Annotation... annotations) {
                 return null;
             }
 
-            @Override public Path copy(Path path, String s, String s1) {
+            @Override
+            public <U extends NotificationEvent> Event<U> select(Class<U> aClass,
+                                                                 Annotation... annotations) {
                 return null;
             }
-
-            @Override public Path copy(Path path, String s, Path targetDirectory, String s1) {
-                return null;
-            }
-
-            @Override public Path create(Path path, String s, Scenario scenario, String s1) {
-                return null;
-            }
-
-            @Override public void delete(Path path, String s) {
-
-            }
-
-            @Override public Scenario load(Path path) {
-                return null;
-            }
-
-            @Override public Path rename(Path path, String s, String s1) {
-                return null;
-            }
-
-            @Override public Path save(Path path, Scenario content, Metadata metadata, String comment) {
-
-                savedScenario = content;
-
-                return null;
-            }
-        }
-    }
-
-    class TestServiceCallerMock
-            implements Caller<TestService> {
-
-        RemoteCallback remoteCallback;
-
-        TestServiceMock service = new TestServiceMock();
-
-        @Override public TestService call() {
-            return null;
-        }
-
-        @Override public TestService call(RemoteCallback<?> remoteCallback) {
-            return call(remoteCallback, null);
-        }
-
-        @Override public TestService call(RemoteCallback<?> remoteCallback, ErrorCallback<?> errorCallback) {
-            this.remoteCallback = remoteCallback;
-            return service;
-        }
-
-        private class TestServiceMock implements TestService {
-
-            @Override public void runAllTests(Path path) {
-            }
-
-            @Override public void runAllTests(Path path, Event<TestResultMessage> customTestResultEvent) {
-
-            }
-        }
+        };
     }
 }

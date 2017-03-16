@@ -31,6 +31,7 @@ import org.guvnor.common.services.project.model.Package;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.datamodel.backend.server.service.DataModelService;
+import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -66,147 +67,192 @@ public class ScenarioTestEditorServiceImplTest {
 
     @Test
     public void runScenarioWithoutDependentImports() throws Exception {
-        when( dataModelService.getDataModel( path ) ).thenReturn( modelOracle );
-        when( scenario.getImports() ).thenReturn( new Imports() );
+        when(dataModelService.getDataModel(path)).thenReturn(modelOracle);
+        when(scenario.getImports()).thenReturn(new Imports());
 
-        testEditorService.addDependentImportsToScenario( scenario, path );
+        testEditorService.addDependentImportsToScenario(scenario,
+                                                        path);
 
-        assertEquals( 0, scenario.getImports().getImports().size() );
+        assertEquals(0,
+                     scenario.getImports().getImports().size());
     }
 
     @Test
     public void runScenarioWithDependentImports() throws Exception {
         final ArrayList<Fixture> fixtures = new ArrayList<Fixture>() {{
-            add( factData( "java.sql.ClientInfoStatus" ) );
+            add(factData("java.sql.ClientInfoStatus"));
         }};
 
         final Map<String, ModelField[]> modelFields = new HashMap<String, ModelField[]>() {{
-            put( "java.sql.ClientInfoStatus", new ModelField[]{ modelField( "java.sql.JDBCType" ) } );
+            put("java.sql.ClientInfoStatus",
+                new ModelField[]{modelField("java.sql.JDBCType")});
         }};
 
-        when( scenario.getFixtures() ).thenReturn( fixtures );
-        when( dataModelService.getDataModel( path ) ).thenReturn( modelOracle );
-        when( modelOracle.getProjectModelFields() ).thenReturn( modelFields );
-        when( scenario.getImports() ).thenReturn( new Imports() );
+        when(scenario.getFixtures()).thenReturn(fixtures);
+        when(dataModelService.getDataModel(path)).thenReturn(modelOracle);
+        when(modelOracle.getProjectModelFields()).thenReturn(modelFields);
+        when(scenario.getImports()).thenReturn(new Imports());
 
-        testEditorService.addDependentImportsToScenario( scenario, path );
+        testEditorService.addDependentImportsToScenario(scenario,
+                                                        path);
 
-        assertEquals( 2, scenario.getImports().getImports().size() );
+        assertEquals(2,
+                     scenario.getImports().getImports().size());
     }
 
     @Test
     public void runScenarioWithDependentImportsAndWithoutFactData() throws Exception {
         final ArrayList<Fixture> fixtures = new ArrayList<Fixture>();
         final Imports imports = new Imports() {{
-            addImport( new Import( "java.sql.ClientInfoStatus" ) );
+            addImport(new Import("java.sql.ClientInfoStatus"));
         }};
 
         final Map<String, ModelField[]> modelFields = new HashMap<String, ModelField[]>() {{
-            put( "java.sql.ClientInfoStatus", new ModelField[]{ modelField( "java.sql.JDBCType" ) } );
+            put("java.sql.ClientInfoStatus",
+                new ModelField[]{modelField("java.sql.JDBCType")});
         }};
 
-        when( scenario.getFixtures() ).thenReturn( fixtures );
-        when( dataModelService.getDataModel( path ) ).thenReturn( modelOracle );
-        when( modelOracle.getProjectModelFields() ).thenReturn( modelFields );
-        when( scenario.getImports() ).thenReturn( imports );
+        when(scenario.getFixtures()).thenReturn(fixtures);
+        when(dataModelService.getDataModel(path)).thenReturn(modelOracle);
+        when(modelOracle.getProjectModelFields()).thenReturn(modelFields);
+        when(scenario.getImports()).thenReturn(imports);
 
-        testEditorService.addDependentImportsToScenario( scenario, path );
+        testEditorService.addDependentImportsToScenario(scenario,
+                                                        path);
 
-        assertEquals( 2, scenario.getImports().getImports().size() );
+        assertEquals(2,
+                     scenario.getImports().getImports().size());
     }
 
     @Test
     public void checkDependentImportsWithPrimitiveTypes() throws Exception {
         final ArrayList<Fixture> fixtures = new ArrayList<>();
         final Imports imports = new Imports() {{
-            addImport( new Import( "int" ) );
+            addImport(new Import("int"));
         }};
 
         final Map<String, ModelField[]> modelFields = new HashMap<String, ModelField[]>() {{
-            put( "java.sql.ClientInfoStatus",
-                 new ModelField[]{ modelField( "java.sql.JDBCType" ) } );
+            put("java.sql.ClientInfoStatus",
+                new ModelField[]{modelField("java.sql.JDBCType")});
         }};
 
-        when( scenario.getFixtures() ).thenReturn( fixtures );
-        when( dataModelService.getDataModel( path ) ).thenReturn( modelOracle );
-        when( modelOracle.getProjectModelFields() ).thenReturn( modelFields );
-        when( scenario.getImports() ).thenCallRealMethod();
-        doCallRealMethod().when( scenario ).setImports( any( Imports.class ) );
+        when(scenario.getFixtures()).thenReturn(fixtures);
+        when(dataModelService.getDataModel(path)).thenReturn(modelOracle);
+        when(modelOracle.getProjectModelFields()).thenReturn(modelFields);
+        when(scenario.getImports()).thenCallRealMethod();
+        doCallRealMethod().when(scenario).setImports(any(Imports.class));
 
-        scenario.setImports( imports );
+        scenario.setImports(imports);
 
-        testEditorService.addDependentImportsToScenario( scenario,
-                                                         path );
+        testEditorService.addDependentImportsToScenario(scenario,
+                                                        path);
 
-        assertEquals( 1,
-                      scenario.getImports().getImports().size() );
+        assertEquals(1,
+                     scenario.getImports().getImports().size());
     }
 
     @Test
     public void checkSingleScenarioMultipleExecution() throws Exception {
         final ArrayList<Fixture> fixtures = new ArrayList<>();
         final Imports imports = new Imports() {{
-            addImport( new Import( "java.sql.ClientInfoStatus" ) );
+            addImport(new Import("java.sql.ClientInfoStatus"));
         }};
 
         final Map<String, ModelField[]> modelFields = new HashMap<String, ModelField[]>() {{
-            put( "java.sql.ClientInfoStatus",
-                 new ModelField[]{ modelField( "java.sql.JDBCType" ) } );
+            put("java.sql.ClientInfoStatus",
+                new ModelField[]{modelField("java.sql.JDBCType")});
         }};
 
-        when( scenario.getFixtures() ).thenReturn( fixtures );
-        when( dataModelService.getDataModel( path ) ).thenReturn( modelOracle );
-        when( modelOracle.getProjectModelFields() ).thenReturn( modelFields );
-        when( scenario.getImports() ).thenCallRealMethod();
-        doCallRealMethod().when( scenario ).setImports( any( Imports.class ) );
+        when(scenario.getFixtures()).thenReturn(fixtures);
+        when(dataModelService.getDataModel(path)).thenReturn(modelOracle);
+        when(modelOracle.getProjectModelFields()).thenReturn(modelFields);
+        when(scenario.getImports()).thenCallRealMethod();
+        doCallRealMethod().when(scenario).setImports(any(Imports.class));
 
-        scenario.setImports( imports );
+        scenario.setImports(imports);
 
-        testEditorService.runScenario( path,
-                                       scenario );
+        testEditorService.runScenario("userName",
+                                      path,
+                                      scenario);
 
-        assertEquals( 1,
-                      scenario.getImports().getImports().size() );
+        assertEquals(1,
+                     scenario.getImports().getImports().size());
 
-        testEditorService.runScenario( path,
-                                       scenario);
+        testEditorService.runScenario("userName",
+                                      path,
+                                      scenario);
 
-        assertEquals( 1,
-                      scenario.getImports().getImports().size() );
+        assertEquals(1,
+                     scenario.getImports().getImports().size());
     }
 
     @Test
     public void loadBrokenScenario() throws
-                                     Exception {
-        final Package pgk = mock( Package.class );
-        when( pgk.getPackageName() ).thenReturn( "org.test" );
-        when( projectService.resolvePackage( path ) ).thenReturn( pgk );
+            Exception {
+        final Package pgk = mock(Package.class);
+        when(pgk.getPackageName()).thenReturn("org.test");
+        when(projectService.resolvePackage(path)).thenReturn(pgk);
 
-        final Scenario load = testEditorService.load( path );
+        final Scenario load = testEditorService.load(path);
 
-        assertNotNull( load );
-        assertEquals( "org.test",
-                      load.getPackageName() );
-        assertNotNull( load.getImports() );
+        assertNotNull(load);
+        assertEquals("org.test",
+                     load.getPackageName());
+        assertNotNull(load.getImports());
     }
 
     @Test
     public void loadBrokenScenarioNullPackage() throws
-                                                Exception {
-        when( projectService.resolvePackage( path ) ).thenReturn( null );
+            Exception {
+        when(projectService.resolvePackage(path)).thenReturn(null);
 
-        final Scenario load = testEditorService.load( path );
+        final Scenario load = testEditorService.load(path);
 
-        assertNotNull( load );
-        assertNull( load.getPackageName() );
-        assertNotNull( load.getImports() );
+        assertNotNull(load);
+        assertNull(load.getPackageName());
+        assertNotNull(load.getImports());
     }
 
-    private FactData factData( final String type ) {
-        return new FactData( type, "", true );
+    @Test
+    public void checkScenarioRunnerIsRan() throws Exception {
+        final Imports imports = new Imports() {{
+            addImport(new Import("java.sql.ClientInfoStatus"));
+        }};
+
+        when(dataModelService.getDataModel(path)).thenReturn(modelOracle);
+        when(scenario.getImports()).thenCallRealMethod();
+        doCallRealMethod().when(scenario).setImports(any(Imports.class));
+
+        scenario.setImports(imports);
+
+        testEditorService.runScenario("userName",
+                                      path,
+                                      scenario);
+
+        KieProject project = mock(KieProject.class);
+        when(projectService.resolveProject(path)).thenReturn(project);
+
+        testEditorService.runScenario("userName",
+                                      path,
+                                      scenario);
+
+        verify(scenarioRunner).run("userName",
+                                   scenario,
+                                   project);
     }
 
-    private ModelField modelField( final String className ) {
-        return new ModelField( null, className, null, null, null, null );
+    private FactData factData(final String type) {
+        return new FactData(type,
+                            "",
+                            true);
+    }
+
+    private ModelField modelField(final String className) {
+        return new ModelField(null,
+                              className,
+                              null,
+                              null,
+                              null,
+                              null);
     }
 }

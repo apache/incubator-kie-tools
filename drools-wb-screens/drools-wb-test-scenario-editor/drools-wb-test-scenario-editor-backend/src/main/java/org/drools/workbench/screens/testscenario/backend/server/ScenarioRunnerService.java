@@ -54,12 +54,11 @@ import static org.drools.workbench.screens.testscenario.backend.server.ScenarioU
 public class ScenarioRunnerService
         implements TestService {
 
-    public static final String TEST_SCENARIO_SERVICE_ID = "test-scenario-service";
-    protected KieProjectService        projectService;
-    private   ScenarioLoader           scenarioLoader;
-    private   SessionService           sessionService;
-    private   Event<TestResultMessage> defaultTestResultMessageEvent;
-    private   ConfigurationService     configurationService;
+    protected KieProjectService projectService;
+    private ScenarioLoader scenarioLoader;
+    private SessionService sessionService;
+    private Event<TestResultMessage> defaultTestResultMessageEvent;
+    private ConfigurationService configurationService;
 
     public ScenarioRunnerService() {
     }
@@ -77,54 +76,67 @@ public class ScenarioRunnerService
         this.scenarioLoader = scenarioLoader;
     }
 
-    public TestScenarioResult run(final Scenario scenario,
+    public TestScenarioResult run(final String identifier,
+                                  final Scenario scenario,
                                   final KieProject project) {
         try {
 
-            HashMap<String, KieSession> ksessions = new HashMap<String, KieSession>();
-            String ksessionName = getKSessionName(scenario.getKSessions());
-            ksessions.put(ksessionName, loadKSession(project, ksessionName));
+            final HashMap<String, KieSession> ksessions = new HashMap<String, KieSession>();
+            final String ksessionName = getKSessionName(scenario.getKSessions());
+            ksessions.put(ksessionName,
+                          loadKSession(project,
+                                       ksessionName));
 
-            AuditLogger auditLogger = new AuditLogger(ksessions);
+            final AuditLogger auditLogger = new AuditLogger(ksessions);
 
-            ScenarioRunner4JUnit scenarioRunner = new ScenarioRunner4JUnit(
+            final ScenarioRunner4JUnit scenarioRunner = new ScenarioRunner4JUnit(
                     scenario,
                     ksessions,
                     getMaxRuleFirings());
 
-            run(scenarioRunner, defaultTestResultMessageEvent);
+            run(identifier,
+                scenarioRunner,
+                defaultTestResultMessageEvent);
 
-            return new TestScenarioResult(scenario, auditLogger.getLog());
-
+            return new TestScenarioResult(scenario,
+                                          auditLogger.getLog());
         } catch (InitializationError initializationError) {
             throw new GenericPortableException(initializationError.getMessage());
         }
     }
 
     @Override
-    public void runAllTests(Path path) {
-        runAllTests(path, defaultTestResultMessageEvent);
+    public void runAllTests(final String indentifier,
+                            final Path path) {
+        runAllTests(indentifier,
+                    path,
+                    defaultTestResultMessageEvent);
     }
 
     @Override
-    public void runAllTests(Path path, Event<TestResultMessage> customTestResultEvent) {
+    public void runAllTests(final String identifier,
+                            final Path path,
+                            final Event<TestResultMessage> customTestResultEvent) {
         try {
-            List<Scenario> scenarios = scenarioLoader.loadScenarios(path);
+            final List<Scenario> scenarios = scenarioLoader.loadScenarios(path);
 
             ScenarioRunner4JUnit scenarioRunner = new ScenarioRunner4JUnit(
                     scenarios,
-                    getKSessions(path, scenarios),
+                    getKSessions(path,
+                                 scenarios),
                     getMaxRuleFirings());
 
-            run(scenarioRunner, customTestResultEvent);
-
+            run(identifier,
+                scenarioRunner,
+                customTestResultEvent);
         } catch (Exception e) {
             throw ExceptionUtilities.handleException(e);
         }
     }
 
-    private void run(final ScenarioRunner4JUnit scenarioRunner,
-                     Event<TestResultMessage> testResultMessageEvent) {
+    private void run(final String identifier,
+                     final ScenarioRunner4JUnit scenarioRunner,
+                     final Event<TestResultMessage> testResultMessageEvent) {
 
         final List<org.guvnor.common.services.shared.test.Failure> failures = new ArrayList<org.guvnor.common.services.shared.test.Failure>();
 
@@ -143,7 +155,7 @@ public class ScenarioRunnerService
 
         testResultMessageEvent.fire(
                 new TestResultMessage(
-                        TEST_SCENARIO_SERVICE_ID,
+                        identifier,
                         result.getRunCount(),
                         result.getRunTime(),
                         failures));
@@ -163,22 +175,27 @@ public class ScenarioRunnerService
         return 0;
     }
 
-    private Map<String, KieSession> getKSessions(Path path, List<Scenario> scenarios) {
+    private Map<String, KieSession> getKSessions(Path path,
+                                                 List<Scenario> scenarios) {
         Map<String, KieSession> ksessions = new HashMap<String, KieSession>();
         for (Scenario scenario : scenarios) {
             String ksessionName = getKSessionName(scenario.getKSessions());
-            ksessions.put(ksessionName, loadKSession(projectService.resolveProject(path), ksessionName));
+            ksessions.put(ksessionName,
+                          loadKSession(projectService.resolveProject(path),
+                                       ksessionName));
         }
         return ksessions;
     }
 
-    private KieSession loadKSession(KieProject project, String ksessionName) {
+    private KieSession loadKSession(KieProject project,
+                                    String ksessionName) {
         KieSession ksession = null;
         try {
             if (ksessionName == null || ksessionName.equals("defaultKieSession")) {
                 ksession = sessionService.newDefaultKieSessionWithPseudoClock(project);
             } else {
-                ksession = sessionService.newKieSession(project, ksessionName);
+                ksession = sessionService.newKieSession(project,
+                                                        ksessionName);
             }
         } catch (Exception e) {
             // If for one reason or another we can not load the ksession. Return null
@@ -186,7 +203,5 @@ public class ScenarioRunnerService
         }
 
         return ksession;
-
     }
-
 }

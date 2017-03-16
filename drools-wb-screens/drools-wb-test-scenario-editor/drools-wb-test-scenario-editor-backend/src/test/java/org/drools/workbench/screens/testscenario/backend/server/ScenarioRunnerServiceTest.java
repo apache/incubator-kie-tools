@@ -43,17 +43,13 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ScenarioRunnerServiceTest {
 
-    private ScenarioRunnerService service;
-
-    @Mock
-    private KieSession defaultPseudoClockKieSession;
-
-    @Mock
-    private SessionService sessionService;
-
     @Mock
     ScenarioLoader scenarioLoader;
-
+    private ScenarioRunnerService service;
+    @Mock
+    private KieSession defaultPseudoClockKieSession;
+    @Mock
+    private SessionService sessionService;
     private TestResultMessageEventMock defaultTestResultMessageEvent;
 
     @Before
@@ -70,20 +66,22 @@ public class ScenarioRunnerServiceTest {
                                             scenarioLoader);
 
         when(sessionService.newDefaultKieSessionWithPseudoClock(any(KieProject.class))).thenReturn(defaultPseudoClockKieSession);
-
     }
 
     // TODO: Make sure the ksessions get loaded
 
     @Test
     public void testRunEmptyScenario() throws Exception {
-        TestScenarioResult result = service.run(makeScenario("test.scenario"), new KieProject());
+        TestScenarioResult result = service.run("userName",
+                                                makeScenario("test.scenario"),
+                                                new KieProject());
 
         assertNotNull(result);
 
         ArgumentCaptor<TestResultMessage> argumentCaptor = ArgumentCaptor.forClass(TestResultMessage.class);
         verify(defaultTestResultMessageEvent).fire(argumentCaptor.capture());
-        assertEquals(ScenarioRunnerService.TEST_SCENARIO_SERVICE_ID, argumentCaptor.getValue().getIdentifier());
+        assertEquals("userName",
+                     argumentCaptor.getValue().getIdentifier());
     }
 
     @Test
@@ -97,11 +95,13 @@ public class ScenarioRunnerServiceTest {
         scenarios.add(makeScenario("test3.scenario"));
         when(scenarioLoader.loadScenarios(path)).thenReturn(scenarios);
 
-        service.runAllTests(path);
+        service.runAllTests("userName",
+                            path);
 
         ArgumentCaptor<TestResultMessage> argumentCaptor = ArgumentCaptor.forClass(TestResultMessage.class);
         verify(defaultTestResultMessageEvent).fire(argumentCaptor.capture());
-        assertEquals(ScenarioRunnerService.TEST_SCENARIO_SERVICE_ID, argumentCaptor.getValue().getIdentifier());
+        assertEquals("userName",
+                     argumentCaptor.getValue().getIdentifier());
     }
 
     private Scenario makeScenario(String name) {
@@ -113,15 +113,19 @@ public class ScenarioRunnerServiceTest {
     class TestResultMessageEventMock
             implements Event<TestResultMessage> {
 
-        @Override public void fire(TestResultMessage testResultMessage) {
+        @Override
+        public void fire(TestResultMessage testResultMessage) {
 
         }
 
-        @Override public Event<TestResultMessage> select(Annotation... annotations) {
+        @Override
+        public Event<TestResultMessage> select(Annotation... annotations) {
             return null;
         }
 
-        @Override public <U extends TestResultMessage> Event<U> select(Class<U> aClass, Annotation... annotations) {
+        @Override
+        public <U extends TestResultMessage> Event<U> select(Class<U> aClass,
+                                                             Annotation... annotations) {
             return null;
         }
     }

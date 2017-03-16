@@ -19,6 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
 import org.guvnor.common.services.shared.test.Failure;
@@ -46,6 +47,7 @@ public class TestRuntimeReportingService {
     }
 
     public void addBuildMessages(final @Observes TestResultMessage message) {
+
         if (message.getIdentifier().equals(identity.getIdentifier())) {
             dataProvider.getList().clear();
 

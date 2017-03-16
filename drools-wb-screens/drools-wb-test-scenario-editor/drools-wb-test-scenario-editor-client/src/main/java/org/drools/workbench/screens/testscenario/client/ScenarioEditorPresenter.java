@@ -29,6 +29,7 @@ import org.drools.workbench.screens.testscenario.service.ScenarioTestEditorServi
 import org.guvnor.common.services.shared.test.TestService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracleFactory;
 import org.kie.workbench.common.widgets.configresource.client.widget.bound.ImportsWidgetPresenter;
@@ -53,17 +54,18 @@ public class ScenarioEditorPresenter
         implements ScenarioEditorView.Presenter {
 
     private final TestScenarioResourceType type;
-    private final ScenarioEditorView       view;
+    private final ScenarioEditorView view;
     private final Caller<ScenarioTestEditorService> service;
     private final AsyncPackageDataModelOracleFactory oracleFactory;
-    private final Caller<TestService>                testService;
-    private final ImportsWidgetPresenter             importsWidget;
-
-    private Scenario                    scenario;
+    private final Caller<TestService> testService;
+    private final ImportsWidgetPresenter importsWidget;
+    private User user;
+    private Scenario scenario;
     private AsyncPackageDataModelOracle dmo;
 
     @Inject
     public ScenarioEditorPresenter(final ScenarioEditorView view,
+                                   final User user,
                                    final ImportsWidgetPresenter importsWidget,
                                    final Caller<ScenarioTestEditorService> service,
                                    final Caller<TestService> testService,
@@ -71,6 +73,7 @@ public class ScenarioEditorPresenter
                                    final AsyncPackageDataModelOracleFactory oracleFactory) {
         super(view);
         this.view = view;
+        this.user = user;
         this.importsWidget = importsWidget;
         this.service = service;
         this.testService = testService;
@@ -129,20 +132,21 @@ public class ScenarioEditorPresenter
     @Override
     public void onRunScenario() {
         service.call(new RemoteCallback<TestScenarioResult>() {
-            @Override
-            public void callback(TestScenarioResult result) {
+                         @Override
+                         public void callback(TestScenarioResult result) {
 
-                scenario = result.getScenario();
+                             scenario = result.getScenario();
 
-                view.showResults();
+                             view.showResults();
 
-                view.showAuditView(result.getLog());
+                             view.showAuditView(result.getLog());
 
-                redraw();
-
-            }
-        }, new HasBusyIndicatorDefaultErrorCallback(view)).runScenario(versionRecordManager.getCurrentPath(),
-                                                                       scenario);
+                             redraw();
+                         }
+                     },
+                     new HasBusyIndicatorDefaultErrorCallback(view)).runScenario(user.getIdentifier(),
+                                                                                 versionRecordManager.getCurrentPath(),
+                                                                                 scenario);
     }
 
     private void redraw() {
@@ -164,18 +168,21 @@ public class ScenarioEditorPresenter
     public void onRunAllScenarios() {
         baseView.showBusyIndicator(TestScenarioConstants.INSTANCE.BuildingAndRunningScenario());
         testService.call(new RemoteCallback<Void>() {
-                         @Override
-                         public void callback(Void v) {
-                             view.hideBusyIndicator();
-                         }
-                     },
-                     new TestRunFailedErrorCallback(view)
-                    ).runAllTests(versionRecordManager.getCurrentPath());
+                             @Override
+                             public void callback(Void v) {
+                                 view.hideBusyIndicator();
+                             }
+                         },
+                         new TestRunFailedErrorCallback(view)
+        ).runAllTests(user.getIdentifier(),
+                      versionRecordManager.getCurrentPath());
     }
 
     @Override
     public void onRedraw() {
-        view.renderFixtures(versionRecordManager.getCurrentPath(), dmo, scenario);
+        view.renderFixtures(versionRecordManager.getCurrentPath(),
+                            dmo,
+                            scenario);
     }
 
     @Override
@@ -242,5 +249,4 @@ public class ScenarioEditorPresenter
         versionRecordManager.clear();
         this.oracleFactory.destroy(dmo);
     }
-
 }
