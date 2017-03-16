@@ -39,7 +39,7 @@ import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
-import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
+import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.datamodel.backend.server.builder.util.DataEnumLoader;
 import org.kie.workbench.common.services.shared.project.KieProject;
@@ -85,7 +85,7 @@ public class EnumServiceImpl
     private EnumResourceTypeDefinition resourceTypeDefinition;
 
     @Inject
-    private LRUBuilderCache builderCache;
+    private BuildInfoService buildInfoService;
 
     @Inject
     private CommentedOptionFactory commentedOptionFactory;
@@ -259,7 +259,7 @@ public class EnumServiceImpl
                                                   final String content ) {
         try {
             final KieProject project = projectService.resolveProject( path );
-            final KieModule module = builderCache.assertBuilder( project ).getKieModuleIgnoringErrors();
+            final KieModule module = buildInfoService.getBuildInfo( project ).getKieModuleIgnoringErrors();
             final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData( module ).getClassLoader();
             final DataEnumLoader loader = new DataEnumLoader( content,
                                                               classLoader );
