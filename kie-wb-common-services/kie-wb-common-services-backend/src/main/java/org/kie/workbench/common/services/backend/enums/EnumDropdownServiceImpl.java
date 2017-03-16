@@ -28,7 +28,7 @@ import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
-import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
+import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
 import org.kie.workbench.common.services.shared.enums.EnumDropdownService;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
@@ -47,7 +47,7 @@ public class EnumDropdownServiceImpl implements EnumDropdownService {
     private static final Logger logger = LoggerFactory.getLogger( EnumDropdownServiceImpl.class );
 
     @Inject
-    private LRUBuilderCache builderCache;
+    private BuildInfoService buildInfoService;
 
     @Inject
     private KieProjectService projectService;
@@ -63,7 +63,7 @@ public class EnumDropdownServiceImpl implements EnumDropdownService {
             logger.error( "A Project could not be resolved for path '" + resource.toURI() + "'. No enums will be returned." );
             return null;
         }
-        final KieModule module = builderCache.assertBuilder( project ).getKieModuleIgnoringErrors();
+        final KieModule module = buildInfoService.getBuildInfo( project ).getKieModuleIgnoringErrors();
         if ( module == null ) {
             logger.error( "A KieModule could not be resolved for path '" + resource.toURI() + "'. No enums will be returned." );
             return null;

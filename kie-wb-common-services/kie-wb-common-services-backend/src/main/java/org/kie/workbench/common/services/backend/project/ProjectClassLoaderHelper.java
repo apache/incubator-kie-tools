@@ -22,8 +22,8 @@ import javax.inject.Named;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
-import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
-import org.kie.workbench.common.services.backend.builder.LRUProjectDependenciesClassLoaderCache;
+import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
+import org.kie.workbench.common.services.backend.builder.core.LRUProjectDependenciesClassLoaderCache;
 import org.kie.workbench.common.services.shared.project.KieProject;
 
 /**
@@ -33,7 +33,7 @@ import org.kie.workbench.common.services.shared.project.KieProject;
 public class ProjectClassLoaderHelper {
 
     @Inject
-    private LRUBuilderCache builderCache;
+    private BuildInfoService buildInfoService;
 
     @Inject
     @Named("LRUProjectDependenciesClassLoaderCache")
@@ -41,7 +41,7 @@ public class ProjectClassLoaderHelper {
 
     public ClassLoader getProjectClassLoader( KieProject project ) {
 
-        final KieModule module = builderCache.assertBuilder( project ).getKieModuleIgnoringErrors();
+        final KieModule module = buildInfoService.getBuildInfo( project ).getKieModuleIgnoringErrors();
         ClassLoader dependenciesClassLoader = dependenciesClassLoaderCache.assertDependenciesClassLoader( project );
         ClassLoader projectClassLoader;
         if ( module instanceof InternalKieModule ) {

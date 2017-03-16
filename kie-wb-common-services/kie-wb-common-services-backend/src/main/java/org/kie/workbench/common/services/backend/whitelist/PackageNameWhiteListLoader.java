@@ -25,7 +25,7 @@ import javax.inject.Named;
 
 import org.apache.commons.io.IOUtils;
 import org.guvnor.common.services.project.model.POM;
-import org.kie.workbench.common.services.backend.builder.NoBuilderFoundException;
+import org.kie.workbench.common.services.backend.builder.core.NoBuilderFoundException;
 import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -18,12 +18,16 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.function.Predicate;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.drools.workbench.models.datamodel.oracle.TypeSource;
+import org.guvnor.ala.pipeline.ConfigExecutor;
+import org.guvnor.ala.registry.PipelineRegistry;
+import org.guvnor.ala.registry.local.InMemoryPipelineRegistry;
 import org.guvnor.common.services.backend.file.FileDiscoveryService;
 import org.guvnor.common.services.backend.file.FileDiscoveryServiceImpl;
 import org.guvnor.common.services.backend.metadata.MetadataServerSideService;
@@ -36,7 +40,9 @@ import org.guvnor.common.services.project.backend.server.ProjectRepositoriesCont
 import org.guvnor.common.services.project.backend.server.ProjectRepositoryResolverImpl;
 import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
+import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.builder.service.BuildValidationHelper;
+import org.guvnor.common.services.project.builder.service.PostBuildHandler;
 import org.guvnor.common.services.project.events.NewPackageEvent;
 import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.events.RenameProjectEvent;
@@ -45,7 +51,6 @@ import org.guvnor.common.services.project.service.ProjectRepositoriesService;
 import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.common.services.shared.metadata.MetadataService;
 import org.guvnor.m2repo.backend.server.M2RepoServiceImpl;
-import org.guvnor.m2repo.service.M2RepoService;
 import org.guvnor.structure.backend.backcompat.BackwardCompatibleUtil;
 import org.guvnor.structure.backend.config.ConfigGroupMarshaller;
 import org.guvnor.structure.backend.config.ConfigurationFactoryImpl;
@@ -62,9 +67,20 @@ import org.jboss.errai.security.shared.api.Role;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.jboss.errai.security.shared.api.identity.UserImpl;
 import org.junit.Test;
-import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
-import org.kie.workbench.common.services.backend.builder.LRUPomModelCache;
-import org.kie.workbench.common.services.backend.builder.LRUProjectDependenciesClassLoaderCache;
+import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.backend.builder.ala.BuildPipelineInitializer;
+import org.kie.workbench.common.services.backend.builder.ala.BuildPipelineInvoker;
+import org.kie.workbench.common.services.backend.builder.ala.LocalBuildConfigExecutor;
+import org.kie.workbench.common.services.backend.builder.ala.LocalBuildExecConfigExecutor;
+import org.kie.workbench.common.services.backend.builder.ala.LocalProjectConfigExecutor;
+import org.kie.workbench.common.services.backend.builder.ala.LocalSourceConfigExecutor;
+import org.kie.workbench.common.services.backend.builder.core.BuildHelper;
+import org.kie.workbench.common.services.backend.builder.core.LRUBuilderCache;
+import org.kie.workbench.common.services.backend.builder.core.LRUPomModelCache;
+import org.kie.workbench.common.services.backend.builder.core.LRUProjectDependenciesClassLoaderCache;
+import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
+import org.kie.workbench.common.services.backend.builder.service.BuildServiceHelper;
+import org.kie.workbench.common.services.backend.builder.service.BuildServiceImpl;
 import org.kie.workbench.common.services.backend.dependencies.DependencyServiceImpl;
 import org.kie.workbench.common.services.backend.kmodule.KModuleContentHandler;
 import org.kie.workbench.common.services.backend.kmodule.KModuleServiceImpl;
@@ -86,6 +102,7 @@ import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.io.ConfigIOServiceProducer;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -106,8 +123,10 @@ import org.uberfire.security.impl.authz.DefaultPermissionTypeRegistry;
 import org.uberfire.security.impl.authz.DotNamedPermissionType;
 
 import static org.junit.Assert.*;
-import static org.kie.workbench.common.services.datamodel.backend.server.ProjectDataModelOracleTestUtils.assertContains;
+import static org.kie.workbench.common.services.datamodel.backend.server.ProjectDataModelOracleTestUtils.*;
+import static org.mockito.Mockito.*;
 
+@RunWith( MockitoJUnitRunner.class )
 public class DataModelServiceConstructorTest {
 
     private SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
@@ -135,8 +154,8 @@ public class DataModelServiceConstructorTest {
     private class HackedLRUProjectDependenciesClassLoaderCache extends LRUProjectDependenciesClassLoaderCache {
 
         @Override
-        public void setBuilderCache(LRUBuilderCache builderCache) {
-            super.setBuilderCache(builderCache);
+        public void setBuildInfoService(BuildInfoService buildInfoService) {
+            super.setBuildInfoService(buildInfoService);
         }
     }
 
@@ -195,6 +214,9 @@ public class DataModelServiceConstructorTest {
                                  groups);
         SessionInfo sessionInfo = new SessionInfoImpl("admin",
                                                       user);
+        Instance<User> userInstance = mock( Instance.class );
+        when( userInstance.get() ).thenReturn( user );
+
         ConfigIOServiceProducer cfiosProducer = new ConfigIOServiceProducer();
         cfiosProducer.setup();
         IOService configIOService = cfiosProducer.configIOService();
@@ -203,7 +225,7 @@ public class DataModelServiceConstructorTest {
                                                                   sessionInfo);
 
         POMContentHandler pomContentHandler = new POMContentHandler();
-        M2RepoService m2RepoService = new M2RepoServiceImpl();
+        M2RepoServiceImpl m2RepoService = new M2RepoServiceImpl();
         POMService pomService = new POMServiceImpl(ioService,
                                                    pomContentHandler,
                                                    m2RepoService,
@@ -344,19 +366,41 @@ public class DataModelServiceConstructorTest {
                                                            classFilterBeans
         );
 
+        Instance< PostBuildHandler > handlerInstance = mock( Instance.class );
+        Iterator<PostBuildHandler> mockIterator = mock( Iterator.class );
+        when( handlerInstance.iterator() ).thenReturn( mockIterator );
+        when ( mockIterator.hasNext() ).thenReturn( false );
+
+        BuildHelper buildHelper = new BuildHelper( pomService,
+                                                    m2RepoService,
+                                                    projectService,
+                                                    repositoryResolver,
+                                                    projectRepositoriesService,
+                                                    builderCache,
+                                                    handlerInstance,
+                                                    userInstance );
+        PipelineRegistry pipelineRegistry = new InMemoryPipelineRegistry();
+        BuildPipelineInitializer pipelineInitializer = new BuildPipelineInitializer( pipelineRegistry,
+                getConfigExecutors( projectService, buildHelper ) );
+        BuildPipelineInvoker pipelineInvoker = new BuildPipelineInvoker( pipelineInitializer.getExecutor(), pipelineRegistry  );
+
+        BuildServiceHelper buildServiceHelper = new BuildServiceHelper( pipelineInvoker );
+        BuildService buildService = new BuildServiceImpl( projectService, buildServiceHelper, builderCache );
+        BuildInfoService buildInfoService = new BuildInfoService( buildService, builderCache );
+
         ProjectDataModelOracleBuilderProvider builderProvider = new ProjectDataModelOracleBuilderProvider(packageNameWhiteListService,
                                                                                                           importsService);
 
         LRUProjectDataModelOracleCache cacheProjects = new LRUProjectDataModelOracleCache(builderProvider,
                                                                                           projectService,
-                                                                                          builderCache);
+                                                                                          buildInfoService );
 
-        dependenciesClassLoaderCache.setBuilderCache(builderCache);
+        dependenciesClassLoaderCache.setBuildInfoService( buildInfoService );
         LRUDataModelOracleCache cachePackages = new LRUDataModelOracleCache(ioService,
                                                                             fileDiscoveryService,
                                                                             cacheProjects,
                                                                             projectService,
-                                                                            builderCache);
+                                                                            buildInfoService );
         DataModelService dataModelService = new DataModelServiceImpl(cachePackages,
                                                                      cacheProjects,
                                                                      projectService);
@@ -387,5 +431,14 @@ public class DataModelServiceConstructorTest {
                      oracle.getProjectTypeSources().get("t1p2.Bean2"));
         assertEquals(TypeSource.JAVA_PROJECT,
                      oracle.getProjectTypeSources().get("java.lang.String"));
+    }
+
+    private Collection< ConfigExecutor > getConfigExecutors( KieProjectService projectService, BuildHelper buildHelper ) {
+        Collection< ConfigExecutor > configs = new ArrayList<>( );
+        configs.add( new LocalSourceConfigExecutor() );
+        configs.add( new LocalProjectConfigExecutor( projectService ) );
+        configs.add( new LocalBuildConfigExecutor() );
+        configs.add( new LocalBuildExecConfigExecutor( buildHelper ) );
+        return configs;
     }
 }

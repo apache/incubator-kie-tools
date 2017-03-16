@@ -31,8 +31,11 @@ import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
-import org.kie.workbench.common.services.backend.builder.Builder;
-import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
+import org.kie.workbench.common.services.backend.builder.service.BuildInfo;
+import org.kie.workbench.common.services.backend.builder.service.BuildInfoImpl;
+import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
+import org.kie.workbench.common.services.backend.builder.core.Builder;
+import org.kie.workbench.common.services.backend.builder.core.LRUBuilderCache;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.backend.vfs.Path;
@@ -46,6 +49,7 @@ public class ValidatorBuildService {
     private IOService ioService;
     private LRUBuilderCache builderCache;
     private KieProjectService projectService;
+    private BuildInfoService buildInfoService;
 
     public ValidatorBuildService() {
         //CDI proxies
@@ -54,10 +58,12 @@ public class ValidatorBuildService {
     @Inject
     public ValidatorBuildService( final @Named("ioStrategy") IOService ioService,
                                   final LRUBuilderCache builderCache,
-                                  final KieProjectService projectService ) {
+                                  final KieProjectService projectService,
+                                  final BuildInfoService buildInfoService ) {
         this.ioService = ioService;
         this.builderCache = builderCache;
         this.projectService = projectService;
+        this.buildInfoService = buildInfoService;
     }
 
     public List<ValidationMessage> validate( final Path resourcePath,
@@ -114,16 +120,14 @@ public class ValidatorBuildService {
     private List<ValidationMessage> doValidation( final Path resourcePath,
                                                   final InputStream inputStream ) throws NoProjectException {
         final ValidatorResultBuilder resultBuilder = new ValidatorResultBuilder();
-        final Builder builder = builderCache.assertBuilder( project( resourcePath ) );
+        final Project project = project( resourcePath );
         final org.uberfire.java.nio.file.Path nioResourcePath = Paths.convert( resourcePath );
 
         //Incremental Build does not support Java classes
         if ( isIncrementalBuildPossible( resourcePath ) ) {
             //Build the Builder from the cache so it's "built" state can be preserved for re-use
-            if ( !builder.isBuilt() ) {
-                builder.build();
-            }
-            final Builder clone = builder.clone();
+            BuildInfo buildInfo = buildInfoService.getBuildInfo( project );
+            final Builder clone = ( ( BuildInfoImpl ) buildInfo ).getBuilder().clone();
             //First delete resource otherwise if the resource already had errors following builder.build()
             //the incremental compilation will not report any additional errors and the resource will be
             //considered valid.
@@ -134,6 +138,7 @@ public class ValidatorBuildService {
             resultBuilder.add( incrementalBuildResults.getAddedMessages() );
 
         } else {
+            Builder builder = builderCache.assertBuilder( project( resourcePath ) );
             final Builder clone = builder.clone();
             resultBuilder.add( clone.build( nioResourcePath,
                                             inputStream ).getMessages() );

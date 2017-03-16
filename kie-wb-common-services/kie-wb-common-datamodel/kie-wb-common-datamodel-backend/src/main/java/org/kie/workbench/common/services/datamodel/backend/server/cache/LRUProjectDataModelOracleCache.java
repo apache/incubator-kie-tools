@@ -23,7 +23,7 @@ import javax.inject.Named;
 import org.drools.workbench.models.datamodel.oracle.ProjectDataModelOracle;
 import org.guvnor.common.services.backend.cache.LRUCache;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
-import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
+import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
@@ -39,7 +39,7 @@ public class LRUProjectDataModelOracleCache
 
     private ProjectDataModelOracleBuilderProvider builderProvider;
     private KieProjectService projectService;
-    private LRUBuilderCache cache;
+    private BuildInfoService buildInfoService;
 
     public LRUProjectDataModelOracleCache() {
     }
@@ -47,10 +47,10 @@ public class LRUProjectDataModelOracleCache
     @Inject
     public LRUProjectDataModelOracleCache( final ProjectDataModelOracleBuilderProvider builderProvider,
                                            final KieProjectService projectService,
-                                           final LRUBuilderCache cache ) {
+                                           final BuildInfoService buildInfoService ) {
         this.builderProvider = builderProvider;
         this.projectService = projectService;
-        this.cache = cache;
+        this.buildInfoService = buildInfoService;
     }
 
     public synchronized void invalidateProjectCache( @Observes final InvalidateDMOProjectCacheEvent event ) {
@@ -78,8 +78,7 @@ public class LRUProjectDataModelOracleCache
 
     private ProjectDataModelOracle makeProjectOracle( final KieProject project ) {
         return builderProvider.newBuilder( project,
-                                           cache.assertBuilder( project ) ).build();
+                                           buildInfoService.getBuildInfo( project ) ).build();
     }
 
 }
-

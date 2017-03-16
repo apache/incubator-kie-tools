@@ -34,7 +34,7 @@ import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.message.Level;
 import org.kie.api.builder.KieModule;
 import org.kie.scanner.KieModuleMetaData;
-import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
+import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
 import org.kie.workbench.common.services.backend.file.DSLFileFilter;
 import org.kie.workbench.common.services.backend.file.EnumerationsFileFilter;
 import org.kie.workbench.common.services.backend.file.GlobalsFileFilter;
@@ -68,7 +68,7 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
 
     private KieProjectService projectService;
 
-    private LRUBuilderCache builderCache;
+    private BuildInfoService buildInfoService;
 
     public LRUDataModelOracleCache() {
         //CDI proxy
@@ -79,12 +79,12 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
                                    final FileDiscoveryService fileDiscoveryService,
                                    final @Named("ProjectDataModelOracleCache") LRUProjectDataModelOracleCache cacheProjects,
                                    final KieProjectService projectService,
-                                   final LRUBuilderCache builderCache) {
+                                   final BuildInfoService buildInfoService) {
         this.ioService = ioService;
         this.fileDiscoveryService = fileDiscoveryService;
         this.cacheProjects = cacheProjects;
         this.projectService = projectService;
-        this.builderCache = builderCache;
+        this.buildInfoService = buildInfoService;
     }
 
     public synchronized void invalidatePackageCache(@Observes final InvalidateDMOPackageCacheEvent event) {
@@ -178,7 +178,7 @@ public class LRUDataModelOracleCache extends LRUCache<Package, PackageDataModelO
     private void loadEnumsForPackage(final PackageDataModelOracleBuilder dmoBuilder,
                                      final KieProject project,
                                      final Package pkg) {
-        final KieModule module = builderCache.assertBuilder(project).getKieModuleIgnoringErrors();
+        final KieModule module = buildInfoService.getBuildInfo( project ).getKieModuleIgnoringErrors();
         final ClassLoader classLoader = KieModuleMetaData.Factory.newKieModuleMetaData(module).getClassLoader();
         final org.uberfire.java.nio.file.Path nioPackagePath = Paths.convert(pkg.getPackageMainResourcesPath());
         final Collection<org.uberfire.java.nio.file.Path> enumFiles = fileDiscoveryService.discoverFiles(nioPackagePath,

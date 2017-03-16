@@ -21,30 +21,27 @@ import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.workbench.common.services.backend.builder.Builder;
-import org.kie.workbench.common.services.backend.builder.LRUBuilderCache;
+import org.kie.workbench.common.services.backend.builder.service.BuildInfoService;
 import org.kie.workbench.common.services.shared.project.KieProject;
 
 public class SessionServiceImpl
         implements SessionService {
 
-    private LRUBuilderCache cache;
+    private BuildInfoService buildInfoService;
 
     public SessionServiceImpl() {
         //Empty constructor for Weld
     }
 
     @Inject
-    public SessionServiceImpl(final LRUBuilderCache cache) {
-        this.cache = cache;
+    public SessionServiceImpl(final BuildInfoService buildInfoService) {
+        this.buildInfoService = buildInfoService;
     }
 
     @Override
     public KieSession newKieSession(KieProject project, String ksessionName) {
 
-        final Builder builder = cache.assertBuilder(project);
-
-        KieContainer kieContainer = builder.getKieContainer();
+        KieContainer kieContainer = buildInfoService.getBuildInfo( project ).getKieContainer();
 
         //If a KieContainer could not be built there is a build error somewhere; so return null to be handled elsewhere
         if (kieContainer == null) {
@@ -58,9 +55,7 @@ public class SessionServiceImpl
     @Override
     public KieSession newDefaultKieSessionWithPseudoClock(final KieProject project) {
 
-        final Builder builder = cache.assertBuilder(project);
-
-        KieContainer kieContainer = builder.getKieContainer();
+        KieContainer kieContainer = buildInfoService.getBuildInfo( project ).getKieContainer();
 
         //If a KieContainer could not be built there is a build error somewhere; so return null to be handled elsewhere
         if (kieContainer == null) {

@@ -20,7 +20,7 @@ import javax.inject.Inject;
 
 import org.guvnor.common.services.project.model.Dependency;
 import org.guvnor.common.services.project.model.POM;
-import org.kie.workbench.common.services.backend.builder.NoBuilderFoundException;
+import org.kie.workbench.common.services.backend.builder.core.NoBuilderFoundException;
 import org.kie.workbench.common.services.shared.dependencies.DependencyService;
 
 public class PackageNameSearchProvider {
