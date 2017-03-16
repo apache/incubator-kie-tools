@@ -254,6 +254,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
     @Mock
     protected AnalyzerController analyzerController;
 
+    protected GuidedDecisionTable52 model;
     protected GuidedDecisionTablePresenter dtPresenter;
     protected GuidedDecisionTableEditorContent dtContent;
 
@@ -371,7 +372,7 @@ public abstract class BaseGuidedDecisionTablePresenterTest {
         };
         dtPresenter = spy( wrapped );
 
-        final GuidedDecisionTable52 model = new GuidedDecisionTable52();
+        model = new GuidedDecisionTable52();
         final PackageDataModelOracleBaselinePayload dmoBaseline = mock( PackageDataModelOracleBaselinePayload.class );
         final Set<PortableWorkDefinition> workItemDefinitions = Collections.emptySet();
         final Overview overview = mock( Overview.class );

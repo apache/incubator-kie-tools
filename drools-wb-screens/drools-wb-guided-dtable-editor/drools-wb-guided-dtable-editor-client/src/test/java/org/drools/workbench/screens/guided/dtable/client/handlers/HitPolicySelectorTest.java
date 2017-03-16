@@ -35,38 +35,44 @@ public class HitPolicySelectorTest {
 
     @Before
     public void setUp() throws
-                        Exception {
-        selector = new HitPolicySelector( view );
+            Exception {
+        selector = new HitPolicySelector(view);
     }
 
     @Test
     public void allModesSetUp() throws
-                                Exception {
+            Exception {
         final GuidedDecisionTable52.HitPolicy[] values = GuidedDecisionTable52.HitPolicy.values();
 
-        verify( view,
-                times( values.length ) ).addHitPolicyOption( any() );
+        verify(view,
+               times(values.length)).addHitPolicyOption(any());
 
-        for ( final GuidedDecisionTable52.HitPolicy value : values ) {
-            verify( view ).addHitPolicyOption( value );
+        for (final GuidedDecisionTable52.HitPolicy value : values) {
+            verify(view).addHitPolicyOption(value);
         }
     }
 
     @Test
     public void defaultIsSelected() throws
-                                    Exception {
-        verify( view ).setSelection( GuidedDecisionTable52.HitPolicy.getDefault() );
+            Exception {
+        verify(view).setSelection(GuidedDecisionTable52.HitPolicy.getDefault());
     }
 
     @Test
-    public void addActiveHitPolicyValueChangeListener() throws
-                                                        Exception {
-        final Callback<GuidedDecisionTable52.HitPolicy> callback = mock( Callback.class );
-        selector.addValueChangeHandler( callback );
-
-        selector.onHitPolicySelected( GuidedDecisionTable52.HitPolicy.RULE_ORDER );
-
-        verify( callback ).callback( GuidedDecisionTable52.HitPolicy.RULE_ORDER );
+    public void testRuleOrderHitPolicy() {
+        testHitPolicyChange(GuidedDecisionTable52.HitPolicy.RULE_ORDER);
     }
 
+    @Test
+    public void testUniqueHitPolicy() {
+        testHitPolicyChange(GuidedDecisionTable52.HitPolicy.UNIQUE_HIT);
+    }
+
+    private void testHitPolicyChange(GuidedDecisionTable52.HitPolicy hitPolicy) {
+        final Callback<GuidedDecisionTable52.HitPolicy> callback = mock(Callback.class);
+        selector.addValueChangeHandler(callback);
+        selector.onHitPolicySelected(hitPolicy);
+        verify(view).setSelection(hitPolicy);
+        verify(callback).callback(hitPolicy);
+    }
 }
