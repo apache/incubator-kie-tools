@@ -787,12 +787,6 @@ public class BPMNDiagramMarshallerTest {
         assertEquals("true",
                      javascriptScriptTask.getExecutionSet().getIsAsync().getValue().toString());
 
-        assertEquals("alert(\"hello\");",
-                     javascriptScriptTask.getExecutionSet().getOnEntryAction().getValue());
-
-        assertEquals("alert(\"bye\");",
-                     javascriptScriptTask.getExecutionSet().getOnExitAction().getValue());
-
         assertEquals("true",
                      javascriptScriptTask.getExecutionSet().getIsAsync().getValue().toString());
 
@@ -820,12 +814,6 @@ public class BPMNDiagramMarshallerTest {
                      javaScriptTask.getExecutionSet().getScriptLanguage().getValue());
         assertEquals("true",
                      javaScriptTask.getExecutionSet().getIsAsync().getValue().toString());
-
-        assertEquals("System.out.println(\"Hello\");",
-                     javaScriptTask.getExecutionSet().getOnEntryAction().getValue());
-
-        assertEquals("System.out.println(\"Bye\");",
-                     javaScriptTask.getExecutionSet().getOnExitAction().getValue());
 
         assertEquals("true",
                      javaScriptTask.getExecutionSet().getIsAsync().getValue().toString());
@@ -1324,14 +1312,6 @@ public class BPMNDiagramMarshallerTest {
                                            ' ').replaceAll("( )+",
                                                            " ");
         assertTrue(flatResult.contains("<drools:metaData name=\"customAsync\"> <drools:metaValue><![CDATA[true]]></drools:metaValue>"));
-
-        assertTrue(flatResult.contains("<drools:onEntry-script scriptFormat=\"http://www.javascript.com/javascript\">"));
-        assertTrue(flatResult.contains("<drools:script><![CDATA[alert(\"hello\");]]></drools:script>"));
-        assertTrue(flatResult.contains("<drools:script><![CDATA[alert(\"bye\");]]></drools:script>"));
-
-        assertTrue(flatResult.contains("<drools:onEntry-script scriptFormat=\"http://www.java.com/java\">"));
-        assertTrue(flatResult.contains("<drools:script><![CDATA[System.out.println(\"Hello\");]]></drools:script>"));
-        assertTrue(flatResult.contains("<drools:script><![CDATA[System.out.println(\"Bye\");]]></drools:script>"));
     }
 
     @Test
