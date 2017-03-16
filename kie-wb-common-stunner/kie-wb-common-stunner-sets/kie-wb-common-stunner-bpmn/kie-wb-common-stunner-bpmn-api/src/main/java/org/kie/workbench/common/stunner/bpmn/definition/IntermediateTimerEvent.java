@@ -74,9 +74,6 @@ public class IntermediateTimerEvent implements BPMNDefinition {
     protected IntermediateTimerEventExecutionSet executionSet;
 
     @PropertySet
-    @FormField(
-            afterElement = "executionSet"
-    )
     @Valid
     private BackgroundSet backgroundSet;
 

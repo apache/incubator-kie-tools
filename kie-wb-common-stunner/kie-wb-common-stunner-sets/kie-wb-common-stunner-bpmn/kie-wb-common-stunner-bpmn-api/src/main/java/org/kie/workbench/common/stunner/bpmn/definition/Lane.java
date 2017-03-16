@@ -71,9 +71,6 @@ public class Lane implements BPMNDefinition {
     protected BPMNGeneralSet general;
 
     @PropertySet
-    @FormField(
-            afterElement = "general"
-    )
     @Valid
     protected BackgroundSet backgroundSet;
 

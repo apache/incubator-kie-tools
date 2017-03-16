@@ -45,9 +45,6 @@ public abstract class BaseGateway implements BPMNDefinition {
     protected BPMNGeneralSet general;
 
     @PropertySet
-    @FormField(
-            afterElement = "general"
-    )
     @Valid
     protected BackgroundSet backgroundSet;
 

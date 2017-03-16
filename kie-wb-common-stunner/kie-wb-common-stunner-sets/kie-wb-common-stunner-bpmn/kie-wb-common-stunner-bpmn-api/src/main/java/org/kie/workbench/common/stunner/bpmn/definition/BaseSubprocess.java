@@ -49,9 +49,6 @@ public abstract class BaseSubprocess implements BPMNDefinition {
     protected BPMNGeneralSet general;
 
     @PropertySet
-    @FormField(
-            afterElement = "general"
-    )
     @Valid
     protected BackgroundSet backgroundSet;
 

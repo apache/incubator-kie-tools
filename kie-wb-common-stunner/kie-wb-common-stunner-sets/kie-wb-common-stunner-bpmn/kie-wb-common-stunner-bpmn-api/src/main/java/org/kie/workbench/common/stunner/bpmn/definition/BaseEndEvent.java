@@ -58,9 +58,6 @@ public abstract class BaseEndEvent implements BPMNDefinition,
     protected DataIOSet dataIOSet;
 
     @PropertySet
-    @FormField(
-            afterElement = "dataIOSet"
-    )
     @Valid
     protected BackgroundSet backgroundSet;
 

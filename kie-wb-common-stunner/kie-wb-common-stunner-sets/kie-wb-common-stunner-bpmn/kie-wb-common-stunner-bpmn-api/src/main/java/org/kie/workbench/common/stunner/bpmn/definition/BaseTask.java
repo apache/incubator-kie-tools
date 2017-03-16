@@ -60,9 +60,6 @@ public abstract class BaseTask implements BPMNDefinition {
     protected TaskType taskType;
 
     @PropertySet
-    @FormField(
-            afterElement = "general"
-    )
     @Valid
     protected BackgroundSet backgroundSet;
 
