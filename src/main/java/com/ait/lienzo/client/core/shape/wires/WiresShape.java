@@ -322,7 +322,10 @@ public class WiresShape extends WiresContainer
         @Override
         public void onNodeDragEnd(NodeDragEndEvent event)
         {
-            this.shapeControl.dragEnd(new WiresDragControlContext(event.getX(), event.getY(), event.getSource()));
+            final boolean accepts = this.shapeControl.dragEnd(new WiresDragControlContext(event.getX(), event.getY(), event.getSource()));
+            if (!accepts) {
+                event.getDragContext().reset();
+            }
         }
 
         @Override

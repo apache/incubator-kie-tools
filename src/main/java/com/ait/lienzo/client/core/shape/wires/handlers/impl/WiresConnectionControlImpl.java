@@ -79,7 +79,7 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
     }
 
     @Override
-    public void dragEnd( final Context context ) {
+    public boolean dragEnd( final Context context ) {
         if (m_magnets != null)
         {
             m_magnets.hide();
@@ -91,6 +91,7 @@ public class WiresConnectionControlImpl implements WiresConnectionControl
         m_colorKey = null;
         m_shape_color_map.clear();
         m_magnet_color_map.clear();
+        return true;
     }
 
     @Override
