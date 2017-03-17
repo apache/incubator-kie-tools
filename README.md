@@ -279,7 +279,7 @@ Use the testing artifact version supported for a concrete Lienzo-Core release:
         Lienzo-Core            Lienzzo-Tests
         ************************************
         2.0.275-RELEASE          1.0.0-RC2
-        2.0.280-RELEASE (+)      current
+        2.0.286-RELEASE (+)      current
         
 NOTE: Symbol "+" indicates from the given version until latest stable release one.               
 

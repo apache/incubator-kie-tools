@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014,2015,2016 Ahome' Innovation Technologies. All rights reserved.
+ * Copyright (c) 2017 Ahome' Innovation Technologies. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ sourceCompatibility = 1.7
 
 targetCompatibility = 1.7
 
-version = '1.0.0-RC4'
+version = '1.0.0-RC5'
 
 group = 'com.ahome-it'
 
@@ -90,7 +90,7 @@ sourceSets {
 }
 
 dependencies {
-    compile(group: 'com.ahome-it', name: 'lienzo-core', version: '2.0.280-RELEASE')
+    compile(group: 'com.ahome-it', name: 'lienzo-core', version: '2.0.286-RELEASE')
     compile(group: 'com.google.gwt', name: 'gwt-dev', version: '2.7.0')
     compile(group: 'com.google.gwt', name: 'gwt-user', version: '2.7.0')
     compile(group: 'junit', name: 'junit', version: '4.11')
