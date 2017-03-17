@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
 
 @Dependent
 @CaseManagementEditor
@@ -44,6 +45,7 @@ public class CaseManagementDiagramMarshaller extends BPMNDiagramMarshaller {
                                            final GraphIndexBuilder<?> indexBuilder,
                                            final @CaseManagementEditor OryxManager oryxManager,
                                            final FactoryManager factoryManager,
+                                           final RuleManager rulesManager,
                                            final GraphCommandManager graphCommandManager,
                                            final GraphCommandFactory commandFactory) {
         super(diagramMetadataMarshaller,
@@ -53,6 +55,7 @@ public class CaseManagementDiagramMarshaller extends BPMNDiagramMarshaller {
               indexBuilder,
               oryxManager,
               factoryManager,
+              rulesManager,
               graphCommandManager,
               commandFactory);
     }

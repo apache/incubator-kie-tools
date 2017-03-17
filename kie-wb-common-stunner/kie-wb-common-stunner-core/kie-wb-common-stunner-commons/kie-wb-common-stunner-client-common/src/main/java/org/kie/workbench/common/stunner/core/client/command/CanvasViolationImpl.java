@@ -17,8 +17,11 @@
 package org.kie.workbench.common.stunner.core.client.command;
 
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.violations.AbstractRuleViolation;
 
-public final class CanvasViolationImpl implements CanvasViolation {
+public final class CanvasViolationImpl
+        extends AbstractRuleViolation
+        implements CanvasViolation {
 
     private final String message;
     private final Type type;
@@ -47,9 +50,16 @@ public final class CanvasViolationImpl implements CanvasViolation {
             this.ruleViolation = ruleViolation;
         }
 
-        public CanvasViolation build() {
-            return new CanvasViolationImpl(ruleViolation.getMessage(),
-                                           ruleViolation.getViolationType());
+        public CanvasViolationImpl build() {
+            final CanvasViolationImpl result = new CanvasViolationImpl(ruleViolation.getMessage(),
+                                                                       ruleViolation.getViolationType());
+            if (ruleViolation instanceof AbstractRuleViolation) {
+                final String uuid = ((AbstractRuleViolation) ruleViolation).getUuid();
+                if (null != uuid) {
+                    result.setUuid(uuid);
+                }
+            }
+            return result;
         }
     }
 

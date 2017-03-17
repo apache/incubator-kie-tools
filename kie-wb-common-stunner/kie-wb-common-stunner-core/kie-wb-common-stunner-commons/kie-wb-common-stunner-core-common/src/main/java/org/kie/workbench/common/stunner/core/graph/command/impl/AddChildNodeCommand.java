@@ -18,16 +18,20 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
@@ -94,15 +98,20 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
     public CommandResult<RuleViolation> allow(final GraphCommandExecutionContext context) {
         ensureInitialized(context);
         // Check if rules are present.
-        if (null == context.getRulesManager()) {
+        if (null == context.getRuleManager()) {
             return GraphCommandResultBuilder.SUCCESS;
         }
-        final Node<?, Edge> parent = getParent(context);
-        final Collection<RuleViolation> containmentRuleViolations = (Collection<RuleViolation>) context.getRulesManager().containment().evaluate(parent,
-                                                                                                                                                 candidate).violations();
-        final Collection<RuleViolation> cardinalityRuleViolations = (Collection<RuleViolation>) context.getRulesManager().cardinality().evaluate(getGraph(context),
-                                                                                                                                                 candidate,
-                                                                                                                                                 RuleManager.Operation.ADD).violations();
+        final Element<? extends Definition<?>> parent = (Element<? extends Definition<?>>) getParent(context);
+        final Collection<RuleViolation> containmentRuleViolations =
+                doEvaluate(context,
+                           RuleContextBuilder.GraphContexts.containment(getGraph(context),
+                                                                        Optional.ofNullable(parent),
+                                                                        candidate));
+        final Collection<RuleViolation> cardinalityRuleViolations =
+                doEvaluate(context,
+                           RuleContextBuilder.GraphContexts.cardinality(getGraph(context),
+                                                                        candidate,
+                                                                        CardinalityContext.Operation.ADD));
         final Collection<RuleViolation> violations = new LinkedList<RuleViolation>();
         violations.addAll(containmentRuleViolations);
         violations.addAll(cardinalityRuleViolations);

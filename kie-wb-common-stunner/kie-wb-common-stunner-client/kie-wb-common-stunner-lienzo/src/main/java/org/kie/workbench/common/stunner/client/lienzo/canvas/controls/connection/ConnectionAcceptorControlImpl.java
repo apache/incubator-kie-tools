@@ -93,6 +93,7 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
                                                                                                                            magnet));
             final boolean accepts = isAccept(violations);
             highlight(source,
+                      connector,
                       accepts);
             return accepts;
         }
@@ -116,6 +117,7 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
                                                                                                                            magnet));
             final boolean accepts = isAccept(violations);
             highlight(target,
+                      connector,
                       accepts);
             return accepts;
         }
@@ -275,10 +277,14 @@ public class ConnectionAcceptorControlImpl implements ConnectionAcceptorControl<
     }
 
     private void highlight(final Node node,
+                           final Edge<View<?>, Node> connector,
                            final boolean valid) {
+        canvasHighlight.unhighLight();
         if (null != node && valid) {
+            canvasHighlight.highLight(connector);
             canvasHighlight.highLight(node);
         } else if (null != node) {
+            canvasHighlight.invalid(connector);
             canvasHighlight.invalid(node);
         }
     }

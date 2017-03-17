@@ -43,8 +43,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
-import org.kie.workbench.common.stunner.core.rule.model.ModelRulesManager;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
 
 @Dependent
 @CaseManagementEditor
@@ -53,8 +52,7 @@ public class CaseManagementCanvasHandler<D extends Diagram, C extends WiresCanva
     @Inject
     public CaseManagementCanvasHandler(final ClientDefinitionManager clientDefinitionManager,
                                        final ClientFactoryService clientFactoryServices,
-                                       final GraphRulesManager graphRulesManager,
-                                       final ModelRulesManager modelRulesManager,
+                                       final RuleManager ruleManager,
                                        final GraphUtils graphUtils,
                                        final GraphIndexBuilder<? extends MutableIndex<Node, Edge>> indexBuilder,
                                        final ShapeManager shapeManager,
@@ -66,8 +64,7 @@ public class CaseManagementCanvasHandler<D extends Diagram, C extends WiresCanva
         super(clientDefinitionManager,
               canvasCommandFactory,
               clientFactoryServices,
-              graphRulesManager,
-              modelRulesManager,
+              ruleManager,
               graphUtils,
               indexBuilder,
               shapeManager,

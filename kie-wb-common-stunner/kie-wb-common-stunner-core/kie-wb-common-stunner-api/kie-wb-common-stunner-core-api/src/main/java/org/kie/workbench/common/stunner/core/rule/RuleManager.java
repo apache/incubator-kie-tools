@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,31 +16,43 @@
 
 package org.kie.workbench.common.stunner.core.rule;
 
-public interface RuleManager<R extends Rule> {
+import org.kie.workbench.common.stunner.core.registry.rule.RuleHandlerRegistry;
+
+/**
+ * Main entry point for evaluating a set of rules in a
+ * certain context.
+ * <p>
+ * It does:
+ * - It provides a rule handler registry instance that
+ * is populated with all available evaluation handlers.
+ * - Evaluates each of the rules in the rule set with each of the
+ * registered evaluation handlers for the given context type.
+ * - If no rules are present in the rule set (for any context - an empty rule set),
+ * it does not produce any rule violations.
+ * - If no rules are present in the rule set for the given context, it depends on the context
+ * type if produce any rule violations.
+ * @See {@link Rule}
+ * @See {@link RuleEvaluationContext}
+ * @See {@link RuleEvaluationHandler}
+ */
+public interface RuleManager {
 
     /**
-     * Common operation types.
+     * Provides a rule handler registry that contains
+     * all available rule an extension handlers present.
      */
-    enum Operation {
-        NONE,
-        ADD,
-        DELETE
-    }
+    RuleHandlerRegistry registry();
 
     /**
-     * The rule manager name.
+     * Evaluates if a given set of rules are allowed
+     * for the given context.
+     * @param ruleSet The set of rules to evaluate for the context.
+     * @param context The rule evaluation context.
+     * @return - If no rules are present in the rule set (for any context - an empty rule set),
+     * it does not produce any rule violations.
+     * - If no rules are present in the rule set for the given context, it depends on the context
+     * type if produce any rule violations.
      */
-    String getName();
-
-    boolean supports(final Rule rule);
-
-    /**
-     * Add a rule to the Rule Manager
-     */
-    RuleManager addRule(final R rule);
-
-    /**
-     * Clear all rules.
-     */
-    RuleManager clearRules();
+    RuleViolations evaluate(final RuleSet ruleSet,
+                            final RuleEvaluationContext context);
 }

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Collection;
+
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.exception.BadCommandArgumentsException;
@@ -27,6 +29,8 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBui
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public abstract class AbstractGraphCommand implements Command<GraphCommandExecutionContext, RuleViolation> {
@@ -36,10 +40,19 @@ public abstract class AbstractGraphCommand implements Command<GraphCommandExecut
     @Override
     public CommandResult<RuleViolation> allow(final GraphCommandExecutionContext context) {
         // Check if rules are present.
-        if (null == context.getRulesManager()) {
+        if (null == context.getRuleManager()) {
             return GraphCommandResultBuilder.SUCCESS;
         }
         return check(context);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Collection<RuleViolation> doEvaluate(final GraphCommandExecutionContext context,
+                                                   final RuleEvaluationContext ruleEvaluationContext) {
+        final RuleSet ruleSet = context.getRuleSet();
+        return (Collection<RuleViolation>) context.getRuleManager().evaluate(ruleSet,
+                                                                             ruleEvaluationContext)
+                .violations();
     }
 
     @SuppressWarnings("unchecked")

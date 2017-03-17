@@ -38,8 +38,7 @@ import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-import org.kie.workbench.common.stunner.core.rule.model.ModelCardinalityRuleManager;
-import org.kie.workbench.common.stunner.core.rule.model.ModelContainmentRuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -61,7 +60,6 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
              null,
              null,
              null,
-             null,
              null);
     }
 
@@ -69,8 +67,7 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
     public ObserverBuilderControl(final ClientDefinitionManager clientDefinitionManager,
                                   final ClientFactoryService clientFactoryServices,
                                   final GraphUtils graphUtils,
-                                  final ModelContainmentRuleManager modelContainmentRuleManager,
-                                  final ModelCardinalityRuleManager modelCardinalityRuleManager,
+                                  final RuleManager ruleManager,
                                   final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                   final GraphBoundsIndexer graphBoundsIndexer,
                                   final CanvasLayoutUtils canvasLayoutUtils,
@@ -78,8 +75,7 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
         super(clientDefinitionManager,
               clientFactoryServices,
               graphUtils,
-              modelContainmentRuleManager,
-              modelCardinalityRuleManager,
+              ruleManager,
               canvasCommandFactory,
               graphBoundsIndexer,
               canvasLayoutUtils);

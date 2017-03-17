@@ -28,8 +28,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-import org.kie.workbench.common.stunner.core.rule.model.ModelCardinalityRuleManager;
-import org.kie.workbench.common.stunner.core.rule.model.ModelContainmentRuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.mockito.Mock;
 
 import static org.mockito.AdditionalMatchers.eq;
@@ -47,10 +46,7 @@ public abstract class BaseCaseManagementBuilderControlTest {
     protected GraphUtils graphUtils;
 
     @Mock
-    protected ModelContainmentRuleManager modelContainmentRuleManager;
-
-    @Mock
-    protected ModelCardinalityRuleManager modelCardinalityRuleManager;
+    protected RuleManager ruleManager;
 
     @Mock
     protected CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;

@@ -22,8 +22,8 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
-import org.kie.workbench.common.stunner.core.rule.model.ModelRulesManager;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.uberfire.mvp.Command;
 
 /**
@@ -47,13 +47,13 @@ public abstract class CanvasHandlerProxy<D extends Diagram, C extends AbstractCa
     public abstract AbstractCanvasHandler getWrapped();
 
     @Override
-    public GraphRulesManager getGraphRulesManager() {
-        return getWrapped().getGraphRulesManager();
+    public RuleSet getRuleSet() {
+        return getWrapped().getRuleSet();
     }
 
     @Override
-    public ModelRulesManager getModelRulesManager() {
-        return getWrapped().getModelRulesManager();
+    public RuleManager getRuleManager() {
+        return getWrapped().getRuleManager();
     }
 
     @Override

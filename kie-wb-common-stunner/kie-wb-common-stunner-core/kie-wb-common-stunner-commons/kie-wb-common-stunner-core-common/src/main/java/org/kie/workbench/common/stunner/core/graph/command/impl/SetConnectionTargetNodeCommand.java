@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -26,9 +27,10 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
-import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
@@ -114,34 +116,32 @@ public final class SetConnectionTargetNodeCommand extends AbstractGraphCommand {
         final Edge<View<?>, Node> edge = (Edge<View<?>, Node>) getEdge(context);
         final GraphCommandResultBuilder resultBuilder = new GraphCommandResultBuilder();
         final Collection<RuleViolation> connectionRuleViolations =
-                (Collection<RuleViolation>) context.getRulesManager()
-                        .connection().evaluate(edge,
-                                               sourceNode,
-                                               targetNode).violations();
+                doEvaluate(context,
+                           RuleContextBuilder.GraphContexts.connection(getGraph(context),
+                                                                       edge,
+                                                                       Optional.ofNullable(sourceNode),
+                                                                       Optional.ofNullable(targetNode)));
         resultBuilder.addViolations(connectionRuleViolations);
         final Node<? extends View<?>, Edge> currentTarget = edge.getTargetNode();
         if (null != currentTarget) {
             final Collection<RuleViolation> cardinalityRuleViolations =
-                    (Collection<RuleViolation>) context.getRulesManager()
-                            .edgeCardinality()
-                            .evaluate(edge,
-                                      currentTarget,
-                                      currentTarget.getInEdges(),
-                                      EdgeCardinalityRule.Type.INCOMING,
-                                      RuleManager.Operation.DELETE)
-                            .violations();
+                    doEvaluate(context,
+                               RuleContextBuilder.GraphContexts.edgeCardinality(getGraph(context),
+                                                                                currentTarget,
+                                                                                edge,
+                                                                                ConnectorCardinalityContext.Direction.INCOMING,
+                                                                                CardinalityContext.Operation.DELETE));
             resultBuilder.addViolations(cardinalityRuleViolations);
         }
         if (null != targetNode) {
             final Collection<RuleViolation> cardinalityRuleViolations =
-                    (Collection<RuleViolation>) context.getRulesManager()
-                            .edgeCardinality()
-                            .evaluate(edge,
-                                      targetNode,
-                                      targetNode.getInEdges(),
-                                      EdgeCardinalityRule.Type.INCOMING,
-                                      RuleManager.Operation.ADD)
-                            .violations();
+                    doEvaluate(context,
+                               RuleContextBuilder.GraphContexts.edgeCardinality(getGraph(context),
+                                                                                targetNode,
+                                                                                edge,
+                                                                                ConnectorCardinalityContext.Direction.INCOMING,
+                                                                                CardinalityContext.Operation.ADD));
+
             resultBuilder.addViolations(cardinalityRuleViolations);
         }
         return resultBuilder.build();

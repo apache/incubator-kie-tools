@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -45,6 +46,9 @@ public class CaseManagementGraphFactoryImplTest {
     private GraphCommandFactory graphCommandFactory;
 
     @Mock
+    private RuleManager ruleManager;
+
+    @Mock
     private GraphIndexBuilder<?> indexBuilder;
 
     private CaseManagementGraphFactoryImpl factory;
@@ -53,6 +57,7 @@ public class CaseManagementGraphFactoryImplTest {
     public void setup() {
         this.factory = new CaseManagementGraphFactoryImpl(definitionManager,
                                                           factoryManager,
+                                                          ruleManager,
                                                           graphCommandManager,
                                                           graphCommandFactory,
                                                           indexBuilder);

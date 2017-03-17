@@ -25,17 +25,17 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
-import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.ElementCardinalityContext;
+import org.mockito.ArgumentCaptor;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -85,26 +85,17 @@ public class SafeDeleteNodeCommandTest extends AbstractGraphCommandTest {
         assertTrue(command1 instanceof DeregisterNodeCommand);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
-        verify(cardinalityRuleManager,
-               times(2)).evaluate(eq(graph),
-                                  eq(node),
-                                  eq(RuleManager.Operation.DELETE));
-        verify(edgeCardinalityRuleManager,
-               times(0)).evaluate(any(Edge.class),
-                                  any(Node.class),
-                                  any(List.class),
-                                  any(EdgeCardinalityRule.Type.class),
-                                  any(RuleManager.Operation.class));
-        verify(containmentRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
-        verify(connectionRuleManager,
-               times(0)).evaluate(any(Edge.class),
-                                  any(Node.class),
-                                  any(Node.class));
-        verify(dockingRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
+        final ArgumentCaptor<RuleEvaluationContext> contextCaptor = ArgumentCaptor.forClass(RuleEvaluationContext.class);
+        verify(ruleManager,
+               times(2)).evaluate(eq(ruleSet),
+                                  contextCaptor.capture());
+        final List<RuleEvaluationContext> contexts = contextCaptor.getAllValues();
+        assertEquals(2,
+                     contexts.size());
+        verifyCardinality((ElementCardinalityContext) contexts.get(0),
+                          graph,
+                          node,
+                          CardinalityContext.Operation.DELETE);
     }
 
     @Test
@@ -121,55 +112,30 @@ public class SafeDeleteNodeCommandTest extends AbstractGraphCommandTest {
                             SafeDeleteNodeCommand.class));
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
-        verify(cardinalityRuleManager,
-               times(3)).evaluate(eq(graph),
-                                  eq(node),
-                                  eq(RuleManager.Operation.DELETE));
-        verify(edgeCardinalityRuleManager,
-               times(0)).evaluate(any(Edge.class),
-                                  any(Node.class),
-                                  any(List.class),
-                                  any(EdgeCardinalityRule.Type.class),
-                                  any(RuleManager.Operation.class));
-        verify(connectionRuleManager,
-               times(0)).evaluate(any(Edge.class),
-                                  any(Node.class),
-                                  any(Node.class));
-        verify(containmentRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
-        verify(dockingRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
+        final ArgumentCaptor<RuleEvaluationContext> contextCaptor = ArgumentCaptor.forClass(RuleEvaluationContext.class);
+        // TODO: 9 times!?
+        verify(ruleManager,
+               times(9)).evaluate(eq(ruleSet),
+                                  contextCaptor.capture());
+        final List<RuleEvaluationContext> contexts = contextCaptor.getAllValues();
+        assertEquals(9,
+                     contexts.size());
+        verifyCardinality((ElementCardinalityContext) contexts.get(8),
+                          graph,
+                          node,
+                          CardinalityContext.Operation.DELETE);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testAllowNoRules() {
-        when(graphCommandExecutionContext.getRulesManager()).thenReturn(null);
+        when(graphCommandExecutionContext.getRuleManager()).thenReturn(null);
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
-        verify(cardinalityRuleManager,
-               times(0)).evaluate(eq(graph),
-                                  eq(node),
-                                  eq(RuleManager.Operation.DELETE));
-        verify(edgeCardinalityRuleManager,
-               times(0)).evaluate(any(Edge.class),
-                                  any(Node.class),
-                                  any(List.class),
-                                  any(EdgeCardinalityRule.Type.class),
-                                  any(RuleManager.Operation.class));
-        verify(containmentRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
-        verify(connectionRuleManager,
-               times(0)).evaluate(any(Edge.class),
-                                  any(Node.class),
-                                  any(Node.class));
-        verify(dockingRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
+        verify(ruleManager,
+               times(0)).evaluate(eq(ruleSet),
+                                  any(RuleEvaluationContext.class));
     }
 
     @SuppressWarnings("unchecked")

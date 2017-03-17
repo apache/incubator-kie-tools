@@ -16,11 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.definition.adapter.bootstrap;
 
-import java.util.Collection;
-
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
-import org.kie.workbench.common.stunner.core.rule.Rule;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
 
 class BootstrapDefinitionSetRuleAdapter implements DefinitionSetRuleAdapter<Object> {
 
@@ -31,8 +29,8 @@ class BootstrapDefinitionSetRuleAdapter implements DefinitionSetRuleAdapter<Obje
     }
 
     @Override
-    public Collection<Rule> getRules(final Object pojo) {
-        return getWrapped(pojo).getRules(pojo);
+    public RuleSet getRuleSet(final Object pojo) {
+        return getWrapped(pojo).getRuleSet(pojo);
     }
 
     @Override

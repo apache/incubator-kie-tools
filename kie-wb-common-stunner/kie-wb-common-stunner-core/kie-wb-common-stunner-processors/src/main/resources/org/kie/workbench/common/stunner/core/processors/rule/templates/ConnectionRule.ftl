@@ -1,8 +1,8 @@
 
-ConnectionRuleImpl ${ruleId} = new ConnectionRuleImpl("${ruleId}", "${ruleDefinitionId}",
-    new HashSet<ConnectionRule.PermittedConnection>(${connectionsSize}) {{
+CanConnect ${ruleId} = new CanConnect("${ruleId}", "${ruleDefinitionId}",
+    new ArrayList<CanConnect.PermittedConnection>(${connectionsSize}) {{
     <#list connections as connection>
-        add(new PermittedConnectionImpl( "${connection.from}", "${connection.to}" ));
+        add(new CanConnect.PermittedConnection( "${connection.from}", "${connection.to}" ));
     </#list>
     }}
 );

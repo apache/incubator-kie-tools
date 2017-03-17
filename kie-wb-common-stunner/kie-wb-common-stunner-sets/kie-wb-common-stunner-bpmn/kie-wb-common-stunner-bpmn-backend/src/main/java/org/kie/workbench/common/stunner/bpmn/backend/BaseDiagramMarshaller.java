@@ -53,6 +53,7 @@ import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFact
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +65,7 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
     private final GraphObjectBuilderFactory bpmnGraphBuilderFactory;
     private final GraphIndexBuilder<?> indexBuilder;
     private final FactoryManager factoryManager;
+    private final RuleManager rulesManager;
     private final GraphCommandManager graphCommandManager;
     private final GraphCommandFactory commandFactory;
 
@@ -78,6 +80,7 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
                                  final GraphIndexBuilder<?> indexBuilder,
                                  final OryxManager oryxManager,
                                  final FactoryManager factoryManager,
+                                 final RuleManager rulesManager,
                                  final GraphCommandManager graphCommandManager,
                                  final GraphCommandFactory commandFactory) {
         this.diagramMetadataMarshaller = diagramMetadataMarshaller;
@@ -87,6 +90,7 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
         this.indexBuilder = indexBuilder;
         this.oryxManager = oryxManager;
         this.factoryManager = factoryManager;
+        this.rulesManager = rulesManager;
         this.graphCommandManager = graphCommandManager;
         this.commandFactory = commandFactory;
     }
@@ -125,6 +129,7 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
         final Bpmn2UnMarshaller parser = new Bpmn2UnMarshaller(bpmnGraphBuilderFactory,
                                                                definitionManager,
                                                                factoryManager,
+                                                               rulesManager,
                                                                graphUtils,
                                                                oryxManager,
                                                                graphCommandManager,

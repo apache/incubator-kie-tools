@@ -40,6 +40,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 
@@ -64,6 +65,7 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
 
     private C canvas;
     private D diagram;
+    private RuleSet ruleSet;
 
     public BaseCanvasHandler(final DefinitionManager definitionManager,
                              final GraphUtils graphUtils,
@@ -80,15 +82,6 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
      * cached in/from server side as well.
      */
     protected abstract void buildGraphIndex(final Command loadCallback);
-
-    /**
-     * Load the necessary rules into the graph and model rules manager member instances.
-     * No rules are supported, so subtypes targeted for read-only purposes or subtyes
-     * that can ensure the commands and graph structure is always valid, can avoid adding
-     * rules into the manager instances.
-     * @param loadCallback Callback to run once rules have been loaded, if any.
-     */
-    protected abstract void loadRules(final Command loadCallback);
 
     /**
      * Delegates the draw behavior to the subtypes.
@@ -118,7 +111,12 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
         }
         this.diagram = diagram;
         // Initialize the graph handler that provides processing and querying operations over the graph.
-        buildGraphIndex(() -> loadRules(() -> draw(loadCallback)));
+        buildGraphIndex(() -> loadRuleSet(() -> draw(loadCallback)));
+    }
+
+    @Override
+    public RuleSet getRuleSet() {
+        return ruleSet;
     }
 
     @Override
@@ -129,6 +127,13 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
     @Override
     public D getDiagram() {
         return diagram;
+    }
+
+    protected void loadRuleSet(final Command callback) {
+        final String id = getDiagram().getMetadata().getDefinitionSetId();
+        final Object defSet = getDefinitionManager().definitionSets().getDefinitionSetById(id);
+        this.ruleSet = definitionManager.adapters().forRules().getRuleSet(defSet);
+        callback.execute();
     }
 
     @Override
@@ -410,7 +415,7 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
     }
 
     protected String getDefinitionId(final Object definition) {
-        return definitionManager.adapters().forDefinition().getId(definition);
+        return getDefinitionManager().adapters().forDefinition().getId(definition);
     }
 
     private void log(final Level level,

@@ -19,10 +19,10 @@ package org.kie.workbench.common.stunner.core.validation.graph;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.validation.Validator;
 
 public interface GraphValidator extends Validator<Graph<?, Node<?, Edge>>, GraphValidatorCallback> {
 
-    GraphValidator withRulesManager(final GraphRulesManager rulesManager);
+    GraphValidator withRuleSet(final RuleSet ruleSet);
 }

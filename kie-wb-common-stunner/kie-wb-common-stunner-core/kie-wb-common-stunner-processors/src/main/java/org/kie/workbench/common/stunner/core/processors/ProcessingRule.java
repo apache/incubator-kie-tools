@@ -23,7 +23,8 @@ public class ProcessingRule {
         CONNECTION,
         CARDINALITY,
         EDGE_CARDINALITY,
-        DOCKING
+        DOCKING,
+        EXTENSION
     }
 
     private final String name;

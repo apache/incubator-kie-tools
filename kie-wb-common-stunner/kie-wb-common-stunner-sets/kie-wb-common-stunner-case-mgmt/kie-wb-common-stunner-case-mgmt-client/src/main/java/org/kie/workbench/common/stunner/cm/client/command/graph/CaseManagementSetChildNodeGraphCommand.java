@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.cm.client.command.graph;
 
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +29,7 @@ import org.kie.workbench.common.stunner.core.graph.command.impl.AbstractGraphCom
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.kie.workbench.common.stunner.core.rule.RuleViolations;
+import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
 public class CaseManagementSetChildNodeGraphCommand extends AbstractGraphCommand {
@@ -132,11 +131,11 @@ public class CaseManagementSetChildNodeGraphCommand extends AbstractGraphCommand
 
     @SuppressWarnings("unchecked")
     protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
-        final RuleViolations violations = context.getRulesManager().containment().evaluate(parent,
-                                                                                           child);
-        final Collection<RuleViolation> results = new LinkedList<>();
-        violations.violations().forEach(results::add);
-        return new GraphCommandResultBuilder(results).build();
+        final Collection<RuleViolation> violations = doEvaluate(context,
+                                                                RuleContextBuilder.GraphContexts.containment(getGraph(context),
+                                                                                                             Optional.ofNullable(parent),
+                                                                                                             child));
+        return new GraphCommandResultBuilder(violations).build();
     }
 
     @Override

@@ -23,12 +23,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
-import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.GraphConnectionContext;
+import org.mockito.ArgumentCaptor;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
@@ -81,66 +83,42 @@ public class SetConnectionSourceNodeCommandTest extends AbstractGraphCommandTest
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
-        verify(connectionRuleManager,
-               times(1)).evaluate(eq(edge),
-                                  eq(node),
-                                  eq(target));
-        verify(edgeCardinalityRuleManager,
-               times(1)).evaluate(eq(edge),
-                                  eq(lastSourceNode),
-                                  any(List.class),
-                                  eq(EdgeCardinalityRule.Type.OUTGOING),
-                                  eq(RuleManager.Operation.DELETE));
+        final ArgumentCaptor<RuleEvaluationContext> contextCaptor = ArgumentCaptor.forClass(RuleEvaluationContext.class);
+        verify(ruleManager,
+               times(3)).evaluate(eq(ruleSet),
+                                  contextCaptor.capture());
+        final List<RuleEvaluationContext> contexts = contextCaptor.getAllValues();
+        assertEquals(3,
+                     contexts.size());
+        verifyConnection((GraphConnectionContext) contexts.get(0),
+                         edge,
+                         node,
+                         target);
 
-        verify(edgeCardinalityRuleManager,
-               times(1)).evaluate(eq(edge),
-                                  eq(node),
-                                  any(List.class),
-                                  eq(EdgeCardinalityRule.Type.OUTGOING),
-                                  eq(RuleManager.Operation.ADD));
-        verify(containmentRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
-        verify(containmentRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
-        verify(dockingRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
+        verifyConnectorCardinality((ConnectorCardinalityContext) contexts.get(1),
+                                   graph,
+                                   lastSourceNode,
+                                   edge,
+                                   ConnectorCardinalityContext.Direction.OUTGOING,
+                                   CardinalityContext.Operation.DELETE);
+        verifyConnectorCardinality((ConnectorCardinalityContext) contexts.get(2),
+                                   graph,
+                                   node,
+                                   edge,
+                                   ConnectorCardinalityContext.Direction.OUTGOING,
+                                   CardinalityContext.Operation.ADD);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testAllowNoRules() {
-        when(graphCommandExecutionContext.getRulesManager()).thenReturn(null);
+        when(graphCommandExecutionContext.getRuleManager()).thenReturn(null);
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
-        verify(connectionRuleManager,
-               times(0)).evaluate(eq(edge),
-                                  eq(node),
-                                  eq(target));
-        verify(edgeCardinalityRuleManager,
-               times(0)).evaluate(eq(edge),
-                                  eq(lastSourceNode),
-                                  any(List.class),
-                                  eq(EdgeCardinalityRule.Type.OUTGOING),
-                                  eq(RuleManager.Operation.DELETE));
-        verify(edgeCardinalityRuleManager,
-               times(0)).evaluate(eq(edge),
-                                  eq(node),
-                                  any(List.class),
-                                  eq(EdgeCardinalityRule.Type.OUTGOING),
-                                  eq(RuleManager.Operation.ADD));
-        verify(containmentRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
-        verify(containmentRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
-        verify(dockingRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
+        verify(ruleManager,
+               times(0)).evaluate(eq(ruleSet),
+                                  any(RuleEvaluationContext.class));
     }
 
     @Test
@@ -152,31 +130,24 @@ public class SetConnectionSourceNodeCommandTest extends AbstractGraphCommandTest
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
-        verify(connectionRuleManager,
-               times(1)).evaluate(eq(edge),
-                                  any(Node.class),
-                                  any(Node.class));
-        verify(edgeCardinalityRuleManager,
-               times(1)).evaluate(eq(edge),
-                                  eq(lastSourceNode),
-                                  any(List.class),
-                                  any(EdgeCardinalityRule.Type.class),
-                                  eq(RuleManager.Operation.DELETE));
-        verify(edgeCardinalityRuleManager,
-               times(0)).evaluate(eq(edge),
-                                  any(Node.class),
-                                  any(List.class),
-                                  any(EdgeCardinalityRule.Type.class),
-                                  eq(RuleManager.Operation.ADD));
-        verify(containmentRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
-        verify(containmentRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
-        verify(dockingRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
+        final ArgumentCaptor<RuleEvaluationContext> contextCaptor = ArgumentCaptor.forClass(RuleEvaluationContext.class);
+        verify(ruleManager,
+               times(2)).evaluate(eq(ruleSet),
+                                  contextCaptor.capture());
+        final List<RuleEvaluationContext> contexts = contextCaptor.getAllValues();
+        assertEquals(2,
+                     contexts.size());
+        verifyConnection((GraphConnectionContext) contexts.get(0),
+                         edge,
+                         null,
+                         null);
+
+        verifyConnectorCardinality((ConnectorCardinalityContext) contexts.get(1),
+                                   graph,
+                                   lastSourceNode,
+                                   edge,
+                                   ConnectorCardinalityContext.Direction.OUTGOING,
+                                   CardinalityContext.Operation.DELETE);
     }
 
     @Test
@@ -189,31 +160,30 @@ public class SetConnectionSourceNodeCommandTest extends AbstractGraphCommandTest
         when(lastSourceNode.getOutEdges()).thenReturn(lastSourceOutEdges);
         when(target.getInEdges()).thenReturn(targetInEdges);
         CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
-        verify(connectionRuleManager,
-               times(1)).evaluate(eq(edge),
-                                  eq(node),
-                                  eq(target));
-        verify(edgeCardinalityRuleManager,
-               times(1)).evaluate(eq(edge),
-                                  eq(lastSourceNode),
-                                  any(List.class),
-                                  eq(EdgeCardinalityRule.Type.OUTGOING),
-                                  eq(RuleManager.Operation.DELETE));
-        verify(edgeCardinalityRuleManager,
-               times(1)).evaluate(eq(edge),
-                                  eq(node),
-                                  any(List.class),
-                                  eq(EdgeCardinalityRule.Type.OUTGOING),
-                                  eq(RuleManager.Operation.ADD));
-        verify(containmentRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
-        verify(containmentRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
-        verify(dockingRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
+        final ArgumentCaptor<RuleEvaluationContext> contextCaptor = ArgumentCaptor.forClass(RuleEvaluationContext.class);
+        verify(ruleManager,
+               times(3)).evaluate(eq(ruleSet),
+                                  contextCaptor.capture());
+        final List<RuleEvaluationContext> contexts = contextCaptor.getAllValues();
+        assertEquals(3,
+                     contexts.size());
+        verifyConnection((GraphConnectionContext) contexts.get(0),
+                         edge,
+                         node,
+                         target);
+
+        verifyConnectorCardinality((ConnectorCardinalityContext) contexts.get(1),
+                                   graph,
+                                   lastSourceNode,
+                                   edge,
+                                   ConnectorCardinalityContext.Direction.OUTGOING,
+                                   CardinalityContext.Operation.DELETE);
+        verifyConnectorCardinality((ConnectorCardinalityContext) contexts.get(2),
+                                   graph,
+                                   node,
+                                   edge,
+                                   ConnectorCardinalityContext.Direction.OUTGOING,
+                                   CardinalityContext.Operation.ADD);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
         verify(lastSourceOutEdges,
@@ -250,31 +220,30 @@ public class SetConnectionSourceNodeCommandTest extends AbstractGraphCommandTest
         when(lastSourceNode.getOutEdges()).thenReturn(lastSourceOutEdges);
         when(target.getInEdges()).thenReturn(targetInEdges);
         CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
-        verify(connectionRuleManager,
-               times(1)).evaluate(eq(edge),
-                                  eq(node),
-                                  eq(target));
-        verify(edgeCardinalityRuleManager,
-               times(1)).evaluate(eq(edge),
-                                  eq(lastSourceNode),
-                                  any(List.class),
-                                  eq(EdgeCardinalityRule.Type.OUTGOING),
-                                  eq(RuleManager.Operation.DELETE));
-        verify(edgeCardinalityRuleManager,
-               times(1)).evaluate(eq(edge),
-                                  eq(node),
-                                  any(List.class),
-                                  eq(EdgeCardinalityRule.Type.OUTGOING),
-                                  eq(RuleManager.Operation.ADD));
-        verify(containmentRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
-        verify(containmentRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
-        verify(dockingRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
+        final ArgumentCaptor<RuleEvaluationContext> contextCaptor = ArgumentCaptor.forClass(RuleEvaluationContext.class);
+        verify(ruleManager,
+               times(3)).evaluate(eq(ruleSet),
+                                  contextCaptor.capture());
+        final List<RuleEvaluationContext> contexts = contextCaptor.getAllValues();
+        assertEquals(3,
+                     contexts.size());
+        verifyConnection((GraphConnectionContext) contexts.get(0),
+                         edge,
+                         node,
+                         target);
+
+        verifyConnectorCardinality((ConnectorCardinalityContext) contexts.get(1),
+                                   graph,
+                                   lastSourceNode,
+                                   edge,
+                                   ConnectorCardinalityContext.Direction.OUTGOING,
+                                   CardinalityContext.Operation.DELETE);
+        verifyConnectorCardinality((ConnectorCardinalityContext) contexts.get(2),
+                                   graph,
+                                   node,
+                                   edge,
+                                   ConnectorCardinalityContext.Direction.OUTGOING,
+                                   CardinalityContext.Operation.ADD);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
         verify(lastSourceOutEdges,

@@ -14,7 +14,6 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -24,14 +23,15 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
  * A Command to register and node into the graph storage.
  * Cardinality rule evaluations for the graph required.
- * <p/>
+ * <p>
  * This command should be used as aggregate for composite commands,
  * but it's recommended to provide on the factory only public commands
  * that do really update the graph structure:
@@ -54,7 +54,7 @@ public class RegisterNodeCommand extends AbstractGraphCommand {
     public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
         final CommandResult<RuleViolation> results = allow(context);
         if (!results.getType().equals(CommandResult.Type.ERROR)) {
-            final Graph<?, Node> graph = getGraph(context);
+            final Graph graph = getGraph(context);
             graph.addNode(candidate);
             getMutableIndex(context).addNode(candidate);
         }
@@ -63,16 +63,13 @@ public class RegisterNodeCommand extends AbstractGraphCommand {
 
     @SuppressWarnings("unchecked")
     protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
-        final Graph<?, Node> graph = getGraph(context);
+        final Graph graph = getGraph(context);
         final Collection<RuleViolation> cardinalityRuleViolations =
-                (Collection<RuleViolation>) context.getRulesManager()
-                        .cardinality()
-                        .evaluate(graph,
-                                  getCandidate(),
-                                  RuleManager.Operation.ADD).violations();
-        return new GraphCommandResultBuilder(new ArrayList<RuleViolation>(1) {{
-            addAll(cardinalityRuleViolations);
-        }}).build();
+                doEvaluate(context,
+                           RuleContextBuilder.GraphContexts.cardinality(graph,
+                                                                        getCandidate(),
+                                                                        CardinalityContext.Operation.ADD));
+        return new GraphCommandResultBuilder(cardinalityRuleViolations).build();
     }
 
     @Override

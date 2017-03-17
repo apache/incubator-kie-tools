@@ -33,8 +33,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-import org.kie.workbench.common.stunner.core.rule.model.ModelCardinalityRuleManager;
-import org.kie.workbench.common.stunner.core.rule.model.ModelContainmentRuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
 
 @Element
 @Dependent
@@ -48,7 +47,6 @@ public class CaseManagementElementBuilderControl extends ElementBuilderControlIm
              null,
              null,
              null,
-             null,
              null);
     }
 
@@ -56,16 +54,14 @@ public class CaseManagementElementBuilderControl extends ElementBuilderControlIm
     public CaseManagementElementBuilderControl(final ClientDefinitionManager clientDefinitionManager,
                                                final ClientFactoryService clientFactoryServices,
                                                final GraphUtils graphUtils,
-                                               final ModelContainmentRuleManager modelContainmentRuleManager,
-                                               final ModelCardinalityRuleManager modelCardinalityRuleManager,
+                                               final RuleManager ruleManager,
                                                final @CaseManagementEditor CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                                final GraphBoundsIndexer graphBoundsIndexer,
                                                final CanvasLayoutUtils canvasLayoutUtils) {
         super(clientDefinitionManager,
               clientFactoryServices,
               graphUtils,
-              modelContainmentRuleManager,
-              modelCardinalityRuleManager,
+              ruleManager,
               canvasCommandFactory,
               graphBoundsIndexer,
               canvasLayoutUtils);

@@ -27,8 +27,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.service.ClientFactoryService;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-import org.kie.workbench.common.stunner.core.rule.model.ModelCardinalityRuleManager;
-import org.kie.workbench.common.stunner.core.rule.model.ModelContainmentRuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
 
 /**
  * Build element on the canvas, either a node or an edge.
@@ -42,16 +41,14 @@ public class ElementBuilderControlImpl extends AbstractElementBuilderControl {
     public ElementBuilderControlImpl(final ClientDefinitionManager clientDefinitionManager,
                                      final ClientFactoryService clientFactoryServices,
                                      final GraphUtils graphUtils,
-                                     final ModelContainmentRuleManager modelContainmentRuleManager,
-                                     final ModelCardinalityRuleManager modelCardinalityRuleManager,
+                                     final RuleManager ruleManager,
                                      final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                      final GraphBoundsIndexer graphBoundsIndexer,
                                      final CanvasLayoutUtils canvasLayoutUtils) {
         super(clientDefinitionManager,
               clientFactoryServices,
               graphUtils,
-              modelContainmentRuleManager,
-              modelCardinalityRuleManager,
+              ruleManager,
               canvasCommandFactory,
               graphBoundsIndexer,
               canvasLayoutUtils);

@@ -56,7 +56,7 @@ public class CardinalityRuleGenerator extends AbstractGenerator {
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
         final boolean isInterface = classElement.getKind().isInterface();
-        AllowedOccurrences occs = classElement.getAnnotation(AllowedOccurrences.class);
+        final AllowedOccurrences occs = classElement.getAnnotation(AllowedOccurrences.class);
         if (null != occs) {
             for (Occurrences occurrence : occs.value()) {
                 String role = occurrence.role();

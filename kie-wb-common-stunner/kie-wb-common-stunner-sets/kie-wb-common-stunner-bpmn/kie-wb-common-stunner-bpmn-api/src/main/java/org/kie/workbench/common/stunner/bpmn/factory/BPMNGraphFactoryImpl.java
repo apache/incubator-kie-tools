@@ -42,6 +42,7 @@ import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
 /**
@@ -60,10 +61,12 @@ public class BPMNGraphFactoryImpl
     private final GraphCommandManager graphCommandManager;
     private final GraphCommandFactory graphCommandFactory;
     private final FactoryManager factoryManager;
+    private final RuleManager ruleManager;
     private final GraphIndexBuilder<?> indexBuilder;
 
     protected BPMNGraphFactoryImpl() {
         this(null,
+             null,
              null,
              null,
              null,
@@ -73,11 +76,13 @@ public class BPMNGraphFactoryImpl
     @Inject
     public BPMNGraphFactoryImpl(final DefinitionManager definitionManager,
                                 final FactoryManager factoryManager,
+                                final RuleManager ruleManager,
                                 final GraphCommandManager graphCommandManager,
                                 final GraphCommandFactory graphCommandFactory,
                                 final GraphIndexBuilder<?> indexBuilder) {
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
+        this.ruleManager = ruleManager;
         this.graphCommandManager = graphCommandManager;
         this.graphCommandFactory = graphCommandFactory;
         this.indexBuilder = indexBuilder;
@@ -128,6 +133,7 @@ public class BPMNGraphFactoryImpl
         return new EmptyRulesCommandExecutionContext(
                 definitionManager,
                 factoryManager,
+                ruleManager,
                 index);
     }
 }

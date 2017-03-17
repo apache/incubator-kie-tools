@@ -17,8 +17,8 @@
 package org.kie.workbench.common.stunner.core.validation.graph;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.Stack;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -27,15 +27,18 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.AbstractTreeTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessor;
-import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
+import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
 import org.kie.workbench.common.stunner.core.validation.AbstractValidator;
 
 @ApplicationScoped
@@ -45,51 +48,42 @@ public class GraphValidatorImpl
 
     TreeWalkTraverseProcessor treeWalkTraverseProcessor;
 
-    private GraphRulesManager rulesManager;
+    private final RuleManager ruleManager;
+    private RuleSet ruleSet;
 
     protected GraphValidatorImpl() {
-        this(null);
+        this(null,
+             null);
     }
 
     @Inject
-    public GraphValidatorImpl(final TreeWalkTraverseProcessor treeWalkTraverseProcessor) {
+    public GraphValidatorImpl(final RuleManager ruleManager,
+                              final TreeWalkTraverseProcessor treeWalkTraverseProcessor) {
+        this.ruleManager = ruleManager;
         this.treeWalkTraverseProcessor = treeWalkTraverseProcessor;
     }
 
     @Override
-    public GraphValidator withRulesManager(final GraphRulesManager rulesManager) {
-        this.rulesManager = rulesManager;
+    public GraphValidator withRuleSet(final RuleSet ruleSet) {
+        this.ruleSet = ruleSet;
         return this;
     }
 
     @Override
-    public void validate(final Graph<?, Node<?, Edge>> graph,
-                         final GraphValidatorCallback callback) {
-        assert this.rulesManager != null;
-        final Collection<GraphValidationViolation> violations = validate(graph,
-                                                                         this.rulesManager,
-                                                                         callback);
-        if (isValid(violations)) {
-            callback.onSuccess();
-        } else {
-            callback.onFail(violations);
-        }
-    }
-
     @SuppressWarnings("unchecked")
-    private Collection<GraphValidationViolation> validate(final Graph graph,
-                                                          final GraphRulesManager rulesManager,
-                                                          final GraphValidatorCallback callback) {
-        final Collection<GraphValidationViolation> result = new LinkedList<GraphValidationViolation>();
+    public void validate(final org.kie.workbench.common.stunner.core.graph.Graph graph,
+                         final GraphValidatorCallback callback) {
+        assert this.ruleSet != null;
+        final Collection<GraphValidationViolation> violations = new LinkedList<GraphValidationViolation>();
         treeWalkTraverseProcessor
                 .useEdgeVisitorPolicy(TreeWalkTraverseProcessor.EdgeVisitorPolicy.VISIT_EDGE_BEFORE_TARGET_NODE)
                 .traverse(graph,
-                          new AbstractTreeTraverseCallback<Graph, Node, Edge>() {
+                          new AbstractTreeTraverseCallback<org.kie.workbench.common.stunner.core.graph.Graph, Node, Edge>() {
 
                               private final Stack<Node> currentParents = new Stack<Node>();
 
                               @Override
-                              public void startGraphTraversal(final Graph graph) {
+                              public void startGraphTraversal(final org.kie.workbench.common.stunner.core.graph.Graph graph) {
                                   super.startGraphTraversal(graph);
                                   currentParents.clear();
                               }
@@ -104,9 +98,9 @@ public class GraphValidatorImpl
                                           this.currentParents.push(edge.getSourceNode());
                                       } else if (content instanceof View) {
                                           // Evaluate containment rules for this edge.
-                                          final Iterable<RuleViolation> inCardinalityViolations = evaluateIncomingEdgeCardinality(rulesManager,
+                                          final Iterable<RuleViolation> inCardinalityViolations = evaluateIncomingEdgeCardinality(graph,
                                                                                                                                   edge);
-                                          final Iterable<RuleViolation> outCardinalityViolations = evaluateOutgoingEdgeCardinality(rulesManager,
+                                          final Iterable<RuleViolation> outCardinalityViolations = evaluateOutgoingEdgeCardinality(graph,
                                                                                                                                    edge);
                                           addViolations(edge,
                                                         _violations,
@@ -118,8 +112,8 @@ public class GraphValidatorImpl
                                           final Node parent = edge.getSourceNode();
                                           final Node docked = edge.getTargetNode();
                                           // Evaluate docking rules for the source & target nodes.
-                                          final Iterable<RuleViolation> dockingViolations = evaluateDocking(rulesManager,
-                                                                                                            parent,
+                                          final Iterable<RuleViolation> dockingViolations = evaluateDocking(graph,
+                                                                                                            Optional.ofNullable(parent),
                                                                                                             docked);
                                           addViolations(parent,
                                                         _violations,
@@ -128,7 +122,7 @@ public class GraphValidatorImpl
                                       callback.afterValidateEdge(edge,
                                                                  _violations);
                                       if (!_violations.isEmpty()) {
-                                          result.addAll(_violations);
+                                          violations.addAll(_violations);
                                       }
                                   }
                                   return true;
@@ -169,17 +163,17 @@ public class GraphValidatorImpl
                                       final Collection<GraphValidationViolation> _violations = new LinkedList<GraphValidationViolation>();
                                       // Evaluate containment rules for this node.
                                       final Iterable<RuleViolation> containmentViolations = null != parent ?
-                                              evaluateContainment(rulesManager,
-                                                                  parent,
-                                                                  node) : evaluateContainment(rulesManager,
-                                                                                              graph,
-                                                                                              node);
+                                              evaluateContainment(graph,
+                                                                  Optional.ofNullable(parent),
+                                                                  node) :
+                                              evaluateContainment(graph,
+                                                                  Optional.empty(),
+                                                                  node);
                                       addViolations(node,
                                                     _violations,
                                                     containmentViolations);
                                       // Evaluate cardinality rules for this node.
-                                      final Iterable<RuleViolation> cardinalityViolations = evaluateCardinality(rulesManager,
-                                                                                                                graph,
+                                      final Iterable<RuleViolation> cardinalityViolations = evaluateCardinality(graph,
                                                                                                                 node);
                                       addViolations(node,
                                                     _violations,
@@ -187,21 +181,24 @@ public class GraphValidatorImpl
                                       callback.afterValidateNode(node,
                                                                  _violations);
                                       if (!_violations.isEmpty()) {
-                                          result.addAll(_violations);
+                                          violations.addAll(_violations);
                                       }
                                   }
                               }
                           });
-        return result;
+
+        if (isValid(violations)) {
+            callback.onSuccess();
+        } else {
+            callback.onFail(violations);
+        }
     }
 
     private void addViolations(final Element element,
                                final Collection<GraphValidationViolation> result,
                                final Iterable<RuleViolation> violations) {
         if (null != violations && violations.iterator().hasNext()) {
-            final Iterator<RuleViolation> it = violations.iterator();
-            while (it.hasNext()) {
-                final RuleViolation violation = it.next();
+            for (RuleViolation violation : violations) {
                 final GraphValidationViolation graphValidationViolation = new GraphValidationViolationImpl(element,
                                                                                                            violation);
                 result.add(graphValidationViolation);
@@ -210,61 +207,62 @@ public class GraphValidatorImpl
     }
 
     @SuppressWarnings("unchecked")
-    private Iterable<RuleViolation> evaluateContainment(final GraphRulesManager rulesManager,
-                                                        final Graph target,
+    private Iterable<RuleViolation> evaluateContainment(final Graph graph,
+                                                        final Optional<Element<? extends Definition<?>>> parent,
                                                         final Node candidate) {
-        return rulesManager.containment().evaluate(target,
-                                                   candidate).violations();
-    }
-
-    @SuppressWarnings("unchecked")
-    private Iterable<RuleViolation> evaluateContainment(final GraphRulesManager rulesManager,
-                                                        final Node parent,
-                                                        final Node candidate) {
-        return rulesManager.containment().evaluate(parent,
-                                                   candidate).violations();
-    }
-
-    @SuppressWarnings("unchecked")
-    private Iterable<RuleViolation> evaluateCardinality(final GraphRulesManager rulesManager,
-                                                        final Graph target,
-                                                        final Node candidate) {
-        return rulesManager.cardinality().evaluate(target,
-                                                   candidate,
-                                                   RuleManager.Operation.ADD).violations();
-    }
-
-    @SuppressWarnings("unchecked")
-    private Iterable<RuleViolation> evaluateDocking(final GraphRulesManager rulesManager,
-                                                    final Node parent,
-                                                    final Node candidate) {
-        return rulesManager.docking().evaluate(parent,
-                                               candidate).violations();
-    }
-
-    @SuppressWarnings("unchecked")
-    private Iterable<RuleViolation> evaluateIncomingEdgeCardinality(final GraphRulesManager rulesManager,
-                                                                    final Edge<? extends View, Node> edge) {
-        return rulesManager
-                .edgeCardinality()
-                .evaluate((Edge<? extends View<?>, Node>) edge,
-                          edge.getTargetNode(),
-                          edge.getTargetNode().getInEdges(),
-                          EdgeCardinalityRule.Type.INCOMING,
-                          RuleManager.Operation.NONE)
+        return ruleManager
+                .evaluate(ruleSet,
+                          RuleContextBuilder.GraphContexts.containment(graph,
+                                                                       parent,
+                                                                       candidate))
                 .violations();
     }
 
     @SuppressWarnings("unchecked")
-    private Iterable<RuleViolation> evaluateOutgoingEdgeCardinality(final GraphRulesManager rulesManager,
+    private Iterable<RuleViolation> evaluateCardinality(final org.kie.workbench.common.stunner.core.graph.Graph target,
+                                                        final Node candidate) {
+        return ruleManager
+                .evaluate(ruleSet,
+                          RuleContextBuilder.GraphContexts.cardinality(target,
+                                                                       candidate,
+                                                                       CardinalityContext.Operation.ADD)).violations();
+    }
+
+    @SuppressWarnings("unchecked")
+    private Iterable<RuleViolation> evaluateDocking(final Graph graph,
+                                                    final Optional<Element<? extends Definition<?>>> parent,
+                                                    final Node candidate) {
+        return ruleManager
+                .evaluate(ruleSet,
+                          RuleContextBuilder.GraphContexts.docking(graph,
+                                                                   parent,
+                                                                   candidate))
+                .violations();
+    }
+
+    @SuppressWarnings("unchecked")
+    private Iterable<RuleViolation> evaluateIncomingEdgeCardinality(final org.kie.workbench.common.stunner.core.graph.Graph graph,
                                                                     final Edge<? extends View, Node> edge) {
-        return rulesManager
-                .edgeCardinality()
-                .evaluate((Edge<? extends View<?>, Node>) edge,
-                          edge.getSourceNode(),
-                          edge.getSourceNode().getOutEdges(),
-                          EdgeCardinalityRule.Type.OUTGOING,
-                          RuleManager.Operation.NONE)
+        return ruleManager
+                .evaluate(ruleSet,
+                          RuleContextBuilder.GraphContexts.edgeCardinality(graph,
+                                                                           edge.getTargetNode(),
+                                                                           (Edge<? extends View<?>, Node>) edge,
+                                                                           ConnectorCardinalityContext.Direction.INCOMING,
+                                                                           CardinalityContext.Operation.NONE))
+                .violations();
+    }
+
+    @SuppressWarnings("unchecked")
+    private Iterable<RuleViolation> evaluateOutgoingEdgeCardinality(final org.kie.workbench.common.stunner.core.graph.Graph graph,
+                                                                    final Edge<? extends View, Node> edge) {
+        return ruleManager
+                .evaluate(ruleSet,
+                          RuleContextBuilder.GraphContexts.edgeCardinality(graph,
+                                                                           edge.getSourceNode(),
+                                                                           (Edge<? extends View<?>, Node>) edge,
+                                                                           ConnectorCardinalityContext.Direction.OUTGOING,
+                                                                           CardinalityContext.Operation.NONE))
                 .violations();
     }
 

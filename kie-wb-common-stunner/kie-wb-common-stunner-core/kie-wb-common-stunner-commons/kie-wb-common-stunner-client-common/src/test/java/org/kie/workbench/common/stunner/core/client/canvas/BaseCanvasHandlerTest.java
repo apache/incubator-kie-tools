@@ -33,6 +33,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -43,8 +44,10 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
-import org.kie.workbench.common.stunner.core.rule.model.ModelRulesManager;
+import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
+import org.kie.workbench.common.stunner.core.rule.EmptyRuleSet;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
@@ -62,21 +65,24 @@ public class BaseCanvasHandlerTest {
     private static final String PARENT_ID = "p1";
     private static final String CANDIDATE_ID = "c1";
     private static final String SHAPE_FACTORY_ID = "factory1";
+    private static final RuleSet RULE_SET = new EmptyRuleSet();
 
     @Mock
     DefinitionManager definitionManager;
     @Mock
     AdapterManager adapterManager;
     @Mock
+    TypeDefinitionSetRegistry definitionSetRegistry;
+    @Mock
     DefinitionAdapter definitionAdapter;
+    @Mock
+    DefinitionSetRuleAdapter definitionSetRuleAdapter;
     @Mock
     GraphUtils graphUtils;
     @Mock
     ShapeManager shapeManager;
     @Mock
-    GraphRulesManager graphRulesManager;
-    @Mock
-    ModelRulesManager modelRulesManager;
+    RuleManager ruleManager;
     @Mock
     Index<?, ?> graphIndex;
     @Mock
@@ -106,6 +112,8 @@ public class BaseCanvasHandlerTest {
     @Mock
     Definition candidateContent;
     @Mock
+    Object defSet;
+    @Mock
     Object defBean;
 
     private BaseCanvasHandlerStub tested;
@@ -114,7 +122,11 @@ public class BaseCanvasHandlerTest {
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         when(definitionManager.adapters()).thenReturn(adapterManager);
+        when(definitionManager.definitionSets()).thenReturn(definitionSetRegistry);
         when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
+        when(adapterManager.forRules()).thenReturn(definitionSetRuleAdapter);
+        when(definitionSetRegistry.getDefinitionSetByType(any(Class.class))).thenReturn(defSet);
+        when(definitionSetRuleAdapter.getRuleSet(eq(defSet))).thenReturn(RULE_SET);
         when(shapeManager.getShapeSet(eq(SHAPE_FACTORY_ID))).thenReturn(shapeSet);
         when(shapeSet.getShapeFactory()).thenReturn(shapeFactory);
         when(shape.getShapeView()).thenReturn(shapeView);
@@ -127,6 +139,7 @@ public class BaseCanvasHandlerTest {
         when(canvas.getShape(eq(PARENT_ID))).thenReturn(parentShape);
         when(canvas.getShape(eq(CANDIDATE_ID))).thenReturn(shape);
         when(diagram.getMetadata()).thenReturn(metadata);
+        when(metadata.getDefinitionSetId()).thenReturn("ds1");
         this.tested = spy(new BaseCanvasHandlerStub());
         tested.handle(canvas);
         assertEquals(canvas,
@@ -348,12 +361,12 @@ public class BaseCanvasHandlerTest {
         }
 
         @Override
-        protected void buildGraphIndex(final Command loadCallback) {
-            loadCallback.execute();
+        public RuleManager getRuleManager() {
+            return ruleManager;
         }
 
         @Override
-        protected void loadRules(final Command loadCallback) {
+        protected void buildGraphIndex(final Command loadCallback) {
             loadCallback.execute();
         }
 
@@ -365,16 +378,6 @@ public class BaseCanvasHandlerTest {
         @Override
         protected void destroyGraphIndex(final Command loadCallback) {
 
-        }
-
-        @Override
-        public GraphRulesManager getGraphRulesManager() {
-            return graphRulesManager;
-        }
-
-        @Override
-        public ModelRulesManager getModelRulesManager() {
-            return modelRulesManager;
         }
 
         @Override

@@ -57,7 +57,7 @@ public abstract class AbstractGraphCompositeCommand extends AbstractCompositeCom
     protected CommandResult<RuleViolation> doAllow(final GraphCommandExecutionContext context,
                                                    final Command<GraphCommandExecutionContext, RuleViolation> command) {
         // Check if rules are present.
-        if (null == context.getRulesManager()) {
+        if (null == context.getRuleManager()) {
             return GraphCommandResultBuilder.SUCCESS;
         }
         return command.allow(context);
@@ -99,6 +99,7 @@ public abstract class AbstractGraphCompositeCommand extends AbstractCompositeCom
     private EmptyRulesCommandExecutionContext buildEmptyExecutionContext(final GraphCommandExecutionContext context) {
         return new EmptyRulesCommandExecutionContext(context.getDefinitionManager(),
                                                      context.getFactoryManager(),
+                                                     context.getRuleManager(),
                                                      context.getGraphIndex());
     }
 }

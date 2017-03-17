@@ -18,20 +18,20 @@ package ${packageName};
 
 import ${parentAdapterClassName};
 import org.kie.workbench.common.stunner.core.rule.Rule;
-import org.kie.workbench.common.stunner.core.rule.CardinalityRule;
-import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
-import org.kie.workbench.common.stunner.core.rule.ConnectionRule;
-import org.kie.workbench.common.stunner.core.rule.impl.rules.ConnectionRuleImpl;
-import org.kie.workbench.common.stunner.core.rule.impl.rules.ContainmentRuleImpl;
-import org.kie.workbench.common.stunner.core.rule.impl.rules.EdgeCardinalityRuleImpl;
-import org.kie.workbench.common.stunner.core.rule.impl.rules.CardinalityRuleImpl;
-import org.kie.workbench.common.stunner.core.rule.impl.rules.*;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
+import org.kie.workbench.common.stunner.core.rule.RuleSetImpl;
+import org.kie.workbench.common.stunner.core.rule.context.*;
+import org.kie.workbench.common.stunner.core.rule.ext.RuleExtension;
+import org.kie.workbench.common.stunner.core.rule.impl.CanConnect;
+import org.kie.workbench.common.stunner.core.rule.impl.CanContain;
+import org.kie.workbench.common.stunner.core.rule.impl.CanDock;
+import org.kie.workbench.common.stunner.core.rule.impl.EdgeOccurrences;
+import org.kie.workbench.common.stunner.core.rule.impl.Occurrences;
 
 import javax.annotation.Generated;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,17 +44,19 @@ public class ${className} extends ${parentAdapterClassName}<${defSetClassName}> 
     </#list>
 
     private static final Set<Rule> rules = new HashSet<Rule>(${rulesSize});
+    private RuleSet ruleSet;
 
     @PostConstruct
     public void init() {
         <#list ruleNames as ruleName>
             rules.add(${ruleName});
         </#list>
+        ruleSet = new RuleSetImpl("${ruleSetName}", rules);
     }
 
     @Override
-    public Collection<Rule> getRules( final ${defSetClassName} pojo ) {
-        return rules;
+    public RuleSet getRuleSet( final ${defSetClassName} pojo ) {
+        return ruleSet;
     }
 
     @Override

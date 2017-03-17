@@ -35,8 +35,7 @@ public class CaseManagementElementBuilderControlTest extends BaseCaseManagementB
         return new CaseManagementElementBuilderControl(clientDefinitionManager,
                                                        clientFactoryServices,
                                                        graphUtils,
-                                                       modelContainmentRuleManager,
-                                                       modelCardinalityRuleManager,
+                                                       ruleManager,
                                                        canvasCommandFactory,
                                                        graphBoundsIndexer,
                                                        canvasLayoutUtils);

@@ -18,18 +18,22 @@ package org.kie.workbench.common.stunner.core.graph.command;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
 
 public abstract class AbstractGraphCommandExecutionContext implements GraphCommandExecutionContext {
 
     private final transient DefinitionManager definitionManager;
     private final transient FactoryManager factoryManager;
+    private final transient RuleManager ruleManager;
     private final transient Index<?, ?> graphIndex;
 
     public AbstractGraphCommandExecutionContext(final DefinitionManager definitionManager,
                                                 final FactoryManager factoryManager,
+                                                final RuleManager ruleManager,
                                                 final Index<?, ?> graphIndex) {
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
+        this.ruleManager = ruleManager;
         this.graphIndex = graphIndex;
     }
 
@@ -46,5 +50,10 @@ public abstract class AbstractGraphCommandExecutionContext implements GraphComma
     @Override
     public Index<?, ?> getGraphIndex() {
         return graphIndex;
+    }
+
+    @Override
+    public RuleManager getRuleManager() {
+        return ruleManager;
     }
 }

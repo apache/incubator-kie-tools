@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -64,6 +65,9 @@ public class CaseManagementDiagramMarshallerTest {
     @Mock
     private GraphCommandFactory commandFactory;
 
+    @Mock
+    private RuleManager rulesManager;
+
     private CaseManagementDiagramMarshaller marshaller;
 
     @Before
@@ -75,6 +79,7 @@ public class CaseManagementDiagramMarshallerTest {
                                                               indexBuilder,
                                                               oryxManager,
                                                               factoryManager,
+                                                              rulesManager,
                                                               graphCommandManager,
                                                               commandFactory);
     }

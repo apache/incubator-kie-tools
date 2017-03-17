@@ -50,6 +50,8 @@ public class BindableDefinitionSetRuleAdapterGenerator extends AbstractBindableA
                  BindableDefinitionSetRuleAdapterGenerator.class.getName());
         root.put("defSetClassName",
                  defSetClassName);
+        root.put("ruleSetName",
+                 className);
         root.put("rules",
                  rules);
         root.put("rulesSize",

@@ -45,7 +45,7 @@ import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 /**
  * A toolbox control provider implementation that provides buttons to create new elements
  * and update the graph structure.
- * <p/>
+ * <p>
  * It provides buttons for:
  * - Creating a new connection from the source element.
  * It looks for the default connector type and creates a button for it.
@@ -119,8 +119,7 @@ public class FlowActionsToolboxControlProvider extends AbstractToolboxControlPro
             final List<ToolboxCommand<AbstractCanvasHandler, ?>> commands = new LinkedList<>();
             // Look for the default connector type and create a button for it.
             // TODO: Handle all response pages.
-            final Set<String> allowedConnectorIds = commonLookups.getAllowedConnectors(context.getModelRulesManager(),
-                                                                                       defSetId,
+            final Set<String> allowedConnectorIds = commonLookups.getAllowedConnectors(defSetId,
                                                                                        node,
                                                                                        0,
                                                                                        10);
@@ -137,8 +136,7 @@ public class FlowActionsToolboxControlProvider extends AbstractToolboxControlPro
             final String defaultConnectorId = definitionUtils.getDefaultConnectorId(defSetId);
             if (null != defaultConnectorId) {
                 // TODO: Handle all response pages.
-                final Set<String> allowedMorphDefaultDefinitionIds = commonLookups.getAllowedMorphDefaultDefinitions(context.getModelRulesManager(),
-                                                                                                                     defSetId,
+                final Set<String> allowedMorphDefaultDefinitionIds = commonLookups.getAllowedMorphDefaultDefinitions(defSetId,
                                                                                                                      diagram.getGraph(),
                                                                                                                      (Node<? extends Definition<Object>, ? extends Edge>) item,
                                                                                                                      defaultConnectorId,

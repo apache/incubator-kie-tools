@@ -1,1 +1,1 @@
-CardinalityRuleImpl ${ruleName} = new CardinalityRuleImpl( "${ruleName}", "${ruleRoleId}", ${min}, ${max} );
+Occurrences ${ruleName} = new Occurrences( "${ruleName}", "${ruleRoleId}", ${min}, ${max} );

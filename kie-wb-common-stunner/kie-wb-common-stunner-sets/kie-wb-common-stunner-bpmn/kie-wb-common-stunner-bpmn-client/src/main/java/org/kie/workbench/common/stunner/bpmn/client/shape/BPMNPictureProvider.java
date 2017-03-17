@@ -57,8 +57,10 @@ public class BPMNPictureProvider implements PictureProvider<BPMNPictures> {
                     BPMNImageResources.INSTANCE.lane().getSafeUri());
                 put(BPMNPictures.PLUS_QUARE,
                     BPMNImageResources.INSTANCE.plusSquare().getSafeUri());
-                put(BPMNPictures.SUB_PROCESS,
-                    BPMNImageResources.INSTANCE.subProcess().getSafeUri());
+                put(BPMNPictures.SUB_PROCESS_REUSABLE,
+                    BPMNImageResources.INSTANCE.subProcessReusable().getSafeUri());
+                put(BPMNPictures.SUB_PROCESS_EMBEDDED,
+                    BPMNImageResources.INSTANCE.subProcessEmbedded().getSafeUri());
                 put(BPMNPictures.PARALLEL_EVENT,
                     BPMNImageResources.INSTANCE.gatewayParallelEvent().getSafeUri());
                 put(BPMNPictures.PARALLEL_MULTIPLE,

@@ -20,25 +20,28 @@ import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
-import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
 
 @NonPortable
 public class GraphCommandExecutionContextImpl extends AbstractGraphCommandExecutionContext {
 
-    private final transient GraphRulesManager rulesManager;
+    private final transient RuleSet ruleSet;
 
     public GraphCommandExecutionContextImpl(final DefinitionManager definitionManager,
                                             final FactoryManager factoryManager,
-                                            final GraphRulesManager rulesManager,
-                                            final Index<?, ?> graphIndex) {
+                                            final RuleManager ruleManager,
+                                            final Index<?, ?> graphIndex,
+                                            final RuleSet ruleSet) {
         super(definitionManager,
               factoryManager,
+              ruleManager,
               graphIndex);
-        this.rulesManager = rulesManager;
+        this.ruleSet = ruleSet;
     }
 
     @Override
-    public GraphRulesManager getRulesManager() {
-        return rulesManager;
+    public RuleSet getRuleSet() {
+        return ruleSet;
     }
 }

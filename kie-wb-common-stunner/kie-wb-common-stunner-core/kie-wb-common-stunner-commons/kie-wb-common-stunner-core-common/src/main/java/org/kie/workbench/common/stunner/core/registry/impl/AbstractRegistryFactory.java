@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionR
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
 import org.kie.workbench.common.stunner.core.registry.diagram.DiagramRegistry;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
+import org.kie.workbench.common.stunner.core.registry.rule.RuleHandlerRegistry;
 
 public abstract class AbstractRegistryFactory implements RegistryFactory {
 
@@ -70,6 +71,11 @@ public abstract class AbstractRegistryFactory implements RegistryFactory {
     @Override
     public <T extends Diagram> DiagramRegistry<T> newDiagramRegistry() {
         return new DiagramListRegistry<T>();
+    }
+
+    @Override
+    public RuleHandlerRegistry newRuleHandlerRegistry() {
+        return new RuleHandlerRegistryImpl();
     }
 
     public <T> MapRegistry<T> newMapRegistry(final KeyProvider<T> keyProvider) {

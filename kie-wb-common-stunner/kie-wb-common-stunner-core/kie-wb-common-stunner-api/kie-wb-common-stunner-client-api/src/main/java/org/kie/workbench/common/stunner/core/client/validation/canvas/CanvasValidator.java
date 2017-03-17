@@ -17,10 +17,8 @@
 package org.kie.workbench.common.stunner.core.client.validation.canvas;
 
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
 import org.kie.workbench.common.stunner.core.validation.Validator;
 
-public interface CanvasValidator extends Validator<CanvasHandler, CanvasValidatorCallback> {
+public interface CanvasValidator<C extends CanvasHandler> extends Validator<C, CanvasValidatorCallback> {
 
-    CanvasValidator withRulesManager(final GraphRulesManager rulesManager);
 }

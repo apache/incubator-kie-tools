@@ -111,6 +111,10 @@ import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBu
 import org.kie.workbench.common.stunner.core.graph.processing.index.map.MapIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
+import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
+import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -161,6 +165,9 @@ public class BPMNDiagramMarshallerTest {
 
     @Mock
     BeanManager beanManager;
+
+    @Mock
+    RuleManager rulesManager;
 
     @Mock
     ApplicationFactoryManager applicationFactoryManager;
@@ -320,6 +327,8 @@ public class BPMNDiagramMarshallerTest {
         when(adapterRegistry.getMorphAdapter(eq(ScriptTask.class))).thenReturn(morphAdapter);
         when(adapterRegistry.getMorphAdapter(eq(BusinessRuleTask.class))).thenReturn(morphAdapter);
         GraphIndexBuilder<?> indexBuilder = new MapIndexBuilder();
+        when(rulesManager.evaluate(any(RuleSet.class),
+                                   any(RuleEvaluationContext.class))).thenReturn(new DefaultRuleViolations());
         // The tested BPMN marshaller.
         tested = new BPMNDiagramMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
                                            objectBuilderFactory,
@@ -328,6 +337,7 @@ public class BPMNDiagramMarshallerTest {
                                            indexBuilder,
                                            oryxManager,
                                            applicationFactoryManager,
+                                           rulesManager,
                                            commandManager,
                                            commandFactory);
     }

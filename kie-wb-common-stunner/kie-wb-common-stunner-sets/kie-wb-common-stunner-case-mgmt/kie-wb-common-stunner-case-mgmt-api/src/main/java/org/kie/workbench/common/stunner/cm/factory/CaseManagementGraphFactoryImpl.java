@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
 
 /**
  * The custom factory for Case Management graphs.
@@ -41,11 +42,13 @@ public class CaseManagementGraphFactoryImpl
     @Inject
     public CaseManagementGraphFactoryImpl(final DefinitionManager definitionManager,
                                           final FactoryManager factoryManager,
+                                          final RuleManager ruleManager,
                                           final GraphCommandManager graphCommandManager,
                                           final GraphCommandFactory graphCommandFactory,
                                           final GraphIndexBuilder<?> indexBuilder) {
         super(definitionManager,
               factoryManager,
+              ruleManager,
               graphCommandManager,
               graphCommandFactory,
               indexBuilder);

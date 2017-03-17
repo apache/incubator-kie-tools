@@ -24,13 +24,13 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.exception.BadCommandArgumentsException;
 import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
@@ -62,7 +62,7 @@ public class DeregisterNodeCommand extends AbstractGraphCommand {
         if (!results.getType().equals(CommandResult.Type.ERROR)) {
             LOGGER.log(Level.FINE,
                        "Executing...");
-            final Graph<?, Node> graph = getGraph(context);
+            final org.kie.workbench.common.stunner.core.graph.Graph graph = getGraph(context);
             final Node<?, Edge> candidate = getCandidate(context);
             this.removed = candidate;
             graph.removeNode(candidate.getUUID());
@@ -82,16 +82,14 @@ public class DeregisterNodeCommand extends AbstractGraphCommand {
     @SuppressWarnings("unchecked")
     protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
         // And check it really exist on the graph storage as well.
-        final Graph<?, Node> graph = getGraph(context);
+        final org.kie.workbench.common.stunner.core.graph.Graph graph = getGraph(context);
         final Node<View<?>, Edge> candidate = (Node<View<?>, Edge>) checkCandidateNotNull(context);
         final GraphCommandResultBuilder builder = new GraphCommandResultBuilder();
         final Collection<RuleViolation> cardinalityRuleViolations =
-                (Collection<RuleViolation>) context.getRulesManager()
-                        .cardinality()
-                        .evaluate(graph,
-                                  candidate,
-                                  RuleManager.Operation.DELETE)
-                        .violations();
+                doEvaluate(context,
+                           RuleContextBuilder.GraphContexts.cardinality(graph,
+                                                                        candidate,
+                                                                        CardinalityContext.Operation.DELETE));
         builder.addViolations(cardinalityRuleViolations);
         return builder.build();
     }

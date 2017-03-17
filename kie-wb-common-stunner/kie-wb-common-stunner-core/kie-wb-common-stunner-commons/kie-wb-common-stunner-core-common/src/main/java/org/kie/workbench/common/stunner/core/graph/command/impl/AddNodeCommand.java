@@ -16,15 +16,18 @@
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
 
 /**
  * A Command to add a node as a child for the main graph instance.
@@ -42,12 +45,12 @@ public final class AddNodeCommand extends RegisterNodeCommand {
         final CommandResult<RuleViolation> parentResult = super.check(context);
         final GraphCommandResultBuilder builder = new GraphCommandResultBuilder();
         parentResult.getViolations().forEach(builder::addViolation);
-        final Graph<?, Node> graph = getGraph(context);
+        final Element<? extends Definition<?>> graph = (Element<? extends Definition<?>>) getGraph(context);
         final Collection<RuleViolation> containmentRuleViolations =
-                (Collection<RuleViolation>) context.getRulesManager()
-                        .containment()
-                        .evaluate(graph,
-                                  getCandidate()).violations();
+                doEvaluate(context,
+                           RuleContextBuilder.GraphContexts.containment(getGraph(context),
+                                                                        Optional.of(graph),
+                                                                        getCandidate()));
         builder.addViolations(containmentRuleViolations);
         return builder.build();
     }

@@ -27,7 +27,6 @@ import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasVali
 import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidationViolation;
 import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidator;
 import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidatorCallback;
-import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
 
 @Dependent
 public class CanvasValidationControlImpl
@@ -60,11 +59,10 @@ public class CanvasValidationControlImpl
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void validate(final CanvasValidatorCallback validatorCallback) {
         if (null != canvasHandler) {
-            final GraphRulesManager rulesManager = canvasHandler.getGraphRulesManager();
             canvasValidator
-                    .withRulesManager(rulesManager)
                     .validate(canvasHandler,
                               new CanvasValidatorCallback() {
 

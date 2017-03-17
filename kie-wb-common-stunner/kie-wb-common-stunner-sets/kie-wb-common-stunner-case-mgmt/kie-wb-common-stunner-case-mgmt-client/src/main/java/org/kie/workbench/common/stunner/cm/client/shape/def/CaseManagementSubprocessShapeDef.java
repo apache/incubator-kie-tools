@@ -112,7 +112,7 @@ public final class CaseManagementSubprocessShapeDef
 
                 @Override
                 public BPMNPictures getSource(final Class<?> type) {
-                    return BPMNPictures.SUB_PROCESS;
+                    return BPMNPictures.SUB_PROCESS_REUSABLE;
                 }
             };
 

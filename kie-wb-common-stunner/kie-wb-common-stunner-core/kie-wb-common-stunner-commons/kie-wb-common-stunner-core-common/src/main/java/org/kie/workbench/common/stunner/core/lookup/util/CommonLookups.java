@@ -42,19 +42,23 @@ import org.kie.workbench.common.stunner.core.lookup.definition.DefinitionReprese
 import org.kie.workbench.common.stunner.core.lookup.rule.RuleLookupManager;
 import org.kie.workbench.common.stunner.core.lookup.rule.RuleLookupRequest;
 import org.kie.workbench.common.stunner.core.lookup.rule.RuleLookupRequestImpl;
-import org.kie.workbench.common.stunner.core.rule.ConnectionRule;
-import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
 import org.kie.workbench.common.stunner.core.rule.Rule;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
-import org.kie.workbench.common.stunner.core.rule.model.ModelRulesManager;
+import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.impl.CanConnect;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+
+import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * An utils class that provides common used look-ups and other logic for querying the domain model and the rules model,
  * that is used along the application.
- * <p/>
+ * <p>
  * // TODO: Some kind of cache to avoid frequently used lookups? Consider performance and memory, this class
  * is shared on both server and client sides.
  */
@@ -65,6 +69,7 @@ public class CommonLookups {
 
     private final DefinitionUtils definitionUtils;
     private final DefinitionLookupManager definitionLookupManager;
+    private final RuleManager ruleManager;
     private final RuleLookupManager ruleLookupManager;
     private final GraphUtils graphUtils;
     private final FactoryManager factoryManager;
@@ -74,16 +79,19 @@ public class CommonLookups {
              null,
              null,
              null,
+             null,
              null);
     }
 
     @Inject
     public CommonLookups(final DefinitionUtils definitionUtils,
                          final GraphUtils graphUtils,
+                         final RuleManager ruleManager,
                          final DefinitionLookupManager definitionLookupManager,
                          final RuleLookupManager ruleLookupManager,
                          final FactoryManager factoryManager) {
         this.definitionUtils = definitionUtils;
+        this.ruleManager = ruleManager;
         this.graphUtils = graphUtils;
         this.definitionLookupManager = definitionLookupManager;
         this.ruleLookupManager = ruleLookupManager;
@@ -93,8 +101,7 @@ public class CommonLookups {
     /**
      * Returns the allowed edge definition identifiers that can be added as outgoing edges for the given source node.
      */
-    public <T> Set<String> getAllowedConnectors(final ModelRulesManager modelRulesManager,
-                                                final String defSetId,
+    public <T> Set<String> getAllowedConnectors(final String defSetId,
                                                 final Node<Definition<T>, Edge> sourceNode,
                                                 final int page,
                                                 final int pageSize) {
@@ -109,13 +116,12 @@ public class CommonLookups {
                 connectionAllowedEdges.stream().forEach(allowedEdgeId -> {
                     final int edgeCount = countOutgoingEdges(sourceNode,
                                                              allowedEdgeId);
-                    final RuleViolations oev = modelRulesManager
-                            .edgeCardinality()
-                            .evaluate(allowedEdgeId,
-                                      sourceNode.getLabels(),
-                                      edgeCount,
-                                      EdgeCardinalityRule.Type.OUTGOING,
-                                      RuleManager.Operation.ADD);
+                    final RuleViolations oev = ruleManager.evaluate(getRuleSet(defSetId),
+                                                                    RuleContextBuilder.DomainContexts.edgeCardinality(sourceNode.getLabels(),
+                                                                                                                      allowedEdgeId,
+                                                                                                                      edgeCount,
+                                                                                                                      ConnectorCardinalityContext.Direction.OUTGOING,
+                                                                                                                      CardinalityContext.Operation.ADD));
                     final boolean oeCardinalityAllowed = pass(oev);
                     log(Level.FINEST,
                         "Outgoing edge cardinality rules evaluation - Result = [" + oeCardinalityAllowed + "]");
@@ -128,23 +134,32 @@ public class CommonLookups {
         return result;
     }
 
+    private RuleSet getRuleSet(final String defSetId) {
+        checkNotNull("defSetId",
+                     defSetId);
+        final Object definitionSet = getDefinitionManager().definitionSets().getDefinitionSetById(defSetId);
+        return getDefinitionManager()
+                .adapters()
+                .registry()
+                .getDefinitionSetRuleAdapter(definitionSet.getClass())
+                .getRuleSet(definitionSet);
+    }
+
     /**
      * Returns the allowed definition identifiers that can be used as target node for the given source node and
      * the given edge (connector) identifier.
      * This method only returns the definition identifiers that are considered the default types for its morph type,
      * it does NOT return all the identifiers for all the allowed target definitions.
-     * <p/>
+     * <p>
      * TODO: Handle several result pages.
      */
-    public <T> Set<String> getAllowedMorphDefaultDefinitions(final ModelRulesManager modelRulesManager,
-                                                             final String defSetId,
+    public <T> Set<String> getAllowedMorphDefaultDefinitions(final String defSetId,
                                                              final Graph<?, ? extends Node> graph,
                                                              final Node<? extends Definition<T>, ? extends Edge> sourceNode,
                                                              final String edgeId,
                                                              final int page,
                                                              final int pageSize) {
-        final Set<Object> allowedDefinitions = getAllowedTargetDefinitions(modelRulesManager,
-                                                                           defSetId,
+        final Set<Object> allowedDefinitions = getAllowedTargetDefinitions(defSetId,
                                                                            graph,
                                                                            sourceNode,
                                                                            edgeId,
@@ -177,11 +192,10 @@ public class CommonLookups {
     /**
      * Returns the allowed definition identifiers that can be used as target node for the given source node and
      * the given edge (connector) identifier.
-     * <p/>
+     * <p>
      * TODO: Handle several result pages.
      */
-    public <T> Set<Object> getAllowedTargetDefinitions(final ModelRulesManager modelRulesManager,
-                                                       final String defSetId,
+    public <T> Set<Object> getAllowedTargetDefinitions(final String defSetId,
                                                        final Graph<?, ? extends Node> graph,
                                                        final Node<? extends Definition<T>, ? extends Edge> sourceNode,
                                                        final String edgeId,
@@ -189,6 +203,7 @@ public class CommonLookups {
                                                        final int pageSize) {
         if (null != defSetId && null != graph && null != sourceNode && null != edgeId) {
             final T definition = sourceNode.getContent().getDefinition();
+            final RuleSet ruleSet = getRuleSet(defSetId);
             log(Level.FINEST,
                 "*** Checking the target definitions allowed " +
                         "for [" + definition + "] and using the " +
@@ -198,11 +213,13 @@ public class CommonLookups {
                                                               edgeId);
             log(Level.FINEST,
                 "The source node has  " + outConnectorsCount + "] outgoing connections.");
-            final RuleViolations oev = modelRulesManager.edgeCardinality().evaluate(edgeId,
-                                                                                    sourceNode.getLabels(),
-                                                                                    outConnectorsCount,
-                                                                                    EdgeCardinalityRule.Type.OUTGOING,
-                                                                                    RuleManager.Operation.ADD);
+            final RuleViolations oev =
+                    ruleManager.evaluate(ruleSet,
+                                         RuleContextBuilder.DomainContexts.edgeCardinality(sourceNode.getLabels(),
+                                                                                           edgeId,
+                                                                                           outConnectorsCount,
+                                                                                           ConnectorCardinalityContext.Direction.OUTGOING,
+                                                                                           CardinalityContext.Operation.ADD));
             final boolean oeCardinalityAllowed = pass(oev);
             log(Level.FINEST,
                 "Outgoing edge cardinality rules evaluation " +
@@ -246,11 +263,10 @@ public class CommonLookups {
                                                 .filter(role -> {
                                                     final Integer i = graphLabelCount.get(role);
                                                     final RuleViolations violations =
-                                                            modelRulesManager
-                                                                    .cardinality()
-                                                                    .evaluate(role,
-                                                                              null != i ? i : 0,
-                                                                              RuleManager.Operation.ADD);
+                                                            ruleManager.evaluate(ruleSet,
+                                                                                 RuleContextBuilder.DomainContexts.cardinality(role,
+                                                                                                                               null != i ? i : 0,
+                                                                                                                               CardinalityContext.Operation.ADD));
                                                     return !pass(violations);
                                                 })
                                                 .findFirst()
@@ -260,13 +276,14 @@ public class CommonLookups {
                                                     "result = [" + hasCardinalityViolations + "]");
                                         if (!hasCardinalityViolations) {
                                             // Check incoming connector cardinality for each the target node.
-                                            final RuleViolations iev = modelRulesManager
-                                                    .edgeCardinality()
-                                                    .evaluate(edgeId,
-                                                              targetDefinitionRoles,
-                                                              inConnectorsCount,
-                                                              EdgeCardinalityRule.Type.INCOMING,
-                                                              RuleManager.Operation.ADD);
+                                            final RuleViolations iev =
+
+                                                    ruleManager.evaluate(ruleSet,
+                                                                         RuleContextBuilder.DomainContexts.edgeCardinality(targetDefinitionRoles,
+                                                                                                                           edgeId,
+                                                                                                                           inConnectorsCount,
+                                                                                                                           ConnectorCardinalityContext.Direction.INCOMING,
+                                                                                                                           CardinalityContext.Operation.ADD));
                                             final boolean ieCardinalityAllowed = pass(iev);
                                             log(Level.FINEST,
                                                 "Incoming edge cardinality rules evaluation " +
@@ -288,7 +305,7 @@ public class CommonLookups {
 
     /**
      * Returns all the Definition Set's definition identifiers that contains the given labels.
-     * <p/>
+     * <p>
      * TODO: Handle several result pages.
      */
     private Set<String> getDefinitions(final String defSetId,
@@ -332,8 +349,8 @@ public class CommonLookups {
         if (null != rules && !rules.isEmpty()) {
             final Set<String> result = new LinkedHashSet<>();
             for (final Rule rule : rules) {
-                final ConnectionRule cr = (ConnectionRule) rule;
-                final String edgeId = cr.getId();
+                final CanConnect cr = (CanConnect) rule;
+                final String edgeId = cr.getConnectorId();
                 result.add(edgeId);
             }
             return result;
@@ -344,7 +361,7 @@ public class CommonLookups {
     /**
      * Returns the allowed ROLES that satisfy connection rules for a given source
      * definition ( domain model object, not a node ).and the given edge (connector) identifier.
-     * <p/>
+     * <p>
      * TODO: Handle several result pages.
      */
     private <T> Set<String> getConnectionRulesAllowedTargets(final String defSetId,
@@ -360,10 +377,10 @@ public class CommonLookups {
         if (null != rules && !rules.isEmpty()) {
             final Set<String> result = new LinkedHashSet<>();
             for (final Rule rule : rules) {
-                final ConnectionRule cr = (ConnectionRule) rule;
-                final Set<ConnectionRule.PermittedConnection> connections = cr.getPermittedConnections();
+                final CanConnect cr = (CanConnect) rule;
+                final List<CanConnect.PermittedConnection> connections = cr.getPermittedConnections();
                 if (null != connections && !connections.isEmpty()) {
-                    for (final ConnectionRule.PermittedConnection connection : connections) {
+                    for (final CanConnect.PermittedConnection connection : connections) {
                         result.add(connection.getEndRole());
                     }
                 }

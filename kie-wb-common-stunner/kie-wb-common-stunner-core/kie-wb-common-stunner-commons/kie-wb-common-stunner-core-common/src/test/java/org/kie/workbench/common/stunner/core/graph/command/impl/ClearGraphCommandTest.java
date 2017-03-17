@@ -16,24 +16,17 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.exception.BadCommandArgumentsException;
-import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -54,26 +47,9 @@ public class ClearGraphCommandTest extends AbstractGraphCommandTest {
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
-        verify(containmentRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
-        verify(cardinalityRuleManager,
-               times(0)).evaluate(any(Graph.class),
-                                  any(Node.class),
-                                  any(RuleManager.Operation.class));
-        verify(connectionRuleManager,
-               times(0)).evaluate(any(Edge.class),
-                                  any(Node.class),
-                                  any(Node.class));
-        verify(edgeCardinalityRuleManager,
-               times(0)).evaluate(any(Edge.class),
-                                  any(Node.class),
-                                  any(List.class),
-                                  any(EdgeCardinalityRule.Type.class),
-                                  any(RuleManager.Operation.class));
-        verify(dockingRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
+        verify(ruleManager,
+               times(0)).evaluate(any(RuleSet.class),
+                                  any(RuleEvaluationContext.class));
     }
 
     @Test(expected = BadCommandArgumentsException.class)

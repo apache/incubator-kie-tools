@@ -22,16 +22,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.ElementCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.NodeDockingContext;
 import org.mockito.ArgumentCaptor;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -79,54 +80,31 @@ public class AddDockedNodeCommandTest extends AbstractGraphCommandTest {
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
-        verify(containmentRuleManager,
-               times(0)).evaluate(eq(graph),
-                                  eq(candidate));
-        verify(cardinalityRuleManager,
-               times(1)).evaluate(eq(graph),
-                                  eq(candidate),
-                                  eq(RuleManager.Operation.ADD));
-        verify(dockingRuleManager,
-               times(1)).evaluate(eq(parent),
-                                  eq(candidate));
-        verify(connectionRuleManager,
-               times(0)).evaluate(any(Edge.class),
-                                  any(Node.class),
-                                  any(Node.class));
-        verify(edgeCardinalityRuleManager,
-               times(0)).evaluate(any(Edge.class),
-                                  any(Node.class),
-                                  any(List.class),
-                                  any(EdgeCardinalityRule.Type.class),
-                                  any(RuleManager.Operation.class));
+        final ArgumentCaptor<RuleEvaluationContext> contextCaptor = ArgumentCaptor.forClass(RuleEvaluationContext.class);
+        verify(ruleManager,
+               times(2)).evaluate(eq(ruleSet),
+                                  contextCaptor.capture());
+        final List<RuleEvaluationContext> contexts = contextCaptor.getAllValues();
+        assertEquals(2,
+                     contexts.size());
+        verifyCardinality((ElementCardinalityContext) contexts.get(0),
+                          graph,
+                          candidate,
+                          CardinalityContext.Operation.ADD);
+        verifyDocking((NodeDockingContext) contexts.get(1),
+                      parent,
+                      candidate);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testAllowNoRules() {
-        when(graphCommandExecutionContext.getRulesManager()).thenReturn(null);
+        when(graphCommandExecutionContext.getRuleManager()).thenReturn(null);
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
-        verify(containmentRuleManager,
-               times(0)).evaluate(eq(graph),
-                                  eq(candidate));
-        verify(cardinalityRuleManager,
-               times(0)).evaluate(eq(graph),
-                                  eq(candidate),
-                                  eq(RuleManager.Operation.ADD));
-        verify(dockingRuleManager,
-               times(0)).evaluate(eq(parent),
-                                  eq(candidate));
-        verify(connectionRuleManager,
-               times(0)).evaluate(any(Edge.class),
-                                  any(Node.class),
-                                  any(Node.class));
-        verify(edgeCardinalityRuleManager,
-               times(0)).evaluate(any(Edge.class),
-                                  any(Node.class),
-                                  any(List.class),
-                                  any(EdgeCardinalityRule.Type.class),
-                                  any(RuleManager.Operation.class));
+        verify(ruleManager,
+               times(0)).evaluate(any(RuleSet.class),
+                                  any(RuleEvaluationContext.class));
     }
 }

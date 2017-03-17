@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionR
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
 import org.kie.workbench.common.stunner.core.registry.diagram.DiagramRegistry;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
+import org.kie.workbench.common.stunner.core.registry.rule.RuleHandlerRegistry;
 
 /**
  * Factory for the different Stunner's registry types available.
@@ -60,4 +61,9 @@ public interface RegistryFactory {
      * Creates a new registry instance for diagrams.
      */
     <T extends Diagram> DiagramRegistry<T> newDiagramRegistry();
+
+    /**
+     * Creates a new registry instance for rule handlers.
+     */
+    RuleHandlerRegistry newRuleHandlerRegistry();
 }

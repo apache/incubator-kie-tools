@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,18 @@
 package org.kie.workbench.common.stunner.core.rule;
 
 /**
- * Rules define restrictions on behaviour of Elements in a diagram
+ * A Rule defines the concrete conditions that satisfy or violate
+ * some semantics or constraints that must be met for a domain.
+ * <p>
+ * Rules must be visible in both server and client side, portable
+ * in the errai bus and do not provide any kind of logic neither
+ * enterprise context dependency , they're just beans that act as the holder instances
+ * for the inputs at runtime for the evaluation.
  */
 public interface Rule {
 
     /**
      * A name for the rule.
-     * @return
-     *//**/
+     */
     String getName();
 }

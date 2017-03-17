@@ -27,10 +27,14 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasHighlight;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 
@@ -39,6 +43,7 @@ public class ContainmentAcceptorControlImpl extends AbstractContainmentBasedCont
         implements ContainmentAcceptorControl<AbstractCanvasHandler> {
 
     private CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
+    private CanvasHighlight canvasHighlight;
 
     @Inject
     public ContainmentAcceptorControlImpl(final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory) {
@@ -48,11 +53,14 @@ public class ContainmentAcceptorControlImpl extends AbstractContainmentBasedCont
     @Override
     protected void doEnable(final WiresCanvas.View view) {
         view.setContainmentAcceptor(CONTAINMENT_ACCEPTOR);
+        this.canvasHighlight = new CanvasHighlight(getCanvasHandler());
     }
 
     @Override
     protected void doDisable(final WiresCanvas.View view) {
         view.setContainmentAcceptor(IContainmentAcceptor.NONE);
+        this.canvasHighlight.destroy();
+        this.canvasHighlight = null;
     }
 
     @Override
@@ -86,8 +94,14 @@ public class ContainmentAcceptorControlImpl extends AbstractContainmentBasedCont
                                                       wiresShape);
             final Node parentNode = WiresUtils.getNode(getCanvasHandler(),
                                                        wiresContainer);
-            return allow(parentNode,
-                         childNode);
+            final boolean allowed = allow(parentNode,
+                                          childNode);
+            if (!allowed) {
+                canvasHighlight.invalid((Element<?>) childNode);
+            } else {
+                canvasHighlight.unhighLight();
+            }
+            return allowed;
         }
 
         @Override
@@ -101,8 +115,21 @@ public class ContainmentAcceptorControlImpl extends AbstractContainmentBasedCont
                                                       wiresShape);
             final Node parentNode = WiresUtils.getNode(getCanvasHandler(),
                                                        wiresContainer);
-            return accept(parentNode,
-                          childNode);
+            final boolean accepted = accept(parentNode,
+                                            childNode);
+            canvasHighlight.unhighLight();
+            return accepted;
         }
     };
+
+    @Override
+    protected CommandResult<CanvasViolation> runAllow(final Node parent,
+                                                      final Node child) {
+        final CommandResult<CanvasViolation> result = super.runAllow(parent,
+                                                                     child);
+        if (CommandUtils.isError(result)) {
+            canvasHighlight.invalid(result.getViolations());
+        }
+        return result;
+    }
 }

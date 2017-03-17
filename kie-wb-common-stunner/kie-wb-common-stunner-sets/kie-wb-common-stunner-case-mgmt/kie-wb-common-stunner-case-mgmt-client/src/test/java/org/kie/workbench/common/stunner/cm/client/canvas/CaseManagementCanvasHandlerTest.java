@@ -50,8 +50,7 @@ import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
-import org.kie.workbench.common.stunner.core.rule.model.ModelRulesManager;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.shapes.def.RectangleShapeDef;
 import org.mockito.Mock;
 import org.uberfire.mocks.EventSourceMock;
@@ -69,10 +68,7 @@ public class CaseManagementCanvasHandlerTest {
     private ClientFactoryService clientFactoryServices;
 
     @Mock
-    private GraphRulesManager graphRulesManager;
-
-    @Mock
-    private ModelRulesManager modelRulesManager;
+    private RuleManager ruleManager;
 
     @Mock
     private AdapterManager adapterManager;
@@ -120,8 +116,7 @@ public class CaseManagementCanvasHandlerTest {
     public void setup() {
         this.handler = new CaseManagementCanvasHandler(clientDefinitionManager,
                                                        clientFactoryServices,
-                                                       graphRulesManager,
-                                                       modelRulesManager,
+                                                       ruleManager,
                                                        graphUtils,
                                                        indexBuilder,
                                                        shapeManager,

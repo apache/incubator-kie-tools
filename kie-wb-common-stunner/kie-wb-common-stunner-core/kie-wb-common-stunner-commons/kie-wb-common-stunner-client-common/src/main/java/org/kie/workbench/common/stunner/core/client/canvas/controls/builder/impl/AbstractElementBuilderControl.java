@@ -44,12 +44,13 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-import org.kie.workbench.common.stunner.core.rule.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
-import org.kie.workbench.common.stunner.core.rule.model.ModelCardinalityRuleManager;
-import org.kie.workbench.common.stunner.core.rule.model.ModelContainmentRuleManager;
+import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
 public abstract class AbstractElementBuilderControl extends AbstractCanvasHandlerControl<AbstractCanvasHandler>
@@ -61,8 +62,7 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
     private final ClientFactoryService clientFactoryServices;
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
     private final GraphUtils graphUtils;
-    private final ModelContainmentRuleManager modelContainmentRuleManager;
-    private final ModelCardinalityRuleManager modelCardinalityRuleManager;
+    private final RuleManager ruleManager;
     private final GraphBoundsIndexer graphBoundsIndexer;
     private final CanvasLayoutUtils canvasLayoutUtils;
     private RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
@@ -70,16 +70,14 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
     public AbstractElementBuilderControl(final ClientDefinitionManager clientDefinitionManager,
                                          final ClientFactoryService clientFactoryServices,
                                          final GraphUtils graphUtils,
-                                         final ModelContainmentRuleManager modelContainmentRuleManager,
-                                         final ModelCardinalityRuleManager modelCardinalityRuleManager,
+                                         final RuleManager ruleManager,
                                          final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                          final GraphBoundsIndexer graphBoundsIndexer,
                                          final CanvasLayoutUtils canvasLayoutUtils) {
         this.clientDefinitionManager = clientDefinitionManager;
         this.clientFactoryServices = clientFactoryServices;
         this.graphUtils = graphUtils;
-        this.modelContainmentRuleManager = modelContainmentRuleManager;
-        this.modelCardinalityRuleManager = modelCardinalityRuleManager;
+        this.ruleManager = ruleManager;
         this.canvasCommandFactory = canvasCommandFactory;
         this.graphBoundsIndexer = graphBoundsIndexer;
         this.canvasLayoutUtils = canvasLayoutUtils;
@@ -99,12 +97,16 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         final Node<View<?>, Edge> parent = getParent(x,
                                                      y);
         final Set<String> labels = clientDefinitionManager.adapters().forDefinition().getLabels(definition);
+        final RuleSet ruleSet = canvasHandler.getRuleSet();
+
         // Check containment rules.
         if (null != parent) {
             final Object parentDef = parent.getContent().getDefinition();
             final String parentId = clientDefinitionManager.adapters().forDefinition().getId(parentDef);
-            final RuleViolations containmentViolations = modelContainmentRuleManager.evaluate(parentId,
-                                                                                              labels);
+            final RuleViolations containmentViolations =
+                    ruleManager.evaluate(ruleSet,
+                                         RuleContextBuilder.DomainContexts.containment(parentId,
+                                                                                       labels));
             if (!isValid(containmentViolations)) {
                 return false;
             }
@@ -116,9 +118,10 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         labels.stream().forEach(role -> {
             final Integer i = graphLabelCount.get(role);
             final RuleViolations violations =
-                    modelCardinalityRuleManager.evaluate(role,
-                                                         null != i ? i : 0,
-                                                         RuleManager.Operation.ADD);
+                    ruleManager.evaluate(ruleSet,
+                                         RuleContextBuilder.DomainContexts.cardinality(role,
+                                                                                       null != i ? i : 0,
+                                                                                       CardinalityContext.Operation.ADD));
             cardinalityViolations.addViolations(violations);
         });
         return isValid(cardinalityViolations);
@@ -183,8 +186,6 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
     @Override
     protected void doDisable() {
         graphBoundsIndexer.destroy();
-        modelContainmentRuleManager.clearRules();
-        modelCardinalityRuleManager.clearRules();
         commandManagerProvider = null;
     }
 

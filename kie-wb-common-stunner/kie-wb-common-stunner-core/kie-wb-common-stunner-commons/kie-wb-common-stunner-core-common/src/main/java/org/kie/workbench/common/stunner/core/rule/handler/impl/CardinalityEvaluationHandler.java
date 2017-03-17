@@ -1,0 +1,78 @@
+/*
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.workbench.common.stunner.core.rule.handler.impl;
+
+import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+
+import org.kie.workbench.common.stunner.core.rule.RuleEvaluationHandler;
+import org.kie.workbench.common.stunner.core.rule.RuleViolations;
+import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.impl.Occurrences;
+import org.kie.workbench.common.stunner.core.rule.violations.CardinalityMaxRuleViolation;
+import org.kie.workbench.common.stunner.core.rule.violations.CardinalityMinRuleViolation;
+import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
+
+@ApplicationScoped
+public class CardinalityEvaluationHandler implements RuleEvaluationHandler<Occurrences, CardinalityContext> {
+
+    @Override
+    public Class<Occurrences> getRuleType() {
+        return Occurrences.class;
+    }
+
+    @Override
+    public Class<CardinalityContext> getContextType() {
+        return CardinalityContext.class;
+    }
+
+    @Override
+    public boolean accepts(final Occurrences rule,
+                           final CardinalityContext context) {
+        return context.getRoles().contains(rule.getRole());
+    }
+
+    @Override
+    public RuleViolations evaluate(final Occurrences rule,
+                                   final CardinalityContext context) {
+
+        final String ruleRole = rule.getRole();
+        final int minOccurrences = rule.getMinOccurrences();
+        final int maxOccurrences = rule.getMaxOccurrences();
+        final Set<String> candidateRoles = context.getRoles();
+        final int candidatesCount = context.getCandidateCount();
+        final CardinalityContext.Operation operation = context.getOperation();
+
+        final DefaultRuleViolations results = new DefaultRuleViolations();
+        if (candidateRoles.contains(ruleRole)) {
+            final int count = operation.equals(CardinalityContext.Operation.NONE) ? candidatesCount :
+                    (operation.equals(CardinalityContext.Operation.ADD) ? candidatesCount + 1 : candidatesCount - 1);
+            if (count < minOccurrences) {
+                results.addViolation(new CardinalityMinRuleViolation(candidateRoles.toString(),
+                                                                     ruleRole,
+                                                                     minOccurrences,
+                                                                     candidatesCount));
+            } else if (maxOccurrences > -1 && count > maxOccurrences) {
+                results.addViolation(new CardinalityMaxRuleViolation(candidateRoles.toString(),
+                                                                     ruleRole,
+                                                                     maxOccurrences,
+                                                                     candidatesCount));
+            }
+        }
+        return results;
+    }
+}

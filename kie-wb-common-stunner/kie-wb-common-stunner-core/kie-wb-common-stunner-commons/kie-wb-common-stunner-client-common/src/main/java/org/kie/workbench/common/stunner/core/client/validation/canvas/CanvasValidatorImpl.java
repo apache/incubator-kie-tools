@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
@@ -29,7 +30,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.validation.AbstractValidator;
 import org.kie.workbench.common.stunner.core.validation.graph.AbstractGraphValidatorCallback;
 import org.kie.workbench.common.stunner.core.validation.graph.GraphValidationViolation;
@@ -37,35 +38,32 @@ import org.kie.workbench.common.stunner.core.validation.graph.GraphValidator;
 
 @ApplicationScoped
 public class CanvasValidatorImpl
-        extends AbstractValidator<CanvasHandler, CanvasValidatorCallback>
-        implements CanvasValidator {
+        extends AbstractValidator<AbstractCanvasHandler, CanvasValidatorCallback>
+        implements CanvasValidator<AbstractCanvasHandler> {
 
     GraphValidator graphValidator;
 
-    private GraphRulesManager rulesManager = null;
+    private final RuleManager ruleManager;
 
     protected CanvasValidatorImpl() {
-        this(null);
+        this(null,
+             null);
     }
 
     @Inject
-    public CanvasValidatorImpl(final GraphValidator graphValidator) {
+    public CanvasValidatorImpl(final RuleManager ruleManager,
+                               final GraphValidator graphValidator) {
+        this.ruleManager = ruleManager;
         this.graphValidator = graphValidator;
     }
 
     @Override
-    public CanvasValidator withRulesManager(final GraphRulesManager rulesManager) {
-        this.rulesManager = rulesManager;
-        return this;
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
-    public void validate(final CanvasHandler canvasHandler,
+    public void validate(final AbstractCanvasHandler canvasHandler,
                          final CanvasValidatorCallback callback) {
         final Graph graph = canvasHandler.getDiagram().getGraph();
         graphValidator
-                .withRulesManager(rulesManager)
+                .withRuleSet(canvasHandler.getRuleSet())
                 .validate(graph,
                           new AbstractGraphValidatorCallback() {
 

@@ -168,6 +168,7 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
                                                 element,
                                                 item,
                                                 targetNode);
+        canvasHighlight.unhighLight();
         if (null != targetNode && accepts) {
             canvasHighlight.highLight(targetNode);
         } else if (null != targetNode) {

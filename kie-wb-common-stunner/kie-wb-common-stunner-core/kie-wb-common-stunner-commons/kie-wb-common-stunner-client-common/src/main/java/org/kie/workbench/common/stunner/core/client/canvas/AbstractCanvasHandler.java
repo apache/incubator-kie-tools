@@ -32,8 +32,8 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
-import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
-import org.kie.workbench.common.stunner.core.rule.model.ModelRulesManager;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
 /**
@@ -63,18 +63,14 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     public abstract DefinitionManager getDefinitionManager();
 
     /**
-     * Provides the graph rules manager instance for this context.
-     * If the implementation class handles rules, this manager will
-     * be populated once loading the diagram instance.
+     * Provides the rule manager instance.
      */
-    public abstract GraphRulesManager getGraphRulesManager();
+    public abstract RuleManager getRuleManager();
 
     /**
-     * Provides the graph rules manager instance for this context.
-     * If the implementation class handles rules, this manager will
-     * be populated once loading the diagram instance.
+     * Provides the ruleSet instance for this handler.
      */
-    public abstract ModelRulesManager getModelRulesManager();
+    public abstract RuleSet getRuleSet();
 
     /**
      * Returns the graph index instance to perform lookups over the graph structure

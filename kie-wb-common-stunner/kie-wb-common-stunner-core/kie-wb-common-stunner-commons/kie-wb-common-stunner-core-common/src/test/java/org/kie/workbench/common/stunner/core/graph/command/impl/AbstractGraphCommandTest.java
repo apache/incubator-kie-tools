@@ -17,7 +17,7 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.Optional;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -30,23 +30,26 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
-import org.kie.workbench.common.stunner.core.rule.DefaultRuleViolations;
-import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
+import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
-import org.kie.workbench.common.stunner.core.rule.graph.GraphCardinalityRuleManager;
-import org.kie.workbench.common.stunner.core.rule.graph.GraphConnectionRuleManager;
-import org.kie.workbench.common.stunner.core.rule.graph.GraphContainmentRuleManager;
-import org.kie.workbench.common.stunner.core.rule.graph.GraphDockingRuleManager;
-import org.kie.workbench.common.stunner.core.rule.graph.GraphEdgeCardinalityRuleManager;
-import org.kie.workbench.common.stunner.core.rule.graph.GraphRulesManager;
+import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.ElementCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.GraphConnectionContext;
+import org.kie.workbench.common.stunner.core.rule.context.NodeContainmentContext;
+import org.kie.workbench.common.stunner.core.rule.context.NodeDockingContext;
+import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -70,24 +73,17 @@ public abstract class AbstractGraphCommandTest {
     @Mock
     protected FactoryManager factoryManager;
     @Mock
-    protected GraphRulesManager graphRulesManager;
-    @Mock
-    protected GraphContainmentRuleManager containmentRuleManager;
-    @Mock
-    protected GraphConnectionRuleManager connectionRuleManager;
-    @Mock
-    protected GraphCardinalityRuleManager cardinalityRuleManager;
-    @Mock
-    protected GraphEdgeCardinalityRuleManager edgeCardinalityRuleManager;
-    @Mock
-    protected GraphDockingRuleManager dockingRuleManager;
+    protected RuleManager ruleManager;
     @Mock
     protected MutableIndex graphIndex;
     @Mock
     protected Graph<DefinitionSet, Node> graph;
-    protected Collection<Node> graphNodes = new LinkedList<>();
+    @Mock
+    protected RuleSet ruleSet;
     @Mock
     protected DefinitionSet graphContent;
+
+    protected Collection<Node> graphNodes = new LinkedList<>();
 
     @SuppressWarnings("unchecked")
     public void init(final double width,
@@ -109,29 +105,12 @@ public abstract class AbstractGraphCommandTest {
         when(adapterRegistry.getPropertyAdapter(any(Class.class))).thenReturn(propertyAdapter);
         when(graphCommandExecutionContext.getDefinitionManager()).thenReturn(definitionManager);
         when(graphCommandExecutionContext.getFactoryManager()).thenReturn(factoryManager);
-        when(graphCommandExecutionContext.getRulesManager()).thenReturn(graphRulesManager);
+        when(graphCommandExecutionContext.getRuleManager()).thenReturn(ruleManager);
         when(graphCommandExecutionContext.getGraphIndex()).thenReturn(graphIndex);
+        when(graphCommandExecutionContext.getRuleSet()).thenReturn(ruleSet);
         when(graphIndex.getGraph()).thenReturn(graph);
-        when(graphRulesManager.containment()).thenReturn(containmentRuleManager);
-        when(graphRulesManager.connection()).thenReturn(connectionRuleManager);
-        when(graphRulesManager.cardinality()).thenReturn(cardinalityRuleManager);
-        when(graphRulesManager.edgeCardinality()).thenReturn(edgeCardinalityRuleManager);
-        when(graphRulesManager.docking()).thenReturn(dockingRuleManager);
-        when(containmentRuleManager.evaluate(any(Element.class),
-                                             any(Element.class))).thenReturn(EMPTY_VIOLATIONS);
-        when(connectionRuleManager.evaluate(any(Edge.class),
-                                            any(Node.class),
-                                            any(Node.class))).thenReturn(EMPTY_VIOLATIONS);
-        when(cardinalityRuleManager.evaluate(any(Graph.class),
-                                             any(Node.class),
-                                             any(RuleManager.Operation.class))).thenReturn(EMPTY_VIOLATIONS);
-        when(edgeCardinalityRuleManager.evaluate(any(Edge.class),
-                                                 any(Node.class),
-                                                 any(List.class),
-                                                 any(EdgeCardinalityRule.Type.class),
-                                                 any(RuleManager.Operation.class))).thenReturn(EMPTY_VIOLATIONS);
-        when(dockingRuleManager.evaluate(any(Element.class),
-                                         any(Element.class))).thenReturn(EMPTY_VIOLATIONS);
+        when(ruleManager.evaluate(any(RuleSet.class),
+                                  any(RuleEvaluationContext.class))).thenReturn(EMPTY_VIOLATIONS);
     }
 
     public static Node mockNode(String uuid) {
@@ -175,5 +154,104 @@ public abstract class AbstractGraphCommandTest {
         when(bounds.getLowerRight()).thenReturn(boundLR);
         when(bounds.getUpperLeft()).thenReturn(boundUL);
         return bounds;
+    }
+
+    protected static void verifyContainment(final NodeContainmentContext containmentContext,
+                                            final Element<? extends Definition<?>> parent,
+                                            final Node<? extends Definition<?>, ? extends Edge> candidate) {
+        assertNotNull(containmentContext);
+        final Optional<Element<? extends Definition<?>>> source = containmentContext.getParent();
+        final Node<? extends Definition<?>, ? extends Edge> target = containmentContext.getCandidate();
+        assertTrue(source.isPresent());
+        assertNotNull(target);
+        assertEquals(parent,
+                     source.get());
+        assertEquals(candidate,
+                     target);
+    }
+
+    protected static void verifyDocking(final NodeDockingContext context,
+                                        final Element<? extends Definition<?>> parent,
+                                        final Node<? extends Definition<?>, ? extends Edge> candidate) {
+        assertNotNull(context);
+        final Optional<Element<? extends Definition<?>>> source = context.getParent();
+        final Node<? extends Definition<?>, ? extends Edge> target = context.getCandidate();
+        assertTrue(source.isPresent());
+        assertNotNull(target);
+        assertEquals(parent,
+                     source.get());
+        assertEquals(candidate,
+                     target);
+    }
+
+    protected static void verifyConnection(final GraphConnectionContext context,
+                                           final Edge<? extends View<?>, ? extends Node> connector,
+                                           final Node<? extends View<?>, ? extends Edge> sourceNode,
+                                           final Node<? extends View<?>, ? extends Edge> targetNode) {
+        assertNotNull(context);
+        final Edge<? extends View<?>, ? extends Node> connector1 = context.getConnector();
+        final Optional<Node<? extends View<?>, ? extends Edge>> source = context.getSource();
+        final Optional<Node<? extends View<?>, ? extends Edge>> target = context.getTarget();
+        assertNotNull(connector1);
+        assertEquals(connector,
+                     connector1);
+        if (null != sourceNode) {
+            assertEquals(sourceNode,
+                         source.get());
+        }
+        if (null != targetNode) {
+            assertEquals(targetNode,
+                         target.get());
+        }
+    }
+
+    protected static void verifyCardinality(final ElementCardinalityContext context,
+                                            final Graph graph,
+                                            final Element<? extends View<?>> candidate,
+                                            final CardinalityContext.Operation operation) {
+        assertNotNull(context);
+        final Graph graph1 = context.getGraph();
+        final Element<? extends View<?>> candidate1 = context.getCandidate();
+        final CardinalityContext.Operation operation1 = context.getOperation();
+        assertNotNull(graph1);
+        assertNotNull(candidate1);
+        assertNotNull(operation1);
+        assertEquals(graph,
+                     graph1);
+        assertEquals(candidate,
+                     candidate1);
+        assertEquals(operation,
+                     operation1);
+    }
+
+    protected static void verifyConnectorCardinality(final ConnectorCardinalityContext context,
+                                                     final Graph graph,
+                                                     final Element<? extends View<?>> candidate,
+                                                     final Edge<? extends View<?>, Node> edge,
+                                                     final ConnectorCardinalityContext.Direction direction,
+                                                     final CardinalityContext.Operation operation) {
+        assertNotNull(context);
+        final ConnectorCardinalityContext.Direction direction1 = context.getDirection();
+        final Edge<? extends View<?>, Node> edge1 = context.getEdge();
+        final Element<? extends View<?>> candidate1 = context.getCandidate();
+        final Graph graph1 = context.getGraph();
+        final CardinalityContext.Operation operation1 = context.getOperation();
+        assertNotNull(direction1);
+        assertNotNull(edge1);
+        assertNotNull(candidate1);
+        assertNotNull(graph1);
+        assertNotNull(operation1);
+        assertEquals(direction,
+                     direction1);
+        assertEquals(edge,
+                     edge1);
+        assertEquals(operation,
+                     operation1);
+        assertEquals(candidate,
+                     candidate1);
+        assertEquals(graph,
+                     graph1);
+        assertEquals(operation,
+                     operation1);
     }
 }

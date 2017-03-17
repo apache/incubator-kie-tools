@@ -19,9 +19,7 @@ package org.kie.workbench.common.stunner.core.processors.rule;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -36,10 +34,9 @@ import freemarker.template.TemplateException;
 import org.kie.workbench.common.stunner.core.processors.MainProcessor;
 import org.kie.workbench.common.stunner.core.processors.ProcessingContext;
 import org.kie.workbench.common.stunner.core.processors.ProcessingRule;
-import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
 import org.kie.workbench.common.stunner.core.rule.annotation.AllowedEdgeOccurrences;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
-import org.kie.workbench.common.stunner.core.rule.impl.rules.EdgeCardinalityRuleImpl;
+import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
 import org.uberfire.annotations.processors.AbstractGenerator;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 
@@ -57,12 +54,11 @@ public class EdgeCardinalityRuleGenerator extends AbstractGenerator {
         messager.printMessage(Diagnostic.Kind.NOTE,
                               "Starting code adf for [" + className + "]");
         final Elements elementUtils = processingEnvironment.getElementUtils();
+        final String ruleDefinitionId = ((TypeElement) element).getQualifiedName().toString();
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
-        final boolean isInterface = classElement.getKind().isInterface();
         AllowedEdgeOccurrences occs = classElement.getAnnotation(AllowedEdgeOccurrences.class);
         if (null != occs) {
-            List<EdgeCardinalityRule> edgeRules = new ArrayList<>();
             for (EdgeOccurrences occurrence : occs.value()) {
                 String role = occurrence.role();
                 String ruleById = classElement.getQualifiedName().toString();
@@ -70,29 +66,15 @@ public class EdgeCardinalityRuleGenerator extends AbstractGenerator {
                                                     ruleById.length());
                 String name = shortId + "_" + role + "_" + MainProcessor.RULE_EDGE_CARDINALITY_SUFFIX_CLASSNAME;
                 EdgeOccurrences.EdgeType _type = occurrence.type();
-                EdgeCardinalityRule.Type type = EdgeOccurrences.EdgeType.INCOMING.equals(_type) ? EdgeCardinalityRule.Type.INCOMING : EdgeCardinalityRule.Type.OUTGOING;
+                ConnectorCardinalityContext.Direction type = EdgeOccurrences.EdgeType.INCOMING.equals(_type) ? ConnectorCardinalityContext.Direction.INCOMING : ConnectorCardinalityContext.Direction.OUTGOING;
                 int min = occurrence.min();
                 int max = occurrence.max();
-                if (EdgeCardinalityRule.Type.INCOMING.equals(type)) {
-                    edgeRules.add(new EdgeCardinalityRuleImpl(ruleById,
-                                                              "incoming" + name,
-                                                              role,
-                                                              type,
-                                                              min,
-                                                              max));
-                } else {
-                    edgeRules.add(new EdgeCardinalityRuleImpl(ruleById,
-                                                              "outgoing" + name,
-                                                              role,
-                                                              type,
-                                                              min,
-                                                              max));
-                }
                 StringBuffer ruleSourceCode = generateRule(messager,
                                                            ruleById,
+                                                           ruleDefinitionId,
                                                            name,
                                                            role,
-                                                           "EdgeCardinalityRule.Type." + type.name(),
+                                                           "ConnectorCardinalityContext.Direction." + type.name(),
                                                            min,
                                                            max);
                 processingContext.addRule(name,
@@ -105,6 +87,7 @@ public class EdgeCardinalityRuleGenerator extends AbstractGenerator {
 
     private StringBuffer generateRule(final Messager messager,
                                       final String ruleId,
+                                      final String ruleDefinitionId,
                                       final String ruleName,
                                       final String ruleRoleId,
                                       final String type,
@@ -123,6 +106,9 @@ public class EdgeCardinalityRuleGenerator extends AbstractGenerator {
                  min);
         root.put("max",
                  max);
+        root.put("edgeId",
+                 ruleDefinitionId);
+
         //Generate code
         final StringWriter sw = new StringWriter();
         final BufferedWriter bw = new BufferedWriter(sw);

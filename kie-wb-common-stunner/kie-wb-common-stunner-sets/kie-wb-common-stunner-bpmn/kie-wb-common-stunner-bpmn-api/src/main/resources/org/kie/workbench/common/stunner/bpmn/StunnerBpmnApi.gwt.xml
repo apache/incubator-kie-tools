@@ -28,6 +28,7 @@
   <source path="forms"/>
   <source path="qualifiers"/>
   <source path="resource"/>
+  <source path="rule"/>
   <source path="service"/>
   <source path="shape/def"/>
   <source path="util"/>

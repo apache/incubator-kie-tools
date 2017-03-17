@@ -1,1 +1,1 @@
-EdgeCardinalityRuleImpl ${ruleName} = new EdgeCardinalityRuleImpl( "${ruleId}", "${ruleName}", "${ruleRoleId}", ${ruleRoleType}, ${min}, ${max} );
+EdgeOccurrences ${ruleName} = new EdgeOccurrences( "${ruleName}", "${edgeId}", "${ruleRoleId}", ${ruleRoleType}, ${min}, ${max} );

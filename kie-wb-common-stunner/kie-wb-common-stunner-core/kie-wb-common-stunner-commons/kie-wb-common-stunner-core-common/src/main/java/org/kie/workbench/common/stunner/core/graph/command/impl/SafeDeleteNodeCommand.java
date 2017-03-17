@@ -35,8 +35,9 @@ import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.SafeDeleteNodeProcessor;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
@@ -149,14 +150,14 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
         final CommandResult<RuleViolation> result = super.doAllow(context,
                                                                   command);
         if (!CommandUtils.isError(result) && hasRules(context)) {
-            final Graph<?, Node> target = getGraph(context);
+            final Graph target = getGraph(context);
             final Node<View<?>, Edge> candidate = (Node<View<?>, Edge>) getCandidate(context);
             final GraphCommandResultBuilder builder = new GraphCommandResultBuilder();
             final Collection<RuleViolation> cardinalityRuleViolations =
-                    (Collection<RuleViolation>) context.getRulesManager()
-                            .cardinality().evaluate(target,
-                                                    candidate,
-                                                    RuleManager.Operation.DELETE).violations();
+                    doEvaluate(context,
+                               RuleContextBuilder.GraphContexts.cardinality(target,
+                                                                            candidate,
+                                                                            CardinalityContext.Operation.DELETE));
             builder.addViolations(cardinalityRuleViolations);
             for (final RuleViolation violation : cardinalityRuleViolations) {
                 if (builder.isError(violation)) {
@@ -188,7 +189,7 @@ public final class SafeDeleteNodeCommand extends AbstractGraphCompositeCommand {
     }
 
     private boolean hasRules(final GraphCommandExecutionContext context) {
-        return null != context.getRulesManager();
+        return null != context.getRuleManager();
     }
 
     @Override

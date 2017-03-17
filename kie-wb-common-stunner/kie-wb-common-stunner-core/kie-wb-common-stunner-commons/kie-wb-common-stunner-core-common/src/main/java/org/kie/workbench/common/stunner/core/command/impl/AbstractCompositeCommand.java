@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.command.impl;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,6 +30,10 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.CompositeCommand;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
+import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
+import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand<T, V> {
 
@@ -120,6 +125,15 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
 
     public List<Command<T, V>> getCommands() {
         return commands;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Collection<RuleViolation> doEvaluate(final GraphCommandExecutionContext context,
+                                                   final RuleEvaluationContext ruleEvaluationContext) {
+        final RuleSet ruleSet = context.getRuleSet();
+        return (Collection<RuleViolation>) context.getRuleManager().evaluate(ruleSet,
+                                                                             ruleEvaluationContext)
+                .violations();
     }
 
     protected boolean isInitialized() {

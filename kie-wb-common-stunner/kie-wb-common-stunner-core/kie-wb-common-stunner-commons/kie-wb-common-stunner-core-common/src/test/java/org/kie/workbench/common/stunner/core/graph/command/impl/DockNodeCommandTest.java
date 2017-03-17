@@ -22,16 +22,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
-import org.kie.workbench.common.stunner.core.rule.DefaultRuleViolations;
-import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
-import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
-import org.kie.workbench.common.stunner.core.rule.impl.violations.ContainmentRuleViolation;
+import org.kie.workbench.common.stunner.core.rule.context.NodeDockingContext;
+import org.kie.workbench.common.stunner.core.rule.violations.ContainmentRuleViolation;
+import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
+import org.mockito.ArgumentCaptor;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
@@ -67,55 +67,28 @@ public class DockNodeCommandTest extends AbstractGraphCommandTest {
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
-        verify(dockingRuleManager,
-               times(1)).evaluate(eq(parent),
-                                  eq(candidate));
-        verify(containmentRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
-        verify(cardinalityRuleManager,
-               times(0)).evaluate(any(Graph.class),
-                                  any(Node.class),
-                                  any(RuleManager.Operation.class));
-        verify(connectionRuleManager,
-               times(0)).evaluate(any(Edge.class),
-                                  any(Node.class),
-                                  any(Node.class));
-        verify(edgeCardinalityRuleManager,
-               times(0)).evaluate(any(Edge.class),
-                                  any(Node.class),
-                                  any(List.class),
-                                  any(EdgeCardinalityRule.Type.class),
-                                  any(RuleManager.Operation.class));
+        final ArgumentCaptor<RuleEvaluationContext> contextCaptor = ArgumentCaptor.forClass(RuleEvaluationContext.class);
+        verify(ruleManager,
+               times(1)).evaluate(eq(ruleSet),
+                                  contextCaptor.capture());
+        final List<RuleEvaluationContext> contexts = contextCaptor.getAllValues();
+        assertEquals(1,
+                     contexts.size());
+        verifyDocking((NodeDockingContext) contexts.get(0),
+                      parent,
+                      candidate);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testAllowNoRules() {
-        when(graphCommandExecutionContext.getRulesManager()).thenReturn(null);
+        when(graphCommandExecutionContext.getRuleManager()).thenReturn(null);
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
-        verify(dockingRuleManager,
-               times(0)).evaluate(eq(parent),
-                                  eq(candidate));
-        verify(containmentRuleManager,
-               times(0)).evaluate(any(Element.class),
-                                  any(Element.class));
-        verify(cardinalityRuleManager,
-               times(0)).evaluate(any(Graph.class),
-                                  any(Node.class),
-                                  any(RuleManager.Operation.class));
-        verify(connectionRuleManager,
-               times(0)).evaluate(any(Edge.class),
-                                  any(Node.class),
-                                  any(Node.class));
-        verify(edgeCardinalityRuleManager,
-               times(0)).evaluate(any(Edge.class),
-                                  any(Node.class),
-                                  any(List.class),
-                                  any(EdgeCardinalityRule.Type.class),
-                                  any(RuleManager.Operation.class));
+        verify(ruleManager,
+               times(0)).evaluate(eq(ruleSet),
+                                  any(RuleEvaluationContext.class));
     }
 
     @Test
@@ -124,8 +97,8 @@ public class DockNodeCommandTest extends AbstractGraphCommandTest {
         final RuleViolations FAILED_VIOLATIONS = new DefaultRuleViolations()
                 .addViolation(new ContainmentRuleViolation(graph.getUUID(),
                                                            PARENT_UUID));
-        when(dockingRuleManager.evaluate(any(Element.class),
-                                         any(Element.class))).thenReturn(FAILED_VIOLATIONS);
+        when(ruleManager.evaluate(any(RuleSet.class),
+                                  any(RuleEvaluationContext.class))).thenReturn(FAILED_VIOLATIONS);
         CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.ERROR,
                      result.getType());
@@ -157,8 +130,8 @@ public class DockNodeCommandTest extends AbstractGraphCommandTest {
         final RuleViolations FAILED_VIOLATIONS = new DefaultRuleViolations()
                 .addViolation(new ContainmentRuleViolation(graph.getUUID(),
                                                            PARENT_UUID));
-        when(dockingRuleManager.evaluate(any(Element.class),
-                                         any(Element.class))).thenReturn(FAILED_VIOLATIONS);
+        when(ruleManager.evaluate(any(RuleSet.class),
+                                  any(RuleEvaluationContext.class))).thenReturn(FAILED_VIOLATIONS);
         CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
         assertEquals(CommandResult.Type.ERROR,
                      result.getType());

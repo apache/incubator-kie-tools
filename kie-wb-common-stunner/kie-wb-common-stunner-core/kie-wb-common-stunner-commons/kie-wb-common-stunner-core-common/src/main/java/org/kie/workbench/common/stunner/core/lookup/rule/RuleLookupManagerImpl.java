@@ -26,20 +26,36 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.lookup.criteria.AbstractCriteriaLookupManager;
-import org.kie.workbench.common.stunner.core.rule.CardinalityRule;
-import org.kie.workbench.common.stunner.core.rule.ConnectionRule;
-import org.kie.workbench.common.stunner.core.rule.ContainmentRule;
-import org.kie.workbench.common.stunner.core.rule.EdgeCardinalityRule;
 import org.kie.workbench.common.stunner.core.rule.Rule;
+import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.impl.CanConnect;
+import org.kie.workbench.common.stunner.core.rule.impl.CanContain;
+import org.kie.workbench.common.stunner.core.rule.impl.EdgeOccurrences;
+import org.kie.workbench.common.stunner.core.rule.impl.Occurrences;
 
 @ApplicationScoped
 public class RuleLookupManagerImpl
         extends AbstractCriteriaLookupManager<Rule, Rule, RuleLookupRequest>
         implements RuleLookupManager {
 
-    DefinitionManager definitionManager;
+    private static final String TYPE = "type";
+    private static final String ROLES = "roles";
+    private static final String ID = "id";
+    private static final String ROLE = "role";
+    private static final String ROLE_IN = "roleIn";
+    private static final String EDGE_TYPE = "edgeType";
+    private static final String FROM = "from";
+    private static final String TO = "to";
+    private static final String INCOMING = "incoming";
+    private static final String CONTAINMENT = "containment";
+    private static final String CONNECTION = "connection";
+    private static final String CARDINALITY = "cardinality";
+    private static final String EDGECARDINALITY = "edgecardinality";
+
+    private final DefinitionManager definitionManager;
 
     protected RuleLookupManagerImpl() {
+        this(null);
     }
 
     @Inject
@@ -52,7 +68,8 @@ public class RuleLookupManagerImpl
         final String defSetId = request.getDefinitionSetId();
         final Object defSet = definitionManager.definitionSets().getDefinitionSetById(defSetId);
         if (null != defSet) {
-            final Collection<Rule> rules = definitionManager.adapters().forRules().getRules(defSet);
+            final Collection<Rule> rules =
+                    (Collection<Rule>) definitionManager.adapters().forRules().getRuleSet(defSet).getRules();
             return new LinkedList<>(rules);
         }
         return null;
@@ -68,46 +85,43 @@ public class RuleLookupManagerImpl
                               final String value,
                               final Rule rule) {
         switch (key) {
-            case "type":
-                return "containment".equals(value) && (rule instanceof ContainmentRule) ||
-                        "connection".equals(value) && (rule instanceof ConnectionRule) ||
-                        "cardinality".equals(value) && (rule instanceof CardinalityRule) ||
-                        "edgecardinality".equals(value) && (rule instanceof EdgeCardinalityRule);
-            case "roles":
+            case TYPE:
+                return CONTAINMENT.equals(value) && (rule instanceof CanContain) ||
+                        CONNECTION.equals(value) && (rule instanceof CanConnect) ||
+                        CARDINALITY.equals(value) && (rule instanceof Occurrences) ||
+                        EDGECARDINALITY.equals(value) && (rule instanceof EdgeOccurrences);
+            case ROLES:
                 try {
                     // Permitted roles on containment rules.
-                    final ContainmentRule cr = (ContainmentRule) rule;
+                    final CanContain cr = (CanContain) rule;
                     final Set<String> rolesSet = toSet(value);
                     if (null != rolesSet) {
-                        return isIntersect(cr.getPermittedRoles(),
+                        return isIntersect(cr.getAllowedRoles(),
                                            rolesSet);
                     }
                 } catch (final ClassCastException e) {
                     return false;
                 }
                 return true;
-            case "id":
+            case ID:
                 String _id = null;
-                if (rule instanceof EdgeCardinalityRule) {
-                    final EdgeCardinalityRule er = (EdgeCardinalityRule) rule;
-                    _id = er.getId();
-                } else if (rule instanceof ContainmentRule) {
-                    final ContainmentRule er = (ContainmentRule) rule;
-                    _id = er.getId();
-                } else if (rule instanceof ConnectionRule) {
-                    final ConnectionRule er = (ConnectionRule) rule;
-                    _id = er.getId();
+                if (rule instanceof CanContain) {
+                    final CanContain er = (CanContain) rule;
+                    _id = er.getParentId();
+                } else if (rule instanceof CanConnect) {
+                    final CanConnect er = (CanConnect) rule;
+                    _id = er.getConnectorId();
                 }
                 return _id != null && _id.equals(value);
-            case "role":
-                if (rule instanceof EdgeCardinalityRule) {
-                    final EdgeCardinalityRule er = (EdgeCardinalityRule) rule;
+            case ROLE:
+                if (rule instanceof EdgeOccurrences) {
+                    final EdgeOccurrences er = (EdgeOccurrences) rule;
                     return (er.getRole().equals(value));
                 }
                 return false;
-            case "roleIn":
-                if (rule instanceof EdgeCardinalityRule) {
-                    final EdgeCardinalityRule er = (EdgeCardinalityRule) rule;
+            case ROLE_IN:
+                if (rule instanceof EdgeOccurrences) {
+                    final EdgeOccurrences er = (EdgeOccurrences) rule;
                     final Set<String> set = toSet(value);
                     if (null != set && !set.isEmpty()) {
                         for (final String s : set) {
@@ -118,22 +132,22 @@ public class RuleLookupManagerImpl
                     }
                 }
                 return false;
-            case "edgeType":
+            case EDGE_TYPE:
                 try {
-                    final EdgeCardinalityRule er = (EdgeCardinalityRule) rule;
-                    return er.getType().equals("incoming".equals(value) ?
-                                                       EdgeCardinalityRule.Type.INCOMING : EdgeCardinalityRule.Type.OUTGOING);
+                    final EdgeOccurrences er = (EdgeOccurrences) rule;
+                    return er.getDirection().equals(INCOMING.equals(value) ?
+                                                            ConnectorCardinalityContext.Direction.INCOMING : ConnectorCardinalityContext.Direction.OUTGOING);
                 } catch (final ClassCastException e) {
                     return false;
                 }
-            case "from":
-            case "to":
+            case FROM:
+            case TO:
                 // Connection rules.
                 try {
-                    final ConnectionRule cr = (ConnectionRule) rule;
+                    final CanConnect cr = (CanConnect) rule;
                     final Set<String> fromSet = toSet(value);
                     Set<String> ruleSet = getRoles(cr.getPermittedConnections(),
-                                                   "from".equals(key));
+                                                   FROM.equals(key));
                     if (null != fromSet) {
                         return isIntersect(fromSet,
                                            ruleSet);
@@ -145,11 +159,11 @@ public class RuleLookupManagerImpl
         throw new UnsupportedOperationException("Cannot filter rules by key [" + key + "]");
     }
 
-    private Set<String> getRoles(final Set<ConnectionRule.PermittedConnection> connections,
+    private Set<String> getRoles(final List<CanConnect.PermittedConnection> connections,
                                  final boolean from) {
         if (null != connections) {
             final HashSet<String> result = new HashSet<>(connections.size());
-            for (final ConnectionRule.PermittedConnection c : connections) {
+            for (final CanConnect.PermittedConnection c : connections) {
                 if (from) {
                     result.add(c.getStartRole());
                 } else {

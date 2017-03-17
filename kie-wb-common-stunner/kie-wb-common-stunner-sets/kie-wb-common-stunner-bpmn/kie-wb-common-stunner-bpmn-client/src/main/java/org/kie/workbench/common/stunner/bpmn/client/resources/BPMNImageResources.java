@@ -139,6 +139,14 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @DataResource.MimeType("image/svg+xml")
     DataResource laneIcon();
 
+    @ClientBundle.Source(BPMNSVGViewFactory.SUBPROCESS_REUSABLE)
+    @DataResource.MimeType("image/svg+xml")
+    DataResource subProcessReusable();
+
+    @ClientBundle.Source(BPMNSVGViewFactory.SUBPROCESS_EMBEDDED)
+    @DataResource.MimeType("image/svg+xml")
+    DataResource subProcessEmbedded();
+
     // ******* Misc *******
 
     @ClientBundle.Source(BPMNSVGViewFactory.RECTANGLE)
@@ -160,8 +168,4 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @ClientBundle.Source("images/plus-square.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource plusSquare();
-
-    @ClientBundle.Source("images/sub-process.svg")
-    @DataResource.MimeType("image/svg+xml")
-    DataResource subProcess();
 }

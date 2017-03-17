@@ -183,12 +183,12 @@ public class GraphUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static Element<?> getParent(final Node<?, Edge> element) {
-        final List<Edge> inEdges = element.getInEdges();
+    public static Element<?> getParent(final Node<?, ? extends Edge> element) {
+        final List<? extends Edge> inEdges = element.getInEdges();
         if (null != inEdges) {
             final Edge<Child, ?> childEdge =
                     inEdges.stream()
-                            .filter(edge -> (edge instanceof Child))
+                            .filter(edge -> (edge.getContent() instanceof Child))
                             .findFirst()
                             .orElse(null);
             if (null != childEdge) {
@@ -196,6 +196,38 @@ public class GraphUtils {
             }
         }
         return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static boolean hasParent(final Node<?, ? extends Edge> candidate,
+                                    final Element<?> parent) {
+        Element<?> p = candidate;
+        while (p instanceof Node && !p.equals(parent)) {
+            p = getParent((Node<?, ? extends Edge>) p);
+        }
+        return null != p;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static Element<?> getParentByDefinitionId(final DefinitionManager definitionManager,
+                                                     final Node<?, ? extends Edge> candidate,
+                                                     final String parentDefId) {
+        Element<?> p = candidate;
+        while (p instanceof Node
+                && p.getContent() instanceof Definition) {
+            final String cID = getDefinitionId(definitionManager,
+                                               (Element<? extends Definition>) p);
+            if (parentDefId.equals(cID)) {
+                return p;
+            }
+            p = getParent((Node<?, ? extends Edge>) p);
+        }
+        return null;
+    }
+
+    private static String getDefinitionId(final DefinitionManager definitionManager,
+                                          final Element<? extends Definition> element) {
+        return definitionManager.adapters().forDefinition().getId(element.getContent().getDefinition());
     }
 
     public static Point2D getPosition(final View element) {

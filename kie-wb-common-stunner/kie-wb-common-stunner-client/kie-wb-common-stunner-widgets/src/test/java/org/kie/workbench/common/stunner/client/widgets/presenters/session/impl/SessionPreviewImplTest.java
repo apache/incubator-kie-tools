@@ -45,10 +45,15 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientSession;
+import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
+import org.kie.workbench.common.stunner.core.rule.EmptyRuleSet;
+import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.mockito.Mock;
 
@@ -61,6 +66,7 @@ import static org.mockito.Mockito.*;
 public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
 
     private static final String DEFINITION_SET_ID = "definitionSetId";
+    private static final RuleSet EMPTY_RULESET = new EmptyRuleSet();
 
     @Mock
     private DefinitionManager definitionManager;
@@ -131,6 +137,18 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
     @Mock
     private CanvasCommandFactory defaultImplementation;
 
+    @Mock
+    private AdapterManager adapterManager;
+
+    @Mock
+    private DefinitionSetRuleAdapter ruleAdapter;
+
+    @Mock
+    private TypeDefinitionSetRegistry definitionSetRegistry;
+
+    @Mock
+    private Object defSet;
+
     private SessionPreviewImpl preview;
 
     @Before
@@ -146,6 +164,11 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
         when(session.getContainmentAcceptorControl()).thenReturn(containmentAcceptorControl);
         when(session.getDockingAcceptorControl()).thenReturn(dockingAcceptorControl);
         when(session.getDragControl()).thenReturn(dragControl);
+        when(definitionManager.adapters()).thenReturn(adapterManager);
+        when(adapterManager.forRules()).thenReturn(ruleAdapter);
+        when(ruleAdapter.getRuleSet(eq(defSet))).thenReturn(EMPTY_RULESET);
+        when(definitionManager.definitionSets()).thenReturn(definitionSetRegistry);
+        when(definitionSetRegistry.getDefinitionSetById(eq(DEFINITION_SET_ID))).thenReturn(defSet);
         when(shapeManager.getCanvasFactory(any(Diagram.class))).thenReturn(canvasFactory);
         when(canvasFactory.newCanvas()).thenReturn(canvas);
         when(canvasFactory.newControl(eq(ZoomControl.class))).thenReturn(zoomControl);

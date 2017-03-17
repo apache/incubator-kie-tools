@@ -81,7 +81,6 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
         // TODO: Finish this implementation & Handle all response buckets/pages. Currently no palettes
         // are used on toolbox ( no implementation for this class )
         final Set<Object> allowedDefinitions = commonLookups.getAllowedTargetDefinitions(
-                canvasHandler.getModelRulesManager(),
                 getDefinitionSetIdentifier(),
                 canvasHandler.getDiagram().getGraph(),
                 this.sourceNode,
@@ -168,7 +167,7 @@ public abstract class NewPaletteNodeCommand<I> extends AbstractPaletteCommand<I>
                                                                                                                     final Node parent = graphBoundsIndexer.getAt(x,
                                                                                                                                                                  y);
                                                                                                                     if (null != parent) {
-                                                                                                                        canvasHighlight.highLight(parent);
+                                                                                                                        canvasHighlight.unhighLight().highLight(parent);
                                                                                                                     }
                                                                                                                 } else {
                                                                                                                     canvasHighlight.unhighLight();

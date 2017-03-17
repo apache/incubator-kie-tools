@@ -16,69 +16,96 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.util;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
-import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.RuleViolations;
+import org.kie.workbench.common.stunner.core.rule.violations.AbstractRuleViolation;
 
 public class CanvasHighlight {
 
     private final AbstractCanvasHandler canvasHandler;
-    private Shape shape;
-    private long duration = 50;
+    private final List<String> uuids = new LinkedList<>();
 
     public CanvasHighlight(final AbstractCanvasHandler canvasHandler) {
         this.canvasHandler = canvasHandler;
     }
 
-    public CanvasHighlight setDuration(final long duration) {
-        this.duration = duration;
+    public CanvasHighlight highLight(final Element<?> node) {
+        applyState(node,
+                   ShapeState.HIGHLIGHT);
         return this;
     }
 
-    public void highLight(final Node node) {
-        applyState(node,
-                   ShapeState.HIGHLIGHT);
-    }
-
-    public void invalid(final Node node) {
+    public CanvasHighlight invalid(final Element<?> node) {
         applyState(node,
                    ShapeState.INVALID);
+        return this;
     }
 
-    public void none(final Node node) {
+    public CanvasHighlight invalid(final RuleViolations violations) {
+        invalid(violations.violations());
+        return this;
+    }
+
+    public CanvasHighlight invalid(final Iterable<? extends RuleViolation> violations) {
+        violations.forEach(v -> {
+            if (v instanceof AbstractRuleViolation) {
+                final String uuid = ((AbstractRuleViolation) v).getUuid();
+                if (null != uuid) {
+                    applyStateToShape(uuid,
+                                      ShapeState.INVALID);
+                }
+            }
+        });
+        getCanvas().draw();
+        return this;
+    }
+
+    public CanvasHighlight none(final Element<?> node) {
         applyState(node,
                    ShapeState.NONE);
+        return this;
     }
 
-    private void applyState(final Node node,
-                            final ShapeState state) {
-        // Only one shape is being highlight at same time, so take this into account in the next conditional sentence.
-        if (null != this.shape && !node.getUUID().equals(shape.getUUID())) {
-            unhighLight();
-        }
-        if (null == this.shape) {
-            final String uuid = node.getUUID();
-            final Shape shape = getShape(uuid);
-            if (null != shape) {
-                this.shape = shape;
-                shape.applyState(state);
-                getCanvas().draw();
-            }
-        }
-    }
-
-    public void unhighLight() {
-        if (null != this.shape) {
-            this.shape.applyState(ShapeState.NONE);
+    public CanvasHighlight unhighLight() {
+        if (!uuids.isEmpty()) {
+            uuids.forEach(uuid -> {
+                final Shape shape = getShape(uuid);
+                if (null != shape) {
+                    shape.applyState(ShapeState.NONE);
+                }
+            });
             getCanvas().draw();
-            this.shape = null;
+            uuids.clear();
         }
+        return this;
     }
 
     public void destroy() {
-        this.shape = null;
+        this.uuids.clear();
+    }
+
+    private void applyState(final Element<?> node,
+                            final ShapeState state) {
+        applyStateToShape(node.getUUID(),
+                          state);
+        getCanvas().draw();
+    }
+
+    private void applyStateToShape(final String uuid,
+                                   final ShapeState state) {
+        final Shape shape = getShape(uuid);
+        if (null != shape) {
+            uuids.add(uuid);
+            shape.applyState(state);
+        }
     }
 
     private Shape getShape(final String uuid) {

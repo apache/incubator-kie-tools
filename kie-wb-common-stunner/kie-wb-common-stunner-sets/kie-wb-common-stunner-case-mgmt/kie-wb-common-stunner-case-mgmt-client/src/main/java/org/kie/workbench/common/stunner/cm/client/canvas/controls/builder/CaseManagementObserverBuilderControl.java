@@ -35,8 +35,7 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
-import org.kie.workbench.common.stunner.core.rule.model.ModelCardinalityRuleManager;
-import org.kie.workbench.common.stunner.core.rule.model.ModelContainmentRuleManager;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
 
 @Observer
 @Dependent
@@ -51,7 +50,6 @@ public class CaseManagementObserverBuilderControl extends ObserverBuilderControl
              null,
              null,
              null,
-             null,
              null);
     }
 
@@ -59,8 +57,7 @@ public class CaseManagementObserverBuilderControl extends ObserverBuilderControl
     public CaseManagementObserverBuilderControl(final ClientDefinitionManager clientDefinitionManager,
                                                 final ClientFactoryService clientFactoryServices,
                                                 final GraphUtils graphUtils,
-                                                final ModelContainmentRuleManager modelContainmentRuleManager,
-                                                final ModelCardinalityRuleManager modelCardinalityRuleManager,
+                                                final RuleManager ruleManager,
                                                 final @CaseManagementEditor CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory,
                                                 final GraphBoundsIndexer graphBoundsIndexer,
                                                 final CanvasLayoutUtils canvasLayoutUtils,
@@ -68,8 +65,7 @@ public class CaseManagementObserverBuilderControl extends ObserverBuilderControl
         super(clientDefinitionManager,
               clientFactoryServices,
               graphUtils,
-              modelContainmentRuleManager,
-              modelCardinalityRuleManager,
+              ruleManager,
               canvasCommandFactory,
               graphBoundsIndexer,
               canvasLayoutUtils,

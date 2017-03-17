@@ -52,6 +52,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
@@ -63,6 +64,7 @@ public class BPMNGraphGenerator extends JsonGenerator {
     private final GraphObjectBuilderFactory bpmnGraphBuilderFactory;
     private final DefinitionManager definitionManager;
     private final FactoryManager factoryManager;
+    private final RuleManager ruleManager;
     private final GraphUtils graphUtils;
     private final OryxManager oryxManager;
     private final CommandManager<GraphCommandExecutionContext, RuleViolation> commandManager;
@@ -79,6 +81,7 @@ public class BPMNGraphGenerator extends JsonGenerator {
     public BPMNGraphGenerator(final GraphObjectBuilderFactory bpmnGraphBuilderFactory,
                               final DefinitionManager definitionManager,
                               final FactoryManager factoryManager,
+                              final RuleManager ruleManager,
                               final GraphUtils graphUtils,
                               final OryxManager oryxManager,
                               final CommandManager<GraphCommandExecutionContext, RuleViolation> commandManager,
@@ -89,6 +92,7 @@ public class BPMNGraphGenerator extends JsonGenerator {
         this.bpmnGraphBuilderFactory = bpmnGraphBuilderFactory;
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
+        this.ruleManager = ruleManager;
         this.graphUtils = graphUtils;
         this.oryxManager = oryxManager;
         this.commandManager = commandManager;
@@ -235,6 +239,7 @@ public class BPMNGraphGenerator extends JsonGenerator {
             GraphCommandExecutionContext executionContext =
                     new EmptyRulesCommandExecutionContext(definitionManager,
                                                           factoryManager,
+                                                          ruleManager,
                                                           index);
             return commandManager.execute(executionContext,
                                           command);

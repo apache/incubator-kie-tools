@@ -35,6 +35,8 @@ public interface BPMNSVGViewFactory {
     String EVENT_INTERMEDIATE = "images/event/event-intermediate.svg";
     String LANE = "images/lane/lane.svg";
     String LANE_ICON = "images/lane/lane_icon.svg";
+    String SUBPROCESS_REUSABLE = "images/subprocess/sub-process-reusable.svg";
+    String SUBPROCESS_EMBEDDED = "images/subprocess/sub-process-embedded.svg";
     String CIRCLE = "images/misc/circle.svg";
     String RECTANGLE = "images/misc/rectangle.svg";
 
@@ -97,6 +99,16 @@ public interface BPMNSVGViewFactory {
     SVGShapeView laneIcon(final double width,
                           final double height,
                           final boolean resizable);
+
+    @SVGSource(SUBPROCESS_REUSABLE)
+    SVGShapeView subprocessReusable(final double width,
+                                    final double height,
+                                    final boolean resizable);
+
+    @SVGSource(SUBPROCESS_EMBEDDED)
+    SVGShapeView subprocessEmbedded(final double width,
+                                    final double height,
+                                    final boolean resizable);
 
     @SVGSource(CIRCLE)
     SVGShapeView circle(final double width,

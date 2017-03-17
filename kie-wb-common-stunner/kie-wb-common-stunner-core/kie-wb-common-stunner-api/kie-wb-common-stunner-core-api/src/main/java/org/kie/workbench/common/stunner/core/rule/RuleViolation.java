@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,29 @@
 
 package org.kie.workbench.common.stunner.core.rule;
 
+/**
+ * A rule violation defines some
+ * information about a concrete domain
+ * operation.
+ */
 public interface RuleViolation {
 
-    String getMessage();
-
-    Type getViolationType();
-
+    /**
+     * Built-in rule violation types.
+     */
     enum Type {
         ERROR,
         WARNING,
         INFO
     }
+
+    /**
+     * The message resuling of a evaluation.
+     */
+    String getMessage();
+
+    /**
+     * The type of violation.
+     */
+    Type getViolationType();
 }

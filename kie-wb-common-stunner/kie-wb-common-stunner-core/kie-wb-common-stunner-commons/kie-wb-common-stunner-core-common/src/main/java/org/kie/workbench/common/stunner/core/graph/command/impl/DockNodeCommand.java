@@ -17,12 +17,13 @@
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
@@ -30,6 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Dock;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.uberfire.commons.validation.PortablePreconditions;
 
@@ -82,14 +84,14 @@ public final class DockNodeCommand extends AbstractGraphCommand {
 
     @SuppressWarnings("unchecked")
     protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
-        final Node<?, Edge> parent = getParent(context);
+        final Element<? extends Definition<?>> parent = (Element<? extends Definition<?>>) getParent(context);
         final Node<Definition<?>, Edge> candidate = (Node<Definition<?>, Edge>) getCandidate(context);
         final Collection<RuleViolation> dockingRuleViolations =
-                (Collection<RuleViolation>) context.getRulesManager().docking().evaluate(parent,
-                                                                                         candidate).violations();
-        final Collection<RuleViolation> violations = new LinkedList<RuleViolation>();
-        violations.addAll(dockingRuleViolations);
-        return new GraphCommandResultBuilder(violations).build();
+                doEvaluate(context,
+                           RuleContextBuilder.GraphContexts.docking(getGraph(context),
+                                                                    Optional.ofNullable(parent),
+                                                                    candidate));
+        return new GraphCommandResultBuilder(dockingRuleViolations).build();
     }
 
     @Override
