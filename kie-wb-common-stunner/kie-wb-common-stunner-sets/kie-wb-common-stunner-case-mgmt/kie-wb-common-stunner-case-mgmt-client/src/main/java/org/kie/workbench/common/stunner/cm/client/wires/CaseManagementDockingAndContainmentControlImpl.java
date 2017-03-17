@@ -31,12 +31,6 @@ public class CaseManagementDockingAndContainmentControlImpl extends WiresDocking
 
     private final CaseManagementContainmentStateHolder state;
 
-    private enum DragEndMode {
-        VETO,
-        REMOVE_GHOST,
-        ADD
-    }
-
     public CaseManagementDockingAndContainmentControlImpl(final WiresShape shape,
                                                           final WiresManager wiresManager,
                                                           final CaseManagementContainmentStateHolder state) {
@@ -100,6 +94,9 @@ public class CaseManagementDockingAndContainmentControlImpl extends WiresDocking
                                                 mouseRelativeLoc);
                 m_layer.getLayer().batch();
 
+                //Allow GC..
+                m_picker = null;
+                //..before creating a new instance
                 m_picker = makeColorMapBackedPicker(m_layer,
                                                     m_parent,
                                                     m_shape);
@@ -107,24 +104,6 @@ public class CaseManagementDockingAndContainmentControlImpl extends WiresDocking
         }
 
         return true;
-    }
-
-    @Override
-    protected void addShapeToParent() {
-        //Children contains m_ghost and others excluding m_shape. This replaces m_ghost with m_shape.
-        final DragEndMode mode = getDragEndMode();
-        switch (mode) {
-            case VETO:
-                restoreDraggedShape();
-                break;
-            default:
-                restoreDraggedShape();
-                super.addShapeToParent();
-        }
-
-        state.setGhost(Optional.empty());
-        state.setOriginalIndex(Optional.empty());
-        state.setOriginalParent(Optional.empty());
     }
 
     @Override
@@ -142,6 +121,38 @@ public class CaseManagementDockingAndContainmentControlImpl extends WiresDocking
                                                       shape.getDockingAcceptor().getHotspotSize());
     }
 
+    @Override
+    protected void addShapeToParent() {
+        if (!(state.getOriginalParent().isPresent() || state.getOriginalIndex().isPresent())) {
+            return;
+        }
+        if (!state.getGhost().isPresent()) {
+            return;
+        }
+
+        //Children contains m_ghost and others excluding m_shape. This replaces m_ghost with m_shape.
+        final AbstractCaseManagementShape ghost = state.getGhost().get();
+        final WiresContainer originalParent = state.getOriginalParent().get();
+        final int originalIndex = state.getOriginalIndex().get();
+
+        final DragEndMode mode = getDragEndMode();
+        switch (mode) {
+            case VETO:
+                restore(ghost,
+                        originalParent,
+                        originalIndex);
+                break;
+            default:
+                reparentDraggedShape(ghost,
+                                     originalParent);
+        }
+
+        m_layer.getLayer().batch();
+        state.setGhost(Optional.empty());
+        state.setOriginalIndex(Optional.empty());
+        state.setOriginalParent(Optional.empty());
+    }
+
     private DragEndMode getDragEndMode() {
         if (m_parent == null) {
             return DragEndMode.VETO;
@@ -154,38 +165,56 @@ public class CaseManagementDockingAndContainmentControlImpl extends WiresDocking
         return DragEndMode.ADD;
     }
 
-    private void restoreDraggedShape() {
-        if (!(state.getOriginalParent().isPresent() || state.getOriginalIndex().isPresent())) {
-            return;
+    private void restore(final AbstractCaseManagementShape ghost,
+                         final WiresContainer originalParent,
+                         final int originalIndex) {
+        if (originalParent instanceof AbstractCaseManagementShape) {
+            restore(ghost,
+                    (AbstractCaseManagementShape) originalParent,
+                    originalIndex);
+        } else {
+            restoreGhostParent(ghost);
         }
-        if (!state.getGhost().isPresent()) {
-            return;
-        }
+    }
 
-        final Integer originalIndex = state.getOriginalIndex().get();
-        final WiresContainer originalParent = state.getOriginalParent().get();
-        final AbstractCaseManagementShape ghost = state.getGhost().get();
+    private void restore(final AbstractCaseManagementShape ghost,
+                         final AbstractCaseManagementShape parent,
+                         final int index) {
+        ghost.removeFromParent();
+        parent.addShape(m_shape,
+                        index);
+    }
 
+    private void reparentDraggedShape(final AbstractCaseManagementShape ghost,
+                                      final WiresContainer originalParent) {
         if (originalParent instanceof AbstractCaseManagementShape) {
             if (originalParent.getChildShapes().contains(ghost)) {
                 ((AbstractCaseManagementShape) originalParent).logicallyReplace(ghost,
                                                                                 m_shape);
             } else {
-                ghost.removeFromParent();
-                ((AbstractCaseManagementShape) originalParent).addShape(m_shape,
-                                                                        originalIndex);
+                restoreGhostParent(ghost);
             }
-        } else if (ghost.getParent() != null) {
+        } else {
+            restoreGhostParent(ghost);
+        }
+        super.addShapeToParent();
+    }
+
+    private void restoreGhostParent(final AbstractCaseManagementShape ghost) {
+        if (ghost.getParent() != null) {
             final WiresContainer ghostContainer = ghost.getParent();
+            final int ghostIndex = ghostContainer.getChildShapes().toList().indexOf(ghost);
             if (ghostContainer instanceof AbstractCaseManagementShape) {
-                final int targetIndex = ghostContainer.getChildShapes().toList().indexOf(ghost);
-                ((AbstractCaseManagementShape) ghostContainer).addShape(m_shape,
-                                                                        targetIndex);
-                ghost.removeFromParent();
+                restore(ghost,
+                        (AbstractCaseManagementShape) ghostContainer,
+                        ghostIndex);
             }
         }
+    }
 
-        m_layer.getLayer().batch();
-        state.setGhost(Optional.empty());
+    private enum DragEndMode {
+        VETO,
+        REMOVE_GHOST,
+        ADD
     }
 }

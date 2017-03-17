@@ -371,7 +371,7 @@ public class BaseCanvasHandlerTest {
         }
 
         @Override
-        protected void draw(final ParameterizedCommand<CommandResult<?>> loadCallback) {
+        public void draw(final ParameterizedCommand<CommandResult<?>> loadCallback) {
             loadCallback.execute(CanvasCommandResultBuilder.SUCCESS);
         }
 

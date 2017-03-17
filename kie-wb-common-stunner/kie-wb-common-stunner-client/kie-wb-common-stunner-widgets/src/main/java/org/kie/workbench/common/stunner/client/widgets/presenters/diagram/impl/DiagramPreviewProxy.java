@@ -17,38 +17,29 @@
 package org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl;
 
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
-import org.kie.workbench.common.stunner.core.api.DefinitionManager;
-import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandlerProxy;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 /**
  * An abstract DiagramViewer type that opens the diagram in a viewer which is scaled
  * to fit the given size, usually for previewing goals.
  * @param <D> The diagram type.
  */
-public abstract class DiagramPreviewProxy<D extends Diagram> extends AbstractDiagramPreview<D, CanvasHandlerProxy> {
+public abstract class DiagramPreviewProxy<D extends Diagram> extends AbstractDiagramPreview<D, AbstractCanvasHandler> {
 
     private final DiagramViewerProxy<D> viewer;
 
     @SuppressWarnings("unchecked")
-    public DiagramPreviewProxy(final DefinitionManager definitionManager,
-                               final GraphUtils graphUtils,
-                               final ShapeManager shapeManager,
-                               final WidgetWrapperView view,
-                               final SelectionControl<CanvasHandlerProxy, ?> selectionControl) {
+    public DiagramPreviewProxy(final WidgetWrapperView view,
+                               final SelectionControl<AbstractCanvasHandler, ?> selectionControl) {
         this.viewer =
-                new DiagramViewerProxy<D>(definitionManager,
-                                          graphUtils,
-                                          shapeManager,
-                                          view,
+                new DiagramViewerProxy<D>(view,
                                           selectionControl) {
                     @Override
                     public <C extends Canvas> ZoomControl<C> getZoomControl() {
@@ -76,8 +67,8 @@ public abstract class DiagramPreviewProxy<D extends Diagram> extends AbstractDia
                     }
 
                     @Override
-                    protected AbstractCanvasHandler<D, ?> getProxiedHandler() {
-                        return DiagramPreviewProxy.this.getProxiedHandler();
+                    protected BaseCanvasHandler<D, ?> getCanvasHandler() {
+                        return DiagramPreviewProxy.this.getCanvasHandler();
                     }
 
                     @Override
@@ -89,7 +80,7 @@ public abstract class DiagramPreviewProxy<D extends Diagram> extends AbstractDia
 
     protected abstract AbstractCanvas getCanvas();
 
-    protected abstract AbstractCanvasHandler<D, ?> getProxiedHandler();
+    protected abstract BaseCanvasHandler<D, ?> getCanvasHandler();
 
     protected abstract CanvasCommandFactory<AbstractCanvasHandler> getCanvasCommandFactory();
 
@@ -105,7 +96,7 @@ public abstract class DiagramPreviewProxy<D extends Diagram> extends AbstractDia
     }
 
     @Override
-    public SelectionControl<CanvasHandlerProxy, ?> getSelectionControl() {
+    public SelectionControl<AbstractCanvasHandler, ?> getSelectionControl() {
         return getViewer().getSelectionControl();
     }
 }

@@ -23,9 +23,8 @@ import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControlImpl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.Element;
-import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 @Dependent
 @CaseManagementEditor
@@ -38,13 +37,21 @@ public class CaseManagementDragControlImpl extends DragControlImpl {
 
     @Override
     protected void doDragStart(final Element element) {
-        final double[] size = GraphUtils.getNodeSize((View) element.getContent());
-        dragShapeSize[0] = size[0];
-        dragShapeSize[1] = size[1];
+        super.doDragStart(element);
+    }
+
+    @Override
+    protected void doDragUpdate(final Element element) {
+        //Case Modeller doesn't constraint Shapes to the boundary of their container
     }
 
     @Override
     protected void doDragEnd(final Element element) {
+        //Case Modeller does not update Node's positions
+    }
+
+    @Override
+    protected void ensureDragConstraints(final ShapeView<?> shapeView) {
         //Case Modeller does not update Node's positions
     }
 

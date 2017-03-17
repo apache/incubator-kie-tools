@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
+import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
@@ -33,6 +34,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseManagementDragControlImplTest {
@@ -44,7 +46,7 @@ public class CaseManagementDragControlImplTest {
 
     @Before
     public void setup() {
-        this.control = new CaseManagementDragControlImpl(commandFactory);
+        this.control = spy(new CaseManagementDragControlImpl(commandFactory));
     }
 
     @Test
@@ -63,6 +65,21 @@ public class CaseManagementDragControlImplTest {
         assertEquals(50.0,
                      control.getDragShapeSize()[1],
                      0.0);
+    }
+
+    @Test
+    public void testDoDragUpdate() {
+        final Node<View<?>, Edge> e = makeElement("uuid",
+                                                  "content",
+                                                  10.0,
+                                                  20.0,
+                                                  25.0,
+                                                  50.0);
+
+        control.doDragUpdate(e);
+
+        verify(control,
+               never()).ensureDragConstraints(any(ShapeView.class));
     }
 
     @Test

@@ -99,6 +99,19 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
                                   final Element child);
 
     /**
+     * This method sets the given <code>child</code> instance as children for the given
+     * given <code>parent</code> instance at the given <code>index</code>. The default
+     * implementation adds the child to the parent and index is unused. The Child's
+     * Shape is also set as a sibling of the Parent Shape.
+     * @param parent The parent graph element.
+     * @param child The graph element to set as child.
+     * @param index The index of the child in the parent.
+     */
+    public abstract void addChild(final Element parent,
+                                  final Element child,
+                                  final int index);
+
+    /**
      * This method removes the given <code>child</code> instance as children for the given
      * given <code>parent</code> instance.
      * It removes the shape for the <code>child</code> instance as child shape for the
@@ -143,28 +156,28 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     /**
      * Subtypes must clear this instance's state here.
      */
-    protected abstract CanvasHandler<D, C> doClear();
+    public abstract CanvasHandler<D, C> doClear();
 
     /**
      * Subtypes must destroy this instance's state here.
      */
-    protected abstract void doDestroy();
+    public abstract void doDestroy();
 
-    protected abstract void register(final Shape shape,
-                                     final Element<View<?>> candidate,
-                                     final boolean fireEvents);
+    public abstract void register(final Shape shape,
+                                  final Element<View<?>> candidate,
+                                  final boolean fireEvents);
 
-    protected abstract void deregister(final Shape shape,
-                                       final Element element,
-                                       final boolean fireEvents);
+    public abstract void deregister(final Shape shape,
+                                    final Element element,
+                                    final boolean fireEvents);
 
-    protected abstract void applyElementMutation(final Shape shape,
-                                                 final Element candidate,
-                                                 final boolean applyPosition,
-                                                 final boolean applyProperties,
-                                                 final MutationContext mutationContext);
+    public abstract void applyElementMutation(final Shape shape,
+                                              final Element candidate,
+                                              final boolean applyPosition,
+                                              final boolean applyProperties,
+                                              final MutationContext mutationContext);
 
-    protected abstract ShapeFactory<Object, AbstractCanvasHandler, Shape> getShapeFactory(String shapeSetId);
+    public abstract ShapeFactory<Object, AbstractCanvasHandler, Shape> getShapeFactory(final String shapeSetId);
 
     /**
      * It does:
@@ -276,10 +289,10 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     }
 
     @SuppressWarnings("unchecked")
-    protected void applyElementMutation(final Element candidate,
-                                        final boolean applyPosition,
-                                        final boolean applyProperties,
-                                        final MutationContext mutationContext) {
+    public void applyElementMutation(final Element candidate,
+                                     final boolean applyPosition,
+                                     final boolean applyProperties,
+                                     final MutationContext mutationContext) {
         if (null != candidate && !isCanvasRoot(candidate)) {
             final Shape shape = getCanvas().getShape(candidate.getUUID());
             applyElementMutation(shape,
@@ -349,7 +362,7 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
     /**
      * Notifies a clean canvas to the listeners.
      */
-    protected void notifyCanvasClear() {
+    public void notifyCanvasClear() {
         for (final CanvasElementListener instance : listeners) {
             instance.clear();
         }
@@ -397,12 +410,12 @@ public abstract class AbstractCanvasHandler<D extends Diagram, C extends Abstrac
         return getCanvas();
     }
 
-    protected boolean isCanvasRoot(final Element parent) {
+    public boolean isCanvasRoot(final Element parent) {
         return CanvasLayoutUtils.isCanvasRoot(getDiagram(),
                                               parent);
     }
 
-    protected String getUuid() {
+    public String getUuid() {
         return uuid;
     }
 

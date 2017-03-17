@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session;
 
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandlerProxy;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
@@ -36,6 +36,6 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
  * @param <S> The session type.
  * @param <D> The diagram type.
  */
-public interface SessionPreview<S extends ClientSession, D extends Diagram> extends SessionViewer<S, CanvasHandlerProxy, D> {
+public interface SessionPreview<S extends ClientSession, D extends Diagram> extends SessionViewer<S, AbstractCanvasHandler, D> {
 
 }

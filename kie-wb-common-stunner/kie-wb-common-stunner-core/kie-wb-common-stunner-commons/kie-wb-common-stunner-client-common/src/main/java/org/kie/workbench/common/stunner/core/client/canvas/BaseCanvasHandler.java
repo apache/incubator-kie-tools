@@ -88,7 +88,7 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
      * @param loadCallback Callback to run once draw has finished. It must provide a result for
      * the draw operation/s.
      */
-    protected abstract void draw(final ParameterizedCommand<CommandResult<?>> loadCallback);
+    public abstract void draw(final ParameterizedCommand<CommandResult<?>> loadCallback);
 
     /**
      * Destroys this instance' graph index.
@@ -138,7 +138,7 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
 
     @Override
     @SuppressWarnings("unchecked")
-    protected ShapeFactory<Object, AbstractCanvasHandler, Shape> getShapeFactory(final String shapeSetId) {
+    public ShapeFactory<Object, AbstractCanvasHandler, Shape> getShapeFactory(final String shapeSetId) {
         ShapeSet<?> shapeSet = shapeManager.getShapeSet(shapeSetId);
         if (null == shapeSet) {
             LOGGER.log(Level.SEVERE,
@@ -149,9 +149,9 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
     }
 
     @Override
-    protected void register(final Shape shape,
-                            final Element<View<?>> candidate,
-                            final boolean fireEvents) {
+    public void register(final Shape shape,
+                         final Element<View<?>> candidate,
+                         final boolean fireEvents) {
         // Add the shapes on canvas and fire events.
         addShape(shape);
         getCanvas().draw();
@@ -165,9 +165,9 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
     }
 
     @Override
-    protected void deregister(final Shape shape,
-                              final Element element,
-                              final boolean fireEvents) {
+    public void deregister(final Shape shape,
+                           final Element element,
+                           final boolean fireEvents) {
         if (fireEvents) {
             // Fire listeners.
             notifyCanvasElementRemoved(element);
@@ -193,11 +193,11 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void applyElementMutation(final Shape shape,
-                                        final Element candidate,
-                                        final boolean applyPosition,
-                                        final boolean applyProperties,
-                                        final MutationContext mutationContext) {
+    public void applyElementMutation(final Shape shape,
+                                     final Element candidate,
+                                     final boolean applyPosition,
+                                     final boolean applyProperties,
+                                     final MutationContext mutationContext) {
         if (shape instanceof ElementShape) {
             final ElementShape graphShape = (ElementShape) shape;
             this.applyElementMutation(graphShape,
@@ -287,6 +287,13 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
             // handlers ( f.i. using canvas#addShape() method ).
             getCanvas().getLayer().addShape(childShape.getShapeView());
         }
+    }
+
+    @Override
+    public void addChild(final Element parent,
+                         final Element child,
+                         final int index) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

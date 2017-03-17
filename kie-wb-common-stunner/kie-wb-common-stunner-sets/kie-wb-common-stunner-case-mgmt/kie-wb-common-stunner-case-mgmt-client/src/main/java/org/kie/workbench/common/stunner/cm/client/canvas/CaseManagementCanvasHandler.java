@@ -75,7 +75,7 @@ public class CaseManagementCanvasHandler<D extends Diagram, C extends WiresCanva
     }
 
     @Override
-    protected boolean isCanvasRoot(final Element parent) {
+    public boolean isCanvasRoot(final Element parent) {
         return false;
     }
 
@@ -85,9 +85,9 @@ public class CaseManagementCanvasHandler<D extends Diagram, C extends WiresCanva
     }
 
     @Override
-    protected void register(final Shape shape,
-                            final Element<View<?>> candidate,
-                            final boolean fireEvents) {
+    public void register(final Shape shape,
+                         final Element<View<?>> candidate,
+                         final boolean fireEvents) {
         if (!isRenderable(shape)) {
             return;
         }
@@ -97,9 +97,9 @@ public class CaseManagementCanvasHandler<D extends Diagram, C extends WiresCanva
     }
 
     @Override
-    protected void deregister(final Shape shape,
-                              final Element element,
-                              final boolean fireEvents) {
+    public void deregister(final Shape shape,
+                           final Element element,
+                           final boolean fireEvents) {
         if (!isRenderable(shape)) {
             return;
         }
@@ -168,11 +168,11 @@ public class CaseManagementCanvasHandler<D extends Diagram, C extends WiresCanva
     }
 
     @Override
-    protected void applyElementMutation(final Shape shape,
-                                        final Element candidate,
-                                        final boolean applyPosition,
-                                        final boolean applyProperties,
-                                        final MutationContext mutationContext) {
+    public void applyElementMutation(final Shape shape,
+                                     final Element candidate,
+                                     final boolean applyPosition,
+                                     final boolean applyProperties,
+                                     final MutationContext mutationContext) {
         if (!isRenderable(shape)) {
             return;
         }
@@ -184,10 +184,10 @@ public class CaseManagementCanvasHandler<D extends Diagram, C extends WiresCanva
     }
 
     @Override
-    protected void applyElementMutation(final Element candidate,
-                                        final boolean applyPosition,
-                                        final boolean applyProperties,
-                                        final MutationContext mutationContext) {
+    public void applyElementMutation(final Element candidate,
+                                     final boolean applyPosition,
+                                     final boolean applyProperties,
+                                     final MutationContext mutationContext) {
         final Shape candidateShape = getCanvas().getShape(candidate.getUUID());
         if (!isRenderable(candidateShape)) {
             return;

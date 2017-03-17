@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 import java.lang.annotation.Annotation;
 import java.util.function.Consumer;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,8 +31,8 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandlerProxy;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasValidationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
@@ -62,7 +62,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-@RunWith(GwtMockitoTestRunner.class)
+@RunWith(LienzoMockitoTestRunner.class)
 public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
 
     private static final String DEFINITION_SET_ID = "definitionSetId";
@@ -72,22 +72,25 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
     private DefinitionManager definitionManager;
 
     @Mock
+    private ShapeManager shapeManager;
+
+    @Mock
+    private CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
+
+    @Mock
     private DefinitionUtils definitionUtils;
 
     @Mock
     private GraphUtils graphUtils;
 
     @Mock
-    private ShapeManager shapeManager;
-
-    @Mock
     private ManagedInstance<CanvasCommandFactory> canvasCommandFactories;
 
     @Mock
-    private SelectionControl<CanvasHandlerProxy, ?> selectionControl;
+    private ManagedInstance<BaseCanvasHandler> canvasHandlerFactories;
 
     @Mock
-    private CanvasCommandManager<CanvasHandlerProxy> canvasCommandManager;
+    private SelectionControl<AbstractCanvasHandler, ?> selectionControl;
 
     @Mock
     private WidgetWrapperView view;
@@ -126,16 +129,28 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
     private Annotation qualifier;
 
     @Mock
-    private ManagedInstance customInstance;
+    private ManagedInstance customCanvasCommandFactoryInstance;
 
     @Mock
-    private ManagedInstance defaultInstance;
+    private ManagedInstance defaultCanvasCommandFactoryInstance;
 
     @Mock
-    private CanvasCommandFactory customImplementation;
+    private CanvasCommandFactory customCanvasCommandFactoryImplementation;
 
     @Mock
-    private CanvasCommandFactory defaultImplementation;
+    private CanvasCommandFactory defaultCanvasCommandFactoryImplementation;
+
+    @Mock
+    private ManagedInstance customCanvasHandlerInstance;
+
+    @Mock
+    private ManagedInstance defaultCanvasHandlerInstance;
+
+    @Mock
+    private BaseCanvasHandler customCanvasHandlerImplementation;
+
+    @Mock
+    private BaseCanvasHandler defaultCanvasHandlerImplementation;
 
     @Mock
     private AdapterManager adapterManager;
@@ -175,36 +190,78 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
         when(diagram.getMetadata()).thenReturn(metaData);
         when(metaData.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
         when(definitionUtils.getQualifier(eq(DEFINITION_SET_ID))).thenReturn(qualifier);
-        when(customInstance.get()).thenReturn(customImplementation);
-        when(defaultInstance.get()).thenReturn(defaultImplementation);
-        when(canvasCommandFactories.select(eq(qualifier))).thenReturn(customInstance);
-        when(canvasCommandFactories.select(eq(DefinitionManager.DEFAULT_QUALIFIER))).thenReturn(defaultInstance);
-        when(customImplementation.draw()).thenReturn(mock(CanvasCommand.class));
-        when(defaultImplementation.draw()).thenReturn(mock(CanvasCommand.class));
+
+        when(customCanvasCommandFactoryInstance.get()).thenReturn(customCanvasCommandFactoryImplementation);
+        when(defaultCanvasCommandFactoryInstance.get()).thenReturn(defaultCanvasCommandFactoryImplementation);
+        when(canvasCommandFactories.select(eq(qualifier))).thenReturn(customCanvasCommandFactoryInstance);
+        when(canvasCommandFactories.select(eq(DefinitionManager.DEFAULT_QUALIFIER))).thenReturn(defaultCanvasCommandFactoryInstance);
+        when(customCanvasCommandFactoryImplementation.draw()).thenReturn(mock(CanvasCommand.class));
+        when(defaultCanvasCommandFactoryImplementation.draw()).thenReturn(mock(CanvasCommand.class));
+
+        when(customCanvasHandlerInstance.get()).thenReturn(customCanvasHandlerImplementation);
+        when(defaultCanvasHandlerInstance.get()).thenReturn(defaultCanvasHandlerImplementation);
+        when(canvasHandlerFactories.select(eq(qualifier))).thenReturn(customCanvasHandlerInstance);
+        when(canvasHandlerFactories.select(eq(DefinitionManager.DEFAULT_QUALIFIER))).thenReturn(defaultCanvasHandlerInstance);
 
         this.preview = new SessionPreviewImpl(definitionManager,
+                                              shapeManager,
+                                              canvasCommandManager,
                                               definitionUtils,
                                               graphUtils,
-                                              shapeManager,
+                                              canvasHandlerFactories,
                                               canvasCommandFactories,
                                               selectionControl,
-                                              canvasCommandManager,
                                               view);
     }
 
     @Test
-    public void checkGetCanvasCommandFactory() {
+    public void checkGetCanvasHandlerWhenSatisfied() {
+        checkCanvasHandler(false,
+                           (c) -> {
+                               assertTrue(c instanceof SessionPreviewCanvasHandlerProxy);
+                               assertEquals(((SessionPreviewCanvasHandlerProxy) c).getWrapped(),
+                                            customCanvasHandlerImplementation);
+                           });
+    }
+
+    @Test
+    public void checkGetCanvasHandlerWhenUnsatisfied() {
+        checkCanvasHandler(true,
+                           (c) -> {
+                               assertTrue(c instanceof SessionPreviewCanvasHandlerProxy);
+                               assertEquals(((SessionPreviewCanvasHandlerProxy) c).getWrapped(),
+                                            defaultCanvasHandlerImplementation);
+                           });
+    }
+
+    private void checkCanvasHandler(final boolean isQualifierUnsatisfied,
+                                    final Consumer<AbstractCanvasHandler> assertion) {
+        when(customCanvasHandlerInstance.isUnsatisfied()).thenReturn(isQualifierUnsatisfied);
+
+        preview.open(session,
+                     callback);
+
+        final AbstractCanvasHandler handler = preview.getCanvasHandler();
+        assertion.accept(handler);
+    }
+
+    @Test
+    public void checkGetCanvasCommandFactoryWhenSatisfied() {
         checkCanvasFactory(false,
-                           (c) -> assertEquals(customImplementation,
+                           (c) -> assertEquals(customCanvasCommandFactoryImplementation,
                                                c));
+    }
+
+    @Test
+    public void checkGetCanvasCommandFactoryWhenUnsatisfied() {
         checkCanvasFactory(true,
-                           (c) -> assertEquals(defaultImplementation,
+                           (c) -> assertEquals(defaultCanvasCommandFactoryImplementation,
                                                c));
     }
 
     private void checkCanvasFactory(final boolean isQualifierUnsatisfied,
                                     final Consumer<CanvasCommandFactory> assertion) {
-        when(customInstance.isUnsatisfied()).thenReturn(isQualifierUnsatisfied);
+        when(customCanvasCommandFactoryInstance.isUnsatisfied()).thenReturn(isQualifierUnsatisfied);
 
         preview.open(session,
                      callback);

@@ -142,7 +142,7 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
     protected void doDragUpdate(final Element element) {
         final AbstractCanvas<?> canvas = canvasHandler.getAbstractCanvas();
         final Shape<?> shape = canvas.getShape(element.getUUID());
-        ensureDragConstrains(shape.getShapeView());
+        ensureDragConstraints(shape.getShapeView());
     }
 
     protected void doDragEnd(final Element element) {
@@ -229,7 +229,7 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
      * ensure drag does not exceed the canvas bounds.
      * @param shapeView The shape view instance being drag.
      */
-    private void ensureDragConstrains(final ShapeView<?> shapeView) {
+    protected void ensureDragConstraints(final ShapeView<?> shapeView) {
         final int mw = canvasHandler.getCanvas().getWidth();
         final int mh = canvasHandler.getCanvas().getHeight();
         final Point2D sa = shapeView.getShapeAbsoluteLocation();

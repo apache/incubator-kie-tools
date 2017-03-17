@@ -18,8 +18,6 @@ package org.kie.workbench.common.stunner.cm.client.command.canvas;
 
 import java.util.Optional;
 
-import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl.DiagramViewerProxy;
-import org.kie.workbench.common.stunner.cm.client.canvas.CaseManagementCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.RemoveCanvasChildCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -47,12 +45,11 @@ public class CaseManagementSetChildNodeCanvasCommand extends org.kie.workbench.c
 
     @Override
     public CommandResult<CanvasViolation> execute(final AbstractCanvasHandler context) {
-        final CaseManagementCanvasHandler cmCanvasHandler = convertContextToCaseManagementContext(context);
-        cmCanvasHandler.addChild(getParent(),
-                                 getCandidate(),
-                                 index.get());
-        cmCanvasHandler.updateElementProperties(getCandidate(),
-                                                MutationContext.STATIC);
+        context.addChild(getParent(),
+                         getCandidate(),
+                         index.get());
+        context.updateElementProperties(getCandidate(),
+                                        MutationContext.STATIC);
         return buildResult();
     }
 
@@ -62,25 +59,12 @@ public class CaseManagementSetChildNodeCanvasCommand extends org.kie.workbench.c
             return new RemoveCanvasChildCommand(getParent(),
                                                 getCandidate()).execute(context);
         } else {
-            final CaseManagementCanvasHandler cmCanvasHandler = convertContextToCaseManagementContext(context);
-            cmCanvasHandler.addChild(originalParent.get(),
-                                     getCandidate(),
-                                     originalIndex.get());
-            cmCanvasHandler.updateElementProperties(getCandidate(),
-                                                    MutationContext.STATIC);
+            context.addChild(originalParent.get(),
+                             getCandidate(),
+                             originalIndex.get());
+            context.updateElementProperties(getCandidate(),
+                                            MutationContext.STATIC);
         }
         return buildResult();
-    }
-
-    private CaseManagementCanvasHandler convertContextToCaseManagementContext(final AbstractCanvasHandler context) {
-        CaseManagementCanvasHandler cmCanvasHandler;
-        if (context instanceof CaseManagementCanvasHandler) {
-            cmCanvasHandler = (CaseManagementCanvasHandler) context;
-        } else if (context instanceof DiagramViewerProxy.DiagramCanvasHandlerProxy) {
-            cmCanvasHandler = (CaseManagementCanvasHandler) ((DiagramViewerProxy.DiagramCanvasHandlerProxy) context).getWrapped();
-        } else {
-            throw new IllegalStateException("CanvasHandler is not an expected type.");
-        }
-        return cmCanvasHandler;
     }
 }

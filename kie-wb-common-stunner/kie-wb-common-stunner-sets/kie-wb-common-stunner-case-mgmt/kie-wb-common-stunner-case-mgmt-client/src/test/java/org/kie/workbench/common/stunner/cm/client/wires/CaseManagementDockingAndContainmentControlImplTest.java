@@ -152,6 +152,21 @@ public class CaseManagementDockingAndContainmentControlImplTest {
     }
 
     @Test
+    public void addShapeToExistingParent() {
+        doDragOverParent(parent);
+
+        control.addShapeToParent();
+
+        assertEquals(1,
+                     parent.getChildShapes().size());
+        assertEquals(child,
+                     parent.getChildShapes().get(0));
+        assertFalse(state.getOriginalIndex().isPresent());
+        assertFalse(state.getOriginalParent().isPresent());
+        assertFalse(state.getGhost().isPresent());
+    }
+
+    @Test
     public void addShapeToParentWhenDragStartsOverNonCaseManagementShape() {
         final WiresShape newParent = new WiresShape(new MultiPath());
         newParent.add(child);
