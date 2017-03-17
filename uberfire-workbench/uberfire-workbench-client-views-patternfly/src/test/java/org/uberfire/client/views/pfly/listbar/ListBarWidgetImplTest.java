@@ -16,6 +16,7 @@
 
 package org.uberfire.client.views.pfly.listbar;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -39,11 +40,13 @@ import org.mockito.Spy;
 import org.uberfire.client.workbench.PanelManager;
 import org.uberfire.client.workbench.part.WorkbenchPartPresenter;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.Resource;
 import org.uberfire.security.ResourceAction;
 import org.uberfire.security.authz.AuthorizationManager;
 import org.uberfire.security.authz.Permission;
 import org.uberfire.workbench.model.PartDefinition;
+import org.uberfire.workbench.model.impl.PartDefinitionImpl;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -332,5 +335,53 @@ public class ListBarWidgetImplTest {
                      subMenusWidgetList.size());
         verify((AnchorListItem) subMenusWidgetList.get(0)).setText(submenu1);
         verify((AnchorListItem) subMenusWidgetList.get(1)).setText(submenu2);
+    }
+
+    @Test
+    public void getNextSelectablePartTest() {
+        PartDefinition part1 = new PartDefinitionImpl(mock(PlaceRequest.class));
+        part1.setSelectable(false);
+        PartDefinition part2 = new PartDefinitionImpl(mock(PlaceRequest.class));
+        part2.setSelectable(true);
+        PartDefinition part3 = new PartDefinitionImpl(mock(PlaceRequest.class));
+        part3.setSelectable(false);
+        PartDefinition part4 = new PartDefinitionImpl(mock(PlaceRequest.class));
+        part4.setSelectable(true);
+        PartDefinition part5 = new PartDefinitionImpl(mock(PlaceRequest.class));
+        part5.setSelectable(false);
+
+        LinkedHashSet<PartDefinition> parts = new LinkedHashSet<>();
+        parts.add(part1);
+        parts.add(part2);
+        parts.add(part3);
+        parts.add(part4);
+        parts.add(part5);
+        doReturn(parts).when(listBar).getUnselectedParts();
+
+        assertSame(part2, listBar.getNextPart(part1));
+        assertSame(part4, listBar.getNextPart(part2));
+        assertSame(part2, listBar.getNextPart(part3));
+        assertSame(part2, listBar.getNextPart(part4));
+        assertSame(part2, listBar.getNextPart(part5));
+    }
+
+    @Test
+    public void getFirstUnselectablePartTest() {
+        PartDefinition part1 = new PartDefinitionImpl(mock(PlaceRequest.class));
+        part1.setSelectable(false);
+        PartDefinition part2 = new PartDefinitionImpl(mock(PlaceRequest.class));
+        part2.setSelectable(true);
+        PartDefinition part3 = new PartDefinitionImpl(mock(PlaceRequest.class));
+        part3.setSelectable(false);
+
+        LinkedHashSet<PartDefinition> parts = new LinkedHashSet<>();
+        parts.add(part1);
+        parts.add(part2);
+        parts.add(part3);
+        doReturn(parts).when(listBar).getUnselectedParts();
+
+        assertSame(part2, listBar.getNextPart(part1));
+        assertSame(part1, listBar.getNextPart(part2));
+        assertSame(part2, listBar.getNextPart(part3));
     }
 }

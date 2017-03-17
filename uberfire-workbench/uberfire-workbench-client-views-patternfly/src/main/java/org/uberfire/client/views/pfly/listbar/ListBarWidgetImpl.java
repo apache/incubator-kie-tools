@@ -307,8 +307,10 @@ public class ListBarWidgetImpl
         }
 
         if (currentPart != null && currentPart.getK1().asString().equals(part.asString())) {
-            if (parts.size() > 0) {
-                presenter.selectPart(parts.iterator().next());
+            PartDefinition nextPart = getNextPart(part);
+
+            if (nextPart != null) {
+                presenter.selectPart(nextPart);
             } else {
                 clear();
             }
@@ -329,6 +331,22 @@ public class ListBarWidgetImpl
         scheduleResize();
 
         return removed;
+    }
+
+    PartDefinition getNextPart(PartDefinition currentSelectedPart) {
+        PartDefinition nextPart = null;
+        for (PartDefinition p : getUnselectedParts()) {
+            if (!currentSelectedPart.asString().equals(p.asString())) {
+                if (nextPart == null || p.isSelectable()) {
+                    nextPart = p;
+                }
+
+                if (p.isSelectable()) {
+                    break;
+                }
+            }
+        }
+        return nextPart;
     }
 
     @Override
@@ -544,6 +562,10 @@ public class ListBarWidgetImpl
     @Override
     public void disableClosePart() {
         closeButton.setVisible(false);
+    }
+
+    Collection<PartDefinition> getUnselectedParts() {
+        return parts;
     }
 
     interface ListBarWidgetBinder
