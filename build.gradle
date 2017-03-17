@@ -24,7 +24,7 @@ buildscript {
         classpath(group: 'commons-logging', name: 'commons-logging', version: '1.2')
         classpath(group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2')
         classpath(group: 'org.fusesource.jansi', name: 'jansi', version: '1.11')
-        classpath(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.7', classifier: 'indy')
+        classpath(group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.9', classifier: 'indy')
     }
 }
 
@@ -39,7 +39,7 @@ sourceCompatibility = 1.7
 
 targetCompatibility = 1.7
 
-version = '1.0.0-RC5'
+version = '2.0.286-RELEASE'
 
 group = 'com.ahome-it'
 
