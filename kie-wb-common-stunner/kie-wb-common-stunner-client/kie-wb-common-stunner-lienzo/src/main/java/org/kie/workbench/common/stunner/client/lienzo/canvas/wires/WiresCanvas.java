@@ -39,7 +39,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEv
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeAddedEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasShapeRemovedEvent;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.lienzo.wires.handlers.impl.WiresControlFactoryImpl;
 
 /**
  * Lienzo based Canvas for Lienzo layer types.
@@ -78,8 +77,6 @@ public abstract class WiresCanvas extends AbstractCanvas<WiresCanvas.View> {
               canvasFocusedEvent,
               layer,
               view);
-        // Use the custom docking and containment control type on wires.
-        getWiresManager().setWiresControlFactory(new WiresControlFactoryImpl());
     }
 
     public WiresManager getWiresManager() {

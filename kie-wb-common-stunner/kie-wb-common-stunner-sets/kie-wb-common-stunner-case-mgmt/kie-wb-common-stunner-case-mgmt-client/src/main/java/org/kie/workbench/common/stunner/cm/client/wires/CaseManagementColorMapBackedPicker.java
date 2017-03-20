@@ -20,10 +20,10 @@ import java.util.Optional;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
+import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
-import org.kie.workbench.common.stunner.lienzo.wires.picker.ColorMapBackedPicker;
 
 public class CaseManagementColorMapBackedPicker extends ColorMapBackedPicker {
 

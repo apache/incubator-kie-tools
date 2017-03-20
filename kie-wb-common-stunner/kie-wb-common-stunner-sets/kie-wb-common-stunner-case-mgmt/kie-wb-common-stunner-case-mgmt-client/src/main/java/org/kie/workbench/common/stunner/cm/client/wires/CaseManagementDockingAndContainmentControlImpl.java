@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@ import com.ait.lienzo.client.core.shape.wires.WiresLayer;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.WiresUtils;
+import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresDockingAndContainmentControlImpl;
 import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
-import org.kie.workbench.common.stunner.lienzo.wires.handlers.impl.WiresDockingAndContainmentControlImpl;
 
 public class CaseManagementDockingAndContainmentControlImpl extends WiresDockingAndContainmentControlImpl {
 
@@ -122,12 +122,12 @@ public class CaseManagementDockingAndContainmentControlImpl extends WiresDocking
     }
 
     @Override
-    protected void addShapeToParent() {
+    protected boolean addShapeToParent() {
         if (!(state.getOriginalParent().isPresent() || state.getOriginalIndex().isPresent())) {
-            return;
+            return true;
         }
         if (!state.getGhost().isPresent()) {
-            return;
+            return true;
         }
 
         //Children contains m_ghost and others excluding m_shape. This replaces m_ghost with m_shape.
@@ -151,6 +151,7 @@ public class CaseManagementDockingAndContainmentControlImpl extends WiresDocking
         state.setGhost(Optional.empty());
         state.setOriginalIndex(Optional.empty());
         state.setOriginalParent(Optional.empty());
+        return true;
     }
 
     private DragEndMode getDragEndMode() {
