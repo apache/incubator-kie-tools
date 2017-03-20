@@ -16,7 +16,7 @@ sh /home/jenkins/workspace/UF_Release-1.0.x/release-scripts/uberfire/scripts/rel
 
 // ******************************************************
 
-job("01.UF_Release-1.0.x") {
+job("01.UF_release-deploy-1.0.x") {
 
   description("This job: <br> releases UF, upgrades the version, builds and deploys, copies artifacts to Nexus, closes the release on Nexus  <br> <b>IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.<b>")
 
@@ -71,7 +71,7 @@ job("01.UF_Release-1.0.x") {
 
 // ******************************************************
 
-job("02.UF_release-pushTags-1.0.x") {
+job("02.UF_release-pushTag-1.0.x") {
 
   description("This job: <br> creates and pushes the tags for <br> community (droolsjbpm) or product (jboss-integration) <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
 
@@ -175,7 +175,7 @@ job("03.UF_release-updateNV-1.0.x") {
 // *************************
 // *************************
 
-listView("UF_Releases-1.0.x") {
+listView("1.0.x-uberfire-releases") {
     description ("1.0.x Uberfire-releases")
     jobs {
                 name("01.UF_release-deploy-1.0.x")
