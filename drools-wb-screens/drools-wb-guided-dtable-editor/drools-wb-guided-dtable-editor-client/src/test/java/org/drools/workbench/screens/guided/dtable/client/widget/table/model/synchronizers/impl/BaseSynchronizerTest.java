@@ -87,121 +87,122 @@ public abstract class BaseSynchronizerTest {
 
     protected Instance<DynamicValidator> validatorInstance = new MockDynamicValidatorInstance();
 
+    protected final GuidedDecisionTableView view = mock(GuidedDecisionTableView.class);
+
     private GuidedDecisionTablePresenter.Access editable = new GuidedDecisionTablePresenter.Access();
 
-    private GuidedDecisionTablePresenter.Access readOnly = new GuidedDecisionTablePresenter.Access() {{
-        setReadOnly( true );
+    protected GuidedDecisionTablePresenter.Access readOnly = new GuidedDecisionTablePresenter.Access() {{
+        setReadOnly(true);
     }};
 
     @Before
     public void setup() {
         //Setup model related classes
         model = new GuidedDecisionTable52();
-        uiModel = new GuidedDecisionTableUiModel( modelSynchronizer );
-        incrementalDataModelServiceCaller = new CallerMock<>( incrementalDataModelService );
+        uiModel = new GuidedDecisionTableUiModel(modelSynchronizer);
+        incrementalDataModelServiceCaller = new CallerMock<>(incrementalDataModelService);
 
-        final BRLRuleModel rm = new BRLRuleModel( model );
+        final BRLRuleModel rm = new BRLRuleModel(model);
         final CellUtilities cellUtilities = new CellUtilities();
-        final ColumnUtilities columnUtilities = new ColumnUtilities( model,
-                                                                     oracle );
-        final DependentEnumsUtilities enumsUtilities = new DependentEnumsUtilities( model,
-                                                                                    oracle );
+        final ColumnUtilities columnUtilities = new ColumnUtilities(model,
+                                                                    oracle);
+        final DependentEnumsUtilities enumsUtilities = new DependentEnumsUtilities(model,
+                                                                                   oracle);
         final GridWidgetCellFactory gridWidgetCellFactory = new GridWidgetCellFactoryImpl();
 
         //Setup mocks
-        final GuidedDecisionTableModellerView.Presenter modellerPresenter = mock( GuidedDecisionTableModellerView.Presenter.class );
-        final GuidedDecisionTableModellerView modellerView = mock( GuidedDecisionTableModellerView.class );
-        final GridLayer gridLayer = mock( GridLayer.class );
-        final AbsolutePanel domElementContainer = mock( AbsolutePanel.class );
-        final GuidedDecisionTableView.Presenter dtablePresenter = mock( GuidedDecisionTableView.Presenter.class );
-        final GuidedDecisionTableView view = mock( GuidedDecisionTableView.class );
-        final EventBus eventBus = mock( EventBus.class );
+        final GuidedDecisionTableModellerView.Presenter modellerPresenter = mock(GuidedDecisionTableModellerView.Presenter.class);
+        final GuidedDecisionTableModellerView modellerView = mock(GuidedDecisionTableModellerView.class);
+        final GridLayer gridLayer = mock(GridLayer.class);
+        final AbsolutePanel domElementContainer = mock(AbsolutePanel.class);
+        final GuidedDecisionTableView.Presenter dtablePresenter = mock(GuidedDecisionTableView.Presenter.class);
+        final EventBus eventBus = mock(EventBus.class);
 
-        when( dtablePresenter.getModellerPresenter() ).thenReturn( modellerPresenter );
-        when( modellerPresenter.getView() ).thenReturn( modellerView );
-        when( modellerView.getGridLayerView() ).thenReturn( gridLayer );
-        when( gridLayer.getDomElementContainer() ).thenReturn( domElementContainer );
-        when( domElementContainer.iterator() ).thenReturn( mock( Iterator.class ) );
+        when(dtablePresenter.getModellerPresenter()).thenReturn(modellerPresenter);
+        when(modellerPresenter.getView()).thenReturn(modellerView);
+        when(modellerView.getGridLayerView()).thenReturn(gridLayer);
+        when(gridLayer.getDomElementContainer()).thenReturn(domElementContainer);
+        when(domElementContainer.iterator()).thenReturn(mock(Iterator.class));
 
         //Setup column converters
         final List<BaseColumnConverter> converters = getConverters();
-        gridWidgetColumnFactory.setConverters( converters );
-        gridWidgetColumnFactory.initialise( model,
-                                            oracle,
-                                            columnUtilities,
-                                            dtablePresenter );
+        gridWidgetColumnFactory.setConverters(converters);
+        gridWidgetColumnFactory.initialise(model,
+                                           oracle,
+                                           columnUtilities,
+                                           dtablePresenter);
 
         //Setup synchronizers
         final List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> synchronizers = getSynchronizers();
-        modelSynchronizer.setSynchronizers( synchronizers );
-        modelSynchronizer.initialise( model,
-                                      uiModel,
-                                      cellUtilities,
-                                      columnUtilities,
-                                      enumsUtilities,
-                                      gridWidgetCellFactory,
-                                      gridWidgetColumnFactory,
-                                      view,
-                                      rm,
-                                      eventBus,
-                                      editable );
+        modelSynchronizer.setSynchronizers(synchronizers);
+        modelSynchronizer.initialise(model,
+                                     uiModel,
+                                     cellUtilities,
+                                     columnUtilities,
+                                     enumsUtilities,
+                                     gridWidgetCellFactory,
+                                     gridWidgetColumnFactory,
+                                     view,
+                                     rm,
+                                     eventBus,
+                                     editable);
 
         //Dummy columns for Row number and Description
-        uiModel.appendColumn( gridWidgetColumnFactory.convertColumn( new RowNumberCol52(),
-                                                                     readOnly,
-                                                                     view ) );
-        uiModel.appendColumn( gridWidgetColumnFactory.convertColumn( new DescriptionCol52(),
-                                                                     readOnly,
-                                                                     view ) );
+        uiModel.appendColumn(gridWidgetColumnFactory.convertColumn(new RowNumberCol52(),
+                                                                   readOnly,
+                                                                   view));
+        uiModel.appendColumn(gridWidgetColumnFactory.convertColumn(new DescriptionCol52(),
+                                                                   readOnly,
+                                                                   view));
 
-        ApplicationPreferences.setUp( new HashMap<String, String>() {{
-            put( ApplicationPreferences.DATE_FORMAT,
-                 "dd-MM-yyyy" );
-        }} );
+        ApplicationPreferences.setUp(new HashMap<String, String>() {{
+            put(ApplicationPreferences.DATE_FORMAT,
+                "dd-MM-yyyy");
+        }});
     }
 
     protected AsyncPackageDataModelOracle getOracle() {
-        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl( incrementalDataModelServiceCaller,
-                                                                                        validatorInstance );
+        final AsyncPackageDataModelOracle oracle = new AsyncPackageDataModelOracleImpl(incrementalDataModelServiceCaller,
+                                                                                       validatorInstance);
         return oracle;
     }
 
     protected List<BaseColumnConverter> getConverters() {
         final List<BaseColumnConverter> converters = new ArrayList<BaseColumnConverter>();
-        converters.add( new ActionInsertFactColumnConverter() );
-        converters.add( new ActionRetractFactColumnConverter() );
-        converters.add( new ActionSetFieldColumnConverter() );
-        converters.add( new ActionWorkItemColumnConverter() );
-        converters.add( new ActionWorkItemInsertFactColumnConverter() );
-        converters.add( new ActionWorkItemSetFieldColumnConverter() );
-        converters.add( new AttributeColumnConverter() );
-        converters.add( new BRLActionVariableColumnConverter() );
-        converters.add( new BRLConditionVariableColumnConverter() );
-        converters.add( new ConditionColumnConverter() );
-        converters.add( new DescriptionColumnConverter() );
-        converters.add( new LimitedEntryColumnConverter() );
-        converters.add( new MetaDataColumnConverter() );
-        converters.add( new RowNumberColumnConverter() );
+        converters.add(new ActionInsertFactColumnConverter());
+        converters.add(new ActionRetractFactColumnConverter());
+        converters.add(new ActionSetFieldColumnConverter());
+        converters.add(new ActionWorkItemColumnConverter());
+        converters.add(new ActionWorkItemInsertFactColumnConverter());
+        converters.add(new ActionWorkItemSetFieldColumnConverter());
+        converters.add(new AttributeColumnConverter());
+        converters.add(new BRLActionVariableColumnConverter());
+        converters.add(new BRLConditionVariableColumnConverter());
+        converters.add(new ConditionColumnConverter());
+        converters.add(new DescriptionColumnConverter());
+        converters.add(new LimitedEntryColumnConverter());
+        converters.add(new MetaDataColumnConverter());
+        converters.add(new RowNumberColumnConverter());
         return converters;
     }
 
     protected List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> getSynchronizers() {
         final List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> synchronizers = new ArrayList<>();
-        synchronizers.add( new ActionColumnSynchronizer() );
-        synchronizers.add( new ActionInsertFactColumnSynchronizer() );
-        synchronizers.add( new ActionRetractFactColumnSynchronizer() );
-        synchronizers.add( new ActionSetFieldColumnSynchronizer() );
-        synchronizers.add( new ActionWorkItemColumnSynchronizer() );
-        synchronizers.add( new ActionWorkItemInsertFactColumnSynchronizer() );
-        synchronizers.add( new ActionWorkItemSetFieldColumnSynchronizer() );
-        synchronizers.add( new AttributeColumnSynchronizer() );
-        synchronizers.add( new BRLActionColumnSynchronizer() );
-        synchronizers.add( new BRLConditionColumnSynchronizer() );
-        synchronizers.add( new ConditionColumnSynchronizer() );
-        synchronizers.add( new LimitedEntryBRLActionColumnSynchronizer() );
-        synchronizers.add( new LimitedEntryBRLConditionColumnSynchronizer() );
-        synchronizers.add( new MetaDataColumnSynchronizer() );
-        synchronizers.add( new RowSynchronizer() );
+        synchronizers.add(new ActionColumnSynchronizer());
+        synchronizers.add(new ActionInsertFactColumnSynchronizer());
+        synchronizers.add(new ActionRetractFactColumnSynchronizer());
+        synchronizers.add(new ActionSetFieldColumnSynchronizer());
+        synchronizers.add(new ActionWorkItemColumnSynchronizer());
+        synchronizers.add(new ActionWorkItemInsertFactColumnSynchronizer());
+        synchronizers.add(new ActionWorkItemSetFieldColumnSynchronizer());
+        synchronizers.add(new AttributeColumnSynchronizer());
+        synchronizers.add(new BRLActionColumnSynchronizer());
+        synchronizers.add(new BRLConditionColumnSynchronizer());
+        synchronizers.add(new ConditionColumnSynchronizer());
+        synchronizers.add(new LimitedEntryBRLActionColumnSynchronizer());
+        synchronizers.add(new LimitedEntryBRLConditionColumnSynchronizer());
+        synchronizers.add(new MetaDataColumnSynchronizer());
+        synchronizers.add(new RowSynchronizer());
         return synchronizers;
     }
 
@@ -209,13 +210,13 @@ public abstract class BaseSynchronizerTest {
     private static class MockDynamicValidatorInstance implements Instance<DynamicValidator> {
 
         @Override
-        public Instance<DynamicValidator> select( final Annotation... annotations ) {
+        public Instance<DynamicValidator> select(final Annotation... annotations) {
             return null;
         }
 
         @Override
-        public <U extends DynamicValidator> Instance<U> select( final Class<U> aClass,
-                                                                final Annotation... annotations ) {
+        public <U extends DynamicValidator> Instance<U> select(final Class<U> aClass,
+                                                               final Annotation... annotations) {
             return null;
         }
 
@@ -230,7 +231,7 @@ public abstract class BaseSynchronizerTest {
         }
 
         @Override
-        public void destroy( final DynamicValidator dynamicValidator ) {
+        public void destroy(final DynamicValidator dynamicValidator) {
 
         }
 
@@ -243,7 +244,5 @@ public abstract class BaseSynchronizerTest {
         public DynamicValidator get() {
             return null;
         }
-
     }
-
 }

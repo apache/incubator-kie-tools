@@ -23,6 +23,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiCell;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.GuidedDecisionTableUiModel;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.converters.cell.GridWidgetCellFactory;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.CellUtilities;
@@ -30,18 +31,17 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.
 
 public class PrioritySynchronizer {
 
-
     private final GuidedDecisionTable52 model;
     private final GuidedDecisionTableUiModel uiModel;
     private final GridWidgetCellFactory gridWidgetCellFactory;
     private final CellUtilities cellUtilities;
     private final ColumnUtilities columnUtilities;
 
-    public PrioritySynchronizer( final GuidedDecisionTable52 model,
-                                 final GuidedDecisionTableUiModel uiModel,
-                                 final GridWidgetCellFactory gridWidgetCellFactory,
-                                 final CellUtilities cellUtilities,
-                                 final ColumnUtilities columnUtilities ) {
+    public PrioritySynchronizer(final GuidedDecisionTable52 model,
+                                final GuidedDecisionTableUiModel uiModel,
+                                final GridWidgetCellFactory gridWidgetCellFactory,
+                                final CellUtilities cellUtilities,
+                                final ColumnUtilities columnUtilities) {
         this.model = model;
         this.uiModel = uiModel;
         this.gridWidgetCellFactory = gridWidgetCellFactory;
@@ -49,46 +49,48 @@ public class PrioritySynchronizer {
         this.columnUtilities = columnUtilities;
     }
 
-    public void update( final int rowNumberColumnIndex,
-                        final RowNumberChanges rowNumberChanges ) {
+    public void update(final int rowNumberColumnIndex,
+                       final RowNumberChanges rowNumberChanges) {
 
         final Optional<BaseColumnInfo> optional = getPriorityColumnInfo();
 
-        if ( optional.isPresent() ) {
+        if (optional.isPresent()) {
 
             final BaseColumnInfo baseColumnInfo = optional.get();
 
-            for ( final List<DTCellValue52> row : model.getData() ) {
+            for (final List<DTCellValue52> row : model.getData()) {
 
-                final DTCellValue52 dtCellValue52 = row.get( baseColumnInfo.getColumnIndex() );
-                final int oldValue = getNumber( dtCellValue52 );
-                final int rowNumber = row.get( rowNumberColumnIndex )
+                final DTCellValue52 dtCellValue52 = row.get(baseColumnInfo.getColumnIndex());
+                final int oldValue = getNumber(dtCellValue52);
+                final int rowNumber = row.get(rowNumberColumnIndex)
                         .getNumericValue()
                         .intValue() - 1;
 
-                if ( oldValue != 0 ) {
+                if (oldValue != 0) {
 
-                    if ( oldValue > rowNumber ) {
-                        dtCellValue52.setStringValue( "" );
+                    GuidedDecisionTableUiCell newUiCell;
+                    if (oldValue > rowNumber || rowNumberChanges.get(oldValue) > rowNumber) {
+                        newUiCell = new GuidedDecisionTableUiCell("");
                     } else {
-                        dtCellValue52.setStringValue( Integer.toString( rowNumberChanges.get( oldValue ) ) );
+                        dtCellValue52.setStringValue(Integer.toString(rowNumberChanges.get(oldValue)));
+                        newUiCell = gridWidgetCellFactory.convertCell(dtCellValue52,
+                                                                      baseColumnInfo.getBaseColumn(),
+                                                                      cellUtilities,
+                                                                      columnUtilities);
                     }
 
-                    uiModel.setCellInternal( rowNumber,
-                                             baseColumnInfo.getColumnIndex(),
-                                             gridWidgetCellFactory.convertCell( dtCellValue52,
-                                                                                baseColumnInfo.getBaseColumn(),
-                                                                                cellUtilities,
-                                                                                columnUtilities ) );
+                    uiModel.setCellInternal(rowNumber,
+                                            baseColumnInfo.getColumnIndex(),
+                                            newUiCell);
                 }
             }
         }
     }
 
-    private int getNumber( final DTCellValue52 dtCellValue52 ) {
+    private int getNumber(final DTCellValue52 dtCellValue52) {
         try {
-            return Integer.parseInt( dtCellValue52.getStringValue() );
-        } catch ( final NumberFormatException e ) {
+            return Integer.parseInt(dtCellValue52.getStringValue());
+        } catch (final NumberFormatException e) {
             return 0;
         }
     }
@@ -97,12 +99,12 @@ public class PrioritySynchronizer {
 
         int attributeColumnIndex = 0;
 
-        for ( final BaseColumn baseColumn : model.getExpandedColumns() ) {
-            if ( baseColumn instanceof MetadataCol52
-                    && GuidedDecisionTable52.HitPolicy.RESOLVED_HIT_METADATA_NAME.equals( ( (MetadataCol52) baseColumn ).getMetadata() ) ) {
+        for (final BaseColumn baseColumn : model.getExpandedColumns()) {
+            if (baseColumn instanceof MetadataCol52
+                    && GuidedDecisionTable52.HitPolicy.RESOLVED_HIT_METADATA_NAME.equals(((MetadataCol52) baseColumn).getMetadata())) {
 
-                return Optional.of( new BaseColumnInfo( attributeColumnIndex,
-                                                        baseColumn ) );
+                return Optional.of(new BaseColumnInfo(attributeColumnIndex,
+                                                      baseColumn));
             } else {
                 attributeColumnIndex++;
             }
@@ -110,35 +112,34 @@ public class PrioritySynchronizer {
         return Optional.empty();
     }
 
-    public void deleteRow( final int deletedRowIndex ) {
-
+    public void deleteRow(final int deletedRowIndex) {
 
         final int deletedRowNumber = deletedRowIndex + 1;
 
-        if ( GuidedDecisionTable52.HitPolicy.RESOLVED_HIT.equals( model.getHitPolicy() ) ) {
+        if (GuidedDecisionTable52.HitPolicy.RESOLVED_HIT.equals(model.getHitPolicy())) {
 
             final Optional<BaseColumnInfo> optional = getPriorityColumnInfo();
 
-            if ( optional.isPresent() ) {
+            if (optional.isPresent()) {
 
                 final BaseColumnInfo baseColumnInfo = optional.get();
 
                 int rowNumber = 0;
 
-                for ( final List<DTCellValue52> row : model.getData() ) {
+                for (final List<DTCellValue52> row : model.getData()) {
 
-                    final DTCellValue52 dtCellValue52 = row.get( baseColumnInfo.getColumnIndex() );
-                    final int oldValue = getNumber( dtCellValue52 );
+                    final DTCellValue52 dtCellValue52 = row.get(baseColumnInfo.getColumnIndex());
+                    final int oldValue = getNumber(dtCellValue52);
 
-                    if ( oldValue == deletedRowNumber ) {
-                        dtCellValue52.setNumericValue( 0 );
+                    if (oldValue == deletedRowNumber) {
+                        dtCellValue52.setNumericValue(0);
 
-                        uiModel.setCellInternal( rowNumber,
-                                                 baseColumnInfo.getColumnIndex(),
-                                                 gridWidgetCellFactory.convertCell( dtCellValue52,
-                                                                                    baseColumnInfo.getBaseColumn(),
-                                                                                    cellUtilities,
-                                                                                    columnUtilities ) );
+                        uiModel.setCellInternal(rowNumber,
+                                                baseColumnInfo.getColumnIndex(),
+                                                gridWidgetCellFactory.convertCell(dtCellValue52,
+                                                                                  baseColumnInfo.getBaseColumn(),
+                                                                                  cellUtilities,
+                                                                                  columnUtilities));
                     }
 
                     rowNumber++;
@@ -157,11 +158,12 @@ public class PrioritySynchronizer {
     }
 
     private class BaseColumnInfo {
+
         private int columnIndex;
         private BaseColumn baseColumn;
 
-        public BaseColumnInfo( final int columnIndex,
-                               final BaseColumn baseColumn ) {
+        public BaseColumnInfo(final int columnIndex,
+                              final BaseColumn baseColumn) {
             this.columnIndex = columnIndex;
             this.baseColumn = baseColumn;
         }
