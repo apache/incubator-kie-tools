@@ -36,8 +36,6 @@ job("01.UF_release-deploy-1.0.x") {
 
   jdk("jdk1.8")
 
-  customWorkspace("/home/jenkins/workspace/UF_Release-1.0.x")
-
   wrappers {
     timeout {
       absolute(60)
