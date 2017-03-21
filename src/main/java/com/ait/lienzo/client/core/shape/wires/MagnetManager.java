@@ -224,13 +224,13 @@ public class MagnetManager
 
     public static class Magnets implements AttributesChangedHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
     {
-        private IControlHandleList               m_list;
+        private IControlHandleList m_list;
 
-        private MagnetManager                    m_magnetManager;
+        private MagnetManager m_magnetManager;
 
-        private WiresShape                       m_wiresShape;
+        private WiresShape m_wiresShape;
 
-        private boolean                          m_isDragging;
+        private boolean m_isDragging;
 
         private final HandlerRegistrationManager m_registrationManager = new HandlerRegistrationManager();
 
@@ -297,7 +297,6 @@ public class MagnetManager
 
         private void shapeMoved(final double x, final double y)
         {
-
             for (int i = 0; i < m_list.size(); i++)
             {
                 WiresMagnet m = (WiresMagnet) m_list.getHandle(i);
@@ -313,12 +312,10 @@ public class MagnetManager
             }
 
             batch();
-
         }
 
         public void shapeChanged()
         {
-
             final Point2DArray points = MagnetManager.getWiresIntersectionPoints(m_wiresShape);
 
             if (points.size() == m_list.size())
