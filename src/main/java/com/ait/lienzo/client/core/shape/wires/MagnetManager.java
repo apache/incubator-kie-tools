@@ -56,30 +56,38 @@ public class MagnetManager
 
     private int                       m_ctrlSize           = CONTROL_RADIUS;
 
-    public ImageData drawMagnetsToBack(Magnets magnets, NFastStringMap<WiresShape> shape_color_map, NFastStringMap<WiresMagnet> magnet_color_map, ScratchPad scratch)
+    public ImageData drawMagnetsToBack(Magnets magnets, NFastStringMap<WiresShape> shapeColors, NFastStringMap<WiresMagnet> magnetColors, ScratchPad scratch)
     {
         scratch.clear();
         Context2D ctx = scratch.getContext();
 
-        // the Shape doesn't need recording, we just need to know the mouse is over something
-        BackingColorMapUtils.drawShapeToBacking(ctx, magnets.getWiresShape(), m_c_rotor.next(), shape_color_map);
+        drawShapeToBacking(magnets, shapeColors, ctx);
 
-        magnet_color_map.clear();
+        magnetColors.clear();
         for (int i = 0; i < magnets.size(); i++)
         {
-            WiresMagnet m = magnets.getMagnet(i);
-
-            String c = m_c_rotor.next();
-            magnet_color_map.put(c, m);
-            ctx.beginPath();
-            ctx.setStrokeWidth(m_ctrlSize);
-            ctx.setStrokeColor(c);
-            ctx.setFillColor(c);
-            ctx.arc(m.getControl().getX(), m.getControl().getY(), m_ctrlSize, 0, 2 * Math.PI, false);
-            ctx.stroke();
-            ctx.fill();
+            drawMagnet(magnetColors, ctx, magnets.getMagnet(i));
         }
-        return ctx.getImageData(0, 0, scratch.getHeight(), scratch.getHeight());
+        return ctx.getImageData(0, 0, scratch.getWidth(), scratch.getHeight());
+    }
+
+    protected void drawShapeToBacking(Magnets magnets, NFastStringMap<WiresShape> shapeColorMap, Context2D ctx)
+    {
+        // the Shape doesn't need recording, we just need to know the mouse is over something
+        BackingColorMapUtils.drawShapeToBacking(ctx, magnets.getWiresShape(), m_c_rotor.next(), shapeColorMap);
+    }
+
+    protected void drawMagnet(NFastStringMap<WiresMagnet> magnetColorMap, Context2D ctx, WiresMagnet m)
+    {
+        String c = m_c_rotor.next();
+        magnetColorMap.put(c, m);
+        ctx.beginPath();
+        ctx.setStrokeWidth(m_ctrlSize);
+        ctx.setStrokeColor(c);
+        ctx.setFillColor(c);
+        ctx.arc(m.getControl().getX(), m.getControl().getY(), m_ctrlSize, 0, 2 * Math.PI, false);
+        ctx.stroke();
+        ctx.fill();
     }
 
     public Magnets createMagnets(final WiresShape wiresShape)
@@ -224,13 +232,13 @@ public class MagnetManager
 
     public static class Magnets implements AttributesChangedHandler, NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler
     {
-        private IControlHandleList               m_list;
+        private IControlHandleList m_list;
 
-        private MagnetManager                    m_magnetManager;
+        private MagnetManager m_magnetManager;
 
-        private WiresShape                       m_wiresShape;
+        private WiresShape m_wiresShape;
 
-        private boolean                          m_isDragging;
+        private boolean m_isDragging;
 
         private final HandlerRegistrationManager m_registrationManager = new HandlerRegistrationManager();
 
@@ -297,7 +305,6 @@ public class MagnetManager
 
         private void shapeMoved(final double x, final double y)
         {
-
             for (int i = 0; i < m_list.size(); i++)
             {
                 WiresMagnet m = (WiresMagnet) m_list.getHandle(i);
@@ -313,12 +320,10 @@ public class MagnetManager
             }
 
             batch();
-
         }
 
         public void shapeChanged()
         {
-
             final Point2DArray points = MagnetManager.getWiresIntersectionPoints(m_wiresShape);
 
             if (points.size() == m_list.size())
