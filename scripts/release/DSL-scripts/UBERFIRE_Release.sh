@@ -1,16 +1,16 @@
 def ufDeploy=
 """
-sh /home/jenkins/workspace/UBERFIRE_Release-1.0.x/release-scripts/uberfire/scripts/release/DSL-scripts/UF_deploy.sh
+sh /home/jenkins/workspace/UBERFIRE-Release-1.0.x/release-scripts/uberfire/scripts/release/DSL-scripts/UF_deploy.sh
 """
 
 def ufPushTag=
 """
-sh /home/jenkins/workspace/UBERFIRE_Release-1.0.x/release-scripts/uberfire/scripts/release/DSL-scripts/UF_pushTag.sh
+sh /home/jenkins/workspace/UBERFIRE-Release-1.0.x/release-scripts/uberfire/scripts/release/DSL-scripts/UF_pushTag.sh
 """
 
 def ufUpdateVersion=
 """
-sh /home/jenkins/workspace/UBERFIRE_Release-1.0.x/release-scripts/uberfire/scripts/release/DSL-scripts/UF_updateNextVersions.sh
+sh /home/jenkins/workspace/UBERFIRE-Release-1.0.x/release-scripts/uberfire/scripts/release/DSL-scripts/UF_updateVersion.sh
 """
 
 
@@ -121,7 +121,7 @@ job("UF_pushTag-1.0.x") {
 
 // ******************************************************
 
-job("UF_updateNV-1.0.x") {
+job("UF_updateVersion-1.0.x") {
 
   description("This job: <br> updates the UF and UF-extensions repositories to a new developmenmt version <br> for 0.7.x, 0.8.x or 0.9.x branches <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
  
@@ -178,7 +178,7 @@ listView("1.0.x-uberfire-releases") {
     jobs {
                 name("UF_release-1.0.x")
                 name("UF_pushTag-1.0.x")
-                name("UF_updateNV-1.0.x")
+                name("UF_updateVersion-1.0.x")
     }
     columns {
                 status()
