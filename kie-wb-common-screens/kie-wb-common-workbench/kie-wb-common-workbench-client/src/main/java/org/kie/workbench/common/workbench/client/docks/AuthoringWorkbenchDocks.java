@@ -79,27 +79,30 @@ public class AuthoringWorkbenchDocks {
     public void perspectiveChangeEvent(@Observes UberfireDockReadyEvent dockReadyEvent) {
         currentPerspectiveIdentifier = dockReadyEvent.getCurrentPerspective();
         if (authoringPerspectiveIdentifier != null && dockReadyEvent.getCurrentPerspective().equals(authoringPerspectiveIdentifier)) {
-            if (authorizationManager.authorize(WorkbenchFeatures.PLANNER_AVAILABLE,
-                                               sessionInfo.getIdentity())) {
-                if (plannerDock == null) {
-                    plannerDock = new UberfireDock(UberfireDockPosition.EAST,
-                                                   WorkbenchImageResources.INSTANCE.optaPlannerDisabledIcon(),
-                                                   WorkbenchImageResources.INSTANCE.optaPlannerEnabledIcon(),
-                                                   new DefaultPlaceRequest("PlannerDomainScreen"),
-                                                   authoringPerspectiveIdentifier)
-                            .withSize(450).withLabel(constants.DocksOptaPlannerTitle());
-                } else {
-                    //avoid duplications
-                    uberfireDocks.remove(plannerDock);
-                }
-                uberfireDocks.add(plannerDock);
-            } else if (plannerDock != null) {
-                uberfireDocks.remove(plannerDock);
-            }
-
+            updatePlannerDock(authoringPerspectiveIdentifier);
             if (projectExplorerEnabled) {
                 expandProjectExplorer();
             }
+        }
+    }
+
+    private void updatePlannerDock(String perspectiveIdentifier) {
+        if (authorizationManager.authorize(WorkbenchFeatures.PLANNER_AVAILABLE,
+                                           sessionInfo.getIdentity())) {
+            if (plannerDock == null) {
+                plannerDock = new UberfireDock(UberfireDockPosition.EAST,
+                                               WorkbenchImageResources.INSTANCE.optaPlannerDisabledIcon(),
+                                               WorkbenchImageResources.INSTANCE.optaPlannerEnabledIcon(),
+                                               new DefaultPlaceRequest("PlannerDomainScreen"),
+                                               perspectiveIdentifier)
+                        .withSize(450).withLabel(constants.DocksOptaPlannerTitle());
+            } else {
+                //avoid duplications
+                uberfireDocks.remove(plannerDock);
+            }
+            uberfireDocks.add(plannerDock);
+        } else if (plannerDock != null) {
+            uberfireDocks.remove(plannerDock);
         }
     }
 
@@ -133,6 +136,7 @@ public class AuthoringWorkbenchDocks {
                                  new DefaultPlaceRequest("ProjectDiagramExplorerScreen"),
                                  authoringPerspectiveIdentifier).withSize(450).withLabel(constants.DocksStunnerExplorerTitle())
         );
+        updatePlannerDock(authoringPerspectiveIdentifier);
         uberfireDocks.disable(UberfireDockPosition.EAST,
                               authoringPerspectiveIdentifier);
         dataModelerDocksEnabled = false;

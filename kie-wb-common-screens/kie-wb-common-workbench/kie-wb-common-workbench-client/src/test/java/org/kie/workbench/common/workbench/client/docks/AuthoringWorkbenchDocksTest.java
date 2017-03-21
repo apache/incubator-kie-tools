@@ -132,6 +132,19 @@ public class AuthoringWorkbenchDocksTest {
         //if not, do nothing
     }
 
+    @Test
+    public void setup() {
+        when(sessionInfo.getIdentity()).thenReturn(user);
+        when(authorizationManager.authorize(WorkbenchFeatures.PLANNER_AVAILABLE,
+                                            user)).thenReturn(true);
+
+        authoringDocks.setup("authoring",
+                             placeRequest);
+
+        verify(uberfireDocks,
+               times(1)).add(plannerDock);
+    }
+
     /**
      * This test checks that docks operations resulting from the event processing only occurs on the docks belonging
      * to the given active perspective.
