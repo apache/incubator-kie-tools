@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
@@ -60,7 +61,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
                 StartTimerEvent.class,
                 EndNoneEvent.class,
                 EndTerminateEvent.class,
-                // TODO: Removed for M1 ( no form properties available for it yet ) - IntermediateTimerEvent.class,
+                IntermediateTimerEvent.class,
                 ParallelGateway.class,
                 ExclusiveDatabasedGateway.class,
                 ReusableSubprocess.class,

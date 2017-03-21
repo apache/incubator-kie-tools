@@ -106,6 +106,10 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @DataResource.MimeType("image/svg+xml")
     DataResource eventStartTimer();
 
+    @ClientBundle.Source("images/event/event-intermediate-timer.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource eventIntermediateTimer();
+
     // ******* Gateway *******
     @ClientBundle.Source("images/gateway/parallel-event.svg")
     @DataResource.MimeType("image/svg+xml")

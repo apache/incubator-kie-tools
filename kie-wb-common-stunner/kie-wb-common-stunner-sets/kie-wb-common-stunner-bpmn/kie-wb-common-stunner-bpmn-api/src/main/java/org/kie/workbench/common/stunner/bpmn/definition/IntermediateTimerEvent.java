@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition;
 
-import java.util.HashSet;
-import java.util.Set;
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
@@ -36,83 +34,43 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGen
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Description;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
-import org.kie.workbench.common.stunner.core.definition.builder.Builder;
+import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = IntermediateTimerEvent.IntermediateTimerEventBuilder.class)
+@Morph(base = BaseIntermediateEvent.class)
 @FormDefinition(
-        policy = FieldPolicy.ONLY_MARKED,
-        startElement = "general"
+        startElement = "general",
+        policy = FieldPolicy.ONLY_MARKED
 )
-public class IntermediateTimerEvent implements BPMNDefinition {
-
-    @Category
-    public static final transient String category = Categories.EVENTS;
+public class IntermediateTimerEvent extends BaseIntermediateEvent {
 
     @Title
-    public static final transient String title = "Timer Intermediate Event";
+    public static final transient String title = "Intermediate Timer Event";
 
     @Description
     public static final transient String description = "Process execution is delayed until a certain point in time " +
             "is reached or a particular duration is over.";
 
     @PropertySet
-    @FormField
-    @Valid
-    private BPMNGeneralSet general;
-
-    @PropertySet
     @FormField(
+            labelKey = "executionSet",
             afterElement = "general"
     )
     @Valid
     protected IntermediateTimerEventExecutionSet executionSet;
 
-    @PropertySet
-    @Valid
-    private BackgroundSet backgroundSet;
-
-    @PropertySet
-    private FontSet fontSet;
-
-    @PropertySet
-    private CircleDimensionSet dimensionsSet;
-
-    @Labels
-    private final Set<String> labels = new HashSet<String>() {{
-        add("all");
-        add("sequence_start");
-        add("sequence_end");
-        add("to_task_event");
-        add("from_task_event");
-        add("fromtoall");
-        add("choreography_sequence_start");
-        add("choreography_sequence_end");
-        add("FromEventbasedGateway");
-        add("IntermediateEventOnSubprocessBoundary");
-        add("IntermediateEventOnActivityBoundary");
-        add("EventOnChoreographyActivityBoundary");
-        add("IntermediateEventsMorph");
-    }};
-
     @NonPortable
-    public static class IntermediateTimerEventBuilder implements Builder<IntermediateTimerEvent> {
-
-        public static final String COLOR = "#f5deb3";
-        public static final Double BORDER_SIZE = 1d;
-        public static final String BORDER_COLOR = "#a0522d";
-        public static final Double RADIUS = 15d;
+    public static class IntermediateTimerEventBuilder extends BaseIntermediateEventBuilder<IntermediateTimerEvent> {
 
         @Override
         public IntermediateTimerEvent build() {
-            return new IntermediateTimerEvent(new BPMNGeneralSet("Timer"),
+            return new IntermediateTimerEvent(new BPMNGeneralSet("Intermediate Timer"),
                                               new IntermediateTimerEventExecutionSet(),
-                                              new BackgroundSet(COLOR,
+                                              new BackgroundSet(BG_COLOR,
                                                                 BORDER_COLOR,
                                                                 BORDER_SIZE),
                                               new FontSet(),
@@ -128,15 +86,11 @@ public class IntermediateTimerEvent implements BPMNDefinition {
                                   final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                                   final @MapsTo("fontSet") FontSet fontSet,
                                   final @MapsTo("dimensionsSet") CircleDimensionSet dimensionsSet) {
-        this.general = general;
-        this.backgroundSet = backgroundSet;
-        this.fontSet = fontSet;
-        this.dimensionsSet = dimensionsSet;
+        super(general,
+              backgroundSet,
+              fontSet,
+              dimensionsSet);
         this.executionSet = executionSet;
-    }
-
-    public String getCategory() {
-        return category;
     }
 
     public String getTitle() {
@@ -147,47 +101,11 @@ public class IntermediateTimerEvent implements BPMNDefinition {
         return description;
     }
 
-    public Set<String> getLabels() {
-        return labels;
-    }
-
-    public BPMNGeneralSet getGeneral() {
-        return general;
-    }
-
-    public BackgroundSet getBackgroundSet() {
-        return backgroundSet;
-    }
-
-    public FontSet getFontSet() {
-        return fontSet;
-    }
-
-    public void setGeneral(final BPMNGeneralSet general) {
-        this.general = general;
-    }
-
-    public void setBackgroundSet(final BackgroundSet backgroundSet) {
-        this.backgroundSet = backgroundSet;
-    }
-
-    public void setFontSet(final FontSet fontSet) {
-        this.fontSet = fontSet;
-    }
-
-    public CircleDimensionSet getDimensionsSet() {
-        return dimensionsSet;
-    }
-
-    public void setDimensionsSet(final CircleDimensionSet dimensionsSet) {
-        this.dimensionsSet = dimensionsSet;
-    }
-
     public IntermediateTimerEventExecutionSet getExecutionSet() {
         return executionSet;
     }
 
-    public void setExecutionSet(final IntermediateTimerEventExecutionSet executionSet) {
+    public void setExecutionSet(IntermediateTimerEventExecutionSet executionSet) {
         this.executionSet = executionSet;
     }
 }

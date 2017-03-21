@@ -51,6 +51,8 @@ import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 @EdgeOccurrences(role = "Endevents_all", type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
 // A single outgoing sequence flows for message flow_start roles, such as Tasks or Subprocess.
 @EdgeOccurrences(role = "messageflow_start", type = EdgeOccurrences.EdgeType.OUTGOING, max = 1)
+// A single outgoing sequence flows for event types that can be docked (boundary) such as Intermediate Timer Event
+@EdgeOccurrences(role = "IntermediateEventOnActivityBoundary", type = EdgeOccurrences.EdgeType.OUTGOING, max = 1)
 @FormDefinition(
         startElement = "general"
 )

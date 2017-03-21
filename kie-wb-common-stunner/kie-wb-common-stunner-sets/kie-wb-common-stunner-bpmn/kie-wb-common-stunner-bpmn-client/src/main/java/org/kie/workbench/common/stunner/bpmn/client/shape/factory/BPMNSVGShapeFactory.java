@@ -24,6 +24,7 @@ import org.kie.workbench.common.stunner.bpmn.client.shape.def.BPMNDiagramShapeDe
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.EndNoneEventShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.EndTerminateEventShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.GatewayShapeDef;
+import org.kie.workbench.common.stunner.bpmn.client.shape.def.IntermediateTimerEventShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.LaneShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.ReusableSubprocessShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.SequenceFlowConnectorDef;
@@ -36,6 +37,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
@@ -120,6 +122,10 @@ public class BPMNSVGShapeFactory
                                     new EndTerminateEventShapeDef());
         svgShapeFactory.addShapeDef(EndNoneEvent.class,
                                     new EndNoneEventShapeDef());
+        svgShapeFactory.addShapeDef(IntermediateTimerEvent.class,
+                                    new IntermediateTimerEventShapeDef());
+        basicShapesFactory.addShapeDef(SequenceFlow.class,
+                                       new SequenceFlowConnectorDef());
         basicShapesFactory.addShapeDef(SequenceFlow.class,
                                        new SequenceFlowConnectorDef());
     }

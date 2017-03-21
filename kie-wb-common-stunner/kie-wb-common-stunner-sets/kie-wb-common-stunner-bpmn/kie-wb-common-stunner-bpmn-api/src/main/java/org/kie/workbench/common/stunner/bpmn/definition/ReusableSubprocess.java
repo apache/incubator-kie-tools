@@ -43,7 +43,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = ReusableSubprocess.ReusableSubprocessBuilder.class)
-@CanDock(roles = {"IntermediateEventOnActivityBoundary"})
+@CanDock(roles = {"IntermediateEventOnSubprocessBoundary"})
 @FormDefinition(
         startElement = "general",
         policy = FieldPolicy.ONLY_MARKED

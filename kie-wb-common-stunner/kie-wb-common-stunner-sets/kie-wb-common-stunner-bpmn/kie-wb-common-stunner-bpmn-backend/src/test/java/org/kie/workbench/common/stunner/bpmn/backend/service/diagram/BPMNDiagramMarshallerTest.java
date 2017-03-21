@@ -142,6 +142,7 @@ public class BPMNDiagramMarshallerTest {
     private static final String BPMN_STARTEVENTASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startEventAssignments.bpmn";
     private static final String BPMN_STARTTIMEREVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startTimerEvent.bpmn";
     private static final String BPMN_STARTSIGNALEVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/startSignalEvent.bpmn";
+    private static final String BPMN_INTERMEDIATE_TIMER_EVENT = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/intermediateTimerEvent.bpmn";
     private static final String BPMN_ENDEVENTASSIGNMENTS = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/endEventAssignments.bpmn";
     private static final String BPMN_PROCESSPROPERTIES = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/processProperties.bpmn";
     private static final String BPMN_BUSINESSRULETASKRULEFLOWGROUP = "org/kie/workbench/common/stunner/bpmn/backend/service/diagram/businessRuleTask.bpmn";
@@ -528,6 +529,30 @@ public class BPMNDiagramMarshallerTest {
         assertEquals("sig1",
                      signalRef.getValue());
     }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUnmarshallIntermediateTimerEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INTERMEDIATE_TIMER_EVENT);
+        assertDiagram(diagram,
+                      2);
+        assertEquals("intermediateTimer",
+                     diagram.getMetadata().getTitle());
+        Node<? extends Definition, ?> intermediateEventNode = diagram.getGraph().getNode("_8D881072-284F-4F0D-8CF2-AD1F4540FC4E");
+        IntermediateTimerEvent intermediateTimerEvent = (IntermediateTimerEvent) intermediateEventNode.getContent().getDefinition();
+        assertNotNull(intermediateTimerEvent.getGeneral());
+        assertEquals("MyTimer", intermediateTimerEvent.getGeneral().getName().getValue());
+        assertNotNull(intermediateTimerEvent.getExecutionSet());
+        assertEquals("abc",
+                     intermediateTimerEvent.getExecutionSet().getTimeCycle().getValue());
+        assertEquals("none",
+                     intermediateTimerEvent.getExecutionSet().getTimeCycleLanguage().getValue());
+        assertEquals("abc",
+                     intermediateTimerEvent.getExecutionSet().getTimeDate().getValue());
+        assertEquals("abc",
+                     intermediateTimerEvent.getExecutionSet().getTimeDuration().getValue());
+    }
+
 
     @Test
     @SuppressWarnings("unchecked")
@@ -1161,6 +1186,23 @@ public class BPMNDiagramMarshallerTest {
         assertTrue(result.contains("<bpmn2:signal id=\"_47718ea6-a6a4-3ceb-9e93-2111bdad0b8c\" name=\"sig1\"/>"));
         assertTrue(result.contains("<bpmn2:signalEventDefinition"));
         assertTrue(result.contains("signalRef=\"_47718ea6-a6a4-3ceb-9e93-2111bdad0b8c\"/>"));
+    }
+
+    @Test
+    public void testMarshallTimerIntermediateEvent() throws Exception {
+        Diagram<Graph, Metadata> diagram = unmarshall(BPMN_INTERMEDIATE_TIMER_EVENT);
+        String result = tested.marshall(diagram);
+        assertDiagram(result,
+                      1,
+                      1,
+                      0);
+
+        assertTrue(result.contains("<bpmn2:intermediateCatchEvent"));
+        assertTrue(result.contains(" name=\"MyTimer\""));
+        assertTrue(result.contains("<bpmn2:timerEventDefinition"));
+        assertTrue(result.contains("<bpmn2:timeDate"));
+        assertTrue(result.contains("<bpmn2:timeDuration"));
+        assertTrue(result.contains("<bpmn2:timeCycle"));
     }
 
     @Test
