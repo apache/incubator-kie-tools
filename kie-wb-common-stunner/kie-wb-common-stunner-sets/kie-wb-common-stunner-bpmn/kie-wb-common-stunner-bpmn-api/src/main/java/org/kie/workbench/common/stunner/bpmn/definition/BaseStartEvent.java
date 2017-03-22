@@ -76,6 +76,7 @@ public abstract class BaseStartEvent implements BPMNDefinition,
     protected final Set<String> labels = new HashSet<String>() {{
         add("all");
         add("Startevents_all");
+        add("Startevents_outgoing_all");
         add("sequence_start");
         add("choreography_sequence_start");
         add("to_task_event");
