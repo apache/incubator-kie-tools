@@ -80,6 +80,7 @@ public abstract class BaseEndEvent implements BPMNDefinition,
         add("choreography_sequence_end");
         add("Endevents_all");
         add("EndEventsMorph");
+        add("cm_nop");
     }};
 
     static abstract class BaseEndEventBuilder<T extends BaseEndEvent> implements Builder<T> {

@@ -25,6 +25,20 @@ import org.kie.workbench.common.stunner.shapes.def.picture.PictureGlyphDef;
 
 public class NullShapeDef<W extends BPMNDefinition> implements MutableShapeDef<W> {
 
+    private final PictureGlyphDef<W, BPMNPictures> NULL_GLYPH_DEF =
+            new PictureGlyphDef<W, BPMNPictures>() {
+
+                @Override
+                public String getGlyphDescription(final BPMNDefinition element) {
+                    return "";
+                }
+
+                @Override
+                public BPMNPictures getSource(final Class<?> type) {
+                    return BPMNPictures.CANCEL;
+                }
+            };
+
     @Override
     public double getAlpha(final W element) {
         return 1d;
@@ -84,20 +98,6 @@ public class NullShapeDef<W extends BPMNDefinition> implements MutableShapeDef<W
     public double getFontRotation(final W element) {
         return 0;
     }
-
-    private final PictureGlyphDef<W, BPMNPictures> NULL_GLYPH_DEF =
-            new PictureGlyphDef<W, BPMNPictures>() {
-
-                @Override
-                public String getGlyphDescription(final BPMNDefinition element) {
-                    return "";
-                }
-
-                @Override
-                public BPMNPictures getSource(final Class<?> type) {
-                    return BPMNPictures.CANCEL;
-                }
-            };
 
     @Override
     public GlyphDef<W> getGlyphDef() {

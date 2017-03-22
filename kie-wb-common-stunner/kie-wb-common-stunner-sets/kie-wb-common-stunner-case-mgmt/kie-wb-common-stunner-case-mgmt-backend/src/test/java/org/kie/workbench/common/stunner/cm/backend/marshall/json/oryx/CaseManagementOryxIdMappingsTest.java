@@ -1,0 +1,64 @@
+/*
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.workbench.common.stunner.cm.backend.marshall.json.oryx;
+
+import java.util.Map;
+import java.util.Set;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxIdMappings;
+import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.mockito.Mock;
+
+import static org.junit.Assert.*;
+
+public class CaseManagementOryxIdMappingsTest {
+
+    @Mock
+    private DefinitionManager definitionManager;
+
+    private OryxIdMappings oryxIdMappings;
+
+    @Before
+    public void setup() {
+        this.oryxIdMappings = new CaseManagementOryxIdMappings(definitionManager);
+    }
+
+    @Test
+    public void checkSkippedProperties() {
+        final Map<Class<?>, Set<String>> skippedProperties = oryxIdMappings.getSkippedProperties();
+        final Set<String> bpmnSkippedProperties = skippedProperties.get(org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram.class);
+        final Set<String> cmSkippedProperties = skippedProperties.get(BPMNDiagram.class);
+        assertNotNull(bpmnSkippedProperties);
+        assertNotNull(cmSkippedProperties);
+        assertEquals(bpmnSkippedProperties,
+                     cmSkippedProperties);
+    }
+
+    @Test
+    public void checkGetDefinitionMappings() {
+        final Map<Class<?>, Map<Class<?>, String>> definitionMappings = oryxIdMappings.getDefinitionMappings();
+        final Map<Class<?>, String> bpmnDefinitionMappings = definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram.class);
+        final Map<Class<?>, String> cmDefinitionMappings = definitionMappings.get(BPMNDiagram.class);
+        assertNotNull(bpmnDefinitionMappings);
+        assertNotNull(cmDefinitionMappings);
+        assertEquals(bpmnDefinitionMappings,
+                     cmDefinitionMappings);
+    }
+}

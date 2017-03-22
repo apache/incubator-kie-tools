@@ -27,6 +27,20 @@ public final class CaseManagementSubprocessShapeDef
         extends AbstractShapeDef<BaseSubprocess>
         implements StageShapeDef<BaseSubprocess> {
 
+    private static final PictureGlyphDef<BaseSubprocess, BPMNPictures> SUBPROCESS_GLYPH_DEF =
+            new PictureGlyphDef<BaseSubprocess, BPMNPictures>() {
+
+                @Override
+                public String getGlyphDescription(final BaseSubprocess element) {
+                    return element.getDescription();
+                }
+
+                @Override
+                public BPMNPictures getSource(final Class<?> type) {
+                    return BPMNPictures.SUB_PROCESS_REUSABLE;
+                }
+            };
+
     @Override
     public double getAlpha(final BaseSubprocess element) {
         return 1d;
@@ -101,20 +115,6 @@ public final class CaseManagementSubprocessShapeDef
     public double getVOffset(final BaseSubprocess element) {
         return 20.0;
     }
-
-    private static final PictureGlyphDef<BaseSubprocess, BPMNPictures> SUBPROCESS_GLYPH_DEF =
-            new PictureGlyphDef<BaseSubprocess, BPMNPictures>() {
-
-                @Override
-                public String getGlyphDescription(final BaseSubprocess element) {
-                    return element.getDescription();
-                }
-
-                @Override
-                public BPMNPictures getSource(final Class<?> type) {
-                    return BPMNPictures.SUB_PROCESS_REUSABLE;
-                }
-            };
 
     @Override
     public GlyphDef<BaseSubprocess> getGlyphDef() {

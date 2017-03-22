@@ -36,11 +36,11 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.StringTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.VariablesTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGateway;
+import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
@@ -48,7 +48,10 @@ import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
+import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -97,7 +100,7 @@ public class CaseManagementOryxManagerTest {
     @Test
     public void checkGetDefinitionClasses() {
         final Set<Class<?>> classes = oryxManager.getDefinitionClasses();
-        assertEquals(14,
+        assertEquals(17,
                      classes.size());
         assertTrue(classes.contains(BPMNDiagram.class));
         assertTrue(classes.contains(Lane.class));
@@ -106,8 +109,11 @@ public class CaseManagementOryxManagerTest {
         assertTrue(classes.contains(ScriptTask.class));
         assertTrue(classes.contains(BusinessRuleTask.class));
         assertTrue(classes.contains(StartNoneEvent.class));
+        assertTrue(classes.contains(StartSignalEvent.class));
+        assertTrue(classes.contains(StartTimerEvent.class));
         assertTrue(classes.contains(EndNoneEvent.class));
         assertTrue(classes.contains(EndTerminateEvent.class));
+        assertTrue(classes.contains(IntermediateTimerEvent.class));
         assertTrue(classes.contains(ParallelGateway.class));
         assertTrue(classes.contains(ExclusiveDatabasedGateway.class));
         assertTrue(classes.contains(AdHocSubprocess.class));

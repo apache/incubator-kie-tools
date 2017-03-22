@@ -13,30 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.workbench.common.stunner.cm.util;
 
-package org.kie.workbench.common.stunner.cm.project.factory;
-
-import javax.enterprise.context.ApplicationScoped;
-
-import org.kie.workbench.common.stunner.bpmn.project.factory.impl.BPMNProjectDiagramFactory;
-import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
-import org.kie.workbench.common.stunner.cm.util.CaseManagementUtils;
+import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
-@ApplicationScoped
-public class CaseManagementProjectDiagramFactory
-        extends BPMNProjectDiagramFactory {
+/**
+ * Shared utils class for BPMN stuff.
+ */
+public class CaseManagementUtils {
 
-    @Override
-    protected Class<?> getDefinitionSetType() {
-        return CaseManagementDefinitionSet.class;
-    }
-
-    @Override
+    /**
+     * Finds the first Diagram in the graph structure.
+     * @param graph The graph structure.
+     */
     @SuppressWarnings("unchecked")
-    protected Node<Definition<org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram>, ?> getFirstDiagramNode(final Graph graph) {
-        return CaseManagementUtils.getFirstDiagramNode(graph);
+    public static Node<Definition<org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram>, ?> getFirstDiagramNode(final Graph<?, Node> graph) {
+        return GraphUtils.getFirstNode(graph,
+                                       BPMNDiagram.class);
     }
 }

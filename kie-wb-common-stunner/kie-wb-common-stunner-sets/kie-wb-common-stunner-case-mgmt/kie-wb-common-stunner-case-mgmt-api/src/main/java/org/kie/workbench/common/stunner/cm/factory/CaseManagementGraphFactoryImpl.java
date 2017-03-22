@@ -13,20 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.workbench.common.stunner.cm.factory;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactoryImpl;
+import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
+import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
+import org.kie.workbench.common.stunner.core.util.UUID;
 
 /**
  * The custom factory for Case Management graphs.
@@ -57,5 +65,23 @@ public class CaseManagementGraphFactoryImpl
     @Override
     public Class<? extends ElementFactory> getFactoryType() {
         return CaseManagementGraphFactory.class;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    // Add a BPMN diagram and a start event nodes by default.
+    // This is not duplicated code as the Generics class is Case Management's BPMNDiagram
+    protected List<Command> buildInitialisationCommands() {
+        final List<Command> commands = new ArrayList<>();
+        final Node<Definition<BPMNDiagram>, Edge> diagramNode = (Node<Definition<BPMNDiagram>, Edge>) factoryManager.newElement(UUID.uuid(),
+                                                                                                                                BPMNDiagram.class);
+        final Node<Definition<StartNoneEvent>, Edge> startEventNode = (Node<Definition<StartNoneEvent>, Edge>) factoryManager.newElement(UUID.uuid(),
+                                                                                                                                         StartNoneEvent.class);
+        commands.add(graphCommandFactory.addNode(diagramNode));
+        commands.add(graphCommandFactory.addChildNode(diagramNode,
+                                                      startEventNode,
+                                                      100d,
+                                                      100d));
+        return commands;
     }
 }

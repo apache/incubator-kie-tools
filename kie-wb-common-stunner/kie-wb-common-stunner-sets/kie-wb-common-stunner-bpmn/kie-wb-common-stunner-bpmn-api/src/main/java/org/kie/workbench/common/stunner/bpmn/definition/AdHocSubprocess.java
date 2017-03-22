@@ -42,7 +42,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 
 @Portable
 @Bindable
-@CanContain(roles = {"task"})
+@CanContain(roles = {"cm_activity"})
 @Definition(graphFactory = NodeFactory.class, builder = AdHocSubprocess.AdHocSubprocessBuilder.class)
 @FormDefinition(
         startElement = "general",

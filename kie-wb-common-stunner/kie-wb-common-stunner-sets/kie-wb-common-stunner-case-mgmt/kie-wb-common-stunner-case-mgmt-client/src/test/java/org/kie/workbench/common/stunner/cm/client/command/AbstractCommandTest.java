@@ -63,6 +63,16 @@ public abstract class AbstractCommandTest {
     protected Graph<String, Node> graph;
     protected Index index;
 
+    protected static void assertCommandSuccess(final CommandResult<? extends RuleViolation> result) {
+        final List<RuleViolation> violations = new ArrayList<>();
+        result.getViolations().forEach(violations::add);
+
+        assertEquals(0,
+                     violations.size());
+        assertEquals(CommandResult.Type.INFO,
+                     result.getType());
+    }
+
     public void setup() {
         MockitoAnnotations.initMocks(this);
         this.graph = new GraphImpl<>("graph",
@@ -80,15 +90,5 @@ public abstract class AbstractCommandTest {
         when(metadata.getDefinitionSetId()).thenReturn(DEF_SET_ID);
         when(metadata.getShapeSetId()).thenReturn(SHAPE_SET_ID);
         when(metadata.getCanvasRootUUID()).thenReturn(CANVAS_ROOT_UUID);
-    }
-
-    protected static void assertCommandSuccess(final CommandResult<? extends RuleViolation> result) {
-        final List<RuleViolation> violations = new ArrayList<>();
-        result.getViolations().forEach(violations::add);
-
-        assertEquals(0,
-                     violations.size());
-        assertEquals(CommandResult.Type.INFO,
-                     result.getType());
     }
 }

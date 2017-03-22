@@ -64,9 +64,9 @@ public class BPMNProjectDiagramFactory
         return BPMNDefinitionSet.class;
     }
 
-    private void updateDiagramProperties(final String name,
-                                         final Graph<DefinitionSet, ?> graph,
-                                         final ProjectMetadata metadata) {
+    protected void updateDiagramProperties(final String name,
+                                           final Graph<DefinitionSet, ?> graph,
+                                           final ProjectMetadata metadata) {
         final Node<Definition<BPMNDiagram>, ?> diagramNode = getFirstDiagramNode(graph);
         if (null == diagramNode) {
             throw new IllegalStateException("A BPMN Diagram is expected to be present on BPMN Diagram graphs.");
@@ -93,7 +93,7 @@ public class BPMNProjectDiagramFactory
     }
 
     @SuppressWarnings("unchecked")
-    private static Node<Definition<BPMNDiagram>, ?> getFirstDiagramNode(final Graph graph) {
+    protected Node<Definition<BPMNDiagram>, ?> getFirstDiagramNode(final Graph graph) {
         return BPMNUtils.getFirstDiagramNode(graph);
     }
 }

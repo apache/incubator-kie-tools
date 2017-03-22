@@ -69,6 +69,7 @@ public abstract class BaseIntermediateEvent implements BPMNDefinition,
         add("IntermediateEventOnActivityBoundary");
         add("EventOnChoreographyActivityBoundary");
         add("IntermediateEventsMorph");
+        add("cm_nop");
     }};
 
     @NonPortable

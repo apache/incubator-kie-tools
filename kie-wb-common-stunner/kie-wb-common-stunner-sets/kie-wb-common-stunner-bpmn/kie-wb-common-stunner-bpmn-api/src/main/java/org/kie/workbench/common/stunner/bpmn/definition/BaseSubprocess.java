@@ -72,6 +72,7 @@ public abstract class BaseSubprocess implements BPMNDefinition {
         add("from_task_event");
         add("fromtoall");
         add("ActivitiesMorph");
+        add("cm_stage");
     }};
 
     @NonPortable

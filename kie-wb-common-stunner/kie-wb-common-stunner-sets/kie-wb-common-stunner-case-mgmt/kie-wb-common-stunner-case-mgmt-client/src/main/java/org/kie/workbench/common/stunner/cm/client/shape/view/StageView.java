@@ -47,19 +47,6 @@ public class StageView extends AbstractCaseManagementShape<StageView> {
         setResizable(false);
     }
 
-    @Override
-    public StageView setSize(final double width,
-                             final double height) {
-        create(getPath().clear(),
-               width,
-               height,
-               voffset);
-        updateFillGradient(width,
-                           height);
-        refresh();
-        return this;
-    }
-
     /**
      * Append the path parts for a stage.
      * @param path The source multipath
@@ -81,6 +68,19 @@ public class StageView extends AbstractCaseManagementShape<StageView> {
                                                      0).Z().close();
         path.setFillColor(ColorName.RED);
         return path;
+    }
+
+    @Override
+    public StageView setSize(final double width,
+                             final double height) {
+        create(getPath().clear(),
+               width,
+               height,
+               voffset);
+        updateFillGradient(width,
+                           height);
+        refresh();
+        return this;
     }
 
     @Override

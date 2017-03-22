@@ -109,7 +109,7 @@ public abstract class BaseTask implements BPMNDefinition {
         add("messageflow_end");
         add("fromtoall");
         add("ActivitiesMorph");
-        add("task");
+        add("cm_activity");
     }};
 
     @NonPortable

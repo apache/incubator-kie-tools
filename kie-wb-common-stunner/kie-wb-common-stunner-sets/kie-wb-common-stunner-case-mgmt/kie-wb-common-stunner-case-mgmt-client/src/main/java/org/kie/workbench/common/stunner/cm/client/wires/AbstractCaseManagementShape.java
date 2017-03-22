@@ -28,12 +28,11 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventTy
 
 public abstract class AbstractCaseManagementShape<T extends WiresShapeViewExt> extends WiresShapeViewExt<T> implements HasSize<T> {
 
-    private double currentWidth;
-    private double currentHeight;
     private final double minWidth;
     private final double minHeight;
-
     private final Optional<MultiPath> optDropZone;
+    private double currentWidth;
+    private double currentHeight;
 
     public AbstractCaseManagementShape(final ViewEventType[] supportedEventTypes,
                                        final MultiPath path,

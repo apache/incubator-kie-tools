@@ -39,18 +39,6 @@ public class DiagramView extends AbstractCaseManagementShape<DiagramView> {
         setDraggable(false);
     }
 
-    @Override
-    public DiagramView setSize(final double width,
-                               final double height) {
-        create(getPath().clear(),
-               width,
-               height);
-        updateFillGradient(width,
-                           height);
-        refresh();
-        return this;
-    }
-
     /**
      * Append the path parts for a diagram.
      * @param path The source multipath
@@ -65,6 +53,18 @@ public class DiagramView extends AbstractCaseManagementShape<DiagramView> {
                   w,
                   h);
         return path;
+    }
+
+    @Override
+    public DiagramView setSize(final double width,
+                               final double height) {
+        create(getPath().clear(),
+               width,
+               height);
+        updateFillGradient(width,
+                           height);
+        refresh();
+        return this;
     }
 
     @Override

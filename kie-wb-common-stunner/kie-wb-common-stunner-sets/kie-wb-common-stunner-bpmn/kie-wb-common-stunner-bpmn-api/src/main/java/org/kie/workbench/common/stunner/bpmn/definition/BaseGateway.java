@@ -63,6 +63,7 @@ public abstract class BaseGateway implements BPMNDefinition {
         add("choreography_sequence_end");
         add("fromtoall");
         add("GatewaysMorph");
+        add("cm_nop");
     }};
 
     @NonPortable

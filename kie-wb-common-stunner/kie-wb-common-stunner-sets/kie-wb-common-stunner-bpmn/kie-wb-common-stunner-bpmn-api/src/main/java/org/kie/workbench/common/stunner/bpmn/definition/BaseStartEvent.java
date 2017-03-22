@@ -82,6 +82,7 @@ public abstract class BaseStartEvent implements BPMNDefinition,
         add("from_task_event");
         add("fromtoall");
         add("StartEventsMorph");
+        add("cm_nop");
     }};
 
     @NonPortable

@@ -34,11 +34,11 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 
 public class CaseManagementSetChildNodeGraphCommand extends AbstractGraphCommand {
 
-    private final Node parent;
-    private final Node child;
     protected final Optional<Integer> index;
     protected final Optional<Node> originalParent;
     protected final Optional<Integer> originalIndex;
+    private final Node parent;
+    private final Node child;
 
     public CaseManagementSetChildNodeGraphCommand(final Node parent,
                                                   final Node child,

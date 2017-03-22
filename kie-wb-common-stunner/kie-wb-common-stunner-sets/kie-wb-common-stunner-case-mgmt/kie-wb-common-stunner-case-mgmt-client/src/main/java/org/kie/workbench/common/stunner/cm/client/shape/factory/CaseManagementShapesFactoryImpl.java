@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.cm.client.shape.factory;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.cm.client.shape.ActivityShape;
@@ -33,6 +32,7 @@ import org.kie.workbench.common.stunner.cm.client.shape.view.ActivityView;
 import org.kie.workbench.common.stunner.cm.client.shape.view.DiagramView;
 import org.kie.workbench.common.stunner.cm.client.shape.view.NullView;
 import org.kie.workbench.common.stunner.cm.client.shape.view.StageView;
+import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;

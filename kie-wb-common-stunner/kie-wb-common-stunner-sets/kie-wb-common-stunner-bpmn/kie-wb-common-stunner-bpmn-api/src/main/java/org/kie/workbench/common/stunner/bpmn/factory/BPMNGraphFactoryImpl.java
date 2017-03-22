@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.factory;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -23,6 +25,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.factory.impl.AbstractElementFactory;
@@ -58,11 +61,12 @@ public class BPMNGraphFactoryImpl
         implements BPMNGraphFactory {
 
     private final DefinitionManager definitionManager;
-    private final GraphCommandManager graphCommandManager;
-    private final GraphCommandFactory graphCommandFactory;
-    private final FactoryManager factoryManager;
     private final RuleManager ruleManager;
     private final GraphIndexBuilder<?> indexBuilder;
+
+    protected final GraphCommandManager graphCommandManager;
+    protected final GraphCommandFactory graphCommandFactory;
+    protected final FactoryManager factoryManager;
 
     protected BPMNGraphFactoryImpl() {
         this(null,
@@ -97,43 +101,59 @@ public class BPMNGraphFactoryImpl
     @SuppressWarnings("unchecked")
     public Graph<DefinitionSet, Node> build(final String uuid,
                                             final String definitionSetId) {
-        final GraphImpl graph = new GraphImpl<>(uuid,
-                                                new GraphNodeStoreImpl());
-        final DefinitionSet content = new DefinitionSetImpl(definitionSetId);
-        graph.setContent(content);
-        if (null == content.getBounds()) {
-            content.setBounds(new BoundsImpl(
-                    new BoundImpl(0d,
-                                  0d),
-                    new BoundImpl(BPMNGraphFactory.GRAPH_DEFAULT_WIDTH,
-                                  BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT)
-            ));
-        }
-        // Add a BPMN diagram and a start event nodes by default.
-        Node<Definition<BPMNDiagram>, Edge> diagramNode = (Node<Definition<BPMNDiagram>, Edge>) factoryManager.newElement(UUID.uuid(),
-                                                                                                                          BPMNDiagram.class);
-        Node<Definition<StartNoneEvent>, Edge> startEventNode = (Node<Definition<StartNoneEvent>, Edge>) factoryManager.newElement(UUID.uuid(),
-                                                                                                                                   StartNoneEvent.class);
+        //Build Graph
+        final Graph graph = buildGraph(uuid,
+                                       definitionSetId);
+
+        //Add default elements
+        final List<Command> commands = buildInitialisationCommands();
+        final CompositeCommandImpl.CompositeCommandBuilder commandBuilder = new CompositeCommandImpl.CompositeCommandBuilder();
+        commands.forEach(commandBuilder::addCommand);
         graphCommandManager.execute(createGraphContext(graph),
-                                    new CompositeCommandImpl.CompositeCommandBuilder()
-                                            .addCommand(graphCommandFactory.addNode(diagramNode))
-                                            .addCommand(graphCommandFactory.addChildNode(diagramNode,
-                                                                                         startEventNode,
-                                                                                         100d,
-                                                                                         100d))
-                                            .build()
-        );
+                                    commandBuilder.build());
 
         return graph;
     }
 
     @SuppressWarnings("unchecked")
-    private GraphCommandExecutionContext createGraphContext(final GraphImpl graph) {
-        Index<?, ?> index = indexBuilder.build(graph);
-        return new EmptyRulesCommandExecutionContext(
-                definitionManager,
-                factoryManager,
-                ruleManager,
-                index);
+    protected Graph buildGraph(final String uuid,
+                               final String definitionSetId) {
+        final GraphImpl graph = new GraphImpl<>(uuid,
+                                                new GraphNodeStoreImpl());
+        final DefinitionSet content = new DefinitionSetImpl(definitionSetId);
+        graph.setContent(content);
+        if (null == content.getBounds()) {
+            content.setBounds(new BoundsImpl(new BoundImpl(0d,
+                                                           0d),
+                                             new BoundImpl(BPMNGraphFactory.GRAPH_DEFAULT_WIDTH,
+                                                           BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT)
+            ));
+        }
+        return graph;
+    }
+
+    @SuppressWarnings("unchecked")
+    // Add a BPMN diagram and a start event nodes by default.
+    protected List<Command> buildInitialisationCommands() {
+        final List<Command> commands = new ArrayList<>();
+        final Node<Definition<BPMNDiagram>, Edge> diagramNode = (Node<Definition<BPMNDiagram>, Edge>) factoryManager.newElement(UUID.uuid(),
+                                                                                                                                BPMNDiagram.class);
+        final Node<Definition<StartNoneEvent>, Edge> startEventNode = (Node<Definition<StartNoneEvent>, Edge>) factoryManager.newElement(UUID.uuid(),
+                                                                                                                                         StartNoneEvent.class);
+        commands.add(graphCommandFactory.addNode(diagramNode));
+        commands.add(graphCommandFactory.addChildNode(diagramNode,
+                                                      startEventNode,
+                                                      100d,
+                                                      100d));
+        return commands;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected GraphCommandExecutionContext createGraphContext(final Graph graph) {
+        final Index<?, ?> index = indexBuilder.build(graph);
+        return new EmptyRulesCommandExecutionContext(definitionManager,
+                                                     factoryManager,
+                                                     ruleManager,
+                                                     index);
     }
 }

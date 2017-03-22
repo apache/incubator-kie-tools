@@ -36,7 +36,7 @@ public class CaseManagementOryxManager extends BaseOryxManager {
     }
 
     @Inject
-    public CaseManagementOryxManager(final OryxIdMappings oryxIdMappings,
+    public CaseManagementOryxManager(final @CaseManagementEditor OryxIdMappings oryxIdMappings,
                                      final Bpmn2OryxPropertyManager oryxPropertyManager) {
         super(oryxIdMappings,
               oryxPropertyManager);

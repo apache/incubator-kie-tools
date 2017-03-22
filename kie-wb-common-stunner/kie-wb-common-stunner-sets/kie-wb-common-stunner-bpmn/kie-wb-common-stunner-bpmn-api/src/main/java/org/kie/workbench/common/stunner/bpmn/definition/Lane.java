@@ -86,6 +86,7 @@ public class Lane implements BPMNDefinition {
         add("PoolChild");
         add("fromtoall");
         add("canContainArtifacts");
+        add("cm_nop");
     }};
 
     @NonPortable

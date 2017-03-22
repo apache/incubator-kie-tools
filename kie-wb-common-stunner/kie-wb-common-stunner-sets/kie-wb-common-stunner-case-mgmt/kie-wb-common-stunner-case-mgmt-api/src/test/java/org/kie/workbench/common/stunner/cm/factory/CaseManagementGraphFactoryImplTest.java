@@ -16,11 +16,17 @@
 
 package org.kie.workbench.common.stunner.cm.factory;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
+import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
+import org.kie.workbench.common.stunner.core.command.Command;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
@@ -29,6 +35,10 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CaseManagementGraphFactoryImplTest {
@@ -70,5 +80,22 @@ public class CaseManagementGraphFactoryImplTest {
         // should someone decide to change the apparent innocuous method in CaseManagementGraphFactoryImpl.
         assertEquals(CaseManagementGraphFactory.class,
                      factory.getFactoryType());
+    }
+
+    @Test
+    public void checkBuildInitialisationCommands() {
+        final List<Command> commands = factory.buildInitialisationCommands();
+
+        assertEquals(2,
+                     commands.size());
+        verify(factoryManager).newElement(anyString(),
+                                          eq(BPMNDiagram.class));
+        verify(factoryManager).newElement(anyString(),
+                                          eq(StartNoneEvent.class));
+        verify(graphCommandFactory).addNode(any(Node.class));
+        verify(graphCommandFactory).addChildNode(any(Node.class),
+                                                 any(Node.class),
+                                                 eq(100d),
+                                                 eq(100d));
     }
 }

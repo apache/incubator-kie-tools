@@ -39,18 +39,6 @@ public class ActivityView extends AbstractCaseManagementShape<ActivityView> {
         setResizable(false);
     }
 
-    @Override
-    public ActivityView setSize(final double width,
-                                final double height) {
-        create(getPath().clear(),
-               width,
-               height);
-        updateFillGradient(width,
-                           height);
-        refresh();
-        return this;
-    }
-
     /**
      * Append the path parts for a Activity.
      * @param path The source multipath
@@ -66,6 +54,18 @@ public class ActivityView extends AbstractCaseManagementShape<ActivityView> {
                               0.0);
         path.setFillColor(ColorName.LIME);
         return path;
+    }
+
+    @Override
+    public ActivityView setSize(final double width,
+                                final double height) {
+        create(getPath().clear(),
+               width,
+               height);
+        updateFillGradient(width,
+                           height);
+        refresh();
+        return this;
     }
 
     @Override

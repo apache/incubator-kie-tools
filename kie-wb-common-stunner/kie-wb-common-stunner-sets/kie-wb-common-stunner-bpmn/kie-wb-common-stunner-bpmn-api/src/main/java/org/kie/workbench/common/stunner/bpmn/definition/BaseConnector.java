@@ -64,6 +64,7 @@ public abstract class BaseConnector implements BPMNDefinition {
     protected final Set<String> labels = new HashSet<String>() {{
         add("all");
         add("ConnectingObjectsMorph");
+        add("cm_nop");
     }};
 
     protected BaseConnector() {

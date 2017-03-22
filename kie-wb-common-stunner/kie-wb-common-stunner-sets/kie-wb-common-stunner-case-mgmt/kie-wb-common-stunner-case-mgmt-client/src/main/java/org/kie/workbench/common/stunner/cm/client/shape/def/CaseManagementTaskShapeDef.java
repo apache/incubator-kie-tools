@@ -41,6 +41,31 @@ public final class CaseManagementTaskShapeDef
         implements RectangleShapeDef<BaseTask>,
                    HasChildShapeDefs<BaseTask> {
 
+    private static final PictureGlyphDef<BaseTask, BPMNPictures> TASK_GLYPH_DEF = new PictureGlyphDef<BaseTask, BPMNPictures>() {
+
+        private final Map<Class<?>, BPMNPictures> PICTURES = new HashMap<Class<?>, BPMNPictures>(3) {{
+            // TODO: Change NoneTask image!
+            put(NoneTask.class,
+                BPMNPictures.TASK_USER);
+            put(UserTask.class,
+                BPMNPictures.TASK_USER);
+            put(ScriptTask.class,
+                BPMNPictures.TASK_SCRIPT);
+            put(BusinessRuleTask.class,
+                BPMNPictures.TASK_BUSINESS_RULE);
+        }};
+
+        @Override
+        public String getGlyphDescription(final BaseTask element) {
+            return element.getDescription();
+        }
+
+        @Override
+        public BPMNPictures getSource(final Class<?> type) {
+            return PICTURES.get(type);
+        }
+    };
+
     @Override
     public double getAlpha(final BaseTask element) {
         return 1d;
@@ -100,31 +125,6 @@ public final class CaseManagementTaskShapeDef
     public double getFontRotation(final BaseTask element) {
         return 0;
     }
-
-    private static final PictureGlyphDef<BaseTask, BPMNPictures> TASK_GLYPH_DEF = new PictureGlyphDef<BaseTask, BPMNPictures>() {
-
-        private final Map<Class<?>, BPMNPictures> PICTURES = new HashMap<Class<?>, BPMNPictures>(3) {{
-            // TODO: Change NoneTask image!
-            put(NoneTask.class,
-                BPMNPictures.TASK_USER);
-            put(UserTask.class,
-                BPMNPictures.TASK_USER);
-            put(ScriptTask.class,
-                BPMNPictures.TASK_SCRIPT);
-            put(BusinessRuleTask.class,
-                BPMNPictures.TASK_BUSINESS_RULE);
-        }};
-
-        @Override
-        public String getGlyphDescription(final BaseTask element) {
-            return element.getDescription();
-        }
-
-        @Override
-        public BPMNPictures getSource(final Class<?> type) {
-            return PICTURES.get(type);
-        }
-    };
 
     @Override
     public GlyphDef<BaseTask> getGlyphDef() {
