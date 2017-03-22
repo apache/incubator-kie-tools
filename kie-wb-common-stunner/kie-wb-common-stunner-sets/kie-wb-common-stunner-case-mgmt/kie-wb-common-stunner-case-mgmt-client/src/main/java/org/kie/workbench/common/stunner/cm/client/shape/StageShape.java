@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape;
 
+import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
 import org.kie.workbench.common.stunner.cm.client.shape.def.StageShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.view.StageView;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
@@ -37,9 +38,8 @@ public class StageShape<W> extends BasicContainerShape<W, StageShapeDef<W>, Stag
                                 final MutationContext mutationContext) {
         super.applyProperties(element,
                               mutationContext);
-        // Apply stage attribute values for width and height.
-        final Double width = getShapeDefinition().getWidth(getDefinition(element));
-        final Double height = getShapeDefinition().getHeight(getDefinition(element));
+        final Double width = BaseSubprocess.BaseSubprocessBuilder.WIDTH;
+        final Double height = BaseSubprocess.BaseSubprocessBuilder.HEIGHT;
         getDefViewHandler().getViewHandler().applySize(width,
                                                        height,
                                                        mutationContext);

@@ -76,7 +76,7 @@ public abstract class BaseSubprocess implements BPMNDefinition {
     }};
 
     @NonPortable
-    static abstract class BaseSubprocessBuilder<T extends BaseSubprocess> implements Builder<T> {
+    public static abstract class BaseSubprocessBuilder<T extends BaseSubprocess> implements Builder<T> {
 
         public static final String COLOR = "#fafad2";
         public static final Double WIDTH = 136d;

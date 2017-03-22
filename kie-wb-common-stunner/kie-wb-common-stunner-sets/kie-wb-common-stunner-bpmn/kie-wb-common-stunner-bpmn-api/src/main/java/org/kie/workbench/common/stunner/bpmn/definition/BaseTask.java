@@ -113,7 +113,7 @@ public abstract class BaseTask implements BPMNDefinition {
     }};
 
     @NonPortable
-    static abstract class BaseTaskBuilder<T extends BaseTask> implements Builder<T> {
+    public static abstract class BaseTaskBuilder<T extends BaseTask> implements Builder<T> {
 
         public static final String COLOR = "#f9fad2";
         public static final Double WIDTH = 136d;

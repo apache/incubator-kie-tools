@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.cm.client.shape;
 
+import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.cm.client.shape.view.ActivityView;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -37,9 +38,8 @@ public class ActivityShape<W> extends BasicContainerShape<W, RectangleShapeDef<W
                                 final MutationContext mutationContext) {
         super.applyProperties(element,
                               mutationContext);
-        // Apply activity attribute values for width and height.
-        final Double width = getShapeDefinition().getWidth(getDefinition(element));
-        final Double height = getShapeDefinition().getHeight(getDefinition(element));
+        final Double width = BaseTask.BaseTaskBuilder.WIDTH;
+        final Double height = BaseTask.BaseTaskBuilder.HEIGHT;
         getDefViewHandler().getViewHandler().applySize(width,
                                                        height,
                                                        mutationContext);

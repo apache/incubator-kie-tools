@@ -90,8 +90,8 @@ public class CaseManagementShapesFactoryImpl extends
         } else if (isCaseManagementStage(proxy)) {
             found = true;
             final CaseManagementSubprocessShapeDef stageProxy = (CaseManagementSubprocessShapeDef) proxy;
-            final double width = stageProxy.getWidth((BaseSubprocess) definition);
-            final double height = stageProxy.getHeight((BaseSubprocess) definition);
+            final double width = BaseSubprocess.BaseSubprocessBuilder.WIDTH;
+            final double height = BaseSubprocess.BaseSubprocessBuilder.HEIGHT;
             final double voffset = stageProxy.getVOffset((BaseSubprocess) definition);
             final StageView view = new StageView(width,
                                                  height,
@@ -101,8 +101,8 @@ public class CaseManagementShapesFactoryImpl extends
         } else if (isCaseManagementActivity(proxy)) {
             found = true;
             final CaseManagementTaskShapeDef taskProxy = (CaseManagementTaskShapeDef) proxy;
-            final double width = taskProxy.getWidth((BaseTask) definition);
-            final double height = taskProxy.getHeight((BaseTask) definition);
+            final double width = BaseTask.BaseTaskBuilder.WIDTH;
+            final double height = BaseTask.BaseTaskBuilder.HEIGHT;
             final ActivityView view = new ActivityView(width,
                                                        height);
             shape = new ActivityShape(taskProxy,

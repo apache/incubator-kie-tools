@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.SequenceFlowConnectorDef;
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
+import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
@@ -49,6 +50,7 @@ import org.kie.workbench.common.stunner.cm.client.shape.view.ActivityView;
 import org.kie.workbench.common.stunner.cm.client.shape.view.DiagramView;
 import org.kie.workbench.common.stunner.cm.client.shape.view.NullView;
 import org.kie.workbench.common.stunner.cm.client.shape.view.StageView;
+import org.kie.workbench.common.stunner.cm.client.wires.AbstractCaseManagementShape;
 import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -99,6 +101,29 @@ public class CaseManagementDelegateShapeFactoryTest {
     @Mock
     private CaseManagementCanvasHandler canvasHandler;
 
+    private Consumer<Shape> nullAssertions = (shape) -> {
+        assertNotNull(shape.getShapeView());
+        assertTrue(shape instanceof NullShape);
+        assertTrue(shape.getShapeView() instanceof NullView);
+        assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof NullShapeDef);
+    };
+
+    private Consumer<Shape> activityAssertions = (shape) -> {
+        assertNotNull(shape.getShapeView());
+        assertTrue(shape instanceof ActivityShape);
+        assertTrue(shape.getShapeView() instanceof ActivityView);
+        assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof CaseManagementTaskShapeDef);
+        assertShapeSize((ActivityView) shape.getShapeView());
+    };
+
+    private Consumer<Shape> stageAssertions = (shape) -> {
+        assertNotNull(shape.getShapeView());
+        assertTrue(shape instanceof StageShape);
+        assertTrue(shape.getShapeView() instanceof StageView);
+        assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof CaseManagementSubprocessShapeDef);
+        assertShapeSize((StageView) shape.getShapeView());
+    };
+
     private CaseManagementDelegateShapeFactory factory;
 
     @Before
@@ -140,132 +165,77 @@ public class CaseManagementDelegateShapeFactoryTest {
     @Test
     public void checkLane() {
         assertShapeConstruction(new Lane.LaneBuilder().build(),
-                                (shape) -> {
-                                    assertNotNull(shape.getShapeView());
-                                    assertTrue(shape instanceof NullShape);
-                                    assertTrue(shape.getShapeView() instanceof NullView);
-                                    assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof NullShapeDef);
-                                });
+                                nullAssertions);
         assertShapeGlyph(new Lane.LaneBuilder().build());
     }
 
     @Test
     public void checkNoneTask() {
         assertShapeConstruction(new NoneTask.NoneTaskBuilder().build(),
-                                (shape) -> {
-                                    assertNotNull(shape.getShapeView());
-                                    assertTrue(shape instanceof ActivityShape);
-                                    assertTrue(shape.getShapeView() instanceof ActivityView);
-                                    assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof CaseManagementTaskShapeDef);
-                                });
+                                activityAssertions);
         assertShapeGlyph(new NoneTask.NoneTaskBuilder().build());
     }
 
     @Test
     public void checkUserTask() {
         assertShapeConstruction(new UserTask.UserTaskBuilder().build(),
-                                (shape) -> {
-                                    assertNotNull(shape.getShapeView());
-                                    assertTrue(shape instanceof ActivityShape);
-                                    assertTrue(shape.getShapeView() instanceof ActivityView);
-                                    assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof CaseManagementTaskShapeDef);
-                                });
+                                activityAssertions);
         assertShapeGlyph(new UserTask.UserTaskBuilder().build());
     }
 
     @Test
     public void checkBusinessRuleTask() {
         assertShapeConstruction(new BusinessRuleTask.BusinessRuleTaskBuilder().build(),
-                                (shape) -> {
-                                    assertNotNull(shape.getShapeView());
-                                    assertTrue(shape instanceof ActivityShape);
-                                    assertTrue(shape.getShapeView() instanceof ActivityView);
-                                    assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof CaseManagementTaskShapeDef);
-                                });
+                                activityAssertions);
         assertShapeGlyph(new BusinessRuleTask.BusinessRuleTaskBuilder().build());
     }
 
     @Test
     public void checkStartNoneEvent() {
         assertShapeConstruction(new StartNoneEvent.StartNoneEventBuilder().build(),
-                                (shape) -> {
-                                    assertNotNull(shape.getShapeView());
-                                    assertTrue(shape instanceof NullShape);
-                                    assertTrue(shape.getShapeView() instanceof NullView);
-                                    assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof NullShapeDef);
-                                });
+                                nullAssertions);
         assertShapeGlyph(new StartNoneEvent.StartNoneEventBuilder().build());
     }
 
     @Test
     public void checkEndNoneEvent() {
         assertShapeConstruction(new EndNoneEvent.EndNoneEventBuilder().build(),
-                                (shape) -> {
-                                    assertNotNull(shape.getShapeView());
-                                    assertTrue(shape instanceof NullShape);
-                                    assertTrue(shape.getShapeView() instanceof NullView);
-                                    assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof NullShapeDef);
-                                });
+                                nullAssertions);
         assertShapeGlyph(new EndNoneEvent.EndNoneEventBuilder().build());
     }
 
     @Test
     public void checkEndTerminateEvent() {
         assertShapeConstruction(new EndTerminateEvent.EndTerminateEventBuilder().build(),
-                                (shape) -> {
-                                    assertNotNull(shape.getShapeView());
-                                    assertTrue(shape instanceof NullShape);
-                                    assertTrue(shape.getShapeView() instanceof NullView);
-                                    assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof NullShapeDef);
-                                });
+                                nullAssertions);
         assertShapeGlyph(new EndTerminateEvent.EndTerminateEventBuilder().build());
     }
 
     @Test
     public void checkParallelGateway() {
         assertShapeConstruction(new ParallelGateway.ParallelGatewayBuilder().build(),
-                                (shape) -> {
-                                    assertNotNull(shape.getShapeView());
-                                    assertTrue(shape instanceof NullShape);
-                                    assertTrue(shape.getShapeView() instanceof NullView);
-                                    assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof NullShapeDef);
-                                });
+                                nullAssertions);
         assertShapeGlyph(new ParallelGateway.ParallelGatewayBuilder().build());
     }
 
     @Test
     public void checkExclusiveDatabasedGateway() {
         assertShapeConstruction(new ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder().build(),
-                                (shape) -> {
-                                    assertNotNull(shape.getShapeView());
-                                    assertTrue(shape instanceof NullShape);
-                                    assertTrue(shape.getShapeView() instanceof NullView);
-                                    assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof NullShapeDef);
-                                });
+                                nullAssertions);
         assertShapeGlyph(new ExclusiveDatabasedGateway.ExclusiveDatabasedGatewayBuilder().build());
     }
 
     @Test
     public void checkAdHocSubprocess() {
         assertShapeConstruction(new AdHocSubprocess.AdHocSubprocessBuilder().build(),
-                                (shape) -> {
-                                    assertNotNull(shape.getShapeView());
-                                    assertTrue(shape instanceof StageShape);
-                                    assertTrue(shape.getShapeView() instanceof StageView);
-                                    assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof CaseManagementSubprocessShapeDef);
-                                });
+                                stageAssertions);
         assertShapeGlyph(new AdHocSubprocess.AdHocSubprocessBuilder().build());
     }
 
     @Test
     public void checkReusableSubprocess() {
         assertShapeConstruction(new ReusableSubprocess.ReusableSubprocessBuilder().build(),
-                                (shape) -> {
-                                    assertNotNull(shape.getShapeView());
-                                    assertTrue(shape instanceof StageShape);
-                                    assertTrue(shape.getShapeView() instanceof StageView);
-                                    assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof CaseManagementSubprocessShapeDef);
-                                });
+                                stageAssertions);
         assertShapeGlyph(new ReusableSubprocess.ReusableSubprocessBuilder().build());
     }
 
@@ -305,5 +275,14 @@ public class CaseManagementDelegateShapeFactoryTest {
         verify(glyphBuilder).width(eq(20.0));
         verify(glyphBuilder).height(eq(40.0));
         verify(glyphBuilder).build();
+    }
+
+    private void assertShapeSize(final AbstractCaseManagementShape shapeView) {
+        assertEquals(BaseTask.BaseTaskBuilder.WIDTH,
+                     shapeView.getWidth(),
+                     0.0);
+        assertEquals(BaseTask.BaseTaskBuilder.HEIGHT,
+                     shapeView.getHeight(),
+                     0.0);
     }
 }
