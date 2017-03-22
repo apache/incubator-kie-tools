@@ -68,7 +68,10 @@ public class OUPageTest {
     };
 
     @Captor
-    private ArgumentCaptor<List<ExampleOrganizationalUnit>> organizationalUnitArgumentCaptor;
+    private ArgumentCaptor<List<ExampleOrganizationalUnit>> organizationalUnitsArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<ExampleOrganizationalUnit> organizationalUnitArgumentCaptor;
 
     private OUPage page;
 
@@ -132,9 +135,42 @@ public class OUPageTest {
         }};
         page.setOrganizationalUnits( organizationalUnits );
         verify( view,
-                times( 1 ) ).setOrganizationalUnits( organizationalUnitArgumentCaptor.capture() );
+                times( 1 ) ).setOrganizationalUnits(organizationalUnitsArgumentCaptor.capture() );
+        verify( view,
+                times( 1 ) ).setOrganizationalUnit(organizationalUnitArgumentCaptor.capture() );
 
-        final List<ExampleOrganizationalUnit> sortedOrganizationalUnits = organizationalUnitArgumentCaptor.getValue();
+        final List<ExampleOrganizationalUnit> sortedOrganizationalUnits = organizationalUnitsArgumentCaptor.getValue();
+        final ExampleOrganizationalUnit selectedOrganizationalUnit = organizationalUnitArgumentCaptor.getValue();
+
+        assertEquals(sortedOrganizationalUnits.get( 0 ).getName(), selectedOrganizationalUnit.getName());
+
+        assertNotNull( sortedOrganizationalUnits );
+        assertEquals( 2,
+                      sortedOrganizationalUnits.size() );
+        assertEquals( "ou1",
+                      sortedOrganizationalUnits.get( 0 ).getName() );
+        assertEquals( "ou2",
+                      sortedOrganizationalUnits.get( 1 ).getName() );
+    }
+
+    @Test
+    public void testSetOrganizationalUnits_Custom() {
+        final Set<ExampleOrganizationalUnit> organizationalUnits = new HashSet<ExampleOrganizationalUnit>() {{
+            add( new ExampleOrganizationalUnit( "ou1" ) );
+            add( new ExampleOrganizationalUnit( "ou2" ) );
+        }};
+        model.setTargetOrganizationalUnit(new ExampleOrganizationalUnit( "ou2" ));
+        page.setOrganizationalUnits( organizationalUnits );
+        verify( view,
+                times( 1 ) ).setOrganizationalUnits(organizationalUnitsArgumentCaptor.capture() );
+        verify( view,
+                times( 1 ) ).setOrganizationalUnit(organizationalUnitArgumentCaptor.capture() );
+
+        final List<ExampleOrganizationalUnit> sortedOrganizationalUnits = organizationalUnitsArgumentCaptor.getValue();
+        final ExampleOrganizationalUnit selectedOrganizationalUnit = organizationalUnitArgumentCaptor.getValue();
+
+        assertEquals(sortedOrganizationalUnits.get( 1 ).getName(), selectedOrganizationalUnit.getName());
+
         assertNotNull( sortedOrganizationalUnits );
         assertEquals( 2,
                       sortedOrganizationalUnits.size() );

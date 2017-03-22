@@ -61,6 +61,8 @@ public class LibraryToolbarPresenterTest {
 
     private OrganizationalUnit selectedOrganizationalUnit;
 
+    private OrganizationalUnit organizationalUnit2;
+
     private Repository selectedRepository;
 
     private Command callback;
@@ -78,7 +80,7 @@ public class LibraryToolbarPresenterTest {
 
         selectedOrganizationalUnit = mock(OrganizationalUnit.class);
         doReturn("organizationalUnit1").when(selectedOrganizationalUnit).getIdentifier();
-        OrganizationalUnit organizationalUnit2 = mock(OrganizationalUnit.class);
+        organizationalUnit2 = mock(OrganizationalUnit.class);
         doReturn("organizationalUnit2").when(organizationalUnit2).getIdentifier();
         List<OrganizationalUnit> organizationalUnits = new ArrayList<>();
         organizationalUnits.add(selectedOrganizationalUnit);
@@ -103,9 +105,15 @@ public class LibraryToolbarPresenterTest {
                                                        repositories,
                                                        selectedRepository);
 
+        final OrganizationalUnitRepositoryInfo organizationalUnit2RepositoryInfo
+                = new OrganizationalUnitRepositoryInfo(organizationalUnits,
+                                                       organizationalUnit2,
+                                                       repositories,
+                                                       selectedRepository);
+
         doReturn(organizationalUnitRepositoryInfo)
                 .when(libraryService).getDefaultOrganizationalUnitRepositoryInfo();
-        doReturn(organizationalUnitRepositoryInfo)
+        doReturn(organizationalUnit2RepositoryInfo)
                 .when(libraryService).getOrganizationalUnitRepositoryInfo(organizationalUnit2);
 
         callback = mock(Command.class);
@@ -188,12 +196,15 @@ public class LibraryToolbarPresenterTest {
         assertEquals("repository2",
                      presenter.getSelectedRepository().getAlias());
 
-        verify(libraryPlaces).goToLibrary();
+        verify(libraryPlaces).goToLibrary(any());
 
         verify(view).clearRepositories();
         verify(view).addRepository("repository1");
         verify(view).addRepository("repository2");
         verify(view).setSelectedRepository("repository1");
+
+        verify(libraryPreferences).setOuIdentifier("organizationalUnit2");
+        verify(libraryPreferences).save();
     }
 
     @Test
@@ -231,7 +242,7 @@ public class LibraryToolbarPresenterTest {
         assertEquals("defaultBranch",
                      presenter.getSelectedBranch());
 
-        verify(libraryPlaces).goToLibrary();
+        verify(libraryPlaces).goToLibrary(any());
 
         verify(view,
                never()).clearRepositories();
@@ -240,6 +251,9 @@ public class LibraryToolbarPresenterTest {
         verify(view,
                never()).setSelectedRepository(anyString());
         verify(view).setSelectedBranch("defaultBranch");
+
+        verify(libraryPreferences).setRepositoryAlias("repository2");
+        verify(libraryPreferences).save();
     }
 
     @Test
@@ -256,7 +270,7 @@ public class LibraryToolbarPresenterTest {
 
         presenter.onUpdateSelectedBranch();
 
-        verify(libraryPlaces).goToLibrary();
+        verify(libraryPlaces).goToLibrary(any());
 
         verify(view,
                never()).clearRepositories();
@@ -266,5 +280,34 @@ public class LibraryToolbarPresenterTest {
                never()).setSelectedRepository(anyString());
         verify(view,
                never()).setSelectedBranch("dev");
+    }
+
+    @Test
+    public void setSelectedInfoTest() {
+        presenter.init(callback);
+        Mockito.reset(view);
+
+        doReturn(true).when(placeManager).closeAllPlacesOrNothing();
+        doReturn("organizationalUnit2").when(view).getSelectedOrganizationalUnit();
+        doReturn("repository2").when(view).getSelectedRepository();
+
+        final Command callback = mock(Command.class);
+        presenter.setSelectedInfo(organizationalUnit2,
+                                  selectedRepository,
+                                  callback);
+
+        assertEquals("organizationalUnit2",
+                     presenter.getSelectedOrganizationalUnit().getIdentifier());
+        assertEquals("repository2",
+                     presenter.getSelectedRepository().getAlias());
+
+        verify(libraryPlaces).goToLibrary(callback);
+
+        verify(view).clearOrganizationalUnits();
+        verify(view).setSelectedOrganizationalUnit("organizationalUnit2");
+        verify(view).clearRepositories();
+        verify(view).addRepository("repository1");
+        verify(view).addRepository("repository2");
+        verify(view).setSelectedRepository("repository1");
     }
 }

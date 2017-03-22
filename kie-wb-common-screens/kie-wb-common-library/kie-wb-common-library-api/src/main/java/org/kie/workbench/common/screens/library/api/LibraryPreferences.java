@@ -66,7 +66,7 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
     }
 
     @Override
-    public LibraryPreferences defaultValue( final LibraryPreferences defaultValue ) {
+    public LibraryPreferences defaultValue(final LibraryPreferences defaultValue) {
         defaultValue.ouIdentifier = "myteam";
         defaultValue.ouOwner = "admin";
         defaultValue.ouGroupId = "org.default";
@@ -128,5 +128,13 @@ public class LibraryPreferences implements BasePreference<LibraryPreferences> {
 
     public boolean isProjectExplorerExpanded() {
         return projectExplorerExpanded;
+    }
+
+    public void setRepositoryAlias(String repositoryAlias) {
+        this.repositoryAlias = repositoryAlias;
+    }
+
+    public void setOuIdentifier(String ouIdentifier) {
+        this.ouIdentifier = ouIdentifier;
     }
 }

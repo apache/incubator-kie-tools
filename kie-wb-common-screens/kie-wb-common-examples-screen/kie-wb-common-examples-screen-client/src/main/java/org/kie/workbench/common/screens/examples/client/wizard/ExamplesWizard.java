@@ -36,6 +36,7 @@ import org.kie.workbench.common.screens.examples.client.wizard.pages.project.Pro
 import org.kie.workbench.common.screens.examples.client.wizard.pages.repository.RepositoryPage;
 import org.kie.workbench.common.screens.examples.model.ExampleOrganizationalUnit;
 import org.kie.workbench.common.screens.examples.model.ExampleRepository;
+import org.kie.workbench.common.screens.examples.model.ExampleTargetRepository;
 import org.kie.workbench.common.screens.examples.model.ExamplesMetaData;
 import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.uberfire.client.callbacks.Callback;
@@ -83,11 +84,11 @@ public class ExamplesWizard extends AbstractWizard {
         this.examplesService = examplesService;
         this.event = event;
         this.translator = translator;
+        model = new ExamplesWizardModel();
     }
 
     @Override
     public void start() {
-        model = new ExamplesWizardModel();
         for (WizardPage page : pages) {
             page.initialise();
             ((ExamplesWizardPage) page).setModel(model);
@@ -173,5 +174,15 @@ public class ExamplesWizard extends AbstractWizard {
                                                                                                         model.getTargetRepository(),
                                                                                                         model.getSelectedBranch(),
                                                                                                         model.getProjects());
+    }
+
+    public void setDefaultTargetOrganizationalUnit(final String ouName) {
+        final ExampleOrganizationalUnit targetOrganizationalUnit = new ExampleOrganizationalUnit(ouName);
+        this.organizationalUnitPage.setTargetOrganizationalUnit(targetOrganizationalUnit);
+    }
+
+    public void setDefaultTargetRepository(final String repositoryAlias) {
+        final ExampleTargetRepository targetRepository = new ExampleTargetRepository(repositoryAlias);
+        this.organizationalUnitPage.setTargetRepository(targetRepository);
     }
 }

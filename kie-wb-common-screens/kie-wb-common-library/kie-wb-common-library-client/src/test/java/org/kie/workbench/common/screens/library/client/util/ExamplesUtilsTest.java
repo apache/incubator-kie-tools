@@ -107,7 +107,7 @@ public class ExamplesUtilsTest {
 
     @Test
     public void importProjectSuccessfullyTest() {
-        final ArgumentCaptor<ProjectInfo> projectInfoArgumentCaptor = ArgumentCaptor.forClass(ProjectInfo.class);
+        final ArgumentCaptor<NewProjectEvent> newProjectEventArgumentCaptor = ArgumentCaptor.forClass(NewProjectEvent.class);
 
         final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
         final Repository repository = mock(Repository.class);
@@ -128,19 +128,11 @@ public class ExamplesUtilsTest {
         verify(busyIndicatorView).showBusyIndicator(anyString());
         verify(busyIndicatorView).hideBusyIndicator();
         verify(notificationEvent).fire(any(NotificationEvent.class));
-        verify(newProjectEvent).fire(any(NewProjectEvent.class));
-        verify(libraryPlaces).goToProject(projectInfoArgumentCaptor.capture());
+        verify(newProjectEvent).fire(newProjectEventArgumentCaptor.capture());
+        verify(libraryPlaces).goToProject(any(ProjectInfo.class));
 
-        final ProjectInfo projectInfo = projectInfoArgumentCaptor.getValue();
-
-        assertEquals(organizationalUnit,
-                     projectInfo.getOrganizationalUnit());
-        assertEquals(repository,
-                     projectInfo.getRepository());
-        assertEquals(branch,
-                     projectInfo.getBranch());
         assertEquals(project,
-                     projectInfo.getProject());
+                     newProjectEventArgumentCaptor.getValue().getProject());
     }
 
     @Test

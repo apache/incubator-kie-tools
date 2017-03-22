@@ -93,192 +93,223 @@ public class ProjectScreenTest {
 
     @Before
     public void setup() {
-        libraryServiceCaller = new CallerMock<>( libraryService );
+        libraryServiceCaller = new CallerMock<>(libraryService);
 
-        projectScreen = spy( new ProjectScreen( view,
-                                                libraryPlaces,
-                                                ts,
-                                                libraryServiceCaller,
-                                                assetClassifier,
-                                                assetDetailEvent,
-                                                projectContextChangeEvent,
-                                                busyIndicatorView ) );
+        projectScreen = spy(new ProjectScreen(view,
+                                              libraryPlaces,
+                                              ts,
+                                              libraryServiceCaller,
+                                              assetClassifier,
+                                              assetDetailEvent,
+                                              projectContextChangeEvent,
+                                              busyIndicatorView));
 
-        doReturn( "createdTime" ).when( projectScreen ).getCreatedTime( any( AssetInfo.class ) );
-        doReturn( "lastModifiedTime" ).when( projectScreen ).getLastModifiedTime( any( AssetInfo.class ) );
+        doReturn("createdTime").when(projectScreen).getCreatedTime(any(AssetInfo.class));
+        doReturn("lastModifiedTime").when(projectScreen).getLastModifiedTime(any(AssetInfo.class));
 
         mockClientResourceType();
         mockAssets();
 
         projectInfo = createProjectInfo();
-        projectScreen.onStartup( new ProjectDetailEvent( projectInfo ) );
+        projectScreen.onStartup(new ProjectDetailEvent(projectInfo));
     }
 
     @Test
     public void onStartupTest() {
-        verify( projectContextChangeEvent ).fire( any( ProjectContextChangeEvent.class ) );
-        verify( busyIndicatorView ).showBusyIndicator( anyString() );
-        verify( libraryService ).getProjectAssets( projectInfo.getProject() );
-        verify( view ).clearAssets();
-        verify( view, times( 2 ) ).addAsset( anyString(),
-                                             anyString(),
-                                             anyString(),
-                                             any( IsWidget.class ),
-                                             anyString(),
-                                             anyString(),
-                                             any( Command.class ),
-                                             any( Command.class ) );
-        verify( busyIndicatorView ).hideBusyIndicator();
-        verify( view ).setProjectName( "projectName" );
+        verify(busyIndicatorView).showBusyIndicator(anyString());
+        verify(libraryService).getProjectAssets(projectInfo.getProject());
+        verify(view).clearAssets();
+        verify(view,
+               times(2)).addAsset(anyString(),
+                                  anyString(),
+                                  anyString(),
+                                  any(IsWidget.class),
+                                  anyString(),
+                                  anyString(),
+                                  any(Command.class),
+                                  any(Command.class));
+        verify(busyIndicatorView).hideBusyIndicator();
+        verify(view).setProjectName("projectName");
     }
 
     @Test
     public void refreshOnFocusTest() {
-        final PlaceRequest place = new DefaultPlaceRequest( LibraryPlaces.PROJECT_SCREEN );
-        final PlaceGainFocusEvent placeGainFocusEvent = new PlaceGainFocusEvent( place );
+        final PlaceRequest place = new DefaultPlaceRequest(LibraryPlaces.PROJECT_SCREEN);
+        final PlaceGainFocusEvent placeGainFocusEvent = new PlaceGainFocusEvent(place);
 
-        projectScreen.refreshOnFocus( placeGainFocusEvent );
+        projectScreen.refreshOnFocus(placeGainFocusEvent);
 
-        verify( busyIndicatorView, times( 2 ) ).showBusyIndicator( anyString() );
-        verify( libraryService, times( 2 ) ).getProjectAssets( projectInfo.getProject() );
-        verify( view, times( 2 ) ).clearAssets();
-        verify( view, times( 4 ) ).addAsset( anyString(),
-                                             anyString(),
-                                             anyString(),
-                                             any( IsWidget.class ),
-                                             anyString(),
-                                             anyString(),
-                                             any( Command.class ),
-                                             any( Command.class ) );
-        verify( busyIndicatorView, times( 2 ) ).hideBusyIndicator();
+        verify(busyIndicatorView,
+               times(2)).showBusyIndicator(anyString());
+        verify(libraryService,
+               times(2)).getProjectAssets(projectInfo.getProject());
+        verify(view,
+               times(2)).clearAssets();
+        verify(view,
+               times(4)).addAsset(anyString(),
+                                  anyString(),
+                                  anyString(),
+                                  any(IsWidget.class),
+                                  anyString(),
+                                  anyString(),
+                                  any(Command.class),
+                                  any(Command.class));
+        verify(busyIndicatorView,
+               times(2)).hideBusyIndicator();
     }
 
     @Test
     public void dontRefreshOnFocusOnAnotherScreenTest() {
-        final PlaceRequest place = new DefaultPlaceRequest( "anotherScreen" );
-        final PlaceGainFocusEvent placeGainFocusEvent = new PlaceGainFocusEvent( place );
+        final PlaceRequest place = new DefaultPlaceRequest("anotherScreen");
+        final PlaceGainFocusEvent placeGainFocusEvent = new PlaceGainFocusEvent(place);
 
-        projectScreen.refreshOnFocus( placeGainFocusEvent );
+        projectScreen.refreshOnFocus(placeGainFocusEvent);
 
-        verify( busyIndicatorView, times( 1 ) ).showBusyIndicator( anyString() );
-        verify( libraryService, times( 1 ) ).getProjectAssets( projectInfo.getProject() );
-        verify( view, times( 1 ) ).clearAssets();
-        verify( view, times( 2 ) ).addAsset( anyString(),
-                                             anyString(),
-                                             anyString(),
-                                             any( IsWidget.class ),
-                                             anyString(),
-                                             anyString(),
-                                             any( Command.class ),
-                                             any( Command.class ) );
-        verify( busyIndicatorView, times( 1 ) ).hideBusyIndicator();
+        verify(busyIndicatorView,
+               times(1)).showBusyIndicator(anyString());
+        verify(libraryService,
+               times(1)).getProjectAssets(projectInfo.getProject());
+        verify(view,
+               times(1)).clearAssets();
+        verify(view,
+               times(2)).addAsset(anyString(),
+                                  anyString(),
+                                  anyString(),
+                                  any(IsWidget.class),
+                                  anyString(),
+                                  anyString(),
+                                  any(Command.class),
+                                  any(Command.class));
+        verify(busyIndicatorView,
+               times(1)).hideBusyIndicator();
     }
 
     @Test
     public void updateAssetsByTest() {
-        reset( view );
-        projectScreen.updateAssetsBy( "file3" );
+        reset(view);
+        projectScreen.updateAssetsBy("file3");
 
-        verify( view ).clearAssets();
-        verify( view, times( 1 ) ).addAsset( eq( "file3.txt" ),
-                                             anyString(),
-                                             anyString(),
-                                             any( IsWidget.class ),
-                                             anyString(),
-                                             anyString(),
-                                             any( Command.class ),
-                                             any( Command.class ) );
-        verify( busyIndicatorView ).hideBusyIndicator();
+        verify(view).clearAssets();
+        verify(view,
+               times(1)).addAsset(eq("file3.txt"),
+                                  anyString(),
+                                  anyString(),
+                                  any(IsWidget.class),
+                                  anyString(),
+                                  anyString(),
+                                  any(Command.class),
+                                  any(Command.class));
+        verify(busyIndicatorView).hideBusyIndicator();
     }
 
     @Test
     public void goToSettingsTest() {
         projectScreen.goToSettings();
 
-        verify( assetDetailEvent ).fire( new AssetDetailEvent( projectInfo, null ) );
+        verify(assetDetailEvent).fire(new AssetDetailEvent(projectInfo,
+                                                           null));
     }
 
     @Test
     public void getProjectNameTest() {
-        assertEquals( "projectName", projectScreen.getProjectName() );
+        assertEquals("projectName",
+                     projectScreen.getProjectName());
     }
 
     @Test
     public void filterAssetsTest() {
-        assertEquals( 3, projectScreen.filterAssets( assets, "f" ).size() );
-        assertEquals( 1, projectScreen.filterAssets( assets, "folder" ).size() );
-        assertEquals( 2, projectScreen.filterAssets( assets, "file" ).size() );
-        assertEquals( 1, projectScreen.filterAssets( assets, "file2" ).size() );
-        assertEquals( 0, projectScreen.filterAssets( assets, "fileX" ).size() );
+        assertEquals(3,
+                     projectScreen.filterAssets(assets,
+                                                "f").size());
+        assertEquals(1,
+                     projectScreen.filterAssets(assets,
+                                                "folder").size());
+        assertEquals(2,
+                     projectScreen.filterAssets(assets,
+                                                "file").size());
+        assertEquals(1,
+                     projectScreen.filterAssets(assets,
+                                                "file2").size());
+        assertEquals(0,
+                     projectScreen.filterAssets(assets,
+                                                "fileX").size());
     }
 
     @Test
     public void selectCommandTest() {
-        final Path assetPath = mock( Path.class );
+        final Path assetPath = mock(Path.class);
 
-        projectScreen.selectCommand( assetPath ).execute();
+        projectScreen.selectCommand(assetPath).execute();
 
-        verify( libraryPlaces ).goToAsset( projectInfo, assetPath );
+        verify(libraryPlaces).goToAsset(projectInfo,
+                                        assetPath);
     }
 
     @Test
     public void detailsCommandTest() {
-        final Path assetPath = mock( Path.class );
+        final Path assetPath = mock(Path.class);
 
-        projectScreen.detailsCommand( assetPath ).execute();
+        projectScreen.detailsCommand(assetPath).execute();
 
-        verify( libraryPlaces ).goToAsset( projectInfo, assetPath );
+        verify(libraryPlaces).goToAsset(projectInfo,
+                                        assetPath);
     }
 
     private void mockAssets() {
-        final Path asset1Path = mock( Path.class );
-        doReturn( "git://projectPath/folder1" ).when( asset1Path ).toURI();
-        final FolderItem asset1 = mock( FolderItem.class );
-        doReturn( FolderItemType.FOLDER ).when( asset1 ).getType();
-        doReturn( "folder1" ).when( asset1 ).getFileName();
-        doReturn( asset1Path ).when( asset1 ).getItem();
+        final Path asset1Path = mock(Path.class);
+        doReturn("git://projectPath/folder1").when(asset1Path).toURI();
+        final FolderItem asset1 = mock(FolderItem.class);
+        doReturn(FolderItemType.FOLDER).when(asset1).getType();
+        doReturn("folder1").when(asset1).getFileName();
+        doReturn(asset1Path).when(asset1).getItem();
 
-        final Path asset2Path = mock( Path.class );
-        doReturn( "git://projectPath/file2.txt" ).when( asset2Path ).toURI();
-        final FolderItem asset2 = mock( FolderItem.class );
-        doReturn( FolderItemType.FILE ).when( asset2 ).getType();
-        doReturn( "file2.txt" ).when( asset2 ).getFileName();
-        doReturn( asset2Path ).when( asset2 ).getItem();
+        final Path asset2Path = mock(Path.class);
+        doReturn("git://projectPath/file2.txt").when(asset2Path).toURI();
+        final FolderItem asset2 = mock(FolderItem.class);
+        doReturn(FolderItemType.FILE).when(asset2).getType();
+        doReturn("file2.txt").when(asset2).getFileName();
+        doReturn(asset2Path).when(asset2).getItem();
 
-        final Path asset3Path = mock( Path.class );
-        doReturn( "git://projectPath/file3.txt" ).when( asset3Path ).toURI();
-        final FolderItem asset3 = mock( FolderItem.class );
-        doReturn( FolderItemType.FILE ).when( asset3 ).getType();
-        doReturn( "file3.txt" ).when( asset3 ).getFileName();
-        doReturn( asset3Path ).when( asset3 ).getItem();
+        final Path asset3Path = mock(Path.class);
+        doReturn("git://projectPath/file3.txt").when(asset3Path).toURI();
+        final FolderItem asset3 = mock(FolderItem.class);
+        doReturn(FolderItemType.FILE).when(asset3).getType();
+        doReturn("file3.txt").when(asset3).getFileName();
+        doReturn(asset3Path).when(asset3).getItem();
 
-        assets = Arrays.asList( new AssetInfo( asset1, new Date(), new Date() ),
-                                new AssetInfo( asset2, new Date(), new Date() ),
-                                new AssetInfo( asset3, new Date(), new Date() ) );
-        doReturn( assets ).when( libraryService ).getProjectAssets( any( Project.class ) );
+        assets = Arrays.asList(new AssetInfo(asset1,
+                                             new Date(),
+                                             new Date()),
+                               new AssetInfo(asset2,
+                                             new Date(),
+                                             new Date()),
+                               new AssetInfo(asset3,
+                                             new Date(),
+                                             new Date()));
+        doReturn(assets).when(libraryService).getProjectAssets(any(Project.class));
     }
 
     private void mockClientResourceType() {
-        ClientResourceType clientResourceType = mock( ClientResourceType.class );
-        doReturn( ".txt" ).when( clientResourceType ).getSuffix();
-        doReturn( "Text file" ).when( clientResourceType ).getDescription();
-        doReturn( clientResourceType ).when( assetClassifier ).findResourceType( any( FolderItem.class ) );
+        ClientResourceType clientResourceType = mock(ClientResourceType.class);
+        doReturn(".txt").when(clientResourceType).getSuffix();
+        doReturn("Text file").when(clientResourceType).getDescription();
+        doReturn(clientResourceType).when(assetClassifier).findResourceType(any(FolderItem.class));
     }
 
     private ProjectInfo createProjectInfo() {
-        final Path rootPath = mock( Path.class );
-        doReturn( "git://projectPath" ).when( rootPath ).toURI();
-        final Project project = mock( Project.class );
-        doReturn( "projectName" ).when( project ).getProjectName();
-        doReturn( "projectPath" ).when( project ).getIdentifier();
-        doReturn( rootPath ).when( project ).getRootPath();
+        final Path rootPath = mock(Path.class);
+        doReturn("git://projectPath").when(rootPath).toURI();
+        final Project project = mock(Project.class);
+        doReturn("projectName").when(project).getProjectName();
+        doReturn("projectPath").when(project).getIdentifier();
+        doReturn(rootPath).when(project).getRootPath();
 
-        final OrganizationalUnit organizationalUnit = mock( OrganizationalUnit.class );
-        final Repository repository = mock( Repository.class );
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        final Repository repository = mock(Repository.class);
         final String branch = "master";
-        return new ProjectInfo( organizationalUnit,
-                                repository,
-                                branch,
-                                project );
+        return new ProjectInfo(organizationalUnit,
+                               repository,
+                               branch,
+                               project);
     }
 }

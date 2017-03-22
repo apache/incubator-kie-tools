@@ -63,7 +63,7 @@ public class LibraryToolbarPresenter {
 
         void setBranchSelectorVisibility(boolean visible);
     }
-    
+
     private View view;
     private Caller<LibraryService> libraryService;
     private LibraryPreferences libraryPreferences;
@@ -107,6 +107,17 @@ public class LibraryToolbarPresenter {
                                 });
     }
 
+    public void setSelectedInfo(final OrganizationalUnit organizationalUnit,
+                                final Repository repository,
+                                final Command callback) {
+        libraryService.call((OrganizationalUnitRepositoryInfo newInfo) -> {
+            setupOrganizationUnits(newInfo);
+            newInfo.setSelectedRepository(repository);
+            refreshLibrary(newInfo,
+                           callback);
+        }).getOrganizationalUnitRepositoryInfo(organizationalUnit);
+    }
+
     private void setupOrganizationUnits(final OrganizationalUnitRepositoryInfo info) {
         view.clearOrganizationalUnits();
         info.getOrganizationalUnits().forEach(ou -> view.addOrganizationUnit(ou.getIdentifier()));
@@ -131,16 +142,22 @@ public class LibraryToolbarPresenter {
         view.setSelectedBranch(selectedBranch);
     }
 
-
     void onUpdateSelectedOrganizationalUnit() {
+        final OrganizationalUnit selectedOrganizationalUnit = getViewSelectedOrganizationalUnit();
         libraryService.call((OrganizationalUnitRepositoryInfo newInfo) -> refreshLibrary(newInfo))
-                .getOrganizationalUnitRepositoryInfo(getViewSelectedOrganizationalUnit());
+                .getOrganizationalUnitRepositoryInfo(selectedOrganizationalUnit);
+
+        libraryPreferences.setOuIdentifier(selectedOrganizationalUnit.getIdentifier());
+        libraryPreferences.save();
     }
 
     void onUpdateSelectedRepository() {
         refreshLibrary(null);
         setUpBranches(selectedBranch,
                       selectedRepository);
+
+        libraryPreferences.setRepositoryAlias(selectedRepository.getAlias());
+        libraryPreferences.save();
     }
 
     void onUpdateSelectedBranch() {
@@ -148,6 +165,12 @@ public class LibraryToolbarPresenter {
     }
 
     private void refreshLibrary(final OrganizationalUnitRepositoryInfo newInfo) {
+        refreshLibrary(newInfo,
+                       null);
+    }
+
+    private void refreshLibrary(final OrganizationalUnitRepositoryInfo newInfo,
+                                final Command callback) {
         if (placeManager.closeAllPlacesOrNothing()) {
             if (newInfo != null) {
                 this.info = newInfo;
@@ -159,7 +182,7 @@ public class LibraryToolbarPresenter {
 
             setBranchSelectorVisibility();
 
-            libraryPlaces.goToLibrary();
+            libraryPlaces.goToLibrary(callback);
         } else {
             view.setSelectedOrganizationalUnit(selectedOrganizationalUnit.getIdentifier());
             view.setSelectedRepository(selectedRepository.getAlias());
@@ -170,7 +193,7 @@ public class LibraryToolbarPresenter {
     }
 
     private void setBranchSelectorVisibility() {
-        view.setBranchSelectorVisibility(selectedRepository.getBranches().size()>1);
+        view.setBranchSelectorVisibility(selectedRepository.getBranches().size() > 1);
     }
 
     private String getViewSelectedBranch() {

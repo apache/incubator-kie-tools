@@ -28,34 +28,34 @@ public interface OUPageView extends UberView<OUPage> {
 
     interface Presenter {
 
-        void setOrganizationalUnits( final Set<ExampleOrganizationalUnit> organizationalUnits );
+        void setOrganizationalUnits(final Set<ExampleOrganizationalUnit> organizationalUnits);
 
-        void setTargetRepository( final ExampleTargetRepository repository );
+        void setTargetRepository(final ExampleTargetRepository repository);
 
-        void setTargetOrganizationalUnit( final ExampleOrganizationalUnit organizationalUnit );
-
+        void setTargetOrganizationalUnit(final ExampleOrganizationalUnit organizationalUnit);
     }
 
     void initialise();
 
-    void setTargetRepositoryPlaceHolder( final String placeHolder );
+    void setTargetRepositoryPlaceHolder(final String placeHolder);
 
-    void setOrganizationalUnitsPlaceHolder( final String placeHolder );
+    void setOrganizationalUnitsPlaceHolder(final String placeHolder);
 
-    void setOrganizationalUnits( final List<ExampleOrganizationalUnit> organizationalUnits );
+    void setOrganizationalUnits(final List<ExampleOrganizationalUnit> organizationalUnits);
 
-    void setOrganizationalUnit( final ExampleOrganizationalUnit organizationalUnit );
+    void setOrganizationalUnit(final ExampleOrganizationalUnit organizationalUnit);
 
-    void setTargetRepositoryGroupType( final ValidationState state );
+    void setTargetRepository(final ExampleTargetRepository repository);
 
-    void showTargetRepositoryHelpMessage( final String message );
+    void setTargetRepositoryGroupType(final ValidationState state);
+
+    void showTargetRepositoryHelpMessage(final String message);
 
     void hideTargetRepositoryHelpMessage();
 
-    void setTargetOrganizationalUnitGroupType( final ValidationState state );
+    void setTargetOrganizationalUnitGroupType(final ValidationState state);
 
-    void showTargetOrganizationalUnitHelpMessage( final String message );
+    void showTargetOrganizationalUnitHelpMessage(final String message);
 
     void hideTargetOrganizationalUnitHelpMessage();
-
 }

@@ -44,7 +44,7 @@ public class OUPageViewImpl extends Composite implements OUPageView {
     Element targetRepositoryGroup = DOM.createDiv();
 
     @DataField("targetRepositoryTextBox")
-    TextBox targetRepositoryTextBox = GWT.create( TextBox.class );
+    TextBox targetRepositoryTextBox = GWT.create(TextBox.class);
 
     @DataField("target-repository-help")
     Element targetRepositoryHelp = DOM.createSpan();
@@ -53,7 +53,7 @@ public class OUPageViewImpl extends Composite implements OUPageView {
     Element organizationalUnitsGroup = DOM.createDiv();
 
     @DataField
-    ComboBox organizationalUnitsDropdown = GWT.create( ComboBox.class );
+    ComboBox organizationalUnitsDropdown = GWT.create(ComboBox.class);
 
     @DataField("organizational-units-help")
     Element organizationalUnitsHelp = DOM.createSpan();
@@ -62,90 +62,94 @@ public class OUPageViewImpl extends Composite implements OUPageView {
 
     @PostConstruct
     public void setup() {
-        targetRepositoryTextBox.addValueChangeHandler( new ValueChangeHandler<String>() {
+        targetRepositoryTextBox.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
-            public void onValueChange( final ValueChangeEvent<String> event ) {
-                presenter.setTargetRepository( new ExampleTargetRepository( event.getValue() ) );
+            public void onValueChange(final ValueChangeEvent<String> event) {
+                presenter.setTargetRepository(new ExampleTargetRepository(event.getValue()));
             }
-        } );
-        organizationalUnitsDropdown.addValueChangeHandler( new ValueChangeHandler<String>() {
+        });
+        organizationalUnitsDropdown.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
-            public void onValueChange( final ValueChangeEvent<String> event ) {
-                presenter.setTargetOrganizationalUnit( new ExampleOrganizationalUnit( event.getValue() ) );
+            public void onValueChange(final ValueChangeEvent<String> event) {
+                presenter.setTargetOrganizationalUnit(new ExampleOrganizationalUnit(event.getValue()));
             }
-        } );
+        });
     }
 
     @Override
-    public void init( final OUPage presenter ) {
+    public void init(final OUPage presenter) {
         this.presenter = presenter;
     }
 
     @Override
     public void initialise() {
-        targetRepositoryTextBox.setText( "" );
-        organizationalUnitsDropdown.setText( "" );
+        targetRepositoryTextBox.setText("");
+        organizationalUnitsDropdown.setText("");
     }
 
     @Override
-    public void setTargetRepositoryPlaceHolder( final String placeHolder ) {
-        targetRepositoryTextBox.setPlaceholder( placeHolder );
+    public void setTargetRepositoryPlaceHolder(final String placeHolder) {
+        targetRepositoryTextBox.setPlaceholder(placeHolder);
     }
 
     @Override
-    public void setOrganizationalUnitsPlaceHolder( final String placeHolder ) {
-        organizationalUnitsDropdown.setPlaceholder( placeHolder );
+    public void setOrganizationalUnitsPlaceHolder(final String placeHolder) {
+        organizationalUnitsDropdown.setPlaceholder(placeHolder);
     }
 
     @Override
-    public void setOrganizationalUnits( final List<ExampleOrganizationalUnit> organizationalUnits ) {
+    public void setOrganizationalUnits(final List<ExampleOrganizationalUnit> organizationalUnits) {
         this.organizationalUnitsDropdown.clear();
-        for ( ExampleOrganizationalUnit organizationalUnit : organizationalUnits ) {
-            this.organizationalUnitsDropdown.addItem( organizationalUnit.getName() );
+        for (ExampleOrganizationalUnit organizationalUnit : organizationalUnits) {
+            this.organizationalUnitsDropdown.addItem(organizationalUnit.getName());
         }
     }
 
     @Override
-    public void setOrganizationalUnit( final ExampleOrganizationalUnit organizationalUnit ) {
-        this.organizationalUnitsDropdown.setText( organizationalUnit.getName() );
+    public void setOrganizationalUnit(final ExampleOrganizationalUnit organizationalUnit) {
+        this.organizationalUnitsDropdown.setText(organizationalUnit.getName());
     }
 
     @Override
-    public void setTargetRepositoryGroupType( final ValidationState state ) {
-        StyleHelper.addUniqueEnumStyleName( targetRepositoryGroup,
-                                            ValidationState.class,
-                                            state );
+    public void setTargetRepository(ExampleTargetRepository repository) {
+        this.targetRepositoryTextBox.setText(repository.getAlias());
     }
 
     @Override
-    public void showTargetRepositoryHelpMessage( final String message ) {
-        targetRepositoryHelp.getStyle().setVisibility( Style.Visibility.VISIBLE );
-        targetRepositoryHelp.setInnerText( message );
+    public void setTargetRepositoryGroupType(final ValidationState state) {
+        StyleHelper.addUniqueEnumStyleName(targetRepositoryGroup,
+                                           ValidationState.class,
+                                           state);
+    }
+
+    @Override
+    public void showTargetRepositoryHelpMessage(final String message) {
+        targetRepositoryHelp.getStyle().setVisibility(Style.Visibility.VISIBLE);
+        targetRepositoryHelp.setInnerText(message);
     }
 
     @Override
     public void hideTargetRepositoryHelpMessage() {
-        targetRepositoryHelp.getStyle().setVisibility( Style.Visibility.HIDDEN );
-        targetRepositoryHelp.setInnerText( "" );
+        targetRepositoryHelp.getStyle().setVisibility(Style.Visibility.HIDDEN);
+        targetRepositoryHelp.setInnerText("");
     }
 
     @Override
-    public void setTargetOrganizationalUnitGroupType( final ValidationState state ) {
-        StyleHelper.addUniqueEnumStyleName( organizationalUnitsGroup,
-                                            ValidationState.class,
-                                            state );
+    public void setTargetOrganizationalUnitGroupType(final ValidationState state) {
+        StyleHelper.addUniqueEnumStyleName(organizationalUnitsGroup,
+                                           ValidationState.class,
+                                           state);
     }
 
     @Override
-    public void showTargetOrganizationalUnitHelpMessage( final String message ) {
-        organizationalUnitsHelp.getStyle().setVisibility( Style.Visibility.VISIBLE );
-        organizationalUnitsHelp.setInnerText( message );
+    public void showTargetOrganizationalUnitHelpMessage(final String message) {
+        organizationalUnitsHelp.getStyle().setVisibility(Style.Visibility.VISIBLE);
+        organizationalUnitsHelp.setInnerText(message);
     }
 
     @Override
     public void hideTargetOrganizationalUnitHelpMessage() {
-        organizationalUnitsHelp.getStyle().setVisibility( Style.Visibility.HIDDEN );
-        organizationalUnitsHelp.setInnerText( "" );
+        organizationalUnitsHelp.getStyle().setVisibility(Style.Visibility.HIDDEN);
+        organizationalUnitsHelp.setInnerText("");
     }
-
 }

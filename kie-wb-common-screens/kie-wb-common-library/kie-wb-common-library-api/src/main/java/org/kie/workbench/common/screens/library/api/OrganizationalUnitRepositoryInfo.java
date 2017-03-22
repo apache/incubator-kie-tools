@@ -32,7 +32,7 @@ public class OrganizationalUnitRepositoryInfo {
 
     private final Collection<Repository> repositories;
 
-    private final Repository selectedRepository;
+    private Repository selectedRepository;
 
     public OrganizationalUnitRepositoryInfo(@MapsTo("organizationalUnits") final Collection<OrganizationalUnit> organizationalUnits,
                                             @MapsTo("selectedOrganizationalUnit") final OrganizationalUnit selectedOrganizationalUnit,
@@ -58,6 +58,12 @@ public class OrganizationalUnitRepositoryInfo {
 
     public Repository getSelectedRepository() {
         return selectedRepository;
+    }
+
+    public void setSelectedRepository(final Repository selectedRepository) {
+        if (repositories.contains(selectedRepository)) {
+            this.selectedRepository = selectedRepository;
+        }
     }
 
     @Override

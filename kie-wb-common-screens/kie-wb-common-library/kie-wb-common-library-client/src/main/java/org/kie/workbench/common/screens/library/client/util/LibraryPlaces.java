@@ -31,7 +31,9 @@ import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
+import org.kie.workbench.common.screens.examples.client.wizard.ExamplesWizard;
 import org.kie.workbench.common.screens.library.api.LibraryPreferences;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
@@ -49,6 +51,7 @@ import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.ext.editor.commons.client.event.ConcurrentRenameAcceptedEvent;
 import org.uberfire.ext.widgets.common.client.breadcrumbs.UberfireBreadcrumbs;
+import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.ConditionalPlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -109,9 +112,13 @@ public class LibraryPlaces {
 
     private Event<NotificationEvent> notificationEvent;
 
+    private ManagedInstance<ExamplesWizard> examplesWizards;
+
     private boolean docksReady = false;
 
     private boolean docksHidden = true;
+
+    private Project lastViewedProject = null;
 
     @Inject
     public LibraryPlaces(final UberfireBreadcrumbs breadcrumbs,
@@ -128,7 +135,8 @@ public class LibraryPlaces {
                          final LibraryPreferences libraryPreferences,
                          final Event<ProjectContextChangeEvent> projectContextChangeEvent,
                          final ExamplesUtils examplesUtils,
-                         final Event<NotificationEvent> notificationEvent) {
+                         final Event<NotificationEvent> notificationEvent,
+                         final ManagedInstance<ExamplesWizard> examplesWizards) {
         this.breadcrumbs = breadcrumbs;
         this.ts = ts;
         this.projectDetailEvent = projectDetailEvent;
@@ -144,6 +152,7 @@ public class LibraryPlaces {
         this.projectContextChangeEvent = projectContextChangeEvent;
         this.examplesUtils = examplesUtils;
         this.notificationEvent = notificationEvent;
+        this.examplesWizards = examplesWizards;
     }
 
     public ProjectInfo getProjectInfo() {
@@ -244,6 +253,31 @@ public class LibraryPlaces {
                   assetDetails.getPath());
     }
 
+    public void projectContextChange() {
+        final ProjectInfo projectInfo = new ProjectInfo(projectContext.getActiveOrganizationalUnit(),
+                                                        projectContext.getActiveRepository(),
+                                                        projectContext.getActiveBranch(),
+                                                        projectContext.getActiveProject());
+
+        if (placeManager.getStatus(LIBRARY_PERSPECTIVE).equals(PlaceStatus.OPEN)) {
+            if ((libraryToolbar.getSelectedOrganizationalUnit() != null && !projectContext.getActiveOrganizationalUnit().equals(libraryToolbar.getSelectedOrganizationalUnit()))
+                    || (libraryToolbar.getSelectedRepository() != null && !projectContext.getActiveRepository().equals(libraryToolbar.getSelectedRepository()))
+                    || (libraryToolbar.getSelectedBranch() != null && !projectContext.getActiveBranch().equals(libraryToolbar.getSelectedBranch()))) {
+                libraryToolbar.setSelectedInfo(projectContext.getActiveOrganizationalUnit(),
+                                               projectContext.getActiveRepository(),
+                                               () -> {
+                                                   if (projectContext.getActiveProject() != null) {
+                                                       goToProject(projectInfo,
+                                                                   false);
+                                                   }
+                                               });
+            } else if (projectContext.getActiveProject() != null && !projectContext.getActiveProject().equals(lastViewedProject)) {
+                goToProject(projectInfo,
+                            false);
+            }
+        }
+    }
+
     public void setupToolBar() {
         breadcrumbs.clearBreadCrumbsAndToolBars(LibraryPlaces.LIBRARY_PERSPECTIVE);
         breadcrumbs.addBreadCrumb(LibraryPlaces.LIBRARY_PERSPECTIVE,
@@ -306,12 +340,15 @@ public class LibraryPlaces {
         libraryToolbar.init(() -> {
             setupToolBar();
             goToLibrary();
-            hideDocks();
             examplesUtils.refresh();
         });
     }
 
     public void goToLibrary() {
+        goToLibrary(null);
+    }
+
+    public void goToLibrary(final Command callback) {
         libraryService.call(new RemoteCallback<Boolean>() {
             @Override
             public void callback(final Boolean hasProjects) {
@@ -328,10 +365,16 @@ public class LibraryPlaces {
 
                     setupLibraryBreadCrumbs();
 
-                    // TODO is this still needed?
-                    projectContextChangeEvent.fire(new ProjectContextChangeEvent(getSelectedOrganizationalUnit(),
-                                                                                 getSelectedRepository(),
-                                                                                 getSelectedBranch()));
+                    hideDocks();
+                    lastViewedProject = null;
+
+                    if (callback != null) {
+                        callback.execute();
+                    } else {
+                        projectContextChangeEvent.fire(new ProjectContextChangeEvent(getSelectedOrganizationalUnit(),
+                                                                                     getSelectedRepository(),
+                                                                                     getSelectedBranch()));
+                    }
                 }).getLibraryInfo(getSelectedRepository(),
                                   getSelectedBranch());
             }
@@ -340,6 +383,12 @@ public class LibraryPlaces {
     }
 
     public void goToProject(final ProjectInfo projectInfo) {
+        goToProject(projectInfo,
+                    true);
+    }
+
+    public void goToProject(final ProjectInfo projectInfo,
+                            final boolean fireProjectContextChangeEvent) {
         libraryService.call(hasAssets -> {
             final PlaceRequest projectScreen = new ConditionalPlaceRequest(LibraryPlaces.PROJECT_SCREEN)
                     .when(p -> (Boolean) hasAssets)
@@ -352,10 +401,14 @@ public class LibraryPlaces {
                               libraryPerspective.getRootPanel());
 
             projectDetailEvent.fire(new ProjectDetailEvent(projectInfo));
-            projectContextChangeEvent.fire(new ProjectContextChangeEvent(projectInfo.getOrganizationalUnit(),
-                                                                         projectInfo.getRepository(),
-                                                                         projectInfo.getBranch(),
-                                                                         projectInfo.getProject()));
+
+            lastViewedProject = projectInfo.getProject();
+            if (fireProjectContextChangeEvent) {
+                projectContextChangeEvent.fire(new ProjectContextChangeEvent(projectInfo.getOrganizationalUnit(),
+                                                                             projectInfo.getRepository(),
+                                                                             projectInfo.getBranch(),
+                                                                             projectInfo.getProject()));
+            }
 
             setupLibraryBreadCrumbsForProject(projectInfo);
         }).hasAssets(projectInfo.getProject());
@@ -387,6 +440,16 @@ public class LibraryPlaces {
     public void goToSettings(final ProjectInfo projectInfo) {
         assetDetailEvent.fire(new AssetDetailEvent(projectInfo,
                                                    null));
+    }
+
+    public void goToImportProjectWizard() {
+        final String organizationalUnitName = projectContext.getActiveOrganizationalUnit().getName();
+        final String repositoryAlias = projectContext.getActiveRepository().getAlias();
+
+        final ExamplesWizard examplesWizard = examplesWizards.get();
+        examplesWizard.start();
+        examplesWizard.setDefaultTargetOrganizationalUnit(organizationalUnitName);
+        examplesWizard.setDefaultTargetRepository(repositoryAlias);
     }
 
     public OrganizationalUnit getSelectedOrganizationalUnit() {

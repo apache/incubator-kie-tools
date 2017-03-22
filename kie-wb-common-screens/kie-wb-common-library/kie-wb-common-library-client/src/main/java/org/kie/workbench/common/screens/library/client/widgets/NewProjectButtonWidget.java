@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.screens.library.client.widgets;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
@@ -24,9 +27,6 @@ import org.kie.workbench.common.widgets.client.handlers.NewProjectHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.mvp.Command;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
 public class NewProjectButtonWidget {
 
@@ -80,9 +80,9 @@ public class NewProjectButtonWidget {
 
         if (newDefaultProjectHandler.canCreate()) {
             addNewProjectHandler(view.getQuickSetupDescription(),
-                    () -> libraryPlaces.goToNewProject());
+                                 () -> libraryPlaces.goToNewProject());
             addNewProjectHandler(view.getAdvancedSetupDescription(),
-                    newDefaultProjectHandler);
+                                 newDefaultProjectHandler);
         }
 
         view.addHeader(view.getOtherProjectsHeaderTitle());
@@ -90,7 +90,7 @@ public class NewProjectButtonWidget {
         for (NewProjectHandler newProjectHandler : getNewProjectHandlers()) {
             if (!ResourceUtils.isDefaultProjectHandler(newProjectHandler) && newProjectHandler.canCreate()) {
                 addNewProjectHandler(newProjectHandler.getDescription(),
-                        newProjectHandler);
+                                     newProjectHandler);
             }
         }
     }
@@ -101,21 +101,25 @@ public class NewProjectButtonWidget {
         newProjectHandler.setCreationSuccessCallback(project -> {
             if (project != null) {
                 final ProjectInfo projectInfo = new ProjectInfo(libraryPlaces.getSelectedOrganizationalUnit(),
-                        libraryPlaces.getSelectedRepository(),
-                        libraryPlaces.getSelectedBranch(),
-                        project);
+                                                                libraryPlaces.getSelectedRepository(),
+                                                                libraryPlaces.getSelectedBranch(),
+                                                                project);
                 libraryPlaces.goToProject(projectInfo);
             }
         });
 
         view.addNewProjectHandler(description,
-                newProjectHandler);
+                                  newProjectHandler);
     }
 
     private void addNewProjectHandler(final String description,
                                       final Command command) {
         view.addNewProjectHandler(description,
-                command);
+                                  command);
+    }
+
+    public void openImportWizard() {
+        libraryPlaces.goToImportProjectWizard();
     }
 
     public NewResourcePresenter getNewResourcePresenter() {

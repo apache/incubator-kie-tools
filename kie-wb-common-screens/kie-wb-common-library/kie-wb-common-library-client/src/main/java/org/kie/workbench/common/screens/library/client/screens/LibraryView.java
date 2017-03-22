@@ -15,8 +15,14 @@
  */
 package org.kie.workbench.common.screens.library.client.screens;
 
+import javax.inject.Inject;
+
 import com.google.gwt.user.client.Event;
-import org.jboss.errai.common.client.dom.*;
+import org.jboss.errai.common.client.dom.Button;
+import org.jboss.errai.common.client.dom.DOMUtil;
+import org.jboss.errai.common.client.dom.Div;
+import org.jboss.errai.common.client.dom.Input;
+import org.jboss.errai.common.client.dom.UnorderedList;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
@@ -31,11 +37,9 @@ import org.kie.workbench.common.screens.library.client.widgets.NewProjectButtonW
 import org.kie.workbench.common.screens.library.client.widgets.ProjectItemWidget;
 import org.uberfire.mvp.Command;
 
-import javax.inject.Inject;
-
 @Templated
 public class LibraryView implements LibraryScreen.View,
-        IsElement {
+                                    IsElement {
 
     private LibraryScreen presenter;
 
@@ -79,7 +83,7 @@ public class LibraryView implements LibraryScreen.View,
     Div newProjectContainer;
 
     @Inject
-    @DataField("import-project")
+    @DataField("import-example")
     Button importProject;
 
     private ProjectItemWidget selectedProjectItemWidget;
@@ -90,7 +94,8 @@ public class LibraryView implements LibraryScreen.View,
     public void init(LibraryScreen presenter) {
         this.presenter = presenter;
         this.selectedProjectItemWidget = null;
-        filterText.setAttribute("placeholder", ts.getTranslation(LibraryConstants.LibraryView_Filter));
+        filterText.setAttribute("placeholder",
+                                ts.getTranslation(LibraryConstants.LibraryView_Filter));
         detailsContainer.appendChild(projectsDetailScreen.getView().getElement());
         newProjectContainer.appendChild(newProjectButtonWidget.getView().getElement());
     }
@@ -105,7 +110,10 @@ public class LibraryView implements LibraryScreen.View,
                            final Command details,
                            final Command select) {
         ProjectItemWidget projectItemWidget = itemWidgetsInstances.get();
-        projectItemWidget.init(project, detailsCommand(details, projectItemWidget), select);
+        projectItemWidget.init(project,
+                               detailsCommand(details,
+                                              projectItemWidget),
+                               select);
         projectList.appendChild(projectItemWidget.getElement());
     }
 
@@ -147,8 +155,8 @@ public class LibraryView implements LibraryScreen.View,
     public void addProjectToImport(final ExampleProject exampleProject) {
         final ImportExampleListItemWidget importExampleListItem = importExampleListItemWidgets.get();
         importExampleListItem.init(exampleProject.getName(),
-                exampleProject.getDescription(),
-                () -> presenter.importProject(exampleProject));
+                                   exampleProject.getDescription(),
+                                   () -> presenter.importProject(exampleProject));
 
         importProjectContainer.appendChild(importExampleListItem.getElement());
     }
@@ -164,8 +172,8 @@ public class LibraryView implements LibraryScreen.View,
     }
 
     @SinkNative(Event.ONCLICK)
-    @EventHandler("import-project")
-    public void importProject(Event e) {
+    @EventHandler("import-example")
+    public void importExample(Event e) {
         if (!importProjectLoaded) {
             presenter.updateImportProjects();
             importProjectLoaded = true;
