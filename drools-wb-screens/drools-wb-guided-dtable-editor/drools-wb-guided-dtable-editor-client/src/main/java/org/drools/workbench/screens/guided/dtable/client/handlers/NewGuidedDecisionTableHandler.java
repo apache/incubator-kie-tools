@@ -31,7 +31,6 @@ import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEdi
 import org.guvnor.common.services.project.model.Package;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
@@ -64,12 +63,12 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     }
 
     @Inject
-    public NewGuidedDecisionTableHandler( final PlaceManager placeManager,
-                                          final Caller<GuidedDecisionTableEditorService> service,
-                                          final GuidedDTableResourceType resourceType,
-                                          final GuidedDecisionTableOptions options,
-                                          final BusyIndicatorView busyIndicatorView,
-                                          final NewGuidedDecisionTableWizardHelper helper ) {
+    public NewGuidedDecisionTableHandler(final PlaceManager placeManager,
+                                         final Caller<GuidedDecisionTableEditorService> service,
+                                         final GuidedDTableResourceType resourceType,
+                                         final GuidedDecisionTableOptions options,
+                                         final BusyIndicatorView busyIndicatorView,
+                                         final NewGuidedDecisionTableWizardHelper helper) {
         this.placeManager = placeManager;
         this.service = service;
         this.resourceType = resourceType;
@@ -80,8 +79,8 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
 
     @PostConstruct
     private void setupExtensions() {
-        extensions.add( new Pair<String, GuidedDecisionTableOptions>( GuidedDecisionTableConstants.INSTANCE.Options(),
-                                                                      options ) );
+        extensions.add(new Pair<String, GuidedDecisionTableOptions>(GuidedDecisionTableConstants.INSTANCE.Options(),
+                                                                    options));
     }
 
     @Override
@@ -91,7 +90,7 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( GuidedDecisionTableResources.INSTANCE.images().typeGuidedDecisionTable() );
+        return new Image(GuidedDecisionTableResources.INSTANCE.images().typeGuidedDecisionTable());
     }
 
     @Override
@@ -100,65 +99,69 @@ public class NewGuidedDecisionTableHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final Package pkg,
-                        final String baseFileName,
-                        final NewResourcePresenter presenter ) {
+    public void create(final Package pkg,
+                       final String baseFileName,
+                       final NewResourcePresenter presenter) {
         this.newResourcePresenter = presenter;
-        if ( !options.isUsingWizard() ) {
-            createEmptyDecisionTable( pkg.getPackageMainResourcesPath(),
-                                      baseFileName );
+        if (!options.isUsingWizard()) {
+            createEmptyDecisionTable(pkg.getPackageMainResourcesPath(),
+                                     baseFileName);
         } else {
-            createDecisionTableWithWizard( pkg.getPackageMainResourcesPath(),
-                                           baseFileName );
+            createDecisionTableWithWizard(pkg.getPackageMainResourcesPath(),
+                                          baseFileName);
         }
     }
 
-    private void createEmptyDecisionTable( final Path contextPath,
-                                           final String baseFileName ) {
+    private void createEmptyDecisionTable(final Path contextPath,
+                                          final String baseFileName) {
         final GuidedDecisionTable52 model = new GuidedDecisionTable52();
-        model.setTableFormat( options.getTableFormat() );
-        model.setHitPolicy( options.getHitPolicy() );
+        model.setTableFormat(options.getTableFormat());
+        model.setHitPolicy(options.getHitPolicy());
 
-        if(GuidedDecisionTable52.HitPolicy.RESOLVED_HIT.equals( options.getHitPolicy() )) {
+        if (GuidedDecisionTable52.HitPolicy.RESOLVED_HIT.equals(options.getHitPolicy())) {
             final MetadataCol52 metadataCol52 = new MetadataCol52();
 
-            metadataCol52.setMetadata( GuidedDecisionTable52.HitPolicy.RESOLVED_HIT_METADATA_NAME );
-            model.getMetadataCols().add( metadataCol52 );
+            metadataCol52.setMetadata(GuidedDecisionTable52.HitPolicy.RESOLVED_HIT_METADATA_NAME);
+            model.getMetadataCols().add(metadataCol52);
         }
 
-        model.setTableName( baseFileName );
+        model.setTableName(baseFileName);
 
-        final RemoteCallback<Path> onSaveSuccessCallback = getSuccessCallback( newResourcePresenter );
-        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-        service.call( ( Path path ) -> {
-                          busyIndicatorView.hideBusyIndicator();
-                          onSaveSuccessCallback.callback( path );
-                      },
-                      new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).create( contextPath,
-                                                                                              buildFileName( baseFileName,
-                                                                                                             resourceType ),
-                                                                                              model,
-                                                                                              "" );
+        final RemoteCallback<Path> onSaveSuccessCallback = getSuccessCallback(newResourcePresenter);
+        busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+        service.call((Path path) -> {
+                         busyIndicatorView.hideBusyIndicator();
+                         onSaveSuccessCallback.callback(path);
+                     },
+                     new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).create(contextPath,
+                                                                                         buildFileName(baseFileName,
+                                                                                                       resourceType),
+                                                                                         model,
+                                                                                         "");
     }
 
-    private void createDecisionTableWithWizard( final Path contextPath,
-                                                final String baseFileName ) {
-        helper.createNewGuidedDecisionTable( contextPath,
-                                             baseFileName,
-                                             options.getTableFormat(),
-                                             options.getHitPolicy(),
-                                             busyIndicatorView,
-                                             getSuccessCallback( newResourcePresenter ) );
+    private void createDecisionTableWithWizard(final Path contextPath,
+                                               final String baseFileName) {
+        helper.createNewGuidedDecisionTable(contextPath,
+                                            baseFileName,
+                                            options.getTableFormat(),
+                                            options.getHitPolicy(),
+                                            busyIndicatorView,
+                                            getSuccessCallback(newResourcePresenter));
     }
 
     @Override
-    protected RemoteCallback<Path> getSuccessCallback( final NewResourcePresenter presenter ) {
-        return ( Path path ) -> {
+    protected RemoteCallback<Path> getSuccessCallback(final NewResourcePresenter presenter) {
+        return (Path path) -> {
             presenter.complete();
             notifySuccess();
-            newResourceSuccessEvent.fire( new NewResourceSuccessEvent( path ) );
-            placeManager.goTo( path );
+            newResourceSuccessEvent.fire(new NewResourceSuccessEvent(path));
+            placeManager.goTo(path);
         };
     }
 
+    @Override
+    public int order() {
+        return -20;
+    }
 }
