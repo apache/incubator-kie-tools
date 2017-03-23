@@ -57,7 +57,7 @@ public class EndTerminateEvent extends BaseEndEvent {
 
         @Override
         public EndTerminateEvent build() {
-            return new EndTerminateEvent(new BPMNGeneralSet("End"),
+            return new EndTerminateEvent(new BPMNGeneralSet(""),
                                          new DataIOSet(),
                                          new BackgroundSet(BG_COLOR,
                                                            BORDER_COLOR,

@@ -43,7 +43,6 @@ public class BPMNGeneralSet implements BPMNPropertySet {
 
     @Property
     @FormField
-    @Valid
     private Name name;
 
     @Property
@@ -51,7 +50,6 @@ public class BPMNGeneralSet implements BPMNPropertySet {
             type = TextAreaFieldType.class,
             afterElement = "name"
     )
-    @Valid
     private Documentation documentation;
 
     public BPMNGeneralSet() {

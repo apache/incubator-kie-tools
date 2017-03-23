@@ -68,7 +68,7 @@ public class IntermediateTimerEvent extends BaseIntermediateEvent {
 
         @Override
         public IntermediateTimerEvent build() {
-            return new IntermediateTimerEvent(new BPMNGeneralSet("Intermediate Timer"),
+            return new IntermediateTimerEvent(new BPMNGeneralSet(""),
                                               new IntermediateTimerEventExecutionSet(),
                                               new BackgroundSet(BG_COLOR,
                                                                 BORDER_COLOR,

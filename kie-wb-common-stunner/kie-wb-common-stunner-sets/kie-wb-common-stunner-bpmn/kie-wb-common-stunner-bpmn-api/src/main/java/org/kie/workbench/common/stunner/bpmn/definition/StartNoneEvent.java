@@ -56,7 +56,7 @@ public class StartNoneEvent extends BaseStartEvent {
 
         @Override
         public StartNoneEvent build() {
-            return new StartNoneEvent(new BPMNGeneralSet("Start"),
+            return new StartNoneEvent(new BPMNGeneralSet(""),
                                       new DataIOSet(),
                                       new BackgroundSet(BG_COLOR,
                                                         BORDER_COLOR,

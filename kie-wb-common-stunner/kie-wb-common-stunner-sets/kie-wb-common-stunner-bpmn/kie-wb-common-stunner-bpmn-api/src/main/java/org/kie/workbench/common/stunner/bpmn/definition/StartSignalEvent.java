@@ -71,7 +71,7 @@ public class StartSignalEvent extends BaseStartEvent {
 
         @Override
         public StartSignalEvent build() {
-            return new StartSignalEvent(new BPMNGeneralSet("Start Signal"),
+            return new StartSignalEvent(new BPMNGeneralSet(""),
                                         new SignalEventExecutionSet(),
                                         new DataIOSet(),
                                         new BackgroundSet(BG_COLOR,

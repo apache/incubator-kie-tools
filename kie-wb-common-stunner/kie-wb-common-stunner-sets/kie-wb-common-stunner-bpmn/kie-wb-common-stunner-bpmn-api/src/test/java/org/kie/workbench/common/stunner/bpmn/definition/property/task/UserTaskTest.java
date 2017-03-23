@@ -25,6 +25,7 @@ import javax.validation.ValidatorFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
+import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 
 import static org.junit.Assert.*;
 
@@ -104,5 +105,21 @@ public class UserTaskTest {
         Set<ConstraintViolation<UserTask>> violations = this.validator.validate(userTask);
         assertEquals(1,
                      violations.size());
+    }
+
+    @Test
+    public void testUserTaskNameValid() {
+        UserTask userTask = new UserTask.UserTaskBuilder().build();
+        userTask.getGeneral().setName(new Name(TASK_NAME_VALID));
+        Set<ConstraintViolation<UserTask>> violations = this.validator.validate(userTask);
+        assertTrue(violations.isEmpty());
+    }
+
+    @Test
+    public void testUserTaskNameEmpty() {
+        UserTask userTask = new UserTask.UserTaskBuilder().build();
+        userTask.getGeneral().setName(new Name(""));
+        Set<ConstraintViolation<UserTask>> violations = this.validator.validate(userTask);
+        assertTrue(violations.isEmpty());
     }
 }

@@ -83,7 +83,7 @@ public class StartTimerEvent extends BaseStartEvent {
 
         @Override
         public StartTimerEvent build() {
-            return new StartTimerEvent(new BPMNGeneralSet("Start Timer"),
+            return new StartTimerEvent(new BPMNGeneralSet(""),
                                        new IntermediateTimerEventExecutionSet(),
                                        new IsInterrupting(true),
                                        new DataIOSet(),
