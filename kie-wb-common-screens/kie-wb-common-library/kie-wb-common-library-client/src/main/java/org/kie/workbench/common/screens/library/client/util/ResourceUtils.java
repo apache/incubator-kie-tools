@@ -16,6 +16,14 @@
 
 package org.kie.workbench.common.screens.library.client.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.explorer.client.utils.Classifier;
 import org.kie.workbench.common.screens.explorer.client.utils.Utils;
 import org.kie.workbench.common.widgets.client.handlers.NewProjectHandler;
@@ -23,22 +31,24 @@ import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
 @Dependent
 public class ResourceUtils {
 
     private Classifier classifier;
 
+    private ManagedInstance<NewResourceHandler> newResourceHandlers;
+
     @Inject
-    public ResourceUtils(final Classifier classifier) {
+    public ResourceUtils(final Classifier classifier,
+                         final ManagedInstance<NewResourceHandler> newResourceHandlers) {
         this.classifier = classifier;
+        this.newResourceHandlers = newResourceHandlers;
     }
 
     public String getBaseFileName(final Path path) {
         final ClientResourceType resourceType = classifier.findResourceType(path);
-        final String baseName = Utils.getBaseFileName(path.getFileName(), resourceType.getSuffix());
+        final String baseName = Utils.getBaseFileName(path.getFileName(),
+                                                      resourceType.getSuffix());
 
         return baseName;
     }
@@ -57,5 +67,38 @@ public class ResourceUtils {
 
     public static boolean isUploadHandler(final NewResourceHandler handler) {
         return handler.getClass().getName().contains("NewFileUploader");
+    }
+
+    public List<NewResourceHandler> getOrderedNewResourceHandlers() {
+        return getNewResourceHandlers(NEW_RESOURCE_HANDLER_COMPARATOR_BY_ORDER);
+    }
+
+    public List<NewResourceHandler> getAlphabeticallyOrderedNewResourceHandlers() {
+        return getNewResourceHandlers(NEW_RESOURCE_HANDLER_COMPARATOR_BY_ALPHABETICAL_ORDER);
+    }
+
+    private List<NewResourceHandler> getNewResourceHandlers(final Comparator<NewResourceHandler> sortComparator) {
+        final List<NewResourceHandler> sortedNewResourceHandlers = new ArrayList<>();
+        getNewResourceHandlers().forEach(sortedNewResourceHandlers::add);
+        Collections.sort(sortedNewResourceHandlers,
+                         sortComparator);
+
+        return sortedNewResourceHandlers;
+    }
+
+    public static final Comparator<NewResourceHandler> NEW_RESOURCE_HANDLER_COMPARATOR_BY_ORDER = (o1, o2) -> {
+        if (o1.order() < o2.order()) {
+            return -1;
+        } else if (o1.order() > o2.order()) {
+            return 1;
+        } else {
+            return o1.getDescription().compareToIgnoreCase(o2.getDescription());
+        }
+    };
+
+    public static final Comparator<NewResourceHandler> NEW_RESOURCE_HANDLER_COMPARATOR_BY_ALPHABETICAL_ORDER = (o1, o2) -> o1.getDescription().compareToIgnoreCase(o2.getDescription());
+
+    Iterable<NewResourceHandler> getNewResourceHandlers() {
+        return newResourceHandlers;
     }
 }

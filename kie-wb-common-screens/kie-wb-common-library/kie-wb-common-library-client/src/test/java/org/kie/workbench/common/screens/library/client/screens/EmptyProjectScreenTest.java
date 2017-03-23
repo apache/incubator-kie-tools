@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.guvnor.common.services.project.model.Project;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +27,7 @@ import org.kie.workbench.common.screens.defaulteditor.client.editor.NewFileUploa
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.kie.workbench.common.screens.library.client.util.ResourceUtils;
 import org.kie.workbench.common.screens.projecteditor.client.handlers.NewPackageHandler;
 import org.kie.workbench.common.screens.projecteditor.client.handlers.NewProjectHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
@@ -50,7 +50,7 @@ public class EmptyProjectScreenTest {
     private EmptyProjectScreen.View view;
 
     @Mock
-    private ManagedInstance<NewResourceHandler> newResourceHandlers;
+    private ResourceUtils resourceUtils;
 
     @Mock
     private NewResourcePresenter newResourcePresenter;
@@ -65,78 +65,81 @@ public class EmptyProjectScreenTest {
 
     @Before
     public void setup() {
-        emptyProjectScreen = spy( new EmptyProjectScreen( view,
-                                                          newResourceHandlers,
-                                                          newResourcePresenter,
-                                                          placeManager,
-                                                          libraryPlaces ) );
+        emptyProjectScreen = spy(new EmptyProjectScreen(view,
+                                                        resourceUtils,
+                                                        newResourcePresenter,
+                                                        placeManager,
+                                                        libraryPlaces));
     }
 
     @Test
     public void onStartupTest() {
-        NewResourceHandler projectHandler = mock( NewProjectHandler.class );
-        doReturn( true ).when( projectHandler ).canCreate();
-        NewResourceHandler packageHandler = mock( NewPackageHandler.class );
-        doReturn( true ).when( packageHandler ).canCreate();
-        NewResourceHandler uploadHandler = mock( NewFileUploader.class );
-        doReturn( true ).when( uploadHandler ).canCreate();
-        NewResourceHandler type1Handler = mock( NewResourceHandler.class );
-        doReturn( true ).when( type1Handler ).canCreate();
-        NewResourceHandler type2Handler = mock( NewResourceHandler.class );
-        doReturn( true ).when( type2Handler ).canCreate();
+        NewResourceHandler projectHandler = mock(NewProjectHandler.class);
+        doReturn(true).when(projectHandler).canCreate();
+        NewResourceHandler packageHandler = mock(NewPackageHandler.class);
+        doReturn(true).when(packageHandler).canCreate();
+        NewResourceHandler uploadHandler = mock(NewFileUploader.class);
+        doReturn(true).when(uploadHandler).canCreate();
+        NewResourceHandler type1Handler = mock(NewResourceHandler.class);
+        doReturn(true).when(type1Handler).canCreate();
+        NewResourceHandler type2Handler = mock(NewResourceHandler.class);
+        doReturn(true).when(type2Handler).canCreate();
 
         List<NewResourceHandler> handlers = new ArrayList<>();
-        handlers.add( projectHandler );
-        handlers.add( packageHandler );
-        handlers.add( uploadHandler );
-        handlers.add( type1Handler );
-        handlers.add( type2Handler );
-        doReturn( handlers ).when( emptyProjectScreen ).getNewResourceHandlers();
+        handlers.add(projectHandler);
+        handlers.add(packageHandler);
+        handlers.add(uploadHandler);
+        handlers.add(type1Handler);
+        handlers.add(type2Handler);
+        doReturn(handlers).when(resourceUtils).getOrderedNewResourceHandlers();
 
-        final Project project = mock( Project.class );
-        doReturn( "projectName" ).when( project ).getProjectName();
-        final ProjectInfo projectInfo = mock( ProjectInfo.class );
-        doReturn( project ).when( projectInfo ).getProject();
-        final ProjectDetailEvent projectDetailEvent = mock( ProjectDetailEvent.class );
-        doReturn( projectInfo ).when( projectDetailEvent ).getProjectInfo();
+        final Project project = mock(Project.class);
+        doReturn("projectName").when(project).getProjectName();
+        final ProjectInfo projectInfo = mock(ProjectInfo.class);
+        doReturn(project).when(projectInfo).getProject();
+        final ProjectDetailEvent projectDetailEvent = mock(ProjectDetailEvent.class);
+        doReturn(projectInfo).when(projectDetailEvent).getProjectInfo();
 
-        emptyProjectScreen.onStartup( projectDetailEvent );
+        emptyProjectScreen.onStartup(projectDetailEvent);
 
-        assertEquals( uploadHandler, emptyProjectScreen.getUploadHandler() );
+        assertEquals(uploadHandler,
+                     emptyProjectScreen.getUploadHandler());
 
-        verify( view, times( 2 ) ).addResourceHandler( any( NewResourceHandler.class ) );
-        verify( view ).addResourceHandler( type1Handler );
-        verify( view ).addResourceHandler( type2Handler );
+        verify(view,
+               times(2)).addResourceHandler(any(NewResourceHandler.class));
+        verify(view).addResourceHandler(type1Handler);
+        verify(view).addResourceHandler(type2Handler);
 
-        verify( view ).setProjectName( "projectName" );
-        verify( placeManager ).closePlace( LibraryPlaces.LIBRARY_SCREEN );
+        verify(view).setProjectName("projectName");
+        verify(placeManager).closePlace(LibraryPlaces.LIBRARY_SCREEN);
     }
 
     @Test
     public void refreshOnFocusTest() {
-        final PlaceRequest place = new DefaultPlaceRequest( LibraryPlaces.EMPTY_PROJECT_SCREEN );
-        final PlaceGainFocusEvent placeGainFocusEvent = new PlaceGainFocusEvent( place );
+        final PlaceRequest place = new DefaultPlaceRequest(LibraryPlaces.EMPTY_PROJECT_SCREEN);
+        final PlaceGainFocusEvent placeGainFocusEvent = new PlaceGainFocusEvent(place);
 
-        emptyProjectScreen.projectInfo = mock( ProjectInfo.class );
-        emptyProjectScreen.refreshOnFocus( placeGainFocusEvent );
+        emptyProjectScreen.projectInfo = mock(ProjectInfo.class);
+        emptyProjectScreen.refreshOnFocus(placeGainFocusEvent);
 
-        verify( libraryPlaces ).goToProject( any( ProjectInfo.class ) );
+        verify(libraryPlaces).goToProject(any(ProjectInfo.class));
     }
 
     @Test
     public void dontRefreshOnFocusOnAnotherScreenTest() {
-        final PlaceRequest place = new DefaultPlaceRequest( "anotherScreen" );
-        final PlaceGainFocusEvent placeGainFocusEvent = new PlaceGainFocusEvent( place );
+        final PlaceRequest place = new DefaultPlaceRequest("anotherScreen");
+        final PlaceGainFocusEvent placeGainFocusEvent = new PlaceGainFocusEvent(place);
 
-        emptyProjectScreen.refreshOnFocus( placeGainFocusEvent );
+        emptyProjectScreen.refreshOnFocus(placeGainFocusEvent);
 
-        verify( libraryPlaces, never() ).goToProject( any( ProjectInfo.class ) );
+        verify(libraryPlaces,
+               never()).goToProject(any(ProjectInfo.class));
     }
 
     @Test
     public void goToSettingsTest() {
         emptyProjectScreen.goToSettings();
 
-        verify( libraryPlaces ).goToSettings( any( ProjectInfo.class ) );
+        verify(libraryPlaces).goToSettings(any(ProjectInfo.class));
     }
 }

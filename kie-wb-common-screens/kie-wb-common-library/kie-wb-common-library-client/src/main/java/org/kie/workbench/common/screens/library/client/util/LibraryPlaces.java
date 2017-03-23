@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.events.DeleteProjectEvent;
+import org.guvnor.common.services.project.events.RenameProjectEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
@@ -238,12 +239,25 @@ public class LibraryPlaces {
 
     public void projectDeleted(@Observes final DeleteProjectEvent deleteProjectEvent) {
         if (placeManager.getStatus(LIBRARY_PERSPECTIVE).equals(PlaceStatus.OPEN)) {
-            final Project activeProject = projectContext.getActiveProject();
-
-            if (deleteProjectEvent.getProject().equals(activeProject)) {
+            if (deleteProjectEvent.getProject().equals(lastViewedProject)) {
                 goToLibrary();
                 notificationEvent.fire(new NotificationEvent(ts.getTranslation(LibraryConstants.ProjectDeleted),
                                                              NotificationEvent.NotificationType.DEFAULT));
+            }
+        }
+    }
+
+    public void projectRenamed(@Observes final RenameProjectEvent renameProjectEvent) {
+        if (placeManager.getStatus(LIBRARY_PERSPECTIVE).equals(PlaceStatus.OPEN)) {
+            final Project activeProject = projectContext.getActiveProject();
+
+            if (renameProjectEvent.getOldProject().equals(activeProject)) {
+                setupLibraryBreadCrumbsForAsset(new ProjectInfo(projectContext.getActiveOrganizationalUnit(),
+                                                                projectContext.getActiveRepository(),
+                                                                projectContext.getActiveBranch(),
+                                                                renameProjectEvent.getNewProject()),
+                                                null);
+                lastViewedProject = renameProjectEvent.getNewProject();
             }
         }
     }

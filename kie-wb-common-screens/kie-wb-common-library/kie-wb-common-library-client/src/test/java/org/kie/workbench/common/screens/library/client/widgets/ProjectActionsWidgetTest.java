@@ -19,10 +19,10 @@ package org.kie.workbench.common.screens.library.client.widgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.screens.library.client.util.ResourceUtils;
 import org.kie.workbench.common.screens.projecteditor.client.handlers.NewPackageHandler;
 import org.kie.workbench.common.screens.projecteditor.client.handlers.NewProjectHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
@@ -40,7 +40,7 @@ public class ProjectActionsWidgetTest {
     private ProjectActionsWidget.View view;
 
     @Mock
-    private ManagedInstance<NewResourceHandler> newResourceHandlers;
+    private ResourceUtils resourceUtils;
 
     @Mock
     private NewResourcePresenter newResourcePresenter;
@@ -49,33 +49,35 @@ public class ProjectActionsWidgetTest {
 
     @Before
     public void setup() {
-        presenter = spy( new ProjectActionsWidget( view,
-                                                   newResourceHandlers,
-                                                   newResourcePresenter ) );
+        presenter = spy(new ProjectActionsWidget(view,
+                                                 newResourcePresenter,
+                                                 resourceUtils));
     }
 
     @Test
     public void initTest() {
-        NewResourceHandler projectHandler = mock( NewProjectHandler.class );
-        doReturn( true ).when( projectHandler ).canCreate();
-        NewResourceHandler packageHandler = mock( NewPackageHandler.class );
-        doReturn( true ).when( packageHandler ).canCreate();
-        NewResourceHandler type1Handler = mock( NewResourceHandler.class );
-        doReturn( true ).when( type1Handler ).canCreate();
-        NewResourceHandler type2Handler = mock( NewResourceHandler.class );
-        doReturn( true ).when( type2Handler ).canCreate();
+        NewResourceHandler projectHandler = mock(NewProjectHandler.class);
+        doReturn(true).when(projectHandler).canCreate();
+        NewResourceHandler packageHandler = mock(NewPackageHandler.class);
+        doReturn(true).when(packageHandler).canCreate();
+        NewResourceHandler type1Handler = mock(NewResourceHandler.class);
+        doReturn(true).when(type1Handler).canCreate();
+        NewResourceHandler type2Handler = mock(NewResourceHandler.class);
+        doReturn(true).when(type2Handler).canCreate();
 
         List<NewResourceHandler> handlers = new ArrayList<>();
-        handlers.add( projectHandler );
-        handlers.add( packageHandler );
-        handlers.add( type1Handler );
-        handlers.add( type2Handler );
-        doReturn( handlers ).when( presenter ).getNewResourceHandlers();
+        handlers.add(projectHandler);
+        handlers.add(packageHandler);
+        handlers.add(type1Handler);
+        handlers.add(type2Handler);
+        doReturn(handlers).when(resourceUtils).getAlphabeticallyOrderedNewResourceHandlers();
 
-        presenter.init( mock( Command.class ) );
+        presenter.init(mock(Command.class));
 
-        verify( view, times( 2 ) ).addResourceHandler( any( NewResourceHandler.class ) );
-        verify( view ).addResourceHandler( type1Handler );
-        verify( view ).addResourceHandler( type2Handler );
+        verify(view,
+               times(3)).addResourceHandler(any(NewResourceHandler.class));
+        verify(view).addResourceHandler(packageHandler);
+        verify(view).addResourceHandler(type1Handler);
+        verify(view).addResourceHandler(type2Handler);
     }
 }

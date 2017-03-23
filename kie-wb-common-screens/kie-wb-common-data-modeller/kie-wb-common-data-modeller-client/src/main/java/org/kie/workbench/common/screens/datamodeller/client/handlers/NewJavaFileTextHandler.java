@@ -43,7 +43,6 @@ import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
@@ -65,7 +64,7 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
     @Inject
     private SyncBeanManager iocBeanManager;
 
-    private List<ResourceOptions> resourceOptions = new ArrayList<ResourceOptions>(  );
+    private List<ResourceOptions> resourceOptions = new ArrayList<ResourceOptions>();
 
     @Inject
     private DomainHandlerRegistry domainHandlerRegistry;
@@ -74,11 +73,12 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
     private void setupExtensions() {
 
         ResourceOptions options;
-        for ( DomainHandler handler : domainHandlerRegistry.getDomainHandlers() ) {
-            options = handler.getResourceOptions( false );
-            if ( options != null ) {
-                resourceOptions.add( options );
-                extensions.add( new Pair<String, Widget>( handler.getName(), options.getWidget() ) );
+        for (DomainHandler handler : domainHandlerRegistry.getDomainHandlers()) {
+            options = handler.getResourceOptions(false);
+            if (options != null) {
+                resourceOptions.add(options);
+                extensions.add(new Pair<String, Widget>(handler.getName(),
+                                                        options.getWidget()));
             }
         }
     }
@@ -90,7 +90,7 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
 
     @Override
     public IsWidget getIcon() {
-        return new Image( JavaEditorResources.INSTANCE.images().typeJava() );
+        return new Image(JavaEditorResources.INSTANCE.images().typeJava());
     }
 
     @Override
@@ -99,51 +99,57 @@ public class NewJavaFileTextHandler extends DefaultNewResourceHandler {
     }
 
     @Override
-    public void create( final org.guvnor.common.services.project.model.Package pkg,
-                        final String baseFileName,
-                        final NewResourcePresenter presenter ) {
+    public void create(final org.guvnor.common.services.project.model.Package pkg,
+                       final String baseFileName,
+                       final NewResourcePresenter presenter) {
 
-        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+        busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Saving());
 
-        Map<String, Object> params = new HashMap<String, Object>( );
-        for ( ResourceOptions options : resourceOptions ) {
-            params.putAll( options.getOptions() );
+        Map<String, Object> params = new HashMap<String, Object>();
+        for (ResourceOptions options : resourceOptions) {
+            params.putAll(options.getOptions());
         }
 
-        dataModelerService.call( getSuccessCallback( presenter ),
-                                 new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).createJavaFile(
+        dataModelerService.call(getSuccessCallback(presenter),
+                                new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).createJavaFile(
                 pkg.getPackageMainSrcPath(),
-                buildFileName( baseFileName, resourceType ),
+                buildFileName(baseFileName,
+                              resourceType),
                 "",
-                params );
+                params);
     }
 
     @Override
-    public void validate( final String javaFileName,
-                          final ValidatorWithReasonCallback callback ) {
+    public void validate(final String javaFileName,
+                         final ValidatorWithReasonCallback callback) {
 
-        validationService.call( new RemoteCallback<Boolean>() {
+        validationService.call(new RemoteCallback<Boolean>() {
             @Override
-            public void callback( final Boolean response ) {
-                if ( Boolean.TRUE.equals( response ) ) {
+            public void callback(final Boolean response) {
+                if (Boolean.TRUE.equals(response)) {
                     callback.onSuccess();
                 } else {
-                    callback.onFailure( CommonConstants.INSTANCE.InvalidFileName0( javaFileName ) );
+                    callback.onFailure(CommonConstants.INSTANCE.InvalidFileName0(javaFileName));
                 }
             }
-        } ).isJavaFileNameValid( javaFileName + ".java" );
+        }).isJavaFileNameValid(javaFileName + ".java");
     }
 
     @Override
-    public Command getCommand( NewResourcePresenter newResourcePresenter ) {
-        for ( ResourceOptions options : resourceOptions ) {
+    public Command getCommand(NewResourcePresenter newResourcePresenter) {
+        for (ResourceOptions options : resourceOptions) {
             options.restoreOptionsDefaults();
         }
-        return super.getCommand( newResourcePresenter );
+        return super.getCommand(newResourcePresenter);
     }
 
     @Override
     public boolean supportsDefaultPackage() {
         return false;
+    }
+
+    @Override
+    public int order() {
+        return -10;
     }
 }

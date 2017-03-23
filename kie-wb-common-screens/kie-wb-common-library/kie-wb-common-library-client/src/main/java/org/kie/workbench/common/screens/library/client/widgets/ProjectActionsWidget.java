@@ -18,49 +18,44 @@ package org.kie.workbench.common.screens.library.client.widgets;
 
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.workbench.common.screens.library.client.util.ResourceUtils;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.mvp.Command;
 
-import static org.kie.workbench.common.screens.library.client.util.ResourceUtils.*;
+import static org.kie.workbench.common.screens.library.client.util.ResourceUtils.isProjectHandler;
 
 public class ProjectActionsWidget {
 
     public interface View extends UberElement<ProjectActionsWidget> {
 
-        void addResourceHandler( final NewResourceHandler newResourceHandler );
+        void addResourceHandler(final NewResourceHandler newResourceHandler);
     }
 
     private View view;
-
-    private ManagedInstance<NewResourceHandler> newResourceHandlers;
 
     private NewResourcePresenter newResourcePresenter;
 
     private Command showSettingsCommand;
 
+    private ResourceUtils resourceUtils;
+
     @Inject
-    public ProjectActionsWidget( final View view,
-                                 final ManagedInstance<NewResourceHandler> newResourceHandlers,
-                                 final NewResourcePresenter newResourcePresenter ) {
+    public ProjectActionsWidget(final View view,
+                                final NewResourcePresenter newResourcePresenter,
+                                final ResourceUtils resourceUtils) {
         this.view = view;
-        this.newResourceHandlers = newResourceHandlers;
         this.newResourcePresenter = newResourcePresenter;
+        this.resourceUtils = resourceUtils;
     }
 
-    public void init( final Command showSettingsCommand ) {
+    public void init(final Command showSettingsCommand) {
         this.showSettingsCommand = showSettingsCommand;
 
-        view.init( this );
-        for ( NewResourceHandler newResourceHandler : getNewResourceHandlers() ) {
-            if ( newResourceHandler.canCreate()
-                    && !isPackageHandler( newResourceHandler )
-                    && !isProjectHandler( newResourceHandler ) ) {
-                view.addResourceHandler( newResourceHandler );
-            }
-        }
+        view.init(this);
+        resourceUtils.getAlphabeticallyOrderedNewResourceHandlers().stream().filter(newResourceHandler -> newResourceHandler.canCreate()
+                && !isProjectHandler(newResourceHandler)).forEach(newResourceHandler -> view.addResourceHandler(newResourceHandler));
     }
 
     public void goToProjectSettings() {
@@ -73,9 +68,5 @@ public class ProjectActionsWidget {
 
     public View getView() {
         return view;
-    }
-
-    Iterable<NewResourceHandler> getNewResourceHandlers() {
-        return newResourceHandlers;
     }
 }

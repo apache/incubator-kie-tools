@@ -19,10 +19,10 @@ package org.kie.workbench.common.screens.library.client.screens;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.screens.library.api.ProjectInfo;
 import org.kie.workbench.common.screens.library.client.events.ProjectDetailEvent;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.kie.workbench.common.screens.library.client.util.ResourceUtils;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -33,21 +33,23 @@ import org.uberfire.client.mvp.UberElement;
 import org.uberfire.client.workbench.events.PlaceGainFocusEvent;
 import org.uberfire.mvp.PlaceRequest;
 
-import static org.kie.workbench.common.screens.library.client.util.ResourceUtils.*;
+import static org.kie.workbench.common.screens.library.client.util.ResourceUtils.isPackageHandler;
+import static org.kie.workbench.common.screens.library.client.util.ResourceUtils.isProjectHandler;
+import static org.kie.workbench.common.screens.library.client.util.ResourceUtils.isUploadHandler;
 
 @WorkbenchScreen(identifier = LibraryPlaces.EMPTY_PROJECT_SCREEN)
 public class EmptyProjectScreen {
 
     public interface View extends UberElement<EmptyProjectScreen> {
 
-        void setProjectName( String projectName );
+        void setProjectName(String projectName);
 
-        void addResourceHandler( NewResourceHandler newResourceHandler );
+        void addResourceHandler(NewResourceHandler newResourceHandler);
     }
 
     private View view;
 
-    private ManagedInstance<NewResourceHandler> newResourceHandlers;
+    private ResourceUtils resourceUtils;
 
     private NewResourcePresenter newResourcePresenter;
 
@@ -60,45 +62,45 @@ public class EmptyProjectScreen {
     ProjectInfo projectInfo;
 
     @Inject
-    public EmptyProjectScreen( final View view,
-                               final ManagedInstance<NewResourceHandler> newResourceHandlers,
-                               final NewResourcePresenter newResourcePresenter,
-                               final PlaceManager placeManager,
-                               final LibraryPlaces libraryPlaces ) {
+    public EmptyProjectScreen(final View view,
+                              final ResourceUtils resourceUtils,
+                              final NewResourcePresenter newResourcePresenter,
+                              final PlaceManager placeManager,
+                              final LibraryPlaces libraryPlaces) {
         this.view = view;
-        this.newResourceHandlers = newResourceHandlers;
+        this.resourceUtils = resourceUtils;
         this.newResourcePresenter = newResourcePresenter;
         this.placeManager = placeManager;
         this.libraryPlaces = libraryPlaces;
     }
 
-    public void onStartup( @Observes final ProjectDetailEvent projectDetailEvent ) {
+    public void onStartup(@Observes final ProjectDetailEvent projectDetailEvent) {
         this.projectInfo = projectDetailEvent.getProjectInfo();
 
-        for ( NewResourceHandler newResourceHandler : getNewResourceHandlers() ) {
-            if ( newResourceHandler.canCreate() ) {
-                if ( isUploadHandler( newResourceHandler ) ) {
-                    uploadHandler = newResourceHandler;
-                } else if ( !isPackageHandler( newResourceHandler )
-                        && !isProjectHandler( newResourceHandler ) ) {
-                    view.addResourceHandler( newResourceHandler );
-                }
-            }
-        }
+        view.init(this);
 
-        view.setProjectName( projectInfo.getProject().getProjectName() );
-        placeManager.closePlace( LibraryPlaces.LIBRARY_SCREEN );
+        resourceUtils.getOrderedNewResourceHandlers().stream().filter(newResourceHandler -> newResourceHandler.canCreate()).forEach(newResourceHandler -> {
+            if (isUploadHandler(newResourceHandler)) {
+                uploadHandler = newResourceHandler;
+            } else if (!isPackageHandler(newResourceHandler)
+                    && !isProjectHandler(newResourceHandler)) {
+                view.addResourceHandler(newResourceHandler);
+            }
+        });
+
+        view.setProjectName(projectInfo.getProject().getProjectName());
+        placeManager.closePlace(LibraryPlaces.LIBRARY_SCREEN);
     }
 
-    public void refreshOnFocus( @Observes final PlaceGainFocusEvent placeGainFocusEvent ) {
+    public void refreshOnFocus(@Observes final PlaceGainFocusEvent placeGainFocusEvent) {
         final PlaceRequest place = placeGainFocusEvent.getPlace();
-        if ( projectInfo != null && place.getIdentifier().equals( LibraryPlaces.EMPTY_PROJECT_SCREEN ) ) {
-            libraryPlaces.goToProject( projectInfo );
+        if (projectInfo != null && place.getIdentifier().equals(LibraryPlaces.EMPTY_PROJECT_SCREEN)) {
+            libraryPlaces.goToProject(projectInfo);
         }
     }
 
     public void goToSettings() {
-        libraryPlaces.goToSettings( projectInfo );
+        libraryPlaces.goToSettings(projectInfo);
     }
 
     public NewResourceHandler getUploadHandler() {
@@ -107,10 +109,6 @@ public class EmptyProjectScreen {
 
     public NewResourcePresenter getNewResourcePresenter() {
         return newResourcePresenter;
-    }
-
-    Iterable<NewResourceHandler> getNewResourceHandlers() {
-        return newResourceHandlers;
     }
 
     @WorkbenchPartTitle

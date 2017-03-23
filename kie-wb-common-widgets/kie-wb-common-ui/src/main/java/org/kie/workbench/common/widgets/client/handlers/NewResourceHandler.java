@@ -21,7 +21,6 @@ import com.google.gwt.core.client.Callback;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.model.Package;
-import org.jboss.errai.security.shared.api.identity.User;
 import org.uberfire.commons.data.Pair;
 import org.uberfire.ext.editor.commons.client.validation.ValidatorWithReasonCallback;
 import org.uberfire.mvp.Command;
@@ -53,7 +52,6 @@ public interface NewResourceHandler {
     /**
      * Asks if the resource handler can be created or not.
      * For example a lack of a certain role can return false.
-     *
      * @return If true this resource handler can be added.
      */
     boolean canCreate();
@@ -64,9 +62,9 @@ public interface NewResourceHandler {
      * @param baseFileName the base name of the new resource
      * @param presenter underlying presenter
      */
-    void create( final Package pkg,
-                 final String baseFileName,
-                 final NewResourcePresenter presenter );
+    void create(final Package pkg,
+                final String baseFileName,
+                final NewResourcePresenter presenter);
 
     /**
      * Return a List of Widgets that the NewResourceHandler can use to gather additional parameters for the
@@ -80,8 +78,8 @@ public interface NewResourceHandler {
      * @param baseFileName The base file name for the new item (excluding extension)
      * @param callback Callback depending on validation result
      */
-    void validate( final String baseFileName,
-                   final ValidatorWithReasonCallback callback );
+    void validate(final String baseFileName,
+                  final ValidatorWithReasonCallback callback);
 
     /**
      * Returns the actual ProjectContext
@@ -101,7 +99,7 @@ public interface NewResourceHandler {
      * Indicates if the NewResourceHandler can create a resource to this path
      * @return
      */
-    void acceptContext( final Callback<Boolean, Void> callback );
+    void acceptContext(final Callback<Boolean, Void> callback);
 
     /**
      * A command to execute instead of defaulting to the NewResourceView.
@@ -109,5 +107,13 @@ public interface NewResourceHandler {
      * @param newResourcePresenter
      * @return
      */
-    Command getCommand( final NewResourcePresenter newResourcePresenter );
+    Command getCommand(final NewResourcePresenter newResourcePresenter);
+
+    /**
+     * Defines the handler order for UI purposes.
+     * @return The handler order. The smallest number comes first.
+     */
+    default int order() {
+        return 0;
+    }
 }

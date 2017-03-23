@@ -21,6 +21,7 @@ import javax.enterprise.event.Event;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.events.DeleteProjectEvent;
+import org.guvnor.common.services.project.events.RenameProjectEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
@@ -289,9 +290,6 @@ public class LibraryPlacesTest {
         doReturn(activeRepository).when(libraryToolbar).getSelectedRepository();
         doReturn(activeBranch).when(libraryToolbar).getSelectedBranch();
 
-        doReturn(activeOrganizationalUnit).when(projectContext).getActiveOrganizationalUnit();
-        doReturn(activeRepository).when(projectContext).getActiveRepository();
-        doReturn(activeBranch).when(projectContext).getActiveBranch();
         doReturn(activeProject).when(projectContext).getActiveProject();
 
         libraryPlaces.goToProject(new ProjectInfo(activeOrganizationalUnit,
@@ -322,8 +320,6 @@ public class LibraryPlacesTest {
         final OrganizationalUnit newOrganizationalUnit = mock(OrganizationalUnit.class);
 
         doReturn(newOrganizationalUnit).when(projectContext).getActiveOrganizationalUnit();
-        doReturn(activeRepository).when(projectContext).getActiveRepository();
-        doReturn(activeBranch).when(projectContext).getActiveBranch();
         doReturn(activeProject).when(projectContext).getActiveProject();
 
         libraryPlaces.projectContextChange();
@@ -346,9 +342,6 @@ public class LibraryPlacesTest {
 
         final Project newProject = mock(Project.class);
 
-        doReturn(activeOrganizationalUnit).when(projectContext).getActiveOrganizationalUnit();
-        doReturn(activeRepository).when(projectContext).getActiveRepository();
-        doReturn(activeBranch).when(projectContext).getActiveBranch();
         doReturn(newProject).when(projectContext).getActiveProject();
 
         libraryPlaces.goToProject(new ProjectInfo(activeOrganizationalUnit,
@@ -461,9 +454,12 @@ public class LibraryPlacesTest {
         final DeleteProjectEvent deleteProjectEvent = mock(DeleteProjectEvent.class);
 
         doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
-        doReturn(activeProject).when(projectContext).getActiveProject();
         doReturn(activeProject).when(deleteProjectEvent).getProject();
 
+        libraryPlaces.goToProject(new ProjectInfo(projectContext.getActiveOrganizationalUnit(),
+                                                  projectContext.getActiveRepository(),
+                                                  projectContext.getActiveBranch(),
+                                                  activeProject));
         libraryPlaces.projectDeleted(deleteProjectEvent);
 
         verify(libraryPlaces).goToLibrary();
@@ -486,5 +482,46 @@ public class LibraryPlacesTest {
                never()).goToLibrary();
         verify(notificationEvent,
                never()).fire(any());
+    }
+
+    @Test
+    public void breadcrumbIsUpdatedWhenActiveProjectIsRenamedTest() {
+        final Project activeProject = mock(Project.class);
+        final Project renamedProject = mock(Project.class);
+        final RenameProjectEvent renameProjectEvent = mock(RenameProjectEvent.class);
+
+        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
+
+        doReturn(activeProject).when(projectContext).getActiveProject();
+        doReturn(activeProject).when(renameProjectEvent).getOldProject();
+        doReturn(renamedProject).when(renameProjectEvent).getNewProject();
+
+        libraryPlaces.projectRenamed(renameProjectEvent);
+
+        verify(libraryPlaces).setupLibraryBreadCrumbsForAsset(new ProjectInfo(projectContext.getActiveOrganizationalUnit(),
+                                                                              projectContext.getActiveRepository(),
+                                                                              projectContext.getActiveBranch(),
+                                                                              renameProjectEvent.getNewProject()),
+                                                              null);
+    }
+
+    @Test
+    public void breadcrumbIsNotUpdatedWhenInactiveProjectIsRenamedTest() {
+        final Project activeProject = mock(Project.class);
+        final Project renamedProject = mock(Project.class);
+        final Project otherProject = mock(Project.class);
+        final RenameProjectEvent renameProjectEvent = mock(RenameProjectEvent.class);
+
+        doReturn(PlaceStatus.OPEN).when(placeManager).getStatus(LibraryPlaces.LIBRARY_PERSPECTIVE);
+
+        doReturn(activeProject).when(projectContext).getActiveProject();
+        doReturn(otherProject).when(renameProjectEvent).getOldProject();
+        doReturn(renamedProject).when(renameProjectEvent).getNewProject();
+
+        libraryPlaces.projectRenamed(renameProjectEvent);
+
+        verify(libraryPlaces,
+               never()).setupLibraryBreadCrumbsForAsset(any(),
+                                                        any());
     }
 }
