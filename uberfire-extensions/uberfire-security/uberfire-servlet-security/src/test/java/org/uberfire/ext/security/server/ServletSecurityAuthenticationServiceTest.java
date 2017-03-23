@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -179,6 +180,24 @@ public class ServletSecurityAuthenticationServiceTest {
                times(1)).logout();
         verify(httpSession,
                times(1)).invalidate();
+    }
+
+    @Test
+    public void testSwallowIllegalStateExceptionDuringLogoutWithKeycloak() {
+        doThrow(new IllegalStateException("UT000021: Session already invalidated")).when(httpSession).invalidate();
+        tested.logout();
+    }
+
+    @Test
+    public void testReThrowUnexpectedIllegalStateExceptionDuringLogout() {
+        String exceptionMsg = "This exception should be propagated!";
+        doThrow(new IllegalStateException(exceptionMsg)).when(httpSession).invalidate();
+        try {
+            tested.logout();
+        } catch (IllegalStateException ise) {
+            // the exception message needs to be the same as defined above
+            assertEquals(exceptionMsg, ise.getMessage());
+        }
     }
 
     private Set<Principal> mockPrincipals(String... names) {
