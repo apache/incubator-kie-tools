@@ -175,6 +175,14 @@ public class VariablesEditorFieldRendererTest {
                                          "var2",
                                          "Integer",
                                          null));
+        variableRows.add(new VariableRow(Variable.VariableType.PROCESS,
+                                         null,
+                                         "Object",
+                                         null));
+        variableRows.add(new VariableRow(Variable.VariableType.PROCESS,
+                                         null,
+                                         null,
+                                         null));
         when(variablesEditorWidgetView.getVariableRows()).thenReturn(variableRows);
         assertTrue(variablesEditor.isDuplicateName("var2"));
         assertFalse(variablesEditor.isDuplicateName("var1"));

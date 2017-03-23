@@ -189,8 +189,10 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
         List<VariableRow> as = view.getVariableRows();
         if (as != null && !as.isEmpty()) {
             int nameCount = 0;
+            String currName = name.trim();
             for (VariableRow row : as) {
-                if (name.trim().compareTo(row.getName()) == 0) {
+                String rowName = row.getName();
+                if (rowName != null && currName.compareTo(rowName.trim()) == 0) {
                     nameCount++;
                     if (nameCount > 1) {
                         return true;
