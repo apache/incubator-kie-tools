@@ -123,6 +123,7 @@ public class SystemControlledColumnValuesSynchronizer {
     }
 
     public void insertRow( final int rowIndex ) {
+        prioritySynchronizer.insertRow(rowIndex);
         updateSystemControlledColumnValues();
     }
 

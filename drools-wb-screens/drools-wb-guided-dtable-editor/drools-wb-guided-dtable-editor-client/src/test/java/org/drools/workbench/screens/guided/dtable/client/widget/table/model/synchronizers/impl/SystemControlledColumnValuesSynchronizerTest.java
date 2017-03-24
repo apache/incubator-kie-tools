@@ -120,6 +120,197 @@ public class SystemControlledColumnValuesSynchronizerTest extends BaseSynchroniz
     }
 
     @Test
+    public void testTransitivePrioritiesMoveFirstUp() throws Exception {
+        addRowWithPriorityOver("");
+        addRowWithPriorityOver("");
+        addRowWithPriorityOver("2");
+        addRowWithPriorityOver("3");
+
+        uiModel.moveRowsTo(0,
+                           Arrays.asList(uiModel.getRow(1)));
+
+        assertPriorities(Arrays.asList("",
+                                       "",
+                                       "1",
+                                       "3"));
+    }
+
+    @Test
+    public void testTransitivePrioritiesMoveFirstDown() throws Exception {
+        addRowWithPriorityOver("");
+        addRowWithPriorityOver("");
+        addRowWithPriorityOver("2");
+        addRowWithPriorityOver("3");
+
+        uiModel.moveRowsTo(2,
+                           Arrays.asList(uiModel.getRow(1)));
+
+        assertPriorities(Arrays.asList("",
+                                       "",
+                                       "",
+                                       "2"));
+    }
+
+    @Test
+    public void testTransitivePrioritiesMoveMiddleUp() throws Exception {
+        addRowWithPriorityOver("");
+        addRowWithPriorityOver("");
+        addRowWithPriorityOver("2");
+        addRowWithPriorityOver("3");
+
+        uiModel.moveRowsTo(0,
+                           Arrays.asList(uiModel.getRow(2)));
+
+        assertPriorities(Arrays.asList("",
+                                       "",
+                                       "",
+                                       "1"));
+    }
+
+    @Test
+    public void testTransitivePrioritiesMoveMiddleDown() throws Exception {
+        addRowWithPriorityOver("");
+        addRowWithPriorityOver("1");
+        addRowWithPriorityOver("");
+        addRowWithPriorityOver("2");
+
+        uiModel.moveRowsTo(2,
+                           Arrays.asList(uiModel.getRow(1)));
+
+        assertPriorities(Arrays.asList("",
+                                       "",
+                                       "1",
+                                       "3"));
+    }
+
+    @Test
+    public void testTransitivePrioritiesMoveLastUp() throws Exception {
+        addRowWithPriorityOver("");
+        addRowWithPriorityOver("");
+        addRowWithPriorityOver("2");
+        addRowWithPriorityOver("3");
+
+        uiModel.moveRowsTo(0,
+                           Arrays.asList(uiModel.getRow(3)));
+
+        assertPriorities(Arrays.asList("",
+                                       "",
+                                       "",
+                                       "3"));
+    }
+
+    @Test
+    public void testTransitivePrioritiesMoveLastDown() throws Exception {
+        addRowWithPriorityOver("");
+        addRowWithPriorityOver("1");
+        addRowWithPriorityOver("2");
+        addRowWithPriorityOver("");
+
+        uiModel.moveRowsTo(3,
+                           Arrays.asList(uiModel.getRow(2)));
+
+        assertPriorities(Arrays.asList("",
+                                       "1",
+                                       "",
+                                       "2"));
+    }
+
+    @Test
+    public void testDeletionOfRow() throws Exception {
+        addRowWithPriorityOver("");
+        addRowWithPriorityOver("1");
+        addRowWithPriorityOver("");
+        addRowWithPriorityOver("2");
+        addRowWithPriorityOver("4");
+
+        modelSynchronizer.deleteRow(2);
+
+        assertPriorities(Arrays.asList("",
+                                       "1",
+                                       "2",
+                                       "3"));
+    }
+
+    @Test
+    public void testDeletionOfExplicitlyUsedRow() throws Exception {
+        addRowWithPriorityOver("");
+        addRowWithPriorityOver("1");
+        addRowWithPriorityOver("1");
+        addRowWithPriorityOver("2");
+        addRowWithPriorityOver("4");
+
+        modelSynchronizer.deleteRow(0);
+
+        assertPriorities(Arrays.asList("0",
+                                       "0",
+                                       "1",
+                                       "3"));
+    }
+
+    @Test
+    public void testInsertionAtBeginning() throws Exception {
+        addRowWithPriorityOver("");
+        addRowWithPriorityOver("1");
+        addRowWithPriorityOver("1");
+        addRowWithPriorityOver("2");
+        addRowWithPriorityOver("4");
+
+        modelSynchronizer.insertRow(0);
+        uiModel.setCell(0,
+                        2,
+                        new GuidedDecisionTableUiCell<>(""));
+
+        assertPriorities(Arrays.asList("",
+                                       "",
+                                       "2",
+                                       "2",
+                                       "3",
+                                       "5"));
+    }
+
+    @Test
+    public void testInsertionIntoMiddle() throws Exception {
+        addRowWithPriorityOver("");
+        addRowWithPriorityOver("1");
+        addRowWithPriorityOver("1");
+        addRowWithPriorityOver("2");
+        addRowWithPriorityOver("4");
+
+        modelSynchronizer.insertRow(3);
+        uiModel.setCell(3,
+                        2,
+                        new GuidedDecisionTableUiCell<>(""));
+
+        assertPriorities(Arrays.asList("",
+                                       "1",
+                                       "1",
+                                       "",
+                                       "2",
+                                       "5"));
+    }
+
+    @Test
+    public void testInsertionOnPlaceOfUsedRows() throws Exception {
+        addRowWithPriorityOver("");
+        addRowWithPriorityOver("1");
+        addRowWithPriorityOver("1");
+        addRowWithPriorityOver("2");
+        addRowWithPriorityOver("4");
+
+        modelSynchronizer.insertRow(4);
+        uiModel.setCell(4,
+                        2,
+                        new GuidedDecisionTableUiCell<>(""));
+
+        assertPriorities(Arrays.asList("",
+                                       "1",
+                                       "1",
+                                       "2",
+                                       "",
+                                       "5"));
+    }
+
+    @Test
     public void testMoveIntoGroup() throws Exception {
         addRowWithPriorityOver("");
         addRowWithPriorityOver("1");

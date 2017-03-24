@@ -131,8 +131,42 @@ public class PrioritySynchronizer {
                     final DTCellValue52 dtCellValue52 = row.get(baseColumnInfo.getColumnIndex());
                     final int oldValue = getNumber(dtCellValue52);
 
-                    if (oldValue == deletedRowNumber) {
-                        dtCellValue52.setNumericValue(0);
+                    if (oldValue >= deletedRowNumber) {
+                        dtCellValue52.setNumericValue(oldValue - 1);
+
+                        uiModel.setCellInternal(rowNumber,
+                                                baseColumnInfo.getColumnIndex(),
+                                                gridWidgetCellFactory.convertCell(dtCellValue52,
+                                                                                  baseColumnInfo.getBaseColumn(),
+                                                                                  cellUtilities,
+                                                                                  columnUtilities));
+                    }
+
+                    rowNumber++;
+                }
+            }
+        }
+    }
+
+    public void insertRow(final int insertedRowIndex) {
+
+        if (GuidedDecisionTable52.HitPolicy.RESOLVED_HIT.equals(model.getHitPolicy())) {
+
+            final Optional<BaseColumnInfo> optional = getPriorityColumnInfo();
+
+            if (optional.isPresent()) {
+
+                final BaseColumnInfo baseColumnInfo = optional.get();
+
+                int rowNumber = 0;
+
+                for (final List<DTCellValue52> row : model.getData()) {
+
+                    final DTCellValue52 dtCellValue52 = row.get(baseColumnInfo.getColumnIndex());
+                    final int oldValue = getNumber(dtCellValue52);
+
+                    if (oldValue != 0 && oldValue == insertedRowIndex) {
+                        dtCellValue52.setNumericValue(oldValue + 1);
 
                         uiModel.setCellInternal(rowNumber,
                                                 baseColumnInfo.getColumnIndex(),
