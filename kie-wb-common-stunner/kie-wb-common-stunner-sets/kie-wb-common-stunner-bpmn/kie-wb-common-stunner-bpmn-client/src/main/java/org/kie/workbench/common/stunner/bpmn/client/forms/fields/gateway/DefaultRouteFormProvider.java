@@ -66,23 +66,30 @@ public class DefaultRouteFormProvider implements SelectorDataProvider {
                 String edgeId = outEdge.getUUID();
                 String routeIdentifier = (flowName != null && flowName.length() > 0) ? (flowName + " : " + edgeId) : edgeId;
 
-                // UI value for the route is the target node name
+                // UI value for the route is the target node name or target node type
                 String targetName = null;
+                String targetNodeType = null;
                 BPMNDefinition bpmnDefinition = getEdgeTarget(outEdge);
-                if (bpmnDefinition instanceof BaseStartEvent) {
-                    targetName = ((BaseStartEvent) bpmnDefinition).getGeneral().getName().getValue();
-                } else if (bpmnDefinition instanceof BaseEndEvent) {
-                    targetName = ((BaseEndEvent) bpmnDefinition).getGeneral().getName().getValue();
-                } else if (bpmnDefinition instanceof BaseTask) {
-                    targetName = ((BaseTask) bpmnDefinition).getGeneral().getName().getValue();
-                } else if (bpmnDefinition instanceof BaseGateway) {
-                    targetName = ((BaseGateway) bpmnDefinition).getGeneral().getName().getValue();
-                } else if (bpmnDefinition instanceof BaseSubprocess) {
-                    targetName = ((BaseSubprocess) bpmnDefinition).getGeneral().getName().getValue();
+                if (bpmnDefinition != null) {
+                    targetNodeType = bpmnDefinition.getTitle();
+                    if (bpmnDefinition instanceof BaseStartEvent) {
+                        targetName = ((BaseStartEvent) bpmnDefinition).getGeneral().getName().getValue();
+                    } else if (bpmnDefinition instanceof BaseEndEvent) {
+                        targetName = ((BaseEndEvent) bpmnDefinition).getGeneral().getName().getValue();
+                    } else if (bpmnDefinition instanceof BaseTask) {
+                        targetName = ((BaseTask) bpmnDefinition).getGeneral().getName().getValue();
+                    } else if (bpmnDefinition instanceof BaseGateway) {
+                        targetName = ((BaseGateway) bpmnDefinition).getGeneral().getName().getValue();
+                    } else if (bpmnDefinition instanceof BaseSubprocess) {
+                        targetName = ((BaseSubprocess) bpmnDefinition).getGeneral().getName().getValue();
+                    }
                 }
                 if (targetName != null && !targetName.isEmpty()) {
                     values.put(routeIdentifier,
                                targetName);
+                } else if (targetNodeType != null && !targetNodeType.isEmpty()) {
+                    values.put(routeIdentifier,
+                               targetNodeType);
                 } else {
                     values.put(routeIdentifier,
                                routeIdentifier);
@@ -90,7 +97,7 @@ public class DefaultRouteFormProvider implements SelectorDataProvider {
             }
         }
         return new SelectorData(values,
-                                null);
+                                "");
     }
 
     protected List<Edge> getGatewayOutEdges(FormRenderingContext context) {

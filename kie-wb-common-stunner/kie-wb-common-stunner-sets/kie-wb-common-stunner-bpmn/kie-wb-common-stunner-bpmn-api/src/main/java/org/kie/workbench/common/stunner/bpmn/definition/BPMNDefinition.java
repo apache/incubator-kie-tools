@@ -21,4 +21,5 @@ package org.kie.workbench.common.stunner.bpmn.definition;
  */
 public interface BPMNDefinition {
 
+    String getTitle();
 }
