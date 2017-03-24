@@ -93,6 +93,7 @@ public class IntermediateTimerEvent extends BaseIntermediateEvent {
         this.executionSet = executionSet;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }

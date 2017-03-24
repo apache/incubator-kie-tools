@@ -144,6 +144,7 @@ public class UserTask extends BaseTask implements DataIOModel {
         return false;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }

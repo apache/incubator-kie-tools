@@ -129,6 +129,7 @@ public class BPMNDiagram implements BPMNDefinition {
         return category;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }

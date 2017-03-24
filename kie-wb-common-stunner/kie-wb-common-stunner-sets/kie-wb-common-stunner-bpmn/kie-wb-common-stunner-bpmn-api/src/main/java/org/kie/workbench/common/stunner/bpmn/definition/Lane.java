@@ -130,6 +130,7 @@ public class Lane implements BPMNDefinition {
         return category;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }

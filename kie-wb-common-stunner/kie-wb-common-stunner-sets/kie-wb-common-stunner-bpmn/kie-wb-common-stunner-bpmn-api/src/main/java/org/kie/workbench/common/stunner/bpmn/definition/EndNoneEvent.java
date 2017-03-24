@@ -84,6 +84,7 @@ public class EndNoneEvent extends BaseEndEvent {
               dimensionsSet);
     }
 
+    @Override
     public String getTitle() {
         return title;
     }

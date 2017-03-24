@@ -98,6 +98,7 @@ public class NoneTask extends BaseTask {
         this.executionSet = executionSet;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }

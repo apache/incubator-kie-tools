@@ -84,6 +84,7 @@ public class StartNoneEvent extends BaseStartEvent {
               dimensionsSet);
     }
 
+    @Override
     public String getTitle() {
         return title;
     }

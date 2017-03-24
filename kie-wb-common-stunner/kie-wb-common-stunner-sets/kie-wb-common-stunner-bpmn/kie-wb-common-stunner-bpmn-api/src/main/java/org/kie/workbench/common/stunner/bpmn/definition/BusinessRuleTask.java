@@ -134,6 +134,7 @@ public class BusinessRuleTask extends BaseTask implements DataIOModel {
         return false;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }

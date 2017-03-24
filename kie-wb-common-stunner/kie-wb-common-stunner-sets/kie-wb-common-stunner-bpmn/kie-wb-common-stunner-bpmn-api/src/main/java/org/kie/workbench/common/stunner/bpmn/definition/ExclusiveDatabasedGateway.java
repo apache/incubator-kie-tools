@@ -96,6 +96,7 @@ public class ExclusiveDatabasedGateway extends BaseGateway {
         this.Id = nextID++;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }

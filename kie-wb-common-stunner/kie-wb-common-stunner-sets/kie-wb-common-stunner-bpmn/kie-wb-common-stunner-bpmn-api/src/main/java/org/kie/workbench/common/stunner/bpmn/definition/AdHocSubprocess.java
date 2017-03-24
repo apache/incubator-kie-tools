@@ -129,6 +129,7 @@ public class AdHocSubprocess extends BaseSubprocess implements DataIOModel {
         return false;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }

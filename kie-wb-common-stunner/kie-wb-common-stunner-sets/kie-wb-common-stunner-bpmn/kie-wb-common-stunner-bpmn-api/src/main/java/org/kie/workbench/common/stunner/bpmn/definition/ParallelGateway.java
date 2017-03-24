@@ -76,6 +76,7 @@ public class ParallelGateway extends BaseGateway {
               dimensionsSet);
     }
 
+    @Override
     public String getTitle() {
         return title;
     }

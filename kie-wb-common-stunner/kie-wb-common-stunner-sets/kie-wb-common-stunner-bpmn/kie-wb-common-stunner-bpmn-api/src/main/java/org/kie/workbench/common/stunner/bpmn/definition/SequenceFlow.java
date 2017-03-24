@@ -101,6 +101,7 @@ public class SequenceFlow extends BaseConnector {
         return category;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }

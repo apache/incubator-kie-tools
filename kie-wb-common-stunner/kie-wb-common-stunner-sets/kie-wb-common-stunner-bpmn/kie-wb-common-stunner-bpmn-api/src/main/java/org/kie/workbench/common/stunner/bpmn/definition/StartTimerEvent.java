@@ -117,6 +117,7 @@ public class StartTimerEvent extends BaseStartEvent {
         this.isInterrupting = isInterrupting;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }

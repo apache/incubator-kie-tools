@@ -102,6 +102,7 @@ public class StartSignalEvent extends BaseStartEvent {
         this.executionSet = executionSet;
     }
 
+    @Override
     public String getTitle() {
         return title;
     }
