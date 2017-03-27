@@ -15,18 +15,30 @@
  */
 package org.kie.workbench.common.stunner.cm.definition;
 
+import java.util.HashSet;
+import java.util.Set;
+import javax.validation.Valid;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
+import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
+import org.kie.workbench.common.stunner.bpmn.definition.Categories;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.ProcessData;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
+import org.kie.workbench.common.stunner.core.definition.annotation.Description;
+import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
+import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
+import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
+import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
@@ -39,24 +51,47 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
         startElement = "diagramSet",
         policy = FieldPolicy.ONLY_MARKED
 )
+// This is a clone of org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram with different containment rules.
+// Unfortunately extending the foregoing and providing a new @CanContain annotation leads to problems with identifying
+// Factories for Definitions; as CM's BindableDefinitionAdapterProxy is then generated with support for the super-class.
+// This then leads the unmarshalling of model Elements to Definitions to use the wrong Factory and hence fail.
+public class BPMNDiagram implements BPMNDefinition {
 
-public class BPMNDiagram extends org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram {
+    @Category
+    public static final transient String category = Categories.LANES;
 
-    public BPMNDiagram() {
-        super();
-    }
+    @Title
+    public static final transient String title = "BPMN Diagram";
 
-    public BPMNDiagram(final @MapsTo("diagramSet") DiagramSet diagramSet,
-                       final @MapsTo("processData") ProcessData processData,
-                       final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
-                       final @MapsTo("fontSet") FontSet fontSet,
-                       final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
-        super(diagramSet,
-              processData,
-              backgroundSet,
-              fontSet,
-              dimensionsSet);
-    }
+    @Description
+    public static final transient String description = "BPMN Diagram";
+
+    @PropertySet
+    @FormField
+    @Valid
+    private DiagramSet diagramSet;
+
+    @PropertySet
+    @FormField(
+            afterElement = "diagramSet"
+    )
+    @Valid
+    protected ProcessData processData;
+
+    @PropertySet
+    private BackgroundSet backgroundSet;
+
+    @PropertySet
+    private FontSet fontSet;
+
+    @PropertySet
+    protected RectangleDimensionsSet dimensionsSet;
+
+    @Labels
+    private final Set<String> labels = new HashSet<String>() {{
+        add("canContainArtifacts");
+        add("diagram");
+    }};
 
     @NonPortable
     public static class BPMNDiagramBuilder implements Builder<BPMNDiagram> {
@@ -78,5 +113,77 @@ public class BPMNDiagram extends org.kie.workbench.common.stunner.bpmn.definitio
                                    new RectangleDimensionsSet(WIDTH,
                                                               HEIGHT));
         }
+    }
+
+    public BPMNDiagram() {
+    }
+
+    public BPMNDiagram(final @MapsTo("diagramSet") DiagramSet diagramSet,
+                       final @MapsTo("processData") ProcessData processData,
+                       final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                       final @MapsTo("fontSet") FontSet fontSet,
+                       final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
+        this.diagramSet = diagramSet;
+        this.processData = processData;
+        this.backgroundSet = backgroundSet;
+        this.fontSet = fontSet;
+        this.dimensionsSet = dimensionsSet;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    @Override
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Set<String> getLabels() {
+        return labels;
+    }
+
+    public DiagramSet getDiagramSet() {
+        return diagramSet;
+    }
+
+    public RectangleDimensionsSet getDimensionsSet() {
+        return dimensionsSet;
+    }
+
+    public void setDimensionsSet(final RectangleDimensionsSet dimensionsSet) {
+        this.dimensionsSet = dimensionsSet;
+    }
+
+    public ProcessData getProcessData() {
+        return processData;
+    }
+
+    public BackgroundSet getBackgroundSet() {
+        return backgroundSet;
+    }
+
+    public FontSet getFontSet() {
+        return fontSet;
+    }
+
+    public void setDiagramSet(final DiagramSet diagramSet) {
+        this.diagramSet = diagramSet;
+    }
+
+    public void setProcessData(final ProcessData processData) {
+        this.processData = processData;
+    }
+
+    public void setBackgroundSet(final BackgroundSet backgroundSet) {
+        this.backgroundSet = backgroundSet;
+    }
+
+    public void setFontSet(final FontSet fontSet) {
+        this.fontSet = fontSet;
     }
 }

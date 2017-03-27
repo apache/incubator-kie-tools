@@ -20,7 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.backend.service.XMLEncoderDiagramMetadataMarshaller;
-import org.kie.workbench.common.stunner.bpmn.backend.BPMNDiagramMarshaller;
+import org.kie.workbench.common.stunner.bpmn.backend.BaseDiagramMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder.GraphObjectBuilderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
@@ -41,7 +41,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleManager;
 
 @Dependent
 @CaseManagementEditor
-public class CaseManagementDiagramMarshaller extends BPMNDiagramMarshaller {
+public class CaseManagementDiagramMarshaller extends BaseDiagramMarshaller<BPMNDiagram> {
 
     @Inject
     public CaseManagementDiagramMarshaller(final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller,
@@ -77,8 +77,20 @@ public class CaseManagementDiagramMarshaller extends BPMNDiagramMarshaller {
     }
 
     @Override
+    public String getTitle(final Graph graph) {
+        final Node<Definition<BPMNDiagram>, ?> diagramNode = getFirstDiagramNode(graph);
+        final BPMNDiagram diagramBean = null != diagramNode ? (BPMNDiagram) ((Definition) diagramNode.getContent()).getDefinition() : null;
+        return getTitle(diagramBean);
+    }
+
+    private String getTitle(final BPMNDiagram diagram) {
+        final String title = diagram.getDiagramSet().getName().getValue();
+        return title != null && title.trim().length() > 0 ? title : "-- Untitled BPMN2 diagram --";
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
-    public Node<Definition<org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram>, ?> getFirstDiagramNode(final Graph graph) {
+    public Node<Definition<BPMNDiagram>, ?> getFirstDiagramNode(final Graph graph) {
         return CaseManagementUtils.getFirstDiagramNode(graph);
     }
 }

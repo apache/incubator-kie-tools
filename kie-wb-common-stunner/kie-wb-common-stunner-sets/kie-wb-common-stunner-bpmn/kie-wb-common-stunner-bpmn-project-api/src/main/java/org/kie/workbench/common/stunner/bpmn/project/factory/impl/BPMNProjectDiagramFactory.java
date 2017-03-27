@@ -19,6 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.util.BPMNUtils;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.impl.BindableDiagramFactory;
@@ -67,33 +68,38 @@ public class BPMNProjectDiagramFactory
     protected void updateDiagramProperties(final String name,
                                            final Graph<DefinitionSet, ?> graph,
                                            final ProjectMetadata metadata) {
+        final DiagramSet diagramSet = getDiagramSet(graph);
+        final String id = diagramSet.getId().getValue();
+        final String projectName = null != metadata.getProjectName() ? metadata.getProjectName() + "." : "";
+        if (null == id || id.isEmpty()) {
+            diagramSet.getId().setValue(projectName + name);
+        }
+        final String p = diagramSet.getPackageProperty().getValue();
+        if (null == p || p.isEmpty()) {
+            String metadataPackage = metadata.getProjectPackage();
+            if (metadataPackage == null || metadataPackage.isEmpty()) {
+                diagramSet.getPackageProperty().setValue(diagramSet.getPackageProperty().DEFAULT_PACKAGE);
+            } else {
+                diagramSet.getPackageProperty().setValue(metadata.getProjectPackage());
+            }
+        }
+        final String diagramName = diagramSet.getName().getValue();
+        if (null == diagramName || diagramName.isEmpty()) {
+            diagramSet.getName().setValue(name);
+        }
+    }
+
+    protected DiagramSet getDiagramSet(final Graph<DefinitionSet, ?> graph) {
         final Node<Definition<BPMNDiagram>, ?> diagramNode = getFirstDiagramNode(graph);
         if (null == diagramNode) {
             throw new IllegalStateException("A BPMN Diagram is expected to be present on BPMN Diagram graphs.");
         }
         final BPMNDiagram diagram = diagramNode.getContent().getDefinition();
-        final String id = diagram.getDiagramSet().getId().getValue();
-        final String projectName = null != metadata.getProjectName() ? metadata.getProjectName() + "." : "";
-        if (null == id || id.isEmpty()) {
-            diagram.getDiagramSet().getId().setValue(projectName + name);
-        }
-        final String p = diagram.getDiagramSet().getPackageProperty().getValue();
-        if (null == p || p.isEmpty()) {
-            String metadataPackage = metadata.getProjectPackage();
-            if (metadataPackage == null || metadataPackage.isEmpty()) {
-                diagram.getDiagramSet().getPackageProperty().setValue(diagram.getDiagramSet().getPackageProperty().DEFAULT_PACKAGE);
-            } else {
-                diagram.getDiagramSet().getPackageProperty().setValue(metadata.getProjectPackage());
-            }
-        }
-        final String diagramName = diagram.getDiagramSet().getName().getValue();
-        if (null == diagramName || diagramName.isEmpty()) {
-            diagram.getDiagramSet().getName().setValue(name);
-        }
+        return diagram.getDiagramSet();
     }
 
     @SuppressWarnings("unchecked")
-    protected Node<Definition<BPMNDiagram>, ?> getFirstDiagramNode(final Graph graph) {
+    private Node<Definition<BPMNDiagram>, ?> getFirstDiagramNode(final Graph graph) {
         return BPMNUtils.getFirstDiagramNode(graph);
     }
 }

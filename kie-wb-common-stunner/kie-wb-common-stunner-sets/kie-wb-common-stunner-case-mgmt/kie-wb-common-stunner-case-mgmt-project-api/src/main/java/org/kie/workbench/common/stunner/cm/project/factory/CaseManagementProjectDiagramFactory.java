@@ -18,12 +18,15 @@ package org.kie.workbench.common.stunner.cm.project.factory;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.project.factory.impl.BPMNProjectDiagramFactory;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
+import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.cm.util.CaseManagementUtils;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 
 @ApplicationScoped
 public class CaseManagementProjectDiagramFactory
@@ -35,8 +38,17 @@ public class CaseManagementProjectDiagramFactory
     }
 
     @Override
+    protected DiagramSet getDiagramSet(final Graph<DefinitionSet, ?> graph) {
+        final Node<Definition<BPMNDiagram>, ?> diagramNode = getFirstDiagramNode(graph);
+        if (null == diagramNode) {
+            throw new IllegalStateException("A BPMN Diagram is expected to be present on BPMN Diagram graphs.");
+        }
+        final BPMNDiagram diagram = diagramNode.getContent().getDefinition();
+        return diagram.getDiagramSet();
+    }
+
     @SuppressWarnings("unchecked")
-    protected Node<Definition<org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram>, ?> getFirstDiagramNode(final Graph graph) {
+    private Node<Definition<BPMNDiagram>, ?> getFirstDiagramNode(final Graph graph) {
         return CaseManagementUtils.getFirstDiagramNode(graph);
     }
 }

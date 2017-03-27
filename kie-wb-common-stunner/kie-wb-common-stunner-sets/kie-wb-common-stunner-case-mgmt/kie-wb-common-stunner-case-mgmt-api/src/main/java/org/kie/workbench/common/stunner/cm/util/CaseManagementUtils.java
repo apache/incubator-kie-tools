@@ -31,7 +31,7 @@ public class CaseManagementUtils {
      * @param graph The graph structure.
      */
     @SuppressWarnings("unchecked")
-    public static Node<Definition<org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram>, ?> getFirstDiagramNode(final Graph<?, Node> graph) {
+    public static Node<Definition<BPMNDiagram>, ?> getFirstDiagramNode(final Graph<?, Node> graph) {
         return GraphUtils.getFirstNode(graph,
                                        BPMNDiagram.class);
     }
