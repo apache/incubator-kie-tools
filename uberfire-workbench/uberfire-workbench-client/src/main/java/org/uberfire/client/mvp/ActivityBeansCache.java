@@ -18,6 +18,7 @@ package org.uberfire.client.mvp;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -180,16 +181,16 @@ public class ActivityBeansCache {
      * Used for runtime plugins.
      */
     public void addNewEditorActivity(final SyncBeanDef<Activity> activityBean,
-                                     Class<? extends ClientResourceType> resourceTypeClass) {
+                                     String priority,
+                                     String resourceTypeName) {
         final String id = activityBean.getName();
 
         validateUniqueness(id);
 
-        final List<String> resourceTypes = new ArrayList<String>();
-        resourceTypes.add(resourceTypeClass.getName());
         resourceActivities.add(new ActivityAndMetaInfo(activityBean,
-                                                       0,
-                                                       resourceTypes));
+                                                       Integer.valueOf(priority),
+                                                       Arrays.asList(resourceTypeName)));
+        sortResourceActivitiesByPriority();
     }
 
     public void addNewSplashScreenActivity(final SyncBeanDef<Activity> activityBean) {
@@ -250,25 +251,16 @@ public class ActivityBeansCache {
 
         private final SyncBeanDef<Activity> activityBean;
         private final int priority;
-        private final ClientResourceType[] resourceTypes;
+        final List<String> resourceTypesNames;
+        ClientResourceType[] resourceTypes;
 
         @SuppressWarnings("rawtypes")
         ActivityAndMetaInfo(final SyncBeanDef<Activity> activityBean,
                             final int priority,
-                            final List<String> resourceTypes) {
+                            final List<String> resourceTypesNames) {
             this.activityBean = activityBean;
             this.priority = priority;
-            this.resourceTypes = new ClientResourceType[resourceTypes.size()];
-
-            for (int i = 0; i < resourceTypes.size(); i++) {
-                final String resourceTypeFqcn = resourceTypes.get(i);
-                final Collection<SyncBeanDef> resourceTypeBeans = iocManager.lookupBeans(resourceTypeFqcn);
-                if (resourceTypeBeans.isEmpty()) {
-                    throw new RuntimeException("ClientResourceType " + resourceTypeFqcn + " not found");
-                }
-
-                this.resourceTypes[i] = (ClientResourceType) resourceTypeBeans.iterator().next().getInstance();
-            }
+            this.resourceTypesNames = resourceTypesNames;
         }
 
         public SyncBeanDef<Activity> getActivityBean() {
@@ -280,7 +272,23 @@ public class ActivityBeansCache {
         }
 
         public ClientResourceType[] getResourceTypes() {
+            if (resourceTypes == null) {
+                dynamicLookupResourceTypes();
+            }
             return resourceTypes;
+        }
+
+        private void dynamicLookupResourceTypes() {
+            this.resourceTypes = new ClientResourceType[resourceTypesNames.size()];
+            for (int i = 0; i < resourceTypesNames.size(); i++) {
+                final String resourceTypeIdentifier = resourceTypesNames.get(i);
+                final Collection<SyncBeanDef> resourceTypeBeans = iocManager.lookupBeans(resourceTypeIdentifier);
+                if (resourceTypeBeans.isEmpty()) {
+                    throw new RuntimeException("ClientResourceType " + resourceTypeIdentifier + " not found");
+                }
+
+                this.resourceTypes[i] = (ClientResourceType) resourceTypeBeans.iterator().next().getInstance();
+            }
         }
     }
 

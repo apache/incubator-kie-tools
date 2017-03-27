@@ -16,11 +16,31 @@
 
 package org.uberfire.client.mvp;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.uberfire.client.workbench.type.ClientResourceType;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ActivityBeansCacheTest {
+
+    @Mock
+    private SyncBeanManager iocManager;
+
+    @InjectMocks
+    ActivityBeansCache cache;
 
     @Test
     public void initShouldCacheSplashScreen() throws Exception {
@@ -91,5 +111,54 @@ public class ActivityBeansCacheTest {
                      firstActivityOnList.getPriority());
         assertEquals(priorityActivityOne,
                      secondActivityOnList.getPriority());
+    }
+
+    @Test
+    public void activityAndMetaInfoShouldLookupResourceTypesOnRuntime() {
+        ClientResourceType clientResourceType = mock(ClientResourceType.class);
+        SyncBeanDef<ClientResourceType> syncBeanDef = mock(SyncBeanDef.class);
+        when(syncBeanDef.getInstance()).thenReturn(clientResourceType);
+        Collection<SyncBeanDef> resourceTypeBeans = Arrays.asList(syncBeanDef);
+        when(iocManager.lookupBeans("resource1")).thenReturn(resourceTypeBeans);
+
+        ActivityBeansCache.ActivityAndMetaInfo activatedActivityAndMetaInfo =
+                cache.new ActivityAndMetaInfo(mock(SyncBeanDef.class),
+                                              0,
+                                              Arrays.asList("resource1"));
+        assertNull(activatedActivityAndMetaInfo.resourceTypes);
+        assertTrue(!activatedActivityAndMetaInfo.resourceTypesNames.isEmpty());
+
+        activatedActivityAndMetaInfo.getResourceTypes();
+
+        assertTrue(activatedActivityAndMetaInfo.resourceTypes.length > 0);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void dynamicLookupOfResourceTypeShouldFailWhenThereIsNoResource() {
+        Collection<SyncBeanDef> resourceTypeBeans = new ArrayList<>();
+        when(iocManager.lookupBeans("resource1")).thenReturn(resourceTypeBeans);
+
+        ActivityBeansCache.ActivityAndMetaInfo activatedActivityAndMetaInfo =
+                cache.new ActivityAndMetaInfo(mock(SyncBeanDef.class),
+                                              0,
+                                              Arrays.asList("resource1"));
+
+        activatedActivityAndMetaInfo.getResourceTypes();
+    }
+
+    @Test
+    public void addEditorActivityShouldSortResourcesByPriority() {
+        String higherPriority = "20000";
+        String lowerPriority = "1";
+
+        cache.addNewEditorActivity(mock(SyncBeanDef.class),
+                                   lowerPriority,
+                                   "resource");
+        cache.addNewEditorActivity(mock(SyncBeanDef.class),
+                                   higherPriority,
+                                   "resource");
+        List<ActivityBeansCache.ActivityAndMetaInfo> resourceActivities = cache.getResourceActivities();
+
+        assertEquals(resourceActivities.get(0).getPriority(), Integer.valueOf(higherPriority).intValue());
     }
 }

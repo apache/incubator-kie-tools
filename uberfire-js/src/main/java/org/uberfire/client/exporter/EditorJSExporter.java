@@ -18,15 +18,12 @@ package org.uberfire.client.exporter;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import org.jboss.errai.ioc.client.container.IOC;
-import org.jboss.errai.ioc.client.container.IOCBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.uberfire.client.editor.JSEditorActivity;
 import org.uberfire.client.editor.JSNativeEditor;
@@ -34,7 +31,6 @@ import org.uberfire.client.mvp.Activity;
 import org.uberfire.client.mvp.ActivityBeansCache;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.WorkbenchEditorActivity;
-import org.uberfire.client.workbench.type.ClientResourceType;
 
 import static org.jboss.errai.ioc.client.QualifierUtil.DEFAULT_QUALIFIERS;
 
@@ -96,23 +92,9 @@ public class EditorJSExporter implements UberfireJSExporter {
         beanManager.registerBeanTypeAlias(beanDef,
                                           Activity.class);
 
-        Class<? extends ClientResourceType> resourceTypeClass = getResourceTypeClass(beanManager,
-                                                                                     newNativeEditor);
         activityBeansCache.addNewEditorActivity(beanManager.lookupBeans(newNativeEditor.getId()).iterator().next(),
-                                                resourceTypeClass);
-    }
-
-    private static Class<? extends ClientResourceType> getResourceTypeClass(SyncBeanManager beanManager,
-                                                                            JSNativeEditor newNativeEditor) {
-
-        Collection<SyncBeanDef<ClientResourceType>> iocBeanDefs = beanManager.lookupBeans(ClientResourceType.class);
-        for (IOCBeanDef<ClientResourceType> iocBeanDef : iocBeanDefs) {
-            String beanClassName = iocBeanDef.getBeanClass().getName();
-            if (beanClassName.equalsIgnoreCase(newNativeEditor.getResourceType())) {
-                return (Class<? extends ClientResourceType>) iocBeanDef.getBeanClass();
-            }
-        }
-        throw new EditorResourceTypeNotFound();
+                                                newNativeEditor.getPriority(),
+                                                newNativeEditor.getResourceType());
     }
 
     @Override

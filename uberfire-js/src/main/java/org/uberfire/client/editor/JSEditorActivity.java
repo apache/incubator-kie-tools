@@ -20,6 +20,7 @@ import javax.enterprise.inject.Alternative;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.uberfire.backend.vfs.ObservablePath;
+import org.uberfire.client.annotations.WorkbenchEditor;
 import org.uberfire.client.mvp.AbstractWorkbenchEditorActivity;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mvp.Command;
@@ -136,5 +137,10 @@ public class JSEditorActivity extends AbstractWorkbenchEditorActivity {
 
     public void setNativeEditor(JSNativeEditor nativeEditor) {
         this.nativeEditor = nativeEditor;
+    }
+
+    @Override
+    protected WorkbenchEditor.LockingStrategy getLockingStrategy() {
+        return WorkbenchEditor.LockingStrategy.EDITOR_PROVIDED;
     }
 }

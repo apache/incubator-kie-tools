@@ -188,6 +188,10 @@ public abstract class JSNativePlugin {
         return this.@org.uberfire.client.plugin.JSNativePlugin::obj.id;
     }-*/;
 
+    public native String getPriority()  /*-{
+        return this.@org.uberfire.client.plugin.JSNativePlugin::obj.priority;
+    }-*/;
+
     public Element getElement() {
         return element;
     }

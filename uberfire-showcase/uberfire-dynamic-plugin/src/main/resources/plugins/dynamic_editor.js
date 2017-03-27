@@ -15,11 +15,11 @@
  */
 
 $registerEditor({
-    "id": "sample editor",
+    "id": "dynamic editor",
     "type": "editor",
     priority: "1000",
-    "templateUrl": "editor.html",
-    "resourceType": "SampleResourceType",
+    "templateUrl": "dynamic_editor.html",
+    "resourceType": "DynamicResourceType",
     "on_concurrent_update": function () {
         alert('on_concurrent_update callback')
         $vfs_readAllString(document.getElementById('filename').innerHTML, function (a) {
