@@ -78,6 +78,7 @@ public class BS3PaletteWidgetViewImpl implements BS3PaletteWidgetView,
                                        @Override
                                        public void onComplete(final double x,
                                                               final double y) {
+                                           glyph.destroy();
                                            presenter.onDragProxyComplete(itemId,
                                                                          x,
                                                                          y);

@@ -37,7 +37,7 @@ public final class CaseManagementSubprocessShapeDef
 
                 @Override
                 public BPMNPictures getSource(final Class<?> type) {
-                    return BPMNPictures.SUB_PROCESS_REUSABLE;
+                    return BPMNPictures.GLYPH_OOME_HACK;
                 }
             };
 

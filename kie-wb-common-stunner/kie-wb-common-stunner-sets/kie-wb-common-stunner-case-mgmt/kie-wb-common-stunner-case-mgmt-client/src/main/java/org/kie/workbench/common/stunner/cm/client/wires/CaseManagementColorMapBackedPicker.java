@@ -21,31 +21,10 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.PickerPart;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.picker.ColorMapBackedPicker;
-import com.ait.lienzo.client.core.types.ImageData;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.tooling.nativetools.client.collection.NFastArrayList;
 
 public class CaseManagementColorMapBackedPicker extends ColorMapBackedPicker {
-
-    public CaseManagementColorMapBackedPicker(final NFastArrayList<WiresShape> shapes,
-                                              final ScratchPad scratchPad,
-                                              final WiresShape shapeToSkip) {
-        super(shapes,
-              scratchPad,
-              shapeToSkip);
-    }
-
-    public CaseManagementColorMapBackedPicker(final NFastArrayList<WiresShape> shapes,
-                                              final ScratchPad scratchPad,
-                                              final WiresShape shapeToSkip,
-                                              final boolean addHotspots,
-                                              final double borderWidth) {
-        super(shapes,
-              scratchPad,
-              shapeToSkip,
-              addHotspots,
-              borderWidth);
-    }
 
     public CaseManagementColorMapBackedPicker(final NFastArrayList<WiresShape> shapes,
                                               final ScratchPad scratchPad,
@@ -64,12 +43,6 @@ public class CaseManagementColorMapBackedPicker extends ColorMapBackedPicker {
         if (prim instanceof AbstractCaseManagementShape) {
             addDropZone((AbstractCaseManagementShape) prim);
         }
-    }
-
-    @SuppressWarnings("unused")
-    //This is a convenience method for debugging ColorMapBackedPicker
-    public ImageData getBackingImageData() {
-        return super.m_imageData;
     }
 
     void addDropZone(final AbstractCaseManagementShape<?> prim) {

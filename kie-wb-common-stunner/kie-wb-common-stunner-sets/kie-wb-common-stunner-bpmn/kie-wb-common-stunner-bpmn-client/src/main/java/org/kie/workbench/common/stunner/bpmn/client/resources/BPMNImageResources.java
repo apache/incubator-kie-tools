@@ -20,6 +20,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ClientBundleWithLookup;
 import com.google.gwt.resources.client.DataResource;
+import com.google.gwt.resources.client.ImageResource;
 
 public interface BPMNImageResources extends ClientBundleWithLookup {
 
@@ -172,4 +173,8 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @ClientBundle.Source("images/plus-square.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource plusSquare();
+
+    //This is a hack for OOME related to SVG, or image/svg+xml;base64 URLs
+    @Source("images/glyph-oome-hack.png")
+    ImageResource glyphOOMEHack();
 }

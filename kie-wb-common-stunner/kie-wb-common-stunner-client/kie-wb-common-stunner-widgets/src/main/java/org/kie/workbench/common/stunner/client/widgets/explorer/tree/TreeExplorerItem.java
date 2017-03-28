@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.explorer.tree;
 
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -50,6 +51,7 @@ public class TreeExplorerItem implements IsWidget {
     GraphUtils graphUtils;
     DefinitionUtils definitionUtils;
     View view;
+    Glyph glyph;
 
     @Inject
     public TreeExplorerItem(final ShapeManager shapeManager,
@@ -67,6 +69,11 @@ public class TreeExplorerItem implements IsWidget {
         view.init(this);
     }
 
+    @PreDestroy
+    public void destroy() {
+        glyph.destroy();
+    }
+
     @Override
     public Widget asWidget() {
         return view.asWidget();
@@ -78,11 +85,12 @@ public class TreeExplorerItem implements IsWidget {
         final Object definition = element.getContent().getDefinition();
         final String defId = definitionUtils.getDefinitionManager().adapters().forDefinition().getId(definition);
         final ShapeFactory factory = shapeManager.getShapeSet(shapeSetId).getShapeFactory();
+        this.glyph = factory.glyph(defId,
+                                   25,
+                                   25);
         view.setUUID(element.getUUID())
                 .setName(getItemText(element))
-                .setGlyph(factory.glyph(defId,
-                                        25,
-                                        25));
+                .setGlyph(glyph);
     }
 
     private String getItemText(final Element<org.kie.workbench.common.stunner.core.graph.content.view.View> item) {

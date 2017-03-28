@@ -35,4 +35,10 @@ public interface Glyph<G> {
      * @return
      */
     double getHeight();
+
+    /**
+     * Destroys resources relating to the Glyph
+     */
+    default void destroy() {
+    }
 }

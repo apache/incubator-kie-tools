@@ -19,11 +19,14 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Picture;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.shared.core.types.ColorName;
+import com.google.gwt.core.client.Scheduler;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.glyph.AbstractLienzoShapeGlyph;
 
 import static org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils.scalePicture;
 
 public final class PictureGlyph extends AbstractLienzoShapeGlyph {
+
+    private Picture picture;
 
     public PictureGlyph(final String uri,
                         final double width,
@@ -36,6 +39,26 @@ public final class PictureGlyph extends AbstractLienzoShapeGlyph {
               height);
     }
 
+    @Override
+    public void destroy() {
+        // Destroy the <img..> related to the Glyph added to the DOM root by Picture's use of ImageLoader.
+        // If the image has not completed loading attempts to remove from the DOM result in an error; therefore
+        // schedule successive attempts until success.
+        if (!doDestroy()) {
+            Scheduler.get().scheduleFixedDelay(() -> !doDestroy(),
+                                               200);
+        }
+    }
+
+    private boolean doDestroy() {
+        if (picture != null && picture.isLoaded()) {
+            picture.getImageProxy().getImage().removeFromParent();
+            picture = null;
+            return true;
+        }
+        return false;
+    }
+
     private void build(final String uri,
                        final double width,
                        final double height) {
@@ -44,14 +67,14 @@ public final class PictureGlyph extends AbstractLienzoShapeGlyph {
                 .setCornerRadius(5)
                 .setFillColor(ColorName.LIGHTGREY)
                 .setFillAlpha(0.2d);
-        new Picture(uri,
-                    picture -> {
-                        scalePicture(picture,
-                                     width,
-                                     height);
-                        group.remove(decorator);
-                        group.add(picture);
-                    });
+        picture = new Picture(uri,
+                              picture -> {
+                                  scalePicture(picture,
+                                               width,
+                                               height);
+                                  group.remove(decorator);
+                                  group.add(picture);
+                              });
         group.add(decorator);
     }
 }

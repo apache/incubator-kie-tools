@@ -46,13 +46,13 @@ public final class CaseManagementTaskShapeDef
         private final Map<Class<?>, BPMNPictures> PICTURES = new HashMap<Class<?>, BPMNPictures>(3) {{
             // TODO: Change NoneTask image!
             put(NoneTask.class,
-                BPMNPictures.TASK_USER);
+                BPMNPictures.GLYPH_OOME_HACK);
             put(UserTask.class,
-                BPMNPictures.TASK_USER);
+                BPMNPictures.GLYPH_OOME_HACK);
             put(ScriptTask.class,
-                BPMNPictures.TASK_SCRIPT);
+                BPMNPictures.GLYPH_OOME_HACK);
             put(BusinessRuleTask.class,
-                BPMNPictures.TASK_BUSINESS_RULE);
+                BPMNPictures.GLYPH_OOME_HACK);
         }};
 
         @Override

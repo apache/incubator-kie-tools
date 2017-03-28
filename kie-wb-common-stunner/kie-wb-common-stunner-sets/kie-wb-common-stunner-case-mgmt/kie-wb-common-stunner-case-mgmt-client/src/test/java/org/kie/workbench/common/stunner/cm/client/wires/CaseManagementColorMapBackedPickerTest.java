@@ -54,9 +54,11 @@ public class CaseManagementColorMapBackedPickerTest {
     @Before
     public void setup() {
         when(scratchPad.getContext()).thenReturn(context2D);
+        final NFastArrayList<WiresShape> shapesToSkip = new NFastArrayList<>();
+        shapesToSkip.add(shapeToSkip);
         this.picker = spy(new TestCaseManagementColorMapBackedPicker(new NFastArrayList<>(),
                                                                      scratchPad,
-                                                                     shapeToSkip));
+                                                                     shapesToSkip));
     }
 
     @Test
@@ -104,10 +106,12 @@ public class CaseManagementColorMapBackedPickerTest {
 
         public TestCaseManagementColorMapBackedPicker(final NFastArrayList<WiresShape> shapes,
                                                       final ScratchPad scratchPad,
-                                                      final WiresShape shapeToSkip) {
+                                                      final NFastArrayList<WiresShape> shapesToSkip) {
             super(shapes,
                   scratchPad,
-                  shapeToSkip);
+                  shapesToSkip,
+                  false,
+                  0);
         }
 
         @Override

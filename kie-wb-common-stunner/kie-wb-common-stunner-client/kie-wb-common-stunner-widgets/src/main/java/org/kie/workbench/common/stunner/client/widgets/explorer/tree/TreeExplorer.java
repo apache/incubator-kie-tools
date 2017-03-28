@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.stunner.client.widgets.explorer.tree;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
@@ -74,11 +76,18 @@ public class TreeExplorer implements IsWidget {
         View clear();
     }
 
-    DefinitionManager definitionManager;
-    ChildrenTraverseProcessor childrenTraverseProcessor;
-    ManagedInstance<TreeExplorerItem> treeExplorerItemInstances;
-    Event<CanvasElementSelectedEvent> elementSelectedEventEvent;
-    View view;
+    private DefinitionManager definitionManager;
+    private ChildrenTraverseProcessor childrenTraverseProcessor;
+    private ManagedInstance<TreeExplorerItem> treeExplorerItemInstances;
+    private Event<CanvasElementSelectedEvent> elementSelectedEventEvent;
+    private View view;
+
+    //ManagedInstance<T> releases instances when TreeExplorer is destroyed; therefore when
+    //nodes are added, removed or updated whilst the instance of TreeExplorer is active
+    //more and more instances of TreeExplorerItem are created. TreeExplorerItem's view
+    //includes a Glyph which can lead to the DOM being flooded with <img..> elements
+    //unless we destroy instances when the TreeExplorer is refreshed.
+    private Set<TreeExplorerItem> treeExplorerItems = new HashSet<>();
 
     private CanvasHandler canvasHandler;
 
@@ -174,6 +183,7 @@ public class TreeExplorer implements IsWidget {
                                                        level);
                                                    if (null == parent) {
                                                        final TreeExplorerItem item = treeExplorerItemInstances.get();
+                                                       treeExplorerItems.add(item);
                                                        view.addItem(node.getUUID(),
                                                                     item.asWidget(),
                                                                     expand);
@@ -183,6 +193,7 @@ public class TreeExplorer implements IsWidget {
                                                        int[] parentsIdx = getParentsIdx(levelIdx,
                                                                                         level);
                                                        final TreeExplorerItem item = treeExplorerItemInstances.get();
+                                                       treeExplorerItems.add(item);
                                                        view.addItem(node.getUUID(),
                                                                     item.asWidget(),
                                                                     expand,
@@ -219,6 +230,9 @@ public class TreeExplorer implements IsWidget {
     }
 
     public void clear() {
+        //Destroy existing TreeExplorerItems; that otherwise are not GC'ed until TreeExplorer closes.
+        treeExplorerItems.forEach(TreeExplorerItem::destroy);
+        treeExplorerItems.clear();
         view.clear();
     }
 

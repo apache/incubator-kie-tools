@@ -35,7 +35,7 @@ public class NullShapeDef<W extends BPMNDefinition> implements MutableShapeDef<W
 
                 @Override
                 public BPMNPictures getSource(final Class<?> type) {
-                    return BPMNPictures.CANCEL;
+                    return BPMNPictures.GLYPH_OOME_HACK;
                 }
             };
 

@@ -69,6 +69,8 @@ public class BPMNPictureProvider implements PictureProvider<BPMNPictures> {
                     BPMNImageResources.INSTANCE.gatewayParallelMultiple().getSafeUri());
                 put(BPMNPictures.EXCLUSIVE,
                     BPMNImageResources.INSTANCE.gatewayExclusive().getSafeUri());
+                put(BPMNPictures.GLYPH_OOME_HACK,
+                    BPMNImageResources.INSTANCE.glyphOOMEHack().getSafeUri());
             }};
 
     @Override

@@ -43,11 +43,6 @@ public class CaseManagementDockingAndContainmentControlImpl extends WiresDocking
     public void dragStart(final Context context) {
         super.dragStart(context);
 
-//        //TODO {manstis} This is to debug ColorMapPicker for drop-zones
-//        m_layer.getLayer().getContext().putImageData(((CaseManagementColorMapBackedPicker) m_picker).getBackingImageData(),
-//                                                     0,
-//                                                     0);
-
         state.setGhost(Optional.empty());
         state.setOriginalIndex(Optional.empty());
         state.setOriginalParent(Optional.empty());
@@ -94,9 +89,6 @@ public class CaseManagementDockingAndContainmentControlImpl extends WiresDocking
                                                 mouseRelativeLoc);
                 m_layer.getLayer().batch();
 
-                //Allow GC..
-                m_picker = null;
-                //..before creating a new instance
                 m_picker = makeColorMapBackedPicker(m_layer,
                                                     m_parent,
                                                     m_shape);
@@ -147,10 +139,13 @@ public class CaseManagementDockingAndContainmentControlImpl extends WiresDocking
                                      originalParent);
         }
 
-        m_layer.getLayer().batch();
+        ghost.getChildShapes().toList().forEach(WiresShape::destroy);
+        ghost.destroy();
         state.setGhost(Optional.empty());
         state.setOriginalIndex(Optional.empty());
         state.setOriginalParent(Optional.empty());
+        m_layer.getLayer().batch();
+        m_picker = null;
         return true;
     }
 
