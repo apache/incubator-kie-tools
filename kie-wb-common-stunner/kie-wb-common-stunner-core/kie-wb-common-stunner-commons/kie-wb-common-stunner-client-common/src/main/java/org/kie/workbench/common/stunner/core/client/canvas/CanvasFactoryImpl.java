@@ -37,7 +37,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.C
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.palette.CanvasPaletteControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
@@ -59,7 +58,6 @@ public class CanvasFactoryImpl implements CanvasFactory<AbstractCanvas, Abstract
 
     private final ManagedInstance<ResizeControl> resizeControls;
     private final ManagedInstance<CanvasValidationControl> validationControls;
-    private final ManagedInstance<CanvasPaletteControl> paletteControls;
     private final ManagedInstance<ConnectionAcceptorControl> connectionAcceptorControls;
     private final ManagedInstance<ContainmentAcceptorControl> containmentAcceptorControls;
     private final ManagedInstance<DockingAcceptorControl> dockingAcceptorControls;
@@ -93,14 +91,12 @@ public class CanvasFactoryImpl implements CanvasFactory<AbstractCanvas, Abstract
              null,
              null,
              null,
-             null,
              null);
     }
 
     @Inject
     public CanvasFactoryImpl(final ManagedInstance<ResizeControl> resizeControls,
                              final ManagedInstance<CanvasValidationControl> validationControls,
-                             final ManagedInstance<CanvasPaletteControl> paletteControls,
                              final ManagedInstance<ConnectionAcceptorControl> connectionAcceptorControls,
                              final ManagedInstance<ContainmentAcceptorControl> containmentAcceptorControls,
                              final ManagedInstance<DockingAcceptorControl> dockingAcceptorControls,
@@ -117,7 +113,6 @@ public class CanvasFactoryImpl implements CanvasFactory<AbstractCanvas, Abstract
                              final @Default ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances) {
         this.resizeControls = resizeControls;
         this.validationControls = validationControls;
-        this.paletteControls = paletteControls;
         this.connectionAcceptorControls = connectionAcceptorControls;
         this.containmentAcceptorControls = containmentAcceptorControls;
         this.dockingAcceptorControls = dockingAcceptorControls;
@@ -140,8 +135,6 @@ public class CanvasFactoryImpl implements CanvasFactory<AbstractCanvas, Abstract
                      resizeControls);
         controls.put(CanvasValidationControl.class,
                      validationControls);
-        controls.put(CanvasPaletteControl.class,
-                     paletteControls);
         controls.put(ConnectionAcceptorControl.class,
                      connectionAcceptorControls);
         controls.put(ContainmentAcceptorControl.class,

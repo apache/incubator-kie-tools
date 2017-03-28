@@ -42,7 +42,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.C
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.palette.CanvasPaletteControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
@@ -57,7 +56,6 @@ public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas
     private static Logger LOGGER = Logger.getLogger(CaseManagementCanvasFactory.class.getName());
 
     private final ManagedInstance<CanvasValidationControl> validationControls;
-    private final ManagedInstance<CanvasPaletteControl> paletteControls;
     private final ManagedInstance<ConnectionAcceptorControl> connectionAcceptorControls;
     private final ManagedInstance<ContainmentAcceptorControl> containmentAcceptorControls;
     private final ManagedInstance<DockingAcceptorControl> dockingAcceptorControls;
@@ -90,13 +88,11 @@ public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas
              null,
              null,
              null,
-             null,
              null);
     }
 
     @Inject
     public CaseManagementCanvasFactory(final ManagedInstance<CanvasValidationControl> validationControls,
-                                       final @CaseManagementEditor ManagedInstance<CanvasPaletteControl> paletteControls,
                                        final ManagedInstance<ConnectionAcceptorControl> connectionAcceptorControls,
                                        final @CaseManagementEditor ManagedInstance<ContainmentAcceptorControl> containmentAcceptorControls,
                                        final ManagedInstance<DockingAcceptorControl> dockingAcceptorControls,
@@ -112,7 +108,6 @@ public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas
                                        final @CaseManagementEditor ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances,
                                        final @CaseManagementEditor WiresControlFactory caseManagementControlFactory) {
         this.validationControls = validationControls;
-        this.paletteControls = paletteControls;
         this.connectionAcceptorControls = connectionAcceptorControls;
         this.containmentAcceptorControls = containmentAcceptorControls;
         this.dockingAcceptorControls = dockingAcceptorControls;
@@ -133,8 +128,6 @@ public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas
     public void init() {
         controls.put(CanvasValidationControl.class,
                      validationControls);
-        controls.put(CanvasPaletteControl.class,
-                     paletteControls);
         controls.put(ConnectionAcceptorControl.class,
                      connectionAcceptorControls);
         controls.put(ContainmentAcceptorControl.class,

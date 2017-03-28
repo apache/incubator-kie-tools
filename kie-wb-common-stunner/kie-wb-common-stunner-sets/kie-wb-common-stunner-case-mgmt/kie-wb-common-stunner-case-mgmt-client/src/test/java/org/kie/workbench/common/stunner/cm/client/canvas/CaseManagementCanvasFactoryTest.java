@@ -34,7 +34,6 @@ import org.kie.workbench.common.stunner.cm.client.canvas.controls.builder.CaseMa
 import org.kie.workbench.common.stunner.cm.client.canvas.controls.builder.CaseManagementNodeBuilderControl;
 import org.kie.workbench.common.stunner.cm.client.canvas.controls.containment.CaseManagementContainmentAcceptorControlImpl;
 import org.kie.workbench.common.stunner.cm.client.canvas.controls.drag.CaseManagementDragControlImpl;
-import org.kie.workbench.common.stunner.cm.client.palette.CaseManagementLienzoCanvasPaletteControl;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControl;
@@ -49,7 +48,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.C
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.palette.CanvasPaletteControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
@@ -62,7 +60,6 @@ import static org.mockito.Mockito.*;
 public class CaseManagementCanvasFactoryTest {
 
     private ManagedInstance<CanvasValidationControl> validationControls;
-    private ManagedInstance<CanvasPaletteControl> paletteControls;
     private ManagedInstance<ConnectionAcceptorControl> connectionAcceptorControls;
     private ManagedInstance<ContainmentAcceptorControl> containmentAcceptorControls;
     private ManagedInstance<DockingAcceptorControl> dockingAcceptorControls;
@@ -93,7 +90,6 @@ public class CaseManagementCanvasFactoryTest {
         this.wiresManager = WiresManager.get(layer);
 
         this.validationControls = mockManagedInstance(CanvasValidationControlImpl.class);
-        this.paletteControls = mockManagedInstance(CaseManagementLienzoCanvasPaletteControl.class);
         this.connectionAcceptorControls = mockManagedInstance(ConnectionAcceptorControlImpl.class);
         this.containmentAcceptorControls = mockManagedInstance(CaseManagementContainmentAcceptorControlImpl.class);
         this.dockingAcceptorControls = mockManagedInstance(DockingAcceptorControlImpl.class);
@@ -110,7 +106,6 @@ public class CaseManagementCanvasFactoryTest {
         this.canvasHandlerInstances = mockManagedInstance(CaseManagementCanvasHandler.class);
 
         this.factory = new CaseManagementCanvasFactory(validationControls,
-                                                       paletteControls,
                                                        connectionAcceptorControls,
                                                        containmentAcceptorControls,
                                                        dockingAcceptorControls,

@@ -30,7 +30,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.C
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.palette.CanvasPaletteControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
@@ -77,9 +76,6 @@ public class CaseManagementClientFullSessionTest {
     private CanvasValidationControl<AbstractCanvasHandler> canvasValidationControl;
 
     @Mock
-    private CanvasPaletteControl<AbstractCanvasHandler> canvasPaletteControl;
-
-    @Mock
     private CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
 
     @Mock
@@ -123,7 +119,6 @@ public class CaseManagementClientFullSessionTest {
         when(factory.newControl(eq(SelectionControl.class))).thenReturn(selectionControl);
         when(factory.newControl(eq(ResizeControl.class))).thenReturn(resizeControl);
         when(factory.newControl(eq(CanvasValidationControl.class))).thenReturn(canvasValidationControl);
-        when(factory.newControl(eq(CanvasPaletteControl.class))).thenReturn(canvasPaletteControl);
         when(factory.newControl(eq(ConnectionAcceptorControl.class))).thenReturn(connectionAcceptorControl);
         when(factory.newControl(eq(ContainmentAcceptorControl.class))).thenReturn(containmentAcceptorControl);
         when(factory.newControl(eq(DockingAcceptorControl.class))).thenReturn(dockingAcceptorControl);
@@ -165,9 +160,6 @@ public class CaseManagementClientFullSessionTest {
                      session.getDragControl());
         assertEquals(builderControl,
                      session.getBuilderControl());
-
-        assertEquals(canvasPaletteControl,
-                     session.getCanvasPaletteControl());
         assertEquals(canvasNameEditionControl,
                      session.getCanvasNameEditionControl());
     }
@@ -187,8 +179,6 @@ public class CaseManagementClientFullSessionTest {
         verify(panControl,
                times(1)).enable(eq(canvas));
         verify(canvasValidationControl,
-               times(1)).enable(eq(canvasHandler));
-        verify(canvasPaletteControl,
                times(1)).enable(eq(canvasHandler));
         verify(connectionAcceptorControl,
                times(1)).enable(eq(canvasHandler));
@@ -224,8 +214,6 @@ public class CaseManagementClientFullSessionTest {
         verify(panControl,
                times(1)).disable();
         verify(canvasValidationControl,
-               times(1)).disable();
-        verify(canvasPaletteControl,
                times(1)).disable();
         verify(connectionAcceptorControl,
                times(1)).disable();

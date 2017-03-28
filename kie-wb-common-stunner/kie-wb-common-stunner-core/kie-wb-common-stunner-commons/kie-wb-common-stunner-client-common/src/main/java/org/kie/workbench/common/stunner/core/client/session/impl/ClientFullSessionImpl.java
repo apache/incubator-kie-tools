@@ -29,7 +29,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.C
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.palette.CanvasPaletteControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
@@ -46,7 +45,6 @@ import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 public class ClientFullSessionImpl extends AbstractClientFullSession {
 
     private ResizeControl<AbstractCanvasHandler, Element> resizeControl;
-    private CanvasPaletteControl<AbstractCanvasHandler> canvasPaletteControl;
     private CanvasNameEditionControl<AbstractCanvasHandler, Element> canvasNameEditionControl;
     private ToolboxControl<AbstractCanvasHandler, Element> toolboxControl;
 
@@ -73,21 +71,14 @@ public class ClientFullSessionImpl extends AbstractClientFullSession {
               factory.newControl(DockingAcceptorControl.class),
               factory.newControl(ElementBuilderControl.class));
         this.resizeControl = factory.newControl(ResizeControl.class);
-        this.canvasPaletteControl = factory.newControl(CanvasPaletteControl.class);
         this.canvasNameEditionControl = factory.newControl(CanvasNameEditionControl.class);
         this.toolboxControl = factory.newControl(ToolboxControl.class);
         getRegistrationHandler().registerCanvasHandlerControl(resizeControl);
         resizeControl.setCommandManagerProvider(() -> sessionCommandManager);
         getRegistrationHandler().registerCanvasHandlerControl(toolboxControl);
         toolboxControl.setCommandManagerProvider(() -> sessionCommandManager);
-        getRegistrationHandler().registerCanvasHandlerControl(canvasPaletteControl);
-        canvasPaletteControl.setCommandManagerProvider(() -> sessionCommandManager);
         getRegistrationHandler().registerCanvasHandlerControl(canvasNameEditionControl);
         canvasNameEditionControl.setCommandManagerProvider(() -> sessionCommandManager);
-    }
-
-    public CanvasPaletteControl<AbstractCanvasHandler> getPaletteControl() {
-        return canvasPaletteControl;
     }
 
     public ResizeControl<AbstractCanvasHandler, Element> getResizeControl() {

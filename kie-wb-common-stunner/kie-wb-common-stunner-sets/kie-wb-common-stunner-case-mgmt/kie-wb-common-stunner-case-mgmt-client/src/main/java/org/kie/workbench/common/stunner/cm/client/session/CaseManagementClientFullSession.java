@@ -29,7 +29,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.C
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.palette.CanvasPaletteControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
@@ -45,7 +44,6 @@ import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 @CaseManagementEditor
 public class CaseManagementClientFullSession extends AbstractClientFullSession {
 
-    private CanvasPaletteControl<AbstractCanvasHandler> canvasPaletteControl;
     private CanvasNameEditionControl<AbstractCanvasHandler, Element> canvasNameEditionControl;
 
     @Inject
@@ -71,17 +69,9 @@ public class CaseManagementClientFullSession extends AbstractClientFullSession {
               factory.newControl(DockingAcceptorControl.class),
               factory.newControl(ElementBuilderControl.class));
 
-        this.canvasPaletteControl = factory.newControl(CanvasPaletteControl.class);
         this.canvasNameEditionControl = factory.newControl(CanvasNameEditionControl.class);
-
-        getRegistrationHandler().registerCanvasHandlerControl(canvasPaletteControl);
-        canvasPaletteControl.setCommandManagerProvider(() -> sessionCommandManager);
         getRegistrationHandler().registerCanvasHandlerControl(canvasNameEditionControl);
         canvasNameEditionControl.setCommandManagerProvider(() -> sessionCommandManager);
-    }
-
-    CanvasPaletteControl<AbstractCanvasHandler> getCanvasPaletteControl() {
-        return canvasPaletteControl;
     }
 
     CanvasNameEditionControl<AbstractCanvasHandler, Element> getCanvasNameEditionControl() {
