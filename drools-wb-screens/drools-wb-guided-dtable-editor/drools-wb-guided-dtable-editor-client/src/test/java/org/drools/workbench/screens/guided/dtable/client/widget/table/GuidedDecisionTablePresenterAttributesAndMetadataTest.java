@@ -28,6 +28,7 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.ModelSynchronizer;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
+import org.drools.workbench.services.verifier.api.client.index.Rule;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -217,11 +218,32 @@ public class GuidedDecisionTablePresenterAttributesAndMetadataTest
 
     @Test
     public void testNewAttributeOrMetaDataColumnUniqueHitPolicy() throws Exception {
-        model.setHitPolicy(HitPolicy.UNIQUE_HIT);
+        testReservedAttributes(HitPolicy.UNIQUE_HIT, "activation-group");
+    }
+
+    @Test
+    public void testNewAttributeOrMetaDataColumnFirstHitPolicy() throws Exception {
+        testReservedAttributes(HitPolicy.FIRST_HIT, "activation-group", "salience");
+    }
+
+    @Test
+    public void testNewAttributeOrMetaDataColumnResolvedHitPolicy() throws Exception {
+        testReservedAttributes(HitPolicy.RESOLVED_HIT, "activation-group", "salience");
+    }
+
+    @Test
+    public void testNewAttributeOrMetaDataColumnRuleOrderHitPolicy() throws Exception {
+        testReservedAttributes(HitPolicy.RULE_ORDER, "salience");
+    }
+
+    private void testReservedAttributes(HitPolicy policy, String... attributes) {
+        model.setHitPolicy(policy);
         dtPresenter.newAttributeOrMetaDataColumn();
         verify(view).newAttributeOrMetaDataColumn(reservedAttributesCaptor.capture());
-        assertEquals(1,
+        assertEquals(attributes.length,
                      reservedAttributesCaptor.getValue().size());
-        assertTrue(reservedAttributesCaptor.getValue().contains("activation-group"));
+        for(String attribute : attributes) {
+            assertTrue(reservedAttributesCaptor.getValue().contains(attribute));
+        }
     }
 }
