@@ -91,6 +91,10 @@ public class BpmnFileIndexerTest extends BaseIndexingTest<BPMNDefinitionSetResou
         }};
     }
 
+    private static final long WAIT_TIME_MILLIS = 2000;
+
+    private static final int MAX_WAIT_TIMES = 8;
+
     @Test
     public void testBpmnIndexing() throws Exception {
 
@@ -107,26 +111,23 @@ public class BpmnFileIndexerTest extends BaseIndexingTest<BPMNDefinitionSetResou
         }
         Path[] paths = pathList.toArray(new Path[pathList.size()]);
 
-        Thread.sleep(5000); //wait for events to be consumed from jgit -> (notify changes -> watcher -> index) -> lucene index
-
         {
-            final RefactoringPageRequest request = new RefactoringPageRequest(FindResourcesQuery.NAME,
-                                                                              new HashSet<ValueIndexTerm>() {{
-                                                                                  add(new ValueResourceIndexTerm("*",
-                                                                                                                 ResourceType.BPMN2,
-                                                                                                                 ValueIndexTerm.TermSearchType.WILDCARD));
-                                                                              }},
-                                                                              0,
-                                                                              10);
-
+            PageResponse<RefactoringPageRow> response = null;
             try {
-                final PageResponse<RefactoringPageRow> response = service.query(request);
-                assertNotNull(response);
-                assertEquals(paths.length,
-                             response.getPageRowList().size());
+                for (int i = 0; i < MAX_WAIT_TIMES; i++) {
+                    Thread.sleep(WAIT_TIME_MILLIS);
+                    response = queryBPMN2Resources();
+                    if (response != null && response.getPageRowList() != null && response.getPageRowList().size() >= paths.length) {
+                        break;
+                    }
+                }
             } catch (IllegalArgumentException e) {
                 fail("Exception thrown: " + e.getMessage());
             }
+
+            assertNotNull(response);
+            assertEquals(paths.length,
+                         response.getPageRowList().size());
         }
 
         {
@@ -234,6 +235,19 @@ public class BpmnFileIndexerTest extends BaseIndexingTest<BPMNDefinitionSetResou
                 fail("Exception thrown: " + e.getMessage());
             }
         }
+    }
+
+    private PageResponse<RefactoringPageRow> queryBPMN2Resources() throws IllegalArgumentException {
+        final RefactoringPageRequest request = new RefactoringPageRequest(FindResourcesQuery.NAME,
+                                                                          new HashSet<ValueIndexTerm>() {{
+                                                                              add(new ValueResourceIndexTerm("*",
+                                                                                                             ResourceType.BPMN2,
+                                                                                                             ValueIndexTerm.TermSearchType.WILDCARD));
+                                                                          }},
+                                                                          0,
+                                                                          10);
+
+        return service.query(request);
     }
 
     @Override
