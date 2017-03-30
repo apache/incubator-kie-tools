@@ -76,7 +76,7 @@ job("UF_pushTag-1.0.x") {
   parameters {
     choiceParam("TARGET", ["community", "productized"], "please select if this release is for community <b> community </b> or <br> if it is for building a productization tag <b>productized <br> ******************************************************** <br> ")
     stringParam("RELEASE_BRANCH", "release branch", "please edit the name of the release branch <br> i.e. typically <b> r1.0.0.Beta5 </b> for <b> community </b>or <b> bsync-6.5.x-2016.08.05  </b> for <b> productization </b> <br> ******************************************************** <br> ")
-    stringParam("TAG_NAME", "tag", "The tag should typically look like <b> 1.0.0.Beta6 </b> for <b> community </b> or <b> sync-6.5.0.2016.08.05 </b> for <b> productization </b> <br> ******************************************************** <br> ")
+    stringParam("TAG", "tag", "The tag should typically look like <b> 1.0.0.Beta6 </b> for <b> community </b> or <b> sync-6.5.0.2016.08.05 </b> for <b> productization </b> <br> ******************************************************** <br> ")
   };
 
   label("kie-releases")

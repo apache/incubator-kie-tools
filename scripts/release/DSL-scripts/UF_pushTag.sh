@@ -2,10 +2,8 @@
 
 if [ "$TARGET" == "productized" ]; then   
    git clone git@github.com:jboss-integration/uberfire.git --branch $RELEASE_BRANCH
-   git clone git@github.com:jboss-integration/uberfire-extensions.git --branch $RELEASE_BRANCH
 else 
    git clone git@github.com:uberfire/uberfire.git --branch $RELEASE_BRANCH
-   git clone git@github.com:uberfire/uberfire-extensions.git --branch $RELEASE_BRANCH
 fi
 
 commitMSG="Tagging $TAG"
@@ -16,15 +14,8 @@ if [ "$TARGET" == "productized" ]; then
    git tag -a $TAG -m "$commitMSG"
    git remote add upstream git@github.com:jboss-integration/uberfire.git
    git push upstream $TAG
-   cd $WORKSPACE/uberfire-extensions
-   git tag -a $TAG -m "$commitMSG"
-   git remote add upstream git@github.com:jboss-integration/uberfire-extensions.git
-   git push upstream $TAG
 else
    cd $WORKSPACE/uberfire
    git tag -a $TAG -m "$commitMSG"
-   git push origin $TAG
-   cd $WORKSPACE/uberfire-extensions
-   git tag -a $TAG -m "$commitMSG"   
    git push origin $TAG
 fi
