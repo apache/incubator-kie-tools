@@ -29,16 +29,17 @@ import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGatewa
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
-import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementDiagramShapeDef;
+import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementReusableSubprocessTaskShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSubprocessShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementTaskShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.NullShapeDef;
 import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
@@ -81,8 +82,7 @@ public class CaseManagementDelegateShapeFactory
                                                 new CaseManagementDiagramShapeDef());
         caseManagementShapesFactory.addShapeDef(AdHocSubprocess.class,
                                                 new CaseManagementSubprocessShapeDef());
-        caseManagementShapesFactory.addShapeDef(ReusableSubprocess.class,
-                                                new CaseManagementSubprocessShapeDef());
+
         caseManagementShapesFactory.addShapeDef(NoneTask.class,
                                                 new CaseManagementTaskShapeDef());
         caseManagementShapesFactory.addShapeDef(UserTask.class,
@@ -91,6 +91,8 @@ public class CaseManagementDelegateShapeFactory
                                                 new CaseManagementTaskShapeDef());
         caseManagementShapesFactory.addShapeDef(BusinessRuleTask.class,
                                                 new CaseManagementTaskShapeDef());
+        caseManagementShapesFactory.addShapeDef(ReusableSubprocess.class,
+                                                new CaseManagementReusableSubprocessTaskShapeDef());
 
         caseManagementShapesFactory.addShapeDef(StartNoneEvent.class,
                                                 new NullShapeDef());

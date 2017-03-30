@@ -22,8 +22,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.definition.AdHocSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.BaseSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.Categories;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
@@ -32,13 +30,11 @@ import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGatewa
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
-import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
-import org.kie.workbench.common.stunner.bpmn.definition.ScriptTask;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
-import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.BindableDefSetPaletteDefinitionFactory;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
@@ -46,39 +42,26 @@ import org.kie.workbench.common.stunner.core.client.components.palette.model.def
 @Dependent
 public class CaseManagementPaletteDefinitionFactory extends BindableDefSetPaletteDefinitionFactory {
 
-    private static final String STAGES = "Stages";
-    private static final String ACTIVITIES = "Activities";
+    public static final String STAGES = "Stages";
+    public static final String ACTIVITIES = "Activities";
 
     private static final Map<String, String> CAT_TITLES = new HashMap<String, String>(2) {{
-        put(Categories.SUBPROCESSES,
+        put(STAGES,
             STAGES);
-        put(Categories.ACTIVITIES,
+        put(ACTIVITIES,
             ACTIVITIES);
     }};
 
-    private static final Map<String, Class<?>> CAT_DEF_IDS = new HashMap<String, Class<?>>(1) {{
-        put(Categories.ACTIVITIES,
-            UserTask.class);
-        put(Categories.ACTIVITIES,
-            ScriptTask.class);
-        put(Categories.ACTIVITIES,
-            BusinessRuleTask.class);
-        put(Categories.SUBPROCESSES,
+    private static final Map<String, Class<?>> CAT_DEF_IDS = new HashMap<String, Class<?>>(5) {{
+        put(STAGES,
             AdHocSubprocess.class);
-        put(Categories.SUBPROCESSES,
-            ReusableSubprocess.class);
-    }};
-
-    private static final Map<String, String> MORPH_GROUP_TITLES = new HashMap<String, String>(2) {{
-        put(BaseSubprocess.class.getName(),
-            STAGES);
-        put(BaseTask.class.getName(),
-            ACTIVITIES);
+        put(ACTIVITIES,
+            BusinessRuleTask.class);
     }};
 
     @Inject
     public CaseManagementPaletteDefinitionFactory(final ShapeManager shapeManager,
-                                                  final DefinitionSetPaletteBuilder paletteBuilder) {
+                                                  final @CaseManagementEditor DefinitionSetPaletteBuilder paletteBuilder) {
         super(shapeManager,
               paletteBuilder);
     }
@@ -106,25 +89,25 @@ public class CaseManagementPaletteDefinitionFactory extends BindableDefSetPalett
     }
 
     @Override
-    protected Class<?> getCategoryTargetDefinitionId(final String id) {
-        return CAT_DEF_IDS.get(id);
-    }
-
-    @Override
     protected String getCategoryDescription(final String id) {
         return CAT_TITLES.get(id);
     }
 
     @Override
+    protected Class<?> getCategoryTargetDefinitionId(final String id) {
+        return CAT_DEF_IDS.get(id);
+    }
+
+    @Override
     protected String getMorphGroupTitle(final String morphBaseId,
                                         final Object definition) {
-        return MORPH_GROUP_TITLES.get(morphBaseId);
+        throw new UnsupportedOperationException("CaseManagement does not use Morph Groups for Palette construction");
     }
 
     @Override
     protected String getMorphGroupDescription(final String morphBaseId,
                                               final Object definition) {
-        return MORPH_GROUP_TITLES.get(morphBaseId);
+        throw new UnsupportedOperationException("CaseManagement does not use Morph Groups for Palette construction");
     }
 
     @Override

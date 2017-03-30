@@ -28,8 +28,8 @@ public final class DefinitionSetPaletteImpl
 
     private final String defSetId;
 
-    protected DefinitionSetPaletteImpl(final List<DefinitionPaletteCategory> categories,
-                                       final String defSetId) {
+    public DefinitionSetPaletteImpl(final List<DefinitionPaletteCategory> categories,
+                                    final String defSetId) {
         super(categories);
         this.defSetId = defSetId;
     }

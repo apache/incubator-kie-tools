@@ -33,7 +33,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.ExclusiveDatabasedGatewa
 import org.kie.workbench.common.stunner.bpmn.definition.Lane;
 import org.kie.workbench.common.stunner.bpmn.definition.NoneTask;
 import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
-import org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
@@ -43,6 +42,7 @@ import org.kie.workbench.common.stunner.cm.client.shape.DiagramShape;
 import org.kie.workbench.common.stunner.cm.client.shape.NullShape;
 import org.kie.workbench.common.stunner.cm.client.shape.StageShape;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementDiagramShapeDef;
+import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementReusableSubprocessTaskShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSubprocessShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementTaskShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.NullShapeDef;
@@ -52,6 +52,7 @@ import org.kie.workbench.common.stunner.cm.client.shape.view.NullView;
 import org.kie.workbench.common.stunner.cm.client.shape.view.StageView;
 import org.kie.workbench.common.stunner.cm.client.wires.AbstractCaseManagementShape;
 import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
@@ -108,6 +109,14 @@ public class CaseManagementDelegateShapeFactoryTest {
         assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof NullShapeDef);
     };
 
+    private Consumer<Shape> stageAssertions = (shape) -> {
+        assertNotNull(shape.getShapeView());
+        assertTrue(shape instanceof StageShape);
+        assertTrue(shape.getShapeView() instanceof StageView);
+        assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof CaseManagementSubprocessShapeDef);
+        assertShapeSize((StageView) shape.getShapeView());
+    };
+
     private Consumer<Shape> activityAssertions = (shape) -> {
         assertNotNull(shape.getShapeView());
         assertTrue(shape instanceof ActivityShape);
@@ -116,12 +125,12 @@ public class CaseManagementDelegateShapeFactoryTest {
         assertShapeSize((ActivityView) shape.getShapeView());
     };
 
-    private Consumer<Shape> stageAssertions = (shape) -> {
+    private Consumer<Shape> reusableSubprocessActivityAssertions = (shape) -> {
         assertNotNull(shape.getShapeView());
-        assertTrue(shape instanceof StageShape);
-        assertTrue(shape.getShapeView() instanceof StageView);
-        assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof CaseManagementSubprocessShapeDef);
-        assertShapeSize((StageView) shape.getShapeView());
+        assertTrue(shape instanceof ActivityShape);
+        assertTrue(shape.getShapeView() instanceof ActivityView);
+        assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof CaseManagementReusableSubprocessTaskShapeDef);
+        assertShapeSize((ActivityView) shape.getShapeView());
     };
 
     private CaseManagementDelegateShapeFactory factory;
@@ -235,7 +244,7 @@ public class CaseManagementDelegateShapeFactoryTest {
     @Test
     public void checkReusableSubprocess() {
         assertShapeConstruction(new ReusableSubprocess.ReusableSubprocessBuilder().build(),
-                                stageAssertions);
+                                reusableSubprocessActivityAssertions);
         assertShapeGlyph(new ReusableSubprocess.ReusableSubprocessBuilder().build());
     }
 

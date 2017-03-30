@@ -23,6 +23,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.BaseOryxIdMappings;
 import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 
@@ -55,6 +56,10 @@ public class CaseManagementOryxIdMappings extends BaseOryxIdMappings {
         final Map<Class<?>, String> diagramPropertiesMap = definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram.class);
         definitionMappings.put(BPMNDiagram.class,
                                diagramPropertiesMap);
+
+        final Map<Class<?>, String> reusableSubprocessPropertiesMap = definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess.class);
+        definitionMappings.put(ReusableSubprocess.class,
+                               reusableSubprocessPropertiesMap);
 
         return definitionMappings;
     }

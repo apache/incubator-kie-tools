@@ -511,9 +511,9 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                 note("Definition for tye [" + defintionClassName + "] have no Property members.");
             }
             // -- Morphing annotations --
-            // MorphBase - defaultType
             MorphBase morphBaseAnn = e.getAnnotation(MorphBase.class);
-            if (null != morphBaseAnn) {
+            Morph morphAnn = e.getAnnotation(Morph.class);
+            if (null != morphBaseAnn && null != morphAnn) {
                 TypeElement superElement = getAnnotationInTypeInheritance(classElement,
                                                                           MorphBase.class.getName());
                 final String packageName = packageElement.getQualifiedName().toString();
@@ -552,10 +552,6 @@ public class MainProcessor extends AbstractErrorAbsorbingProcessor {
                     processMorphProperties(superElement,
                                            morphBaseClassName);
                 }
-            }
-            // Morph - baseType
-            Morph morphAnn = e.getAnnotation(Morph.class);
-            if (null != morphAnn) {
                 TypeMirror morphBaseTypeMirror = null;
                 try {
                     Class<?> defaultTypeClass = morphAnn.base();

@@ -62,18 +62,7 @@ public abstract class BaseSubprocess implements BPMNDefinition {
     protected RectangleDimensionsSet dimensionsSet;
 
     @Labels
-    protected final Set<String> labels = new HashSet<String>() {{
-        add("all");
-        add("sequence_start");
-        add("sequence_end");
-        add("messageflow_start");
-        add("messageflow_end");
-        add("to_task_event");
-        add("from_task_event");
-        add("fromtoall");
-        add("ActivitiesMorph");
-        add("cm_stage");
-    }};
+    protected final Set<String> labels = new HashSet<>();
 
     @NonPortable
     public static abstract class BaseSubprocessBuilder<T extends BaseSubprocess> implements Builder<T> {
@@ -86,6 +75,7 @@ public abstract class BaseSubprocess implements BPMNDefinition {
     }
 
     protected BaseSubprocess() {
+        this.labels.addAll(makeLabels());
     }
 
     public BaseSubprocess(final @MapsTo("general") BPMNGeneralSet general,
@@ -98,6 +88,22 @@ public abstract class BaseSubprocess implements BPMNDefinition {
         this.fontSet = fontSet;
         this.dimensionsSet = dimensionsSet;
         this.simulationSet = simulationSet;
+        this.labels.addAll(makeLabels());
+    }
+
+    protected Set<String> makeLabels() {
+        return new HashSet<String>() {{
+            add("all");
+            add("sequence_start");
+            add("sequence_end");
+            add("messageflow_start");
+            add("messageflow_end");
+            add("to_task_event");
+            add("from_task_event");
+            add("fromtoall");
+            add("ActivitiesMorph");
+            add("cm_stage");
+        }};
     }
 
     public String getCategory() {

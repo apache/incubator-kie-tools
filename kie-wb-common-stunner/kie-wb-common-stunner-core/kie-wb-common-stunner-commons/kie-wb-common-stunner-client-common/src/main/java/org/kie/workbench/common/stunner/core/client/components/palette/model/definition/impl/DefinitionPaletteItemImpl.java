@@ -42,7 +42,7 @@ public final class DefinitionPaletteItemImpl
         return definitionId;
     }
 
-    static class DefinitionPaletteItemBuilder
+    public static class DefinitionPaletteItemBuilder
             extends AbstractPaletteItemBuilder<DefinitionPaletteItemBuilder, DefinitionPaletteItemImpl> {
 
         private String definitionId;

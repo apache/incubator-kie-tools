@@ -39,7 +39,7 @@ public final class DefinitionPaletteCategoryImpl extends AbstractPaletteGroup<De
               items);
     }
 
-    static class DefinitionPaletteCategoryBuilder extends AbstractPaletteGroupBuilder<DefinitionPaletteCategoryBuilder,
+    public static class DefinitionPaletteCategoryBuilder extends AbstractPaletteGroupBuilder<DefinitionPaletteCategoryBuilder,
             DefinitionPaletteCategoryImpl, DefinitionPaletteItem> {
 
         public DefinitionPaletteCategoryBuilder(final String id) {

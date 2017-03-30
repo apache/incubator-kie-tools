@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.workbench.common.stunner.cm.client.palette;
+
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconResource;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.bs3.BS3IconRenderer;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
@@ -50,5 +52,17 @@ public class CaseManagementBS3PaletteViewFactoryTest {
     public void assertPaletteIconRendererType() {
         assertEquals(BS3IconRenderer.class,
                      paletteViewFactory.getPaletteIconRendererType());
+    }
+
+    @Test
+    public void checkCategoryIconResources() {
+        final Map<String, IconResource> iconResources = paletteViewFactory.getCategoryIconResources();
+        assertNotNull(iconResources);
+        assertEquals(2,
+                     iconResources.size());
+        assertTrue(iconResources.containsKey(CaseManagementPaletteDefinitionFactory.STAGES));
+        assertTrue(iconResources.containsKey(CaseManagementPaletteDefinitionFactory.ACTIVITIES));
+        assertNotNull(iconResources.get(CaseManagementPaletteDefinitionFactory.STAGES));
+        assertNotNull(iconResources.get(CaseManagementPaletteDefinitionFactory.ACTIVITIES));
     }
 }

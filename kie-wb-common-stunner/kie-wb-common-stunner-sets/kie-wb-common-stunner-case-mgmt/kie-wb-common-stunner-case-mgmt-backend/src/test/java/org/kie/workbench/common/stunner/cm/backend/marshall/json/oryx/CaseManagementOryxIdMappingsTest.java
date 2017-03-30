@@ -23,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxIdMappings;
 import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.mockito.Mock;
 
@@ -52,10 +53,22 @@ public class CaseManagementOryxIdMappingsTest {
     }
 
     @Test
-    public void checkGetDefinitionMappings() {
+    public void checkGetDefinitionMappingsForDiagram() {
+        assertDefinitionMappings(org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram.class,
+                                 BPMNDiagram.class);
+    }
+
+    @Test
+    public void checkGetDefinitionMappingsForReusableSubprocess() {
+        assertDefinitionMappings(org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess.class,
+                                 ReusableSubprocess.class);
+    }
+
+    private void assertDefinitionMappings(final Class bpmnClass,
+                                          final Class cmClass) {
         final Map<Class<?>, Map<Class<?>, String>> definitionMappings = oryxIdMappings.getDefinitionMappings();
-        final Map<Class<?>, String> bpmnDefinitionMappings = definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram.class);
-        final Map<Class<?>, String> cmDefinitionMappings = definitionMappings.get(BPMNDiagram.class);
+        final Map<Class<?>, String> bpmnDefinitionMappings = definitionMappings.get(bpmnClass);
+        final Map<Class<?>, String> cmDefinitionMappings = definitionMappings.get(cmClass);
         assertNotNull(bpmnDefinitionMappings);
         assertNotNull(cmDefinitionMappings);
         assertEquals(bpmnDefinitionMappings,

@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.cm.client.shape.DiagramShape;
 import org.kie.workbench.common.stunner.cm.client.shape.NullShape;
 import org.kie.workbench.common.stunner.cm.client.shape.StageShape;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementDiagramShapeDef;
+import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementReusableSubprocessTaskShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSubprocessShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementTaskShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.NullShapeDef;
@@ -107,6 +108,15 @@ public class CaseManagementShapesFactoryImpl extends
                                                        height);
             shape = new ActivityShape(taskProxy,
                                       view);
+        } else if (isCaseManagementReusableSubprocessActivity(proxy)) {
+            found = true;
+            final CaseManagementReusableSubprocessTaskShapeDef taskProxy = (CaseManagementReusableSubprocessTaskShapeDef) proxy;
+            final double width = BaseTask.BaseTaskBuilder.WIDTH;
+            final double height = BaseTask.BaseTaskBuilder.HEIGHT;
+            final ActivityView view = new ActivityView(width,
+                                                       height);
+            shape = new ActivityShape(taskProxy,
+                                      view);
         }
 
         if (!found) {
@@ -130,6 +140,10 @@ public class CaseManagementShapesFactoryImpl extends
 
     private boolean isCaseManagementActivity(final ShapeDef<?> proxy) {
         return proxy instanceof CaseManagementTaskShapeDef;
+    }
+
+    private boolean isCaseManagementReusableSubprocessActivity(final ShapeDef<?> proxy) {
+        return proxy instanceof CaseManagementReusableSubprocessTaskShapeDef;
     }
 
     @Override

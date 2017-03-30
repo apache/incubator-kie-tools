@@ -22,7 +22,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.kie.workbench.common.stunner.bpmn.definition.Categories;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.BindableBS3PaletteGlyphViewFactory;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconRenderer;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.icons.IconResource;
@@ -33,10 +32,11 @@ import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 @ApplicationScoped
 public class CaseManagementBS3PaletteViewFactory extends BindableBS3PaletteGlyphViewFactory {
 
+    @SuppressWarnings("unchecked")
     private final static Map<String, IconResource> CATEGORY_RENDERERS_SETTINGS = new HashMap<String, IconResource>() {{
-        put(Categories.SUBPROCESSES,
+        put(CaseManagementPaletteDefinitionFactory.STAGES,
             new IconResource(IconType.STAR));
-        put(Categories.ACTIVITIES,
+        put(CaseManagementPaletteDefinitionFactory.ACTIVITIES,
             new IconResource(IconType.TASKS));
     }};
 
