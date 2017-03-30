@@ -18,6 +18,7 @@ package org.drools.workbench.services.verifier.webworker.client;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.services.verifier.api.client.configuration.CheckConfiguration;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 
 public class CheckConfigurationProvider {
 
@@ -29,6 +30,7 @@ public class CheckConfigurationProvider {
             case RESOLVED_HIT:
                 return getWhiteListWithNoRowToRowChecks();
             case UNIQUE_HIT:
+                return getUniqueHitPolicyChecks();
             case NONE:
             default:
                 return CheckConfiguration.newDefault();
@@ -40,6 +42,16 @@ public class CheckConfigurationProvider {
 
         checkConfiguration.getCheckConfiguration()
                 .removeAll(CheckType.getRowLevelCheckTypes());
+
+        return checkConfiguration;
+    }
+
+    private static CheckConfiguration getUniqueHitPolicyChecks() {
+        final CheckConfiguration checkConfiguration = CheckConfiguration.newDefault();
+        checkConfiguration.setSeverityOverwrites(CheckType.REDUNDANT_ROWS,
+                                                 Severity.ERROR);
+        checkConfiguration.setSeverityOverwrites(CheckType.SUBSUMPTANT_ROWS,
+                                                 Severity.ERROR);
 
         return checkConfiguration;
     }

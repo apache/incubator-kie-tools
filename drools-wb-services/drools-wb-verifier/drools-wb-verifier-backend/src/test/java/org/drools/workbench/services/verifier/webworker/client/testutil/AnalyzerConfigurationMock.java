@@ -15,19 +15,24 @@
  */
 package org.drools.workbench.services.verifier.webworker.client.testutil;
 
+import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.configuration.CheckConfiguration;
 import org.drools.workbench.services.verifier.api.client.configuration.RunnerType;
+import org.drools.workbench.services.verifier.webworker.client.CheckConfigurationProvider;
 
 public class AnalyzerConfigurationMock
         extends AnalyzerConfiguration {
 
-
     public AnalyzerConfigurationMock() {
-        super( "UUID",
-               new DateTimeFormatProviderMock() ,
-               new UUIDKeyProviderMock(),
-               CheckConfiguration.newDefault(),
-               RunnerType.JAVA );
+        this(GuidedDecisionTable52.HitPolicy.NONE);
+    }
+
+    public AnalyzerConfigurationMock(GuidedDecisionTable52.HitPolicy hitPolicy) {
+        super("UUID",
+              new DateTimeFormatProviderMock(),
+              new UUIDKeyProviderMock(),
+              CheckConfigurationProvider.get(hitPolicy),
+              RunnerType.JAVA);
     }
 }

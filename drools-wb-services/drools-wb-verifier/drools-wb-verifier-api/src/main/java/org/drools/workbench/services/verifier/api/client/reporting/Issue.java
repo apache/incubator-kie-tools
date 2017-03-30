@@ -64,4 +64,36 @@ public class Issue {
     public void setDebugMessage( final String debugMessage ) {
         this.debugMessage = debugMessage;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Issue issue = (Issue) o;
+
+        if (severity != issue.severity) {
+            return false;
+        }
+        if (rowNumbers != null ? !rowNumbers.equals(issue.rowNumbers) : issue.rowNumbers != null) {
+            return false;
+        }
+        if (checkType != issue.checkType) {
+            return false;
+        }
+        return debugMessage != null ? debugMessage.equals(issue.debugMessage) : issue.debugMessage == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = severity != null ? ~~severity.hashCode() : 0;
+        result = 31 * result + (rowNumbers != null ? ~~rowNumbers.hashCode() : 0);
+        result = 31 * result + (checkType != null ? ~~checkType.hashCode() : 0);
+        result = 31 * result + (debugMessage != null ? ~~debugMessage.hashCode() : 0);
+        return ~~result;
+    }
 }

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
@@ -30,6 +31,8 @@ import org.drools.workbench.services.verifier.plugin.client.builders.BuildExcept
 import org.drools.workbench.services.verifier.plugin.client.builders.ModelMetaDataEnhancer;
 import org.drools.workbench.services.verifier.webworker.client.testutil.AnalyzerProvider;
 import org.junit.Before;
+
+import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.loadResource;
 
 public abstract class AnalyzerUpdateTestBase {
 
@@ -224,6 +227,18 @@ public abstract class AnalyzerUpdateTestBase {
         updates.add(new Coordinate(x,
                                    y));
         return updates;
+    }
+
+    protected void analyze(String resourceName) throws Exception {
+        final String xml = loadResource(resourceName);
+
+        final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance().unmarshal(xml);
+
+        final Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
+
+        // First run
+        analyzer.resetChecks();
+        analyzer.analyze();
     }
 
     public class ValueSetter {

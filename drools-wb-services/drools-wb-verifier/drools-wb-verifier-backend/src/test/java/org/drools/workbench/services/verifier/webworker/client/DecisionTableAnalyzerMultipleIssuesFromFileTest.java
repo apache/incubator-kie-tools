@@ -20,9 +20,6 @@ import java.util.HashSet;
 
 import org.drools.workbench.services.verifier.api.client.index.DataType;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.services.verifier.core.main.Analyzer;
 import org.drools.workbench.services.verifier.plugin.client.api.FactTypes;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,11 +27,11 @@ import org.junit.runner.RunWith;
 
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.assertContains;
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.assertOnlyContains;
-import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.loadResource;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpdateTestBase {
 
+    @Override
     @Before
     public void setUp() throws
             Exception {
@@ -55,9 +52,7 @@ public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpd
     }
 
     @Test
-    public void testMissingRangeAndRedundantRows() throws
-            Exception,
-            UpdateException {
+    public void testMissingRangeAndRedundantRows() throws Exception, UpdateException {
 
         analyze("missingRangeAndRedundantRows.gdst");
 
@@ -248,17 +243,5 @@ public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpd
                            RULE_HAS_NO_RESTRICTIONS_AND_WILL_ALWAYS_FIRE,
                            RULE_HAS_NO_ACTION,
                            SINGLE_HIT_LOST);
-    }
-
-    private void analyze(String resourceName) throws Exception {
-        final String xml = loadResource(resourceName);
-
-        final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance().unmarshal(xml);
-
-        final Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
-
-        // First run
-        analyzer.resetChecks();
-        analyzer.analyze();
     }
 }

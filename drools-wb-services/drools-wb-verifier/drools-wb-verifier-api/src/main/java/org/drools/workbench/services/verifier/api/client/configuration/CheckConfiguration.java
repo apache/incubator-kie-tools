@@ -51,6 +51,10 @@ public class CheckConfiguration {
         return configurations;
     }
 
+    public void setSeverityOverwrites(CheckType checkType, Severity severity) {
+        severityOverwrites.put(checkType, severity);
+    }
+
     public Optional<Severity> getSeverityOverwrite( final CheckType checkType ) {
         if ( severityOverwrites.containsKey( checkType ) ) {
             return Optional.of( severityOverwrites.get( checkType ) );
