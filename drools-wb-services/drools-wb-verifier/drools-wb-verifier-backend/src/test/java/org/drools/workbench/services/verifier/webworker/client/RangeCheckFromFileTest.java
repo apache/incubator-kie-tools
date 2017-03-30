@@ -35,50 +35,41 @@ import org.junit.runner.RunWith;
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class RangeCheckFromFileTest {
+public class RangeCheckFromFileTest extends AnalyzerUpdateTestBase {
 
-    @GwtMock
-    AnalysisConstants analysisConstants;
-
-    @GwtMock
-    DateTimeFormat dateTimeFormat;
-
-    private AnalyzerProvider analyzerProvider;
-
+    @Override
     @Before
     public void setUp() throws
-                        Exception {
-        analyzerProvider = new AnalyzerProvider();
+            Exception {
+        super.setUp();
 
         analyzerProvider.getFactTypes()
-                .add( new FactTypes.FactType( "Employee",
-                                              new HashSet<FactTypes.Field>() {
-                                                  {
-                                                      add( new FactTypes.Field( "age",
-                                                                                DataType.TYPE_NUMERIC_INTEGER ) );
-                                                      add( new FactTypes.Field( "yearsService",
-                                                                                DataType.TYPE_NUMERIC_INTEGER ) );
-                                                      add( new FactTypes.Field( "vacationEntitlement",
-                                                                                DataType.TYPE_NUMERIC_INTEGER ) );
-                                                  }
-                                              } ) );
+                .add(new FactTypes.FactType("Employee",
+                                            new HashSet<FactTypes.Field>() {
+                                                {
+                                                    add(new FactTypes.Field("age",
+                                                                            DataType.TYPE_NUMERIC_INTEGER));
+                                                    add(new FactTypes.Field("yearsService",
+                                                                            DataType.TYPE_NUMERIC_INTEGER));
+                                                    add(new FactTypes.Field("vacationEntitlement",
+                                                                            DataType.TYPE_NUMERIC_INTEGER));
+                                                }
+                                            }));
     }
 
     @Test
     public void testFileExtraDays() throws
-                                    Exception {
-        final String xml = loadResource( "Extra 5 days.gdst" );
+            Exception {
+        final String xml = loadResource("Extra 5 days.gdst");
 
         final GuidedDecisionTable52 table52 = GuidedDTXMLPersistence.getInstance()
-                .unmarshal( xml );
-        final Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+                .unmarshal(xml);
+        final Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
 
         analyzer.resetChecks();
         analyzer.analyze();
 
-        assertOnlyContains( analyzerProvider.getAnalysisReport(),
-                            "MissingRangeTitle" );
+        assertOnlyContains(analyzerProvider.getAnalysisReport(),
+                           MISSING_RANGE_TITLE);
     }
-
-
 }

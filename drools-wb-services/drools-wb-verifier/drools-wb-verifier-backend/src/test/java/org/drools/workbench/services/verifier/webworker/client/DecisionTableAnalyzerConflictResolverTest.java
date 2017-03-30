@@ -21,120 +21,153 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.*;
-import static org.junit.Assert.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class DecisionTableAnalyzerConflictResolverTest
         extends AnalyzerUpdateTestBase {
 
     @Test
     public void testNoIssue() throws Exception {
         analyzer = analyzerProvider.makeAnalyser()
-                                   .withPersonAgeColumn( ">" )
-                                   .withAccountDepositColumn( "<" )
-                                   .withApplicationApprovedSetField()
-                                   .withData( DataBuilderProvider
-                                                      .row( 100, 0.0, true )
-                                                      .end() )
-                                   .buildAnalyzer();
+                .withPersonAgeColumn(">")
+                .withAccountDepositColumn("<")
+                .withApplicationApprovedSetField()
+                .withData(DataBuilderProvider
+                                  .row(100,
+                                       0.0,
+                                       true)
+                                  .end())
+                .buildAnalyzer();
 
         fireUpAnalyzer();
 
-        assertDoesNotContain( "ConflictingRows", analyzerProvider.getAnalysisReport() );
+        assertDoesNotContain(CONFLICTING_ROWS,
+                             analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testNoIssueWithNulls() throws Exception {
         table52 = analyzerProvider.makeAnalyser()
-                                  .withPersonAgeColumn( ">" )
-                                  .withPersonAgeColumn( "<" )
-                                  .withData( DataBuilderProvider
-                                                     .row( null, null )
-                                                     .end() )
-                                  .buildTable();
-
+                .withPersonAgeColumn(">")
+                .withPersonAgeColumn("<")
+                .withData(DataBuilderProvider
+                                  .row(null,
+                                       null)
+                                  .end())
+                .buildTable();
 
         // After a save has been done, the server side sometimes sets the String field value to "" for numbers, even when the data type is a number
-        table52.getData().get( 0 ).get( 2 ).setStringValue( "" );
-        table52.getData().get( 0 ).get( 3 ).setStringValue( "" );
+        table52.getData().get(0).get(2).setStringValue("");
+        table52.getData().get(0).get(3).setStringValue("");
 
         fireUpAnalyzer();
 
-        assertContains( "EmptyRule", analyzerProvider.getAnalysisReport(), 1);
-
+        assertContains(EMPTY_RULE,
+                       analyzerProvider.getAnalysisReport(),
+                       1);
     }
 
     @Test
     public void testImpossibleMatch001() throws Exception {
         analyzer = analyzerProvider.makeAnalyser()
-                                   .withPersonAgeColumn( ">" )
-                                   .withPersonAgeColumn( "<" )
-                                   .withData( DataBuilderProvider
-                                                      .row( 100, 0 )
-                                                      .end() )
-                                   .buildAnalyzer();
-
+                .withPersonAgeColumn(">")
+                .withPersonAgeColumn("<")
+                .withData(DataBuilderProvider
+                                  .row(100,
+                                       0)
+                                  .end())
+                .buildAnalyzer();
 
         fireUpAnalyzer();
 
-        assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport() );
+        assertContains(IMPOSSIBLE_MATCH,
+                       analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testImpossibleMatch002() throws Exception {
         analyzer = analyzerProvider.makeAnalyser()
-                                   .withEnumColumn( "a", "Person", "name", "==", "Toni,Eder" )
-                                   .withPersonNameColumn( "==" )
-                                   .withData( DataBuilderProvider
-                                                      .row( "Toni", "" )
-                                                      .end() )
-                                   .buildAnalyzer();
+                .withEnumColumn("a",
+                                "Person",
+                                "name",
+                                "==",
+                                "Toni,Eder")
+                .withPersonNameColumn("==")
+                .withData(DataBuilderProvider
+                                  .row("Toni",
+                                       "")
+                                  .end())
+                .buildAnalyzer();
 
         fireUpAnalyzer();
 
-        assertDoesNotContain( "ImpossibleMatch", analyzerProvider.getAnalysisReport() );
+        assertDoesNotContain(IMPOSSIBLE_MATCH,
+                             analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testConflictIgnoreEmptyRows() throws Exception {
         analyzer = analyzerProvider.makeAnalyser()
-                                   .withPersonAgeColumn( "==" )
-                                   .withPersonApprovedActionSetField()
-                                   .withData( DataBuilderProvider
-                                                      .row( null, "" )
-                                                      .row( null, "true" )
-                                                      .end() )
-                                   .buildAnalyzer();
+                .withPersonAgeColumn("==")
+                .withPersonApprovedActionSetField()
+                .withData(DataBuilderProvider
+                                  .row(null,
+                                       "")
+                                  .row(null,
+                                       "true")
+                                  .end())
+                .buildAnalyzer();
 
         fireUpAnalyzer();
 
-        assertDoesNotContain( "ConflictingRows", analyzerProvider.getAnalysisReport(), 1 );
-        assertDoesNotContain( "ConflictingRows", analyzerProvider.getAnalysisReport(), 2 );
-
+        assertDoesNotContain(CONFLICTING_ROWS,
+                             analyzerProvider.getAnalysisReport(),
+                             1);
+        assertDoesNotContain(CONFLICTING_ROWS,
+                             analyzerProvider.getAnalysisReport(),
+                             2);
     }
 
     @Test
     public void testConflictWithASubsumingRow() throws Exception {
         analyzer = analyzerProvider.makeAnalyser()
-                                   .withPersonAgeColumn( "==" )
-                                   .withPersonNameColumn( "==" )
-                                   .withPersonLastNameColumn( "==" )
-                                   .withPersonSalarySetFieldAction()
-                                   .withPersonDescriptionSetActionField()
-                                   .withData( DataBuilderProvider
-                                                      .row( null, null, null, 100, "ok" )
-                                                      .row( null, "Toni", null, 200, "ok" )
-                                                      .row( 12, "Toni", "Rikkola", 300, "ok" )
-                                                      .row( null, null, null, null, null )
-                                                      .end()
-                                            )
-                                   .buildAnalyzer();
+                .withPersonAgeColumn("==")
+                .withPersonNameColumn("==")
+                .withPersonLastNameColumn("==")
+                .withPersonSalarySetFieldAction()
+                .withPersonDescriptionSetActionField()
+                .withData(DataBuilderProvider
+                                  .row(null,
+                                       null,
+                                       null,
+                                       100,
+                                       "ok")
+                                  .row(null,
+                                       "Toni",
+                                       null,
+                                       200,
+                                       "ok")
+                                  .row(12,
+                                       "Toni",
+                                       "Rikkola",
+                                       300,
+                                       "ok")
+                                  .row(null,
+                                       null,
+                                       null,
+                                       null,
+                                       null)
+                                  .end()
+                )
+                .buildAnalyzer();
 
         fireUpAnalyzer();
 
-        assertContains( "ConflictingRows", analyzerProvider.getAnalysisReport(), 2 );
-        assertContains( "ConflictingRows", analyzerProvider.getAnalysisReport(), 3 );
-
+        assertContains(CONFLICTING_ROWS,
+                       analyzerProvider.getAnalysisReport(),
+                       2);
+        assertContains(CONFLICTING_ROWS,
+                       analyzerProvider.getAnalysisReport(),
+                       3);
     }
-
 }

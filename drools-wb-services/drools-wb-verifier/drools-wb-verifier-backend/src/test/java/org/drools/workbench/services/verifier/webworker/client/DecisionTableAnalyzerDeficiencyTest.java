@@ -33,152 +33,271 @@ public class DecisionTableAnalyzerDeficiencyTest
 
     @Test
     public void testRuleIsNotDeficient() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", "==" )
-                .withStringColumn( "a", "Person", "name", "==" )
-                .withStringColumn( "a", "Person", "lastName", "==" )
-                .withActionSetField( "a", "salary", DataType.TYPE_NUMERIC_INTEGER )
-                .withData( new Object[][]{
-                        { 1, "description", null, "Eder", null, 100 },
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            "==")
+                .withStringColumn("a",
+                                  "Person",
+                                  "name",
+                                  "==")
+                .withStringColumn("a",
+                                  "Person",
+                                  "lastName",
+                                  "==")
+                .withActionSetField("a",
+                                    "salary",
+                                    DataType.TYPE_NUMERIC_INTEGER)
+                .withData(new Object[][]{
+                        {1, "description", null, "Eder", null, 100},
                         {2, "description", 10, null, null, 100},
                         {3, "description", null, "Toni", "Rikkola", 100},
-                        { 4, "description", null, null, null, null }
-                } )
+                        {4, "description", null, null, null, null}
+                })
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport() );
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testRuleIsDeficient001() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", "==" )
-                .withStringColumn( "a", "Person", "name", "==" )
-                .withStringColumn( "a", "Person", "lastName", "==" )
-                .withActionSetField( "a", "salary", DataType.TYPE_NUMERIC_INTEGER )
-                .withData( new Object[][]{
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            "==")
+                .withStringColumn("a",
+                                  "Person",
+                                  "name",
+                                  "==")
+                .withStringColumn("a",
+                                  "Person",
+                                  "lastName",
+                                  "==")
+                .withActionSetField("a",
+                                    "salary",
+                                    DataType.TYPE_NUMERIC_INTEGER)
+                .withData(new Object[][]{
                         {1, "description", null, "Eder", null, 100},
                         {2, "description", 10, null, null, 200},
                         {3, "description", null, "Toni", "Rikkola", 300},
                         {4, "description", null, null, null, null}
-                } )
+                })
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
-        assertContains( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 3 );
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 4 );
-
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             1);
+        assertContains(DEFICIENT_ROW,
+                       analyzerProvider.getAnalysisReport(),
+                       2);
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             3);
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             4);
     }
 
     @Test
     public void testRuleIsDeficient002() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", "==" )
-                .withStringColumn( "a", "Person", "name", "==" )
-                .withStringColumn( "a", "Person", "lastName", "==" )
-                .withActionSetField( "a", "salary", DataType.TYPE_NUMERIC_INTEGER )
-                .withActionSetField( "a", "description", DataType.TYPE_STRING )
-                .withData( new Object[][]{
-                        { 1, "description", 10, "", "", 100, "ok" },
-                        { 2, "description", null, "", "", 200, "ok" },
-                        { 3, "description", 12, "", "Rikkola", 300, "ok" },
-                        { 4, "description", null, "", "", null, "" }
-                } )
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            "==")
+                .withStringColumn("a",
+                                  "Person",
+                                  "name",
+                                  "==")
+                .withStringColumn("a",
+                                  "Person",
+                                  "lastName",
+                                  "==")
+                .withActionSetField("a",
+                                    "salary",
+                                    DataType.TYPE_NUMERIC_INTEGER)
+                .withActionSetField("a",
+                                    "description",
+                                    DataType.TYPE_STRING)
+                .withData(new Object[][]{
+                        {1, "description", 10, "", "", 100, "ok"},
+                        {2, "description", null, "", "", 200, "ok"},
+                        {3, "description", 12, "", "Rikkola", 300, "ok"},
+                        {4, "description", null, "", "", null, ""}
+                })
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 3 );
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 4 );
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             1);
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             2);
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             3);
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             4);
 
-        setValue( 1, 3, "Toni" );
+        setValue(1,
+                 3,
+                 "Toni");
 
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
-        assertContains( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 3 );
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 4 );
-
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             1);
+        assertContains(DEFICIENT_ROW,
+                       analyzerProvider.getAnalysisReport(),
+                       2);
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             3);
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             4);
     }
 
     @Test
     public void testRuleIsDeficient003() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", "==" )
-                .withStringColumn( "a", "Person", "name", "==" )
-                .withStringColumn( "a", "Person", "lastName", "==" )
-                .withActionSetField( "a", "salary", DataType.TYPE_NUMERIC_INTEGER )
-                .withActionSetField( "a", "description", DataType.TYPE_STRING )
-                .withData( new Object[][]{
-                        { 1, "description", 10, "", "", 100, "ok" },
-                        { 2, "description", null, "Eder", "", 200, "ok" },
-                        { 3, "description", 12, "", "Rikkola", 300, "ok" },
-                        { 4, "description", null, "", "", null, "" }
-                } )
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            "==")
+                .withStringColumn("a",
+                                  "Person",
+                                  "name",
+                                  "==")
+                .withStringColumn("a",
+                                  "Person",
+                                  "lastName",
+                                  "==")
+                .withActionSetField("a",
+                                    "salary",
+                                    DataType.TYPE_NUMERIC_INTEGER)
+                .withActionSetField("a",
+                                    "description",
+                                    DataType.TYPE_STRING)
+                .withData(new Object[][]{
+                        {1, "description", 10, "", "", 100, "ok"},
+                        {2, "description", null, "Eder", "", 200, "ok"},
+                        {3, "description", 12, "", "Rikkola", 300, "ok"},
+                        {4, "description", null, "", "", null, ""}
+                })
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
-        assertContains( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 3 );
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 4 );
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             1);
+        assertContains(DEFICIENT_ROW,
+                       analyzerProvider.getAnalysisReport(),
+                       2);
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             3);
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             4);
 
-        setValue( 2, 3, "Toni" );
+        setValue(2,
+                 3,
+                 "Toni");
 
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 3 );
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 4 );
-
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             1);
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             2);
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             3);
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             4);
     }
 
     @Test
     public void testRuleIsDeficient004() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", "==" )
-                .withStringColumn( "a", "Person", "name", "==" )
-                .withStringColumn( "a", "Person", "lastName", "==" )
-                .withActionSetField( "a", "salary", DataType.TYPE_NUMERIC_INTEGER )
-                .withActionSetField( "a", "description", DataType.TYPE_STRING )
-                .withData( new Object[][]{
-                        { 1, "description", 10, "", "", 100, "ok" },
-                        { 2, "description", null, "Eder", "", 200, "ok" },
-                        { 3, "description", 12, "Toni", "Rikkola", 300, "ok" },
-                        { 4, "description", null, "", "", null, "" }
-                } )
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            "==")
+                .withStringColumn("a",
+                                  "Person",
+                                  "name",
+                                  "==")
+                .withStringColumn("a",
+                                  "Person",
+                                  "lastName",
+                                  "==")
+                .withActionSetField("a",
+                                    "salary",
+                                    DataType.TYPE_NUMERIC_INTEGER)
+                .withActionSetField("a",
+                                    "description",
+                                    DataType.TYPE_STRING)
+                .withData(new Object[][]{
+                        {1, "description", 10, "", "", 100, "ok"},
+                        {2, "description", null, "Eder", "", 200, "ok"},
+                        {3, "description", 12, "Toni", "Rikkola", 300, "ok"},
+                        {4, "description", null, "", "", null, ""}
+                })
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 3 );
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 4 );
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             1);
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             2);
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             3);
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             4);
 
-        setValue( 2, 3, "" );
+        setValue(2,
+                 3,
+                 "");
 
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 1 );
-        assertContains( "DeficientRow", analyzerProvider.getAnalysisReport(), 2 );
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 3 );
-        assertDoesNotContain( "DeficientRow", analyzerProvider.getAnalysisReport(), 4 );
-
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             1);
+        assertContains(DEFICIENT_ROW,
+                       analyzerProvider.getAnalysisReport(),
+                       2);
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             3);
+        assertDoesNotContain(DEFICIENT_ROW,
+                             analyzerProvider.getAnalysisReport(),
+                             4);
     }
-
 }

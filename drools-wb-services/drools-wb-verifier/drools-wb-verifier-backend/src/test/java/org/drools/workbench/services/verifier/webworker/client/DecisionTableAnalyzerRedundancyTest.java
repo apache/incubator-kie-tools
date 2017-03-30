@@ -23,46 +23,49 @@ import org.junit.runner.RunWith;
 
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.assertDoesNotContain;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class DecisionTableAnalyzerRedundancyTest
         extends AnalyzerUpdateTestBase {
 
     @Test
     public void twoNewRulesShouldNotBeRedundant() throws Exception {
         table52 = analyzerProvider.makeAnalyser()
-                                  .conditionColumn().person( "aa" ).age( ">" )
-                                  .actionColumn().retract()
-                                  .withData( DataBuilderProvider
-                                                     .row( 22, "aa" )
-                                                     .end() )
-                                  .buildTable();
+                .conditionColumn().person("aa").age(">")
+                .actionColumn().retract()
+                .withData(DataBuilderProvider
+                                  .row(22,
+                                       "aa")
+                                  .end())
+                .buildTable();
 
         fireUpAnalyzer();
 
-        appendRow( DataType.DataTypes.NUMERIC_INTEGER,
-                   DataType.DataTypes.STRING );
+        appendRow(DataType.DataTypes.NUMERIC_INTEGER,
+                  DataType.DataTypes.STRING);
 
-        assertDoesNotContain( "RedundantRows", analyzerProvider.getAnalysisReport() );
+        assertDoesNotContain(REDUNDANT_ROWS,
+                             analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void twoNewRulesShouldNotBeRedundantScenario() throws Exception {
         table52 = analyzerProvider.makeAnalyser()
-                                  .conditionColumn().person( "aa" ).age( ">" )
-                                  .actionColumn().retract()
-                                  .buildTable();
+                .conditionColumn().person("aa").age(">")
+                .actionColumn().retract()
+                .buildTable();
 
         fireUpAnalyzer();
 
-        appendRow( DataType.DataTypes.NUMERIC_INTEGER,
-                   DataType.DataTypes.STRING  );
+        appendRow(DataType.DataTypes.NUMERIC_INTEGER,
+                  DataType.DataTypes.STRING);
 
-        setCoordinate().row( 0 ).column( 2 ).toValue( 22 );
-        setCoordinate().row( 0 ).column( 3 ).toValue( "aa" );
+        setCoordinate().row(0).column(2).toValue(22);
+        setCoordinate().row(0).column(3).toValue("aa");
 
-        appendRow( DataType.DataTypes.NUMERIC_INTEGER,
-                   DataType.DataTypes.STRING  );
+        appendRow(DataType.DataTypes.NUMERIC_INTEGER,
+                  DataType.DataTypes.STRING);
 
-        assertDoesNotContain( "RedundantRows", analyzerProvider.getAnalysisReport() );
+        assertDoesNotContain(REDUNDANT_ROWS,
+                             analyzerProvider.getAnalysisReport());
     }
 }

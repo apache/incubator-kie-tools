@@ -17,171 +17,127 @@
 package org.drools.workbench.services.verifier.webworker.client;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.services.verifier.api.client.resources.i18n.AnalysisConstants;
-import org.drools.workbench.services.verifier.core.main.Analyzer;
-import org.drools.workbench.services.verifier.plugin.client.Coordinate;
-import org.drools.workbench.services.verifier.webworker.client.testutil.AnalyzerProvider;
-import org.junit.Before;
-import org.junit.Ignore;
+import org.drools.workbench.models.datamodel.imports.Import;
+import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.services.verifier.webworker.client.testutil.ExtendedGuidedDecisionTableBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-@Ignore("Just for profiling")
-public class SpeedTest {
+public class SpeedTest extends AnalyzerUpdateTestBase {
 
-    @GwtMock
-    AnalysisConstants analysisConstants;
-    @GwtMock
-    DateTimeFormat dateTimeFormat;
-
-    private AnalyzerProvider analyzerProvider;
-
-    @Before
-    public void setUp() throws
-                        Exception {
-        analyzerProvider = new AnalyzerProvider();
-    }
+    Logger logger = LoggerFactory.getLogger(SpeedTest.class);
 
     @Test
     public void subsumptionTable() throws
-                                   Exception,
-                                   UpdateException {
+            Exception,
+            UpdateException {
         long baseline = System.currentTimeMillis();
 
-        final DataBuilderProvider.DataBuilder builder = DataBuilderProvider
-                .row( true,
-                      null,
-                      true );
-        for ( int i = 0; i < 1000; i++ ) {
+        final DataBuilderProvider.DataBuilder builder = DataBuilderProvider.row(true,
+                                                                                null,
+                                                                                true);
+        for (int i = 0; i < 100; i++) {
 
-            builder
-                    .row( null,
-                          false,
-                          true );
+            builder.row(null,
+                        false,
+                        true);
         }
 
-        final Object[][] end = builder.end();
+        final Object[][] data = builder.end();
 
-        long now = System.currentTimeMillis();
-        System.out.println( "Loading of model took.. " + ( now - baseline ) + " ms" );
-        baseline = now;
-
-        final GuidedDecisionTable52 table52 = analyzerProvider.makeAnalyser()
-                .withPersonApprovedColumn( "==" )
-                .withPersonApprovedColumn( "!=" )
-                .withPersonApprovedActionSetField()
-                .withData( end )
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionBooleanColumn("$p",
+                                            "Person",
+                                            "approved",
+                                            "==")
+                .withConditionBooleanColumn("$p",
+                                            "Person",
+                                            "approved",
+                                            "!=")
+                .withActionSetField("$p",
+                                    "approved",
+                                    DataType.TYPE_BOOLEAN)
+                .withData(data)
                 .buildTable();
 
-        now = System.currentTimeMillis();
-        System.out.println( "Made table.. " + ( now - baseline ) + " ms" );
+        long now = System.currentTimeMillis();
+        logger.debug("Loading of model took.. " + (now - baseline) + " ms");
         baseline = now;
 
-        final Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+        fireUpAnalyzer();
 
         now = System.currentTimeMillis();
-        System.out.println( "Indexing.. " + ( now - baseline ) + " ms" );
+        logger.debug("Analyzing took.. " + (now - baseline) + " ms");
         baseline = now;
 
-        analyzer.analyze();
+        setValue(1,
+                 2,
+                 false);
 
         now = System.currentTimeMillis();
-        System.out.println( "Validated.. " + ( now - baseline ) + " ms" );
-        baseline = now;
+        logger.debug("Update.. " + (now - baseline) + " ms");
 
-        table52.getData()
-                .get( 1 )
-                .get( 2 )
-                .setBooleanValue( false );
-
-        List<Coordinate> updates = new ArrayList<>();
-        updates.add( new Coordinate( 1,
-                                     2 ) );
-        analyzerProvider.getUpdateManager( table52,
-                                           analyzer )
-                .update( table52,
-                         updates );
-
-        now = System.currentTimeMillis();
-        System.out.println( "Update.. " + ( now - baseline ) + " ms" );
-
-
-        assertContains( "RedundantRows",
-                        analyzerProvider.getAnalysisReport() );
+        assertContains(REDUNDANT_ROWS,
+                       analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void noConflictTable() throws
-                                  Exception,
-                                  UpdateException {
+            Exception,
+            UpdateException {
         long baseline = System.currentTimeMillis();
 
         final DataBuilderProvider.DataBuilder builder = DataBuilderProvider
-                .row( -1,
-                      true );
-        for ( int i = 0; i < 1000; i++ ) {
+                .row(-1,
+                     true);
+        for (int i = 0; i < 1000; i++) {
             builder
-                    .row( i,
-                          true );
+                    .row(i,
+                         true);
         }
 
-        final Object[][] end = builder.end();
+        final Object[][] data = builder.end();
 
-        long now = System.currentTimeMillis();
-        System.out.println( "Loading of model took.. " + ( now - baseline ) + " ms" );
-        baseline = now;
-
-        final GuidedDecisionTable52 table52 = analyzerProvider.makeAnalyser()
-                .withPersonAgeColumn( "==" )
-                .withPersonApprovedActionSetField()
-                .withData( end )
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                        new ArrayList<Import>(),
+                                                        "mytable")
+                .withConditionIntegerColumn("$p",
+                                            "Person",
+                                            "age",
+                                            "==")
+                .withActionSetField("$p",
+                                    "approved",
+                                    DataType.TYPE_BOOLEAN)
+                .withData(data)
                 .buildTable();
 
-        now = System.currentTimeMillis();
-        System.out.println( "Made table.. " + ( now - baseline ) + " ms" );
+        long now = System.currentTimeMillis();
+        logger.debug("Loading of model took.. " + (now - baseline) + " ms");
         baseline = now;
 
-        final Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+        fireUpAnalyzer();
 
         now = System.currentTimeMillis();
-        System.out.println( "Indexing.. " + ( now - baseline ) + " ms" );
+        logger.debug("Analyzing took.. " + (now - baseline) + " ms");
         baseline = now;
 
-        analyzer.analyze();
+        setValue(1,
+                 2,
+                 3);
 
         now = System.currentTimeMillis();
-        System.out.println( "Validated.. " + ( now - baseline ) + " ms" );
-        baseline = now;
+        logger.debug("Update.. " + (now - baseline) + " ms");
 
-        table52.getData()
-                .get( 1 )
-                .get( 2 )
-                .setNumericValue( 3 );
-
-        List<Coordinate> updates = new ArrayList<>();
-        updates.add( new Coordinate( 1,
-                                     2 ) );
-        analyzerProvider.getUpdateManager( table52,
-                                           analyzer )
-                .update( table52,
-                         updates );
-
-        now = System.currentTimeMillis();
-        System.out.println( "Update.. " + ( now - baseline ) + " ms" );
-
-
-        assertContains( "RedundantRows",
-                        analyzerProvider.getAnalysisReport() );
+        assertContains(REDUNDANT_ROWS,
+                       analyzerProvider.getAnalysisReport());
     }
-
-
 }

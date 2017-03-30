@@ -19,15 +19,13 @@ package org.drools.workbench.services.verifier.webworker.client.testutil;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.services.verifier.api.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.services.verifier.core.main.Analyzer;
 import org.drools.workbench.services.verifier.plugin.client.api.FactTypes;
+import org.drools.workbench.services.verifier.webworker.client.AnalyzerUpdateTestBase;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -36,446 +34,427 @@ import org.junit.runner.RunWith;
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.*;
 
 @RunWith(GwtMockitoTestRunner.class)
-public class DecisionTableAnalyzerSubsumptionResolverTest {
-
-    @GwtMock
-    AnalysisConstants analysisConstants;
-
-    @GwtMock
-    DateTimeFormat dateTimeFormat;
-
-    private AnalyzerProvider analyzerProvider;
+public class DecisionTableAnalyzerSubsumptionResolverTest extends AnalyzerUpdateTestBase {
 
     @Before
     public void setUp() throws
-                        Exception {
-        analyzerProvider = new AnalyzerProvider();
-
-
-        analyzerProvider.getFactTypes()
-                .add( new FactTypes.FactType( "LoanApplication",
-                                              new HashSet<FactTypes.Field>() {
-                                                  {
-                                                      add( new FactTypes.Field( "amount",
-                                                                                DataType.TYPE_NUMERIC_INTEGER ) );
-                                                      add( new FactTypes.Field( "lengthYears",
-                                                                                DataType.TYPE_NUMERIC_INTEGER ) );
-                                                      add( new FactTypes.Field( "deposit",
-                                                                                DataType.TYPE_NUMERIC_INTEGER ) );
-                                                      add( new FactTypes.Field( "approved",
-                                                                                DataType.TYPE_BOOLEAN ) );
-                                                      add( new FactTypes.Field( "insuranceCost",
-                                                                                DataType.TYPE_NUMERIC_INTEGER ) );
-                                                      add( new FactTypes.Field( "approvedRate",
-                                                                                DataType.TYPE_NUMERIC_INTEGER ) );
-                                                  }
-                                              } ) );
+            Exception {
+        super.setUp();
 
         analyzerProvider.getFactTypes()
-                .add( new FactTypes.FactType( "IncomeSource",
-                                              new HashSet<FactTypes.Field>() {
-                                                  {
-                                                      add( new FactTypes.Field( "type",
-                                                                                DataType.TYPE_STRING ) );
-                                                  }
-                                              } ) );
+                .add(new FactTypes.FactType("LoanApplication",
+                                            new HashSet<FactTypes.Field>() {
+                                                {
+                                                    add(new FactTypes.Field("amount",
+                                                                            DataType.TYPE_NUMERIC_INTEGER));
+                                                    add(new FactTypes.Field("lengthYears",
+                                                                            DataType.TYPE_NUMERIC_INTEGER));
+                                                    add(new FactTypes.Field("deposit",
+                                                                            DataType.TYPE_NUMERIC_INTEGER));
+                                                    add(new FactTypes.Field("approved",
+                                                                            DataType.TYPE_BOOLEAN));
+                                                    add(new FactTypes.Field("insuranceCost",
+                                                                            DataType.TYPE_NUMERIC_INTEGER));
+                                                    add(new FactTypes.Field("approvedRate",
+                                                                            DataType.TYPE_NUMERIC_INTEGER));
+                                                }
+                                            }));
+
         analyzerProvider.getFactTypes()
-                .add( new FactTypes.FactType( "Person",
-                                              new HashSet<FactTypes.Field>() {
-                                                  {
-                                                      add( new FactTypes.Field( "name",
-                                                                                DataType.TYPE_STRING ) );
-                                                  }
-                                              } ) );
+                .add(new FactTypes.FactType("IncomeSource",
+                                            new HashSet<FactTypes.Field>() {
+                                                {
+                                                    add(new FactTypes.Field("type",
+                                                                            DataType.TYPE_STRING));
+                                                }
+                                            }));
+        analyzerProvider.getFactTypes()
+                .add(new FactTypes.FactType("Person",
+                                            new HashSet<FactTypes.Field>() {
+                                                {
+                                                    add(new FactTypes.Field("name",
+                                                                            DataType.TYPE_STRING));
+                                                }
+                                            }));
     }
 
     @Test
     public void testNoIssues() throws
-                               Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
-                .withConditionIntegerColumn( "application",
-                                             "LoanApplication",
-                                             "amount",
-                                             ">" )
-                .withConditionIntegerColumn( "application",
-                                             "LoanApplication",
-                                             "amount",
-                                             "<=" )
-                .withConditionIntegerColumn( "application",
-                                             "LoanApplication",
-                                             "lengthYears",
-                                             "==" )
-                .withConditionIntegerColumn( "application",
-                                             "LoanApplication",
-                                             "deposit",
-                                             "<" )
-                .withStringColumn( "income",
-                                   "IncomeSource",
-                                   "type",
-                                   "==" )
-                .withActionSetField( "application",
-                                     "approved",
-                                     DataType.TYPE_BOOLEAN )
-                .withActionSetField( "application",
-                                     "insuranceCost",
-                                     DataType.TYPE_NUMERIC_INTEGER )
-                .withActionSetField( "application",
-                                     "approvedRate",
-                                     DataType.TYPE_NUMERIC_INTEGER )
-                .withData( new Object[][]{
+            Exception {
+        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                                               new ArrayList<Import>(),
+                                                                               "mytable")
+                .withConditionIntegerColumn("application",
+                                            "LoanApplication",
+                                            "amount",
+                                            ">")
+                .withConditionIntegerColumn("application",
+                                            "LoanApplication",
+                                            "amount",
+                                            "<=")
+                .withConditionIntegerColumn("application",
+                                            "LoanApplication",
+                                            "lengthYears",
+                                            "==")
+                .withConditionIntegerColumn("application",
+                                            "LoanApplication",
+                                            "deposit",
+                                            "<")
+                .withStringColumn("income",
+                                  "IncomeSource",
+                                  "type",
+                                  "==")
+                .withActionSetField("application",
+                                    "approved",
+                                    DataType.TYPE_BOOLEAN)
+                .withActionSetField("application",
+                                    "insuranceCost",
+                                    DataType.TYPE_NUMERIC_INTEGER)
+                .withActionSetField("application",
+                                    "approvedRate",
+                                    DataType.TYPE_NUMERIC_INTEGER)
+                .withData(new Object[][]{
                         {1, "description", 131000, 200000, 30, 20000, "Asset", true, 0, 2},
                         {2, "description", 10000, 100000, 20, 2000, "Job", true, 0, 4},
                         {3, "description", 100001, 130000, 20, 3000, "Job", true, 10, 6},
                         {4, "description", null, null, null, null, null, null, null, null},
-                        {5, "description", null, null, null, null, null, null, null, null}} )
+                        {5, "description", null, null, null, null, null, null, null, null}})
                 .buildTable();
 
-        Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+        Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
 
         analyzer.resetChecks();
         analyzer.analyze();
 
-        assertDoesNotContain( "ThisRowIsRedundantTo(1)",
-                              analyzerProvider.getAnalysisReport() );
-        assertDoesNotContain( "ThisRowIsRedundantTo(2)",
-                              analyzerProvider.getAnalysisReport() );
-        assertDoesNotContain( "ThisRowIsRedundantTo(3)",
-                              analyzerProvider.getAnalysisReport() );
-        assertDoesNotContain( "ThisRowIsRedundantTo(4)",
-                              analyzerProvider.getAnalysisReport() );
-        assertDoesNotContain( "ThisRowIsRedundantTo(5)",
-                              analyzerProvider.getAnalysisReport() );
-
+        assertDoesNotContain("ThisRowIsRedundantTo(1)",
+                             analyzerProvider.getAnalysisReport());
+        assertDoesNotContain("ThisRowIsRedundantTo(2)",
+                             analyzerProvider.getAnalysisReport());
+        assertDoesNotContain("ThisRowIsRedundantTo(3)",
+                             analyzerProvider.getAnalysisReport());
+        assertDoesNotContain("ThisRowIsRedundantTo(4)",
+                             analyzerProvider.getAnalysisReport());
+        assertDoesNotContain("ThisRowIsRedundantTo(5)",
+                             analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testNoIssues2() throws
-                                Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
-                .withConditionIntegerColumn( "application",
-                                             "LoanApplication",
-                                             "amount",
-                                             ">" )
-                .withConditionIntegerColumn( "application",
-                                             "LoanApplication",
-                                             "amount",
-                                             "<=" )
-                .withConditionIntegerColumn( "application",
-                                             "LoanApplication",
-                                             "lengthYears",
-                                             "==" )
-                .withConditionIntegerColumn( "application",
-                                             "LoanApplication",
-                                             "deposit",
-                                             "<" )
-                .withStringColumn( "income",
-                                   "IncomeSource",
-                                   "type",
-                                   "==" )
-                .withActionSetField( "application",
-                                     "approved",
-                                     DataType.TYPE_BOOLEAN )
-                .withActionSetField( "application",
-                                     "insuranceCost",
-                                     DataType.TYPE_NUMERIC_INTEGER )
-                .withActionSetField( "application",
-                                     "approvedRate",
-                                     DataType.TYPE_NUMERIC_INTEGER )
-                .withData( new Object[][]{
+            Exception {
+        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                                               new ArrayList<Import>(),
+                                                                               "mytable")
+                .withConditionIntegerColumn("application",
+                                            "LoanApplication",
+                                            "amount",
+                                            ">")
+                .withConditionIntegerColumn("application",
+                                            "LoanApplication",
+                                            "amount",
+                                            "<=")
+                .withConditionIntegerColumn("application",
+                                            "LoanApplication",
+                                            "lengthYears",
+                                            "==")
+                .withConditionIntegerColumn("application",
+                                            "LoanApplication",
+                                            "deposit",
+                                            "<")
+                .withStringColumn("income",
+                                  "IncomeSource",
+                                  "type",
+                                  "==")
+                .withActionSetField("application",
+                                    "approved",
+                                    DataType.TYPE_BOOLEAN)
+                .withActionSetField("application",
+                                    "insuranceCost",
+                                    DataType.TYPE_NUMERIC_INTEGER)
+                .withActionSetField("application",
+                                    "approvedRate",
+                                    DataType.TYPE_NUMERIC_INTEGER)
+                .withData(new Object[][]{
                         {1, "description", 131000, 200000, 30, 20000, "Asset", true, 0, 2},
                         {2, "description", 1000, 200000, 30, 20000, "Asset", true, 0, 2},
-                        {3, "description", 100001, 130000, 20, 3000, "Job", true, 10, 6}} )
+                        {3, "description", 100001, 130000, 20, 3000, "Job", true, 10, 6}})
                 .buildTable();
 
-        Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+        Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
 
         analyzer.resetChecks();
         analyzer.analyze();
 
-        assertDoesNotContain( "ThisRowIsRedundantTo(1)",
-                              analyzerProvider.getAnalysisReport() );
-        assertDoesNotContain( "ThisRowIsRedundantTo(2)",
-                              analyzerProvider.getAnalysisReport() );
-        assertDoesNotContain( "ThisRowIsRedundantTo(3)",
-                              analyzerProvider.getAnalysisReport() );
-
+        assertDoesNotContain("ThisRowIsRedundantTo(1)",
+                             analyzerProvider.getAnalysisReport());
+        assertDoesNotContain("ThisRowIsRedundantTo(2)",
+                             analyzerProvider.getAnalysisReport());
+        assertDoesNotContain("ThisRowIsRedundantTo(3)",
+                             analyzerProvider.getAnalysisReport());
     }
 
     @Test
     @Ignore("This randomly does not pick up the issue. Better that way, I'm hoping future changes will find the cause. Every other test works 100%")
     public void testRedundantRows001() throws
-                                       Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
-                .withNumericColumn( "application",
-                                    "LoanApplication",
-                                    "amount",
-                                    ">" )
-                .withNumericColumn( "application",
-                                    "LoanApplication",
-                                    "amount",
-                                    "<=" )
-                .withNumericColumn( "application",
-                                    "LoanApplication",
-                                    "lengthYears",
-                                    "==" )
-                .withNumericColumn( "application",
-                                    "LoanApplication",
-                                    "deposit",
-                                    "<" )
-                .withStringColumn( "income",
-                                   "IncomeSource",
-                                   "type",
-                                   "==" )
-                .withActionSetField( "application",
-                                     "approved",
-                                     DataType.TYPE_BOOLEAN )
-                .withActionSetField( "application",
-                                     "insuranceCost",
-                                     DataType.TYPE_NUMERIC )
-                .withActionSetField( "application",
-                                     "approvedRate",
-                                     DataType.TYPE_NUMERIC )
-                .withData( new Object[][]{
+            Exception {
+        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                                               new ArrayList<Import>(),
+                                                                               "mytable")
+                .withNumericColumn("application",
+                                   "LoanApplication",
+                                   "amount",
+                                   ">")
+                .withNumericColumn("application",
+                                   "LoanApplication",
+                                   "amount",
+                                   "<=")
+                .withNumericColumn("application",
+                                   "LoanApplication",
+                                   "lengthYears",
+                                   "==")
+                .withNumericColumn("application",
+                                   "LoanApplication",
+                                   "deposit",
+                                   "<")
+                .withStringColumn("income",
+                                  "IncomeSource",
+                                  "type",
+                                  "==")
+                .withActionSetField("application",
+                                    "approved",
+                                    DataType.TYPE_BOOLEAN)
+                .withActionSetField("application",
+                                    "insuranceCost",
+                                    DataType.TYPE_NUMERIC)
+                .withActionSetField("application",
+                                    "approvedRate",
+                                    DataType.TYPE_NUMERIC)
+                .withData(new Object[][]{
                         {1, "description", 131000, 200000, 30, 20000, "Asset", true, 0, 2},
                         {2, "description", 131000, 200000, 30, 20000, "Asset", true, 0, 2},
-                        {3, "description", 100001, 130000, 20, 3000, "Job", true, 10, 6}} )
+                        {3, "description", 100001, 130000, 20, 3000, "Job", true, 10, 6}})
                 .buildTable();
 
-        Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+        Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
 
         analyzer.resetChecks();
         analyzer.analyze();
 
-        assertContains( "RedundantRows",
-                        analyzerProvider.getAnalysisReport(),
-                        1 );
-        assertContains( "RedundantRows",
-                        analyzerProvider.getAnalysisReport(),
-                        2 );
-
+        assertContains(REDUNDANT_ROWS,
+                       new HashSet<Integer>() {{
+                           add(1);
+                           add(2);
+                       }},
+                       analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testRedundantRows002() throws
-                                       Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
-                .withStringColumn( "application",
-                                   "LoanApplication",
-                                   "amount",
-                                   ">" )
-                .withStringColumn( "person",
-                                   "Person",
-                                   "name",
-                                   "==" )
-                .withStringColumn( "income",
-                                   "IncomeSource",
-                                   "type",
-                                   "==" )
-                .withActionSetField( "application",
-                                     "approved",
-                                     DataType.TYPE_STRING )
-                .withData( new Object[][]{
+            Exception {
+        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                                               new ArrayList<Import>(),
+                                                                               "mytable")
+                .withStringColumn("application",
+                                  "LoanApplication",
+                                  "amount",
+                                  ">")
+                .withStringColumn("person",
+                                  "Person",
+                                  "name",
+                                  "==")
+                .withStringColumn("income",
+                                  "IncomeSource",
+                                  "type",
+                                  "==")
+                .withActionSetField("application",
+                                    "approved",
+                                    DataType.TYPE_STRING)
+                .withData(new Object[][]{
                         {1, "description", "131000", "Toni", "Asset", "true"},
                         {2, "description", "131000", "Toni", "Asset", "true"},
-                        {3, "description", "100001", "Michael", "Job", "true"}} )
+                        {3, "description", "100001", "Michael", "Job", "true"}})
                 .buildTable();
 
-        Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+        Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
 
         analyzer.resetChecks();
         analyzer.analyze();
 
-        assertContains( "RedundantRows",
-                        analyzerProvider.getAnalysisReport(),
-                        1 );
-        assertContains( "RedundantRows",
-                        analyzerProvider.getAnalysisReport(),
-                        2 );
-
+        assertContains(REDUNDANT_ROWS,
+                       new HashSet<Integer>() {{
+                           add(1);
+                           add(2);
+                       }},
+                       analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testRedundantRows003() throws
-                                       Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
-                .withStringColumn( "application",
-                                   "LoanApplication",
-                                   "amount",
-                                   ">" )
-                .withStringColumn( "person",
-                                   "Person",
-                                   "name",
-                                   "==" )
-                .withEnumColumn( "income",
-                                 "IncomeSource",
-                                 "type",
-                                 "==",
-                                 "Asset,Job" )
-                .withActionSetField( "application",
-                                     "approved",
-                                     DataType.TYPE_STRING )
-                .withData( new Object[][]{
+            Exception {
+        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                                               new ArrayList<Import>(),
+                                                                               "mytable")
+                .withStringColumn("application",
+                                  "LoanApplication",
+                                  "amount",
+                                  ">")
+                .withStringColumn("person",
+                                  "Person",
+                                  "name",
+                                  "==")
+                .withEnumColumn("income",
+                                "IncomeSource",
+                                "type",
+                                "==",
+                                "Asset,Job")
+                .withActionSetField("application",
+                                    "approved",
+                                    DataType.TYPE_STRING)
+                .withData(new Object[][]{
                         {1, "description", "131000", "Toni", "Asset", "true"},
                         {2, "description", "131000", "Toni", "Asset", "true"},
-                        {3, "description", "100001", "Michael", "Job", "true"}} )
+                        {3, "description", "100001", "Michael", "Job", "true"}})
                 .buildTable();
 
-        Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+        Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
 
         analyzer.resetChecks();
         analyzer.analyze();
 
-        assertContains( "RedundantRows",
-                        analyzerProvider.getAnalysisReport(),
-                        1 );
-        assertContains( "RedundantRows",
-                        analyzerProvider.getAnalysisReport(),
-                        2 );
-
+        assertContains(REDUNDANT_ROWS,
+                       new HashSet<Integer>() {{
+                           add(1);
+                           add(2);
+                       }},
+                       analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testRedundantConditions001() throws
-                                             Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
-                .withEnumColumn( "a",
-                                 "Person",
-                                 "name",
-                                 "==",
-                                 "Toni,Eder" )
-                .withConditionIntegerColumn( "a",
-                                             "Person",
-                                             "name",
-                                             "==" )
-                .withData( new Object[][]{{1, "description", "Toni", "Toni"}} )
+            Exception {
+        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                                               new ArrayList<Import>(),
+                                                                               "mytable")
+                .withEnumColumn("a",
+                                "Person",
+                                "name",
+                                "==",
+                                "Toni,Eder")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "name",
+                                            "==")
+                .withData(new Object[][]{{1, "description", "Toni", "Toni"}})
                 .buildTable();
 
-        Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+        Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
 
         analyzer.resetChecks();
         analyzer.analyze();
 
-        assertContains( "RedundantConditions",
-                        analyzerProvider.getAnalysisReport() );
-
+        assertContains(REDUNDANT_CONDITIONS_TITLE,
+                       analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testRedundantRowsWithConflict() throws
-                                                Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
-                .withConditionIntegerColumn( "a",
-                                             "Person",
-                                             "age",
-                                             ">" )
-                .withConditionDoubleColumn( "d",
-                                            "Account",
-                                            "deposit",
-                                            "<" )
-                .withActionSetField( "a",
-                                     "approved",
-                                     DataType.TYPE_BOOLEAN )
-                .withActionSetField( "a",
-                                     "approved",
-                                     DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{
+            Exception {
+        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                                               new ArrayList<Import>(),
+                                                                               "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            ">")
+                .withConditionDoubleColumn("d",
+                                           "Account",
+                                           "deposit",
+                                           "<")
+                .withActionSetField("a",
+                                    "approved",
+                                    DataType.TYPE_BOOLEAN)
+                .withActionSetField("a",
+                                    "approved",
+                                    DataType.TYPE_BOOLEAN)
+                .withData(new Object[][]{
                         {1, "description", 100, 0.0, true, true},
-                        {2, "description", 100, 0.0, true, false}} )
+                        {2, "description", 100, 0.0, true, false}})
                 .buildTable();
 
-        Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+        Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
 
         analyzer.resetChecks();
         analyzer.analyze();
 
-        assertDoesNotContain( "ThisRowIsRedundantTo(1)",
-                              analyzerProvider.getAnalysisReport() );
-        assertDoesNotContain( "ThisRowIsRedundantTo(2)",
-                              analyzerProvider.getAnalysisReport() );
-
+        assertDoesNotContain("ThisRowIsRedundantTo(1)",
+                             analyzerProvider.getAnalysisReport());
+        assertDoesNotContain("ThisRowIsRedundantTo(2)",
+                             analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testRedundantActionsInOneRow001() throws
-                                                  Exception {
-        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                new ArrayList<Import>(),
-                                                                                "mytable" )
-                .withConditionIntegerColumn( "a",
-                                             "Person",
-                                             "name",
-                                             "==" )
-                .withActionSetField( "a",
-                                     "salary",
-                                     DataType.TYPE_NUMERIC_INTEGER )
-                .withActionSetField( "a",
-                                     "salary",
-                                     DataType.TYPE_NUMERIC_INTEGER )
-                .withData( new Object[][]{
+            Exception {
+        GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                                               new ArrayList<Import>(),
+                                                                               "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "name",
+                                            "==")
+                .withActionSetField("a",
+                                    "salary",
+                                    DataType.TYPE_NUMERIC_INTEGER)
+                .withActionSetField("a",
+                                    "salary",
+                                    DataType.TYPE_NUMERIC_INTEGER)
+                .withData(new Object[][]{
                         {1, "description", "Toni", 100, 100},
                         {2, "description", "Eder", 200, null},
                         {3, "description", "Michael", null, 300},
                         {4, "description", null, null, null, null, null}
-                } )
+                })
                 .buildTable();
 
-        Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+        Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
 
         analyzer.resetChecks();
         analyzer.analyze();
 
-        assertContains( "ValueForFactFieldIsSetTwice(a, salary)",
-                        analyzerProvider.getAnalysisReport() );
-
+        assertContains("ValueForFactFieldIsSetTwice(a, salary)",
+                       analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testRedundantActionsInOneRow002() throws
-                                                  Exception {
-        final GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                                                      new ArrayList<Import>(),
-                                                                                      "mytable" )
-                .withConditionIntegerColumn( "a",
-                                             "Person",
-                                             "name",
-                                             "==" )
-                .withActionInsertFact( "Person",
-                                       "b",
-                                       "salary",
-                                       DataType.TYPE_NUMERIC_INTEGER )
-                .withActionSetField( "b",
-                                     "salary",
-                                     DataType.TYPE_NUMERIC_INTEGER )
-                .withData( new Object[][]{
+            Exception {
+        final GuidedDecisionTable52 table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                                                     new ArrayList<Import>(),
+                                                                                     "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "name",
+                                            "==")
+                .withActionInsertFact("Person",
+                                      "b",
+                                      "salary",
+                                      DataType.TYPE_NUMERIC_INTEGER)
+                .withActionSetField("b",
+                                    "salary",
+                                    DataType.TYPE_NUMERIC_INTEGER)
+                .withData(new Object[][]{
                         {1, "description", "Toni", 100, 100},
                         {2, "description", "Eder", 200, null},
                         {3, "description", "Michael", null, 300},
                         {4, "description", null, null, null, null, null}
-                } )
+                })
                 .buildTable();
 
-        final Analyzer analyzer = analyzerProvider.makeAnalyser( table52 );
+        final Analyzer analyzer = analyzerProvider.makeAnalyser(table52);
 
         analyzer.resetChecks();
         analyzer.analyze();
 
-        assertContains( "ValueForFactFieldIsSetTwice(b, salary)",
-                        analyzerProvider.getAnalysisReport() );
-
+        assertContains("ValueForFactFieldIsSetTwice(b, salary)",
+                       analyzerProvider.getAnalysisReport());
     }
-
 }

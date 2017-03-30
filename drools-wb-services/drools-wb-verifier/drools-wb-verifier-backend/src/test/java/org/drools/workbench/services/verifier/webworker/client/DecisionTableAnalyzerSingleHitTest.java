@@ -22,25 +22,26 @@ import org.junit.runner.RunWith;
 
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.assertContains;
 
-
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class DecisionTableAnalyzerSingleHitTest
         extends AnalyzerUpdateTestBase {
 
     @Test
     public void testSingleHit() throws Exception {
         analyzer = analyzerProvider.makeAnalyser()
-                                   .withPersonAgeColumn( ">" )
-                                   .withPersonApprovedActionSetField()
-                                   .withData( DataBuilderProvider
-                                                                                  .row( 0, null )
-                                                                                  .row( 50, false )
-                                                                                  .end() )
-                                   .buildAnalyzer();
+                .withPersonAgeColumn(">")
+                .withPersonApprovedActionSetField()
+                .withData(DataBuilderProvider
+                                  .row(0,
+                                       null)
+                                  .row(50,
+                                       false)
+                                  .end())
+                .buildAnalyzer();
 
         fireUpAnalyzer();
 
-        assertContains( "SingleHitLost", analyzerProvider.getAnalysisReport() );
+        assertContains(SINGLE_HIT_LOST,
+                       analyzerProvider.getAnalysisReport());
     }
-
 }

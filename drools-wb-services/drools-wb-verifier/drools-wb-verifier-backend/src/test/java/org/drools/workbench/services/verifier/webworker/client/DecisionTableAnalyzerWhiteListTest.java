@@ -32,79 +32,77 @@ import static org.drools.workbench.services.verifier.webworker.client.testutil.T
 public class DecisionTableAnalyzerWhiteListTest
         extends AnalyzerUpdateTestBase {
 
-
     @Override
     @Before
     public void setUp() throws
-                        Exception {
+            Exception {
         super.setUp();
 
         table52 = analyzerProvider.makeAnalyser()
-                .withPersonAgeColumn( ">" )
+                .withPersonAgeColumn(">")
                 .withPersonApprovedActionSetField()
-                .withData( DataBuilderProvider
-                                   .row( 0,
-                                         true )
-                                   .row( 0,
-                                         true )
-                                   .row( null,
-                                         null )
-                                   .end() )
+                .withData(DataBuilderProvider
+                                  .row(0,
+                                       true)
+                                  .row(0,
+                                       true)
+                                  .row(null,
+                                       null)
+                                  .end())
                 .buildTable();
     }
 
     @Test
     public void defaultWhiteList() throws
-                                   Exception {
+            Exception {
 
-        analyzerProvider.setConfiguration( new AnalyzerConfigurationMock() );
+        analyzerProvider.setConfiguration(new AnalyzerConfigurationMock());
 
         fireUpAnalyzer();
 
         final Set<Issue> analysisReport = analyzerProvider.getAnalysisReport();
-        assertOnlyContains( analysisReport,
-                            "RedundantRows",
-                            "SingleHitLost",
-                            "EmptyRule" );
+        assertOnlyContains(analysisReport,
+                           REDUNDANT_ROWS,
+                           SINGLE_HIT_LOST,
+                           EMPTY_RULE);
     }
 
     @Test
     public void noRedundantRows() throws
-                                  Exception {
+            Exception {
 
         final AnalyzerConfigurationMock analyzerConfiguration = new AnalyzerConfigurationMock();
         analyzerConfiguration.getCheckConfiguration()
                 .getCheckConfiguration()
-                .remove( CheckType.REDUNDANT_ROWS );
+                .remove(CheckType.REDUNDANT_ROWS);
         analyzerConfiguration.getCheckConfiguration()
                 .getCheckConfiguration()
-                .remove( CheckType.SUBSUMPTANT_ROWS );
-        analyzerProvider.setConfiguration( analyzerConfiguration );
+                .remove(CheckType.SUBSUMPTANT_ROWS);
+        analyzerProvider.setConfiguration(analyzerConfiguration);
 
         fireUpAnalyzer();
 
         final Set<Issue> analysisReport = analyzerProvider.getAnalysisReport();
-        assertOnlyContains( analysisReport,
-                            "SingleHitLost",
-                            "EmptyRule" );
+        assertOnlyContains(analysisReport,
+                           SINGLE_HIT_LOST,
+                           EMPTY_RULE);
     }
 
     @Test
     public void noEmptyRule() throws
-                              Exception {
+            Exception {
 
         final AnalyzerConfigurationMock analyzerConfiguration = new AnalyzerConfigurationMock();
         analyzerConfiguration.getCheckConfiguration()
                 .getCheckConfiguration()
-                .remove( CheckType.EMPTY_RULE );
-        analyzerProvider.setConfiguration( analyzerConfiguration );
+                .remove(CheckType.EMPTY_RULE);
+        analyzerProvider.setConfiguration(analyzerConfiguration);
 
         fireUpAnalyzer();
 
         final Set<Issue> analysisReport = analyzerProvider.getAnalysisReport();
-        assertOnlyContains( analysisReport,
-                            "RedundantRows",
-                            "SingleHitLost" );
+        assertOnlyContains(analysisReport,
+                           REDUNDANT_ROWS,
+                           SINGLE_HIT_LOST);
     }
-
 }

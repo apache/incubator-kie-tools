@@ -27,123 +27,175 @@ import org.junit.runner.RunWith;
 
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class DecisionTableAnalyzerSubsumptionTest
         extends AnalyzerUpdateTestBase {
 
     @Test
     public void testSubsumptionBooleanDifferentValueDifferentOperator() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionBooleanColumn( "a", "Person", "approved", "==" )
-                .withConditionBooleanColumn( "a", "Person", "approved", "!=" )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionBooleanColumn("a",
+                                            "Person",
+                                            "approved",
+                                            "==")
+                .withConditionBooleanColumn("a",
+                                            "Person",
+                                            "approved",
+                                            "!=")
+                .withActionSetField("a",
+                                    "approved",
+                                    DataType.TYPE_BOOLEAN)
+                .withData(new Object[][]{
                         {1, "description", true, null, true},
                         {2, "description", null, false, true},
-                } )
+                })
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertContains( "RedundantRows", analyzerProvider.getAnalysisReport() );
+        assertContains(REDUNDANT_ROWS,
+                       analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testSubsumptionBooleansWithSameValue() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionBooleanColumn( "a", "Person", "approved", "==" )
-                .withConditionBooleanColumn( "a", "Person", "approved", "==" )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionBooleanColumn("a",
+                                            "Person",
+                                            "approved",
+                                            "==")
+                .withConditionBooleanColumn("a",
+                                            "Person",
+                                            "approved",
+                                            "==")
+                .withActionSetField("a",
+                                    "approved",
+                                    DataType.TYPE_BOOLEAN)
+                .withData(new Object[][]{
                         {1, "description", true, null, true},
                         {2, "description", null, true, true},
-                } )
+                })
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertContains( "RedundantRows", analyzerProvider.getAnalysisReport() );
+        assertContains(REDUNDANT_ROWS,
+                       analyzerProvider.getAnalysisReport());
     }
-
 
     @Test
     public void testBooleansAreNotRedundant() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionBooleanColumn( "a", "Person", "approved", "==" )
-                .withConditionBooleanColumn( "a", "Person", "approved", "==" )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionBooleanColumn("a",
+                                            "Person",
+                                            "approved",
+                                            "==")
+                .withConditionBooleanColumn("a",
+                                            "Person",
+                                            "approved",
+                                            "==")
+                .withActionSetField("a",
+                                    "approved",
+                                    DataType.TYPE_BOOLEAN)
+                .withData(new Object[][]{
                         {1, "description", true, null, true},
                         {2, "description", null, false, true},
-                } )
+                })
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertDoesNotContain( "RedundantRows", analyzerProvider.getAnalysisReport() );
+        assertDoesNotContain(REDUNDANT_ROWS,
+                             analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testBooleansAreNotRedundantDifferentOperator() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionBooleanColumn( "a", "Person", "approved", "==" )
-                .withConditionBooleanColumn( "a", "Person", "approved", "!=" )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionBooleanColumn("a",
+                                            "Person",
+                                            "approved",
+                                            "==")
+                .withConditionBooleanColumn("a",
+                                            "Person",
+                                            "approved",
+                                            "!=")
+                .withActionSetField("a",
+                                    "approved",
+                                    DataType.TYPE_BOOLEAN)
+                .withData(new Object[][]{
                         {1, "description", true, null, true},
                         {2, "description", null, true, true},
-                } )
+                })
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertDoesNotContain( "RedundantRows", analyzerProvider.getAnalysisReport() );
+        assertDoesNotContain(REDUNDANT_ROWS,
+                             analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testSumbsumptantAgeRows() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", ">" )
-                .withConditionIntegerColumn( "a", "Person", "age", ">" )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            ">")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            ">")
+                .withActionSetField("a",
+                                    "approved",
+                                    DataType.TYPE_BOOLEAN)
+                .withData(new Object[][]{
                         {1, "description", 0, null, true},
                         {2, "description", null, 0, true},
-                } )
+                })
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertContains( "RedundantRows", analyzerProvider.getAnalysisReport() );
+        assertContains(REDUNDANT_ROWS,
+                       analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testSumbsumptantAgeDifferentOperator() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", ">" )
-                .withConditionIntegerColumn( "a", "Person", "age", ">=" )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            ">")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            ">=")
+                .withActionSetField("a",
+                                    "approved",
+                                    DataType.TYPE_BOOLEAN)
+                .withData(new Object[][]{
                         {1, "description", 0, null, true},
                         {2, "description", null, 1, true},
-                } )
+                })
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertContains( "RedundantRows", analyzerProvider.getAnalysisReport() );
+        assertContains(REDUNDANT_ROWS,
+                       analyzerProvider.getAnalysisReport());
     }
-
 }

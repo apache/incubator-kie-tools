@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DecisionTableAnalyzerAddRowScenarioTest
@@ -33,28 +33,29 @@ public class DecisionTableAnalyzerAddRowScenarioTest
 
     @Test
     public void emptyLineThatIsAddedShouldBeIgnored() throws
-                                                      Exception {
+            Exception {
         table52 = analyzerProvider.makeAnalyser()
-                .withPersonAgeColumn( ">" )
+                .withPersonAgeColumn(">")
                 .withPersonApprovedActionSetField()
-                .withData( DataBuilderProvider
-                                   .row( 0,
-                                         true )
-                                   .end() )
+                .withData(DataBuilderProvider
+                                  .row(0,
+                                       true)
+                                  .end())
                 .buildTable();
 
         fireUpAnalyzer();
 
-        appendRow( DataType.DataTypes.NUMERIC,
-                   DataType.DataTypes.BOOLEAN );
+        appendRow(DataType.DataTypes.NUMERIC,
+                  DataType.DataTypes.BOOLEAN);
 
         final Set<Issue> analysisReport = analyzerProvider.getAnalysisReport();
-        assertOnlyContains( analysisReport,
-                            "SingleHitLost",
-                            "EmptyRule" );
-        assertContains( "EmptyRule", analysisReport, 2 );
-        assertEquals( 2,
-                      analysisReport.size() );
+        assertOnlyContains(analysisReport,
+                           SINGLE_HIT_LOST,
+                           EMPTY_RULE);
+        assertContains(EMPTY_RULE,
+                       analysisReport,
+                       2);
+        assertEquals(2,
+                     analysisReport.size());
     }
-
 }

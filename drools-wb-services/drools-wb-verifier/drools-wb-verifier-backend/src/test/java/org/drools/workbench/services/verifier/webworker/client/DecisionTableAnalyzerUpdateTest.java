@@ -33,222 +33,291 @@ public class DecisionTableAnalyzerUpdateTest
     public void updateRetract() throws Exception {
 
         table52 = analyzerProvider.makeAnalyser()
-                                  .withPersonAgeColumn( "==" )
-                                  .withRetract()
-                                  .withData( DataBuilderProvider
-                                                     .row( 1, null )
-                                                     .end() )
-                                  .buildTable();
+                .withPersonAgeColumn("==")
+                .withRetract()
+                .withData(DataBuilderProvider
+                                  .row(1,
+                                       null)
+                                  .end())
+                .buildTable();
 
         fireUpAnalyzer();
 
-        assertContains( "RuleHasNoAction", analyzerProvider.getAnalysisReport() );
+        assertContains(RULE_HAS_NO_ACTION,
+                       analyzerProvider.getAnalysisReport());
 
-        setValue( 0, 3, "a" );
+        setValue(0,
+                 3,
+                 "a");
 
-        assertDoesNotContain( "RuleHasNoAction", analyzerProvider.getAnalysisReport() );
+        assertDoesNotContain(RULE_HAS_NO_ACTION,
+                             analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testRowValueChange() throws Exception {
 
         table52 = analyzerProvider.makeAnalyser()
-                                  .withPersonAgeColumn( "==" )
-                                  .withPersonApprovedActionSetField()
-                                  .withData( DataBuilderProvider
-                                                     .row( 1, true )
-                                                     .row( 1, true )
-                                                     .end() )
-                                  .buildTable();
+                .withPersonAgeColumn("==")
+                .withPersonApprovedActionSetField()
+                .withData(DataBuilderProvider
+                                  .row(1,
+                                       true)
+                                  .row(1,
+                                       true)
+                                  .end())
+                .buildTable();
 
         fireUpAnalyzer();
 
-        assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 1 );
-        assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 2 );
+        assertContains(REDUNDANT_ROWS,
+                       analyzerProvider.getAnalysisReport(),
+                       1);
+        assertContains(REDUNDANT_ROWS,
+                       analyzerProvider.getAnalysisReport(),
+                       2);
 
-        setValue( 1, 2, 0 );
+        setValue(1,
+                 2,
+                 0);
 
-        assertTrue( analyzerProvider.getAnalysisReport().isEmpty() );
+        assertTrue(analyzerProvider.getAnalysisReport().isEmpty());
     }
 
     @Test
     public void testRemoveRow() throws Exception {
         table52 = analyzerProvider.makeAnalyser()
-                                  .withPersonAgeColumn( "==" )
-                                  .withPersonAgeColumn( "==" )
-                                  .withPersonApprovedActionSetField()
-                                  .withData( DataBuilderProvider
-                                                     .row( 1, 1, true )
-                                                     .row( 0, 1, true )
-                                                     .row( 2, 2, true )
-                                                     .row( 1, 1, false )
-                                                     .end() )
-                                  .buildTable();
+                .withPersonAgeColumn("==")
+                .withPersonAgeColumn("==")
+                .withPersonApprovedActionSetField()
+                .withData(DataBuilderProvider
+                                  .row(1,
+                                       1,
+                                       true)
+                                  .row(0,
+                                       1,
+                                       true)
+                                  .row(2,
+                                       2,
+                                       true)
+                                  .row(1,
+                                       1,
+                                       false)
+                                  .end())
+                .buildTable();
 
         fireUpAnalyzer();
 
-        assertContains( "ConflictingRows", analyzerProvider.getAnalysisReport(), 4 );
-        assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 2 );
+        assertContains(CONFLICTING_ROWS,
+                       analyzerProvider.getAnalysisReport(),
+                       4);
+        assertContains(IMPOSSIBLE_MATCH,
+                       analyzerProvider.getAnalysisReport(),
+                       2);
 
-        removeRow( 1 );
+        removeRow(1);
 
-        assertContains( "ConflictingRows", analyzerProvider.getAnalysisReport(), 3 );
-        assertDoesNotContain( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 3 );
+        assertContains(CONFLICTING_ROWS,
+                       analyzerProvider.getAnalysisReport(),
+                       3);
+        assertDoesNotContain(IMPOSSIBLE_MATCH,
+                             analyzerProvider.getAnalysisReport(),
+                             3);
 
         // BREAK LINE NUMBER 2 ( previously line number 3 )
-        setValue( 1, 3, 1 );
+        setValue(1,
+                 3,
+                 1);
 
-        assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 2 );
-
+        assertContains(IMPOSSIBLE_MATCH,
+                       analyzerProvider.getAnalysisReport(),
+                       2);
     }
 
     @Test
     public void testRemoveRow2() throws Exception {
         table52 = analyzerProvider.makeAnalyser()
-                                  .withPersonAgeColumn( ">" )
-                                  .withPersonAgeColumn( "<" )
-                                  .withPersonApprovedActionSetField()
-                                  .withData( DataBuilderProvider
-                                                     .row( 1, 10, true )
-                                                     .row( 1, 10, true )
-                                                     .end() )
-                                  .buildTable();
+                .withPersonAgeColumn(">")
+                .withPersonAgeColumn("<")
+                .withPersonApprovedActionSetField()
+                .withData(DataBuilderProvider
+                                  .row(1,
+                                       10,
+                                       true)
+                                  .row(1,
+                                       10,
+                                       true)
+                                  .end())
+                .buildTable();
 
         fireUpAnalyzer();
 
-        assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 1 );
-        assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 2 );
+        assertContains(REDUNDANT_ROWS,
+                       analyzerProvider.getAnalysisReport(),
+                       1);
+        assertContains(REDUNDANT_ROWS,
+                       analyzerProvider.getAnalysisReport(),
+                       2);
 
         // REMOVE 2
-        removeRow( 0 );
+        removeRow(0);
 
-        assertDoesNotContain( "RedundantRows", analyzerProvider.getAnalysisReport() );
+        assertDoesNotContain(REDUNDANT_ROWS,
+                             analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testRemoveColumn() throws Exception {
 
         table52 = analyzerProvider.makeAnalyser()
-                                  .withPersonAgeColumn( "==" )
-                                  .withPersonApprovedActionSetField()
-                                  .withData( DataBuilderProvider
-                                                     .row( 1, true )
-                                                     .row( 2, true )
-                                                     .row( 3, true )
-                                                     .end() )
-                                  .buildTable();
+                .withPersonAgeColumn("==")
+                .withPersonApprovedActionSetField()
+                .withData(DataBuilderProvider
+                                  .row(1,
+                                       true)
+                                  .row(2,
+                                       true)
+                                  .row(3,
+                                       true)
+                                  .end())
+                .buildTable();
 
         fireUpAnalyzer();
 
-        assertTrue( analyzerProvider.getAnalysisReport().isEmpty() );
+        assertTrue(analyzerProvider.getAnalysisReport().isEmpty());
 
-        removeActionColumn( 3, 0 );
+        removeActionColumn(3,
+                           0);
 
-        assertContains( "RuleHasNoAction", analyzerProvider.getAnalysisReport() );
-
+        assertContains(RULE_HAS_NO_ACTION,
+                       analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testAddColumn() throws Exception {
         table52 = analyzerProvider
                 .makeAnalyser()
-                .withPersonAgeColumn( "==" )
+                .withPersonAgeColumn("==")
                 .withPersonApprovedActionSetField()
-                .withData( DataBuilderProvider
-                                   .row( 1, true )
-                                   .row( 2, true )
-                                   .row( 3, true )
-                                   .end() )
+                .withData(DataBuilderProvider
+                                  .row(1,
+                                       true)
+                                  .row(2,
+                                       true)
+                                  .row(3,
+                                       true)
+                                  .end())
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertTrue( analyzerProvider.getAnalysisReport().isEmpty() );
+        assertTrue(analyzerProvider.getAnalysisReport().isEmpty());
 
-        appendActionColumn( 4,
-                            createActionSetField( "a", "approved", DataType.TYPE_BOOLEAN ),
-                            true,
-                            true,
-                            false );
+        appendActionColumn(4,
+                           createActionSetField("a",
+                                                "approved",
+                                                DataType.TYPE_BOOLEAN),
+                           true,
+                           true,
+                           false);
 
-        assertContains( "MultipleValuesForOneAction", analyzerProvider.getAnalysisReport(), 3 );
-
+        assertContains(MULTIPLE_VALUES_FOR_ONE_ACTION,
+                       analyzerProvider.getAnalysisReport(),
+                       3);
     }
 
     @Test
     public void testAddBRLColumn() throws Exception {
         table52 = analyzerProvider
                 .makeAnalyser()
-                .withPersonAgeColumn( "==" )
+                .withPersonAgeColumn("==")
                 .withPersonApprovedActionSetField()
-                .withData( DataBuilderProvider
-                                   .row( 1, true )
-                                   .row( 2, true )
-                                   .row( 3, true )
-                                   .end() )
+                .withData(DataBuilderProvider
+                                  .row(1,
+                                       true)
+                                  .row(2,
+                                       true)
+                                  .row(3,
+                                       true)
+                                  .end())
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertTrue( analyzerProvider.getAnalysisReport().isEmpty() );
+        assertTrue(analyzerProvider.getAnalysisReport().isEmpty());
 
-        insertConditionColumn( 3,
-                               createBRLConditionColumn(),
-                               true,
-                               true,
-                               true );
+        insertConditionColumn(3,
+                              createBRLConditionColumn(),
+                              true,
+                              true,
+                              true);
 
-        assertDoesNotContain( "RedundantRows", analyzerProvider.getAnalysisReport() );
-
+        assertDoesNotContain(REDUNDANT_ROWS,
+                             analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testInsertRow() throws Exception {
         table52 = analyzerProvider.makeAnalyser()
-                                  .withPersonAgeColumn( "==" )
-                                  .withPersonAgeColumn( "==" )
-                                  .withPersonApprovedActionSetField()
-                                  .withData( DataBuilderProvider
-                                                     .row( 1, 1, true )
-                                                     .row( 0, 1, true )
-                                                     .row( 2, 2, true )
-                                                     .end() )
-                                  .buildTable();
-
+                .withPersonAgeColumn("==")
+                .withPersonAgeColumn("==")
+                .withPersonApprovedActionSetField()
+                .withData(DataBuilderProvider
+                                  .row(1,
+                                       1,
+                                       true)
+                                  .row(0,
+                                       1,
+                                       true)
+                                  .row(2,
+                                       2,
+                                       true)
+                                  .end())
+                .buildTable();
 
         fireUpAnalyzer();
 
-        insertRow( 0,
-                   DataType.DataTypes.NUMERIC,
-                   DataType.DataTypes.NUMERIC,
-                   DataType.DataTypes.BOOLEAN );
+        insertRow(0,
+                  DataType.DataTypes.NUMERIC,
+                  DataType.DataTypes.NUMERIC,
+                  DataType.DataTypes.BOOLEAN);
 
-        assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 3 );
-
+        assertContains(IMPOSSIBLE_MATCH,
+                       analyzerProvider.getAnalysisReport(),
+                       3);
     }
 
     @Test
     public void testAppendRow() throws Exception {
         table52 = analyzerProvider.makeAnalyser()
-                                  .withPersonAgeColumn( "==" )
-                                  .withPersonAgeColumn( "==" )
-                                  .withPersonApprovedActionSetField()
-                                  .withData( DataBuilderProvider
-                                                     .row( 1, 1, true )
-                                                     .row( 0, 1, true )
-                                                     .row( 2, 2, true )
-                                                     .end() )
-                                  .buildTable();
+                .withPersonAgeColumn("==")
+                .withPersonAgeColumn("==")
+                .withPersonApprovedActionSetField()
+                .withData(DataBuilderProvider
+                                  .row(1,
+                                       1,
+                                       true)
+                                  .row(0,
+                                       1,
+                                       true)
+                                  .row(2,
+                                       2,
+                                       true)
+                                  .end())
+                .buildTable();
 
         fireUpAnalyzer();
 
-        assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 2 );
+        assertContains(IMPOSSIBLE_MATCH,
+                       analyzerProvider.getAnalysisReport(),
+                       2);
 
-        appendRow( DataType.DataTypes.NUMERIC,
-                   DataType.DataTypes.NUMERIC,
-                   DataType.DataTypes.STRING  );
+        appendRow(DataType.DataTypes.NUMERIC,
+                  DataType.DataTypes.NUMERIC,
+                  DataType.DataTypes.STRING);
 
-        assertContains( "ImpossibleMatch", analyzerProvider.getAnalysisReport(), 2 );
+        assertContains(IMPOSSIBLE_MATCH,
+                       analyzerProvider.getAnalysisReport(),
+                       2);
     }
-
 }

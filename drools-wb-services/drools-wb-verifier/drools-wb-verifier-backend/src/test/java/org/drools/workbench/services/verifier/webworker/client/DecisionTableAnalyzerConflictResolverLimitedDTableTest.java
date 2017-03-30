@@ -28,7 +28,6 @@ import org.junit.runner.RunWith;
 
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.assertContains;
 
-
 @RunWith(GwtMockitoTestRunner.class)
 public class DecisionTableAnalyzerConflictResolverLimitedDTableTest
         extends AnalyzerUpdateTestBase {
@@ -36,30 +35,42 @@ public class DecisionTableAnalyzerConflictResolverLimitedDTableTest
     @Test
     public void testConflict() throws Exception {
 
-        table52 = new LimitedGuidedDecisionTableBuilder( "org.test",
-                                                         new ArrayList<Import>(),
-                                                         "mytable" )
-                .withIntegerColumn( "a", "Person", "age", "==", 0 )
-                .withAction( "a", "approved", DataType.TYPE_BOOLEAN, new DTCellValue52() {
-                    {
-                        setBooleanValue( true );
-                    }
-                } )
-                .withAction( "a", "approved", DataType.TYPE_BOOLEAN, new DTCellValue52() {
-                    {
-                        setBooleanValue( false );
-                    }
-                } )
-                .withData( new Object[][]{
-                        { 1, "description", true, true, false },
-                        { 2, "description", true, false, true } } )
+        table52 = new LimitedGuidedDecisionTableBuilder("org.test",
+                                                        new ArrayList<Import>(),
+                                                        "mytable")
+                .withIntegerColumn("a",
+                                   "Person",
+                                   "age",
+                                   "==",
+                                   0)
+                .withAction("a",
+                            "approved",
+                            DataType.TYPE_BOOLEAN,
+                            new DTCellValue52() {
+                                {
+                                    setBooleanValue(true);
+                                }
+                            })
+                .withAction("a",
+                            "approved",
+                            DataType.TYPE_BOOLEAN,
+                            new DTCellValue52() {
+                                {
+                                    setBooleanValue(false);
+                                }
+                            })
+                .withData(new Object[][]{
+                        {1, "description", true, true, false},
+                        {2, "description", true, false, true}})
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertContains( "ConflictingRows", analyzerProvider.getAnalysisReport(), 2 );
-        assertContains( "ConflictingRows", analyzerProvider.getAnalysisReport(), 1 );
-
+        assertContains(CONFLICTING_ROWS,
+                       analyzerProvider.getAnalysisReport(),
+                       2);
+        assertContains(CONFLICTING_ROWS,
+                       analyzerProvider.getAnalysisReport(),
+                       1);
     }
-
 }

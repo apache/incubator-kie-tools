@@ -40,7 +40,7 @@ public class DecisionTableAnalyzerRangeCheckTest
 
         fireUpAnalyzer();
 
-        assertDoesNotContain( "MissingRangeTitle", analyzerProvider.getAnalysisReport() );
+        assertDoesNotContain(MISSING_RANGE_TITLE, analyzerProvider.getAnalysisReport() );
     }
 
     @Test
@@ -56,7 +56,7 @@ public class DecisionTableAnalyzerRangeCheckTest
 
         fireUpAnalyzer();
 
-        assertDoesNotContain( "MissingRangeTitle", analyzerProvider.getAnalysisReport() );
+        assertDoesNotContain(MISSING_RANGE_TITLE, analyzerProvider.getAnalysisReport() );
     }
 
     @Test
@@ -73,7 +73,7 @@ public class DecisionTableAnalyzerRangeCheckTest
 
         fireUpAnalyzer();
 
-        assertContains( "MissingRangeTitle", analyzerProvider.getAnalysisReport() );
+        assertContains(MISSING_RANGE_TITLE, analyzerProvider.getAnalysisReport() );
     }
 
     @Test
@@ -90,7 +90,7 @@ public class DecisionTableAnalyzerRangeCheckTest
 
         fireUpAnalyzer();
 
-        assertContains( "MissingRangeTitle", analyzerProvider.getAnalysisReport() );
+        assertContains(MISSING_RANGE_TITLE, analyzerProvider.getAnalysisReport() );
     }
 
     @Test
@@ -107,7 +107,7 @@ public class DecisionTableAnalyzerRangeCheckTest
 
         fireUpAnalyzer();
 
-        assertDoesNotContain( "MissingRangeTitle", analyzerProvider.getAnalysisReport() );
+        assertDoesNotContain(MISSING_RANGE_TITLE, analyzerProvider.getAnalysisReport() );
     }
 
     @Test
@@ -124,7 +124,7 @@ public class DecisionTableAnalyzerRangeCheckTest
 
         fireUpAnalyzer();
 
-        assertContains( "MissingRangeTitle", analyzerProvider.getAnalysisReport() );
+        assertContains(MISSING_RANGE_TITLE, analyzerProvider.getAnalysisReport() );
     }
 
     @Test
@@ -141,6 +141,6 @@ public class DecisionTableAnalyzerRangeCheckTest
 
         fireUpAnalyzer();
 
-        assertDoesNotContain( "MissingRangeTitle", analyzerProvider.getAnalysisReport() );
+        assertDoesNotContain(MISSING_RANGE_TITLE, analyzerProvider.getAnalysisReport() );
     }
 }

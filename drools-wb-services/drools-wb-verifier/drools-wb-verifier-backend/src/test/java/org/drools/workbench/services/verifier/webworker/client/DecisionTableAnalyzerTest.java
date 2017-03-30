@@ -17,14 +17,10 @@
 package org.drools.workbench.services.verifier.webworker.client;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
-import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
-import org.drools.workbench.models.datamodel.rule.IAction;
-import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.services.verifier.api.client.resources.i18n.AnalysisConstants;
@@ -46,220 +42,305 @@ public class DecisionTableAnalyzerTest
 
         fireUpAnalyzer();
 
-        assertTrue( analyzerProvider.getAnalysisReport().isEmpty() );
-
+        assertTrue(analyzerProvider.getAnalysisReport().isEmpty());
     }
 
     @Test
     public void testEmptyRow() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", ">" )
-                .withData( new Object[][]{ { 1, "description", "" } } )
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            ">")
+                .withData(new Object[][]{{1, "description", ""}})
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertContains( "EmptyRule", analyzerProvider.getAnalysisReport(), 1 );
-
+        assertContains(EMPTY_RULE,
+                       analyzerProvider.getAnalysisReport(),
+                       1);
     }
 
     @Test
     public void testMultipleEmptyRows() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                new ArrayList<Import>(),
-                "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", "==" )
-                .withData( new Object[][]{ { 1, "description", "" },
-                                           { 2, "description", "" }
-                                         } )
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            "==")
+                .withData(new Object[][]{{1, "description", ""},
+                        {2, "description", ""}
+                })
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertEquals( 4, analyzerProvider.getAnalysisReport().size() );
-        assertContains( AnalysisConstants.INSTANCE.EmptyRule(), analyzerProvider.getAnalysisReport(), 1 );
-        assertContains( AnalysisConstants.INSTANCE.EmptyRule(), analyzerProvider.getAnalysisReport(), 2 );
-        assertOnlyContains( analyzerProvider.getAnalysisReport(),
-                            AnalysisConstants.INSTANCE.EmptyRule(),
-                            AnalysisConstants.INSTANCE.SingleHitLost() );
+        assertEquals(4,
+                     analyzerProvider.getAnalysisReport().size());
+        assertContains(AnalysisConstants.INSTANCE.EmptyRule(),
+                       analyzerProvider.getAnalysisReport(),
+                       1);
+        assertContains(AnalysisConstants.INSTANCE.EmptyRule(),
+                       analyzerProvider.getAnalysisReport(),
+                       2);
+        assertOnlyContains(analyzerProvider.getAnalysisReport(),
+                           AnalysisConstants.INSTANCE.EmptyRule(),
+                           SINGLE_HIT_LOST);
     }
 
     @Test
     public void testRuleHasNoAction() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", ">" )
-                .withData( new Object[][]{ { 1, "description", 0 } } )
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            ">")
+                .withData(new Object[][]{{1, "description", 0}})
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertContains( "RuleHasNoAction", analyzerProvider.getAnalysisReport() );
-
+        assertContains(RULE_HAS_NO_ACTION,
+                       analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testMultipleRuleHasNoActions() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                new ArrayList<Import>(),
-                "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", ">" )
-                .withData( new Object[][]{ { 1, "description", 0 },
-                                           { 2, "description", 1 } } )
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            ">")
+                .withData(new Object[][]{{1, "description", 0},
+                        {2, "description", 1}})
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertContains( AnalysisConstants.INSTANCE.RuleHasNoAction(), analyzerProvider.getAnalysisReport(), 1 );
-        assertContains( AnalysisConstants.INSTANCE.RuleHasNoAction(), analyzerProvider.getAnalysisReport(), 2 );
-
+        assertContains(AnalysisConstants.INSTANCE.RuleHasNoAction(),
+                       analyzerProvider.getAnalysisReport(),
+                       1);
+        assertContains(AnalysisConstants.INSTANCE.RuleHasNoAction(),
+                       analyzerProvider.getAnalysisReport(),
+                       2);
     }
 
     @Test
     public void ruleHasNoActionShouldNotIgnoreRetract() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", ">" )
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            ">")
                 .withRetract()
-                .withData( DataBuilderProvider
-                                   .row( 0, "a" )
-                                   .end() )
+                .withData(DataBuilderProvider
+                                  .row(0,
+                                       "a")
+                                  .end())
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertDoesNotContain( "RuleHasNoAction", analyzerProvider.getAnalysisReport() );
-
+        assertDoesNotContain(RULE_HAS_NO_ACTION,
+                             analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testRuleHasNoActionSet() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", ">" )
-                .withActionSetField( "a", "age", DataType.TYPE_NUMERIC_INTEGER )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withActionSetField( "a", "name", DataType.TYPE_STRING )
-                .withData( new Object[][]{
-                        { 1, "description", 0, null, null, "" },
-                        { 2, "description", null, null, null, null }
-                } )
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            ">")
+                .withActionSetField("a",
+                                    "age",
+                                    DataType.TYPE_NUMERIC_INTEGER)
+                .withActionSetField("a",
+                                    "approved",
+                                    DataType.TYPE_BOOLEAN)
+                .withActionSetField("a",
+                                    "name",
+                                    DataType.TYPE_STRING)
+                .withData(new Object[][]{
+                        {1, "description", 0, null, null, ""},
+                        {2, "description", null, null, null, null}
+                })
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertContains( "RuleHasNoAction", analyzerProvider.getAnalysisReport(), 1 );
-        assertContains( "EmptyRule", analyzerProvider.getAnalysisReport(), 2 );
-        assertDoesNotContain( "EmptyRule", analyzerProvider.getAnalysisReport(), 1 );
-        assertDoesNotContain( "RuleHasNoAction", analyzerProvider.getAnalysisReport(), 2 );
-
+        assertContains(RULE_HAS_NO_ACTION,
+                       analyzerProvider.getAnalysisReport(),
+                       1);
+        assertContains(EMPTY_RULE,
+                       analyzerProvider.getAnalysisReport(),
+                       2);
+        assertDoesNotContain(EMPTY_RULE,
+                             analyzerProvider.getAnalysisReport(),
+                             1);
+        assertDoesNotContain(RULE_HAS_NO_ACTION,
+                             analyzerProvider.getAnalysisReport(),
+                             2);
     }
 
     @Test
     public void testRuleHasNoRestrictions() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<>(),
-                                                          "mytable" )
-                .withActionInsertFact( "Person", "a", "approved", DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{{1, "description", true}} )
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<>(),
+                                                         "mytable")
+                .withActionInsertFact("Person",
+                                      "a",
+                                      "approved",
+                                      DataType.TYPE_BOOLEAN)
+                .withData(new Object[][]{{1, "description", true}})
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport() );
-
+        assertContains(RULE_HAS_NO_RESTRICTIONS_AND_WILL_ALWAYS_FIRE,
+                       analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testRuleHasNoRestrictionsSet() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", ">" )
-                .withStringColumn( "a", "Person", "name", "==" )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{
-                        { 1, "description", null, "", true },
-                        { 2, "description", null, null, null }
-                } )
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            ">")
+                .withStringColumn("a",
+                                  "Person",
+                                  "name",
+                                  "==")
+                .withActionSetField("a",
+                                    "approved",
+                                    DataType.TYPE_BOOLEAN)
+                .withData(new Object[][]{
+                        {1, "description", null, "", true},
+                        {2, "description", null, null, null}
+                })
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport(), 1 );
-        assertContains( "EmptyRule", analyzerProvider.getAnalysisReport(), 2 );
-        assertDoesNotContain( "EmptyRule", analyzerProvider.getAnalysisReport(), 1 );
-        assertDoesNotContain( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport(), 2 );
-
+        assertContains(RULE_HAS_NO_RESTRICTIONS_AND_WILL_ALWAYS_FIRE,
+                       analyzerProvider.getAnalysisReport(),
+                       1);
+        assertContains(EMPTY_RULE,
+                       analyzerProvider.getAnalysisReport(),
+                       2);
+        assertDoesNotContain(EMPTY_RULE,
+                             analyzerProvider.getAnalysisReport(),
+                             1);
+        assertDoesNotContain(RULE_HAS_NO_RESTRICTIONS_AND_WILL_ALWAYS_FIRE,
+                             analyzerProvider.getAnalysisReport(),
+                             2);
     }
 
     @Test
     public void testMultipleValuesForOneAction() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", ">" )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withActionSetField( "a", "approved", DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{ { 1, "description", 100, true, false } } )
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            ">")
+                .withActionSetField("a",
+                                    "approved",
+                                    DataType.TYPE_BOOLEAN)
+                .withActionSetField("a",
+                                    "approved",
+                                    DataType.TYPE_BOOLEAN)
+                .withData(new Object[][]{{1, "description", 100, true, false}})
                 .buildTable();
 
-        analyzer = analyzerProvider.makeAnalyser( table52 );
+        analyzer = analyzerProvider.makeAnalyser(table52);
 
         analyzer.start();
 
-        assertContains( "MultipleValuesForOneAction", analyzerProvider.getAnalysisReport() );
-
+        assertContains(MULTIPLE_VALUES_FOR_ONE_ACTION,
+                       analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testRedundancy() throws Exception {
-        table52 = new LimitedGuidedDecisionTableBuilder( "org.test",
-                                                         new ArrayList<Import>(),
-                                                         "mytable" )
-                .withIntegerColumn( "a", "Person", "age", "==", 0 )
-                .withAction( "a", "Person", "approved", new DTCellValue52() {
-                    {
-                        setBooleanValue( true );
-                    }
-                } ).withAction( "a", "Person", "approved", new DTCellValue52() {
-                    {
-                        setBooleanValue( true );
-                    }
-                } )
-                .withData( new Object[][]{
-                        { 1, "description", true, true, false },
-                        { 2, "description", true, false, true } } )
+        table52 = new LimitedGuidedDecisionTableBuilder("org.test",
+                                                        new ArrayList<Import>(),
+                                                        "mytable")
+                .withIntegerColumn("a",
+                                   "Person",
+                                   "age",
+                                   "==",
+                                   0)
+                .withAction("a",
+                            "Person",
+                            "approved",
+                            new DTCellValue52() {
+                                {
+                                    setBooleanValue(true);
+                                }
+                            }).withAction("a",
+                                          "Person",
+                                          "approved",
+                                          new DTCellValue52() {
+                                              {
+                                                  setBooleanValue(true);
+                                              }
+                                          })
+                .withData(new Object[][]{
+                        {1, "description", true, true, false},
+                        {2, "description", true, false, true}})
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 1 );
-        assertContains( "RedundantRows", analyzerProvider.getAnalysisReport(), 2 );
+        assertContains(REDUNDANT_ROWS,
+                       analyzerProvider.getAnalysisReport(),
+                       1);
+        assertContains(REDUNDANT_ROWS,
+                       analyzerProvider.getAnalysisReport(),
+                       2);
 
-        assertNotNull( analyzerProvider.getStatus() );
+        assertNotNull(analyzerProvider.getStatus());
     }
 
     // GUVNOR-2546: Verification & Validation: BRL fragments are ignored
     @Test
     public void testRuleHasNoActionBRLFragmentHasAction() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", ">" )
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            ">")
                 .withActionBRLFragment()
-                .withData( new Object[][]{{1, "description", 0, true}} )
+                .withData(new Object[][]{{1, "description", 0, true}})
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertDoesNotContain( "EmptyRule", analyzerProvider.getAnalysisReport(), 1 );
-        assertDoesNotContain( "RuleHasNoAction", analyzerProvider.getAnalysisReport() );
+        assertDoesNotContain(EMPTY_RULE,
+                             analyzerProvider.getAnalysisReport(),
+                             1);
+        assertDoesNotContain(RULE_HAS_NO_ACTION,
+                             analyzerProvider.getAnalysisReport());
     }
 
     /**
@@ -268,18 +349,23 @@ public class DecisionTableAnalyzerTest
      */
     @Test
     public void testMissingActionForBrlAction() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", ">" )
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            ">")
                 .withActionBRLFragment()
-                .withData( new Object[][]{{1, "description", 0, null}} )
+                .withData(new Object[][]{{1, "description", 0, null}})
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertEquals( 1, analyzerProvider.getAnalysisReport().size() );
-        assertContains( "RuleHasNoAction", analyzerProvider.getAnalysisReport() );
+        assertEquals(1,
+                     analyzerProvider.getAnalysisReport().size());
+        assertContains(RULE_HAS_NO_ACTION,
+                       analyzerProvider.getAnalysisReport());
     }
 
     /**
@@ -288,44 +374,56 @@ public class DecisionTableAnalyzerTest
      */
     @Test
     public void testMissingRestrictionForBrlAction() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
-                .withConditionIntegerColumn( "a", "Person", "age", ">" )
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
+                .withConditionIntegerColumn("a",
+                                            "Person",
+                                            "age",
+                                            ">")
                 .withActionBRLFragment()
-                .withData( new Object[][]{{1, "description", null, true}} )
+                .withData(new Object[][]{{1, "description", null, true}})
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertEquals( 1, analyzerProvider.getAnalysisReport().size() );
-        assertContains("RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport());
+        assertEquals(1,
+                     analyzerProvider.getAnalysisReport().size());
+        assertContains(RULE_HAS_NO_RESTRICTIONS_AND_WILL_ALWAYS_FIRE,
+                       analyzerProvider.getAnalysisReport());
     }
 
     // GUVNOR-2546: Verification & Validation: BRL fragments are ignored
     @Test
     public void testConditionsShouldNotBeIgnored() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
                 .withConditionBRLColumn()
-                .withActionInsertFact( "Application",
-                                       "a",
-                                       "approved",
-                                       DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{
+                .withActionInsertFact("Application",
+                                      "a",
+                                      "approved",
+                                      DataType.TYPE_BOOLEAN)
+                .withData(new Object[][]{
                         {1, "description", null, true},
                         {2, "description", null, null}
-                } )
+                })
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertContains( "EmptyRule", analyzerProvider.getAnalysisReport(), 2 );
-        assertDoesNotContain( "EmptyRule", analyzerProvider.getAnalysisReport(), 1 );
-        assertContains( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport(), 1 );
-        assertDoesNotContain( "RuleHasNoRestrictionsAndWillAlwaysFire", analyzerProvider.getAnalysisReport(), 2 );
-
+        assertContains(EMPTY_RULE,
+                       analyzerProvider.getAnalysisReport(),
+                       2);
+        assertDoesNotContain(EMPTY_RULE,
+                             analyzerProvider.getAnalysisReport(),
+                             1);
+        assertContains(RULE_HAS_NO_RESTRICTIONS_AND_WILL_ALWAYS_FIRE,
+                       analyzerProvider.getAnalysisReport(),
+                       1);
+        assertDoesNotContain(RULE_HAS_NO_RESTRICTIONS_AND_WILL_ALWAYS_FIRE,
+                             analyzerProvider.getAnalysisReport(),
+                             2);
     }
 
     /**
@@ -334,21 +432,22 @@ public class DecisionTableAnalyzerTest
      */
     @Test
     public void testMissingActionForBrlCondition() throws Exception {
-        table52 = new ExtendedGuidedDecisionTableBuilder( "org.test",
-                                                          new ArrayList<Import>(),
-                                                          "mytable" )
+        table52 = new ExtendedGuidedDecisionTableBuilder("org.test",
+                                                         new ArrayList<Import>(),
+                                                         "mytable")
                 .withConditionBRLColumn()
-                .withActionInsertFact( "Application",
-                                       "a",
-                                       "approved",
-                                       DataType.TYPE_BOOLEAN )
-                .withData( new Object[][]{ {1, "description", "value", null}} )
+                .withActionInsertFact("Application",
+                                      "a",
+                                      "approved",
+                                      DataType.TYPE_BOOLEAN)
+                .withData(new Object[][]{{1, "description", "value", null}})
                 .buildTable();
 
         fireUpAnalyzer();
 
-        assertEquals(1, analyzerProvider.getAnalysisReport().size());
-        assertContains("RuleHasNoAction", analyzerProvider.getAnalysisReport());
-
+        assertEquals(1,
+                     analyzerProvider.getAnalysisReport().size());
+        assertContains(RULE_HAS_NO_ACTION,
+                       analyzerProvider.getAnalysisReport());
     }
 }
