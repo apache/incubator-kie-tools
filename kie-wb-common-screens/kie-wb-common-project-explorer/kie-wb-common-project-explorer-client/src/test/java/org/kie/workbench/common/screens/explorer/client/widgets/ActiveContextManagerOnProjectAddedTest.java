@@ -32,15 +32,18 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.client.mvp.PlaceManager;
+import org.uberfire.client.mvp.PlaceStatus;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
 import static org.junit.Assert.*;
-import static org.kie.workbench.common.screens.explorer.client.TestUtils.*;
+import static org.kie.workbench.common.screens.explorer.client.TestUtils.getPathMock;
+import static org.kie.workbench.common.screens.explorer.client.TestUtils.getProjectMock;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class ActiveContextManagerOnProjectAddedTest {
 
     @Mock
@@ -59,6 +62,9 @@ public class ActiveContextManagerOnProjectAddedTest {
     SessionInfo sessionInfo;
 
     @Mock
+    PlaceManager placeManager;
+
+    @Mock
     User identity;
 
     @Mock
@@ -74,94 +80,114 @@ public class ActiveContextManagerOnProjectAddedTest {
 
     @Before
     public void setUp() {
-        when( view.isVisible() ).thenReturn( true );
+        when(view.isVisible()).thenReturn(true);
 
-        when( sessionInfo.getIdentity() ).thenReturn( identity );
-        when( sessionInfo.getId() ).thenReturn( "sessionID" );
+        when(sessionInfo.getIdentity()).thenReturn(identity);
+        when(sessionInfo.getId()).thenReturn("sessionID");
 
-        this.activeContextManager = spy( new ActiveContextManager( activeContextItems,
-                                                                   activeOptions,
-                                                                   new CallerMock<>( explorerService ),
-                                                                   authorizationManager,
-                                                                   sessionInfo ) );
+        when(placeManager.getStatus("LibraryPerspective")).thenReturn(PlaceStatus.CLOSE);
 
-        this.activeContextManager.init( view,
-                                        remoteCallback );
+        this.activeContextManager = spy(new ActiveContextManager(activeContextItems,
+                                                                 activeOptions,
+                                                                 new CallerMock<>(explorerService),
+                                                                 authorizationManager,
+                                                                 sessionInfo,
+                                                                 placeManager));
+
+        this.activeContextManager.init(view,
+                                       remoteCallback);
+    }
+
+    @Test
+    public void testLibraryPerspectiveOpen() throws Exception {
+        when(placeManager.getStatus("LibraryPerspective")).thenReturn(PlaceStatus.OPEN);
+
+        activeContextManager.onProjectAdded(new NewProjectEvent(mock(Project.class),
+                                                                "differentID",
+                                                                "userName"));
+
+        verify(explorerService,
+               never()).getContent(any(ProjectExplorerContentQuery.class));
     }
 
     @Test
     public void testViewNotVisible() throws Exception {
-        when( view.isVisible() ).thenReturn( false );
+        when(view.isVisible()).thenReturn(false);
 
-        activeContextManager.onProjectAdded( new NewProjectEvent() );
+        activeContextManager.onProjectAdded(new NewProjectEvent(mock(Project.class),
+                                                                "differentID",
+                                                                "userName"));
 
-        verify( explorerService, never() ).getContent( any( ProjectExplorerContentQuery.class ) );
+        verify(explorerService,
+               never()).getContent(any(ProjectExplorerContentQuery.class));
     }
 
     @Test
     public void testProjectNull() throws Exception {
-        activeContextManager.onProjectAdded( new NewProjectEvent() );
+        activeContextManager.onProjectAdded(new NewProjectEvent());
 
-        verify( explorerService, never() ).getContent( any( ProjectExplorerContentQuery.class ) );
+        verify(explorerService,
+               never()).getContent(any(ProjectExplorerContentQuery.class));
     }
 
     @Test
     public void testNotInCurrentSession() throws Exception {
-        activeContextManager.onProjectAdded( new NewProjectEvent( mock( Project.class ),
-                                                                  "differentID",
-                                                                  "userName" ) );
+        activeContextManager.onProjectAdded(new NewProjectEvent(mock(Project.class),
+                                                                "differentID",
+                                                                "userName"));
 
         verifyFullRefresh();
     }
 
     @Test
     public void testNotInSameBranch() throws Exception {
-        final Repository repository = mock( Repository.class );
-        when( activeContextItems.getActiveRepository() ).thenReturn( repository );
-        when( activeContextItems.getActiveBranch() ).thenReturn( "master" );
+        final Repository repository = mock(Repository.class);
+        when(activeContextItems.getActiveRepository()).thenReturn(repository);
+        when(activeContextItems.getActiveBranch()).thenReturn("master");
 
-        final Path masterRootPath = getPathMock( "default://master@uf-playground/" );
+        final Path masterRootPath = getPathMock("default://master@uf-playground/");
 
-        when( repository.getBranchRoot( "master" ) ).thenReturn( masterRootPath );
+        when(repository.getBranchRoot("master")).thenReturn(masterRootPath);
 
-        final Project project = getProjectMock( "default://devBranch@uf-playground/myProject" );
+        final Project project = getProjectMock("default://devBranch@uf-playground/myProject");
 
-        activeContextManager.onProjectAdded( new NewProjectEvent( project,
-                                                                  "sessionID",
-                                                                  "userName" ) );
+        activeContextManager.onProjectAdded(new NewProjectEvent(project,
+                                                                "sessionID",
+                                                                "userName"));
 
         verifyFullRefresh();
     }
 
     @Test
     public void testProjectRefresh() throws Exception {
-        final Repository repository = mock( Repository.class );
-        when( activeContextItems.getActiveRepository() ).thenReturn( repository );
-        when( activeContextItems.getActiveBranch() ).thenReturn( "master" );
+        final Repository repository = mock(Repository.class);
+        when(activeContextItems.getActiveRepository()).thenReturn(repository);
+        when(activeContextItems.getActiveBranch()).thenReturn("master");
 
-        final Path masterRootPath = getPathMock( "default://master@uf-playground/" );
+        final Path masterRootPath = getPathMock("default://master@uf-playground/");
 
-        when( repository.getBranchRoot( "master" ) ).thenReturn( masterRootPath );
+        when(repository.getBranchRoot("master")).thenReturn(masterRootPath);
 
-        final Project project = getProjectMock( "default://master@uf-playground/myProject" );
+        final Project project = getProjectMock("default://master@uf-playground/myProject");
 
-        activeContextManager.onProjectAdded( new NewProjectEvent( project,
-                                                                  "sessionID",
-                                                                  "userName" ) );
+        activeContextManager.onProjectAdded(new NewProjectEvent(project,
+                                                                "sessionID",
+                                                                "userName"));
 
-        verifyProjectRefresh( project );
+        verifyProjectRefresh(project);
     }
 
-    private void verifyProjectRefresh( final Project project ) {
-        verify( explorerService ).getContent( projectExplorerContentQueryCaptor.capture() );
+    private void verifyProjectRefresh(final Project project) {
+        verify(explorerService).getContent(projectExplorerContentQueryCaptor.capture());
         final ProjectExplorerContentQuery query = projectExplorerContentQueryCaptor.getValue();
-        assertNotNull( query.getProject() );
-        assertEquals( project, query.getProject() );
+        assertNotNull(query.getProject());
+        assertEquals(project,
+                     query.getProject());
     }
 
     private void verifyFullRefresh() {
-        verify( explorerService ).getContent( projectExplorerContentQueryCaptor.capture() );
+        verify(explorerService).getContent(projectExplorerContentQueryCaptor.capture());
         final ProjectExplorerContentQuery query = projectExplorerContentQueryCaptor.getValue();
-        assertNull( query.getProject() );
+        assertNull(query.getProject());
     }
 }

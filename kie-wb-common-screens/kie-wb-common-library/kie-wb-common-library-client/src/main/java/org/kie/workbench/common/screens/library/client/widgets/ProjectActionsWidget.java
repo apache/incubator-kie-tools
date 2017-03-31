@@ -18,52 +18,55 @@ package org.kie.workbench.common.screens.library.client.widgets;
 
 import javax.inject.Inject;
 
-import org.kie.workbench.common.screens.library.client.util.ResourceUtils;
-import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
-import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
+import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.kie.workbench.common.screens.projecteditor.client.build.BuildExecutor;
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.mvp.Command;
 
-import static org.kie.workbench.common.screens.library.client.util.ResourceUtils.isProjectHandler;
-
 public class ProjectActionsWidget {
 
-    public interface View extends UberElement<ProjectActionsWidget> {
+    public interface View extends UberElement<ProjectActionsWidget>,
+                                  BuildExecutor.View {
 
-        void addResourceHandler(final NewResourceHandler newResourceHandler);
     }
 
     private View view;
 
-    private NewResourcePresenter newResourcePresenter;
+    private BuildExecutor buildExecutor;
+
+    private LibraryPlaces libraryPlaces;
 
     private Command showSettingsCommand;
 
-    private ResourceUtils resourceUtils;
-
     @Inject
     public ProjectActionsWidget(final View view,
-                                final NewResourcePresenter newResourcePresenter,
-                                final ResourceUtils resourceUtils) {
+                                final BuildExecutor buildExecutor,
+                                final LibraryPlaces libraryPlaces) {
         this.view = view;
-        this.newResourcePresenter = newResourcePresenter;
-        this.resourceUtils = resourceUtils;
+        this.buildExecutor = buildExecutor;
+        this.libraryPlaces = libraryPlaces;
     }
 
     public void init(final Command showSettingsCommand) {
         this.showSettingsCommand = showSettingsCommand;
-
         view.init(this);
-        resourceUtils.getAlphabeticallyOrderedNewResourceHandlers().stream().filter(newResourceHandler -> newResourceHandler.canCreate()
-                && !isProjectHandler(newResourceHandler)).forEach(newResourceHandler -> view.addResourceHandler(newResourceHandler));
+        buildExecutor.init(view);
     }
 
     public void goToProjectSettings() {
         showSettingsCommand.execute();
     }
 
-    public NewResourcePresenter getNewResourcePresenter() {
-        return newResourcePresenter;
+    public void compileProject() {
+        buildExecutor.triggerBuild();
+    }
+
+    public void buildAndDeployProject() {
+        buildExecutor.triggerBuildAndDeploy();
+    }
+
+    public void goToMessages() {
+        libraryPlaces.goToMessages();
     }
 
     public View getView() {

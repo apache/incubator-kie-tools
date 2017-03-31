@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import javax.enterprise.context.Dependent;
@@ -31,18 +30,13 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import com.google.common.collect.FluentIterable;
-import com.google.common.collect.Maps;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.guvnor.common.services.project.builder.model.BuildResults;
-import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.client.preferences.ProjectScopedResolutionStrategySupplier;
 import org.guvnor.common.services.project.client.repositories.ConflictingRepositoriesPopup;
 import org.guvnor.common.services.project.context.ProjectContext;
 import org.guvnor.common.services.project.context.ProjectContextChangeHandle;
 import org.guvnor.common.services.project.context.ProjectContextChangeHandler;
-import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.preferences.GAVPreferences;
 import org.guvnor.common.services.project.security.ProjectAction;
@@ -62,17 +56,12 @@ import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.async.AsyncBeanDef;
 import org.jboss.errai.ioc.client.container.async.AsyncBeanManager;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.kie.server.api.model.KieContainerStatus;
-import org.kie.server.api.model.ReleaseId;
-import org.kie.server.controller.api.model.spec.ContainerSpec;
-import org.kie.server.controller.api.model.spec.ServerTemplate;
-import org.kie.server.controller.api.model.spec.ServerTemplateKey;
+import org.kie.workbench.common.screens.projecteditor.client.build.BuildExecutor;
 import org.kie.workbench.common.screens.projecteditor.client.editor.extension.BuildOptionExtension;
 import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.client.validation.ProjectNameValidator;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
 import org.kie.workbench.common.screens.projecteditor.service.ProjectScreenService;
-import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.validation.ValidationService;
 import org.kie.workbench.common.widgets.client.callbacks.CommandBuilder;
@@ -103,7 +92,6 @@ import org.uberfire.ext.editor.commons.client.file.popups.SavePopUpPresenter;
 import org.uberfire.ext.preferences.client.admin.AdminPagePerspective;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnMayClose;
 import org.uberfire.lifecycle.OnStartup;
@@ -121,7 +109,9 @@ import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.model.menu.impl.BaseMenuCustom;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
-import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.*;
+import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentDelete;
+import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentRename;
+import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentUpdate;
 
 @WorkbenchScreen(identifier = "projectScreen")
 public class ProjectScreenPresenter
@@ -134,16 +124,12 @@ public class ProjectScreenPresenter
     private Caller<ValidationService> validationService;
 
     private Caller<ProjectScreenService> projectScreenService;
-    private Caller<BuildService> buildServiceCaller;
-
-    private Caller<SpecManagementService> specManagementService;
 
     private ProjectNameValidator projectNameValidator;
 
     private KieProject project;
     protected ObservablePath pathToPomXML;
 
-    private Event<BuildResults> buildResultsEvent;
     private Event<NotificationEvent> notificationEvent;
     private Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent;
 
@@ -153,7 +139,6 @@ public class ProjectScreenPresenter
     private ProjectScreenModel model;
     private Integer originalHash;
     private PlaceRequest placeRequest;
-    private boolean building = false;
 
     private BusyIndicatorView busyIndicatorView;
 
@@ -177,8 +162,6 @@ public class ProjectScreenPresenter
 
     private ConflictingRepositoriesPopup conflictingRepositoriesPopup;
 
-    private DeploymentScreenPopupViewImpl deploymentScreenPopupView;
-
     protected CopyPopUpPresenter copyPopUpPresenter;
 
     protected RenamePopUpPresenter renamePopUpPresenter;
@@ -191,70 +174,47 @@ public class ProjectScreenPresenter
 
     private Instance<ResourceTypeDefinition> resourceTypes;
 
-    //Used by ErrorCallback for "Build" operation.
-    private Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> onBuildAndDeployGavExistsHandler = new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
-        put( GAVAlreadyExistsException.class,
-             new CommandWithThrowableDrivenErrorCallback.CommandWithThrowable() {
-                 @Override
-                 public void execute( final Throwable parameter ) {
-                     view.hideBusyIndicator();
-                     conflictingRepositoriesPopup.setContent( model.getPOM().getGav(),
-                                                              ( (GAVAlreadyExistsException) parameter ).getRepositories(),
-                                                              new Command() {
-                                                                  @Override
-                                                                  public void execute() {
-                                                                      conflictingRepositoriesPopup.hide();
-                                                                      getBuildDeployCommand( DeploymentMode.FORCED ).execute();
-
-                                                                  }
-                                                              } );
-                     conflictingRepositoriesPopup.show();
-                 }
-             } );
-    }};
+    private BuildExecutor buildExecutor;
 
     public ProjectScreenPresenter() {
     }
 
     @Inject
-    public ProjectScreenPresenter( final ProjectScreenView view,
-                                   final ProjectContext workbenchContext,
-                                   final Caller<ProjectScreenService> projectScreenService,
-                                   final Caller<BuildService> buildServiceCaller,
-                                   final User user,
-                                   final Event<BuildResults> buildResultsEvent,
-                                   final Event<NotificationEvent> notificationEvent,
-                                   final Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent,
-                                   final ProjectNameValidator projectNameValidator,
-                                   final PlaceManager placeManager,
-                                   final BusyIndicatorView busyIndicatorView,
-                                   final Caller<ValidationService> validationService,
-                                   final Instance<LockManager> lockManagerInstanceProvider,
-                                   final Event<ForceUnlockEvent> forceLockReleaseEvent,
-                                   final ConflictingRepositoriesPopup conflictingRepositoriesPopup,
-                                   final Caller<SpecManagementService> specManagementService,
-                                   final DeploymentScreenPopupViewImpl deploymentScreenPopupView,
-                                   final CopyPopUpPresenter copyPopUpPresenter,
-                                   final RenamePopUpPresenter renamePopUpPresenter,
-                                   final DeletePopUpPresenter deletePopUpPresenter,
-                                   final SavePopUpPresenter savePopUpPresenter,
-                                   final GAVPreferences gavPreferences,
-                                   final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier,
-                                   final Instance<ResourceTypeDefinition> resourceTypes ) {
+    public ProjectScreenPresenter(final ProjectScreenView view,
+                                  final ProjectContext workbenchContext,
+                                  final Caller<ProjectScreenService> projectScreenService,
+                                  final User user,
+                                  final Event<NotificationEvent> notificationEvent,
+                                  final Event<ChangeTitleWidgetEvent> changeTitleWidgetEvent,
+                                  final ProjectNameValidator projectNameValidator,
+                                  final PlaceManager placeManager,
+                                  final BusyIndicatorView busyIndicatorView,
+                                  final Caller<ValidationService> validationService,
+                                  final Instance<LockManager> lockManagerInstanceProvider,
+                                  final Event<ForceUnlockEvent> forceLockReleaseEvent,
+                                  final ConflictingRepositoriesPopup conflictingRepositoriesPopup,
+                                  final CopyPopUpPresenter copyPopUpPresenter,
+                                  final RenamePopUpPresenter renamePopUpPresenter,
+                                  final DeletePopUpPresenter deletePopUpPresenter,
+                                  final SavePopUpPresenter savePopUpPresenter,
+                                  final GAVPreferences gavPreferences,
+                                  final ProjectScopedResolutionStrategySupplier projectScopedResolutionStrategySupplier,
+                                  final Instance<ResourceTypeDefinition> resourceTypes,
+                                  final BuildExecutor buildExecutor) {
 
         this.view = view;
         this.user = user;
-        view.setPresenter( this );
+        view.setPresenter(this);
 
-        gavPreferences.load( projectScopedResolutionStrategySupplier.get(), loadedGAVPreferences -> {
-            view.setGAVCheckDisabledSetting( loadedGAVPreferences.isConflictingGAVCheckDisabled() );
-        }, throwable -> {
-            throw new RuntimeException( throwable );
-        } );
+        gavPreferences.load(projectScopedResolutionStrategySupplier.get(),
+                            loadedGAVPreferences -> {
+                                view.setGAVCheckDisabledSetting(loadedGAVPreferences.isConflictingGAVCheckDisabled());
+                            },
+                            throwable -> {
+                                throw new RuntimeException(throwable);
+                            });
 
         this.projectScreenService = projectScreenService;
-        this.buildServiceCaller = buildServiceCaller;
-        this.buildResultsEvent = buildResultsEvent;
         this.notificationEvent = notificationEvent;
         this.changeTitleWidgetEvent = changeTitleWidgetEvent;
         this.projectNameValidator = projectNameValidator;
@@ -267,19 +227,17 @@ public class ProjectScreenPresenter
         this.forceLockReleaseEvent = forceLockReleaseEvent;
         this.conflictingRepositoriesPopup = conflictingRepositoriesPopup;
 
-        this.specManagementService = specManagementService;
-
         this.copyPopUpPresenter = copyPopUpPresenter;
         this.renamePopUpPresenter = renamePopUpPresenter;
         this.deletePopUpPresenter = deletePopUpPresenter;
         this.savePopUpPresenter = savePopUpPresenter;
 
-        projectContextChangeHandle = workbenchContext.addChangeHandler( new ProjectContextChangeHandler() {
+        projectContextChangeHandle = workbenchContext.addChangeHandler(new ProjectContextChangeHandler() {
             @Override
             public void onChange() {
                 update();
             }
-        } );
+        });
         this.buildOptions = view.getBuildButtons();
 
         menus = makeMenuBar();
@@ -296,38 +254,39 @@ public class ProjectScreenPresenter
 
             @Override
             public String getTitle() {
-                return ( title == null ) ? ProjectScreenPresenter.this.getTitle() : title;
+                return (title == null) ? ProjectScreenPresenter.this.getTitle() : title;
             }
         };
 
-        this.deploymentScreenPopupView = deploymentScreenPopupView;
-
         this.resourceTypes = resourceTypes;
+
+        this.buildExecutor = buildExecutor;
+        this.buildExecutor.init(view);
     }
 
-    protected boolean isDeploymentDescritorEditorAvailable( final Stream<ResourceTypeDefinition> resourceTypes,
-                                                            final Path path ) {
-        return resourceTypes.anyMatch( r -> r.accept( path ) && KIE_DEPLOYMENT_DESCRIPTOR_XML.equals( r.getPrefix() + "." + r.getSuffix() ) );
+    protected boolean isDeploymentDescritorEditorAvailable(final Stream<ResourceTypeDefinition> resourceTypes,
+                                                           final Path path) {
+        return resourceTypes.anyMatch(r -> r.accept(path) && KIE_DEPLOYMENT_DESCRIPTOR_XML.equals(r.getPrefix() + "." + r.getSuffix()));
     }
 
     /**
      * This is in no way a permanent fix for the refresh issue.
      * We need something reusable for all the multi file editors we have and will have.
      */
-    void onResourceUpdated( final @Observes ResourceUpdatedEvent resourceUpdatedEvent ) {
-        if ( resourceUpdatedEvent.getSessionInfo().getIdentity().equals( user ) ) {
-            if ( resourceUpdatedEvent.getPath().equals( pathToPomXML ) ) {
+    void onResourceUpdated(final @Observes ResourceUpdatedEvent resourceUpdatedEvent) {
+        if (resourceUpdatedEvent.getSessionInfo().getIdentity().equals(user)) {
+            if (resourceUpdatedEvent.getPath().equals(pathToPomXML)) {
                 reloadRunnable.run();
             }
         }
     }
 
-    private void configureBuildExtensions( final Project project,
-                                           final ButtonGroup buildButtonGroup ) {
+    private void configureBuildExtensions(final Project project,
+                                          final ButtonGroup buildButtonGroup) {
         cleanExtensions();
-        final DropDownMenu buildDropdown = getDropdown( buildButtonGroup );
+        final DropDownMenu buildDropdown = getDropdown(buildButtonGroup);
 
-        if ( project == null || buildDropdown == null ) {
+        if (project == null || buildDropdown == null) {
             buildExtensions = null;
             return;
         }
@@ -336,25 +295,25 @@ public class ProjectScreenPresenter
         Collection<BuildOptionExtension> allExtensions = pair.getK1();
         Collection<BuildOptionExtension> dependentScopedExtensions = pair.getK2();
 
-        buildExtensions = new ArrayList<Widget>( allExtensions.size() );
+        buildExtensions = new ArrayList<Widget>(allExtensions.size());
 
-        for ( BuildOptionExtension ext : allExtensions ) {
-            for ( Widget option : ext.getBuildOptions( project ) ) {
-                if ( option instanceof DropDownHeader ||
-                        option instanceof AnchorListItem ) {
-                    buildExtensions.add( option );
-                    buildDropdown.add( option );
+        for (BuildOptionExtension ext : allExtensions) {
+            for (Widget option : ext.getBuildOptions(project)) {
+                if (option instanceof DropDownHeader ||
+                        option instanceof AnchorListItem) {
+                    buildExtensions.add(option);
+                    buildDropdown.add(option);
                 }
             }
         }
 
-        destroyExtensions( dependentScopedExtensions );
+        destroyExtensions(dependentScopedExtensions);
     }
 
-    private DropDownMenu getDropdown( final ButtonGroup buildButtonGroup ) {
-        for ( int i = 0; i < buildButtonGroup.getWidgetCount(); i++ ) {
-            final Widget widget = buildButtonGroup.getWidget( i );
-            if ( widget instanceof DropDownMenu ) {
+    private DropDownMenu getDropdown(final ButtonGroup buildButtonGroup) {
+        for (int i = 0; i < buildButtonGroup.getWidgetCount(); i++) {
+            final Widget widget = buildButtonGroup.getWidget(i);
+            if (widget instanceof DropDownMenu) {
                 return (DropDownMenu) widget;
             }
         }
@@ -363,57 +322,58 @@ public class ProjectScreenPresenter
     }
 
     private void cleanExtensions() {
-        if ( buildExtensions != null && buildOptions != null ) {
-            final DropDownMenu dropdownMenu = ( (DropDownMenu) buildOptions.getWidget( 1 ) );
-            for ( Widget ext : buildExtensions ) {
-                dropdownMenu.remove( ext );
+        if (buildExtensions != null && buildOptions != null) {
+            final DropDownMenu dropdownMenu = ((DropDownMenu) buildOptions.getWidget(1));
+            for (Widget ext : buildExtensions) {
+                dropdownMenu.remove(ext);
             }
         }
     }
 
     protected Pair<Collection<BuildOptionExtension>, Collection<BuildOptionExtension>> getBuildExtensions() {
         AsyncBeanManager beanManager = IOC.getAsyncBeanManager();
-        Collection<AsyncBeanDef<BuildOptionExtension>> beans = beanManager.lookupBeans( BuildOptionExtension.class );
-        final Collection<BuildOptionExtension> dependentScoped = new ArrayList<BuildOptionExtension>( beans.size() );
-        final Collection<BuildOptionExtension> instances = new ArrayList<BuildOptionExtension>( beans.size() );
+        Collection<AsyncBeanDef<BuildOptionExtension>> beans = beanManager.lookupBeans(BuildOptionExtension.class);
+        final Collection<BuildOptionExtension> dependentScoped = new ArrayList<BuildOptionExtension>(beans.size());
+        final Collection<BuildOptionExtension> instances = new ArrayList<BuildOptionExtension>(beans.size());
 
-        for ( final AsyncBeanDef<BuildOptionExtension> bean : beans ) {
+        for (final AsyncBeanDef<BuildOptionExtension> bean : beans) {
             /*
              * We are assuming that extensions are not marked with @LoadAsync.
              * Thus getInstance will immediately invoke the callback.
              */
-            bean.getInstance( new CreationalCallback<BuildOptionExtension>() {
+            bean.getInstance(new CreationalCallback<BuildOptionExtension>() {
 
                 @Override
-                public void callback( BuildOptionExtension extension ) {
-                    instances.add( extension );
-                    if ( bean.getScope().equals( Dependent.class ) ) {
-                        dependentScoped.add( extension );
+                public void callback(BuildOptionExtension extension) {
+                    instances.add(extension);
+                    if (bean.getScope().equals(Dependent.class)) {
+                        dependentScoped.add(extension);
                     }
                 }
-            } );
+            });
         }
 
-        return new Pair<Collection<BuildOptionExtension>, Collection<BuildOptionExtension>>( instances, dependentScoped );
+        return new Pair<Collection<BuildOptionExtension>, Collection<BuildOptionExtension>>(instances,
+                                                                                            dependentScoped);
     }
 
-    protected void destroyExtensions( Collection<BuildOptionExtension> extensions ) {
+    protected void destroyExtensions(Collection<BuildOptionExtension> extensions) {
         AsyncBeanManager beanManager = IOC.getAsyncBeanManager();
 
-        for ( BuildOptionExtension ext : extensions ) {
-            beanManager.destroyBean( ext );
+        for (BuildOptionExtension ext : extensions) {
+            beanManager.destroyBean(ext);
         }
     }
 
     @OnStartup
-    public void onStartup( final PlaceRequest placeRequest ) {
+    public void onStartup(final PlaceRequest placeRequest) {
         this.placeRequest = placeRequest;
         update();
     }
 
     @OnMayClose
     public boolean onMayClose() {
-        if ( isDirty() ) {
+        if (isDirty()) {
             return view.confirmClose();
         }
         return true;
@@ -421,218 +381,231 @@ public class ProjectScreenPresenter
 
     @OnClose
     public void onClose() {
-        workbenchContext.removeChangeHandler( projectContextChangeHandle );
-        for ( LockManager lockManager : lockManagers.values() ) {
+        workbenchContext.removeChangeHandler(projectContextChangeHandle);
+        for (LockManager lockManager : lockManagers.values()) {
             lockManager.releaseLock();
-            lockManagerInstanceProvider.destroy( lockManager );
+            lockManagerInstanceProvider.destroy(lockManager);
         }
         lockManagers.clear();
     }
 
     private void update() {
-        if ( workbenchContext.getActiveProject() == null ) {
-            enableMenus( false );
+        if (workbenchContext.getActiveProject() == null) {
+            enableMenus(false);
             view.showNoProjectSelected();
             view.hideBusyIndicator();
         } else {
-            enableMenus( true );
+            enableMenus(true);
             view.showProjectEditor();
-            showCurrentProjectInfoIfAny( (KieProject) workbenchContext.getActiveProject() );
+            showCurrentProjectInfoIfAny((KieProject) workbenchContext.getActiveProject());
         }
     }
 
-    private void showCurrentProjectInfoIfAny( final KieProject project ) {
-        if ( project != null && !project.equals( this.project ) ) {
+    private void showCurrentProjectInfoIfAny(final KieProject project) {
+        if (project != null && !project.equals(this.project)) {
             this.project = project;
-            this.kieDeploymentDescriptoPath = PathFactory.newPath( KIE_DEPLOYMENT_DESCRIPTOR_XML, project.getRootPath().toURI() + "/src/main/resources/META-INF/" + KIE_DEPLOYMENT_DESCRIPTOR_XML );
+            this.kieDeploymentDescriptoPath = PathFactory.newPath(KIE_DEPLOYMENT_DESCRIPTOR_XML,
+                                                                  project.getRootPath().toURI() + "/src/main/resources/META-INF/" + KIE_DEPLOYMENT_DESCRIPTOR_XML);
             setupPathToPomXML();
             init();
         }
     }
 
     private void init() {
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
         projectScreenService.call(
                 new RemoteCallback<ProjectScreenModel>() {
                     @Override
-                    public void callback( ProjectScreenModel model ) {
+                    public void callback(ProjectScreenModel model) {
                         concurrentUpdateSessionInfo = null;
                         ProjectScreenPresenter.this.model = model;
 
-                        view.setPOM( model.getPOM() );
+                        view.setPOM(model.getPOM());
 
-                        validateGroupID( model.getPOM().getGav().getGroupId() );
-                        validateArtifactID( model.getPOM().getGav().getArtifactId() );
-                        validateVersion( model.getPOM().getGav().getVersion() );
+                        validateGroupID(model.getPOM().getGav().getGroupId());
+                        validateArtifactID(model.getPOM().getGav().getArtifactId());
+                        validateVersion(model.getPOM().getGav().getVersion());
 
-                        view.setDependencies( model.getPOM(),
-                                              model.getWhiteList() );
-                        view.setPomMetadata( model.getPOMMetaData() );
-                        view.setPomMetadataUnlockHandler( getUnlockHandler( model.getPOMMetaData().getPath() ) );
+                        view.setDependencies(model.getPOM(),
+                                             model.getWhiteList());
+                        view.setPomMetadata(model.getPOMMetaData());
+                        view.setPomMetadataUnlockHandler(getUnlockHandler(model.getPOMMetaData().getPath()));
 
-                        view.setKModule( model.getKModule() );
-                        view.setKModuleMetadata( model.getKModuleMetaData() );
-                        view.setKModuleMetadataUnlockHandler( getUnlockHandler( model.getKModuleMetaData().getPath() ) );
+                        view.setKModule(model.getKModule());
+                        view.setKModuleMetadata(model.getKModuleMetaData());
+                        view.setKModuleMetadataUnlockHandler(getUnlockHandler(model.getKModuleMetaData().getPath()));
 
-                        view.setImports( model.getProjectImports() );
-                        view.setImportsMetadata( model.getProjectImportsMetaData() );
-                        view.setImportsMetadataUnlockHandler( getUnlockHandler( model.getProjectImportsMetaData().getPath() ) );
+                        view.setImports(model.getProjectImports());
+                        view.setImportsMetadata(model.getProjectImportsMetaData());
+                        view.setImportsMetadataUnlockHandler(getUnlockHandler(model.getProjectImportsMetaData().getPath()));
 
-                        view.setRepositories( model.getRepositories() );
+                        view.setRepositories(model.getRepositories());
 
-                        view.setDeploymentDescriptorEnabled( isDeploymentDescritorEditorAvailable( StreamSupport.stream( resourceTypes.spliterator(), false ), kieDeploymentDescriptoPath ) );
+                        view.setDeploymentDescriptorEnabled(isDeploymentDescritorEditorAvailable(StreamSupport.stream(resourceTypes.spliterator(),
+                                                                                                                      false),
+                                                                                                 kieDeploymentDescriptoPath));
 
                         view.hideBusyIndicator();
                         originalHash = model.hashCode();
 
-                        for ( MenuItem mi : menus.getItemsMap().values() ) {
-                            mi.setEnabled( true );
+                        for (MenuItem mi : menus.getItemsMap().values()) {
+                            mi.setEnabled(true);
                         }
 
                         updateEditorTitle();
                         updateCurrentView();
                     }
                 },
-                new CommandDrivenErrorCallback( view,
-                                                new CommandBuilder()
-                                                        .addNoSuchFileException( view,
-                                                                                 menus )
-                                                        .addFileSystemNotFoundException( view,
-                                                                                         menus )
-                                                        .build() ) ).load( pathToPomXML );
+                new CommandDrivenErrorCallback(view,
+                                               new CommandBuilder()
+                                                       .addNoSuchFileException(view,
+                                                                               menus)
+                                                       .addFileSystemNotFoundException(view,
+                                                                                       menus)
+                                                       .build())).load(pathToPomXML);
 
-        if ( model == null ) {
+        if (model == null) {
             view.showGAVPanel();
         }
 
-        configureBuildExtensions( project,
-                                  buildOptions );
+        configureBuildExtensions(project,
+                                 buildOptions);
     }
 
     private void updateEditorTitle() {
-        title = ProjectEditorResources.CONSTANTS.ProjectScreenWithName( model.getPOM().getGav().getGroupId() + ":" +
-                                                                                model.getPOM().getGav().getArtifactId() + ":" +
-                                                                                model.getPOM().getGav().getVersion() );
+        title = ProjectEditorResources.CONSTANTS.ProjectScreenWithName(model.getPOM().getGav().getGroupId() + ":" +
+                                                                               model.getPOM().getGav().getArtifactId() + ":" +
+                                                                               model.getPOM().getGav().getVersion());
 
-        changeTitleWidgetEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
-                                                                 title ) );
+        changeTitleWidgetEvent.fire(new ChangeTitleWidgetEvent(placeRequest,
+                                                               title));
     }
 
     private void updateCurrentView() {
-        if ( view.showsGAVPanel() ) {
+        if (view.showsGAVPanel()) {
             onGAVPanelSelected();
-        } else if ( view.showsGAVMetadataPanel() ) {
+        } else if (view.showsGAVMetadataPanel()) {
             onGAVMetadataPanelSelected();
-        } else if ( view.showsKBasePanel() ) {
+        } else if (view.showsKBasePanel()) {
             onKBasePanelSelected();
-        } else if ( view.showsKBaseMetadataPanel() ) {
+        } else if (view.showsKBaseMetadataPanel()) {
             onKBaseMetadataPanelSelected();
-        } else if ( view.showsImportsPanel() ) {
+        } else if (view.showsImportsPanel()) {
             onImportsPanelSelected();
-        } else if ( view.showsImportsMetadataPanel() ) {
+        } else if (view.showsImportsMetadataPanel()) {
             onImportsMetadataPanelSelected();
-        } else if ( view.showsRepositoriesPanel() ) {
+        } else if (view.showsRepositoriesPanel()) {
             onRepositoriesPanelSelected();
-        } else if ( view.showsDependenciesPanel() ) {
+        } else if (view.showsDependenciesPanel()) {
             onDependenciesSelected();
         }
     }
 
     protected void setupPathToPomXML() {
-        if ( pathToPomXML != null ) {
+        if (pathToPomXML != null) {
             pathToPomXML.dispose();
         }
 
-        pathToPomXML = IOC.getBeanManager().lookupBean( ObservablePath.class ).getInstance().wrap( project.getPomXMLPath() );
+        pathToPomXML = IOC.getBeanManager().lookupBean(ObservablePath.class).getInstance().wrap(project.getPomXMLPath());
 
-        pathToPomXML.onConcurrentUpdate( new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
+        pathToPomXML.onConcurrentUpdate(new ParameterizedCommand<ObservablePath.OnConcurrentUpdateEvent>() {
             @Override
-            public void execute( final ObservablePath.OnConcurrentUpdateEvent eventInfo ) {
+            public void execute(final ObservablePath.OnConcurrentUpdateEvent eventInfo) {
                 concurrentUpdateSessionInfo = eventInfo;
             }
-        } );
+        });
 
-        pathToPomXML.onConcurrentRename( new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
+        pathToPomXML.onConcurrentRename(new ParameterizedCommand<ObservablePath.OnConcurrentRenameEvent>() {
             @Override
-            public void execute( final ObservablePath.OnConcurrentRenameEvent info ) {
-                newConcurrentRename( info.getSource(),
-                                     info.getTarget(),
-                                     info.getIdentity(),
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             enableMenus( false );
-                                         }
-                                     },
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             reload();
-                                         }
-                                     }
-                                   ).show();
+            public void execute(final ObservablePath.OnConcurrentRenameEvent info) {
+                newConcurrentRename(info.getSource(),
+                                    info.getTarget(),
+                                    info.getIdentity(),
+                                    new Command() {
+                                        @Override
+                                        public void execute() {
+                                            enableMenus(false);
+                                        }
+                                    },
+                                    new Command() {
+                                        @Override
+                                        public void execute() {
+                                            reload();
+                                        }
+                                    }
+                ).show();
             }
-        } );
+        });
 
-        pathToPomXML.onConcurrentDelete( new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
+        pathToPomXML.onConcurrentDelete(new ParameterizedCommand<ObservablePath.OnConcurrentDelete>() {
             @Override
-            public void execute( final ObservablePath.OnConcurrentDelete info ) {
-                newConcurrentDelete( info.getPath(),
-                                     info.getIdentity(),
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             enableMenus( false );
-                                         }
-                                     },
-                                     new Command() {
-                                         @Override
-                                         public void execute() {
-                                             placeManager.closePlace( "projectScreen" );
-                                         }
-                                     }
-                                   ).show();
+            public void execute(final ObservablePath.OnConcurrentDelete info) {
+                newConcurrentDelete(info.getPath(),
+                                    info.getIdentity(),
+                                    new Command() {
+                                        @Override
+                                        public void execute() {
+                                            enableMenus(false);
+                                        }
+                                    },
+                                    new Command() {
+                                        @Override
+                                        public void execute() {
+                                            placeManager.closePlace("projectScreen");
+                                        }
+                                    }
+                ).show();
             }
-        } );
+        });
     }
 
-    void enableMenus( final boolean enabled ) {
-        for ( MenuItem mi : menus.getItems() ) {
-            mi.setEnabled( enabled );
+    void enableMenus(final boolean enabled) {
+        for (MenuItem mi : menus.getItems()) {
+            mi.setEnabled(enabled);
         }
     }
 
     private void reload() {
         concurrentUpdateSessionInfo = null;
-        view.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
+        view.showBusyIndicator(CommonConstants.INSTANCE.Loading());
         init();
     }
 
     private Menus makeMenuBar() {
         return MenuFactory
-                .newTopLevelMenu( CommonConstants.INSTANCE.Save() )
-                .withPermission( Project.RESOURCE_TYPE, project, ProjectAction.UPDATE )
-                .respondsWith( getSaveCommand( DeploymentMode.VALIDATED ) )
+                .newTopLevelMenu(CommonConstants.INSTANCE.Save())
+                .withPermission(Project.RESOURCE_TYPE,
+                                project,
+                                ProjectAction.UPDATE)
+                .respondsWith(getSaveCommand(DeploymentMode.VALIDATED))
                 .endMenu()
-                .newTopLevelMenu( CommonConstants.INSTANCE.Delete() )
-                .withPermission( Project.RESOURCE_TYPE, project, ProjectAction.DELETE )
-                .respondsWith( getDeleteCommand() )
+                .newTopLevelMenu(CommonConstants.INSTANCE.Delete())
+                .withPermission(Project.RESOURCE_TYPE,
+                                project,
+                                ProjectAction.DELETE)
+                .respondsWith(getDeleteCommand())
                 .endMenu()
-                .newTopLevelMenu( CommonConstants.INSTANCE.Rename() )
-                .withPermission( Project.RESOURCE_TYPE, project, ProjectAction.UPDATE )
-                .respondsWith( getRenameCommand() )
+                .newTopLevelMenu(CommonConstants.INSTANCE.Rename())
+                .withPermission(Project.RESOURCE_TYPE,
+                                project,
+                                ProjectAction.UPDATE)
+                .respondsWith(getRenameCommand())
                 .endMenu()
-                .newTopLevelMenu( CommonConstants.INSTANCE.Copy() )
-                .withPermission( Project.RESOURCE_TYPE, project, ProjectAction.CREATE )
-                .respondsWith( getCopyCommand() )
+                .newTopLevelMenu(CommonConstants.INSTANCE.Copy())
+                .withPermission(Project.RESOURCE_TYPE,
+                                project,
+                                ProjectAction.CREATE)
+                .respondsWith(getCopyCommand())
                 .endMenu()
-                .newTopLevelMenu( CommonConstants.INSTANCE.Reimport() )
-                .withPermission( Project.RESOURCE_TYPE, project, ProjectAction.UPDATE )
-                .respondsWith( getReImportCommand() )
+                .newTopLevelMenu(CommonConstants.INSTANCE.Reimport())
+                .withPermission(Project.RESOURCE_TYPE,
+                                project,
+                                ProjectAction.UPDATE)
+                .respondsWith(getReImportCommand())
                 .endMenu()
-                .newTopLevelCustomMenu( new MenuFactory.CustomMenuBuilder() {
+                .newTopLevelCustomMenu(new MenuFactory.CustomMenuBuilder() {
                     @Override
-                    public void push( MenuFactory.CustomMenuBuilder element ) {
+                    public void push(MenuFactory.CustomMenuBuilder element) {
                     }
 
                     @Override
@@ -652,19 +625,21 @@ public class ProjectScreenPresenter
                             }
 
                             @Override
-                            public void setEnabled( boolean enabled ) {
+                            public void setEnabled(boolean enabled) {
                                 this.enabled = enabled;
-                                ( (Button) buildOptions.getWidget( 0 ) ).setEnabled( enabled );
+                                ((Button) buildOptions.getWidget(0)).setEnabled(enabled);
                             }
 
                             @Override
                             public List<ResourceActionRef> getResourceActions() {
-                                ResourceActionRef ref = new ResourceActionRef( Project.RESOURCE_TYPE, project, ProjectAction.BUILD );
-                                return Collections.singletonList( ref );
+                                ResourceActionRef ref = new ResourceActionRef(Project.RESOURCE_TYPE,
+                                                                              project,
+                                                                              ProjectAction.BUILD);
+                                return Collections.singletonList(ref);
                             }
                         };
                     }
-                } ).endMenu()
+                }).endMenu()
                 .build();
     }
 
@@ -676,12 +651,12 @@ public class ProjectScreenPresenter
                         new RemoteCallback<Void>() {
 
                             @Override
-                            public void callback( final Void o ) {
+                            public void callback(final Void o) {
                                 busyIndicatorView.hideBusyIndicator();
-                                notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ReimportSuccessful() ) );
+                                notificationEvent.fire(new NotificationEvent(CommonConstants.INSTANCE.ReimportSuccessful()));
                             }
                         },
-                        new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).reImport( project.getPomXMLPath() );
+                        new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).reImport(project.getPomXMLPath());
             }
         };
     }
@@ -690,22 +665,23 @@ public class ProjectScreenPresenter
         return new Command() {
             @Override
             public void execute() {
-                deletePopUpPresenter.show( new ParameterizedCommand<String>() {
+                deletePopUpPresenter.show(new ParameterizedCommand<String>() {
                     @Override
-                    public void execute( final String comment ) {
-                        busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Deleting() );
+                    public void execute(final String comment) {
+                        busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Deleting());
                         projectScreenService.call(
                                 new RemoteCallback<Void>() {
                                     @Override
-                                    public void callback( final Void o ) {
+                                    public void callback(final Void o) {
                                         busyIndicatorView.hideBusyIndicator();
-                                        notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemDeletedSuccessfully() ) );
-                                        placeManager.forceClosePlace( placeRequest );
+                                        notificationEvent.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemDeletedSuccessfully()));
+                                        placeManager.forceClosePlace(placeRequest);
                                     }
                                 },
-                                new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) ).delete( project.getPomXMLPath(), comment );
+                                new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView)).delete(project.getPomXMLPath(),
+                                                                                                    comment);
                     }
-                } );
+                });
             }
         };
     }
@@ -714,39 +690,40 @@ public class ProjectScreenPresenter
         return new Command() {
             @Override
             public void execute() {
-                copyPopUpPresenter.show( project.getRootPath(),
-                                         projectNameValidator,
-                                         new CommandWithFileNameAndCommitMessage() {
-                                             @Override
-                                             public void execute( final FileNameAndCommitMessage details ) {
-                                                 busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Copying() );
-                                                 projectScreenService.call(
-                                                         new RemoteCallback<Void>() {
+                copyPopUpPresenter.show(project.getRootPath(),
+                                        projectNameValidator,
+                                        new CommandWithFileNameAndCommitMessage() {
+                                            @Override
+                                            public void execute(final FileNameAndCommitMessage details) {
+                                                busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Copying());
+                                                projectScreenService.call(
+                                                        new RemoteCallback<Void>() {
 
-                                                             @Override
-                                                             public void callback( final Void o ) {
-                                                                 copyPopUpPresenter.getView().hide();
-                                                                 busyIndicatorView.hideBusyIndicator();
-                                                                 notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemCopiedSuccessfully() ) );
-                                                             }
-                                                         },
-                                                         getCopyErrorCallback( copyPopUpPresenter.getView() ) ).copy( project.getPomXMLPath(),
-                                                                                                                      details.getNewFileName(),
-                                                                                                                      details.getCommitMessage() );
-                                             }
-                                         } );
+                                                            @Override
+                                                            public void callback(final Void o) {
+                                                                copyPopUpPresenter.getView().hide();
+                                                                busyIndicatorView.hideBusyIndicator();
+                                                                notificationEvent.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemCopiedSuccessfully()));
+                                                            }
+                                                        },
+                                                        getCopyErrorCallback(copyPopUpPresenter.getView())).copy(project.getPomXMLPath(),
+                                                                                                                 details.getNewFileName(),
+                                                                                                                 details.getCommitMessage());
+                                            }
+                                        });
             }
         };
     }
 
-    protected HasBusyIndicatorDefaultErrorCallback getCopyErrorCallback( final CopyPopUpPresenter.View copyPopupView ) {
-        return new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) {
+    protected HasBusyIndicatorDefaultErrorCallback getCopyErrorCallback(final CopyPopUpPresenter.View copyPopupView) {
+        return new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView) {
 
             @Override
-            public boolean error( final Message message,
-                                  final Throwable throwable ) {
+            public boolean error(final Message message,
+                                 final Throwable throwable) {
                 copyPopupView.hide();
-                return super.error( message, throwable );
+                return super.error(message,
+                                   throwable);
             }
         };
     }
@@ -755,57 +732,39 @@ public class ProjectScreenPresenter
         return new Command() {
             @Override
             public void execute() {
-                renamePopUpPresenter.show( project.getRootPath(),
-                                           projectNameValidator,
-                                           new CommandWithFileNameAndCommitMessage() {
-                                               @Override
-                                               public void execute( final FileNameAndCommitMessage details ) {
-                                                   busyIndicatorView.showBusyIndicator( CommonConstants.INSTANCE.Renaming() );
-                                                   projectScreenService.call(
-                                                           new RemoteCallback<ProjectScreenModel>() {
-                                                               @Override
-                                                               public void callback( final ProjectScreenModel model ) {
-                                                                   renamePopUpPresenter.getView().hide();
-                                                                   busyIndicatorView.hideBusyIndicator();
-                                                                   notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRenamedSuccessfully() ) );
-
-                                                               }
-                                                           },
-                                                           getRenameErrorCallback( renamePopUpPresenter.getView() ) ).rename( project.getPomXMLPath(),
-                                                                                                                              details.getNewFileName(),
-                                                                                                                              details.getCommitMessage() );
-                                               }
-                                           } );
+                renamePopUpPresenter.show(project.getRootPath(),
+                                          projectNameValidator,
+                                          new CommandWithFileNameAndCommitMessage() {
+                                              @Override
+                                              public void execute(final FileNameAndCommitMessage details) {
+                                                  busyIndicatorView.showBusyIndicator(CommonConstants.INSTANCE.Renaming());
+                                                  projectScreenService.call(
+                                                          new RemoteCallback<ProjectScreenModel>() {
+                                                              @Override
+                                                              public void callback(final ProjectScreenModel model) {
+                                                                  renamePopUpPresenter.getView().hide();
+                                                                  busyIndicatorView.hideBusyIndicator();
+                                                                  notificationEvent.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRenamedSuccessfully()));
+                                                              }
+                                                          },
+                                                          getRenameErrorCallback(renamePopUpPresenter.getView())).rename(project.getPomXMLPath(),
+                                                                                                                         details.getNewFileName(),
+                                                                                                                         details.getCommitMessage());
+                                              }
+                                          });
             }
         };
     }
 
-    protected HasBusyIndicatorDefaultErrorCallback getRenameErrorCallback( final RenamePopUpPresenter.View renamePopupView ) {
-        return new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView ) {
+    protected HasBusyIndicatorDefaultErrorCallback getRenameErrorCallback(final RenamePopUpPresenter.View renamePopupView) {
+        return new HasBusyIndicatorDefaultErrorCallback(busyIndicatorView) {
 
             @Override
-            public boolean error( final Message message,
-                                  final Throwable throwable ) {
+            public boolean error(final Message message,
+                                 final Throwable throwable) {
                 renamePopupView.hide();
-                return super.error( message, throwable );
-            }
-        };
-    }
-
-    private Command getSafeExecutedCommand( final Command command ) {
-        return new Command() {
-            @Override
-            public void execute() {
-                if ( building ) {
-                    view.showABuildIsAlreadyRunning();
-                } else if ( isDirty() ) {
-                    view.showSaveBeforeContinue( getSaveAndExecuteCommand( command,
-                                                                           DeploymentMode.VALIDATED ),
-                                                 command,
-                                                 getCancelCommand() );
-                } else {
-                    command.execute();
-                }
+                return super.error(message,
+                                   throwable);
             }
         };
     }
@@ -818,354 +777,152 @@ public class ProjectScreenPresenter
         };
     }
 
-    Command getSaveCommand( final DeploymentMode mode ) {
+    Command getSaveCommand(final DeploymentMode mode) {
         return new Command() {
             @Override
             public void execute() {
-                saveProject( new RemoteCallback<Void>() {
-                                 @Override
-                                 public void callback( Void v ) {
-                                     view.hideBusyIndicator();
-                                     notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( pathToPomXML.getFileName() ),
-                                                                                    NotificationEvent.NotificationType.SUCCESS ) );
-                                     originalHash = model.hashCode();
-                                 }
-                             },
-                             mode );
+                saveProject(new RemoteCallback<Void>() {
+                                @Override
+                                public void callback(Void v) {
+                                    view.hideBusyIndicator();
+                                    notificationEvent.fire(new NotificationEvent(ProjectEditorResources.CONSTANTS.SaveSuccessful(pathToPomXML.getFileName()),
+                                                                                 NotificationEvent.NotificationType.SUCCESS));
+                                    originalHash = model.hashCode();
+                                }
+                            },
+                            mode);
             }
         };
     }
 
-    private Command getSaveAndExecuteCommand( final Command command,
-                                              final DeploymentMode mode ) {
+    private Command getSaveAndExecuteCommand(final Command command,
+                                             final DeploymentMode mode) {
         return new Command() {
             @Override
             public void execute() {
-                saveProject( new RemoteCallback<Void>() {
-                                 @Override
-                                 public void callback( Void v ) {
-                                     notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.SaveSuccessful( pathToPomXML.getFileName() ),
-                                                                                    NotificationEvent.NotificationType.SUCCESS ) );
-                                     originalHash = model.hashCode();
-                                     command.execute();
-                                 }
-                             },
-                             mode );
+                saveProject(new RemoteCallback<Void>() {
+                                @Override
+                                public void callback(Void v) {
+                                    notificationEvent.fire(new NotificationEvent(ProjectEditorResources.CONSTANTS.SaveSuccessful(pathToPomXML.getFileName()),
+                                                                                 NotificationEvent.NotificationType.SUCCESS));
+                                    originalHash = model.hashCode();
+                                    command.execute();
+                                }
+                            },
+                            mode);
             }
         };
     }
 
-    private void saveProject( final RemoteCallback<Void> callback,
-                              final DeploymentMode mode ) {
-        if ( concurrentUpdateSessionInfo != null ) {
-            newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
-                                 concurrentUpdateSessionInfo.getIdentity(),
-                                 new Command() {
-                                     @Override
-                                     public void execute() {
-                                         save( callback,
-                                               mode );
-                                     }
-                                 },
-                                 new Command() {
-                                     @Override
-                                     public void execute() {
-                                         //cancel?
-                                     }
-                                 },
-                                 new Command() {
-                                     @Override
-                                     public void execute() {
-                                         reload();
-                                     }
-                                 }
-                               ).show();
+    private void saveProject(final RemoteCallback<Void> callback,
+                             final DeploymentMode mode) {
+        if (concurrentUpdateSessionInfo != null) {
+            newConcurrentUpdate(concurrentUpdateSessionInfo.getPath(),
+                                concurrentUpdateSessionInfo.getIdentity(),
+                                new Command() {
+                                    @Override
+                                    public void execute() {
+                                        save(callback,
+                                             mode);
+                                    }
+                                },
+                                new Command() {
+                                    @Override
+                                    public void execute() {
+                                        //cancel?
+                                    }
+                                },
+                                new Command() {
+                                    @Override
+                                    public void execute() {
+                                        reload();
+                                    }
+                                }
+            ).show();
         } else {
-            save( callback,
-                  mode );
+            save(callback,
+                 mode);
         }
     }
 
-    private void save( final RemoteCallback<Void> callback,
-                       final DeploymentMode mode ) {
-        savePopUpPresenter.show( pathToPomXML,
-                                 new ParameterizedCommand<String>() {
-                                     @Override
-                                     public void execute( final String comment ) {
-                                         doSave( comment,
-                                                 callback,
-                                                 mode );
-                                     }
-                                 } );
+    private void save(final RemoteCallback<Void> callback,
+                      final DeploymentMode mode) {
+        savePopUpPresenter.show(pathToPomXML,
+                                new ParameterizedCommand<String>() {
+                                    @Override
+                                    public void execute(final String comment) {
+                                        doSave(comment,
+                                               callback,
+                                               mode);
+                                    }
+                                });
         concurrentUpdateSessionInfo = null;
     }
 
-    private void doSave( final String comment,
-                         final RemoteCallback<Void> callback,
-                         final DeploymentMode mode ) {
-        view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
+    private void doSave(final String comment,
+                        final RemoteCallback<Void> callback,
+                        final DeploymentMode mode) {
+        view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
 
         //Instantiate a new instance on each "save" operation to pass in commit message
         final Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> onSaveGavExistsHandler = new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
-            put( GAVAlreadyExistsException.class,
-                 new CommandWithThrowableDrivenErrorCallback.CommandWithThrowable() {
-                     @Override
-                     public void execute( final Throwable parameter ) {
-                         view.hideBusyIndicator();
-                         conflictingRepositoriesPopup.setContent( model.getPOM().getGav(),
-                                                                  ( (GAVAlreadyExistsException) parameter ).getRepositories(),
-                                                                  new Command() {
-                                                                      @Override
-                                                                      public void execute() {
-                                                                          conflictingRepositoriesPopup.hide();
-                                                                          doSave( comment,
-                                                                                  callback,
-                                                                                  DeploymentMode.FORCED );
-                                                                      }
-                                                                  } );
-                         conflictingRepositoriesPopup.show();
-                     }
-                 } );
+            put(GAVAlreadyExistsException.class,
+                new CommandWithThrowableDrivenErrorCallback.CommandWithThrowable() {
+                    @Override
+                    public void execute(final Throwable parameter) {
+                        view.hideBusyIndicator();
+                        conflictingRepositoriesPopup.setContent(model.getPOM().getGav(),
+                                                                ((GAVAlreadyExistsException) parameter).getRepositories(),
+                                                                new Command() {
+                                                                    @Override
+                                                                    public void execute() {
+                                                                        conflictingRepositoriesPopup.hide();
+                                                                        doSave(comment,
+                                                                               callback,
+                                                                               DeploymentMode.FORCED);
+                                                                    }
+                                                                });
+                        conflictingRepositoriesPopup.show();
+                    }
+                });
         }};
 
-        projectScreenService.call( new RemoteCallback<Void>() {
-                                       @Override
-                                       public void callback( Void v ) {
-                                           project.setPom( model.getPOM() );
-                                           if ( callback != null ) {
-                                               callback.callback( v );
-                                           }
-                                       }
-                                   },
-                                   new CommandWithThrowableDrivenErrorCallback( view,
-                                                                                onSaveGavExistsHandler ) ).save( pathToPomXML,
-                                                                                                                 model,
-                                                                                                                 comment,
-                                                                                                                 mode );
+        projectScreenService.call(new RemoteCallback<Void>() {
+                                      @Override
+                                      public void callback(Void v) {
+                                          project.setPom(model.getPOM());
+                                          if (callback != null) {
+                                              callback.callback(v);
+                                          }
+                                      }
+                                  },
+                                  new CommandWithThrowableDrivenErrorCallback(view,
+                                                                              onSaveGavExistsHandler)).save(pathToPomXML,
+                                                                                                            model,
+                                                                                                            comment,
+                                                                                                            mode);
         updateEditorTitle();
     }
 
     @Override
     public void triggerBuild() {
-        getSafeExecutedCommand( getBuildCommand() ).execute();
+        runBuild(() -> buildExecutor.triggerBuild());
     }
 
     @Override
     public void triggerBuildAndDeploy() {
-        specManagementService.call( new RemoteCallback<Collection<ServerTemplate>>() {
-            @Override
-            public void callback( final Collection<ServerTemplate> serverTemplates ) {
-                //TODO use config for using defaults or not
-                final String defaultContainerId = project.getPom().getGav().getArtifactId() + "_" + project.getPom().getGav().getVersion();
-                final String defaultContainerAlias = project.getPom().getGav().getArtifactId();
-                final boolean defaultStartContainer = true;
-                if ( serverTemplates.isEmpty() ) {
-                    getSafeExecutedCommand( getBuildDeployCommand( DeploymentMode.VALIDATED ) ).execute();
-                } else if ( serverTemplates.size() == 1 ) {
-                    final ServerTemplate serverTemplate = serverTemplates.iterator().next();
-                    final Set<String> existingContainers = FluentIterable.from( serverTemplate.getContainersSpec() ).transform( s -> s.getId() ).toSet();
-                    if ( existingContainers.contains( defaultContainerId ) == false ) {
-                        getSafeExecutedCommand( getBuildDeployProvisionCommand( DeploymentMode.VALIDATED, defaultContainerId, defaultContainerAlias, serverTemplate.getId(), defaultStartContainer ) ).execute();
-                    } else {
-                        deploymentScreenPopupView.setValidateExistingContainerCallback( containerName -> existingContainers.contains( containerName ) );
-                        deploymentScreenPopupView.setContainerId( defaultContainerId );
-                        deploymentScreenPopupView.setContainerAlias( defaultContainerAlias );
-                        deploymentScreenPopupView.setStartContainer( defaultStartContainer );
-                        deploymentScreenPopupView.configure( new com.google.gwt.user.client.Command() {
-                            @Override
-                            public void execute() {
-                                final String containerId = deploymentScreenPopupView.getContainerId();
-                                final String containerAlias = deploymentScreenPopupView.getContainerAlias();
-                                final boolean startContainer = deploymentScreenPopupView.getStartContainer();
-
-                                getSafeExecutedCommand( getBuildDeployProvisionCommand( DeploymentMode.VALIDATED, containerId, containerAlias, serverTemplate.getId(), startContainer ) ).execute();
-
-                                deploymentScreenPopupView.hide();
-                            }
-                        } );
-                        deploymentScreenPopupView.show();
-                    }
-                } else {
-                    final Map<String, ServerTemplate> serverTemplatesIds = Maps.uniqueIndex( serverTemplates, s -> s.getId() );
-                    final Map<String, Set<String>> containerNames = Maps.transformEntries( serverTemplatesIds, ( id, server ) ->
-                                                                                                   FluentIterable.from( server.getContainersSpec() ).transform( c -> c.getContainerName() ).toSet()
-                                                                                         );
-                    deploymentScreenPopupView.addServerTemplates( FluentIterable.from( serverTemplatesIds.keySet() ).toSortedSet( String.CASE_INSENSITIVE_ORDER ) );
-                    deploymentScreenPopupView.setValidateExistingContainerCallback( containerName -> FluentIterable.from( containerNames.get( deploymentScreenPopupView.getServerTemplate() ) ).contains( containerName ) );
-                    deploymentScreenPopupView.setContainerId( defaultContainerId );
-                    deploymentScreenPopupView.setContainerAlias( defaultContainerAlias );
-                    deploymentScreenPopupView.setStartContainer( defaultStartContainer );
-                    deploymentScreenPopupView.configure( new com.google.gwt.user.client.Command() {
-                        @Override
-                        public void execute() {
-                            final String containerId = deploymentScreenPopupView.getContainerId();
-                            final String containerAlias = deploymentScreenPopupView.getContainerAlias();
-                            final String serverTemplate = deploymentScreenPopupView.getServerTemplate();
-                            final boolean startContainer = deploymentScreenPopupView.getStartContainer();
-
-                            getSafeExecutedCommand( getBuildDeployProvisionCommand( DeploymentMode.VALIDATED, containerId, containerAlias, serverTemplate, startContainer ) ).execute();
-
-                            deploymentScreenPopupView.hide();
-                        }
-                    } );
-                    deploymentScreenPopupView.show();
-                }
-            }
-        } ).listServerTemplates();
-
+        runBuild(() -> buildExecutor.triggerBuildAndDeploy());
     }
 
-    private Command getBuildCommand() {
-        return new Command() {
-            @Override
-            public void execute() {
-                view.showBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
-                build();
-            }
-        };
-    }
-
-    private Command getBuildDeployCommand( final DeploymentMode mode ) {
-        return new Command() {
-            @Override
-            public void execute() {
-                view.showBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
-                buildAndDeploy( mode );
-            }
-        };
-    }
-
-    private Command getBuildDeployProvisionCommand( final DeploymentMode mode,
-                                                    final String containerId,
-                                                    final String containerAlias,
-                                                    final String serverTemplate,
-                                                    final boolean startContainer ) {
-        return new Command() {
-            @Override
-            public void execute() {
-                view.showBusyIndicator( ProjectEditorResources.CONSTANTS.Building() );
-                buildAndDeployAndProvision( mode, containerId, containerAlias, serverTemplate, startContainer );
-            }
-        };
-    }
-
-    private void build() {
-        building = true;
-        buildServiceCaller.call( getBuildSuccessCallback(),
-                                 new BuildFailureErrorCallback( view,
-                                                                Collections.EMPTY_MAP ) ).build( project );
-    }
-
-    private void buildAndDeploy( final DeploymentMode mode ) {
-        building = true;
-        buildServiceCaller.call( getBuildSuccessCallback(),
-                                 new BuildFailureErrorCallback( view, onBuildAndDeployGavExistsHandler ) ).buildAndDeploy( project, mode );
-    }
-
-    private void buildAndDeployAndProvision( final DeploymentMode mode,
-                                             final String containerId,
-                                             final String containerAlias,
-                                             final String serverTemplate,
-                                             final boolean startContainer ) {
-
-        building = true;
-        buildServiceCaller.call( getBuildDeployProvisionSuccessCallback( containerId, containerAlias, serverTemplate, startContainer ),
-                                 new BuildFailureErrorCallback( view, getOnBuildAndDeployAndProvisionGavExistsHandler( containerId, containerAlias, serverTemplate, startContainer ) ) ).buildAndDeploy( project, mode );
-    }
-
-    private Map<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable> getOnBuildAndDeployAndProvisionGavExistsHandler( final String containerId,
-                                                                                                                                                           final String containerAlias,
-                                                                                                                                                           final String serverTemplate,
-                                                                                                                                                           final boolean startContainer ) {
-        return new HashMap<Class<? extends Throwable>, CommandWithThrowableDrivenErrorCallback.CommandWithThrowable>() {{
-            put( GAVAlreadyExistsException.class,
-                 new CommandWithThrowableDrivenErrorCallback.CommandWithThrowable() {
-                     @Override
-                     public void execute( final Throwable parameter ) {
-                         view.hideBusyIndicator();
-                         conflictingRepositoriesPopup.setContent( model.getPOM().getGav(),
-                                                                  ( (GAVAlreadyExistsException) parameter ).getRepositories(),
-                                                                  new Command() {
-                                                                      @Override
-                                                                      public void execute() {
-                                                                          conflictingRepositoriesPopup.hide();
-                                                                          getBuildDeployProvisionCommand( DeploymentMode.FORCED, containerId, containerAlias, serverTemplate, startContainer ).execute();
-
-                                                                      }
-                                                                  } );
-                         conflictingRepositoriesPopup.show();
-                     }
-                 } );
-        }};
-    }
-
-    private RemoteCallback getBuildDeployProvisionSuccessCallback( final String containerId,
-                                                                   final String containerAlias,
-                                                                   final String serverTemplate,
-                                                                   final boolean startContainer ) {
-        return new RemoteCallback<BuildResults>() {
-            @Override
-            public void callback( final BuildResults result ) {
-                if ( result.getErrorMessages().isEmpty() ) {
-                    notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.BuildSuccessful(),
-                                                                   NotificationEvent.NotificationType.SUCCESS ) );
-                    if ( containerId != null && serverTemplate != null ) {
-                        GAV gav = project.getPom().getGav();
-                        ReleaseId releaseId = new ReleaseId( gav.getGroupId(), gav.getArtifactId(), gav.getVersion() );
-                        ContainerSpec containerSpec = new ContainerSpec( containerId,
-                                                                         containerAlias,
-                                                                         new ServerTemplateKey( serverTemplate, serverTemplate ),
-                                                                         releaseId,
-                                                                         KieContainerStatus.STOPPED,
-                                                                         new HashMap<>() );
-
-                        specManagementService.call( new RemoteCallback<Void>() {
-                            @Override
-                            public void callback( Void aVoid ) {
-                                notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.DeploySuccessful(),
-                                                                               NotificationEvent.NotificationType.SUCCESS ) );
-
-                                if ( startContainer ) {
-                                    specManagementService.call( new RemoteCallback<Void>() {
-                                                                    @Override
-                                                                    public void callback( Void aVoid ) {
-                                                                    }
-                                                                }
-                                                              ).startContainer( containerSpec );
-                                }
-
-                            }
-                        } ).saveContainerSpec( serverTemplate, containerSpec );
-                    }
-                } else {
-                    notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.BuildFailed(),
-                                                                   NotificationEvent.NotificationType.ERROR ) );
-                }
-                buildResultsEvent.fire( result );
-                view.hideBusyIndicator();
-
-                building = false;
-            }
-        };
-    }
-
-    private RemoteCallback getBuildSuccessCallback() {
-        return new RemoteCallback<BuildResults>() {
-            @Override
-            public void callback( final BuildResults result ) {
-                if ( result.getErrorMessages().isEmpty() ) {
-                    notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.BuildSuccessful(),
-                                                                   NotificationEvent.NotificationType.SUCCESS ) );
-                } else {
-                    notificationEvent.fire( new NotificationEvent( ProjectEditorResources.CONSTANTS.BuildFailed(),
-                                                                   NotificationEvent.NotificationType.ERROR ) );
-                }
-                buildResultsEvent.fire( result );
-                view.hideBusyIndicator();
-
-                building = false;
-            }
-        };
+    private void runBuild(final Command buildCommand) {
+        if (isDirty()) {
+            view.showSaveBeforeContinue(getSaveAndExecuteCommand(buildCommand,
+                                                                 DeploymentMode.VALIDATED),
+                                        buildCommand,
+                                        getCancelCommand());
+        } else {
+            buildCommand.execute();
+        }
     }
 
     @WorkbenchPartTitle
@@ -1180,7 +937,7 @@ public class ProjectScreenPresenter
 
     @WorkbenchMenu
     public Menus getMenus() {
-        if ( menus == null ) {
+        if (menus == null) {
             menus = makeMenuBar();
         }
         return menus;
@@ -1189,191 +946,181 @@ public class ProjectScreenPresenter
     @Override
     public void onGAVPanelSelected() {
         view.showGAVPanel();
-        acquireLockOnDemand( model.getPathToPOM(),
-                             view.getPomPart() );
+        acquireLockOnDemand(model.getPathToPOM(),
+                            view.getPomPart());
     }
 
     @Override
     public void onGAVMetadataPanelSelected() {
         view.showGAVMetadataPanel();
-        acquireLockOnDemand( model.getPathToPOM(),
-                             view.getPomMetadataPart() );
+        acquireLockOnDemand(model.getPathToPOM(),
+                            view.getPomMetadataPart());
     }
 
     @Override
     public void onProjectPreferencesSelected() {
         Map<String, String> params = new HashMap<>();
-        params.put( "screen", "project" );
-        params.put( "perspectiveIdentifierToGoBackTo", "AuthoringPerspective" );
-        placeManager.goTo( new DefaultPlaceRequest( AdminPagePerspective.IDENTIFIER, params ) );
+        params.put("screen",
+                   "project");
+        params.put("perspectiveIdentifierToGoBackTo",
+                   "AuthoringPerspective");
+        placeManager.goTo(new DefaultPlaceRequest(AdminPagePerspective.IDENTIFIER,
+                                                  params));
     }
 
     @Override
     public void onKBasePanelSelected() {
         view.showKBasePanel();
-        acquireLockOnDemand( model.getPathToKModule(),
-                             view.getKModulePart() );
+        acquireLockOnDemand(model.getPathToKModule(),
+                            view.getKModulePart());
     }
 
     @Override
     public void onKBaseMetadataPanelSelected() {
         view.showKBaseMetadataPanel();
-        acquireLockOnDemand( model.getPathToKModule(),
-                             view.getKModuleMetadataPart() );
+        acquireLockOnDemand(model.getPathToKModule(),
+                            view.getKModuleMetadataPart());
     }
 
     @Override
     public void onImportsPanelSelected() {
         view.showImportsPanel();
-        acquireLockOnDemand( model.getPathToImports(),
-                             view.getImportsPart() );
+        acquireLockOnDemand(model.getPathToImports(),
+                            view.getImportsPart());
     }
 
     @Override
     public void onImportsMetadataPanelSelected() {
         view.showImportsMetadataPanel();
-        acquireLockOnDemand( model.getPathToImports(),
-                             view.getImportsMetadataPart() );
+        acquireLockOnDemand(model.getPathToImports(),
+                            view.getImportsMetadataPart());
     }
 
     @Override
     public void onRepositoriesPanelSelected() {
         view.showRepositoriesPanel();
-        acquireLockOnDemand( model.getPathToRepositories(),
-                             view.getRepositoriesPart() );
+        acquireLockOnDemand(model.getPathToRepositories(),
+                            view.getRepositoriesPart());
     }
 
     @Override
     public void onDependenciesSelected() {
         view.showDependenciesPanel();
-        acquireLockOnDemand( model.getPathToPOM(),
-                             view.getDependenciesPart() );
+        acquireLockOnDemand(model.getPathToPOM(),
+                            view.getDependenciesPart());
     }
 
     @Override
     public void onDeploymentDescriptorSelected() {
-        placeManager.goTo( kieDeploymentDescriptoPath );
+        placeManager.goTo(kieDeploymentDescriptoPath);
     }
 
     @Override
     public void onPersistenceDescriptorSelected() {
 
         Map<String, Object> attrs = new HashMap<String, Object>();
-        attrs.put( PathFactory.VERSION_PROPERTY, new Boolean( true ) );
+        attrs.put(PathFactory.VERSION_PROPERTY,
+                  new Boolean(true));
 
-        PathPlaceRequest placeRequest = new PathPlaceRequest( PathFactory.newPath( "persistence.xml",
-                                                                                   project.getRootPath().toURI() + "/src/main/resources/META-INF/persistence.xml",
-                                                                                   attrs ) );
-        placeRequest.addParameter( "createIfNotExists", "true" );
-        placeManager.goTo( placeRequest );
+        PathPlaceRequest placeRequest = new PathPlaceRequest(PathFactory.newPath("persistence.xml",
+                                                                                 project.getRootPath().toURI() + "/src/main/resources/META-INF/persistence.xml",
+                                                                                 attrs));
+        placeRequest.addParameter("createIfNotExists",
+                                  "true");
+        placeManager.goTo(placeRequest);
     }
 
     private boolean isDirty() {
         Integer currentHash = model != null ? model.hashCode() : null;
-        if ( originalHash == null ) {
+        if (originalHash == null) {
             return currentHash != null;
         } else {
-            return !originalHash.equals( currentHash );
-        }
-    }
-
-    private class BuildFailureErrorCallback
-            extends CommandWithThrowableDrivenErrorCallback {
-
-        public BuildFailureErrorCallback( final HasBusyIndicator view,
-                                          final Map<Class<? extends Throwable>, CommandWithThrowable> commands ) {
-            super( view,
-                   commands );
-        }
-
-        @Override
-        public boolean error( final Message message,
-                              final Throwable throwable ) {
-            building = false;
-            return super.error( message,
-                                throwable );
+            return !originalHash.equals(currentHash);
         }
     }
 
     @Override
-    public void validateGroupID( final String groupId ) {
-        validationService.call( new RemoteCallback<Boolean>() {
+    public void validateGroupID(final String groupId) {
+        validationService.call(new RemoteCallback<Boolean>() {
             @Override
-            public void callback( final Boolean result ) {
-                view.setValidGroupID( Boolean.TRUE.equals( result ) );
+            public void callback(final Boolean result) {
+                view.setValidGroupID(Boolean.TRUE.equals(result));
             }
-        } ).validateGroupId( groupId );
+        }).validateGroupId(groupId);
     }
 
     @Override
-    public void validateArtifactID( final String artifactId ) {
-        validationService.call( new RemoteCallback<Boolean>() {
+    public void validateArtifactID(final String artifactId) {
+        validationService.call(new RemoteCallback<Boolean>() {
             @Override
-            public void callback( final Boolean result ) {
-                view.setValidArtifactID( Boolean.TRUE.equals( result ) );
+            public void callback(final Boolean result) {
+                view.setValidArtifactID(Boolean.TRUE.equals(result));
             }
-        } ).validateArtifactId( artifactId );
+        }).validateArtifactId(artifactId);
     }
 
     @Override
-    public void validateVersion( final String version ) {
-        validationService.call( new RemoteCallback<Boolean>() {
+    public void validateVersion(final String version) {
+        validationService.call(new RemoteCallback<Boolean>() {
             @Override
-            public void callback( final Boolean result ) {
-                view.setValidVersion( Boolean.TRUE.equals( result ) );
+            public void callback(final Boolean result) {
+                view.setValidVersion(Boolean.TRUE.equals(result));
             }
-        } ).validateGAVVersion( version );
+        }).validateGAVVersion(version);
     }
 
-    private void acquireLockOnDemand( final Path path,
-                                      final Widget widget ) {
-        final LockManager lockManager = getOrCreateLockManager( widget );
-        final LockTarget lockTarget = new LockTarget( path, widget, placeRequest, titleProvider, reloadRunnable );
-        lockManager.init( lockTarget );
+    private void acquireLockOnDemand(final Path path,
+                                     final Widget widget) {
+        final LockManager lockManager = getOrCreateLockManager(widget);
+        final LockTarget lockTarget = new LockTarget(path,
+                                                     widget,
+                                                     placeRequest,
+                                                     titleProvider,
+                                                     reloadRunnable);
+        lockManager.init(lockTarget);
         lockManager.acquireLockOnDemand();
     }
 
-    private LockManager getOrCreateLockManager( final Widget widget ) {
-        LockManager lockManager = lockManagers.get( widget );
-        if ( lockManager == null ) {
+    private LockManager getOrCreateLockManager(final Widget widget) {
+        LockManager lockManager = lockManagers.get(widget);
+        if (lockManager == null) {
             lockManager = lockManagerInstanceProvider.get();
-            lockManagers.put( widget, lockManager );
+            lockManagers.put(widget,
+                             lockManager);
         }
         return lockManager;
     }
 
-    private Runnable getUnlockHandler( final Path path ) {
+    private Runnable getUnlockHandler(final Path path) {
         return new Runnable() {
 
             @Override
             public void run() {
-                forceLockReleaseEvent.fire( new ForceUnlockEvent( path ) );
+                forceLockReleaseEvent.fire(new ForceUnlockEvent(path));
             }
-
         };
     }
 
     @SuppressWarnings("unused")
-    private void onLockChange( @Observes LockInfo lockInfo ) {
-        if ( model == null ) {
+    private void onLockChange(@Observes LockInfo lockInfo) {
+        if (model == null) {
             return;
         }
 
         final Metadata pomMetaData = model.getPOMMetaData();
-        if ( pomMetaData != null && lockInfo.getFile().equals( pomMetaData.getPath() ) ) {
-            pomMetaData.setLockInfo( lockInfo );
-            view.setPomMetadata( pomMetaData );
+        if (pomMetaData != null && lockInfo.getFile().equals(pomMetaData.getPath())) {
+            pomMetaData.setLockInfo(lockInfo);
+            view.setPomMetadata(pomMetaData);
         }
         final Metadata kModuleMetaData = model.getKModuleMetaData();
-        if ( kModuleMetaData != null && lockInfo.getFile().equals( kModuleMetaData.getPath() ) ) {
-            kModuleMetaData.setLockInfo( lockInfo );
-            view.setKModuleMetadata( kModuleMetaData );
+        if (kModuleMetaData != null && lockInfo.getFile().equals(kModuleMetaData.getPath())) {
+            kModuleMetaData.setLockInfo(lockInfo);
+            view.setKModuleMetadata(kModuleMetaData);
         }
         final Metadata projectImportsMetaData = model.getProjectImportsMetaData();
-        if ( projectImportsMetaData != null && lockInfo.getFile().equals( projectImportsMetaData.getPath() ) ) {
-            projectImportsMetaData.setLockInfo( lockInfo );
-            view.setImportsMetadata( projectImportsMetaData );
+        if (projectImportsMetaData != null && lockInfo.getFile().equals(projectImportsMetaData.getPath())) {
+            projectImportsMetaData.setLockInfo(lockInfo);
+            view.setImportsMetadata(projectImportsMetaData);
         }
     }
-
 }

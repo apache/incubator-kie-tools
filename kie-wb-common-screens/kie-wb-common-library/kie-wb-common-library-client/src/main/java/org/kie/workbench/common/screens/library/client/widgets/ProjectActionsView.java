@@ -20,13 +20,14 @@ import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import org.jboss.errai.common.client.dom.Button;
-import org.jboss.errai.common.client.dom.UnorderedList;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.IsElement;
+import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
+import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
+import org.uberfire.ext.widgets.common.client.common.BusyPopup;
+import org.uberfire.ext.widgets.common.client.common.popups.errors.ErrorPopup;
 
 @Templated
 public class ProjectActionsView implements ProjectActionsWidget.View,
@@ -34,33 +35,66 @@ public class ProjectActionsView implements ProjectActionsWidget.View,
 
     private ProjectActionsWidget presenter;
 
-    @Inject
-    private ManagedInstance<MenuResourceHandlerWidget> menuResourceHandlerWidgets;
+    private TranslationService translationService;
 
     @Inject
-    @DataField("resource-handler-menu-container")
-    UnorderedList resourceHandlerMenuContainer;
-
-    @Inject
-    @DataField
+    @DataField("settings")
     Button settings;
 
-    @Override
-    public void init( final ProjectActionsWidget presenter ) {
-        this.presenter = presenter;
-        resourceHandlerMenuContainer.setTextContent( "" );
+    @Inject
+    @DataField("compile")
+    Button compile;
+
+    @Inject
+    @DataField("build-and-deploy")
+    Button buildAndDeploy;
+
+    @Inject
+    @DataField("messages")
+    Button messages;
+
+    @Inject
+    public ProjectActionsView(TranslationService translationService) {
+        this.translationService = translationService;
     }
 
     @Override
-    public void addResourceHandler( final NewResourceHandler newResourceHandler ) {
-        final MenuResourceHandlerWidget menuResourceHandlerWidget = menuResourceHandlerWidgets.get();
-        menuResourceHandlerWidget.init( newResourceHandler.getDescription(),
-                                        newResourceHandler.getCommand( presenter.getNewResourcePresenter() ) );
-        resourceHandlerMenuContainer.appendChild( menuResourceHandlerWidget.getElement() );
+    public void init(final ProjectActionsWidget presenter) {
+        this.presenter = presenter;
     }
 
     @EventHandler("settings")
-    public void projectSettings( final ClickEvent clickEvent ) {
+    public void projectSettings(final ClickEvent clickEvent) {
         presenter.goToProjectSettings();
+    }
+
+    @EventHandler("compile")
+    public void compileProject(final ClickEvent clickEvent) {
+        presenter.compileProject();
+    }
+
+    @EventHandler("build-and-deploy")
+    public void buildAndDeployProject(final ClickEvent clickEvent) {
+        presenter.buildAndDeployProject();
+    }
+
+    @EventHandler("messages")
+    public void messages(final ClickEvent clickEvent) {
+        presenter.goToMessages();
+    }
+
+    @Override
+    public void showBusyIndicator(String message) {
+        BusyPopup.showMessage(message);
+    }
+
+    @Override
+    public void hideBusyIndicator() {
+        BusyPopup.close();
+    }
+
+    @Override
+    public void showABuildIsAlreadyRunning() {
+        ErrorPopup.showMessage(translationService.getTranslation(LibraryConstants.ABuildIsAlreadyRunning));
     }
 }

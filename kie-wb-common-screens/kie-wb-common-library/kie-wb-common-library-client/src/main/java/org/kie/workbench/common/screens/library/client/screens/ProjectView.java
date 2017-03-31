@@ -33,6 +33,7 @@ import org.jboss.errai.ui.shared.api.annotations.SinkNative;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.widgets.AssetItemWidget;
+import org.kie.workbench.common.screens.library.client.widgets.AssetsActionsWidget;
 import org.kie.workbench.common.screens.library.client.widgets.ProjectActionsWidget;
 import org.uberfire.mvp.Command;
 
@@ -46,17 +47,24 @@ public class ProjectView implements ProjectScreen.View,
     private ProjectsDetailScreen projectsDetailScreen;
 
     @Inject
-    private ProjectActionsWidget projectActionsWidget;
-
-    @Inject
     private ManagedInstance<AssetItemWidget> itemWidgetsInstances;
 
     @Inject
     private TranslationService ts;
 
     @Inject
-    @DataField
-    Form toolbar;
+    private ProjectActionsWidget projectActionsWidget;
+
+    @Inject
+    private AssetsActionsWidget assetsActionsWidget;
+
+    @Inject
+    @DataField("project-toolbar")
+    Div projectToolbar;
+
+    @Inject
+    @DataField("assets-toolbar")
+    Form assetsToolbar;
 
     @Inject
     @DataField("details-container")
@@ -75,41 +83,51 @@ public class ProjectView implements ProjectScreen.View,
     Div projectNameContainer;
 
     @Override
-    public void init( ProjectScreen presenter ) {
+    public void init(ProjectScreen presenter) {
         this.presenter = presenter;
-        projectActionsWidget.init( () -> presenter.goToSettings() );
-        filterText.setAttribute( "placeholder", ts.getTranslation( LibraryConstants.LibraryView_Filter ) );
-        detailsContainer.appendChild( projectsDetailScreen.getView().getElement() );
-        toolbar.appendChild( projectActionsWidget.getView().getElement() );
+        assetsActionsWidget.init();
+        projectActionsWidget.init(presenter::goToSettings);
+        filterText.setAttribute("placeholder",
+                                ts.getTranslation(LibraryConstants.LibraryView_Filter));
+        detailsContainer.appendChild(projectsDetailScreen.getView().getElement());
+        assetsToolbar.appendChild(assetsActionsWidget.getView().getElement());
+        projectToolbar.appendChild(projectActionsWidget.getView().getElement());
     }
 
     @Override
-    public void setProjectName( final String projectName ) {
-        projectNameContainer.setTextContent( projectName );
+    public void setProjectName(final String projectName) {
+        projectNameContainer.setTextContent(projectName);
     }
 
     @Override
     public void clearAssets() {
-        DOMUtil.removeAllChildren( assetList );
+        DOMUtil.removeAllChildren(assetList);
     }
 
     @Override
-    public void addAsset( final String assetName,
-                          final String assetPath,
-                          final String assetType,
-                          final IsWidget assetIcon,
-                          final String lastModifiedDate,
-                          final String createdDate,
-                          final Command details,
-                          final Command select ) {
+    public void addAsset(final String assetName,
+                         final String assetPath,
+                         final String assetType,
+                         final IsWidget assetIcon,
+                         final String lastModifiedDate,
+                         final String createdDate,
+                         final Command details,
+                         final Command select) {
         AssetItemWidget assetItemWidget = itemWidgetsInstances.get();
-        assetItemWidget.init( assetName, assetPath, assetType, assetIcon, lastModifiedDate, createdDate, details, select );
-        assetList.appendChild( assetItemWidget.getElement() );
+        assetItemWidget.init(assetName,
+                             assetPath,
+                             assetType,
+                             assetIcon,
+                             lastModifiedDate,
+                             createdDate,
+                             details,
+                             select);
+        assetList.appendChild(assetItemWidget.getElement());
     }
 
     @SinkNative(Event.ONKEYUP)
     @EventHandler("filter-text")
-    public void filterTextChange( Event e ) {
-        presenter.updateAssetsBy( filterText.getValue() );
+    public void filterTextChange(Event e) {
+        presenter.updateAssetsBy(filterText.getValue());
     }
 }

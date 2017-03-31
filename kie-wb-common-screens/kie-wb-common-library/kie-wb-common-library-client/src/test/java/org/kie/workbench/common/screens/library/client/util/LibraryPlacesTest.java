@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.screens.library.client.util;
 
+import java.util.ArrayList;
 import javax.enterprise.event.Event;
 
 import org.guvnor.common.services.project.context.ProjectContext;
@@ -167,6 +168,8 @@ public class LibraryPlacesTest {
         doNothing().when(libraryPlaces).setupLibraryBreadCrumbsForProject(any(ProjectInfo.class));
         doNothing().when(libraryPlaces).setupLibraryBreadCrumbsForAsset(any(ProjectInfo.class),
                                                                         any(Path.class));
+
+        doReturn(true).when(placeManager).closeAllPlacesOrNothing();
     }
 
     @Test
@@ -424,16 +427,32 @@ public class LibraryPlacesTest {
                 .orElse(new DefaultPlaceRequest(LibraryPlaces.EMPTY_PROJECT_SCREEN));
         final PartDefinitionImpl part = new PartDefinitionImpl(projectScreen);
         part.setSelectable(false);
-        final ProjectInfo projectInfo = mock(ProjectInfo.class);
+        final ProjectInfo projectInfo = new ProjectInfo(activeOrganizationalUnit,
+                                                        activeRepository,
+                                                        activeBranch,
+                                                        activeProject);
 
         libraryPlaces.goToProject(projectInfo);
 
-        verify(libraryPlaces).closeLibraryPlaces();
         verify(placeManager).goTo(eq(part),
                                   any(PanelDefinition.class));
         verify(projectDetailEvent).fire(any(ProjectDetailEvent.class));
         verify(projectContextChangeEvent).fire(any(ProjectContextChangeEvent.class));
         verify(libraryPlaces).setupLibraryBreadCrumbsForProject(projectInfo);
+        verify(placeManager).closeAllPlacesOrNothing();
+    }
+
+    @Test
+    public void goToSameProjectTest() {
+        final ProjectInfo projectInfo = new ProjectInfo(activeOrganizationalUnit,
+                                                        activeRepository,
+                                                        activeBranch,
+                                                        activeProject);
+        libraryPlaces.goToProject(projectInfo);
+        libraryPlaces.goToProject(projectInfo);
+
+        verify(placeManager,
+               times(1)).closeAllPlacesOrNothing();
     }
 
     @Test
@@ -446,6 +465,13 @@ public class LibraryPlacesTest {
         verify(examplesWizard).start();
         verify(examplesWizard).setDefaultTargetOrganizationalUnit(anyString());
         verify(examplesWizard).setDefaultTargetRepository(anyString());
+    }
+
+    @Test
+    public void goToMessages() {
+        libraryPlaces.goToMessages();
+
+        verify(placeManager).goTo(LibraryPlaces.MESSAGES);
     }
 
     @Test

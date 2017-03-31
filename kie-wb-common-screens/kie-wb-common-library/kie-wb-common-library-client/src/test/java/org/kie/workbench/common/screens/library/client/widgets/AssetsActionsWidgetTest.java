@@ -29,15 +29,14 @@ import org.kie.workbench.common.widgets.client.handlers.NewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.uberfire.mvp.Command;
 
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProjectActionsWidgetTest {
+public class AssetsActionsWidgetTest {
 
     @Mock
-    private ProjectActionsWidget.View view;
+    private AssetsActionsWidget.View view;
 
     @Mock
     private ResourceUtils resourceUtils;
@@ -45,13 +44,13 @@ public class ProjectActionsWidgetTest {
     @Mock
     private NewResourcePresenter newResourcePresenter;
 
-    private ProjectActionsWidget presenter;
+    private AssetsActionsWidget presenter;
 
     @Before
     public void setup() {
-        presenter = spy(new ProjectActionsWidget(view,
-                                                 newResourcePresenter,
-                                                 resourceUtils));
+        presenter = spy(new AssetsActionsWidget(view,
+                                                newResourcePresenter,
+                                                resourceUtils));
     }
 
     @Test
@@ -72,7 +71,7 @@ public class ProjectActionsWidgetTest {
         handlers.add(type2Handler);
         doReturn(handlers).when(resourceUtils).getAlphabeticallyOrderedNewResourceHandlers();
 
-        presenter.init(mock(Command.class));
+        presenter.init();
 
         verify(view,
                times(3)).addResourceHandler(any(NewResourceHandler.class));

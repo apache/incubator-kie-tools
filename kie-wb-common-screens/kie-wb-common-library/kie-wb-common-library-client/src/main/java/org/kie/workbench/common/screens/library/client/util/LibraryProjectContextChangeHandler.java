@@ -25,14 +25,11 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 @EntryPoint
 public class LibraryProjectContextChangeHandler implements ProjectContextChangeHandler {
 
-    private ProjectContext projectContext;
-
     private LibraryPlaces libraryPlaces;
 
     @Inject
     public LibraryProjectContextChangeHandler(final ProjectContext projectContext,
                                               final LibraryPlaces libraryPlaces) {
-        this.projectContext = projectContext;
         this.libraryPlaces = libraryPlaces;
 
         projectContext.addChangeHandler(this);

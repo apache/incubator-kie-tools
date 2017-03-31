@@ -47,7 +47,7 @@ public class DeploymentScreenPopupViewImpl extends BaseModal {
 
     }
 
-    private DeploymentScreenPopupWidgetBinder uiBinder = GWT.create( DeploymentScreenPopupWidgetBinder.class );
+    private DeploymentScreenPopupWidgetBinder uiBinder = GWT.create(DeploymentScreenPopupWidgetBinder.class);
 
     @Inject
     private User identity;
@@ -96,36 +96,36 @@ public class DeploymentScreenPopupViewImpl extends BaseModal {
         @Override
         public void execute() {
 
-            if ( isEmpty( containerIdText.getText() ) ) {
-                containerIdTextGroup.setValidationState( ValidationState.ERROR );
-                containerIdTextHelpInline.setText( ProjectEditorResources.CONSTANTS.FieldMandatory0( "ContainerId" ) );
+            if (isEmpty(containerIdText.getText())) {
+                containerIdTextGroup.setValidationState(ValidationState.ERROR);
+                containerIdTextHelpInline.setText(ProjectEditorResources.CONSTANTS.FieldMandatory0("ContainerId"));
 
                 return;
             }
 
-            if ( validateExistingContainerCallback != null && validateExistingContainerCallback.containerNameExists( containerIdText.getText() ) ) {
+            if (validateExistingContainerCallback != null && validateExistingContainerCallback.containerNameExists(containerIdText.getText())) {
                 containerIdTextGroup.setValidationState(ValidationState.ERROR);
                 containerIdTextHelpInline.setText(ProjectEditorResources.CONSTANTS.ContainerIdAlreadyInUse());
 
                 return;
             }
 
-            if ( serverTemplateGroup.isVisible() && isEmpty(serverTemplateDropdown.getValue()) ) {
+            if (serverTemplateGroup.isVisible() && isEmpty(serverTemplateDropdown.getValue())) {
                 serverTemplateGroup.setValidationState(ValidationState.ERROR);
-                serverTemplateHelpInline.setText(ProjectEditorResources.CONSTANTS.FieldMandatory0( "Server template" ));
+                serverTemplateHelpInline.setText(ProjectEditorResources.CONSTANTS.FieldMandatory0("Server template"));
 
                 return;
             }
 
-            if ( callbackCommand != null ) {
+            if (callbackCommand != null) {
                 callbackCommand.execute();
             }
 
             hide();
         }
 
-        private boolean isEmpty( String value ) {
-            if ( value == null || value.isEmpty() ) {
+        private boolean isEmpty(String value) {
+            if (value == null || value.isEmpty()) {
                 return true;
             }
 
@@ -140,23 +140,24 @@ public class DeploymentScreenPopupViewImpl extends BaseModal {
         }
     };
 
-    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons( okCommand, cancelCommand );
+    private final ModalFooterOKCancelButtons footer = new ModalFooterOKCancelButtons(okCommand,
+                                                                                     cancelCommand);
 
     public DeploymentScreenPopupViewImpl() {
-        setTitle( ProjectEditorResources.CONSTANTS.BuildAndDeploy() );
-        setDataBackdrop( ModalBackdrop.STATIC );
-        setDataKeyboard( true );
-        setFade( true );
-        setRemoveOnHide( true );
+        setTitle(ProjectEditorResources.CONSTANTS.BuildAndDeploy());
+        setDataBackdrop(ModalBackdrop.STATIC);
+        setDataKeyboard(true);
+        setFade(true);
+        setRemoveOnHide(true);
 
         final ModalBody modalBody = GWT.create(ModalBody.class);
-        modalBody.add( uiBinder.createAndBindUi( DeploymentScreenPopupViewImpl.this ) );
-        add( modalBody );
-        add( footer );
-
+        modalBody.add(uiBinder.createAndBindUi(DeploymentScreenPopupViewImpl.this));
+        add(modalBody);
+        add(footer);
     }
 
-    @Override public void show() {
+    @Override
+    public void show() {
         super.show();
     }
 
@@ -166,9 +167,9 @@ public class DeploymentScreenPopupViewImpl extends BaseModal {
         serverTemplateGroup.setVisible(false);
         containerIdText.setText(null);
         startContainerCheck.setValue(null);
-        serverTemplateDropdown.setValue((String)null);
+        serverTemplateDropdown.setValue((String) null);
         final Iterator<Widget> options = serverTemplateDropdown.iterator();
-        while(options.hasNext()){
+        while (options.hasNext()) {
             options.next();
             options.remove();
         }
@@ -182,15 +183,15 @@ public class DeploymentScreenPopupViewImpl extends BaseModal {
         serverTemplateHelpInline.setText("");
     }
 
-    public void configure(Command command ) {
+    public void configure(Command command) {
         this.callbackCommand = command;
     }
 
-    public void addServerTemplates( final Set<String> serverTemplateIds ) {
-        for (final String id : serverTemplateIds){
+    public void addServerTemplates(final Set<String> serverTemplateIds) {
+        for (final String id : serverTemplateIds) {
             final Option option = GWT.create(Option.class);
-            option.setText( id );
-            option.setValue( id );
+            option.setText(id);
+            option.setValue(id);
             serverTemplateDropdown.add(option);
         }
         serverTemplateDropdown.refresh();
@@ -217,7 +218,7 @@ public class DeploymentScreenPopupViewImpl extends BaseModal {
         return this.serverTemplateDropdown.getValue();
     }
 
-    public void setStartContainer(final boolean startContainer){
+    public void setStartContainer(final boolean startContainer) {
         startContainerCheck.setValue(startContainer);
     }
 
@@ -229,10 +230,8 @@ public class DeploymentScreenPopupViewImpl extends BaseModal {
         this.validateExistingContainerCallback = validateExistingContainerCallback;
     }
 
-    interface ValidateExistingContainerCallback {
+    public interface ValidateExistingContainerCallback {
 
         boolean containerNameExists(String containerName);
-
     }
-
 }

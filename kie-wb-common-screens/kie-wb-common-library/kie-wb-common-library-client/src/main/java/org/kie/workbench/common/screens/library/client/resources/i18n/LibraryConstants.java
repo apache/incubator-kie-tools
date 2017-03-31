@@ -42,7 +42,7 @@ public class LibraryConstants {
     public static final String NewProjectScreen = "New_Project_Screen";
 
     @TranslationKey(defaultValue = "")
-    public static final String LibraryBreadcrumbs_Settings = "LibraryBreadcrumbs.Settings";
+    public static final String Settings = "Settings";
 
     @TranslationKey(defaultValue = "")
     public static final String ProjectImportedSuccessfully = "ProjectImportedSuccessfully";
@@ -77,4 +77,6 @@ public class LibraryConstants {
     @TranslationKey(defaultValue = "")
     public static final String ProjectDeleted = "ProjectDeleted";
 
+    @TranslationKey(defaultValue = "")
+    public static final String ABuildIsAlreadyRunning = "ABuildIsAlreadyRunning";
 }

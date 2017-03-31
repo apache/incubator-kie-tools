@@ -16,47 +16,28 @@
 
 package org.kie.workbench.common.screens.projecteditor.client.editor;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.Sets;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.guvnor.common.services.project.builder.model.BuildMessage;
-import org.guvnor.common.services.project.builder.model.BuildResults;
-import org.guvnor.common.services.project.builder.service.BuildService;
 import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.service.DeploymentMode;
 import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.server.controller.api.model.spec.ContainerSpec;
-import org.kie.server.controller.api.model.spec.ServerTemplate;
-import org.kie.workbench.common.screens.projecteditor.client.resources.ProjectEditorResources;
 import org.kie.workbench.common.screens.projecteditor.model.ProjectScreenModel;
-import org.kie.workbench.common.screens.server.management.service.SpecManagementService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
-import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatcher;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.LockManager;
-import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
@@ -79,341 +60,135 @@ public class ProjectScreenPresenterTest
 
     @Before
     public void setup() {
-        ApplicationPreferences.setUp( new HashMap<String, String>() );
+        ApplicationPreferences.setUp(new HashMap<String, String>());
 
         //The BuildOptions widget is manipulated in the Presenter so we need some nasty mocking
         mockBuildOptions();
 
-        constructProjectScreenPresenter( project,
-                                         new CallerMock<BuildService>( buildService ),
-                                         new CallerMock<SpecManagementService>( specManagementServiceMock ) );
+        constructProjectScreenPresenter(project);
 
         //Mock ProjectScreenService
         model = new ProjectScreenModel();
-        final POM pom = mockProjectScreenService( model );
-
-        //Mock BuildService
-        mockBuildService( buildService );
+        final POM pom = mockProjectScreenService(model);
 
         //Mock LockManager initialisation
-        mockLockManager( model );
+        mockLockManager(model);
 
         //Mock ProjectContext
-        mockProjectContext( pom,
-                            repository,
-                            project,
-                            pomPath );
+        mockProjectContext(pom,
+                           repository,
+                           project,
+                           pomPath);
 
         //Trigger initialisation of view. Unfortunately this is the only way to initialise a Project in the Presenter
-        context.onProjectContextChanged( new ProjectContextChangeEvent( mock( OrganizationalUnit.class ),
-                                                                        repository,
-                                                                        "master",
-                                                                        project ) );
+        context.onProjectContextChanged(new ProjectContextChangeEvent(mock(OrganizationalUnit.class),
+                                                                      repository,
+                                                                      "master",
+                                                                      project));
 
-        verify( view,
-                times( 1 ) ).setGAVCheckDisabledSetting( eq( false ) );
-        verify( view,
-                times( 1 ) ).showBusyIndicator( eq( CommonConstants.INSTANCE.Loading() ) );
-        verify( view,
-                times( 1 ) ).hideBusyIndicator();
+        verify(view,
+               times(1)).setGAVCheckDisabledSetting(eq(false));
+        verifyBusyShowHideAnyString(1,
+                                    1,
+                                    CommonConstants.INSTANCE.Loading());
     }
 
     @Test
     public void testIsDeploymentDescriptorEditorAvailable() {
-        final ResourceTypeDefinition editor = mock( ResourceTypeDefinition.class );
-        when( editor.getPrefix() ).thenReturn( "kie-deployment-descriptor" );
-        when( editor.getSuffix() ).thenReturn( "xml" );
-        when( editor.accept( any( Path.class ) ) ).thenReturn( true );
+        final ResourceTypeDefinition editor = mock(ResourceTypeDefinition.class);
+        when(editor.getPrefix()).thenReturn("kie-deployment-descriptor");
+        when(editor.getSuffix()).thenReturn("xml");
+        when(editor.accept(any(Path.class))).thenReturn(true);
 
-        assertFalse( presenter.isDeploymentDescritorEditorAvailable( Arrays.<ResourceTypeDefinition>asList( new AnyResourceTypeDefinition() ).stream(), mock( Path.class ) ) );
+        assertFalse(presenter.isDeploymentDescritorEditorAvailable(Arrays.<ResourceTypeDefinition>asList(new AnyResourceTypeDefinition()).stream(),
+                                                                   mock(Path.class)));
 
-        assertTrue( presenter.isDeploymentDescritorEditorAvailable( Arrays.<ResourceTypeDefinition>asList( new AnyResourceTypeDefinition(), editor ).stream(), mock( Path.class ) ) );
-    }
-
-    @Test
-    public void testBuildCommand() {
-        presenter.triggerBuild();
-
-        verify( notificationEvent ).fire( argThat( new ArgumentMatcher<NotificationEvent>() {
-            @Override
-            public boolean matches( final Object argument ) {
-                final NotificationEvent event = (NotificationEvent) argument;
-                final String notification = event.getNotification();
-                final NotificationEvent.NotificationType type = event.getType();
-
-                return notification.equals( ProjectEditorResources.CONSTANTS.BuildSuccessful() ) &&
-                        type.equals( NotificationEvent.NotificationType.SUCCESS );
-            }
-        } ) );
-
-        verify( view,
-                times( 1 ) ).showBusyIndicator( eq( ProjectEditorResources.CONSTANTS.Building() ) );
-        //There are two calls to "hide" by this stage; one from the view initialisation one for the build
-        verify( view,
-                times( 2 ) ).hideBusyIndicator();
-    }
-
-    @Test
-    public void testBuildCommandFail() {
-        BuildMessage message = mock( BuildMessage.class );
-        List<BuildMessage> messages = new ArrayList<BuildMessage>();
-        messages.add( message );
-
-        BuildResults results = mock( BuildResults.class );
-        when( results.getErrorMessages() ).thenReturn( messages );
-
-        when( buildService.build( any( KieProject.class ) ) ).thenReturn( results );
-
-        presenter.triggerBuild();
-
-        verify( notificationEvent ).fire( argThat( new ArgumentMatcher<NotificationEvent>() {
-            @Override
-            public boolean matches( final Object argument ) {
-                final NotificationEvent event = (NotificationEvent) argument;
-                final String notification = event.getNotification();
-                final NotificationEvent.NotificationType type = event.getType();
-
-                return notification.equals( ProjectEditorResources.CONSTANTS.BuildFailed() ) &&
-                        type.equals( NotificationEvent.NotificationType.ERROR );
-            }
-        } ) );
-
-        verify( view,
-                times( 1 ) ).showBusyIndicator( eq( ProjectEditorResources.CONSTANTS.Building() ) );
-        //There are two calls to "hide" by this stage; one from the view initialisation one for the build
-        verify( view,
-                times( 2 ) ).hideBusyIndicator();
-    }
-
-    @Test
-    public void testBuildAndDeployCommandSingleServerTemplate() {
-        final ServerTemplate serverTemplate = new ServerTemplate( "id", "name" );
-        when( specManagementServiceMock.listServerTemplates() ).thenReturn( Collections.singletonList( serverTemplate ) );
-
-        presenter.triggerBuildAndDeploy();
-
-        ArgumentCaptor<ContainerSpec> containerSpecArgumentCaptor = ArgumentCaptor.forClass( ContainerSpec.class );
-        verify( specManagementServiceMock ).saveContainerSpec( eq( serverTemplate.getId() ), containerSpecArgumentCaptor.capture() );
-        final ContainerSpec containerSpec = containerSpecArgumentCaptor.getValue();
-        assertEquals( project.getPom().getGav().getArtifactId(), containerSpec.getContainerName() );
-
-        verify( notificationEvent ).fire( argThat( new ArgumentMatcher<NotificationEvent>() {
-            @Override
-            public boolean matches( final Object argument ) {
-                final NotificationEvent event = (NotificationEvent) argument;
-                final String notification = event.getNotification();
-                final NotificationEvent.NotificationType type = event.getType();
-
-                return notification.equals( ProjectEditorResources.CONSTANTS.BuildSuccessful() ) &&
-                        type.equals( NotificationEvent.NotificationType.SUCCESS );
-            }
-        } ) );
-        verify( notificationEvent ).fire( argThat( new ArgumentMatcher<NotificationEvent>() {
-            @Override
-            public boolean matches( final Object argument ) {
-                final NotificationEvent event = (NotificationEvent) argument;
-                final String notification = event.getNotification();
-                final NotificationEvent.NotificationType type = event.getType();
-
-                return notification.equals( ProjectEditorResources.CONSTANTS.DeploySuccessful() ) &&
-                        type.equals( NotificationEvent.NotificationType.SUCCESS );
-            }
-        } ) );
-        verify( notificationEvent, times( 2 ) ).fire( any( NotificationEvent.class ) );
-        verifyBusyShowHideAnyString( 2, 2 );
-    }
-
-    @Test
-    public void testBuildAndDeployCommandSingleServerTemplateContainerExists() {
-        final String containerId = project.getPom().getGav().getArtifactId() + "_" + project.getPom().getGav().getVersion();
-        final String containerName = project.getPom().getGav().getArtifactId();
-        final ServerTemplate serverTemplate = new ServerTemplate( "id", "name" );
-        serverTemplate.addContainerSpec( new ContainerSpec( containerId, containerName, null, null, null, null ) );
-        when( specManagementServiceMock.listServerTemplates() ).thenReturn( Collections.singletonList( serverTemplate ) );
-
-        presenter.triggerBuildAndDeploy();
-
-        verify( deploymentScreenPopupView ).setValidateExistingContainerCallback( any( DeploymentScreenPopupViewImpl.ValidateExistingContainerCallback.class ) );
-        verify( deploymentScreenPopupView ).setContainerId( containerId );
-        verify( deploymentScreenPopupView ).setContainerAlias( containerName );
-        verify( deploymentScreenPopupView ).setStartContainer( true );
-        verify( deploymentScreenPopupView ).configure( any( com.google.gwt.user.client.Command.class ) );
-        verify( deploymentScreenPopupView ).show();
-        verifyNoMoreInteractions( deploymentScreenPopupView );
-    }
-
-    @Test
-    public void testBuildAndDeployCommandMultipleServerTemplate() {
-        final String containerId = project.getPom().getGav().getArtifactId() + "_" + project.getPom().getGav().getVersion();
-        final String containerName = project.getPom().getGav().getArtifactId();
-        final ServerTemplate serverTemplate1 = new ServerTemplate( "id1", "name1" );
-        final ServerTemplate serverTemplate2 = new ServerTemplate( "id2", "name2" );
-
-        when( specManagementServiceMock.listServerTemplates() ).thenReturn( Arrays.asList( serverTemplate1, serverTemplate2 ) );
-
-        presenter.triggerBuildAndDeploy();
-
-        verify( deploymentScreenPopupView ).setValidateExistingContainerCallback( any( DeploymentScreenPopupViewImpl.ValidateExistingContainerCallback.class ) );
-        verify( deploymentScreenPopupView ).setContainerId( containerId );
-        verify( deploymentScreenPopupView ).setContainerAlias( containerName );
-        verify( deploymentScreenPopupView ).setStartContainer( true );
-        verify( deploymentScreenPopupView ).addServerTemplates( eq( Sets.newHashSet( "id1", "id2" ) ) );
-        verify( deploymentScreenPopupView ).configure( any( com.google.gwt.user.client.Command.class ) );
-        verify( deploymentScreenPopupView ).show();
-        verifyNoMoreInteractions( deploymentScreenPopupView );
-    }
-
-    @Test
-    public void testBuildAndDeployCommand() {
-        presenter.triggerBuildAndDeploy();
-
-        verify( notificationEvent ).fire( argThat( new ArgumentMatcher<NotificationEvent>() {
-            @Override
-            public boolean matches( final Object argument ) {
-                final NotificationEvent event = (NotificationEvent) argument;
-                final String notification = event.getNotification();
-                final NotificationEvent.NotificationType type = event.getType();
-
-                return notification.equals( ProjectEditorResources.CONSTANTS.BuildSuccessful() ) &&
-                        type.equals( NotificationEvent.NotificationType.SUCCESS );
-            }
-        } ) );
-
-        verify( notificationEvent, times( 1 ) ).fire( any( NotificationEvent.class ) );
-        verifyBusyShowHideAnyString( 2, 2 );
-    }
-
-    @Test
-    public void testBuildAndDeployCommandFail() {
-
-        BuildMessage message = mock( BuildMessage.class );
-        List<BuildMessage> messages = new ArrayList<BuildMessage>();
-        messages.add( message );
-
-        BuildResults results = mock( BuildResults.class );
-        when( results.getErrorMessages() ).thenReturn( messages );
-
-        when( buildService.buildAndDeploy( any( KieProject.class ),
-                                           any( DeploymentMode.class ) ) ).thenReturn( results );
-
-        presenter.triggerBuildAndDeploy();
-
-        verify( notificationEvent ).fire( argThat( new ArgumentMatcher<NotificationEvent>() {
-            @Override
-            public boolean matches( final Object argument ) {
-                final NotificationEvent event = (NotificationEvent) argument;
-                final String notification = event.getNotification();
-                final NotificationEvent.NotificationType type = event.getType();
-
-                return notification.equals( ProjectEditorResources.CONSTANTS.BuildFailed() ) &&
-                        type.equals( NotificationEvent.NotificationType.ERROR );
-            }
-        } ) );
-
-        verify( view,
-                times( 1 ) ).showBusyIndicator( eq( ProjectEditorResources.CONSTANTS.Building() ) );
-        //There are two calls to "hide" by this stage; one from the view initialisation one for the build
-        verify( view,
-                times( 2 ) ).hideBusyIndicator();
-    }
-
-    @Test
-    public void testAlreadyRunningBuild() {
-        constructProjectScreenPresenter( project,
-                                         buildServiceCaller(),
-                                         new CallerMock<SpecManagementService>( specManagementServiceMock ) );
-
-        presenter.triggerBuild();
-        presenter.triggerBuild();
-
-        verify( view, times( 1 ) ).showABuildIsAlreadyRunning();
-        verify( notificationEvent, never() ).fire( any( NotificationEvent.class ) );
-        verifyBusyShowHideAnyString( 2, 1 );
-    }
-
-    @Test
-    public void testAlreadyRunningBuildAndDeploy() {
-        constructProjectScreenPresenter( project,
-                                         buildServiceCaller(),
-                                         new CallerMock<SpecManagementService>( specManagementServiceMock ) );
-        presenter.onStartup( mock( PlaceRequest.class ) );
-
-        presenter.triggerBuildAndDeploy();
-        presenter.triggerBuildAndDeploy();
-
-        verify( view, times( 1 ) ).showABuildIsAlreadyRunning();
-        verify( notificationEvent, never() ).fire( any( NotificationEvent.class ) );
-        verifyBusyShowHideAnyString( 3, 2 );
+        assertTrue(presenter.isDeploymentDescritorEditorAvailable(Arrays.<ResourceTypeDefinition>asList(new AnyResourceTypeDefinition(),
+                                                                                                        editor).stream(),
+                                                                  mock(Path.class)));
     }
 
     @Test
     public void testIsDirtyBuild() {
-        model.setPOM( mock( POM.class ) ); // causes isDirty evaluates as true
+        model.setPOM(mock(POM.class)); // causes isDirty evaluates as true
         presenter.triggerBuild();
 
-        verify( view, times( 1 ) ).showSaveBeforeContinue( any( Command.class ), any( Command.class ), any( Command.class ) );
-        verify( notificationEvent, never() ).fire( any( NotificationEvent.class ) );
-        verifyBusyShowHideAnyString( 1, 1 );
+        verify(view,
+               times(1)).showSaveBeforeContinue(any(Command.class),
+                                                any(Command.class),
+                                                any(Command.class));
+        verify(notificationEvent,
+               never()).fire(any(NotificationEvent.class));
+        verifyBusyShowHideAnyString(1,
+                                    1);
     }
 
     @Test
     public void testIsDirtyBuildAndInstall() {
-        model.setPOM( mock( POM.class ) ); // causes isDirty evaluates as true
+        model.setPOM(mock(POM.class)); // causes isDirty evaluates as true
         presenter.triggerBuildAndDeploy();
 
-        verify( view, times( 1 ) ).showSaveBeforeContinue( any( Command.class ), any( Command.class ), any( Command.class ) );
-        verify( notificationEvent, never() ).fire( any( NotificationEvent.class ) );
-        verifyBusyShowHideAnyString( 1, 1 );
+        verify(view,
+               times(1)).showSaveBeforeContinue(any(Command.class),
+                                                any(Command.class),
+                                                any(Command.class));
+        verify(notificationEvent,
+               never()).fire(any(NotificationEvent.class));
+        verifyBusyShowHideAnyString(1,
+                                    1);
     }
 
     @Test
     public void testIsDirtyBuildAndDeploy() {
-        model.setPOM( mock( POM.class ) ); // causes isDirty evaluates as true
+        model.setPOM(mock(POM.class)); // causes isDirty evaluates as true
         presenter.triggerBuildAndDeploy();
 
-        verify( view, times( 1 ) ).showSaveBeforeContinue( any( Command.class ), any( Command.class ), any( Command.class ) );
-        verify( notificationEvent, never() ).fire( any( NotificationEvent.class ) );
-        verifyBusyShowHideAnyString( 1, 1 );
+        verify(view,
+               times(1)).showSaveBeforeContinue(any(Command.class),
+                                                any(Command.class),
+                                                any(Command.class));
+        verify(notificationEvent,
+               never()).fire(any(NotificationEvent.class));
+        verifyBusyShowHideAnyString(1,
+                                    1);
     }
 
     @Test
     public void testOnDependenciesSelected() throws Exception {
 
-        when( lockManagerInstanceProvider.get() ).thenReturn( mock( LockManager.class ) );
+        when(lockManagerInstanceProvider.get()).thenReturn(mock(LockManager.class));
 
-        Path pathToPOM = mock( Path.class );
-        model.setPathToPOM( pathToPOM );
+        Path pathToPOM = mock(Path.class);
+        model.setPathToPOM(pathToPOM);
 
-        when( view.getDependenciesPart() ).thenReturn( dependenciesPart );
+        when(view.getDependenciesPart()).thenReturn(dependenciesPart);
 
-        presenter.onStartup( mock( PlaceRequest.class ) );
+        presenter.onStartup(mock(PlaceRequest.class));
 
         presenter.onDependenciesSelected();
 
-        verify( view ).showDependenciesPanel();
+        verify(view).showDependenciesPanel();
     }
 
     @Test
     public void testSaveNonClashingGAV() throws Exception {
         savePopUpPresenterShowMock();
 
-        verify( view,
-                times( 1 ) ).showBusyIndicator( eq( CommonConstants.INSTANCE.Loading() ) );
-        verify( view,
-                times( 1 ) ).hideBusyIndicator();
+        verifyBusyShowHideAnyString(1,
+                                    1,
+                                    CommonConstants.INSTANCE.Loading());
 
-        final Command command = presenter.getSaveCommand( DeploymentMode.VALIDATED );
+        final Command command = presenter.getSaveCommand(DeploymentMode.VALIDATED);
         command.execute();
 
-        verify( projectScreenService,
-                times( 1 ) ).save( eq( presenter.pathToPomXML ),
-                                   eq( model ),
-                                   eq( "" ),
-                                   eq( DeploymentMode.VALIDATED ) );
-        verify( view,
-                times( 1 ) ).showBusyIndicator( eq( CommonConstants.INSTANCE.Saving() ) );
-        verify( view,
-                times( 2 ) ).hideBusyIndicator();
+        verify(projectScreenService,
+               times(1)).save(eq(presenter.pathToPomXML),
+                              eq(model),
+                              eq(""),
+                              eq(DeploymentMode.VALIDATED));
+        verifyBusyShowHideAnyString(1,
+                                    2,
+                                    CommonConstants.INSTANCE.Saving());
     }
 
     @Test
@@ -421,164 +196,59 @@ public class ProjectScreenPresenterTest
     public void testSaveClashingGAV() throws Exception {
         savePopUpPresenterShowMock();
 
-        verify( view,
-                times( 1 ) ).showBusyIndicator( eq( CommonConstants.INSTANCE.Loading() ) );
-        verify( view,
-                times( 1 ) ).hideBusyIndicator();
+        verifyBusyShowHideAnyString(1,
+                                    1,
+                                    CommonConstants.INSTANCE.Loading());
 
-        doThrow( GAVAlreadyExistsException.class ).when( projectScreenService ).save( presenter.pathToPomXML,
-                                                                                      model,
-                                                                                      "",
-                                                                                      DeploymentMode.VALIDATED );
+        doThrow(GAVAlreadyExistsException.class).when(projectScreenService).save(presenter.pathToPomXML,
+                                                                                 model,
+                                                                                 "",
+                                                                                 DeploymentMode.VALIDATED);
 
         final GAV gav = model.getPOM().getGav();
-        final ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
-        final Command command = presenter.getSaveCommand( DeploymentMode.VALIDATED );
+        final ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass(Command.class);
+        final Command command = presenter.getSaveCommand(DeploymentMode.VALIDATED);
 
         command.execute();
 
-        verify( projectScreenService,
-                times( 1 ) ).save( eq( presenter.pathToPomXML ),
-                                   eq( model ),
-                                   eq( "" ),
-                                   eq( DeploymentMode.VALIDATED ) );
+        verify(projectScreenService,
+               times(1)).save(eq(presenter.pathToPomXML),
+                              eq(model),
+                              eq(""),
+                              eq(DeploymentMode.VALIDATED));
 
-        verify( conflictingRepositoriesPopup,
-                times( 1 ) ).setContent( eq( gav ),
-                                         any( Set.class ),
-                                         commandArgumentCaptor.capture() );
-        verify( conflictingRepositoriesPopup,
-                times( 1 ) ).show();
+        verify(conflictingRepositoriesPopup,
+               times(1)).setContent(eq(gav),
+                                    any(Set.class),
+                                    commandArgumentCaptor.capture());
+        verify(conflictingRepositoriesPopup,
+               times(1)).show();
 
-        assertNotNull( commandArgumentCaptor.getValue() );
+        assertNotNull(commandArgumentCaptor.getValue());
 
         //Emulate User electing to force save
         commandArgumentCaptor.getValue().execute();
 
-        verify( projectScreenService,
-                times( 1 ) ).save( eq( presenter.pathToPomXML ),
-                                   eq( model ),
-                                   eq( "" ),
-                                   eq( DeploymentMode.FORCED ) );
+        verify(projectScreenService,
+               times(1)).save(eq(presenter.pathToPomXML),
+                              eq(model),
+                              eq(""),
+                              eq(DeploymentMode.FORCED));
         //We attempted to save the Project twice
-        verify( view,
-                times( 2 ) ).showBusyIndicator( eq( CommonConstants.INSTANCE.Saving() ) );
         //We hid the BusyPopup 1 x loading, 1 x per save attempt
-        verify( view,
-                times( 3 ) ).hideBusyIndicator();
+        verifyBusyShowHideAnyString(2,
+                                    3,
+                                    CommonConstants.INSTANCE.Saving());
     }
 
     private void savePopUpPresenterShowMock() {
         Answer fakeShow = invocation -> {
-            ParameterizedCommand<String> cmd = (ParameterizedCommand<String>) invocation.getArguments()[ 1 ];
-            cmd.execute( "" );
+            ParameterizedCommand<String> cmd = (ParameterizedCommand<String>) invocation.getArguments()[1];
+            cmd.execute("");
             return null;
         };
-        doAnswer( fakeShow ).when( savePopUpPresenter ).show( any( Path.class ), any( ParameterizedCommand.class ) );
-    }
-
-    @Test
-    public void testBuildManagedRepository() throws Exception {
-        verify( view,
-                times( 1 ) ).showBusyIndicator( eq( CommonConstants.INSTANCE.Loading() ) );
-        verify( view,
-                times( 1 ) ).hideBusyIndicator();
-
-        final Map<String, Object> env = new HashMap<String, Object>() {
-            {
-                put( "managed",
-                     true );
-            }
-        };
-        when( repository.getEnvironment() ).thenReturn( env );
-
-        presenter.triggerBuild();
-
-        verify( buildService,
-                times( 1 ) ).build( eq( project ) );
-        verify( view,
-                times( 1 ) ).showBusyIndicator( eq( ProjectEditorResources.CONSTANTS.Building() ) );
-        verify( view,
-                times( 2 ) ).hideBusyIndicator();
-    }
-
-    @Test
-    public void testBuildNotManagedRepositoryNonClashingGAV() throws Exception {
-        verify( view,
-                times( 1 ) ).showBusyIndicator( eq( CommonConstants.INSTANCE.Loading() ) );
-        verify( view,
-                times( 1 ) ).hideBusyIndicator();
-
-        final Map<String, Object> env = new HashMap<String, Object>() {
-            {
-                put( "managed",
-                     false );
-            }
-        };
-        when( repository.getEnvironment() ).thenReturn( env );
-
-        presenter.triggerBuild();
-
-        verify( buildService,
-                times( 1 ) ).build( eq( project ) );
-        verify( view,
-                times( 1 ) ).showBusyIndicator( eq( ProjectEditorResources.CONSTANTS.Building() ) );
-        verify( view,
-                times( 2 ) ).hideBusyIndicator();
-    }
-
-    @Test
-    @SuppressWarnings("unchecked")
-    public void testBuildNotManagedRepositoryClashingGAV() throws Exception {
-        verify( view,
-                times( 1 ) ).showBusyIndicator( eq( CommonConstants.INSTANCE.Loading() ) );
-        verify( view,
-                times( 1 ) ).hideBusyIndicator();
-
-        final Map<String, Object> env = new HashMap<String, Object>() {
-            {
-                put( "managed",
-                     false );
-            }
-        };
-        when( repository.getEnvironment() ).thenReturn( env );
-
-        doThrow( GAVAlreadyExistsException.class ).when( buildService ).buildAndDeploy( eq( project ),
-                                                                                        eq( DeploymentMode.VALIDATED ) );
-
-        final GAV gav = model.getPOM().getGav();
-        final ArgumentCaptor<Command> commandArgumentCaptor = ArgumentCaptor.forClass( Command.class );
-
-        presenter.triggerBuildAndDeploy();
-
-        verify( buildService,
-                times( 1 ) ).buildAndDeploy( eq( project ),
-                                             eq( DeploymentMode.VALIDATED ) );
-
-        verify( conflictingRepositoriesPopup,
-                times( 1 ) ).setContent( eq( gav ),
-                                         any( Set.class ),
-                                         commandArgumentCaptor.capture() );
-        verify( conflictingRepositoriesPopup,
-                times( 1 ) ).show();
-
-        assertNotNull( commandArgumentCaptor.getValue() );
-
-        //Emulate User electing to force save
-        commandArgumentCaptor.getValue().execute();
-
-        verify( conflictingRepositoriesPopup,
-                times( 1 ) ).hide();
-
-        verify( buildService,
-                times( 1 ) ).buildAndDeploy( eq( project ),
-                                             eq( DeploymentMode.FORCED ) );
-        //We attempted to build the Project twice
-        verify( view,
-                times( 2 ) ).showBusyIndicator( eq( ProjectEditorResources.CONSTANTS.Building() ) );
-        //We hid the BusyPopup 1 x loading, 1 x per build attempt
-        verify( view,
-                times( 3 ) ).hideBusyIndicator();
+        doAnswer(fakeShow).when(savePopUpPresenter).show(any(Path.class),
+                                                         any(ParameterizedCommand.class));
     }
 
     @Test
@@ -587,56 +257,57 @@ public class ProjectScreenPresenterTest
 
         reImportCommand.execute();
 
-        verify( projectScreenService, times( 1 ) ).reImport( eq( presenter.pathToPomXML ) );
+        verify(projectScreenService,
+               times(1)).reImport(eq(presenter.pathToPomXML));
     }
 
     @Test
     public void projectContextWithNoProjectDisablesMenus() {
         //setup() mocks the ProjectContext so we need to reset it
-        reset( context );
+        reset(context);
 
-        context.onProjectContextChanged( new ProjectContextChangeEvent( mock( OrganizationalUnit.class ) ) );
+        context.onProjectContextChanged(new ProjectContextChangeEvent(mock(OrganizationalUnit.class)));
 
-        assertMenuItems( false );
+        assertMenuItems(false);
     }
 
     @Test
     public void projectContextWithProjectEnablesMenus() {
         //setup() mocks the ProjectContext so we need to reset it
-        reset( context );
+        reset(context);
 
-        context.onProjectContextChanged( new ProjectContextChangeEvent( mock( OrganizationalUnit.class ),
-                                                                        repository,
-                                                                        "master",
-                                                                        project ) );
+        context.onProjectContextChanged(new ProjectContextChangeEvent(mock(OrganizationalUnit.class),
+                                                                      repository,
+                                                                      "master",
+                                                                      project));
 
-        assertMenuItems( true );
+        assertMenuItems(true);
     }
 
-    private void assertMenuItems( final boolean enabled ) {
-        presenter.getMenus().getItems().forEach( ( m ) -> assertEquals( enabled,
-                                                                        m.isEnabled() ) );
+    private void assertMenuItems(final boolean enabled) {
+        presenter.getMenus().getItems().forEach((m) -> assertEquals(enabled,
+                                                                    m.isEnabled()));
     }
 
-    private void verifyBusyShowHideAnyString( int show,
-                                              int hide ) {
-        //Check the "Busy" popup has not been shown again
-        verify( view,
-                times( show ) ).showBusyIndicator( any( String.class ) );
-        verify( view,
-                times( hide ) ).hideBusyIndicator();
+    private void verifyBusyShowHideAnyString(final int show,
+                                             final int hide) {
+        verifyBusyShowHideAnyString(show,
+                                    hide,
+                                    null);
     }
 
-    private Caller buildServiceCaller() {
-        Caller<BuildService> caller = mock( Caller.class );
-        when( caller.call( any( RemoteCallback.class ), any( ErrorCallback.class ) ) ).thenAnswer( new Answer<BuildService>() {
-            @Override
-            public BuildService answer( InvocationOnMock invocationOnMock ) throws Throwable {
-                //not calling callback causes building is still set to true
-                return buildService;
-            }
-        } );
+    private void verifyBusyShowHideAnyString(final int show,
+                                             final int hide,
+                                             final String message) {
+        if (message != null) {
+            verify(view,
+                   times(show)).showBusyIndicator(message);
+        } else {
+            verify(view,
+                   times(show)).showBusyIndicator(anyString());
+        }
 
-        return caller;
+        verify(view,
+               times(hide)).hideBusyIndicator();
     }
 }

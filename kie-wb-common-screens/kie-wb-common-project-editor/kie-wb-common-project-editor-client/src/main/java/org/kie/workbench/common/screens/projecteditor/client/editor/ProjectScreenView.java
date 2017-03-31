@@ -23,13 +23,15 @@ import org.guvnor.common.services.project.model.ProjectImports;
 import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
 import org.gwtbootstrap3.client.ui.ButtonGroup;
+import org.kie.workbench.common.screens.projecteditor.client.build.BuildExecutor;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.kie.workbench.common.services.shared.whitelist.WhiteList;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.mvp.Command;
 
 public interface ProjectScreenView
-        extends HasBusyIndicator,
+        extends BuildExecutor.View,
+                HasBusyIndicator,
                 IsWidget {
 
     interface Presenter {
@@ -56,42 +58,41 @@ public interface ProjectScreenView
 
         void onPersistenceDescriptorSelected();
 
-        void validateGroupID( String groupId );
+        void validateGroupID(String groupId);
 
-        void validateArtifactID( String artifactId );
+        void validateArtifactID(String artifactId);
 
-        void validateVersion( String version );
+        void validateVersion(String version);
 
         void triggerBuild();
 
         void triggerBuildAndDeploy();
-
     }
 
-    void setPresenter( Presenter projectScreenPresenter );
+    void setPresenter(Presenter projectScreenPresenter);
 
-    void setPOM( POM pom );
+    void setPOM(POM pom);
 
-    void setDependencies( POM pom,
-                          final WhiteList whiteList );
+    void setDependencies(POM pom,
+                         final WhiteList whiteList);
 
-    void setPomMetadata( Metadata pomMetaData );
+    void setPomMetadata(Metadata pomMetaData);
 
-    void setPomMetadataUnlockHandler( Runnable unlockHandler );
+    void setPomMetadataUnlockHandler(Runnable unlockHandler);
 
-    void setKModule( KModuleModel kModule );
+    void setKModule(KModuleModel kModule);
 
-    void setKModuleMetadata( Metadata kModuleMetaData );
+    void setKModuleMetadata(Metadata kModuleMetaData);
 
-    void setKModuleMetadataUnlockHandler( Runnable unlockHandler );
+    void setKModuleMetadataUnlockHandler(Runnable unlockHandler);
 
-    void setImports( ProjectImports projectImports );
+    void setImports(ProjectImports projectImports);
 
-    void setImportsMetadata( Metadata projectImportsMetadata );
+    void setImportsMetadata(Metadata projectImportsMetadata);
 
-    void setImportsMetadataUnlockHandler( Runnable unlockHandler );
+    void setImportsMetadataUnlockHandler(Runnable unlockHandler);
 
-    void setRepositories( ProjectRepositories repositories );
+    void setRepositories(ProjectRepositories repositories);
 
     void showImportsPanel();
 
@@ -125,7 +126,7 @@ public interface ProjectScreenView
 
     boolean showsKBaseMetadataPanel();
 
-    void switchBusyIndicator( String newMessage );
+    void switchBusyIndicator(String newMessage);
 
     void showABuildIsAlreadyRunning();
 
@@ -133,7 +134,7 @@ public interface ProjectScreenView
 
     void setDeploymentDescriptorEnabled(final Boolean enabled);
 
-    void setGAVCheckDisabledSetting( Boolean disabled );
+    void setGAVCheckDisabledSetting(Boolean disabled);
 
     void showNoProjectSelected();
 
@@ -141,11 +142,11 @@ public interface ProjectScreenView
 
     boolean confirmClose();
 
-    void setValidGroupID( boolean isValid );
+    void setValidGroupID(boolean isValid);
 
-    void setValidArtifactID( boolean isValid );
+    void setValidArtifactID(boolean isValid);
 
-    void setValidVersion( boolean isValid );
+    void setValidVersion(boolean isValid);
 
     Widget getPomPart();
 
@@ -163,10 +164,9 @@ public interface ProjectScreenView
 
     Widget getRepositoriesPart();
 
-    void showUnexpectedErrorPopup( String error );
+    void showUnexpectedErrorPopup(String error);
 
-    void showSaveBeforeContinue( Command yesCommand,
-                                 Command noCommand,
-                                 Command cancelCommand );
-
+    void showSaveBeforeContinue(Command yesCommand,
+                                Command noCommand,
+                                Command cancelCommand);
 }
