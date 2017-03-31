@@ -22,6 +22,7 @@ import org.kie.workbench.common.forms.model.FieldType;
 @Portable
 public class AssigneeEditorFieldType implements FieldType {
 
+    public static final String MAX_PARAM = "max";
     public static final String NAME = "AssigneeEditor";
 
     @Override

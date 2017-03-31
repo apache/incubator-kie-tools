@@ -41,5 +41,7 @@ public class AssigneeFieldInitializer implements FieldInitializer<AssigneeEditor
                                                                     ""));
         field.setType(AssigneeType.valueOf(fieldElement.getParams().getOrDefault("type",
                                                                                  "USER")));
+        field.setMax(Integer.valueOf(fieldElement.getParams().getOrDefault("max",
+                                                                           "-1")));
     }
 }

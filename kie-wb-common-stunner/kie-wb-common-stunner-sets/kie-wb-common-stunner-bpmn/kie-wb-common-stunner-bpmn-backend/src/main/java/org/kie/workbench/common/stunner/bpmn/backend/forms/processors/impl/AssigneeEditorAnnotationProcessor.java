@@ -43,6 +43,9 @@ public class AssigneeEditorAnnotationProcessor extends AbstractFieldAnnotationPr
                              TransformerContext context) {
         field.setDefaultValue((String) annotation.getParameters().get("defaultValue"));
         field.setType(AssigneeType.valueOf((String) annotation.getParameters().get("type")));
+        if (annotation.getParameters().get("max") != null && !((String) annotation.getParameters().get("max")).isEmpty()) {
+            field.setMax(Integer.valueOf((String) annotation.getParameters().get("max")));
+        }
     }
 
     @Override

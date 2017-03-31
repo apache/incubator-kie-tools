@@ -28,8 +28,12 @@ import org.kie.workbench.common.forms.adf.definitions.annotations.metaModel.Fiel
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.type.ListBoxFieldType;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.type.TextAreaFieldType;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNPropertySet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Actors;
+import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.Groupid;
 import org.kie.workbench.common.stunner.bpmn.definition.property.connectors.Priority;
+import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldType;
+import org.kie.workbench.common.stunner.bpmn.forms.model.AssignmentsEditorFieldType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Name;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.PropertySet;
@@ -56,6 +60,39 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
             afterElement = "taskName"
     )
     @Valid
+    private Subject subject;
+
+    @Property
+    @FormField(
+            type = AssigneeEditorFieldType.class,
+            afterElement = "subject",
+            settings = @FieldParam(name = "type", value = "USER")
+    )
+    @Valid
+    private Actors actors;
+
+    @Property
+    @FormField(
+            type = AssigneeEditorFieldType.class,
+            afterElement = "actors",
+            settings = @FieldParam(name = "type", value = "GROUP")
+    )
+    @Valid
+    private Groupid groupid;
+
+    @Property
+    @FormField(
+            type = AssignmentsEditorFieldType.class,
+            afterElement = "groupid"
+    )
+    @Valid
+    private AssignmentsInfo assignmentsinfo;
+
+    @Property
+    @FormField(
+            afterElement = "assignmentsinfo"
+    )
+    @Valid
     private IsAsync isAsync;
 
     @Property
@@ -78,28 +115,16 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
             afterElement = "skippable"
     )
     @Valid
-    private Subject subject;
-
-    @Property
-    @FormField(
-            type = TextAreaFieldType.class,
-            afterElement = "subject"
-    )
-    @Valid
-    private Content content;
-
-    @Property
-    @FormField(
-            afterElement = "content"
-    )
-    @Valid
     private Description description;
 
     @Property
     @FormField(
             type = AssigneeEditorFieldType.class,
             afterElement = "description",
-            settings = @FieldParam(name = "type", value = "USER")
+            settings = {
+                    @FieldParam(name = "type", value = "USER"),
+                    @FieldParam(name = "max", value = "1")
+            }
     )
     @Valid
     private CreatedBy createdBy;
@@ -142,11 +167,13 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
 
     public UserTaskExecutionSet() {
         this(new TaskName("Task"),
+             new Actors(),
+             new Groupid(),
+             new AssignmentsInfo(),
              new IsAsync(),
              new Skippable(),
              new Priority(""),
              new Subject(""),
-             new Content(""),
              new Description(""),
              new CreatedBy(),
              new AdHocAutostart(),
@@ -156,11 +183,13 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
     }
 
     public UserTaskExecutionSet(final @MapsTo("taskName") TaskName taskName,
+                                final @MapsTo("actors") Actors actors,
+                                final @MapsTo("groupid") Groupid groupid,
+                                final @MapsTo("assignmentsinfo") AssignmentsInfo assignmentsinfo,
                                 final @MapsTo("isAsync") IsAsync isAsync,
                                 final @MapsTo("skippable") Skippable skippable,
                                 final @MapsTo("priority") Priority priority,
                                 final @MapsTo("subject") Subject subject,
-                                final @MapsTo("content") Content content,
                                 final @MapsTo("description") Description description,
                                 final @MapsTo("createdBy") CreatedBy createdBy,
                                 final @MapsTo("adHocAutostart") AdHocAutostart adHocAutostart,
@@ -168,11 +197,13 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
                                 final @MapsTo("onExitAction") OnExitAction onExitAction,
                                 final @MapsTo("scriptLanguage") ScriptLanguage scriptLanguage) {
         this.taskName = taskName;
+        this.actors = actors;
+        this.groupid = groupid;
+        this.assignmentsinfo = assignmentsinfo;
         this.isAsync = isAsync;
         this.skippable = skippable;
         this.priority = priority;
         this.subject = subject;
-        this.content = content;
         this.description = description;
         this.createdBy = createdBy;
         this.adHocAutostart = adHocAutostart;
@@ -191,6 +222,30 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
 
     public void setTaskName(final TaskName taskName) {
         this.taskName = taskName;
+    }
+
+    public Actors getActors() {
+        return actors;
+    }
+
+    public void setActors(final Actors actors) {
+        this.actors = actors;
+    }
+
+    public Groupid getGroupid() {
+        return groupid;
+    }
+
+    public void setGroupid(final Groupid groupid) {
+        this.groupid = groupid;
+    }
+
+    public AssignmentsInfo getAssignmentsinfo() {
+        return assignmentsinfo;
+    }
+
+    public void setAssignmentsinfo(final AssignmentsInfo assignmentsinfo) {
+        this.assignmentsinfo = assignmentsinfo;
     }
 
     public IsAsync getIsAsync() {
@@ -223,14 +278,6 @@ public class UserTaskExecutionSet implements BPMNPropertySet {
 
     public void setSubject(Subject subject) {
         this.subject = subject;
-    }
-
-    public Content getContent() {
-        return content;
-    }
-
-    public void setContent(Content content) {
-        this.content = content;
     }
 
     public Description getDescription() {

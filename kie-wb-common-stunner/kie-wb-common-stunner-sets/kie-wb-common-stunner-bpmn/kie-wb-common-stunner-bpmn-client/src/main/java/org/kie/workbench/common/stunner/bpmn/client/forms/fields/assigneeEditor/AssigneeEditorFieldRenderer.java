@@ -56,6 +56,11 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
     }
 
     @Override
+    public Integer getMax() {
+        return getField().getMax();
+    }
+
+    @Override
     public void initInputWidget() {
         view.init(this);
     }
@@ -92,11 +97,17 @@ public class AssigneeEditorFieldRenderer extends FieldRenderer<AssigneeEditorFie
         if (as.isEmpty()) {
             view.setTableDisplayStyle();
         }
-        AssigneeRow newAssignee = new AssigneeRow();
-        as.add(newAssignee);
-        AssigneeListItemWidgetView widget = view.getAssigneeWidget(view.getAssigneeRowsCount() - 1);
-        widget.setNames(nameListBoxValues);
-        widget.setParentWidget(this);
+
+        int max = getMax();
+        if (max != -1 && as.size() >= max) {
+            view.showMaxAssigneesAdded();
+        } else {
+            AssigneeRow newAssignee = new AssigneeRow();
+            as.add(newAssignee);
+            AssigneeListItemWidgetView widget = view.getAssigneeWidget(view.getAssigneeRowsCount() - 1);
+            widget.setNames(nameListBoxValues);
+            widget.setParentWidget(this);
+        }
     }
 
     @Override

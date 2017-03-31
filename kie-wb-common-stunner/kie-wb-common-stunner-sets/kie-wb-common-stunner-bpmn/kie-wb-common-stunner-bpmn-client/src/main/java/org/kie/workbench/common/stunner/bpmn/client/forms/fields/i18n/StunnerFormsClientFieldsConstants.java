@@ -65,6 +65,8 @@ public interface StunnerFormsClientFieldsConstants extends Messages {
 
     String Invalid_character_in_name();
 
+    String Max_assignees_added();
+
     String Name();
 
     String No_Data_Input();

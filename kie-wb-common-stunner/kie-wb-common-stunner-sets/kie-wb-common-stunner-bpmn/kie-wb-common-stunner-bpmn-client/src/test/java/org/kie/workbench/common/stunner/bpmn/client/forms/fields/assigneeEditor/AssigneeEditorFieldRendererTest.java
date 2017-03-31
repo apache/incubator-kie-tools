@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssigneeRow;
+import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeEditorFieldDefinition;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
@@ -40,14 +42,24 @@ public class AssigneeEditorFieldRendererTest {
     @Mock
     private AssigneeListItemWidgetView assigneeListItemWidgetView;
 
+    @Mock
+    private AssigneeEditorFieldDefinition assigneeEditorFieldDefinition;
+
     @Spy
     @InjectMocks
     private AssigneeEditorFieldRenderer assigneeEditor = new AssigneeEditorFieldRenderer(assigneeEditorWidgetView);
 
-    @Test
-    public void testAddAssignee() {
+    @Before
+    public void setUp() {
+        assigneeEditor.init(null,
+                            assigneeEditorFieldDefinition);
+        when(assigneeEditorFieldDefinition.getMax()).thenReturn(new Integer(-1));
         when(assigneeEditorWidgetView.getAssigneeWidget(anyInt())).thenReturn(assigneeListItemWidgetView);
         when(assigneeEditorWidgetView.getAssigneeRowsCount()).thenReturn(1);
+    }
+
+    @Test
+    public void testAddAssignee() {
         assigneeEditor.addAssignee();
         verify(assigneeEditorWidgetView,
                times(1)).setTableDisplayStyle();
@@ -65,8 +77,6 @@ public class AssigneeEditorFieldRendererTest {
 
     @Test
     public void testRemoveAssignee() {
-        when(assigneeEditorWidgetView.getAssigneeWidget(anyInt())).thenReturn(assigneeListItemWidgetView);
-        when(assigneeEditorWidgetView.getAssigneeRowsCount()).thenReturn(1);
         assigneeEditor.addAssignee();
         assigneeEditor.addAssignee();
         assigneeEditor.removeAssignee(null);

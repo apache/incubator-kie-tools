@@ -28,4 +28,6 @@ public @interface AssigneeEditor {
     String defaultValue() default "";
 
     AssigneeType type() default AssigneeType.USER;
+
+    int max() default -1;
 }

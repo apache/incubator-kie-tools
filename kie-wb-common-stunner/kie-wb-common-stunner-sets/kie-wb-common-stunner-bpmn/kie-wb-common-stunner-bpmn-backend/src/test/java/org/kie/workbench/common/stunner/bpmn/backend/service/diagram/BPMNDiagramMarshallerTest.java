@@ -60,7 +60,6 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
-import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.AssigneeSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
@@ -475,8 +474,8 @@ public class BPMNDiagramMarshallerTest {
         UserTask selfEvaluationTask = (UserTask) selfEvaluationNode.getContent().getDefinition();
         assertEquals(selfEvaluationTask.getTaskType().getValue(),
                      TaskTypes.USER);
-        DataIOSet dataIOSet = selfEvaluationTask.getDataIOSet();
-        AssignmentsInfo assignmentsinfo = dataIOSet.getAssignmentsinfo();
+        UserTaskExecutionSet executionSet = selfEvaluationTask.getExecutionSet();
+        AssignmentsInfo assignmentsinfo = executionSet.getAssignmentsinfo();
         assertEquals(assignmentsinfo.getValue(),
                      "|reason:com.test.Reason,Comment:Object,Skippable:Object||performance:Object|[din]reason->reason,[dout]performance->performance");
     }
@@ -541,7 +540,8 @@ public class BPMNDiagramMarshallerTest {
         Node<? extends Definition, ?> intermediateEventNode = diagram.getGraph().getNode("_8D881072-284F-4F0D-8CF2-AD1F4540FC4E");
         IntermediateTimerEvent intermediateTimerEvent = (IntermediateTimerEvent) intermediateEventNode.getContent().getDefinition();
         assertNotNull(intermediateTimerEvent.getGeneral());
-        assertEquals("MyTimer", intermediateTimerEvent.getGeneral().getName().getValue());
+        assertEquals("MyTimer",
+                     intermediateTimerEvent.getGeneral().getName().getValue());
         assertNotNull(intermediateTimerEvent.getExecutionSet());
         assertEquals("abc",
                      intermediateTimerEvent.getExecutionSet().getTimeCycle().getValue());
@@ -552,7 +552,6 @@ public class BPMNDiagramMarshallerTest {
         assertEquals("abc",
                      intermediateTimerEvent.getExecutionSet().getTimeDuration().getValue());
     }
-
 
     @Test
     @SuppressWarnings("unchecked")
@@ -602,7 +601,7 @@ public class BPMNDiagramMarshallerTest {
                       6);
         assertEquals("UserGroups",
                      diagram.getMetadata().getTitle());
-        AssigneeSet assigneeSet = null;
+        UserTaskExecutionSet executionSet = null;
         Iterator<Element> it = nodesIterator(diagram);
         while (it.hasNext()) {
             Element element = it.next();
@@ -610,15 +609,15 @@ public class BPMNDiagramMarshallerTest {
                 Object oDefinition = ((View) element.getContent()).getDefinition();
                 if (oDefinition instanceof UserTask) {
                     UserTask userTask = (UserTask) oDefinition;
-                    assigneeSet = userTask.getAssigneeSet();
+                    executionSet = userTask.getExecutionSet();
                     break;
                 }
             }
         }
         assertEquals("user,user1",
-                     assigneeSet.getActors().getValue());
+                     executionSet.getActors().getValue());
         assertEquals("admin,kiemgmt",
-                     assigneeSet.getGroupid().getValue());
+                     executionSet.getGroupid().getValue());
     }
 
     @Test
@@ -652,9 +651,6 @@ public class BPMNDiagramMarshallerTest {
 
         assertEquals("my subject",
                      userTaskExecutionSet.getSubject().getValue());
-
-        assertEquals("my content",
-                     userTaskExecutionSet.getContent().getValue());
 
         assertEquals("admin",
                      userTaskExecutionSet.getCreatedBy().getValue());

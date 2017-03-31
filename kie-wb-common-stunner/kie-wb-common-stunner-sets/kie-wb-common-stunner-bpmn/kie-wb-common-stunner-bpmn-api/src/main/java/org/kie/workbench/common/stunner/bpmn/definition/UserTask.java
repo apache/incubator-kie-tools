@@ -25,10 +25,8 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
-import org.kie.workbench.common.stunner.bpmn.definition.property.assignee.AssigneeSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
-import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.RectangleDimensionsSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Documentation;
@@ -66,19 +64,6 @@ public class UserTask extends BaseTask implements DataIOModel {
     @Valid
     protected UserTaskExecutionSet executionSet;
 
-    @PropertySet
-    @FormField(
-            afterElement = "executionSet"
-    )
-    protected AssigneeSet assigneeSet;
-
-    @PropertySet
-    @FormField(
-            afterElement = "assigneeSet"
-    )
-    @Valid
-    protected DataIOSet dataIOSet;
-
     @NonPortable
     public static class UserTaskBuilder extends BaseTaskBuilder<UserTask> {
 
@@ -87,8 +72,6 @@ public class UserTask extends BaseTask implements DataIOModel {
             return new UserTask(new TaskGeneralSet(new Name("Task"),
                                                    new Documentation("")),
                                 new UserTaskExecutionSet(),
-                                new AssigneeSet(),
-                                new DataIOSet(),
                                 new BackgroundSet(COLOR,
                                                   BORDER_COLOR,
                                                   BORDER_SIZE),
@@ -106,8 +89,6 @@ public class UserTask extends BaseTask implements DataIOModel {
 
     public UserTask(final @MapsTo("general") TaskGeneralSet general,
                     final @MapsTo("executionSet") UserTaskExecutionSet executionSet,
-                    final @MapsTo("assigneeSet") AssigneeSet assigneeSet,
-                    final @MapsTo("dataIOSet") DataIOSet dataIOSet,
                     final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
                     final @MapsTo("fontSet") FontSet fontSet,
                     final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet,
@@ -120,8 +101,6 @@ public class UserTask extends BaseTask implements DataIOModel {
               simulationSet,
               taskType);
         this.executionSet = executionSet;
-        this.assigneeSet = assigneeSet;
-        this.dataIOSet = dataIOSet;
     }
 
     @Override
@@ -153,23 +132,7 @@ public class UserTask extends BaseTask implements DataIOModel {
         return executionSet;
     }
 
-    public AssigneeSet getAssigneeSet() {
-        return assigneeSet;
-    }
-
-    public DataIOSet getDataIOSet() {
-        return dataIOSet;
-    }
-
     public void setExecutionSet(final UserTaskExecutionSet executionSet) {
         this.executionSet = executionSet;
-    }
-
-    public void setAssigneeSet(final AssigneeSet assigneeSet) {
-        this.assigneeSet = assigneeSet;
-    }
-
-    public void setDataIOSet(final DataIOSet dataIOSet) {
-        this.dataIOSet = dataIOSet;
     }
 }

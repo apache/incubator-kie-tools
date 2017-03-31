@@ -28,6 +28,8 @@ public interface AssigneeEditorWidgetView {
 
         AssigneeType getType();
 
+        Integer getMax();
+
         void doSave();
 
         void notifyModelChanged();
@@ -66,4 +68,6 @@ public interface AssigneeEditorWidgetView {
     AssigneeListItemWidgetView getAssigneeWidget(final int index);
 
     boolean isDuplicateName(final String name);
+
+    void showMaxAssigneesAdded();
 }

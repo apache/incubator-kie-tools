@@ -31,6 +31,12 @@ public class AssigneeEditorFieldDefinition extends AbstractFieldDefinition {
 
     private AssigneeType type;
 
+    private Integer max;
+
+    public AssigneeEditorFieldDefinition() {
+        max = new Integer(-1);
+    }
+
     @Override
     public AssigneeEditorFieldType getFieldType() {
         return FIELD_TYPE;
@@ -52,11 +58,20 @@ public class AssigneeEditorFieldDefinition extends AbstractFieldDefinition {
         this.type = type;
     }
 
+    public Integer getMax() {
+        return max;
+    }
+
+    public void setMax(Integer max) {
+        this.max = max;
+    }
+
     @Override
     protected void doCopyFrom(FieldDefinition other) {
         if (other instanceof AssigneeEditorFieldDefinition) {
             this.setDefaultValue(((AssigneeEditorFieldDefinition) other).getDefaultValue());
             this.setType(((AssigneeEditorFieldDefinition) other).getType());
+            this.setMax(((AssigneeEditorFieldDefinition) other).getMax());
         }
     }
 }

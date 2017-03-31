@@ -45,6 +45,7 @@ import org.jboss.errai.ui.client.widget.Table;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssigneeRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.ListBoxValues;
 import org.kie.workbench.common.stunner.bpmn.forms.model.AssigneeType;
@@ -252,5 +253,11 @@ public class AssigneeEditorWidgetViewImpl extends Composite implements AssigneeE
         } else if (item instanceof Group) {
             names.add(((Group) item).getName());
         }
+    }
+
+    @Override
+    public void showMaxAssigneesAdded() {
+        notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.INSTANCE.Max_assignees_added(),
+                                                NotificationEvent.NotificationType.ERROR));
     }
 }
