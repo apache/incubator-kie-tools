@@ -20,6 +20,7 @@ import java.util.HashSet;
 
 import org.drools.workbench.services.verifier.api.client.index.DataType;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.plugin.client.api.FactTypes;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,24 +61,21 @@ public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpd
                            MISSING_RANGE_TITLE,
                            REDUNDANT_ROWS);
 
-        assertContains(MISSING_RANGE_TITLE,
-                       new HashSet<Integer>() {{
-                           add(1);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       MISSING_RANGE_TITLE,
+                       Severity.NOTE,
+                       1);
 
-        assertContains(MISSING_RANGE_TITLE,
-                       new HashSet<Integer>() {{
-                           add(2);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       MISSING_RANGE_TITLE,
+                       Severity.NOTE,
+                       2);
 
-        assertContains(REDUNDANT_ROWS,
-                       new HashSet<Integer>() {{
-                           add(1);
-                           add(2);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       REDUNDANT_ROWS,
+                       Severity.WARNING,
+                       1,
+                       2);
     }
 
     @Test
@@ -88,25 +86,22 @@ public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpd
                            MISSING_RANGE_TITLE,
                            SUBSUMPTANT_ROWS);
 
-        assertContains(MISSING_RANGE_TITLE,
-                       new HashSet<Integer>() {{
-                           add(5);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       MISSING_RANGE_TITLE,
+                       Severity.NOTE,
+                       5);
 
-        assertContains(SUBSUMPTANT_ROWS,
-                       new HashSet<Integer>() {{
-                           add(1);
-                           add(6);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       SUBSUMPTANT_ROWS,
+                       Severity.WARNING,
+                       1,
+                       6);
 
-        assertContains(SUBSUMPTANT_ROWS,
-                       new HashSet<Integer>() {{
-                           add(2);
-                           add(6);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       SUBSUMPTANT_ROWS,
+                       Severity.WARNING,
+                       2,
+                       6);
     }
 
     @Test
@@ -117,25 +112,22 @@ public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpd
                            MISSING_RANGE_TITLE,
                            CONFLICTING_ROWS);
 
-        assertContains(MISSING_RANGE_TITLE,
-                       new HashSet<Integer>() {{
-                           add(5);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       MISSING_RANGE_TITLE,
+                       Severity.NOTE,
+                       5);
 
-        assertContains(CONFLICTING_ROWS,
-                       new HashSet<Integer>() {{
-                           add(3);
-                           add(6);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       CONFLICTING_ROWS,
+                       Severity.WARNING,
+                       3,
+                       6);
 
-        assertContains(CONFLICTING_ROWS,
-                       new HashSet<Integer>() {{
-                           add(4);
-                           add(6);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       CONFLICTING_ROWS,
+                       Severity.WARNING,
+                       4,
+                       6);
     }
 
     @Test
@@ -146,17 +138,15 @@ public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpd
                            MISSING_RANGE_TITLE,
                            RULE_HAS_NO_ACTION);
 
-        assertContains(MISSING_RANGE_TITLE,
-                       new HashSet<Integer>() {{
-                           add(5);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       MISSING_RANGE_TITLE,
+                       Severity.NOTE,
+                       5);
 
-        assertContains(RULE_HAS_NO_ACTION,
-                       new HashSet<Integer>() {{
-                           add(5);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       RULE_HAS_NO_ACTION,
+                       Severity.WARNING,
+                       5);
     }
 
     @Test
@@ -167,26 +157,23 @@ public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpd
                            SUBSUMPTANT_ROWS,
                            REDUNDANT_ROWS);
 
-        assertContains(SUBSUMPTANT_ROWS,
-                       new HashSet<Integer>() {{
-                           add(1);
-                           add(2);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       SUBSUMPTANT_ROWS,
+                       Severity.WARNING,
+                       1,
+                       2);
 
-        assertContains(SUBSUMPTANT_ROWS,
-                       new HashSet<Integer>() {{
-                           add(1);
-                           add(3);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       SUBSUMPTANT_ROWS,
+                       Severity.WARNING,
+                       1,
+                       3);
 
-        assertContains(REDUNDANT_ROWS,
-                       new HashSet<Integer>() {{
-                           add(2);
-                           add(3);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       REDUNDANT_ROWS,
+                       Severity.WARNING,
+                       2,
+                       3);
     }
 
     @Test
@@ -197,19 +184,17 @@ public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpd
                            SUBSUMPTANT_ROWS,
                            CONFLICTING_ROWS);
 
-        assertContains(SUBSUMPTANT_ROWS,
-                       new HashSet<Integer>() {{
-                           add(1);
-                           add(2);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       SUBSUMPTANT_ROWS,
+                       Severity.WARNING,
+                       1,
+                       2);
 
-        assertContains(CONFLICTING_ROWS,
-                       new HashSet<Integer>() {{
-                           add(2);
-                           add(4);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       CONFLICTING_ROWS,
+                       Severity.WARNING,
+                       2,
+                       4);
     }
 
     @Test
@@ -220,19 +205,17 @@ public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpd
                            REDUNDANT_ROWS,
                            CONFLICTING_ROWS);
 
-        assertContains(REDUNDANT_ROWS,
-                       new HashSet<Integer>() {{
-                           add(1);
-                           add(3);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       REDUNDANT_ROWS,
+                       Severity.WARNING,
+                       1,
+                       3);
 
-        assertContains(CONFLICTING_ROWS,
-                       new HashSet<Integer>() {{
-                           add(2);
-                           add(4);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       CONFLICTING_ROWS,
+                       Severity.WARNING,
+                       2,
+                       4);
     }
 
     @Test

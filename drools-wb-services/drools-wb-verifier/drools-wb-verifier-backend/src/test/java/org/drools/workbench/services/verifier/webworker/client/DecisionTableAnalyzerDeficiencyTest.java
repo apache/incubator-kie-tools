@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.webworker.client.testutil.ExtendedGuidedDecisionTableBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -98,8 +99,9 @@ public class DecisionTableAnalyzerDeficiencyTest
         assertDoesNotContain(DEFICIENT_ROW,
                              analyzerProvider.getAnalysisReport(),
                              1);
-        assertContains(DEFICIENT_ROW,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       DEFICIENT_ROW,
+                       Severity.WARNING,
                        2);
         assertDoesNotContain(DEFICIENT_ROW,
                              analyzerProvider.getAnalysisReport(),
@@ -162,8 +164,9 @@ public class DecisionTableAnalyzerDeficiencyTest
         assertDoesNotContain(DEFICIENT_ROW,
                              analyzerProvider.getAnalysisReport(),
                              1);
-        assertContains(DEFICIENT_ROW,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       DEFICIENT_ROW,
+                       Severity.WARNING,
                        2);
         assertDoesNotContain(DEFICIENT_ROW,
                              analyzerProvider.getAnalysisReport(),
@@ -209,8 +212,9 @@ public class DecisionTableAnalyzerDeficiencyTest
         assertDoesNotContain(DEFICIENT_ROW,
                              analyzerProvider.getAnalysisReport(),
                              1);
-        assertContains(DEFICIENT_ROW,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       DEFICIENT_ROW,
+                       Severity.WARNING,
                        2);
         assertDoesNotContain(DEFICIENT_ROW,
                              analyzerProvider.getAnalysisReport(),
@@ -290,8 +294,9 @@ public class DecisionTableAnalyzerDeficiencyTest
         assertDoesNotContain(DEFICIENT_ROW,
                              analyzerProvider.getAnalysisReport(),
                              1);
-        assertContains(DEFICIENT_ROW,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       DEFICIENT_ROW,
+                       Severity.WARNING,
                        2);
         assertDoesNotContain(DEFICIENT_ROW,
                              analyzerProvider.getAnalysisReport(),

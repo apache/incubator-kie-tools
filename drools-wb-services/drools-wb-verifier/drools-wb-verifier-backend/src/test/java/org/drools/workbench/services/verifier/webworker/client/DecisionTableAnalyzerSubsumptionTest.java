@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.webworker.client.testutil.ExtendedGuidedDecisionTableBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,8 +56,9 @@ public class DecisionTableAnalyzerSubsumptionTest
 
         fireUpAnalyzer();
 
-        assertContains(REDUNDANT_ROWS,
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       REDUNDANT_ROWS,
+                       Severity.WARNING);
     }
 
     @Test
@@ -83,8 +85,9 @@ public class DecisionTableAnalyzerSubsumptionTest
 
         fireUpAnalyzer();
 
-        assertContains(REDUNDANT_ROWS,
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       REDUNDANT_ROWS,
+                       Severity.WARNING);
     }
 
     @Test
@@ -167,8 +170,9 @@ public class DecisionTableAnalyzerSubsumptionTest
 
         fireUpAnalyzer();
 
-        assertContains(REDUNDANT_ROWS,
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       REDUNDANT_ROWS,
+                       Severity.WARNING);
     }
 
     @Test
@@ -195,7 +199,8 @@ public class DecisionTableAnalyzerSubsumptionTest
 
         fireUpAnalyzer();
 
-        assertContains(REDUNDANT_ROWS,
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       REDUNDANT_ROWS,
+                       Severity.WARNING);
     }
 }

@@ -17,12 +17,13 @@
 package org.drools.workbench.services.verifier.webworker.client;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class DecisionTableAnalyzerRangeCheckTest
         extends AnalyzerUpdateTestBase {
 
@@ -30,117 +31,149 @@ public class DecisionTableAnalyzerRangeCheckTest
     public void testMissingRangeNoIssueNameHasNoRange() throws Exception {
 
         analyzer = analyzerProvider.makeAnalyser()
-                                   .withPersonNameColumn( "==" )
-                                   .withApplicationApprovedSetField()
-                                   .withData( DataBuilderProvider
-                                                      .row( "Toni", true )
-                                                      .row( "Michael", true )
-                                                      .end() )
-                                   .buildAnalyzer();
+                .withPersonNameColumn("==")
+                .withApplicationApprovedSetField()
+                .withData(DataBuilderProvider
+                                  .row("Toni",
+                                       true)
+                                  .row("Michael",
+                                       true)
+                                  .end())
+                .buildAnalyzer();
 
         fireUpAnalyzer();
 
-        assertDoesNotContain(MISSING_RANGE_TITLE, analyzerProvider.getAnalysisReport() );
+        assertDoesNotContain(MISSING_RANGE_TITLE,
+                             analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testMissingRangeNoIssue() throws Exception {
         analyzer = analyzerProvider.makeAnalyser()
-                                   .withPersonApprovedColumn( "==" )
-                                   .withPersonApprovedActionSetField()
-                                   .withData( DataBuilderProvider
-                                                      .row( true, true )
-                                                      .row( false, true )
-                                                      .end() )
-                                   .buildAnalyzer();
+                .withPersonApprovedColumn("==")
+                .withPersonApprovedActionSetField()
+                .withData(DataBuilderProvider
+                                  .row(true,
+                                       true)
+                                  .row(false,
+                                       true)
+                                  .end())
+                .buildAnalyzer();
 
         fireUpAnalyzer();
 
-        assertDoesNotContain(MISSING_RANGE_TITLE, analyzerProvider.getAnalysisReport() );
+        assertDoesNotContain(MISSING_RANGE_TITLE,
+                             analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testMissingRangeMissingNotApprovedFromLHS() throws Exception {
         analyzer = analyzerProvider.makeAnalyser()
-                                   .withPersonApprovedColumn( "==" )
-                                   .withPersonApprovedActionSetField()
-                                   .withData( DataBuilderProvider
-                                                      .row( true, true )
-                                                      .row( true, false )
-                                                      .end()
-                                            )
-                                   .buildAnalyzer();
+                .withPersonApprovedColumn("==")
+                .withPersonApprovedActionSetField()
+                .withData(DataBuilderProvider
+                                  .row(true,
+                                       true)
+                                  .row(true,
+                                       false)
+                                  .end()
+                )
+                .buildAnalyzer();
 
         fireUpAnalyzer();
 
-        assertContains(MISSING_RANGE_TITLE, analyzerProvider.getAnalysisReport() );
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       MISSING_RANGE_TITLE,
+                       Severity.NOTE);
     }
 
     @Test
     public void testMissingAgeBetween1And100() throws Exception {
         analyzer = analyzerProvider.makeAnalyser()
-                                   .withPersonAgeColumn( "<" )
-                                   .withPersonAgeColumn( ">=" )
-                                   .withPersonApprovedActionSetField()
-                                   .withData( DataBuilderProvider
-                                                      .row( 0, null, true )
-                                                      .row( null, 100, false )
-                                                      .end() )
-                                   .buildAnalyzer();
+                .withPersonAgeColumn("<")
+                .withPersonAgeColumn(">=")
+                .withPersonApprovedActionSetField()
+                .withData(DataBuilderProvider
+                                  .row(0,
+                                       null,
+                                       true)
+                                  .row(null,
+                                       100,
+                                       false)
+                                  .end())
+                .buildAnalyzer();
 
         fireUpAnalyzer();
 
-        assertContains(MISSING_RANGE_TITLE, analyzerProvider.getAnalysisReport() );
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       MISSING_RANGE_TITLE,
+                       Severity.NOTE);
     }
 
     @Test
     public void testCompleteAgeRange() throws Exception {
         analyzer = analyzerProvider.makeAnalyser()
-                                   .withPersonAgeColumn( "<" )
-                                   .withPersonAgeColumn( ">=" )
-                                   .withPersonApprovedActionSetField()
-                                   .withData( DataBuilderProvider
-                                                      .row( 0, null, true )
-                                                      .row( null, 0, true )
-                                                      .end() )
-                                   .buildAnalyzer();
+                .withPersonAgeColumn("<")
+                .withPersonAgeColumn(">=")
+                .withPersonApprovedActionSetField()
+                .withData(DataBuilderProvider
+                                  .row(0,
+                                       null,
+                                       true)
+                                  .row(null,
+                                       0,
+                                       true)
+                                  .end())
+                .buildAnalyzer();
 
         fireUpAnalyzer();
 
-        assertDoesNotContain(MISSING_RANGE_TITLE, analyzerProvider.getAnalysisReport() );
+        assertDoesNotContain(MISSING_RANGE_TITLE,
+                             analyzerProvider.getAnalysisReport());
     }
 
     @Test
     public void testMissingDepositBetween0And12345() throws Exception {
         analyzer = analyzerProvider.makeAnalyser()
-                                   .withAccountDepositColumn( "<" )
-                                   .withAccountDepositColumn( ">" )
-                                   .withPersonApprovedActionInsertFact()
-                                   .withData( DataBuilderProvider
-                                                      .row( 0.0, null, true )
-                                                      .row( null, 12345.0, true )
-                                                      .end() )
-                                   .buildAnalyzer();
+                .withAccountDepositColumn("<")
+                .withAccountDepositColumn(">")
+                .withPersonApprovedActionInsertFact()
+                .withData(DataBuilderProvider
+                                  .row(0.0,
+                                       null,
+                                       true)
+                                  .row(null,
+                                       12345.0,
+                                       true)
+                                  .end())
+                .buildAnalyzer();
 
         fireUpAnalyzer();
 
-        assertContains(MISSING_RANGE_TITLE, analyzerProvider.getAnalysisReport() );
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       MISSING_RANGE_TITLE,
+                       Severity.NOTE);
     }
 
     @Test
     public void testCompleteAccountRange() throws Exception {
         analyzer = analyzerProvider.makeAnalyser()
-                                   .withAccountDepositColumn( ">=" )
-                                   .withAccountDepositColumn( "<" )
-                                   .withPersonApprovedActionInsertFact()
-                                   .withData( DataBuilderProvider
-                                                      .row( 0.0, null, true )
-                                                      .row( null, 0.0, true )
-                                                      .end() )
-                                   .buildAnalyzer();
+                .withAccountDepositColumn(">=")
+                .withAccountDepositColumn("<")
+                .withPersonApprovedActionInsertFact()
+                .withData(DataBuilderProvider
+                                  .row(0.0,
+                                       null,
+                                       true)
+                                  .row(null,
+                                       0.0,
+                                       true)
+                                  .end())
+                .buildAnalyzer();
 
         fireUpAnalyzer();
 
-        assertDoesNotContain(MISSING_RANGE_TITLE, analyzerProvider.getAnalysisReport() );
+        assertDoesNotContain(MISSING_RANGE_TITLE,
+                             analyzerProvider.getAnalysisReport());
     }
 }

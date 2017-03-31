@@ -23,6 +23,7 @@ import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.api.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.services.verifier.webworker.client.testutil.ExtendedGuidedDecisionTableBuilder;
 import org.drools.workbench.services.verifier.webworker.client.testutil.LimitedGuidedDecisionTableBuilder;
@@ -59,8 +60,9 @@ public class DecisionTableAnalyzerTest
 
         fireUpAnalyzer();
 
-        assertContains(EMPTY_RULE,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       EMPTY_RULE,
+                       Severity.WARNING,
                        1);
     }
 
@@ -82,14 +84,16 @@ public class DecisionTableAnalyzerTest
 
         assertEquals(4,
                      analyzerProvider.getAnalysisReport().size());
-        assertContains(AnalysisConstants.INSTANCE.EmptyRule(),
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       EMPTY_RULE,
+                       Severity.WARNING,
                        1);
-        assertContains(AnalysisConstants.INSTANCE.EmptyRule(),
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       EMPTY_RULE,
+                       Severity.WARNING,
                        2);
         assertOnlyContains(analyzerProvider.getAnalysisReport(),
-                           AnalysisConstants.INSTANCE.EmptyRule(),
+                           EMPTY_RULE,
                            SINGLE_HIT_LOST);
     }
 
@@ -107,8 +111,9 @@ public class DecisionTableAnalyzerTest
 
         fireUpAnalyzer();
 
-        assertContains(RULE_HAS_NO_ACTION,
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       RULE_HAS_NO_ACTION,
+                       Severity.WARNING);
     }
 
     @Test
@@ -126,11 +131,14 @@ public class DecisionTableAnalyzerTest
 
         fireUpAnalyzer();
 
-        assertContains(AnalysisConstants.INSTANCE.RuleHasNoAction(),
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       RULE_HAS_NO_ACTION,
+                       Severity.WARNING,
                        1);
-        assertContains(AnalysisConstants.INSTANCE.RuleHasNoAction(),
-                       analyzerProvider.getAnalysisReport(),
+
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       RULE_HAS_NO_ACTION,
+                       Severity.WARNING,
                        2);
     }
 
@@ -182,11 +190,13 @@ public class DecisionTableAnalyzerTest
 
         fireUpAnalyzer();
 
-        assertContains(RULE_HAS_NO_ACTION,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       RULE_HAS_NO_ACTION,
+                       Severity.WARNING,
                        1);
-        assertContains(EMPTY_RULE,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       EMPTY_RULE,
+                       Severity.WARNING,
                        2);
         assertDoesNotContain(EMPTY_RULE,
                              analyzerProvider.getAnalysisReport(),
@@ -210,8 +220,9 @@ public class DecisionTableAnalyzerTest
 
         fireUpAnalyzer();
 
-        assertContains(RULE_HAS_NO_RESTRICTIONS_AND_WILL_ALWAYS_FIRE,
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       RULE_HAS_NO_RESTRICTIONS_AND_WILL_ALWAYS_FIRE,
+                       Severity.NOTE);
     }
 
     @Test
@@ -238,11 +249,13 @@ public class DecisionTableAnalyzerTest
 
         fireUpAnalyzer();
 
-        assertContains(RULE_HAS_NO_RESTRICTIONS_AND_WILL_ALWAYS_FIRE,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       RULE_HAS_NO_RESTRICTIONS_AND_WILL_ALWAYS_FIRE,
+                       Severity.NOTE,
                        1);
-        assertContains(EMPTY_RULE,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       EMPTY_RULE,
+                       Severity.WARNING,
                        2);
         assertDoesNotContain(EMPTY_RULE,
                              analyzerProvider.getAnalysisReport(),
@@ -274,8 +287,9 @@ public class DecisionTableAnalyzerTest
 
         analyzer.start();
 
-        assertContains(MULTIPLE_VALUES_FOR_ONE_ACTION,
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       MULTIPLE_VALUES_FOR_ONE_ACTION,
+                       Severity.WARNING);
     }
 
     @Test
@@ -310,11 +324,10 @@ public class DecisionTableAnalyzerTest
 
         fireUpAnalyzer();
 
-        assertContains(REDUNDANT_ROWS,
-                       analyzerProvider.getAnalysisReport(),
-                       1);
-        assertContains(REDUNDANT_ROWS,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       REDUNDANT_ROWS,
+                       Severity.WARNING,
+                       1,
                        2);
 
         assertNotNull(analyzerProvider.getStatus());
@@ -364,8 +377,9 @@ public class DecisionTableAnalyzerTest
 
         assertEquals(1,
                      analyzerProvider.getAnalysisReport().size());
-        assertContains(RULE_HAS_NO_ACTION,
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       RULE_HAS_NO_ACTION,
+                       Severity.WARNING);
     }
 
     /**
@@ -389,8 +403,9 @@ public class DecisionTableAnalyzerTest
 
         assertEquals(1,
                      analyzerProvider.getAnalysisReport().size());
-        assertContains(RULE_HAS_NO_RESTRICTIONS_AND_WILL_ALWAYS_FIRE,
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       RULE_HAS_NO_RESTRICTIONS_AND_WILL_ALWAYS_FIRE,
+                       Severity.NOTE);
     }
 
     // GUVNOR-2546: Verification & Validation: BRL fragments are ignored
@@ -412,14 +427,16 @@ public class DecisionTableAnalyzerTest
 
         fireUpAnalyzer();
 
-        assertContains(EMPTY_RULE,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       EMPTY_RULE,
+                       Severity.WARNING,
                        2);
         assertDoesNotContain(EMPTY_RULE,
                              analyzerProvider.getAnalysisReport(),
                              1);
-        assertContains(RULE_HAS_NO_RESTRICTIONS_AND_WILL_ALWAYS_FIRE,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       RULE_HAS_NO_RESTRICTIONS_AND_WILL_ALWAYS_FIRE,
+                       Severity.NOTE,
                        1);
         assertDoesNotContain(RULE_HAS_NO_RESTRICTIONS_AND_WILL_ALWAYS_FIRE,
                              analyzerProvider.getAnalysisReport(),
@@ -447,7 +464,8 @@ public class DecisionTableAnalyzerTest
 
         assertEquals(1,
                      analyzerProvider.getAnalysisReport().size());
-        assertContains(RULE_HAS_NO_ACTION,
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       RULE_HAS_NO_ACTION,
+                       Severity.WARNING);
     }
 }

@@ -21,6 +21,7 @@ import java.util.Set;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -52,8 +53,9 @@ public class DecisionTableAnalyzerAddRowScenarioTest
         assertOnlyContains(analysisReport,
                            SINGLE_HIT_LOST,
                            EMPTY_RULE);
-        assertContains(EMPTY_RULE,
-                       analysisReport,
+        assertContains(analysisReport,
+                       EMPTY_RULE,
+                       Severity.WARNING,
                        2);
         assertEquals(2,
                      analysisReport.size());

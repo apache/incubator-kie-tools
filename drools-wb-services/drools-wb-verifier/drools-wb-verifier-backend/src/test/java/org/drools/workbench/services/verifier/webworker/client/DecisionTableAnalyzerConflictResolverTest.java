@@ -17,6 +17,7 @@
 package org.drools.workbench.services.verifier.webworker.client;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -62,8 +63,9 @@ public class DecisionTableAnalyzerConflictResolverTest
 
         fireUpAnalyzer();
 
-        assertContains(EMPTY_RULE,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       EMPTY_RULE,
+                       Severity.WARNING,
                        1);
     }
 
@@ -80,8 +82,10 @@ public class DecisionTableAnalyzerConflictResolverTest
 
         fireUpAnalyzer();
 
-        assertContains(IMPOSSIBLE_MATCH,
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       IMPOSSIBLE_MATCH,
+                       Severity.ERROR
+        );
     }
 
     @Test
@@ -163,11 +167,13 @@ public class DecisionTableAnalyzerConflictResolverTest
 
         fireUpAnalyzer();
 
-        assertContains(CONFLICTING_ROWS,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       CONFLICTING_ROWS,
+                       Severity.WARNING,
                        2);
-        assertContains(CONFLICTING_ROWS,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       CONFLICTING_ROWS,
+                       Severity.WARNING,
                        3);
     }
 }

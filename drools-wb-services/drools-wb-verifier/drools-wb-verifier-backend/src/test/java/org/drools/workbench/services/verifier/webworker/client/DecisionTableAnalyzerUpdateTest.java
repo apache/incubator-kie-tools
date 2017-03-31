@@ -18,6 +18,7 @@ package org.drools.workbench.services.verifier.webworker.client;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.oracle.DataType;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -43,8 +44,9 @@ public class DecisionTableAnalyzerUpdateTest
 
         fireUpAnalyzer();
 
-        assertContains(RULE_HAS_NO_ACTION,
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       RULE_HAS_NO_ACTION,
+                       Severity.WARNING);
 
         setValue(0,
                  3,
@@ -70,12 +72,10 @@ public class DecisionTableAnalyzerUpdateTest
 
         fireUpAnalyzer();
 
-        assertContains(REDUNDANT_ROWS,
-                       analyzerProvider.getAnalysisReport(),
-                       1);
-        assertContains(REDUNDANT_ROWS,
-                       analyzerProvider.getAnalysisReport(),
-                       2);
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       REDUNDANT_ROWS,
+                       Severity.WARNING,
+                       1,2);
 
         setValue(1,
                  2,
@@ -108,17 +108,20 @@ public class DecisionTableAnalyzerUpdateTest
 
         fireUpAnalyzer();
 
-        assertContains(CONFLICTING_ROWS,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       CONFLICTING_ROWS,
+                       Severity.WARNING,
                        4);
-        assertContains(IMPOSSIBLE_MATCH,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       IMPOSSIBLE_MATCH,
+                       Severity.ERROR,
                        2);
 
         removeRow(1);
 
-        assertContains(CONFLICTING_ROWS,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       CONFLICTING_ROWS,
+                       Severity.WARNING,
                        3);
         assertDoesNotContain(IMPOSSIBLE_MATCH,
                              analyzerProvider.getAnalysisReport(),
@@ -129,8 +132,9 @@ public class DecisionTableAnalyzerUpdateTest
                  3,
                  1);
 
-        assertContains(IMPOSSIBLE_MATCH,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       IMPOSSIBLE_MATCH,
+                       Severity.ERROR,
                        2);
     }
 
@@ -152,12 +156,10 @@ public class DecisionTableAnalyzerUpdateTest
 
         fireUpAnalyzer();
 
-        assertContains(REDUNDANT_ROWS,
-                       analyzerProvider.getAnalysisReport(),
-                       1);
-        assertContains(REDUNDANT_ROWS,
-                       analyzerProvider.getAnalysisReport(),
-                       2);
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       REDUNDANT_ROWS,
+                       Severity.WARNING,
+                       1,2);
 
         // REMOVE 2
         removeRow(0);
@@ -189,8 +191,9 @@ public class DecisionTableAnalyzerUpdateTest
         removeActionColumn(3,
                            0);
 
-        assertContains(RULE_HAS_NO_ACTION,
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       RULE_HAS_NO_ACTION,
+                       Severity.WARNING);
     }
 
     @Test
@@ -221,8 +224,9 @@ public class DecisionTableAnalyzerUpdateTest
                            true,
                            false);
 
-        assertContains(MULTIPLE_VALUES_FOR_ONE_ACTION,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       MULTIPLE_VALUES_FOR_ONE_ACTION,
+                       Severity.WARNING,
                        3);
     }
 
@@ -282,8 +286,9 @@ public class DecisionTableAnalyzerUpdateTest
                   DataType.DataTypes.NUMERIC,
                   DataType.DataTypes.BOOLEAN);
 
-        assertContains(IMPOSSIBLE_MATCH,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       IMPOSSIBLE_MATCH,
+                       Severity.ERROR,
                        3);
     }
 
@@ -308,16 +313,18 @@ public class DecisionTableAnalyzerUpdateTest
 
         fireUpAnalyzer();
 
-        assertContains(IMPOSSIBLE_MATCH,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       IMPOSSIBLE_MATCH,
+                       Severity.ERROR,
                        2);
 
         appendRow(DataType.DataTypes.NUMERIC,
                   DataType.DataTypes.NUMERIC,
                   DataType.DataTypes.STRING);
 
-        assertContains(IMPOSSIBLE_MATCH,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       IMPOSSIBLE_MATCH,
+                       Severity.ERROR,
                        2);
     }
 }

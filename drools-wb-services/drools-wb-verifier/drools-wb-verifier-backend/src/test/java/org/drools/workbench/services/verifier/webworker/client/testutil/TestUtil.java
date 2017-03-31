@@ -19,12 +19,14 @@ package org.drools.workbench.services.verifier.webworker.client.testutil;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.drools.workbench.services.verifier.api.client.reporting.ExplanationProvider;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.webworker.client.DecisionTableAnalyzerFromFileTest;
 
 import static org.junit.Assert.assertTrue;
@@ -63,32 +65,19 @@ public class TestUtil {
         assertThat(resultTitles).containsOnly(expected);
     }
 
-    public static void assertContains(final String expected,
-                                      final Set<Issue> result) {
-        assertContains(expected,
-                       new HashSet<>(),
-                       result);
-    }
+    public static void assertContains(final Set<Issue> result,
+                                      final String expected,
+                                      final Severity severity,
+                                      final Integer... rowNumbers) {
 
-    public static void assertContains(final String expected,
-                                      final Set<Issue> result,
-                                      final int rowNumber) {
-
-        assertContains(expected,
-                       new HashSet<Integer>() {{
-                           add(rowNumber);
-                       }},
-                       result);
-    }
-
-    public static void assertContains(final String expected,
-                                      final Set<Integer> rowNumbers,
-                                      final Set<Issue> result) {
-
-        assertTrue("Could not find: " + expected + " for rows: " + rowNumbers,
-                   result.stream().filter(issue -> titleEquals(issue,
-                                                               expected) && rowNumberContains(issue,
-                                                                                                rowNumbers)).count() > 0);
+        assertTrue("Could not find: " + expected + " for rows: " + rowNumbers + " and severity: " + severity,
+                   result.stream()
+                           .filter(issue -> issue.getSeverity() == severity)
+                           .filter(issue -> titleEquals(issue,
+                                                        expected))
+                           .filter(issue -> rowNumberContains(issue,
+                                                              Arrays.asList(rowNumbers)))
+                           .count() > 0);
     }
 
     public static void assertDoesNotContain(final String notExpected,
@@ -103,11 +92,12 @@ public class TestUtil {
                                             final int rowNumber) {
 
         assertFalse("Found " + notExpected,
-                    result.stream().filter(issue -> titleEquals(issue,
-                                                                notExpected) && rowNumberContains(issue,
-                                                                                                    new HashSet<Integer>() {{
-                                                                                                        add(rowNumber);
-                                                                                                    }})).count() > 0);
+                    result.stream()
+                            .filter(issue -> titleEquals(issue,
+                                                         notExpected))
+                            .filter(issue -> rowNumberContains(issue,
+                                                               Arrays.asList(rowNumber)))
+                            .count() > 0);
     }
 
     private static boolean titleEquals(Issue issue,
@@ -116,7 +106,7 @@ public class TestUtil {
     }
 
     private static boolean rowNumberContains(Issue issue,
-                                             Set<Integer> rowNumbers) {
+                                             List<Integer> rowNumbers) {
         return issue.getRowNumbers().containsAll(rowNumbers);
     }
 }

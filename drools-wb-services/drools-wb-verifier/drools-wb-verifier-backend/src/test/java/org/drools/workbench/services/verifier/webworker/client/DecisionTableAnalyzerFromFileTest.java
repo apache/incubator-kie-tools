@@ -24,6 +24,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.core.main.Analyzer;
 import org.drools.workbench.services.verifier.plugin.client.Coordinate;
 import org.drools.workbench.services.verifier.plugin.client.api.FactTypes;
@@ -51,8 +52,9 @@ public class DecisionTableAnalyzerFromFileTest extends AnalyzerUpdateTestBase {
         analyzer.resetChecks();
         analyzer.analyze();
 
-        assertContains(RULE_HAS_NO_RESTRICTIONS_AND_WILL_ALWAYS_FIRE,
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       RULE_HAS_NO_RESTRICTIONS_AND_WILL_ALWAYS_FIRE,
+                       Severity.NOTE);
 
         // Update
         table52.getData()

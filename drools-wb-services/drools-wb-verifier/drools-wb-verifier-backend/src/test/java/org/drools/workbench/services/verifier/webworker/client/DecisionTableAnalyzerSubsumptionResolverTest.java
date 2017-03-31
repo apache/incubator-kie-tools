@@ -23,6 +23,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.core.main.Analyzer;
 import org.drools.workbench.services.verifier.plugin.client.api.FactTypes;
 import org.drools.workbench.services.verifier.webworker.client.AnalyzerUpdateTestBase;
@@ -239,12 +240,11 @@ public class DecisionTableAnalyzerSubsumptionResolverTest extends AnalyzerUpdate
         analyzer.resetChecks();
         analyzer.analyze();
 
-        assertContains(REDUNDANT_ROWS,
-                       new HashSet<Integer>() {{
-                           add(1);
-                           add(2);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       REDUNDANT_ROWS,
+                       Severity.WARNING,
+                       1,
+                       2);
     }
 
     @Test
@@ -279,12 +279,11 @@ public class DecisionTableAnalyzerSubsumptionResolverTest extends AnalyzerUpdate
         analyzer.resetChecks();
         analyzer.analyze();
 
-        assertContains(REDUNDANT_ROWS,
-                       new HashSet<Integer>() {{
-                           add(1);
-                           add(2);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       REDUNDANT_ROWS,
+                       Severity.WARNING,
+                       1,
+                       2);
     }
 
     @Test
@@ -320,12 +319,11 @@ public class DecisionTableAnalyzerSubsumptionResolverTest extends AnalyzerUpdate
         analyzer.resetChecks();
         analyzer.analyze();
 
-        assertContains(REDUNDANT_ROWS,
-                       new HashSet<Integer>() {{
-                           add(1);
-                           add(2);
-                       }},
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       REDUNDANT_ROWS,
+                       Severity.WARNING,
+                       1,
+                       2);
     }
 
     @Test
@@ -351,8 +349,9 @@ public class DecisionTableAnalyzerSubsumptionResolverTest extends AnalyzerUpdate
         analyzer.resetChecks();
         analyzer.analyze();
 
-        assertContains(REDUNDANT_CONDITIONS_TITLE,
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       REDUNDANT_CONDITIONS_TITLE,
+                       Severity.NOTE);
     }
 
     @Test
@@ -420,8 +419,10 @@ public class DecisionTableAnalyzerSubsumptionResolverTest extends AnalyzerUpdate
         analyzer.resetChecks();
         analyzer.analyze();
 
-        assertContains("ValueForFactFieldIsSetTwice(a, salary)",
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       "ValueForFactFieldIsSetTwice(a, salary)",
+                       Severity.WARNING
+        );
     }
 
     @Test
@@ -454,7 +455,9 @@ public class DecisionTableAnalyzerSubsumptionResolverTest extends AnalyzerUpdate
         analyzer.resetChecks();
         analyzer.analyze();
 
-        assertContains("ValueForFactFieldIsSetTwice(b, salary)",
-                       analyzerProvider.getAnalysisReport());
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       "ValueForFactFieldIsSetTwice(b, salary)",
+                       Severity.WARNING
+        );
     }
 }

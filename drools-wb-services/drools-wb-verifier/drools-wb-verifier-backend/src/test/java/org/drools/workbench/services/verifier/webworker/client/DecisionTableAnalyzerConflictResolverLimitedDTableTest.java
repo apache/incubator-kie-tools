@@ -22,6 +22,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.webworker.client.testutil.LimitedGuidedDecisionTableBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,11 +67,13 @@ public class DecisionTableAnalyzerConflictResolverLimitedDTableTest
 
         fireUpAnalyzer();
 
-        assertContains(CONFLICTING_ROWS,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       CONFLICTING_ROWS,
+                       Severity.WARNING,
                        2);
-        assertContains(CONFLICTING_ROWS,
-                       analyzerProvider.getAnalysisReport(),
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       CONFLICTING_ROWS,
+                       Severity.WARNING,
                        1);
     }
 }
