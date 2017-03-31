@@ -21,6 +21,9 @@
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[MyTask]]></drools:metaValue>
         </drools:metaData>
+        <drools:metaData name="customAutoStart">
+            <drools:metaValue><![CDATA[true]]></drools:metaValue>
+        </drools:metaData>
         <drools:metaData name="customAsync">
           <drools:metaValue><![CDATA[true]]></drools:metaValue>
         </drools:metaData>

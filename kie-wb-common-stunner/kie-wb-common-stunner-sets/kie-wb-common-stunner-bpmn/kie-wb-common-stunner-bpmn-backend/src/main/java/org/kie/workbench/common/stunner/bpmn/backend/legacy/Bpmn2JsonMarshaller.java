@@ -1936,6 +1936,14 @@ public class Bpmn2JsonMarshaller {
         String customAsync = (customAsyncMetaData != null && customAsyncMetaData.length() > 0) ? customAsyncMetaData : "false";
         properties.put("isasync",
                        customAsync);
+
+        // custom autostart
+        String customAutoStartMetaData = Utils.getMetaDataValue(task.getExtensionValues(),
+                                                                "customAutoStart");
+        String customAutoStart = (customAutoStartMetaData != null && customAutoStartMetaData.length() > 0) ? customAutoStartMetaData : "false";
+        properties.put("customautostart",
+                       customAutoStart);
+
         // backwards compatibility with jbds editor
         boolean foundTaskName = false;
         if (task instanceof UserTask && task.getIoSpecification() != null && task.getIoSpecification().getDataInputs() != null) {

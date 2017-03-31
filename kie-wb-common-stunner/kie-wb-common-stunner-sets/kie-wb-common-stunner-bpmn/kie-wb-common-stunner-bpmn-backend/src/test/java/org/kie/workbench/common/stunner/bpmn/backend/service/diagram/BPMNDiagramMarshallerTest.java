@@ -661,6 +661,9 @@ public class BPMNDiagramMarshallerTest {
         assertEquals("3",
                      userTaskExecutionSet.getPriority().getValue());
 
+        assertEquals("true",
+                     userTaskExecutionSet.getAdHocAutostart().getValue().toString());
+
         assertEquals("System.out.println(\"Hello\");",
                      userTaskExecutionSet.getOnEntryAction().getValue());
 
@@ -1289,6 +1292,7 @@ public class BPMNDiagramMarshallerTest {
                                            ' ').replaceAll("( )+",
                                                            " ");
         assertTrue(flatResult.contains("<drools:metaData name=\"customAsync\"> <drools:metaValue><![CDATA[true]]></drools:metaValue>"));
+        assertTrue(flatResult.contains("<drools:metaData name=\"customAutoStart\"> <drools:metaValue><![CDATA[true]]></drools:metaValue>"));
 
         assertTrue(flatResult.contains("<drools:onEntry-script scriptFormat=\"http://www.java.com/java\">"));
         assertTrue(flatResult.contains("<drools:script><![CDATA[System.out.println(\"Hello\");]]></drools:script>"));
