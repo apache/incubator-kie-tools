@@ -24,6 +24,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -127,7 +128,10 @@ public class FilterPagedTable<T>
                                                                                 NewTabFilterPopup.FILTER_TAB_NAME_PARAM);
         final String gridTitle = multiGridPreferencesStore.getGridSettingParam(key,
                                                                                NewTabFilterPopup.FILTER_TAB_DESC_PARAM);
-        grid.addTableTitle(gridTitle);
+        final String safeHtmlGridHeader =(gridHeader!=null ? SafeHtmlUtils.htmlEscape(gridHeader) : "");
+        final String safeHtmlGridTitle =(gridTitle!=null ? SafeHtmlUtils.htmlEscape(gridTitle) : "");
+
+        grid.addTableTitle(safeHtmlGridTitle);
 
         Button close = null;
         if (!"base".equals(key)) {
@@ -140,7 +144,7 @@ public class FilterPagedTable<T>
             close.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
-                    getYesNoCancelPopup(gridHeader,
+                    getYesNoCancelPopup(safeHtmlGridHeader,
                                         key).show();
                 }
             });

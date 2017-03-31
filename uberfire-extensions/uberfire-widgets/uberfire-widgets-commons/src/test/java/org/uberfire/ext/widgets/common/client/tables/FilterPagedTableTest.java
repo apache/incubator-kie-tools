@@ -19,6 +19,7 @@ package org.uberfire.ext.widgets.common.client.tables;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Element;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -32,6 +33,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.uberfire.ext.services.shared.preferences.MultiGridPreferencesStore;
 import org.uberfire.ext.widgets.common.client.common.popups.YesNoCancelPopup;
+import org.uberfire.ext.widgets.common.client.tables.popup.NewTabFilterPopup;
 import org.uberfire.mvp.Command;
 
 import static org.mockito.Mockito.*;
@@ -44,6 +46,16 @@ public class FilterPagedTableTest {
 
     @GwtMock
     Button button;
+
+    @GwtMock
+    protected MultiGridPreferencesStore multiGridPreferencesStoreMock;
+
+    @GwtMock
+    protected PagedTable pagedTableMock;
+
+    @GwtMock
+    protected YesNoCancelPopup yesNoCancelPopupMock;
+
 
     @GwtMock
     NavTabs navTabs;
@@ -64,21 +76,47 @@ public class FilterPagedTableTest {
 
         final YesNoCancelPopup yesNoCancelPopup = mock(YesNoCancelPopup.class);
         filterPagedTable = spy(new FilterPagedTable(mock(MultiGridPreferencesStore.class)));
-        doReturn(yesNoCancelPopup).when(filterPagedTable).getYesNoCancelPopup(anyString(),
-                                                                              anyString());
+        doReturn(yesNoCancelPopup).when(filterPagedTable).getYesNoCancelPopup(anyString(), anyString());
         filterPagedTable.makeWidget();
 
-        filterPagedTable.addTab(mock(PagedTable.class),
-                                "",
-                                mock(Command.class));
+        filterPagedTable.addTab(mock(PagedTable.class), "", mock(Command.class));
 
         clickHandler.onClick(new ClickEvent() {
         });
 
         verify(yesNoCancelPopup).show();
-        verify(filterPagedTable,
-               never()).removeTab(anyInt());
-        verify(filterPagedTable,
-               never()).removeTab(anyString());
+        verify(filterPagedTable, never()).removeTab(anyInt());
+        verify(filterPagedTable, never()).removeTab(anyString());
+    }
+
+    @Test
+    public void testScapeHtmlCodeInDescriptionRemoveTab() throws Exception {
+        String key = "test";
+        String header = "*<h1>test</h1>*";
+        String title = "*<h1>test</h1>*";
+
+        final Element element = mock(Element.class);
+        when(element.getStyle()).thenReturn(mock(Style.class));
+        when(button.getElement()).thenReturn(element);
+        when(button.addClickHandler(any(ClickHandler.class))).thenAnswer(new Answer() {
+            public Object answer(InvocationOnMock aInvocation) throws Throwable {
+                clickHandler = (ClickHandler) aInvocation.getArguments()[0];
+                return null;
+            }
+        });
+
+        filterPagedTable = spy(new FilterPagedTable(multiGridPreferencesStoreMock));
+        doReturn(yesNoCancelPopupMock).when(filterPagedTable).getYesNoCancelPopup(eq(SafeHtmlUtils.htmlEscape(header)), anyString());
+        filterPagedTable.makeWidget();
+        when(multiGridPreferencesStoreMock.getGridSettingParam(eq(key),eq(NewTabFilterPopup.FILTER_TAB_NAME_PARAM))).thenReturn(header);
+        when(multiGridPreferencesStoreMock.getGridSettingParam(eq(key),eq(NewTabFilterPopup.FILTER_TAB_DESC_PARAM))).thenReturn(title);
+
+        filterPagedTable.addTab(pagedTableMock, key, mock(Command.class));
+
+        clickHandler.onClick(new ClickEvent() {
+        });
+
+        verify(pagedTableMock).addTableTitle(eq(SafeHtmlUtils.htmlEscape(title)));
+        verify(yesNoCancelPopupMock).show();
     }
 }
