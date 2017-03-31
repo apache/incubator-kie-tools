@@ -57,4 +57,10 @@ public class WiresContainerShapeView<T extends WiresContainerShapeView>
     public Iterable<T> getChildren() {
         return children;
     }
+
+    @Override
+    protected void preDestroy() {
+        this.getChildren().forEach(WiresContainerShapeView::destroy);
+        super.preDestroy();
+    }
 }

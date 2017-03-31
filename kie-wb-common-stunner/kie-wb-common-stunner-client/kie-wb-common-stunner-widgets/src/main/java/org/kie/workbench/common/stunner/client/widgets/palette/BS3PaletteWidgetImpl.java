@@ -315,6 +315,7 @@ public class BS3PaletteWidgetImpl extends AbstractPalette<DefinitionSetPalette>
     protected void doDestroy() {
         categoryWidgetInstance.destroyAll();
         iconRendererInstance.destroyAll();
+        viewFactory.destroy();
         view.destroy();
         this.itemDropCallback = null;
     }

@@ -24,7 +24,17 @@ public abstract class BindableBS3PaletteGlyphViewFactory extends BindableBS3Pale
     private final BS3PaletteGlyphViewFactory glyphViewFactory;
 
     public BindableBS3PaletteGlyphViewFactory(final ShapeManager shapeManager) {
-        this.glyphViewFactory = new BS3PaletteGlyphViewFactory(shapeManager);
+        this.glyphViewFactory = getBS3PaletteGlyphViewFactory(shapeManager);
+    }
+
+    //package-protected method to support overriding factory in Unit Tests
+    BS3PaletteGlyphViewFactory getBS3PaletteGlyphViewFactory(final ShapeManager shapeManager) {
+        return new BS3PaletteGlyphViewFactory(shapeManager);
+    }
+
+    @Override
+    public void destroy() {
+        glyphViewFactory.destroy();
     }
 
     @Override

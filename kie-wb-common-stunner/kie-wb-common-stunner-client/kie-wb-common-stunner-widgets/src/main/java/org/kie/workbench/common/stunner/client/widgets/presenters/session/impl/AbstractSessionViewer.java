@@ -77,7 +77,6 @@ public abstract class AbstractSessionViewer<S extends AbstractClientSession, H e
     public void clear() {
         if (null != getDiagramViewer()) {
             getDiagramViewer().clear();
-            session = null;
         }
     }
 

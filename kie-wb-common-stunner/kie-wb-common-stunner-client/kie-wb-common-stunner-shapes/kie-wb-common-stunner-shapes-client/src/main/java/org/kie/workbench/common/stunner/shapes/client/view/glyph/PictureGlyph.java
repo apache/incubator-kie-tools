@@ -21,6 +21,7 @@ import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.google.gwt.core.client.Scheduler;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.glyph.AbstractLienzoShapeGlyph;
+import org.kie.workbench.common.stunner.shapes.client.view.PictureUtils;
 
 import static org.kie.workbench.common.stunner.client.lienzo.util.LienzoShapeUtils.scalePicture;
 
@@ -41,22 +42,14 @@ public final class PictureGlyph extends AbstractLienzoShapeGlyph {
 
     @Override
     public void destroy() {
-        // Destroy the <img..> related to the Glyph added to the DOM root by Picture's use of ImageLoader.
-        // If the image has not completed loading attempts to remove from the DOM result in an error; therefore
-        // schedule successive attempts until success.
-        if (!doDestroy()) {
-            Scheduler.get().scheduleFixedDelay(() -> !doDestroy(),
-                                               200);
-        }
+        PictureUtils.tryDestroy(getPicture(),
+                                (p) -> Scheduler.get().scheduleFixedDelay(() -> !PictureUtils.retryDestroy(p),
+                                                                          200));
     }
 
-    private boolean doDestroy() {
-        if (picture != null && picture.isLoaded()) {
-            picture.getImageProxy().getImage().removeFromParent();
-            picture = null;
-            return true;
-        }
-        return false;
+    //package-protected method to support overriding Picture in Unit Tests
+    Picture getPicture() {
+        return this.picture;
     }
 
     private void build(final String uri,

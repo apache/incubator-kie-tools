@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette.factory;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.validation.client.impl.Group;
 import org.kie.workbench.common.stunner.client.lienzo.util.LienzoPanelUtils;
@@ -32,6 +35,8 @@ class BS3PaletteGlyphViewFactory implements BS3PaletteViewFactory {
 
     private final ShapeManager shapeManager;
 
+    private final Set<Glyph<Group>> glyphs = new HashSet<>();
+
     BS3PaletteGlyphViewFactory(final ShapeManager shapeManager) {
         this.shapeManager = shapeManager;
     }
@@ -47,6 +52,7 @@ class BS3PaletteGlyphViewFactory implements BS3PaletteViewFactory {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public PaletteIconSettings getDefinitionIconSettings(String defSetId,
                                                          String itemId) {
         IsWidget panel = getDefinitionView(defSetId,
@@ -54,6 +60,12 @@ class BS3PaletteGlyphViewFactory implements BS3PaletteViewFactory {
 
         return new PaletteIconSettings(LienzoPanelIconRenderer.class,
                                        new IconResource<>(panel));
+    }
+
+    @Override
+    public void destroy() {
+        glyphs.forEach(Glyph::destroy);
+        glyphs.clear();
     }
 
     protected IsWidget getDefinitionView(final String defSetId,
@@ -72,8 +84,10 @@ class BS3PaletteGlyphViewFactory implements BS3PaletteViewFactory {
                                   final String id,
                                   final int width,
                                   final int height) {
-        return shapeManager.getDefaultShapeSet(defSetId).getShapeFactory().glyph(id,
-                                                                                 width,
-                                                                                 height);
+        final Glyph<Group> glyph = shapeManager.getDefaultShapeSet(defSetId).getShapeFactory().glyph(id,
+                                                                                                     width,
+                                                                                                     height);
+        glyphs.add(glyph);
+        return glyph;
     }
 }

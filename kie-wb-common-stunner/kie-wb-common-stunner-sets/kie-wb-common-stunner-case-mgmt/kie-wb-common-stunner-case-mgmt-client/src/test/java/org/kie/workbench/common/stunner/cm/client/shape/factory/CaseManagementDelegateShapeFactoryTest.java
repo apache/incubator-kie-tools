@@ -18,6 +18,8 @@ package org.kie.workbench.common.stunner.cm.client.shape.factory;
 
 import java.util.function.Consumer;
 
+import com.ait.lienzo.client.core.shape.Group;
+import com.ait.lienzo.client.core.shape.IContainer;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,6 +69,7 @@ import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
 import org.kie.workbench.common.stunner.shapes.client.factory.BasicShapesFactoryImpl;
+import org.kie.workbench.common.stunner.shapes.client.view.PictureShapeView;
 import org.kie.workbench.common.stunner.shapes.client.view.ShapeViewFactory;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 import org.mockito.Mock;
@@ -98,6 +101,10 @@ public class CaseManagementDelegateShapeFactoryTest {
 
     @Mock
     private ShapeViewFactory shapeViewFactory;
+
+    @Mock
+    private PictureShapeView pictureShapeView;
+    private IContainer pictureShapeViewContainer = new Group();
 
     @Mock
     private CaseManagementCanvasHandler canvasHandler;
@@ -143,6 +150,7 @@ public class CaseManagementDelegateShapeFactoryTest {
                                                                                  definitionManager,
                                                                                  glyphBuilderFactory);
         final CaseManagementShapesFactory caseManagementShapesFactory = new CaseManagementShapesFactoryImpl(factoryManager,
+                                                                                                            shapeViewFactory,
                                                                                                             definitionManager,
                                                                                                             glyphBuilderFactory);
         this.factory = new CaseManagementDelegateShapeFactory(definitionManager,
@@ -150,6 +158,10 @@ public class CaseManagementDelegateShapeFactoryTest {
                                                               caseManagementShapesFactory);
         this.factory.init();
 
+        when(shapeViewFactory.picture(anyObject(),
+                                      anyDouble(),
+                                      anyDouble())).thenReturn(pictureShapeView);
+        when(pictureShapeView.getContainer()).thenReturn(pictureShapeViewContainer);
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
         when(glyphBuilderFactory.getBuilder(any(GlyphDef.class))).thenReturn(glyphBuilder);

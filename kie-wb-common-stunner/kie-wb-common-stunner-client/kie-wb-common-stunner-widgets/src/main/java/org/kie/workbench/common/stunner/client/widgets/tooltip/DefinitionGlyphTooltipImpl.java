@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.client.widgets.tooltip;
 
+import java.util.Optional;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -40,6 +42,8 @@ public class DefinitionGlyphTooltipImpl
     private String prefix;
     private String suffix;
 
+    private Optional<Glyph> glyph = Optional.empty();
+
     protected DefinitionGlyphTooltipImpl() {
         this(null,
              null,
@@ -56,6 +60,11 @@ public class DefinitionGlyphTooltipImpl
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
         this.shapeManager = shapeManager;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        glyph.ifPresent(Glyph::destroy);
     }
 
     @Override
@@ -97,10 +106,10 @@ public class DefinitionGlyphTooltipImpl
         final String title = getTitle(definitionId);
         if (null != title) {
             final ShapeFactory<?, ?, ?> factory = shapeManager.getDefaultShapeSet(defSetId).getShapeFactory();
-            final Glyph glyph = factory.glyph(definitionId,
-                                              width,
-                                              height);
-            this.show(glyph,
+            this.glyph = Optional.of(factory.glyph(definitionId,
+                                                   width,
+                                                   height));
+            this.show(glyph.get(),
                       getTitleToShow(title),
                       x,
                       y,

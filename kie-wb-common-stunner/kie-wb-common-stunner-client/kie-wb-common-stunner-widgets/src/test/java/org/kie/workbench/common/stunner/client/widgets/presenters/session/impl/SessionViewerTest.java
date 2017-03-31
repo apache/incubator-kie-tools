@@ -98,7 +98,6 @@ public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {
         tested.open(session,
                     callback);
         tested.clear();
-        assertNull(tested.getInstance());
         verify(canvasHandler,
                times(1)).clear();
         verify(view,

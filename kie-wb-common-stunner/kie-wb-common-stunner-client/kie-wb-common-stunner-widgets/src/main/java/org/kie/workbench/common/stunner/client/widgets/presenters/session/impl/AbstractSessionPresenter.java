@@ -182,7 +182,6 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         if (null != getToolbar()) {
             getToolbar().clear();
         }
-        sessionManager.destroy();
         getDisplayer().clear();
         diagram = null;
     }

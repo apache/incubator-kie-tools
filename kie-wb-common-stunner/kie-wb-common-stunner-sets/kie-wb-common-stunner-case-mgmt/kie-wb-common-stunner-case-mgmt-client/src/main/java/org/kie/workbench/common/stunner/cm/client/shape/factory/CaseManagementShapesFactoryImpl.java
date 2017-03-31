@@ -15,6 +15,7 @@
  */
 package org.kie.workbench.common.stunner.cm.client.shape.factory;
 
+import java.util.Map;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -37,6 +38,7 @@ import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.AbstractShapeDefFactory;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
@@ -44,21 +46,29 @@ import org.kie.workbench.common.stunner.core.client.shape.view.glyph.Glyph;
 import org.kie.workbench.common.stunner.core.client.shape.view.glyph.GlyphBuilderFactory;
 import org.kie.workbench.common.stunner.core.definition.shape.GlyphDef;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
+import org.kie.workbench.common.stunner.shapes.client.PictureShape;
+import org.kie.workbench.common.stunner.shapes.client.view.PictureShapeView;
+import org.kie.workbench.common.stunner.shapes.client.view.ShapeViewFactory;
+import org.kie.workbench.common.stunner.shapes.def.HasChildShapeDefs;
+import org.kie.workbench.common.stunner.shapes.def.picture.PictureShapeDef;
 
 @ApplicationScoped
 public class CaseManagementShapesFactoryImpl extends
                                              AbstractShapeDefFactory<Object, ShapeView, Shape<ShapeView>, ShapeDef<Object>>
         implements CaseManagementShapesFactory<Object, AbstractCanvasHandler> {
 
+    private final ShapeViewFactory shapeViewFactory;
     private final DefinitionManager definitionManager;
     private final GlyphBuilderFactory glyphBuilderFactory;
 
     @Inject
     public CaseManagementShapesFactoryImpl(final FactoryManager factoryManager,
+                                           final ShapeViewFactory shapeViewFactory,
                                            final DefinitionManager definitionManager,
                                            final GlyphBuilderFactory glyphBuilderFactory) {
         super(definitionManager,
               factoryManager);
+        this.shapeViewFactory = shapeViewFactory;
         this.definitionManager = definitionManager;
         this.glyphBuilderFactory = glyphBuilderFactory;
     }
@@ -68,8 +78,14 @@ public class CaseManagementShapesFactoryImpl extends
     public Shape<ShapeView> build(final Object definition,
                                   final AbstractCanvasHandler context) {
         final String id = definitionManager.adapters().forDefinition().getId(definition);
-        final ShapeDef<?> proxy = getShapeDef(id);
+        final ShapeDef<Object> proxy = getShapeDef(id);
+        return build(definition,
+                     proxy);
+    }
 
+    @SuppressWarnings("unchecked")
+    protected Shape<ShapeView> build(final Object definition,
+                                     final ShapeDef<?> proxy) {
         boolean found = false;
         Shape<? extends ShapeView> shape = null;
 
@@ -117,10 +133,41 @@ public class CaseManagementShapesFactoryImpl extends
                                                        height);
             shape = new ActivityShape(taskProxy,
                                       view);
+        } else if (isPicture(proxy)) {
+            final PictureShapeDef pictureProxy = (PictureShapeDef) proxy;
+            final Object pictureSource = pictureProxy.getPictureSource(definition);
+            if (null != pictureSource) {
+                final double width = pictureProxy.getWidth(definition);
+                final double height = pictureProxy.getHeight(definition);
+                final PictureShapeView view = shapeViewFactory.picture(pictureSource,
+                                                                       width,
+                                                                       height);
+                shape = new PictureShape(view);
+            }
+            found = true;
+        }
+
+        // Add children, if any.
+        if (shape != null && proxy instanceof HasChildShapeDefs) {
+            final HasChildShapeDefs<Object> hasChildren = (HasChildShapeDefs<Object>) proxy;
+            final Map<ShapeDef<Object>, HasChildren.Layout> childShapeDefs = hasChildren.getChildShapeDefs();
+            if (!(childShapeDefs == null || childShapeDefs.isEmpty())) {
+                for (final Map.Entry<ShapeDef<Object>, HasChildren.Layout> entry : childShapeDefs.entrySet()) {
+                    final ShapeDef<Object> child = entry.getKey();
+                    final HasChildren.Layout layout = entry.getValue();
+                    final Shape<ShapeView> childShape = this.build(definition,
+                                                                   child);
+                    if (null != childShape) {
+                        ((HasChildren) shape).addChild(childShape,
+                                                       layout);
+                    }
+                }
+            }
         }
 
         if (!found) {
-            throw new RuntimeException("This factory supports [" + id + "] but cannot built a shape for it.");
+            final String id = definitionManager.adapters().forDefinition().getId(definition);
+            throw new RuntimeException("This factory supports [" + id + "] but cannot build a shape for it.");
         }
 
         return (Shape<ShapeView>) shape;
@@ -144,6 +191,10 @@ public class CaseManagementShapesFactoryImpl extends
 
     private boolean isCaseManagementReusableSubprocessActivity(final ShapeDef<?> proxy) {
         return proxy instanceof CaseManagementReusableSubprocessTaskShapeDef;
+    }
+
+    private boolean isPicture(final ShapeDef<?> proxy) {
+        return proxy instanceof PictureShapeDef;
     }
 
     @Override

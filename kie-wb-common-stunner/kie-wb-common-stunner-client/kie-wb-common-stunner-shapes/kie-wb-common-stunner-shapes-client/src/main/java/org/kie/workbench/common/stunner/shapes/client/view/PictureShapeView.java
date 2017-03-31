@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.shapes.client.view;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.Picture;
+import com.google.gwt.core.client.Scheduler;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresContainerShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 
@@ -42,21 +43,27 @@ public class PictureShapeView<T extends PictureShapeView>
                             height)
                       .setStrokeAlpha(0)
                       .setFillAlpha(0));
-        new Picture(uri,
-                    picture1 -> {
-                        this.picture = picture1;
-                        scalePicture(picture1,
-                                     width,
-                                     height);
-                        addChild(picture1);
-                        refresh();
-                    });
+        this.picture = new Picture(uri,
+                                   picture -> {
+                                       scalePicture(picture,
+                                                    width,
+                                                    height);
+                                       addChild(picture);
+                                       refresh();
+                                   });
         super.setResizable(false);
     }
 
     @Override
     protected void preDestroy() {
         super.preDestroy();
-        picture.removeFromParent();
+        PictureUtils.tryDestroy(getPicture(),
+                                (p) -> Scheduler.get().scheduleFixedDelay(() -> !PictureUtils.retryDestroy(p),
+                                                                          200));
+    }
+
+    //package-protected method to support overriding Picture in Unit Tests
+    Picture getPicture() {
+        return this.picture;
     }
 }

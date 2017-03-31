@@ -467,6 +467,7 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private void destroySession() {
         unbindCommands();
         presenter.clear();
+        presenter.destroy();
     }
 
     private void updateTitle(final String title) {

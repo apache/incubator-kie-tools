@@ -26,4 +26,10 @@ public interface BS3PaletteViewFactory {
     boolean accepts(final String defSetId);
 
     PaletteIconSettings getCategoryIconSettings(final String categoryId);
+
+    /**
+     * Destroys resources that may need releasing when the factory is destroyed
+     */
+    default void destroy() {
+    }
 }

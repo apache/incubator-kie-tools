@@ -17,13 +17,13 @@
 package org.kie.workbench.common.stunner.cm.client.wires;
 
 import com.ait.lienzo.client.core.shape.MultiPath;
-import org.kie.workbench.common.stunner.client.lienzo.shape.view.ext.WiresShapeViewExt;
+import org.kie.workbench.common.stunner.client.lienzo.shape.view.WiresContainerShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventType;
 
 /**
  * Mock implementation of AbstractCaseManagementShape for Unit Tests
  */
-public class MockCaseManagementShape extends AbstractCaseManagementShape<WiresShapeViewExt> {
+public class MockCaseManagementShape extends AbstractCaseManagementShape<WiresContainerShapeView> {
 
     public MockCaseManagementShape() {
         super(new ViewEventType[]{},
@@ -38,8 +38,8 @@ public class MockCaseManagementShape extends AbstractCaseManagementShape<WiresSh
     }
 
     @Override
-    public WiresShapeViewExt setSize(double width,
-                                     double height) {
+    public WiresContainerShapeView setSize(double width,
+                                           double height) {
         return this;
     }
 }
