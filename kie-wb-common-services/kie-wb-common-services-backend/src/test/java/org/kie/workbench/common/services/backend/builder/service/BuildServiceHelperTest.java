@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.backend.builder.ala.BuildPipelineInvoker;
 import org.kie.workbench.common.services.backend.builder.ala.LocalBinaryConfig;
 import org.kie.workbench.common.services.backend.builder.ala.LocalBuildConfig;
+import org.kie.workbench.common.services.backend.builder.core.DeploymentVerifier;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -47,6 +48,9 @@ public class BuildServiceHelperTest {
 
     @Mock
     private BuildPipelineInvoker pipelineInvoker;
+
+    @Mock
+    private DeploymentVerifier deploymentVerifier;
 
     private BuildServiceHelper serviceHelper;
 
@@ -72,7 +76,7 @@ public class BuildServiceHelperTest {
 
     @Before
     public void setUp( ) {
-        serviceHelper = new BuildServiceHelper( pipelineInvoker );
+        serviceHelper = new BuildServiceHelper( pipelineInvoker, deploymentVerifier );
     }
 
     @Test

@@ -75,6 +75,7 @@ import org.kie.workbench.common.services.backend.builder.ala.LocalBuildExecConfi
 import org.kie.workbench.common.services.backend.builder.ala.LocalProjectConfigExecutor;
 import org.kie.workbench.common.services.backend.builder.ala.LocalSourceConfigExecutor;
 import org.kie.workbench.common.services.backend.builder.core.BuildHelper;
+import org.kie.workbench.common.services.backend.builder.core.DeploymentVerifier;
 import org.kie.workbench.common.services.backend.builder.core.LRUBuilderCache;
 import org.kie.workbench.common.services.backend.builder.core.LRUPomModelCache;
 import org.kie.workbench.common.services.backend.builder.core.LRUProjectDependenciesClassLoaderCache;
@@ -371,11 +372,11 @@ public class DataModelServiceConstructorTest {
         when( handlerInstance.iterator() ).thenReturn( mockIterator );
         when ( mockIterator.hasNext() ).thenReturn( false );
 
+        DeploymentVerifier deploymentVerifier = new DeploymentVerifier( repositoryResolver, projectRepositoriesService );
         BuildHelper buildHelper = new BuildHelper( pomService,
                                                     m2RepoService,
                                                     projectService,
-                                                    repositoryResolver,
-                                                    projectRepositoriesService,
+                                                    deploymentVerifier,
                                                     builderCache,
                                                     handlerInstance,
                                                     userInstance );
@@ -384,7 +385,7 @@ public class DataModelServiceConstructorTest {
                 getConfigExecutors( projectService, buildHelper ) );
         BuildPipelineInvoker pipelineInvoker = new BuildPipelineInvoker( pipelineInitializer.getExecutor(), pipelineRegistry  );
 
-        BuildServiceHelper buildServiceHelper = new BuildServiceHelper( pipelineInvoker );
+        BuildServiceHelper buildServiceHelper = new BuildServiceHelper( pipelineInvoker, deploymentVerifier );
         BuildService buildService = new BuildServiceImpl( projectService, buildServiceHelper, builderCache );
         BuildInfoService buildInfoService = new BuildInfoService( buildService, builderCache );
 

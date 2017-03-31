@@ -19,16 +19,19 @@ package org.kie.workbench.common.services.backend.builder.core;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import javax.enterprise.inject.Instance;
 
 import com.google.common.base.Charsets;
 import org.guvnor.common.services.project.builder.service.PostBuildHandler;
 import org.guvnor.common.services.project.model.GAV;
 import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
+import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.project.service.DeploymentMode;
+import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.POMService;
 import org.guvnor.common.services.project.service.ProjectRepositoriesService;
 import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
@@ -90,11 +93,33 @@ public class BuildHelperTest {
 
     private BuildHelper buildHelper;
 
+    private DeploymentVerifier deploymentVerifier;
+
     private Path rootPath;
 
     private Path snapshotRootPath;
 
     private KieProject project;
+
+    @Mock
+    private POM pom;
+
+    @Mock
+    private GAV gav;
+
+    @Mock
+    private Path repositoriesPath;
+
+    @Mock
+    private ProjectRepositories projectRepositories;
+
+    private Set< MavenRepositoryMetadata > repositories;
+
+    @Mock
+    private MavenRepositoryMetadata repositoryMetadata1;
+
+    @Mock
+    private MavenRepositoryMetadata repositoryMetadata2;
 
     @BeforeClass
     public static void setupSystemProperties( ) {
@@ -113,17 +138,15 @@ public class BuildHelperTest {
         projectService = testFileSystem.getReference( KieProjectService.class );
         pomService = testFileSystem.getReference( POMService.class );
         cache = testFileSystem.getReference( LRUBuilderCache.class );
+        deploymentVerifier = new DeploymentVerifier( repositoryResolver, projectRepositoriesService );
         buildHelper = spy( new BuildHelper( pomService,
                 m2RepoService,
                 projectService,
-                repositoryResolver,
-                projectRepositoriesService,
+                deploymentVerifier,
                 cache,
                 handlers,
                 identity ) );
 
-        final ProjectRepositories projectRepositories = new ProjectRepositories( );
-        when( projectRepositoriesService.load( any( Path.class ) ) ).thenReturn( projectRepositories );
         when( identity.get() ).thenReturn( user );
         when( user.getIdentifier() ).thenReturn( "test-user" );
 
@@ -144,9 +167,9 @@ public class BuildHelperTest {
     }
 
     @Test
-    public void testBuildAndDeployNonSnapshot( ) {
+    public void testBuildAndDeployNonSnapshotNotDeployed( ) {
         final GAV gav = new GAV( GROUP_ID, ARTIFACT_ID, VERSION );
-        prepareBuildAndDeploy( rootPath, gav );
+        prepareBuildAndDeploy( rootPath, gav, false );
 
         buildHelper.buildAndDeploy( project );
 
@@ -154,6 +177,26 @@ public class BuildHelperTest {
                 times( 1 ) ).buildAndDeploy( eq( project ),
                 eq( DeploymentMode.VALIDATED ) );
         verifyBuildAndDeploy( project, gav );
+    }
+
+    @Test
+    public void testBuildAndDeployNonSnapshotAlreadyDeployed( ) {
+        final GAV gav = new GAV( GROUP_ID, ARTIFACT_ID, VERSION );
+        prepareBuildAndDeploy( rootPath, gav, true );
+        Exception exception = null;
+        try {
+            buildHelper.buildAndDeploy( project );
+        } catch ( Exception e ) {
+            exception = e;
+        }
+
+        verify( buildHelper,
+                times( 1 ) ).buildAndDeploy( eq( project ),
+                eq( DeploymentMode.VALIDATED ) );
+
+        assertNotNull( exception );
+        assertTrue( exception instanceof GAVAlreadyExistsException );
+        assertEquals( gav, ( ( GAVAlreadyExistsException ) exception ).getGAV() );
     }
 
     @Test
@@ -198,14 +241,25 @@ public class BuildHelperTest {
     }
 
     private void prepareBuildAndDeploy( Path rootPath, GAV gav ) {
+        prepareBuildAndDeploy( rootPath, gav, false );
+    }
+
+    private void prepareBuildAndDeploy( Path rootPath, GAV gav, boolean isDeployed ) {
         project = projectService.resolveProject( rootPath );
-        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ) ) ).thenReturn( Collections.< MavenRepositoryMetadata >emptySet( ) );
+
+        repositories = new HashSet<>( );
+        if ( isDeployed ) {
+            repositories.add( repositoryMetadata1 );
+            repositories.add( repositoryMetadata2 );
+        }
+        when( projectRepositoriesService.load( project.getRepositoriesPath() ) ).thenReturn( projectRepositories );
+        when( repositoryResolver.getRepositoriesResolvingArtifact( eq( gav ), any( MavenRepositoryMetadata[].class ) ) ).thenReturn( repositories );
     }
 
     private void verifyBuildAndDeploy( KieProject project, GAV gav ) {
         verify( projectRepositoriesService,
                 times( 1 ) ).load( any( Path.class ) );
-        verify( repositoryResolver, times( 1 ) ).getRepositoriesResolvingArtifact( eq( gav ) );
+        verify( repositoryResolver, times( 1 ) ).getRepositoriesResolvingArtifact( eq( gav ), any( MavenRepositoryMetadata[].class ) );
         verifyBuilder( project, gav );
     }
 

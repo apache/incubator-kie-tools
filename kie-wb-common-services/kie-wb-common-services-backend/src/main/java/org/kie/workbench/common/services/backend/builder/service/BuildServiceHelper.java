@@ -27,9 +27,10 @@ import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.PostBuildHandler;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.common.services.project.service.DeploymentMode;
+import org.kie.workbench.common.services.backend.builder.ala.BuildPipelineInvoker;
 import org.kie.workbench.common.services.backend.builder.ala.LocalBinaryConfig;
 import org.kie.workbench.common.services.backend.builder.ala.LocalBuildConfig;
-import org.kie.workbench.common.services.backend.builder.ala.BuildPipelineInvoker;
+import org.kie.workbench.common.services.backend.builder.core.DeploymentVerifier;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.events.ResourceChange;
 
@@ -42,13 +43,16 @@ public class BuildServiceHelper {
 
     private BuildPipelineInvoker buildPipelineInvoker;
 
+    private DeploymentVerifier deploymentVerifier;
+
     public BuildServiceHelper( ) {
         //Empty constructor for Weld proxying
     }
 
     @Inject
-    public BuildServiceHelper( BuildPipelineInvoker buildPipelineInvoker ) {
+    public BuildServiceHelper( BuildPipelineInvoker buildPipelineInvoker, DeploymentVerifier deploymentVerifier ) {
         this.buildPipelineInvoker = buildPipelineInvoker;
+        this.deploymentVerifier = deploymentVerifier;
     }
 
     /**
@@ -167,6 +171,7 @@ public class BuildServiceHelper {
                                            boolean suppressHandlers,
                                            DeploymentMode mode,
                                            Consumer< LocalBinaryConfig > consumer ) {
+        deploymentVerifier.verifyWithException( project, mode );
         BuildPipelineInvoker.LocalBuildRequest buildRequest = BuildPipelineInvoker.LocalBuildRequest.newFullBuildAndDeployRequest( project, toDeploymentType( mode ), suppressHandlers );
         buildPipelineInvoker.invokeLocalBuildPipeLine( buildRequest, consumer );
     }

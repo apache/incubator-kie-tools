@@ -19,7 +19,6 @@ package org.kie.workbench.common.services.backend.builder.core;
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.inject.Instance;
@@ -32,15 +31,10 @@ import org.guvnor.common.services.project.builder.model.BuildResults;
 import org.guvnor.common.services.project.builder.model.IncrementalBuildResults;
 import org.guvnor.common.services.project.builder.service.PostBuildHandler;
 import org.guvnor.common.services.project.model.GAV;
-import org.guvnor.common.services.project.model.MavenRepositoryMetadata;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
-import org.guvnor.common.services.project.model.ProjectRepositories;
 import org.guvnor.common.services.project.service.DeploymentMode;
-import org.guvnor.common.services.project.service.GAVAlreadyExistsException;
 import org.guvnor.common.services.project.service.POMService;
-import org.guvnor.common.services.project.service.ProjectRepositoriesService;
-import org.guvnor.common.services.project.service.ProjectRepositoryResolver;
 import org.guvnor.common.services.shared.message.Level;
 import org.guvnor.m2repo.backend.server.ExtendedM2RepoService;
 import org.jboss.errai.security.shared.api.identity.User;
@@ -65,9 +59,7 @@ public class BuildHelper {
 
     private KieProjectService projectService;
 
-    private ProjectRepositoryResolver repositoryResolver;
-
-    private ProjectRepositoriesService projectRepositoriesService;
+    private DeploymentVerifier deploymentVerifier;
 
     private Instance< User > identity;
 
@@ -80,16 +72,14 @@ public class BuildHelper {
     public BuildHelper( final POMService pomService,
                         final ExtendedM2RepoService m2RepoService,
                         final KieProjectService projectService,
-                        final ProjectRepositoryResolver repositoryResolver,
-                        final ProjectRepositoriesService projectRepositoriesService,
+                        final DeploymentVerifier deploymentVerifier,
                         final LRUBuilderCache cache,
                         final Instance< PostBuildHandler > handlers,
                         final Instance< User > identity ) {
         this.pomService = pomService;
         this.m2RepoService = m2RepoService;
         this.projectService = projectService;
-        this.repositoryResolver = repositoryResolver;
-        this.projectRepositoriesService = projectRepositoriesService;
+        this.deploymentVerifier = deploymentVerifier;
         this.cache = cache;
         this.handlers = handlers;
         this.identity = identity;
@@ -249,9 +239,7 @@ public class BuildHelper {
 
     public BuildResults buildAndDeploy( final Project project,
                                         final DeploymentMode mode ) {
-        if ( DeploymentMode.VALIDATED.equals( mode ) ) {
-            checkRepositories( project );
-        }
+        deploymentVerifier.verifyWithException( project, mode );
         return doBuildAndDeploy( project,
                 false );
     }
@@ -266,9 +254,7 @@ public class BuildHelper {
     public BuildResults buildAndDeploy( final Project project,
                                         final boolean suppressHandlers,
                                         final DeploymentMode mode ) {
-        if ( DeploymentMode.VALIDATED.equals( mode ) ) {
-            checkRepositories( project );
-        }
+        deploymentVerifier.verifyWithException( project, mode );
         return doBuildAndDeploy( project,
                 suppressHandlers );
     }
@@ -342,21 +328,6 @@ public class BuildHelper {
             // BZ-1007894: If throwing the exception, an error popup will be displayed, but it's not the expected behavior. The excepted one is to show the errors in problems widget.
             // So, instead of throwing the exception, a BuildResults instance is produced on the fly to simulate the error in the problems widget.
             return buildExceptionResults( e, project.getPom( ).getGav( ) );
-        }
-    }
-
-    private void checkRepositories( final Project project ) {
-        // Check is the POM's GAV resolves to any pre-existing artifacts.
-        final GAV gav = project.getPom( ).getGav( );
-        if ( gav.isSnapshot( ) ) {
-            return;
-        }
-        final ProjectRepositories projectRepositories = projectRepositoriesService.load( ( ( KieProject ) project ).getRepositoriesPath( ) );
-        final Set< MavenRepositoryMetadata > repositories = repositoryResolver.getRepositoriesResolvingArtifact( gav,
-                projectRepositories.filterByIncluded( ) );
-        if ( repositories.size( ) > 0 ) {
-            throw new GAVAlreadyExistsException( gav,
-                    repositories );
         }
     }
 
