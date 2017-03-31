@@ -27,10 +27,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.Canv
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
@@ -61,8 +59,6 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
     ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl;
     @Mock
     DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
-    @Mock
-    DragControl<AbstractCanvasHandler, Element> dragControl;
     @Mock
     DiagramViewer.DiagramViewerCallback<Diagram> callback;
 
@@ -95,8 +91,7 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
                                                                       validationControl,
                                                                       connectionAcceptorControl,
                                                                       containmentAcceptorControl,
-                                                                      dockingAcceptorControl,
-                                                                      dragControl);
+                                                                      dockingAcceptorControl);
     }
 
     @Test
@@ -116,8 +111,6 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
         verify(containmentAcceptorControl,
                times(1)).enable(eq(canvasHandler));
         verify(dockingAcceptorControl,
-               times(1)).enable(eq(canvasHandler));
-        verify(dragControl,
                times(1)).enable(eq(canvasHandler));
     }
 
@@ -152,8 +145,6 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
                times(1)).disable();
         verify(dockingAcceptorControl,
                times(1)).disable();
-        verify(dragControl,
-               times(1)).disable();
     }
 
     @Test
@@ -172,8 +163,6 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
         verify(containmentAcceptorControl,
                times(1)).disable();
         verify(dockingAcceptorControl,
-               times(1)).disable();
-        verify(dragControl,
                times(1)).disable();
     }
 }

@@ -52,13 +52,16 @@
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-client-common</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.kie.workbench.stunner</groupId>
       <artifactId>kie-wb-common-stunner-lienzo</artifactId>
-      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.workbench.stunner</groupId>
+      <artifactId>kie-wb-common-stunner-lienzo-extensions</artifactId>
     </dependency>
 
     <!-- Uberfire & Errai. -->

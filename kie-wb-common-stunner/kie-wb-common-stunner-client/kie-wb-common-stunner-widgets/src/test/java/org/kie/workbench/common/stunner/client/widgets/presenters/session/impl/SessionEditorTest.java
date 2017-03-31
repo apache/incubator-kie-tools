@@ -30,7 +30,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.Canv
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -67,8 +66,6 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
     @Mock
     DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
     @Mock
-    DragControl<AbstractCanvasHandler, Element> dragControl;
-    @Mock
     WidgetWrapperView view;
 
     private SessionEditorImpl<AbstractClientFullSession, AbstractCanvasHandler> tested;
@@ -85,7 +82,6 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
         when(session.getConnectionAcceptorControl()).thenReturn(connectionAcceptorControl);
         when(session.getContainmentAcceptorControl()).thenReturn(containmentAcceptorControl);
         when(session.getDockingAcceptorControl()).thenReturn(dockingAcceptorControl);
-        when(session.getDragControl()).thenReturn(dragControl);
         this.tested = new SessionEditorImpl<AbstractClientFullSession, AbstractCanvasHandler>(canvasCommandManager,
                                                                                               view);
     }
@@ -113,8 +109,6 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
                      tested.getDiagramEditor().getContainmentAcceptorControl());
         assertEquals(dockingAcceptorControl,
                      tested.getDiagramEditor().getDockingAcceptorControl());
-        assertEquals(dragControl,
-                     tested.getDiagramEditor().getDragControl());
         verify(canvasHandler,
                times(1)).draw(eq(diagram),
                               any(ParameterizedCommand.class));

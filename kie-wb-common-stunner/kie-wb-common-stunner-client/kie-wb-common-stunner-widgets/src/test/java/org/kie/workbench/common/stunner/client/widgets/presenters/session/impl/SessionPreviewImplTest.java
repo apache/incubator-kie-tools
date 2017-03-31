@@ -37,7 +37,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.Canv
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
@@ -49,7 +48,6 @@ import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
-import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
 import org.kie.workbench.common.stunner.core.rule.EmptyRuleSet;
@@ -117,9 +115,6 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
     private DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
 
     @Mock
-    private DragControl<AbstractCanvasHandler, Element> dragControl;
-
-    @Mock
     private CanvasFactory canvasFactory;
 
     @Mock
@@ -178,7 +173,6 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
         when(session.getConnectionAcceptorControl()).thenReturn(connectionAcceptorControl);
         when(session.getContainmentAcceptorControl()).thenReturn(containmentAcceptorControl);
         when(session.getDockingAcceptorControl()).thenReturn(dockingAcceptorControl);
-        when(session.getDragControl()).thenReturn(dragControl);
         when(definitionManager.adapters()).thenReturn(adapterManager);
         when(adapterManager.forRules()).thenReturn(ruleAdapter);
         when(ruleAdapter.getRuleSet(eq(defSet))).thenReturn(EMPTY_RULESET);

@@ -27,13 +27,11 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.Canv
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.graph.Element;
 
 /**
  * A generic session's editor instance.
@@ -156,12 +154,6 @@ public class SessionEditorImpl<S extends AbstractClientFullSession, H extends Ab
         @SuppressWarnings("unchecked")
         public CanvasCommandManager<H> getCommandManager() {
             return (CanvasCommandManager<H>) canvasCommandManager;
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public DragControl<H, Element> getDragControl() {
-            return (DragControl<H, Element>) getSession().getDragControl();
         }
 
         @Override

@@ -31,8 +31,8 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasDragBounds;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
-import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.DragEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.DragHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.MouseEnterEvent;
@@ -44,7 +44,10 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.Bounds;
+import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
@@ -82,32 +85,44 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
             final AbstractCanvas<?> canvas = canvasHandler.getAbstractCanvas();
             final Shape<?> shape = canvas.getShape(element.getUUID());
             if (shape.getShapeView() instanceof HasEventHandlers) {
-                // Register the drag handler.
                 final HasEventHandlers hasEventHandlers = (HasEventHandlers) shape.getShapeView();
-                final DragHandler handler = new DragHandler() {
+                // Register the drag handler.
+                if (supportsDrag(hasEventHandlers)) {
+                    final DragHandler handler = new DragHandler() {
 
-                    @Override
-                    public void start(final DragEvent event) {
-                        doDragStart(element);
-                    }
+                        @Override
+                        public void start(final DragEvent event) {
+                            doDragStart(element);
+                        }
 
-                    @Override
-                    public void handle(final DragEvent event) {
-                        doDragUpdate(element);
-                    }
+                        @Override
+                        public void handle(final DragEvent event) {
+                        }
 
-                    @Override
-                    public void end(final DragEvent event) {
-                        doDragEnd(element);
-                    }
-                };
-                hasEventHandlers.addHandler(ViewEventType.DRAG,
-                                            handler);
-                registerHandler(element.getUUID(),
-                                handler);
+                        @Override
+                        public void end(final DragEvent event) {
+                            final CommandResult<CanvasViolation> result = doDragEnd(element);
+                            if (CommandUtils.isError(result)) {
+                                LOGGER.log(Level.SEVERE,
+                                           "Update element's position command failed [result=" + result + "]");
+                                event.getDragContext().reset();
+                            }
+                        }
+                    };
+                    hasEventHandlers.addHandler(ViewEventType.DRAG,
+                                                handler);
+                    registerHandler(element.getUUID(),
+                                    handler);
+                }
+
+                // Set the drag bounds.
+                if (shape.getShapeView() instanceof HasDragBounds) {
+                    ensureDragConstraints((HasDragBounds<?>) shape.getShapeView());
+                }
+
                 // Change mouse cursor, if shape supports it.
-                if (hasEventHandlers.supports(ViewEventType.MOUSE_ENTER) &&
-                        hasEventHandlers.supports(ViewEventType.MOUSE_EXIT)) {
+                if (supportsMouseEnter(hasEventHandlers) &&
+                        supportsMouseExit(hasEventHandlers)) {
                     final MouseEnterHandler overHandler = new MouseEnterHandler() {
                         @Override
                         public void handle(MouseEnterEvent event) {
@@ -133,28 +148,6 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
         }
     }
 
-    protected void doDragStart(final Element element) {
-        final double[] size = GraphUtils.getNodeSize((View) element.getContent());
-        dragShapeSize[0] = size[0];
-        dragShapeSize[1] = size[1];
-    }
-
-    protected void doDragUpdate(final Element element) {
-        final AbstractCanvas<?> canvas = canvasHandler.getAbstractCanvas();
-        final Shape<?> shape = canvas.getShape(element.getUUID());
-        ensureDragConstraints(shape.getShapeView());
-    }
-
-    protected void doDragEnd(final Element element) {
-        final AbstractCanvas<?> canvas = canvasHandler.getAbstractCanvas();
-        final Shape<?> shape = canvas.getShape(element.getUUID());
-        final double x = shape.getShapeView().getShapeX();
-        final double y = shape.getShapeView().getShapeY();
-        move(element,
-             x,
-             y);
-    }
-
     @Override
     @SuppressWarnings("unchecked")
     public CommandResult<CanvasViolation> move(final Element element,
@@ -168,10 +161,6 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
         if (!CommandUtils.isError(result)) {
             result = getCommandManager().execute(canvasHandler,
                                                  c);
-        }
-        if (CommandUtils.isError(result)) {
-            LOGGER.log(Level.SEVERE,
-                       "Update element's position command failed [result=" + result + "]");
         }
         return result;
     }
@@ -224,29 +213,42 @@ public class DragControlImpl extends AbstractCanvasHandlerRegistrationControl<Ab
         commandManagerProvider = null;
     }
 
-    /**
-     * Setting dragBounds for the shape doesn't work on lienzo side, so
-     * ensure drag does not exceed the canvas bounds.
-     * @param shapeView The shape view instance being drag.
-     */
-    protected void ensureDragConstraints(final ShapeView<?> shapeView) {
-        final int mw = canvasHandler.getCanvas().getWidth();
-        final int mh = canvasHandler.getCanvas().getHeight();
-        final Point2D sa = shapeView.getShapeAbsoluteLocation();
-        LOGGER.log(Level.FINE,
-                   "Ensuring drag constraints for absolute coordinates at [" + sa.getX() + ", " + sa.getY() + "]");
-        final double ax = mw - dragShapeSize[0];
-        final double ay = mh - dragShapeSize[1];
-        final boolean xb = sa.getX() >= ax || sa.getX() < 0;
-        final boolean yb = sa.getY() >= ay || sa.getY() < 0;
-        if (xb || yb) {
-            final double tx = sa.getX() >= ax ? ax : (sa.getX() < 0 ? 0 : sa.getX());
-            final double ty = sa.getY() >= ay ? ay : (sa.getY() < 0 ? 0 : sa.getY());
-            LOGGER.log(Level.FINE,
-                       "Setting constraint coordinates at [" + tx + ", " + ty + "]");
-            shapeView.setShapeX(tx);
-            shapeView.setShapeY(ty);
-        }
+    @SuppressWarnings("unchecked")
+    protected void ensureDragConstraints(final HasDragBounds<?> shapeView) {
+        final Graph<DefinitionSet, ? extends Node> graph = canvasHandler.getGraphIndex().getGraph();
+        final Bounds bounds = graph.getContent().getBounds();
+        shapeView.setDragBounds(bounds.getUpperLeft().getX(),
+                                bounds.getUpperLeft().getY(),
+                                bounds.getLowerRight().getX(),
+                                bounds.getLowerRight().getY());
+    }
+
+    private void doDragStart(final Element element) {
+        final double[] size = GraphUtils.getNodeSize((View) element.getContent());
+        dragShapeSize[0] = size[0];
+        dragShapeSize[1] = size[1];
+    }
+
+    private CommandResult<CanvasViolation> doDragEnd(final Element element) {
+        final AbstractCanvas<?> canvas = canvasHandler.getAbstractCanvas();
+        final Shape<?> shape = canvas.getShape(element.getUUID());
+        final double x = shape.getShapeView().getShapeX();
+        final double y = shape.getShapeView().getShapeY();
+        return move(element,
+                    x,
+                    y);
+    }
+
+    private boolean supportsDrag(final HasEventHandlers shapeView) {
+        return shapeView.supports(ViewEventType.DRAG);
+    }
+
+    private boolean supportsMouseEnter(final HasEventHandlers shapeView) {
+        return shapeView.supports(ViewEventType.MOUSE_ENTER);
+    }
+
+    private boolean supportsMouseExit(final HasEventHandlers shapeView) {
+        return shapeView.supports(ViewEventType.MOUSE_EXIT);
     }
 
     private CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {

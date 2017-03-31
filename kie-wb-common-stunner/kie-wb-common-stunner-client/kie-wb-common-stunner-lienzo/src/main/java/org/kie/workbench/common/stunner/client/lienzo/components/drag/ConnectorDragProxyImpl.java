@@ -280,14 +280,6 @@ public class ConnectorDragProxyImpl implements ConnectorDragProxy<AbstractCanvas
         }
 
         @Override
-        public DummyShapeView setDragBounds(final double x1,
-                                            final double y1,
-                                            final double x2,
-                                            final double y2) {
-            return null;
-        }
-
-        @Override
         public DummyShapeView moveToTop() {
             return null;
         }

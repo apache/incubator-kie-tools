@@ -240,8 +240,8 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
                               current.getY() + h)
         );
         // Check the new bound values that come from the user's action do not exceed graph ones.
-        if (!GraphUtils.checkBounds(canvasHandler.getDiagram().getGraph(),
-                                    newBounds)) {
+        if (!GraphUtils.checkBoundsExceeded(canvasHandler.getDiagram().getGraph(),
+                                            newBounds)) {
             return new CommandResultImpl<>(
                     CommandResult.Type.ERROR,
                     "Bounds exceeded",

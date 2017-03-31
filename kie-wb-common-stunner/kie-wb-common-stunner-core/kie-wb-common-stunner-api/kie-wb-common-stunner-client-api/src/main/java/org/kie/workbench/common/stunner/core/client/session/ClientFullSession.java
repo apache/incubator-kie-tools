@@ -23,11 +23,9 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Elem
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.command.Command;
-import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 
 /**
@@ -51,8 +49,6 @@ public interface ClientFullSession<C extends Canvas, H extends CanvasHandler>
     ContainmentAcceptorControl<H> getContainmentAcceptorControl();
 
     DockingAcceptorControl<H> getDockingAcceptorControl();
-
-    DragControl<H, Element> getDragControl();
 
     ElementBuilderControl<H> getBuilderControl();
 }

@@ -129,14 +129,6 @@ public interface ShapeView<T> {
     T setStrokeWidth(final double width);
 
     /**
-     * Set the drag bounds.
-     */
-    T setDragBounds(final double x1,
-                    final double y1,
-                    final double x2,
-                    final double y2);
-
-    /**
      * Move shape view to top.
      */
     T moveToTop();

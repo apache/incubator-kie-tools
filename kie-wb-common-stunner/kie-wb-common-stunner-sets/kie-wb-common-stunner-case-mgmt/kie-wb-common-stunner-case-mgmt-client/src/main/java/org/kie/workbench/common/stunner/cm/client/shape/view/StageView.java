@@ -23,7 +23,6 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.cm.client.wires.AbstractCaseManagementShape;
 import org.kie.workbench.common.stunner.cm.client.wires.VerticalStackLayoutManager;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 
 /**
  * The Lienzo view implementation for the Stage shape.
@@ -35,7 +34,7 @@ public class StageView extends AbstractCaseManagementShape<StageView> {
     public StageView(final double width,
                      final double height,
                      final double voffset) {
-        super(ShapeViewSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
+        super(CM_SHAPE_VIEW_EVENT_TYPES,
               create(new MultiPath(),
                      width,
                      height,
@@ -45,6 +44,7 @@ public class StageView extends AbstractCaseManagementShape<StageView> {
         this.voffset = voffset;
         setLayoutHandler(new VerticalStackLayoutManager());
         setResizable(false);
+        setDraggable(true);
     }
 
     /**

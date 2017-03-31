@@ -44,6 +44,7 @@ import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 @Dependent
 public class ClientFullSessionImpl extends AbstractClientFullSession {
 
+    private DragControl<AbstractCanvasHandler, Element> dragControl;
     private ResizeControl<AbstractCanvasHandler, Element> resizeControl;
     private CanvasNameEditionControl<AbstractCanvasHandler, Element> canvasNameEditionControl;
     private ToolboxControl<AbstractCanvasHandler, Element> toolboxControl;
@@ -65,20 +66,26 @@ public class ClientFullSessionImpl extends AbstractClientFullSession {
               () -> sessionCommandManager,
               () -> requestCommandManager,
               registryFactory.newCommandRegistry(),
-              factory.newControl(DragControl.class),
               factory.newControl(ConnectionAcceptorControl.class),
               factory.newControl(ContainmentAcceptorControl.class),
               factory.newControl(DockingAcceptorControl.class),
               factory.newControl(ElementBuilderControl.class));
+        this.dragControl = factory.newControl(DragControl.class);
         this.resizeControl = factory.newControl(ResizeControl.class);
         this.canvasNameEditionControl = factory.newControl(CanvasNameEditionControl.class);
         this.toolboxControl = factory.newControl(ToolboxControl.class);
+        getRegistrationHandler().registerCanvasHandlerControl(dragControl);
+        dragControl.setCommandManagerProvider(() -> sessionCommandManager);
         getRegistrationHandler().registerCanvasHandlerControl(resizeControl);
         resizeControl.setCommandManagerProvider(() -> sessionCommandManager);
         getRegistrationHandler().registerCanvasHandlerControl(toolboxControl);
         toolboxControl.setCommandManagerProvider(() -> sessionCommandManager);
         getRegistrationHandler().registerCanvasHandlerControl(canvasNameEditionControl);
         canvasNameEditionControl.setCommandManagerProvider(() -> sessionCommandManager);
+    }
+
+    public DragControl<AbstractCanvasHandler, Element> getDragControl() {
+        return dragControl;
     }
 
     public ResizeControl<AbstractCanvasHandler, Element> getResizeControl() {

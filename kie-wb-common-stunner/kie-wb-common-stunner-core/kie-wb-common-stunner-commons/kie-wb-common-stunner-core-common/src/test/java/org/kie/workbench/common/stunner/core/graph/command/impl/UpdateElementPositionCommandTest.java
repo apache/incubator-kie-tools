@@ -20,7 +20,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.exception.BadCommandArgumentsException;
-import org.kie.workbench.common.stunner.core.command.exception.BoundsExceededException;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -111,11 +110,27 @@ public class UpdateElementPositionCommandTest extends AbstractGraphCommandTest {
         tested.execute(graphCommandExecutionContext);
     }
 
-    @Test(expected = BoundsExceededException.class)
+    @Test
+    public void testAllowBadBounds() {
+        this.tested = new UpdateElementPositionCommand(UUID,
+                                                       600d,
+                                                       600d);
+        final CommandResult<RuleViolation> result = tested.allow(graphCommandExecutionContext);
+        verify(content,
+               never()).setBounds(any(Bounds.class));
+        assertEquals(CommandResult.Type.ERROR,
+                     result.getType());
+    }
+
+    @Test
     public void testExecuteBadBounds() {
         this.tested = new UpdateElementPositionCommand(UUID,
                                                        600d,
                                                        600d);
-        tested.execute(graphCommandExecutionContext);
+        final CommandResult<RuleViolation> result = tested.execute(graphCommandExecutionContext);
+        verify(content,
+               never()).setBounds(any(Bounds.class));
+        assertEquals(CommandResult.Type.ERROR,
+                     result.getType());
     }
 }

@@ -120,14 +120,6 @@ public class ShapeViewStub implements ShapeView<Object> {
     }
 
     @Override
-    public Object setDragBounds(final double x1,
-                                final double y1,
-                                final double x2,
-                                final double y2) {
-        return this;
-    }
-
-    @Override
     public Object moveToTop() {
         return this;
     }

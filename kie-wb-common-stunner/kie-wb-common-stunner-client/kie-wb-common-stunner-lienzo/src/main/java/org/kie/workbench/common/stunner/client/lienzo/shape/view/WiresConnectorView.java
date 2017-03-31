@@ -24,7 +24,6 @@ import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.WiresMagnet;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
-import com.ait.lienzo.client.core.types.DragBounds;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
@@ -230,20 +229,6 @@ public class WiresConnectorView<T> extends WiresConnector
     @SuppressWarnings("unchecked")
     public T setStrokeWidth(final double width) {
         getLine().setStrokeWidth(width);
-        return (T) this;
-    }
-
-    // TODO: Move this into lienzo WiresShape/WiresConnector?
-    @Override
-    @SuppressWarnings("unchecked")
-    public T setDragBounds(final double x1,
-                           final double y1,
-                           final double x2,
-                           final double y2) {
-        getGroup().setDragBounds(new DragBounds(x1,
-                                                y1,
-                                                x2,
-                                                y2));
         return (T) this;
     }
 

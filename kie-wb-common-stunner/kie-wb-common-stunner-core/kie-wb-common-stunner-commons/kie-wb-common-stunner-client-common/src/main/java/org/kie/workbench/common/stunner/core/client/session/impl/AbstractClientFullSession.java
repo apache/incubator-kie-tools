@@ -23,7 +23,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Elem
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
@@ -41,7 +40,6 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
     private CanvasValidationControl<AbstractCanvasHandler> canvasValidationControl;
     private CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
     private CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
-    private DragControl<AbstractCanvasHandler, Element> dragControl;
     private ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl;
     private ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl;
     private DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl;
@@ -57,7 +55,6 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
                                      final RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> sessionCommandManagerProvider,
                                      final RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> requestCommandManagerProvider,
                                      final CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry,
-                                     final DragControl<AbstractCanvasHandler, Element> dragControl,
                                      final ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl,
                                      final ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl,
                                      final DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl,
@@ -70,13 +67,10 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
         this.canvasValidationControl = canvasValidationControl;
         this.canvasCommandManager = canvasCommandManager;
         this.commandRegistry = commandRegistry;
-        this.dragControl = dragControl;
         this.connectionAcceptorControl = connectionAcceptorControl;
         this.containmentAcceptorControl = containmentAcceptorControl;
         this.dockingAcceptorControl = dockingAcceptorControl;
         this.builderControl = builderControl;
-        getRegistrationHandler().registerCanvasHandlerControl(dragControl);
-        dragControl.setCommandManagerProvider(requestCommandManagerProvider);
         getRegistrationHandler().registerCanvasHandlerControl(connectionAcceptorControl);
         connectionAcceptorControl.setCommandManagerProvider(requestCommandManagerProvider);
         getRegistrationHandler().registerCanvasHandlerControl(containmentAcceptorControl);
@@ -116,11 +110,6 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
     @Override
     public CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> getCommandRegistry() {
         return commandRegistry;
-    }
-
-    @Override
-    public DragControl<AbstractCanvasHandler, Element> getDragControl() {
-        return dragControl;
     }
 
     @Override

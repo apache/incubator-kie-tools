@@ -28,7 +28,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Elem
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
@@ -63,7 +62,6 @@ public class CaseManagementClientFullSession extends AbstractClientFullSession {
               () -> sessionCommandManager,
               () -> requestCommandManager,
               registryFactory.newCommandRegistry(),
-              factory.newControl(DragControl.class),
               factory.newControl(ConnectionAcceptorControl.class),
               factory.newControl(ContainmentAcceptorControl.class),
               factory.newControl(DockingAcceptorControl.class),

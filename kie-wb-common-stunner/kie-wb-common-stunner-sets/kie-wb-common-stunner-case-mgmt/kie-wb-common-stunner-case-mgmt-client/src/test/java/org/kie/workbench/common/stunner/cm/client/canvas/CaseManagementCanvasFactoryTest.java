@@ -33,7 +33,6 @@ import org.kie.workbench.common.stunner.client.lienzo.canvas.controls.zoom.ZoomW
 import org.kie.workbench.common.stunner.cm.client.canvas.controls.builder.CaseManagementElementBuilderControl;
 import org.kie.workbench.common.stunner.cm.client.canvas.controls.builder.CaseManagementNodeBuilderControl;
 import org.kie.workbench.common.stunner.cm.client.canvas.controls.containment.CaseManagementContainmentAcceptorControlImpl;
-import org.kie.workbench.common.stunner.cm.client.canvas.controls.drag.CaseManagementDragControlImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControl;
@@ -47,7 +46,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
@@ -65,7 +63,6 @@ public class CaseManagementCanvasFactoryTest {
     private ManagedInstance<DockingAcceptorControl> dockingAcceptorControls;
     private ManagedInstance<CanvasNameEditionControl> nameEditionControls;
     private ManagedInstance<SelectionControl> selectionControls;
-    private ManagedInstance<DragControl> dragControls;
     private ManagedInstance<ElementBuilderControl> elementBuilderControls;
     private ManagedInstance<NodeBuilderControl> nodeBuilderControls;
     private ManagedInstance<EdgeBuilderControl> edgeBuilderControls;
@@ -95,7 +92,6 @@ public class CaseManagementCanvasFactoryTest {
         this.dockingAcceptorControls = mockManagedInstance(DockingAcceptorControlImpl.class);
         this.nameEditionControls = mockManagedInstance(CanvasNameEditionControlImpl.class);
         this.selectionControls = mockManagedInstance(SelectionControl.class);
-        this.dragControls = mockManagedInstance(CaseManagementDragControlImpl.class);
         this.elementBuilderControls = mockManagedInstance(CaseManagementElementBuilderControl.class);
         this.nodeBuilderControls = mockManagedInstance(CaseManagementNodeBuilderControl.class);
         this.edgeBuilderControls = mockManagedInstance(EdgeBuilderControlImpl.class);
@@ -111,7 +107,6 @@ public class CaseManagementCanvasFactoryTest {
                                                        dockingAcceptorControls,
                                                        nameEditionControls,
                                                        selectionControls,
-                                                       dragControls,
                                                        elementBuilderControls,
                                                        nodeBuilderControls,
                                                        edgeBuilderControls,

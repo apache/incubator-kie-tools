@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,31 @@
 
 package org.kie.workbench.common.stunner.core.client.shape.view.event;
 
-public final class DragEvent extends AbstractMouseEvent {
+import org.uberfire.mvp.Command;
 
-    private final DragContext dragContext;
+public final class DragContext {
 
-    public DragEvent(final double mouseX,
-                     final double mouseY,
-                     final double clientX,
-                     final double clientY,
-                     final DragContext dragContext) {
-        super(mouseX,
-              mouseY,
-              clientX,
-              clientY);
-        this.dragContext = dragContext;
+    private final int dx;
+    private final int dy;
+    private final Command resetCommand;
+
+    public DragContext(final int dx,
+                       final int dy,
+                       final Command resetCommand) {
+        this.dx = dx;
+        this.dy = dy;
+        this.resetCommand = resetCommand;
     }
 
-    public DragContext getDragContext() {
-        return dragContext;
+    public int getDx() {
+        return dx;
+    }
+
+    public int getDy() {
+        return dy;
+    }
+
+    public void reset() {
+        resetCommand.execute();
     }
 }

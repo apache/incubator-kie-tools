@@ -29,7 +29,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.Elem
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.ResizeControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
@@ -100,9 +99,6 @@ public class CaseManagementClientFullSessionTest {
     private CanvasNameEditionControl<AbstractCanvasHandler, Element> canvasNameEditionControl;
 
     @Mock
-    private DragControl<AbstractCanvasHandler, Element> dragControl;
-
-    @Mock
     private ToolboxControl<AbstractCanvasHandler, Element> toolboxControl;
 
     @Mock
@@ -122,7 +118,6 @@ public class CaseManagementClientFullSessionTest {
         when(factory.newControl(eq(ConnectionAcceptorControl.class))).thenReturn(connectionAcceptorControl);
         when(factory.newControl(eq(ContainmentAcceptorControl.class))).thenReturn(containmentAcceptorControl);
         when(factory.newControl(eq(DockingAcceptorControl.class))).thenReturn(dockingAcceptorControl);
-        when(factory.newControl(eq(DragControl.class))).thenReturn(dragControl);
         when(factory.newControl(eq(CanvasNameEditionControl.class))).thenReturn(canvasNameEditionControl);
         when(factory.newControl(eq(ToolboxControl.class))).thenReturn(toolboxControl);
         when(factory.newControl(eq(ElementBuilderControl.class))).thenReturn(builderControl);
@@ -156,8 +151,6 @@ public class CaseManagementClientFullSessionTest {
                      session.getContainmentAcceptorControl());
         assertEquals(dockingAcceptorControl,
                      session.getDockingAcceptorControl());
-        assertEquals(dragControl,
-                     session.getDragControl());
         assertEquals(builderControl,
                      session.getBuilderControl());
         assertEquals(canvasNameEditionControl,
@@ -187,8 +180,6 @@ public class CaseManagementClientFullSessionTest {
         verify(dockingAcceptorControl,
                times(1)).enable(eq(canvasHandler));
         verify(canvasNameEditionControl,
-               times(1)).enable(eq(canvasHandler));
-        verify(dragControl,
                times(1)).enable(eq(canvasHandler));
         verify(builderControl,
                times(1)).enable(eq(canvasHandler));
@@ -222,8 +213,6 @@ public class CaseManagementClientFullSessionTest {
         verify(dockingAcceptorControl,
                times(1)).disable();
         verify(canvasNameEditionControl,
-               times(1)).disable();
-        verify(dragControl,
                times(1)).disable();
         verify(builderControl,
                times(1)).disable();

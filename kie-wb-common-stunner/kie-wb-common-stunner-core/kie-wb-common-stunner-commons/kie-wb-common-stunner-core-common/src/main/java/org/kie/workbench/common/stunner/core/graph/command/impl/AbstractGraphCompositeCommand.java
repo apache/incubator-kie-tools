@@ -28,7 +28,6 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public abstract class AbstractGraphCompositeCommand extends AbstractCompositeCommand<GraphCommandExecutionContext, RuleViolation> {
@@ -68,20 +67,21 @@ public abstract class AbstractGraphCompositeCommand extends AbstractCompositeCom
         return (MutableIndex<Node, Edge>) context.getGraphIndex();
     }
 
+    @SuppressWarnings("unchecked")
     protected Graph<?, Node> getGraph(final GraphCommandExecutionContext context) {
-        return GraphUtils.getGraph(context);
+        return (Graph<?, Node>) context.getGraphIndex().getGraph();
     }
 
+    @SuppressWarnings("unchecked")
     protected Node<?, Edge> getNode(final GraphCommandExecutionContext context,
                                     final String uuid) {
-        return GraphUtils.getNode(context,
-                                  uuid);
+        return context.getGraphIndex().getNode(uuid);
     }
 
+    @SuppressWarnings("unchecked")
     protected Edge<? extends View, Node> getViewEdge(final GraphCommandExecutionContext context,
                                                      final String uuid) {
-        return GraphUtils.getViewEdge(context,
-                                      uuid);
+        return context.getGraphIndex().getEdge(uuid);
     }
 
     protected Node<?, Edge> checkNodeNotNull(final GraphCommandExecutionContext context,

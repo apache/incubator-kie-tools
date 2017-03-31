@@ -32,7 +32,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.Canv
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -85,13 +84,11 @@ public class DiagramPresenterFactoryImpl implements DiagramPresenterFactory<Diag
         final ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl = canvasFactory.newControl(ConnectionAcceptorControl.class);
         final ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl = canvasFactory.newControl(ContainmentAcceptorControl.class);
         final DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl = canvasFactory.newControl(DockingAcceptorControl.class);
-        final DragControl<AbstractCanvasHandler, Element> dragControl = canvasFactory.newControl(DragControl.class);
         return new DiagramEditorImpl<>(viewer,
                                        commandManagerInstances.get(),
                                        validationControl,
                                        connectionAcceptorControl,
                                        containmentAcceptorControl,
-                                       dockingAcceptorControl,
-                                       dragControl);
+                                       dockingAcceptorControl);
     }
 }

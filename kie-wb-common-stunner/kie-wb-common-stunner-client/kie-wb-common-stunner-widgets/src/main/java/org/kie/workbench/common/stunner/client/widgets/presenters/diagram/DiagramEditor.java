@@ -23,24 +23,20 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.Canv
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.graph.Element;
 
 /**
  * An editor type for diagram instances based on any subtypes for <code>Diagram</code> and <code>AbstractCanvasHandler</code>.
- * <p/>
+ * <p>
  * The goal for a diagram editor is to provide authoring features in top of a diagram viewer instance.
  * On top of the diagram viewer instance, it provides:
  * - The mandatory acceptor controls enabled for this viewer's canvas handler instance, in order
  * to provide user interactions for the different model structure updates
- * - A drag control enabled for this viewer's canvas handler instance, provides user event handlers as well.
- * A validation control to ensure diagram can be validated at any point.
- * <p/>
+ * <p>
  * Notes:
  * - The interaction with the some of the controls, such as CDI contexts and events, depends on each control's implementation.
  * - Subtypes can provide additional controls.
- * <p/>
+ * <p>
  * As for viewers, in case the default Stunner's behaviors, features, views or controls do not fit a concrete
  * Definition Set requirements,different DiagramEditor types could be necessary for custom behaviors..
  * @param <D> The diagram type.
@@ -49,11 +45,6 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 public interface DiagramEditor<D extends Diagram, H extends CanvasHandler>
         extends DiagramViewer<D, H>,
                 Editor<D, H, WidgetWrapperView, DiagramViewer.DiagramViewerCallback<D>> {
-
-    /**
-     * Returns a drag control instance. Allows the user to drag elements.
-     */
-    DragControl<H, Element> getDragControl();
 
     /**
      * Returns a connection acceptor control instance. Allows the user to create valid connections.

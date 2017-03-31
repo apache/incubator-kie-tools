@@ -29,7 +29,6 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
@@ -48,30 +47,6 @@ public class GraphUtils {
     @SuppressWarnings("all")
     public GraphUtils(final DefinitionManager definitionManager) {
         this.definitionManager = definitionManager;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static Graph<?, Node> getGraph(final GraphCommandExecutionContext context) {
-        return (Graph<?, Node>) context.getGraphIndex().getGraph();
-    }
-
-    @SuppressWarnings("unchecked")
-    public static Node<?, Edge> getNode(final GraphCommandExecutionContext context,
-                                        final String uuid) {
-        return context.getGraphIndex().getNode(uuid);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static Edge<? extends View, Node> getViewEdge(final GraphCommandExecutionContext context,
-                                                         final String uuid) {
-        return context.getGraphIndex().getEdge(uuid);
-    }
-
-    public Object getProperty(final Element<? extends Definition> element,
-                              final String id) {
-        return getProperty(definitionManager,
-                           element,
-                           id);
     }
 
     public static Object getProperty(final DefinitionManager definitionManager,
@@ -106,11 +81,6 @@ public class GraphUtils {
             }
         }
         return null;
-    }
-
-    public static Map<String, Integer> getLabelsCount(final Graph<?, ? extends Node> target) {
-        return getLabelsCount(target,
-                              null);
     }
 
     @SuppressWarnings("unchecked")
@@ -198,38 +168,6 @@ public class GraphUtils {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
-    public static boolean hasParent(final Node<?, ? extends Edge> candidate,
-                                    final Element<?> parent) {
-        Element<?> p = candidate;
-        while (p instanceof Node && !p.equals(parent)) {
-            p = getParent((Node<?, ? extends Edge>) p);
-        }
-        return null != p;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static Element<?> getParentByDefinitionId(final DefinitionManager definitionManager,
-                                                     final Node<?, ? extends Edge> candidate,
-                                                     final String parentDefId) {
-        Element<?> p = candidate;
-        while (p instanceof Node
-                && p.getContent() instanceof Definition) {
-            final String cID = getDefinitionId(definitionManager,
-                                               (Element<? extends Definition>) p);
-            if (parentDefId.equals(cID)) {
-                return p;
-            }
-            p = getParent((Node<?, ? extends Edge>) p);
-        }
-        return null;
-    }
-
-    private static String getDefinitionId(final DefinitionManager definitionManager,
-                                          final Element<? extends Definition> element) {
-        return definitionManager.adapters().forDefinition().getId(element.getContent().getDefinition());
-    }
-
     public static Point2D getPosition(final View element) {
         final Bounds.Bound ul = element.getBounds().getUpperLeft();
         final double x = ul.getX();
@@ -259,8 +197,8 @@ public class GraphUtils {
      * @return if bounds exceed graph limits it returns <code>false</code>. Otherwise returns <code>true</code>.
      */
     @SuppressWarnings("unchecked")
-    public static boolean checkBounds(final Graph<DefinitionSet, ? extends Node> graph,
-                                      final Bounds bounds) {
+    public static boolean checkBoundsExceeded(final Graph<DefinitionSet, ? extends Node> graph,
+                                              final Bounds bounds) {
         final Bounds graphBounds = graph.getContent().getBounds();
         if ((bounds.getLowerRight().getX() > graphBounds.getLowerRight().getX())
                 || (bounds.getLowerRight().getY() > graphBounds.getLowerRight().getY())) {

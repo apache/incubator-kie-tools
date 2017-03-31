@@ -321,8 +321,7 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
                                           final double y) {
         final Optional<Shape> shape = getCanvas().getShapeAt(x,
                                                              y);
-        return shape.flatMap(s -> Optional.of(GraphUtils.getNode(getGraphExecutionContext(),
-                                                                 s.getUUID())));
+        return shape.flatMap(s -> Optional.of(getGraphExecutionContext().getGraphIndex().getNode(s.getUUID())));
     }
 
     protected boolean isCanvasRoot(final String pUUID) {

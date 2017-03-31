@@ -41,7 +41,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.pan.PanControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
@@ -61,7 +60,6 @@ public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas
     private final ManagedInstance<DockingAcceptorControl> dockingAcceptorControls;
     private final ManagedInstance<CanvasNameEditionControl> nameEditionControls;
     private final ManagedInstance<SelectionControl> selectionControls;
-    private final ManagedInstance<DragControl> dragControls;
     private final ManagedInstance<ElementBuilderControl> elementBuilderControls;
     private final ManagedInstance<NodeBuilderControl> nodeBuilderControls;
     private final ManagedInstance<EdgeBuilderControl> edgeBuilderControls;
@@ -87,7 +85,6 @@ public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas
              null,
              null,
              null,
-             null,
              null);
     }
 
@@ -98,7 +95,6 @@ public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas
                                        final ManagedInstance<DockingAcceptorControl> dockingAcceptorControls,
                                        final ManagedInstance<CanvasNameEditionControl> nameEditionControls,
                                        final ManagedInstance<SelectionControl> selectionControls,
-                                       final @CaseManagementEditor ManagedInstance<DragControl> dragControls,
                                        final @CaseManagementEditor @Observer ManagedInstance<ElementBuilderControl> elementBuilderControls,
                                        final @CaseManagementEditor ManagedInstance<NodeBuilderControl> nodeBuilderControls,
                                        final ManagedInstance<EdgeBuilderControl> edgeBuilderControls,
@@ -113,7 +109,6 @@ public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas
         this.dockingAcceptorControls = dockingAcceptorControls;
         this.nameEditionControls = nameEditionControls;
         this.selectionControls = selectionControls;
-        this.dragControls = dragControls;
         this.elementBuilderControls = elementBuilderControls;
         this.nodeBuilderControls = nodeBuilderControls;
         this.edgeBuilderControls = edgeBuilderControls;
@@ -138,8 +133,6 @@ public class CaseManagementCanvasFactory implements CanvasFactory<AbstractCanvas
                      nameEditionControls);
         controls.put(SelectionControl.class,
                      selectionControls);
-        controls.put(DragControl.class,
-                     dragControls);
         controls.put(ElementBuilderControl.class,
                      elementBuilderControls);
         controls.put(NodeBuilderControl.class,

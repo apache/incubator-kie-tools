@@ -27,13 +27,11 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.Canv
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.drag.DragControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.zoom.ZoomControl;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.graph.Element;
 
 /**
  * This DiagramEditor type wraps a DiagramViewer implementation and adds on top of it the
@@ -50,7 +48,6 @@ public class DiagramEditorImpl<D extends Diagram, H extends AbstractCanvasHandle
     private final ConnectionAcceptorControl<H> connectionAcceptorControl;
     private final ContainmentAcceptorControl<H> containmentAcceptorControl;
     private final DockingAcceptorControl<H> dockingAcceptorControl;
-    private final DragControl<H, Element> dragControl;
 
     private CanvasControlRegistrationHandler<AbstractCanvas, H> registrationHandler;
 
@@ -59,15 +56,13 @@ public class DiagramEditorImpl<D extends Diagram, H extends AbstractCanvasHandle
                       final CanvasValidationControl<H> validationControl,
                       final ConnectionAcceptorControl<H> connectionAcceptorControl,
                       final ContainmentAcceptorControl<H> containmentAcceptorControl,
-                      final DockingAcceptorControl<H> dockingAcceptorControl,
-                      final DragControl<H, Element> dragControl) {
+                      final DockingAcceptorControl<H> dockingAcceptorControl) {
         this.viewer = viewer;
         this.validationControl = validationControl;
         this.commandManager = commandManager;
         this.connectionAcceptorControl = connectionAcceptorControl;
         this.containmentAcceptorControl = containmentAcceptorControl;
         this.dockingAcceptorControl = dockingAcceptorControl;
-        this.dragControl = dragControl;
         this.registrationHandler = null;
     }
 
@@ -163,11 +158,6 @@ public class DiagramEditorImpl<D extends Diagram, H extends AbstractCanvasHandle
         return dockingAcceptorControl;
     }
 
-    @Override
-    public DragControl<H, Element> getDragControl() {
-        return dragControl;
-    }
-
     /**
      * A private inner viewer callback type that wraps the given callback from api methods
      * and additionally prepared the edition once the canvas and its handler have been initialized.
@@ -207,7 +197,6 @@ public class DiagramEditorImpl<D extends Diagram, H extends AbstractCanvasHandle
         registrationHandler.registerCanvasHandlerControl(connectionAcceptorControl);
         registrationHandler.registerCanvasHandlerControl(containmentAcceptorControl);
         registrationHandler.registerCanvasHandlerControl(dockingAcceptorControl);
-        registrationHandler.registerCanvasHandlerControl(dragControl);
         registrationHandler.enable();
     }
 }

@@ -24,13 +24,17 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.DragBounds;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresUtils;
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
+import org.kie.workbench.common.stunner.core.client.shape.view.HasDragBounds;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
+import org.kie.workbench.common.stunner.lienzo.core.shape.wires.WiresDragConstraintEnforcer;
 
 public class WiresShapeView<T> extends WiresShape
         implements
-        ShapeView<T> {
+        ShapeView<T>,
+        HasDragBounds<T> {
 
     private String uuid;
+    private WiresDragConstraintEnforcer dragEnforcer;
 
     public WiresShapeView(final MultiPath path) {
         this(path,
@@ -41,7 +45,6 @@ public class WiresShapeView<T> extends WiresShape
                           final LayoutContainer layoutContainer) {
         super(path,
               null != layoutContainer ? layoutContainer : new WiresLayoutContainer());
-        initialize();
     }
 
     public Shape<?> getShape() {
@@ -163,17 +166,32 @@ public class WiresShapeView<T> extends WiresShape
         return (T) this;
     }
 
-    // TODO: Move this into lienzo WiresShape/WiresConnector?
     @Override
     @SuppressWarnings("unchecked")
     public T setDragBounds(final double x1,
                            final double y1,
                            final double x2,
                            final double y2) {
-        getGroup().setDragBounds(new DragBounds(x1,
-                                                y1,
-                                                x2,
-                                                y2));
+        final DragBounds dragBounds = new DragBounds(x1,
+                                                     y1,
+                                                     x2,
+                                                     y2);
+        if (null == dragEnforcer) {
+            dragEnforcer = WiresDragConstraintEnforcer.enforce(this,
+                                                               dragBounds);
+        } else {
+            dragEnforcer.setDragBounds(dragBounds);
+        }
+        return (T) this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public T unsetDragBounds() {
+        if (null != dragEnforcer) {
+            dragEnforcer.remove();
+            dragEnforcer = null;
+        }
         return (T) this;
     }
 
@@ -208,8 +226,10 @@ public class WiresShapeView<T> extends WiresShape
     @Override
     public void destroy() {
         super.destroy();
+        unsetDragBounds();
     }
 
-    protected void initialize() {
+    public WiresDragConstraintEnforcer getDragEnforcer() {
+        return dragEnforcer;
     }
 }

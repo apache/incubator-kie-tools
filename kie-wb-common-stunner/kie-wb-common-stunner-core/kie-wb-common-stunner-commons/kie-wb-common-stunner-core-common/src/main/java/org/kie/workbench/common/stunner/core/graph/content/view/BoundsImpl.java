@@ -50,6 +50,22 @@ public final class BoundsImpl implements Bounds {
         this.ul = ul;
     }
 
+    public double getX() {
+        return getUpperLeft().getX();
+    }
+
+    public double getY() {
+        return getUpperLeft().getY();
+    }
+
+    public double getWidth() {
+        return getLowerRight().getX() - getUpperLeft().getX();
+    }
+
+    public double getHeight() {
+        return getLowerRight().getY() - getUpperLeft().getY();
+    }
+
     @Override
     public String toString() {
         return "UL=" + ul + " | LR=" + lr;

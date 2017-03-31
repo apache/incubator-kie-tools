@@ -20,7 +20,6 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.cm.client.wires.AbstractCaseManagementShape;
-import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
 import org.kie.workbench.common.stunner.lienzo.util.LienzoPaths;
 
 /**
@@ -30,13 +29,14 @@ public class ActivityView extends AbstractCaseManagementShape<ActivityView> {
 
     public ActivityView(final double width,
                         final double height) {
-        super(ShapeViewSupportedEvents.DESKTOP_NO_RESIZE_EVENT_TYPES,
+        super(CM_SHAPE_VIEW_EVENT_TYPES,
               create(new MultiPath(),
                      width,
                      height),
               width,
               height);
         setResizable(false);
+        setDraggable(true);
     }
 
     /**

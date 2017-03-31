@@ -42,6 +42,7 @@ import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasEventHandlers;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasFillGradient;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
+import org.kie.workbench.common.stunner.core.client.shape.view.event.DragContext;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.DragEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.DragHandler;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ResizeEvent;
@@ -400,12 +401,14 @@ public class WiresShapeViewExt<T extends WiresShapeViewExt>
         final double cy = sourceDragEvent.getNodeDragEvent().getY();
         final int dx = sourceDragEvent.getNodeDragEvent().getDragContext().getDx();
         final int dy = sourceDragEvent.getNodeDragEvent().getDragContext().getDy();
+        final DragContext dragContext = new DragContext(dx,
+                                                        dy,
+                                                        () -> sourceDragEvent.getNodeDragEvent().getDragContext().reset());
         return new DragEvent(x,
                              y,
                              cx,
                              cy,
-                             dx,
-                             dy);
+                             dragContext);
     }
 
     private ResizeEvent buildResizeEvent(final AbstractWiresResizeEvent sourceResizeEvent) {

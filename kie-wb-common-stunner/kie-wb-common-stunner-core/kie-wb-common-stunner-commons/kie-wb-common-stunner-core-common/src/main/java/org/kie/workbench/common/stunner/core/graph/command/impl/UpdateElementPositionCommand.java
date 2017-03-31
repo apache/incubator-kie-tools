@@ -22,11 +22,11 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
-import org.kie.workbench.common.stunner.core.command.exception.BoundsExceededException;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.command.BoundsExceededCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
@@ -75,63 +75,6 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
                                                        node);
     }
 
-    @Override
-    protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
-        checkNodeNotNull(context);
-        return GraphCommandResultBuilder.SUCCESS;
-    }
-
-    private Node<?, Edge> checkNodeNotNull(final GraphCommandExecutionContext context) {
-        if (null == node) {
-            node = super.checkNodeNotNull(context,
-                                          uuid);
-        }
-        return node;
-    }
-
-    @Override
-    public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
-        final Element<?> element = checkNodeNotNull(context);
-        final Point2D oldPosition = GraphUtils.getPosition((View) element.getContent());
-        final double[] oldSize = GraphUtils.getNodeSize((View) element.getContent());
-        this.oldX = oldPosition.getX();
-        this.oldY = oldPosition.getY();
-        final double w = oldSize[0];
-        final double h = oldSize[1];
-        final BoundsImpl newBounds = new BoundsImpl(new BoundImpl(x,
-                                                                  y),
-                                                    new BoundImpl(x + w,
-                                                                  y + h));
-        checkBounds(context,
-                    newBounds);
-        ((View) element.getContent()).setBounds(newBounds);
-        LOGGER.log(Level.FINE,
-                   "Moving element bounds to [" + x + "," + y + "] [" + (x + w) + "," + (y + h) + "]");
-        return GraphCommandResultBuilder.SUCCESS;
-    }
-
-    @SuppressWarnings("unchecked")
-    private void checkBounds(final GraphCommandExecutionContext context,
-                             final Bounds bounds) {
-        final Graph<DefinitionSet, Node> graph = (Graph<DefinitionSet, Node>) getGraph(context);
-        if (!GraphUtils.checkBounds(graph,
-                                    bounds)) {
-            final Bounds graphBounds = graph.getContent().getBounds();
-            throw new BoundsExceededException(this,
-                                              bounds,
-                                              graphBounds.getLowerRight().getX(),
-                                              graphBounds.getLowerRight().getY());
-        }
-    }
-
-    @Override
-    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
-        final UpdateElementPositionCommand undoCommand = new UpdateElementPositionCommand(checkNodeNotNull(context),
-                                                                                          oldX,
-                                                                                          oldY);
-        return undoCommand.execute(context);
-    }
-
     public Double getX() {
         return x;
     }
@@ -154,6 +97,85 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
 
     public String getUuid() {
         return uuid;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
+        final Element<?> element = checkNodeNotNull(context);
+        final Graph<DefinitionSet, Node> graph = (Graph<DefinitionSet, Node>) getGraph(context);
+        final BoundsImpl newBounds = getTargetBounds(element);
+        return !checkBoundsExceeded(graph,
+                                    newBounds) ?
+                buildBoundsExceededResult(element,
+                                          newBounds) :
+                GraphCommandResultBuilder.SUCCESS;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
+        final Graph<DefinitionSet, Node> graph = (Graph<DefinitionSet, Node>) getGraph(context);
+        final Element<?> element = checkNodeNotNull(context);
+        final BoundsImpl newBounds = getTargetBounds(element);
+        LOGGER.log(Level.FINE,
+                   "Moving element bounds to " +
+                           "[" + newBounds.getX() + "," + newBounds.getY() + "] " +
+                           "[" + newBounds.getWidth() + "," + newBounds.getHeight() + "]");
+        if (checkBoundsExceeded(graph,
+                                newBounds)) {
+            ((View) element.getContent()).setBounds(newBounds);
+            return GraphCommandResultBuilder.SUCCESS;
+        } else {
+            final Bounds graphBounds = graph.getContent().getBounds();
+            return buildBoundsExceededResult(element,
+                                             graphBounds);
+        }
+    }
+
+    private CommandResult<RuleViolation> buildBoundsExceededResult(final Element<?> element,
+                                                                   final Bounds bounds) {
+        return
+                new BoundsExceededCommandResultBuilder(element.getUUID(),
+                                                       bounds)
+                        .build();
+    }
+
+    @SuppressWarnings("unchecked")
+    private BoundsImpl getTargetBounds(final Element<?> element) {
+        final Point2D oldPosition = GraphUtils.getPosition((View) element.getContent());
+        final double[] oldSize = GraphUtils.getNodeSize((View) element.getContent());
+        this.oldX = oldPosition.getX();
+        this.oldY = oldPosition.getY();
+        final double w = oldSize[0];
+        final double h = oldSize[1];
+        return new BoundsImpl(new BoundImpl(x,
+                                            y),
+                              new BoundImpl(x + w,
+                                            y + h));
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean checkBoundsExceeded(final Graph<DefinitionSet, Node> graph,
+                                        final Bounds bounds) {
+        return GraphUtils.checkBoundsExceeded(graph,
+                                              bounds);
+    }
+
+    @Override
+    public CommandResult<RuleViolation> undo(final GraphCommandExecutionContext context) {
+        final UpdateElementPositionCommand undoCommand = new UpdateElementPositionCommand(checkNodeNotNull(context),
+                                                                                          oldX,
+                                                                                          oldY);
+        return undoCommand.execute(context);
+    }
+
+    private Node<?, Edge> checkNodeNotNull(final GraphCommandExecutionContext context) {
+        if (null == node) {
+            node = super.checkNodeNotNull(context,
+                                          uuid);
+        }
+        return node;
     }
 
     @Override

@@ -53,8 +53,9 @@ public abstract class CommandResultBuilder<V> {
         return this;
     }
 
-    public void setType(final CommandResult.Type type) {
+    public CommandResultBuilder<V> setType(final CommandResult.Type type) {
         this.type = type;
+        return this;
     }
 
     public void setMessage(final String message) {
