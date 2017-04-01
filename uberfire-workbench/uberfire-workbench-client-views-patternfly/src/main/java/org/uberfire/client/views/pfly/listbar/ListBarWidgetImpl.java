@@ -278,6 +278,7 @@ public class ListBarWidgetImpl
         }
 
         scheduleResize();
+        resizePanelBody();
 
         SelectionEvent.fire(ListBarWidgetImpl.this,
                             part);
@@ -534,8 +535,13 @@ public class ListBarWidgetImpl
         //When an Item is added to the PanelHeader recalculate the PanelBody size.
         //This cannot be performed in either the @PostConstruct or onAttach() methods as at
         //these times the PanelHeader may not have any content and hence have no size.
-        content.getElement().getStyle().setProperty("height",
-                                                    "calc(100% - " + header.getOffsetHeight() + "px)");
+        if (currentPart != null && !currentPart.getK1().isSelectable()) {
+            content.getElement().getStyle().setProperty("height",
+                                                        "100%");
+        } else {
+            content.getElement().getStyle().setProperty("height",
+                                                        "calc(100% - " + header.getOffsetHeight() + "px)");
+        }
     }
 
     /**

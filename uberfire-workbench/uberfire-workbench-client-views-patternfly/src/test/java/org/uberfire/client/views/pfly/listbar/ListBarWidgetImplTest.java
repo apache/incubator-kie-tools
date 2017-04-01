@@ -19,6 +19,8 @@ package org.uberfire.client.views.pfly.listbar;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -78,12 +80,16 @@ public class ListBarWidgetImplTest {
                                     any(User.class))).thenReturn(true);
 
         doNothing().when(listBar).setupContextMenu();
-        doNothing().when(listBar).resizePanelBody();
 
         listBar.panelManager = mock(PanelManager.class);
         listBar.titleDropDown = mock(PartListDropdown.class);
         listBar.content = mock(PanelBody.class);
         listBar.header = mock(PanelHeader.class);
+
+        final Element element = mock(Element.class);
+        final Style style = mock(Style.class);
+        doReturn(style).when(element).getStyle();
+        doReturn(element).when(listBar.content).getElement();
     }
 
     @Test
@@ -102,6 +108,7 @@ public class ListBarWidgetImplTest {
         listBar.selectPart(selectedPart);
 
         verify(listBar.panelManager).onPartHidden(currentPart);
+        verify(listBar).resizePanelBody();
     }
 
     @Test
@@ -174,6 +181,7 @@ public class ListBarWidgetImplTest {
                never()).selectPart(part);
         verify(listBar.titleDropDown,
                never()).addPart(view);
+        verify(listBar).resizePanelBody();
     }
 
     @Test
@@ -188,6 +196,7 @@ public class ListBarWidgetImplTest {
         verify(listBar).selectPart(part);
         verify(listBar.titleDropDown,
                never()).addPart(view);
+        verify(listBar).resizePanelBody();
     }
 
     @Test
@@ -204,6 +213,8 @@ public class ListBarWidgetImplTest {
                never()).setupContextMenu();
         verify(listBar.header,
                never()).setVisible(anyBoolean());
+        verify(listBar,
+               never()).resizePanelBody();
     }
 
     @Test
@@ -219,6 +230,7 @@ public class ListBarWidgetImplTest {
         verify(listBar,
                never()).setupContextMenu();
         verify(listBar.header).setVisible(false);
+        verify(listBar).resizePanelBody();
     }
 
     @Test
@@ -232,6 +244,7 @@ public class ListBarWidgetImplTest {
         verify(listBar.titleDropDown).selectPart(part);
         verify(listBar).setupContextMenu();
         verify(listBar.header).setVisible(true);
+        verify(listBar).resizePanelBody();
     }
 
     @Test
@@ -243,6 +256,7 @@ public class ListBarWidgetImplTest {
 
         verify(listBar.titleDropDown,
                never()).removePart(part);
+        verify(listBar).resizePanelBody();
     }
 
     @Test
@@ -253,6 +267,7 @@ public class ListBarWidgetImplTest {
         listBar.remove(part);
 
         verify(listBar.titleDropDown).removePart(part);
+        verify(listBar).resizePanelBody();
     }
 
     private PartDefinition getPartDefinition(final boolean selectable,
@@ -383,5 +398,32 @@ public class ListBarWidgetImplTest {
         assertSame(part2, listBar.getNextPart(part1));
         assertSame(part1, listBar.getNextPart(part2));
         assertSame(part2, listBar.getNextPart(part3));
+    }
+
+    @Test
+    public void resizePanelBodyForUnselectablePart() {
+        final PartDefinitionImpl partDefinition = new PartDefinitionImpl(mock(PlaceRequest.class));
+        partDefinition.setSelectable(false);
+        listBar.currentPart = new Pair<>(partDefinition,
+                                         mock(FlowPanel.class));
+
+        listBar.resizePanelBody();
+
+        verify(listBar.content.getElement().getStyle()).setProperty("height",
+                                                                    "100%");
+    }
+
+    @Test
+    public void resizePanelBodyForSelectablePart() {
+        final PartDefinitionImpl partDefinition = new PartDefinitionImpl(mock(PlaceRequest.class));
+        partDefinition.setSelectable(true);
+        listBar.currentPart = new Pair<>(partDefinition,
+                                         mock(FlowPanel.class));
+        doReturn(10).when(listBar.header).getOffsetHeight();
+
+        listBar.resizePanelBody();
+
+        verify(listBar.content.getElement().getStyle()).setProperty("height",
+                                                                    "calc(100% - 10px)");
     }
 }
