@@ -1,3 +1,5 @@
+#!/bin/bash
+
 TARGET_USER=kiereleaseuser
 REMOTE_URL=git@github.com:kiereleaseuser/uberfire.git
 DATE=$(date "+%Y-%m-%d")
@@ -12,6 +14,10 @@ git remote add $TARGET_USER $REMOTE_URL
 #UBERFIRE
 # upgrades the version to next development version of Uberfire
 sh scripts/release/update-version.sh $newVersion
+
+#upgrades the errai version
+sed -i "$!N;s/<version.org.jboss.errai>.*.<\/version.org.jboss.errai>/<version.org.jboss.errai>$ERRAI_DEVEL_VERSION<\/version.org.jboss.errai>/;P;D " pom.xml
+# git add and commit the version update changes
 
 # git add and commit the version update changes 
 git add .

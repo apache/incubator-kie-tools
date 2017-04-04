@@ -126,8 +126,9 @@ job("UF_updateVersion-1.0.x") {
   description("This job: <br> updates the UF and UF-extensions repositories to a new developmenmt version <br> for 0.7.x, 0.8.x or 0.9.x branches <br> IMPORTANT: Created automatically by Jenkins job DSL plugin. Do not edit manually! The changes will get lost next time the job is generated.")
  
   parameters {
-    stringParam("newVersion", "new version", "Edit the new UF version")
+    stringParam("newVersion", "uberfire development version", "Edit uberfire development version")
     stringParam("BASE_BRANCH", "base branch", "please edit the name of the base branch <br> ******************************************************** <br> ")
+    stringParam("ERRAI_DEVEL_VERSION","errai development version","Edit errai development version")
   }
 
   label("kie-releases")
