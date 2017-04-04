@@ -110,8 +110,7 @@ public class DslFileIndexer extends AbstractDrlFileIndexer {
         }
 
         // responsible for basic index info: project name, branch, etc
-        return new DefaultIndexBuilder(project,
-                                       pkg) {
+        return new DefaultIndexBuilder( Paths.convert(path).getFileName(), project, pkg ) {
             @Override
             public DefaultIndexBuilder addGenerator(final IndexElementsGenerator generator) {
                 // Don't include the rule created to parse DSL

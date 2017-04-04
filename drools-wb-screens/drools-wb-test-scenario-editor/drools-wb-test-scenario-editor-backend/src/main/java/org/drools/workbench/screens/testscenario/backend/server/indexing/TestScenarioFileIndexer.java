@@ -57,7 +57,8 @@ public class TestScenarioFileIndexer extends AbstractFileIndexer {
         final Project project = projectService.resolveProject( Paths.convert( path ) );
         final Package pkg = projectService.resolvePackage( Paths.convert( path ) );
 
-        final DefaultIndexBuilder builder = new DefaultIndexBuilder( project,
+        final DefaultIndexBuilder builder = new DefaultIndexBuilder( Paths.convert(path).getFileName(),
+                                                                     project,
                                                                      pkg );
         final TestScenarioIndexVisitor visitor = new TestScenarioIndexVisitor( dmo,
                                                                                builder,
