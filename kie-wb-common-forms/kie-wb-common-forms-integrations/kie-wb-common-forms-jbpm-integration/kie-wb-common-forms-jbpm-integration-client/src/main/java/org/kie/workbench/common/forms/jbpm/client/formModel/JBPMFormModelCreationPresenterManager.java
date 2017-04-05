@@ -96,7 +96,6 @@ public class JBPMFormModelCreationPresenterManager implements FormModelCreationV
     @Override
     public void reset() {
         view.reset();
-        newResourcePresenter.setResourceName( "" );
     }
 
     @Override
@@ -110,9 +109,7 @@ public class JBPMFormModelCreationPresenterManager implements FormModelCreationV
         this.model = model;
 
         if ( model != null ) {
-            newResourcePresenter.setResourceName( model.getFormName() );
-        } else {
-            newResourcePresenter.setResourceName( "" );
+            newResourcePresenter.setResourceName(model.getFormName());
         }
     }
 }

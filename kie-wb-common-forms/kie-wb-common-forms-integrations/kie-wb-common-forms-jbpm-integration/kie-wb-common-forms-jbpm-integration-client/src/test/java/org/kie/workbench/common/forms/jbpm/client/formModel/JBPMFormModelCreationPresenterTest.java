@@ -115,8 +115,6 @@ public class JBPMFormModelCreationPresenterTest {
 
         presenter.reset();
 
-        verify( newResourcePresenter, times( 2 ) ).setResourceName( "" );
-
         boolean isValid = presenter.isValid();
 
         assertTrue( isValid );

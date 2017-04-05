@@ -76,8 +76,6 @@ public class DataObjectFormModelCreationViewImpl implements DataObjectFormModelC
     @Override
     public void reset() {
         listBox.setValue( null );
-        listBox.setAcceptableValues( new ArrayList<>() );
-        listBox.reset();
         clearValidationErrors();
     }
 
