@@ -20,10 +20,10 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.event.dom.client.MouseDownEvent;
-import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Document;
 import org.jboss.errai.common.client.dom.HTMLElement;
+import org.jboss.errai.common.client.dom.Paragraph;
 import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.ui.client.local.api.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
@@ -44,7 +44,7 @@ public class DefinitionPaletteCategoryWidgetViewImpl implements DefinitionPalett
 
     @Inject
     @DataField
-    private Anchor categoryIcon;
+    private Paragraph categoryIcon;
 
     @Inject
     @DataField

@@ -86,9 +86,12 @@ public class SVGIconRendererViewImpl implements SVGIconRendererView,
                                                   size + "px");
                 svgElement.getStyle().setProperty("height",
                                                   size + "px");
-                svgElement.getStyle().setProperty("position", "absolute");
-                svgElement.getStyle().setProperty("top", "0px");
-                svgElement.getStyle().setProperty("left", "0px");
+                svgElement.getStyle().setProperty("position",
+                                                  "absolute");
+                svgElement.getStyle().setProperty("top",
+                                                  "0px");
+                svgElement.getStyle().setProperty("left",
+                                                  "0px");
             }
         }
     }
