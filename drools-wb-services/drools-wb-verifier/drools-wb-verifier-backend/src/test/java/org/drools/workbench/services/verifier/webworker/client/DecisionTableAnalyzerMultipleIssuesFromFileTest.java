@@ -23,6 +23,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.plugin.client.api.FactTypes;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -176,6 +177,34 @@ public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpd
                        3);
     }
 
+    @Ignore
+    @Test
+    public void testSubsumptionAndRedundancyMultipleFields() throws Exception {
+        analyze("subsumptionAndRedundancyMultipleFields.gdst");
+
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       SUBSUMPTANT_ROWS,
+                       Severity.WARNING,
+                       1,
+                       2);
+
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       SUBSUMPTANT_ROWS,
+                       Severity.WARNING,
+                       1,
+                       3);
+
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       REDUNDANT_ROWS,
+                       Severity.WARNING,
+                       2,
+                       3);
+
+        assertOnlyContains(analyzerProvider.getAnalysisReport(),
+                           SUBSUMPTANT_ROWS,
+                           REDUNDANT_ROWS);
+    }
+
     @Test
     public void testSubsumptionAndConflict() throws Exception {
         analyze("subsumptionAndConflict.gdst");
@@ -197,6 +226,27 @@ public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpd
                        4);
     }
 
+    @Ignore
+    @Test
+    public void testSubsumptionAndMissingAction() throws Exception {
+        analyze("subsumptionAndMissingAction.gdst");
+
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       SUBSUMPTANT_ROWS,
+                       Severity.WARNING,
+                       1,
+                       2);
+
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       RULE_HAS_NO_ACTION,
+                       Severity.WARNING,
+                       3);
+
+        assertOnlyContains(analyzerProvider.getAnalysisReport(),
+                           SUBSUMPTANT_ROWS,
+                           RULE_HAS_NO_ACTION);
+    }
+
     @Test
     public void testRedundancyAndConflicts() throws Exception {
         analyze("redundancyAndConflicts.gdst");
@@ -216,6 +266,34 @@ public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpd
                        Severity.WARNING,
                        2,
                        4);
+    }
+
+    @Ignore
+    @Test
+    public void testRedundancyAndConflictsMultipleFields() throws Exception {
+        analyze("redundancyAndConflictsMultipleFields.gdst");
+
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       REDUNDANT_ROWS,
+                       Severity.WARNING,
+                       1,
+                       2);
+
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       CONFLICTING_ROWS,
+                       Severity.WARNING,
+                       1,
+                       3);
+
+        assertContains(analyzerProvider.getAnalysisReport(),
+                       CONFLICTING_ROWS,
+                       Severity.WARNING,
+                       2,
+                       3);
+
+        assertOnlyContains(analyzerProvider.getAnalysisReport(),
+                           REDUNDANT_ROWS,
+                           CONFLICTING_ROWS);
     }
 
     @Test
