@@ -80,6 +80,7 @@ public class PermissionTreeSetup {
         perspectiveTreeProvider.setPerspectiveName(JOBS, i18n.Jobs());
         perspectiveTreeProvider.setPerspectiveName(TASKS, i18n.Tasks());
         perspectiveTreeProvider.setPerspectiveName(PROCESS_DASHBOARD, i18n.Process_Dashboard());
+        perspectiveTreeProvider.setPerspectiveName(BUSINESS_DASHBOARDS, i18n.Business_Dashboards());
 
         // Exclude some perspectives
         perspectiveTreeProvider.excludePerspectiveId("AuthoringPerspectiveNoContext"); /* kie-wb-distributions */
@@ -89,6 +90,7 @@ public class PermissionTreeSetup {
         perspectiveTreeProvider.excludePerspectiveId("StandaloneEditorPerspective"); /* uberfire */
         perspectiveTreeProvider.excludePerspectiveId("WiresTreesPerspective"); /* uberfire */
         perspectiveTreeProvider.excludePerspectiveId("WiresGridsDemoPerspective"); /* uberfire */
+        perspectiveTreeProvider.excludePerspectiveId("PreferencesCentralPerspective"); /* uberfire */
 
         // Set the desired display order
         workbenchTreeProvider.setRootNodePosition(0);

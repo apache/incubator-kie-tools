@@ -23,6 +23,5 @@ import org.kie.workbench.common.screens.datamodeller.security.DataModelerFeature
  */
 public interface WorkbenchFeatures extends DataModelerFeatures {
 
-    String MANAGE_DASHBOARDS ="dashboard.manage";
     String PLANNER_AVAILABLE ="planner.available";
 }

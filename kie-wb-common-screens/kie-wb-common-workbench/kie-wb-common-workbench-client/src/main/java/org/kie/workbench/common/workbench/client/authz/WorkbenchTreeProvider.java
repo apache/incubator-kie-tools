@@ -34,7 +34,6 @@ import org.uberfire.security.client.authz.tree.impl.PermissionLeafNode;
 
 import static org.guvnor.m2repo.security.MavenRepositoryPagedJarTableFeatures.JAR_DOWNLOAD;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_SOURCES;
-import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.MANAGE_DASHBOARDS;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.PLANNER_AVAILABLE;
 
 /**
@@ -92,13 +91,10 @@ public class WorkbenchTreeProvider implements PermissionTreeProvider {
             PermissionLeafNode node2 = createPermissionLeafNode(EDIT_SOURCES,
                                                                 i18n.DataModelerEditSources(),
                                                                 i18n.DataModelerEditSourcesHelp());
-            PermissionLeafNode node3 = createPermissionLeafNode(MANAGE_DASHBOARDS,
-                                                                i18n.ManageDashboards(),
-                                                                i18n.ManageDashboardsHelp());
-            PermissionLeafNode node4 = createPermissionLeafNode(PLANNER_AVAILABLE,
+            PermissionLeafNode node3 = createPermissionLeafNode(PLANNER_AVAILABLE,
                                                                 i18n.ResourcePlanner(),
                                                                 i18n.ResourcePlannerHelp());
-            PermissionLeafNode node5 = createPermissionLeafNode(JAR_DOWNLOAD,
+            PermissionLeafNode node4 = createPermissionLeafNode(JAR_DOWNLOAD,
                                                                 i18n.MavenRepositoryPagedJarTableDownloadJar(),
                                                                 i18n.MavenRepositoryPagedJarTableDownloadJarHelp());
 
@@ -106,7 +102,6 @@ public class WorkbenchTreeProvider implements PermissionTreeProvider {
             result.add(node2);
             result.add(node3);
             result.add(node4);
-            result.add(node5);
 
             callback.afterLoad(result);
         }

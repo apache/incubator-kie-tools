@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.dashbuilder.navigation.NavTree;
+import org.dashbuilder.navigation.impl.NavTreeBuilder;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
@@ -46,6 +48,7 @@ import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.views.pfly.menu.UserMenu;
 import org.uberfire.client.workbench.widgets.menu.UtilityMenuBar;
 import org.uberfire.mvp.Command;
+import org.uberfire.workbench.model.menu.MenuGroup;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
@@ -309,6 +312,34 @@ public class DefaultWorkbenchFeaturesMenusHelperTest {
 
         final String redirectURL = redirectURLCaptor.getValue();
         assertTrue( redirectURL.contains( "/logout.jsp?locale=en_GB" ) );
+    }
+
+    @Test
+    public void buildMenusFromNavTreeTest() {
+        NavTree navTree = new NavTreeBuilder()
+                .group("g1", "g1", "g1", true)
+                    .item("i1", "i1", "i1", true)
+                    .endGroup()
+                .group("g2", "g2", "g2", true)
+                    .item("i2", "i2", "i2", true)
+                    .endGroup()
+                .build();
+
+        Menus menus = menusHelper.buildMenusFromNavTree(navTree).build();
+        List<MenuItem> menuItems = menus.getItems();
+        assertEquals(menuItems.size(), 2);
+
+        MenuGroup group1 = (MenuGroup) menuItems.get(0);
+        assertEquals(group1.getCaption(), "g1");
+        assertEquals(group1.getItems().size(), 1);
+        MenuItem item1 = group1.getItems().get(0);
+        assertEquals(item1.getCaption(), "i1");
+
+        MenuGroup group2 = (MenuGroup) menuItems.get(1);
+        assertEquals(group2.getCaption(), "g2");
+        assertEquals(group2.getItems().size(), 1);
+        MenuItem item2 = group2.getItems().get(0);
+        assertEquals(item2.getCaption(), "i2");
     }
 
     private void mockGroups() {

@@ -22,10 +22,16 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.LocaleInfo;
+import org.dashbuilder.navigation.NavDivider;
+import org.dashbuilder.navigation.NavGroup;
+import org.dashbuilder.navigation.NavItem;
+import org.dashbuilder.navigation.NavTree;
+import org.dashbuilder.navigation.workbench.NavWorkbenchCtx;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -36,7 +42,6 @@ import org.jboss.errai.security.shared.service.AuthenticationService;
 import org.kie.workbench.common.widgets.client.menu.AboutMenuBuilder;
 import org.kie.workbench.common.widgets.client.menu.AppLauncherMenuBuilder;
 import org.kie.workbench.common.widgets.client.menu.ResetPerspectivesMenuBuilder;
-import org.kie.workbench.common.workbench.client.admin.DefaultAdminPageHelper;
 import org.kie.workbench.common.workbench.client.library.LibraryMonitor;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.uberfire.client.menu.CustomSplashHelp;
@@ -51,6 +56,7 @@ import org.uberfire.mvp.Command;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.ConditionalPlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
+import org.uberfire.workbench.model.ActivityResourceType;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
@@ -58,38 +64,40 @@ import org.uberfire.workbench.model.menu.Menus;
 import static org.kie.workbench.common.workbench.client.PerspectiveIds.*;
 import static org.uberfire.workbench.model.menu.MenuFactory.*;
 
+@ApplicationScoped
 public class DefaultWorkbenchFeaturesMenusHelper {
 
     DefaultWorkbenchConstants constants = DefaultWorkbenchConstants.INSTANCE;
 
-    @Inject
     protected SyncBeanManager iocManager;
-
-    @Inject
     private ActivityManager activityManager;
-
-    @Inject
     private PerspectiveManager perspectiveManager;
-
-    @Inject
     protected Caller<AuthenticationService> authService;
-
-    @Inject
     protected User identity;
-
-    @Inject
     protected UserMenu userMenu;
-
-    @Inject
     protected UtilityMenuBar utilityMenuBar;
-
-    @Inject
-    protected DefaultAdminPageHelper adminPageHelper;
-
-    @Inject
     protected LibraryMonitor libraryMonitor;
 
-    public List<? extends MenuItem> getHomeViews( final boolean socialEnabled ) {
+    @Inject
+    public DefaultWorkbenchFeaturesMenusHelper(SyncBeanManager iocManager,
+                                               ActivityManager activityManager,
+                                               PerspectiveManager perspectiveManager,
+                                               Caller<AuthenticationService> authService,
+                                               User identity,
+                                               UserMenu userMenu,
+                                               UtilityMenuBar utilityMenuBar,
+                                               LibraryMonitor libraryMonitor) {
+        this.iocManager = iocManager;
+        this.activityManager = activityManager;
+        this.perspectiveManager = perspectiveManager;
+        this.authService = authService;
+        this.identity = identity;
+        this.userMenu = userMenu;
+        this.utilityMenuBar = utilityMenuBar;
+        this.libraryMonitor = libraryMonitor;
+    }
+
+    public List<? extends MenuItem> getHomeViews(final boolean socialEnabled ) {
         final AbstractWorkbenchPerspectiveActivity defaultPerspective = getDefaultPerspectiveActivity();
         final List<MenuItem> result = new ArrayList<>( 1 );
 
@@ -266,6 +274,73 @@ public class DefaultWorkbenchFeaturesMenusHelper {
         }
 
         return result;
+    }
+
+    public TopLevelMenusBuilder<MenuBuilder> buildMenusFromNavTree(NavTree navTree) {
+        MenuBuilder<TopLevelMenusBuilder<MenuBuilder>> builder = null;
+        for (NavItem navItem : navTree.getRootItems()) {
+
+            // Skip dividers
+            if (navItem instanceof NavDivider) {
+                continue;
+            }
+            // Build a top level menu entry
+            if (builder == null) {
+                builder = MenuFactory.newTopLevelMenu(navItem.getName());
+            } else {
+                builder = builder.endMenu().newTopLevelMenu(navItem.getName());
+            }
+            // Append its children
+            if (navItem instanceof NavGroup) {
+                List<MenuItem> childItems = buildMenuItemsFromNavGroup((NavGroup) navItem);
+                builder.withItems(childItems);
+            }
+            // Append the place request
+            NavWorkbenchCtx navCtx = NavWorkbenchCtx.get(navItem);
+            if (navCtx.getResourceId() != null && ActivityResourceType.PERSPECTIVE.equals(navCtx.getResourceType())) {
+                PlaceRequest placeRequest = resolvePlaceRequest(navCtx.getResourceId());
+                builder = builder.place(placeRequest);
+            }
+        }
+        return builder != null ? builder.endMenu() : null;
+    }
+
+    public List<MenuItem> buildMenuItemsFromNavGroup(NavGroup navGroup) {
+        List<MenuItem> result = new ArrayList<>();
+        for (NavItem navItem : navGroup.getChildren()) {
+
+            // Skip dividers
+            if (navItem instanceof NavDivider) {
+                continue;
+            }
+            // Append its children
+            MenuBuilder<Builder> builder = MenuFactory.newSimpleItem(navItem.getName());
+            if (navItem instanceof NavGroup) {
+                List<MenuItem> childItems = buildMenuItemsFromNavGroup((NavGroup) navItem);
+                builder.withItems(childItems);
+            }
+            // Append the place request
+            NavWorkbenchCtx navCtx = NavWorkbenchCtx.get(navItem);
+            if (navCtx.getResourceId() != null && ActivityResourceType.PERSPECTIVE.equals(navCtx.getResourceType())) {
+                PlaceRequest placeRequest = resolvePlaceRequest(navCtx.getResourceId());
+                builder.place(placeRequest);
+            }
+            // Build the menu item & continue with the next one
+            MenuItem menuItem = builder.endMenu().build().getItems().get(0);
+            result.add(menuItem);
+        }
+        return result;
+    }
+
+    public PlaceRequest resolvePlaceRequest(String perspectiveId) {
+        switch (perspectiveId) {
+            case AUTHORING:
+                return new ConditionalPlaceRequest(AUTHORING)
+                        .when(p -> libraryMonitor.thereIsAtLeastOneProjectAccessible())
+                        .orElse(new DefaultPlaceRequest(LIBRARY));
+            default:
+                return new DefaultPlaceRequest(perspectiveId);
+        }
     }
 
     protected class LogoutCommand implements Command {

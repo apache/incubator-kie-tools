@@ -1135,6 +1135,10 @@
             <compileSourcesArtifact>org.uberfire:uberfire-security-management-client-wb</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-widgets-security-management</compileSourcesArtifact>
 
+            <!-- Dashbuilder -->
+            <compileSourcesArtifact>org.dashbuilder:dashbuilder-json</compileSourcesArtifact>
+            <compileSourcesArtifact>org.dashbuilder:dashbuilder-navigation-api</compileSourcesArtifact>
+
             <!-- Drools & Guvnor. -->
             <compileSourcesArtifact>org.kie.workbench.services:kie-wb-common-datamodel-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-workbench-models-datamodel-api</compileSourcesArtifact>

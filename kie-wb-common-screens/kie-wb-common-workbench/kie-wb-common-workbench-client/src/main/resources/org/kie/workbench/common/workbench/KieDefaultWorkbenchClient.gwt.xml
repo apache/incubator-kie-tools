@@ -20,6 +20,9 @@
   <inherits name="org.kie.workbench.common.screens.library.LibraryClient"/>
   <inherits name='org.gwtbootstrap3.extras.typeahead.Typeahead'/>
 
+  <inherits name="org.dashbuilder.JSON"/>
+  <inherits name="org.dashbuilder.NavigationAPI"/>
+
   <source path="client"/>
   <source path="shared"/>
 

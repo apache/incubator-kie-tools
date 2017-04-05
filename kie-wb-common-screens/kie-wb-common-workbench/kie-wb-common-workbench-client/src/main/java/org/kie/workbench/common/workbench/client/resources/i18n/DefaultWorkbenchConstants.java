@@ -71,6 +71,8 @@ public interface DefaultWorkbenchConstants
 
     String Process_Dashboard();
 
+    String Business_Dashboards();
+
     String Group();
 
     String DocksOptaPlannerTitle();
@@ -101,8 +103,6 @@ public interface DefaultWorkbenchConstants
 
     String DataModelerEditSources();
 
-    String ManageDashboards();
-
     String ResourcePlanner();
 
     String WorkbenchRootNodeHelp();
@@ -114,8 +114,6 @@ public interface DefaultWorkbenchConstants
     String ReleaseProjectsHelp();
 
     String DataModelerEditSourcesHelp();
-
-    String ManageDashboardsHelp();
 
     String ResourcePlannerHelp();
 

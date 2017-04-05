@@ -30,7 +30,6 @@ import org.uberfire.security.impl.authz.DefaultPermissionManager;
 
 import static org.guvnor.m2repo.security.MavenRepositoryPagedJarTableFeatures.JAR_DOWNLOAD;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.EDIT_SOURCES;
-import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.MANAGE_DASHBOARDS;
 import static org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures.PLANNER_AVAILABLE;
 import static org.mockito.Mockito.*;
 
@@ -41,7 +40,6 @@ public class WorkbenchTreeProviderTest {
 
             RepositoryFeatures.CONFIGURE_REPOSITORY,
             EDIT_SOURCES,
-            MANAGE_DASHBOARDS,
             PLANNER_AVAILABLE,
             JAR_DOWNLOAD
     };

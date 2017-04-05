@@ -134,6 +134,10 @@
       <groupId>org.uberfire</groupId>
       <artifactId>uberfire-security-management-client</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-navigation-api</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>javax.inject</groupId>
