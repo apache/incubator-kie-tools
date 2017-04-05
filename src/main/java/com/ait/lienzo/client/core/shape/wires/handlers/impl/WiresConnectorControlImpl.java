@@ -1,16 +1,34 @@
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.event.*;
+import com.ait.lienzo.client.core.event.NodeDragEndEvent;
+import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
+import com.ait.lienzo.client.core.event.NodeMouseEnterEvent;
+import com.ait.lienzo.client.core.event.NodeMouseEnterHandler;
+import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
+import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
-import com.ait.lienzo.client.core.shape.wires.*;
+import com.ait.lienzo.client.core.shape.wires.BackingColorMapUtils;
+import com.ait.lienzo.client.core.shape.wires.IControlHandle;
+import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
+import com.ait.lienzo.client.core.shape.wires.MagnetManager;
+import com.ait.lienzo.client.core.shape.wires.WiresConnector;
+import com.ait.lienzo.client.core.shape.wires.WiresManager;
+import com.ait.lienzo.client.core.shape.wires.WiresUtils;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectionControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresDragControlContext;
-import com.ait.lienzo.client.core.types.*;
+import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.PathPartEntryJSO;
+import com.ait.lienzo.client.core.types.PathPartList;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
@@ -139,39 +157,46 @@ public class WiresConnectorControlImpl implements WiresConnectorControl {
     }
 
     @Override
-    public void destroyControlPoint( final Object control ) {
+    public void destroyControlPoint(final Object control) {
+        // Connection (line) need at least 2 points to be drawn
+        if (m_connector.getPointHandles().size() <= 2)
+        {
+            m_wiresManager.deregister(m_connector);
+            return;
+        }
 
         IControlHandle selected = null;
 
-        for ( IControlHandle handle : m_connector.getPointHandles() ) {
-            if ( handle.getControl() == control ) {
+        for (IControlHandle handle : m_connector.getPointHandles())
+        {
+            if (handle.getControl() == control)
+            {
                 selected = handle;
-
                 break;
             }
         }
-        if ( null == selected ) {
+
+        if (null == selected)
+        {
             return;
         }
+
         Point2DArray oldPoints = m_connector.getLine().getPoint2DArray();
-
         Point2DArray newPoints = new Point2DArray();
-
         Point2D selectedPoint2D = selected.getControl().getLocation();
+        for (int i = 0; i < oldPoints.size(); i++)
+        {
+            Point2D current = oldPoints.get(i);
 
-        for ( int i = 0; i < oldPoints.size(); i++ ) {
-            Point2D current = oldPoints.get( i );
-
-            if ( !current.equals( selectedPoint2D ) ) {
-                newPoints.push( current );
+            if (!current.equals(selectedPoint2D))
+            {
+                newPoints.push(current);
             }
         }
+
         m_connector.destroyPointHandles();
-
-        m_connector.getLine().setPoint2DArray( newPoints );
-
+        m_connector.getLine().setPoint2DArray(newPoints);
         showPointHandles();
-
     }
 
     @Override
