@@ -35,6 +35,7 @@ import org.kie.workbench.common.screens.datamodeller.model.persistence.Property;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.TransactionType;
 import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorService;
 import org.kie.workbench.common.screens.datamodeller.util.PersistenceDescriptorXMLMarshaller;
+import org.kie.workbench.common.screens.datamodeller.validation.PersistenceDescriptorValidator;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
@@ -55,18 +56,23 @@ public class PersistenceDescriptorServiceImpl implements PersistenceDescriptorSe
 
     private KieProjectService projectService;
 
+    private PersistenceDescriptorValidator descriptorValidator;
+
     public PersistenceDescriptorServiceImpl() {
+        //Empty constructor for Weld proxying
     }
 
     @Inject
     public PersistenceDescriptorServiceImpl(
             final @Named( "ioStrategy" ) IOService ioService,
             final KieProjectService projectService,
+            final PersistenceDescriptorValidator descriptorValidator,
             final MetadataService metadataService,
             final CommentedOptionFactory optionsFactory ) {
 
         this.ioService = ioService;
         this.projectService = projectService;
+        this.descriptorValidator = descriptorValidator;
         this.metadataService = metadataService;
         this.optionsFactory = optionsFactory;
     }
@@ -131,8 +137,7 @@ public class PersistenceDescriptorServiceImpl implements PersistenceDescriptorSe
 
     @Override
     public List<ValidationMessage> validate( Path path, PersistenceDescriptorModel model ) {
-        //TODO implement validation
-        return null;
+        return descriptorValidator.validate( path, model );
     }
 
     @Override

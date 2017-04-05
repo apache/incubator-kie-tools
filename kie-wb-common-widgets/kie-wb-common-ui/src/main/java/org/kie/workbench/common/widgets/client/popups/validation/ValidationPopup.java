@@ -64,6 +64,10 @@ public class ValidationPopup implements ValidationPopupView.Presenter {
                           messages );
     }
 
+    public void showTranslatedMessages( final List<ValidationMessage> messages ) {
+        showMessages( validationMessageTranslatorUtils.translate( messages ) );
+    }
+
     public void showCopyValidationMessages( final Command yesCommand,
                                             final Command cancelCommand,
                                             final List<ValidationMessage> validationMessages ) {

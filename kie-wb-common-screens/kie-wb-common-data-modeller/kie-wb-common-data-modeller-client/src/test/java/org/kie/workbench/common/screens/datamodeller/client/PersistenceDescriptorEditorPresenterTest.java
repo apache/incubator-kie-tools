@@ -16,88 +16,106 @@
 
 package org.kie.workbench.common.screens.datamodeller.client;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.guvnor.common.services.shared.metadata.model.Metadata;
+import com.google.gwtmockito.GwtMock;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.guvnor.common.services.shared.metadata.model.Overview;
-import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.api.ErrorCallback;
-import org.jboss.errai.common.client.api.RemoteCallback;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.ClassRow;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.ClassRowImpl;
-import org.kie.workbench.common.screens.datamodeller.client.widgets.datasourceselector.DataSourceSelector;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.PersistenceUnitPropertyGrid;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.ProjectClassList;
 import org.kie.workbench.common.screens.datamodeller.client.type.PersistenceDescriptorType;
+import org.kie.workbench.common.screens.datamodeller.client.widgets.datasourceselector.DataSourceSelector;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorEditorContent;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceDescriptorModel;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.PersistenceUnitModel;
 import org.kie.workbench.common.screens.datamodeller.model.persistence.TransactionType;
 import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorEditorService;
+import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorService;
+import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
+import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorWrapperView;
 import org.kie.workbench.common.widgets.metadata.client.widget.OverviewWidgetPresenter;
+import org.mockito.Mock;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.editor.commons.client.history.VersionRecordManager;
+import org.uberfire.mocks.CallerMock;
+import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 
-import com.google.gwtmockito.GwtMock;
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 @RunWith( GwtMockitoTestRunner.class)
 public class PersistenceDescriptorEditorPresenterTest {
 
     @GwtMock
-    PersistenceDescriptorType persistenceDescriptorType;
+    private PersistenceDescriptorType persistenceDescriptorType;
 
     @GwtMock
-    PersistenceDescriptorEditorView view;
+    private PersistenceDescriptorEditorView view;
 
     @GwtMock
-    PersistenceUnitPropertyGrid propertyGrid;
+    private PersistenceUnitPropertyGrid propertyGrid;
 
     @GwtMock
-    DataSourceSelector dataSourceSelector;
+    private DataSourceSelector dataSourceSelector;
 
     @GwtMock
-    ProjectClassList projectClassList;
+    private ProjectClassList projectClassList;
 
     @GwtMock
-    ObservablePath path;
+    private ObservablePath path;
 
     @GwtMock
-    VersionRecordManager _versionRecordManager;
+    private VersionRecordManager _versionRecordManager;
 
-    PersistenceDescriptorEditorPresenter presenter;
+    private PersistenceDescriptorEditorPresenter presenter;
+
+    @Mock
+    private ValidationPopup validationPopup;
+
+    @Mock
+    private PersistenceDescriptorEditorService editorService;
+
+    @Mock
+    private PersistenceDescriptorService descriptorService;
+
+    @Mock
+    private DataModelerService dataModelerService;
+
+    @Mock
+    private EventSourceMock<NotificationEvent> notificationEvent;
 
     @Before
     public void setup() {
         presenter = new PersistenceDescriptorEditorPresenter( view,
                                                               persistenceDescriptorType,
                                                               dataSourceSelector,
-                                                              new PersistenceDescriptorEditorServiceCallerMock(),
-                                                              null,
-                                                              new DataModelerServiceCallerMock()
+                                                              new CallerMock<>( editorService ),
+                                                              new CallerMock<>( descriptorService ),
+                                                              new CallerMock<>( dataModelerService ),
+                                                              validationPopup
                                                                 ) {
             {
                 kieView = mock( KieEditorWrapperView.class );
                 this.versionRecordManager = _versionRecordManager;
                 overviewWidget = mock( OverviewWidgetPresenter.class );
+                this.notification = notificationEvent;
             }
 
             protected void makeMenuBar() {
@@ -110,6 +128,8 @@ public class PersistenceDescriptorEditorPresenterTest {
 
         };
         verify( view, times( 1 ) ).setPresenter( presenter );
+        when( editorService.loadContent( any( Path.class ), anyBoolean() ) ).thenReturn( createEditorContent() );
+        when( dataModelerService.findPersistableClasses( any( Path.class ) ) ).thenReturn( createPersistableClasses() );
     }
 
     private void loadContent() {
@@ -239,6 +259,7 @@ public class PersistenceDescriptorEditorPresenterTest {
         classRows.add( new ClassRowImpl( "Class4" ) );
         projectClassList.setClasses( classRows );
         when( projectClassList.getClasses() ).thenReturn( classRows );
+        when( dataModelerService.isPersistableClass( eq( "NewClass" ), any( Path.class ) ) ).thenReturn( true );
 
         presenter.onLoadClass( "NewClass" );
         classRows.add( new ClassRowImpl( "NewClass" ) );
@@ -256,125 +277,55 @@ public class PersistenceDescriptorEditorPresenterTest {
         assertEquals( classRows.get( 2 ).getClassName(), "NewClass" );
     }
 
-    private class PersistenceDescriptorEditorServiceCallerMock
-            implements Caller<PersistenceDescriptorEditorService> {
-
-        PersistenceDescriptorEditorService editorService = new PersistenceDescriptorEditorServiceMock();
-        RemoteCallback remoteCallback;
-
-        @Override public PersistenceDescriptorEditorService call() {
-            return editorService;
-        }
-
-        @Override public PersistenceDescriptorEditorService call( RemoteCallback<?> remoteCallback ) {
-            return call( remoteCallback, null );
-        }
-
-        @Override public PersistenceDescriptorEditorService call( RemoteCallback<?> remoteCallback, ErrorCallback<?> errorCallback ) {
-            this.remoteCallback = remoteCallback;
-            return editorService;
-        }
-
-        private class PersistenceDescriptorEditorServiceMock
-                implements PersistenceDescriptorEditorService {
-
-            @Override public PersistenceDescriptorEditorContent loadContent( Path path ) {
-                return null;
-            }
-
-            @Override public PersistenceDescriptorEditorContent loadContent( Path path, boolean createDefaultContent ) {
-                PersistenceDescriptorEditorContent content = new PersistenceDescriptorEditorContent();
-                PersistenceDescriptorModel model = new PersistenceDescriptorModel();
-                model.setVersion( "2.0" );
-                PersistenceUnitModel unitModel = new PersistenceUnitModel();
-                model.setPersistenceUnit( unitModel );
-
-                unitModel.setName( "UnitName" );
-                unitModel.setTransactionType( TransactionType.JTA );
-                unitModel.setProvider( "ProviderClass" );
-                unitModel.setJtaDataSource( "JTADataSource" );
-                List<String> classes = new ArrayList<String>(  );
-                classes.add( "Class1" );
-                classes.add( "Class2" );
-                unitModel.setClasses( classes );
-
-                content.setDescriptorModel( model );
-                content.setOverview( new Overview() );
-
-                remoteCallback.callback( content );
-                return content;
-            }
-
-            @Override public Path save( Path path, PersistenceDescriptorEditorContent content, Metadata metadata, String comment ) {
-                return null;
-            }
-        }
+    @Test
+    public void testOnValidateWithNoMessages() {
+        loadContent();
+        List<ValidationMessage> messages = new ArrayList<>(  );
+        when( descriptorService.validate( path, presenter.getContent().getDescriptorModel() ) ).thenReturn( messages );
+        presenter.onValidate().execute();
+        verify( validationPopup, never() ).showTranslatedMessages( anyList() );
+        verify( notificationEvent, times( 1 ) ).fire( new NotificationEvent(
+                CommonConstants.INSTANCE.ItemValidatedSuccessfully( ),
+                NotificationEvent.NotificationType.SUCCESS ) );
     }
 
-    private static class DataModelerServiceCallerMock
-                    implements Caller<DataModelerService> {
+    @Test
+    public void testOnValidateWithMessages() {
+        loadContent();
+        List<ValidationMessage> messages = new ArrayList<>(  );
+        messages.add( mock( ValidationMessage.class ) );
+        messages.add( mock( ValidationMessage.class ) );
 
-        RemoteCallback remoteCallback;
-
-        @Override
-        public DataModelerService call() {
-            return DataModelerServiceMockProxy.getProxyInstance(remoteCallback);
-        }
-
-        @Override
-        public DataModelerService call( RemoteCallback<?> remoteCallback ) {
-            return call( remoteCallback, null );
-        }
-
-        @Override
-        public DataModelerService call( RemoteCallback<?> remoteCallback, ErrorCallback<?> errorCallback ) {
-            this.remoteCallback = remoteCallback;
-            return DataModelerServiceMockProxy.getProxyInstance(remoteCallback);
-        }
-
-        /**
-         * And with this, I introduce the PROXY PATTERN!
-         *
-         * Travel the world,
-         * Learn the {@link InvocationHandler}/{@link Proxy} pattern,
-         * and save millions of pixels on your screen,
-         * -- not to mention the time saved by you AND others when reading your code!
-         *
-         * ;D
-         */
-        private static class DataModelerServiceMockProxy implements InvocationHandler {
-
-            private final RemoteCallback proxyOwnedRemoteCallback;
-
-            private DataModelerServiceMockProxy(RemoteCallback remoteCallback) {
-                this.proxyOwnedRemoteCallback = remoteCallback;
-            }
-
-            public static DataModelerService getProxyInstance(RemoteCallback remoteCallback) {
-                return (DataModelerService) Proxy.newProxyInstance(
-                        DataModelerServiceMockProxy.class.getClassLoader(),
-                        new Class [] { DataModelerService.class },
-                        new DataModelerServiceMockProxy(remoteCallback));
-            }
-
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                String methodName = method.getName();
-                if( "findPersistableClasses".equals(methodName) ) {
-                    List<String> classes = new ArrayList<String>();
-                    classes.add( "Class3" );
-                    classes.add( "Class4" );
-                    proxyOwnedRemoteCallback.callback( classes );
-                    return classes;
-                } else if( "isPersistableClass".equals(methodName) ) {
-                    proxyOwnedRemoteCallback.callback( true );
-                    return true;
-                } else {
-                    return null;
-                }
-            }
-
-        }
+        when( descriptorService.validate( path, presenter.getContent().getDescriptorModel() ) ).thenReturn( messages );
+        presenter.onValidate().execute();
+        verify( validationPopup, times( 1 ) ).showTranslatedMessages( messages );
     }
 
+    private PersistenceDescriptorEditorContent createEditorContent() {
+        PersistenceDescriptorEditorContent content = new PersistenceDescriptorEditorContent();
+        PersistenceDescriptorModel model = new PersistenceDescriptorModel();
+        model.setVersion( "2.0" );
+        PersistenceUnitModel unitModel = new PersistenceUnitModel();
+        model.setPersistenceUnit( unitModel );
+
+        unitModel.setName( "UnitName" );
+        unitModel.setTransactionType( TransactionType.JTA );
+        unitModel.setProvider( "ProviderClass" );
+        unitModel.setJtaDataSource( "JTADataSource" );
+        List<String> classes = new ArrayList<String>(  );
+        classes.add( "Class1" );
+        classes.add( "Class2" );
+        unitModel.setClasses( classes );
+
+        content.setDescriptorModel( model );
+        content.setOverview( new Overview() );
+        return content;
+    }
+
+    private List<String> createPersistableClasses() {
+        List<String> classes = new ArrayList<String>();
+        classes.add( "Class3" );
+        classes.add( "Class4" );
+        return classes;
+    }
 }

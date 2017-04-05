@@ -22,6 +22,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.datamodeller.client.pdescriptor.ClassRow;
@@ -40,6 +41,7 @@ import org.kie.workbench.common.screens.datamodeller.service.DataModelerService;
 import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorEditorService;
 import org.kie.workbench.common.screens.datamodeller.service.PersistenceDescriptorService;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
+import org.kie.workbench.common.widgets.client.popups.validation.ValidationPopup;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
 import org.uberfire.annotations.Customizable;
@@ -50,6 +52,7 @@ import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartTitleDecoration;
 import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.views.pfly.multipage.PageImpl;
+import org.uberfire.ext.widgets.common.client.callbacks.DefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.lifecycle.OnClose;
 import org.uberfire.lifecycle.OnFocus;
@@ -58,6 +61,7 @@ import org.uberfire.lifecycle.OnStartup;
 import org.uberfire.mvp.Command;
 import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
+import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
@@ -80,6 +84,8 @@ public class PersistenceDescriptorEditorPresenter
 
     private Caller<DataModelerService> dataModelerService;
 
+    private ValidationPopup validationPopup;
+
     private PersistenceDescriptorEditorContent content;
 
     private boolean createIfNotExists = false;
@@ -90,7 +96,8 @@ public class PersistenceDescriptorEditorPresenter
                                                  @Customizable final DataSourceSelector dataSourceSelector,
                                                  final Caller<PersistenceDescriptorEditorService> editorService,
                                                  final Caller<PersistenceDescriptorService> descriptorService,
-                                                 final Caller<DataModelerService> dataModelerService ) {
+                                                 final Caller<DataModelerService> dataModelerService,
+                                                 final ValidationPopup validationPopup ) {
         super( baseView );
         this.view = baseView;
         baseView.setPresenter( this );
@@ -99,7 +106,8 @@ public class PersistenceDescriptorEditorPresenter
         this.editorService = editorService;
         this.descriptorService = descriptorService;
         this.dataModelerService = dataModelerService;
-        view.showDataSourceSelector( dataSourceIntegrationEnabled() );
+        this.validationPopup = validationPopup;
+        view.showDataSourceSelector( dataSourceIntegrationEnabled( ) );
     }
 
     @OnStartup
@@ -356,6 +364,36 @@ public class PersistenceDescriptorEditorPresenter
                 new HasBusyIndicatorDefaultErrorCallback( view ) ).isPersistableClass( className, versionRecordManager.getCurrentPath() );
     }
 
+    @Override
+    protected Command onValidate() {
+        return new Command() {
+            @Override
+            public void execute() {
+                onValidateDescriptor();
+            }
+        };
+    }
+
+    protected void onValidateDescriptor( ) {
+        updateContent( );
+        descriptorService.call( getValidationSuccessCallback(), new DefaultErrorCallback( ) ).validate( versionRecordManager.getCurrentPath( ), content.getDescriptorModel( ) );
+    }
+
+    private RemoteCallback<List<ValidationMessage>> getValidationSuccessCallback() {
+        return new RemoteCallback<List<ValidationMessage>>() {
+            @Override
+            public void callback( List<ValidationMessage> messages ) {
+                if ( messages == null || messages.isEmpty( ) ) {
+                    notification.fire( new NotificationEvent(
+                            CommonConstants.INSTANCE.ItemValidatedSuccessfully( ),
+                            NotificationEvent.NotificationType.SUCCESS ) );
+                } else {
+                    validationPopup.showTranslatedMessages( messages );
+                }
+            }
+        };
+    }
+
     protected void updateContent() {
         content.getDescriptorModel().getPersistenceUnit().setProperties(
                 unWrappPropertiesList( view.getPersistenceUnitProperties().getProperties() ) );
@@ -476,4 +514,3 @@ public class PersistenceDescriptorEditorPresenter
     }
 
 }
-

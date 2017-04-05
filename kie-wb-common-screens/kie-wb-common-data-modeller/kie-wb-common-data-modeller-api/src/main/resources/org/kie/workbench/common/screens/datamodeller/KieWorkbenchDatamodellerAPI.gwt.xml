@@ -31,5 +31,6 @@
   <source path="service"/>
   <source path="events" />
   <source path="type" />
+  <source path="validation" />
 
 </module>

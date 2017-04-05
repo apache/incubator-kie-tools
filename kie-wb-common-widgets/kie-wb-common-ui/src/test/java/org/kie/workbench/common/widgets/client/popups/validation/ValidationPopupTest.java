@@ -102,4 +102,17 @@ public class ValidationPopupTest {
         verify( view ).setValidationMessages( translatedMessages );
         verify( view ).show();
     }
+
+    @Test
+    public void showTranslatedMessages() {
+        List<ValidationMessage> validationMessages = Arrays.asList( new ValidationMessage() );
+
+        validationPopup.showTranslatedMessages( validationMessages );
+
+        List<ValidationMessage> translatedMessages = Collections.emptyList();
+        when( validationMessageTranslatorUtils.translate( validationMessages ) ).thenReturn( translatedMessages );
+
+        verify( view ).setValidationMessages( translatedMessages );
+        verify( view ).show();
+    }
 }
