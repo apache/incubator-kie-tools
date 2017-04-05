@@ -85,19 +85,19 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
 
     private final Group headerCaption;
 
-    public GuidedDecisionTableViewImpl( final GridData uiModel,
-                                        final GridRenderer renderer,
-                                        final GuidedDecisionTableView.Presenter presenter,
-                                        final GuidedDecisionTable52 model,
-                                        final AsyncPackageDataModelOracle oracle,
-                                        final Set<PortableWorkDefinition> workItemDefinitions,
-                                        final Event<NotificationEvent> notificationEvent,
-                                        final EventBus eventBus,
-                                        final GuidedDecisionTablePresenter.Access access ) {
-        super( uiModel,
-               presenter,
-               presenter,
-               renderer );
+    public GuidedDecisionTableViewImpl(final GridData uiModel,
+                                       final GridRenderer renderer,
+                                       final GuidedDecisionTableView.Presenter presenter,
+                                       final GuidedDecisionTable52 model,
+                                       final AsyncPackageDataModelOracle oracle,
+                                       final Set<PortableWorkDefinition> workItemDefinitions,
+                                       final Event<NotificationEvent> notificationEvent,
+                                       final EventBus eventBus,
+                                       final GuidedDecisionTablePresenter.Access access) {
+        super(uiModel,
+              presenter,
+              presenter,
+              renderer);
         this.presenter = presenter;
         this.model = model;
         this.oracle = oracle;
@@ -107,67 +107,66 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
         this.access = access;
         this.headerCaption = makeHeaderCaption();
 
-        addNodeDragMoveHandler( ( event ) -> presenter.getModellerPresenter().updateRadar() );
+        addNodeDragMoveHandler((event) -> presenter.getModellerPresenter().updateRadar());
     }
 
     private Group makeHeaderCaption() {
         final Group g = new Group();
         final GuidedDecisionTableTheme theme = (GuidedDecisionTableTheme) renderer.getTheme();
-        final Rectangle r = theme.getBaseRectangle( GuidedDecisionTableTheme.ModelColumnType.CAPTION )
-                .setWidth( HEADER_CAPTION_WIDTH )
-                .setHeight( HEADER_CAPTION_HEIGHT );
+        final Rectangle r = theme.getBaseRectangle(GuidedDecisionTableTheme.ModelColumnType.CAPTION)
+                .setWidth(HEADER_CAPTION_WIDTH)
+                .setHeight(HEADER_CAPTION_HEIGHT);
 
         final MultiPath border = theme.getBodyGridLine();
-        border.M( 0.5,
-                  HEADER_CAPTION_HEIGHT + 0.5 )
-                .L( 0.5,
-                    0.5 )
-                .L( HEADER_CAPTION_WIDTH + 0.5,
-                    0.5 )
-                .L( HEADER_CAPTION_WIDTH + 0.5,
-                    HEADER_CAPTION_HEIGHT + 0.5 )
-                .L( 0.5,
-                    HEADER_CAPTION_HEIGHT + 0.5 );
+        border.M(0.5,
+                 HEADER_CAPTION_HEIGHT + 0.5)
+                .L(0.5,
+                   0.5)
+                .L(HEADER_CAPTION_WIDTH + 0.5,
+                   0.5)
+                .L(HEADER_CAPTION_WIDTH + 0.5,
+                   HEADER_CAPTION_HEIGHT + 0.5)
+                .L(0.5,
+                   HEADER_CAPTION_HEIGHT + 0.5);
 
         final Text caption = theme.getHeaderText()
-                .setText( model.getTableName() )
-                .setX( HEADER_CAPTION_WIDTH / 2 )
-                .setY( HEADER_CAPTION_HEIGHT / 2 );
+                .setText(model.getTableName())
+                .setX(HEADER_CAPTION_WIDTH / 2)
+                .setY(HEADER_CAPTION_HEIGHT / 2);
 
-        g.add( r );
-        g.add( caption );
-        g.add( border );
+        g.add(r);
+        g.add(caption);
+        g.add(border);
 
         //Add handler to enter/exit "pinned" mode
-        addNodeMouseDoubleClickHandler( ( event ) -> {
-            if ( isNodeMouseEventOverCaption( event ) ) {
-                if ( presenter.isGridPinned() ) {
-                    presenter.exitPinnedMode( () -> {/*Nothing*/} );
-
+        addNodeMouseDoubleClickHandler((event) -> {
+            if (isNodeMouseEventOverCaption(event)) {
+                if (presenter.isGridPinned()) {
+                    presenter.exitPinnedMode(() -> {/*Nothing*/});
                 } else {
-                    presenter.enterPinnedMode( GuidedDecisionTableViewImpl.this,
-                                               () -> {/*Nothing*/} );
+                    presenter.enterPinnedMode(GuidedDecisionTableViewImpl.this,
+                                              () -> {/*Nothing*/});
                 }
             }
-        } );
+        });
 
         return g;
     }
 
     @Override
-    public boolean onDragHandle( final INodeXYEvent event ) {
-        return isNodeMouseEventOverCaption( event );
+    public boolean onDragHandle(final INodeXYEvent event) {
+        return isNodeMouseEventOverCaption(event);
     }
 
-    private boolean isNodeMouseEventOverCaption( final INodeXYEvent event ) {
-        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate( this,
-                                                                           new Point2D( event.getX(),
-                                                                                        event.getY() ) );
+    private boolean isNodeMouseEventOverCaption(final INodeXYEvent event) {
+        final Point2D ap = CoordinateUtilities.convertDOMToGridCoordinate(this,
+                                                                          new Point2D(event.getX(),
+                                                                                      event.getY()));
         final double cx = ap.getX();
         final double cy = ap.getY();
 
-        if ( cx > headerCaption.getX() && cx < headerCaption.getX() + HEADER_CAPTION_WIDTH ) {
-            if ( cy > headerCaption.getY() && cy < headerCaption.getY() + HEADER_CAPTION_HEIGHT ) {
+        if (cx > headerCaption.getX() && cx < headerCaption.getX() + HEADER_CAPTION_WIDTH) {
+            if (cy > headerCaption.getY() && cy < headerCaption.getY() + HEADER_CAPTION_HEIGHT) {
                 return true;
             }
         }
@@ -175,170 +174,169 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
     }
 
     @Override
-    public void setLocation( final double x,
-                             final double y ) {
-        setLocation( new Point2D( x,
-                                  y ) );
+    public void setLocation(final double x,
+                            final double y) {
+        setLocation(new Point2D(x,
+                                y));
     }
 
     @Override
-    protected void drawHeader( final BaseGridRendererHelper.RenderingInformation renderingInformation,
-                               final boolean isSelectionLayer ) {
-        super.drawHeader( renderingInformation,
-                          isSelectionLayer );
+    protected void drawHeader(final BaseGridRendererHelper.RenderingInformation renderingInformation,
+                              final boolean isSelectionLayer) {
+        super.drawHeader(renderingInformation,
+                         isSelectionLayer);
 
-        headerCaption.setY( header == null ? 0.0 : header.getY() );
+        headerCaption.setY(header == null ? 0.0 : header.getY());
 
         final BaseGridRendererHelper.RenderingBlockInformation floatingBlockInformation = renderingInformation.getFloatingBlockInformation();
-        if ( !floatingBlockInformation.getColumns().isEmpty() ) {
-            headerCaption.setX( floatingBlockInformation.getX() );
-
+        if (!floatingBlockInformation.getColumns().isEmpty()) {
+            headerCaption.setX(floatingBlockInformation.getX());
         } else {
-            headerCaption.setX( 0.0 );
+            headerCaption.setX(0.0);
         }
 
-        add( headerCaption );
+        add(headerCaption);
     }
 
     @Override
-    public void newAttributeOrMetaDataColumn( final Set<String> reservedAttributeNames ) {
-        new GuidedDecisionTableAttributeSelectorPopup( reservedAttributeNames.toArray( new String[0] ),
-                                                       presenter ).show();
+    public void newAttributeOrMetaDataColumn(final Set<String> reservedAttributeNames) {
+        new GuidedDecisionTableAttributeSelectorPopup(reservedAttributeNames.toArray(new String[0]),
+                                                      presenter).show();
     }
 
     @Override
     public void newExtendedEntryConditionColumn() {
         final ConditionCol52 column = new ConditionCol52();
-        doNewConditionColumn( column );
+        doNewConditionColumn(column);
     }
 
     @Override
     public void newLimitedEntryConditionColumn() {
         final ConditionCol52 column = new LimitedEntryConditionCol52();
-        doNewConditionColumn( column );
+        doNewConditionColumn(column);
     }
 
-    private void doNewConditionColumn( final ConditionCol52 column ) {
-        final ConditionPopup popup = new ConditionPopup( model,
-                                                         oracle,
-                                                         presenter,
-                                                         new ConditionColumnCommand() {
-                                                             public void execute( final Pattern52 pattern,
-                                                                                  final ConditionCol52 column ) {
-                                                                 presenter.appendColumn( pattern,
-                                                                                         column );
-                                                             }
-                                                         },
-                                                         column,
-                                                         true,
-                                                         !access.isEditable() );
+    private void doNewConditionColumn(final ConditionCol52 column) {
+        final ConditionPopup popup = new ConditionPopup(model,
+                                                        oracle,
+                                                        presenter,
+                                                        new ConditionColumnCommand() {
+                                                            public void execute(final Pattern52 pattern,
+                                                                                final ConditionCol52 column) {
+                                                                presenter.appendColumn(pattern,
+                                                                                       column);
+                                                            }
+                                                        },
+                                                        column,
+                                                        true,
+                                                        !access.isEditable());
         popup.show();
     }
 
     @Override
     public void newExtendedEntryConditionBRLFragment() {
         final BRLConditionColumn column = new BRLConditionColumn();
-        final BRLConditionColumnViewImpl popup = new BRLConditionColumnViewImpl( model,
-                                                                                 oracle,
-                                                                                 presenter,
-                                                                                 eventBus,
-                                                                                 column,
-                                                                                 true,
-                                                                                 !access.isEditable() );
+        final BRLConditionColumnViewImpl popup = new BRLConditionColumnViewImpl(model,
+                                                                                oracle,
+                                                                                presenter,
+                                                                                eventBus,
+                                                                                column,
+                                                                                true,
+                                                                                !access.isEditable());
         popup.show();
     }
 
     @Override
     public void newLimitedEntryConditionBRLFragment() {
         final LimitedEntryBRLConditionColumn column = new LimitedEntryBRLConditionColumn();
-        final LimitedEntryBRLConditionColumnViewImpl popup = new LimitedEntryBRLConditionColumnViewImpl( model,
-                                                                                                         oracle,
-                                                                                                         presenter,
-                                                                                                         eventBus,
-                                                                                                         column,
-                                                                                                         true,
-                                                                                                         !access.isEditable() );
+        final LimitedEntryBRLConditionColumnViewImpl popup = new LimitedEntryBRLConditionColumnViewImpl(model,
+                                                                                                        oracle,
+                                                                                                        presenter,
+                                                                                                        eventBus,
+                                                                                                        column,
+                                                                                                        true,
+                                                                                                        !access.isEditable());
         popup.show();
     }
 
     @Override
     public void newExtendedEntryActionInsertColumn() {
         final ActionInsertFactCol52 column = new ActionInsertFactCol52();
-        doNewActionInsertColumn( column );
+        doNewActionInsertColumn(column);
     }
 
     @Override
     public void newLimitedEntryActionInsertColumn() {
         final LimitedEntryActionInsertFactCol52 column = new LimitedEntryActionInsertFactCol52();
-        doNewActionInsertColumn( column );
+        doNewActionInsertColumn(column);
     }
 
-    private void doNewActionInsertColumn( final ActionInsertFactCol52 column ) {
-        final ActionInsertFactPopup popup = new ActionInsertFactPopup( model,
-                                                                       oracle,
-                                                                       presenter,
-                                                                       new ActionColumnCommand() {
-                                                                           public void execute( final ActionCol52 column ) {
-                                                                               presenter.appendColumn( column );
-                                                                           }
-                                                                       },
-                                                                       column,
-                                                                       true,
-                                                                       !access.isEditable() );
+    private void doNewActionInsertColumn(final ActionInsertFactCol52 column) {
+        final ActionInsertFactPopup popup = new ActionInsertFactPopup(model,
+                                                                      oracle,
+                                                                      presenter,
+                                                                      new ActionColumnCommand() {
+                                                                          public void execute(final ActionCol52 column) {
+                                                                              presenter.appendColumn(column);
+                                                                          }
+                                                                      },
+                                                                      column,
+                                                                      true,
+                                                                      !access.isEditable());
         popup.show();
     }
 
     @Override
     public void newExtendedEntryActionSetColumn() {
         final ActionSetFieldCol52 column = new ActionSetFieldCol52();
-        doNewActionSetColumn( column );
+        doNewActionSetColumn(column);
     }
 
     @Override
     public void newLimitedEntryActionSetColumn() {
         final LimitedEntryActionSetFieldCol52 column = new LimitedEntryActionSetFieldCol52();
-        doNewActionSetColumn( column );
+        doNewActionSetColumn(column);
     }
 
-    private void doNewActionSetColumn( final ActionSetFieldCol52 column ) {
-        final ActionSetFieldPopup popup = new ActionSetFieldPopup( model,
-                                                                   oracle,
-                                                                   presenter,
-                                                                   new ActionColumnCommand() {
-                                                                       public void execute( final ActionCol52 column ) {
-                                                                           presenter.appendColumn( column );
-                                                                       }
-                                                                   },
-                                                                   column,
-                                                                   true,
-                                                                   !access.isEditable() );
+    private void doNewActionSetColumn(final ActionSetFieldCol52 column) {
+        final ActionSetFieldPopup popup = new ActionSetFieldPopup(model,
+                                                                  oracle,
+                                                                  presenter,
+                                                                  new ActionColumnCommand() {
+                                                                      public void execute(final ActionCol52 column) {
+                                                                          presenter.appendColumn(column);
+                                                                      }
+                                                                  },
+                                                                  column,
+                                                                  true,
+                                                                  !access.isEditable());
         popup.show();
     }
 
     @Override
     public void newExtendedEntryActionRetractFact() {
         final ActionRetractFactCol52 column = new ActionRetractFactCol52();
-        doNewActionRetractFactColumn( column );
+        doNewActionRetractFactColumn(column);
     }
 
     @Override
     public void newLimitedEntryActionRetractFact() {
         final LimitedEntryActionRetractFactCol52 column = new LimitedEntryActionRetractFactCol52();
-        column.setValue( new DTCellValue52( "" ) );
-        doNewActionRetractFactColumn( column );
+        column.setValue(new DTCellValue52(""));
+        doNewActionRetractFactColumn(column);
     }
 
-    private void doNewActionRetractFactColumn( final ActionRetractFactCol52 column ) {
-        final ActionRetractFactPopup popup = new ActionRetractFactPopup( model,
-                                                                         presenter,
-                                                                         new ActionColumnCommand() {
-                                                                             public void execute( final ActionCol52 column ) {
-                                                                                 presenter.appendColumn( column );
-                                                                             }
-                                                                         },
-                                                                         column,
-                                                                         true,
-                                                                         !access.isEditable() );
+    private void doNewActionRetractFactColumn(final ActionRetractFactCol52 column) {
+        final ActionRetractFactPopup popup = new ActionRetractFactPopup(model,
+                                                                        presenter,
+                                                                        new ActionColumnCommand() {
+                                                                            public void execute(final ActionCol52 column) {
+                                                                                presenter.appendColumn(column);
+                                                                            }
+                                                                        },
+                                                                        column,
+                                                                        true,
+                                                                        !access.isEditable());
         popup.show();
     }
 
@@ -346,17 +344,17 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
     public void newActionWorkItem() {
         //WorkItems are defined within the column and always boolean (i.e. Limited Entry) in the table
         final ActionWorkItemCol52 column = new ActionWorkItemCol52();
-        final ActionWorkItemPopup popup = new ActionWorkItemPopup( model,
-                                                                   presenter,
-                                                                   new ActionColumnCommand() {
-                                                                       public void execute( final ActionCol52 column ) {
-                                                                           presenter.appendColumn( column );
-                                                                       }
-                                                                   },
-                                                                   column,
-                                                                   workItemDefinitions,
-                                                                   true,
-                                                                   !access.isEditable() );
+        final ActionWorkItemPopup popup = new ActionWorkItemPopup(model,
+                                                                  presenter,
+                                                                  new ActionColumnCommand() {
+                                                                      public void execute(final ActionCol52 column) {
+                                                                          presenter.appendColumn(column);
+                                                                      }
+                                                                  },
+                                                                  column,
+                                                                  workItemDefinitions,
+                                                                  true,
+                                                                  !access.isEditable());
         popup.show();
     }
 
@@ -364,17 +362,17 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
     public void newActionWorkItemSetField() {
         //Actions setting Field Values from Work Item Result Parameters are always boolean (i.e. Limited Entry) in the table
         final ActionWorkItemSetFieldCol52 column = new ActionWorkItemSetFieldCol52();
-        final ActionWorkItemSetFieldPopup popup = new ActionWorkItemSetFieldPopup( model,
-                                                                                   oracle,
-                                                                                   presenter,
-                                                                                   new ActionColumnCommand() {
-                                                                                       public void execute( final ActionCol52 column ) {
-                                                                                           presenter.appendColumn( column );
-                                                                                       }
-                                                                                   },
-                                                                                   column,
-                                                                                   true,
-                                                                                   !access.isEditable() );
+        final ActionWorkItemSetFieldPopup popup = new ActionWorkItemSetFieldPopup(model,
+                                                                                  oracle,
+                                                                                  presenter,
+                                                                                  new ActionColumnCommand() {
+                                                                                      public void execute(final ActionCol52 column) {
+                                                                                          presenter.appendColumn(column);
+                                                                                      }
+                                                                                  },
+                                                                                  column,
+                                                                                  true,
+                                                                                  !access.isEditable());
         popup.show();
     }
 
@@ -382,255 +380,254 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
     public void newActionWorkItemInsertFact() {
         //Actions setting Field Values from Work Item Result Parameters are always boolean (i.e. Limited Entry) in the table
         final ActionWorkItemInsertFactCol52 column = new ActionWorkItemInsertFactCol52();
-        final ActionWorkItemInsertFactPopup popup = new ActionWorkItemInsertFactPopup( model,
-                                                                                       oracle,
-                                                                                       presenter,
-                                                                                       new ActionColumnCommand() {
-                                                                                           public void execute( final ActionCol52 column ) {
-                                                                                               presenter.appendColumn( column );
-                                                                                           }
-                                                                                       },
-                                                                                       column,
-                                                                                       true,
-                                                                                       !access.isEditable() );
+        final ActionWorkItemInsertFactPopup popup = new ActionWorkItemInsertFactPopup(model,
+                                                                                      oracle,
+                                                                                      presenter,
+                                                                                      new ActionColumnCommand() {
+                                                                                          public void execute(final ActionCol52 column) {
+                                                                                              presenter.appendColumn(column);
+                                                                                          }
+                                                                                      },
+                                                                                      column,
+                                                                                      true,
+                                                                                      !access.isEditable());
         popup.show();
     }
 
     @Override
     public void newExtendedEntryActionBRLFragment() {
         final BRLActionColumn column = new BRLActionColumn();
-        final BRLActionColumnViewImpl popup = new BRLActionColumnViewImpl( model,
-                                                                           oracle,
-                                                                           presenter,
-                                                                           eventBus,
-                                                                           column,
-                                                                           true,
-                                                                           !access.isEditable() );
+        final BRLActionColumnViewImpl popup = new BRLActionColumnViewImpl(model,
+                                                                          oracle,
+                                                                          presenter,
+                                                                          eventBus,
+                                                                          column,
+                                                                          true,
+                                                                          !access.isEditable());
         popup.show();
     }
 
     @Override
     public void newLimitedEntryActionBRLFragment() {
         final LimitedEntryBRLActionColumn column = new LimitedEntryBRLActionColumn();
-        final LimitedEntryBRLActionColumnViewImpl popup = new LimitedEntryBRLActionColumnViewImpl( model,
-                                                                                                   oracle,
-                                                                                                   presenter,
-                                                                                                   eventBus,
-                                                                                                   column,
-                                                                                                   true,
-                                                                                                   !access.isEditable() );
+        final LimitedEntryBRLActionColumnViewImpl popup = new LimitedEntryBRLActionColumnViewImpl(model,
+                                                                                                  oracle,
+                                                                                                  presenter,
+                                                                                                  eventBus,
+                                                                                                  column,
+                                                                                                  true,
+                                                                                                  !access.isEditable());
         popup.show();
     }
 
-    public void editCondition( final Pattern52 pattern,
-                               final ConditionCol52 column ) {
-        final ConditionPopup popup = new ConditionPopup( model,
-                                                         oracle,
-                                                         presenter,
-                                                         new ConditionColumnCommand() {
-                                                             public void execute( final Pattern52 newPattern,
-                                                                                  final ConditionCol52 newColumn ) {
-                                                                 if ( !access.isEditable() ) {
-                                                                     return;
-                                                                 }
-                                                                 presenter.updateColumn( pattern,
-                                                                                         column,
-                                                                                         newPattern,
-                                                                                         newColumn );
-                                                             }
-                                                         },
-                                                         pattern,
-                                                         column,
-                                                         false,
-                                                         !access.isEditable() );
-        popup.show();
-    }
-
-    @Override
-    public void editExtendedEntryConditionBRLFragment( final BRLConditionColumn column ) {
-        final BRLConditionColumnViewImpl popup = new BRLConditionColumnViewImpl( model,
-                                                                                 oracle,
-                                                                                 presenter,
-                                                                                 eventBus,
-                                                                                 column,
-                                                                                 false,
-                                                                                 !access.isEditable() );
+    public void editCondition(final Pattern52 pattern,
+                              final ConditionCol52 column) {
+        final ConditionPopup popup = new ConditionPopup(model,
+                                                        oracle,
+                                                        presenter,
+                                                        new ConditionColumnCommand() {
+                                                            public void execute(final Pattern52 newPattern,
+                                                                                final ConditionCol52 newColumn) {
+                                                                if (!access.isEditable()) {
+                                                                    return;
+                                                                }
+                                                                presenter.updateColumn(pattern,
+                                                                                       column,
+                                                                                       newPattern,
+                                                                                       newColumn);
+                                                            }
+                                                        },
+                                                        pattern,
+                                                        column,
+                                                        false,
+                                                        !access.isEditable());
         popup.show();
     }
 
     @Override
-    public void editLimitedEntryConditionBRLFragment( final LimitedEntryBRLConditionColumn column ) {
-        final LimitedEntryBRLConditionColumnViewImpl popup = new LimitedEntryBRLConditionColumnViewImpl( model,
-                                                                                                         oracle,
-                                                                                                         presenter,
-                                                                                                         eventBus,
-                                                                                                         column,
-                                                                                                         false,
-                                                                                                         !access.isEditable() );
-        popup.show();
-    }
-
-    @Override
-    public void editActionInsertFact( final ActionInsertFactCol52 column ) {
-        final ActionInsertFactPopup ed = new ActionInsertFactPopup( model,
-                                                                    oracle,
-                                                                    presenter,
-                                                                    new ActionColumnCommand() {
-                                                                        public void execute( final ActionCol52 newColumn ) {
-                                                                            if ( !access.isEditable() ) {
-                                                                                return;
-                                                                            }
-                                                                            presenter.updateColumn( column,
-                                                                                                    (ActionInsertFactCol52) newColumn );
-                                                                        }
-                                                                    },
-                                                                    column,
-                                                                    false,
-                                                                    !access.isEditable() );
-        ed.show();
-    }
-
-    @Override
-    public void editActionSetField( final ActionSetFieldCol52 column ) {
-        final ActionSetFieldPopup ed = new ActionSetFieldPopup( model,
-                                                                oracle,
-                                                                presenter,
-                                                                new ActionColumnCommand() {
-                                                                    public void execute( final ActionCol52 newColumn ) {
-                                                                        if ( !access.isEditable() ) {
-                                                                            return;
-                                                                        }
-                                                                        presenter.updateColumn( column,
-                                                                                                (ActionSetFieldCol52) newColumn );
-                                                                    }
-                                                                },
-                                                                column,
-                                                                false,
-                                                                !access.isEditable() );
-        ed.show();
-    }
-
-    @Override
-    public void editActionRetractFact( final ActionRetractFactCol52 column ) {
-        final ActionRetractFactPopup ed = new ActionRetractFactPopup( model,
-                                                                      presenter,
-                                                                      new ActionColumnCommand() {
-                                                                          public void execute( final ActionCol52 newColumn ) {
-                                                                              if ( !access.isEditable() ) {
-                                                                                  return;
-                                                                              }
-                                                                              presenter.updateColumn( column,
-                                                                                                      (ActionRetractFactCol52) newColumn );
-                                                                          }
-                                                                      },
-                                                                      column,
-                                                                      false,
-                                                                      !access.isEditable() );
-        ed.show();
-    }
-
-    @Override
-    public void editActionWorkItemInsertFact( final ActionWorkItemInsertFactCol52 column ) {
-        final ActionWorkItemInsertFactPopup ed = new ActionWorkItemInsertFactPopup( model,
-                                                                                    oracle,
-                                                                                    presenter,
-                                                                                    new ActionColumnCommand() {
-                                                                                        public void execute( final ActionCol52 newColumn ) {
-                                                                                            if ( !access.isEditable() ) {
-                                                                                                return;
-                                                                                            }
-                                                                                            presenter.updateColumn( column,
-                                                                                                                    (ActionWorkItemInsertFactCol52) newColumn );
-                                                                                        }
-                                                                                    },
-                                                                                    column,
-                                                                                    false,
-                                                                                    !access.isEditable() );
-        ed.show();
-    }
-
-    @Override
-    public void editActionWorkItemSetField( final ActionWorkItemSetFieldCol52 column ) {
-        final ActionWorkItemSetFieldPopup ed = new ActionWorkItemSetFieldPopup( model,
+    public void editExtendedEntryConditionBRLFragment(final BRLConditionColumn column) {
+        final BRLConditionColumnViewImpl popup = new BRLConditionColumnViewImpl(model,
                                                                                 oracle,
                                                                                 presenter,
-                                                                                new ActionColumnCommand() {
-                                                                                    public void execute( final ActionCol52 newColumn ) {
-                                                                                        if ( !access.isEditable() ) {
-                                                                                            return;
-                                                                                        }
-                                                                                        presenter.updateColumn( column,
-                                                                                                                (ActionWorkItemSetFieldCol52) newColumn );
-                                                                                    }
-                                                                                },
+                                                                                eventBus,
                                                                                 column,
                                                                                 false,
-                                                                                !access.isEditable() );
-        ed.show();
+                                                                                !access.isEditable());
+        popup.show();
     }
 
     @Override
-    public void editActionWorkItem( final ActionWorkItemCol52 column ) {
-        final ActionWorkItemPopup popup = new ActionWorkItemPopup( model,
+    public void editLimitedEntryConditionBRLFragment(final LimitedEntryBRLConditionColumn column) {
+        final LimitedEntryBRLConditionColumnViewImpl popup = new LimitedEntryBRLConditionColumnViewImpl(model,
+                                                                                                        oracle,
+                                                                                                        presenter,
+                                                                                                        eventBus,
+                                                                                                        column,
+                                                                                                        false,
+                                                                                                        !access.isEditable());
+        popup.show();
+    }
+
+    @Override
+    public void editActionInsertFact(final ActionInsertFactCol52 column) {
+        final ActionInsertFactPopup ed = new ActionInsertFactPopup(model,
+                                                                   oracle,
                                                                    presenter,
                                                                    new ActionColumnCommand() {
-                                                                       public void execute( final ActionCol52 newColumn ) {
-                                                                           if ( !access.isEditable() ) {
+                                                                       public void execute(final ActionCol52 newColumn) {
+                                                                           if (!access.isEditable()) {
                                                                                return;
                                                                            }
-                                                                           presenter.updateColumn( column,
-                                                                                                   (ActionWorkItemCol52) newColumn );
+                                                                           presenter.updateColumn(column,
+                                                                                                  (ActionInsertFactCol52) newColumn);
                                                                        }
                                                                    },
                                                                    column,
-                                                                   workItemDefinitions,
                                                                    false,
-                                                                   !access.isEditable() );
+                                                                   !access.isEditable());
+        ed.show();
+    }
+
+    @Override
+    public void editActionSetField(final ActionSetFieldCol52 column) {
+        final ActionSetFieldPopup ed = new ActionSetFieldPopup(model,
+                                                               oracle,
+                                                               presenter,
+                                                               new ActionColumnCommand() {
+                                                                   public void execute(final ActionCol52 newColumn) {
+                                                                       if (!access.isEditable()) {
+                                                                           return;
+                                                                       }
+                                                                       presenter.updateColumn(column,
+                                                                                              (ActionSetFieldCol52) newColumn);
+                                                                   }
+                                                               },
+                                                               column,
+                                                               false,
+                                                               !access.isEditable());
+        ed.show();
+    }
+
+    @Override
+    public void editActionRetractFact(final ActionRetractFactCol52 column) {
+        final ActionRetractFactPopup ed = new ActionRetractFactPopup(model,
+                                                                     presenter,
+                                                                     new ActionColumnCommand() {
+                                                                         public void execute(final ActionCol52 newColumn) {
+                                                                             if (!access.isEditable()) {
+                                                                                 return;
+                                                                             }
+                                                                             presenter.updateColumn(column,
+                                                                                                    (ActionRetractFactCol52) newColumn);
+                                                                         }
+                                                                     },
+                                                                     column,
+                                                                     false,
+                                                                     !access.isEditable());
+        ed.show();
+    }
+
+    @Override
+    public void editActionWorkItemInsertFact(final ActionWorkItemInsertFactCol52 column) {
+        final ActionWorkItemInsertFactPopup ed = new ActionWorkItemInsertFactPopup(model,
+                                                                                   oracle,
+                                                                                   presenter,
+                                                                                   new ActionColumnCommand() {
+                                                                                       public void execute(final ActionCol52 newColumn) {
+                                                                                           if (!access.isEditable()) {
+                                                                                               return;
+                                                                                           }
+                                                                                           presenter.updateColumn(column,
+                                                                                                                  (ActionWorkItemInsertFactCol52) newColumn);
+                                                                                       }
+                                                                                   },
+                                                                                   column,
+                                                                                   false,
+                                                                                   !access.isEditable());
+        ed.show();
+    }
+
+    @Override
+    public void editActionWorkItemSetField(final ActionWorkItemSetFieldCol52 column) {
+        final ActionWorkItemSetFieldPopup ed = new ActionWorkItemSetFieldPopup(model,
+                                                                               oracle,
+                                                                               presenter,
+                                                                               new ActionColumnCommand() {
+                                                                                   public void execute(final ActionCol52 newColumn) {
+                                                                                       if (!access.isEditable()) {
+                                                                                           return;
+                                                                                       }
+                                                                                       presenter.updateColumn(column,
+                                                                                                              (ActionWorkItemSetFieldCol52) newColumn);
+                                                                                   }
+                                                                               },
+                                                                               column,
+                                                                               false,
+                                                                               !access.isEditable());
+        ed.show();
+    }
+
+    @Override
+    public void editActionWorkItem(final ActionWorkItemCol52 column) {
+        final ActionWorkItemPopup popup = new ActionWorkItemPopup(model,
+                                                                  presenter,
+                                                                  new ActionColumnCommand() {
+                                                                      public void execute(final ActionCol52 newColumn) {
+                                                                          if (!access.isEditable()) {
+                                                                              return;
+                                                                          }
+                                                                          presenter.updateColumn(column,
+                                                                                                 (ActionWorkItemCol52) newColumn);
+                                                                      }
+                                                                  },
+                                                                  column,
+                                                                  workItemDefinitions,
+                                                                  false,
+                                                                  !access.isEditable());
         popup.show();
     }
 
     @Override
-    public void editExtendedEntryActionBRLFragment( final BRLActionColumn column ) {
-        final BRLActionColumnViewImpl popup = new BRLActionColumnViewImpl( model,
-                                                                           oracle,
-                                                                           presenter,
-                                                                           eventBus,
-                                                                           column,
-                                                                           false,
-                                                                           !access.isEditable() );
+    public void editExtendedEntryActionBRLFragment(final BRLActionColumn column) {
+        final BRLActionColumnViewImpl popup = new BRLActionColumnViewImpl(model,
+                                                                          oracle,
+                                                                          presenter,
+                                                                          eventBus,
+                                                                          column,
+                                                                          false,
+                                                                          !access.isEditable());
         popup.show();
     }
 
     @Override
-    public void editLimitedEntryActionBRLFragment( final LimitedEntryBRLActionColumn column ) {
-        final LimitedEntryBRLActionColumnViewImpl popup = new LimitedEntryBRLActionColumnViewImpl( model,
-                                                                                                   oracle,
-                                                                                                   presenter,
-                                                                                                   eventBus,
-                                                                                                   column,
-                                                                                                   false,
-                                                                                                   !access.isEditable() );
+    public void editLimitedEntryActionBRLFragment(final LimitedEntryBRLActionColumn column) {
+        final LimitedEntryBRLActionColumnViewImpl popup = new LimitedEntryBRLActionColumnViewImpl(model,
+                                                                                                  oracle,
+                                                                                                  presenter,
+                                                                                                  eventBus,
+                                                                                                  column,
+                                                                                                  false,
+                                                                                                  !access.isEditable());
         popup.show();
     }
 
     @Override
     public void showDataCutNotificationEvent() {
-        notificationEvent.fire( new NotificationEvent( GuidedDecisionTableConstants.INSTANCE.DataCutToClipboardMessage() ) );
+        notificationEvent.fire(new NotificationEvent(GuidedDecisionTableConstants.INSTANCE.DataCutToClipboardMessage()));
     }
 
     @Override
     public void showDataCopiedNotificationEvent() {
-        notificationEvent.fire( new NotificationEvent( GuidedDecisionTableConstants.INSTANCE.DataCopiedToClipboardMessage() ) );
+        notificationEvent.fire(new NotificationEvent(GuidedDecisionTableConstants.INSTANCE.DataCopiedToClipboardMessage()));
     }
 
     @Override
-    public void showBusyIndicator( final String message ) {
-        BusyPopup.showMessage( message );
+    public void showBusyIndicator(final String message) {
+        BusyPopup.showMessage(message);
     }
 
     @Override
     public void hideBusyIndicator() {
         BusyPopup.close();
     }
-
 }

@@ -60,25 +60,25 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
 
     void clear();
 
-    void addDecisionTable( final GuidedDecisionTableView gridWidget );
+    void addDecisionTable(final GuidedDecisionTableView gridWidget);
 
-    void removeDecisionTable( final GuidedDecisionTableView gridWidget,
-                              final Command afterRemovalCommand );
+    void removeDecisionTable(final GuidedDecisionTableView gridWidget,
+                             final Command afterRemovalCommand);
 
-    void setEnableColumnCreation( final boolean enabled );
+    void setEnableColumnCreation(final boolean enabled);
 
-    void refreshRuleInheritance( final String selectedParentRuleName,
-                                 final Collection<String> availableParentRuleNames );
+    void refreshRuleInheritance(final String selectedParentRuleName,
+                                final Collection<String> availableParentRuleNames);
 
-    void refreshAttributeWidget( final List<AttributeCol52> attributeColumns );
+    void refreshAttributeWidget(final List<AttributeCol52> attributeColumns);
 
-    void refreshMetaDataWidget( final List<MetadataCol52> metaDataColumns );
+    void refreshMetaDataWidget(final List<MetadataCol52> metaDataColumns);
 
-    void refreshConditionsWidget( final List<CompositeColumn<? extends BaseColumn>> columns );
+    void refreshConditionsWidget(final List<CompositeColumn<? extends BaseColumn>> columns);
 
-    void refreshActionsWidget( final List<ActionCol52> actions );
+    void refreshActionsWidget(final List<ActionCol52> actions);
 
-    void refreshColumnsNote( final boolean hasColumnDefinitions );
+    void refreshColumnsNote(final boolean hasColumnDefinitions);
 
     GridLayer getGridLayerView();
 
@@ -96,51 +96,51 @@ public interface GuidedDecisionTableModellerView extends UberView<GuidedDecision
 
         void releaseHandlerRegistrations();
 
-        GuidedDecisionTableView.Presenter addDecisionTable( final ObservablePath path,
-                                                            final PlaceRequest placeRequest,
-                                                            final GuidedDecisionTableEditorContent content,
-                                                            final boolean isReadOnly,
-                                                            final Double x,
-                                                            final Double y );
+        GuidedDecisionTableView.Presenter addDecisionTable(final ObservablePath path,
+                                                           final PlaceRequest placeRequest,
+                                                           final GuidedDecisionTableEditorContent content,
+                                                           final boolean isReadOnly,
+                                                           final Double x,
+                                                           final Double y);
 
-        GuidedDecisionTableView.Presenter refreshDecisionTable( final GuidedDecisionTableView.Presenter dtPresenter,
-                                                                final ObservablePath path,
-                                                                final PlaceRequest placeRequest,
-                                                                final GuidedDecisionTableEditorContent content,
-                                                                final boolean isReadOnly );
+        GuidedDecisionTableView.Presenter refreshDecisionTable(final GuidedDecisionTableView.Presenter dtPresenter,
+                                                               final ObservablePath path,
+                                                               final PlaceRequest placeRequest,
+                                                               final GuidedDecisionTableEditorContent content,
+                                                               final boolean isReadOnly);
 
-        void removeDecisionTable( final GuidedDecisionTableView.Presenter dtPresenter );
+        void removeDecisionTable(final GuidedDecisionTableView.Presenter dtPresenter);
 
         GuidedDecisionTableView.Presenter getActiveDecisionTable();
 
         Set<GuidedDecisionTableView.Presenter> getAvailableDecisionTables();
 
-        boolean isDecisionTableAvailable( final GuidedDecisionTableView.Presenter dtPresenter );
+        boolean isDecisionTableAvailable(final GuidedDecisionTableView.Presenter dtPresenter);
 
         boolean isActiveDecisionTableEditable();
 
         GuidedDecisionTableModellerView getView();
 
-        void onLockStatusUpdated( final GuidedDecisionTableView.Presenter dtPresenter );
+        void onLockStatusUpdated(final GuidedDecisionTableView.Presenter dtPresenter);
 
-        void onDecisionTableSelected( final DecisionTableSelectedEvent event );
+        void onDecisionTableSelected(final DecisionTableSelectedEvent event);
 
-        void onDecisionTableLinkedColumnSelected( final DecisionTableColumnSelectedEvent event );
+        void onDecisionTableLinkedColumnSelected(final DecisionTableColumnSelectedEvent event);
 
-        void onRefreshAttributesPanelEvent( final RefreshAttributesPanelEvent event );
+        void onRefreshAttributesPanelEvent(final RefreshAttributesPanelEvent event);
 
-        void onRefreshMetaDataPanelEvent( final RefreshMetaDataPanelEvent event );
+        void onRefreshMetaDataPanelEvent(final RefreshMetaDataPanelEvent event);
 
-        void onRefreshConditionsPanelEvent( final RefreshConditionsPanelEvent event );
+        void onRefreshConditionsPanelEvent(final RefreshConditionsPanelEvent event);
 
-        void onRefreshActionsPanelEvent( final RefreshActionsPanelEvent event );
+        void onRefreshActionsPanelEvent(final RefreshActionsPanelEvent event);
 
         void updateRadar();
 
-        void onViewPinned( final boolean isPinned );
+        void onViewPinned(final boolean isPinned);
 
         void updateLinks();
 
+        void openNewGuidedDecisionTableColumnWizard();
     }
-
 }

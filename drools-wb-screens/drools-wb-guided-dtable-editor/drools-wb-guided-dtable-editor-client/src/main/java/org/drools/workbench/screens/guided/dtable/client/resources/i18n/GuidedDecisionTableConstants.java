@@ -26,7 +26,7 @@ public interface GuidedDecisionTableConstants
         extends
         Messages {
 
-    GuidedDecisionTableConstants INSTANCE = GWT.create( GuidedDecisionTableConstants.class );
+    GuidedDecisionTableConstants INSTANCE = GWT.create(GuidedDecisionTableConstants.class);
     String COLON = ":";
 
     //Decision Table
@@ -230,13 +230,17 @@ public interface GuidedDecisionTableConstants
 
     String RemoveThisActionColumn();
 
-    String DeleteActionColumnWarning( String p0 );
+    String DeleteActionColumnWarning(String p0);
 
     String NewColumn();
 
     String AddNewColumn();
 
     String AddNewMetadataOrAttributeColumn();
+
+    String AddNewAttributeColumn();
+
+    String AddNewMetadata();
 
     String AddNewConditionSimpleColumn();
 
@@ -276,9 +280,9 @@ public interface GuidedDecisionTableConstants
 
     String UnableToDeleteConditionColumns();
 
-    String UnableToDeleteConditionColumn0( String p0 );
+    String UnableToDeleteConditionColumn0(String p0);
 
-    String DeleteConditionColumnWarning0( String p0 );
+    String DeleteConditionColumnWarning0(String p0);
 
     String Attributes();
 
@@ -309,32 +313,32 @@ public interface GuidedDecisionTableConstants
 
     String DecisionTableAuditLogEventInsertRow();
 
-    String AuditLogEntryOn1( String date,
-                             String who );
+    String AuditLogEntryOn1(String date,
+                            String who);
 
-    String DecisionTableAuditLogInsertRowAt0( int index );
+    String DecisionTableAuditLogInsertRowAt0(int index);
 
-    String DecisionTableAuditLogDeleteRowAt0( int index );
+    String DecisionTableAuditLogDeleteRowAt0(int index);
 
-    String DecisionTableAuditLogDeleteColumn0( String header );
+    String DecisionTableAuditLogDeleteColumn0(String header);
 
-    String DecisionTableAuditLogInsertAttribute0( String attribute );
+    String DecisionTableAuditLogInsertAttribute0(String attribute);
 
-    String DecisionTableAuditLogInsertMetadata0( String metadata );
+    String DecisionTableAuditLogInsertMetadata0(String metadata);
 
-    String DecisionTableAuditLogInsertCondition0( String conditionHeader );
+    String DecisionTableAuditLogInsertCondition0(String conditionHeader);
 
-    String DecisionTableAuditLogInsertActionInsertFact0( String actionInsertFactHeader );
+    String DecisionTableAuditLogInsertActionInsertFact0(String actionInsertFactHeader);
 
-    String DecisionTableAuditLogInsertActionSetField0( String actionSetFieldHeader );
+    String DecisionTableAuditLogInsertActionSetField0(String actionSetFieldHeader);
 
-    String DecisionTableAuditLogInsertColumn0( String header );
+    String DecisionTableAuditLogInsertColumn0(String header);
 
-    String DecisionTableAuditLogInsertWorkItemExecuteColumn0( String header );
+    String DecisionTableAuditLogInsertWorkItemExecuteColumn0(String header);
 
-    String DecisionTableAuditLogInsertWorkItemInsertFactColumn0( String header );
+    String DecisionTableAuditLogInsertWorkItemInsertFactColumn0(String header);
 
-    String DecisionTableAuditLogInsertWorkItemSetFieldColumn0( String header );
+    String DecisionTableAuditLogInsertWorkItemSetFieldColumn0(String header);
 
     String DecisionTableAuditLogWorkItemName();
 
@@ -344,7 +348,7 @@ public interface GuidedDecisionTableConstants
 
     String DecisionTableAuditLogWorkItemParameterValue();
 
-    String DecisionTableAuditLogWorkItemParameterValueOnly0( String value );
+    String DecisionTableAuditLogWorkItemParameterValueOnly0(String value);
 
     String DecisionTableAuditLogWorkItemParameterClassName();
 
@@ -354,13 +358,13 @@ public interface GuidedDecisionTableConstants
 
     String BoundVariable();
 
-    String DecisionTableAuditLogUpdateCondition( String value );
+    String DecisionTableAuditLogUpdateCondition(String value);
 
-    String DecisionTableAuditLogUpdateAction( String value );
+    String DecisionTableAuditLogUpdateAction(String value);
 
-    String DecisionTableAuditLogUpdateColumn( String value );
+    String DecisionTableAuditLogUpdateColumn(String value);
 
-    String DecisionTableAuditLogUpdateAttribute( String value );
+    String DecisionTableAuditLogUpdateAttribute(String value);
 
     String AreYouSureYouWantToRemoveThisItem();
 
@@ -545,5 +549,4 @@ public interface GuidedDecisionTableConstants
     String HasPriorityOverRow();
 
     String ResolvedHitPolicy();
-
 }

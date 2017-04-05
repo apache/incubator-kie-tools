@@ -47,9 +47,11 @@ import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshConditionsPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.events.cdi.RefreshMetaDataPanelEvent;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.popovers.ColumnHeaderPopOver;
+import org.drools.workbench.screens.guided.dtable.client.wizard.column.NewGuidedDecisionTableColumnWizard;
 import org.drools.workbench.screens.guided.dtable.model.GuidedDecisionTableEditorContent;
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -75,26 +77,29 @@ public class GuidedDecisionTableModellerPresenterTest {
     private GuidedDecisionTableModellerView view;
 
     @Mock
+    private ManagedInstance<NewGuidedDecisionTableColumnWizard> wizardManagedInstance;
+
+    @Mock
     private GridLayer gridLayer;
 
-    private Event<RadarMenuBuilder.UpdateRadarEvent> updateRadarEvent = spy( new EventSourceMock<RadarMenuBuilder.UpdateRadarEvent>() {
+    private Event<RadarMenuBuilder.UpdateRadarEvent> updateRadarEvent = spy(new EventSourceMock<RadarMenuBuilder.UpdateRadarEvent>() {
         @Override
-        public void fire( final RadarMenuBuilder.UpdateRadarEvent event ) {
+        public void fire(final RadarMenuBuilder.UpdateRadarEvent event) {
             //Do nothing. Default implementation throws an UnsupportedOperationException
         }
-    } );
+    });
 
-    private Event<DecisionTablePinnedEvent> pinnedEvent = spy( new EventSourceMock<DecisionTablePinnedEvent>() {
+    private Event<DecisionTablePinnedEvent> pinnedEvent = spy(new EventSourceMock<DecisionTablePinnedEvent>() {
         @Override
-        public void fire( final DecisionTablePinnedEvent event ) {
+        public void fire(final DecisionTablePinnedEvent event) {
             //Do nothing. Default implementation throws an UnsupportedOperationException
         }
-    } );
+    });
 
-    private Bounds bounds = new BaseBounds( -1000,
-                                            -1000,
-                                            2000,
-                                            2000 );
+    private Bounds bounds = new BaseBounds(-1000,
+                                           -1000,
+                                           2000,
+                                           2000);
 
     @Mock
     private ManagedInstance<GuidedDecisionTableView.Presenter> dtablePresenterProvider;
@@ -115,47 +120,48 @@ public class GuidedDecisionTableModellerPresenterTest {
 
     @Before
     public void setup() {
-        when( gridLayer.addNodeMouseMoveHandler( any( NodeMouseMoveHandler.class ) ) ).thenReturn( mock( HandlerRegistration.class ) );
-        when( gridLayer.addNodeMouseOutHandler( any( NodeMouseOutHandler.class ) ) ).thenReturn( mock( HandlerRegistration.class ) );
-        when( view.addKeyDownHandler( any( KeyDownHandler.class ) ) ).thenReturn( mock( HandlerRegistration.class ) );
-        when( view.addContextMenuHandler( any( ContextMenuHandler.class ) ) ).thenReturn( mock( HandlerRegistration.class ) );
-        when( view.addMouseDownHandler( any( MouseDownHandler.class ) ) ).thenReturn( mock( HandlerRegistration.class ) );
-        when( view.getGridLayerView() ).thenReturn( gridLayer );
-        when( view.getBounds() ).thenReturn( bounds );
+        when(gridLayer.addNodeMouseMoveHandler(any(NodeMouseMoveHandler.class))).thenReturn(mock(HandlerRegistration.class));
+        when(gridLayer.addNodeMouseOutHandler(any(NodeMouseOutHandler.class))).thenReturn(mock(HandlerRegistration.class));
+        when(view.addKeyDownHandler(any(KeyDownHandler.class))).thenReturn(mock(HandlerRegistration.class));
+        when(view.addContextMenuHandler(any(ContextMenuHandler.class))).thenReturn(mock(HandlerRegistration.class));
+        when(view.addMouseDownHandler(any(MouseDownHandler.class))).thenReturn(mock(HandlerRegistration.class));
+        when(view.getGridLayerView()).thenReturn(gridLayer);
+        when(view.getBounds()).thenReturn(bounds);
 
-        final GuidedDecisionTableModellerPresenter wrapped = new GuidedDecisionTableModellerPresenter( view,
-                                                                                                       dtablePresenterProvider,
-                                                                                                       contextMenuSupport,
-                                                                                                       updateRadarEvent,
-                                                                                                       pinnedEvent,
-                                                                                                       columnHeaderPopOver );
-        presenter = spy( wrapped );
+        final GuidedDecisionTableModellerPresenter wrapped = new GuidedDecisionTableModellerPresenter(view,
+                                                                                                      dtablePresenterProvider,
+                                                                                                      contextMenuSupport,
+                                                                                                      updateRadarEvent,
+                                                                                                      pinnedEvent,
+                                                                                                      columnHeaderPopOver,
+                                                                                                      wizardManagedInstance);
+        presenter = spy(wrapped);
 
-        when( dtablePresenterProvider.get() ).thenReturn( dtablePresenter );
-        when( dtablePresenter.getView() ).thenReturn( dtableView );
+        when(dtablePresenterProvider.get()).thenReturn(dtablePresenter);
+        when(dtablePresenter.getView()).thenReturn(dtableView);
     }
 
     private GuidedDecisionTableView.Presenter makeDecisionTable() {
-        final GuidedDecisionTableView.Presenter dtPresenter = mock( GuidedDecisionTableView.Presenter.class );
-        final GuidedDecisionTableView dtView = mock( GuidedDecisionTableView.class );
+        final GuidedDecisionTableView.Presenter dtPresenter = mock(GuidedDecisionTableView.Presenter.class);
+        final GuidedDecisionTableView dtView = mock(GuidedDecisionTableView.class);
 
-        when( dtPresenter.getView() ).thenReturn( dtView );
-        when( dtPresenter.getAccess() ).thenReturn( mock( GuidedDecisionTablePresenter.Access.class ) );
-        when( dtPresenter.getModel() ).thenReturn( mock( GuidedDecisionTable52.class ) );
+        when(dtPresenter.getView()).thenReturn(dtView);
+        when(dtPresenter.getAccess()).thenReturn(mock(GuidedDecisionTablePresenter.Access.class));
+        when(dtPresenter.getModel()).thenReturn(mock(GuidedDecisionTable52.class));
 
         return dtPresenter;
     }
 
     private GuidedDecisionTableEditorContent makeDecisionTableContent() {
-        final GuidedDecisionTable52 model = mock( GuidedDecisionTable52.class );
-        final PackageDataModelOracleBaselinePayload dmoBaseline = mock( PackageDataModelOracleBaselinePayload.class );
+        final GuidedDecisionTable52 model = mock(GuidedDecisionTable52.class);
+        final PackageDataModelOracleBaselinePayload dmoBaseline = mock(PackageDataModelOracleBaselinePayload.class);
         final Set<PortableWorkDefinition> workItemDefinitions = Collections.emptySet();
-        final Overview overview = mock( Overview.class );
+        final Overview overview = mock(Overview.class);
 
-        final GuidedDecisionTableEditorContent dtContent = new GuidedDecisionTableEditorContent( model,
-                                                                                                 workItemDefinitions,
-                                                                                                 overview,
-                                                                                                 dmoBaseline );
+        final GuidedDecisionTableEditorContent dtContent = new GuidedDecisionTableEditorContent(model,
+                                                                                                workItemDefinitions,
+                                                                                                overview,
+                                                                                                dmoBaseline);
         return dtContent;
     }
 
@@ -163,33 +169,33 @@ public class GuidedDecisionTableModellerPresenterTest {
     public void onClose() {
         presenter.onClose();
 
-        verify( view,
-                times( 1 ) ).clear();
-        verify( presenter,
-                times( 1 ) ).releaseDecisionTables();
-        verify( presenter,
-                times( 1 ) ).releaseHandlerRegistrations();
+        verify(view,
+               times(1)).clear();
+        verify(presenter,
+               times(1)).releaseDecisionTables();
+        verify(presenter,
+               times(1)).releaseHandlerRegistrations();
     }
 
     @Test
     public void addDecisionTable() {
-        final ObservablePath path = mock( ObservablePath.class );
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
+        final ObservablePath path = mock(ObservablePath.class);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
         final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent();
 
-        presenter.addDecisionTable( path,
-                                    placeRequest,
-                                    dtContent,
-                                    false,
-                                    null,
-                                    null );
+        presenter.addDecisionTable(path,
+                                   placeRequest,
+                                   dtContent,
+                                   false,
+                                   null,
+                                   null);
 
-        verify( presenter,
-                times( 1 ) ).updateLinks();
-        verify( gridLayer,
-                times( 1 ) ).refreshGridWidgetConnectors();
-        verify( view,
-                times( 1 ) ).addDecisionTable( eq( dtableView ) );
+        verify(presenter,
+               times(1)).updateLinks();
+        verify(gridLayer,
+               times(1)).refreshGridWidgetConnectors();
+        verify(view,
+               times(1)).addDecisionTable(eq(dtableView));
     }
 
     @Test
@@ -197,26 +203,26 @@ public class GuidedDecisionTableModellerPresenterTest {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
         final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent();
         final GuidedDecisionTableView dtView = dtPresenter.getView();
-        final ObservablePath path = mock( ObservablePath.class );
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
+        final ObservablePath path = mock(ObservablePath.class);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
-        final ArgumentCaptor<Command> afterRemovalCommandCaptor = ArgumentCaptor.forClass( Command.class );
+        final ArgumentCaptor<Command> afterRemovalCommandCaptor = ArgumentCaptor.forClass(Command.class);
 
-        presenter.refreshDecisionTable( dtPresenter,
-                                        path,
-                                        placeRequest,
-                                        dtContent,
-                                        false );
+        presenter.refreshDecisionTable(dtPresenter,
+                                       path,
+                                       placeRequest,
+                                       dtContent,
+                                       false);
 
-        verify( view,
-                times( 1 ) ).removeDecisionTable( eq( dtView ),
-                                                  afterRemovalCommandCaptor.capture() );
+        verify(view,
+               times(1)).removeDecisionTable(eq(dtView),
+                                             afterRemovalCommandCaptor.capture());
         final Command afterRemovalCommand = afterRemovalCommandCaptor.getValue();
-        assertNotNull( afterRemovalCommand );
+        assertNotNull(afterRemovalCommand);
         afterRemovalCommand.execute();
 
-        verify( view,
-                times( 1 ) ).addDecisionTable( eq( dtView ) );
+        verify(view,
+               times(1)).addDecisionTable(eq(dtView));
     }
 
     @Test
@@ -224,237 +230,237 @@ public class GuidedDecisionTableModellerPresenterTest {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
         final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent();
         final GuidedDecisionTableView dtView = dtPresenter.getView();
-        final ObservablePath path = mock( ObservablePath.class );
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
+        final ObservablePath path = mock(ObservablePath.class);
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
 
-        final Point2D dtLocation = new Point2D( 100,
-                                                100 );
+        final Point2D dtLocation = new Point2D(100,
+                                               100);
 
-        when( dtView.getLocation() ).thenReturn( dtLocation );
+        when(dtView.getLocation()).thenReturn(dtLocation);
 
-        final ArgumentCaptor<Command> afterRemovalCommandCaptor = ArgumentCaptor.forClass( Command.class );
+        final ArgumentCaptor<Command> afterRemovalCommandCaptor = ArgumentCaptor.forClass(Command.class);
 
-        presenter.refreshDecisionTable( dtPresenter,
-                                        path,
-                                        placeRequest,
-                                        dtContent,
-                                        false );
+        presenter.refreshDecisionTable(dtPresenter,
+                                       path,
+                                       placeRequest,
+                                       dtContent,
+                                       false);
 
-        verify( dtView,
-                times( 1 ) ).getLocation();
-        verify( view,
-                times( 1 ) ).removeDecisionTable( eq( dtView ),
-                                                  afterRemovalCommandCaptor.capture() );
+        verify(dtView,
+               times(1)).getLocation();
+        verify(view,
+               times(1)).removeDecisionTable(eq(dtView),
+                                             afterRemovalCommandCaptor.capture());
         final Command afterRemovalCommand = afterRemovalCommandCaptor.getValue();
-        assertNotNull( afterRemovalCommand );
+        assertNotNull(afterRemovalCommand);
         afterRemovalCommand.execute();
 
-        verify( dtView,
-                times( 1 ) ).setLocation( eq( dtLocation ) );
+        verify(dtView,
+               times(1)).setLocation(eq(dtLocation));
     }
 
     @Test
     public void removeDecisionTable() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
 
-        final ArgumentCaptor<Command> afterRemovalCommandCaptor = ArgumentCaptor.forClass( Command.class );
+        final ArgumentCaptor<Command> afterRemovalCommandCaptor = ArgumentCaptor.forClass(Command.class);
 
-        presenter.removeDecisionTable( dtPresenter );
+        presenter.removeDecisionTable(dtPresenter);
 
-        verify( view,
-                times( 1 ) ).removeDecisionTable( eq( dtPresenter.getView() ),
-                                                  afterRemovalCommandCaptor.capture() );
+        verify(view,
+               times(1)).removeDecisionTable(eq(dtPresenter.getView()),
+                                             afterRemovalCommandCaptor.capture());
         final Command afterRemovalCommand = afterRemovalCommandCaptor.getValue();
-        assertNotNull( afterRemovalCommand );
+        assertNotNull(afterRemovalCommand);
         afterRemovalCommand.execute();
 
-        verify( view,
-                times( 1 ) ).setEnableColumnCreation( eq( false ) );
-        verify( view,
-                times( 1 ) ).refreshAttributeWidget( eq( Collections.emptyList() ) );
-        verify( view,
-                times( 1 ) ).refreshMetaDataWidget( eq( Collections.emptyList() ) );
-        verify( view,
-                times( 1 ) ).refreshConditionsWidget( eq( Collections.emptyList() ) );
-        verify( view,
-                times( 1 ) ).refreshActionsWidget( eq( Collections.emptyList() ) );
-        verify( view,
-                times( 1 ) ).refreshColumnsNote( eq( false ) );
-        verify( dtPresenter,
-                times( 1 ) ).onClose();
+        verify(view,
+               times(1)).setEnableColumnCreation(eq(false));
+        verify(view,
+               times(1)).refreshAttributeWidget(eq(Collections.emptyList()));
+        verify(view,
+               times(1)).refreshMetaDataWidget(eq(Collections.emptyList()));
+        verify(view,
+               times(1)).refreshConditionsWidget(eq(Collections.emptyList()));
+        verify(view,
+               times(1)).refreshActionsWidget(eq(Collections.emptyList()));
+        verify(view,
+               times(1)).refreshColumnsNote(eq(false));
+        verify(dtPresenter,
+               times(1)).onClose();
     }
 
     @Test
     public void onLockStatusUpdatedWithNullDecisionTable() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
 
-        when( presenter.getActiveDecisionTable() ).thenReturn( dtPresenter );
+        when(presenter.getActiveDecisionTable()).thenReturn(dtPresenter);
 
-        presenter.onLockStatusUpdated( null );
+        presenter.onLockStatusUpdated(null);
 
-        verify( presenter,
-                never() ).refreshDefinitionsPanel( any( GuidedDecisionTableView.Presenter.class ) );
+        verify(presenter,
+               never()).refreshDefinitionsPanel(any(GuidedDecisionTableView.Presenter.class));
     }
 
     @Test
     public void onLockStatusUpdatedWithActiveDecisionTable() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
 
-        when( presenter.getActiveDecisionTable() ).thenReturn( dtPresenter );
+        when(presenter.getActiveDecisionTable()).thenReturn(dtPresenter);
 
-        presenter.onLockStatusUpdated( dtPresenter );
+        presenter.onLockStatusUpdated(dtPresenter);
 
-        verify( presenter,
-                times( 1 ) ).refreshDefinitionsPanel( eq( dtPresenter ) );
+        verify(presenter,
+               times(1)).refreshDefinitionsPanel(eq(dtPresenter));
     }
 
     @Test
     public void onLockStatusUpdatedWithAnotherActiveDecisionTable() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
 
-        when( presenter.getActiveDecisionTable() ).thenReturn( mock( GuidedDecisionTableView.Presenter.class ) );
+        when(presenter.getActiveDecisionTable()).thenReturn(mock(GuidedDecisionTableView.Presenter.class));
 
-        presenter.onLockStatusUpdated( dtPresenter );
+        presenter.onLockStatusUpdated(dtPresenter);
 
-        verify( presenter,
-                never() ).refreshDefinitionsPanel( eq( dtPresenter ) );
+        verify(presenter,
+               never()).refreshDefinitionsPanel(eq(dtPresenter));
     }
 
     @Test
     public void isActiveDecisionTableEditableIsReadOnly() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
         final GuidedDecisionTablePresenter.Access access = new GuidedDecisionTablePresenter.Access();
-        access.setReadOnly( true );
+        access.setReadOnly(true);
 
-        when( presenter.getActiveDecisionTable() ).thenReturn( dtPresenter );
-        when( dtPresenter.getAccess() ).thenReturn( access );
+        when(presenter.getActiveDecisionTable()).thenReturn(dtPresenter);
+        when(dtPresenter.getAccess()).thenReturn(access);
 
-        assertFalse( presenter.isActiveDecisionTableEditable() );
+        assertFalse(presenter.isActiveDecisionTableEditable());
     }
 
     @Test
     public void isActiveDecisionTableEditableNotReadOnly() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
         final GuidedDecisionTablePresenter.Access access = new GuidedDecisionTablePresenter.Access();
-        access.setReadOnly( false );
+        access.setReadOnly(false);
 
-        when( presenter.getActiveDecisionTable() ).thenReturn( dtPresenter );
-        when( dtPresenter.getAccess() ).thenReturn( access );
+        when(presenter.getActiveDecisionTable()).thenReturn(dtPresenter);
+        when(dtPresenter.getAccess()).thenReturn(access);
 
-        assertTrue( presenter.isActiveDecisionTableEditable() );
+        assertTrue(presenter.isActiveDecisionTableEditable());
     }
 
     @Test
     public void isActiveDecisionTableEditableLockedByCurrentUser() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
         final GuidedDecisionTablePresenter.Access access = new GuidedDecisionTablePresenter.Access();
-        access.setLock( GuidedDecisionTablePresenter.Access.LockedBy.CURRENT_USER );
+        access.setLock(GuidedDecisionTablePresenter.Access.LockedBy.CURRENT_USER);
 
-        when( presenter.getActiveDecisionTable() ).thenReturn( dtPresenter );
-        when( dtPresenter.getAccess() ).thenReturn( access );
+        when(presenter.getActiveDecisionTable()).thenReturn(dtPresenter);
+        when(dtPresenter.getAccess()).thenReturn(access);
 
-        assertTrue( presenter.isActiveDecisionTableEditable() );
+        assertTrue(presenter.isActiveDecisionTableEditable());
     }
 
     @Test
     public void isActiveDecisionTableEditableLockedByOtherUser() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
         final GuidedDecisionTablePresenter.Access access = new GuidedDecisionTablePresenter.Access();
-        access.setLock( GuidedDecisionTablePresenter.Access.LockedBy.OTHER_USER );
+        access.setLock(GuidedDecisionTablePresenter.Access.LockedBy.OTHER_USER);
 
-        when( presenter.getActiveDecisionTable() ).thenReturn( dtPresenter );
-        when( dtPresenter.getAccess() ).thenReturn( access );
+        when(presenter.getActiveDecisionTable()).thenReturn(dtPresenter);
+        when(dtPresenter.getAccess()).thenReturn(access);
 
-        assertFalse( presenter.isActiveDecisionTableEditable() );
+        assertFalse(presenter.isActiveDecisionTableEditable());
     }
 
     @Test
     public void onInsertColumnWithNullActiveDecisionTable() {
         presenter.onInsertColumn();
 
-        verify( view,
-                never() ).onInsertColumn();
+        verify(view,
+               never()).onInsertColumn();
     }
 
     @Test
     public void onInsertColumnWithNonNullActiveDecisionTable() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
 
-        when( presenter.getActiveDecisionTable() ).thenReturn( dtPresenter );
+        when(presenter.getActiveDecisionTable()).thenReturn(dtPresenter);
 
         presenter.onInsertColumn();
 
-        verify( view,
-                times( 1 ) ).onInsertColumn();
+        verify(view,
+               times(1)).onInsertColumn();
     }
 
     @Test
     public void setZoom() {
-        presenter.setZoom( 100 );
+        presenter.setZoom(100);
 
-        verify( view,
-                times( 1 ) ).setZoom( eq( 100 ) );
+        verify(view,
+               times(1)).setZoom(eq(100));
     }
 
     @Test
     public void enterPinnedMode() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
-        final Command command = mock( Command.class );
-        presenter.enterPinnedMode( dtPresenter.getView(),
-                                   command );
+        final Command command = mock(Command.class);
+        presenter.enterPinnedMode(dtPresenter.getView(),
+                                  command);
 
-        verify( gridLayer,
-                times( 1 ) ).enterPinnedMode( eq( dtPresenter.getView() ),
-                                              eq( command ) );
-        verify( columnHeaderPopOver,
-                times( 1 ) ).hide();
+        verify(gridLayer,
+               times(1)).enterPinnedMode(eq(dtPresenter.getView()),
+                                         eq(command));
+        verify(columnHeaderPopOver,
+               times(1)).hide();
     }
 
     @Test
     public void exitPinnedMode() {
-        final Command command = mock( Command.class );
-        presenter.exitPinnedMode( command );
+        final Command command = mock(Command.class);
+        presenter.exitPinnedMode(command);
 
-        verify( gridLayer,
-                times( 1 ) ).exitPinnedMode( eq( command ) );
-        verify( columnHeaderPopOver,
-                times( 1 ) ).hide();
+        verify(gridLayer,
+               times(1)).exitPinnedMode(eq(command));
+        verify(columnHeaderPopOver,
+               times(1)).hide();
     }
 
     @Test
     public void updatePinnedContext() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
 
-        presenter.updatePinnedContext( dtPresenter.getView() );
+        presenter.updatePinnedContext(dtPresenter.getView());
 
-        verify( gridLayer,
-                times( 1 ) ).updatePinnedContext( eq( dtPresenter.getView() ) );
-        verify( columnHeaderPopOver,
-                times( 1 ) ).hide();
+        verify(gridLayer,
+               times(1)).updatePinnedContext(eq(dtPresenter.getView()));
+        verify(columnHeaderPopOver,
+               times(1)).hide();
     }
 
     @Test
     public void getPinnedContext() {
         presenter.getPinnedContext();
 
-        verify( gridLayer,
-                times( 1 ) ).getPinnedContext();
+        verify(gridLayer,
+               times(1)).getPinnedContext();
     }
 
     @Test
     public void isGridPinned() {
         presenter.isGridPinned();
 
-        verify( gridLayer,
-                times( 1 ) ).isGridPinned();
+        verify(gridLayer,
+               times(1)).isGridPinned();
     }
 
     @Test
     public void getDefaultTransformMediator() {
         presenter.getDefaultTransformMediator();
 
-        verify( gridLayer,
-                times( 1 ) ).getDefaultTransformMediator();
+        verify(gridLayer,
+               times(1)).getDefaultTransformMediator();
     }
 
     @Test
@@ -462,39 +468,39 @@ public class GuidedDecisionTableModellerPresenterTest {
     public void onDecisionTableSelectedWhenInPinnedMode() {
         final GuidedDecisionTableView.Presenter dtPresenter1 = makeDecisionTable();
         final GuidedDecisionTableView.Presenter dtPresenter2 = makeDecisionTable();
-        final DecisionTableSelectedEvent event = new DecisionTableSelectedEvent( dtPresenter1 );
+        final DecisionTableSelectedEvent event = new DecisionTableSelectedEvent(dtPresenter1);
         final List<String> parentRuleNames = Collections.emptyList();
 
-        when( gridLayer.isGridPinned() ).thenReturn( true );
+        when(gridLayer.isGridPinned()).thenReturn(true);
 
-        when( presenter.isDecisionTableAvailable( eq( dtPresenter1 ) ) ).thenReturn( true );
-        when( presenter.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
-            add( dtPresenter1 );
-            add( dtPresenter2 );
-        }} );
+        when(presenter.isDecisionTableAvailable(eq(dtPresenter1))).thenReturn(true);
+        when(presenter.getAvailableDecisionTables()).thenReturn(new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add(dtPresenter1);
+            add(dtPresenter2);
+        }});
 
-        final ArgumentCaptor<ParameterizedCommand> parentRuleNamesCommandCaptor = ArgumentCaptor.forClass( ParameterizedCommand.class );
+        final ArgumentCaptor<ParameterizedCommand> parentRuleNamesCommandCaptor = ArgumentCaptor.forClass(ParameterizedCommand.class);
 
-        presenter.onDecisionTableSelected( event );
+        presenter.onDecisionTableSelected(event);
 
-        verify( dtPresenter1,
-                times( 1 ) ).initialiseAnalysis();
-        verify( presenter,
-                times( 1 ) ).refreshDefinitionsPanel( eq( dtPresenter1 ) );
-        verify( view,
-                times( 1 ) ).select( dtPresenter1.getView() );
+        verify(dtPresenter1,
+               times(1)).initialiseAnalysis();
+        verify(presenter,
+               times(1)).refreshDefinitionsPanel(eq(dtPresenter1));
+        verify(view,
+               times(1)).select(dtPresenter1.getView());
 
-        verify( dtPresenter1,
-                times( 1 ) ).getPackageParentRuleNames( parentRuleNamesCommandCaptor.capture() );
+        verify(dtPresenter1,
+               times(1)).getPackageParentRuleNames(parentRuleNamesCommandCaptor.capture());
         final ParameterizedCommand parentRuleNamesCommand = parentRuleNamesCommandCaptor.getValue();
-        assertNotNull( parentRuleNamesCommand );
-        parentRuleNamesCommand.execute( parentRuleNames );
+        assertNotNull(parentRuleNamesCommand);
+        parentRuleNamesCommand.execute(parentRuleNames);
 
-        verify( view,
-                times( 1 ) ).refreshRuleInheritance( any( String.class ),
-                                                     eq( parentRuleNames ) );
-        verify( gridLayer,
-                times( 1 ) ).flipToGridWidget( eq( dtPresenter1.getView() ) );
+        verify(view,
+               times(1)).refreshRuleInheritance(any(String.class),
+                                                eq(parentRuleNames));
+        verify(gridLayer,
+               times(1)).flipToGridWidget(eq(dtPresenter1.getView()));
     }
 
     @Test
@@ -502,63 +508,63 @@ public class GuidedDecisionTableModellerPresenterTest {
     public void onDecisionTableSelectedWhenNotInPinnedMode() {
         final GuidedDecisionTableView.Presenter dtPresenter1 = makeDecisionTable();
         final GuidedDecisionTableView.Presenter dtPresenter2 = makeDecisionTable();
-        final DecisionTableSelectedEvent event = new DecisionTableSelectedEvent( dtPresenter1 );
+        final DecisionTableSelectedEvent event = new DecisionTableSelectedEvent(dtPresenter1);
         final List<String> parentRuleNames = Collections.emptyList();
 
-        when( presenter.isDecisionTableAvailable( eq( dtPresenter1 ) ) ).thenReturn( true );
-        when( presenter.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
-            add( dtPresenter1 );
-            add( dtPresenter2 );
-        }} );
+        when(presenter.isDecisionTableAvailable(eq(dtPresenter1))).thenReturn(true);
+        when(presenter.getAvailableDecisionTables()).thenReturn(new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add(dtPresenter1);
+            add(dtPresenter2);
+        }});
 
-        final ArgumentCaptor<ParameterizedCommand> parentRuleNamesCommandCaptor = ArgumentCaptor.forClass( ParameterizedCommand.class );
+        final ArgumentCaptor<ParameterizedCommand> parentRuleNamesCommandCaptor = ArgumentCaptor.forClass(ParameterizedCommand.class);
 
-        presenter.onDecisionTableSelected( event );
+        presenter.onDecisionTableSelected(event);
 
-        verify( dtPresenter1,
-                times( 1 ) ).initialiseAnalysis();
-        verify( presenter,
-                times( 1 ) ).refreshDefinitionsPanel( eq( dtPresenter1 ) );
-        verify( view,
-                times( 1 ) ).select( dtPresenter1.getView() );
+        verify(dtPresenter1,
+               times(1)).initialiseAnalysis();
+        verify(presenter,
+               times(1)).refreshDefinitionsPanel(eq(dtPresenter1));
+        verify(view,
+               times(1)).select(dtPresenter1.getView());
 
-        verify( dtPresenter1,
-                times( 1 ) ).getPackageParentRuleNames( parentRuleNamesCommandCaptor.capture() );
+        verify(dtPresenter1,
+               times(1)).getPackageParentRuleNames(parentRuleNamesCommandCaptor.capture());
         final ParameterizedCommand parentRuleNamesCommand = parentRuleNamesCommandCaptor.getValue();
-        assertNotNull( parentRuleNamesCommand );
-        parentRuleNamesCommand.execute( parentRuleNames );
+        assertNotNull(parentRuleNamesCommand);
+        parentRuleNamesCommand.execute(parentRuleNames);
 
-        verify( view,
-                times( 1 ) ).refreshRuleInheritance( any( String.class ),
-                                                     eq( parentRuleNames ) );
-        verify( gridLayer,
-                never() ).flipToGridWidget( any( GuidedDecisionTableView.class ) );
+        verify(view,
+               times(1)).refreshRuleInheritance(any(String.class),
+                                                eq(parentRuleNames));
+        verify(gridLayer,
+               never()).flipToGridWidget(any(GuidedDecisionTableView.class));
     }
 
     @Test
     public void onDecisionTableLinkedColumnSelected() {
-        final GridColumn gridColumn = mock( GridColumn.class );
-        final DecisionTableColumnSelectedEvent event = new DecisionTableColumnSelectedEvent( gridColumn );
+        final GridColumn gridColumn = mock(GridColumn.class);
+        final DecisionTableColumnSelectedEvent event = new DecisionTableColumnSelectedEvent(gridColumn);
 
-        presenter.onDecisionTableLinkedColumnSelected( event );
+        presenter.onDecisionTableLinkedColumnSelected(event);
 
-        verify( view,
-                times( 1 ) ).selectLinkedColumn( eq( gridColumn ) );
+        verify(view,
+               times(1)).selectLinkedColumn(eq(gridColumn));
     }
 
     @Test
     public void onRefreshAttributesPanelEventWithDecisionTableAvailable() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
         final List<AttributeCol52> columns = Collections.emptyList();
-        final RefreshAttributesPanelEvent event = new RefreshAttributesPanelEvent( dtPresenter,
-                                                                                   columns );
+        final RefreshAttributesPanelEvent event = new RefreshAttributesPanelEvent(dtPresenter,
+                                                                                  columns);
 
-        when( presenter.isDecisionTableAvailable( dtPresenter ) ).thenReturn( true );
+        when(presenter.isDecisionTableAvailable(dtPresenter)).thenReturn(true);
 
-        presenter.onRefreshAttributesPanelEvent( event );
+        presenter.onRefreshAttributesPanelEvent(event);
 
-        verify( view,
-                times( 1 ) ).refreshAttributeWidget( eq( columns ) );
+        verify(view,
+               times(1)).refreshAttributeWidget(eq(columns));
     }
 
     @Test
@@ -566,30 +572,30 @@ public class GuidedDecisionTableModellerPresenterTest {
     public void onRefreshAttributesPanelEventWithDecisionTableUnavailable() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
         final List<AttributeCol52> columns = Collections.emptyList();
-        final RefreshAttributesPanelEvent event = new RefreshAttributesPanelEvent( dtPresenter,
-                                                                                   columns );
+        final RefreshAttributesPanelEvent event = new RefreshAttributesPanelEvent(dtPresenter,
+                                                                                  columns);
 
-        when( presenter.isDecisionTableAvailable( dtPresenter ) ).thenReturn( false );
+        when(presenter.isDecisionTableAvailable(dtPresenter)).thenReturn(false);
 
-        presenter.onRefreshAttributesPanelEvent( event );
+        presenter.onRefreshAttributesPanelEvent(event);
 
-        verify( view,
-                never() ).refreshAttributeWidget( any( List.class ) );
+        verify(view,
+               never()).refreshAttributeWidget(any(List.class));
     }
 
     @Test
     public void onRefreshMetaDataPanelEventWithDecisionTableAvailable() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
         final List<MetadataCol52> columns = Collections.emptyList();
-        final RefreshMetaDataPanelEvent event = new RefreshMetaDataPanelEvent( dtPresenter,
-                                                                               columns );
+        final RefreshMetaDataPanelEvent event = new RefreshMetaDataPanelEvent(dtPresenter,
+                                                                              columns);
 
-        when( presenter.isDecisionTableAvailable( dtPresenter ) ).thenReturn( true );
+        when(presenter.isDecisionTableAvailable(dtPresenter)).thenReturn(true);
 
-        presenter.onRefreshMetaDataPanelEvent( event );
+        presenter.onRefreshMetaDataPanelEvent(event);
 
-        verify( view,
-                times( 1 ) ).refreshMetaDataWidget( eq( columns ) );
+        verify(view,
+               times(1)).refreshMetaDataWidget(eq(columns));
     }
 
     @Test
@@ -597,30 +603,30 @@ public class GuidedDecisionTableModellerPresenterTest {
     public void onRefreshMetaDataPanelEventWithDecisionTableUnavailable() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
         final List<MetadataCol52> columns = Collections.emptyList();
-        final RefreshMetaDataPanelEvent event = new RefreshMetaDataPanelEvent( dtPresenter,
-                                                                               columns );
+        final RefreshMetaDataPanelEvent event = new RefreshMetaDataPanelEvent(dtPresenter,
+                                                                              columns);
 
-        when( presenter.isDecisionTableAvailable( dtPresenter ) ).thenReturn( false );
+        when(presenter.isDecisionTableAvailable(dtPresenter)).thenReturn(false);
 
-        presenter.onRefreshMetaDataPanelEvent( event );
+        presenter.onRefreshMetaDataPanelEvent(event);
 
-        verify( view,
-                never() ).refreshMetaDataWidget( any( List.class ) );
+        verify(view,
+               never()).refreshMetaDataWidget(any(List.class));
     }
 
     @Test
     public void onRefreshConditionsPanelEventWithDecisionTableAvailable() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
         final List<CompositeColumn<? extends BaseColumn>> columns = Collections.emptyList();
-        final RefreshConditionsPanelEvent event = new RefreshConditionsPanelEvent( dtPresenter,
-                                                                                   columns );
+        final RefreshConditionsPanelEvent event = new RefreshConditionsPanelEvent(dtPresenter,
+                                                                                  columns);
 
-        when( presenter.isDecisionTableAvailable( dtPresenter ) ).thenReturn( true );
+        when(presenter.isDecisionTableAvailable(dtPresenter)).thenReturn(true);
 
-        presenter.onRefreshConditionsPanelEvent( event );
+        presenter.onRefreshConditionsPanelEvent(event);
 
-        verify( view,
-                times( 1 ) ).refreshConditionsWidget( eq( columns ) );
+        verify(view,
+               times(1)).refreshConditionsWidget(eq(columns));
     }
 
     @Test
@@ -628,30 +634,30 @@ public class GuidedDecisionTableModellerPresenterTest {
     public void onRefreshConditionsPanelEventWithDecisionTableUnavailable() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
         final List<CompositeColumn<? extends BaseColumn>> columns = Collections.emptyList();
-        final RefreshConditionsPanelEvent event = new RefreshConditionsPanelEvent( dtPresenter,
-                                                                                   columns );
+        final RefreshConditionsPanelEvent event = new RefreshConditionsPanelEvent(dtPresenter,
+                                                                                  columns);
 
-        when( presenter.isDecisionTableAvailable( dtPresenter ) ).thenReturn( false );
+        when(presenter.isDecisionTableAvailable(dtPresenter)).thenReturn(false);
 
-        presenter.onRefreshConditionsPanelEvent( event );
+        presenter.onRefreshConditionsPanelEvent(event);
 
-        verify( view,
-                never() ).refreshConditionsWidget( any( List.class ) );
+        verify(view,
+               never()).refreshConditionsWidget(any(List.class));
     }
 
     @Test
     public void onRefreshActionsPanelEventWithDecisionTableAvailable() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
         final List<ActionCol52> columns = Collections.emptyList();
-        final RefreshActionsPanelEvent event = new RefreshActionsPanelEvent( dtPresenter,
-                                                                             columns );
+        final RefreshActionsPanelEvent event = new RefreshActionsPanelEvent(dtPresenter,
+                                                                            columns);
 
-        when( presenter.isDecisionTableAvailable( dtPresenter ) ).thenReturn( true );
+        when(presenter.isDecisionTableAvailable(dtPresenter)).thenReturn(true);
 
-        presenter.onRefreshActionsPanelEvent( event );
+        presenter.onRefreshActionsPanelEvent(event);
 
-        verify( view,
-                times( 1 ) ).refreshActionsWidget( eq( columns ) );
+        verify(view,
+               times(1)).refreshActionsWidget(eq(columns));
     }
 
     @Test
@@ -659,55 +665,55 @@ public class GuidedDecisionTableModellerPresenterTest {
     public void onRefreshActionsPanelEventWithDecisionTableUnavailable() {
         final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable();
         final List<ActionCol52> columns = Collections.emptyList();
-        final RefreshActionsPanelEvent event = new RefreshActionsPanelEvent( dtPresenter,
-                                                                             columns );
+        final RefreshActionsPanelEvent event = new RefreshActionsPanelEvent(dtPresenter,
+                                                                            columns);
 
-        when( presenter.isDecisionTableAvailable( dtPresenter ) ).thenReturn( false );
+        when(presenter.isDecisionTableAvailable(dtPresenter)).thenReturn(false);
 
-        presenter.onRefreshActionsPanelEvent( event );
+        presenter.onRefreshActionsPanelEvent(event);
 
-        verify( view,
-                never() ).refreshActionsWidget( any( List.class ) );
+        verify(view,
+               never()).refreshActionsWidget(any(List.class));
     }
 
     @Test
     public void updateRadar() {
         presenter.updateRadar();
 
-        verify( updateRadarEvent,
-                times( 1 ) ).fire( any( RadarMenuBuilder.UpdateRadarEvent.class ) );
+        verify(updateRadarEvent,
+               times(1)).fire(any(RadarMenuBuilder.UpdateRadarEvent.class));
     }
 
     @Test
     public void onViewPinnedIsPinned() {
-        final ArgumentCaptor<DecisionTablePinnedEvent> pinnedEventCaptor = ArgumentCaptor.forClass( DecisionTablePinnedEvent.class );
+        final ArgumentCaptor<DecisionTablePinnedEvent> pinnedEventCaptor = ArgumentCaptor.forClass(DecisionTablePinnedEvent.class);
 
-        presenter.onViewPinned( true );
+        presenter.onViewPinned(true);
 
-        verify( pinnedEvent,
-                times( 1 ) ).fire( pinnedEventCaptor.capture() );
+        verify(pinnedEvent,
+               times(1)).fire(pinnedEventCaptor.capture());
         final DecisionTablePinnedEvent pinnedEvent = pinnedEventCaptor.getValue();
-        assertNotNull( pinnedEvent );
+        assertNotNull(pinnedEvent);
 
-        assertEquals( presenter,
-                      pinnedEvent.getPresenter() );
-        assertTrue( pinnedEvent.isPinned() );
+        assertEquals(presenter,
+                     pinnedEvent.getPresenter());
+        assertTrue(pinnedEvent.isPinned());
     }
 
     @Test
     public void onViewPinnedIsNotPinned() {
-        final ArgumentCaptor<DecisionTablePinnedEvent> pinnedEventCaptor = ArgumentCaptor.forClass( DecisionTablePinnedEvent.class );
+        final ArgumentCaptor<DecisionTablePinnedEvent> pinnedEventCaptor = ArgumentCaptor.forClass(DecisionTablePinnedEvent.class);
 
-        presenter.onViewPinned( false );
+        presenter.onViewPinned(false);
 
-        verify( pinnedEvent,
-                times( 1 ) ).fire( pinnedEventCaptor.capture() );
+        verify(pinnedEvent,
+               times(1)).fire(pinnedEventCaptor.capture());
         final DecisionTablePinnedEvent pinnedEvent = pinnedEventCaptor.getValue();
-        assertNotNull( pinnedEvent );
+        assertNotNull(pinnedEvent);
 
-        assertEquals( presenter,
-                      pinnedEvent.getPresenter() );
-        assertFalse( pinnedEvent.isPinned() );
+        assertEquals(presenter,
+                     pinnedEvent.getPresenter());
+        assertFalse(pinnedEvent.isPinned());
     }
 
     @Test
@@ -715,21 +721,20 @@ public class GuidedDecisionTableModellerPresenterTest {
         final GuidedDecisionTableView.Presenter dtPresenter1 = makeDecisionTable();
         final GuidedDecisionTableView.Presenter dtPresenter2 = makeDecisionTable();
         final Set<GuidedDecisionTableView.Presenter> availableDecisionTables = new HashSet<GuidedDecisionTableView.Presenter>() {{
-            add( dtPresenter1 );
-            add( dtPresenter2 );
+            add(dtPresenter1);
+            add(dtPresenter2);
         }};
 
-        when( presenter.isDecisionTableAvailable( eq( dtPresenter1 ) ) ).thenReturn( true );
-        when( presenter.getAvailableDecisionTables() ).thenReturn( availableDecisionTables );
+        when(presenter.isDecisionTableAvailable(eq(dtPresenter1))).thenReturn(true);
+        when(presenter.getAvailableDecisionTables()).thenReturn(availableDecisionTables);
 
         presenter.updateLinks();
 
-        verify( dtPresenter1,
-                times( 1 ) ).link( eq( availableDecisionTables ) );
-        verify( dtPresenter2,
-                times( 1 ) ).link( eq( availableDecisionTables ) );
-        verify( gridLayer,
-                times( 1 ) ).refreshGridWidgetConnectors();
+        verify(dtPresenter1,
+               times(1)).link(eq(availableDecisionTables));
+        verify(dtPresenter2,
+               times(1)).link(eq(availableDecisionTables));
+        verify(gridLayer,
+               times(1)).refreshGridWidgetConnectors();
     }
-
 }

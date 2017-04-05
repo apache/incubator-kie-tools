@@ -193,7 +193,7 @@ public class RuleModelCloneVisitorTest {
         facc.setExpression( buildExpressionFormLine() );
         facc.setFactPattern( buildFactPattern() );
         facc.setFunction( "function;" );
-        facc.setInitCode( "init code;" );
+        facc.setInitCode( "setPlugin code;" );
         facc.setResultCode( "result code;" );
         facc.setReverseCode( "reverse code;" );
         facc.setSourcePattern( buildExpressionFormLine() );

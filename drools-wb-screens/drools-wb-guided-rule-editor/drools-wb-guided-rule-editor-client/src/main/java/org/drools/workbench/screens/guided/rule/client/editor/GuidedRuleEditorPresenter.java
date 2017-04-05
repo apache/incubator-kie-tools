@@ -63,7 +63,7 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
-@WorkbenchEditor(identifier = "GuidedRuleEditor", supportedTypes = { GuidedRuleDRLResourceType.class, GuidedRuleDSLRResourceType.class }, priority = 102)
+@WorkbenchEditor(identifier = "GuidedRuleEditor", supportedTypes = {GuidedRuleDRLResourceType.class, GuidedRuleDSLRResourceType.class}, priority = 102)
 public class GuidedRuleEditorPresenter
         extends KieEditor {
 
@@ -99,85 +99,85 @@ public class GuidedRuleEditorPresenter
     private AsyncPackageDataModelOracle oracle;
 
     @Inject
-    public GuidedRuleEditorPresenter( final GuidedRuleEditorView view ) {
-        super( view );
+    public GuidedRuleEditorPresenter(final GuidedRuleEditorView view) {
+        super(view);
         this.view = view;
     }
 
     @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
+    public void onStartup(final ObservablePath path,
+                          final PlaceRequest place) {
 
-        super.init( path,
-                    place,
-                    getResourceType( path ) );
-        this.isDSLEnabled = resourceTypeDSL.accept( path );
+        super.init(path,
+                   place,
+                   getResourceType(path));
+        this.isDSLEnabled = resourceTypeDSL.accept(path);
     }
 
     protected void loadContent() {
         view.showLoading();
-        service.call( getModelSuccessCallback(),
-                      getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
+        service.call(getModelSuccessCallback(),
+                     getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
     }
 
     @Override
     public void onSourceTabSelected() {
-        service.call( new RemoteCallback<String>() {
+        service.call(new RemoteCallback<String>() {
             @Override
-            public void callback( String source ) {
-                updateSource( source );
+            public void callback(String source) {
+                updateSource(source);
             }
-        } ).toSource( versionRecordManager.getCurrentPath(),
-                      model );
+        }).toSource(versionRecordManager.getCurrentPath(),
+                    model);
     }
 
     private RemoteCallback<GuidedEditorContent> getModelSuccessCallback() {
         return new RemoteCallback<GuidedEditorContent>() {
 
             @Override
-            public void callback( final GuidedEditorContent content ) {
+            public void callback(final GuidedEditorContent content) {
                 //Path is set to null when the Editor is closed (which can happen before async calls complete).
-                if ( versionRecordManager.getCurrentPath() == null ) {
+                if (versionRecordManager.getCurrentPath() == null) {
                     return;
                 }
 
                 GuidedRuleEditorPresenter.this.model = content.getModel();
                 final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-                oracle = oracleFactory.makeAsyncPackageDataModelOracle( versionRecordManager.getCurrentPath(),
-                                                                        model,
-                                                                        dataModel );
+                oracle = oracleFactory.makeAsyncPackageDataModelOracle(versionRecordManager.getCurrentPath(),
+                                                                       model,
+                                                                       dataModel);
 
-                resetEditorPages( content.getOverview() );
+                resetEditorPages(content.getOverview());
 
                 addSourcePage();
 
-                addImportsTab( importsWidget );
+                addImportsTab(importsWidget);
 
-                view.setContent( model,
-                                 oracle,
-                                 ruleNamesService,
-                                 isReadOnly,
-                                 isDSLEnabled );
-                importsWidget.setContent( oracle,
-                                          model.getImports(),
-                                          isReadOnly );
+                view.setContent(model,
+                                oracle,
+                                ruleNamesService,
+                                isReadOnly,
+                                isDSLEnabled);
+                importsWidget.setContent(oracle,
+                                         model.getImports(),
+                                         isReadOnly);
 
                 view.hideBusyIndicator();
 
-                createOriginalHash( model );
+                createOriginalHash(model);
             }
         };
     }
 
-    public void handleImportAddedEvent( @Observes ImportAddedEvent event ) {
-        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+    public void handleImportAddedEvent(@Observes ImportAddedEvent event) {
+        if (!event.getDataModelOracle().equals(this.oracle)) {
             return;
         }
         view.refresh();
     }
 
-    public void handleImportRemovedEvent( @Observes ImportRemovedEvent event ) {
-        if ( !event.getDataModelOracle().equals( this.oracle ) ) {
+    public void handleImportRemovedEvent(@Observes ImportRemovedEvent event) {
+        if (!event.getDataModelOracle().equals(this.oracle)) {
             return;
         }
         view.refresh();
@@ -187,60 +187,60 @@ public class GuidedRuleEditorPresenter
         return new Command() {
             @Override
             public void execute() {
-                service.call( new RemoteCallback<List<ValidationMessage>>() {
+                service.call(new RemoteCallback<List<ValidationMessage>>() {
                     @Override
-                    public void callback( final List<ValidationMessage> results ) {
-                        if ( results == null || results.isEmpty() ) {
-                            notification.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
-                                                                      NotificationEvent.NotificationType.SUCCESS ) );
+                    public void callback(final List<ValidationMessage> results) {
+                        if (results == null || results.isEmpty()) {
+                            notification.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemValidatedSuccessfully(),
+                                                                    NotificationEvent.NotificationType.SUCCESS));
                         } else {
-                            validationPopup.showMessages( results );
+                            validationPopup.showMessages(results);
                         }
                     }
-                } ).validate( versionRecordManager.getCurrentPath(),
-                              view.getContent() );
+                }).validate(versionRecordManager.getCurrentPath(),
+                            view.getContent());
             }
         };
     }
 
     protected void save() {
-        GuidedRuleEditorValidator validator = new GuidedRuleEditorValidator( model,
-                                                                             GuidedRuleEditorResources.CONSTANTS );
+        GuidedRuleEditorValidator validator = new GuidedRuleEditorValidator(model,
+                                                                            GuidedRuleEditorResources.CONSTANTS);
 
-        if ( validator.isValid() ) {
-            savePopUpPresenter.show( versionRecordManager.getPathToLatest(),
-                                     new ParameterizedCommand<String>() {
-                                         @Override
-                                         public void execute( final String commitMessage ) {
-                                             view.showSaving();
-                                             save( commitMessage );
-                                         }
-                                     } );
+        if (validator.isValid()) {
+            savePopUpPresenter.show(versionRecordManager.getPathToLatest(),
+                                    new ParameterizedCommand<String>() {
+                                        @Override
+                                        public void execute(final String commitMessage) {
+                                            view.showSaving();
+                                            save(commitMessage);
+                                        }
+                                    });
 
             concurrentUpdateSessionInfo = null;
         } else {
-            ErrorPopup.showMessage( validator.getErrors().get( 0 ) );
+            ErrorPopup.showMessage(validator.getErrors().get(0));
         }
     }
 
     @Override
-    protected void save( String commitMessage ) {
-        service.call( getSaveSuccessCallback( model.hashCode() ),
-                      new HasBusyIndicatorDefaultErrorCallback( view ) ).save( versionRecordManager.getCurrentPath(),
-                                                                               view.getContent(),
-                                                                               metadata,
-                                                                               commitMessage );
+    protected void save(String commitMessage) {
+        service.call(getSaveSuccessCallback(model.hashCode()),
+                     new HasBusyIndicatorDefaultErrorCallback(view)).save(versionRecordManager.getCurrentPath(),
+                                                                          view.getContent(),
+                                                                          metadata,
+                                                                          commitMessage);
     }
 
     @OnClose
     public void onClose() {
         this.versionRecordManager.clear();
-        this.oracleFactory.destroy( oracle );
+        this.oracleFactory.destroy(oracle);
     }
 
     @OnMayClose
     public boolean mayClose() {
-        return super.mayClose( view.getContent() );
+        return super.mayClose(view.getContent());
     }
 
     @WorkbenchPartTitle
@@ -253,8 +253,8 @@ public class GuidedRuleEditorPresenter
         return super.getTitle();
     }
 
-    private ClientResourceType getResourceType( final Path path ) {
-        if ( resourceTypeDRL.accept( path ) ) {
+    private ClientResourceType getResourceType(final Path path) {
+        if (resourceTypeDRL.accept(path)) {
             return resourceTypeDRL;
         } else {
             return resourceTypeDRL;
@@ -270,5 +270,4 @@ public class GuidedRuleEditorPresenter
     public Menus getMenus() {
         return menus;
     }
-
 }

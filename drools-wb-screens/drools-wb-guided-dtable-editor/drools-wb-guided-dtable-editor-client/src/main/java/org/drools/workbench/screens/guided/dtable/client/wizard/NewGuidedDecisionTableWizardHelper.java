@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
+import org.drools.workbench.screens.guided.dtable.client.wizard.table.NewGuidedDecisionTableWizard;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -49,9 +50,9 @@ public class NewGuidedDecisionTableWizardHelper {
     private GuidedDTableResourceType dtResourceType = new GuidedDTableResourceType();
 
     @Inject
-    public NewGuidedDecisionTableWizardHelper( final Caller<GuidedDecisionTableEditorService> dtService,
-                                               final AsyncPackageDataModelOracleFactory oracleFactory,
-                                               final SyncBeanManager beanManager ) {
+    public NewGuidedDecisionTableWizardHelper(final Caller<GuidedDecisionTableEditorService> dtService,
+                                              final AsyncPackageDataModelOracleFactory oracleFactory,
+                                              final SyncBeanManager beanManager) {
         this.dtService = dtService;
         this.oracleFactory = oracleFactory;
         this.beanManager = beanManager;
@@ -59,94 +60,87 @@ public class NewGuidedDecisionTableWizardHelper {
 
     /**
      * Presents the {@link NewGuidedDecisionTableWizard} to Users to creates a new Guided Decision Table.
-     * @param contextPath
-     *         The base path where the Decision Table will be created. Cannot be null.
-     * @param baseFileName
-     *         The base file name of the new Decision Table. Cannot be null.
-     * @param tableFormat
-     *         The format of the Decision Table. Cannot be null.
-     * @param view
-     *         A {@link HasBusyIndicator} to handle status messages. Cannot be null.
-     * @param onSaveSuccessCallback
-     *         Called when the new Decision Table has successfully been created. Cannot be null.
+     * @param contextPath The base path where the Decision Table will be created. Cannot be null.
+     * @param baseFileName The base file name of the new Decision Table. Cannot be null.
+     * @param tableFormat The format of the Decision Table. Cannot be null.
+     * @param view A {@link HasBusyIndicator} to handle status messages. Cannot be null.
+     * @param onSaveSuccessCallback Called when the new Decision Table has successfully been created. Cannot be null.
      */
-    public void createNewGuidedDecisionTable( final Path contextPath,
-                                              final String baseFileName,
-                                              final GuidedDecisionTable52.TableFormat tableFormat,
-                                              final GuidedDecisionTable52.HitPolicy hitPolicy,
-                                              final HasBusyIndicator view,
-                                              final RemoteCallback<Path> onSaveSuccessCallback ) {
-        PortablePreconditions.checkNotNull( "contextPath",
-                                            contextPath );
-        PortablePreconditions.checkNotNull( "baseFileName",
-                                            baseFileName );
-        PortablePreconditions.checkNotNull( "tableFormat",
-                                            tableFormat );
-        PortablePreconditions.checkNotNull( "hitPolicy",
-                                            hitPolicy );
-        PortablePreconditions.checkNotNull( "view",
-                                            view );
-        PortablePreconditions.checkNotNull( "onSaveSuccessCallback",
-                                            onSaveSuccessCallback );
+    public void createNewGuidedDecisionTable(final Path contextPath,
+                                             final String baseFileName,
+                                             final GuidedDecisionTable52.TableFormat tableFormat,
+                                             final GuidedDecisionTable52.HitPolicy hitPolicy,
+                                             final HasBusyIndicator view,
+                                             final RemoteCallback<Path> onSaveSuccessCallback) {
+        PortablePreconditions.checkNotNull("contextPath",
+                                           contextPath);
+        PortablePreconditions.checkNotNull("baseFileName",
+                                           baseFileName);
+        PortablePreconditions.checkNotNull("tableFormat",
+                                           tableFormat);
+        PortablePreconditions.checkNotNull("hitPolicy",
+                                           hitPolicy);
+        PortablePreconditions.checkNotNull("view",
+                                           view);
+        PortablePreconditions.checkNotNull("onSaveSuccessCallback",
+                                           onSaveSuccessCallback);
 
-        dtService.call( new RemoteCallback<PackageDataModelOracleBaselinePayload>() {
+        dtService.call(new RemoteCallback<PackageDataModelOracleBaselinePayload>() {
 
             @Override
-            public void callback( final PackageDataModelOracleBaselinePayload dataModel ) {
-                final AsyncPackageDataModelOracle oracle = oracleFactory.makeAsyncPackageDataModelOracle( contextPath,
-                                                                                                          dataModel );
+            public void callback(final PackageDataModelOracleBaselinePayload dataModel) {
+                final AsyncPackageDataModelOracle oracle = oracleFactory.makeAsyncPackageDataModelOracle(contextPath,
+                                                                                                         dataModel);
 
                 //NewGuidedDecisionTableHandler is @ApplicationScoped and so has a single instance of the NewGuidedDecisionTableWizard injected.
                 //The Wizard maintains state and hence multiple use of the same Wizard instance leads to the Wizard UI showing stale values.
                 //Rather than have the Wizard initialise fields when shown I elected to create new instances whenever needed.
-                wizard = beanManager.lookupBean( NewGuidedDecisionTableWizard.class ).getInstance();
+                wizard = beanManager.lookupBean(NewGuidedDecisionTableWizard.class).getInstance();
 
-                wizard.setContent( contextPath,
-                                   baseFileName,
-                                   tableFormat,
-                                   hitPolicy,
-                                   oracle,
-                                   new NewGuidedDecisionTableWizard.GuidedDecisionTableWizardHandler() {
+                wizard.setContent(contextPath,
+                                  baseFileName,
+                                  tableFormat,
+                                  hitPolicy,
+                                  oracle,
+                                  new NewGuidedDecisionTableWizard.GuidedDecisionTableWizardHandler() {
 
-                                       @Override
-                                       public void save( final Path contextPath,
-                                                         final String baseFileName,
-                                                         final GuidedDecisionTable52 model ) {
-                                           destroyWizard();
-                                           oracleFactory.destroy( oracle );
-                                           view.showBusyIndicator( CommonConstants.INSTANCE.Saving() );
-                                           dtService.call( ( Path path ) -> {
-                                                               view.hideBusyIndicator();
-                                                               onSaveSuccessCallback.callback( path );
-                                                           },
-                                                           new HasBusyIndicatorDefaultErrorCallback( view ) ).create( contextPath,
-                                                                                                                      buildFileName( baseFileName ),
-                                                                                                                      model,
-                                                                                                                      "" );
+                                      @Override
+                                      public void save(final Path contextPath,
+                                                       final String baseFileName,
+                                                       final GuidedDecisionTable52 model) {
+                                          destroyWizard();
+                                          oracleFactory.destroy(oracle);
+                                          view.showBusyIndicator(CommonConstants.INSTANCE.Saving());
+                                          dtService.call((Path path) -> {
+                                                             view.hideBusyIndicator();
+                                                             onSaveSuccessCallback.callback(path);
+                                                         },
+                                                         new HasBusyIndicatorDefaultErrorCallback(view)).create(contextPath,
+                                                                                                                buildFileName(baseFileName),
+                                                                                                                model,
+                                                                                                                "");
+                                      }
 
-                                       }
+                                      private String buildFileName(final String baseFileName) {
+                                          final String suffix = dtResourceType.getSuffix();
+                                          final String prefix = dtResourceType.getPrefix();
+                                          final String extension = !(suffix == null || "".equals(suffix)) ? "." + dtResourceType.getSuffix() : "";
+                                          if (baseFileName.endsWith(extension)) {
+                                              return prefix + baseFileName;
+                                          }
+                                          return prefix + baseFileName + extension;
+                                      }
 
-                                       private String buildFileName( final String baseFileName ) {
-                                           final String suffix = dtResourceType.getSuffix();
-                                           final String prefix = dtResourceType.getPrefix();
-                                           final String extension = !( suffix == null || "".equals( suffix ) ) ? "." + dtResourceType.getSuffix() : "";
-                                           if ( baseFileName.endsWith( extension ) ) {
-                                               return prefix + baseFileName;
-                                           }
-                                           return prefix + baseFileName + extension;
-                                       }
-
-                                       @Override
-                                       public void destroyWizard() {
-                                           if ( wizard != null ) {
-                                               beanManager.destroyBean( wizard );
-                                               wizard = null;
-                                           }
-                                       }
-                                   } );
+                                      @Override
+                                      public void destroyWizard() {
+                                          if (wizard != null) {
+                                              beanManager.destroyBean(wizard);
+                                              wizard = null;
+                                          }
+                                      }
+                                  });
                 wizard.start();
             }
-        } ).loadDataModel( contextPath );
+        }).loadDataModel(contextPath);
     }
-
 }

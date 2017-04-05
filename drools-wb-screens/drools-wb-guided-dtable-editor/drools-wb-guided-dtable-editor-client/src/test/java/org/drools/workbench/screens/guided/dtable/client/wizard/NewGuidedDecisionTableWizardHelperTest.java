@@ -19,7 +19,8 @@ package org.drools.workbench.screens.guided.dtable.client.wizard;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.client.type.GuidedDTableResourceType;
-import org.drools.workbench.screens.guided.dtable.client.wizard.NewGuidedDecisionTableWizard.GuidedDecisionTableWizardHandler;
+import org.drools.workbench.screens.guided.dtable.client.wizard.table.NewGuidedDecisionTableWizard;
+import org.drools.workbench.screens.guided.dtable.client.wizard.table.NewGuidedDecisionTableWizard.GuidedDecisionTableWizardHandler;
 import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableEditorService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -49,52 +50,38 @@ import static org.mockito.Mockito.*;
 @RunWith(GwtMockitoTestRunner.class)
 public class NewGuidedDecisionTableWizardHelperTest {
 
+    @Rule
+    public ExpectedException rule = ExpectedException.none();
     @Mock
     private GuidedDecisionTableEditorService dtService;
     private Caller<GuidedDecisionTableEditorService> dtServiceCaller;
-
     @Mock
     private AsyncPackageDataModelOracleFactory oracleFactory;
-
     @Mock
     private PackageDataModelOracleBaselinePayload oracleBasePayload;
-
     @Mock
     private AsyncPackageDataModelOracle oracle;
-
     @Mock
     private SyncBeanManager beanManager;
-
     @Mock
     private SyncBeanDef<NewGuidedDecisionTableWizard> wizardBeanDef;
-
     @Mock
     private NewGuidedDecisionTableWizard wizardBean;
-
     @Mock
     private Path contextPath;
-
     private String baseFileName = "baseFileName";
-
     private GuidedDecisionTable52.TableFormat tableFormat = GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY;
 
     private GuidedDecisionTable52.HitPolicy hitPolicy = GuidedDecisionTable52.HitPolicy.NONE;
 
     @Mock
     private HasBusyIndicator view;
-
     @Mock
     private RemoteCallback<Path> onSaveSuccessCallback;
-
     @Captor
     private ArgumentCaptor<GuidedDecisionTableWizardHandler> wizardHandlerCaptor;
-
     @Captor
     private ArgumentCaptor<String> fileNameCaptor;
-
-    @Rule
-    public ExpectedException rule = ExpectedException.none();
-
     private GuidedDecisionTable52 model;
 
     private NewGuidedDecisionTableWizardHelper helper;
@@ -103,200 +90,199 @@ public class NewGuidedDecisionTableWizardHelperTest {
 
     @Before
     public void setup() {
-        dtServiceCaller = new CallerMock<>( dtService );
+        dtServiceCaller = new CallerMock<>(dtService);
         model = new GuidedDecisionTable52();
-        model.setTableFormat( tableFormat );
-        model.setHitPolicy( hitPolicy );
+        model.setTableFormat(tableFormat);
+        model.setHitPolicy(hitPolicy);
 
-        helper = new NewGuidedDecisionTableWizardHelper( dtServiceCaller,
-                                                         oracleFactory,
-                                                         beanManager );
+        helper = new NewGuidedDecisionTableWizardHelper(dtServiceCaller,
+                                                        oracleFactory,
+                                                        beanManager);
 
-        when( beanManager.lookupBean( eq( NewGuidedDecisionTableWizard.class ) ) ).thenReturn( wizardBeanDef );
-        when( wizardBeanDef.getInstance() ).thenReturn( wizardBean );
+        when(beanManager.lookupBean(eq(NewGuidedDecisionTableWizard.class))).thenReturn(wizardBeanDef);
+        when(wizardBeanDef.getInstance()).thenReturn(wizardBean);
 
-        when( dtService.loadDataModel( eq( contextPath ) ) ).thenReturn( oracleBasePayload );
+        when(dtService.loadDataModel(eq(contextPath))).thenReturn(oracleBasePayload);
 
-        when( dtService.create( any( Path.class ),
-                                any( String.class ),
-                                any( GuidedDecisionTable52.class ),
-                                any( String.class ) ) ).<Path>thenAnswer( ( invocation ) -> {
-            final Path path = ( (Path) invocation.getArguments()[ 0 ] );
-            final String fileName = ( (String) invocation.getArguments()[ 1 ] );
-            final Path newPath = PathFactory.newPath( fileName,
-                                                      path.toURI() + "/" + fileName );
+        when(dtService.create(any(Path.class),
+                              any(String.class),
+                              any(GuidedDecisionTable52.class),
+                              any(String.class))).<Path>thenAnswer((invocation) -> {
+            final Path path = ((Path) invocation.getArguments()[0]);
+            final String fileName = ((String) invocation.getArguments()[1]);
+            final Path newPath = PathFactory.newPath(fileName,
+                                                     path.toURI() + "/" + fileName);
             return newPath;
-        } );
+        });
 
-        when( oracleFactory.makeAsyncPackageDataModelOracle( contextPath,
-                                                             oracleBasePayload ) ).thenReturn( oracle );
+        when(oracleFactory.makeAsyncPackageDataModelOracle(contextPath,
+                                                           oracleBasePayload)).thenReturn(oracle);
     }
 
     @Test
     public void checkNullContextPath() {
-        rule.expect( IllegalArgumentException.class );
+        rule.expect(IllegalArgumentException.class);
 
-        helper.createNewGuidedDecisionTable( null,
-                                             baseFileName,
-                                             tableFormat,
-                                             hitPolicy,
-                                             view,
-                                             onSaveSuccessCallback );
+        helper.createNewGuidedDecisionTable(null,
+                                            baseFileName,
+                                            tableFormat,
+                                            hitPolicy,
+                                            view,
+                                            onSaveSuccessCallback);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void checkNullBaseFilename() {
-        rule.expect( IllegalArgumentException.class );
+        rule.expect(IllegalArgumentException.class);
 
-        helper.createNewGuidedDecisionTable( contextPath,
-                                             null,
-                                             tableFormat,
-                                             hitPolicy,
-                                             view,
-                                             onSaveSuccessCallback );
+        helper.createNewGuidedDecisionTable(contextPath,
+                                            null,
+                                            tableFormat,
+                                            hitPolicy,
+                                            view,
+                                            onSaveSuccessCallback);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void checkNullTableFormat() {
-        rule.expect( IllegalArgumentException.class );
+        rule.expect(IllegalArgumentException.class);
 
-        helper.createNewGuidedDecisionTable( contextPath,
-                                             baseFileName,
-                                             null,
-                                             hitPolicy,
-                                             view,
-                                             onSaveSuccessCallback );
+        helper.createNewGuidedDecisionTable(contextPath,
+                                            baseFileName,
+                                            null,
+                                            hitPolicy,
+                                            view,
+                                            onSaveSuccessCallback);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void checkNullHitPolicy() {
-        rule.expect( IllegalArgumentException.class );
+        rule.expect(IllegalArgumentException.class);
 
-        helper.createNewGuidedDecisionTable( contextPath,
-                                             baseFileName,
-                                             tableFormat,
-                                             null,
-                                             view,
-                                             onSaveSuccessCallback );
+        helper.createNewGuidedDecisionTable(contextPath,
+                                            baseFileName,
+                                            tableFormat,
+                                            null,
+                                            view,
+                                            onSaveSuccessCallback);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void checkNullHasBusyIndicator() {
-        rule.expect( IllegalArgumentException.class );
+        rule.expect(IllegalArgumentException.class);
 
-        helper.createNewGuidedDecisionTable( contextPath,
-                                             baseFileName,
-                                             tableFormat,
-                                             hitPolicy,
-                                             null,
-                                             onSaveSuccessCallback );
+        helper.createNewGuidedDecisionTable(contextPath,
+                                            baseFileName,
+                                            tableFormat,
+                                            hitPolicy,
+                                            null,
+                                            onSaveSuccessCallback);
     }
 
     @Test
     public void checkNullSaveSuccessCallback() {
-        rule.expect( IllegalArgumentException.class );
+        rule.expect(IllegalArgumentException.class);
 
-        helper.createNewGuidedDecisionTable( contextPath,
-                                             baseFileName,
-                                             tableFormat,
-                                             hitPolicy,
-                                             view,
-                                             null );
+        helper.createNewGuidedDecisionTable(contextPath,
+                                            baseFileName,
+                                            tableFormat,
+                                            hitPolicy,
+                                            view,
+                                            null);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void checkWizardContentIsSet() {
-        helper.createNewGuidedDecisionTable( contextPath,
-                                             baseFileName,
-                                             tableFormat,
-                                             hitPolicy,
-                                             view,
-                                             onSaveSuccessCallback );
+        helper.createNewGuidedDecisionTable(contextPath,
+                                            baseFileName,
+                                            tableFormat,
+                                            hitPolicy,
+                                            view,
+                                            onSaveSuccessCallback);
 
-        verify( wizardBean,
-                times( 1 ) ).setContent( eq( contextPath ),
-                                         eq( baseFileName ),
-                                         eq( tableFormat ),
-                                         eq( hitPolicy ),
-                                         eq( oracle ),
-                                         any( GuidedDecisionTableWizardHandler.class ) );
+        verify(wizardBean,
+               times(1)).setContent(eq(contextPath),
+                                    eq(baseFileName),
+                                    eq(tableFormat),
+                                    eq(hitPolicy),
+                                    eq(oracle),
+                                    any(GuidedDecisionTableWizardHandler.class));
     }
 
     @Test
     public void checkWizardHandlerSave() {
-        helper.createNewGuidedDecisionTable( contextPath,
-                                             baseFileName,
-                                             tableFormat,
-                                             hitPolicy,
-                                             view,
-                                             onSaveSuccessCallback );
+        helper.createNewGuidedDecisionTable(contextPath,
+                                            baseFileName,
+                                            tableFormat,
+                                            hitPolicy,
+                                            view,
+                                            onSaveSuccessCallback);
 
-        verify( wizardBean,
-                times( 1 ) ).setContent( eq( contextPath ),
-                                         eq( baseFileName ),
-                                         eq( tableFormat ),
-                                         eq( hitPolicy ),
-                                         eq( oracle ),
-                                         wizardHandlerCaptor.capture() );
+        verify(wizardBean,
+               times(1)).setContent(eq(contextPath),
+                                    eq(baseFileName),
+                                    eq(tableFormat),
+                                    eq(hitPolicy),
+                                    eq(oracle),
+                                    wizardHandlerCaptor.capture());
 
         final GuidedDecisionTableWizardHandler wizardHandler = wizardHandlerCaptor.getValue();
-        assertNotNull( wizardHandler );
+        assertNotNull(wizardHandler);
 
-        wizardHandler.save( contextPath,
-                            baseFileName,
-                            model );
+        wizardHandler.save(contextPath,
+                           baseFileName,
+                           model);
 
-        verify( beanManager,
-                times( 1 ) ).destroyBean( wizardBean );
-        verify( oracleFactory,
-                times( 1 ) ).destroy( oracle );
-        verify( view,
-                times( 1 ) ).showBusyIndicator( any( String.class ) );
-        verify( dtService,
-                times( 1 ) ).create( eq( contextPath ),
-                                     fileNameCaptor.capture(),
-                                     eq( model ),
-                                     eq( "" ) );
-        verify( onSaveSuccessCallback,
-                times( 1 ) ).callback( any( Path.class ) );
-        verify( view,
-                times( 1 ) ).hideBusyIndicator();
+        verify(beanManager,
+               times(1)).destroyBean(wizardBean);
+        verify(oracleFactory,
+               times(1)).destroy(oracle);
+        verify(view,
+               times(1)).showBusyIndicator(any(String.class));
+        verify(dtService,
+               times(1)).create(eq(contextPath),
+                                fileNameCaptor.capture(),
+                                eq(model),
+                                eq(""));
+        verify(onSaveSuccessCallback,
+               times(1)).callback(any(Path.class));
+        verify(view,
+               times(1)).hideBusyIndicator();
 
         final String fileName = fileNameCaptor.getValue();
-        assertNotNull( fileName );
-        assertEquals( baseFileName + "." + dtResourceType.getSuffix(),
-                      fileName );
+        assertNotNull(fileName);
+        assertEquals(baseFileName + "." + dtResourceType.getSuffix(),
+                     fileName);
     }
 
     @Test
     public void checkWizardHandlerDestroyWizard() {
-        helper.createNewGuidedDecisionTable( contextPath,
-                                             baseFileName,
-                                             tableFormat,
-                                             hitPolicy,
-                                             view,
-                                             onSaveSuccessCallback );
+        helper.createNewGuidedDecisionTable(contextPath,
+                                            baseFileName,
+                                            tableFormat,
+                                            hitPolicy,
+                                            view,
+                                            onSaveSuccessCallback);
 
-        verify( wizardBean,
-                times( 1 ) ).setContent( eq( contextPath ),
-                                         eq( baseFileName ),
-                                         eq( tableFormat ),
-                                         eq( hitPolicy ),
-                                         eq( oracle ),
-                                         wizardHandlerCaptor.capture() );
+        verify(wizardBean,
+               times(1)).setContent(eq(contextPath),
+                                    eq(baseFileName),
+                                    eq(tableFormat),
+                                    eq(hitPolicy),
+                                    eq(oracle),
+                                    wizardHandlerCaptor.capture());
 
         final GuidedDecisionTableWizardHandler wizardHandler = wizardHandlerCaptor.getValue();
-        assertNotNull( wizardHandler );
+        assertNotNull(wizardHandler);
 
         wizardHandler.destroyWizard();
 
-        verify( beanManager,
-                times( 1 ) ).destroyBean( wizardBean );
+        verify(beanManager,
+               times(1)).destroyBean(wizardBean);
     }
-
 }

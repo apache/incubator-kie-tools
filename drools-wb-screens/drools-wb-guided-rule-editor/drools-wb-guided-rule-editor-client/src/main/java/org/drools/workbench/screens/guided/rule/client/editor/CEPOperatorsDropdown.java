@@ -289,4 +289,7 @@ public class CEPOperatorsDropdown extends Composite
                            ValueChangeEvent.getType() );
     }
 
+    public ListBox getBox() {
+        return box;
+    }
 }

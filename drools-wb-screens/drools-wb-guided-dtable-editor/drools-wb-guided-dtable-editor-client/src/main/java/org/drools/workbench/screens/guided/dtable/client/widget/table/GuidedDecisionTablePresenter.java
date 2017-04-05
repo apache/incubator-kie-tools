@@ -125,8 +125,10 @@ import org.uberfire.mvp.ParameterizedCommand;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
 
-import static org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter.Access.LockedBy.*;
-import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer.*;
+import static org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter.Access.LockedBy.CURRENT_USER;
+import static org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter.Access.LockedBy.NOBODY;
+import static org.drools.workbench.screens.guided.dtable.client.widget.table.GuidedDecisionTablePresenter.Access.LockedBy.OTHER_USER;
+import static org.drools.workbench.screens.guided.dtable.client.widget.table.model.synchronizers.Synchronizer.MetaData;
 
 @Dependent
 public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Presenter {
@@ -154,25 +156,19 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     private final EnumLoaderUtilities enumLoaderUtilities;
 
     private final Access access = new Access();
-
+    protected CellUtilities cellUtilities;
+    protected ColumnUtilities columnUtilities;
+    protected DependentEnumsUtilities dependentEnumsUtilities;
+    protected AnalyzerController analyzerController;
     private GuidedDecisionTable52 model;
     private Overview overview;
     private AsyncPackageDataModelOracle oracle;
     private GuidedDecisionTableModellerView.Presenter parent;
     private BRLRuleModel rm;
-
     private GuidedDecisionTableUiModel uiModel;
     private GuidedDecisionTableView view;
     private GuidedDecisionTableRenderer renderer;
-
     private AuditLog auditLog;
-
-    protected CellUtilities cellUtilities;
-    protected ColumnUtilities columnUtilities;
-    protected DependentEnumsUtilities dependentEnumsUtilities;
-
-    protected AnalyzerController analyzerController;
-
     private String version = null;
     private ObservablePath latestPath = null;
     private ObservablePath currentPath = null;
@@ -183,74 +179,30 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     //This EventBus is local to the screen and should be used for local operations, set data, add rows etc
     private EventBus eventBus = new SimpleEventBus();
-
-    public static class Access {
-
-        public enum LockedBy {
-            CURRENT_USER,
-            OTHER_USER,
-            NOBODY
-        }
-
-        private LockedBy lock = NOBODY;
-        private boolean isReadOnly = false;
-
-        public LockedBy getLock() {
-            return lock;
-        }
-
-        public void setLock( final LockedBy lock ) {
-            this.lock = lock;
-        }
-
-        public boolean isReadOnly() {
-            return isReadOnly;
-        }
-
-        public void setReadOnly( final boolean isReadOnly ) {
-            this.isReadOnly = isReadOnly;
-        }
-
-        public boolean isEditable() {
-            return !( lock == OTHER_USER || isReadOnly );
-        }
-
-    }
-
-    private interface VetoableCommand {
-
-        void execute() throws ModelSynchronizer.MoveColumnVetoException;
-
-    }
-
-    private interface VetoableUpdateCommand {
-
-        List<BaseColumnFieldDiff> execute() throws ModelSynchronizer.MoveColumnVetoException;
-
-    }
+    private Set<PortableWorkDefinition> workItemDefinitions;
 
     @Inject
-    public GuidedDecisionTablePresenter( final User identity,
-                                         final GuidedDTableResourceType resourceType,
-                                         final Caller<RuleNamesService> ruleNameService,
-                                         final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent,
-                                         final Event<DecisionTableColumnSelectedEvent> decisionTableColumnSelectedEvent,
-                                         final Event<DecisionTableSelectionsChangedEvent> decisionTableSelectionsChangedEvent,
-                                         final Event<RefreshAttributesPanelEvent> refreshAttributesPanelEvent,
-                                         final Event<RefreshMetaDataPanelEvent> refreshMetaDataPanelEvent,
-                                         final Event<RefreshConditionsPanelEvent> refreshConditionsPanelEvent,
-                                         final Event<RefreshActionsPanelEvent> refreshActionsPanelEvent,
-                                         final Event<NotificationEvent> notificationEvent,
-                                         final GridWidgetCellFactory gridWidgetCellFactory,
-                                         final GridWidgetColumnFactory gridWidgetColumnFactory,
-                                         final AsyncPackageDataModelOracleFactory oracleFactory,
-                                         final ModelSynchronizer synchronizer,
-                                         final SyncBeanManager beanManager,
-                                         final @GuidedDecisionTable GuidedDecisionTableLockManager lockManager,
-                                         final GuidedDecisionTableLinkManager linkManager,
-                                         final Clipboard clipboard,
-                                         final DecisionTableAnalyzerProvider decisionTableAnalyzerProvider,
-                                         final EnumLoaderUtilities enumLoaderUtilities ) {
+    public GuidedDecisionTablePresenter(final User identity,
+                                        final GuidedDTableResourceType resourceType,
+                                        final Caller<RuleNamesService> ruleNameService,
+                                        final Event<DecisionTableSelectedEvent> decisionTableSelectedEvent,
+                                        final Event<DecisionTableColumnSelectedEvent> decisionTableColumnSelectedEvent,
+                                        final Event<DecisionTableSelectionsChangedEvent> decisionTableSelectionsChangedEvent,
+                                        final Event<RefreshAttributesPanelEvent> refreshAttributesPanelEvent,
+                                        final Event<RefreshMetaDataPanelEvent> refreshMetaDataPanelEvent,
+                                        final Event<RefreshConditionsPanelEvent> refreshConditionsPanelEvent,
+                                        final Event<RefreshActionsPanelEvent> refreshActionsPanelEvent,
+                                        final Event<NotificationEvent> notificationEvent,
+                                        final GridWidgetCellFactory gridWidgetCellFactory,
+                                        final GridWidgetColumnFactory gridWidgetColumnFactory,
+                                        final AsyncPackageDataModelOracleFactory oracleFactory,
+                                        final ModelSynchronizer synchronizer,
+                                        final SyncBeanManager beanManager,
+                                        final @GuidedDecisionTable GuidedDecisionTableLockManager lockManager,
+                                        final GuidedDecisionTableLinkManager linkManager,
+                                        final Clipboard clipboard,
+                                        final DecisionTableAnalyzerProvider decisionTableAnalyzerProvider,
+                                        final EnumLoaderUtilities enumLoaderUtilities) {
         this.identity = identity;
         this.resourceType = resourceType;
         this.ruleNameService = ruleNameService;
@@ -273,11 +225,21 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         this.decisionTableAnalyzerProvider = decisionTableAnalyzerProvider;
         this.enumLoaderUtilities = enumLoaderUtilities;
 
-        CellUtilities.injectDateConvertor( getDateConverter() );
+        CellUtilities.injectDateConvertor(getDateConverter());
+    }
+
+    @Override
+    public Set<PortableWorkDefinition> getWorkItemDefinitions() {
+        return workItemDefinitions;
     }
 
     DateConverter getDateConverter() {
         return GWTDateConverter.getInstance();
+    }
+
+    @Override
+    public EventBus getEventBus() {
+        return eventBus;
     }
 
     @Override
@@ -315,58 +277,58 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     @Override
-    public void setContent( final ObservablePath path,
-                            final PlaceRequest placeRequest,
-                            final GuidedDecisionTableEditorContent content,
-                            final GuidedDecisionTableModellerView.Presenter parent,
-                            final boolean isReadOnly ) {
+    public void setContent(final ObservablePath path,
+                           final PlaceRequest placeRequest,
+                           final GuidedDecisionTableEditorContent content,
+                           final GuidedDecisionTableModellerView.Presenter parent,
+                           final boolean isReadOnly) {
         this.parent = parent;
         this.latestPath = path;
 
-        initialiseContent( path,
-                           placeRequest,
-                           content,
-                           isReadOnly );
+        initialiseContent(path,
+                          placeRequest,
+                          content,
+                          isReadOnly);
     }
 
     @Override
-    public void refreshContent( final ObservablePath path,
-                                final PlaceRequest placeRequest,
-                                final GuidedDecisionTableEditorContent content,
-                                final boolean isReadOnly ) {
+    public void refreshContent(final ObservablePath path,
+                               final PlaceRequest placeRequest,
+                               final GuidedDecisionTableEditorContent content,
+                               final boolean isReadOnly) {
         onClose();
 
-        initialiseContent( path,
-                           placeRequest,
-                           content,
-                           isReadOnly );
+        initialiseContent(path,
+                          placeRequest,
+                          content,
+                          isReadOnly);
 
-        if ( !isReadOnly() ) {
+        if (!isReadOnly()) {
             analyzerController.initialiseAnalysis();
         }
     }
 
-    void initialiseContent( final ObservablePath path,
-                            final PlaceRequest placeRequest,
-                            final GuidedDecisionTableEditorContent content,
-                            final boolean isReadOnly ) {
+    void initialiseContent(final ObservablePath path,
+                           final PlaceRequest placeRequest,
+                           final GuidedDecisionTableEditorContent content,
+                           final boolean isReadOnly) {
         final GuidedDecisionTable52 model = content.getModel();
         final PackageDataModelOracleBaselinePayload dataModel = content.getDataModel();
-        final Set<PortableWorkDefinition> workItemDefinitions = content.getWorkItemDefinitions();
 
+        this.workItemDefinitions = content.getWorkItemDefinitions();
         this.currentPath = path;
         this.placeRequest = placeRequest;
         this.model = model;
         this.overview = content.getOverview();
-        this.oracle = oracleFactory.makeAsyncPackageDataModelOracle( path,
-                                                                     model,
-                                                                     dataModel );
-        this.access.setReadOnly( isReadOnly );
-        this.rm = new BRLRuleModel( model );
+        this.oracle = oracleFactory.makeAsyncPackageDataModelOracle(path,
+                                                                    model,
+                                                                    dataModel);
+        this.access.setReadOnly(isReadOnly);
+        this.rm = new BRLRuleModel(model);
 
         this.uiModel = makeUiModel();
         this.renderer = makeViewRenderer();
-        this.view = makeView( workItemDefinitions );
+        this.view = makeView(workItemDefinitions);
 
         initialiseLockManager();
         initialiseUtilities();
@@ -377,36 +339,36 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     //Setup LockManager
     void initialiseLockManager() {
-        lockManager.init( new LockTarget( currentPath,
-                                          parent.getView().asWidget(),
-                                          placeRequest,
-                                          () -> currentPath.getFileName() + " - " + resourceType.getDescription(),
-                                          () -> {/*nothing*/} ),
-                          parent );
+        lockManager.init(new LockTarget(currentPath,
+                                        parent.getView().asWidget(),
+                                        placeRequest,
+                                        () -> currentPath.getFileName() + " - " + resourceType.getDescription(),
+                                        () -> {/*nothing*/}),
+                         parent);
     }
 
     //Instantiate UiModel overriding cell selection to inform MenuItems about changes to selected cells.
     GuidedDecisionTableUiModel makeUiModel() {
-        return new GuidedDecisionTableUiModel( synchronizer ) {
+        return new GuidedDecisionTableUiModel(synchronizer) {
             @Override
-            public Range selectCell( final int rowIndex,
-                                     final int columnIndex ) {
-                final Range rows = super.selectCell( rowIndex,
-                                                     columnIndex );
-                decisionTableSelectionsChangedEvent.fire( new DecisionTableSelectionsChangedEvent( GuidedDecisionTablePresenter.this ) );
+            public Range selectCell(final int rowIndex,
+                                    final int columnIndex) {
+                final Range rows = super.selectCell(rowIndex,
+                                                    columnIndex);
+                decisionTableSelectionsChangedEvent.fire(new DecisionTableSelectionsChangedEvent(GuidedDecisionTablePresenter.this));
                 return rows;
             }
 
             @Override
-            public Range selectCells( final int rowIndex,
-                                      final int columnIndex,
-                                      final int width,
-                                      final int height ) {
-                final Range rows = super.selectCells( rowIndex,
-                                                      columnIndex,
-                                                      width,
-                                                      height );
-                decisionTableSelectionsChangedEvent.fire( new DecisionTableSelectionsChangedEvent( GuidedDecisionTablePresenter.this ) );
+            public Range selectCells(final int rowIndex,
+                                     final int columnIndex,
+                                     final int width,
+                                     final int height) {
+                final Range rows = super.selectCells(rowIndex,
+                                                     columnIndex,
+                                                     width,
+                                                     height);
+                decisionTableSelectionsChangedEvent.fire(new DecisionTableSelectionsChangedEvent(GuidedDecisionTablePresenter.this));
                 return rows;
             }
 
@@ -423,77 +385,76 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     GuidedDecisionTableRenderer makeViewRenderer() {
-        return new GuidedDecisionTableRenderer( uiModel,
-                                                model );
+        return new GuidedDecisionTableRenderer(uiModel,
+                                               model);
     }
 
-    GuidedDecisionTableView makeView( final Set<PortableWorkDefinition> workItemDefinitions ) {
-        return new GuidedDecisionTableViewImpl( uiModel,
-                                                renderer,
-                                                this,
-                                                model,
-                                                oracle,
-                                                workItemDefinitions,
-                                                notificationEvent,
-                                                eventBus,
-                                                access );
+    GuidedDecisionTableView makeView(final Set<PortableWorkDefinition> workItemDefinitions) {
+        return new GuidedDecisionTableViewImpl(uiModel,
+                                               renderer,
+                                               this,
+                                               model,
+                                               oracle,
+                                               workItemDefinitions,
+                                               notificationEvent,
+                                               eventBus,
+                                               access);
     }
 
     void initialiseUtilities() {
         this.cellUtilities = new CellUtilities();
-        this.columnUtilities = new ColumnUtilities( model,
-                                                    oracle );
+        this.columnUtilities = new ColumnUtilities(model,
+                                                   oracle);
 
         //Setup the DropDownManager that requires the Model and UI data to determine drop-down lists
         //for dependent enumerations. This needs to be called before the columns are created.
-        this.dependentEnumsUtilities = new DependentEnumsUtilities( model,
-                                                                    oracle );
+        this.dependentEnumsUtilities = new DependentEnumsUtilities(model,
+                                                                   oracle);
 
         //Setup Factories for new Columns and Cells
-        gridWidgetColumnFactory.setConverters( getConverters() );
-        gridWidgetColumnFactory.initialise( model,
-                                            oracle,
-                                            columnUtilities,
-                                            this );
+        gridWidgetColumnFactory.setConverters(getConverters());
+        gridWidgetColumnFactory.initialise(model,
+                                           oracle,
+                                           columnUtilities,
+                                           this);
 
         //Setup synchronizers to update the Model when the UiModel changes.
-        synchronizer.setSynchronizers( getSynchronizers() );
-        synchronizer.initialise( model,
-                                 uiModel,
-                                 cellUtilities,
-                                 columnUtilities,
-                                 dependentEnumsUtilities,
-                                 gridWidgetCellFactory,
-                                 gridWidgetColumnFactory,
-                                 view,
-                                 rm,
-                                 eventBus,
-                                 access );
-
+        synchronizer.setSynchronizers(getSynchronizers());
+        synchronizer.initialise(model,
+                                uiModel,
+                                cellUtilities,
+                                columnUtilities,
+                                dependentEnumsUtilities,
+                                gridWidgetCellFactory,
+                                gridWidgetColumnFactory,
+                                view,
+                                rm,
+                                eventBus,
+                                access);
     }
 
     //Copy Model data to UiModel.
     void initialiseModels() {
         initialiseLegacyColumnDataTypes();
         final List<BaseColumn> modelColumns = model.getExpandedColumns();
-        for ( BaseColumn column : modelColumns ) {
-            initialiseColumn( column );
+        for (BaseColumn column : modelColumns) {
+            initialiseColumn(column);
         }
-        for ( List<DTCellValue52> row : model.getData() ) {
-            initialiseRow( modelColumns,
-                           row );
+        for (List<DTCellValue52> row : model.getData()) {
+            initialiseRow(modelColumns,
+                          row);
         }
-        setOriginalHashCode( model.hashCode() );
+        setOriginalHashCode(model.hashCode());
     }
 
     //Ensure field data-type is set (field did not exist before 5.2)
     void initialiseLegacyColumnDataTypes() {
-        for ( CompositeColumn<?> column : model.getConditions() ) {
-            if ( column instanceof Pattern52 ) {
+        for (CompositeColumn<?> column : model.getConditions()) {
+            if (column instanceof Pattern52) {
                 final Pattern52 pattern = (Pattern52) column;
-                for ( ConditionCol52 condition : pattern.getChildColumns() ) {
-                    condition.setFieldType( oracle.getFieldType( pattern.getFactType(),
-                                                                 condition.getFactField() ) );
+                for (ConditionCol52 condition : pattern.getChildColumns()) {
+                    condition.setFieldType(oracle.getFieldType(pattern.getFactType(),
+                                                               condition.getFactField()));
                 }
             }
         }
@@ -501,54 +462,54 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     //Setup the Validation & Verification analyzer
     void initialiseValidationAndVerification() {
-        this.analyzerController = decisionTableAnalyzerProvider.newAnalyzer( placeRequest,
-                                                                             oracle,
-                                                                             model,
-                                                                             eventBus );
+        this.analyzerController = decisionTableAnalyzerProvider.newAnalyzer(placeRequest,
+                                                                            oracle,
+                                                                            model,
+                                                                            eventBus);
     }
 
     //Setup Audit Log
     void initialiseAuditLog() {
-        this.auditLog = new AuditLog( model,
-                                      identity );
+        this.auditLog = new AuditLog(model,
+                                     identity);
     }
 
     @Override
-    public void link( final Set<GuidedDecisionTableView.Presenter> dtPresenters ) {
+    public void link(final Set<GuidedDecisionTableView.Presenter> dtPresenters) {
         final Set<GuidedDecisionTableView.Presenter> otherDecisionTables = new HashSet<>();
-        otherDecisionTables.addAll( dtPresenters );
-        otherDecisionTables.remove( this );
-        otherDecisionTables.stream().forEach( ( e ) -> linkManager.link( this.getModel(),
-                                                                         e.getModel(),
-                                                                         ( final int sourceColumnIndex,
-                                                                           final int targetColumnIndex ) -> {
-                                                                             final GridData sourceUiModel = GuidedDecisionTablePresenter.this.getView().getModel();
-                                                                             final GridData targetUiModel = e.getView().getModel();
-                                                                             sourceUiModel.getColumns().get( sourceColumnIndex ).setLink( targetUiModel.getColumns().get( targetColumnIndex ) );
-                                                                         } ) );
+        otherDecisionTables.addAll(dtPresenters);
+        otherDecisionTables.remove(this);
+        otherDecisionTables.stream().forEach((e) -> linkManager.link(this.getModel(),
+                                                                     e.getModel(),
+                                                                     (final int sourceColumnIndex,
+                                                                      final int targetColumnIndex) -> {
+                                                                         final GridData sourceUiModel = GuidedDecisionTablePresenter.this.getView().getModel();
+                                                                         final GridData targetUiModel = e.getView().getModel();
+                                                                         sourceUiModel.getColumns().get(sourceColumnIndex).setLink(targetUiModel.getColumns().get(targetColumnIndex));
+                                                                     }));
     }
 
     List<BaseColumnConverter> getConverters() {
         final List<BaseColumnConverter> converters = new ArrayList<BaseColumnConverter>();
-        for ( SyncBeanDef<BaseColumnConverter> bean : beanManager.lookupBeans( BaseColumnConverter.class ) ) {
-            converters.add( bean.getInstance() );
+        for (SyncBeanDef<BaseColumnConverter> bean : beanManager.lookupBeans(BaseColumnConverter.class)) {
+            converters.add(bean.getInstance());
         }
-        Collections.sort( converters,
-                          new Comparator<BaseColumnConverter>() {
-                              @Override
-                              public int compare( final BaseColumnConverter o1,
-                                                  final BaseColumnConverter o2 ) {
-                                  return o2.priority() - o1.priority();
-                              }
-                          } );
+        Collections.sort(converters,
+                         new Comparator<BaseColumnConverter>() {
+                             @Override
+                             public int compare(final BaseColumnConverter o1,
+                                                final BaseColumnConverter o2) {
+                                 return o2.priority() - o1.priority();
+                             }
+                         });
         return converters;
     }
 
     @SuppressWarnings("unchecked")
     List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> getSynchronizers() {
         final List<Synchronizer<? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData, ? extends MetaData>> synchronizers = new ArrayList<>();
-        for ( SyncBeanDef<Synchronizer> bean : beanManager.lookupBeans( Synchronizer.class ) ) {
-            synchronizers.add( bean.getInstance() );
+        for (SyncBeanDef<Synchronizer> bean : beanManager.lookupBeans(Synchronizer.class)) {
+            synchronizers.add(bean.getInstance());
         }
         return synchronizers;
     }
@@ -562,78 +523,76 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     public void onClose() {
         terminateAnalysis();
 
-        if ( uiModel != null ) {
-            for ( GridColumn<?> column : uiModel.getColumns() ) {
-                if ( column.getColumnRenderer() instanceof HasDOMElementResources ) {
-                    ( (HasDOMElementResources) column.getColumnRenderer() ).destroyResources();
+        if (uiModel != null) {
+            for (GridColumn<?> column : uiModel.getColumns()) {
+                if (column.getColumnRenderer() instanceof HasDOMElementResources) {
+                    ((HasDOMElementResources) column.getColumnRenderer()).destroyResources();
                 }
             }
         }
 
         lockManager.releaseLock();
-        oracleFactory.destroy( oracle );
+        oracleFactory.destroy(oracle);
     }
 
     @Override
     public void initialiseAnalysis() {
-        if ( analyzerController != null ) {
+        if (analyzerController != null) {
             analyzerController.initialiseAnalysis();
         }
     }
 
     @Override
     public void terminateAnalysis() {
-        if ( analyzerController != null ) {
+        if (analyzerController != null) {
             analyzerController.terminateAnalysis();
         }
     }
 
     @Override
     @SuppressWarnings("unused")
-    public void select( final GridWidget selectedGridWidget ) {
-        decisionTableSelectedEvent.fire( new DecisionTableSelectedEvent( this ) );
-        if ( !isReadOnly() ) {
+    public void select(final GridWidget selectedGridWidget) {
+        decisionTableSelectedEvent.fire(new DecisionTableSelectedEvent(this));
+        if (!isReadOnly()) {
             lockManager.acquireLock();
         }
     }
 
-    void onUpdatedLockStatusEvent( final @Observes UpdatedLockStatusEvent event ) {
-        if ( currentPath == null ) {
+    void onUpdatedLockStatusEvent(final @Observes UpdatedLockStatusEvent event) {
+        if (currentPath == null) {
             return;
         }
-        if ( currentPath.equals( event.getFile() ) ) {
-            if ( event.isLocked() ) {
-                access.setLock( event.isLockedByCurrentUser() ? CURRENT_USER : OTHER_USER );
+        if (currentPath.equals(event.getFile())) {
+            if (event.isLocked()) {
+                access.setLock(event.isLockedByCurrentUser() ? CURRENT_USER : OTHER_USER);
             } else {
-                access.setLock( NOBODY );
+                access.setLock(NOBODY);
             }
-            parent.onLockStatusUpdated( this );
+            parent.onLockStatusUpdated(this);
         }
     }
 
-    void onIssueSelectedEvent( final @Observes IssueSelectedEvent event ) {
-        if ( event == null ) {
+    void onIssueSelectedEvent(final @Observes IssueSelectedEvent event) {
+        if (event == null) {
             return;
         }
         final PlaceRequest placeRequest = event.getPlaceRequest();
         final Issue issue = event.getIssue();
 
-        if ( placeRequest == null || issue == null ) {
+        if (placeRequest == null || issue == null) {
             renderer.clearHighlights();
-
-        } else if ( !placeRequest.equals( this.getPlaceRequest() ) ) {
+        } else if (!placeRequest.equals(this.getPlaceRequest())) {
             renderer.clearHighlights();
-
         } else {
-            renderer.highlightRows( event.getIssue().getSeverity(),
-                                    event.getIssue().getRowNumbers() );
+            renderer.highlightRows(event.getIssue().getSeverity(),
+                                   event.getIssue().getRowNumbers());
         }
         getView().draw();
     }
 
     @Override
-    public void selectLinkedColumn( final GridColumn<?> column ) {
-        decisionTableColumnSelectedEvent.fire( new DecisionTableColumnSelectedEvent( column ) );
+    public void selectLinkedColumn(final GridColumn<?> column) {
+        decisionTableColumnSelectedEvent.fire(new DecisionTableColumnSelectedEvent(column));
     }
 
     @Override
@@ -642,20 +601,20 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     @Override
-    public void enterPinnedMode( final GridWidget gridWidget,
-                                 final Command onStartCommand ) {
-        parent.enterPinnedMode( gridWidget,
-                                onStartCommand );
+    public void enterPinnedMode(final GridWidget gridWidget,
+                                final Command onStartCommand) {
+        parent.enterPinnedMode(gridWidget,
+                               onStartCommand);
     }
 
     @Override
-    public void exitPinnedMode( final Command onCompleteCommand ) {
-        parent.exitPinnedMode( onCompleteCommand );
+    public void exitPinnedMode(final Command onCompleteCommand) {
+        parent.exitPinnedMode(onCompleteCommand);
     }
 
     @Override
-    public void updatePinnedContext( final GridWidget gridWidget ) throws IllegalStateException {
-        parent.updatePinnedContext( gridWidget );
+    public void updatePinnedContext(final GridWidget gridWidget) throws IllegalStateException {
+        parent.updatePinnedContext(gridWidget);
     }
 
     @Override
@@ -674,19 +633,19 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     @Override
-    public void getPackageParentRuleNames( final ParameterizedCommand<Collection<String>> command ) {
-        ruleNameService.call( new RemoteCallback<Collection<String>>() {
+    public void getPackageParentRuleNames(final ParameterizedCommand<Collection<String>> command) {
+        ruleNameService.call(new RemoteCallback<Collection<String>>() {
             @Override
-            public void callback( final Collection<String> ruleNames ) {
-                command.execute( ruleNames );
+            public void callback(final Collection<String> ruleNames) {
+                command.execute(ruleNames);
             }
-        } ).getRuleNames( getCurrentPath(),
-                          model.getPackageName() );
+        }).getRuleNames(getCurrentPath(),
+                        model.getPackageName());
     }
 
     @Override
-    public void setParentRuleName( final String parentName ) {
-        model.setParentName( parentName );
+    public void setParentRuleName(final String parentName) {
+        model.setParentName(parentName);
     }
 
     @Override
@@ -697,28 +656,28 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     @Override
-    public Set<String> getBindings( final String className ) {
+    public Set<String> getBindings(final String className) {
         //For some reason, Fact Pattern data-types use the leaf name of the fully qualified Class Name
         //whereas Fields use the fully qualified Class Name. We don't use the generic fieldType (see
         //SuggestionCompletionEngine.TYPE) as we can't distinguish between different numeric types
         String simpleClassName = className;
-        if ( simpleClassName != null && simpleClassName.lastIndexOf( "." ) > 0 ) {
-            simpleClassName = simpleClassName.substring( simpleClassName.lastIndexOf( "." ) + 1 );
+        if (simpleClassName != null && simpleClassName.lastIndexOf(".") > 0) {
+            simpleClassName = simpleClassName.substring(simpleClassName.lastIndexOf(".") + 1);
         }
         Set<String> bindings = new HashSet<String>();
-        for ( Pattern52 p : model.getPatterns() ) {
-            if ( className == null || p.getFactType().equals( simpleClassName ) ) {
+        for (Pattern52 p : model.getPatterns()) {
+            if (className == null || p.getFactType().equals(simpleClassName)) {
                 String binding = p.getBoundName();
-                if ( !( binding == null || "".equals( binding ) ) ) {
-                    bindings.add( binding );
+                if (!(binding == null || "".equals(binding))) {
+                    bindings.add(binding);
                 }
             }
-            for ( ConditionCol52 c : p.getChildColumns() ) {
-                if ( c.isBound() ) {
-                    String fieldDataType = oracle.getFieldClassName( p.getFactType(),
-                                                                     c.getFactField() );
-                    if ( fieldDataType.equals( className ) ) {
-                        bindings.add( c.getBinding() );
+            for (ConditionCol52 c : p.getChildColumns()) {
+                if (c.isBound()) {
+                    String fieldDataType = oracle.getFieldClassName(p.getFactType(),
+                                                                    c.getFactField());
+                    if (fieldDataType.equals(className)) {
+                        bindings.add(c.getBinding());
                     }
                 }
             }
@@ -732,24 +691,24 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     @Override
-    public boolean canConditionBeDeleted( final ConditionCol52 col ) {
-        Pattern52 pattern = model.getPattern( col );
-        if ( pattern.getChildColumns().size() > 1 ) {
+    public boolean canConditionBeDeleted(final ConditionCol52 col) {
+        Pattern52 pattern = model.getPattern(col);
+        if (pattern.getChildColumns().size() > 1) {
             return true;
         }
-        if ( isBindingUsed( pattern.getBoundName() ) ) {
+        if (isBindingUsed(pattern.getBoundName())) {
             return false;
         }
         return true;
     }
 
     @Override
-    public boolean canConditionBeDeleted( final BRLConditionColumn col ) {
-        for ( IPattern p : col.getDefinition() ) {
-            if ( p instanceof FactPattern ) {
+    public boolean canConditionBeDeleted(final BRLConditionColumn col) {
+        for (IPattern p : col.getDefinition()) {
+            if (p instanceof FactPattern) {
                 FactPattern fp = (FactPattern) p;
-                if ( fp.isBound() ) {
-                    if ( isBindingUsed( fp.getBoundName() ) ) {
+                if (fp.isBound()) {
+                    if (isBindingUsed(fp.getBoundName())) {
                         return false;
                     }
                 }
@@ -758,40 +717,41 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         return true;
     }
 
-    private boolean isBindingUsed( final String binding ) {
-        return rm.isBoundFactUsed( binding );
+    private boolean isBindingUsed(final String binding) {
+        return rm.isBoundFactUsed(binding);
     }
 
     @Override
-    public Map<String, String> getValueListLookups( final BaseColumn column ) {
-        final String[] dropDownItems = columnUtilities.getValueList( column );
-        return enumLoaderUtilities.convertDropDownData( dropDownItems );
+    public Map<String, String> getValueListLookups(final BaseColumn column) {
+        final String[] dropDownItems = columnUtilities.getValueList(column);
+        return enumLoaderUtilities.convertDropDownData(dropDownItems);
     }
 
     @Override
-    public void getEnumLookups( final String factType,
-                                final String factField,
-                                final DependentEnumsUtilities.Context context,
-                                final Callback<Map<String, String>> callback ) {
-        final DropDownData enumDefinition = oracle.getEnums( factType,
-                                                             factField,
-                                                             this.dependentEnumsUtilities.getCurrentValueMap( context ) );
-        enumLoaderUtilities.getEnums( enumDefinition,
-                                      callback,
-                                      this,
-                                      () -> view.showBusyIndicator( CommonConstants.INSTANCE.RefreshingList() ),
-                                      () -> view.hideBusyIndicator() );
+    public void getEnumLookups(final String factType,
+                               final String factField,
+                               final DependentEnumsUtilities.Context context,
+                               final Callback<Map<String, String>> callback) {
+        final DropDownData enumDefinition = oracle.getEnums(factType,
+                                                            factField,
+                                                            this.dependentEnumsUtilities.getCurrentValueMap(context));
+        enumLoaderUtilities.getEnums(enumDefinition,
+                                     callback,
+                                     this,
+                                     () -> view.showBusyIndicator(CommonConstants.INSTANCE.RefreshingList()),
+                                     () -> view.hideBusyIndicator());
     }
 
     @Override
     public void newAttributeOrMetaDataColumn() {
-        if ( isReadOnly() ) {
+        if (isReadOnly()) {
             return;
         }
         view.newAttributeOrMetaDataColumn( getReservedAttributeNames() );
     }
 
-    private Set<String> getReservedAttributeNames() {
+    @Override
+    public Set<String> getReservedAttributeNames() {
         final Set<String> result = new HashSet<>();
 
         result.addAll( getExistingAttributeNames() );
@@ -802,16 +762,16 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     private Set<String> getExistingAttributeNames() {
         final Set<String> existingAttributeNames = new HashSet<String>();
-        for ( AttributeCol52 attributeCol : model.getAttributeCols() ) {
-            existingAttributeNames.add( attributeCol.getAttribute() );
+        for (AttributeCol52 attributeCol : model.getAttributeCols()) {
+            existingAttributeNames.add(attributeCol.getAttribute());
         }
         return existingAttributeNames;
     }
 
     @Override
-    public boolean isMetaDataUnique( final String metaDataName ) {
-        for ( MetadataCol52 mc : model.getMetadataCols() ) {
-            if ( metaDataName.equals( mc.getMetadata() ) ) {
+    public boolean isMetaDataUnique(final String metaDataName) {
+        for (MetadataCol52 mc : model.getMetadataCols()) {
+            if (metaDataName.equals(mc.getMetadata())) {
                 return false;
             }
         }
@@ -820,10 +780,10 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void newConditionColumn() {
-        if ( isReadOnly() ) {
+        if (isReadOnly()) {
             return;
         }
-        switch ( model.getTableFormat() ) {
+        switch (model.getTableFormat()) {
             case EXTENDED_ENTRY:
                 view.newExtendedEntryConditionColumn();
                 break;
@@ -835,10 +795,10 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void newConditionBRLFragment() {
-        if ( isReadOnly() ) {
+        if (isReadOnly()) {
             return;
         }
-        switch ( model.getTableFormat() ) {
+        switch (model.getTableFormat()) {
             case EXTENDED_ENTRY:
                 view.newExtendedEntryConditionBRLFragment();
                 break;
@@ -850,10 +810,10 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void newActionInsertColumn() {
-        if ( isReadOnly() ) {
+        if (isReadOnly()) {
             return;
         }
-        switch ( model.getTableFormat() ) {
+        switch (model.getTableFormat()) {
             case EXTENDED_ENTRY:
                 view.newExtendedEntryActionInsertColumn();
                 break;
@@ -865,10 +825,10 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void newActionSetColumn() {
-        if ( isReadOnly() ) {
+        if (isReadOnly()) {
             return;
         }
-        switch ( model.getTableFormat() ) {
+        switch (model.getTableFormat()) {
             case EXTENDED_ENTRY:
                 view.newExtendedEntryActionSetColumn();
                 break;
@@ -880,10 +840,10 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void newActionRetractFact() {
-        if ( isReadOnly() ) {
+        if (isReadOnly()) {
             return;
         }
-        switch ( model.getTableFormat() ) {
+        switch (model.getTableFormat()) {
             case EXTENDED_ENTRY:
                 view.newExtendedEntryActionRetractFact();
                 break;
@@ -895,7 +855,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void newActionWorkItem() {
-        if ( isReadOnly() ) {
+        if (isReadOnly()) {
             return;
         }
         view.newActionWorkItem();
@@ -903,7 +863,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void newActionWorkItemSetField() {
-        if ( isReadOnly() ) {
+        if (isReadOnly()) {
             return;
         }
         view.newActionWorkItemSetField();
@@ -911,7 +871,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void newActionWorkItemInsertFact() {
-        if ( isReadOnly() ) {
+        if (isReadOnly()) {
             return;
         }
         view.newActionWorkItemInsertFact();
@@ -919,10 +879,10 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void newActionBRLFragment() {
-        if ( isReadOnly() ) {
+        if (isReadOnly()) {
             return;
         }
-        switch ( model.getTableFormat() ) {
+        switch (model.getTableFormat()) {
             case EXTENDED_ENTRY:
                 view.newExtendedEntryActionBRLFragment();
                 break;
@@ -933,97 +893,97 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     @Override
-    public void editCondition( final Pattern52 pattern,
-                               final ConditionCol52 column ) {
-        if ( isReadOnly() ) {
+    public void editCondition(final Pattern52 pattern,
+                              final ConditionCol52 column) {
+        if (isReadOnly()) {
             return;
         }
-        view.editCondition( pattern,
-                            column );
+        view.editCondition(pattern,
+                           column);
     }
 
     @Override
-    public void editCondition( final BRLConditionColumn column ) {
-        if ( isReadOnly() ) {
+    public void editCondition(final BRLConditionColumn column) {
+        if (isReadOnly()) {
             return;
         }
-        if ( column instanceof LimitedEntryBRLConditionColumn ) {
-            view.editLimitedEntryConditionBRLFragment( (LimitedEntryBRLConditionColumn) column );
+        if (column instanceof LimitedEntryBRLConditionColumn) {
+            view.editLimitedEntryConditionBRLFragment((LimitedEntryBRLConditionColumn) column);
         } else {
-            view.editExtendedEntryConditionBRLFragment( column );
+            view.editExtendedEntryConditionBRLFragment(column);
         }
     }
 
     @Override
-    public void editAction( final ActionCol52 column ) {
-        if ( isReadOnly() ) {
+    public void editAction(final ActionCol52 column) {
+        if (isReadOnly()) {
             return;
         }
-        if ( column instanceof ActionWorkItemSetFieldCol52 ) {
-            view.editActionWorkItemSetField( (ActionWorkItemSetFieldCol52) column );
-        } else if ( column instanceof ActionSetFieldCol52 ) {
-            view.editActionSetField( (ActionSetFieldCol52) column );
-        } else if ( column instanceof ActionWorkItemInsertFactCol52 ) {
-            view.editActionWorkItemInsertFact( (ActionWorkItemInsertFactCol52) column );
-        } else if ( column instanceof ActionInsertFactCol52 ) {
-            view.editActionInsertFact( (ActionInsertFactCol52) column );
-        } else if ( column instanceof ActionRetractFactCol52 ) {
-            view.editActionRetractFact( (ActionRetractFactCol52) column );
-        } else if ( column instanceof ActionWorkItemCol52 ) {
-            view.editActionWorkItem( (ActionWorkItemCol52) column );
-        } else if ( column instanceof LimitedEntryBRLActionColumn ) {
-            view.editLimitedEntryActionBRLFragment( (LimitedEntryBRLActionColumn) column );
-        } else if ( column instanceof BRLActionColumn ) {
-            view.editExtendedEntryActionBRLFragment( (BRLActionColumn) column );
+        if (column instanceof ActionWorkItemSetFieldCol52) {
+            view.editActionWorkItemSetField((ActionWorkItemSetFieldCol52) column);
+        } else if (column instanceof ActionSetFieldCol52) {
+            view.editActionSetField((ActionSetFieldCol52) column);
+        } else if (column instanceof ActionWorkItemInsertFactCol52) {
+            view.editActionWorkItemInsertFact((ActionWorkItemInsertFactCol52) column);
+        } else if (column instanceof ActionInsertFactCol52) {
+            view.editActionInsertFact((ActionInsertFactCol52) column);
+        } else if (column instanceof ActionRetractFactCol52) {
+            view.editActionRetractFact((ActionRetractFactCol52) column);
+        } else if (column instanceof ActionWorkItemCol52) {
+            view.editActionWorkItem((ActionWorkItemCol52) column);
+        } else if (column instanceof LimitedEntryBRLActionColumn) {
+            view.editLimitedEntryActionBRLFragment((LimitedEntryBRLActionColumn) column);
+        } else if (column instanceof BRLActionColumn) {
+            view.editExtendedEntryActionBRLFragment((BRLActionColumn) column);
         }
     }
 
     @Override
-    public void appendColumn( final AttributeCol52 column ) {
-        doAppendColumn( column,
-                        () -> synchronizer.appendColumn( column ),
-                        () -> refreshAttributesPanelEvent.fire( new RefreshAttributesPanelEvent( this,
-                                                                                                 model.getAttributeCols() ) ) );
+    public void appendColumn(final AttributeCol52 column) {
+        doAppendColumn(column,
+                       () -> synchronizer.appendColumn(column),
+                       () -> refreshAttributesPanelEvent.fire(new RefreshAttributesPanelEvent(this,
+                                                                                              model.getAttributeCols())));
     }
 
     @Override
-    public void appendColumn( final MetadataCol52 column ) {
-        doAppendColumn( column,
-                        () -> synchronizer.appendColumn( column ),
-                        () -> refreshMetaDataPanelEvent.fire( new RefreshMetaDataPanelEvent( this,
-                                                                                             model.getMetadataCols() ) ) );
+    public void appendColumn(final MetadataCol52 column) {
+        doAppendColumn(column,
+                       () -> synchronizer.appendColumn(column),
+                       () -> refreshMetaDataPanelEvent.fire(new RefreshMetaDataPanelEvent(this,
+                                                                                          model.getMetadataCols())));
     }
 
     @Override
-    public void appendColumn( final Pattern52 pattern,
-                              final ConditionCol52 column ) {
-        doAppendColumn( column,
-                        () -> synchronizer.appendColumn( pattern,
-                                                         column ),
-                        () -> refreshConditionsPanelEvent.fire( new RefreshConditionsPanelEvent( this,
-                                                                                                 model.getConditions() ) ) );
+    public void appendColumn(final Pattern52 pattern,
+                             final ConditionCol52 column) {
+        doAppendColumn(column,
+                       () -> synchronizer.appendColumn(pattern,
+                                                       column),
+                       () -> refreshConditionsPanelEvent.fire(new RefreshConditionsPanelEvent(this,
+                                                                                              model.getConditions())));
     }
 
     @Override
-    public void appendColumn( final ConditionCol52 column ) {
-        doAppendColumn( column,
-                        () -> synchronizer.appendColumn( column ),
-                        () -> refreshConditionsPanelEvent.fire( new RefreshConditionsPanelEvent( this,
-                                                                                                 model.getConditions() ) ) );
+    public void appendColumn(final ConditionCol52 column) {
+        doAppendColumn(column,
+                       () -> synchronizer.appendColumn(column),
+                       () -> refreshConditionsPanelEvent.fire(new RefreshConditionsPanelEvent(this,
+                                                                                              model.getConditions())));
     }
 
     @Override
-    public void appendColumn( final ActionCol52 column ) {
-        doAppendColumn( column,
-                        () -> synchronizer.appendColumn( column ),
-                        () -> refreshActionsPanelEvent.fire( new RefreshActionsPanelEvent( this,
-                                                                                           model.getActionCols() ) ) );
+    public void appendColumn(final ActionCol52 column) {
+        doAppendColumn(column,
+                       () -> synchronizer.appendColumn(column),
+                       () -> refreshActionsPanelEvent.fire(new RefreshActionsPanelEvent(this,
+                                                                                        model.getActionCols())));
     }
 
-    private void doAppendColumn( final BaseColumn column,
-                                 final VetoableCommand append,
-                                 final Command callback ) {
-        if ( isReadOnly() ) {
+    private void doAppendColumn(final BaseColumn column,
+                                final VetoableCommand append,
+                                final Command callback) {
+        if (isReadOnly()) {
             return;
         }
         try {
@@ -1034,18 +994,17 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
             view.getLayer().draw();
 
             //Log addition of column
-            model.getAuditLog().add( new InsertColumnAuditLogEntry( identity.getIdentifier(),
-                                                                    column ) );
+            model.getAuditLog().add(new InsertColumnAuditLogEntry(identity.getIdentifier(),
+                                                                  column));
             callback.execute();
-
-        } catch ( ModelSynchronizer.MoveColumnVetoException e ) {
+        } catch (ModelSynchronizer.MoveColumnVetoException e) {
             //Swallow. The VetoException signals that the column could not be appended.
         }
     }
 
     @Override
     public void onAppendRow() {
-        if ( isReadOnly() ) {
+        if (isReadOnly()) {
             return;
         }
         try {
@@ -1056,128 +1015,126 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
             view.getLayer().draw();
 
             //Log insertion of row
-            model.getAuditLog().add( new InsertRowAuditLogEntry( identity.getIdentifier(),
-                                                                 model.getData().size() - 1 ) );
-
-        } catch ( ModelSynchronizer.MoveColumnVetoException e ) {
+            model.getAuditLog().add(new InsertRowAuditLogEntry(identity.getIdentifier(),
+                                                               model.getData().size() - 1));
+        } catch (ModelSynchronizer.MoveColumnVetoException e) {
             //Swallow
         }
     }
 
     @Override
-    public void deleteColumn( final AttributeCol52 column ) {
-        doDeleteColumn( column,
-                        () -> refreshAttributesPanelEvent.fire( new RefreshAttributesPanelEvent( this,
-                                                                                                 model.getAttributeCols() ) ) );
+    public void deleteColumn(final AttributeCol52 column) {
+        doDeleteColumn(column,
+                       () -> refreshAttributesPanelEvent.fire(new RefreshAttributesPanelEvent(this,
+                                                                                              model.getAttributeCols())));
     }
 
     @Override
-    public void deleteColumn( final MetadataCol52 column ) {
-        doDeleteColumn( column,
-                        () -> refreshMetaDataPanelEvent.fire( new RefreshMetaDataPanelEvent( this,
-                                                                                             model.getMetadataCols() ) ) );
+    public void deleteColumn(final MetadataCol52 column) {
+        doDeleteColumn(column,
+                       () -> refreshMetaDataPanelEvent.fire(new RefreshMetaDataPanelEvent(this,
+                                                                                          model.getMetadataCols())));
     }
 
     @Override
-    public void deleteColumn( final ConditionCol52 column ) {
-        doDeleteColumn( column,
-                        () -> refreshConditionsPanelEvent.fire( new RefreshConditionsPanelEvent( this,
-                                                                                                 model.getConditions() ) ) );
+    public void deleteColumn(final ConditionCol52 column) {
+        doDeleteColumn(column,
+                       () -> refreshConditionsPanelEvent.fire(new RefreshConditionsPanelEvent(this,
+                                                                                              model.getConditions())));
     }
 
     @Override
-    public void deleteColumn( final ActionCol52 column ) {
-        doDeleteColumn( column,
-                        () -> refreshActionsPanelEvent.fire( new RefreshActionsPanelEvent( this,
-                                                                                           model.getActionCols() ) ) );
+    public void deleteColumn(final ActionCol52 column) {
+        doDeleteColumn(column,
+                       () -> refreshActionsPanelEvent.fire(new RefreshActionsPanelEvent(this,
+                                                                                        model.getActionCols())));
     }
 
-    private void doDeleteColumn( final BaseColumn column,
-                                 final Command callback ) {
-        if ( isReadOnly() ) {
+    private void doDeleteColumn(final BaseColumn column,
+                                final Command callback) {
+        if (isReadOnly()) {
             return;
         }
         try {
-            synchronizer.deleteColumn( column );
+            synchronizer.deleteColumn(column);
 
             parent.updateLinks();
 
             view.getLayer().draw();
 
             //Log deletion of column
-            model.getAuditLog().add( new DeleteColumnAuditLogEntry( identity.getIdentifier(),
-                                                                    column ) );
+            model.getAuditLog().add(new DeleteColumnAuditLogEntry(identity.getIdentifier(),
+                                                                  column));
             callback.execute();
-
-        } catch ( ModelSynchronizer.MoveColumnVetoException e ) {
+        } catch (ModelSynchronizer.MoveColumnVetoException e) {
             //Swallow. The VetoException signals that the column could not be deleted.
         }
     }
 
     @Override
-    public void updateColumn( final AttributeCol52 originalColumn,
-                              final AttributeCol52 editedColumn ) {
-        doUpdateColumn( originalColumn,
-                        editedColumn,
-                        () -> synchronizer.updateColumn( originalColumn,
-                                                         editedColumn ),
-                        () -> refreshAttributesPanelEvent.fire( new RefreshAttributesPanelEvent( this,
-                                                                                                 model.getAttributeCols() ) ) );
+    public void updateColumn(final AttributeCol52 originalColumn,
+                             final AttributeCol52 editedColumn) {
+        doUpdateColumn(originalColumn,
+                       editedColumn,
+                       () -> synchronizer.updateColumn(originalColumn,
+                                                       editedColumn),
+                       () -> refreshAttributesPanelEvent.fire(new RefreshAttributesPanelEvent(this,
+                                                                                              model.getAttributeCols())));
     }
 
     @Override
-    public void updateColumn( final MetadataCol52 originalColumn,
-                              final MetadataCol52 editedColumn ) {
-        doUpdateColumn( originalColumn,
-                        editedColumn,
-                        () -> synchronizer.updateColumn( originalColumn,
-                                                         editedColumn ),
-                        () -> refreshMetaDataPanelEvent.fire( new RefreshMetaDataPanelEvent( this,
-                                                                                             model.getMetadataCols() ) ) );
+    public void updateColumn(final MetadataCol52 originalColumn,
+                             final MetadataCol52 editedColumn) {
+        doUpdateColumn(originalColumn,
+                       editedColumn,
+                       () -> synchronizer.updateColumn(originalColumn,
+                                                       editedColumn),
+                       () -> refreshMetaDataPanelEvent.fire(new RefreshMetaDataPanelEvent(this,
+                                                                                          model.getMetadataCols())));
     }
 
     @Override
-    public void updateColumn( final Pattern52 originalPattern,
-                              final ConditionCol52 originalColumn,
-                              final Pattern52 editedPattern,
-                              final ConditionCol52 editedColumn ) {
-        doUpdateColumn( originalColumn,
-                        editedColumn,
-                        () -> synchronizer.updateColumn( originalPattern,
-                                                         originalColumn,
-                                                         editedPattern,
-                                                         editedColumn ),
-                        () -> refreshConditionsPanelEvent.fire( new RefreshConditionsPanelEvent( this,
-                                                                                                 model.getConditions() ) ) );
+    public void updateColumn(final Pattern52 originalPattern,
+                             final ConditionCol52 originalColumn,
+                             final Pattern52 editedPattern,
+                             final ConditionCol52 editedColumn) {
+        doUpdateColumn(originalColumn,
+                       editedColumn,
+                       () -> synchronizer.updateColumn(originalPattern,
+                                                       originalColumn,
+                                                       editedPattern,
+                                                       editedColumn),
+                       () -> refreshConditionsPanelEvent.fire(new RefreshConditionsPanelEvent(this,
+                                                                                              model.getConditions())));
     }
 
     @Override
-    public void updateColumn( final ConditionCol52 originalColumn,
-                              final ConditionCol52 editedColumn ) {
-        doUpdateColumn( originalColumn,
-                        editedColumn,
-                        () -> synchronizer.updateColumn( originalColumn,
-                                                         editedColumn ),
-                        () -> refreshConditionsPanelEvent.fire( new RefreshConditionsPanelEvent( this,
-                                                                                                 model.getConditions() ) ) );
+    public void updateColumn(final ConditionCol52 originalColumn,
+                             final ConditionCol52 editedColumn) {
+        doUpdateColumn(originalColumn,
+                       editedColumn,
+                       () -> synchronizer.updateColumn(originalColumn,
+                                                       editedColumn),
+                       () -> refreshConditionsPanelEvent.fire(new RefreshConditionsPanelEvent(this,
+                                                                                              model.getConditions())));
     }
 
     @Override
-    public void updateColumn( final ActionCol52 originalColumn,
-                              final ActionCol52 editedColumn ) {
-        doUpdateColumn( originalColumn,
-                        editedColumn,
-                        () -> synchronizer.updateColumn( originalColumn,
-                                                         editedColumn ),
-                        () -> refreshActionsPanelEvent.fire( new RefreshActionsPanelEvent( this,
-                                                                                           model.getActionCols() ) ) );
+    public void updateColumn(final ActionCol52 originalColumn,
+                             final ActionCol52 editedColumn) {
+        doUpdateColumn(originalColumn,
+                       editedColumn,
+                       () -> synchronizer.updateColumn(originalColumn,
+                                                       editedColumn),
+                       () -> refreshActionsPanelEvent.fire(new RefreshActionsPanelEvent(this,
+                                                                                        model.getActionCols())));
     }
 
-    private void doUpdateColumn( final BaseColumn originalColumn,
-                                 final BaseColumn editedColumn,
-                                 final VetoableUpdateCommand update,
-                                 final Command callback ) {
-        if ( isReadOnly() ) {
+    private void doUpdateColumn(final BaseColumn originalColumn,
+                                final BaseColumn editedColumn,
+                                final VetoableUpdateCommand update,
+                                final Command callback) {
+        if (isReadOnly()) {
             return;
         }
         try {
@@ -1186,55 +1143,54 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
             parent.updateLinks();
 
             //Log change to column definition
-            if ( !( diffs == null || diffs.isEmpty() ) ) {
+            if (!(diffs == null || diffs.isEmpty())) {
                 view.getLayer().draw();
-                model.getAuditLog().add( new UpdateColumnAuditLogEntry( identity.getIdentifier(),
-                                                                        originalColumn,
-                                                                        editedColumn,
-                                                                        diffs ) );
+                model.getAuditLog().add(new UpdateColumnAuditLogEntry(identity.getIdentifier(),
+                                                                      originalColumn,
+                                                                      editedColumn,
+                                                                      diffs));
                 callback.execute();
-
             }
-        } catch ( ModelSynchronizer.MoveColumnVetoException e ) {
+        } catch (ModelSynchronizer.MoveColumnVetoException e) {
             //Swallow. The VetoException signals that the column could not be updated.
         }
     }
 
-    private void initialiseColumn( final BaseColumn column ) {
-        final GridColumn<?> gridColumn = gridWidgetColumnFactory.convertColumn( column,
-                                                                                access,
-                                                                                getView() );
-        uiModel.appendColumn( gridColumn );
+    private void initialiseColumn(final BaseColumn column) {
+        final GridColumn<?> gridColumn = gridWidgetColumnFactory.convertColumn(column,
+                                                                               access,
+                                                                               getView());
+        uiModel.appendColumn(gridColumn);
     }
 
-    private void initialiseRow( final List<BaseColumn> columns,
-                                final List<DTCellValue52> row ) {
-        final GridRow uiModelRow = new BaseGridRow( GuidedDecisionTableView.ROW_HEIGHT );
+    private void initialiseRow(final List<BaseColumn> columns,
+                               final List<DTCellValue52> row) {
+        final GridRow uiModelRow = new BaseGridRow(GuidedDecisionTableView.ROW_HEIGHT);
         final int rowIndex = uiModel.getRowCount();
-        uiModel.appendRow( uiModelRow );
+        uiModel.appendRow(uiModelRow);
 
-        for ( int iModelColumn = 0; iModelColumn < row.size(); iModelColumn++ ) {
-            final DTCellValue52 modelCell = row.get( iModelColumn );
-            final BaseColumn modelColumn = columns.get( iModelColumn );
+        for (int iModelColumn = 0; iModelColumn < row.size(); iModelColumn++) {
+            final DTCellValue52 modelCell = row.get(iModelColumn);
+            final BaseColumn modelColumn = columns.get(iModelColumn);
 
             // We cannot rely upon the values in the existing data as legacy tables aren't guaranteed to be sorted
-            if ( modelColumn instanceof RowNumberCol52 ) {
-                modelCell.setNumericValue( uiModel.getRowCount() );
+            if (modelColumn instanceof RowNumberCol52) {
+                modelCell.setNumericValue(uiModel.getRowCount());
             }
 
             //BaseGridData is sparsely populated; only add values if needed.
-            if ( modelCell.hasValue() ) {
-                uiModel.setCellInternal( rowIndex,
-                                         iModelColumn,
-                                         gridWidgetCellFactory.convertCell( modelCell,
-                                                                            modelColumn,
-                                                                            cellUtilities,
-                                                                            columnUtilities ) );
+            if (modelCell.hasValue()) {
+                uiModel.setCellInternal(rowIndex,
+                                        iModelColumn,
+                                        gridWidgetCellFactory.convertCell(modelCell,
+                                                                          modelColumn,
+                                                                          cellUtilities,
+                                                                          columnUtilities));
 
                 //Set-up SelectionManager for Row Number column, to select entire row.
-                if ( modelColumn instanceof RowNumberCol52 ) {
-                    uiModel.getCell( rowIndex,
-                                     iModelColumn ).setSelectionManager( RowSelectionStrategy.INSTANCE );
+                if (modelColumn instanceof RowNumberCol52) {
+                    uiModel.getCell(rowIndex,
+                                    iModelColumn).setSelectionManager(RowSelectionStrategy.INSTANCE);
                 }
             }
         }
@@ -1242,10 +1198,10 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void onCut() {
-        if ( isSelectionEmpty() ) {
+        if (isSelectionEmpty()) {
             return;
         }
-        if ( isReadOnly() ) {
+        if (isReadOnly()) {
             return;
         }
         copyCellsToClipboard();
@@ -1255,10 +1211,10 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void onCopy() {
-        if ( isSelectionEmpty() ) {
+        if (isSelectionEmpty()) {
             return;
         }
-        if ( isReadOnly() ) {
+        if (isReadOnly()) {
             return;
         }
         copyCellsToClipboard();
@@ -1267,77 +1223,77 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     private void copyCellsToClipboard() {
         final List<GridData.SelectedCell> selections = uiModel.getSelectedCells();
-        if ( selections == null || selections.isEmpty() ) {
+        if (selections == null || selections.isEmpty()) {
             return;
         }
         int originRowIndex = Integer.MAX_VALUE;
         int originColumnIndex = Integer.MAX_VALUE;
         final Set<Clipboard.ClipboardData> data = new HashSet<>();
 
-        for ( GridData.SelectedCell sc : selections ) {
+        for (GridData.SelectedCell sc : selections) {
             final int rowIndex = sc.getRowIndex();
-            final int columnIndex = findUiColumnIndex( sc.getColumnIndex() );
-            originRowIndex = Math.min( rowIndex,
-                                       originRowIndex );
-            originColumnIndex = Math.min( columnIndex,
-                                          originColumnIndex );
+            final int columnIndex = findUiColumnIndex(sc.getColumnIndex());
+            originRowIndex = Math.min(rowIndex,
+                                      originRowIndex);
+            originColumnIndex = Math.min(columnIndex,
+                                         originColumnIndex);
         }
-        for ( GridData.SelectedCell sc : selections ) {
+        for (GridData.SelectedCell sc : selections) {
             final int rowIndex = sc.getRowIndex();
-            final int columnIndex = findUiColumnIndex( sc.getColumnIndex() );
-            final DTCellValue52 value = model.getData().get( rowIndex ).get( columnIndex );
-            data.add( new DefaultClipboard.ClipboardDataImpl( rowIndex - originRowIndex,
-                                                              columnIndex - originColumnIndex,
-                                                              new DTCellValue52( value ) ) );
+            final int columnIndex = findUiColumnIndex(sc.getColumnIndex());
+            final DTCellValue52 value = model.getData().get(rowIndex).get(columnIndex);
+            data.add(new DefaultClipboard.ClipboardDataImpl(rowIndex - originRowIndex,
+                                                            columnIndex - originColumnIndex,
+                                                            new DTCellValue52(value)));
         }
-        clipboard.setData( data );
+        clipboard.setData(data);
     }
 
     @Override
     public void onPaste() {
-        if ( !clipboard.hasData() ) {
+        if (!clipboard.hasData()) {
             return;
         }
-        if ( isSelectionEmpty() ) {
+        if (isSelectionEmpty()) {
             return;
         }
-        if ( isReadOnly() ) {
+        if (isReadOnly()) {
             return;
         }
         final Set<Clipboard.ClipboardData> data = clipboard.getData();
         final int currentOriginRowIndex = uiModel.getSelectedCellsOrigin().getRowIndex();
-        final int currentOriginColumnIndex = findUiColumnIndex( uiModel.getSelectedCellsOrigin().getColumnIndex() );
+        final int currentOriginColumnIndex = findUiColumnIndex(uiModel.getSelectedCellsOrigin().getColumnIndex());
 
         boolean updateSystemControlledValues = false;
-        for ( Clipboard.ClipboardData cd : data ) {
+        for (Clipboard.ClipboardData cd : data) {
             final int targetRowIndex = currentOriginRowIndex + cd.getRowIndex();
             final int targetColumnIndex = currentOriginColumnIndex + cd.getColumnIndex();
-            if ( targetRowIndex < 0 || targetRowIndex > uiModel.getRowCount() - 1 ) {
+            if (targetRowIndex < 0 || targetRowIndex > uiModel.getRowCount() - 1) {
                 continue;
             }
-            if ( targetColumnIndex < 0 || targetColumnIndex > uiModel.getColumns().size() - 1 ) {
+            if (targetColumnIndex < 0 || targetColumnIndex > uiModel.getColumns().size() - 1) {
                 continue;
             }
 
             final DTCellValue52 modelCell = cd.getValue();
-            final BaseColumn modelColumn = model.getExpandedColumns().get( targetColumnIndex );
-            if ( modelCell.hasValue() ) {
-                uiModel.setCell( targetRowIndex,
-                                 targetColumnIndex,
-                                 gridWidgetCellFactory.convertCell( modelCell,
-                                                                    modelColumn,
-                                                                    cellUtilities,
-                                                                    columnUtilities ) );
+            final BaseColumn modelColumn = model.getExpandedColumns().get(targetColumnIndex);
+            if (modelCell.hasValue()) {
+                uiModel.setCell(targetRowIndex,
+                                targetColumnIndex,
+                                gridWidgetCellFactory.convertCell(modelCell,
+                                                                  modelColumn,
+                                                                  cellUtilities,
+                                                                  columnUtilities));
             } else {
-                uiModel.deleteCell( targetRowIndex,
-                                    targetColumnIndex );
+                uiModel.deleteCell(targetRowIndex,
+                                   targetColumnIndex);
             }
 
-            if ( modelColumn instanceof RowNumberCol52 ) {
+            if (modelColumn instanceof RowNumberCol52) {
                 updateSystemControlledValues = true;
             }
         }
-        if ( updateSystemControlledValues ) {
+        if (updateSystemControlledValues) {
             synchronizer.updateSystemControlledColumnValues();
         }
         view.batch();
@@ -1349,28 +1305,28 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void onDeleteSelectedCells() {
-        if ( isReadOnly() ) {
+        if (isReadOnly()) {
             return;
         }
         final List<GridData.SelectedCell> selections = uiModel.getSelectedCells();
-        if ( selections == null || selections.isEmpty() ) {
+        if (selections == null || selections.isEmpty()) {
             return;
         }
-        for ( GridData.SelectedCell sc : selections ) {
+        for (GridData.SelectedCell sc : selections) {
             final int rowIndex = sc.getRowIndex();
-            final int columnIndex = findUiColumnIndex( sc.getColumnIndex() );
-            final BaseColumn column = model.getExpandedColumns().get( columnIndex );
-            final GridColumn<?> uiColumn = uiModel.getColumns().get( columnIndex );
-            if ( column instanceof RowNumberCol52 ) {
+            final int columnIndex = findUiColumnIndex(sc.getColumnIndex());
+            final BaseColumn column = model.getExpandedColumns().get(columnIndex);
+            final GridColumn<?> uiColumn = uiModel.getColumns().get(columnIndex);
+            if (column instanceof RowNumberCol52) {
                 continue;
             }
-            if ( uiColumn instanceof BooleanUiColumn ) {
-                uiModel.setCell( rowIndex,
-                                 columnIndex,
-                                 new GuidedDecisionTableUiCell<>( false ) );
+            if (uiColumn instanceof BooleanUiColumn) {
+                uiModel.setCell(rowIndex,
+                                columnIndex,
+                                new GuidedDecisionTableUiCell<>(false));
             } else {
-                uiModel.deleteCell( rowIndex,
-                                    columnIndex );
+                uiModel.deleteCell(rowIndex,
+                                   columnIndex);
             }
         }
         view.getLayer().draw();
@@ -1378,87 +1334,87 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void onDeleteSelectedColumns() {
-        if ( isReadOnly() ) {
+        if (isReadOnly()) {
             return;
         }
         final Set<Integer> selectedColumnIndexes = getSelectedColumnIndexes();
         final Set<BaseColumn> columnsToDelete = new HashSet<>();
-        for ( int selectedColumnIndex : selectedColumnIndexes ) {
-            final int columnIndex = findUiColumnIndex( selectedColumnIndex );
-            final BaseColumn column = model.getExpandedColumns().get( columnIndex );
-            if ( !( column instanceof RowNumberCol52 || column instanceof DescriptionCol52 ) ) {
-                columnsToDelete.add( column );
+        for (int selectedColumnIndex : selectedColumnIndexes) {
+            final int columnIndex = findUiColumnIndex(selectedColumnIndex);
+            final BaseColumn column = model.getExpandedColumns().get(columnIndex);
+            if (!(column instanceof RowNumberCol52 || column instanceof DescriptionCol52)) {
+                columnsToDelete.add(column);
             }
         }
-        for ( BaseColumn columnToDelete : columnsToDelete ) {
-            if ( columnToDelete instanceof AttributeCol52 ) {
-                deleteColumn( (AttributeCol52) columnToDelete );
-            } else if ( columnToDelete instanceof MetadataCol52 ) {
-                deleteColumn( (MetadataCol52) columnToDelete );
-            } else if ( columnToDelete instanceof ConditionCol52 ) {
-                deleteColumn( (ConditionCol52) columnToDelete );
-            } else if ( columnToDelete instanceof ActionCol52 ) {
-                deleteColumn( (ActionCol52) columnToDelete );
+        for (BaseColumn columnToDelete : columnsToDelete) {
+            if (columnToDelete instanceof AttributeCol52) {
+                deleteColumn((AttributeCol52) columnToDelete);
+            } else if (columnToDelete instanceof MetadataCol52) {
+                deleteColumn((MetadataCol52) columnToDelete);
+            } else if (columnToDelete instanceof ConditionCol52) {
+                deleteColumn((ConditionCol52) columnToDelete);
+            } else if (columnToDelete instanceof ActionCol52) {
+                deleteColumn((ActionCol52) columnToDelete);
             }
         }
     }
 
     private Set<Integer> getSelectedColumnIndexes() {
         final Set<Integer> columnUsage = new HashSet<>();
-        for ( GridData.SelectedCell sc : uiModel.getSelectedCells() ) {
-            columnUsage.add( sc.getColumnIndex() );
+        for (GridData.SelectedCell sc : uiModel.getSelectedCells()) {
+            columnUsage.add(sc.getColumnIndex());
         }
         return columnUsage;
     }
 
-    private int findUiColumnIndex( final int modelColumnIndex ) {
+    private int findUiColumnIndex(final int modelColumnIndex) {
         final List<GridColumn<?>> columns = uiModel.getColumns();
-        for ( int uiColumnIndex = 0; uiColumnIndex < columns.size(); uiColumnIndex++ ) {
-            final GridColumn<?> c = columns.get( uiColumnIndex );
-            if ( c.getIndex() == modelColumnIndex ) {
+        for (int uiColumnIndex = 0; uiColumnIndex < columns.size(); uiColumnIndex++) {
+            final GridColumn<?> c = columns.get(uiColumnIndex);
+            if (c.getIndex() == modelColumnIndex) {
                 return uiColumnIndex;
             }
         }
-        throw new IllegalStateException( "Column was not found!" );
+        throw new IllegalStateException("Column was not found!");
     }
 
     @Override
     public void onDeleteSelectedRows() {
-        if ( isReadOnly() ) {
+        if (isReadOnly()) {
             return;
         }
         Set<Integer> selectedRowIndexes;
-        while ( !( selectedRowIndexes = getSelectedRowIndexes() ).isEmpty() ) {
+        while (!(selectedRowIndexes = getSelectedRowIndexes()).isEmpty()) {
             final int rowIndex = selectedRowIndexes.iterator().next();
-            deleteRow( rowIndex );
+            deleteRow(rowIndex);
         }
     }
 
-    private void deleteRow( final int rowIndex ) {
+    private void deleteRow(final int rowIndex) {
         try {
-            synchronizer.deleteRow( rowIndex );
+            synchronizer.deleteRow(rowIndex);
 
             parent.updateLinks();
 
             view.getLayer().draw();
 
             //Log deletion of column
-            model.getAuditLog().add( new DeleteRowAuditLogEntry( identity.getIdentifier(),
-                                                                 rowIndex ) );
-        } catch ( ModelSynchronizer.MoveColumnVetoException e ) {
+            model.getAuditLog().add(new DeleteRowAuditLogEntry(identity.getIdentifier(),
+                                                               rowIndex));
+        } catch (ModelSynchronizer.MoveColumnVetoException e) {
             //Swallow
         }
     }
 
     @Override
-    public void setMerged( final boolean merged ) {
-        uiModel.setMerged( merged );
-        view.getLayer().draw();
+    public boolean isMerged() {
+        return uiModel.isMerged();
     }
 
     @Override
-    public boolean isMerged() {
-        return uiModel.isMerged();
+    public void setMerged(final boolean merged) {
+        uiModel.setMerged(merged);
+        view.getLayer().draw();
     }
 
     @Override
@@ -1468,62 +1424,62 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
 
     @Override
     public void onInsertRowAbove() {
-        doInsertRow( this::insertRow );
+        doInsertRow(this::insertRow);
     }
 
     @Override
     public void onInsertRowBelow() {
-        doInsertRow( ( index ) -> insertRow( index + 1 ) );
+        doInsertRow((index) -> insertRow(index + 1));
     }
 
-    private void doInsertRow( final ParameterizedCommand<Integer> callback ) {
-        if ( isReadOnly() ) {
+    private void doInsertRow(final ParameterizedCommand<Integer> callback) {
+        if (isReadOnly()) {
             return;
         }
         final Set<Integer> selectedRowIndexes = getSelectedRowIndexes();
-        if ( selectedRowIndexes.size() != 1 ) {
+        if (selectedRowIndexes.size() != 1) {
             return;
         }
-        callback.execute( selectedRowIndexes.iterator().next() );
+        callback.execute(selectedRowIndexes.iterator().next());
     }
 
     private Set<Integer> getSelectedRowIndexes() {
         final Set<Integer> rowUsage = new HashSet<>();
-        for ( GridData.SelectedCell sc : uiModel.getSelectedCells() ) {
-            rowUsage.add( sc.getRowIndex() );
+        for (GridData.SelectedCell sc : uiModel.getSelectedCells()) {
+            rowUsage.add(sc.getRowIndex());
         }
         return rowUsage;
     }
 
-    private void insertRow( final int rowIndex ) {
+    private void insertRow(final int rowIndex) {
         try {
-            synchronizer.insertRow( rowIndex );
+            synchronizer.insertRow(rowIndex);
 
             parent.updateLinks();
 
             view.getLayer().draw();
 
             //Log insertion of row
-            model.getAuditLog().add( new InsertRowAuditLogEntry( identity.getIdentifier(),
-                                                                 rowIndex ) );
-        } catch ( ModelSynchronizer.MoveColumnVetoException e ) {
+            model.getAuditLog().add(new InsertRowAuditLogEntry(identity.getIdentifier(),
+                                                               rowIndex));
+        } catch (ModelSynchronizer.MoveColumnVetoException e) {
             //Swallow
         }
     }
 
     @Override
     public void onOtherwiseCell() {
-        if ( isReadOnly() ) {
+        if (isReadOnly()) {
             return;
         }
         final List<GridData.SelectedCell> selections = uiModel.getSelectedCells();
-        if ( selections.size() != 1 ) {
+        if (selections.size() != 1) {
             return;
         }
-        final GridData.SelectedCell selection = selections.get( 0 );
-        final int columnIndex = findUiColumnIndex( selection.getColumnIndex() );
-        synchronizer.setCellOtherwiseState( selection.getRowIndex(),
-                                            columnIndex );
+        final GridData.SelectedCell selection = selections.get(0);
+        final int columnIndex = findUiColumnIndex(selection.getColumnIndex());
+        synchronizer.setCellOtherwiseState(selection.getRowIndex(),
+                                           columnIndex);
         view.getLayer().draw();
     }
 
@@ -1533,7 +1489,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     @Override
-    public void setVersion( final String version ) {
+    public void setVersion(final String version) {
         this.version = version;
     }
 
@@ -1543,7 +1499,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     @Override
-    public void setLatestPath( final ObservablePath latestPath ) {
+    public void setLatestPath(final ObservablePath latestPath) {
         this.latestPath = latestPath;
     }
 
@@ -1553,7 +1509,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     @Override
-    public void setCurrentPath( final ObservablePath currentPath ) {
+    public void setCurrentPath(final ObservablePath currentPath) {
         this.currentPath = currentPath;
     }
 
@@ -1568,8 +1524,8 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     @Override
-    public void setReadOnly( final boolean isReadOnly ) {
-        this.access.setReadOnly( isReadOnly );
+    public void setReadOnly(final boolean isReadOnly) {
+        this.access.setReadOnly(isReadOnly);
     }
 
     @Override
@@ -1578,7 +1534,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     @Override
-    public void setOriginalHashCode( final Integer originalHashCode ) {
+    public void setOriginalHashCode(final Integer originalHashCode) {
         this.originalHashCode = originalHashCode;
     }
 
@@ -1588,8 +1544,49 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
     }
 
     @Override
-    public void setConcurrentUpdateSessionInfo( final ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo ) {
+    public void setConcurrentUpdateSessionInfo(final ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo) {
         this.concurrentUpdateSessionInfo = concurrentUpdateSessionInfo;
     }
 
+    private interface VetoableCommand {
+
+        void execute() throws ModelSynchronizer.MoveColumnVetoException;
+    }
+
+    private interface VetoableUpdateCommand {
+
+        List<BaseColumnFieldDiff> execute() throws ModelSynchronizer.MoveColumnVetoException;
+    }
+
+    public static class Access {
+
+        private LockedBy lock = NOBODY;
+        private boolean isReadOnly = false;
+
+        public LockedBy getLock() {
+            return lock;
+        }
+
+        public void setLock(final LockedBy lock) {
+            this.lock = lock;
+        }
+
+        public boolean isReadOnly() {
+            return isReadOnly;
+        }
+
+        public void setReadOnly(final boolean isReadOnly) {
+            this.isReadOnly = isReadOnly;
+        }
+
+        public boolean isEditable() {
+            return !(lock == OTHER_USER || isReadOnly);
+        }
+
+        public enum LockedBy {
+            CURRENT_USER,
+            OTHER_USER,
+            NOBODY
+        }
+    }
 }

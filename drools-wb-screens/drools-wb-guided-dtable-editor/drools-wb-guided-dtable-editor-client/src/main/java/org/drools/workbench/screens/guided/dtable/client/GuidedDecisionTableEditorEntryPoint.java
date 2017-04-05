@@ -30,5 +30,4 @@ public class GuidedDecisionTableEditorEntryPoint {
         GuidedDecisionTableResources.INSTANCE.css().ensureInjected();
         AnalyzerResources.INSTANCE.analysisCss().ensureInjected();
     }
-
 }

@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -414,9 +416,9 @@ public class DTCellValueWidgetFactory {
         // Wire up update handler
         lb.setEnabled(!isReadOnly);
         if (!isReadOnly) {
-            lb.addClickHandler(new ClickHandler() {
+            lb.addChangeHandler(new ChangeHandler() {
 
-                public void onClick(ClickEvent event) {
+                public void onChange(ChangeEvent event) {
                     String value = null;
                     if (lb.isMultipleSelect()) {
                         for (int i = 0; i < lb.getItemCount(); i++) {
@@ -509,9 +511,9 @@ public class DTCellValueWidgetFactory {
         // Wire up update handler
         lb.setEnabled(!isReadOnly);
         if (!isReadOnly) {
-            lb.addClickHandler(new ClickHandler() {
+            lb.addChangeHandler(new ChangeHandler() {
 
-                public void onClick(ClickEvent event) {
+                public void onChange(ChangeEvent event) {
                     int index = lb.getSelectedIndex();
                     if (index > -1) {
                         //Set base column value
