@@ -18,6 +18,7 @@ package com.ait.lienzo.test.translator;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.ait.lienzo.test.settings.Settings;
 
@@ -61,7 +62,24 @@ public class LienzoStubTranslatorInterceptor implements LienzoMockitoClassTransl
                     {
                         ctClass.defrost();
                     }
-                    classPool.getAndRename(translationClass, name);
+                    classPool.getAndRename(translationClass,
+                                                       name);
+                    CtClass stubCtClass = classPool.get(name);
+                    // Check the if the parent type for the stub class, if any,
+                    // contains some reference to any other stub as well.
+                    // If found other stub references on parent, replace
+                    // parent types for the expected parent type.
+                    if (null != stubCtClass.getSuperclass()) {
+                        String superStubName = stubCtClass.getSuperclass().getName();
+                        if (stubs.containsValue(superStubName)) {
+                            String superName = getKey(superStubName);
+                            if (null != superName) {
+                                CtClass pp = classPool.get(superName);
+                                stubCtClass.setSuperclass(pp);
+                            }
+                        }
+                    }
+
                 }
                 catch (NotFoundException e)
                 {
@@ -86,5 +104,17 @@ public class LienzoStubTranslatorInterceptor implements LienzoMockitoClassTransl
     public void interceptAfterParent(ClassPool classPool, String name) throws NotFoundException, CannotCompileException
     {
         // Nothing required for now.
+    }
+
+    private String getKey(final String value) {
+        Set<Map.Entry<String, String>> entries = stubs.entrySet();
+        for(Map.Entry<String, String> entry : entries) {
+            String  _key = entry.getKey();
+            String  _value = entry.getValue();
+            if (_value.equals(value)) {
+                return _key;
+            }
+        }
+        return null;
     }
 }

@@ -16,6 +16,8 @@
 
 package com.ait.lienzo.test.settings;
 
+import com.ait.lienzo.test.stub.overlays.NArrayBaseJSO;
+import com.ait.lienzo.test.stub.overlays.Point2DArrayJSO;
 import com.ait.lienzo.test.translator.*;
 
 /**
@@ -49,12 +51,16 @@ import com.ait.lienzo.test.translator.*;
                 com.ait.lienzo.test.stub.overlays.JsArrayMixed.class,
                 com.ait.lienzo.test.stub.overlays.PathPartListJSO.class,
                 com.ait.lienzo.test.stub.overlays.PathPartEntryJSO.class,
+                com.ait.lienzo.test.stub.overlays.Point2DArrayJSO.class,
+                com.ait.lienzo.test.stub.overlays.NArrayBaseJSO.class,
+                com.ait.lienzo.test.stub.overlays.NFastPrimitiveArrayBaseJSO.class,
+                com.ait.lienzo.test.stub.overlays.NFastDoubleArrayJSO.class,
                 com.ait.lienzo.test.stub.overlays.OptionalNodeFields.class,
-		 com.ait.lienzo.test.stub.overlays.OptionalShapeFields.class,
-		 com.ait.lienzo.test.stub.overlays.OptionalGroupOfFields.class,
+                com.ait.lienzo.test.stub.overlays.OptionalShapeFields.class,
+                com.ait.lienzo.test.stub.overlays.OptionalGroupOfFields.class,
                 com.ait.lienzo.test.stub.Attributes.class,
                 com.ait.lienzo.test.stub.NFastArrayList.class,
-                com.ait.lienzo.test.stub.NFastStringMap.class
+                com.ait.lienzo.test.stub.NFastStringMap.class,
         },
         
         jsoStubs = {
@@ -73,8 +79,6 @@ import com.ait.lienzo.test.translator.*;
                 "com.ait.lienzo.client.core.image.filter.ImageDataFilterCommonOps",
                 "com.ait.lienzo.client.core.image.filter.ImageDataFilter$FilterTableArray",
                 "com.ait.lienzo.client.core.image.filter.ImageDataFilter$FilterTableArray",
-                "com.ait.tooling.nativetools.client.NArrayBaseJSO",
-                "com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO",
                 "com.ait.tooling.nativetools.client.collection.NFastBooleanArrayJSO",
                 "com.ait.tooling.nativetools.client.collection.NFastIntegerArrayJSO",
                 "com.ait.tooling.nativetools.client.collection.NFastStringArrayJSO",
@@ -86,8 +90,7 @@ import com.ait.lienzo.test.translator.*;
                 "com.ait.tooling.nativetools.client.util.Performance$PerformanceJSO",
                 "com.ait.tooling.nativetools.client.webworker.WebWorker$WebWorkerJSO",
                 "com.ait.tooling.nativetools.client.usermedia.UserMediaStream",
-                "com.ait.tooling.nativetools.client.NObjectBaseJSO",
-                "com.ait.lienzo.client.core.types.Point2DArray$Point2DArrayJSO"
+                "com.ait.tooling.nativetools.client.NObjectBaseJSO"
         },
         
         jsoMocks = {},

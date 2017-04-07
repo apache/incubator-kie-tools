@@ -985,9 +985,10 @@ public class Attributes
         }
     }
 
+    // Lienzo-mockito: Replaced use of "cast()" by just using java regular casting.
     public final Point2DArray getControlPoints()
     {
-        JsArray<JavaScriptObject> points = getArrayOfJSO(Attribute.CONTROL_POINTS.getProperty());
+        Point2DArray.Point2DArrayJSO points = (Point2DArray.Point2DArrayJSO) m_jso.getAsJSO(Attribute.CONTROL_POINTS.getProperty());
 
         if (null != points)
         {
