@@ -42,6 +42,12 @@ public class AnalyzerProvider {
 
     public AnalyzerProvider() {
 
+        factTypes.add( new FactTypes.FactType( "Applicant",
+                                               new HashSet<FactTypes.Field>() {{
+                                                   add( new FactTypes.Field( "age",
+                                                                             DataType.TYPE_NUMERIC_INTEGER ) );
+                                               }} ) );
+
         factTypes.add( new FactTypes.FactType( "Account",
                                                new HashSet<FactTypes.Field>() {{
                                                    add( new FactTypes.Field( "deposit",

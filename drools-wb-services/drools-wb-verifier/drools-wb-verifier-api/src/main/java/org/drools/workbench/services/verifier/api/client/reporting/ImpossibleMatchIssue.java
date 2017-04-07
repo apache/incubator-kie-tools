@@ -15,9 +15,7 @@
  */
 package org.drools.workbench.services.verifier.api.client.reporting;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
+import java.util.Set;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -26,10 +24,10 @@ public class ImpossibleMatchIssue
         extends Issue {
 
     private final String fieldFactType;
-    private String fieldName;
+    private final String fieldName;
     private final String conflictedItem;
     private final String conflictingItem;
-    private String ruleId;
+    private final String ruleId;
 
     public ImpossibleMatchIssue( @MapsTo("severity") final Severity severity,
                                  @MapsTo("checkType") final CheckType checkType,
@@ -38,10 +36,10 @@ public class ImpossibleMatchIssue
                                  @MapsTo("fieldName") final String fieldName,
                                  @MapsTo("conflictedItem") final String conflictedItem,
                                  @MapsTo("conflictingItem") final String conflictingItem,
-                                 @MapsTo("rowNumbers") final Integer... rowNumbers ) {
+                                 @MapsTo("rowNumbers") final Set<Integer> rowNumbers ) {
         super( severity,
                checkType,
-               new HashSet<>( Arrays.asList( rowNumbers ) )
+               rowNumbers
              );
 
         this.ruleId = ruleId;
@@ -49,14 +47,6 @@ public class ImpossibleMatchIssue
         this.fieldName = fieldName;
         this.conflictedItem = conflictedItem;
         this.conflictingItem = conflictingItem;
-    }
-
-    public String getConflictedItem() {
-        return conflictedItem;
-    }
-
-    public String getConflictingItem() {
-        return conflictingItem;
     }
 
     public String getFieldFactType() {
@@ -67,7 +57,55 @@ public class ImpossibleMatchIssue
         return fieldName;
     }
 
+    public String getConflictedItem() {
+        return conflictedItem;
+    }
+
+    public String getConflictingItem() {
+        return conflictingItem;
+    }
+
     public String getRuleId() {
         return ruleId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+
+        ImpossibleMatchIssue that = (ImpossibleMatchIssue) o;
+
+        if (fieldFactType != null ? !fieldFactType.equals(that.fieldFactType) : that.fieldFactType != null) {
+            return false;
+        }
+        if (fieldName != null ? !fieldName.equals(that.fieldName) : that.fieldName != null) {
+            return false;
+        }
+        if (conflictedItem != null ? !conflictedItem.equals(that.conflictedItem) : that.conflictedItem != null) {
+            return false;
+        }
+        if (conflictingItem != null ? !conflictingItem.equals(that.conflictingItem) : that.conflictingItem != null) {
+            return false;
+        }
+        return ruleId != null ? ruleId.equals(that.ruleId) : that.ruleId == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (fieldFactType != null ? ~~fieldFactType.hashCode() : 0);
+        result = 31 * result + (fieldName != null ? ~~fieldName.hashCode() : 0);
+        result = 31 * result + (conflictedItem != null ? ~~conflictedItem.hashCode() : 0);
+        result = 31 * result + (conflictingItem != null ? ~~conflictingItem.hashCode() : 0);
+        result = 31 * result + (ruleId != null ? ~~ruleId.hashCode() : 0);
+        return result;
     }
 }

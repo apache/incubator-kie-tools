@@ -57,6 +57,10 @@ public class Issue {
         return checkType;
     }
 
+    public void setCheckType(CheckType checkType) {
+        this.checkType = checkType;
+    }
+
     public String getDebugMessage() {
         return debugMessage;
     }
