@@ -40,61 +40,60 @@ public class IssuePresenterTest {
 
     @Before
     public void setUp() throws
-                        Exception {
-        view = mock( IssuePresenterView.class );
-        screen = new IssuePresenter( view );
+            Exception {
+        view = mock(IssuePresenterView.class);
+        screen = new IssuePresenter(view);
     }
 
     @Test
     public void testShow() throws
-                           Exception {
+            Exception {
 
-        Issue issue = new Issue( Severity.WARNING,
-                                 CheckType.REDUNDANT_ROWS,
-                                 new HashSet<>( Arrays.asList( 1,
-                                                               2,
-                                                               3 ) )
+        Issue issue = new Issue(Severity.WARNING,
+                                CheckType.REDUNDANT_ROWS,
+                                new HashSet<>(Arrays.asList(1,
+                                                            2,
+                                                            3))
         );
 
+        screen.show(issue);
 
-        screen.show( issue );
-
-        verify( view ).setIssueTitle( "RedundantRows" );
-        ArgumentCaptor<SafeHtml> safeHtmlArgumentCaptor = ArgumentCaptor.forClass( SafeHtml.class );
-        verify( view ).setExplanation( safeHtmlArgumentCaptor.capture() );
-        assertEquals( "<p>MissingRangeP1(2)</p>",
-                      safeHtmlArgumentCaptor.getValue()
-                              .asString() );
-        verify( view ).setLines( "1, 2, 3" );
+        verify(view).setIssueTitle("RedundantRows");
+        ArgumentCaptor<SafeHtml> safeHtmlArgumentCaptor = ArgumentCaptor.forClass(SafeHtml.class);
+        verify(view).setExplanation(safeHtmlArgumentCaptor.capture());
+        assertEquals("<p>MissingRangeP1(1)</p>",
+                     safeHtmlArgumentCaptor.getValue()
+                             .asString());
+        verify(view).setLines("1, 2, 3");
     }
 
     @Test
     public void testShowEmptyIssue() throws
             Exception {
 
-        screen.show( Issue.EMPTY );
+        screen.show(Issue.EMPTY);
 
-        verify( view ).setIssueTitle( "---" );
-        ArgumentCaptor<SafeHtml> safeHtmlArgumentCaptor = ArgumentCaptor.forClass( SafeHtml.class );
-        verify( view ).setExplanation( safeHtmlArgumentCaptor.capture() );
-        assertEquals( "---",
-                safeHtmlArgumentCaptor.getValue()
-                        .asString() );
-        verify( view ).setLines( "" );
+        verify(view).setIssueTitle("---");
+        ArgumentCaptor<SafeHtml> safeHtmlArgumentCaptor = ArgumentCaptor.forClass(SafeHtml.class);
+        verify(view).setExplanation(safeHtmlArgumentCaptor.capture());
+        assertEquals("---",
+                     safeHtmlArgumentCaptor.getValue()
+                             .asString());
+        verify(view).setLines("");
     }
 
     @Test
     public void testClear() throws
-                            Exception {
+            Exception {
         screen.clear();
 
-        verify( view ).setIssueTitle( "" );
-        ArgumentCaptor<SafeHtml> safeHtmlArgumentCaptor = ArgumentCaptor.forClass( SafeHtml.class );
-        verify( view ).setExplanation( safeHtmlArgumentCaptor.capture() );
-        assertEquals( "",
-                      safeHtmlArgumentCaptor.getValue()
-                              .asString() );
-        verify( view ).hideLines();
-        verify( view ).setLines( "" );
+        verify(view).setIssueTitle("");
+        ArgumentCaptor<SafeHtml> safeHtmlArgumentCaptor = ArgumentCaptor.forClass(SafeHtml.class);
+        verify(view).setExplanation(safeHtmlArgumentCaptor.capture());
+        assertEquals("",
+                     safeHtmlArgumentCaptor.getValue()
+                             .asString());
+        verify(view).hideLines();
+        verify(view).setLines("");
     }
 }
