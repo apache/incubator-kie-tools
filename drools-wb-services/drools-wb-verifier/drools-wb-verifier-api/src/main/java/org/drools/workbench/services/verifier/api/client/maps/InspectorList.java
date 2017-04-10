@@ -29,6 +29,8 @@ import org.drools.workbench.services.verifier.api.client.relations.IsRedundant;
 import org.drools.workbench.services.verifier.api.client.relations.IsSubsuming;
 import org.drools.workbench.services.verifier.api.client.relations.RelationResolver;
 
+import static java.util.stream.Collectors.joining;
+
 public class InspectorList<InspectorType extends HasUUID>
         extends ArrayList<InspectorType>
         implements IsOverlapping,
@@ -90,5 +92,10 @@ public class InspectorList<InspectorType extends HasUUID>
     @Override
     public boolean add( final InspectorType inspector ) {
         return super.add( inspector );
+    }
+
+    @Override
+    public String toString() {
+        return stream().map( Object::toString ).collect( joining(", ") );
     }
 }

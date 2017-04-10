@@ -86,6 +86,11 @@ public abstract class FieldBase
     }
 
     @Override
+    public String toString() {
+        return factType + "." + name;
+    }
+
+    @Override
     public int compareTo( final FieldBase field ) {
         if ( factType.equals( field.factType )
                 && name.equals( field.name ) ) {

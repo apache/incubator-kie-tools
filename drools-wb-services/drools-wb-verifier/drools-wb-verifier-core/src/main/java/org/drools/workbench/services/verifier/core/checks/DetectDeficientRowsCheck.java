@@ -47,27 +47,15 @@ public class DetectDeficientRowsCheck
     }
 
     @Override
-    public void check() {
-        hasIssues = false;
-
-        if ( ruleInspector.isEmpty() ) {
-            return;
-        }
-
-        if ( ruleInspector.atLeastOneConditionHasAValue() ) {
-            if ( thereIsAtLeastOneRow() ) {
-                hasIssues = isDeficient();
-            }
-        }
+    public boolean check() {
+        return hasIssues = !ruleInspector.isEmpty() &&
+                           ruleInspector.atLeastOneConditionHasAValue() &&
+                           thereIsAtLeastOneRow() &&
+                           isDeficient();
     }
 
     private boolean isDeficient() {
-        for ( final RuleInspector other : getOtherRows() ) {
-            if ( !isDeficient( other ) ) {
-                return false;
-            }
-        }
-        return true;
+        return !getOtherRows().stream().anyMatch( other -> !isDeficient( other ) );
     }
 
     private boolean isDeficient( final RuleInspector other ) {

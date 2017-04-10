@@ -35,6 +35,8 @@ import org.drools.workbench.services.verifier.core.checks.base.CheckFactory;
 import org.drools.workbench.services.verifier.core.checks.base.CheckStorage;
 import org.uberfire.commons.validation.PortablePreconditions;
 
+import static java.util.stream.Collectors.toList;
+
 public class RuleInspectorCache {
 
     private final Map<Rule, RuleInspector> ruleInspectors = new HashMap<>();
@@ -81,13 +83,7 @@ public class RuleInspectorCache {
     }
 
     public Collection<RuleInspector> all( final Filter filter ) {
-        final ArrayList<RuleInspector> result = new ArrayList<RuleInspector>();
-        for ( final RuleInspector ruleInspector : all() ) {
-            if ( filter.accept( ruleInspector ) ) {
-                result.add( ruleInspector );
-            }
-        }
-        return result;
+        return all().stream().filter( filter::accept ).collect( toList() );
     }
 
     private void add( final RuleInspector ruleInspector ) {
@@ -107,7 +103,7 @@ public class RuleInspectorCache {
         return remove;
     }
 
-    public Rule getRule( final int rowNumber ) {
+    private Rule getRule( final int rowNumber ) {
         return index.getRules()
                 .where( Rule.index()
                                 .is( rowNumber ) )
@@ -137,8 +133,8 @@ public class RuleInspectorCache {
                         .select();
 
 
-        final ArrayList<Action> actions = new ArrayList<Action>();
-        final ArrayList<Condition> conditions = new ArrayList<Condition>();
+        final ArrayList<Action> actions = new ArrayList<>();
+        final ArrayList<Condition> conditions = new ArrayList<>();
 
         for ( final Field field : fieldSelector.all() ) {
             for ( final Column column : all ) {
@@ -190,7 +186,7 @@ public class RuleInspectorCache {
     }
 
     public RuleInspector getRuleInspector( final int row ) {
-        return ruleInspectors.get( getRule( (int) row ) );
+        return ruleInspectors.get( getRule( row ) );
     }
 
     public AnalyzerConfiguration getConfiguration() {

@@ -76,21 +76,17 @@ public class DetectRedundantRowsCheck
     }
 
     @Override
-    public void check() {
-
-        hasIssues = false;
-
-        if ( other.atLeastOneActionHasAValue() ) {
-
-            final boolean subsumes = ruleInspector.subsumes( other );
-
-            if ( allowRedundancyReporting && subsumes && other.subsumes( ruleInspector ) ) {
-                hasIssues = true;
+    public boolean check() {
+        if ( other.atLeastOneActionHasAValue() && ruleInspector.subsumes( other )) {
+            if ( allowRedundancyReporting && other.subsumes( ruleInspector ) ) {
                 issueType = CheckType.REDUNDANT_ROWS;
-            } else if ( allowSubsumptionReporting && subsumes ) {
-                hasIssues = true;
+                return hasIssues = true;
+            } else if ( allowSubsumptionReporting ) {
                 issueType = CheckType.SUBSUMPTANT_ROWS;
+                return hasIssues = true;
             }
         }
+
+        return hasIssues = false;
     }
 }

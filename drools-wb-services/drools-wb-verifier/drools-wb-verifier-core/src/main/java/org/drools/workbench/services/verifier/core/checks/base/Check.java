@@ -21,7 +21,7 @@ import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 
 public interface Check {
 
-    void check();
+    boolean check();
 
     Issue getIssue();
 

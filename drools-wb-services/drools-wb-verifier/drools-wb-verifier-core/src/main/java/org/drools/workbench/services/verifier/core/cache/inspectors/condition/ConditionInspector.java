@@ -115,6 +115,11 @@ public abstract class ConditionInspector<T extends Comparable<T>>
     public abstract String toHumanReadableString();
 
     @Override
+    public String toString() {
+        return condition.toString();
+    }
+
+    @Override
     public boolean equals( Object obj ) {
         if ( obj == null ) {
             return false;

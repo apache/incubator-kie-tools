@@ -62,10 +62,6 @@ public class ChecksRepeatingCommand
                 return false;
             }
 
-            if ( isCancelled() ) {
-                return false;
-            }
-
             checksToRun.get( index ).check();
         }
 

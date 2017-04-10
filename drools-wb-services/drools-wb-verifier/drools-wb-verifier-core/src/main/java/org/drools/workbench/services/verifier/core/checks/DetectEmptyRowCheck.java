@@ -37,10 +37,8 @@ public class DetectEmptyRowCheck
     }
 
     @Override
-    public void check() {
-        hasIssues = false;
-
-        hasIssues = !ruleInspector.atLeastOneConditionHasAValue() && !ruleInspector.atLeastOneActionHasAValue();
+    public boolean check() {
+        return hasIssues = !ruleInspector.atLeastOneConditionHasAValue() && !ruleInspector.atLeastOneActionHasAValue();
     }
 
     @Override

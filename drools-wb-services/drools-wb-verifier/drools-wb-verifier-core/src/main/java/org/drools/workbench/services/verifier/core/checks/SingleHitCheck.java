@@ -16,7 +16,6 @@
 package org.drools.workbench.services.verifier.core.checks;
 
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
-import org.drools.workbench.services.verifier.api.client.configuration.CheckConfiguration;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
@@ -41,13 +40,8 @@ public class SingleHitCheck
     }
 
     @Override
-    public void check() {
-        hasIssues = false;
-
-        if ( ruleInspector.getConditionsInspectors()
-                .subsumes( other.getConditionsInspectors() ) ) {
-            hasIssues = true;
-        }
+    public boolean check() {
+        return hasIssues = ruleInspector.getConditionsInspectors().subsumes( other.getConditionsInspectors() );
     }
 
     @Override

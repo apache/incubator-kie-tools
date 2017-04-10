@@ -42,18 +42,8 @@ public class PriorityListCheck
     }
 
     @Override
-    public void check() {
-        checkWithIssues = null;
-
-        for ( final Check check : filteredSet ) {
-            check.check();
-            if ( check.hasIssues() ) {
-                checkWithIssues = check;
-            }
-
-            if ( checkWithIssues != null ) {
-                break;
-            }
-        }
+    public boolean check() {
+        checkWithIssues = filteredSet.stream().filter( Check::check ).findFirst().orElse( null );
+        return checkWithIssues != null;
     }
 }

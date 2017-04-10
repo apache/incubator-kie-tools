@@ -195,8 +195,8 @@ public class CheckRunManagerTest {
         }
 
         @Override
-        public void check() {
-            hasIssues = true;
+        public boolean check() {
+            return hasIssues = true;
         }
 
         @Override

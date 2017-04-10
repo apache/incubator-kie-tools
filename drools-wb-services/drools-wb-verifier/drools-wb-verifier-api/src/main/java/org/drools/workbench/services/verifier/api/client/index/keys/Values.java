@@ -17,6 +17,8 @@ package org.drools.workbench.services.verifier.api.client.index.keys;
 
 import java.util.HashSet;
 
+import static java.util.stream.Collectors.joining;
+
 public class Values<T extends Comparable>
         extends HashSet<T> {
 
@@ -29,6 +31,11 @@ public class Values<T extends Comparable>
     }
 
     public Values() {
+    }
+
+    @Override
+    public String toString() {
+        return stream().map( Object::toString ).collect( joining(", ") );
     }
 
     public boolean isThereChanges( final Values otherValues ) {

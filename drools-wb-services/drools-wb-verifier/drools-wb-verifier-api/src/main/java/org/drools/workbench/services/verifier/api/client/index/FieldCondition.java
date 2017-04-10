@@ -56,6 +56,11 @@ public class FieldCondition<T extends Comparable>
     }
 
     @Override
+    public String toString() {
+        return field + " " + operator + " " + getValues();
+    }
+
+    @Override
     public Key[] keys() {
         final ArrayList<Key> keys = new ArrayList<>();
         for ( final Key key : super.keys() ) {

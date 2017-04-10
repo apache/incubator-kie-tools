@@ -48,16 +48,9 @@ public class RelationResolver {
     }
 
     public boolean subsumes( final InspectorList otherList ) {
-
-        if ( list == null || otherList == null ) {
-            return false;
-        }
-
-        if ( isConflicting( otherList ) ) {
-            return false;
-        } else {
-            return subsumptionResolver.listSubsumesOther( otherList );
-        }
+        return list != null && otherList != null &&
+               !isConflicting( otherList ) &&
+               subsumptionResolver.listSubsumesOther( otherList );
     }
 
     public boolean isRedundant( final InspectorList otherList ) {

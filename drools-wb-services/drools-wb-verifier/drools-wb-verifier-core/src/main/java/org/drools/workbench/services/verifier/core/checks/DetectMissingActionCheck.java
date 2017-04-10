@@ -37,12 +37,8 @@ public class DetectMissingActionCheck
     }
 
     @Override
-    public void check() {
-        hasIssues = false;
-
-        if ( ruleInspector.atLeastOneConditionHasAValue() ) {
-            hasIssues = !ruleInspector.atLeastOneActionHasAValue();
-        }
+    public boolean check() {
+        return hasIssues = ruleInspector.atLeastOneConditionHasAValue() && !ruleInspector.atLeastOneActionHasAValue();
     }
 
     @Override

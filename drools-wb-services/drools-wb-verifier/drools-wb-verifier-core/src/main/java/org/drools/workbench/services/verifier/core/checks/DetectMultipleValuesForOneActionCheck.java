@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
+import org.drools.workbench.services.verifier.api.client.maps.InspectorMultiMap;
 import org.drools.workbench.services.verifier.api.client.relations.Conflict;
 import org.drools.workbench.services.verifier.api.client.relations.HumanReadable;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
@@ -43,22 +44,15 @@ public class DetectMultipleValuesForOneActionCheck
     }
 
     @Override
-    public void check() {
+    public boolean check() {
+        conflict = ruleInspector.getPatternsInspector().stream()
+                                .map( PatternInspector::getActionsInspector )
+                                .map( InspectorMultiMap::hasConflicts )
+                                .filter( Conflict::foundIssue )
+                                .findFirst()
+                                .orElse( Conflict.EMPTY );
 
-        hasIssues = false;
-        conflict = Conflict.EMPTY;
-
-        for ( final PatternInspector patternInspector : ruleInspector.getPatternsInspector() ) {
-            final Conflict result = patternInspector.getActionsInspector()
-                    .hasConflicts();
-            if ( result.foundIssue() ) {
-                hasIssues = true;
-                conflict = result;
-                return;
-
-            }
-        }
-
+        return hasIssues = conflict != Conflict.EMPTY;
     }
 
     @Override

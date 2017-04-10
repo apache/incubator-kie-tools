@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
-import org.drools.workbench.services.verifier.api.client.configuration.CheckConfiguration;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
@@ -50,11 +49,8 @@ public class DetectConflictingRowsCheck
     }
 
     @Override
-    public void check() {
-        hasIssues = false;
-        if ( ruleInspector.conflicts( other ) ) {
-            hasIssues = true;
-        }
+    public boolean check() {
+        return hasIssues = ruleInspector.conflicts( other );
     }
 
     @Override

@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
+import org.drools.workbench.services.verifier.api.client.maps.InspectorMultiMap;
+import org.drools.workbench.services.verifier.api.client.maps.util.RedundancyResult;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
@@ -38,20 +40,16 @@ public class DetectRedundantActionFactFieldCheck
     }
 
     @Override
-    public void check() {
-        hasIssues = false;
+    public boolean check() {
+        result = ruleInspector.getPatternsInspector().stream()
+                              .filter( p -> p.getPattern().getBoundName() != null )
+                              .peek( p -> patternInspector = p )
+                              .map( PatternInspector::getActionsInspector )
+                              .map( InspectorMultiMap::hasRedundancy )
+                              .filter( RedundancyResult::isTrue )
+                              .findFirst().orElse( null );
 
-        for ( final PatternInspector patternInspector : ruleInspector.getPatternsInspector() ) {
-            this.patternInspector = patternInspector;
-            result = patternInspector.getActionsInspector()
-                    .hasRedundancy();
-            if ( result.isTrue()
-                    && patternInspector.getPattern()
-                    .getBoundName() != null ) {
-                hasIssues = true;
-                return;
-            }
-        }
+        return hasIssues = result != null;
     }
 
     @Override

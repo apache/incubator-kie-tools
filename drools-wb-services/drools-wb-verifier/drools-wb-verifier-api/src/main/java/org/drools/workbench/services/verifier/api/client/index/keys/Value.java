@@ -29,6 +29,11 @@ public class Value
     }
 
     @Override
+    public String toString() {
+        return "" + comparable;
+    }
+
+    @Override
     public int compareTo( final Value value ) {
         if ( comparable == null && value.comparable == null ) {
             return 0;

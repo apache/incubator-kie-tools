@@ -15,7 +15,7 @@
  */
 package org.drools.workbench.services.verifier.core.checks;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
@@ -43,81 +43,29 @@ import org.drools.workbench.services.verifier.core.checks.base.OneToManyCheck;
 public class RangeCheck
         extends OneToManyCheck {
 
-    private InspectorList<RuleInspector> otherRows;
-
     public RangeCheck( final RuleInspector ruleInspector,
                        final AnalyzerConfiguration configuration ) {
         super( ruleInspector,
-               new RuleInspectorCache.Filter() {
-                   @Override
-                   public boolean accept( final RuleInspector other ) {
-                       return !ruleInspector.getRule()
-                               .getUuidKey()
-                               .equals( other.getRule()
-                                                .getUuidKey() );
-                   }
-               },
+               other -> !ruleInspector.getRule().getUuidKey()
+                                      .equals( other.getRule().getUuidKey() ),
                configuration,
                CheckType.MISSING_RANGE );
     }
 
     @Override
-    public void check() {
-
-        otherRows = getOtherRows();
+    public boolean check() {
+        InspectorList<RuleInspector> otherRows = getOtherRows();
 
         if ( otherRows.size() == 0 ) {
             hasIssues = false;
         } else {
             // For some reason these clones always turn out to be evil.
             final RuleInspectorClone evilClone = makeClone();
-
-            if ( evilClone.containsInvertedItems && !isSubsumedByOtherRows( evilClone ) ) {
-                hasIssues = true;
-            } else {
-                hasIssues = false;
-            }
+            hasIssues = evilClone.containsInvertedItems &&
+                        SubsumptionResolver.isSubsumedByAnObjectInThisList( otherRows, evilClone ).foundIssue();
         }
-    }
 
-    private boolean isSubsumedByOtherRows( final RuleInspectorClone evilClone ) {
-        if ( otherRows.isEmpty() ) {
-            // Currently not reporting this issue if there is only one row.
-            return true;
-        } else {
-            return !SubsumptionResolver.isSubsumedByAnObjectInThisList( otherRows,
-                                                                        evilClone )
-                    .foundIssue();
-        }
-    }
-
-    private FieldCondition invert( final FieldCondition condition,
-                                   final AnalyzerConfiguration configuration ) {
-        return new FieldCondition<>( condition.getField(),
-                                     condition.getColumn(),
-                                     invert( condition.getOperator() ),
-                                     condition.getValues(),
-                                     configuration );
-    }
-
-    private String invert( final String operator ) {
-
-        switch ( operator ) {
-            case "==":
-                return "!=";
-            case "!=":
-                return "==";
-            case ">":
-                return "<=";
-            case "<":
-                return ">=";
-            case ">=":
-                return "<";
-            case "<=":
-                return ">";
-            default:
-                return operator;
-        }
+        return hasIssues;
     }
 
     private RuleInspectorClone makeClone() {
@@ -135,18 +83,17 @@ public class RangeCheck
                                final CheckType checkType ) {
         return new Issue( severity,
                           checkType,
-                          new HashSet<>( Arrays.asList( ruleInspector.getRowIndex() + 1 ) )
+                          new HashSet<>( Collections.singletonList( ruleInspector.getRowIndex() + 1 ) )
         );
     }
 
-    private class RuleInspectorClone
-            extends RuleInspector {
+    private static class RuleInspectorClone extends RuleInspector {
 
         private final InspectorList<ConditionsInspectorMultiMap> conditionsInspectors;
         boolean containsInvertedItems = false;
 
-        public RuleInspectorClone( final Rule rule,
-                                   final RuleInspectorCache cache ) {
+        RuleInspectorClone( final Rule rule,
+                            final RuleInspectorCache cache ) {
             super( rule,
                    new CheckStorage( new CheckFactory( cache.getConfiguration() ) ),
                    cache,
@@ -229,6 +176,34 @@ public class RangeCheck
                     && getBrlConditionsInspectors().subsumes( ( (RuleInspector) other ).getBrlConditionsInspectors() )
                     && getConditionsInspectors().subsumes( ( (RuleInspector) other ).getConditionsInspectors() );
         }
-    }
 
+        private FieldCondition invert( final FieldCondition condition,
+                                       final AnalyzerConfiguration configuration ) {
+            return new FieldCondition<>( condition.getField(),
+                                         condition.getColumn(),
+                                         invert( condition.getOperator() ),
+                                         condition.getValues(),
+                                         configuration );
+        }
+
+        private String invert( final String operator ) {
+
+            switch ( operator ) {
+                case "==":
+                    return "!=";
+                case "!=":
+                    return "==";
+                case ">":
+                    return "<=";
+                case "<":
+                    return ">=";
+                case ">=":
+                    return "<";
+                case "<=":
+                    return ">";
+                default:
+                    return operator;
+            }
+        }
+    }
 }

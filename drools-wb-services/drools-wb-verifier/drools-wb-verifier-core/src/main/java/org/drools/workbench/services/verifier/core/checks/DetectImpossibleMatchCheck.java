@@ -46,19 +46,15 @@ public class DetectImpossibleMatchCheck
     }
 
     @Override
-    public void check() {
-        hasIssues = false;
-        conflict = Conflict.EMPTY;
+    public boolean check() {
+        conflict = ruleInspector.getPatternsInspector().stream()
+                                .map( PatternInspector::getConditionsInspector )
+                                .map( ConditionsInspectorMultiMap::hasConflicts )
+                                .filter(Conflict::foundIssue )
+                                .findFirst()
+                                .orElse( Conflict.EMPTY );
 
-        for ( final PatternInspector patternInspector : ruleInspector.getPatternsInspector() ) {
-            final ConditionsInspectorMultiMap conditionsInspector = patternInspector.getConditionsInspector();
-            final Conflict conflict = conditionsInspector.hasConflicts();
-            if ( conflict.foundIssue() ) {
-                hasIssues = true;
-                this.conflict = conflict;
-            }
-
-        }
+        return hasIssues = conflict != Conflict.EMPTY;
     }
 
     @Override

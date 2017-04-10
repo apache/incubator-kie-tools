@@ -18,6 +18,7 @@ package org.drools.workbench.services.verifier.core.checks;
 
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.ObjectField;
+import org.drools.workbench.services.verifier.api.client.maps.InspectorMultiMap;
 import org.drools.workbench.services.verifier.api.client.maps.util.RedundancyResult;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.core.cache.inspectors.PatternInspector;
@@ -41,18 +42,14 @@ public abstract class DetectRedundantActionBase
     }
 
     @Override
-    public void check() {
-        hasIssues = false;
+    public boolean check() {
+        result = ruleInspector.getPatternsInspector().stream()
+                              .map( PatternInspector::getActionsInspector )
+                              .map( InspectorMultiMap::hasRedundancy )
+                              .filter( RedundancyResult::isTrue )
+                              .findFirst().orElse( null );
 
-        for ( final PatternInspector patternInspector : ruleInspector.getPatternsInspector() ) {
-            this.patternInspector = patternInspector;
-            result = patternInspector.getActionsInspector()
-                    .hasRedundancy();
-            if ( result.isTrue() ) {
-                hasIssues = true;
-                return;
-            }
-        }
+        return hasIssues = result != null;
     }
 
 }

@@ -103,12 +103,6 @@ public class SubsumptionResolver {
 
     private static boolean subsumesItem( final InspectorList otherCollection,
                                          final IsSubsuming object ) {
-        for ( final Object otherObject : otherCollection ) {
-            if ( object.subsumes( otherObject ) ) {
-                return true;
-            }
-        }
-        return false;
+        return otherCollection.stream().anyMatch( other -> object.subsumes( other ) );
     }
-
 }

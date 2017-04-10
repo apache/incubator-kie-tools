@@ -32,6 +32,8 @@ import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspecto
 import org.drools.workbench.services.verifier.core.checks.base.Check;
 import org.drools.workbench.services.verifier.core.checks.base.CheckRunManager;
 
+import static java.util.stream.Collectors.toSet;
+
 public class Analyzer {
 
     private final RuleInspectorCache cache;
@@ -77,18 +79,11 @@ public class Analyzer {
     }
 
     private Set<Issue> getIssues() {
-
-        final Set<Issue> unorderedIssues = new HashSet<>();
-
-        for ( final RuleInspector ruleInspector : cache.all() ) {
-            for ( final Check check : ruleInspector.getChecks() ) {
-                if ( check.hasIssues() ) {
-                    unorderedIssues.add( check.getIssue() );
-                }
-            }
-        }
-
-        return unorderedIssues;
+        return cache.all().stream()
+                    .flatMap( inspector -> inspector.getChecks().stream() )
+                    .filter( Check::hasIssues )
+                    .map( Check::getIssue )
+                    .collect( toSet() );
     }
 
     public void removeRule( final Integer rowDeleted ) {
@@ -124,28 +119,14 @@ public class Analyzer {
                                   onCompletion );
     }
 
-    protected StatusUpdate getOnStatusCommand() {
-        return new StatusUpdate() {
-
-            @Override
-            public void update( final int currentStartIndex,
-                                final int endIndex,
-                                final int size ) {
-                reporter.sendStatus( new Status( configuration.getWebWorkerUUID(),
-                                                 currentStartIndex,
-                                                 endIndex,
-                                                 size ) );
-            }
-        };
+    private StatusUpdate getOnStatusCommand() {
+        return ( currentStartIndex, endIndex, size ) -> reporter.sendStatus( new Status( configuration.getWebWorkerUUID(),
+                                                                                         currentStartIndex,
+                                                                                         endIndex,
+                                                                                         size ) );
     }
 
-    protected Command getOnCompletionCommand() {
-        return new Command() {
-
-            @Override
-            public void execute() {
-                reporter.sendReport( getIssues() );
-            }
-        };
+    private Command getOnCompletionCommand() {
+        return () -> reporter.sendReport( getIssues() );
     }
 }
