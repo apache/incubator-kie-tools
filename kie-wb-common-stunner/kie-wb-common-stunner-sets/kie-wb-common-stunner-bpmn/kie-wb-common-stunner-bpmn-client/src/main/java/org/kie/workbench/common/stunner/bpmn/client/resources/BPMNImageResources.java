@@ -45,6 +45,10 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @DataResource.MimeType("image/svg+xml")
     DataResource categoryGateway();
 
+    @ClientBundle.Source("images/categories/event.svg")
+    @DataResource.MimeType("image/svg+xml")
+    DataResource categoryEvent();
+
     @ClientBundle.Source("images/categories/library.svg")
     @DataResource.MimeType("image/svg+xml")
     DataResource categoryLibrary();
@@ -99,11 +103,11 @@ public interface BPMNImageResources extends ClientBundleWithLookup {
     @DataResource.MimeType("image/svg+xml")
     DataResource eventStartNonInterrupting();
 
-    @ClientBundle.Source("images/event/event-start-signal.svg")
+    @ClientBundle.Source(BPMNSVGViewFactory.EVENT_START_SIGNAL)
     @DataResource.MimeType("image/svg+xml")
     DataResource eventStartSignal();
 
-    @ClientBundle.Source("images/event/event-start-timer.svg")
+    @ClientBundle.Source(BPMNSVGViewFactory.EVENT_START_TIMER)
     @DataResource.MimeType("image/svg+xml")
     DataResource eventStartTimer();
 

@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.definition.property.general;
 
-import javax.validation.Valid;
-
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;

@@ -89,7 +89,7 @@ public abstract class BaseStartEvent implements BPMNDefinition,
     @NonPortable
     static abstract class BaseStartEventBuilder<T extends BaseStartEvent> implements Builder<T> {
 
-        public static final String BG_COLOR = "#FFFFFF";
+        public static final String BG_COLOR = "#9acd32";
         public static final Double BORDER_SIZE = 1.5d;
         public static final String BORDER_COLOR = "#000000";
         public static final Double RADIUS = 15d;

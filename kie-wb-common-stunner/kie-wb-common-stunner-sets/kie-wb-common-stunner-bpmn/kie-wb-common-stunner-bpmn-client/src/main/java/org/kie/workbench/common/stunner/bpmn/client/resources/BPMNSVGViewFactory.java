@@ -31,6 +31,8 @@ public interface BPMNSVGViewFactory {
     String GATEWAY_PARALLEL_MULTIPLE = "images/gateway/parallel_multiple.svg";
     String GATEWAY_EXCLUSIVE = "images/gateway/exclusive.svg";
     String EVENT_START = "images/event/event-start.svg";
+    String EVENT_START_SIGNAL = "images/event/event-start-signal.svg";
+    String EVENT_START_TIMER = "images/event/event-start-timer.svg";
     String EVENT_END = "images/event/event-end.svg";
     String EVENT_INTERMEDIATE = "images/event/event-intermediate.svg";
     String LANE = "images/lane/lane.svg";
@@ -79,6 +81,16 @@ public interface BPMNSVGViewFactory {
     SVGShapeView eventStart(final double width,
                             final double height,
                             final boolean resizable);
+
+    @SVGSource(EVENT_START_SIGNAL)
+    SVGShapeView eventStartSignal(final double width,
+                                  final double height,
+                                  final boolean resizable);
+
+    @SVGSource(EVENT_START_TIMER)
+    SVGShapeView eventStartTimer(final double width,
+                                 final double height,
+                                 final boolean resizable);
 
     @SVGSource(EVENT_END)
     SVGShapeView eventEnd(final double width,
