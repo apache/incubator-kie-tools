@@ -35,6 +35,7 @@ import org.drools.workbench.screens.guided.dtable.service.GuidedDecisionTableLin
 import org.drools.workbench.screens.guided.dtable.type.GuidedDTableResourceTypeDefinition;
 import org.guvnor.common.services.backend.config.SafeSessionInfo;
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
+import org.guvnor.common.services.backend.file.DotFileFilter;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
 import org.guvnor.common.services.project.model.Package;
 import org.guvnor.common.services.shared.metadata.model.Metadata;
@@ -74,6 +75,7 @@ public class GuidedDecisionTableGraphEditorServiceImpl
     private Event<ResourceOpenedEvent> resourceOpenedEvent;
     private CommentedOptionFactory commentedOptionFactory;
     private GuidedDTableResourceTypeDefinition resourceType;
+    private DotFileFilter dotFileFilter;
     private SafeSessionInfo safeSessionInfo;
 
     public GuidedDecisionTableGraphEditorServiceImpl() {
@@ -81,18 +83,19 @@ public class GuidedDecisionTableGraphEditorServiceImpl
     }
 
     @Inject
-    public GuidedDecisionTableGraphEditorServiceImpl( final @Named("ioStrategy") IOService ioService,
-                                                      final CopyService copyService,
-                                                      final DeleteService deleteService,
-                                                      final RenameService renameService,
-                                                      final KieProjectService projectService,
-                                                      final VersionRecordService versionRecordService,
-                                                      final GuidedDecisionTableEditorService dtableService,
-                                                      final GuidedDecisionTableLinkManager dtableLinkManager,
-                                                      final Event<ResourceOpenedEvent> resourceOpenedEvent,
-                                                      final CommentedOptionFactory commentedOptionFactory,
-                                                      final GuidedDTableResourceTypeDefinition resourceType,
-                                                      final SessionInfo sessionInfo ) {
+    public GuidedDecisionTableGraphEditorServiceImpl(final @Named("ioStrategy") IOService ioService,
+                                                     final CopyService copyService,
+                                                     final DeleteService deleteService,
+                                                     final RenameService renameService,
+                                                     final KieProjectService projectService,
+                                                     final VersionRecordService versionRecordService,
+                                                     final GuidedDecisionTableEditorService dtableService,
+                                                     final GuidedDecisionTableLinkManager dtableLinkManager,
+                                                     final Event<ResourceOpenedEvent> resourceOpenedEvent,
+                                                     final CommentedOptionFactory commentedOptionFactory,
+                                                     final GuidedDTableResourceTypeDefinition resourceType,
+                                                     final DotFileFilter dotFileFilter,
+                                                     final SessionInfo sessionInfo) {
         this.ioService = ioService;
         this.copyService = copyService;
         this.deleteService = deleteService;
@@ -104,213 +107,205 @@ public class GuidedDecisionTableGraphEditorServiceImpl
         this.resourceOpenedEvent = resourceOpenedEvent;
         this.commentedOptionFactory = commentedOptionFactory;
         this.resourceType = resourceType;
-        this.safeSessionInfo = new SafeSessionInfo( sessionInfo );
+        this.dotFileFilter = dotFileFilter;
+        this.safeSessionInfo = new SafeSessionInfo(sessionInfo);
     }
 
     @Override
-    public Path create( final Path context,
-                        final String fileName,
-                        final GuidedDecisionTableEditorGraphModel model,
-                        final String comment ) {
+    public Path create(final Path context,
+                       final String fileName,
+                       final GuidedDecisionTableEditorGraphModel model,
+                       final String comment) {
         try {
-            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
-            if ( ioService.exists( nioPath ) ) {
-                throw new FileAlreadyExistsException( nioPath.toString() );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert(context).resolve(fileName);
+            if (ioService.exists(nioPath)) {
+                throw new FileAlreadyExistsException(nioPath.toString());
             }
 
-            final Set<Path> paths = getLinkedDecisionTablesInPackage( context );
-            paths.forEach( ( path ) -> model.getEntries().add( new GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry( path,
-                                                                                                                                      getLatestVersionPath( path ) ) ) );
+            final Set<Path> paths = getLinkedDecisionTablesInPackage(context);
+            paths.forEach((path) -> model.getEntries().add(new GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry(path,
+                                                                                                                                 getLatestVersionPath(path))));
 
-            ioService.write( nioPath,
-                             GuidedDTGraphXMLPersistence.getInstance().marshal( model ),
-                             commentedOptionFactory.makeCommentedOption( comment ) );
+            ioService.write(nioPath,
+                            GuidedDTGraphXMLPersistence.getInstance().marshal(model),
+                            commentedOptionFactory.makeCommentedOption(comment));
 
-            final Path newPath = Paths.convert( nioPath );
+            final Path newPath = Paths.convert(nioPath);
             return newPath;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public GuidedDecisionTableEditorGraphModel load( final Path path ) {
+    public GuidedDecisionTableEditorGraphModel load(final Path path) {
         try {
-            final String content = ioService.readAllString( Paths.convert( path ) );
+            final String content = ioService.readAllString(Paths.convert(path));
 
-            return GuidedDTGraphXMLPersistence.getInstance().unmarshal( content );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return GuidedDTGraphXMLPersistence.getInstance().unmarshal(content);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public GuidedDecisionTableEditorGraphContent loadContent( final Path path ) {
-        return super.loadContent( path );
+    public GuidedDecisionTableEditorGraphContent loadContent(final Path path) {
+        return super.loadContent(path);
     }
 
     @Override
-    protected GuidedDecisionTableEditorGraphContent constructContent( final Path path,
-                                                                      final Overview overview ) {
-        final GuidedDecisionTableEditorGraphModel model = load( path );
+    protected GuidedDecisionTableEditorGraphContent constructContent(final Path path,
+                                                                     final Overview overview) {
+        final GuidedDecisionTableEditorGraphModel model = load(path);
 
         //Signal opening to interested parties
-        resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                           safeSessionInfo ) );
+        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
+                                                         safeSessionInfo));
 
-        return new GuidedDecisionTableEditorGraphContent( model,
-                                                          overview );
+        return new GuidedDecisionTableEditorGraphContent(model,
+                                                         overview);
     }
 
     @Override
-    public Path save( final Path path,
-                      final GuidedDecisionTableEditorGraphModel model,
-                      final Metadata metadata,
-                      final String comment ) {
+    public Path save(final Path path,
+                     final GuidedDecisionTableEditorGraphModel model,
+                     final Metadata metadata,
+                     final String comment) {
         try {
-            final Metadata currentMetadata = metadataService.getMetadata( path );
+            final Metadata currentMetadata = metadataService.getMetadata(path);
 
-            versionEntriesPaths( model );
+            versionEntriesPaths(model);
 
-            ioService.write( Paths.convert( path ),
-                             GuidedDTGraphXMLPersistence.getInstance().marshal( model ),
-                             metadataService.setUpAttributes( path,
-                                                              metadata ),
-                             commentedOptionFactory.makeCommentedOption( comment ) );
+            ioService.write(Paths.convert(path),
+                            GuidedDTGraphXMLPersistence.getInstance().marshal(model),
+                            metadataService.setUpAttributes(path,
+                                                            metadata),
+                            commentedOptionFactory.makeCommentedOption(comment));
 
-            fireMetadataSocialEvents( path,
-                                      currentMetadata,
-                                      metadata );
+            fireMetadataSocialEvents(path,
+                                     currentMetadata,
+                                     metadata);
 
             return path;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
-    private void versionEntriesPaths( final GuidedDecisionTableEditorGraphModel model ) {
-        for ( GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry entry : model.getEntries() ) {
-            entry.setPathVersion( getLatestVersionPath( entry.getPathHead() ) );
+    private void versionEntriesPaths(final GuidedDecisionTableEditorGraphModel model) {
+        for (GuidedDecisionTableEditorGraphModel.GuidedDecisionTableGraphEntry entry : model.getEntries()) {
+            entry.setPathVersion(getLatestVersionPath(entry.getPathHead()));
         }
     }
 
-    private Path getLatestVersionPath( final Path path ) {
-        final List<VersionRecord> versions = versionRecordService.load( Paths.convert( path ) );
-        final String versionUri = versions.get( versions.size() - 1 ).uri();
-        return PathFactory.newPathBasedOn( path.getFileName(),
-                                           versionUri,
-                                           path );
+    private Path getLatestVersionPath(final Path path) {
+        final List<VersionRecord> versions = versionRecordService.load(Paths.convert(path));
+        final String versionUri = versions.get(versions.size() - 1).uri();
+        return PathFactory.newPathBasedOn(path.getFileName(),
+                                          versionUri,
+                                          path);
     }
 
     @Override
-    public void delete( final Path path,
-                        final String comment ) {
+    public void delete(final Path path,
+                       final String comment) {
         try {
-            deleteService.delete( path,
-                                  comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            deleteService.delete(path,
+                                 comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path rename( final Path path,
-                        final String newName,
-                        final String comment ) {
+    public Path rename(final Path path,
+                       final String newName,
+                       final String comment) {
         try {
-            return renameService.rename( path,
-                                         newName,
-                                         comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return renameService.rename(path,
+                                        newName,
+                                        comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path copy( final Path path,
-                      final String newName,
-                      final String comment ) {
+    public Path copy(final Path path,
+                     final String newName,
+                     final String comment) {
         try {
-            return copyService.copy( path,
-                                     newName,
-                                     comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return copyService.copy(path,
+                                    newName,
+                                    comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path copy( final Path path,
-                      final String newName,
-                      final Path targetDirectory,
-                      final String comment ) {
+    public Path copy(final Path path,
+                     final String newName,
+                     final Path targetDirectory,
+                     final String comment) {
         try {
-            return copyService.copy( path,
-                                     newName,
-                                     targetDirectory,
-                                     comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return copyService.copy(path,
+                                    newName,
+                                    targetDirectory,
+                                    comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public List<Path> listDecisionTablesInPackage( final Path path ) {
+    public List<Path> listDecisionTablesInPackage(final Path path) {
         try {
-            final Package pkg = projectService.resolvePackage( path );
-            if ( pkg == null ) {
+            final Package pkg = projectService.resolvePackage(path);
+            if (pkg == null) {
                 return Collections.emptyList();
             }
 
             final Path pkgPath = pkg.getPackageMainResourcesPath();
-            final org.uberfire.java.nio.file.Path nioPkgPath = Paths.convert( pkgPath );
+            final org.uberfire.java.nio.file.Path nioPkgPath = Paths.convert(pkgPath);
 
-            final List<Path> paths = findDecisionTables( nioPkgPath );
+            final List<Path> paths = findDecisionTables(nioPkgPath);
             return paths;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
-    private List<Path> findDecisionTables( final org.uberfire.java.nio.file.Path nioRootPath ) {
+    private List<Path> findDecisionTables(final org.uberfire.java.nio.file.Path nioRootPath) {
         final List<Path> paths = new ArrayList<>();
-        final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream = ioService.newDirectoryStream( nioRootPath );
-        for ( org.uberfire.java.nio.file.Path nioPath : directoryStream ) {
-            final Path path = Paths.convert( nioPath );
-            if ( resourceType.accept( path ) ) {
-                paths.add( path );
+        final DirectoryStream<org.uberfire.java.nio.file.Path> directoryStream = ioService.newDirectoryStream(nioRootPath);
+        for (org.uberfire.java.nio.file.Path nioPath : directoryStream) {
+            final Path path = Paths.convert(nioPath);
+            if (!dotFileFilter.accept(nioPath) && resourceType.accept(path)) {
+                paths.add(path);
             }
         }
         return paths;
     }
 
-    private Set<Path> getLinkedDecisionTablesInPackage( final Path context ) {
+    private Set<Path> getLinkedDecisionTablesInPackage(final Path context) {
         final Set<Path> linkedDecisionTablePaths = new HashSet<>();
-        final List<Path> allDecisionTablePathsInPackage = listDecisionTablesInPackage( context );
+        final List<Path> allDecisionTablePathsInPackage = listDecisionTablesInPackage(context);
         final List<Pair<Path, GuidedDecisionTable52>> allDecisionTablesInPackage = new ArrayList<>();
-        allDecisionTablePathsInPackage.forEach( ( path ) -> allDecisionTablesInPackage.add( new Pair<>( path,
-                                                                                                        dtableService.load( path ) ) ) );
-        allDecisionTablesInPackage.forEach( ( source ) -> {
+        allDecisionTablePathsInPackage.forEach((path) -> allDecisionTablesInPackage.add(new Pair<>(path,
+                                                                                                   dtableService.load(path))));
+        allDecisionTablesInPackage.forEach((source) -> {
             final List<Pair<Path, GuidedDecisionTable52>> otherDecisionTablesInPackage = new ArrayList<>();
-            otherDecisionTablesInPackage.addAll( allDecisionTablesInPackage );
-            otherDecisionTablesInPackage.remove( source );
-            otherDecisionTablesInPackage.forEach( ( target ) -> dtableLinkManager.link( source.getK2(),
-                                                                                        target.getK2(),
-                                                                                        ( s, t ) -> {
-                                                                                            linkedDecisionTablePaths.add( source.getK1() );
-                                                                                            linkedDecisionTablePaths.add( target.getK1() );
-                                                                                        } ) );
-        } );
+            otherDecisionTablesInPackage.addAll(allDecisionTablesInPackage);
+            otherDecisionTablesInPackage.remove(source);
+            otherDecisionTablesInPackage.forEach((target) -> dtableLinkManager.link(source.getK2(),
+                                                                                    target.getK2(),
+                                                                                    (s, t) -> {
+                                                                                        linkedDecisionTablePaths.add(source.getK1());
+                                                                                        linkedDecisionTablePaths.add(target.getK1());
+                                                                                    }));
+        });
 
         return linkedDecisionTablePaths;
     }
-
 }
