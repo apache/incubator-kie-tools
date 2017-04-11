@@ -142,53 +142,53 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     @Captor
     private ArgumentCaptor<RemoteCallback<Path>> onSaveSuccessCallbackCaptor;
 
-    private Event<SaveInProgressEvent> saveInProgressEvent = spy( new EventSourceMock<SaveInProgressEvent>() {
+    private Event<SaveInProgressEvent> saveInProgressEvent = spy(new EventSourceMock<SaveInProgressEvent>() {
         @Override
-        public void fire( final SaveInProgressEvent event ) {
+        public void fire(final SaveInProgressEvent event) {
             //Do nothing
         }
-    } );
+    });
 
     private GuidedDTableGraphResourceType dtGraphResourceType = new GuidedDTableGraphResourceType();
 
     @Before
     public void setup() {
-        this.dtGraphServiceCaller = new CallerMock<>( dtGraphService );
+        this.dtGraphServiceCaller = new CallerMock<>(dtGraphService);
 
-        when( view.asWidget() ).thenReturn( mock( Widget.class ) );
-        when( context.getActivePackage() ).thenReturn( activePackage );
-        when( activePackage.getPackageMainResourcesPath() ).thenReturn( activePackageResourcesPath );
+        when(view.asWidget()).thenReturn(mock(Widget.class));
+        when(context.getActivePackage()).thenReturn(activePackage);
+        when(activePackage.getPackageMainResourcesPath()).thenReturn(activePackageResourcesPath);
 
         super.setup();
     }
 
     @Override
     protected GuidedDecisionTableGraphEditorPresenter getPresenter() {
-        return new GuidedDecisionTableGraphEditorPresenter( view,
-                                                            dtServiceCaller,
-                                                            dtGraphServiceCaller,
-                                                            notification,
-                                                            saveInProgressEvent,
-                                                            decisionTableSelectedEvent,
-                                                            validationPopup,
-                                                            dtGraphResourceType,
-                                                            editMenuBuilder,
-                                                            viewMenuBuilder,
-                                                            insertMenuBuilder,
-                                                            radarMenuBuilder,
-                                                            modeller,
-                                                            context,
-                                                            helper,
-                                                            beanManager,
-                                                            placeManager,
-                                                            lockManager ) {
+        return new GuidedDecisionTableGraphEditorPresenter(view,
+                                                           dtServiceCaller,
+                                                           dtGraphServiceCaller,
+                                                           notification,
+                                                           saveInProgressEvent,
+                                                           decisionTableSelectedEvent,
+                                                           validationPopup,
+                                                           dtGraphResourceType,
+                                                           editMenuBuilder,
+                                                           viewMenuBuilder,
+                                                           insertMenuBuilder,
+                                                           radarMenuBuilder,
+                                                           modeller,
+                                                           context,
+                                                           helper,
+                                                           beanManager,
+                                                           placeManager,
+                                                           lockManager) {
             @Override
-            PathPlaceRequest getPathPlaceRequest( final Path path ) {
+            PathPlaceRequest getPathPlaceRequest(final Path path) {
                 //Avoid use of IOC.getBeanManager().lookupBean(..) in PathPlaceRequest for Unit Tests
-                final PathPlaceRequest pathPlaceRequest = new PathPlaceRequest( path ) {
+                final PathPlaceRequest pathPlaceRequest = new PathPlaceRequest(path) {
                     @Override
-                    protected ObservablePath createObservablePath( final Path path ) {
-                        final ObservablePath op = new ObservablePathImpl().wrap( path );
+                    protected ObservablePath createObservablePath(final Path path) {
+                        final ObservablePath op = new ObservablePathImpl().wrap(path);
                         return op;
                     }
                 };
@@ -200,381 +200,388 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     @Test
     @SuppressWarnings("unchecked")
     public void checkInit() {
-        verify( viewMenuBuilder,
-                times( 1 ) ).setModeller( eq( modeller ) );
-        verify( insertMenuBuilder,
-                times( 1 ) ).setModeller( eq( modeller ) );
-        verify( radarMenuBuilder,
-                times( 1 ) ).setModeller( eq( modeller ) );
-        verify( view,
-                times( 1 ) ).setModellerView( eq( modellerView ) );
+        verify(viewMenuBuilder,
+               times(1)).setModeller(eq(modeller));
+        verify(insertMenuBuilder,
+               times(1)).setModeller(eq(modeller));
+        verify(radarMenuBuilder,
+               times(1)).setModeller(eq(modeller));
+        verify(view,
+               times(1)).setModellerView(eq(modellerView));
 
-        verify( registeredDocumentsMenuBuilder,
-                times( 1 ) ).setActivateDocumentCommand( any( ParameterizedCommand.class ) );
-        verify( registeredDocumentsMenuBuilder,
-                times( 1 ) ).setRemoveDocumentCommand( any( ParameterizedCommand.class ) );
-        verify( registeredDocumentsMenuBuilder,
-                times( 1 ) ).setNewDocumentCommand( any( Command.class ) );
+        verify(registeredDocumentsMenuBuilder,
+               times(1)).setActivateDocumentCommand(any(ParameterizedCommand.class));
+        verify(registeredDocumentsMenuBuilder,
+               times(1)).setRemoveDocumentCommand(any(ParameterizedCommand.class));
+        verify(registeredDocumentsMenuBuilder,
+               times(1)).setNewDocumentCommand(any(Command.class));
     }
 
     @Test
     public void checkInitActivateDocumentFromRegisteredDocumentMenu() {
-        verify( registeredDocumentsMenuBuilder,
-                times( 1 ) ).setActivateDocumentCommand( activateDocumentCommandCaptor.capture() );
+        verify(registeredDocumentsMenuBuilder,
+               times(1)).setActivateDocumentCommand(activateDocumentCommandCaptor.capture());
 
-        final GuidedDecisionTablePresenter dtPresenter = mock( GuidedDecisionTablePresenter.class );
+        final GuidedDecisionTablePresenter dtPresenter = mock(GuidedDecisionTablePresenter.class);
 
         final ParameterizedCommand<KieDocument> activeDocumentCommand = activateDocumentCommandCaptor.getValue();
-        assertNotNull( activeDocumentCommand );
-        activeDocumentCommand.execute( dtPresenter );
-        verify( decisionTableSelectedEvent,
-                times( 1 ) ).fire( dtSelectedEventCaptor.capture() );
-        assertNotNull( dtSelectedEventCaptor.getValue() );
-        assertEquals( dtPresenter,
-                      dtSelectedEventCaptor.getValue().getPresenter() );
+        assertNotNull(activeDocumentCommand);
+        activeDocumentCommand.execute(dtPresenter);
+        verify(decisionTableSelectedEvent,
+               times(1)).fire(dtSelectedEventCaptor.capture());
+        assertNotNull(dtSelectedEventCaptor.getValue());
+        assertEquals(dtPresenter,
+                     dtSelectedEventCaptor.getValue().getPresenter());
     }
 
     @Test
     public void checkInitRemoveDocumentFromRegisteredDocumentMenu() {
-        verify( registeredDocumentsMenuBuilder,
-                times( 1 ) ).setRemoveDocumentCommand( removeDocumentCommandCaptor.capture() );
+        verify(registeredDocumentsMenuBuilder,
+               times(1)).setRemoveDocumentCommand(removeDocumentCommandCaptor.capture());
 
-        final GuidedDecisionTablePresenter dtPresenter = mock( GuidedDecisionTablePresenter.class );
+        final GuidedDecisionTablePresenter dtPresenter = mock(GuidedDecisionTablePresenter.class);
 
-        doReturn( true ).when( presenter ).mayClose( eq( dtPresenter ) );
-        doNothing().when( presenter ).removeDocument( any( GuidedDecisionTablePresenter.class ) );
+        doReturn(true).when(presenter).mayClose(eq(dtPresenter));
+        doNothing().when(presenter).removeDocument(any(GuidedDecisionTablePresenter.class));
 
         final ParameterizedCommand<KieDocument> removeDocumentCommand = removeDocumentCommandCaptor.getValue();
-        assertNotNull( removeDocumentCommand );
-        removeDocumentCommand.execute( dtPresenter );
-        verify( presenter,
-                times( 1 ) ).mayClose( eq( dtPresenter ) );
-        verify( presenter,
-                times( 1 ) ).removeDocument( eq( dtPresenter ) );
+        assertNotNull(removeDocumentCommand);
+        removeDocumentCommand.execute(dtPresenter);
+        verify(presenter,
+               times(1)).mayClose(eq(dtPresenter));
+        verify(presenter,
+               times(1)).removeDocument(eq(dtPresenter));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void checkInitNewDocumentFromRegisteredDocumentMenu() {
-        verify( registeredDocumentsMenuBuilder,
-                times( 1 ) ).setNewDocumentCommand( newDocumentCommandCaptor.capture() );
+        verify(registeredDocumentsMenuBuilder,
+               times(1)).setNewDocumentCommand(newDocumentCommandCaptor.capture());
 
         final Command newDocumentCommand = newDocumentCommandCaptor.getValue();
-        assertNotNull( newDocumentCommand );
+        assertNotNull(newDocumentCommand);
         newDocumentCommand.execute();
 
-        verify( presenter,
-                times( 1 ) ).onNewDocument();
-        verify( helper,
-                times( 1 ) ).createNewGuidedDecisionTable( eq( activePackageResourcesPath ),
-                                                           eq( "" ),
-                                                           eq( GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY ),
-                                                           eq( GuidedDecisionTable52.HitPolicy.NONE ),
-                                                           eq( view ),
-                                                           onSaveSuccessCallbackCaptor.capture() );
+        verify(presenter,
+               times(1)).onNewDocument();
+        verify(helper,
+               times(1)).createNewGuidedDecisionTable(eq(activePackageResourcesPath),
+                                                      eq(""),
+                                                      eq(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY),
+                                                      eq(GuidedDecisionTable52.HitPolicy.NONE),
+                                                      eq(view),
+                                                      onSaveSuccessCallbackCaptor.capture());
 
-        final Path dtPath = mock( Path.class );
+        final Path dtPath = mock(Path.class);
         final RemoteCallback<Path> onSaveSuccessCallback = onSaveSuccessCallbackCaptor.getValue();
-        assertNotNull( onSaveSuccessCallback );
+        assertNotNull(onSaveSuccessCallback);
 
-        doNothing().when( presenter ).onOpenDocumentsInEditor( any( List.class ) );
+        doNothing().when(presenter).onOpenDocumentsInEditor(any(List.class));
 
-        onSaveSuccessCallback.callback( dtPath );
+        onSaveSuccessCallback.callback(dtPath);
 
-        verify( presenter,
-                times( 1 ) ).onOpenDocumentsInEditor( dtPathsCaptor.capture() );
+        verify(presenter,
+               times(1)).onOpenDocumentsInEditor(dtPathsCaptor.capture());
 
         final List<Path> dtPaths = dtPathsCaptor.getValue();
-        assertNotNull( dtPaths );
-        assertEquals( 1,
-                      dtPaths.size() );
-        assertEquals( dtPath,
-                      dtPaths.get( 0 ) );
+        assertNotNull(dtPaths);
+        assertEquals(1,
+                     dtPaths.size());
+        assertEquals(dtPath,
+                     dtPaths.get(0));
     }
 
     @Test
     public void testSetupMenuBar() {
-        verify( fileMenuBuilder,
-                times( 1 ) ).addSave( any( MenuItem.class ) );
-        verify( fileMenuBuilder,
-                times( 1 ) ).addCopy( any( BasicFileMenuBuilder.PathProvider.class ),
-                                      eq( fileNameValidator ) );
-        verify( fileMenuBuilder,
-                times( 1 ) ).addRename( any( BasicFileMenuBuilder.PathProvider.class ),
-                                        eq( fileNameValidator ) );
-        verify( fileMenuBuilder,
-                times( 1 ) ).addDelete( any( BasicFileMenuBuilder.PathProvider.class ) );
-        verify( fileMenuBuilder,
-                times( 1 ) ).addValidate( any( Command.class ) );
-        verify( fileMenuBuilder,
-                times( 1 ) ).addNewTopLevelMenu( eq( editMenuItem ) );
-        verify( fileMenuBuilder,
-                times( 1 ) ).addNewTopLevelMenu( eq( viewMenuItem ) );
-        verify( fileMenuBuilder,
-                times( 1 ) ).addNewTopLevelMenu( eq( insertMenuItem ) );
-        verify( fileMenuBuilder,
-                times( 1 ) ).addNewTopLevelMenu( eq( radarMenuItem ) );
-        verify( fileMenuBuilder,
-                times( 1 ) ).addNewTopLevelMenu( eq( versionManagerMenuItem ) );
-        verify( fileMenuBuilder,
-                times( 1 ) ).addNewTopLevelMenu( eq( registeredDocumentsMenuItem ) );
+        verify(fileMenuBuilder,
+               times(1)).addSave(any(MenuItem.class));
+        verify(fileMenuBuilder,
+               times(1)).addCopy(any(BasicFileMenuBuilder.PathProvider.class),
+                                 eq(fileNameValidator));
+        verify(fileMenuBuilder,
+               times(1)).addRename(any(BasicFileMenuBuilder.PathProvider.class),
+                                   eq(fileNameValidator));
+        verify(fileMenuBuilder,
+               times(1)).addDelete(any(BasicFileMenuBuilder.PathProvider.class));
+        verify(fileMenuBuilder,
+               times(1)).addValidate(any(Command.class));
+        verify(fileMenuBuilder,
+               times(1)).addNewTopLevelMenu(eq(editMenuItem));
+        verify(fileMenuBuilder,
+               times(1)).addNewTopLevelMenu(eq(viewMenuItem));
+        verify(fileMenuBuilder,
+               times(1)).addNewTopLevelMenu(eq(insertMenuItem));
+        verify(fileMenuBuilder,
+               times(1)).addNewTopLevelMenu(eq(radarMenuItem));
+        verify(fileMenuBuilder,
+               times(1)).addNewTopLevelMenu(eq(versionManagerMenuItem));
+        verify(fileMenuBuilder,
+               times(1)).addNewTopLevelMenu(eq(registeredDocumentsMenuItem));
     }
 
     @Test
     public void checkOnStartupBasicInitialisation() {
-        final ObservablePath dtGraphPath = mock( ObservablePath.class );
-        final PlaceRequest dtGraphPlaceRequest = mock( PlaceRequest.class );
-        final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent( INITIAL_HASH_CODE );
+        final ObservablePath dtGraphPath = mock(ObservablePath.class);
+        final PlaceRequest dtGraphPlaceRequest = mock(PlaceRequest.class);
+        final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent(INITIAL_HASH_CODE);
 
-        when( dtGraphPath.toURI() ).thenReturn( "dtGraphPath" );
-        when( dtGraphService.loadContent( eq( dtGraphPath ) ) ).thenReturn( dtGraphContent );
-        when( versionRecordManager.getCurrentPath() ).thenReturn( dtGraphPath );
-        when( dtGraphPath.getFileName() ).thenReturn( "filename" );
+        when(dtGraphPath.toURI()).thenReturn("dtGraphPath");
+        when(dtGraphService.loadContent(eq(dtGraphPath))).thenReturn(dtGraphContent);
+        when(versionRecordManager.getCurrentPath()).thenReturn(dtGraphPath);
+        when(dtGraphPath.getFileName()).thenReturn("filename");
 
-        presenter.onStartup( dtGraphPath,
-                             dtGraphPlaceRequest );
+        presenter.onStartup(dtGraphPath,
+                            dtGraphPlaceRequest);
 
-        assertEquals( dtGraphPath,
-                      presenter.editorPath );
-        assertEquals( dtGraphPlaceRequest,
-                      presenter.editorPlaceRequest );
-        assertEquals( INITIAL_HASH_CODE,
-                      (int) presenter.originalGraphHash );
+        assertEquals(dtGraphPath,
+                     presenter.editorPath);
+        assertEquals(dtGraphPlaceRequest,
+                     presenter.editorPlaceRequest);
+        assertEquals(INITIAL_HASH_CODE,
+                     (int) presenter.originalGraphHash);
 
-        verify( presenter,
-                times( 1 ) ).initialiseEditor( eq( dtGraphPath ),
-                                               eq( dtGraphPlaceRequest ) );
-        verify( presenter,
-                times( 1 ) ).initialiseVersionManager();
-        verify( presenter,
-                times( 1 ) ).addFileChangeListeners( eq( dtGraphPath ) );
+        verify(presenter,
+               times(1)).initialiseEditor(eq(dtGraphPath),
+                                          eq(dtGraphPlaceRequest));
+        verify(presenter,
+               times(1)).initialiseVersionManager();
+        verify(presenter,
+               times(1)).addFileChangeListeners(eq(dtGraphPath));
 
-        verify( lockManager,
-                times( 1 ) ).init( lockTargetCaptor.capture() );
+        verify(lockManager,
+               times(1)).init(lockTargetCaptor.capture());
 
         final LockTarget lockTarget = lockTargetCaptor.getValue();
-        assertNotNull( lockTarget );
-        assertEquals( dtGraphPath,
-                      lockTarget.getPath() );
-        assertEquals( dtGraphPlaceRequest,
-                      lockTarget.getPlace() );
-        assertNotNull( lockTarget.getTitle() );
+        assertNotNull(lockTarget);
+        assertEquals(dtGraphPath,
+                     lockTarget.getPath());
+        assertEquals(dtGraphPlaceRequest,
+                     lockTarget.getPlace());
+        assertNotNull(lockTarget.getTitle());
     }
 
     @Test
     public void checkOnStartupLoadGraphEntries() {
-        final ObservablePath dtGraphPath = mock( ObservablePath.class );
-        final PlaceRequest dtGraphPlaceRequest = mock( PlaceRequest.class );
-        final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent( INITIAL_HASH_CODE );
+        final ObservablePath dtGraphPath = mock(ObservablePath.class);
+        final PlaceRequest dtGraphPlaceRequest = mock(PlaceRequest.class);
+        final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent(INITIAL_HASH_CODE);
 
-        final Path dtPath = mock( Path.class );
+        final Path dtPath = mock(Path.class);
         final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent();
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( dtPath,
-                                                                                 dtGraphPath,
-                                                                                 dtGraphPlaceRequest,
-                                                                                 dtContent );
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable(dtPath,
+                                                                                dtGraphPath,
+                                                                                dtGraphPlaceRequest,
+                                                                                dtContent);
 
-        final GuidedDecisionTableGraphEntry dtGraphEntry = new GuidedDecisionTableGraphEntry( dtPath,
-                                                                                              dtPath );
-        dtGraphContent.getModel().getEntries().add( dtGraphEntry );
+        final GuidedDecisionTableGraphEntry dtGraphEntry = new GuidedDecisionTableGraphEntry(dtPath,
+                                                                                             dtPath);
+        dtGraphContent.getModel().getEntries().add(dtGraphEntry);
 
-        when( dtPath.toURI() ).thenReturn( "dtPath" );
-        when( dtGraphPath.toURI() ).thenReturn( "dtGraphPath" );
-        when( dtGraphPath.getFileName() ).thenReturn( "filename" );
-        when( dtService.loadContent( eq( dtPath ) ) ).thenReturn( dtContent );
-        when( dtGraphService.loadContent( eq( dtGraphPath ) ) ).thenReturn( dtGraphContent );
-        when( versionRecordManager.getCurrentPath() ).thenReturn( dtGraphPath );
+        when(dtPath.toURI()).thenReturn("dtPath");
+        when(dtGraphPath.toURI()).thenReturn("dtGraphPath");
+        when(dtGraphPath.getFileName()).thenReturn("filename");
+        when(dtService.loadContent(eq(dtPath))).thenReturn(dtContent);
+        when(dtGraphService.loadContent(eq(dtGraphPath))).thenReturn(dtGraphContent);
+        when(versionRecordManager.getCurrentPath()).thenReturn(dtGraphPath);
 
         //Fake building of Graph Model from Editor to control hashCode
-        doReturn( makeDecisionTableGraphContent( EDITOR_HASH_CODE ).getModel() ).when( presenter ).buildModelFromEditor();
+        doReturn(makeDecisionTableGraphContent(EDITOR_HASH_CODE).getModel()).when(presenter).buildModelFromEditor();
 
-        when( modeller.addDecisionTable( any( ObservablePath.class ),
-                                         any( PlaceRequest.class ),
-                                         any( GuidedDecisionTableEditorContent.class ),
-                                         any( Boolean.class ),
-                                         any( Double.class ),
-                                         any( Double.class ) ) ).thenReturn( dtPresenter );
+        when(modeller.addDecisionTable(any(ObservablePath.class),
+                                       any(PlaceRequest.class),
+                                       any(GuidedDecisionTableEditorContent.class),
+                                       any(Boolean.class),
+                                       any(Double.class),
+                                       any(Double.class))).thenReturn(dtPresenter);
 
-        presenter.onStartup( dtGraphPath,
-                             dtGraphPlaceRequest );
+        presenter.onStartup(dtGraphPath,
+                            dtGraphPlaceRequest);
 
-        verify( view,
-                times( 1 ) ).showLoading();
-        verify( presenter,
-                times( 1 ) ).loadDocumentGraph( eq( dtGraphPath ) );
+        verify(view,
+               times(1)).showLoading();
+        verify(presenter,
+               times(1)).loadDocumentGraph(eq(dtGraphPath));
 
-        verify( dtService,
-                times( 1 ) ).loadContent( eq( dtPath ) );
-        verify( modeller,
-                times( 1 ) ).addDecisionTable( dtObservablePathCaptor.capture(),
-                                               dtPathPlaceRequestCaptor.capture(),
-                                               eq( dtContent ),
-                                               any( Boolean.class ),
-                                               eq( null ),
-                                               eq( null ) );
+        verify(dtService,
+               times(1)).loadContent(eq(dtPath));
+        verify(modeller,
+               times(1)).addDecisionTable(dtObservablePathCaptor.capture(),
+                                          dtPathPlaceRequestCaptor.capture(),
+                                          eq(dtContent),
+                                          any(Boolean.class),
+                                          eq(null),
+                                          eq(null));
         final ObservablePath dtObservablePath = dtObservablePathCaptor.getValue();
         final PathPlaceRequest dtPathPlaceRequest = dtPathPlaceRequestCaptor.getValue();
-        assertNotNull( dtObservablePath );
-        assertNotNull( dtPathPlaceRequest );
-        assertEquals( dtPath.toURI(),
-                      dtObservablePath.toURI() );
-        assertEquals( dtPath.toURI(),
-                      dtPathPlaceRequest.getPath().toURI() );
-        assertEquals( EDITOR_HASH_CODE,
-                      (int) presenter.originalGraphHash );
+        assertNotNull(dtObservablePath);
+        assertNotNull(dtPathPlaceRequest);
+        assertEquals(dtPath.toURI(),
+                     dtObservablePath.toURI());
+        assertEquals(dtPath.toURI(),
+                     dtPathPlaceRequest.getPath().toURI());
+        assertEquals(EDITOR_HASH_CODE,
+                     (int) presenter.originalGraphHash);
 
-        verify( presenter,
-                times( 1 ) ).registerDocument( eq( dtPresenter ) );
-        verify( view,
-                times( 1 ) ).hideBusyIndicator();
+        verify(presenter,
+               times(1)).registerDocument(eq(dtPresenter));
+        verify(view,
+               times(1)).hideBusyIndicator();
 
-        verify( decisionTableSelectedEvent,
-                times( 1 ) ).fire( dtSelectedEventCaptor.capture() );
+        verify(decisionTableSelectedEvent,
+               times(1)).fire(dtSelectedEventCaptor.capture());
         final DecisionTableSelectedEvent dtSelectedEvent = dtSelectedEventCaptor.getValue();
-        assertNotNull( dtSelectedEvent );
-        assertNotNull( dtSelectedEvent.getPresenter() );
-        assertEquals( dtPresenter,
-                      dtSelectedEvent.getPresenter() );
+        assertNotNull(dtSelectedEvent);
+        assertNotNull(dtSelectedEvent.getPresenter());
+        assertEquals(dtPresenter,
+                     dtSelectedEvent.getPresenter());
 
-        verify( lockManager,
-                never() ).acquireLock();
+        verify(lockManager,
+               never()).acquireLock();
     }
 
     @Test
     public void checkMayCloseWithCleanDecisionTableGraph() {
-        checkMayClose( 0,
-                       () -> assertTrue( presenter.mayClose() ) );
+        checkMayClose(0,
+                      () -> assertTrue(presenter.mayClose()));
     }
 
     @Test
     public void checkMayCloseWithDirtyDecisionTableGraph() {
-        checkMayClose( 1,
-                       () -> assertFalse( presenter.mayClose() ) );
+        checkMayClose(1,
+                      () -> assertFalse(presenter.mayClose()));
     }
 
-    private void checkMayClose( final int uiModelHashCode,
-                                final Command assertion ) {
-        final ObservablePath dtGraphPath = mock( ObservablePath.class );
-        final PlaceRequest dtGraphPlaceRequest = mock( PlaceRequest.class );
-        final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent( 0 );
+    private void checkMayClose(final int uiModelHashCode,
+                               final Command assertion) {
+        final ObservablePath dtGraphPath = mock(ObservablePath.class);
+        final PlaceRequest dtGraphPlaceRequest = mock(PlaceRequest.class);
+        final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent(0);
 
-        when( dtGraphPath.toURI() ).thenReturn( "dtGraphPath" );
-        when( dtGraphPath.getFileName() ).thenReturn( "filename" );
-        when( dtGraphService.loadContent( eq( dtGraphPath ) ) ).thenReturn( dtGraphContent );
-        when( versionRecordManager.getCurrentPath() ).thenReturn( dtGraphPath );
+        when(dtGraphPath.toURI()).thenReturn("dtGraphPath");
+        when(dtGraphPath.getFileName()).thenReturn("filename");
+        when(dtGraphService.loadContent(eq(dtGraphPath))).thenReturn(dtGraphContent);
+        when(versionRecordManager.getCurrentPath()).thenReturn(dtGraphPath);
 
-        doReturn( makeDecisionTableGraphContent( uiModelHashCode ).getModel() ).when( presenter ).buildModelFromEditor();
+        doReturn(makeDecisionTableGraphContent(uiModelHashCode).getModel()).when(presenter).buildModelFromEditor();
 
-        presenter.onStartup( dtGraphPath,
-                             dtGraphPlaceRequest );
+        presenter.onStartup(dtGraphPath,
+                            dtGraphPlaceRequest);
 
         assertion.execute();
     }
 
     @Test
     public void checkMayCloseWithCleanDecisionTableGraphEntries() {
-        checkMayCloseWithDecisionTableGraphEntries( 0,
-                                                    () -> assertTrue( presenter.mayClose() ) );
+        checkMayCloseWithDecisionTableGraphEntries(0,
+                                                   () -> assertTrue(presenter.mayClose()));
+    }
+
+    @Test
+    public void checkMayCloseWithCleanDecisionTableGraphEntriesButDirtyGraphOverview() {
+        when(overviewWidget.isDirty()).thenReturn(true);
+        checkMayCloseWithDecisionTableGraphEntries(0,
+                                                   () -> assertFalse(presenter.mayClose()));
     }
 
     @Test
     public void checkMayCloseWithDirtyDecisionTableGraphEntries() {
-        checkMayCloseWithDecisionTableGraphEntries( 1,
-                                                    () -> assertFalse( presenter.mayClose() ) );
+        checkMayCloseWithDecisionTableGraphEntries(1,
+                                                   () -> assertFalse(presenter.mayClose()));
     }
 
-    private void checkMayCloseWithDecisionTableGraphEntries( final int uiModelHashCode,
-                                                             final Command assertion ) {
-        final ObservablePath dtGraphPath = mock( ObservablePath.class );
-        final PlaceRequest dtGraphPlaceRequest = mock( PlaceRequest.class );
+    private void checkMayCloseWithDecisionTableGraphEntries(final int uiModelHashCode,
+                                                            final Command assertion) {
+        final ObservablePath dtGraphPath = mock(ObservablePath.class);
+        final PlaceRequest dtGraphPlaceRequest = mock(PlaceRequest.class);
         final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent();
 
-        final ObservablePath dtPath = mock( ObservablePath.class );
-        final PlaceRequest dtPlaceRequest = mock( PlaceRequest.class );
-        final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent( 0 );
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( dtPath,
-                                                                                 dtPath,
-                                                                                 dtPlaceRequest,
-                                                                                 dtContent );
+        final ObservablePath dtPath = mock(ObservablePath.class);
+        final PlaceRequest dtPlaceRequest = mock(PlaceRequest.class);
+        final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent(0);
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable(dtPath,
+                                                                                dtPath,
+                                                                                dtPlaceRequest,
+                                                                                dtContent);
 
-        final GuidedDecisionTableGraphEntry dtGraphEntry = new GuidedDecisionTableGraphEntry( dtPath,
-                                                                                              dtPath );
-        dtGraphContent.getModel().getEntries().add( dtGraphEntry );
+        final GuidedDecisionTableGraphEntry dtGraphEntry = new GuidedDecisionTableGraphEntry(dtPath,
+                                                                                             dtPath);
+        dtGraphContent.getModel().getEntries().add(dtGraphEntry);
 
-        when( dtPath.toURI() ).thenReturn( "dtPath" );
-        when( dtGraphPath.toURI() ).thenReturn( "dtGraphPath" );
-        when( dtGraphPath.getFileName() ).thenReturn( "filename" );
-        when( dtService.loadContent( eq( dtPath ) ) ).thenReturn( dtContent );
-        when( dtGraphService.loadContent( eq( dtGraphPath ) ) ).thenReturn( dtGraphContent );
-        when( versionRecordManager.getCurrentPath() ).thenReturn( dtGraphPath );
+        when(dtPath.toURI()).thenReturn("dtPath");
+        when(dtGraphPath.toURI()).thenReturn("dtGraphPath");
+        when(dtGraphPath.getFileName()).thenReturn("filename");
+        when(dtService.loadContent(eq(dtPath))).thenReturn(dtContent);
+        when(dtGraphService.loadContent(eq(dtGraphPath))).thenReturn(dtGraphContent);
+        when(versionRecordManager.getCurrentPath()).thenReturn(dtGraphPath);
 
-        when( dtPresenter.getOriginalHashCode() ).thenReturn( uiModelHashCode );
-        doReturn( makeDecisionTableGraphContent( uiModelHashCode ).getModel() ).when( presenter ).buildModelFromEditor();
+        when(dtPresenter.getOriginalHashCode()).thenReturn(uiModelHashCode);
+        doReturn(makeDecisionTableGraphContent(uiModelHashCode).getModel()).when(presenter).buildModelFromEditor();
 
-        when( modeller.addDecisionTable( any( ObservablePath.class ),
-                                         any( PlaceRequest.class ),
-                                         any( GuidedDecisionTableEditorContent.class ),
-                                         any( Boolean.class ),
-                                         any( Double.class ),
-                                         any( Double.class ) ) ).thenReturn( dtPresenter );
-        when( modeller.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
-            add( dtPresenter );
-        }} );
+        when(modeller.addDecisionTable(any(ObservablePath.class),
+                                       any(PlaceRequest.class),
+                                       any(GuidedDecisionTableEditorContent.class),
+                                       any(Boolean.class),
+                                       any(Double.class),
+                                       any(Double.class))).thenReturn(dtPresenter);
+        when(modeller.getAvailableDecisionTables()).thenReturn(new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add(dtPresenter);
+        }});
 
-        presenter.onStartup( dtGraphPath,
-                             dtGraphPlaceRequest );
+        presenter.onStartup(dtGraphPath,
+                            dtGraphPlaceRequest);
 
         assertion.execute();
     }
 
     @Test
     public void checkBuildModelFromEditor() {
-        final ObservablePath dtPath1 = mock( ObservablePath.class );
-        final PlaceRequest dtPlaceRequest1 = mock( PlaceRequest.class );
-        final GuidedDecisionTableEditorContent dtContent1 = makeDecisionTableContent( 0 );
-        final GuidedDecisionTableView.Presenter dtPresenter1 = makeDecisionTable( dtPath1,
-                                                                                  dtPath1,
-                                                                                  dtPlaceRequest1,
-                                                                                  dtContent1 );
+        final ObservablePath dtPath1 = mock(ObservablePath.class);
+        final PlaceRequest dtPlaceRequest1 = mock(PlaceRequest.class);
+        final GuidedDecisionTableEditorContent dtContent1 = makeDecisionTableContent(0);
+        final GuidedDecisionTableView.Presenter dtPresenter1 = makeDecisionTable(dtPath1,
+                                                                                 dtPath1,
+                                                                                 dtPlaceRequest1,
+                                                                                 dtContent1);
 
-        final ObservablePath dtPath2 = mock( ObservablePath.class );
-        final PlaceRequest dtPlaceRequest2 = mock( PlaceRequest.class );
-        final GuidedDecisionTableEditorContent dtContent2 = makeDecisionTableContent( 0 );
-        final GuidedDecisionTableView.Presenter dtPresenter2 = makeDecisionTable( dtPath2,
-                                                                                  dtPath2,
-                                                                                  dtPlaceRequest2,
-                                                                                  dtContent2 );
+        final ObservablePath dtPath2 = mock(ObservablePath.class);
+        final PlaceRequest dtPlaceRequest2 = mock(PlaceRequest.class);
+        final GuidedDecisionTableEditorContent dtContent2 = makeDecisionTableContent(0);
+        final GuidedDecisionTableView.Presenter dtPresenter2 = makeDecisionTable(dtPath2,
+                                                                                 dtPath2,
+                                                                                 dtPlaceRequest2,
+                                                                                 dtContent2);
 
-        when( dtPresenter1.getView().getX() ).thenReturn( 100.0 );
-        when( dtPresenter1.getView().getY() ).thenReturn( 110.0 );
-        when( dtPresenter2.getView().getX() ).thenReturn( 200.0 );
-        when( dtPresenter2.getView().getY() ).thenReturn( 220.0 );
-        when( modeller.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
-            add( dtPresenter1 );
-            add( dtPresenter2 );
-        }} );
+        when(dtPresenter1.getView().getX()).thenReturn(100.0);
+        when(dtPresenter1.getView().getY()).thenReturn(110.0);
+        when(dtPresenter2.getView().getX()).thenReturn(200.0);
+        when(dtPresenter2.getView().getY()).thenReturn(220.0);
+        when(modeller.getAvailableDecisionTables()).thenReturn(new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add(dtPresenter1);
+            add(dtPresenter2);
+        }});
 
         final GuidedDecisionTableEditorGraphModel model = presenter.buildModelFromEditor();
-        assertNotNull( model );
-        assertNotNull( model.getEntries() );
-        assertEquals( 2,
-                      model.getEntries().size() );
-        assertContains( model.getEntries(),
-                        dtPath1,
-                        100.0,
-                        110.0 );
-        assertContains( model.getEntries(),
-                        dtPath2,
-                        200.0,
-                        220.0 );
+        assertNotNull(model);
+        assertNotNull(model.getEntries());
+        assertEquals(2,
+                     model.getEntries().size());
+        assertContains(model.getEntries(),
+                       dtPath1,
+                       100.0,
+                       110.0);
+        assertContains(model.getEntries(),
+                       dtPath2,
+                       200.0,
+                       220.0);
     }
 
-    private void assertContains( final Set<GuidedDecisionTableGraphEntry> entries,
-                                 final ObservablePath path,
-                                 final Double x,
-                                 final Double y ) {
-        if ( entries.stream().filter( ( e ) -> e.getPathHead().equals( path ) && x.equals( e.getX() ) && y.equals( e.getY() ) ).collect( Collectors.toList() ).isEmpty() ) {
-            fail( "Path [" + path.toURI() + " not found in GuidedDecisionTableEditorGraphModel.entries()" );
+    private void assertContains(final Set<GuidedDecisionTableGraphEntry> entries,
+                                final ObservablePath path,
+                                final Double x,
+                                final Double y) {
+        if (entries.stream().filter((e) -> e.getPathHead().equals(path) && x.equals(e.getX()) && y.equals(e.getY())).collect(Collectors.toList()).isEmpty()) {
+            fail("Path [" + path.toURI() + " not found in GuidedDecisionTableEditorGraphModel.entries()");
         }
     }
 
@@ -582,225 +589,225 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
     public void checkOnClose() {
         presenter.onClose();
 
-        verify( modeller,
-                times( 1 ) ).onClose();
-        verify( lockManager,
-                times( 1 ) ).releaseLock();
+        verify(modeller,
+               times(1)).onClose();
+        verify(lockManager,
+               times(1)).releaseLock();
     }
 
     @Test
     public void checkOnDecisionTableSelectedReadOnly() {
-        checkOnDecisionTableSelected( ( dtGraphPlaceRequest ) -> when( dtGraphPlaceRequest.getParameter( eq( "readOnly" ),
-                                                                                                         any() ) ).thenReturn( Boolean.toString( true ) ),
-                                      () -> verify( lockManager,
-                                                    never() ).acquireLock() );
+        checkOnDecisionTableSelected((dtGraphPlaceRequest) -> when(dtGraphPlaceRequest.getParameter(eq("readOnly"),
+                                                                                                    any())).thenReturn(Boolean.toString(true)),
+                                     () -> verify(lockManager,
+                                                  never()).acquireLock());
     }
 
     @Test
     public void checkOnDecisionTableSelectedNotReadOnly() {
-        checkOnDecisionTableSelected( ( dtGraphPlaceRequest ) -> {/*Nothing*/},
-                                      () -> verify( lockManager,
-                                                    times( 1 ) ).acquireLock() );
+        checkOnDecisionTableSelected((dtGraphPlaceRequest) -> {/*Nothing*/},
+                                     () -> verify(lockManager,
+                                                  times(1)).acquireLock());
     }
 
-    private void checkOnDecisionTableSelected( final ParameterizedCommand<PlaceRequest> setup,
-                                               final Command assertion ) {
-        final ObservablePath dtGraphPath = mock( ObservablePath.class );
-        final PlaceRequest dtGraphPlaceRequest = mock( PlaceRequest.class );
+    private void checkOnDecisionTableSelected(final ParameterizedCommand<PlaceRequest> setup,
+                                              final Command assertion) {
+        final ObservablePath dtGraphPath = mock(ObservablePath.class);
+        final PlaceRequest dtGraphPlaceRequest = mock(PlaceRequest.class);
         final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent();
 
-        final ObservablePath dtPath = mock( ObservablePath.class );
-        final PlaceRequest dtPlaceRequest = mock( PlaceRequest.class );
-        final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent( 0 );
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( dtPath,
-                                                                                 dtPath,
-                                                                                 dtPlaceRequest,
-                                                                                 dtContent );
+        final ObservablePath dtPath = mock(ObservablePath.class);
+        final PlaceRequest dtPlaceRequest = mock(PlaceRequest.class);
+        final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent(0);
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable(dtPath,
+                                                                                dtPath,
+                                                                                dtPlaceRequest,
+                                                                                dtContent);
 
-        final GuidedDecisionTableGraphEntry dtGraphEntry = new GuidedDecisionTableGraphEntry( dtPath,
-                                                                                              dtPath );
-        dtGraphContent.getModel().getEntries().add( dtGraphEntry );
+        final GuidedDecisionTableGraphEntry dtGraphEntry = new GuidedDecisionTableGraphEntry(dtPath,
+                                                                                             dtPath);
+        dtGraphContent.getModel().getEntries().add(dtGraphEntry);
 
-        when( dtPath.toURI() ).thenReturn( "dtPath" );
-        when( dtGraphPath.toURI() ).thenReturn( "dtGraphPath" );
-        when( dtGraphPath.getFileName() ).thenReturn( "filename" );
-        when( dtService.loadContent( eq( dtPath ) ) ).thenReturn( dtContent );
-        when( dtGraphService.loadContent( eq( dtGraphPath ) ) ).thenReturn( dtGraphContent );
-        when( versionRecordManager.getCurrentPath() ).thenReturn( dtGraphPath );
+        when(dtPath.toURI()).thenReturn("dtPath");
+        when(dtGraphPath.toURI()).thenReturn("dtGraphPath");
+        when(dtGraphPath.getFileName()).thenReturn("filename");
+        when(dtService.loadContent(eq(dtPath))).thenReturn(dtContent);
+        when(dtGraphService.loadContent(eq(dtGraphPath))).thenReturn(dtGraphContent);
+        when(versionRecordManager.getCurrentPath()).thenReturn(dtGraphPath);
 
-        when( modeller.addDecisionTable( any( ObservablePath.class ),
-                                         any( PlaceRequest.class ),
-                                         any( GuidedDecisionTableEditorContent.class ),
-                                         any( Boolean.class ),
-                                         any( Double.class ),
-                                         any( Double.class ) ) ).thenReturn( dtPresenter );
-        when( modeller.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
-            add( dtPresenter );
-        }} );
+        when(modeller.addDecisionTable(any(ObservablePath.class),
+                                       any(PlaceRequest.class),
+                                       any(GuidedDecisionTableEditorContent.class),
+                                       any(Boolean.class),
+                                       any(Double.class),
+                                       any(Double.class))).thenReturn(dtPresenter);
+        when(modeller.getAvailableDecisionTables()).thenReturn(new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add(dtPresenter);
+        }});
 
-        setup.execute( dtGraphPlaceRequest );
+        setup.execute(dtGraphPlaceRequest);
 
-        presenter.onStartup( dtGraphPath,
-                             dtGraphPlaceRequest );
+        presenter.onStartup(dtGraphPath,
+                            dtGraphPlaceRequest);
 
-        final DecisionTableSelectedEvent event = new DecisionTableSelectedEvent( dtPresenter );
+        final DecisionTableSelectedEvent event = new DecisionTableSelectedEvent(dtPresenter);
 
-        presenter.onDecisionTableSelected( event );
+        presenter.onDecisionTableSelected(event);
 
         assertion.execute();
     }
 
     @Test
     public void checkEnableMenus() {
-        presenter.enableMenus( true );
+        presenter.enableMenus(true);
 
-        checkMenuItems( true );
+        checkMenuItems(true);
     }
 
     @Test
     public void checkDisableMenus() {
-        presenter.enableMenus( false );
+        presenter.enableMenus(false);
 
-        checkMenuItems( false );
+        checkMenuItems(false);
     }
 
-    private void checkMenuItems( final boolean enabled ) {
-        verify( saveMenuItem,
-                times( 1 ) ).setEnabled( eq( enabled ) );
-        verify( versionManagerMenuItem,
-                times( 1 ) ).setEnabled( eq( enabled ) );
-        verify( editMenuItem,
-                times( 1 ) ).setEnabled( eq( enabled ) );
-        verify( viewMenuItem,
-                times( 1 ) ).setEnabled( eq( enabled ) );
-        verify( insertMenuItem,
-                times( 1 ) ).setEnabled( eq( enabled ) );
-        verify( radarMenuItem,
-                times( 1 ) ).setEnabled( eq( enabled ) );
-        verify( registeredDocumentsMenuItem,
-                times( 1 ) ).setEnabled( eq( enabled ) );
+    private void checkMenuItems(final boolean enabled) {
+        verify(saveMenuItem,
+               times(1)).setEnabled(eq(enabled));
+        verify(versionManagerMenuItem,
+               times(1)).setEnabled(eq(enabled));
+        verify(editMenuItem,
+               times(1)).setEnabled(eq(enabled));
+        verify(viewMenuItem,
+               times(1)).setEnabled(eq(enabled));
+        verify(insertMenuItem,
+               times(1)).setEnabled(eq(enabled));
+        verify(radarMenuItem,
+               times(1)).setEnabled(eq(enabled));
+        verify(registeredDocumentsMenuItem,
+               times(1)).setEnabled(eq(enabled));
     }
 
     @Test
     public void checkGetAvailableDocumentPaths() {
-        when( dtGraphService.listDecisionTablesInPackage( eq( presenter.editorPath ) ) ).thenReturn( new ArrayList<Path>() {{
-            add( PathFactory.newPath( "file1",
-                                      "file1Url" ) );
-        }} );
+        when(dtGraphService.listDecisionTablesInPackage(eq(presenter.editorPath))).thenReturn(new ArrayList<Path>() {{
+            add(PathFactory.newPath("file1",
+                                    "file1Url"));
+        }});
 
-        presenter.getAvailableDocumentPaths( ( List<Path> result ) -> {
-            assertNotNull( result );
-            assertEquals( 1,
-                          result.size() );
-            assertEquals( "file1",
-                          result.get( 0 ).getFileName() );
-            assertEquals( "file1Url",
-                          result.get( 0 ).toURI() );
-        } );
+        presenter.getAvailableDocumentPaths((List<Path> result) -> {
+            assertNotNull(result);
+            assertEquals(1,
+                         result.size());
+            assertEquals("file1",
+                         result.get(0).getFileName());
+            assertEquals("file1Url",
+                         result.get(0).toURI());
+        });
 
-        verify( view,
-                times( 1 ) ).showLoading();
-        verify( dtGraphService,
-                times( 1 ) ).listDecisionTablesInPackage( eq( presenter.editorPath ) );
-        verify( view,
-                times( 1 ) ).hideBusyIndicator();
+        verify(view,
+               times(1)).showLoading();
+        verify(dtGraphService,
+               times(1)).listDecisionTablesInPackage(eq(presenter.editorPath));
+        verify(view,
+               times(1)).hideBusyIndicator();
     }
 
     @Test
     public void checkOnOpenDocumentsInEditor() {
-        final Path dtPath1 = PathFactory.newPath( "file1",
-                                                  "file1Url" );
-        final Path dtPath2 = PathFactory.newPath( "file2",
-                                                  "file2Url" );
+        final Path dtPath1 = PathFactory.newPath("file1",
+                                                 "file1Url");
+        final Path dtPath2 = PathFactory.newPath("file2",
+                                                 "file2Url");
         final List<Path> dtPaths = new ArrayList<Path>() {{
-            add( dtPath1 );
-            add( dtPath2 );
+            add(dtPath1);
+            add(dtPath2);
         }};
 
-        final ObservablePath dtPath = mock( ObservablePath.class );
-        final PlaceRequest dtPlaceRequest = mock( PlaceRequest.class );
-        final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent( 0 );
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( dtPath,
-                                                                                 dtPath,
-                                                                                 dtPlaceRequest,
-                                                                                 dtContent );
+        final ObservablePath dtPath = mock(ObservablePath.class);
+        final PlaceRequest dtPlaceRequest = mock(PlaceRequest.class);
+        final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent(0);
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable(dtPath,
+                                                                                dtPath,
+                                                                                dtPlaceRequest,
+                                                                                dtContent);
 
-        when( modeller.addDecisionTable( any( ObservablePath.class ),
-                                         any( PlaceRequest.class ),
-                                         any( GuidedDecisionTableEditorContent.class ),
-                                         any( Boolean.class ),
-                                         any( Double.class ),
-                                         any( Double.class ) ) ).thenReturn( dtPresenter );
+        when(modeller.addDecisionTable(any(ObservablePath.class),
+                                       any(PlaceRequest.class),
+                                       any(GuidedDecisionTableEditorContent.class),
+                                       any(Boolean.class),
+                                       any(Double.class),
+                                       any(Double.class))).thenReturn(dtPresenter);
 
-        presenter.onOpenDocumentsInEditor( dtPaths );
+        presenter.onOpenDocumentsInEditor(dtPaths);
 
-        verify( dtService,
-                times( 2 ) ).loadContent( dtPathCaptor.capture() );
+        verify(dtService,
+               times(2)).loadContent(dtPathCaptor.capture());
 
         final List<Path> dtLoadedPaths = dtPathCaptor.getAllValues();
-        assertNotNull( dtLoadedPaths );
-        assertEquals( 2,
-                      dtLoadedPaths.size() );
-        assertContains( dtLoadedPaths,
-                        dtPath1 );
-        assertContains( dtLoadedPaths,
-                        dtPath2 );
+        assertNotNull(dtLoadedPaths);
+        assertEquals(2,
+                     dtLoadedPaths.size());
+        assertContains(dtLoadedPaths,
+                       dtPath1);
+        assertContains(dtLoadedPaths,
+                       dtPath2);
     }
 
-    private void assertContains( final List<Path> paths,
-                                 final Path path ) {
-        if ( paths.stream().filter( ( p ) -> p.toURI().equals( path.toURI() ) ).collect( Collectors.toList() ).isEmpty() ) {
-            fail( "Document for path [" + path.toURI() + "] not loaded by GuidedDecisionTableGraphEditorPresenter.loadDocument()." );
+    private void assertContains(final List<Path> paths,
+                                final Path path) {
+        if (paths.stream().filter((p) -> p.toURI().equals(path.toURI())).collect(Collectors.toList()).isEmpty()) {
+            fail("Document for path [" + path.toURI() + "] not loaded by GuidedDecisionTableGraphEditorPresenter.loadDocument().");
         }
     }
 
     @Test
     public void checkDoSaveWhenReadOnlyWithLatestPath() {
-        when( versionRecordManager.isCurrentLatest() ).thenReturn( true );
-        checkDoSave( ( setup ) -> {
-                         when( setup.getDecisionTableGraphPlaceRequest().getParameter( eq( "readOnly" ),
-                                                                                       any() ) ).thenReturn( Boolean.toString( true ) );
-                         presenter.onStartup( setup.getDecisionTableGraphPath(),
-                                              setup.getDecisionTableGraphPlaceRequest() );
-                     },
-                     () -> verify( view,
-                                   times( 1 ) ).alertReadOnly() );
+        when(versionRecordManager.isCurrentLatest()).thenReturn(true);
+        checkDoSave((setup) -> {
+                        when(setup.getDecisionTableGraphPlaceRequest().getParameter(eq("readOnly"),
+                                                                                    any())).thenReturn(Boolean.toString(true));
+                        presenter.onStartup(setup.getDecisionTableGraphPath(),
+                                            setup.getDecisionTableGraphPlaceRequest());
+                    },
+                    () -> verify(view,
+                                 times(1)).alertReadOnly());
     }
 
     @Test
     public void checkDoSaveWhenReadOnlyWithHistoricPath() {
-        checkDoSave( ( setup ) -> {
-                         when( setup.getDecisionTableGraphPlaceRequest().getParameter( eq( "readOnly" ),
-                                                                                       any() ) ).thenReturn( Boolean.toString( true ) );
-                         presenter.onStartup( setup.getDecisionTableGraphPath(),
-                                              setup.getDecisionTableGraphPlaceRequest() );
-                     },
-                     () -> verify( versionRecordManager,
-                                   times( 1 ) ).restoreToCurrentVersion() );
+        checkDoSave((setup) -> {
+                        when(setup.getDecisionTableGraphPlaceRequest().getParameter(eq("readOnly"),
+                                                                                    any())).thenReturn(Boolean.toString(true));
+                        presenter.onStartup(setup.getDecisionTableGraphPath(),
+                                            setup.getDecisionTableGraphPlaceRequest());
+                    },
+                    () -> verify(versionRecordManager,
+                                 times(1)).restoreToCurrentVersion());
     }
 
     @Test
     public void checkDoSaveWithConcurrentModificationOfGraph() {
-        doNothing().when( presenter ).showConcurrentUpdatesPopup();
+        doNothing().when(presenter).showConcurrentUpdatesPopup();
 
-        checkDoSave( ( dtGraphPlaceRequest ) -> presenter.concurrentUpdateSessionInfo = mock( OnConcurrentUpdateEvent.class ),
-                     () -> verify( presenter,
-                                   times( 1 ) ).showConcurrentUpdatesPopup() );
+        checkDoSave((dtGraphPlaceRequest) -> presenter.concurrentUpdateSessionInfo = mock(OnConcurrentUpdateEvent.class),
+                    () -> verify(presenter,
+                                 times(1)).showConcurrentUpdatesPopup());
     }
 
-    private void checkDoSave( final ParameterizedCommand<OnSaveSetupDataHolder> setup,
-                              final Command assertion ) {
-        final ObservablePath dtGraphPath = mock( ObservablePath.class );
-        final PlaceRequest dtGraphPlaceRequest = mock( PlaceRequest.class );
+    private void checkDoSave(final ParameterizedCommand<OnSaveSetupDataHolder> setup,
+                             final Command assertion) {
+        final ObservablePath dtGraphPath = mock(ObservablePath.class);
+        final PlaceRequest dtGraphPlaceRequest = mock(PlaceRequest.class);
         final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent();
 
-        when( dtGraphPath.toURI() ).thenReturn( "dtGraphPath" );
-        when( dtGraphPath.getFileName() ).thenReturn( "filename" );
-        when( dtGraphService.loadContent( eq( dtGraphPath ) ) ).thenReturn( dtGraphContent );
-        when( versionRecordManager.getCurrentPath() ).thenReturn( dtGraphPath );
+        when(dtGraphPath.toURI()).thenReturn("dtGraphPath");
+        when(dtGraphPath.getFileName()).thenReturn("filename");
+        when(dtGraphService.loadContent(eq(dtGraphPath))).thenReturn(dtGraphContent);
+        when(versionRecordManager.getCurrentPath()).thenReturn(dtGraphPath);
 
-        setup.execute( new OnSaveSetupDataHolder( dtGraphPath,
-                                                  dtGraphPlaceRequest ) );
+        setup.execute(new OnSaveSetupDataHolder(dtGraphPath,
+                                                dtGraphPlaceRequest));
 
         presenter.doSave();
 
@@ -809,69 +816,429 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
 
     @Test
     public void checkDoSaveWithConcurrentModificationOfGraphEntry() {
-        doNothing().when( presenter ).showConcurrentUpdatesPopup();
+        doNothing().when(presenter).showConcurrentUpdatesPopup();
 
-        checkDoSaveWithGraphEntry( ( setup ) -> {
-                                       when( setup.getDecisionTablePresenter().getConcurrentUpdateSessionInfo() ).thenReturn( mock( OnConcurrentUpdateEvent.class ) );
-                                       presenter.onStartup( setup.getDecisionTableGraphPath(),
-                                                            setup.getDecisionTableGraphPlaceRequest() );
-                                   },
-                                   () -> verify( presenter,
-                                                 times( 1 ) ).showConcurrentUpdatesPopup() );
+        checkDoSaveWithGraphEntry((setup) -> {
+                                      when(setup.getDecisionTablePresenter().getConcurrentUpdateSessionInfo()).thenReturn(mock(OnConcurrentUpdateEvent.class));
+                                      presenter.onStartup(setup.getDecisionTableGraphPath(),
+                                                          setup.getDecisionTableGraphPlaceRequest());
+                                  },
+                                  () -> verify(presenter,
+                                               times(1)).showConcurrentUpdatesPopup());
     }
 
     @Test
     public void checkDoSaveWithGraphEntry() {
-        doNothing().when( presenter ).saveDocumentGraphEntries();
+        doNothing().when(presenter).saveDocumentGraphEntries();
 
-        checkDoSaveWithGraphEntry( ( setup ) -> presenter.onStartup( setup.getDecisionTableGraphPath(),
-                                                                     setup.getDecisionTableGraphPlaceRequest() ),
-                                   () -> verify( presenter,
-                                                 times( 1 ) ).saveDocumentGraphEntries() );
+        checkDoSaveWithGraphEntry((setup) -> presenter.onStartup(setup.getDecisionTableGraphPath(),
+                                                                 setup.getDecisionTableGraphPlaceRequest()),
+                                  () -> verify(presenter,
+                                               times(1)).saveDocumentGraphEntries());
     }
 
-    private void checkDoSaveWithGraphEntry( final ParameterizedCommand<OnSaveSetupDataHolder> setup,
-                                            final Command assertion ) {
-        final ObservablePath dtGraphPath = mock( ObservablePath.class );
-        final PathPlaceRequest dtGraphPlaceRequest = mock( PathPlaceRequest.class );
+    private void checkDoSaveWithGraphEntry(final ParameterizedCommand<OnSaveSetupDataHolder> setup,
+                                           final Command assertion) {
+        final ObservablePath dtGraphPath = mock(ObservablePath.class);
+        final PathPlaceRequest dtGraphPlaceRequest = mock(PathPlaceRequest.class);
         final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent();
 
-        final ObservablePath dtPath = mock( ObservablePath.class );
-        final PlaceRequest dtPlaceRequest = mock( PlaceRequest.class );
-        final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent( 0 );
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( dtPath,
-                                                                                 dtPath,
-                                                                                 dtPlaceRequest,
-                                                                                 dtContent );
+        final ObservablePath dtPath = mock(ObservablePath.class);
+        final PlaceRequest dtPlaceRequest = mock(PlaceRequest.class);
+        final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent(0);
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable(dtPath,
+                                                                                dtPath,
+                                                                                dtPlaceRequest,
+                                                                                dtContent);
 
-        final GuidedDecisionTableGraphEntry dtGraphEntry = new GuidedDecisionTableGraphEntry( dtPath,
-                                                                                              dtPath );
-        dtGraphContent.getModel().getEntries().add( dtGraphEntry );
+        final GuidedDecisionTableGraphEntry dtGraphEntry = new GuidedDecisionTableGraphEntry(dtPath,
+                                                                                             dtPath);
+        dtGraphContent.getModel().getEntries().add(dtGraphEntry);
 
-        when( dtPath.toURI() ).thenReturn( "dtPath" );
-        when( dtGraphPath.toURI() ).thenReturn( "dtGraphPath" );
-        when( dtGraphPath.getFileName() ).thenReturn( "filename" );
-        when( dtService.loadContent( eq( dtPath ) ) ).thenReturn( dtContent );
-        when( dtGraphService.loadContent( eq( dtGraphPath ) ) ).thenReturn( dtGraphContent );
-        when( versionRecordManager.getCurrentPath() ).thenReturn( dtGraphPath );
+        when(dtPath.toURI()).thenReturn("dtPath");
+        when(dtGraphPath.toURI()).thenReturn("dtGraphPath");
+        when(dtGraphPath.getFileName()).thenReturn("filename");
+        when(dtService.loadContent(eq(dtPath))).thenReturn(dtContent);
+        when(dtGraphService.loadContent(eq(dtGraphPath))).thenReturn(dtGraphContent);
+        when(versionRecordManager.getCurrentPath()).thenReturn(dtGraphPath);
 
-        when( modeller.addDecisionTable( any( ObservablePath.class ),
-                                         any( PlaceRequest.class ),
-                                         any( GuidedDecisionTableEditorContent.class ),
-                                         any( Boolean.class ),
-                                         any( Double.class ),
-                                         any( Double.class ) ) ).thenReturn( dtPresenter );
-        when( modeller.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
-            add( dtPresenter );
-        }} );
+        when(modeller.addDecisionTable(any(ObservablePath.class),
+                                       any(PlaceRequest.class),
+                                       any(GuidedDecisionTableEditorContent.class),
+                                       any(Boolean.class),
+                                       any(Double.class),
+                                       any(Double.class))).thenReturn(dtPresenter);
+        when(modeller.getAvailableDecisionTables()).thenReturn(new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add(dtPresenter);
+        }});
 
-        setup.execute( new OnSaveSetupDataHolder( dtGraphPath,
-                                                  dtGraphPlaceRequest,
-                                                  dtPresenter ) );
+        setup.execute(new OnSaveSetupDataHolder(dtGraphPath,
+                                                dtGraphPlaceRequest,
+                                                dtPresenter));
 
         presenter.doSave();
 
         assertion.execute();
+    }
+
+    @Test
+    public void checkSaveDocumentGraphEntries() {
+        final ObservablePath dtGraphPath = mock(ObservablePath.class);
+        final PathPlaceRequest dtGraphPlaceRequest = mock(PathPlaceRequest.class);
+        final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent();
+
+        final ObservablePath dtPath1 = mock(ObservablePath.class);
+        final PlaceRequest dtPlaceRequest1 = mock(PlaceRequest.class);
+        final GuidedDecisionTableEditorContent dtContent1 = makeDecisionTableContent();
+        final GuidedDecisionTableView.Presenter dtPresenter1 = makeDecisionTable(dtPath1,
+                                                                                 dtPath1,
+                                                                                 dtPlaceRequest1,
+                                                                                 dtContent1);
+        final ObservablePath dtPath2 = mock(ObservablePath.class);
+        final PlaceRequest dtPlaceRequest2 = mock(PlaceRequest.class);
+        final GuidedDecisionTableEditorContent dtContent2 = makeDecisionTableContent();
+        final GuidedDecisionTableView.Presenter dtPresenter2 = makeDecisionTable(dtPath2,
+                                                                                 dtPath2,
+                                                                                 dtPlaceRequest2,
+                                                                                 dtContent2);
+
+        when(dtPath1.toURI()).thenReturn("dtPath1");
+        when(dtPath2.toURI()).thenReturn("dtPath2");
+        when(dtGraphPath.toURI()).thenReturn("dtGraphPath");
+        when(dtGraphPath.getFileName()).thenReturn("filename");
+        when(dtService.loadContent(eq(dtPath1))).thenReturn(dtContent1);
+        when(dtService.loadContent(eq(dtPath2))).thenReturn(dtContent2);
+        when(dtGraphService.loadContent(eq(dtGraphPath))).thenReturn(dtGraphContent);
+        when(versionRecordManager.getCurrentPath()).thenReturn(dtGraphPath);
+
+        when(modeller.addDecisionTable(any(ObservablePath.class),
+                                       any(PlaceRequest.class),
+                                       eq(dtContent1),
+                                       any(Boolean.class),
+                                       any(Double.class),
+                                       any(Double.class))).thenReturn(dtPresenter1);
+        when(modeller.addDecisionTable(any(ObservablePath.class),
+                                       any(PlaceRequest.class),
+                                       eq(dtContent2),
+                                       any(Boolean.class),
+                                       any(Double.class),
+                                       any(Double.class))).thenReturn(dtPresenter2);
+
+        when(modeller.getAvailableDecisionTables()).thenReturn(new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add(dtPresenter1);
+            add(dtPresenter2);
+        }});
+
+        presenter.onStartup(dtGraphPath,
+                            dtGraphPlaceRequest);
+
+        presenter.saveDocumentGraphEntries();
+
+        verify(savePopUpPresenter,
+               times(1)).show(any(Path.class),
+                              commitMessageCommandCaptor.capture());
+
+        final ParameterizedCommand<String> commitMessageCommand = commitMessageCommandCaptor.getValue();
+        assertNotNull(commitMessageCommand);
+        commitMessageCommand.execute("message");
+
+        verify(view,
+               times(1)).showSaving();
+        verify(saveInProgressEvent,
+               times(2)).fire(any(SaveInProgressEvent.class));
+        verify(dtGraphService,
+               times(1)).save(eq(dtGraphPath),
+                              any(GuidedDecisionTableEditorGraphModel.class),
+                              any(Metadata.class),
+                              eq("message"));
+        verify(dtService,
+               times(1)).save(eq(dtPath2),
+                              any(GuidedDecisionTable52.class),
+                              any(Metadata.class),
+                              eq("message"));
+        verify(dtService,
+               times(1)).save(eq(dtPath2),
+                              any(GuidedDecisionTable52.class),
+                              any(Metadata.class),
+                              eq("message"));
+        verify(notificationEvent,
+               times(1)).fire(any(NotificationEvent.class));
+        verify(dtPresenter1,
+               times(1)).setConcurrentUpdateSessionInfo(eq(null));
+        verify(dtPresenter2,
+               times(1)).setConcurrentUpdateSessionInfo(eq(null));
+        assertNull(presenter.concurrentUpdateSessionInfo);
+    }
+
+    @Test
+    public void checkInitialiseVersionManager() {
+        doNothing().when(presenter).reload();
+        when(versionRecordManager.isLatest(any(VersionRecord.class))).thenReturn(true);
+
+        presenter.initialiseVersionManager();
+
+        verify(versionRecordManager,
+               times(1)).init(eq(null),
+                              eq(presenter.editorPath),
+                              versionRecordCallbackCaptor.capture());
+
+        final Callback<VersionRecord> versionRecordCallback = versionRecordCallbackCaptor.getValue();
+        assertNotNull(versionRecordCallback);
+        versionRecordCallback.callback(new PortableVersionRecord("id",
+                                                                 "author",
+                                                                 "email",
+                                                                 "comment",
+                                                                 mock(Date.class),
+                                                                 "uri"));
+
+        verify(versionRecordManager,
+               times(1)).setVersion(eq("id"));
+        verify(registeredDocumentsMenuBuilder,
+               times(1)).setReadOnly(eq(false));
+        verify(presenter,
+               times(1)).reload();
+        assertFalse(presenter.access.isReadOnly());
+    }
+
+    @Test
+    public void checkInitialiseKieEditorTabs() {
+        final ObservablePath dtGraphPath = mock(ObservablePath.class);
+        final PlaceRequest dtGraphPlaceRequest = mock(PlaceRequest.class);
+        final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent(0);
+
+        when(dtGraphPath.toURI()).thenReturn("dtGraphPath");
+        when(dtGraphPath.getFileName()).thenReturn("filename");
+        when(dtGraphService.loadContent(eq(dtGraphPath))).thenReturn(dtGraphContent);
+        when(versionRecordManager.getCurrentPath()).thenReturn(dtGraphPath);
+        when(versionRecordManager.getVersion()).thenReturn("version");
+
+        presenter.onStartup(dtGraphPath,
+                            dtGraphPlaceRequest);
+
+        verify(kieEditorWrapperView,
+               times(1)).clear();
+
+        final GuidedDecisionTableView.Presenter document = mock(GuidedDecisionTableView.Presenter.class);
+        final AsyncPackageDataModelOracle dmo = mock(AsyncPackageDataModelOracle.class);
+        final Imports imports = mock(Imports.class);
+        final boolean isReadOnly = true;
+
+        final ArgumentCaptor<com.google.gwt.user.client.Command> onFocusCommandCaptor = ArgumentCaptor.forClass(com.google.gwt.user.client.Command.class);
+
+        presenter.initialiseKieEditorTabs(document,
+                                          dtGraphContent.getOverview(),
+                                          dmo,
+                                          imports,
+                                          isReadOnly);
+
+        verify(kieEditorWrapperView,
+               times(2)).clear();
+        verify(kieEditorWrapperView,
+               times(2)).addMainEditorPage(view);
+        verify(kieEditorWrapperView,
+               times(2)).addOverviewPage(eq(overviewWidget),
+                                         onFocusCommandCaptor.capture());
+        verify(overviewWidget,
+               times(2)).setContent(eq(dtGraphContent.getOverview()),
+                                    any(ObservablePath.class));
+
+        verify(kieEditorWrapperView,
+               times(1)).addSourcePage(any(ViewDRLSourceWidget.class));
+        verify(kieEditorWrapperView,
+               times(1)).addImportsTab(eq(importsWidget));
+        verify(importsWidget,
+               times(1)).setContent(eq(dmo),
+                                    eq(imports),
+                                    eq(isReadOnly));
+
+        final com.google.gwt.user.client.Command onFocusCommand = onFocusCommandCaptor.getValue();
+        assertNotNull(onFocusCommand);
+        onFocusCommand.execute();
+
+        verify(overviewWidget,
+               times(1)).refresh(eq("version"));
+    }
+
+    @Test
+    public void checkOnDelete() {
+        final PlaceRequest placeRequest = mock(PlaceRequest.class);
+        presenter.editorPlaceRequest = placeRequest;
+
+        presenter.onDelete();
+
+        final ArgumentCaptor<Scheduler.ScheduledCommand> commandCaptor = ArgumentCaptor.forClass(Scheduler.ScheduledCommand.class);
+
+        verify(presenter,
+               times(1)).scheduleClosure(commandCaptor.capture());
+
+        final Scheduler.ScheduledCommand command = commandCaptor.getValue();
+        assertNotNull(command);
+        command.execute();
+
+        verify(placeManager,
+               times(1)).forceClosePlace(eq(placeRequest));
+    }
+
+    @Test
+    public void checkOnRename() {
+        doNothing().when(presenter).reload();
+        when(versionRecordManager.getCurrentPath()).thenReturn(mock(ObservablePath.class));
+
+        presenter.onRename();
+
+        verify(presenter,
+               times(1)).reload();
+        verify(changeTitleEvent,
+               times(1)).fire(any(ChangeTitleWidgetEvent.class));
+    }
+
+    @Test
+    public void checkReload() {
+        final ObservablePath dtGraphPath = mock(ObservablePath.class);
+        final PathPlaceRequest dtGraphPlaceRequest = mock(PathPlaceRequest.class);
+        final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent();
+
+        final ObservablePath dtPath = mock(ObservablePath.class);
+        final PlaceRequest dtPlaceRequest = mock(PlaceRequest.class);
+        final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent(0);
+        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable(dtPath,
+                                                                                dtPath,
+                                                                                dtPlaceRequest,
+                                                                                dtContent);
+
+        final GuidedDecisionTableGraphEntry dtGraphEntry = new GuidedDecisionTableGraphEntry(dtPath,
+                                                                                             dtPath);
+        dtGraphContent.getModel().getEntries().add(dtGraphEntry);
+
+        when(dtPath.toURI()).thenReturn("dtPath");
+        when(dtGraphPath.toURI()).thenReturn("dtGraphPath");
+        when(dtGraphPath.getFileName()).thenReturn("filename");
+        when(dtService.loadContent(eq(dtPath))).thenReturn(dtContent);
+        when(dtGraphService.loadContent(eq(dtGraphPath))).thenReturn(dtGraphContent);
+        when(versionRecordManager.getCurrentPath()).thenReturn(dtGraphPath);
+
+        when(modeller.addDecisionTable(any(ObservablePath.class),
+                                       any(PlaceRequest.class),
+                                       any(GuidedDecisionTableEditorContent.class),
+                                       any(Boolean.class),
+                                       any(Double.class),
+                                       any(Double.class))).thenReturn(dtPresenter);
+        when(modeller.getAvailableDecisionTables()).thenReturn(new HashSet<GuidedDecisionTableView.Presenter>() {{
+            add(dtPresenter);
+        }});
+
+        presenter.onStartup(dtGraphPath,
+                            dtGraphPlaceRequest);
+
+        verify(presenter,
+               times(1)).loadDocumentGraph(dtGraphPath);
+
+        presenter.reload();
+
+        verify(presenter,
+               times(1)).deregisterDocument(eq(dtPresenter));
+        verify(presenter,
+               times(2)).loadDocumentGraph(dtGraphPath);
+        verify(modeller,
+               times(1)).releaseDecisionTables();
+        verify(modellerView,
+               times(1)).clear();
+    }
+
+    @Test
+    public void checkOnRestore() {
+        final ObservablePath dtGraphPath = mock(ObservablePath.class);
+        final PathPlaceRequest dtGraphPlaceRequest = mock(PathPlaceRequest.class);
+        final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent();
+        final RestoreEvent event = new RestoreEvent(dtGraphPath);
+
+        when(dtGraphPath.toURI()).thenReturn("dtGraphPath");
+        when(dtGraphPath.getFileName()).thenReturn("filename");
+        when(dtGraphService.loadContent(eq(dtGraphPath))).thenReturn(dtGraphContent);
+        when(versionRecordManager.getCurrentPath()).thenReturn(dtGraphPath);
+        when(versionRecordManager.getPathToLatest()).thenReturn(dtGraphPath);
+
+        presenter.onStartup(dtGraphPath,
+                            dtGraphPlaceRequest);
+
+        verify(presenter,
+               times(1)).initialiseEditor(eq(dtGraphPath),
+                                          eq(dtGraphPlaceRequest));
+
+        presenter.onRestore(event);
+
+        verify(presenter,
+               times(2)).initialiseEditor(eq(dtGraphPath),
+                                          eq(dtGraphPlaceRequest));
+        verify(notification,
+               times(1)).fire(any(NotificationEvent.class));
+    }
+
+    @Test
+    public void checkOnUpdatedLockStatusEventWithNullPath() {
+        checkOnUpdatedLockStatusEvent(null,
+                                      false,
+                                      false,
+                                      () -> assertEquals(LockedBy.NOBODY,
+                                                         presenter.access.getLock()));
+    }
+
+    @Test
+    public void checkOnUpdatedLockStatusEventNotLocked() {
+        checkOnUpdatedLockStatusEvent(mock(ObservablePath.class),
+                                      false,
+                                      false,
+                                      () -> assertEquals(LockedBy.NOBODY,
+                                                         presenter.access.getLock()));
+    }
+
+    @Test
+    public void checkOnUpdatedLockStatusEventLockedByOtherUser() {
+        checkOnUpdatedLockStatusEvent(mock(ObservablePath.class),
+                                      true,
+                                      false,
+                                      () -> assertEquals(LockedBy.OTHER_USER,
+                                                         presenter.access.getLock()));
+    }
+
+    @Test
+    public void checkOnUpdatedLockStatusEventLockedByCurrentUser() {
+        checkOnUpdatedLockStatusEvent(mock(ObservablePath.class),
+                                      true,
+                                      true,
+                                      () -> assertEquals(LockedBy.CURRENT_USER,
+                                                         presenter.access.getLock()));
+    }
+
+    private void checkOnUpdatedLockStatusEvent(final ObservablePath path,
+                                               final boolean locked,
+                                               final boolean lockedByCurrentUser,
+                                               final Command assertion) {
+        presenter.editorPath = path;
+        presenter.access.setLock(LockedBy.NOBODY);
+
+        final UpdatedLockStatusEvent event = new UpdatedLockStatusEvent(path,
+                                                                        locked,
+                                                                        lockedByCurrentUser);
+
+        presenter.onUpdatedLockStatusEvent(event);
+
+        assertion.execute();
+    }
+
+    protected GuidedDecisionTableEditorGraphContent makeDecisionTableGraphContent() {
+        return makeDecisionTableGraphContent(0);
+    }
+
+    protected GuidedDecisionTableEditorGraphContent makeDecisionTableGraphContent(final int hashCode) {
+        final GuidedDecisionTableEditorGraphModel model = new GuidedDecisionTableEditorGraphModel() {
+            @Override
+            public int hashCode() {
+                return hashCode;
+            }
+        };
+        return new GuidedDecisionTableEditorGraphContent(model,
+                                                         mock(Overview.class));
     }
 
     private static class OnSaveSetupDataHolder {
@@ -880,16 +1247,16 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
         private PlaceRequest dtGraphPlaceRequest;
         private GuidedDecisionTableView.Presenter dtPresenter;
 
-        public OnSaveSetupDataHolder( final ObservablePath dtGraphPath,
-                                      final PlaceRequest dtGraphPlaceRequest ) {
-            this( dtGraphPath,
-                  dtGraphPlaceRequest,
-                  null );
+        public OnSaveSetupDataHolder(final ObservablePath dtGraphPath,
+                                     final PlaceRequest dtGraphPlaceRequest) {
+            this(dtGraphPath,
+                 dtGraphPlaceRequest,
+                 null);
         }
 
-        public OnSaveSetupDataHolder( final ObservablePath dtGraphPath,
-                                      final PlaceRequest dtGraphPlaceRequest,
-                                      final GuidedDecisionTableView.Presenter dtPresenter ) {
+        public OnSaveSetupDataHolder(final ObservablePath dtGraphPath,
+                                     final PlaceRequest dtGraphPlaceRequest,
+                                     final GuidedDecisionTableView.Presenter dtPresenter) {
             this.dtGraphPath = dtGraphPath;
             this.dtGraphPlaceRequest = dtGraphPlaceRequest;
             this.dtPresenter = dtPresenter;
@@ -907,365 +1274,4 @@ public class GuidedDecisionTableGraphEditorPresenterTest extends BaseGuidedDecis
             return dtPresenter;
         }
     }
-
-    @Test
-    public void checkSaveDocumentGraphEntries() {
-        final ObservablePath dtGraphPath = mock( ObservablePath.class );
-        final PathPlaceRequest dtGraphPlaceRequest = mock( PathPlaceRequest.class );
-        final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent();
-
-        final ObservablePath dtPath1 = mock( ObservablePath.class );
-        final PlaceRequest dtPlaceRequest1 = mock( PlaceRequest.class );
-        final GuidedDecisionTableEditorContent dtContent1 = makeDecisionTableContent();
-        final GuidedDecisionTableView.Presenter dtPresenter1 = makeDecisionTable( dtPath1,
-                                                                                  dtPath1,
-                                                                                  dtPlaceRequest1,
-                                                                                  dtContent1 );
-        final ObservablePath dtPath2 = mock( ObservablePath.class );
-        final PlaceRequest dtPlaceRequest2 = mock( PlaceRequest.class );
-        final GuidedDecisionTableEditorContent dtContent2 = makeDecisionTableContent();
-        final GuidedDecisionTableView.Presenter dtPresenter2 = makeDecisionTable( dtPath2,
-                                                                                  dtPath2,
-                                                                                  dtPlaceRequest2,
-                                                                                  dtContent2 );
-
-        when( dtPath1.toURI() ).thenReturn( "dtPath1" );
-        when( dtPath2.toURI() ).thenReturn( "dtPath2" );
-        when( dtGraphPath.toURI() ).thenReturn( "dtGraphPath" );
-        when( dtGraphPath.getFileName() ).thenReturn( "filename" );
-        when( dtService.loadContent( eq( dtPath1 ) ) ).thenReturn( dtContent1 );
-        when( dtService.loadContent( eq( dtPath2 ) ) ).thenReturn( dtContent2 );
-        when( dtGraphService.loadContent( eq( dtGraphPath ) ) ).thenReturn( dtGraphContent );
-        when( versionRecordManager.getCurrentPath() ).thenReturn( dtGraphPath );
-
-        when( modeller.addDecisionTable( any( ObservablePath.class ),
-                                         any( PlaceRequest.class ),
-                                         eq( dtContent1 ),
-                                         any( Boolean.class ),
-                                         any( Double.class ),
-                                         any( Double.class ) ) ).thenReturn( dtPresenter1 );
-        when( modeller.addDecisionTable( any( ObservablePath.class ),
-                                         any( PlaceRequest.class ),
-                                         eq( dtContent2 ),
-                                         any( Boolean.class ),
-                                         any( Double.class ),
-                                         any( Double.class ) ) ).thenReturn( dtPresenter2 );
-
-        when( modeller.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
-            add( dtPresenter1 );
-            add( dtPresenter2 );
-        }} );
-
-        presenter.onStartup( dtGraphPath,
-                             dtGraphPlaceRequest );
-
-        presenter.saveDocumentGraphEntries();
-
-        verify( savePopUpPresenter,
-                times( 1 ) ).show( any( Path.class ),
-                                   commitMessageCommandCaptor.capture() );
-
-        final ParameterizedCommand<String> commitMessageCommand = commitMessageCommandCaptor.getValue();
-        assertNotNull( commitMessageCommand );
-        commitMessageCommand.execute( "message" );
-
-        verify( view,
-                times( 1 ) ).showSaving();
-        verify( saveInProgressEvent,
-                times( 2 ) ).fire( any( SaveInProgressEvent.class ) );
-        verify( dtGraphService,
-                times( 1 ) ).save( eq( dtGraphPath ),
-                                   any( GuidedDecisionTableEditorGraphModel.class ),
-                                   any( Metadata.class ),
-                                   eq( "message" ) );
-        verify( dtService,
-                times( 1 ) ).save( eq( dtPath2 ),
-                                   any( GuidedDecisionTable52.class ),
-                                   any( Metadata.class ),
-                                   eq( "message" ) );
-        verify( dtService,
-                times( 1 ) ).save( eq( dtPath2 ),
-                                   any( GuidedDecisionTable52.class ),
-                                   any( Metadata.class ),
-                                   eq( "message" ) );
-        verify( notificationEvent,
-                times( 1 ) ).fire( any( NotificationEvent.class ) );
-        verify( dtPresenter1,
-                times( 1 ) ).setConcurrentUpdateSessionInfo( eq( null ) );
-        verify( dtPresenter2,
-                times( 1 ) ).setConcurrentUpdateSessionInfo( eq( null ) );
-        assertNull( presenter.concurrentUpdateSessionInfo );
-    }
-
-    @Test
-    public void checkInitialiseVersionManager() {
-        doNothing().when( presenter ).reload();
-        when( versionRecordManager.isLatest( any( VersionRecord.class ) ) ).thenReturn( true );
-
-        presenter.initialiseVersionManager();
-
-        verify( versionRecordManager,
-                times( 1 ) ).init( eq( null ),
-                                   eq( presenter.editorPath ),
-                                   versionRecordCallbackCaptor.capture() );
-
-        final Callback<VersionRecord> versionRecordCallback = versionRecordCallbackCaptor.getValue();
-        assertNotNull( versionRecordCallback );
-        versionRecordCallback.callback( new PortableVersionRecord( "id",
-                                                                   "author",
-                                                                   "email",
-                                                                   "comment",
-                                                                   mock( Date.class ),
-                                                                   "uri" ) );
-
-        verify( versionRecordManager,
-                times( 1 ) ).setVersion( eq( "id" ) );
-        verify( registeredDocumentsMenuBuilder,
-                times( 1 ) ).setReadOnly( eq( false ) );
-        verify( presenter,
-                times( 1 ) ).reload();
-        assertFalse( presenter.access.isReadOnly() );
-    }
-
-    @Test
-    public void checkInitialiseKieEditorTabs() {
-        final ObservablePath dtGraphPath = mock( ObservablePath.class );
-        final PlaceRequest dtGraphPlaceRequest = mock( PlaceRequest.class );
-        final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent( 0 );
-
-        when( dtGraphPath.toURI() ).thenReturn( "dtGraphPath" );
-        when( dtGraphPath.getFileName() ).thenReturn( "filename" );
-        when( dtGraphService.loadContent( eq( dtGraphPath ) ) ).thenReturn( dtGraphContent );
-        when( versionRecordManager.getCurrentPath() ).thenReturn( dtGraphPath );
-        when( versionRecordManager.getVersion() ).thenReturn( "version" );
-
-        presenter.onStartup( dtGraphPath,
-                             dtGraphPlaceRequest );
-
-        verify( kieEditorWrapperView,
-                times( 1 ) ).clear();
-
-        final GuidedDecisionTableView.Presenter document = mock( GuidedDecisionTableView.Presenter.class );
-        final AsyncPackageDataModelOracle dmo = mock( AsyncPackageDataModelOracle.class );
-        final Imports imports = mock( Imports.class );
-        final boolean isReadOnly = true;
-
-        final ArgumentCaptor<com.google.gwt.user.client.Command> onFocusCommandCaptor = ArgumentCaptor.forClass( com.google.gwt.user.client.Command.class );
-
-        presenter.initialiseKieEditorTabs( document,
-                                           dtGraphContent.getOverview(),
-                                           dmo,
-                                           imports,
-                                           isReadOnly );
-
-        verify( kieEditorWrapperView,
-                times( 2 ) ).clear();
-        verify( kieEditorWrapperView,
-                times( 2 ) ).addMainEditorPage( view );
-        verify( kieEditorWrapperView,
-                times( 2 ) ).addOverviewPage( eq( overviewWidget ),
-                                              onFocusCommandCaptor.capture() );
-        verify( overviewWidget,
-                times( 2 ) ).setContent( eq( dtGraphContent.getOverview() ),
-                                         any( ObservablePath.class ) );
-
-        verify( kieEditorWrapperView,
-                times( 1 ) ).addSourcePage( any( ViewDRLSourceWidget.class ) );
-        verify( kieEditorWrapperView,
-                times( 1 ) ).addImportsTab( eq( importsWidget ) );
-        verify( importsWidget,
-                times( 1 ) ).setContent( eq( dmo ),
-                                         eq( imports ),
-                                         eq( isReadOnly ) );
-
-        final com.google.gwt.user.client.Command onFocusCommand = onFocusCommandCaptor.getValue();
-        assertNotNull( onFocusCommand );
-        onFocusCommand.execute();
-
-        verify( overviewWidget,
-                times( 1 ) ).refresh( eq( "version" ) );
-    }
-
-    @Test
-    public void checkOnDelete() {
-        final PlaceRequest placeRequest = mock( PlaceRequest.class );
-        presenter.editorPlaceRequest = placeRequest;
-
-        presenter.onDelete();
-
-        final ArgumentCaptor<Scheduler.ScheduledCommand> commandCaptor = ArgumentCaptor.forClass( Scheduler.ScheduledCommand.class );
-
-        verify( presenter,
-                times( 1 ) ).scheduleClosure( commandCaptor.capture() );
-
-        final Scheduler.ScheduledCommand command = commandCaptor.getValue();
-        assertNotNull( command );
-        command.execute();
-
-        verify( placeManager,
-                times( 1 ) ).forceClosePlace( eq( placeRequest ) );
-    }
-
-    @Test
-    public void checkOnRename() {
-        doNothing().when( presenter ).reload();
-        when( versionRecordManager.getCurrentPath() ).thenReturn( mock( ObservablePath.class ) );
-
-        presenter.onRename();
-
-        verify( presenter,
-                times( 1 ) ).reload();
-        verify( changeTitleEvent,
-                times( 1 ) ).fire( any( ChangeTitleWidgetEvent.class ) );
-    }
-
-    @Test
-    public void checkReload() {
-        final ObservablePath dtGraphPath = mock( ObservablePath.class );
-        final PathPlaceRequest dtGraphPlaceRequest = mock( PathPlaceRequest.class );
-        final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent();
-
-        final ObservablePath dtPath = mock( ObservablePath.class );
-        final PlaceRequest dtPlaceRequest = mock( PlaceRequest.class );
-        final GuidedDecisionTableEditorContent dtContent = makeDecisionTableContent( 0 );
-        final GuidedDecisionTableView.Presenter dtPresenter = makeDecisionTable( dtPath,
-                                                                                 dtPath,
-                                                                                 dtPlaceRequest,
-                                                                                 dtContent );
-
-        final GuidedDecisionTableGraphEntry dtGraphEntry = new GuidedDecisionTableGraphEntry( dtPath,
-                                                                                              dtPath );
-        dtGraphContent.getModel().getEntries().add( dtGraphEntry );
-
-        when( dtPath.toURI() ).thenReturn( "dtPath" );
-        when( dtGraphPath.toURI() ).thenReturn( "dtGraphPath" );
-        when( dtGraphPath.getFileName() ).thenReturn( "filename" );
-        when( dtService.loadContent( eq( dtPath ) ) ).thenReturn( dtContent );
-        when( dtGraphService.loadContent( eq( dtGraphPath ) ) ).thenReturn( dtGraphContent );
-        when( versionRecordManager.getCurrentPath() ).thenReturn( dtGraphPath );
-
-        when( modeller.addDecisionTable( any( ObservablePath.class ),
-                                         any( PlaceRequest.class ),
-                                         any( GuidedDecisionTableEditorContent.class ),
-                                         any( Boolean.class ),
-                                         any( Double.class ),
-                                         any( Double.class ) ) ).thenReturn( dtPresenter );
-        when( modeller.getAvailableDecisionTables() ).thenReturn( new HashSet<GuidedDecisionTableView.Presenter>() {{
-            add( dtPresenter );
-        }} );
-
-        presenter.onStartup( dtGraphPath,
-                             dtGraphPlaceRequest );
-
-        verify( presenter,
-                times( 1 ) ).loadDocumentGraph( dtGraphPath );
-
-        presenter.reload();
-
-        verify( presenter,
-                times( 1 ) ).deregisterDocument( eq( dtPresenter ) );
-        verify( presenter,
-                times( 2 ) ).loadDocumentGraph( dtGraphPath );
-        verify( modeller,
-                times( 1 ) ).releaseDecisionTables();
-        verify( modellerView,
-                times( 1 ) ).clear();
-    }
-
-    @Test
-    public void checkOnRestore() {
-        final ObservablePath dtGraphPath = mock( ObservablePath.class );
-        final PathPlaceRequest dtGraphPlaceRequest = mock( PathPlaceRequest.class );
-        final GuidedDecisionTableEditorGraphContent dtGraphContent = makeDecisionTableGraphContent();
-        final RestoreEvent event = new RestoreEvent( dtGraphPath );
-
-        when( dtGraphPath.toURI() ).thenReturn( "dtGraphPath" );
-        when( dtGraphPath.getFileName() ).thenReturn( "filename" );
-        when( dtGraphService.loadContent( eq( dtGraphPath ) ) ).thenReturn( dtGraphContent );
-        when( versionRecordManager.getCurrentPath() ).thenReturn( dtGraphPath );
-        when( versionRecordManager.getPathToLatest() ).thenReturn( dtGraphPath );
-
-        presenter.onStartup( dtGraphPath,
-                             dtGraphPlaceRequest );
-
-        verify( presenter,
-                times( 1 ) ).initialiseEditor( eq( dtGraphPath ),
-                                               eq( dtGraphPlaceRequest ) );
-
-        presenter.onRestore( event );
-
-        verify( presenter,
-                times( 2 ) ).initialiseEditor( eq( dtGraphPath ),
-                                               eq( dtGraphPlaceRequest ) );
-        verify( notification,
-                times( 1 ) ).fire( any( NotificationEvent.class ) );
-    }
-
-    @Test
-    public void checkOnUpdatedLockStatusEventWithNullPath() {
-        checkOnUpdatedLockStatusEvent( null,
-                                       false,
-                                       false,
-                                       () -> assertEquals( LockedBy.NOBODY,
-                                                           presenter.access.getLock() ) );
-    }
-
-    @Test
-    public void checkOnUpdatedLockStatusEventNotLocked() {
-        checkOnUpdatedLockStatusEvent( mock( ObservablePath.class ),
-                                       false,
-                                       false,
-                                       () -> assertEquals( LockedBy.NOBODY,
-                                                           presenter.access.getLock() ) );
-    }
-
-    @Test
-    public void checkOnUpdatedLockStatusEventLockedByOtherUser() {
-        checkOnUpdatedLockStatusEvent( mock( ObservablePath.class ),
-                                       true,
-                                       false,
-                                       () -> assertEquals( LockedBy.OTHER_USER,
-                                                           presenter.access.getLock() ) );
-    }
-
-    @Test
-    public void checkOnUpdatedLockStatusEventLockedByCurrentUser() {
-        checkOnUpdatedLockStatusEvent( mock( ObservablePath.class ),
-                                       true,
-                                       true,
-                                       () -> assertEquals( LockedBy.CURRENT_USER,
-                                                           presenter.access.getLock() ) );
-    }
-
-    private void checkOnUpdatedLockStatusEvent( final ObservablePath path,
-                                                final boolean locked,
-                                                final boolean lockedByCurrentUser,
-                                                final Command assertion ) {
-        presenter.editorPath = path;
-        presenter.access.setLock( LockedBy.NOBODY );
-
-        final UpdatedLockStatusEvent event = new UpdatedLockStatusEvent( path,
-                                                                         locked,
-                                                                         lockedByCurrentUser );
-
-        presenter.onUpdatedLockStatusEvent( event );
-
-        assertion.execute();
-    }
-
-    protected GuidedDecisionTableEditorGraphContent makeDecisionTableGraphContent() {
-        return makeDecisionTableGraphContent( 0 );
-    }
-
-    protected GuidedDecisionTableEditorGraphContent makeDecisionTableGraphContent( final int hashCode ) {
-        final GuidedDecisionTableEditorGraphModel model = new GuidedDecisionTableEditorGraphModel() {
-            @Override
-            public int hashCode() {
-                return hashCode;
-            }
-        };
-        return new GuidedDecisionTableEditorGraphContent( model,
-                                                          mock( Overview.class ) );
-    }
-
 }
