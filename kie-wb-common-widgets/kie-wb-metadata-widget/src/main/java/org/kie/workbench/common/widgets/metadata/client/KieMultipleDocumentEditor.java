@@ -60,7 +60,9 @@ import org.uberfire.workbench.events.NotificationEvent;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.*;
+import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentDelete;
+import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentRename;
+import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopup.newConcurrentUpdate;
 
 /**
  * A base for Multi-Document-Interface editors. This base implementation adds default Menus for Save", "Copy",
@@ -68,8 +70,7 @@ import static org.uberfire.ext.widgets.common.client.common.ConcurrentChangePopu
  * {@link KieDocument} documents are first registered and then activated. Registration ensures the document
  * is configured for optimistic concurrent lock handling. Activation updates the content of the editor to
  * reflect the active document.
- * @param <D>
- *         Document type
+ * @param <D> Document type
  */
 public abstract class KieMultipleDocumentEditor<D extends KieDocument> implements KieMultipleDocumentEditorPresenter<D> {
 
@@ -89,7 +90,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     //Constructed
     protected BaseEditorView editorView;
-    protected ViewDRLSourceWidget sourceWidget = GWT.create( ViewDRLSourceWidget.class );
+    protected ViewDRLSourceWidget sourceWidget = GWT.create(ViewDRLSourceWidget.class);
 
     private MenuItem saveMenuItem;
     private MenuItem versionMenuItem;
@@ -101,18 +102,17 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     protected final Set<D> documents = new HashSet<>();
 
     //Handler for MayClose requests
-    private interface MayCloseHandler {
+    protected interface MayCloseHandler {
 
-        boolean mayClose( final Integer originalHashCode,
-                          final Integer currentHashCode );
-
+        boolean mayClose(final Integer originalHashCode,
+                         final Integer currentHashCode);
     }
 
     //The default implementation delegates to the HashCode comparison in BaseEditor
     private final MayCloseHandler DEFAULT_MAY_CLOSE_HANDLER = this::doMayClose;
 
     //This implementation always permits closure as something went wrong loading the Editor's content
-    private final MayCloseHandler EXCEPTION_MAY_CLOSE_HANDLER = ( originalHashCode, currentHashCode ) -> true;
+    private final MayCloseHandler EXCEPTION_MAY_CLOSE_HANDLER = (originalHashCode, currentHashCode) -> true;
 
     private MayCloseHandler mayCloseHandler = DEFAULT_MAY_CLOSE_HANDLER;
 
@@ -121,208 +121,208 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
         //Zero-parameter constructor for CDI proxy
     }
 
-    public KieMultipleDocumentEditor( final KieEditorView editorView ) {
+    public KieMultipleDocumentEditor(final KieEditorView editorView) {
         this.editorView = editorView;
     }
 
     @PostConstruct
     protected void setupMenuBar() {
         makeMenuBar();
-        kieEditorWrapperView.init( this );
+        kieEditorWrapperView.init(this);
     }
 
     @Inject
-    protected void setKieEditorWrapperView( final @KieMultipleDocumentEditorQualifier KieMultipleDocumentEditorWrapperView kieEditorWrapperView ) {
+    protected void setKieEditorWrapperView(final @KieMultipleDocumentEditorQualifier KieMultipleDocumentEditorWrapperView kieEditorWrapperView) {
         this.kieEditorWrapperView = kieEditorWrapperView;
-        this.kieEditorWrapperView.setPresenter( this );
+        this.kieEditorWrapperView.setPresenter(this);
     }
 
     @Inject
-    protected void setOverviewWidget( final OverviewWidgetPresenter overviewWidget ) {
+    protected void setOverviewWidget(final OverviewWidgetPresenter overviewWidget) {
         this.overviewWidget = overviewWidget;
     }
 
     @Inject
-    protected void setSavePopUpPresenter( final SavePopUpPresenter savePopUpPresenter ) {
+    protected void setSavePopUpPresenter(final SavePopUpPresenter savePopUpPresenter) {
         this.savePopUpPresenter = savePopUpPresenter;
     }
 
     @Inject
-    protected void setImportsWidget( final ImportsWidgetPresenter importsWidget ) {
+    protected void setImportsWidget(final ImportsWidgetPresenter importsWidget) {
         this.importsWidget = importsWidget;
     }
 
     @Inject
-    protected void setNotificationEvent( final Event<NotificationEvent> notificationEvent ) {
+    protected void setNotificationEvent(final Event<NotificationEvent> notificationEvent) {
         this.notificationEvent = notificationEvent;
     }
 
     @Inject
-    protected void setChangeTitleEvent( final Event<ChangeTitleWidgetEvent> changeTitleEvent ) {
+    protected void setChangeTitleEvent(final Event<ChangeTitleWidgetEvent> changeTitleEvent) {
         this.changeTitleEvent = changeTitleEvent;
     }
 
     @Inject
-    protected void setWorkbenchContext( final ProjectContext workbenchContext ) {
+    protected void setWorkbenchContext(final ProjectContext workbenchContext) {
         this.workbenchContext = workbenchContext;
     }
 
     @Inject
-    protected void setVersionRecordManager( final VersionRecordManager versionRecordManager ) {
+    protected void setVersionRecordManager(final VersionRecordManager versionRecordManager) {
         this.versionRecordManager = versionRecordManager;
-        this.versionRecordManager.setShowMoreCommand( () -> {
+        this.versionRecordManager.setShowMoreCommand(() -> {
             kieEditorWrapperView.selectOverviewTab();
             overviewWidget.showVersionsTab();
-        } );
+        });
     }
 
     @Inject
-    protected void setFileMenuBuilder( final FileMenuBuilder fileMenuBuilder ) {
+    protected void setFileMenuBuilder(final FileMenuBuilder fileMenuBuilder) {
         this.fileMenuBuilder = fileMenuBuilder;
     }
 
     @Inject
-    protected void setRegisteredDocumentsMenuBuilder( final RegisteredDocumentsMenuBuilder registeredDocumentsMenuBuilder ) {
+    protected void setRegisteredDocumentsMenuBuilder(final RegisteredDocumentsMenuBuilder registeredDocumentsMenuBuilder) {
         this.registeredDocumentsMenuBuilder = registeredDocumentsMenuBuilder;
     }
 
     @Inject
-    protected void setFileNameValidator( final DefaultFileNameValidator fileNameValidator ) {
+    protected void setFileNameValidator(final DefaultFileNameValidator fileNameValidator) {
         this.fileNameValidator = fileNameValidator;
     }
 
     @Override
-    public void registerDocument( final D document ) {
-        PortablePreconditions.checkNotNull( "document",
-                                            document );
+    public void registerDocument(final D document) {
+        PortablePreconditions.checkNotNull("document",
+                                           document);
 
-        if ( documents.contains( document ) ) {
+        if (documents.contains(document)) {
             return;
         }
 
-        documents.add( document );
-        registeredDocumentsMenuBuilder.registerDocument( document );
+        documents.add(document);
+        registeredDocumentsMenuBuilder.registerDocument(document);
 
         //Setup concurrent modification handlers
         final ObservablePath path = document.getLatestPath();
 
-        path.onRename( () -> refresh( document ) );
-        path.onConcurrentRename( ( info ) -> doConcurrentRename( document,
-                                                                 info ) );
+        path.onRename(() -> refresh(document));
+        path.onConcurrentRename((info) -> doConcurrentRename(document,
+                                                             info));
 
-        path.onDelete( () -> {
-            enableMenus( false );
-            removeDocument( document );
-            deregisterDocument( document );
-        } );
-        path.onConcurrentDelete( ( info ) -> {
-            doConcurrentDelete( document,
-                                info );
-        } );
+        path.onDelete(() -> {
+            enableMenus(false);
+            removeDocument(document);
+            deregisterDocument(document);
+        });
+        path.onConcurrentDelete((info) -> {
+            doConcurrentDelete(document,
+                               info);
+        });
 
-        path.onConcurrentUpdate( ( eventInfo ) -> document.setConcurrentUpdateSessionInfo( eventInfo ) );
+        path.onConcurrentUpdate((eventInfo) -> document.setConcurrentUpdateSessionInfo(eventInfo));
     }
 
     //Package protected to allow overriding for Unit Tests
-    void doConcurrentRename( final D document,
-                             final ObservablePath.OnConcurrentRenameEvent info ) {
-        newConcurrentRename( info.getSource(),
-                             info.getTarget(),
-                             info.getIdentity(),
-                             getConcurrentRenameOnIgnoreCommand(),
-                             getConcurrentRenameOnReopenCommand( document ) ).show();
+    void doConcurrentRename(final D document,
+                            final ObservablePath.OnConcurrentRenameEvent info) {
+        newConcurrentRename(info.getSource(),
+                            info.getTarget(),
+                            info.getIdentity(),
+                            getConcurrentRenameOnIgnoreCommand(),
+                            getConcurrentRenameOnReopenCommand(document)).show();
     }
 
     //Package protected to allow overriding for Unit Tests
     Command getConcurrentRenameOnIgnoreCommand() {
-        return () -> enableMenus( false );
+        return () -> enableMenus(false);
     }
 
     //Package protected to allow overriding for Unit Tests
-    Command getConcurrentRenameOnReopenCommand( final D document ) {
+    Command getConcurrentRenameOnReopenCommand(final D document) {
         return () -> {
-            document.setConcurrentUpdateSessionInfo( null );
-            refresh( document );
+            document.setConcurrentUpdateSessionInfo(null);
+            refresh(document);
         };
     }
 
     //Package protected to allow overriding for Unit Tests
-    void doConcurrentDelete( final D document,
-                             final ObservablePath.OnConcurrentDelete info ) {
-        newConcurrentDelete( info.getPath(),
-                             info.getIdentity(),
-                             getConcurrentDeleteOnIgnoreCommand(),
-                             getConcurrentDeleteOnClose( document ) ).show();
+    void doConcurrentDelete(final D document,
+                            final ObservablePath.OnConcurrentDelete info) {
+        newConcurrentDelete(info.getPath(),
+                            info.getIdentity(),
+                            getConcurrentDeleteOnIgnoreCommand(),
+                            getConcurrentDeleteOnClose(document)).show();
     }
 
     //Package protected to allow overriding for Unit Tests
     Command getConcurrentDeleteOnIgnoreCommand() {
-        return () -> enableMenus( false );
+        return () -> enableMenus(false);
     }
 
     //Package protected to allow overriding for Unit Tests
-    Command getConcurrentDeleteOnClose( final D document ) {
+    Command getConcurrentDeleteOnClose(final D document) {
         return () -> {
-            enableMenus( false );
-            removeDocument( document );
-            deregisterDocument( document );
+            enableMenus(false);
+            removeDocument(document);
+            deregisterDocument(document);
         };
     }
 
     @Override
-    public void deregisterDocument( final D document ) {
-        PortablePreconditions.checkNotNull( "document",
-                                            document );
+    public void deregisterDocument(final D document) {
+        PortablePreconditions.checkNotNull("document",
+                                           document);
 
-        if ( !documents.contains( document ) ) {
+        if (!documents.contains(document)) {
             return;
         }
 
-        registeredDocumentsMenuBuilder.deregisterDocument( document );
+        registeredDocumentsMenuBuilder.deregisterDocument(document);
         document.getLatestPath().dispose();
-        documents.remove( document );
+        documents.remove(document);
     }
 
-    private void refresh( final D document ) {
-        final String documentTitle = getDocumentTitle( document );
-        editorView.refreshTitle( documentTitle );
-        editorView.showBusyIndicator( CommonConstants.INSTANCE.Loading() );
-        refreshDocument( document );
+    private void refresh(final D document) {
+        final String documentTitle = getDocumentTitle(document);
+        editorView.refreshTitle(documentTitle);
+        editorView.showBusyIndicator(CommonConstants.INSTANCE.Loading());
+        refreshDocument(document);
 
         final PlaceRequest placeRequest = document.getPlaceRequest();
-        changeTitleEvent.fire( new ChangeTitleWidgetEvent( placeRequest,
-                                                           documentTitle,
-                                                           getTitleWidget( document ) ) );
+        changeTitleEvent.fire(new ChangeTitleWidgetEvent(placeRequest,
+                                                         documentTitle,
+                                                         getTitleWidget(document)));
     }
 
     @Override
-    public void activateDocument( final D document,
-                                  final Overview overview,
-                                  final AsyncPackageDataModelOracle dmo,
-                                  final Imports imports,
-                                  final boolean isReadOnly ) {
-        PortablePreconditions.checkNotNull( "document",
-                                            document );
-        PortablePreconditions.checkNotNull( "overview",
-                                            overview );
-        PortablePreconditions.checkNotNull( "dmo",
-                                            document );
-        PortablePreconditions.checkNotNull( "imports",
-                                            imports );
+    public void activateDocument(final D document,
+                                 final Overview overview,
+                                 final AsyncPackageDataModelOracle dmo,
+                                 final Imports imports,
+                                 final boolean isReadOnly) {
+        PortablePreconditions.checkNotNull("document",
+                                           document);
+        PortablePreconditions.checkNotNull("overview",
+                                           overview);
+        PortablePreconditions.checkNotNull("dmo",
+                                           document);
+        PortablePreconditions.checkNotNull("imports",
+                                           imports);
 
-        if ( !documents.contains( document ) ) {
-            throw new IllegalArgumentException( "Document has not been registered." );
+        if (!documents.contains(document)) {
+            throw new IllegalArgumentException("Document has not been registered.");
         }
 
         activeDocument = document;
-        registeredDocumentsMenuBuilder.activateDocument( document );
+        registeredDocumentsMenuBuilder.activateDocument(document);
 
-        initialiseVersionManager( document );
-        initialiseKieEditorTabs( document,
-                                 overview,
-                                 dmo,
-                                 imports,
-                                 isReadOnly );
+        initialiseVersionManager(document);
+        initialiseKieEditorTabs(document,
+                                overview,
+                                dmo,
+                                imports,
+                                isReadOnly);
     }
 
     @Override
@@ -330,37 +330,37 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
         return activeDocument;
     }
 
-    protected void initialiseVersionManager( final D document ) {
+    protected void initialiseVersionManager(final D document) {
         final String version = document.getVersion();
         final ObservablePath path = document.getLatestPath();
 
-        versionRecordManager.init( version,
-                                   path,
-                                   ( versionRecord ) -> {
-                                       versionRecordManager.setVersion( versionRecord.id() );
-                                       document.setVersion( versionRecord.id() );
-                                       document.setCurrentPath( versionRecordManager.getCurrentPath() );
-                                       document.setReadOnly( !versionRecordManager.isLatest( versionRecord ) );
-                                       refreshDocument( document );
-                                   } );
+        versionRecordManager.init(version,
+                                  path,
+                                  (versionRecord) -> {
+                                      versionRecordManager.setVersion(versionRecord.id());
+                                      document.setVersion(versionRecord.id());
+                                      document.setCurrentPath(versionRecordManager.getCurrentPath());
+                                      document.setReadOnly(!versionRecordManager.isLatest(versionRecord));
+                                      refreshDocument(document);
+                                  });
     }
 
-    protected void initialiseKieEditorTabs( final D document,
-                                            final Overview overview,
-                                            final AsyncPackageDataModelOracle dmo,
-                                            final Imports imports,
-                                            final boolean isReadOnly ) {
+    protected void initialiseKieEditorTabs(final D document,
+                                           final Overview overview,
+                                           final AsyncPackageDataModelOracle dmo,
+                                           final Imports imports,
+                                           final boolean isReadOnly) {
         kieEditorWrapperView.clear();
-        kieEditorWrapperView.addMainEditorPage( editorView );
-        kieEditorWrapperView.addOverviewPage( overviewWidget,
-                                              () -> overviewWidget.refresh( versionRecordManager.getVersion() ) );
-        kieEditorWrapperView.addSourcePage( sourceWidget );
-        kieEditorWrapperView.addImportsTab( importsWidget );
-        overviewWidget.setContent( overview,
-                                   document.getLatestPath() );
-        importsWidget.setContent( dmo,
-                                  imports,
-                                  isReadOnly );
+        kieEditorWrapperView.addMainEditorPage(editorView);
+        kieEditorWrapperView.addOverviewPage(overviewWidget,
+                                             () -> overviewWidget.refresh(versionRecordManager.getVersion()));
+        kieEditorWrapperView.addSourcePage(sourceWidget);
+        kieEditorWrapperView.addImportsTab(importsWidget);
+        overviewWidget.setContent(overview,
+                                  document.getLatestPath());
+        importsWidget.setContent(dmo,
+                                 imports,
+                                 isReadOnly);
     }
 
     @Override
@@ -369,10 +369,10 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     }
 
     @Override
-    public IsWidget getTitleWidget( final D document ) {
-        PortablePreconditions.checkNotNull( "document",
-                                            document );
-        editorView.refreshTitle( getDocumentTitle( document ) );
+    public IsWidget getTitleWidget(final D document) {
+        PortablePreconditions.checkNotNull("document",
+                                           document);
+        editorView.refreshTitle(getDocumentTitle(document));
         return editorView.getTitleWidget();
     }
 
@@ -383,20 +383,20 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
 
     @Override
     public void onClose() {
-        final List<D> documents = new ArrayList<>( this.documents );
-        documents.stream().forEach( this::deregisterDocument );
+        final List<D> documents = new ArrayList<>(this.documents);
+        documents.stream().forEach(this::deregisterDocument);
         this.versionRecordManager.clear();
         this.activeDocument = null;
     }
 
     @Override
     public void onSourceTabSelected() {
-        onSourceTabSelected( getActiveDocument() );
+        onSourceTabSelected(getActiveDocument());
     }
 
     @Override
-    public void updateSource( final String source ) {
-        sourceWidget.setContent( source );
+    public void updateSource(final String source) {
+        sourceWidget.setContent(source);
     }
 
     @Override
@@ -415,28 +415,32 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
     }
 
     @Override
-    public boolean mayClose( final Integer originalHashCode,
-                             final Integer currentHashCode ) {
-        return mayCloseHandler.mayClose( originalHashCode,
-                                         currentHashCode );
+    public boolean mayClose(final Integer originalHashCode,
+                            final Integer currentHashCode) {
+        return mayCloseHandler.mayClose(originalHashCode,
+                                        currentHashCode);
     }
 
-    private boolean doMayClose( final Integer originalHashCode,
-                                final Integer currentHashCode ) {
-        if ( this.isDirty( originalHashCode,
-                           currentHashCode ) || overviewWidget.isDirty() ) {
+    protected void setMayCloseHandler(final MayCloseHandler mayCloseHandler) {
+        this.mayCloseHandler = mayCloseHandler;
+    }
+
+    protected boolean doMayClose(final Integer originalHashCode,
+                                 final Integer currentHashCode) {
+        if (this.isDirty(originalHashCode,
+                         currentHashCode) || overviewWidget.isDirty()) {
             return this.editorView.confirmClose();
         } else {
             return true;
         }
     }
 
-    private boolean isDirty( final Integer originalHashCode,
-                             final Integer currentHashCode ) {
-        if ( originalHashCode == null ) {
+    protected boolean isDirty(final Integer originalHashCode,
+                              final Integer currentHashCode) {
+        if (originalHashCode == null) {
             return currentHashCode != null;
         } else {
-            return !originalHashCode.equals( currentHashCode );
+            return !originalHashCode.equals(currentHashCode);
         }
     }
 
@@ -447,17 +451,17 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
      */
     @Override
     public void makeMenuBar() {
-        this.fileMenuBuilder.setLockSyncMenuStateHelper( new KieMultipleDocumentEditorLockSyncHelper( this ) );
+        this.fileMenuBuilder.setLockSyncMenuStateHelper(new KieMultipleDocumentEditorLockSyncHelper(this));
         this.menus = fileMenuBuilder
-                .addSave( getSaveMenuItem() )
-                .addCopy( () -> getActiveDocument().getCurrentPath(),
-                          fileNameValidator )
-                .addRename( () -> getActiveDocument().getLatestPath(),
-                            fileNameValidator )
-                .addDelete( () -> getActiveDocument().getLatestPath() )
-                .addValidate( () -> onValidate( getActiveDocument() ) )
-                .addNewTopLevelMenu( getRegisteredDocumentsMenuItem() )
-                .addNewTopLevelMenu( getVersionManagerMenuItem() )
+                .addSave(getSaveMenuItem())
+                .addCopy(() -> getActiveDocument().getCurrentPath(),
+                         fileNameValidator)
+                .addRename(() -> getActiveDocument().getLatestPath(),
+                           fileNameValidator)
+                .addDelete(() -> getActiveDocument().getLatestPath())
+                .addValidate(() -> onValidate(getActiveDocument()))
+                .addNewTopLevelMenu(getRegisteredDocumentsMenuItem())
+                .addNewTopLevelMenu(getVersionManagerMenuItem())
                 .build();
     }
 
@@ -466,8 +470,8 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
      * @return
      */
     protected MenuItem getSaveMenuItem() {
-        if ( saveMenuItem == null ) {
-            saveMenuItem = versionRecordManager.newSaveMenuItem( this::doSave );
+        if (saveMenuItem == null) {
+            saveMenuItem = versionRecordManager.newSaveMenuItem(this::doSave);
         }
         return saveMenuItem;
     }
@@ -477,9 +481,9 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
      * @return
      */
     protected MenuItem getRegisteredDocumentsMenuItem() {
-        if ( registeredDocumentsMenuItem == null ) {
+        if (registeredDocumentsMenuItem == null) {
             registeredDocumentsMenuItem = registeredDocumentsMenuBuilder.build();
-            registeredDocumentsMenuBuilder.setOpenDocumentCommand( this::openDocumentInEditor );
+            registeredDocumentsMenuBuilder.setOpenDocumentCommand(this::openDocumentInEditor);
         }
         return registeredDocumentsMenuItem;
     }
@@ -489,7 +493,7 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
      * @return
      */
     protected MenuItem getVersionManagerMenuItem() {
-        if ( versionMenuItem == null ) {
+        if (versionMenuItem == null) {
             versionMenuItem = versionRecordManager.buildMenu();
         }
         return versionMenuItem;
@@ -504,20 +508,20 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
      */
     protected void doSave() {
         final D document = getActiveDocument();
-        if ( document == null ) {
+        if (document == null) {
             return;
         }
 
         final boolean isReadOnly = document.isReadOnly();
-        if ( isReadOnly ) {
-            if ( versionRecordManager.isCurrentLatest() ) {
+        if (isReadOnly) {
+            if (versionRecordManager.isCurrentLatest()) {
                 editorView.alertReadOnly();
             } else {
                 versionRecordManager.restoreToCurrentVersion();
             }
             return;
         }
-        doSaveCheckForAndHandleConcurrentUpdate( document );
+        doSaveCheckForAndHandleConcurrentUpdate(document);
     }
 
     /**
@@ -527,73 +531,73 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
      * the document is persisted.
      * @param document
      */
-    protected void doSaveCheckForAndHandleConcurrentUpdate( final D document ) {
+    protected void doSaveCheckForAndHandleConcurrentUpdate(final D document) {
         final ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = document.getConcurrentUpdateSessionInfo();
-        if ( concurrentUpdateSessionInfo != null ) {
-            showConcurrentUpdatePopup( document );
+        if (concurrentUpdateSessionInfo != null) {
+            showConcurrentUpdatePopup(document);
         } else {
-            doSave( document );
+            doSave(document);
         }
     }
 
-    void showConcurrentUpdatePopup( final D document ) {
+    void showConcurrentUpdatePopup(final D document) {
         final ObservablePath.OnConcurrentUpdateEvent concurrentUpdateSessionInfo = document.getConcurrentUpdateSessionInfo();
-        newConcurrentUpdate( concurrentUpdateSessionInfo.getPath(),
-                             concurrentUpdateSessionInfo.getIdentity(),
-                             () -> doSave( document ),
-                             () -> {/*nothing*/},
-                             () -> {
-                                 document.setConcurrentUpdateSessionInfo( null );
-                                 refresh( document );
-                             } ).show();
+        newConcurrentUpdate(concurrentUpdateSessionInfo.getPath(),
+                            concurrentUpdateSessionInfo.getIdentity(),
+                            () -> doSave(document),
+                            () -> {/*nothing*/},
+                            () -> {
+                                document.setConcurrentUpdateSessionInfo(null);
+                                refresh(document);
+                            }).show();
     }
 
     //Package protected to allow overriding for Unit Tests
-    void doSave( final D document ) {
-        savePopUpPresenter.show( document.getCurrentPath(),
-                                 getSaveCommand( document ) );
+    void doSave(final D document) {
+        savePopUpPresenter.show(document.getCurrentPath(),
+                                getSaveCommand(document));
     }
 
     //Package protected to allow overriding for Unit Tests
-    ParameterizedCommand<String> getSaveCommand( final D document ) {
-        return ( commitMessage ) -> {
+    ParameterizedCommand<String> getSaveCommand(final D document) {
+        return (commitMessage) -> {
             editorView.showSaving();
-            onSave( document,
-                    commitMessage );
-            document.setConcurrentUpdateSessionInfo( null );
+            onSave(document,
+                   commitMessage);
+            document.setConcurrentUpdateSessionInfo(null);
         };
     }
 
-    void onRestore( final @Observes RestoreEvent event ) {
-        if ( event == null || event.getPath() == null ) {
+    void onRestore(final @Observes RestoreEvent event) {
+        if (event == null || event.getPath() == null) {
             return;
         }
-        if ( versionRecordManager.getCurrentPath() == null ) {
+        if (versionRecordManager.getCurrentPath() == null) {
             return;
         }
-        if ( versionRecordManager.getCurrentPath().equals( event.getPath() ) ) {
-            activeDocument.setVersion( null );
-            activeDocument.setLatestPath( versionRecordManager.getPathToLatest() );
-            activeDocument.setCurrentPath( versionRecordManager.getPathToLatest() );
-            initialiseVersionManager( activeDocument );
-            activeDocument.setReadOnly( false );
-            refreshDocument( activeDocument );
-            notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemRestored() ) );
+        if (versionRecordManager.getCurrentPath().equals(event.getPath())) {
+            activeDocument.setVersion(null);
+            activeDocument.setLatestPath(versionRecordManager.getPathToLatest());
+            activeDocument.setCurrentPath(versionRecordManager.getPathToLatest());
+            initialiseVersionManager(activeDocument);
+            activeDocument.setReadOnly(false);
+            refreshDocument(activeDocument);
+            notificationEvent.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemRestored()));
         }
     }
 
-    void onRepositoryRemoved( final @Observes RepositoryRemovedEvent event ) {
-        if ( event.getRepository() == null ) {
+    void onRepositoryRemoved(final @Observes RepositoryRemovedEvent event) {
+        if (event.getRepository() == null) {
             return;
         }
-        if ( workbenchContext == null ) {
+        if (workbenchContext == null) {
             return;
         }
-        if ( workbenchContext.getActiveRepository() == null ) {
+        if (workbenchContext.getActiveRepository() == null) {
             return;
         }
-        if ( workbenchContext.getActiveRepository().equals( event.getRepository() ) ) {
-            enableMenus( false );
+        if (workbenchContext.getActiveRepository().equals(event.getRepository())) {
+            enableMenus(false);
         }
     }
 
@@ -603,43 +607,43 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
      * this to customize their Menus.
      * @param enabled
      */
-    protected void enableMenus( final boolean enabled ) {
-        getSaveMenuItem().setEnabled( enabled );
-        getVersionManagerMenuItem().setEnabled( enabled );
+    protected void enableMenus(final boolean enabled) {
+        getSaveMenuItem().setEnabled(enabled);
+        getVersionManagerMenuItem().setEnabled(enabled);
 
-        enableMenuItem( enabled,
-                        MenuItems.COPY );
-        enableMenuItem( enabled,
-                        MenuItems.RENAME );
-        enableMenuItem( enabled,
-                        MenuItems.DELETE );
-        enableMenuItem( enabled,
-                        MenuItems.VALIDATE );
+        enableMenuItem(enabled,
+                       MenuItems.COPY);
+        enableMenuItem(enabled,
+                       MenuItems.RENAME);
+        enableMenuItem(enabled,
+                       MenuItems.DELETE);
+        enableMenuItem(enabled,
+                       MenuItems.VALIDATE);
     }
 
     /**
      * Enable/disable a single menu associated with the MDI container.
      * @param enabled
      */
-    protected void enableMenuItem( final boolean enabled,
-                                   final MenuItems menuItem ) {
-        if ( menus.getItemsMap().containsKey( menuItem ) ) {
-            menus.getItemsMap().get( menuItem ).setEnabled( enabled );
+    protected void enableMenuItem(final boolean enabled,
+                                  final MenuItems menuItem) {
+        if (menus.getItemsMap().containsKey(menuItem)) {
+            menus.getItemsMap().get(menuItem).setEnabled(enabled);
         }
     }
 
     protected void openDocumentInEditor() {
-        getAvailableDocumentPaths( ( allPaths ) -> {
-            for ( D document : documents ) {
-                allPaths.remove( document.getLatestPath() );
+        getAvailableDocumentPaths((allPaths) -> {
+            for (D document : documents) {
+                allPaths.remove(document.getLatestPath());
             }
 
-            if ( allPaths.isEmpty() ) {
+            if (allPaths.isEmpty()) {
                 kieEditorWrapperView.showNoAdditionalDocuments();
             } else {
-                kieEditorWrapperView.showAdditionalDocuments( allPaths );
+                kieEditorWrapperView.showAdditionalDocuments(allPaths);
             }
-        } );
+        });
     }
 
     /**
@@ -647,22 +651,22 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
      * @return
      */
     protected CommandDrivenErrorCallback getNoSuchFileExceptionErrorCallback() {
-        return new CommandDrivenErrorCallback( editorView,
-                                               new CommandBuilder()
-                                                       .addNoSuchFileException( editorView,
-                                                                                kieEditorWrapperView.getMultiPage(),
-                                                                                menus )
-                                                       .addFileSystemNotFoundException( editorView,
-                                                                                        kieEditorWrapperView.getMultiPage(),
-                                                                                        menus )
-                                                       .build()
+        return new CommandDrivenErrorCallback(editorView,
+                                              new CommandBuilder()
+                                                      .addNoSuchFileException(editorView,
+                                                                              kieEditorWrapperView.getMultiPage(),
+                                                                              menus)
+                                                      .addFileSystemNotFoundException(editorView,
+                                                                                      kieEditorWrapperView.getMultiPage(),
+                                                                                      menus)
+                                                      .build()
         ) {
             @Override
-            public boolean error( final Message message,
-                                  final Throwable throwable ) {
+            public boolean error(final Message message,
+                                 final Throwable throwable) {
                 mayCloseHandler = EXCEPTION_MAY_CLOSE_HANDLER;
-                return super.error( message,
-                                    throwable );
+                return super.error(message,
+                                   throwable);
             }
         };
     }
@@ -672,11 +676,11 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
      * @return
      */
     protected CommandDrivenErrorCallback getCouldNotGenerateSourceErrorCallback() {
-        return new CommandDrivenErrorCallback( editorView,
-                                               new CommandBuilder()
-                                                       .addSourceCodeGenerationFailedException( editorView,
-                                                                                                sourceWidget )
-                                                       .build()
+        return new CommandDrivenErrorCallback(editorView,
+                                              new CommandBuilder()
+                                                      .addSourceCodeGenerationFailedException(editorView,
+                                                                                              sourceWidget)
+                                                      .build()
         );
     }
 
@@ -687,14 +691,13 @@ public abstract class KieMultipleDocumentEditor<D extends KieDocument> implement
      * @param currentHashCode
      * @return
      */
-    protected RemoteCallback<Path> getSaveSuccessCallback( final D document,
-                                                           final int currentHashCode ) {
-        return ( path ) -> {
+    protected RemoteCallback<Path> getSaveSuccessCallback(final D document,
+                                                          final int currentHashCode) {
+        return (path) -> {
             editorView.hideBusyIndicator();
-            versionRecordManager.reloadVersions( path );
-            notificationEvent.fire( new NotificationEvent( CommonConstants.INSTANCE.ItemSavedSuccessfully() ) );
-            document.setOriginalHashCode( currentHashCode );
+            versionRecordManager.reloadVersions(path);
+            notificationEvent.fire(new NotificationEvent(CommonConstants.INSTANCE.ItemSavedSuccessfully()));
+            document.setOriginalHashCode(currentHashCode);
         };
     }
-
 }
