@@ -487,6 +487,34 @@ public class Attributes
         return false;
     }
 
+    public final void setSelectionBoundsOffset(final double offset)
+    {
+        put(Attribute.SELECTION_BOUNDS_OFFSET.getProperty(), offset);
+    }
+
+    public final double getSelectionBoundsOffset()
+    {
+        if (isDefined(Attribute.SELECTION_BOUNDS_OFFSET))
+        {
+            return getDouble(Attribute.SELECTION_BOUNDS_OFFSET.getProperty());
+        }
+        return 0d;
+    }
+
+    public final void setSelectionStrokeOffset(final double offset)
+    {
+        put(Attribute.SELECTION_STROKE_OFFSET.getProperty(), offset);
+    }
+
+    public final double getSelectionStrokeOffset()
+    {
+        if (isDefined(Attribute.SELECTION_STROKE_OFFSET))
+        {
+            return getDouble(Attribute.SELECTION_STROKE_OFFSET.getProperty());
+        }
+        return 0d;
+    }
+
     public final void setListening(final boolean listening)
     {
         put(Attribute.LISTENING.getProperty(), listening);

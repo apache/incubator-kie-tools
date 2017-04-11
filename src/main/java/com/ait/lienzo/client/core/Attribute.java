@@ -77,6 +77,10 @@ public class Attribute
 
     public static final Attribute           FILL_BOUNDS_FOR_SELECTION        = new Attribute("fillBoundsForSelection", MESSAGES.fillBoundsForSelectionLabel(), MESSAGES.fillBoundsForSelectionDescription(), AttributeType.BOOLEAN_TYPE);
 
+    public static final Attribute           SELECTION_BOUNDS_OFFSET          = new Attribute("selectionBoundsOffset", MESSAGES.selectionBoundsOffsetLabel(), MESSAGES.selectionBoundsOffsetDescription(), AttributeType.NUMBER_TYPE);
+
+    public static final Attribute           SELECTION_STROKE_OFFSET          = new Attribute("selectionStrokeOffset", MESSAGES.selectionStrokeOffsetLabel(), MESSAGES.selectionStrokeOffsetDescription(), AttributeType.NUMBER_TYPE);
+
     public static final Attribute           DRAG_CONSTRAINT                  = new Attribute("dragConstraint", MESSAGES.dragConstraintLabel(), MESSAGES.dragConstraintDescription(), AttributeType.DRAG_CONSTRAINT_TYPE);
 
     public static final Attribute           DRAG_BOUNDS                      = new Attribute("dragBounds", MESSAGES.dragBoundsLabel(), MESSAGES.dragBoundsDescription(), AttributeType.DRAG_BOUNDS_TYPE);

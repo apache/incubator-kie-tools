@@ -398,12 +398,16 @@ public abstract class Shape <T extends Shape<T>> extends Node<T>implements IPrim
                         if (wide > 0)
                         {
                             final double high = bbox.getHeight();
+                            final double offset = getSelectionBoundsOffset();
 
                             if (high > 0)
                             {
                                 context.setFillColor(color);
 
-                                context.fillRect(bbox.getX(), bbox.getY(), wide, high);
+                                context.fillRect(bbox.getX() - offset,
+                                                 bbox.getY() - offset,
+                                                 wide + offset,
+                                                 high + offset);
                             }
                         }
                     }
@@ -553,6 +557,8 @@ public abstract class Shape <T extends Shape<T>> extends Node<T>implements IPrim
         {
             return false;
         }
+
+        double strokeOffset = 0;
         if (context.isSelection())
         {
             color = getColorKey();
@@ -562,6 +568,8 @@ public abstract class Shape <T extends Shape<T>> extends Node<T>implements IPrim
                 return false;
             }
             context.save();
+
+            strokeOffset = getSelectionStrokeOffset();
         }
         else
         {
@@ -571,7 +579,7 @@ public abstract class Shape <T extends Shape<T>> extends Node<T>implements IPrim
         }
         context.setStrokeColor(color);
 
-        context.setStrokeWidth(width);
+        context.setStrokeWidth(width + strokeOffset);
 
         if (false == attr.hasExtraStrokeAttributes())
         {
@@ -1057,6 +1065,45 @@ public abstract class Shape <T extends Shape<T>> extends Node<T>implements IPrim
         getAttributes().setFillBoundsForSelection(selection);
 
         return cast();
+    }
+
+    /**
+     * Sets the number of pixels that are used to increase
+     * the bounding box on the selection layer.
+     */
+    public final T setSelectionBoundsOffset(final double offset)
+    {
+        getAttributes().setSelectionBoundsOffset(offset);
+
+        return cast();
+    }
+
+    /**
+     * Gets the number of pixels that are used to increase
+     * the bounding box on the selection layer.
+     */
+    public final double getSelectionBoundsOffset()
+    {
+        return getAttributes().getSelectionBoundsOffset();
+    }
+
+    /**
+     * Sets the number of pixels that are used to increase
+     * stroke size on the selection layer.
+     */
+    public final T setSelectionStrokeOffset(final double offset)
+    {
+        getAttributes().setSelectionStrokeOffset(offset);
+
+        return cast();
+    }
+
+    /**
+     * Gets the number of pixels that are used to increase
+     * stroke size on the selection layer.
+     */
+    public final double getSelectionStrokeOffset() {
+        return getAttributes().getSelectionStrokeOffset();
     }
 
     /**
@@ -1769,6 +1816,10 @@ public abstract class Shape <T extends Shape<T>> extends Node<T>implements IPrim
             addAttribute(Attribute.FILL_SHAPE_FOR_SELECTION);
 
             addAttribute(Attribute.FILL_BOUNDS_FOR_SELECTION);
+
+            addAttribute(Attribute.SELECTION_BOUNDS_OFFSET);
+
+            addAttribute(Attribute.SELECTION_STROKE_OFFSET);
 
             addAttribute(Attribute.EVENT_PROPAGATION_MODE);
         }
