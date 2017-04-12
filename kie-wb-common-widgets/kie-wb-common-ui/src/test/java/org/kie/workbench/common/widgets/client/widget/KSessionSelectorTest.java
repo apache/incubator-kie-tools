@@ -32,11 +32,12 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.mocks.CallerMock;
+import org.uberfire.mvp.Command;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class KSessionSelectorTest {
 
     @Mock
@@ -53,175 +54,204 @@ public class KSessionSelectorTest {
     @Mock
     private KModuleService kModuleService;
 
-    private KSessionSelector     selector;
+    private KSessionSelector selector;
     private KSessionSelectorView view;
-    private KModuleModel         kModule;
+    private KModuleModel kModule;
 
     @Before
     public void setUp() throws Exception {
 
-        kieProject = spy( new KieProject() );
+        kieProject = spy(new KieProject());
 
-        when( kieProject.getKModuleXMLPath() ).thenReturn( kmodulePath );
+        when(kieProject.getKModuleXMLPath()).thenReturn(kmodulePath);
 
         kModule = new KModuleModel();
 
-        kModule.getKBases().put( "kbase1", getKBase( "kbase1", "ksession1" ) );
-        kModule.getKBases().put( "kbase2", getKBase( "kbase2", "ksession2", "ksession3" ) );
-        kModule.getKBases().put( "kbase3", getKBase( "kbase3" ) );
+        kModule.getKBases().put("kbase1",
+                                getKBase("kbase1",
+                                         "ksession1"));
+        kModule.getKBases().put("kbase2",
+                                getKBase("kbase2",
+                                         "ksession2",
+                                         "ksession3"));
+        kModule.getKBases().put("kbase3",
+                                getKBase("kbase3"));
 
-        view = mock( KSessionSelectorView.class );
+        view = mock(KSessionSelectorView.class);
 
+        when(kieProjectService.resolveProject(path)).thenReturn(kieProject);
 
-        when( kieProjectService.resolveProject( path ) ).thenReturn( kieProject );
-
-        when( kModuleService.load( kmodulePath ) ).thenReturn( kModule );
+        when(kModuleService.load(kmodulePath)).thenReturn(kModule);
 
         selector = new KSessionSelector(
                 view,
-                new CallerMock<KieProjectService>( kieProjectService ),
-                new CallerMock<KModuleService>( kModuleService ) );
+                new CallerMock<>(kieProjectService),
+                new CallerMock<>(kModuleService));
     }
 
     @Test
     public void testSetPresenter() throws Exception {
-        view.setPresenter( selector );
+        view.setPresenter(selector);
     }
 
     @Test
     public void clearPreviousSetUp() throws
-                                     Exception {
-        selector.init( path,
-                       "first" );
-        verify( view ).clear();
+            Exception {
+        selector.init(path,
+                      "first");
+        verify(view).clear();
 
-        selector.init( path,
-                       "second" );
-        verify( view,
-                times( 2 ) ).clear();
+        selector.init(path,
+                      "second");
+        verify(view,
+               times(2)).clear();
     }
 
     @Test
     public void testSetKBaseAndKSession() throws Exception {
 
-        selector.init( path,
-                       "ksession2" );
+        selector.init(path,
+                      "ksession2");
 
-        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass( List.class );
-        verify( view ).setKSessions( listArgumentCaptor.capture() );
+        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
+        verify(view).setKSessions(listArgumentCaptor.capture());
         List ksessionNamesList = listArgumentCaptor.getValue();
-        assertEquals( 2, ksessionNamesList.size() );
+        assertEquals(2,
+                     ksessionNamesList.size());
 
-        verify( view ).setSelected( "kbase2", "ksession2" );
+        verify(view).setSelected("kbase2",
+                                 "ksession2");
     }
 
     @Test
     public void testKBaseAndKSessionNotPreviouslySet() throws Exception {
-        selector.init( path,
-                       null );
+        selector.init(path,
+                      null);
 
+        verify(view).addKBase("kbase1");
 
-        verify( view ).addKBase( "kbase1" );
-
-        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass( List.class );
-        verify( view ).setKSessions( listArgumentCaptor.capture() );
+        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
+        verify(view).setKSessions(listArgumentCaptor.capture());
         List ksessionNamesList = listArgumentCaptor.getValue();
-        assertEquals( 1, ksessionNamesList.size() );
+        assertEquals(1,
+                     ksessionNamesList.size());
 
-        verify( view ).setSelected( "kbase1", "ksession1" );
+        verify(view).setSelected("kbase1",
+                                 "ksession1");
     }
 
     @Test
     public void testEmpty() throws Exception {
         // No kbases or ksessions defined in the kmodule.xml
-        when( kModuleService.load( kmodulePath ) ).thenReturn( new KModuleModel() );
+        when(kModuleService.load(kmodulePath)).thenReturn(new KModuleModel());
 
-        selector.init( path,
-                       null );
+        selector.init(path,
+                      null);
 
-        verify( view ).addKBase( "defaultKieBase" );
+        verify(view).addKBase("defaultKieBase");
 
-        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass( List.class );
-        verify( view ).setKSessions( listArgumentCaptor.capture() );
+        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
+        verify(view).setKSessions(listArgumentCaptor.capture());
 
-        verify( view ).setSelected( eq( "defaultKieBase" ), eq( "defaultKieSession" ) );
+        verify(view).setSelected(eq("defaultKieBase"),
+                                 eq("defaultKieSession"));
 
         List ksessionNamesList = listArgumentCaptor.getValue();
-        assertEquals( 1, ksessionNamesList.size() );
+        assertEquals(1,
+                     ksessionNamesList.size());
 
-        assertEquals( "defaultKieSession", ksessionNamesList.iterator().next() );
+        assertEquals("defaultKieSession",
+                     ksessionNamesList.iterator().next());
     }
 
     @Test
     public void testKSessionDefinedInScenarioNoLongerExists() throws Exception {
 
-        selector.init( path,
-                       "ksessionThatHasBeenRemovedFromKModuleXML" );
+        selector.init(path,
+                      "ksessionThatHasBeenRemovedFromKModuleXML");
 
-        verify( view ).addKBase( "kbase1" );
-        verify( view ).addKBase( "kbase2" );
-        verify( view ).addKBase( "kbase3" );
-        verify( view ).addKBase( "---" );
+        verify(view).addKBase("kbase1");
+        verify(view).addKBase("kbase2");
+        verify(view).addKBase("kbase3");
+        verify(view).addKBase("---");
 
-        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass( List.class );
-        verify( view ).setKSessions( listArgumentCaptor.capture() );
+        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
+        verify(view).setKSessions(listArgumentCaptor.capture());
 
-        verify( view ).setSelected( eq( "---" ), eq( "ksessionThatHasBeenRemovedFromKModuleXML" ) );
+        verify(view).setSelected(eq("---"),
+                                 eq("ksessionThatHasBeenRemovedFromKModuleXML"));
 
-        verify( view ).showWarningSelectedKSessionDoesNotExist();
+        verify(view).showWarningSelectedKSessionDoesNotExist();
 
         List ksessionNamesList = listArgumentCaptor.getValue();
-        assertEquals( 1, ksessionNamesList.size() );
+        assertEquals(1,
+                     ksessionNamesList.size());
 
-        assertEquals( "ksessionThatHasBeenRemovedFromKModuleXML", ksessionNamesList.get( 0 ) );
+        assertEquals("ksessionThatHasBeenRemovedFromKModuleXML",
+                     ksessionNamesList.get(0));
     }
 
     @Test
     public void testKSessionDefinedInScenarioNoLongerExistsAndKModuleIsEmpty() throws Exception {
         // No kbases or ksessions defined in the kmodule.xml
-        when( kModuleService.load( kmodulePath ) ).thenReturn( new KModuleModel() );
+        when(kModuleService.load(kmodulePath)).thenReturn(new KModuleModel());
 
-        selector.init( path,
-                       "ksessionThatHasBeenRemovedFromKModuleXML" );
+        selector.init(path,
+                      "ksessionThatHasBeenRemovedFromKModuleXML");
 
-        verify( view ).addKBase( "defaultKieBase" );
-        verify( view ).addKBase( "---" );
+        verify(view).addKBase("defaultKieBase");
+        verify(view).addKBase("---");
 
-        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass( List.class );
-        verify( view ).setKSessions( listArgumentCaptor.capture() );
+        ArgumentCaptor<List> listArgumentCaptor = ArgumentCaptor.forClass(List.class);
+        verify(view).setKSessions(listArgumentCaptor.capture());
 
-        verify( view ).setSelected( eq( "---" ), eq( "ksessionThatHasBeenRemovedFromKModuleXML" ) );
+        verify(view).setSelected(eq("---"),
+                                 eq("ksessionThatHasBeenRemovedFromKModuleXML"));
 
-        verify( view ).showWarningSelectedKSessionDoesNotExist();
+        verify(view).showWarningSelectedKSessionDoesNotExist();
 
         List ksessionNamesList = listArgumentCaptor.getValue();
-        assertEquals( 1, ksessionNamesList.size() );
+        assertEquals(1,
+                     ksessionNamesList.size());
 
-        assertEquals( "ksessionThatHasBeenRemovedFromKModuleXML", ksessionNamesList.get( 0 ) );
+        assertEquals("ksessionThatHasBeenRemovedFromKModuleXML",
+                     ksessionNamesList.get(0));
     }
 
     @Test
     public void testChangeSelection() throws Exception {
 
-        selector.init( path,
-                       "ksessionThatHasBeenRemovedFromKModuleXML" );
+        selector.init(path,
+                      "ksessionThatHasBeenRemovedFromKModuleXML");
 
-        reset( view );
+        reset(view);
 
-        selector.onKBaseSelected( "kbase2" );
+        selector.onKBaseSelected("kbase2");
 
-        verify( view ).setSelected( "kbase2",
-                                    "ksession2" );
+        verify(view).setSelected("kbase2",
+                                 "ksession2");
     }
 
-    private KBaseModel getKBase( final String kbaseName,
-                                 final String... ksessionNames ) {
+    @Test
+    public void onSelectionChange() {
+        Command command = mock(Command.class);
+
+        selector.setSelectionChangeHandler(command);
+
+        selector.onSelectionChange();
+
+        verify(command,
+               times(1)).execute();
+    }
+
+    private KBaseModel getKBase(final String kbaseName,
+                                final String... ksessionNames) {
         return new KBaseModel() {{
-            setName( kbaseName );
-            for ( final String ksessionName : ksessionNames ) {
-                getKSessions().add( new KSessionModel() {{
-                    setName( ksessionName );
-                }} );
+            setName(kbaseName);
+            for (final String ksessionName : ksessionNames) {
+                getKSessions().add(new KSessionModel() {{
+                    setName(ksessionName);
+                }});
             }
         }};
     }

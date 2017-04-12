@@ -268,12 +268,6 @@ public interface CommonConstants
 
     String PromptResetPerspectives();
 
-    String WarningTheSelectedKSessionDoesNotExist();
-
-    String KBase();
-
-    String KSession();
-
     String Workbench_Settings();
 
     String Advanced();

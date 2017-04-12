@@ -17,35 +17,57 @@
 package org.kie.workbench.common.widgets.client.widget;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.jboss.errai.common.client.dom.Document;
+import org.jboss.errai.common.client.dom.Label;
+import org.jboss.errai.common.client.dom.Select;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class KSessionSelectorViewImplTest {
+
+    @Mock
+    private Document document;
+
+    @Mock
+    private Select kBaseSelect;
+
+    @Mock
+    private Select kSessionSelect;
+
+    @Mock
+    private Label warningLabel;
+
+    @Mock
+    private KSessionSelector presenter;
 
     private KSessionSelectorViewImpl kSessionSelectorView;
 
     @Before
     public void setUp() throws Exception {
-        kSessionSelectorView = spy( new KSessionSelectorViewImpl() );
-
+        kSessionSelectorView = spy(new KSessionSelectorViewImpl(document,
+                                                                kBaseSelect,
+                                                                kSessionSelect,
+                                                                warningLabel));
+        kSessionSelectorView.setPresenter(presenter);
     }
 
     @Test
     public void testSetSelected() throws Exception {
-        kSessionSelectorView.setSelected( "kbaseName",
-                                          "ksessionName" );
+        kSessionSelectorView.setSelected("kbaseName",
+                                         "ksessionName");
 
-        verify( kSessionSelectorView ).fireValueChanged();
+        verify(kSessionSelectorView).onSelectionChange();
     }
 
     @Test
     public void testName() throws Exception {
-        kSessionSelectorView.onKSessionSelected( null );
+        kSessionSelectorView.onKSessionSelected(null);
 
-        verify( kSessionSelectorView ).fireValueChanged();
+        verify(kSessionSelectorView).onSelectionChange();
     }
 }

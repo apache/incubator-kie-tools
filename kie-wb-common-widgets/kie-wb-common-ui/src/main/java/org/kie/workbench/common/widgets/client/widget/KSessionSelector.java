@@ -20,13 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
-import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.services.shared.kmodule.KBaseModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleModel;
 import org.kie.workbench.common.services.shared.kmodule.KModuleService;
@@ -34,104 +34,109 @@ import org.kie.workbench.common.services.shared.kmodule.KSessionModel;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.vfs.Path;
+import org.uberfire.commons.validation.PortablePreconditions;
+import org.uberfire.mvp.Command;
 
 public class KSessionSelector
-        implements IsWidget,
-                   SelectionChangeEvent.HasSelectionChangedHandlers {
+        implements IsWidget {
 
-    private static String DEFAULT_KIE_BASE    = "defaultKieBase";
+    private static String DEFAULT_KIE_BASE = "defaultKieBase";
     private static String DEFAULT_KIE_SESSION = "defaultKieSession";
-    private static String NON_EXISTING_KBASE  = "---";
+    private static String NON_EXISTING_KBASE = "---";
 
-    private KSessionSelectorView      view;
+    private KSessionSelectorView view;
     private Caller<KieProjectService> projectService;
 
     private Caller<KModuleService> kModuleService;
-    private KModuleModel           kmodule;
+    private KModuleModel kmodule;
+
+    private Command selectionHandler;
 
     @Inject
-    public KSessionSelector( final KSessionSelectorView view,
-                             final Caller<KieProjectService> projectService,
-                             final Caller<KModuleService> kModuleService ) {
+    public KSessionSelector(final KSessionSelectorView view,
+                            final Caller<KieProjectService> projectService,
+                            final Caller<KModuleService> kModuleService) {
         this.view = view;
         this.projectService = projectService;
         this.kModuleService = kModuleService;
 
-        view.setPresenter( this );
+        view.setPresenter(this);
     }
 
-    public void init( final Path path,
-                      final String ksession ) {
-        projectService.call( getSuccessfulResolveProjectCallback( ksession ) ).resolveProject( path );
+    public void init(final Path path,
+                     final String ksession) {
+        projectService.call(getSuccessfulResolveProjectCallback(ksession)).resolveProject(path);
     }
 
-    private RemoteCallback<KieProject> getSuccessfulResolveProjectCallback( final String currentKSession ) {
+    private RemoteCallback<KieProject> getSuccessfulResolveProjectCallback(final String currentKSession) {
         return new RemoteCallback<KieProject>() {
             @Override
-            public void callback( KieProject project ) {
-                kModuleService.call( getSuccessfulLoadKModuleCallback( currentKSession ) ).load( project.getKModuleXMLPath() );
+            public void callback(KieProject project) {
+                kModuleService.call(getSuccessfulLoadKModuleCallback(currentKSession)).load(project.getKModuleXMLPath());
             }
         };
     }
 
-    private RemoteCallback<KModuleModel> getSuccessfulLoadKModuleCallback( final String currentKSession ) {
+    private RemoteCallback<KModuleModel> getSuccessfulLoadKModuleCallback(final String currentKSession) {
         return new RemoteCallback<KModuleModel>() {
             @Override
-            public void callback( KModuleModel kmodule ) {
+            public void callback(KModuleModel kmodule) {
                 KSessionSelector.this.kmodule = kmodule;
 
-                initKBases( currentKSession );
-                selectCurrentKBaseAndKSession( currentKSession );
+                initKBases(currentKSession);
+                selectCurrentKBaseAndKSession(currentKSession);
             }
         };
     }
 
-    private void selectCurrentKBaseAndKSession( final String currentKSession ) {
-        if ( isNotNullOrEmpty( currentKSession ) && kmoduleContainsCurrentKSession( currentKSession ) ) {
-            selectFromModel( currentKSession );
+    private void selectCurrentKBaseAndKSession(final String currentKSession) {
+        if (isNotNullOrEmpty(currentKSession) && kmoduleContainsCurrentKSession(currentKSession)) {
+            selectFromModel(currentKSession);
         } else {
             selectFirstKBaseAndKSession();
         }
     }
 
-    private void initKBases( final String currentKSession ) {
+    private void initKBases(final String currentKSession) {
         view.clear();
 
-        if ( kmodule.getKBases().isEmpty() ) {
-            addMockKBaseModel( DEFAULT_KIE_BASE, DEFAULT_KIE_SESSION );
-            view.addKBase( DEFAULT_KIE_BASE );
+        if (kmodule.getKBases().isEmpty()) {
+            addMockKBaseModel(DEFAULT_KIE_BASE,
+                              DEFAULT_KIE_SESSION);
+            view.addKBase(DEFAULT_KIE_BASE);
         } else {
-            for ( KBaseModel kBase : kmodule.getKBases().values() ) {
-                view.addKBase( kBase.getName() );
+            for (KBaseModel kBase : kmodule.getKBases().values()) {
+                view.addKBase(kBase.getName());
             }
         }
-        if ( isNotNullOrEmpty( currentKSession ) && !kmoduleContainsCurrentKSession( currentKSession ) ) {
-            addMockKBaseModel( NON_EXISTING_KBASE,
-                               currentKSession );
-            view.addKBase( NON_EXISTING_KBASE );
+        if (isNotNullOrEmpty(currentKSession) && !kmoduleContainsCurrentKSession(currentKSession)) {
+            addMockKBaseModel(NON_EXISTING_KBASE,
+                              currentKSession);
+            view.addKBase(NON_EXISTING_KBASE);
             view.showWarningSelectedKSessionDoesNotExist();
         }
     }
 
-    private void addMockKBaseModel( final String kbaseName,
-                                    final String ksessionsName ) {
+    private void addMockKBaseModel(final String kbaseName,
+                                   final String ksessionsName) {
         KBaseModel kbaseModel = new KBaseModel();
-        kbaseModel.setName( kbaseName );
+        kbaseModel.setName(kbaseName);
         KSessionModel ksessionModel = new KSessionModel();
-        ksessionModel.setName( ksessionsName );
-        kbaseModel.getKSessions().add( ksessionModel );
-        kmodule.getKBases().put( kbaseName, kbaseModel );
+        ksessionModel.setName(ksessionsName);
+        kbaseModel.getKSessions().add(ksessionModel);
+        kmodule.getKBases().put(kbaseName,
+                                kbaseModel);
     }
 
-    private boolean isNotNullOrEmpty( final String ksession ) {
+    private boolean isNotNullOrEmpty(final String ksession) {
         return ksession != null && !ksession.trim().isEmpty();
     }
 
-    private boolean kmoduleContainsCurrentKSession( final String currentKSession ) {
-        if ( isNotNullOrEmpty( currentKSession ) ) {
-            for ( KBaseModel kbase : kmodule.getKBases().values() ) {
-                for ( KSessionModel ksession : kbase.getKSessions() ) {
-                    if ( ksession.getName().equals( currentKSession ) ) {
+    private boolean kmoduleContainsCurrentKSession(final String currentKSession) {
+        if (isNotNullOrEmpty(currentKSession)) {
+            for (KBaseModel kbase : kmodule.getKBases().values()) {
+                for (KSessionModel ksession : kbase.getKSessions()) {
+                    if (ksession.getName().equals(currentKSession)) {
                         return true;
                     }
                 }
@@ -141,25 +146,25 @@ public class KSessionSelector
         return false;
     }
 
-    public void onKBaseSelected( final String kbaseName ) {
-        final List<KSessionModel> ksessions = kmodule.getKBases().get( kbaseName ).getKSessions();
-        listKSessions( ksessions );
+    public void onKBaseSelected(final String kbaseName) {
+        final List<KSessionModel> ksessions = kmodule.getKBases().get(kbaseName).getKSessions();
+        listKSessions(ksessions);
 
-        view.setSelected( kbaseName,
-                          ksessions.iterator().next().getName() );
+        view.setSelected(kbaseName,
+                         ksessions.iterator().next().getName());
     }
 
-    public String getSelectedKSessionName(){
+    public String getSelectedKSessionName() {
         return view.getSelectedKSessionName();
     }
 
-    private void selectFromModel( final String currentKSession ) {
-        for ( KBaseModel kbase : kmodule.getKBases().values() ) {
-            for ( KSessionModel ksession : kbase.getKSessions() ) {
-                if ( ksession.getName().equals( currentKSession ) ) {
-                    listKSessions( kmodule.getKBases().get( kbase.getName() ).getKSessions() );
-                    view.setSelected( kbase.getName(),
-                                      currentKSession );
+    private void selectFromModel(final String currentKSession) {
+        for (KBaseModel kbase : kmodule.getKBases().values()) {
+            for (KSessionModel ksession : kbase.getKSessions()) {
+                if (ksession.getName().equals(currentKSession)) {
+                    listKSessions(kmodule.getKBases().get(kbase.getName()).getKSessions());
+                    view.setSelected(kbase.getName(),
+                                     currentKSession);
                     break;
                 }
             }
@@ -172,32 +177,32 @@ public class KSessionSelector
 
         List<KSessionModel> ksessions = firstKBase.getKSessions();
 
-        listKSessions( ksessions );
+        listKSessions(ksessions);
 
-        view.setSelected( firstKBase.getName(),
-                          ksessions.iterator().next().getName() );
+        view.setSelected(firstKBase.getName(),
+                         ksessions.iterator().next().getName());
     }
 
-    private void listKSessions( List<KSessionModel> ksessions ) {
+    private void listKSessions(List<KSessionModel> ksessions) {
         List<String> ksessionNames = new ArrayList<String>();
-        for ( KSessionModel ksession : ksessions ) {
-            ksessionNames.add( ksession.getName() );
+        for (KSessionModel ksession : ksessions) {
+            ksessionNames.add(ksession.getName());
         }
-        view.setKSessions( ksessionNames );
+        view.setKSessions(ksessionNames);
     }
 
     @Override
     public Widget asWidget() {
-        return view.asWidget();
+        return ElementWrapperWidget.getWidget(view.getElement());
     }
 
-    @Override
-    public HandlerRegistration addSelectionChangeHandler( final SelectionChangeEvent.Handler handler ) {
-        return view.addSelectionChangeHandler( handler );
+    public void onSelectionChange() {
+        if ( selectionHandler != null ) {
+            selectionHandler.execute();
+        }
     }
 
-    @Override
-    public void fireEvent( final GwtEvent<?> gwtEvent ) {
-        view.fireEvent( gwtEvent );
+    public void setSelectionChangeHandler(final Command handler) {
+        this.selectionHandler = PortablePreconditions.checkNotNull("handler", handler);
     }
 }

@@ -17,117 +17,115 @@
 package org.kie.workbench.common.widgets.client.widget;
 
 import java.util.List;
+import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.SelectionChangeEvent;
-import org.gwtbootstrap3.client.ui.Label;
-import org.gwtbootstrap3.client.ui.ListBox;
+import org.jboss.errai.common.client.dom.Document;
+import org.jboss.errai.common.client.dom.Label;
+import org.jboss.errai.common.client.dom.Option;
+import org.jboss.errai.common.client.dom.Select;
+import org.jboss.errai.ui.shared.api.annotations.DataField;
+import org.jboss.errai.ui.shared.api.annotations.EventHandler;
+import org.jboss.errai.ui.shared.api.annotations.Templated;
 
-public class KSessionSelectorViewImpl
-        extends Composite
-        implements KSessionSelectorView {
+@Templated
+public class KSessionSelectorViewImpl implements KSessionSelectorView {
 
-    private static Binder uiBinder = GWT.create( Binder.class );
+    Document document;
 
-    interface Binder
-            extends
-            UiBinder<Widget, KSessionSelectorViewImpl> {
+    @DataField("kbaseSelect")
+    Select kbaseSelect;
 
-    }
+    @Inject
+    @DataField("ksessionSelect")
+    Select ksessionSelect;
 
-    @UiField
-    ListBox kbases;
-
-    @UiField
-    ListBox ksessions;
-
-    @UiField
-    Label   warning;
+    @Inject
+    @DataField("warningLabel")
+    Label warningLabel;
 
     private KSessionSelector presenter;
 
     public KSessionSelectorViewImpl() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+    }
+
+    @Inject
+    public KSessionSelectorViewImpl(final Document document,
+                                    final Select kbaseSelect,
+                                    final Select ksessionSelect,
+                                    final Label warningLabel) {
+        this.document = document;
+        this.kbaseSelect = kbaseSelect;
+        this.ksessionSelect = ksessionSelect;
+        this.warningLabel = warningLabel;
     }
 
     @Override
-    public void setPresenter( final KSessionSelector presenter ) {
+    public void setPresenter(final KSessionSelector presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setSelected( final String kbase,
-                             final String ksession ) {
-        setSelectedValue( kbases,
-                          kbase );
-        setSelectedValue( ksessions,
-                          ksession );
-        fireValueChanged();
+    public void setSelected(final String kbase,
+                            final String ksession) {
+        kbaseSelect.setValue(kbase);
+        ksessionSelect.setValue(ksession);
+
+        onSelectionChange();
     }
 
     @Override
-    public void addKBase( final String name ) {
-        kbases.addItem( name );
+    public void addKBase(final String name) {
+        kbaseSelect.add(createOption(name));
     }
 
     @Override
-    public void setKSessions( final List<String> ksessions ) {
-        this.ksessions.clear();
-        for ( String ksession : ksessions ) {
-            this.ksessions.addItem( ksession );
+    public void setKSessions(final List<String> ksessions) {
+        removeChildren(ksessionSelect);
+        for (String ksession : ksessions) {
+            ksessionSelect.add(createOption(ksession));
+        }
+    }
+
+    private Option createOption(final String value) {
+        Option option = (Option) document.createElement("option");
+        option.setText(value);
+        return option;
+    }
+
+    private void removeChildren(final Select select) {
+        while (select.hasChildNodes()) {
+            select.removeChild(select.getLastChild());
         }
     }
 
     @Override
     public void showWarningSelectedKSessionDoesNotExist() {
-        warning.setVisible( true );
+        warningLabel.setHidden(false);
     }
 
     @Override
     public void clear() {
-        kbases.clear();
-        ksessions.clear();
+        removeChildren(kbaseSelect);
+        removeChildren(ksessionSelect);
     }
 
     @Override
     public String getSelectedKSessionName() {
-        return ksessions.getItemText( ksessions.getSelectedIndex() );
+        return ksessionSelect.getValue();
     }
 
-    void setSelectedValue( final ListBox listbox,
-                           final String value ) {
-        for ( int i = 0; i < listbox.getItemCount(); i++ ) {
-            if ( listbox.getValue( i ).equals( value ) ) {
-                listbox.setSelectedIndex( i );
-                return;
-            }
-        }
+    @EventHandler("kbaseSelect")
+    public void onKBaseChange(final ChangeEvent event) {
+        presenter.onKBaseSelected(kbaseSelect.getValue());
     }
 
-    @UiHandler( "kbases" )
-    public void onKBaseSelected( final ChangeEvent event ) {
-        presenter.onKBaseSelected( kbases.getItemText( kbases.getSelectedIndex() ) );
+    @EventHandler("ksessionSelect")
+    public void onKSessionSelected(final ChangeEvent event) {
+        onSelectionChange();
     }
 
-    @UiHandler( "ksessions" )
-    public void onKSessionSelected( final ChangeEvent event ) {
-        fireValueChanged();
-    }
-
-    @Override
-    public HandlerRegistration addSelectionChangeHandler( final SelectionChangeEvent.Handler handler ) {
-        return addHandler( handler,
-                           SelectionChangeEvent.getType() );
-    }
-
-    void fireValueChanged() {
-        SelectionChangeEvent.fire( this );
+    void onSelectionChange() {
+        presenter.onSelectionChange();
     }
 }

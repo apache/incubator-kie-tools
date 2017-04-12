@@ -18,22 +18,19 @@ package org.kie.workbench.common.widgets.client.widget;
 
 import java.util.List;
 
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.view.client.SelectionChangeEvent;
+import org.jboss.errai.ui.client.local.api.IsElement;
 
 public interface KSessionSelectorView
-        extends IsWidget,
-                SelectionChangeEvent.HasSelectionChangedHandlers {
+        extends IsElement {
 
-    void setPresenter( final KSessionSelector presenter );
+    void setPresenter(final KSessionSelector presenter);
 
-    void setSelected( final String kbase,
-                      final String ksession );
+    void setSelected(final String kbase,
+                     final String ksession);
 
-    void addKBase( final String name );
+    void addKBase(final String name);
 
-    void setKSessions( final List<String> ksessions );
+    void setKSessions(final List<String> ksessions);
 
     void showWarningSelectedKSessionDoesNotExist();
 
