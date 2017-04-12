@@ -24,13 +24,14 @@ public class ObjectFlatView extends AbstractFormFieldFlatView<Object> {
 
     protected MaskInterpreter<Object> interpreter;
 
-    public ObjectFlatView( String mask ) {
-        Assert.notNull( "Mask cannot be empty.", mask );
-        interpreter = new ClientMaskInterpreter<>( mask );
+    public ObjectFlatView(String mask) {
+        Assert.notNull("Mask cannot be empty.",
+                       mask);
+        interpreter = new ClientMaskInterpreter<>(mask);
     }
 
     @Override
-    public String renderValue( Object value ) {
-        return interpreter.render( value );
+    public String renderValue(Object value) {
+        return interpreter.render(value);
     }
 }

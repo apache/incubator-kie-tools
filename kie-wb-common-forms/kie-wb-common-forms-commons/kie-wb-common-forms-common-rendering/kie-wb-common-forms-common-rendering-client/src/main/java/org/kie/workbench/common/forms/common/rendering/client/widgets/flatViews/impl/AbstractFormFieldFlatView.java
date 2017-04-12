@@ -25,22 +25,22 @@ public abstract class AbstractFormFieldFlatView<T> extends Composite implements 
     protected HTML html = new HTML();
 
     public AbstractFormFieldFlatView() {
-        initWidget( html );
+        initWidget(html);
     }
 
     protected T value;
 
     @Override
-    public void setValue( T value ) {
+    public void setValue(T value) {
         this.value = value;
 
-        String text = renderValue( value );
+        String text = renderValue(value);
 
-        if ( text == null ) {
+        if (text == null) {
             text = "";
         }
 
-        html.setText( text );
+        html.setText(text);
     }
 
     @Override

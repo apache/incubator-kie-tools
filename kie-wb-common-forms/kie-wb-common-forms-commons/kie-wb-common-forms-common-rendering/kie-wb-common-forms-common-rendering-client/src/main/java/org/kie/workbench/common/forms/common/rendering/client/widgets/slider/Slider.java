@@ -26,16 +26,22 @@ import org.gwtbootstrap3.extras.slider.client.ui.base.constants.HandleType;
  */
 public class Slider extends org.gwtbootstrap3.extras.slider.client.ui.Slider {
 
-    public Slider( double min, double max, double precision, double step ) {
-        super( min, max, 0.0 );
-        setPrecision( precision );
-        setStep( step );
-        setHandle( HandleType.TRIANGLE );
-        setWidth( "100%" );
+    public Slider(double min,
+                  double max,
+                  double precision,
+                  double step) {
+        super(min,
+              max,
+              0.0);
+        setPrecision(precision);
+        setStep(step);
+        setHandle(HandleType.TRIANGLE);
+        setWidth("100%");
     }
 
     @Override
-    protected native void setValue( Element e, Double value ) /*-{
+    protected native void setValue(Element e,
+                                   Double value) /*-{
         $wnd.jQuery(e).slider(@org.gwtbootstrap3.extras.slider.client.ui.base.SliderCommand::SET_VALUE, value);
     }-*/;
 }

@@ -21,12 +21,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.test.model.Address;
 import org.kie.workbench.common.forms.dynamic.test.model.Employee;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.definition.CheckBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.integerBox.definition.IntegerBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.definition.TextAreaFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.definition.CheckBoxFieldDefinition;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.definition.TextAreaFieldDefinition;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
@@ -42,38 +42,43 @@ public class InheritanceFormRenderingContextGeneratorTest extends BasicFormRende
 
     @Test
     public void testCreateContextForModelWithInheritance() {
-        initTest( new Employee(), 8 );
+        initTest(new Employee(),
+                 8);
 
         FormDefinition form = context.getRootForm();
 
-        checkMarried( form.getFieldById( "married" ) );
-        checkAge( form.getFieldById( "age" ) );
-        checkAddress( form.getFieldById( "address" ) );
-        checkRole( form.getFieldById( "roleDescription" ) );
+        checkMarried(form.getFieldById("married"));
+        checkAge(form.getFieldById("age"));
+        checkAddress(form.getFieldById("address"));
+        checkRole(form.getFieldById("roleDescription"));
     }
 
-    protected void checkMarried( FieldDefinition field ) {
-        assertNotNull( field );
-        assertTrue( field instanceof CheckBoxFieldDefinition );
+    protected void checkMarried(FieldDefinition field) {
+        assertNotNull(field);
+        assertTrue(field instanceof CheckBoxFieldDefinition);
     }
 
-    protected void checkAge( FieldDefinition field ) {
-        assertNotNull( field );
-        assertTrue( field instanceof TextBoxFieldDefinition );
-        assertEquals( Integer.class.getName(), field.getStandaloneClassName() );
+    protected void checkAge(FieldDefinition field) {
+        assertNotNull(field);
+        assertTrue(field instanceof IntegerBoxFieldDefinition);
+        assertEquals(Integer.class.getName(),
+                     field.getStandaloneClassName());
     }
 
-    protected void checkAddress( FieldDefinition field ) {
-        assertNotNull( field );
-        assertTrue( field instanceof SubFormFieldDefinition );
-        assertEquals( Address.class.getName(), field.getStandaloneClassName() );
+    protected void checkAddress(FieldDefinition field) {
+        assertNotNull(field);
+        assertTrue(field instanceof SubFormFieldDefinition);
+        assertEquals(Address.class.getName(),
+                     field.getStandaloneClassName());
     }
 
-    protected void checkRole( FieldDefinition field ) {
-        assertNotNull( field );
-        assertTrue( field instanceof TextAreaFieldDefinition );
+    protected void checkRole(FieldDefinition field) {
+        assertNotNull(field);
+        assertTrue(field instanceof TextAreaFieldDefinition);
         TextAreaFieldDefinition textArea = (TextAreaFieldDefinition) field;
-        assertEquals( 4, textArea.getRows().intValue() );
-        assertEquals( "Role Description", textArea.getPlaceHolder() );
+        assertEquals(4,
+                     textArea.getRows().intValue());
+        assertEquals("Role Description",
+                     textArea.getPlaceHolder());
     }
 }

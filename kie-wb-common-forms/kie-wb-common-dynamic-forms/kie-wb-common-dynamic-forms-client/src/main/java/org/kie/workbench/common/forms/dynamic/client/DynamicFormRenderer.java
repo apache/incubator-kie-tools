@@ -25,15 +25,19 @@ import com.google.gwt.user.client.ui.Widget;
 import org.jboss.errai.common.client.api.Assert;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.databinding.client.api.Converter;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.IsFormView;
+import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.RequiresValueConverter;
 import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
 import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGeneratorManager;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
+import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.RequiresValueConverter;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.subform.widget.SubFormWidget;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContextGeneratorService;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
+import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHandler;
@@ -42,15 +46,18 @@ import org.uberfire.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.Command;
 
 @Dependent
-public class DynamicFormRenderer implements IsWidget, IsFormView {
+public class DynamicFormRenderer implements IsWidget,
+                                            IsFormView {
 
     public interface DynamicFormRendererView extends IsWidget {
-        void setPresenter( DynamicFormRenderer presenter );
 
-        void render( FormRenderingContext context );
+        void setPresenter(DynamicFormRenderer presenter);
+
+        void render(FormRenderingContext context);
+
         void bind();
 
-        FieldLayoutComponent getFieldLayoutComponentForField( FieldDefinition field );
+        FieldLayoutComponent getFieldLayoutComponentForField(FieldDefinition field);
 
         void clear();
     }
@@ -68,10 +75,10 @@ public class DynamicFormRenderer implements IsWidget, IsFormView {
     private DynamicFormModelGenerator dynamicFormModelGenerator;
 
     @Inject
-    public DynamicFormRenderer( DynamicFormRendererView view,
-                                Caller<FormRenderingContextGeneratorService> transformerService,
-                                FormHandlerGeneratorManager formHandlerGenerator,
-                                DynamicFormModelGenerator dynamicFormModelGenerator ) {
+    public DynamicFormRenderer(DynamicFormRendererView view,
+                               Caller<FormRenderingContextGeneratorService> transformerService,
+                               FormHandlerGeneratorManager formHandlerGenerator,
+                               DynamicFormModelGenerator dynamicFormModelGenerator) {
         this.view = view;
         this.transformerService = transformerService;
         this.formHandlerGenerator = formHandlerGenerator;
@@ -80,104 +87,134 @@ public class DynamicFormRenderer implements IsWidget, IsFormView {
 
     @PostConstruct
     protected void init() {
-        view.setPresenter( this );
+        view.setPresenter(this);
     }
 
-    public void renderDefaultForm( final Object model ) {
-        renderDefaultForm( model, RenderMode.EDIT_MODE, null );
+    public void renderDefaultForm(final Object model) {
+        renderDefaultForm(model,
+                          RenderMode.EDIT_MODE,
+                          null);
     }
 
-    public void renderDefaultForm( final Object model, RenderMode renderMode ) {
-        renderDefaultForm(model, renderMode, null);
+    public void renderDefaultForm(final Object model,
+                                  RenderMode renderMode) {
+        renderDefaultForm(model,
+                          renderMode,
+                          null);
     }
 
-    public void renderDefaultForm( final Object model, final Command callback ) {
-        renderDefaultForm(model, RenderMode.EDIT_MODE, callback );
+    public void renderDefaultForm(final Object model,
+                                  final Command callback) {
+        renderDefaultForm(model,
+                          RenderMode.EDIT_MODE,
+                          callback);
     }
 
-    public void renderDefaultForm( final Object model, final RenderMode renderMode, final Command callback ) {
-        PortablePreconditions.checkNotNull("model", model);
-        FormRenderingContext context = dynamicFormModelGenerator.getContextForModel( model );
-        if ( context != null ) {
-            doRenderDefaultForm(context, model, renderMode, callback);
+    public void renderDefaultForm(final Object model,
+                                  final RenderMode renderMode,
+                                  final Command callback) {
+        PortablePreconditions.checkNotNull("model",
+                                           model);
+        FormRenderingContext context = dynamicFormModelGenerator.getContextForModel(model);
+        if (context != null) {
+            doRenderDefaultForm(context,
+                                model,
+                                renderMode,
+                                callback);
         } else {
-            transformerService.call( new RemoteCallback<FormRenderingContext>() {
+            transformerService.call(new RemoteCallback<FormRenderingContext>() {
                 @Override
-                public void callback( FormRenderingContext context ) {
-                    doRenderDefaultForm(context, model, renderMode, callback);
+                public void callback(FormRenderingContext context) {
+                    doRenderDefaultForm(context,
+                                        model,
+                                        renderMode,
+                                        callback);
                 }
-            } ).createContext( model );
+            }).createContext(model);
         }
     }
 
-    protected void doRenderDefaultForm( FormRenderingContext context, final Object model, final RenderMode renderMode, final Command callback ) {
-        if ( renderMode != null ) {
+    protected void doRenderDefaultForm(FormRenderingContext context,
+                                       final Object model,
+                                       final RenderMode renderMode,
+                                       final Command callback) {
+        if (renderMode != null) {
             context.setRenderMode(renderMode);
         }
-        if ( context.getModel() == null ) {
+        if (context.getModel() == null) {
             context.setModel(model);
         }
         render(context);
-        if ( callback != null ) {
+        if (callback != null) {
             callback.execute();
         }
     }
 
-    public void render ( FormRenderingContext context ) {
-        Assert.notNull( "FormRenderingContext must not be null", context);
+    public void render(FormRenderingContext context) {
+        Assert.notNull("FormRenderingContext must not be null",
+                       context);
 
         this.context = context;
 
-        formHandler = formHandlerGenerator.getFormHandler( context );
+        formHandler = formHandlerGenerator.getFormHandler(context);
 
-        view.render( context );
-        if ( context.getModel() != null ) {
-            bind( context.getModel() );
+        view.render(context);
+        if (context.getModel() != null) {
+            bind(context.getModel());
         }
     }
 
-    public void bind( Object model ) {
-        if ( context != null && model != null ) {
-            context.setModel( model );
-            formHandler.setUp( model );
+    public void bind(Object model) {
+        if (context != null && model != null) {
+            context.setModel(model);
+            formHandler.setUp(model);
             view.bind();
         }
     }
 
-    protected void bind( FieldRenderer renderer ) {
-        doBind( renderer );
+    protected void bind(FieldRenderer renderer) {
+        doBind(renderer);
     }
 
-    protected void doBind( FieldRenderer renderer ) {
-        if ( isInitialized() &&  renderer.getFormField() != null) {
-            formHandler.registerInput( renderer.getFormField() );
+    protected void doBind(FieldRenderer renderer) {
+        if (isInitialized() && renderer.getFormField() != null) {
+            if (renderer instanceof RequiresValueConverter) {
+                Converter valueConverter = ((RequiresValueConverter) renderer).getConverter();
+                formHandler.registerInput(renderer.getFormField(),
+                                          valueConverter);
+            } else {
+                formHandler.registerInput(renderer.getFormField());
+            }
         }
     }
 
-    public void addFieldChangeHandler( FieldChangeHandler handler ) {
-        addFieldChangeHandler( null, handler );
+    public void addFieldChangeHandler(FieldChangeHandler handler) {
+        addFieldChangeHandler(null,
+                              handler);
     }
 
-    public void addFieldChangeHandler( String fieldName, FieldChangeHandler handler ) {
-        if ( context != null && isInitialized() ) {
-            if ( fieldName != null ) {
-                FieldDefinition field = context.getRootForm().getFieldByName( fieldName );
-                if ( field == null ) {
-                    throw new IllegalArgumentException( "Form doesn't contain any field identified by: '" + fieldName + "'" );
+    public void addFieldChangeHandler(String fieldName,
+                                      FieldChangeHandler handler) {
+        if (context != null && isInitialized()) {
+            if (fieldName != null) {
+                FieldDefinition field = context.getRootForm().getFieldByName(fieldName);
+                if (field == null) {
+                    throw new IllegalArgumentException("Form doesn't contain any field identified by: '" + fieldName + "'");
                 } else {
-                    formHandler.addFieldChangeHandler( fieldName, handler );
+                    formHandler.addFieldChangeHandler(fieldName,
+                                                      handler);
                 }
             } else {
-                formHandler.addFieldChangeHandler( handler );
+                formHandler.addFieldChangeHandler(handler);
             }
         }
     }
 
     public void unBind() {
-        if ( isInitialized() ) {
-            for ( FieldDefinition field : context.getRootForm().getFields() ) {
-                if ( field instanceof SubFormFieldDefinition ) {
-                    FieldLayoutComponent component = view.getFieldLayoutComponentForField( field );
+        if (isInitialized()) {
+            for (FieldDefinition field : context.getRootForm().getFields()) {
+                if (field instanceof SubFormFieldDefinition) {
+                    FieldLayoutComponent component = view.getFieldLayoutComponentForField(field);
                     SubFormWidget subFormWidget = (SubFormWidget) component.getFieldRenderer().getInputWidget();
                     subFormWidget.unBind();
                 }
@@ -187,30 +224,31 @@ public class DynamicFormRenderer implements IsWidget, IsFormView {
         }
     }
 
-    public void setModel( Object model ) {
-        bind( model );
+    public void setModel(Object model) {
+        bind(model);
     }
 
     public Object getModel() {
-        if ( formHandler != null ) {
+        if (formHandler != null) {
             return formHandler.getModel();
         }
         return null;
     }
 
-    public void switchToMode( RenderMode renderMode ) {
-        Assert.notNull( "RenderMode cannot be null", renderMode );
+    public void switchToMode(RenderMode renderMode) {
+        Assert.notNull("RenderMode cannot be null",
+                       renderMode);
         RenderMode currentMode = context.getRenderMode();
-        if ( context != null && isInitialized() && !currentMode.equals( renderMode ) ) {
+        if (context != null && isInitialized() && !currentMode.equals(renderMode)) {
 
-            context.setRenderMode( renderMode );
+            context.setRenderMode(renderMode);
 
-            if ( currentMode.equals( RenderMode.PRETTY_MODE )) {
-                render( context );
-            } else if ( renderMode.equals( RenderMode.PRETTY_MODE ) ) {
-                render( context );
+            if (currentMode.equals(RenderMode.PRETTY_MODE)) {
+                render(context);
+            } else if (renderMode.equals(RenderMode.PRETTY_MODE)) {
+                render(context);
             } else {
-                formHandler.setReadOnly( RenderMode.READ_ONLY_MODE.equals( renderMode ) );
+                formHandler.setReadOnly(RenderMode.READ_ONLY_MODE.equals(renderMode));
             }
         }
     }

@@ -16,13 +16,13 @@
 
 package org.kie.workbench.common.forms.common.rendering.client.widgets.flatViews.impl;
 
-
 import java.util.Date;
 
 public class DateFlatView extends AbstractFormFieldFlatView<Date> {
+
     @Override
-    public String renderValue( Date value ) {
-        if ( value == null ) {
+    public String renderValue(Date value) {
+        if (value == null) {
             return null;
         }
         return value.toString();

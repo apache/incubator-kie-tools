@@ -20,6 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasValue;
 import org.gwtbootstrap3.client.ui.gwt.FlowPanel;
 import org.gwtbootstrap3.extras.typeahead.client.base.Dataset;
 import org.gwtbootstrap3.extras.typeahead.client.ui.Typeahead;
@@ -44,36 +45,44 @@ public class BindableTypeAheadViewImpl<T> extends Composite implements BindableT
     private FlowPanel content;
 
     @Override
-    public void setPresenter( BindableTypeAhead<T> presenter ) {
+    public void setPresenter(BindableTypeAhead<T> presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void init( Dataset<T> dataset, String mask ) {
-        Assert.notNull( "Dataset cannot be null", dataset );
+    public void init(Dataset<T> dataset,
+                     String mask) {
+        Assert.notNull("Dataset cannot be null",
+                       dataset);
 
         content.clear();
 
-        typeahead = new Typeahead<T>( dataset );
+        typeahead = new Typeahead<T>(dataset);
 
-        interpreter = new ClientMaskInterpreter<T>( mask );
+        interpreter = new ClientMaskInterpreter<T>(mask);
 
-        content.add( typeahead );
+        content.add(typeahead);
 
-        typeahead.addTypeaheadSelectedHandler( event -> {
-            presenter.setValue( event.getSuggestion().getData(), true );
-        } );
+        typeahead.addTypeaheadSelectedHandler(event -> {
+            presenter.setValue(event.getSuggestion().getData(),
+                               true);
+        });
     }
 
     @Override
-    public void setValue( T value ) {
-        if ( typeahead != null ) {
+    public HasValue<T> wrapped() {
+        return presenter;
+    }
+
+    @Override
+    public void setValue(T value) {
+        if (typeahead != null) {
             typeahead.setValue(interpreter.render(value));
         }
     }
 
     @Override
-    public void setReadOnly( boolean readOnly ) {
-        typeahead.setReadOnly( readOnly );
+    public void setReadOnly(boolean readOnly) {
+        typeahead.setReadOnly(readOnly);
     }
 }

@@ -43,7 +43,7 @@ public class PictureFieldProvider extends BasicTypeFieldProvider<PictureFieldDef
 
     @Override
     public int getPriority() {
-        return 8;
+        return 9;
     }
 
     @Override

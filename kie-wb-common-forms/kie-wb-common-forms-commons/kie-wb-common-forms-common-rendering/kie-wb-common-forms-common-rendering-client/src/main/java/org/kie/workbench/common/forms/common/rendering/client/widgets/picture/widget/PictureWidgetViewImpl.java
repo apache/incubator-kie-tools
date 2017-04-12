@@ -77,18 +77,24 @@ public class PictureWidgetViewImpl extends Composite implements PictureWidgetVie
     }
 
     @Override
-    public void init( int width, int height, PictureWidget.TakePictureCallback callback ) {
+    public void init(int width,
+                     int height,
+                     PictureWidget.TakePictureCallback callback) {
         this.width = width;
         this.height = height;
 
         this.callback = callback;
 
-        if ( driver == null ) {
-            driver = PictureWidgetDriver.create( videoElement, canvasElement, imageElement.getElement() );
+        if (driver == null) {
+            driver = PictureWidgetDriver.create(videoElement,
+                                                canvasElement,
+                                                imageElement.getElement());
         }
 
-        videoContainer.getStyle().setWidth( width, Style.Unit.PX );
-        imageContainer.getStyle().setWidth( width, Style.Unit.PX );
+        videoContainer.getStyle().setWidth(width,
+                                           Style.Unit.PX);
+        imageContainer.getStyle().setWidth(width,
+                                           Style.Unit.PX);
 
         initDisplay();
     }
@@ -101,7 +107,7 @@ public class PictureWidgetViewImpl extends Composite implements PictureWidgetVie
     protected void initDisplay() {
         boolean isShowPicture = pictureUrl != null && !pictureUrl.isEmpty();
 
-        if ( isShowPicture ) {
+        if (isShowPicture) {
             showPicture();
         } else {
             showCapturePicture();
@@ -109,58 +115,59 @@ public class PictureWidgetViewImpl extends Composite implements PictureWidgetVie
     }
 
     public void showPicture() {
-        videoContainer.getStyle().setDisplay( Style.Display.NONE );
-        imageElement.setUrl( pictureUrl );
-        imageContainer.getStyle().setDisplay( Style.Display.BLOCK );
+        videoContainer.getStyle().setDisplay(Style.Display.NONE);
+        imageElement.setUrl(pictureUrl);
+        imageContainer.getStyle().setDisplay(Style.Display.BLOCK);
     }
 
     public void showCapturePicture() {
-        driver.startStreaming( width, height );
+        driver.startStreaming(width,
+                              height);
 
-        imageContainer.getStyle().setDisplay( Style.Display.NONE );
-        videoContainer.getStyle().setDisplay( Style.Display.BLOCK );
+        imageContainer.getStyle().setDisplay(Style.Display.NONE);
+        videoContainer.getStyle().setDisplay(Style.Display.BLOCK);
     }
 
-    @EventHandler( "takeAnotherPicture" )
-    public void takeAnoterPicture( ClickEvent clickEvent ) {
+    @EventHandler("takeAnotherPicture")
+    public void takeAnoterPicture(ClickEvent clickEvent) {
         showCapturePicture();
     }
 
-    @EventHandler( "takePicture" )
-    public void takePicture( ClickEvent clickEvent ) {
-        if ( callback != null ) {
+    @EventHandler("takePicture")
+    public void takePicture(ClickEvent clickEvent) {
+        if (callback != null) {
             String url = driver.takePicture();
-            setPictureUrl( url );
-            callback.onTakePicture( url );
+            setPictureUrl(url);
+            callback.onTakePicture(url);
         }
     }
 
-    public void setPictureUrl( String url ) {
+    public void setPictureUrl(String url) {
 
-        if ( driver == null ) {
-            GWT.log( "Cannot use component while it isn't initialized. Run the init method before set the value " );
+        if (driver == null) {
+            GWT.log("Cannot use component while it isn't initialized. Run the init method before set the value ");
             return;
         }
 
-        if ( url == null ) {
+        if (url == null) {
             url = "";
         }
 
-        if ( !pictureUrl.equals( url ) ) {
+        if (!pictureUrl.equals(url)) {
             pictureUrl = url;
             initDisplay();
         }
     }
 
     @Override
-    public void setReadOnly( boolean readOnly ) {
-        if ( readOnly ) {
-            takePicture.setVisible( false );
-            takeAnotherPicture.setVisible( false );
+    public void setReadOnly(boolean readOnly) {
+        if (readOnly) {
+            takePicture.setVisible(false);
+            takeAnotherPicture.setVisible(false);
             showPicture();
         } else {
-            takePicture.setVisible( true );
-            takeAnotherPicture.setVisible( true );
+            takePicture.setVisible(true);
+            takeAnotherPicture.setVisible(true);
             initDisplay();
         }
     }
@@ -168,7 +175,7 @@ public class PictureWidgetViewImpl extends Composite implements PictureWidgetVie
     @Override
     protected void onDetach() {
         super.onDetach();
-        if ( driver != null ) {
+        if (driver != null) {
             driver.doStopStreaming();
         }
     }

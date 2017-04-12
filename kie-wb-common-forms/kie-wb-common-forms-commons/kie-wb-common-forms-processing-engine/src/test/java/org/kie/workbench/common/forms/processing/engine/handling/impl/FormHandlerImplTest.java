@@ -21,6 +21,7 @@ import javax.validation.Validator;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.databinding.client.PropertyChangeUnsubscribeHandle;
+import org.jboss.errai.databinding.client.api.Converter;
 import org.jboss.errai.databinding.client.api.DataBinder;
 import org.junit.After;
 import org.junit.Before;
@@ -49,28 +50,32 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
     public void init() {
         super.init();
 
-        when( binder.getModel() ).thenReturn( model );
+        when(binder.getModel()).thenReturn(model);
 
-        when( binder.addPropertyChangeHandler( any() ) ).thenReturn( unsubscribeHandle );
-        when( binder.addPropertyChangeHandler( anyString(), any() ) ).thenReturn( unsubscribeHandle );
+        when(binder.addPropertyChangeHandler(any())).thenReturn(unsubscribeHandle);
+        when(binder.addPropertyChangeHandler(anyString(),
+                                             any())).thenReturn(unsubscribeHandle);
 
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-        FormValidatorImpl formValidator = new FormValidatorImpl( new DefaultModelValidator( validator ) );
+        FormValidatorImpl formValidator = new FormValidatorImpl(new DefaultModelValidator(validator));
 
-        formValidator.setFormFieldProvider( formFieldProvider );
+        formValidator.setFormFieldProvider(formFieldProvider);
 
         FieldChangeHandlerManagerImpl fieldChangeHandlerManager = new FieldChangeHandlerManagerImpl();
-        fieldChangeHandlerManager.setValidator( formValidator );
+        fieldChangeHandlerManager.setValidator(formValidator);
 
-        formHandler = new TestFormHandler( formValidator, fieldChangeHandlerManager, binder );
+        formHandler = new TestFormHandler(formValidator,
+                                          fieldChangeHandlerManager,
+                                          binder);
 
-        formHandler.getAll().addAll( formFieldProvider.getAll() );
+        formHandler.getAll().addAll(formFieldProvider.getAll());
     }
 
     @Test
     public void testHandlerDataBinderSetupWithBindings() {
-        formHandler.setUp( binder, true );
+        formHandler.setUp(binder,
+                          true);
 
         checkBindings = true;
         runSetupTest();
@@ -78,7 +83,7 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
 
     @Test
     public void testHandlerDataBinderSetupWithoutBindings() {
-        formHandler.setUp( binder );
+        formHandler.setUp(binder);
 
         checkBindings = false;
         runSetupTest();
@@ -86,106 +91,133 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
 
     @Test
     public void testHandlerModelSetup() {
-        formHandler.setUp( model );
+        formHandler.setUp(model);
 
         checkBindings = true;
         runSetupTest();
     }
 
     protected void runSetupTest() {
-        for ( FormField formField : formFieldProvider.getAll() ) {
-            formHandler.registerInput( formField );
-        }
-        formHandler.addFieldChangeHandler( anonymous );
-        formHandler.addFieldChangeHandler( VALUE_FIELD, value );
-        formHandler.addFieldChangeHandler( USER_NAME_FIELD, userName );
-        formHandler.addFieldChangeHandler( USER_LAST_NAME_FIELD, userLastName );
-        formHandler.addFieldChangeHandler( USER_BIRTHDAY_FIELD, userBirthday );
-        formHandler.addFieldChangeHandler( USER_MARRIED_FIELD, userMarried );
-        formHandler.addFieldChangeHandler( USER_ADDRESS_FIELD, userAddress );
+        Converter integerConverter = mock(Converter.class);
+        when(integerConverter.toWidgetValue(25)).thenReturn(25l);
+        when(integerConverter.toModelValue(25l)).thenReturn(25);
 
-        if ( checkBindings ) {
-            verify( binder, times( formFieldProvider.getAll().size() ) ).bind( anyObject(), anyString() );
-        } else {
-            verify( binder, never() ).bind( anyObject(), anyString() );
+        for (FormField formField : formFieldProvider.getAll()) {
+            if (formField.getFieldName().equals(VALUE_FIELD)) {
+                formHandler.registerInput(formField,
+                                          integerConverter);
+            } else {
+                formHandler.registerInput(formField);
+            }
         }
-        verify( binder, times( formFieldProvider.getAll().size() ) ).addPropertyChangeHandler( anyString(), any() );
+        formHandler.addFieldChangeHandler(anonymous);
+        formHandler.addFieldChangeHandler(VALUE_FIELD,
+                                          value);
+        formHandler.addFieldChangeHandler(USER_NAME_FIELD,
+                                          userName);
+        formHandler.addFieldChangeHandler(USER_LAST_NAME_FIELD,
+                                          userLastName);
+        formHandler.addFieldChangeHandler(USER_BIRTHDAY_FIELD,
+                                          userBirthday);
+        formHandler.addFieldChangeHandler(USER_MARRIED_FIELD,
+                                          userMarried);
+        formHandler.addFieldChangeHandler(USER_ADDRESS_FIELD,
+                                          userAddress);
+
+        if (checkBindings) {
+            verify(binder,
+                   times(formFieldProvider.getAll().size() - 1)).bind(anyObject(),
+                                                                      anyString());
+            verify(binder,
+                   times(1)).bind(anyObject(),
+                                  anyString(),
+                                  anyObject());
+        } else {
+            verify(binder,
+                   never()).bind(anyObject(),
+                                 anyString());
+        }
+        verify(binder,
+               times(formFieldProvider.getAll().size())).addPropertyChangeHandler(anyString(),
+                                                                                  any());
     }
 
     @Test
     public void testHandlerDataBinderCorrectValidationBindings() {
         testHandlerDataBinderSetupWithBindings();
-        runCorrectValidationTest( false );
+        runCorrectValidationTest(false);
     }
 
     @Test
     public void testHandlerDataBinderCorrectValidationWithoutBindings() {
         testHandlerDataBinderSetupWithoutBindings();
-        runCorrectValidationTest( false );
+        runCorrectValidationTest(false);
     }
 
     @Test
     public void testHandlerModelCorrectValidation() {
         testHandlerModelSetup();
-        runCorrectValidationTest( true );
+        runCorrectValidationTest(true);
     }
 
-    protected void runCorrectValidationTest( boolean skipGetModel ) {
-        assertTrue( formHandler.validate() );
-        if ( !skipGetModel ) {
-            verify( binder ).getModel();
+    protected void runCorrectValidationTest(boolean skipGetModel) {
+        assertTrue(formHandler.validate());
+        if (!skipGetModel) {
+            verify(binder).getModel();
         }
 
-        assertTrue( formHandler.validate( VALUE_FIELD ) );
-        assertTrue( formHandler.validate( USER_NAME_FIELD ) );
-        assertTrue( formHandler.validate( USER_LAST_NAME_FIELD ) );
-        assertTrue( formHandler.validate( USER_BIRTHDAY_FIELD ) );
-        assertTrue( formHandler.validate( USER_MARRIED_FIELD ) );
-        assertTrue( formHandler.validate( USER_ADDRESS_FIELD ) );
+        assertTrue(formHandler.validate(VALUE_FIELD));
+        assertTrue(formHandler.validate(USER_NAME_FIELD));
+        assertTrue(formHandler.validate(USER_LAST_NAME_FIELD));
+        assertTrue(formHandler.validate(USER_BIRTHDAY_FIELD));
+        assertTrue(formHandler.validate(USER_MARRIED_FIELD));
+        assertTrue(formHandler.validate(USER_ADDRESS_FIELD));
 
-        if ( !skipGetModel ) {
-            verify( binder, times( formFieldProvider.getAll().size() + 1 ) ).getModel();
+        if (!skipGetModel) {
+            verify(binder,
+                   times(formFieldProvider.getAll().size() + 1)).getModel();
         }
     }
 
     @Test
     public void testHandlerDataBinderWrongValidationWithBindings() {
         testHandlerDataBinderSetupWithBindings();
-        runWrongValidationTest( false );
+        runWrongValidationTest(false);
     }
 
     @Test
     public void testHandlerDataBinderWrongValidationWithoutBindings() {
         testHandlerDataBinderSetupWithBindings();
-        runWrongValidationTest( false );
+        runWrongValidationTest(false);
     }
 
     @Test
     public void testHandlerModelWrongValidationWithoutBindings() {
         testHandlerModelSetup();
-        runWrongValidationTest( true );
+        runWrongValidationTest(true);
     }
 
-    protected void runWrongValidationTest( boolean skipGetModel ) {
-        model.setValue( -123 );
-        model.getUser().setLastName( "" );
-        model.getUser().setAddress( "" );
+    protected void runWrongValidationTest(boolean skipGetModel) {
+        model.setValue(-123);
+        model.getUser().setLastName("");
+        model.getUser().setAddress("");
 
-        assertFalse( formHandler.validate() );
+        assertFalse(formHandler.validate());
 
-        if ( !skipGetModel ) {
-            verify( binder ).getModel();
+        if (!skipGetModel) {
+            verify(binder).getModel();
         }
 
-        assertFalse( formHandler.validate( VALUE_FIELD ) );
-        assertTrue( formHandler.validate( USER_NAME_FIELD ) );
-        assertFalse( formHandler.validate( USER_LAST_NAME_FIELD ) );
-        assertTrue( formHandler.validate( USER_BIRTHDAY_FIELD ) );
-        assertTrue( formHandler.validate( USER_MARRIED_FIELD ) );
-        assertFalse( formHandler.validate( USER_ADDRESS_FIELD ) );
+        assertFalse(formHandler.validate(VALUE_FIELD));
+        assertTrue(formHandler.validate(USER_NAME_FIELD));
+        assertFalse(formHandler.validate(USER_LAST_NAME_FIELD));
+        assertTrue(formHandler.validate(USER_BIRTHDAY_FIELD));
+        assertTrue(formHandler.validate(USER_MARRIED_FIELD));
+        assertFalse(formHandler.validate(USER_ADDRESS_FIELD));
 
-        if ( !skipGetModel ) {
-            verify( binder, times( formFieldProvider.getAll().size() + 1 ) ).getModel();
+        if (!skipGetModel) {
+            verify(binder,
+                   times(formFieldProvider.getAll().size() + 1)).getModel();
         }
     }
 
@@ -193,12 +225,13 @@ public class FormHandlerImplTest extends AbstractFormEngineTest {
     public void end() {
         formHandler.clear();
 
-        if ( checkBindings ) {
-            verify( binder ).unbind();
+        if (checkBindings) {
+            verify(binder).unbind();
         } else {
-            verify( binder, never() ).unbind();
+            verify(binder,
+                   never()).unbind();
         }
-        verify( unsubscribeHandle, times( formFieldProvider.getAll().size() ) ).unsubscribe();
+        verify(unsubscribeHandle,
+               times(formFieldProvider.getAll().size())).unsubscribe();
     }
-
 }

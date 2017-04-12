@@ -19,11 +19,14 @@ package org.kie.workbench.common.forms.common.rendering.client.widgets.picture.w
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface PictureWidgetView extends IsWidget {
-    void init( int width, int height, PictureWidget.TakePictureCallback callback );
+
+    void init(int width,
+              int height,
+              PictureWidget.TakePictureCallback callback);
 
     String getPictureUrl();
 
-    void setPictureUrl( String url );
+    void setPictureUrl(String url);
 
-    void setReadOnly( boolean readOnly );
+    void setReadOnly(boolean readOnly);
 }

@@ -33,23 +33,27 @@ public class PictureInput extends SimplePanel implements HasValue<String> {
     private PictureWidget widget;
 
     @Inject
-    public PictureInput( PictureWidget widget ) {
+    public PictureInput(PictureWidget widget) {
         this.widget = widget;
     }
 
     @PostConstruct
     protected void init() {
-        this.add( widget );
+        this.add(widget);
     }
 
     private String value;
 
-    public void init( int width, int height ) {
-        widget.init( width, height, url -> setValue( url, true ) );
+    public void init(int width,
+                     int height) {
+        widget.init(width,
+                    height,
+                    url -> setValue(url,
+                                    true));
     }
 
-    public void setPicture( String url ) {
-        setValue( url );
+    public void setPicture(String url) {
+        setValue(url);
     }
 
     @Override
@@ -58,35 +62,39 @@ public class PictureInput extends SimplePanel implements HasValue<String> {
     }
 
     @Override
-    public void setValue( String value ) {
-        this.setValue( value, false );
+    public void setValue(String value) {
+        this.setValue(value,
+                      false);
     }
 
     @Override
-    public void setValue( String value, boolean fireEvents ) {
-        if ( value == null ) {
+    public void setValue(String value,
+                         boolean fireEvents) {
+        if (value == null) {
             value = "";
         }
 
-        if ( value.equals( getValue() ) ) {
+        if (value.equals(getValue())) {
             return;
         }
 
         this.value = value;
 
-        widget.setPictureUrl( value );
+        widget.setPictureUrl(value);
 
-        if ( fireEvents ) {
-            ValueChangeEvent.fire( this, value );
+        if (fireEvents) {
+            ValueChangeEvent.fire(this,
+                                  value);
         }
     }
 
-    public void setReadOnly( boolean readOnly ) {
-        widget.setReadOnly( readOnly );
+    public void setReadOnly(boolean readOnly) {
+        widget.setReadOnly(readOnly);
     }
 
     @Override
-    public HandlerRegistration addValueChangeHandler( ValueChangeHandler<String> valueChangeHandler ) {
-        return this.addHandler( valueChangeHandler, ValueChangeEvent.getType() );
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> valueChangeHandler) {
+        return this.addHandler(valueChangeHandler,
+                               ValueChangeEvent.getType());
     }
 }

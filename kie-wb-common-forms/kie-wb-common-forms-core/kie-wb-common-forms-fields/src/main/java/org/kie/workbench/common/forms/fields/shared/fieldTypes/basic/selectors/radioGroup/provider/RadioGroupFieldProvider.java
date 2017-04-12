@@ -64,7 +64,7 @@ public class RadioGroupFieldProvider extends SelectorFieldProvider<RadioGroupBas
 
     @Override
     public int getPriority() {
-        return 7;
+        return 8;
     }
 
     @Override

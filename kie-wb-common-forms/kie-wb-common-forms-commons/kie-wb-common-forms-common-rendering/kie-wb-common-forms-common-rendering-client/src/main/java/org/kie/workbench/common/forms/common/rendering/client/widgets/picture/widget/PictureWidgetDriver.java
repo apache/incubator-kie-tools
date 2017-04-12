@@ -26,7 +26,9 @@ public class PictureWidgetDriver extends JavaScriptObject {
     protected PictureWidgetDriver() {
     }
 
-    public static native PictureWidgetDriver create( VideoElement video, CanvasElement canvas, Element image ) /*-{
+    public static native PictureWidgetDriver create(VideoElement video,
+                                                    CanvasElement canvas,
+                                                    Element image) /*-{
         return {
             video: video,
             canvas: canvas,
@@ -35,7 +37,8 @@ public class PictureWidgetDriver extends JavaScriptObject {
         };
     }-*/;
 
-    public final native void startStreaming( double width, double height ) /*-{
+    public final native void startStreaming(double width,
+                                            double height) /*-{
         if (this.streaming) {
             @org.kie.workbench.common.forms.common.rendering.client.widgets.picture.widget.PictureWidgetDriver::stopStreaming(*)(this);
         }
@@ -126,8 +129,8 @@ public class PictureWidgetDriver extends JavaScriptObject {
         }
     }-*/;
 
-    public static final void stopStreaming( PictureWidgetDriver driver ) {
-        if ( driver != null ) {
+    public static final void stopStreaming(PictureWidgetDriver driver) {
+        if (driver != null) {
             driver.doStopStreaming();
         }
     }
@@ -149,5 +152,4 @@ public class PictureWidgetDriver extends JavaScriptObject {
             console.log("An error occured! " + err);
         }
     }-*/;
-
 }

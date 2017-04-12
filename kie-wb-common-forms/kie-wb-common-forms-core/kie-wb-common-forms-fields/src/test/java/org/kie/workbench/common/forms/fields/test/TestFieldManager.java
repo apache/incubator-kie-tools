@@ -21,6 +21,8 @@ import org.kie.workbench.common.forms.fields.shared.AbstractFieldManager;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.provider.CheckBoxFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.provider.DatePickerFieldProvider;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.decimalBox.provider.DecimalBoxFieldProvider;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.integerBox.provider.IntegerBoxFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.provider.ListBoxFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.radioGroup.provider.RadioGroupFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.slider.provider.SliderFieldProvider;
@@ -39,6 +41,16 @@ public class TestFieldManager extends AbstractFieldManager {
             }
         });
         registerFieldProvider(new TextAreaFieldProvider() {
+            {
+                doRegisterFields();
+            }
+        });
+        registerFieldProvider(new IntegerBoxFieldProvider() {
+            {
+                doRegisterFields();
+            }
+        });
+        registerFieldProvider(new DecimalBoxFieldProvider() {
             {
                 doRegisterFields();
             }

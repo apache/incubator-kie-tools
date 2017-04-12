@@ -19,7 +19,8 @@ package org.kie.workbench.common.forms.common.rendering.client.widgets.flatViews
 import com.google.gwt.user.client.TakesValue;
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface FormFieldFlatView<T> extends IsWidget, TakesValue<T> {
+public interface FormFieldFlatView<T> extends IsWidget,
+                                              TakesValue<T> {
 
-    String renderValue( T value );
+    String renderValue(T value);
 }

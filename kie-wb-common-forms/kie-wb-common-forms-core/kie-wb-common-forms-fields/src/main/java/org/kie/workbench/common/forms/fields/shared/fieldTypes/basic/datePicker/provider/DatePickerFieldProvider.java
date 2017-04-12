@@ -44,7 +44,7 @@ public class DatePickerFieldProvider extends BasicTypeFieldProvider<DatePickerFi
 
     @Override
     public int getPriority() {
-        return 4;
+        return 5;
     }
 
     @Override

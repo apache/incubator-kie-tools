@@ -27,20 +27,23 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.extras.typeahead.client.base.Dataset;
 
-public class BindableTypeAhead<T> implements IsWidget, HasValue<T> {
+public class BindableTypeAhead<T> implements IsWidget,
+                                             HasValue<T> {
 
     protected T value;
 
     private BindableTypeAheadView view;
 
     @Inject
-    public BindableTypeAhead( BindableTypeAheadView view ) {
+    public BindableTypeAhead(BindableTypeAheadView view) {
         this.view = view;
-        view.setPresenter( this );
+        view.setPresenter(this);
     }
 
-    public void init( String mask, Dataset<T> dataset ) {
-        view.init( dataset, mask );
+    public void init(String mask,
+                     Dataset<T> dataset) {
+        view.init(dataset,
+                  mask);
     }
 
     @Override
@@ -49,34 +52,38 @@ public class BindableTypeAhead<T> implements IsWidget, HasValue<T> {
     }
 
     @Override
-    public void setValue( T value ) {
-        setValue( value, false );
+    public void setValue(T value) {
+        setValue(value,
+                 false);
     }
 
     @Override
-    public void setValue( T value, boolean fireEvents ) {
-        if ( this.value == null ) {
+    public void setValue(T value,
+                         boolean fireEvents) {
+        if (this.value == null) {
             this.value = value;
-        } else if ( this.value.equals( value ) ) {
+        } else if (this.value.equals(value)) {
             return;
         }
 
         this.value = value;
 
-        view.setValue( value );
+        view.setValue(value);
 
-        if ( fireEvents ) {
-            ValueChangeEvent.fire( this, value );
+        if (fireEvents) {
+            ValueChangeEvent.fire(this,
+                                  value);
         }
     }
 
     @Override
-    public HandlerRegistration addValueChangeHandler( ValueChangeHandler<T> valueChangeHandler ) {
-        return view.asWidget().addHandler( valueChangeHandler, ValueChangeEvent.getType() );
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<T> valueChangeHandler) {
+        return view.asWidget().addHandler(valueChangeHandler,
+                                          ValueChangeEvent.getType());
     }
 
-    public void setReadOnly( boolean readOnly ) {
-        view.setReadOnly( readOnly );
+    public void setReadOnly(boolean readOnly) {
+        view.setReadOnly(readOnly);
     }
 
     @Override
@@ -85,7 +92,7 @@ public class BindableTypeAhead<T> implements IsWidget, HasValue<T> {
     }
 
     @Override
-    public void fireEvent( GwtEvent<?> event ) {
-        view.asWidget().fireEvent( event );
+    public void fireEvent(GwtEvent<?> event) {
+        view.asWidget().fireEvent(event);
     }
 }

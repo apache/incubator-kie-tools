@@ -44,7 +44,7 @@ public class CheckBoxFieldProvider extends BasicTypeFieldProvider<CheckBoxFieldD
 
     @Override
     public int getPriority() {
-        return 3;
+        return 4;
     }
 
     @Override

@@ -25,20 +25,25 @@ public class DefaultValueListBoxRenderer<T> implements Renderer<T> {
 
     private Map<T, String> values;
 
-    public void setValues( Map<T, String> values ) {
+    public void setValues(Map<T, String> values) {
         this.values = values;
     }
 
     @Override
-    public String render( T value ) {
-        if ( value == null ) return "";
-        if ( values == null || !values.containsKey( value ) ) return "";
+    public String render(T value) {
+        if (value == null) {
+            return "";
+        }
+        if (values == null || !values.containsKey(value)) {
+            return "";
+        }
 
-        return values.get( value );
+        return values.get(value);
     }
 
     @Override
-    public void render( T value, Appendable appendable ) throws IOException {
-        appendable.append( render( value ) );
+    public void render(T value,
+                       Appendable appendable) throws IOException {
+        appendable.append(render(value));
     }
 }

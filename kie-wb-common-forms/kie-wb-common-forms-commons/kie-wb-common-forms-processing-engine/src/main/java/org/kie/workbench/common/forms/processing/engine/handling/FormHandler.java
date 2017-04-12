@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.forms.processing.engine.handling;
 
+import org.jboss.errai.databinding.client.api.Converter;
 import org.jboss.errai.databinding.client.api.DataBinder;
 
 /**
@@ -28,7 +29,7 @@ public interface FormHandler<T> {
      * the field changes but doesn't bind the field Widgets to the DataBinder. Binder mustn't be null.
      * @param binder The binder, must not be null.
      */
-    void setUp( DataBinder<T> binder );
+    void setUp(DataBinder<T> binder);
 
     /**
      * Sets up the FormHancler for the given DataBinder. It configures all the field callbacks required to process
@@ -36,14 +37,15 @@ public interface FormHandler<T> {
      * @param binder The binder, must not be null.
      * @param bindInputs Determines if the form widgets must be binded to the DataBinder when registered or not,
      */
-    void setUp( DataBinder<T> binder, boolean bindInputs );
+    void setUp(DataBinder<T> binder,
+               boolean bindInputs);
 
     /**
      * Sets up the FormHandler for the given model, Creates a DataBinder instance for the given model, configures all the field callbacks required to process
      * the field changes and binds the field Widgets to the DataBinder
      * @param model The form model, it must not be null.
      */
-    void setUp( T model );
+    void setUp(T model);
 
     /**
      * Retrives the model used on the Form
@@ -58,7 +60,18 @@ public interface FormHandler<T> {
      * Any of the setUp method's must be executed before register any FormField
      * @param formField The FormField, it must not be null.
      */
-    void registerInput( FormField formField );
+    void registerInput(FormField formField);
+
+    /**
+     * Registers a new FormField to the FormHandler and sets up the Field Change engine for it,
+     * The Field widget provided can binded to the form DataBinder depending on how the FormHandler has been setUp.
+     * <p>
+     * Any of the setUp method's must be executed before register any FormField
+     * @param formField The FormField, it must not be null.
+     * @param converter The value converter used in data binding, if necessary
+     */
+    void registerInput(FormField formField,
+                       Converter converter);
 
     /**
      * Validates all the form fields.
@@ -71,7 +84,7 @@ public interface FormHandler<T> {
      * @param propertyName
      * @return
      */
-    boolean validate( String propertyName );
+    boolean validate(String propertyName);
 
     /**
      * Clears the status of th
@@ -83,7 +96,7 @@ public interface FormHandler<T> {
      * added.
      * @param handler The handler, it must not be null.
      */
-    void addFieldChangeHandler( FieldChangeHandler handler );
+    void addFieldChangeHandler(FieldChangeHandler handler);
 
     /**
      * Adds FieldChangeHandler that will be notified when the specified field value changes. Multiple handlers can be
@@ -91,12 +104,13 @@ public interface FormHandler<T> {
      * @param fieldName The name of the field, if it is null the handler will be notified on any field change.
      * @param handler The handler, it must not be null.
      */
-    void addFieldChangeHandler( String fieldName, FieldChangeHandler handler );
+    void addFieldChangeHandler(String fieldName,
+                               FieldChangeHandler handler);
 
     ;
 
     /**
      * Sets the form widgets into readOnly mode
      */
-    void setReadOnly( boolean readOnly );
+    void setReadOnly(boolean readOnly);
 }

@@ -45,7 +45,7 @@ public class ListBoxFieldProvider extends SelectorFieldProvider<ListBoxBaseDefin
 
     @Override
     public int getPriority() {
-        return 6;
+        return 7;
     }
 
     @Override

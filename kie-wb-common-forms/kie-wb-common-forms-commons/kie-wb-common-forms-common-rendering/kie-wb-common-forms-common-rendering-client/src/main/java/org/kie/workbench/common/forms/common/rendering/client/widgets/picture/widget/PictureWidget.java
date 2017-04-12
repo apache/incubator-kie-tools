@@ -28,7 +28,7 @@ public class PictureWidget implements IsWidget {
     private PictureWidgetView view;
 
     @Inject
-    public PictureWidget( PictureWidgetView view ) {
+    public PictureWidget(PictureWidgetView view) {
         this.view = view;
     }
 
@@ -37,23 +37,29 @@ public class PictureWidget implements IsWidget {
         return view.asWidget();
     }
 
-    public void init( int width, int height, TakePictureCallback callback ) {
-        view.init( width, height, callback );
+    public void init(int width,
+                     int height,
+                     TakePictureCallback callback) {
+        view.init(width,
+                  height,
+                  callback);
     }
 
-    public void setPictureUrl( String url ) {
-        view.setPictureUrl( url );
+    public void setPictureUrl(String url) {
+        view.setPictureUrl(url);
     }
 
-    public void setReadOnly( boolean readOnly ) {
-        view.setReadOnly( readOnly );
+    public void setReadOnly(boolean readOnly) {
+        view.setReadOnly(readOnly);
     }
 
     public interface TakePictureCallback {
-        public void onTakePicture( String url );
+
+        public void onTakePicture(String url);
     }
 
     public enum WidgetMode {
-        PICTURE, READONLY
+        PICTURE,
+        READONLY
     }
 }
