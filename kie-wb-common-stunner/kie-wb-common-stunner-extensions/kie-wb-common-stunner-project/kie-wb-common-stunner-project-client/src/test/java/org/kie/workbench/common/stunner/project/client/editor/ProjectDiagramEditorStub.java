@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.project.client.editor;
 import javax.enterprise.event.Event;
 
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
-import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenErrorView;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
@@ -44,7 +43,6 @@ class ProjectDiagramEditorStub extends AbstractProjectDiagramEditor<ClientResour
                                     ClientProjectDiagramService projectDiagramServices,
                                     SessionManager sessionManager,
                                     SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
-                                    ScreenErrorView editorErrorView,
                                     ClientSessionUtils sessionUtils,
                                     SessionCommandFactory sessionCommandFactory,
                                     ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder) {
@@ -57,7 +55,6 @@ class ProjectDiagramEditorStub extends AbstractProjectDiagramEditor<ClientResour
               projectDiagramServices,
               sessionManager,
               sessionPresenterFactory,
-              editorErrorView,
               sessionUtils,
               sessionCommandFactory,
               menuItemsBuilder);

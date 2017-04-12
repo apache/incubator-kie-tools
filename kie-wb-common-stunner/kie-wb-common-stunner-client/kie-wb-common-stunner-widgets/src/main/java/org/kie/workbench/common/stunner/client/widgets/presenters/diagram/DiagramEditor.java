@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.client.widgets.presenters.diagram;
 import org.kie.workbench.common.stunner.client.widgets.presenters.Editor;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasValidationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
@@ -61,10 +60,4 @@ public interface DiagramEditor<D extends Diagram, H extends CanvasHandler>
      * for allowed elements.
      */
     DockingAcceptorControl<H> getDockingAcceptorControl();
-
-    /**
-     * Returns the validation control. Allows validate the model at any point based on the diagram and
-     * canvas handler constraints.
-     */
-    CanvasValidationControl<H> getValidationControl();
 }

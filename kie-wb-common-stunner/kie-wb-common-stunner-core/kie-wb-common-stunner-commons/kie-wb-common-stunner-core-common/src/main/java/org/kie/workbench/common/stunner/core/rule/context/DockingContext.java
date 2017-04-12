@@ -31,15 +31,14 @@ import org.kie.workbench.common.stunner.core.rule.impl.CanDock;
 public interface DockingContext extends RuleEvaluationContext {
 
     /**
-     * The identifier of the Definition type that provides
-     * the docking restriction. Eg: NoneTask
+     * The role that provides the docking restriction.
      */
-    String getId();
+    Set<String> getParentRoles();
 
     /**
      * The set of roles that a candidate Definition
      * instance must provide as for its graph
      * element's labels.
      */
-    Set<String> getAllowedRoles();
+    Set<String> getCandidateRoles();
 }

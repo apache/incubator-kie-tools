@@ -17,8 +17,10 @@
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -71,7 +73,9 @@ public class GraphConnectionEvaluationHandlerTest extends AbstractGraphRuleHandl
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.setup();
+        final Set<String> edgeLabels = Collections.singleton(EDGE_ID);
         when(edge.getContent()).thenReturn(edgeContent);
+        when(edge.getLabels()).thenReturn(edgeLabels);
         when(edgeContent.getDefinition()).thenReturn(edgeDefinition);
         when(definitionAdapter.getId(eq(edgeDefinition))).thenReturn(EDGE_ID);
         when(context.getConnector()).thenReturn(edge);

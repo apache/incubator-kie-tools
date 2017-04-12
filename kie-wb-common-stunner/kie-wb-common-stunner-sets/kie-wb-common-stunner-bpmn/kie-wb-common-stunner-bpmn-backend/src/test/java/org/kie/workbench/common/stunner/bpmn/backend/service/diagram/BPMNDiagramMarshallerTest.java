@@ -108,7 +108,6 @@ import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.graph.impl.NodeImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.map.MapIndexBuilder;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
@@ -175,7 +174,6 @@ public class BPMNDiagramMarshallerTest {
     EdgeFactory<Object> connectionEdgeFactory;
     NodeFactory<Object> viewNodeFactory;
     DefinitionUtils definitionUtils;
-    GraphUtils graphUtils;
 
     GraphCommandManager commandManager;
     GraphCommandFactory commandFactory;
@@ -201,7 +199,6 @@ public class BPMNDiagramMarshallerTest {
         when(adapterManager.registry()).thenReturn(adapterRegistry);
         definitionUtils = new DefinitionUtils(definitionManager,
                                               applicationFactoryManager);
-        graphUtils = new GraphUtils(definitionManager);
         testScopeModelFactory = new TestScopeModelFactory(new BPMNDefinitionSet.BPMNDefinitionSetBuilder().build());
         // Definition manager.
         final RuntimeDefinitionAdapter definitionAdapter = new RuntimeDefinitionAdapter(definitionUtils);
@@ -333,7 +330,6 @@ public class BPMNDiagramMarshallerTest {
         tested = new BPMNDiagramMarshaller(new XMLEncoderDiagramMetadataMarshaller(),
                                            objectBuilderFactory,
                                            definitionManager,
-                                           graphUtils,
                                            indexBuilder,
                                            oryxManager,
                                            applicationFactoryManager,

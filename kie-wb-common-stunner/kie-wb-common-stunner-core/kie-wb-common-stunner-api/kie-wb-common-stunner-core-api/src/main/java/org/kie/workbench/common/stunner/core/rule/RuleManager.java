@@ -39,7 +39,7 @@ public interface RuleManager {
 
     /**
      * Provides a rule handler registry that contains
-     * all available rule an extension handlers present.
+     * all available rule & extension handlers present.
      */
     RuleHandlerRegistry registry();
 

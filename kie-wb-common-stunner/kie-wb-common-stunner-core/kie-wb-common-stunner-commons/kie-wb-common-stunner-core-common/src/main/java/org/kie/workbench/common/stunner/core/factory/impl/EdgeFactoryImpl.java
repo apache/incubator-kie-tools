@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.factory.impl;
 
-import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -40,7 +39,7 @@ public class EdgeFactoryImpl extends AbstractElementFactory<Object, Definition<O
     private final DefinitionManager definitionManager;
 
     protected EdgeFactoryImpl() {
-        this.definitionManager = null;
+        this(null);
     }
 
     @Inject
@@ -62,13 +61,20 @@ public class EdgeFactoryImpl extends AbstractElementFactory<Object, Definition<O
             ViewConnector<Object> content = new ViewConnectorImpl<>(definition,
                                                                     buildBounds());
             edge.setContent(content);
-            edge.getLabels().addAll(getLabels(definition));
+            addLabels(edge.getLabels(),
+                      definition);
         }
         return edge;
     }
 
-    private Set<String> getLabels(final Object definition) {
-        return definitionManager.adapters().forDefinition().getLabels(definition);
+    @Override
+    public boolean accepts(final Object source) {
+        return true;
+    }
+
+    @Override
+    protected DefinitionManager getDefinitionManager() {
+        return definitionManager;
     }
 
     // TODO: Review.

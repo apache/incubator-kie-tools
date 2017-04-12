@@ -33,7 +33,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasValidationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
@@ -103,9 +102,6 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
     private ZoomControl<AbstractCanvas> zoomControl;
 
     @Mock
-    private CanvasValidationControl<AbstractCanvasHandler> validationControl;
-
-    @Mock
     private ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl;
 
     @Mock
@@ -169,7 +165,6 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(session.getCanvas()).thenReturn(canvas);
         when(session.getZoomControl()).thenReturn(zoomControl);
-        when(session.getValidationControl()).thenReturn(validationControl);
         when(session.getConnectionAcceptorControl()).thenReturn(connectionAcceptorControl);
         when(session.getContainmentAcceptorControl()).thenReturn(containmentAcceptorControl);
         when(session.getDockingAcceptorControl()).thenReturn(dockingAcceptorControl);

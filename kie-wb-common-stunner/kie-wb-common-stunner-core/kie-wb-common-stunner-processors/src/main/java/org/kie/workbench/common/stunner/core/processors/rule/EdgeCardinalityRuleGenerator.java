@@ -36,7 +36,7 @@ import org.kie.workbench.common.stunner.core.processors.ProcessingContext;
 import org.kie.workbench.common.stunner.core.processors.ProcessingRule;
 import org.kie.workbench.common.stunner.core.rule.annotation.AllowedEdgeOccurrences;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
-import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
 import org.uberfire.annotations.processors.AbstractGenerator;
 import org.uberfire.annotations.processors.exceptions.GenerationException;
 
@@ -59,55 +59,53 @@ public class EdgeCardinalityRuleGenerator extends AbstractGenerator {
         final TypeElement classElement = (TypeElement) element;
         AllowedEdgeOccurrences occs = classElement.getAnnotation(AllowedEdgeOccurrences.class);
         if (null != occs) {
+            int count = 0;
             for (EdgeOccurrences occurrence : occs.value()) {
-                String role = occurrence.role();
                 String ruleById = classElement.getQualifiedName().toString();
                 String shortId = ruleById.substring(ruleById.lastIndexOf(".") + 1,
                                                     ruleById.length());
-                String name = shortId + "_" + role + "_" + MainProcessor.RULE_EDGE_CARDINALITY_SUFFIX_CLASSNAME;
+                String name = shortId + count + MainProcessor.RULE_EDGE_CARDINALITY_SUFFIX_CLASSNAME;
                 EdgeOccurrences.EdgeType _type = occurrence.type();
-                ConnectorCardinalityContext.Direction type = EdgeOccurrences.EdgeType.INCOMING.equals(_type) ? ConnectorCardinalityContext.Direction.INCOMING : ConnectorCardinalityContext.Direction.OUTGOING;
-                int min = occurrence.min();
-                int max = occurrence.max();
+                EdgeCardinalityContext.Direction type = EdgeOccurrences.EdgeType.INCOMING.equals(_type) ? EdgeCardinalityContext.Direction.INCOMING : EdgeCardinalityContext.Direction.OUTGOING;
+                final int min = occurrence.min();
+                final int max = occurrence.max();
+                final String roles = occurrence.role();
                 StringBuffer ruleSourceCode = generateRule(messager,
-                                                           ruleById,
-                                                           ruleDefinitionId,
                                                            name,
-                                                           role,
-                                                           "ConnectorCardinalityContext.Direction." + type.name(),
+                                                           ruleDefinitionId,
+                                                           roles,
+                                                           "EdgeCardinalityContext.Direction." + type.name(),
                                                            min,
                                                            max);
                 processingContext.addRule(name,
                                           ProcessingRule.TYPE.EDGE_CARDINALITY,
                                           ruleSourceCode);
+                count++;
             }
         }
         return null;
     }
 
     private StringBuffer generateRule(final Messager messager,
-                                      final String ruleId,
-                                      final String ruleDefinitionId,
                                       final String ruleName,
-                                      final String ruleRoleId,
-                                      final String type,
+                                      final String ruleDefinitionId,
+                                      final String role,
+                                      final String direction,
                                       final long min,
                                       final long max) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("ruleName",
                  ruleName);
-        root.put("ruleId",
-                 ruleId);
-        root.put("ruleRoleId",
-                 ruleRoleId);
-        root.put("ruleRoleType",
-                 type);
+        root.put("edgeId",
+                 ruleDefinitionId);
+        root.put("role",
+                 role);
+        root.put("direction",
+                 direction);
         root.put("min",
                  min);
         root.put("max",
                  max);
-        root.put("edgeId",
-                 ruleDefinitionId);
 
         //Generate code
         final StringWriter sw = new StringWriter();
@@ -129,7 +127,7 @@ public class EdgeCardinalityRuleGenerator extends AbstractGenerator {
             }
         }
         messager.printMessage(Diagnostic.Kind.NOTE,
-                              "Successfully generated code for [" + ruleId + "]");
+                              "Successfully generated code for [" + ruleName + "]");
         return sw.getBuffer();
     }
 }

@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.Session;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -65,14 +66,18 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<ClientFullS
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> void execute(final Callback<T> callback) {
+    public <V> void execute(final Callback<V> callback) {
         checkNotNull("callback",
                      callback);
         final SessionCommandManager<AbstractCanvasHandler> scm = getSessionCommandManager();
         if (null != scm) {
             final CommandResult<CanvasViolation> result = getSessionCommandManager().undo((AbstractCanvasHandler) getSession().getCanvasHandler());
             checkState();
-            callback.onSuccess((T) result);
+            if (CommandUtils.isError(result)) {
+                callback.onError((V) result);
+            } else {
+                callback.onSuccess();
+            }
         }
     }
 

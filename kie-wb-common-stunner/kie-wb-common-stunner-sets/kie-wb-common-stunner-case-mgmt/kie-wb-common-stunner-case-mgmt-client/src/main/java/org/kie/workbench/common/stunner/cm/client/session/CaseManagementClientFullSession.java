@@ -23,7 +23,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasValidationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
@@ -54,7 +53,6 @@ public class CaseManagementClientFullSession extends AbstractClientFullSession {
                                            final RegistryFactory registryFactory) {
         super(factory.newCanvas(),
               factory.newCanvasHandler(),
-              factory.newControl(CanvasValidationControl.class),
               factory.newControl(SelectionControl.class),
               factory.newControl(ZoomControl.class),
               factory.newControl(PanControl.class),

@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CanContain {
 
-    String id() default "";
+    String role() default "";
 
     String[] roles();
 }

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.rule.context;
 
+import java.util.Optional;
+
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.handler.impl.ElementCardinalityEvaluationHandler;
@@ -31,12 +33,16 @@ import org.kie.workbench.common.stunner.core.rule.impl.Occurrences;
 public interface ElementCardinalityContext extends GraphEvaluationContext {
 
     /**
-     * The candidate element.
+     * The candidate element to add or remove from the graph.
+     * If not candidate present, it checks the cardinality
+     * for the whole graph elements.
      */
-    Element<? extends View<?>> getCandidate();
+    Optional<Element<? extends View<?>>> getCandidate();
 
     /**
-     * The operation.
+     * The operation to be performed on the candidate.
+     * If not candidate present, the operation value is
+     * discarded although being present.
      */
-    CardinalityContext.Operation getOperation();
+    Optional<CardinalityContext.Operation> getOperation();
 }

@@ -16,18 +16,21 @@
 
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.impl.EdgeOccurrences;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -38,30 +41,29 @@ import static org.mockito.Mockito.*;
 @RunWith(MockitoJUnitRunner.class)
 public class ConnectorCardinalityEvaluationHandlerTest extends AbstractGraphRuleHandlerTest {
 
-    private final static String ROLE = "theRole";
     private final static String EDGE_ID = "edgeId1";
 
     private final static EdgeOccurrences RULE_IN_NO_LIMIT =
             new EdgeOccurrences("c1",
                                 EDGE_ID,
-                                ROLE,
-                                ConnectorCardinalityContext.Direction.INCOMING,
+                                CANDIDATE_ID,
+                                EdgeCardinalityContext.Direction.INCOMING,
                                 0,
                                 -1);
 
     private final static EdgeOccurrences RULE_IN_MAX_1 =
             new EdgeOccurrences("c1",
                                 EDGE_ID,
-                                ROLE,
-                                ConnectorCardinalityContext.Direction.INCOMING,
+                                CANDIDATE_ID,
+                                EdgeCardinalityContext.Direction.INCOMING,
                                 0,
                                 1);
 
     private final static EdgeOccurrences RULE_IN_MIN_1 =
             new EdgeOccurrences("c1",
                                 EDGE_ID,
-                                ROLE,
-                                ConnectorCardinalityContext.Direction.INCOMING,
+                                CANDIDATE_ID,
+                                EdgeCardinalityContext.Direction.INCOMING,
                                 1,
                                 -1);
 
@@ -72,36 +74,52 @@ public class ConnectorCardinalityEvaluationHandlerTest extends AbstractGraphRule
     Edge edge;
 
     @Mock
-    Definition edgeContent;
+    ViewConnector edgeContent;
 
     @Mock
     Object edgeDefinition;
 
     private ConnectorCardinalityEvaluationHandler tested;
-    private GraphUtils graphUtils;
+    private GraphEvaluationHandlerUtils evalUtils;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.setup();
-        graphUtils = spy(new GraphUtils(definitionManager));
+        final Set<String> edgeLabels = Collections.singleton(EDGE_ID);
+        evalUtils = spy(new GraphEvaluationHandlerUtils(definitionManager));
         when(context.getCandidate()).thenReturn(candidate);
         when(context.getEdge()).thenReturn(edge);
         when(edge.getContent()).thenReturn(edgeContent);
+        when(edge.getLabels()).thenReturn(edgeLabels);
         when(edgeContent.getDefinition()).thenReturn(edgeDefinition);
         when(definitionAdapter.getId(eq(edgeDefinition))).thenReturn(EDGE_ID);
-        tested = new ConnectorCardinalityEvaluationHandler(definitionManager,
-                                                           graphUtils,
+        tested = new ConnectorCardinalityEvaluationHandler(evalUtils,
                                                            new EdgeCardinalityEvaluationHandler());
     }
 
     @Test
     @SuppressWarnings("unchecked")
+    public void testAccepts() {
+        when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.INCOMING);
+        assertTrue(tested.accepts(RULE_IN_NO_LIMIT,
+                                  context));
+        when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.OUTGOING);
+        assertFalse(tested.accepts(RULE_IN_NO_LIMIT,
+                                   context));
+        when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.INCOMING);
+        when(definitionAdapter.getId(eq(edgeDefinition))).thenReturn("anotherId");
+        assertFalse(tested.accepts(RULE_IN_NO_LIMIT,
+                                   context));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void testEvaluateInNoLimit() {
-        when(graphUtils.countEdges(anyString(),
-                                   any(List.class))).thenReturn(0);
-        when(context.getDirection()).thenReturn(ConnectorCardinalityContext.Direction.INCOMING);
-        when(context.getOperation()).thenReturn(CardinalityContext.Operation.ADD);
+        when(evalUtils.countEdges(anyString(),
+                                  any(List.class))).thenReturn(0);
+        when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.INCOMING);
+        when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_IN_NO_LIMIT,
                                                     context);
         assertNotNull(violations);
@@ -111,10 +129,10 @@ public class ConnectorCardinalityEvaluationHandlerTest extends AbstractGraphRule
     @Test
     @SuppressWarnings("unchecked")
     public void testEvaluateInMaxOneSucess() {
-        when(graphUtils.countEdges(anyString(),
-                                   any(List.class))).thenReturn(0);
-        when(context.getDirection()).thenReturn(ConnectorCardinalityContext.Direction.INCOMING);
-        when(context.getOperation()).thenReturn(CardinalityContext.Operation.ADD);
+        when(evalUtils.countEdges(anyString(),
+                                  any(List.class))).thenReturn(0);
+        when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.INCOMING);
+        when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_IN_MAX_1,
                                                     context);
         assertNotNull(violations);
@@ -124,10 +142,10 @@ public class ConnectorCardinalityEvaluationHandlerTest extends AbstractGraphRule
     @Test
     @SuppressWarnings("unchecked")
     public void testEvaluateInMaxOneFailed() {
-        when(graphUtils.countEdges(anyString(),
-                                   any(List.class))).thenReturn(1);
-        when(context.getDirection()).thenReturn(ConnectorCardinalityContext.Direction.INCOMING);
-        when(context.getOperation()).thenReturn(CardinalityContext.Operation.ADD);
+        when(evalUtils.countEdges(anyString(),
+                                  any(List.class))).thenReturn(1);
+        when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.INCOMING);
+        when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_IN_MAX_1,
                                                     context);
         assertNotNull(violations);
@@ -137,10 +155,10 @@ public class ConnectorCardinalityEvaluationHandlerTest extends AbstractGraphRule
     @Test
     @SuppressWarnings("unchecked")
     public void testEvaluateInMinOneSucess() {
-        when(graphUtils.countEdges(anyString(),
-                                   any(List.class))).thenReturn(0);
-        when(context.getDirection()).thenReturn(ConnectorCardinalityContext.Direction.INCOMING);
-        when(context.getOperation()).thenReturn(CardinalityContext.Operation.ADD);
+        when(evalUtils.countEdges(anyString(),
+                                  any(List.class))).thenReturn(0);
+        when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.INCOMING);
+        when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_IN_MIN_1,
                                                     context);
         assertNotNull(violations);
@@ -150,10 +168,10 @@ public class ConnectorCardinalityEvaluationHandlerTest extends AbstractGraphRule
     @Test
     @SuppressWarnings("unchecked")
     public void testEvaluateInMinOneFailed() {
-        when(graphUtils.countEdges(anyString(),
-                                   any(List.class))).thenReturn(1);
-        when(context.getDirection()).thenReturn(ConnectorCardinalityContext.Direction.INCOMING);
-        when(context.getOperation()).thenReturn(CardinalityContext.Operation.DELETE);
+        when(evalUtils.countEdges(anyString(),
+                                  any(List.class))).thenReturn(1);
+        when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.INCOMING);
+        when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.DELETE));
         RuleViolations violations = tested.evaluate(RULE_IN_MIN_1,
                                                     context);
         assertNotNull(violations);

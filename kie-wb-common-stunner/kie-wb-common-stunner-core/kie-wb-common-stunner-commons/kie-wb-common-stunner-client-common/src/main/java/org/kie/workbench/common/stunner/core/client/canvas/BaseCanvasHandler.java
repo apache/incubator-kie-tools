@@ -206,7 +206,7 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
                                       applyProperties,
                                       mutationContext);
         } else {
-            LOGGER.log(Level.SEVERE,
+            LOGGER.log(Level.WARNING,
                        "The shape to handle must be type of [" + ElementShape.class.getName() + "]");
         }
     }

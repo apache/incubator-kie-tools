@@ -31,7 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBui
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
@@ -105,13 +105,13 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
         final Collection<RuleViolation> containmentRuleViolations =
                 doEvaluate(context,
                            RuleContextBuilder.GraphContexts.containment(getGraph(context),
-                                                                        Optional.ofNullable(parent),
+                                                                        parent,
                                                                         candidate));
         final Collection<RuleViolation> cardinalityRuleViolations =
                 doEvaluate(context,
                            RuleContextBuilder.GraphContexts.cardinality(getGraph(context),
-                                                                        candidate,
-                                                                        CardinalityContext.Operation.ADD));
+                                                                        Optional.of(candidate),
+                                                                        Optional.of(CardinalityContext.Operation.ADD)));
         final Collection<RuleViolation> violations = new LinkedList<RuleViolation>();
         violations.addAll(containmentRuleViolations);
         violations.addAll(cardinalityRuleViolations);

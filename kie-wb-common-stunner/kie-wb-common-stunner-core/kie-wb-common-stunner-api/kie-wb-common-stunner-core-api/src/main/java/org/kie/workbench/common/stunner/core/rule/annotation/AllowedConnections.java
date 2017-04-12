@@ -31,7 +31,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AllowedConnections {
 
-    String id() default "";
+    String role() default "";
 
     CanConnect[] value();
 }

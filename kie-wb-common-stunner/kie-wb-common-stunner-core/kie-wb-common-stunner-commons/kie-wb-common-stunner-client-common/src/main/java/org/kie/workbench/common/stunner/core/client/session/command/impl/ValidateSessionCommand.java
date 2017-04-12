@@ -16,38 +16,57 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import java.util.Collection;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
-import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidationViolation;
-import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidatorCallback;
+import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
+import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasDiagramValidator;
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
+import org.kie.workbench.common.stunner.core.validation.Violation;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
-public class ValidateSessionCommand extends AbstractClientSessionCommand<ClientFullSession> {
+public class ValidateSessionCommand extends AbstractClientSessionCommand<AbstractClientFullSession> {
 
-    public ValidateSessionCommand() {
+    private final CanvasDiagramValidator<AbstractCanvasHandler> validator;
+
+    protected ValidateSessionCommand() {
+        this(null);
+    }
+
+    @Inject
+    public ValidateSessionCommand(final CanvasDiagramValidator<AbstractCanvasHandler> validator) {
         super(true);
+        this.validator = validator;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> void execute(final Callback<T> callback) {
+    public <V> void execute(final Callback<V> callback) {
         checkNotNull("callback",
                      callback);
-        getSession().getValidationControl().validate(new CanvasValidatorCallback() {
+        final AbstractCanvasHandler canvasHandler = getSession().getCanvasHandler();
+        validator.validate(canvasHandler,
+                           elementViolations -> fireCallback(elementViolations,
+                                                             callback));
+    }
 
-            @Override
-            public void onSuccess() {
-                callback.onSuccess(null);
-            }
-
-            @Override
-            public void onFail(final Iterable<CanvasValidationViolation> violations) {
-                callback.onSuccess((T) violations);
-            }
-        });
+    @SuppressWarnings("unchecked")
+    private <V> void fireCallback(final Collection<DiagramElementViolation<RuleViolation>> violations,
+                                  final Callback<V> callback) {
+        final boolean areViolations = violations.stream()
+                .filter(v -> Violation.Type.ERROR.equals(v.getViolationType()))
+                .findAny()
+                .isPresent();
+        if (!areViolations) {
+            callback.onSuccess();
+        } else {
+            callback.onError((V) violations);
+        }
     }
 }

@@ -26,7 +26,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.ContainmentContext;
-import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.rule.violations.RuleViolationImpl;
 import org.mockito.Mock;
@@ -54,7 +54,7 @@ public class RuleExtensionMultiHandlerTest {
 
     @Before
     public void setup() throws Exception {
-        context = RuleContextBuilder.DomainContexts.containment("id1",
+        context = RuleContextBuilder.DomainContexts.containment(Collections.singleton("id1"),
                                                                 Collections.emptySet());
         violation1 = new RuleViolationImpl("v1");
         violations1 = new DefaultRuleViolations().addViolation(violation1);

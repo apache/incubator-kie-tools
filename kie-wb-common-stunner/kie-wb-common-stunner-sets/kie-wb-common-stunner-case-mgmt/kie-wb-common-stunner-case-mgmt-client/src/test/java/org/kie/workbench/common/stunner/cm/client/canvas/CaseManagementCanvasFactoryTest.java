@@ -37,8 +37,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControlImpl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasValidationControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasValidationControlImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.EdgeBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.NodeBuilderControl;
@@ -57,7 +55,6 @@ import static org.mockito.Mockito.*;
 @RunWith(LienzoMockitoTestRunner.class)
 public class CaseManagementCanvasFactoryTest {
 
-    private ManagedInstance<CanvasValidationControl> validationControls;
     private ManagedInstance<ConnectionAcceptorControl> connectionAcceptorControls;
     private ManagedInstance<ContainmentAcceptorControl> containmentAcceptorControls;
     private ManagedInstance<DockingAcceptorControl> dockingAcceptorControls;
@@ -86,7 +83,6 @@ public class CaseManagementCanvasFactoryTest {
         when(layer.uuid()).thenReturn("uuid");
         this.wiresManager = WiresManager.get(layer);
 
-        this.validationControls = mockManagedInstance(CanvasValidationControlImpl.class);
         this.connectionAcceptorControls = mockManagedInstance(ConnectionAcceptorControlImpl.class);
         this.containmentAcceptorControls = mockManagedInstance(CaseManagementContainmentAcceptorControlImpl.class);
         this.dockingAcceptorControls = mockManagedInstance(DockingAcceptorControlImpl.class);
@@ -101,8 +97,7 @@ public class CaseManagementCanvasFactoryTest {
                                                    (c) -> when(c.getWiresManager()).thenReturn(wiresManager));
         this.canvasHandlerInstances = mockManagedInstance(CaseManagementCanvasHandler.class);
 
-        this.factory = new CaseManagementCanvasFactory(validationControls,
-                                                       connectionAcceptorControls,
+        this.factory = new CaseManagementCanvasFactory(connectionAcceptorControls,
                                                        containmentAcceptorControls,
                                                        dockingAcceptorControls,
                                                        nameEditionControls,

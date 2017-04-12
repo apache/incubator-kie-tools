@@ -20,31 +20,16 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class Occurrences extends AbstractRule {
+public class Occurrences extends AbstractOccurrences {
 
-    private final String role;
-    private final int minOccurrences;
-    private final int maxOccurrences;
-
-    public Occurrences(final @MapsTo("name") String name,
-                       final @MapsTo("role") String role,
-                       final @MapsTo("minOccurrences") int minOccurrences,
-                       final @MapsTo("maxOccurrences") int maxOccurrences) {
-        super(name);
-        this.role = role;
-        this.minOccurrences = minOccurrences;
-        this.maxOccurrences = maxOccurrences;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public int getMinOccurrences() {
-        return minOccurrences;
-    }
-
-    public int getMaxOccurrences() {
-        return maxOccurrences;
+    public Occurrences(
+            final @MapsTo("name") String name,
+            final @MapsTo("role") String role,
+            final @MapsTo("minOccurrences") int minOccurrences,
+            final @MapsTo("maxOccurrences") int maxOccurrences) {
+        super(name,
+              role,
+              minOccurrences,
+              maxOccurrences);
     }
 }

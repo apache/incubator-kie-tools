@@ -22,7 +22,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
-import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenErrorView;
 import org.kie.workbench.common.stunner.core.client.api.AbstractClientSessionManager;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.ClearSessionCommand;
@@ -94,8 +93,6 @@ public class ProjectDiagramEditorTest {
     @Mock
     SessionPresenter presenter;
     @Mock
-    ScreenErrorView editorErrorView;
-    @Mock
     ClientSessionUtils sessionUtils;
     @Mock
     SessionCommandFactory sessionCommandFactory;
@@ -150,7 +147,6 @@ public class ProjectDiagramEditorTest {
                                                    projectDiagramServices,
                                                    clientSessionManager,
                                                    presenterFactory,
-                                                   editorErrorView,
                                                    sessionUtils,
                                                    sessionCommandFactory,
                                                    menuItemsBuilder);

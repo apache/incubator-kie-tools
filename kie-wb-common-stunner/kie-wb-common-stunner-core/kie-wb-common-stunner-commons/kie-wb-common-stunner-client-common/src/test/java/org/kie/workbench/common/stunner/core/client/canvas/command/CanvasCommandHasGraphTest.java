@@ -56,9 +56,7 @@ public class CanvasCommandHasGraphTest extends AbstractCanvasCommandTest {
         when(canvasHandler.getGraphExecutionContext()).thenReturn(graphCommandExecutionContext);
         when(successGraphCommandResult.getType()).thenReturn(CommandResult.Type.INFO);
         when(successGraphCommandResult.getViolations()).thenReturn(null);
-        when(successGraphCommandResult.getMessage()).thenReturn("OK");
         when(failedGraphCommandResult.getType()).thenReturn(CommandResult.Type.ERROR);
-        when(failedGraphCommandResult.getMessage()).thenReturn("FAILED");
         this.tested = new HasGraphCommandStub();
     }
 

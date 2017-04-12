@@ -16,29 +16,15 @@
 
 package org.kie.workbench.common.stunner.core.rule;
 
+import java.util.Optional;
+
+import org.kie.workbench.common.stunner.core.validation.GraphElementViolation;
+
 /**
  * A rule violation defines some
- * information about a concrete domain
- * operation.
+ * information about a concrete operation.
  */
-public interface RuleViolation {
+public interface RuleViolation extends GraphElementViolation {
 
-    /**
-     * Built-in rule violation types.
-     */
-    enum Type {
-        ERROR,
-        WARNING,
-        INFO
-    }
-
-    /**
-     * The message resuling of a evaluation.
-     */
-    String getMessage();
-
-    /**
-     * The type of violation.
-     */
-    Type getViolationType();
+    Optional<Object[]> getArguments();
 }

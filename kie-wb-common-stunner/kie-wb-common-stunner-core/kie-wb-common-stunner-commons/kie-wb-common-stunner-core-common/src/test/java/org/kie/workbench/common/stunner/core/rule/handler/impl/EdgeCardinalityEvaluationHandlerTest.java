@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.Before;
@@ -25,7 +27,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.impl.EdgeOccurrences;
 import org.mockito.Mock;
@@ -48,7 +49,7 @@ public class EdgeCardinalityEvaluationHandlerTest {
             new EdgeOccurrences("c1",
                                 EDGE_ID,
                                 ROLE,
-                                ConnectorCardinalityContext.Direction.INCOMING,
+                                EdgeCardinalityContext.Direction.INCOMING,
                                 0,
                                 -1);
 
@@ -56,7 +57,7 @@ public class EdgeCardinalityEvaluationHandlerTest {
             new EdgeOccurrences("c1",
                                 EDGE_ID,
                                 ROLE,
-                                ConnectorCardinalityContext.Direction.INCOMING,
+                                EdgeCardinalityContext.Direction.INCOMING,
                                 0,
                                 1);
 
@@ -64,7 +65,7 @@ public class EdgeCardinalityEvaluationHandlerTest {
             new EdgeOccurrences("c1",
                                 EDGE_ID,
                                 ROLE,
-                                ConnectorCardinalityContext.Direction.INCOMING,
+                                EdgeCardinalityContext.Direction.INCOMING,
                                 1,
                                 -1);
 
@@ -75,16 +76,35 @@ public class EdgeCardinalityEvaluationHandlerTest {
 
     @Before
     public void setup() throws Exception {
-        when(context.getEdgeId()).thenReturn(EDGE_ID);
+        when(context.getEdgeRole()).thenReturn(EDGE_ID);
         when(context.getRoles()).thenReturn(ROLES);
         tested = new EdgeCardinalityEvaluationHandler();
     }
 
     @Test
+    public void testAccept() {
+        when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.OUTGOING);
+        assertFalse(tested.accepts(RULE_IN_MAX_1,
+                                   context));
+        when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.INCOMING);
+        assertTrue(tested.accepts(RULE_IN_MAX_1,
+                                  context));
+        when(context.getEdgeRole()).thenReturn("some-edge");
+        assertFalse(tested.accepts(RULE_IN_MAX_1,
+                                   context));
+        when(context.getEdgeRole()).thenReturn(EDGE_ID);
+        assertTrue(tested.accepts(RULE_IN_MAX_1,
+                                  context));
+        when(context.getRoles()).thenReturn(Collections.singleton("some-role"));
+        assertFalse(tested.accepts(RULE_IN_MAX_1,
+                                   context));
+    }
+
+    @Test
     public void testEvaluateInNoLimit() {
         when(context.getCandidateCount()).thenReturn(0);
-        when(context.getDirection()).thenReturn(ConnectorCardinalityContext.Direction.INCOMING);
-        when(context.getOperation()).thenReturn(CardinalityContext.Operation.ADD);
+        when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.INCOMING);
+        when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_IN_NO_LIMIT,
                                                     context);
         assertNotNull(violations);
@@ -100,8 +120,8 @@ public class EdgeCardinalityEvaluationHandlerTest {
     @Test
     public void testEvaluateInMaxOneSucess() {
         when(context.getCandidateCount()).thenReturn(0);
-        when(context.getDirection()).thenReturn(ConnectorCardinalityContext.Direction.INCOMING);
-        when(context.getOperation()).thenReturn(CardinalityContext.Operation.ADD);
+        when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.INCOMING);
+        when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_IN_MAX_1,
                                                     context);
         assertNotNull(violations);
@@ -111,8 +131,8 @@ public class EdgeCardinalityEvaluationHandlerTest {
     @Test
     public void testEvaluateInMaxOneFailed() {
         when(context.getCandidateCount()).thenReturn(1);
-        when(context.getDirection()).thenReturn(ConnectorCardinalityContext.Direction.INCOMING);
-        when(context.getOperation()).thenReturn(CardinalityContext.Operation.ADD);
+        when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.INCOMING);
+        when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_IN_MAX_1,
                                                     context);
         assertNotNull(violations);
@@ -122,8 +142,8 @@ public class EdgeCardinalityEvaluationHandlerTest {
     @Test
     public void testEvaluateInMinOneSucess() {
         when(context.getCandidateCount()).thenReturn(0);
-        when(context.getDirection()).thenReturn(ConnectorCardinalityContext.Direction.INCOMING);
-        when(context.getOperation()).thenReturn(CardinalityContext.Operation.ADD);
+        when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.INCOMING);
+        when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_IN_MIN_1,
                                                     context);
         assertNotNull(violations);
@@ -133,8 +153,8 @@ public class EdgeCardinalityEvaluationHandlerTest {
     @Test
     public void testEvaluateInMinOneFailed() {
         when(context.getCandidateCount()).thenReturn(1);
-        when(context.getDirection()).thenReturn(ConnectorCardinalityContext.Direction.INCOMING);
-        when(context.getOperation()).thenReturn(CardinalityContext.Operation.DELETE);
+        when(context.getDirection()).thenReturn(EdgeCardinalityContext.Direction.INCOMING);
+        when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.DELETE));
         RuleViolations violations = tested.evaluate(RULE_IN_MIN_1,
                                                     context);
         assertNotNull(violations);

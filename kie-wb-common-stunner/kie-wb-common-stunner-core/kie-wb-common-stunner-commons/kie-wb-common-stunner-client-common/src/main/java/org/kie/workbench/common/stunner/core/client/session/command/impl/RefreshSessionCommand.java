@@ -62,7 +62,7 @@ public class RefreshSessionCommand extends AbstractClientSessionCommand<ClientFu
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> void execute(final Callback<T> callback) {
+    public <V> void execute(final Callback<V> callback) {
         checkNotNull("callback",
                      callback);
         final Path path = getDiagramPath();
@@ -85,12 +85,12 @@ public class RefreshSessionCommand extends AbstractClientSessionCommand<ClientFu
                                                                                         public void execute(CommandResult<?> result) {
                                                                                             if (!CommandUtils.isError(result)) {
                                                                                                 // TODO: Apply session commands again to restore latest client snapshot?
-                                                                                                callback.onSuccess((T) diagram);
+                                                                                                callback.onSuccess();
                                                                                             } else {
                                                                                                 LOGGER.log(Level.SEVERE,
                                                                                                            "Error when drawing diagram for path [" + path + "] - " +
                                                                                                                    "[result=" + result + "]");
-                                                                                                callback.onError(new ClientRuntimeError(result.getMessage()));
+                                                                                                callback.onError((V) new ClientRuntimeError(result.toString()));
                                                                                             }
                                                                                         }
                                                                                     });
@@ -101,7 +101,7 @@ public class RefreshSessionCommand extends AbstractClientSessionCommand<ClientFu
                                                LOGGER.log(Level.SEVERE,
                                                           "Error when loading diagram for path [" + path + "]",
                                                           error.getThrowable());
-                                               callback.onError(error);
+                                               callback.onError((V) error);
                                            }
                                        });
         checkState();

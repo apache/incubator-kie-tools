@@ -38,6 +38,9 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 public class SessionPresenterView extends Composite
         implements SessionPresenter.View {
 
+    private static final int DELAY = 10000;
+    private static final int TIMER = 100;
+
     @Inject
     @DataField
     private Label loadingPanel;
@@ -58,8 +61,11 @@ public class SessionPresenterView extends Composite
 
     @PostConstruct
     public void init() {
-        settings.setShowProgressbar(true);
-        settings.setPauseOnMouseOver(false);
+        settings.setShowProgressbar(false);
+        settings.setPauseOnMouseOver(true);
+        settings.setAllowDismiss(true);
+        settings.setDelay(DELAY);
+        settings.setTimer(TIMER);
         showLoading(false);
     }
 

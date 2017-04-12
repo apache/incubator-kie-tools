@@ -18,33 +18,33 @@ package org.kie.workbench.common.stunner.core.rule.impl;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
 
 @Portable
-public final class EdgeOccurrences extends Occurrences {
+public final class EdgeOccurrences extends AbstractOccurrences {
 
-    private final String edgeId;
-    private final ConnectorCardinalityContext.Direction direction;
+    private final String connectorRole;
+    private final EdgeCardinalityContext.Direction direction;
 
     public EdgeOccurrences(final @MapsTo("name") String name,
-                           final @MapsTo("edgeId") String edgeId,
-                           final @MapsTo("role") String candidateRole,
-                           final @MapsTo("direction") ConnectorCardinalityContext.Direction direction,
+                           final @MapsTo("connectorRole") String connectorRole,
+                           final @MapsTo("role") String role,
+                           final @MapsTo("direction") EdgeCardinalityContext.Direction direction,
                            final @MapsTo("minOccurrences") int minOccurrences,
                            final @MapsTo("maxOccurrences") int maxOccurrences) {
         super(name,
-              candidateRole,
+              role,
               minOccurrences,
               maxOccurrences);
-        this.edgeId = edgeId;
+        this.connectorRole = connectorRole;
         this.direction = direction;
     }
 
-    public String getEdgeId() {
-        return edgeId;
+    public String getConnectorRole() {
+        return connectorRole;
     }
 
-    public ConnectorCardinalityContext.Direction getDirection() {
+    public EdgeCardinalityContext.Direction getDirection() {
         return direction;
     }
 }

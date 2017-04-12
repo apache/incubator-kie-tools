@@ -28,7 +28,7 @@ import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
-import org.kie.workbench.common.stunner.core.factory.impl.AbstractElementFactory;
+import org.kie.workbench.common.stunner.core.factory.impl.AbstractGraphFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -38,13 +38,8 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSetImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
-import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
-import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
@@ -57,7 +52,7 @@ import org.kie.workbench.common.stunner.core.util.UUID;
  */
 @ApplicationScoped
 public class BPMNGraphFactoryImpl
-        extends AbstractElementFactory<String, DefinitionSet, Graph<DefinitionSet, Node>>
+        extends AbstractGraphFactory
         implements BPMNGraphFactory {
 
     private final DefinitionManager definitionManager;
@@ -101,13 +96,12 @@ public class BPMNGraphFactoryImpl
     @SuppressWarnings("unchecked")
     public Graph<DefinitionSet, Node> build(final String uuid,
                                             final String definitionSetId) {
-        //Build Graph
-        final Graph graph = buildGraph(uuid,
-                                       definitionSetId);
-
+        final Graph<DefinitionSet, Node> graph = super.build(uuid,
+                                                             definitionSetId);
         //Add default elements
         final List<Command> commands = buildInitialisationCommands();
-        final CompositeCommandImpl.CompositeCommandBuilder commandBuilder = new CompositeCommandImpl.CompositeCommandBuilder();
+        final CompositeCommandImpl.CompositeCommandBuilder commandBuilder =
+                new CompositeCommandImpl.CompositeCommandBuilder();
         commands.forEach(commandBuilder::addCommand);
         graphCommandManager.execute(createGraphContext(graph),
                                     commandBuilder.build());
@@ -115,21 +109,19 @@ public class BPMNGraphFactoryImpl
         return graph;
     }
 
-    @SuppressWarnings("unchecked")
-    protected Graph buildGraph(final String uuid,
-                               final String definitionSetId) {
-        final GraphImpl graph = new GraphImpl<>(uuid,
-                                                new GraphNodeStoreImpl());
-        final DefinitionSet content = new DefinitionSetImpl(definitionSetId);
-        graph.setContent(content);
-        if (null == content.getBounds()) {
-            content.setBounds(new BoundsImpl(new BoundImpl(0d,
-                                                           0d),
-                                             new BoundImpl(BPMNGraphFactory.GRAPH_DEFAULT_WIDTH,
-                                                           BPMNGraphFactory.GRAPH_DEFAULT_HEIGHT)
-            ));
-        }
-        return graph;
+    @Override
+    public boolean accepts(final String source) {
+        return true;
+    }
+
+    @Override
+    protected double getWidth() {
+        return GRAPH_DEFAULT_WIDTH;
+    }
+
+    @Override
+    protected double getHeight() {
+        return GRAPH_DEFAULT_HEIGHT;
     }
 
     @SuppressWarnings("unchecked")
@@ -155,5 +147,10 @@ public class BPMNGraphFactoryImpl
                                                      factoryManager,
                                                      ruleManager,
                                                      index);
+    }
+
+    @Override
+    protected DefinitionManager getDefinitionManager() {
+        return definitionManager;
     }
 }

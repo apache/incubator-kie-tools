@@ -31,11 +31,11 @@ public class VisitGraphSessionCommand extends AbstractClientSessionCommand<Clien
     }
 
     @Override
-    public <T> void execute(final Callback<T> callback) {
+    public <V> void execute(final Callback<V> callback) {
         checkNotNull("callback",
                      callback);
 
         new CanvasHighlightVisitor().run(getSession().getCanvasHandler(),
-                                         () -> callback.onSuccess(null));
+                                         callback::onSuccess);
     }
 }

@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
-import java.util.Set;
+import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationHandler;
@@ -49,29 +49,21 @@ public class CardinalityEvaluationHandler implements RuleEvaluationHandler<Occur
     @Override
     public RuleViolations evaluate(final Occurrences rule,
                                    final CardinalityContext context) {
-
-        final String ruleRole = rule.getRole();
+        final DefaultRuleViolations results = new DefaultRuleViolations();
         final int minOccurrences = rule.getMinOccurrences();
         final int maxOccurrences = rule.getMaxOccurrences();
-        final Set<String> candidateRoles = context.getRoles();
         final int candidatesCount = context.getCandidateCount();
-        final CardinalityContext.Operation operation = context.getOperation();
-
-        final DefaultRuleViolations results = new DefaultRuleViolations();
-        if (candidateRoles.contains(ruleRole)) {
-            final int count = operation.equals(CardinalityContext.Operation.NONE) ? candidatesCount :
-                    (operation.equals(CardinalityContext.Operation.ADD) ? candidatesCount + 1 : candidatesCount - 1);
-            if (count < minOccurrences) {
-                results.addViolation(new CardinalityMinRuleViolation(candidateRoles.toString(),
-                                                                     ruleRole,
-                                                                     minOccurrences,
-                                                                     candidatesCount));
-            } else if (maxOccurrences > -1 && count > maxOccurrences) {
-                results.addViolation(new CardinalityMaxRuleViolation(candidateRoles.toString(),
-                                                                     ruleRole,
-                                                                     maxOccurrences,
-                                                                     candidatesCount));
-            }
+        final Optional<CardinalityContext.Operation> operation = context.getOperation();
+        final int count = !operation.isPresent() ? candidatesCount :
+                (operation.get().equals(CardinalityContext.Operation.ADD) ? candidatesCount + 1 : candidatesCount - 1);
+        if (count < minOccurrences) {
+            results.addViolation(new CardinalityMinRuleViolation(context.getRoles().toString(),
+                                                                 minOccurrences,
+                                                                 candidatesCount));
+        } else if (maxOccurrences > -1 && count > maxOccurrences) {
+            results.addViolation(new CardinalityMaxRuleViolation(context.getRoles().toString(),
+                                                                 maxOccurrences,
+                                                                 candidatesCount));
         }
         return results;
     }

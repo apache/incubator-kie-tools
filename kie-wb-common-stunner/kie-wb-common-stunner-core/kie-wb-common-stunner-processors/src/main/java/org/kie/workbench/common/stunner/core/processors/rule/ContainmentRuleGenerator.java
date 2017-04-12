@@ -84,6 +84,8 @@ public class ContainmentRuleGenerator extends AbstractGenerator {
                  ruleDefinitionId);
         root.put("roles",
                  roles);
+        root.put("rolesCount",
+                 roles.size());
         //Generate code
         final StringWriter sw = new StringWriter();
         final BufferedWriter bw = new BufferedWriter(sw);

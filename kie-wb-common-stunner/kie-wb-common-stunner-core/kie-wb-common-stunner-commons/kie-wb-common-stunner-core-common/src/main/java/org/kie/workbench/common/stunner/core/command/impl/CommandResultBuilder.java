@@ -25,16 +25,10 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 @NonPortable
 public abstract class CommandResultBuilder<V> {
 
-    protected static final String RESULT_SUCCESS = "Success";
-    protected static final String RESULT_FAILED = "Failed";
-
-    private CommandResult.Type type;
-    private String message = RESULT_SUCCESS;
+    private CommandResult.Type type = CommandResult.Type.INFO;
     private final Collection<V> violations = new LinkedList<>();
 
-    public abstract boolean isError(final V violation);
-
-    public abstract String getMessage(final V violation);
+    public abstract CommandResult.Type getType(final V violation);
 
     public CommandResultBuilder() {
     }
@@ -58,36 +52,14 @@ public abstract class CommandResultBuilder<V> {
         return this;
     }
 
-    public void setMessage(final String message) {
-        this.message = message;
-    }
-
     public CommandResult<V> build() {
-        if (null != violations && !violations.isEmpty()) {
-            StringBuilder messages = new StringBuilder();
-            String message = null;
-            int c = 0;
-            for (final V violation : violations) {
-                if (isError(violation)) {
-                    message = getMessage(violation);
-                    messages.append(" {").append(message).append(" } ");
-                    c++;
-                }
+        violations.forEach(v -> {
+            final CommandResult.Type violationType = getType(v);
+            if (violationType.getSeverity() > this.type.getSeverity()) {
+                this.type = violationType;
             }
-            if (c > 1) {
-                message = "Found " + c + " violations - " + messages.toString();
-            }
-            if (c > 0) {
-                this.message = message;
-                this.type = CommandResult.Type.ERROR;
-            }
-        }
-        // Default values.
-        this.type = this.type == null ? CommandResult.Type.INFO : this.type;
-        this.message = (this.message == null || this.message.trim().length() == 0)
-                ? RESULT_SUCCESS : this.message;
+        });
         return new CommandResultImpl<>(this.type,
-                                       this.message,
                                        this.violations);
     }
 }

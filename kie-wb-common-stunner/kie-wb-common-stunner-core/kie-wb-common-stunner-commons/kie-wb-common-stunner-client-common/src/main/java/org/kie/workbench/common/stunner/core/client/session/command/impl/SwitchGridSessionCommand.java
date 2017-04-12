@@ -45,7 +45,7 @@ public class SwitchGridSessionCommand extends AbstractClientSessionCommand<Abstr
     }
 
     @Override
-    public <T> void execute(final Callback<T> callback) {
+    public <V> void execute(final Callback<V> callback) {
         checkNotNull("callback",
                      callback);
         if (++gridIndex == GRIDS.length) {
@@ -53,7 +53,7 @@ public class SwitchGridSessionCommand extends AbstractClientSessionCommand<Abstr
         }
         updateGrid();
         // Run the callback.
-        callback.onSuccess(null);
+        callback.onSuccess();
     }
 
     private void resetGrid() {

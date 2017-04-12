@@ -36,19 +36,19 @@ public class CanvasViolationImplTest {
     @Before
     public void setup() throws Exception {
         ruleViolation = new RuleViolationImpl(MESSAGE);
-        ruleViolation.setUuid(UUID);
+        ruleViolation.setUUID(UUID);
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testBuild() {
-        final CanvasViolationImpl canvasViolation = new CanvasViolationImpl.CanvasViolationBuilder(ruleViolation).build();
+        final CanvasViolation canvasViolation = CanvasViolationImpl.Builder.build(ruleViolation);
         assertNotNull(canvasViolation);
         assertEquals(RuleViolation.Type.ERROR,
                      canvasViolation.getViolationType());
         assertEquals(MESSAGE,
-                     canvasViolation.getMessage());
+                     canvasViolation.getArguments().get()[0]);
         assertEquals(UUID,
-                     canvasViolation.getUuid());
+                     canvasViolation.getUUID());
     }
 }

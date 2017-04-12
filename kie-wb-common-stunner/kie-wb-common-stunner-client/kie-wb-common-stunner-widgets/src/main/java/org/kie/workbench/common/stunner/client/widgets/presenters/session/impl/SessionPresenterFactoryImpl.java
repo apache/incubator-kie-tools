@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionDiagramOpenedEvent;
+import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
 import org.kie.workbench.common.stunner.client.widgets.palette.factory.BS3PaletteFactory;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionEditor;
@@ -50,11 +51,13 @@ public class SessionPresenterFactoryImpl implements SessionPresenterFactory<Diag
     private final ManagedInstance<SessionDiagramPreview<AbstractClientSession>> sessionPreviewInstances;
     private final ManagedInstance<WidgetWrapperView> diagramViewerViewInstances;
     private final ManagedInstance<SessionPresenter.View> viewInstances;
+    private final ManagedInstance<NotificationsObserver> notificationsObserverInstances;
     private final BS3PaletteFactory paletteWidgetFactory;
     private final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEventInstances;
 
     protected SessionPresenterFactoryImpl() {
         this(null,
+             null,
              null,
              null,
              null,
@@ -73,6 +76,7 @@ public class SessionPresenterFactoryImpl implements SessionPresenterFactory<Diag
                                        final ManagedInstance<SessionDiagramPreview<AbstractClientSession>> sessionPreviewInstances,
                                        final ManagedInstance<WidgetWrapperView> diagramViewerViewInstances,
                                        final ManagedInstance<SessionPresenter.View> viewInstances,
+                                       ManagedInstance<NotificationsObserver> notificationsObserverInstances,
                                        final BS3PaletteFactory paletteWidgetFactory,
                                        final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEventInstances) {
         this.sessionManager = sessionManager;
@@ -82,6 +86,7 @@ public class SessionPresenterFactoryImpl implements SessionPresenterFactory<Diag
         this.sessionPreviewInstances = sessionPreviewInstances;
         this.diagramViewerViewInstances = diagramViewerViewInstances;
         this.paletteWidgetFactory = paletteWidgetFactory;
+        this.notificationsObserverInstances = notificationsObserverInstances;
         this.viewInstances = viewInstances;
         this.sessionDiagramOpenedEventInstances = sessionDiagramOpenedEventInstances;
     }
@@ -111,6 +116,7 @@ public class SessionPresenterFactoryImpl implements SessionPresenterFactory<Diag
                                             viewerToolbarFactoryInstances.get(),
                                             sessionDiagramOpenedEventInstances,
                                             diagramViewerViewInstances.get(),
+                                            notificationsObserverInstances.get(),
                                             viewInstances.get());
     }
 
@@ -122,6 +128,7 @@ public class SessionPresenterFactoryImpl implements SessionPresenterFactory<Diag
                                             editorToolbarFactoryInstances.get(),
                                             paletteWidgetFactory,
                                             diagramViewerViewInstances.get(),
+                                            notificationsObserverInstances.get(),
                                             viewInstances.get());
     }
 }

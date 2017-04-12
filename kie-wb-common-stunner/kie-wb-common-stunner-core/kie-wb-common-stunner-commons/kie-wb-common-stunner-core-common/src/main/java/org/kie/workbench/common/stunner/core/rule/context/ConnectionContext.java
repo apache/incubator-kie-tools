@@ -32,9 +32,9 @@ import org.kie.workbench.common.stunner.core.rule.impl.CanConnect;
 public interface ConnectionContext extends RuleEvaluationContext {
 
     /**
-     * The identifier of the Definition type of candidate connector.
+     * The role that the rules apply for.
      */
-    String getConnectorId();
+    String getConnectorRole();
 
     /**
      * The set of roles that the source node can satisfy

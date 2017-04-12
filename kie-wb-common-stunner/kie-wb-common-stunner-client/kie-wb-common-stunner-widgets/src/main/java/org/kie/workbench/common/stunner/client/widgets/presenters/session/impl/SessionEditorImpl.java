@@ -23,7 +23,6 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasValidationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
@@ -172,12 +171,6 @@ public class SessionEditorImpl<S extends AbstractClientFullSession, H extends Ab
         @SuppressWarnings("unchecked")
         public DockingAcceptorControl<H> getDockingAcceptorControl() {
             return (DockingAcceptorControl<H>) getSession().getDockingAcceptorControl();
-        }
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public CanvasValidationControl<H> getValidationControl() {
-            return (CanvasValidationControl<H>) getSession().getValidationControl();
         }
     }
 }

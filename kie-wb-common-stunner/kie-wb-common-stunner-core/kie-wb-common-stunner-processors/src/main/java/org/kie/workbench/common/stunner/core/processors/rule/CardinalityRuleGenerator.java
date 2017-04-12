@@ -26,7 +26,6 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 
 import freemarker.template.Template;
@@ -52,25 +51,25 @@ public class CardinalityRuleGenerator extends AbstractGenerator {
         final Messager messager = processingEnvironment.getMessager();
         messager.printMessage(Diagnostic.Kind.NOTE,
                               "Starting code adf for [" + className + "]");
-        final Elements elementUtils = processingEnvironment.getElementUtils();
         //Extract required information
         final TypeElement classElement = (TypeElement) element;
-        final boolean isInterface = classElement.getKind().isInterface();
         final AllowedOccurrences occs = classElement.getAnnotation(AllowedOccurrences.class);
         if (null != occs) {
+            int count = 0;
             for (Occurrences occurrence : occs.value()) {
                 String role = occurrence.role();
-                final String ruleNAme = MainProcessor.toValidId(className) + "_" + role + "_" + MainProcessor.RULE_CARDINALITY_SUFFIX_CLASSNAME;
+                final String ruleName = MainProcessor.toValidId(className) + count + MainProcessor.RULE_CARDINALITY_SUFFIX_CLASSNAME;
                 long min = occurrence.min();
                 long max = occurrence.max();
                 StringBuffer ruleSourceCode = generateRule(messager,
-                                                           ruleNAme,
+                                                           ruleName,
                                                            role,
                                                            min,
                                                            max);
-                processingContext.addRule(ruleNAme,
+                processingContext.addRule(ruleName,
                                           ProcessingRule.TYPE.CARDINALITY,
                                           ruleSourceCode);
+                count++;
             }
         }
         return null;
@@ -78,14 +77,14 @@ public class CardinalityRuleGenerator extends AbstractGenerator {
 
     private StringBuffer generateRule(final Messager messager,
                                       final String ruleName,
-                                      final String ruleRoleId,
+                                      final String role,
                                       final long min,
                                       final long max) throws GenerationException {
         Map<String, Object> root = new HashMap<String, Object>();
         root.put("ruleName",
                  ruleName);
-        root.put("ruleRoleId",
-                 ruleRoleId);
+        root.put("role",
+                 role);
         root.put("min",
                  min);
         root.put("max",

@@ -26,25 +26,17 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 public final class CommandResultImpl<V> implements CommandResult<V> {
 
     private final Type type;
-    private final String message;
     private final Collection<V> violations;
 
     public CommandResultImpl(final @MapsTo("type") Type type,
-                             final @MapsTo("message") String message,
                              final @MapsTo("violations") Collection<V> violations) {
         this.violations = violations;
         this.type = type;
-        this.message = message;
     }
 
     @Override
     public Type getType() {
         return type;
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
     }
 
     @Override
@@ -56,7 +48,6 @@ public final class CommandResultImpl<V> implements CommandResult<V> {
     public String toString() {
         return "[Class=" + super.getClass().getSimpleName() + ", "
                 + "Type=" + type.name() + ", "
-                + "Message=" + message + ", "
                 + "Violations=" + violations + "]";
     }
 }

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,11 +30,14 @@ import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.GraphConnectionContext;
 import org.mockito.ArgumentCaptor;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
+import static org.kie.workbench.common.stunner.core.TestingGraphUtils.verifyConnection;
+import static org.kie.workbench.common.stunner.core.TestingGraphUtils.verifyConnectorCardinality;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -99,14 +103,14 @@ public class SetConnectionSourceNodeCommandTest extends AbstractGraphCommandTest
                                    graph,
                                    lastSourceNode,
                                    edge,
-                                   ConnectorCardinalityContext.Direction.OUTGOING,
-                                   CardinalityContext.Operation.DELETE);
+                                   EdgeCardinalityContext.Direction.OUTGOING,
+                                   Optional.of(CardinalityContext.Operation.DELETE));
         verifyConnectorCardinality((ConnectorCardinalityContext) contexts.get(2),
                                    graph,
                                    node,
                                    edge,
-                                   ConnectorCardinalityContext.Direction.OUTGOING,
-                                   CardinalityContext.Operation.ADD);
+                                   EdgeCardinalityContext.Direction.OUTGOING,
+                                   Optional.of(CardinalityContext.Operation.ADD));
     }
 
     @Test
@@ -146,8 +150,8 @@ public class SetConnectionSourceNodeCommandTest extends AbstractGraphCommandTest
                                    graph,
                                    lastSourceNode,
                                    edge,
-                                   ConnectorCardinalityContext.Direction.OUTGOING,
-                                   CardinalityContext.Operation.DELETE);
+                                   EdgeCardinalityContext.Direction.OUTGOING,
+                                   Optional.of(CardinalityContext.Operation.DELETE));
     }
 
     @Test
@@ -176,14 +180,14 @@ public class SetConnectionSourceNodeCommandTest extends AbstractGraphCommandTest
                                    graph,
                                    lastSourceNode,
                                    edge,
-                                   ConnectorCardinalityContext.Direction.OUTGOING,
-                                   CardinalityContext.Operation.DELETE);
+                                   EdgeCardinalityContext.Direction.OUTGOING,
+                                   Optional.of(CardinalityContext.Operation.DELETE));
         verifyConnectorCardinality((ConnectorCardinalityContext) contexts.get(2),
                                    graph,
                                    node,
                                    edge,
-                                   ConnectorCardinalityContext.Direction.OUTGOING,
-                                   CardinalityContext.Operation.ADD);
+                                   EdgeCardinalityContext.Direction.OUTGOING,
+                                   Optional.of(CardinalityContext.Operation.ADD));
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
         verify(lastSourceOutEdges,
@@ -236,14 +240,14 @@ public class SetConnectionSourceNodeCommandTest extends AbstractGraphCommandTest
                                    graph,
                                    lastSourceNode,
                                    edge,
-                                   ConnectorCardinalityContext.Direction.OUTGOING,
-                                   CardinalityContext.Operation.DELETE);
+                                   EdgeCardinalityContext.Direction.OUTGOING,
+                                   Optional.of(CardinalityContext.Operation.DELETE));
         verifyConnectorCardinality((ConnectorCardinalityContext) contexts.get(2),
                                    graph,
                                    node,
                                    edge,
-                                   ConnectorCardinalityContext.Direction.OUTGOING,
-                                   CardinalityContext.Operation.ADD);
+                                   EdgeCardinalityContext.Direction.OUTGOING,
+                                   Optional.of(CardinalityContext.Operation.ADD));
         assertEquals(CommandResult.Type.INFO,
                      result.getType());
         verify(lastSourceOutEdges,

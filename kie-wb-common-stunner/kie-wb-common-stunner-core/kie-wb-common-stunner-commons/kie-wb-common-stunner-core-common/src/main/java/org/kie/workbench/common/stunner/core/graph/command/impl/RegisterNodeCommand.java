@@ -15,6 +15,7 @@
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -25,7 +26,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecution
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
@@ -67,8 +68,8 @@ public class RegisterNodeCommand extends AbstractGraphCommand {
         final Collection<RuleViolation> cardinalityRuleViolations =
                 doEvaluate(context,
                            RuleContextBuilder.GraphContexts.cardinality(graph,
-                                                                        getCandidate(),
-                                                                        CardinalityContext.Operation.ADD));
+                                                                        Optional.of(getCandidate()),
+                                                                        Optional.of(CardinalityContext.Operation.ADD)));
         return new GraphCommandResultBuilder(cardinalityRuleViolations).build();
     }
 

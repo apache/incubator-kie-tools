@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,7 +31,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBui
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
@@ -88,8 +89,8 @@ public class DeregisterNodeCommand extends AbstractGraphCommand {
         final Collection<RuleViolation> cardinalityRuleViolations =
                 doEvaluate(context,
                            RuleContextBuilder.GraphContexts.cardinality(graph,
-                                                                        candidate,
-                                                                        CardinalityContext.Operation.DELETE));
+                                                                        Optional.of(candidate),
+                                                                        Optional.of(CardinalityContext.Operation.DELETE)));
         builder.addViolations(cardinalityRuleViolations);
         return builder.build();
     }

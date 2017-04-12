@@ -23,7 +23,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControlRegistrationHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasValidationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
@@ -44,7 +43,6 @@ public class DiagramEditorImpl<D extends Diagram, H extends AbstractCanvasHandle
 
     private final DiagramViewer<D, H> viewer;
     private final CanvasCommandManager<H> commandManager;
-    private final CanvasValidationControl<H> validationControl;
     private final ConnectionAcceptorControl<H> connectionAcceptorControl;
     private final ContainmentAcceptorControl<H> containmentAcceptorControl;
     private final DockingAcceptorControl<H> dockingAcceptorControl;
@@ -53,12 +51,10 @@ public class DiagramEditorImpl<D extends Diagram, H extends AbstractCanvasHandle
 
     DiagramEditorImpl(final DiagramViewer<D, H> viewer,
                       final CanvasCommandManager<H> commandManager,
-                      final CanvasValidationControl<H> validationControl,
                       final ConnectionAcceptorControl<H> connectionAcceptorControl,
                       final ContainmentAcceptorControl<H> containmentAcceptorControl,
                       final DockingAcceptorControl<H> dockingAcceptorControl) {
         this.viewer = viewer;
-        this.validationControl = validationControl;
         this.commandManager = commandManager;
         this.connectionAcceptorControl = connectionAcceptorControl;
         this.containmentAcceptorControl = containmentAcceptorControl;
@@ -134,11 +130,6 @@ public class DiagramEditorImpl<D extends Diagram, H extends AbstractCanvasHandle
     }
 
     @Override
-    public CanvasValidationControl<H> getValidationControl() {
-        return validationControl;
-    }
-
-    @Override
     public CanvasCommandManager<H> getCommandManager() {
         return commandManager;
     }
@@ -193,7 +184,6 @@ public class DiagramEditorImpl<D extends Diagram, H extends AbstractCanvasHandle
                                                                         getHandler());
         registrationHandler.setCommandManagerProvider(this::getCommandManager);
         // Register the canvas controls that the aggregated diagram viewer instance does not provide.
-        registrationHandler.registerCanvasHandlerControl(validationControl);
         registrationHandler.registerCanvasHandlerControl(connectionAcceptorControl);
         registrationHandler.registerCanvasHandlerControl(containmentAcceptorControl);
         registrationHandler.registerCanvasHandlerControl(dockingAcceptorControl);

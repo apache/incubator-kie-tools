@@ -1,1 +1,1 @@
-Occurrences ${ruleName} = new Occurrences( "${ruleName}", "${ruleRoleId}", ${min}, ${max} );
+Occurrences ${ruleName} = new Occurrences( "${ruleName}", "${role}", ${min}, ${max} );

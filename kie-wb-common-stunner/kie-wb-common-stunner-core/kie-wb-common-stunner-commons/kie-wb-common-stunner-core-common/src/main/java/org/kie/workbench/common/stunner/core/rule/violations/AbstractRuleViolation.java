@@ -16,29 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.rule.violations;
 
-import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+public abstract class AbstractRuleViolation extends AbstractGraphViolation {
 
-public abstract class AbstractRuleViolation implements RuleViolation {
-
-    private String uuid;
+    protected abstract String getMessage();
 
     @Override
     public Type getViolationType() {
         return Type.ERROR;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(final String uuid) {
-        this.uuid = uuid;
-    }
-
-    @Override
-    public String toString() {
-        return "[" + this.getClass().getSimpleName()
-                + (null != uuid ? " {" + uuid + "}] " : "")
-                + getMessage();
     }
 }

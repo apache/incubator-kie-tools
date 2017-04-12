@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
+import java.util.Optional;
 import javax.enterprise.event.Event;
 
 import org.kie.workbench.common.stunner.client.widgets.event.SessionDiagramOpenedEvent;
+import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramViewer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
@@ -33,9 +35,9 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
 /**
  * A generic session's presenter instance for read-only purposes.
- * <p/>
+ * <p>
  * It provides a viewer Toolbar instance type, but does not provide a Palette to ensure view only mode.
- * <p/>
+ * <p>
  * It aggregates a custom session viewer type which provides binds the editors's diagram instance and the
  * different editors' controls with the diagram and controls for the given session.
  * @see <a>org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerImpl</a>
@@ -53,10 +55,13 @@ public class SessionViewerPresenter<S extends AbstractClientReadOnlySession, H e
                            final ViewerToolbarFactory toolbarFactory,
                            final Event<SessionDiagramOpenedEvent> sessionDiagramOpenedEvent,
                            final WidgetWrapperView diagramViewerView,
+                           final NotificationsObserver notificationsObserver,
                            final View view) {
         super(sessionManager,
-              (ToolbarFactory<S>) toolbarFactory,
-              view);
+              view,
+              Optional.of((ToolbarFactory<S>) toolbarFactory),
+              Optional.empty(),
+              notificationsObserver);
         this.viewer = new CustomSessionViewer(commandManager,
                                               diagramViewerView);
         this.sessionDiagramOpenedEvent = sessionDiagramOpenedEvent;

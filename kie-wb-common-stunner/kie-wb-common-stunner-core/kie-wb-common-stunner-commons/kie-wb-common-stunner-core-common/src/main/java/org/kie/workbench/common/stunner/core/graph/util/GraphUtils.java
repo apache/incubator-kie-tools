@@ -16,12 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.graph.util;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.Point2D;
@@ -35,19 +34,7 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Child;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-@ApplicationScoped
 public class GraphUtils {
-
-    DefinitionManager definitionManager;
-
-    protected GraphUtils() {
-    }
-
-    @Inject
-    @SuppressWarnings("all")
-    public GraphUtils(final DefinitionManager definitionManager) {
-        this.definitionManager = definitionManager;
-    }
 
     public static Object getProperty(final DefinitionManager definitionManager,
                                      final Element<? extends Definition> element,
@@ -60,13 +47,6 @@ public class GraphUtils {
                                id);
         }
         return null;
-    }
-
-    public Object getProperty(final Set<?> properties,
-                              final String id) {
-        return getProperty(definitionManager,
-                           properties,
-                           id);
     }
 
     public static Object getProperty(final DefinitionManager definitionManager,
@@ -83,6 +63,50 @@ public class GraphUtils {
         return null;
     }
 
+    public static int countDefinitionsById(final DefinitionManager definitionManager,
+                                           final Graph<?, ? extends Node> target,
+                                           final String id) {
+        final int[] count = {0};
+        target.nodes().forEach(node -> {
+            if (getElementDefinitionId(definitionManager,
+                                       node).equals(id)) {
+                count[0]++;
+            }
+        });
+        return count[0];
+    }
+
+    public static <T> int countDefinitions(final DefinitionManager definitionManager,
+                                           final Graph<?, ? extends Node> target,
+                                           final T definition) {
+        final String id = definitionManager.adapters().forDefinition().getId(definition);
+        return countDefinitionsById(definitionManager,
+                                    target,
+                                    id);
+    }
+
+    public static int countEdges(final DefinitionManager definitionManager,
+                                 final String edgeId,
+                                 final List<? extends Edge> edges) {
+        final int[] count = {0};
+        if (null != edgeId
+                && null != edges
+                && !edges.isEmpty()) {
+            edges.stream().forEach(edge -> {
+                final String eId = getElementDefinitionId(definitionManager,
+                                                          edge);
+                if (null != eId && edgeId.equals(eId)) {
+                    count[0]++;
+                }
+            });
+        }
+        return count[0];
+    }
+
+    /**
+     * Does not returns labels not being used on the graph,
+     * even if included in the <code>filter</code>.
+     */
     @SuppressWarnings("unchecked")
     public static Map<String, Integer> getLabelsCount(final Graph<?, ? extends Node> target,
                                                       final Set<String> filter) {
@@ -103,53 +127,23 @@ public class GraphUtils {
         return labels;
     }
 
-    public int countDefinitionsById(final Graph<?, ? extends Node> target,
-                                    final String id) {
-        final int[] count = {0};
-        target.nodes().forEach(node -> {
-            if (getElementDefinitionId(node).equals(id)) {
-                count[0]++;
+    @SuppressWarnings("unchecked")
+    public static List<String> getParentIds(final DefinitionManager definitionManager,
+                                            final Graph<? extends DefinitionSet, ? extends Node> graph,
+                                            final Element<?> element) {
+        final List<String> result = new ArrayList<>(5);
+        Element<?> p = element;
+        while (p instanceof Node && p.getContent() instanceof Definition) {
+            p = getParent((Node<? extends Definition<?>, ? extends Edge>) p);
+            if (null != p) {
+                final Object definition = ((Definition) p.getContent()).getDefinition();
+                final String id = definitionManager.adapters().forDefinition().getId(definition);
+                result.add(id);
             }
-        });
-        return count[0];
-    }
-
-    public <T> int countDefinitions(final Graph<?, ? extends Node> target,
-                                    final T definition) {
-        final String id = getDefinitionId(definition);
-        return countDefinitionsById(target,
-                                    id);
-    }
-
-    public int countEdges(final String edgeId,
-                          final List<? extends Edge> edges) {
-        final int[] count = {0};
-        if (null != edgeId
-                && null != edges
-                && !edges.isEmpty()) {
-            edges.stream().forEach(edge -> {
-                final String eId = getElementDefinitionId(edge);
-                if (null != eId && edgeId.equals(eId)) {
-                    count[0]++;
-                }
-            });
         }
-        return count[0];
-    }
-
-    private <T> String getDefinitionId(final T definition) {
-        return definitionManager.adapters().forDefinition().getId(definition);
-    }
-
-    public String getElementDefinitionId(final Element<?> element) {
-        String targetId = null;
-        if (element.getContent() instanceof Definition) {
-            final Object definition = ((Definition) element.getContent()).getDefinition();
-            targetId = getDefinitionId(definition);
-        } else if (element.getContent() instanceof DefinitionSet) {
-            targetId = ((DefinitionSet) element.getContent()).getDefinition();
-        }
-        return targetId;
+        final String graphId = graph.getContent().getDefinition();
+        result.add(graphId);
+        return result;
     }
 
     @SuppressWarnings("unchecked")
@@ -230,6 +224,18 @@ public class GraphUtils {
             }
         }
         return null;
+    }
+
+    private static String getElementDefinitionId(final DefinitionManager definitionManager,
+                                                 final Element<?> element) {
+        String targetId = null;
+        if (element.getContent() instanceof Definition) {
+            final Object definition = ((Definition) element.getContent()).getDefinition();
+            targetId = definitionManager.adapters().forDefinition().getId(definition);
+        } else if (element.getContent() instanceof DefinitionSet) {
+            targetId = ((DefinitionSet) element.getContent()).getDefinition();
+        }
+        return targetId;
     }
 
     private static boolean instanceOf(final Object item,

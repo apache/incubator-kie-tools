@@ -29,8 +29,9 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationHandler;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.NodeContainmentContext;
-import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.impl.CanContain;
+import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 
 @ApplicationScoped
 public class NodeContainmentEvaluationHandler implements RuleEvaluationHandler<CanContain, NodeContainmentContext> {
@@ -63,31 +64,29 @@ public class NodeContainmentEvaluationHandler implements RuleEvaluationHandler<C
     @Override
     public boolean accepts(final CanContain rule,
                            final NodeContainmentContext context) {
-        final String parentId = evalUtils.getElementDefinitionId(getParent(context));
+        final Set<String> parenteLabels = evalUtils.getLabels(context.getParent());
         // As for acceptance checking, the delegated handler only needs the parent node id, no need
         // to calculate roles for the candidate node.
         return containmentHandler.accepts(rule,
-                                          RuleContextBuilder.DomainContexts.containment(parentId,
+                                          RuleContextBuilder.DomainContexts.containment(parenteLabels,
                                                                                         Collections.emptySet()));
     }
 
     @Override
     public RuleViolations evaluate(final CanContain rule,
                                    final NodeContainmentContext context) {
-        final Element<? extends Definition<?>> source = getParent(context);
+        final Element<? extends Definition<?>> source = context.getParent();
         final Node<? extends Definition<?>, ? extends Edge> target = context.getCandidate();
-        final String sourceId = evalUtils.getElementDefinitionId(source);
         final Set<String> candidateLabels = evalUtils.getLabels(target);
-        final RuleViolations result = containmentHandler
-                .evaluate(rule,
-                          RuleContextBuilder.DomainContexts.containment(sourceId,
-                                                                        candidateLabels));
+        final Set<String> parentLabels = evalUtils.getLabels(source);
+        final DefaultRuleViolations result = new DefaultRuleViolations();
+        result.addViolations(
+                containmentHandler
+                        .evaluate(rule,
+                                  RuleContextBuilder.DomainContexts.containment(parentLabels,
+                                                                                candidateLabels))
+        );
         return GraphEvaluationHandlerUtils.addViolationsSourceUUID(target.getUUID(),
                                                                    result);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Element<? extends Definition<?>> getParent(final NodeContainmentContext context) {
-        return context.getParent().orElse((Element<? extends Definition<?>>) context.getGraph());
     }
 }

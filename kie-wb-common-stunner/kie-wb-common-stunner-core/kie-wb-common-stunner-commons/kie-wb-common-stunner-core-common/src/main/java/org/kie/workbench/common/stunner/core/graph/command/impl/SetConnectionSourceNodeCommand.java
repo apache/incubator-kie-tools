@@ -29,8 +29,8 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.content.view.ViewConnector;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
@@ -129,8 +129,8 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
                                RuleContextBuilder.GraphContexts.edgeCardinality(getGraph(context),
                                                                                 currentSource,
                                                                                 edge,
-                                                                                ConnectorCardinalityContext.Direction.OUTGOING,
-                                                                                CardinalityContext.Operation.DELETE));
+                                                                                EdgeCardinalityContext.Direction.OUTGOING,
+                                                                                Optional.of(CardinalityContext.Operation.DELETE)));
             resultBuilder.addViolations(cardinalityRuleViolations);
         }
         // If the new source node exist, evaluate cardinality rules for this edge.
@@ -140,8 +140,8 @@ public final class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
                                RuleContextBuilder.GraphContexts.edgeCardinality(getGraph(context),
                                                                                 sourceNode,
                                                                                 edge,
-                                                                                ConnectorCardinalityContext.Direction.OUTGOING,
-                                                                                CardinalityContext.Operation.ADD));
+                                                                                EdgeCardinalityContext.Direction.OUTGOING,
+                                                                                Optional.of(CardinalityContext.Operation.ADD)));
             resultBuilder.addViolations(cardinalityRuleViolations);
         }
         return resultBuilder.build();

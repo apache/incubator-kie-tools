@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls.resize;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -31,6 +32,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.controls.resize.Resiz
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
+import org.kie.workbench.common.stunner.core.client.command.CanvasViolationImpl;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
@@ -56,6 +58,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
+import org.kie.workbench.common.stunner.core.rule.violations.BoundsExceededViolation;
 
 @Dependent
 public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<AbstractCanvasHandler> implements ResizeControl<AbstractCanvasHandler, Element> {
@@ -242,10 +245,12 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
         // Check the new bound values that come from the user's action do not exceed graph ones.
         if (!GraphUtils.checkBoundsExceeded(canvasHandler.getDiagram().getGraph(),
                                             newBounds)) {
-            return new CommandResultImpl<>(
+            final CanvasViolation cv = CanvasViolationImpl.Builder.build(new BoundsExceededViolation(newBounds)
+                                                                                 .setUUID(canvasHandler.getUuid()));
+
+            return new CommandResultImpl<CanvasViolation>(
                     CommandResult.Type.ERROR,
-                    "Bounds exceeded",
-                    new LinkedList<>()
+                    Collections.singleton(cv)
             );
         }
         // Execute the update position and update property/ies command/s on the bean instance to achieve the new bounds.

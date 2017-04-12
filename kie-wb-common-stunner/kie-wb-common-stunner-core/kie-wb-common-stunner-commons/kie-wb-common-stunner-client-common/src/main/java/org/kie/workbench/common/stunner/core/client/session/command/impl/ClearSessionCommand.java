@@ -75,7 +75,7 @@ public class ClearSessionCommand extends AbstractClientSessionCommand<ClientFull
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> void execute(final Callback<T> callback) {
+    public <V> void execute(final Callback<V> callback) {
         checkNotNull("callback",
                      callback);
         final CommandResult<CanvasViolation> result = getSession()
@@ -84,8 +84,10 @@ public class ClearSessionCommand extends AbstractClientSessionCommand<ClientFull
                          canvasCommandFactory.clearCanvas());
         if (!CommandUtils.isError(result)) {
             cleanSessionRegistry();
+            callback.onSuccess();
+        } else {
+            callback.onError((V) result);
         }
-        callback.onSuccess((T) result);
     }
 
     private void cleanSessionRegistry() {

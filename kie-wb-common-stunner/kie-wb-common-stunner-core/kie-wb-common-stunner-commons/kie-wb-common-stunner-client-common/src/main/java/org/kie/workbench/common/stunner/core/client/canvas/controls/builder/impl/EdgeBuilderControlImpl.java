@@ -139,7 +139,7 @@ public class EdgeBuilderControlImpl extends AbstractCanvasHandlerControl<Abstrac
         final CommandResult<CanvasViolation> results = getCommandManager().execute(wch,
                                                                                    commandBuilder.build());
         if (CommandUtils.isError(results)) {
-            LOGGER.log(Level.SEVERE,
+            LOGGER.log(Level.WARNING,
                        results.toString());
         }
         canvasHandler.applyElementMutation(edge,

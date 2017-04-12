@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
 import java.util.Optional;
+import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -27,7 +28,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationHandler;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.GraphConnectionContext;
-import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.impl.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 
@@ -63,14 +64,17 @@ public class GraphConnectionEvaluationHandler implements RuleEvaluationHandler<C
     public boolean accepts(final CanConnect rule,
                            final GraphConnectionContext context) {
         final Edge<? extends View<?>, ? extends Node> connector = context.getConnector();
-        final String id = evalUtils.getElementDefinitionId(connector);
-        // As for acceptance the delegated handler only needs the connector id, no need
-        // to calculate roles for current source/target nodes.
-        connectionEvaluationHandler.accepts(rule,
-                                            RuleContextBuilder.DomainContexts.connection(id,
-                                                                                         Optional.empty(),
-                                                                                         Optional.empty()));
-        return id.equals(evalUtils.getElementDefinitionId(context.getConnector()));
+        final Set<String> labels = evalUtils.getLabels(connector);
+        return labels.stream()
+                .filter(cr -> rule.getRole().equals(cr) &&
+                        // As for acceptance the delegated handler only needs the connector id, no need
+                        // to calculate roles for current source/target nodes.
+                        connectionEvaluationHandler.accepts(rule,
+                                                            RuleContextBuilder.DomainContexts.connection(cr,
+                                                                                                         Optional.empty(),
+                                                                                                         Optional.empty())))
+                .findAny()
+                .isPresent();
     }
 
     @Override
@@ -82,12 +86,17 @@ public class GraphConnectionEvaluationHandler implements RuleEvaluationHandler<C
         if (source == null || target == null) {
             return new DefaultRuleViolations();
         }
-        final String edgeId = evalUtils.getElementDefinitionId(connector);
-        final RuleViolations result = connectionEvaluationHandler
-                .evaluate(rule,
-                          RuleContextBuilder.DomainContexts.connection(edgeId,
-                                                                       Optional.of(evalUtils.getLabels(source)),
-                                                                       Optional.of(evalUtils.getLabels(target))));
+        final Set<String> edgeLabels = evalUtils.getLabels(connector);
+        final Optional<Set<String>> sourceLabels = Optional.of(evalUtils.getLabels(source));
+        final Optional<Set<String>> targetLabels = Optional.of(evalUtils.getLabels(target));
+        final DefaultRuleViolations result = new DefaultRuleViolations();
+        edgeLabels.stream()
+                .filter(pr -> rule.getRole().equals(pr))
+                .forEach(pr -> result.addViolations(connectionEvaluationHandler
+                                                            .evaluate(rule,
+                                                                      RuleContextBuilder.DomainContexts.connection(pr,
+                                                                                                                   sourceLabels,
+                                                                                                                   targetLabels))));
         return GraphEvaluationHandlerUtils.addViolationsSourceUUID(connector.getUUID(),
                                                                    result);
     }

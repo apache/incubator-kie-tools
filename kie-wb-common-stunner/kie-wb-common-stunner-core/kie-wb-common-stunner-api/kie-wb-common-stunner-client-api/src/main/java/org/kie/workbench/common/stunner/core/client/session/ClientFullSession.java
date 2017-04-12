@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.core.client.session;
 
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasValidationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
@@ -37,8 +36,6 @@ import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
  */
 public interface ClientFullSession<C extends Canvas, H extends CanvasHandler>
         extends ClientReadOnlySession<C, H> {
-
-    CanvasValidationControl<H> getValidationControl();
 
     CanvasCommandManager<H> getCommandManager();
 

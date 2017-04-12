@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationHandler;
@@ -46,14 +47,14 @@ public class ConnectionEvaluationHandler implements RuleEvaluationHandler<CanCon
     @Override
     public boolean accepts(final CanConnect rule,
                            final ConnectionContext context) {
-        return rule.getConnectorId().equals(context.getConnectorId());
+        return rule.getRole().equals(context.getConnectorRole());
     }
 
     @Override
     public RuleViolations evaluate(final CanConnect rule,
                                    final ConnectionContext context) {
         final List<CanConnect.PermittedConnection> permittedConnections = rule.getPermittedConnections();
-        final String currentConnectorId = context.getConnectorId();
+        final String currentConnectorRole = context.getConnectorRole();
         final Set<String> incomingLabels = context.getTargetRoles().orElse(Collections.emptySet());
         final Set<String> outgoingLabels = context.getSourceRoles().orElse(Collections.emptySet());
         final DefaultRuleViolations results = new DefaultRuleViolations();
@@ -67,8 +68,14 @@ public class ConnectionEvaluationHandler implements RuleEvaluationHandler<CanCon
             couples.add(new Pair<>(pc.getStartRole(),
                                    pc.getEndRole()));
         }
-        results.addViolation(new ConnectionRuleViolation(currentConnectorId,
-                                                         couples));
+        results.addViolation(new ConnectionRuleViolation(currentConnectorRole,
+                                                         serializeAllowedConnections(couples)));
         return results;
+    }
+
+    private Set<String> serializeAllowedConnections(final Set<Pair<String, String>> couples) {
+        return couples.stream()
+                .map(p -> "{'" + p.getK1() + "' ->'" + p.getK2() + "'}")
+                .collect(Collectors.toSet());
     }
 }

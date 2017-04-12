@@ -17,16 +17,22 @@
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
-import org.kie.workbench.common.stunner.core.rule.violations.AbstractRuleViolation;
+import org.kie.workbench.common.stunner.core.rule.violations.AbstractGraphViolation;
 
 public class GraphEvaluationHandlerUtils {
 
@@ -52,8 +58,24 @@ public class GraphEvaluationHandlerUtils {
         return definitionManager.adapters().forDefinition().getId(definition);
     }
 
+    public Set<String> getParentIds(final Graph<? extends DefinitionSet, ? extends Node> graph,
+                                    final Element<?> element) {
+        return GraphUtils.getParentIds(definitionManager,
+                                       graph,
+                                       element)
+                .stream()
+                .collect(Collectors.toSet());
+    }
+
     public Set<String> getLabels(final Element<? extends Definition<?>> element) {
         return element != null && null != element.getLabels() ? element.getLabels() : Collections.emptySet();
+    }
+
+    public int countEdges(final String edgeId,
+                          final List<? extends Edge> edges) {
+        return GraphUtils.countEdges(definitionManager,
+                                     edgeId,
+                                     edges);
     }
 
     public static RuleViolations addViolationsSourceUUID(final String uuid,
@@ -65,8 +87,8 @@ public class GraphEvaluationHandlerUtils {
 
     public static RuleViolation addViolationSourceUUID(final String uuid,
                                                        final RuleViolation violation) {
-        if (violation instanceof AbstractRuleViolation) {
-            ((AbstractRuleViolation) violation).setUuid(uuid);
+        if (violation instanceof AbstractGraphViolation) {
+            ((AbstractGraphViolation) violation).setUUID(uuid);
         }
         return violation;
     }

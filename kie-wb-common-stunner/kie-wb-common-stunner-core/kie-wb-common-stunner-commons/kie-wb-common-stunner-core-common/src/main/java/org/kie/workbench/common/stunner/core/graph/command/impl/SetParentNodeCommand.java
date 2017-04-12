@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -31,7 +30,7 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.relationship.Parent;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.uberfire.commons.validation.PortablePreconditions;
 
@@ -89,7 +88,7 @@ public final class SetParentNodeCommand extends AbstractGraphCommand {
         final Collection<RuleViolation> containmentRuleViolations =
                 doEvaluate(context,
                            RuleContextBuilder.GraphContexts.containment(getGraph(context),
-                                                                        Optional.ofNullable(parent),
+                                                                        parent,
                                                                         candidate));
         return new GraphCommandResultBuilder(containmentRuleViolations).build();
     }

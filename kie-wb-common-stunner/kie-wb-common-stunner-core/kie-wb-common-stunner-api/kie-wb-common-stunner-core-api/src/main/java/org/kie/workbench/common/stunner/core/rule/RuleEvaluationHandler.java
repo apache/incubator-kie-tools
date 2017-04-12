@@ -58,7 +58,7 @@ public interface RuleEvaluationHandler<R extends Rule, C extends RuleEvaluationC
 
     /**
      * If this handler support the rule type and context
-     * type givven by <code>getRuleType()</code> and
+     * type given by <code>getRuleType()</code> and
      * <code>getContextType()</code>, this method
      * allows to check if the concrete rule applies for
      * the context information at runtime.

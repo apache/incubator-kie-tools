@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
-import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.util.UUID;
@@ -50,23 +49,20 @@ public abstract class AbstractToolbarCommand<S extends ClientSession, C extends 
 
     @Override
     public void execute() {
+
         if (requiresConfirm()) {
-            this.executeWithConfirm();
+            this.executeWithConfirm(noOpCallback);
         } else {
-            this.executeWithNoConfirm();
+            this.executeWithNoConfirm(noOpCallback);
         }
     }
 
-    private <T> void executeWithNoConfirm() {
-        this.command.execute(new ClientSessionCommand.Callback<T>() {
-            @Override
-            public void onSuccess(final T result) {
-            }
-
-            @Override
-            public void onError(final ClientRuntimeError error) {
-            }
-        });
+    public <V> void execute(final ClientSessionCommand.Callback<V> callback) {
+        if (requiresConfirm()) {
+            this.executeWithConfirm(callback);
+        } else {
+            this.executeWithNoConfirm(callback);
+        }
     }
 
     // TODO: I18n.
@@ -74,9 +70,9 @@ public abstract class AbstractToolbarCommand<S extends ClientSession, C extends 
         return "Are you sure?";
     }
 
-    private <T> void executeWithConfirm() {
+    private <V> void executeWithConfirm(final ClientSessionCommand.Callback<V> callback) {
         final Command yesCommand = () -> {
-            this.executeWithNoConfirm();
+            this.executeWithNoConfirm(callback);
         };
         final Command noCommand = () -> {
         };
@@ -158,4 +154,18 @@ public abstract class AbstractToolbarCommand<S extends ClientSession, C extends 
     protected void disable() {
         toolbar.disable(this);
     }
+
+    private <V> void executeWithNoConfirm(final ClientSessionCommand.Callback<V> callback) {
+        this.command.execute(callback);
+    }
+
+    private final ClientSessionCommand.Callback<Object> noOpCallback = new ClientSessionCommand.Callback<Object>() {
+        @Override
+        public void onSuccess() {
+        }
+
+        @Override
+        public void onError(final Object error) {
+        }
+    };
 }

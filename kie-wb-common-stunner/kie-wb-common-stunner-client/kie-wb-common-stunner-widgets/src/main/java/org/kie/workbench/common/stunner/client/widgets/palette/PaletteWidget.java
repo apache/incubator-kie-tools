@@ -59,7 +59,7 @@ public interface PaletteWidget<D extends PaletteDefinition>
         IconRenderer getDefinitionIconRenderer(DefinitionPaletteItem item);
     }
 
-    BS3PaletteWidget onItemDrop(final ItemDropCallback callback);
+    PaletteWidget<D> onItemDrop(final ItemDropCallback callback);
 
     PaletteWidget<D> onItemDragStart(final ItemDragStartCallback callback);
 

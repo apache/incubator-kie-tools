@@ -51,7 +51,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.UUID;
@@ -65,7 +64,6 @@ public class BPMNGraphGenerator extends JsonGenerator {
     private final DefinitionManager definitionManager;
     private final FactoryManager factoryManager;
     private final RuleManager ruleManager;
-    private final GraphUtils graphUtils;
     private final OryxManager oryxManager;
     private final CommandManager<GraphCommandExecutionContext, RuleViolation> commandManager;
     private final GraphCommandFactory commandFactory;
@@ -82,7 +80,6 @@ public class BPMNGraphGenerator extends JsonGenerator {
                               final DefinitionManager definitionManager,
                               final FactoryManager factoryManager,
                               final RuleManager ruleManager,
-                              final GraphUtils graphUtils,
                               final OryxManager oryxManager,
                               final CommandManager<GraphCommandExecutionContext, RuleViolation> commandManager,
                               final GraphCommandFactory commandFactory,
@@ -93,7 +90,6 @@ public class BPMNGraphGenerator extends JsonGenerator {
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
         this.ruleManager = ruleManager;
-        this.graphUtils = graphUtils;
         this.oryxManager = oryxManager;
         this.commandManager = commandManager;
         this.commandFactory = commandFactory;
@@ -222,11 +218,6 @@ public class BPMNGraphGenerator extends JsonGenerator {
         @Override
         public FactoryManager getFactoryManager() {
             return factoryManager;
-        }
-
-        @Override
-        public GraphUtils getGraphUtils() {
-            return graphUtils;
         }
 
         @Override

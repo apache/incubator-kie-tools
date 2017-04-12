@@ -32,19 +32,15 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 public class Bpmn2Marshaller extends Bpmn2JsonUnmarshaller {
 
     private final DefinitionManager definitionManager;
-    private final GraphUtils graphUtils;
     private final OryxManager oryxManager;
 
     public Bpmn2Marshaller(final DefinitionManager definitionManager,
-                           final GraphUtils graphUtils,
                            final OryxManager oryxManager) {
         this.definitionManager = definitionManager;
-        this.graphUtils = graphUtils;
         this.oryxManager = oryxManager;
     }
 
@@ -63,7 +59,6 @@ public class Bpmn2Marshaller extends Bpmn2JsonUnmarshaller {
     private BPMN2JsonParser createParser(final Diagram<Graph, Metadata> diagram) {
         return new BPMN2JsonParser(diagram,
                                    new ParsingContext(definitionManager,
-                                                      graphUtils,
                                                       oryxManager));
     }
 }

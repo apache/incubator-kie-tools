@@ -26,5 +26,6 @@
   <inherits name="org.kie.workbench.common.stunner.core.StunnerCoreCommon"/>
 
   <source path="client"/>
+  <source path="" includes="StunnerCoreEntryPoint.java"/>
 
 </module>

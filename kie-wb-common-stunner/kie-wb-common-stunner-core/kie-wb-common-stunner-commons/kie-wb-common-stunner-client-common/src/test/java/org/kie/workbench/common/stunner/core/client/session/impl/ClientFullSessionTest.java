@@ -24,7 +24,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasNameEditionControl;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasValidationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
@@ -66,8 +65,6 @@ public class ClientFullSessionTest {
     @Mock
     ResizeControl<AbstractCanvasHandler, Element> resizeControl;
     @Mock
-    CanvasValidationControl<AbstractCanvasHandler> canvasValidationControl;
-    @Mock
     CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
     @Mock
     SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
@@ -100,7 +97,6 @@ public class ClientFullSessionTest {
         when(factory.newControl(eq(PanControl.class))).thenReturn(panControl);
         when(factory.newControl(eq(SelectionControl.class))).thenReturn(selectionControl);
         when(factory.newControl(eq(ResizeControl.class))).thenReturn(resizeControl);
-        when(factory.newControl(eq(CanvasValidationControl.class))).thenReturn(canvasValidationControl);
         when(factory.newControl(eq(ConnectionAcceptorControl.class))).thenReturn(connectionAcceptorControl);
         when(factory.newControl(eq(ContainmentAcceptorControl.class))).thenReturn(containmentAcceptorControl);
         when(factory.newControl(eq(DockingAcceptorControl.class))).thenReturn(dockingAcceptorControl);
@@ -130,8 +126,6 @@ public class ClientFullSessionTest {
                      tested.getPanControl());
         assertEquals(resizeControl,
                      tested.getResizeControl());
-        assertEquals(canvasValidationControl,
-                     tested.getValidationControl());
         assertEquals(canvasCommandManager,
                      tested.getCommandManager());
         assertEquals(connectionAcceptorControl,
@@ -164,8 +158,6 @@ public class ClientFullSessionTest {
         verify(panControl,
                times(1)).enable(eq(canvas));
         verify(resizeControl,
-               times(1)).enable(eq(canvasHandler));
-        verify(canvasValidationControl,
                times(1)).enable(eq(canvasHandler));
         verify(connectionAcceptorControl,
                times(1)).enable(eq(canvasHandler));
@@ -202,8 +194,6 @@ public class ClientFullSessionTest {
         verify(panControl,
                times(1)).disable();
         verify(resizeControl,
-               times(1)).disable();
-        verify(canvasValidationControl,
                times(1)).disable();
         verify(connectionAcceptorControl,
                times(1)).disable();

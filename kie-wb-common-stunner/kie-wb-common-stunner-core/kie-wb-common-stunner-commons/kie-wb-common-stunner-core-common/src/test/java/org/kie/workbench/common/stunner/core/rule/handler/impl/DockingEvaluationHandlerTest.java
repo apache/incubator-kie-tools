@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,6 +39,7 @@ public class DockingEvaluationHandlerTest {
     private final static String PARENT_ID = "parentId";
     private final static Set<String> PARENT_ROLES =
             new HashSet<String>(2) {{
+                add(PARENT_ID);
                 add("drole1");
                 add("drole2");
             }};
@@ -56,12 +58,26 @@ public class DockingEvaluationHandlerTest {
     }
 
     @Test
+    public void testAccepts() {
+        Set<String> candidateRoles = Collections.singleton("role2");
+        Set<String> parentRoles = Collections.singleton(PARENT_ID);
+        when(context.getParentRoles()).thenReturn(parentRoles);
+        when(context.getCandidateRoles()).thenReturn(candidateRoles);
+        assertTrue(tested.accepts(RULE,
+                                  context));
+        parentRoles = Collections.singleton("anotherParent");
+        when(context.getParentRoles()).thenReturn(parentRoles);
+        assertFalse(tested.accepts(RULE,
+                                   context));
+    }
+
+    @Test
     public void testEvaluateSuccess() {
         final Set<String> candidateRoles = new HashSet<String>(1) {{
             add("drole2");
         }};
-        when(context.getId()).thenReturn(PARENT_ID);
-        when(context.getAllowedRoles()).thenReturn(candidateRoles);
+        when(context.getParentRoles()).thenReturn(PARENT_ROLES);
+        when(context.getCandidateRoles()).thenReturn(candidateRoles);
         final RuleViolations violations = tested.evaluate(RULE,
                                                           context);
         assertNotNull(violations);
@@ -73,8 +89,8 @@ public class DockingEvaluationHandlerTest {
         final Set<String> candidateRoles = new HashSet<String>(1) {{
             add("drole4");
         }};
-        when(context.getId()).thenReturn(PARENT_ID);
-        when(context.getAllowedRoles()).thenReturn(candidateRoles);
+        when(context.getParentRoles()).thenReturn(PARENT_ROLES);
+        when(context.getCandidateRoles()).thenReturn(candidateRoles);
         final RuleViolations violations = tested.evaluate(RULE,
                                                           context);
         assertNotNull(violations);

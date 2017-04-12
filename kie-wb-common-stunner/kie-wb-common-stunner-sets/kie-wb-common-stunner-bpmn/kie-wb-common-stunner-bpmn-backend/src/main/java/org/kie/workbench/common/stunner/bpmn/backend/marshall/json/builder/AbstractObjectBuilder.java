@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyType;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,8 +145,9 @@ public abstract class AbstractObjectBuilder<W, T extends Element<View<W>>> imple
                                                             oryxId);
                 boolean found = false;
                 if (null != pId) {
-                    final Object property = context.getGraphUtils().getProperty(defProperties,
-                                                                                pId);
+                    final Object property = GraphUtils.getProperty(context.getDefinitionManager(),
+                                                                   defProperties,
+                                                                   pId);
                     if (null != property) {
                         try {
                             PropertyType propertyType = context.getDefinitionManager().adapters().forProperty().getType(property);

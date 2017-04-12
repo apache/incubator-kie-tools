@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
 import java.util.HashSet;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +52,7 @@ public class NodeContainmentEvaluationHandlerTest extends AbstractGraphRuleHandl
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.setup();
-        when(context.getParent()).thenReturn(Optional.of(element));
+        when(context.getParent()).thenReturn(element);
         tested = new NodeContainmentEvaluationHandler(definitionManager,
                                                       CONTAINMENT_HANDLER);
     }
@@ -61,7 +60,7 @@ public class NodeContainmentEvaluationHandlerTest extends AbstractGraphRuleHandl
     @Test
     @SuppressWarnings("unchecked")
     public void testAcceptSuccess() {
-        when(context.getParent()).thenReturn(Optional.of(element));
+        when(context.getParent()).thenReturn(element);
         when(context.getCandidate()).thenReturn(candidate);
         final boolean accepts = tested.accepts(RULE,
                                                context);
@@ -71,7 +70,7 @@ public class NodeContainmentEvaluationHandlerTest extends AbstractGraphRuleHandl
     @Test
     @SuppressWarnings("unchecked")
     public void testAcceptFailed() {
-        when(context.getParent()).thenReturn(Optional.of(parent));
+        when(context.getParent()).thenReturn(parent);
         when(context.getCandidate()).thenReturn(candidate);
         final boolean accepts = tested.accepts(RULE,
                                                context);

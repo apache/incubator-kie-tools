@@ -71,7 +71,7 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
     }
 
     @Override
-    public <T> void execute(final Callback<T> callback) {
+    public <V> void execute(final Callback<V> callback) {
         checkNotNull("callback",
                      callback);
         if (null != getSession().getSelectionControl()) {
@@ -101,7 +101,7 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
                     "Cannot delete element, no element selected on canvas.");
             }
             // Run the callback.
-            callback.onSuccess(null);
+            callback.onSuccess();
         }
     }
 
@@ -113,9 +113,9 @@ public class DeleteSelectionSessionCommand extends AbstractClientSessionCommand<
         final boolean isSameSession = null != getSession()
                 && getSession().equals(clientSessionManager.getCurrentSession());
         if (isDeleteKey && isSameSession) {
-            DeleteSelectionSessionCommand.this.execute(new Callback<Object>() {
+            DeleteSelectionSessionCommand.this.execute(new Callback<ClientRuntimeError>() {
                 @Override
-                public void onSuccess(final Object result) {
+                public void onSuccess() {
                     // Nothing to do.
                 }
 

@@ -16,8 +16,21 @@
 
 package org.kie.workbench.common.stunner.core.validation;
 
-public interface Validator<E, K extends ValidatorCallback> {
+import java.util.Collection;
+import java.util.function.Consumer;
 
-    void validate(final E item,
-                  final K callback);
+/**
+ * A validator type.
+ * @param <T> The entity type.
+ * @param <V> The evaulation violation type.
+ */
+public interface Validator<T, V extends Violation> {
+
+    /**
+     * Validates the instance <code>entity</code>
+     * and provides the resulting validation violations to
+     * the <code>resultConsumer</code> consumer
+     */
+    void validate(T entity,
+                  Consumer<Collection<V>> resultConsumer);
 }

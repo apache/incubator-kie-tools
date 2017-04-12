@@ -30,9 +30,11 @@ import java.lang.annotation.RetentionPolicy;
 @Repeatable(AllowedEdgeOccurrences.class)
 public @interface EdgeOccurrences {
 
-    EdgeType type();
+    String connectorRole() default "";
 
     String role();
+
+    EdgeType type();
 
     int min() default 0;
 

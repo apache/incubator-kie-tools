@@ -72,6 +72,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
         builder = CaseManagementDefinitionSet.CaseManagementDefinitionSetBuilder.class
 )
 @CanContain(roles = {"diagram"})
+@Occurrences(role = "diagram", max = 1)
 @Occurrences(role = "Startevents_all", min = 0)
 @Occurrences(role = "Endevents_all", min = 0)
 @ShapeSet

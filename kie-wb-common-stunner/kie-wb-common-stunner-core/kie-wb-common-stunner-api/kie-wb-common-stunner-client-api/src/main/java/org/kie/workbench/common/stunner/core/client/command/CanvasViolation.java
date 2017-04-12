@@ -20,4 +20,8 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public interface CanvasViolation extends RuleViolation {
 
+    /**
+     * The root violation produced in the canvas.
+     */
+    public RuleViolation getRuleViolation();
 }

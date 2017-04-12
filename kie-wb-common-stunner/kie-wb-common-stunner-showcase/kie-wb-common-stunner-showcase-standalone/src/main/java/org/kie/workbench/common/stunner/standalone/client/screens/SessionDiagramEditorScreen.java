@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.standalone.client.screens;
 
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -29,6 +30,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.client.widgets.menu.dev.MenuDevCommandsBuilder;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
+import org.kie.workbench.common.stunner.client.widgets.toolbar.impl.EditorToolbar;
 import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenErrorView;
 import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenPanelView;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -39,16 +41,17 @@ import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.ClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.command.ClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.event.OnSessionErrorEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
-import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidationViolation;
-import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidatorCallback;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.util.UUID;
+import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -169,34 +172,47 @@ public class SessionDiagramEditorScreen {
     }
 
     private Command getSaveCommand() {
-        return this::save;
+        return this::validateAndSave;
+    }
+
+    private void validateAndSave() {
+        validate(this::save);
+    }
+
+    private void validate(final Command callback) {
+        final EditorToolbar toolbar = (EditorToolbar) presenter.getToolbar();
+        toolbar
+                .getValidateToolbarCommand()
+                .execute(new ClientSessionCommand.Callback<Collection<DiagramElementViolation<RuleViolation>>>() {
+                    @Override
+                    public void onSuccess() {
+                        log(Level.INFO,
+                            "Validation success.");
+                        callback.execute();
+                    }
+
+                    @Override
+                    public void onError(final Collection<DiagramElementViolation<RuleViolation>> violations) {
+                        log(Level.WARNING,
+                            "Validation failed [violations=" + violations.toString() + "].");
+                    }
+                });
     }
 
     private void save() {
-        getSession().getValidationControl().validate(new CanvasValidatorCallback() {
-            @Override
-            public void onSuccess() {
-                diagramService.save(getSession(),
-                                    new ServiceCallback<Diagram<Graph, Metadata>>() {
-                                        @Override
-                                        public void onSuccess(Diagram<Graph, Metadata> item) {
-                                            log(Level.INFO,
-                                                "Save operation finished for diagram [" + item.getName() + "].");
-                                        }
+        diagramService.save(getSession(),
+                            new ServiceCallback<Diagram<Graph, Metadata>>() {
+                                @Override
+                                public void onSuccess(Diagram<Graph, Metadata> item) {
+                                    log(Level.INFO,
+                                        "Save operation finished for diagram [" + item.getName() + "].");
+                                }
 
-                                        @Override
-                                        public void onError(ClientRuntimeError error) {
-                                            showError(error);
-                                        }
-                                    });
-            }
-
-            @Override
-            public void onFail(Iterable<CanvasValidationViolation> violations) {
-                log(Level.WARNING,
-                    "Validation failed [violations=" + violations.toString() + "].");
-            }
-        });
+                                @Override
+                                public void onError(ClientRuntimeError error) {
+                                    showError(error);
+                                }
+                            });
     }
 
     private void newDiagram(final String uuid,

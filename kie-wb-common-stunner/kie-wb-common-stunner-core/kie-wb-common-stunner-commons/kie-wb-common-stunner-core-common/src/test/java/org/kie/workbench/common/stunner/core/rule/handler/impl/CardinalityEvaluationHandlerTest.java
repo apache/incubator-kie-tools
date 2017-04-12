@@ -16,7 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.Before;
@@ -36,10 +37,7 @@ import static org.mockito.Mockito.*;
 public class CardinalityEvaluationHandlerTest {
 
     private final static String ROLE = "theRole";
-    private final static Set<String> ROLES =
-            new HashSet<String>(2) {{
-                add(ROLE);
-            }};
+    private final static Set<String> ROLES = Collections.singleton(ROLE);
 
     private final static Occurrences RULE_NO_LIMIT = new Occurrences("c1",
                                                                      ROLE,
@@ -66,16 +64,28 @@ public class CardinalityEvaluationHandlerTest {
     }
 
     @Test
+    public void testAccepts() {
+        Set<String> roles = Collections.singleton(ROLE);
+        when(context.getRoles()).thenReturn(roles);
+        assertTrue(tested.accepts(RULE_NO_LIMIT,
+                                  context));
+        roles = Collections.singleton("anotherTheRole");
+        when(context.getRoles()).thenReturn(roles);
+        assertFalse(tested.accepts(RULE_NO_LIMIT,
+                                   context));
+    }
+
+    @Test
     public void testEvaluateNoLimit() {
         when(context.getCandidateCount()).thenReturn(0);
-        when(context.getOperation()).thenReturn(CardinalityContext.Operation.ADD);
+        when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_NO_LIMIT,
                                                     context);
         assertNotNull(violations);
         assertFalse(violations.violations(RuleViolation.Type.ERROR).iterator().hasNext());
 
         when(context.getCandidateCount()).thenReturn(100);
-        when(context.getOperation()).thenReturn(CardinalityContext.Operation.ADD);
+        when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         violations = tested.evaluate(RULE_NO_LIMIT,
                                      context);
         assertNotNull(violations);
@@ -85,7 +95,7 @@ public class CardinalityEvaluationHandlerTest {
     @Test
     public void testMinOneSuccess() {
         when(context.getCandidateCount()).thenReturn(0);
-        when(context.getOperation()).thenReturn(CardinalityContext.Operation.ADD);
+        when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_MIN_1,
                                                     context);
         assertNotNull(violations);
@@ -95,7 +105,7 @@ public class CardinalityEvaluationHandlerTest {
     @Test
     public void testMinOneFailed1() {
         when(context.getCandidateCount()).thenReturn(1);
-        when(context.getOperation()).thenReturn(CardinalityContext.Operation.DELETE);
+        when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.DELETE));
         RuleViolations violations = tested.evaluate(RULE_MIN_1,
                                                     context);
         assertNotNull(violations);
@@ -105,7 +115,7 @@ public class CardinalityEvaluationHandlerTest {
     @Test
     public void testMaxOneSuccess() {
         when(context.getCandidateCount()).thenReturn(0);
-        when(context.getOperation()).thenReturn(CardinalityContext.Operation.ADD);
+        when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_MAX_1,
                                                     context);
         assertNotNull(violations);
@@ -115,7 +125,7 @@ public class CardinalityEvaluationHandlerTest {
     @Test
     public void testMaxOneFailed1() {
         when(context.getCandidateCount()).thenReturn(1);
-        when(context.getOperation()).thenReturn(CardinalityContext.Operation.ADD);
+        when(context.getOperation()).thenReturn(Optional.of(CardinalityContext.Operation.ADD));
         RuleViolations violations = tested.evaluate(RULE_MAX_1,
                                                     context);
         assertNotNull(violations);

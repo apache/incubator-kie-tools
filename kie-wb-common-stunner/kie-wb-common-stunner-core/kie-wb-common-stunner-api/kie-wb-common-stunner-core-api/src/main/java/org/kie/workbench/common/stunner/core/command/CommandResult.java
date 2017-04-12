@@ -43,11 +43,5 @@ public interface CommandResult<T> {
      */
     Type getType();
 
-    /**
-     * Detailed message for the Result
-     * @return
-     */
-    String getMessage();
-
     Iterable<T> getViolations();
 }

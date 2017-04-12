@@ -36,6 +36,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
+import static org.kie.workbench.common.stunner.core.TestingGraphUtils.verifyCardinality;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 

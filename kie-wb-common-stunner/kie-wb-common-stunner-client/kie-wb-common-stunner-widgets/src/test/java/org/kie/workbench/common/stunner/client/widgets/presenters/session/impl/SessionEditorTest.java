@@ -26,7 +26,6 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasValidationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
@@ -58,8 +57,6 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
     @Mock
     SelectionControl<AbstractCanvasHandler, Element> selectionControl;
     @Mock
-    CanvasValidationControl<AbstractCanvasHandler> validationControl;
-    @Mock
     ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl;
     @Mock
     ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl;
@@ -78,7 +75,6 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
         when(session.getCanvas()).thenReturn(canvas);
         when(session.getZoomControl()).thenReturn(zoomControl);
         when(session.getSelectionControl()).thenReturn(selectionControl);
-        when(session.getValidationControl()).thenReturn(validationControl);
         when(session.getConnectionAcceptorControl()).thenReturn(connectionAcceptorControl);
         when(session.getContainmentAcceptorControl()).thenReturn(containmentAcceptorControl);
         when(session.getDockingAcceptorControl()).thenReturn(dockingAcceptorControl);
@@ -101,8 +97,6 @@ public class SessionEditorTest extends AbstractCanvasHandlerViewerTest {
                      tested.getDiagramEditor().getZoomControl());
         assertEquals(selectionControl,
                      tested.getDiagramEditor().getSelectionControl());
-        assertEquals(validationControl,
-                     tested.getDiagramEditor().getValidationControl());
         assertEquals(connectionAcceptorControl,
                      tested.getDiagramEditor().getConnectionAcceptorControl());
         assertEquals(containmentAcceptorControl,

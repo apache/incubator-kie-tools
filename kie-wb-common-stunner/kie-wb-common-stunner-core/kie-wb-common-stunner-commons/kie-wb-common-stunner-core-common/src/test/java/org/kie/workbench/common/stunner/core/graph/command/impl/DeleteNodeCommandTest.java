@@ -37,6 +37,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
+import static org.kie.workbench.common.stunner.core.TestingGraphUtils.verifyCardinality;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -95,8 +96,7 @@ public class DeleteNodeCommandTest extends AbstractGraphCommandTest {
     @SuppressWarnings("unchecked")
     public void testNotAllowed() {
         final RuleViolations FAILED_VIOLATIONS = new DefaultRuleViolations()
-                .addViolation(new CardinalityMaxRuleViolation("target",
-                                                              "candidate",
+                .addViolation(new CardinalityMaxRuleViolation("candidate",
                                                               1,
                                                               2));
         when(ruleManager.evaluate(any(RuleSet.class),
@@ -147,8 +147,7 @@ public class DeleteNodeCommandTest extends AbstractGraphCommandTest {
     @SuppressWarnings("unchecked")
     public void testExecuteCheckFailed() {
         final RuleViolations FAILED_VIOLATIONS = new DefaultRuleViolations()
-                .addViolation(new CardinalityMaxRuleViolation("target",
-                                                              "candidate",
+                .addViolation(new CardinalityMaxRuleViolation("candidate",
                                                               1,
                                                               2));
         when(ruleManager.evaluate(any(RuleSet.class),

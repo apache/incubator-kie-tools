@@ -16,6 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.factory.impl;
 
+import java.util.Set;
+
+import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -26,8 +29,19 @@ public abstract class AbstractElementFactory<C, D extends Definition<C>, T exten
     protected AbstractElementFactory() {
     }
 
-    @Override
-    public boolean accepts(final Object definition) {
-        return true;
+    protected abstract DefinitionManager getDefinitionManager();
+
+    protected void addLabels(final Set<String> target,
+                             final Object definition) {
+        target.add(getDefinitionId(definition));
+        target.addAll(getDefinitionLabels(definition));
+    }
+
+    protected String getDefinitionId(final Object definition) {
+        return getDefinitionManager().adapters().forDefinition().getId(definition);
+    }
+
+    protected Set<String> getDefinitionLabels(final Object definition) {
+        return getDefinitionManager().adapters().forDefinition().getLabels(definition);
     }
 }

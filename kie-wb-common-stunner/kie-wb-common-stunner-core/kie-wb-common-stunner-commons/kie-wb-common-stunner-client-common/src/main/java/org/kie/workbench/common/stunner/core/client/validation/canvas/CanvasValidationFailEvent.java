@@ -16,16 +16,28 @@
 
 package org.kie.workbench.common.stunner.core.client.validation.canvas;
 
+import java.util.Collection;
+
 import org.jboss.errai.common.client.api.annotations.NonPortable;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.validation.event.AbstractValidationFailEvent;
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 
 @NonPortable
-public class CanvasValidationFailEvent extends AbstractValidationFailEvent<CanvasHandler, CanvasValidationViolation> {
+public class CanvasValidationFailEvent extends CanvasValidationEvent {
 
-    public CanvasValidationFailEvent(final CanvasHandler entity,
-                                     final Iterable<CanvasValidationViolation> violations) {
-        super(entity,
-              violations);
+    private final Collection<DiagramElementViolation<RuleViolation>> violations;
+
+    public CanvasValidationFailEvent(final String uuid,
+                                     final String diagramName,
+                                     final String diagramTitle,
+                                     final Collection<DiagramElementViolation<RuleViolation>> violations) {
+        super(uuid,
+              diagramName,
+              diagramTitle);
+        this.violations = violations;
+    }
+
+    public Collection<DiagramElementViolation<RuleViolation>> getViolations() {
+        return violations;
     }
 }

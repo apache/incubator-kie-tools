@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.factory.impl;
 
-import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -57,23 +56,23 @@ public class NodeFactoryImpl extends AbstractElementFactory<Object, Definition<O
     public Node<Definition<Object>, Edge> build(final String uuid,
                                                 final Object definition) {
         final NodeImpl node = new NodeImpl<>(uuid);
-        if (null != definition) {
-            final Bounds bounds = definitionUtils.buildBounds(definition,
-                                                              0d,
-                                                              0d);
-            View<Object> content = new ViewImpl<>(definition,
-                                                  bounds);
-            node.setContent(content);
-            node.getLabels().addAll(getLabels(definition));
-        }
+        final Bounds bounds = definitionUtils.buildBounds(definition,
+                                                          0d,
+                                                          0d);
+        View<Object> content = new ViewImpl<>(definition,
+                                              bounds);
+        node.setContent(content);
+        addLabels(node.getLabels(),
+                  definition);
         return node;
     }
 
-    private Set<String> getLabels(final Object definition) {
-        return getDefinitionManager().adapters().forDefinition().getLabels(definition);
+    @Override
+    public boolean accepts(final Object source) {
+        return true;
     }
 
-    private DefinitionManager getDefinitionManager() {
+    protected DefinitionManager getDefinitionManager() {
         return definitionUtils.getDefinitionManager();
     }
 }

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
 import java.util.HashSet;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -47,13 +46,14 @@ public class NodeDockingEvaluationHandlerTest extends AbstractGraphRuleHandlerTe
 
     @Mock
     NodeDockingContext context;
+
     private NodeDockingEvaluationHandler tested;
 
     @Before
     @SuppressWarnings("unchecked")
     public void setup() throws Exception {
         super.setup();
-        when(context.getParent()).thenReturn(Optional.of(parent));
+        when(context.getParent()).thenReturn(parent);
         tested = new NodeDockingEvaluationHandler(definitionManager,
                                                   HANDLER);
     }
@@ -61,11 +61,21 @@ public class NodeDockingEvaluationHandlerTest extends AbstractGraphRuleHandlerTe
     @Test
     @SuppressWarnings("unchecked")
     public void testAcceptSuccess() {
-        when(context.getParent()).thenReturn(Optional.of(parent));
+        when(context.getParent()).thenReturn(parent);
         when(context.getCandidate()).thenReturn(candidate);
         final boolean accepts = tested.accepts(RULE,
                                                context);
         assertTrue(accepts);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testAcceptFailed() {
+        when(context.getParent()).thenReturn(element);
+        when(context.getCandidate()).thenReturn(candidate);
+        final boolean accepts = tested.accepts(RULE,
+                                               context);
+        assertFalse(accepts);
     }
 
     @Test

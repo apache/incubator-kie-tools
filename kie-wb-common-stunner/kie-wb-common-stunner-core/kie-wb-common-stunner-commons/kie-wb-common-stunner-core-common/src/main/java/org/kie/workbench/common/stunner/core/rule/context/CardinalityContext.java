@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.rule.context;
 
+import java.util.Optional;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
@@ -34,14 +35,12 @@ public interface CardinalityContext extends RuleEvaluationContext {
      * Common cardinality operation types.
      */
     enum Operation {
-        NONE,
         ADD,
         DELETE
     }
 
     /**
-     * The roles that the candidate must satisfy
-     * for this rule.
+     * The candidate roles to evaluate against rules.
      */
     Set<String> getRoles();
 
@@ -53,6 +52,7 @@ public interface CardinalityContext extends RuleEvaluationContext {
 
     /**
      * The cardinality operation.
+     * If just validating current context operation can be empty.
      */
-    Operation getOperation();
+    Optional<Operation> getOperation();
 }

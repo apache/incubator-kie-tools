@@ -41,20 +41,23 @@ public abstract class AbstractGraphRuleHandlerTest {
     protected static final String DEFINITION_ID = "defId1";
     protected static final String DEFINITION_ROLE1 = "defId1Role1";
     protected static final String DEFINITION_ROLE2 = "defId1Role2";
-    protected static final Set<String> DEFINITION_LABELS = new HashSet<String>(2) {{
+    protected static final Set<String> DEFINITION_LABELS = new HashSet<String>(3) {{
+        add(DEFINITION_ID);
         add(DEFINITION_ROLE1);
         add(DEFINITION_ROLE2);
     }};
 
     protected static final String PARENT_ID = "pId1";
-    protected static final Set<String> PARENT_LABELS = new HashSet<String>(1) {{
+    protected static final Set<String> PARENT_LABELS = new HashSet<String>(2) {{
+        add(PARENT_ID);
         add("theParent");
     }};
 
     protected static final String CANDIDATE_ID = "cId1";
     protected static final String CANDIDATE_ROLE1 = "cId1Role1";
     protected static final String CANDIDATE_ROLE2 = "cId1Role2";
-    protected static final Set<String> CANDIDATE_LABELS = new HashSet<String>(2) {{
+    protected static final Set<String> CANDIDATE_LABELS = new HashSet<String>(3) {{
+        add(CANDIDATE_ID);
         add(CANDIDATE_ROLE1);
         add(CANDIDATE_ROLE2);
     }};
@@ -158,7 +161,6 @@ public abstract class AbstractGraphRuleHandlerTest {
     protected RuleViolations mockWithViolations() {
         RuleViolation v1 = mock(RuleViolation.class);
         when(v1.getViolationType()).thenReturn(RuleViolation.Type.ERROR);
-        when(v1.getMessage()).thenReturn("error");
         RuleViolations violations = mock(RuleViolations.class);
         List<RuleViolation> result = new ArrayList<RuleViolation>(1) {{
             add(v1);

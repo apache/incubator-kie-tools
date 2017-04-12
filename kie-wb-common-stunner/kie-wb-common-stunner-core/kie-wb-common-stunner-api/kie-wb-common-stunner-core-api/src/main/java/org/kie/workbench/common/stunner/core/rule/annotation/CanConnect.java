@@ -32,6 +32,8 @@ import java.lang.annotation.RetentionPolicy;
 @Repeatable(AllowedConnections.class)
 public @interface CanConnect {
 
+    String role() default "";
+
     String startRole();
 
     String endRole();

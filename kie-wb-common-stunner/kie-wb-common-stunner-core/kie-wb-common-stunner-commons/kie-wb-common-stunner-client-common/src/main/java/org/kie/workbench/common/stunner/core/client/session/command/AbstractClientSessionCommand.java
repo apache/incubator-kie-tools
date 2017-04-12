@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.core.client.session.command;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.uberfire.mvp.Command;
 
@@ -49,11 +48,11 @@ public abstract class AbstractClientSessionCommand<S extends ClientSession> impl
     public void execute() {
         this.execute(new Callback<Object>() {
             @Override
-            public void onSuccess(final Object result) {
+            public void onSuccess() {
             }
 
             @Override
-            public void onError(final ClientRuntimeError error) {
+            public void onError(final Object error) {
                 LOGGER.log(Level.SEVERE,
                            error.toString());
             }

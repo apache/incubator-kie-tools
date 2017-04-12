@@ -16,20 +16,21 @@
 
 package org.kie.workbench.common.stunner.client.widgets.notification;
 
+import java.util.Optional;
+
 public interface Notification<S, C> {
 
     enum Type {
         ERROR,
         WARNING,
-        INFO,
-        DEBUG
+        INFO
     }
-
-    String getNotificationUUID();
 
     Type getType();
 
-    S getSource();
+    Optional<S> getSource();
 
     C getContext();
+
+    String getMessage();
 }

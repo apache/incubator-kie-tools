@@ -359,6 +359,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.jboss.errai</groupId>
+      <artifactId>errai-validation</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.owasp.encoder</groupId>
       <artifactId>encoder</artifactId>
     </dependency>

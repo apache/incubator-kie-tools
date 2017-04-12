@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.rule.violations;
 
+import java.util.Optional;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
@@ -26,6 +28,11 @@ public final class RuleViolationImpl extends AbstractRuleViolation {
 
     public RuleViolationImpl(final @MapsTo("message") String message) {
         this.message = message;
+    }
+
+    @Override
+    public Optional<Object[]> getArguments() {
+        return Optional.of(new Object[]{message});
     }
 
     @Override

@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,12 +30,15 @@ import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.GraphConnectionContext;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
+import static org.kie.workbench.common.stunner.core.TestingGraphUtils.verifyConnection;
+import static org.kie.workbench.common.stunner.core.TestingGraphUtils.verifyConnectorCardinality;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -90,8 +94,8 @@ public class AddConnectorCommandTest extends AbstractGraphCommandTest {
                                    graph,
                                    node,
                                    edge,
-                                   ConnectorCardinalityContext.Direction.OUTGOING,
-                                   CardinalityContext.Operation.ADD);
+                                   EdgeCardinalityContext.Direction.OUTGOING,
+                                   Optional.of(CardinalityContext.Operation.ADD));
     }
 
     @Test

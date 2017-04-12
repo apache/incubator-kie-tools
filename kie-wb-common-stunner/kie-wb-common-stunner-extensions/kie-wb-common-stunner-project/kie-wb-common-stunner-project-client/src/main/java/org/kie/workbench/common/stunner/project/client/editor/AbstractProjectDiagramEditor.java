@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.project.client.editor;
 
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -27,7 +28,6 @@ import com.google.gwt.logging.client.LogConfiguration;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
-import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenErrorView;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -49,9 +49,9 @@ import org.kie.workbench.common.stunner.core.client.session.event.OnSessionError
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientReadOnlySession;
 import org.kie.workbench.common.stunner.core.client.util.ClientSessionUtils;
-import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidationViolation;
-import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasValidatorCallback;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.project.client.service.ClientProjectDiagramService;
 import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
 import org.kie.workbench.common.widgets.metadata.client.KieEditor;
@@ -90,7 +90,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
     private final ClientProjectDiagramService projectDiagramServices;
     private final SessionManager sessionManager;
     private final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory;
-    private final ScreenErrorView editorErrorView;
     private final ClientSessionUtils sessionUtils;
     private final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder;
 
@@ -118,7 +117,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                         final ClientProjectDiagramService projectDiagramServices,
                                         final SessionManager sessionManager,
                                         final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
-                                        final ScreenErrorView editorErrorView,
                                         final ClientSessionUtils sessionUtils,
                                         final SessionCommandFactory sessionCommandFactory,
                                         final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder) {
@@ -131,7 +129,6 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         this.projectDiagramServices = projectDiagramServices;
         this.sessionManager = sessionManager;
         this.sessionPresenterFactory = sessionPresenterFactory;
-        this.editorErrorView = editorErrorView;
         this.sessionUtils = sessionUtils;
         this.menuItemsBuilder = menuItemsBuilder;
         this.sessionClearStatesCommand = sessionCommandFactory.newClearStatesCommand();
@@ -222,32 +219,17 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     @Override
     protected Command onValidate() {
-        showLoadingViews();
-        return () -> {
-            getSession().getValidationControl().validate();
+        return () -> validate(() -> {
+            onValidationSuccess();
             hideLoadingViews();
-        };
-    }
-
-    private AbstractClientFullSession getSession() {
-        return null != presenter ? presenter.getInstance() : null;
+        });
     }
 
     @Override
     protected void save(final String commitMessage) {
-        showLoadingViews();
-        getSession().getValidationControl().validate(new CanvasValidatorCallback() {
-            @Override
-            public void onSuccess() {
-                doSave(commitMessage);
-            }
-
-            @Override
-            public void onFail(final Iterable<CanvasValidationViolation> violations) {
-                log(Level.WARNING,
-                    "Validation failed [violations=" + violations.toString() + "].");
-                hideLoadingViews();
-            }
+        validate(() -> {
+            onValidationSuccess();
+            doSave(commitMessage);
         });
     }
 
@@ -268,12 +250,13 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                                 @Override
                                                 public void onSuccess(final ProjectDiagram item) {
                                                     getSaveSuccessCallback(item.hashCode());
+                                                    onSaveSuccess();
                                                     hideLoadingViews();
                                                 }
 
                                                 @Override
                                                 public void onError(final ClientRuntimeError error) {
-                                                    showError(error);
+                                                    onSaveError(error);
                                                 }
                                             });
     }
@@ -327,6 +310,21 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                 .build();
     }
 
+    private void validate(final Command callback) {
+        showLoadingViews();
+        sessionValidateCommand.execute(new ClientSessionCommand.Callback<Collection<DiagramElementViolation<RuleViolation>>>() {
+            @Override
+            public void onSuccess() {
+                callback.execute();
+            }
+
+            @Override
+            public void onError(final Collection<DiagramElementViolation<RuleViolation>> violations) {
+                onValidationFailed(violations);
+            }
+        });
+    }
+
     private void menu_clear() {
         sessionClearCommand.execute();
     }
@@ -355,16 +353,11 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
         sessionRedoCommand.execute();
     }
 
-    private void menu_validate() {
-        sessionValidateCommand.execute();
-    }
-
     private void menu_refresh() {
         showLoadingViews();
-
-        sessionRefreshCommand.execute(new ClientSessionCommand.Callback<Diagram>() {
+        sessionRefreshCommand.execute(new ClientSessionCommand.Callback<ClientRuntimeError>() {
             @Override
-            public void onSuccess(final Diagram result) {
+            public void onSuccess() {
                 log(FINE,
                     "Diagram refresh successful.");
                 hideLoadingViews();
@@ -375,6 +368,10 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                 showError(error);
             }
         });
+    }
+
+    private void menu_validate() {
+        this.validate(() -> hideLoadingViews());
     }
 
     protected void doOpen() {
@@ -477,11 +474,8 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
                                                                      this.title));
     }
 
-    private void showError(final ClientRuntimeError error) {
-        editorErrorView.showError(error);
-        getView().setWidget(editorErrorView.asWidget());
-        errorPopupPresenter.showMessage(error.toString());
-        hideLoadingViews();
+    private AbstractClientFullSession getSession() {
+        return null != presenter ? presenter.getInstance() : null;
     }
 
     protected int getCurrentDiagramHash() {
@@ -515,6 +509,39 @@ public abstract class AbstractProjectDiagramEditor<R extends ClientResourceType>
 
     protected View getView() {
         return (View) baseView;
+    }
+
+    private void onSaveSuccess() {
+        final String message = "Diagram saved successfully.";
+        log(Level.INFO,
+            message);
+        presenter.getView().showMessage(message);
+    }
+
+    private void onSaveError(final ClientRuntimeError error) {
+        showError(error.toString());
+    }
+
+    private void onValidationSuccess() {
+        log(Level.INFO,
+            "Validation SUCCESS.");
+    }
+
+    private void onValidationFailed(final Collection<DiagramElementViolation<RuleViolation>> violations) {
+        log(Level.WARNING,
+            "Validation FAILED [violations=" + violations.toString() + "]");
+        hideLoadingViews();
+    }
+
+    private void showError(final ClientRuntimeError error) {
+        showError(error.toString());
+    }
+
+    private void showError(final String message) {
+        log(Level.SEVERE,
+            message);
+        errorPopupPresenter.showMessage(message);
+        hideLoadingViews();
     }
 
     private void log(final Level level,

@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.rule.context;
 
-import java.util.Optional;
-
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -34,10 +32,9 @@ import org.kie.workbench.common.stunner.core.rule.impl.CanDock;
 public interface NodeDockingContext extends GraphEvaluationContext {
 
     /**
-     * The candidate's source element where the candidate will be
-     * docked to.
+     * The candidate's parent.
      */
-    Optional<Element<? extends Definition<?>>> getParent();
+    Element<? extends Definition<?>> getParent();
 
     /**
      * The candidate instance to be dock into the parent one.

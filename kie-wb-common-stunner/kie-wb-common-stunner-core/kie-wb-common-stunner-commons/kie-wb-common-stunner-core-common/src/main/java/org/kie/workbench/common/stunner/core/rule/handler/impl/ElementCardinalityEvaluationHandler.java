@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
+import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -31,7 +33,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleEvaluationHandler;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.ElementCardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.impl.Occurrences;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 
@@ -64,40 +66,47 @@ public class ElementCardinalityEvaluationHandler implements RuleEvaluationHandle
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean accepts(final Occurrences rule,
                            final ElementCardinalityContext context) {
-        final Set<String> labels = context.getCandidate().getLabels();
-        // Take into account that there is no need to provide the candidate count value, as not necessary
-        // just to check if the handler accepts the runtime rule and candidates.
-        return cardinalityEvaluationHandler.accepts(rule,
-                                                    RuleContextBuilder.DomainContexts.cardinality(labels,
-                                                                                                  -1,
-                                                                                                  context.getOperation()));
+        if (context.getCandidate().isPresent()) {
+            final Set<String> candidateLabels = evalUtils.getLabels(context.getCandidate().get());
+            return cardinalityEvaluationHandler
+                    .accepts(rule,
+                             RuleContextBuilder.DomainContexts.cardinality(
+                                     candidateLabels,
+                                     -1,
+                                     context.getOperation()));
+        }
+        return true;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public RuleViolations evaluate(final Occurrences rule,
                                    final ElementCardinalityContext context) {
-
-        final Element<? extends View<?>> candidate = context.getCandidate();
-        final Set<String> labels = candidate.getLabels();
-        final Map<String, Integer> graphLabelCount = countLabels(context.getGraph(),
-                                                                 labels);
-        final CardinalityContext.Operation operation = context.getOperation();
         final DefaultRuleViolations results = new DefaultRuleViolations();
-        labels.stream().forEach(role -> {
-            final Integer i = graphLabelCount.get(role);
-            final RuleViolations violations =
-                    cardinalityEvaluationHandler
-                            .evaluate(rule,
-                                      RuleContextBuilder.DomainContexts.cardinality(role,
-                                                                                    null != i ? i : 0,
-                                                                                    operation));
-            results.addViolations(violations);
-        });
-        return GraphEvaluationHandlerUtils.addViolationsSourceUUID(candidate.getUUID(),
-                                                                   results);
+        final Optional<Element<? extends View<?>>> candidate = context.getCandidate();
+        final String role = rule.getRole();
+        final Set<String> roles = Collections.singleton(role);
+        final Map<String, Integer> graphLabelCount = countLabels(context.getGraph(),
+                                                                 roles);
+        // Ensure processing the role even if not used along the graph, so
+        // cardinality min rules can be evaluated.
+        final int count = graphLabelCount.isEmpty() ? 0 : graphLabelCount.get(role);
+        final Optional<CardinalityContext.Operation> operation = context.getOperation();
+        results.addViolations(
+                cardinalityEvaluationHandler
+                        .evaluate(rule,
+                                  RuleContextBuilder.DomainContexts.cardinality(roles,
+                                                                                count,
+                                                                                operation))
+        );
+        if (candidate.isPresent()) {
+            return GraphEvaluationHandlerUtils.addViolationsSourceUUID(candidate.get().getUUID(),
+                                                                       results);
+        }
+        return results;
     }
 
     Map<String, Integer> countLabels(final Graph<?, ? extends Node> target,

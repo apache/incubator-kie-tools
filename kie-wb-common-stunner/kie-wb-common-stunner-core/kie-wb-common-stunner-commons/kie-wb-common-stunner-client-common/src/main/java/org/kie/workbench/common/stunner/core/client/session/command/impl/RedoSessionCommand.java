@@ -71,7 +71,7 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<ClientFullS
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> void execute(final Callback<T> callback) {
+    public <V> void execute(final Callback<V> callback) {
         checkNotNull("callback",
                      callback);
         CommandResult<?> result = null;
@@ -80,7 +80,7 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<ClientFullS
                                                 sessionCommandManager);
             checkState();
         }
-        callback.onSuccess((T) result);
+        callback.onSuccess();
     }
 
     @Override

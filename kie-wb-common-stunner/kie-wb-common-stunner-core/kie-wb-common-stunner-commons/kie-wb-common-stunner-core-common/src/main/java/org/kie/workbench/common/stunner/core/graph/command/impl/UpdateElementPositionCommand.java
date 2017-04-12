@@ -26,7 +26,6 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.command.BoundsExceededCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
@@ -36,6 +35,7 @@ import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+import org.kie.workbench.common.stunner.core.rule.violations.BoundsExceededViolation;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 /**
@@ -102,43 +102,35 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     @Override
     @SuppressWarnings("unchecked")
     protected CommandResult<RuleViolation> check(final GraphCommandExecutionContext context) {
-        final Element<?> element = checkNodeNotNull(context);
-        final Graph<DefinitionSet, Node> graph = (Graph<DefinitionSet, Node>) getGraph(context);
-        final BoundsImpl newBounds = getTargetBounds(element);
-        return !checkBoundsExceeded(graph,
-                                    newBounds) ?
-                buildBoundsExceededResult(element,
-                                          newBounds) :
-                GraphCommandResultBuilder.SUCCESS;
+        return checkBounds(context);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public CommandResult<RuleViolation> execute(final GraphCommandExecutionContext context) {
-        final Graph<DefinitionSet, Node> graph = (Graph<DefinitionSet, Node>) getGraph(context);
-        final Element<?> element = checkNodeNotNull(context);
-        final BoundsImpl newBounds = getTargetBounds(element);
+        final BoundsImpl newBounds = getTargetBounds(checkNodeNotNull(context));
         LOGGER.log(Level.FINE,
                    "Moving element bounds to " +
                            "[" + newBounds.getX() + "," + newBounds.getY() + "] " +
                            "[" + newBounds.getWidth() + "," + newBounds.getHeight() + "]");
+        return checkBounds(context);
+    }
+
+    @SuppressWarnings("unchecked")
+    private CommandResult<RuleViolation> checkBounds(final GraphCommandExecutionContext context) {
+        final Element<?> element = checkNodeNotNull(context);
+        final Graph<DefinitionSet, Node> graph = (Graph<DefinitionSet, Node>) getGraph(context);
+        final BoundsImpl newBounds = getTargetBounds(element);
+        final GraphCommandResultBuilder result = new GraphCommandResultBuilder();
         if (checkBoundsExceeded(graph,
                                 newBounds)) {
             ((View) element.getContent()).setBounds(newBounds);
-            return GraphCommandResultBuilder.SUCCESS;
         } else {
             final Bounds graphBounds = graph.getContent().getBounds();
-            return buildBoundsExceededResult(element,
-                                             graphBounds);
+            result.addViolation(new BoundsExceededViolation(graphBounds)
+                                        .setUUID(element.getUUID()));
         }
-    }
-
-    private CommandResult<RuleViolation> buildBoundsExceededResult(final Element<?> element,
-                                                                   final Bounds bounds) {
-        return
-                new BoundsExceededCommandResultBuilder(element.getUUID(),
-                                                       bounds)
-                        .build();
+        return result.build();
     }
 
     @SuppressWarnings("unchecked")

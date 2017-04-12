@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -26,33 +27,36 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationHandler;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.impl.EdgeOccurrences;
+import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 
 @ApplicationScoped
 public class ConnectorCardinalityEvaluationHandler implements RuleEvaluationHandler<EdgeOccurrences, ConnectorCardinalityContext> {
 
     private final GraphEvaluationHandlerUtils evalUtils;
-    private final GraphUtils graphUtils;
     private final EdgeCardinalityEvaluationHandler edgeCardinalityEvaluationHandler;
 
     protected ConnectorCardinalityEvaluationHandler() {
-        this(null,
-             null,
-             null);
+        this.evalUtils = null;
+        this.edgeCardinalityEvaluationHandler = null;
     }
 
     @Inject
     public ConnectorCardinalityEvaluationHandler(final DefinitionManager definitionManager,
-                                                 final GraphUtils graphUtils,
                                                  final EdgeCardinalityEvaluationHandler edgeCardinalityEvaluationHandler) {
-        this.graphUtils = graphUtils;
         this.evalUtils = new GraphEvaluationHandlerUtils(definitionManager);
+        this.edgeCardinalityEvaluationHandler = edgeCardinalityEvaluationHandler;
+    }
+
+    ConnectorCardinalityEvaluationHandler(final GraphEvaluationHandlerUtils evalUtils,
+                                          final EdgeCardinalityEvaluationHandler edgeCardinalityEvaluationHandler) {
+        this.evalUtils = evalUtils;
         this.edgeCardinalityEvaluationHandler = edgeCardinalityEvaluationHandler;
     }
 
@@ -71,12 +75,12 @@ public class ConnectorCardinalityEvaluationHandler implements RuleEvaluationHand
                            final ConnectorCardinalityContext context) {
         final Edge<? extends View<?>, Node> edge = context.getEdge();
         final Element<? extends View<?>> candidate = context.getCandidate();
-        final Set<String> labels = evalUtils.getLabels(candidate);
         final String edgeId = evalUtils.getElementDefinitionId(edge);
+        final Set<String> candidateRoles = evalUtils.getLabels(candidate);
         // Take into account that there is no need to provide the candidate count value, as not necessary
         // just to check if the handler accepts the runtime rule and candidates.
         return edgeCardinalityEvaluationHandler.accepts(rule,
-                                                        RuleContextBuilder.DomainContexts.edgeCardinality(labels,
+                                                        RuleContextBuilder.DomainContexts.edgeCardinality(candidateRoles,
                                                                                                           edgeId,
                                                                                                           -1,
                                                                                                           context.getDirection(),
@@ -87,33 +91,33 @@ public class ConnectorCardinalityEvaluationHandler implements RuleEvaluationHand
     @SuppressWarnings("unchecked")
     public RuleViolations evaluate(final EdgeOccurrences rule,
                                    final ConnectorCardinalityContext context) {
-
+        final DefaultRuleViolations result = new DefaultRuleViolations();
         final Node<? extends View<?>, ? extends Edge> candidate =
                 (Node<? extends View<?>, ? extends Edge>) context.getCandidate();
         final Edge<? extends View<?>, Node> edge = context.getEdge();
-        final CardinalityContext.Operation operation = context.getOperation();
-        final ConnectorCardinalityContext.Direction direction = context.getDirection();
+        final Optional<CardinalityContext.Operation> operation = context.getOperation();
+        final EdgeCardinalityContext.Direction direction = context.getDirection();
         final List<? extends Edge> edges = isIncoming(direction) ?
                 candidate.getInEdges() : candidate.getOutEdges();
-        // The edge defintiion's identifier.
         final String edgeId = evalUtils.getElementDefinitionId(edge);
-        // Edge count.
-        final int count = graphUtils.countEdges(edgeId,
-                                                edges);
-
+        final int count = evalUtils.countEdges(edgeId,
+                                               edges);
         // Delegate to the domain model cardinality rule manager.
-        final RuleViolations result = edgeCardinalityEvaluationHandler
-                .evaluate(rule,
-                          RuleContextBuilder.DomainContexts.edgeCardinality(evalUtils.getLabels(candidate),
-                                                                            edgeId,
-                                                                            count,
-                                                                            rule.getDirection(),
-                                                                            operation));
+        result.addViolations(
+                edgeCardinalityEvaluationHandler
+                        .evaluate(rule,
+                                  RuleContextBuilder.DomainContexts.edgeCardinality(candidate.getLabels(),
+                                                                                    edgeId,
+                                                                                    count,
+                                                                                    rule.getDirection(),
+                                                                                    operation))
+        );
+
         return GraphEvaluationHandlerUtils.addViolationsSourceUUID(edge.getUUID(),
                                                                    result);
     }
 
-    private boolean isIncoming(final ConnectorCardinalityContext.Direction direction) {
-        return ConnectorCardinalityContext.Direction.INCOMING.equals(direction);
+    private boolean isIncoming(final EdgeCardinalityContext.Direction direction) {
+        return EdgeCardinalityContext.Direction.INCOMING.equals(direction);
     }
 }

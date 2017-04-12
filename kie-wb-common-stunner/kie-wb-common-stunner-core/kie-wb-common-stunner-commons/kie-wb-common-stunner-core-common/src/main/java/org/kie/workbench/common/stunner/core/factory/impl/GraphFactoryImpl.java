@@ -22,23 +22,14 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.GraphFactory;
-import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSetImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundImpl;
-import org.kie.workbench.common.stunner.core.graph.content.view.BoundsImpl;
-import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
-import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 
 @ApplicationScoped
-public class GraphFactoryImpl extends AbstractElementFactory<String, DefinitionSet, Graph<DefinitionSet, Node>>
-        implements GraphFactory {
+public class GraphFactoryImpl extends AbstractGraphFactory {
 
     private final DefinitionManager definitionManager;
 
     protected GraphFactoryImpl() {
-        this.definitionManager = null;
+        this(null);
     }
 
     @Inject
@@ -52,18 +43,22 @@ public class GraphFactoryImpl extends AbstractElementFactory<String, DefinitionS
     }
 
     @Override
-    @SuppressWarnings("unchecked   ")
-    public Graph<DefinitionSet, Node> build(final String uuid,
-                                            final String definitionSetId) {
-        final GraphImpl graph = new GraphImpl<>(uuid,
-                                                new GraphNodeStoreImpl());
-        final DefinitionSet content = new DefinitionSetImpl(definitionSetId);
-        graph.setContent(content);
-        content.setBounds(new BoundsImpl(new BoundImpl(0d,
-                                                       0d),
-                                         new BoundImpl(DEFAULT_WIDTH,
-                                                       DEFAULT_HEIGHT)
-        ));
-        return graph;
+    protected double getWidth() {
+        return DEFAULT_WIDTH;
+    }
+
+    @Override
+    protected double getHeight() {
+        return DEFAULT_HEIGHT;
+    }
+
+    @Override
+    public boolean accepts(final String source) {
+        return true;
+    }
+
+    @Override
+    protected DefinitionManager getDefinitionManager() {
+        return definitionManager;
     }
 }

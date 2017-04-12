@@ -16,55 +16,43 @@
 
 package org.kie.workbench.common.stunner.core.client.command;
 
+import java.util.Optional;
+
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.kie.workbench.common.stunner.core.rule.violations.AbstractRuleViolation;
 
 public final class CanvasViolationImpl
-        extends AbstractRuleViolation
         implements CanvasViolation {
 
-    private final String message;
-    private final Type type;
+    private transient final RuleViolation ruleViolation;
 
-    CanvasViolationImpl(final String message,
-                        final Type type) {
-        this.type = type;
-        this.message = message;
+    CanvasViolationImpl(final RuleViolation ruleViolation) {
+        this.ruleViolation = ruleViolation;
     }
 
     @Override
-    public String getMessage() {
-        return message;
+    public String getUUID() {
+        return ruleViolation.getUUID();
+    }
+
+    @Override
+    public Optional<Object[]> getArguments() {
+        return ruleViolation.getArguments();
     }
 
     @Override
     public Type getViolationType() {
-        return type;
-    }
-
-    public static final class CanvasViolationBuilder {
-
-        private final RuleViolation ruleViolation;
-
-        public CanvasViolationBuilder(final RuleViolation ruleViolation) {
-            this.ruleViolation = ruleViolation;
-        }
-
-        public CanvasViolationImpl build() {
-            final CanvasViolationImpl result = new CanvasViolationImpl(ruleViolation.getMessage(),
-                                                                       ruleViolation.getViolationType());
-            if (ruleViolation instanceof AbstractRuleViolation) {
-                final String uuid = ((AbstractRuleViolation) ruleViolation).getUuid();
-                if (null != uuid) {
-                    result.setUuid(uuid);
-                }
-            }
-            return result;
-        }
+        return ruleViolation.getViolationType();
     }
 
     @Override
-    public String toString() {
-        return getMessage();
+    public RuleViolation getRuleViolation() {
+        return ruleViolation;
+    }
+
+    public static final class Builder {
+
+        public static CanvasViolation build(final RuleViolation violation) {
+            return new CanvasViolationImpl(violation);
+        }
     }
 }

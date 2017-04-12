@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.rule.context;
 
-import java.util.Optional;
-
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -35,10 +33,9 @@ import org.kie.workbench.common.stunner.core.rule.impl.CanContain;
 public interface NodeContainmentContext extends GraphEvaluationContext {
 
     /**
-     * The candidate's parent. If not candidate parent elements
-     * the parent's graph instance is used as parent argument.
+     * The candidate's parent.
      */
-    Optional<Element<? extends Definition<?>>> getParent();
+    Element<? extends Definition<?>> getParent();
 
     /**
      * The candidate instance to be set as a child for the parent one.

@@ -16,7 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.rule.context;
 
+import java.util.Optional;
+
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.rule.handler.impl.EdgeCardinalityEvaluationHandler;
@@ -29,15 +32,7 @@ import org.kie.workbench.common.stunner.core.rule.impl.EdgeOccurrences;
  * @See {@link EdgeOccurrences}
  * @See {@link EdgeCardinalityEvaluationHandler}
  */
-public interface ConnectorCardinalityContext extends ElementCardinalityContext {
-
-    /**
-     * The connector's direction.
-     */
-    enum Direction {
-        INCOMING,
-        OUTGOING;
-    }
+public interface ConnectorCardinalityContext extends GraphEvaluationContext {
 
     /**
      * The connector's graph element.
@@ -45,7 +40,21 @@ public interface ConnectorCardinalityContext extends ElementCardinalityContext {
     Edge<? extends View<?>, Node> getEdge();
 
     /**
+     * The candidate element to add or remove from the graph.
+     * If not candidate present, it checks the cardinality
+     * for the whole graph elements.
+     */
+    Element<? extends View<?>> getCandidate();
+
+    /**
+     * The operation to be performed on the candidate.
+     * If not candidate present, the operation value is
+     * discarded although being present.
+     */
+    Optional<CardinalityContext.Operation> getOperation();
+
+    /**
      * The direction.
      */
-    Direction getDirection();
+    EdgeCardinalityContext.Direction getDirection();
 }

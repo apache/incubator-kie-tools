@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.core.client.session.impl;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasValidationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.builder.ElementBuilderControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
@@ -37,7 +36,6 @@ import org.kie.workbench.common.stunner.core.registry.command.CommandRegistry;
 public abstract class AbstractClientFullSession extends AbstractClientReadOnlySession
         implements ClientFullSession<AbstractCanvas, AbstractCanvasHandler> {
 
-    private CanvasValidationControl<AbstractCanvasHandler> canvasValidationControl;
     private CanvasCommandManager<AbstractCanvasHandler> canvasCommandManager;
     private CommandRegistry<Command<AbstractCanvasHandler, CanvasViolation>> commandRegistry;
     private ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl;
@@ -47,7 +45,6 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
 
     public AbstractClientFullSession(final AbstractCanvas canvas,
                                      final AbstractCanvasHandler canvasHandler,
-                                     final CanvasValidationControl<AbstractCanvasHandler> canvasValidationControl,
                                      final SelectionControl<AbstractCanvasHandler, Element> selectionControl,
                                      final ZoomControl<AbstractCanvas> zoomControl,
                                      final PanControl<AbstractCanvas> panControl,
@@ -64,7 +61,6 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
               selectionControl,
               zoomControl,
               panControl);
-        this.canvasValidationControl = canvasValidationControl;
         this.canvasCommandManager = canvasCommandManager;
         this.commandRegistry = commandRegistry;
         this.connectionAcceptorControl = connectionAcceptorControl;
@@ -79,7 +75,6 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
         dockingAcceptorControl.setCommandManagerProvider(requestCommandManagerProvider);
         getRegistrationHandler().registerCanvasHandlerControl(builderControl);
         builderControl.setCommandManagerProvider(sessionCommandManagerProvider);
-        getRegistrationHandler().registerCanvasHandlerControl(canvasValidationControl);
     }
 
     @Override
@@ -95,11 +90,6 @@ public abstract class AbstractClientFullSession extends AbstractClientReadOnlySe
     @Override
     public PanControl<AbstractCanvas> getPanControl() {
         return panControl;
-    }
-
-    @Override
-    public CanvasValidationControl<AbstractCanvasHandler> getValidationControl() {
-        return canvasValidationControl;
     }
 
     @Override

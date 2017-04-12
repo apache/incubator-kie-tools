@@ -149,7 +149,6 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
 
     private CommandResult<V> buildResult(final List<CommandResult<V>> results) {
         final CommandResult.Type[] type = {CommandResult.Type.INFO};
-        String message = "Found [" + results.size() + "] results.";
         final List<V> violations = new LinkedList<>();
         results.stream().forEach(rr -> {
             if (hasMoreSeverity(rr.getType(),
@@ -162,7 +161,6 @@ public abstract class AbstractCompositeCommand<T, V> implements CompositeCommand
             }
         });
         return new CommandResultImpl<>(type[0],
-                                       message,
                                        violations);
     }
 

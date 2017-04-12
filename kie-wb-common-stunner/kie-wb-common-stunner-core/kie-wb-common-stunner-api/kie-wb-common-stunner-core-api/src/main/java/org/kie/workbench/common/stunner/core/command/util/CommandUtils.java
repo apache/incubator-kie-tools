@@ -19,11 +19,22 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 public class CommandUtils {
 
     public static boolean isError(final CommandResult<?> result) {
         return isCommandResultError(result);
+    }
+
+    public static CommandResult.Type getType(final RuleViolation violation) {
+        switch (violation.getViolationType()) {
+            case ERROR:
+                return CommandResult.Type.ERROR;
+            case WARNING:
+                return CommandResult.Type.WARNING;
+        }
+        return CommandResult.Type.INFO;
     }
 
     public static <V> List<V> toList(final Iterable<V> iterable) {

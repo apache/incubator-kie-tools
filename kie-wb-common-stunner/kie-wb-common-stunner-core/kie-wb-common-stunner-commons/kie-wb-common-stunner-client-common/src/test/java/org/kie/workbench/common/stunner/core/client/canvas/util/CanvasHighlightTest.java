@@ -103,9 +103,9 @@ public class CanvasHighlightTest {
     public void testViolations() {
         final List<RuleViolation> violations = new LinkedList<>();
         final RuleViolationImpl v1 = new RuleViolationImpl("m1");
-        v1.setUuid(ID1);
+        v1.setUUID(ID1);
         final RuleViolationImpl v2 = new RuleViolationImpl("m2");
-        v2.setUuid(ID2);
+        v2.setUUID(ID2);
         violations.add(v1);
         violations.add(v2);
         tested.invalid(violations);

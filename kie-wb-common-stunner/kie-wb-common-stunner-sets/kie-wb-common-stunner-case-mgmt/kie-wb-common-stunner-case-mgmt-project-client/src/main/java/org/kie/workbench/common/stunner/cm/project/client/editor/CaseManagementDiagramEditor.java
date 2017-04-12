@@ -24,7 +24,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
-import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenErrorView;
 import org.kie.workbench.common.stunner.cm.project.client.type.CaseManagementDiagramResourceType;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
@@ -71,7 +70,6 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
                                        final ClientProjectDiagramService projectDiagramServices,
                                        final SessionManager sessionManager,
                                        final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
-                                       final ScreenErrorView editorErrorView,
                                        final ClientSessionUtils sessionUtils,
                                        final SessionCommandFactory sessionCommandFactory,
                                        final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder) {
@@ -84,7 +82,6 @@ public class CaseManagementDiagramEditor extends AbstractProjectDiagramEditor<Ca
               projectDiagramServices,
               sessionManager,
               sessionPresenterFactory,
-              editorErrorView,
               sessionUtils,
               sessionCommandFactory,
               menuItemsBuilder);

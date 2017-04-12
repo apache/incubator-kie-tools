@@ -27,8 +27,8 @@ import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.rule.RuleHandlerRegistry;
 import org.kie.workbench.common.stunner.core.rule.ext.RuleExtension;
 import org.kie.workbench.common.stunner.core.rule.ext.RuleExtensionHandler;
+import org.kie.workbench.common.stunner.core.rule.violations.ContextOperationNotAllowedViolation;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
-import org.kie.workbench.common.stunner.core.rule.violations.NoRulesForContextViolation;
 
 import static org.uberfire.commons.validation.PortablePreconditions.checkNotNull;
 
@@ -55,37 +55,37 @@ public class RuleManagerImpl implements RuleManager {
                      ruleSet);
         checkNotNull("context",
                      context);
-        final DefaultRuleViolations results = new DefaultRuleViolations();
-        final boolean[] empty = {true};
-        final boolean[] noRuleMatch = {true};
-        ruleSet.getRules().forEach(rule -> {
-            empty[0] = false;
-            final Optional<RuleViolations> violations = evaluate(
-                    rule,
-                    context);
-            if (violations.isPresent()) {
-                LOGGER.info("Rule Evaluation [" + rule + ", " + violations + "]");
-                results.addViolations(violations.get());
-                noRuleMatch[0] = false;
-            }
-        });
         /*
-        Consider:
+            Consider:
             - If no rules present on the rule set, no resulting rule violation instances
             are expected
             - If rules present but no rule accepts the runtime context inputs, the context type
             defines if allow/or deny the evaluation
             - Otherwise return the rule violations produced by the handlers or extensions
          */
-        return !empty[0] &&
-                (noRuleMatch[0] && context.isDefaultDeny()) ?
-                getDefaultViolationForContext(context) :
-                results;
+        final DefaultRuleViolations results = new DefaultRuleViolations();
+        final boolean hasRules = ruleSet.getRules().iterator().hasNext();
+        if (hasRules) {
+            final boolean[] hasEvaluations = {false};
+            ruleSet.getRules().forEach(rule -> {
+                final Optional<RuleViolations> violations = evaluate(rule,
+                                                                     context);
+                if (violations.isPresent()) {
+                    hasEvaluations[0] = true;
+                    LOGGER.info("Rule Evaluation [" + rule + ", " + violations + "]");
+                    results.addViolations(violations.get());
+                }
+            });
+            if (!hasEvaluations[0] && context.isDefaultDeny()) {
+                return getDefaultViolationForContext(context);
+            }
+        }
+        return results;
     }
 
     private RuleViolations getDefaultViolationForContext(final RuleEvaluationContext context) {
         return new DefaultRuleViolations().addViolation(
-                new NoRulesForContextViolation(context)
+                new ContextOperationNotAllowedViolation(context)
         );
     }
 

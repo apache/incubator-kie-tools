@@ -63,6 +63,16 @@ public class ConnectionEvaluationHandlerTest {
     }
 
     @Test
+    public void testAccepts() {
+        when(context.getConnectorRole()).thenReturn(EDGE_ID);
+        assertTrue(tested.accepts(RULE,
+                                  context));
+        when(context.getConnectorRole()).thenReturn("anotherEdgeId");
+        assertFalse(tested.accepts(RULE,
+                                   context));
+    }
+
+    @Test
     public void testEvaluateSuccess1() {
         final Set<String> sourceRoles = new HashSet<String>(1) {{
             add("r1");
@@ -70,7 +80,7 @@ public class ConnectionEvaluationHandlerTest {
         final Set<String> targetRoles = new HashSet<String>(1) {{
             add("o1");
         }};
-        when(context.getConnectorId()).thenReturn(EDGE_ID);
+        when(context.getConnectorRole()).thenReturn(EDGE_ID);
         when(context.getSourceRoles()).thenReturn(Optional.of(sourceRoles));
         when(context.getTargetRoles()).thenReturn(Optional.of(targetRoles));
         final RuleViolations violations = tested.evaluate(RULE,
@@ -87,7 +97,7 @@ public class ConnectionEvaluationHandlerTest {
         final Set<String> targetRoles = new HashSet<String>(1) {{
             add("o2");
         }};
-        when(context.getConnectorId()).thenReturn(EDGE_ID);
+        when(context.getConnectorRole()).thenReturn(EDGE_ID);
         when(context.getSourceRoles()).thenReturn(Optional.of(sourceRoles));
         when(context.getTargetRoles()).thenReturn(Optional.of(targetRoles));
         final RuleViolations violations = tested.evaluate(RULE,
@@ -104,7 +114,7 @@ public class ConnectionEvaluationHandlerTest {
         final Set<String> targetRoles = new HashSet<String>(1) {{
             add("o2");
         }};
-        when(context.getConnectorId()).thenReturn(EDGE_ID);
+        when(context.getConnectorRole()).thenReturn(EDGE_ID);
         when(context.getSourceRoles()).thenReturn(Optional.of(sourceRoles));
         when(context.getTargetRoles()).thenReturn(Optional.of(targetRoles));
         final RuleViolations violations = tested.evaluate(RULE,
@@ -121,7 +131,7 @@ public class ConnectionEvaluationHandlerTest {
         final Set<String> targetRoles = new HashSet<String>(1) {{
             add("o1");
         }};
-        when(context.getConnectorId()).thenReturn(EDGE_ID);
+        when(context.getConnectorRole()).thenReturn(EDGE_ID);
         when(context.getSourceRoles()).thenReturn(Optional.of(sourceRoles));
         when(context.getTargetRoles()).thenReturn(Optional.of(targetRoles));
         final RuleViolations violations = tested.evaluate(RULE,

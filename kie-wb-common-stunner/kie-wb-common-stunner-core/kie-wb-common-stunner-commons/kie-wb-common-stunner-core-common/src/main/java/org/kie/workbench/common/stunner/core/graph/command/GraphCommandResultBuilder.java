@@ -23,18 +23,17 @@ import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CommandResultBuilder;
 import org.kie.workbench.common.stunner.core.command.impl.CommandResultImpl;
+import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 @NonPortable
 public class GraphCommandResultBuilder extends CommandResultBuilder<RuleViolation> {
 
     public static final CommandResult<RuleViolation> SUCCESS = new CommandResultImpl<>(CommandResult.Type.INFO,
-                                                                                       RESULT_SUCCESS,
                                                                                        new LinkedList<>()
     );
 
     public static final CommandResult<RuleViolation> FAILED = new CommandResultImpl<>(CommandResult.Type.ERROR,
-                                                                                      RESULT_FAILED,
                                                                                       new LinkedList<>()
     );
 
@@ -46,12 +45,11 @@ public class GraphCommandResultBuilder extends CommandResultBuilder<RuleViolatio
     }
 
     @Override
-    public boolean isError(final RuleViolation violation) {
-        return RuleViolation.Type.ERROR.equals(violation.getViolationType());
+    public CommandResult.Type getType(final RuleViolation violation) {
+        return CommandUtils.getType(violation);
     }
 
-    @Override
-    public String getMessage(final RuleViolation violation) {
-        return violation.getMessage();
+    public boolean isError(final RuleViolation violation) {
+        return RuleViolation.Type.ERROR.equals(violation.getViolationType());
     }
 }

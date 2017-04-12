@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
-import java.util.HashSet;
-import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationHandler;
@@ -43,21 +41,21 @@ public class DockingEvaluationHandler implements RuleEvaluationHandler<CanDock, 
     @Override
     public boolean accepts(final CanDock rule,
                            final DockingContext context) {
-        return rule.getParentId().equals(context.getId());
+        return context.getParentRoles().contains(rule.getRole());
     }
 
     @Override
     public RuleViolations evaluate(final CanDock rule,
                                    final DockingContext context) {
-        final Set<String> allowedRoles = rule.getAllowedRoles();
-        final String targetId = context.getId();
-        final Set<String> candidateRoles = context.getAllowedRoles();
         final DefaultRuleViolations results = new DefaultRuleViolations();
-        final Set<String> permittedStrings = new HashSet<String>(allowedRoles);
-        permittedStrings.retainAll(candidateRoles);
-        if (permittedStrings.isEmpty()) {
-            results.addViolation(new DockingRuleViolation(targetId,
-                                                          candidateRoles.toString()));
+        final boolean present = context.getCandidateRoles()
+                .stream()
+                .filter(cr -> rule.getAllowedRoles().contains(cr))
+                .findAny()
+                .isPresent();
+        if (!present) {
+            results.addViolation(new DockingRuleViolation(rule.getRole(),
+                                                          context.getCandidateRoles().toString()));
         }
         return results;
     }

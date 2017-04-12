@@ -68,8 +68,8 @@ class FactoryRegistryImpl<T extends Factory<?>> implements TypeFactoryRegistry<T
                         && factory.accepts(defSetId)
                         && metadataType.equals(factory.getMetadataType()))
                 .findFirst()
-                .orElse(getDefaultDiagramFactory(defSetId,
-                                                 metadataType));
+                .orElseGet(() -> getDefaultDiagramFactory(defSetId,
+                                                          metadataType));
     }
 
     private DiagramFactory<?, ?> getDefaultDiagramFactory(final String defSetId,

@@ -23,14 +23,14 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.graph.Edge;
-import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationHandler;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.NodeDockingContext;
-import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.impl.CanDock;
+import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 
 @ApplicationScoped
 public class NodeDockingEvaluationHandler implements RuleEvaluationHandler<CanDock, NodeDockingContext> {
@@ -63,31 +63,28 @@ public class NodeDockingEvaluationHandler implements RuleEvaluationHandler<CanDo
     @Override
     public boolean accepts(final CanDock rule,
                            final NodeDockingContext context) {
-        final String parentId = evalUtils.getElementDefinitionId(getParent(context));
+        final Set<String> parentLabels = evalUtils.getLabels(context.getParent());
         // As for acceptance checking, the delegated handler only needs the parent node id, no need
-        // to calculate roles for the candidate node.
+        // to calculate roles for the candidate node, so using an empty set.
         return dockingHandler.accepts(rule,
-                                      RuleContextBuilder.DomainContexts.docking(parentId,
+                                      RuleContextBuilder.DomainContexts.docking(parentLabels,
                                                                                 Collections.emptySet()));
     }
 
     @Override
     public RuleViolations evaluate(final CanDock rule,
                                    final NodeDockingContext context) {
-        final Element<? extends Definition<?>> source = getParent(context);
         final Node<? extends Definition<?>, ? extends Edge> target = context.getCandidate();
-        final String sourceId = evalUtils.getElementDefinitionId(source);
+        final Set<String> parentLabels = evalUtils.getLabels(context.getParent());
         final Set<String> candidateLabels = evalUtils.getLabels(target);
-        final RuleViolations result = dockingHandler
-                .evaluate(rule,
-                          RuleContextBuilder.DomainContexts.docking(sourceId,
-                                                                    candidateLabels));
+        final DefaultRuleViolations result = new DefaultRuleViolations();
+        result.addViolations(
+                dockingHandler
+                        .evaluate(rule,
+                                  RuleContextBuilder.DomainContexts.docking(parentLabels,
+                                                                            candidateLabels))
+        );
         return GraphEvaluationHandlerUtils.addViolationsSourceUUID(target.getUUID(),
                                                                    result);
-    }
-
-    @SuppressWarnings("unchecked")
-    private Element<? extends Definition<?>> getParent(final NodeDockingContext context) {
-        return context.getParent().orElse((Element<? extends Definition<?>>) context.getGraph());
     }
 }

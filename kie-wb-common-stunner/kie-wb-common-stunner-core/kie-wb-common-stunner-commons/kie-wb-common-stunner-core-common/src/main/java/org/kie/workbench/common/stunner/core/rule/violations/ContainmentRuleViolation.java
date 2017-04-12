@@ -16,10 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.rule.violations;
 
+import java.util.Optional;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
-// TODO: I18n.
 @Portable
 public class ContainmentRuleViolation extends AbstractRuleViolation {
 
@@ -30,6 +31,11 @@ public class ContainmentRuleViolation extends AbstractRuleViolation {
                                     final @MapsTo("candidate") String candidate) {
         this.parent = parent;
         this.candidate = candidate;
+    }
+
+    @Override
+    public Optional<Object[]> getArguments() {
+        return Optional.of(new Object[]{parent, candidate});
     }
 
     @Override

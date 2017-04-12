@@ -23,7 +23,6 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.presenters.AbstractCanvasHandlerViewerTest;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasValidationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
@@ -51,8 +50,6 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
     DiagramViewer viewer;
     @Mock
     CanvasCommandManager<AbstractCanvasHandler> commandManager;
-    @Mock
-    CanvasValidationControl<AbstractCanvasHandler> validationControl;
     @Mock
     ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl;
     @Mock
@@ -88,7 +85,6 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
         this.tested =
                 new DiagramEditorImpl<Diagram, AbstractCanvasHandler>(viewer,
                                                                       commandManager,
-                                                                      validationControl,
                                                                       connectionAcceptorControl,
                                                                       containmentAcceptorControl,
                                                                       dockingAcceptorControl);
@@ -104,8 +100,6 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
         verify(viewer,
                times(1)).open(eq(diagram),
                               any(DiagramViewer.DiagramViewerCallback.class));
-        verify(validationControl,
-               times(1)).enable(eq(canvasHandler));
         verify(connectionAcceptorControl,
                times(1)).enable(eq(canvasHandler));
         verify(containmentAcceptorControl,
@@ -137,8 +131,6 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
         assertNull(tested.getInstance());
         verify(viewer,
                times(1)).clear();
-        verify(validationControl,
-               times(1)).disable();
         verify(connectionAcceptorControl,
                times(1)).disable();
         verify(containmentAcceptorControl,
@@ -156,8 +148,6 @@ public class DiagramEditorTest extends AbstractCanvasHandlerViewerTest {
         assertNull(tested.getInstance());
         verify(viewer,
                times(1)).destroy();
-        verify(validationControl,
-               times(1)).disable();
         verify(connectionAcceptorControl,
                times(1)).disable();
         verify(containmentAcceptorControl,

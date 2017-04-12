@@ -16,6 +16,7 @@
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +31,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.GraphConnectionContext;
 import org.kie.workbench.common.stunner.core.rule.violations.ContainmentRuleViolation;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
@@ -38,6 +40,8 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
+import static org.kie.workbench.common.stunner.core.TestingGraphUtils.verifyConnection;
+import static org.kie.workbench.common.stunner.core.TestingGraphUtils.verifyConnectorCardinality;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
@@ -95,8 +99,8 @@ public class DeleteConnectorCommandTest extends AbstractGraphCommandTest {
                                    graph,
                                    source,
                                    edge,
-                                   ConnectorCardinalityContext.Direction.OUTGOING,
-                                   CardinalityContext.Operation.DELETE);
+                                   EdgeCardinalityContext.Direction.OUTGOING,
+                                   Optional.of(CardinalityContext.Operation.DELETE));
         verifyConnection((GraphConnectionContext) contexts.get(2),
                          edge,
                          source,
@@ -105,8 +109,8 @@ public class DeleteConnectorCommandTest extends AbstractGraphCommandTest {
                                    graph,
                                    target,
                                    edge,
-                                   ConnectorCardinalityContext.Direction.INCOMING,
-                                   CardinalityContext.Operation.DELETE);
+                                   EdgeCardinalityContext.Direction.INCOMING,
+                                   Optional.of(CardinalityContext.Operation.DELETE));
     }
 
     @Test

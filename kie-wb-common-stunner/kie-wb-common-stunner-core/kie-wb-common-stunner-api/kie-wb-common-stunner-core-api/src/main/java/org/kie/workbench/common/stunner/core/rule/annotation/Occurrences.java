@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
 @Repeatable(AllowedOccurrences.class)
 public @interface Occurrences {
 
-    String role() default "";
+    String role();
 
     long min() default 0;
 

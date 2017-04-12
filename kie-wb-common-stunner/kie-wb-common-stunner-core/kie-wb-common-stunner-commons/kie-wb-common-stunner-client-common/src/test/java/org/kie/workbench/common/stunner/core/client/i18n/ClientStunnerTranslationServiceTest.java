@@ -23,11 +23,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.kie.workbench.common.stunner.core.i18n.AbstractStunnerTranslationService.CAPTION_SUFFIX;
-import static org.kie.workbench.common.stunner.core.i18n.AbstractStunnerTranslationService.CATEGORY_SUFFIX;
-import static org.kie.workbench.common.stunner.core.i18n.AbstractStunnerTranslationService.DESCRIPTION_SUFFIX;
-import static org.kie.workbench.common.stunner.core.i18n.AbstractStunnerTranslationService.PROPERTY_SET_NAME_SUFFIX;
-import static org.kie.workbench.common.stunner.core.i18n.AbstractStunnerTranslationService.TITLE_SUFFIX;
+import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.CAPTION_SUFFIX;
+import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.CATEGORY_SUFFIX;
+import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.DESCRIPTION_SUFFIX;
+import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.PROPERTY_SET_NAME_SUFFIX;
+import static org.kie.workbench.common.stunner.core.i18n.AbstractTranslationService.TITLE_SUFFIX;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -41,11 +41,11 @@ public class ClientStunnerTranslationServiceTest {
     @Mock
     private TranslationService translationService;
 
-    private ClientStunnerTranslationService stunnerTranlationService;
+    private ClientTranslationService stunnerTranlationService;
 
     @Before
     public void init() {
-        stunnerTranlationService = new ClientStunnerTranslationService(translationService);
+        stunnerTranlationService = new ClientTranslationService(translationService);
     }
 
     @Test
@@ -89,6 +89,6 @@ public class ClientStunnerTranslationServiceTest {
 
     protected String getKey(String modelName,
                             String suffix) {
-        return modelName + ClientStunnerTranslationService.I18N_SEPARATOR + suffix;
+        return modelName + ClientTranslationService.I18N_SEPARATOR + suffix;
     }
 }

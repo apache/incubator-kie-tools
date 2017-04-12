@@ -34,7 +34,6 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 
 @Dependent
@@ -44,7 +43,6 @@ public class BPMNDiagramMarshaller extends BaseDiagramMarshaller<BPMNDiagram> {
     public BPMNDiagramMarshaller(final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller,
                                  final GraphObjectBuilderFactory bpmnGraphBuilderFactory,
                                  final DefinitionManager definitionManager,
-                                 final GraphUtils graphUtils,
                                  final GraphIndexBuilder<?> indexBuilder,
                                  final OryxManager oryxManager,
                                  final FactoryManager factoryManager,
@@ -54,7 +52,6 @@ public class BPMNDiagramMarshaller extends BaseDiagramMarshaller<BPMNDiagram> {
         super(diagramMetadataMarshaller,
               bpmnGraphBuilderFactory,
               definitionManager,
-              graphUtils,
               indexBuilder,
               oryxManager,
               factoryManager,

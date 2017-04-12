@@ -60,11 +60,8 @@ public class StunnerLogger {
 
     @SuppressWarnings("unchecked")
     public static void logCommandResult(final CommandResult result) {
-        String message = result.getMessage();
-        CommandResult.Type type = result.getType();
-        log("Command Result [message=" + message + "] [type" + type.name());
-        Iterable<RuleViolation> violations = result.getViolations();
-        logRuleViolations(violations);
+        log("Command Result [type=" + result.getType() + ",result=" + result + "]");
+        logRuleViolations(result.getViolations());
     }
 
     public static void logRuleViolations(final Iterable<RuleViolation> violations) {
@@ -78,9 +75,7 @@ public class StunnerLogger {
     }
 
     public static void logRuleViolation(final RuleViolation violation) {
-        String message = violation.getMessage();
-        RuleViolation.Type type = violation.getViolationType();
-        log("Rule Violation [message=" + message + "] [type" + type.name());
+        log("Rule Violation [type=" + violation.getViolationType() + "] [violation" + violation);
     }
 
     private static final FullContentTraverseCallback<Node<View, Edge>, Edge<Object, Node>> TREE_TRAVERSE_CALLBACK =

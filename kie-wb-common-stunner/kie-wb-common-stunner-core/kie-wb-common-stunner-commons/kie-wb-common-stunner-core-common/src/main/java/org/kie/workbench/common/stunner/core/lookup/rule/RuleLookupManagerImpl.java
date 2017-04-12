@@ -27,7 +27,7 @@ import javax.inject.Inject;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.lookup.criteria.AbstractCriteriaLookupManager;
 import org.kie.workbench.common.stunner.core.rule.Rule;
-import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.impl.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.impl.CanContain;
 import org.kie.workbench.common.stunner.core.rule.impl.EdgeOccurrences;
@@ -107,10 +107,10 @@ public class RuleLookupManagerImpl
                 String _id = null;
                 if (rule instanceof CanContain) {
                     final CanContain er = (CanContain) rule;
-                    _id = er.getParentId();
+                    _id = er.getRole();
                 } else if (rule instanceof CanConnect) {
                     final CanConnect er = (CanConnect) rule;
-                    _id = er.getConnectorId();
+                    _id = er.getRole();
                 }
                 return _id != null && _id.equals(value);
             case ROLE:
@@ -136,7 +136,7 @@ public class RuleLookupManagerImpl
                 try {
                     final EdgeOccurrences er = (EdgeOccurrences) rule;
                     return er.getDirection().equals(INCOMING.equals(value) ?
-                                                            ConnectorCardinalityContext.Direction.INCOMING : ConnectorCardinalityContext.Direction.OUTGOING);
+                                                            EdgeCardinalityContext.Direction.INCOMING : EdgeCardinalityContext.Direction.OUTGOING);
                 } catch (final ClassCastException e) {
                     return false;
                 }

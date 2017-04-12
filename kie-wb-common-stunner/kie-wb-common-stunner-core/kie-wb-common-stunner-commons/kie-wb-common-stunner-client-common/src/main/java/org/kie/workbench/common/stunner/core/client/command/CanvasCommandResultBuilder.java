@@ -28,14 +28,23 @@ import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 public class CanvasCommandResultBuilder extends CommandResultBuilder<CanvasViolation> {
 
     public static final CommandResult<CanvasViolation> SUCCESS = new CommandResultImpl<>(CommandResult.Type.INFO,
-                                                                                         RESULT_SUCCESS,
                                                                                          new LinkedList<>()
     );
 
     public static final CommandResult<CanvasViolation> FAILED = new CommandResultImpl<>(CommandResult.Type.ERROR,
-                                                                                        RESULT_FAILED,
                                                                                         new LinkedList<>()
     );
+
+    @Override
+    public CommandResult.Type getType(final CanvasViolation violation) {
+        switch (violation.getViolationType()) {
+            case ERROR:
+                return CommandResult.Type.ERROR;
+            case WARNING:
+                return CommandResult.Type.WARNING;
+        }
+        return CommandResult.Type.INFO;
+    }
 
     public CanvasCommandResultBuilder() {
     }
@@ -46,7 +55,6 @@ public class CanvasCommandResultBuilder extends CommandResultBuilder<CanvasViola
 
     public CanvasCommandResultBuilder(final CommandResult<RuleViolation> commandResult) {
         // Use same message and result type.
-        this.setMessage(commandResult.getMessage());
         this.setType(commandResult.getType());
         // Translate violations.
         final Iterable<RuleViolation> violations = commandResult.getViolations();
@@ -54,19 +62,9 @@ public class CanvasCommandResultBuilder extends CommandResultBuilder<CanvasViola
             final Iterator<RuleViolation> violationsIt = violations.iterator();
             while (violationsIt.hasNext()) {
                 final RuleViolation ruleViolation = violationsIt.next();
-                final CanvasViolation canvasViolation = new CanvasViolationImpl.CanvasViolationBuilder(ruleViolation).build();
+                final CanvasViolation canvasViolation = CanvasViolationImpl.Builder.build(ruleViolation);
                 addViolation(canvasViolation);
             }
         }
-    }
-
-    @Override
-    public boolean isError(final CanvasViolation violation) {
-        return RuleViolation.Type.ERROR.equals(violation.getViolationType());
-    }
-
-    @Override
-    public String getMessage(final CanvasViolation violation) {
-        return violation.getMessage();
     }
 }

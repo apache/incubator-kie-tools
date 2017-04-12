@@ -25,7 +25,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
 import org.kie.workbench.common.stunner.bpmn.project.client.type.BPMNDiagramResourceType;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenterFactory;
-import org.kie.workbench.common.stunner.client.widgets.views.session.ScreenErrorView;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.SessionCommandFactory;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractClientFullSession;
@@ -70,7 +69,6 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
                              final ClientProjectDiagramService projectDiagramServices,
                              final SessionManager sessionManager,
                              final SessionPresenterFactory<Diagram, AbstractClientReadOnlySession, AbstractClientFullSession> sessionPresenterFactory,
-                             final ScreenErrorView editorErrorView,
                              final ClientSessionUtils sessionUtils,
                              final SessionCommandFactory sessionCommandFactory,
                              final ProjectDiagramEditorMenuItemsBuilder menuItemsBuilder) {
@@ -83,7 +81,6 @@ public class BPMNDiagramEditor extends AbstractProjectDiagramEditor<BPMNDiagramR
               projectDiagramServices,
               sessionManager,
               sessionPresenterFactory,
-              editorErrorView,
               sessionUtils,
               sessionCommandFactory,
               menuItemsBuilder);

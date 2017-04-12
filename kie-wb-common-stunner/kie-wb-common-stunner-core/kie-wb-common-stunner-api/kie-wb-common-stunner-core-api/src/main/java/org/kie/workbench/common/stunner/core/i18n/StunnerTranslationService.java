@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.i18n;
 
+import org.kie.workbench.common.stunner.core.rule.RuleViolation;
+
 /**
  * Handles the i18n on stunner
  */
@@ -55,4 +57,9 @@ public interface StunnerTranslationService {
      * Retrieves the description for the given Property ID
      */
     String getPropertyDescription(String propId);
+
+    /**
+     * Returns the localized message for the given rule violation.
+     */
+    String getViolationMessage(RuleViolation ruleViolation);
 }

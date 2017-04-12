@@ -31,15 +31,13 @@ import org.kie.workbench.common.stunner.core.rule.impl.CanContain;
 public interface ContainmentContext extends RuleEvaluationContext {
 
     /**
-     * The identifier of the Definition type that provides
-     * the containment restriction. Eg: NoneTask
+     * The role that provides the containment restriction.
      */
-    String getId();
+    Set<String> getParentRoles();
 
     /**
-     * The set of roles that a candidate Definition
-     * instance must provide as for its graph
-     * element's labels.
+     * The set of roles that are allowed to
+     * be used as children.
      */
     Set<String> getCandidateRoles();
 }

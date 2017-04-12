@@ -30,12 +30,20 @@ public interface EdgeCardinalityContext
         extends CardinalityContext {
 
     /**
-     * The identifier of the Definition type of candidate connector.
+     * The connector's direction.
      */
-    String getEdgeId();
+    enum Direction {
+        INCOMING,
+        OUTGOING;
+    }
+
+    /**
+     * The edge's role.
+     */
+    String getEdgeRole();
 
     /**
      * The direction.
      */
-    ConnectorCardinalityContext.Direction getDirection();
+    Direction getDirection();
 }

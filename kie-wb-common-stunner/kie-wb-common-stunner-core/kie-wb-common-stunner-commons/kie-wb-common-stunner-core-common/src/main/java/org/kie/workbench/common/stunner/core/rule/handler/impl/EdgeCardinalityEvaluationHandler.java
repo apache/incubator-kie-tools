@@ -16,18 +16,17 @@
 
 package org.kie.workbench.common.stunner.core.rule.handler.impl;
 
-import java.util.Set;
+import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationHandler;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
 import org.kie.workbench.common.stunner.core.rule.impl.EdgeOccurrences;
-import org.kie.workbench.common.stunner.core.rule.violations.CardinalityMaxRuleViolation;
-import org.kie.workbench.common.stunner.core.rule.violations.CardinalityMinRuleViolation;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
+import org.kie.workbench.common.stunner.core.rule.violations.EdgeCardinalityMaxRuleViolation;
+import org.kie.workbench.common.stunner.core.rule.violations.EdgeCardinalityMinRuleViolation;
 
 @ApplicationScoped
 public class EdgeCardinalityEvaluationHandler implements RuleEvaluationHandler<EdgeOccurrences, EdgeCardinalityContext> {
@@ -45,35 +44,37 @@ public class EdgeCardinalityEvaluationHandler implements RuleEvaluationHandler<E
     @Override
     public boolean accepts(final EdgeOccurrences rule,
                            final EdgeCardinalityContext context) {
-        final ConnectorCardinalityContext.Direction direction = rule.getDirection();
-        final String ruleRole = rule.getRole();
-        return direction.equals(context.getDirection()) && context.getRoles().contains(ruleRole);
+        final EdgeCardinalityContext.Direction direction = rule.getDirection();
+        return context.getEdgeRole().equals(rule.getConnectorRole())
+                && direction.equals(context.getDirection())
+                && context.getRoles().contains(rule.getRole());
     }
 
     @Override
     public RuleViolations evaluate(final EdgeOccurrences rule,
                                    final EdgeCardinalityContext context) {
-
+        final DefaultRuleViolations results = new DefaultRuleViolations();
         final int minOccurrences = rule.getMinOccurrences();
         final int maxOccurrences = rule.getMaxOccurrences();
-        final Set<String> candidateRoles = context.getRoles();
         final int candidatesCount = context.getCandidateCount();
-        final CardinalityContext.Operation operation = context.getOperation();
-        final DefaultRuleViolations results = new DefaultRuleViolations();
-        final int _count = operation.equals(CardinalityContext.Operation.NONE) ? candidatesCount :
-                (operation.equals(CardinalityContext.Operation.ADD) ? candidatesCount + 1 :
+        final Optional<CardinalityContext.Operation> operation = context.getOperation();
+        final EdgeCardinalityContext.Direction direction = rule.getDirection();
+        final int _count = !operation.isPresent() ? candidatesCount :
+                (operation.get().equals(CardinalityContext.Operation.ADD) ? candidatesCount + 1 :
                         (candidatesCount > 0 ? candidatesCount - 1 : 0)
                 );
         if (_count < minOccurrences) {
-            results.addViolation(new CardinalityMinRuleViolation(candidateRoles.toString(),
-                                                                 rule.getName(),
-                                                                 minOccurrences,
-                                                                 candidatesCount));
+            results.addViolation(new EdgeCardinalityMinRuleViolation(context.getRoles().toString(),
+                                                                     context.getEdgeRole(),
+                                                                     minOccurrences,
+                                                                     candidatesCount,
+                                                                     direction));
         } else if (maxOccurrences > -1 && _count > maxOccurrences) {
-            results.addViolation(new CardinalityMaxRuleViolation(candidateRoles.toString(),
-                                                                 rule.getName(),
-                                                                 maxOccurrences,
-                                                                 candidatesCount));
+            results.addViolation(new EdgeCardinalityMaxRuleViolation(context.getRoles().toString(),
+                                                                     context.getEdgeRole(),
+                                                                     maxOccurrences,
+                                                                     candidatesCount,
+                                                                     direction));
         }
         return results;
     }

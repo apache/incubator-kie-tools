@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -49,7 +51,7 @@ import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.violations.DefaultRuleViolations;
 import org.kie.workbench.common.stunner.core.util.UUID;
 
@@ -102,10 +104,10 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         // Check containment rules.
         if (null != parent) {
             final Object parentDef = parent.getContent().getDefinition();
-            final String parentId = clientDefinitionManager.adapters().forDefinition().getId(parentDef);
+            final Set<String> parentLabels = clientDefinitionManager.adapters().forDefinition().getLabels(parentDef);
             final RuleViolations containmentViolations =
                     ruleManager.evaluate(ruleSet,
-                                         RuleContextBuilder.DomainContexts.containment(parentId,
+                                         RuleContextBuilder.DomainContexts.containment(parentLabels,
                                                                                        labels));
             if (!isValid(containmentViolations)) {
                 return false;
@@ -115,14 +117,17 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         final Map<String, Integer> graphLabelCount = GraphUtils.getLabelsCount(canvasHandler.getDiagram().getGraph(),
                                                                                labels);
         final DefaultRuleViolations cardinalityViolations = new DefaultRuleViolations();
-        labels.stream().forEach(role -> {
-            final Integer i = graphLabelCount.get(role);
+        labels.forEach(role -> {
+            final Integer roleCount = Optional.ofNullable(graphLabelCount.get(role)).orElse(0);
             final RuleViolations violations =
                     ruleManager.evaluate(ruleSet,
-                                         RuleContextBuilder.DomainContexts.cardinality(role,
-                                                                                       null != i ? i : 0,
-                                                                                       CardinalityContext.Operation.ADD));
+                                         RuleContextBuilder.DomainContexts.cardinality(Collections.singleton(role),
+                                                                                       roleCount,
+                                                                                       Optional.of(CardinalityContext.Operation.ADD)));
             cardinalityViolations.addViolations(violations);
+        });
+        labels.stream().forEach(role -> {
+
         });
         return isValid(cardinalityViolations);
     }

@@ -22,6 +22,6 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 
 public interface GraphFactory extends ElementFactory<String, DefinitionSet, Graph<DefinitionSet, Node>> {
 
-    double DEFAULT_WIDTH = 1400d;
-    double DEFAULT_HEIGHT = 600d;
+    public double DEFAULT_WIDTH = 1400d;
+    public double DEFAULT_HEIGHT = 600d;
 }

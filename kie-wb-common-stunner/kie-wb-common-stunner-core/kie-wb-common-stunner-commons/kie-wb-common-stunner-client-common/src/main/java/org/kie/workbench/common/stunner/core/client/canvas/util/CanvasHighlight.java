@@ -26,7 +26,6 @@ import org.kie.workbench.common.stunner.core.client.shape.ShapeState;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
-import org.kie.workbench.common.stunner.core.rule.violations.AbstractRuleViolation;
 
 public class CanvasHighlight {
 
@@ -56,13 +55,9 @@ public class CanvasHighlight {
 
     public CanvasHighlight invalid(final Iterable<? extends RuleViolation> violations) {
         violations.forEach(v -> {
-            if (v instanceof AbstractRuleViolation) {
-                final String uuid = ((AbstractRuleViolation) v).getUuid();
-                if (null != uuid) {
-                    applyStateToShape(uuid,
-                                      ShapeState.INVALID);
-                }
-            }
+            final String uuid = v.getUUID();
+            applyStateToShape(uuid,
+                              ShapeState.INVALID);
         });
         getCanvas().draw();
         return this;

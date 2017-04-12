@@ -20,7 +20,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.kie.workbench.common.stunner.client.widgets.notification.Notifications;
+import org.kie.workbench.common.stunner.standalone.client.widgets.Notifications;
 import org.uberfire.client.annotations.WorkbenchContextId;
 import org.uberfire.client.annotations.WorkbenchMenu;
 import org.uberfire.client.annotations.WorkbenchPartTitle;

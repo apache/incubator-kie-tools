@@ -16,24 +16,33 @@
 
 package org.kie.workbench.common.stunner.core.rule.violations;
 
+import java.util.Optional;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
-public class CardinalityMinRuleViolation extends AbstractCardinalityRuleViolation {
+public class CardinalityMinRuleViolation extends AbstractRuleViolation {
 
-    public CardinalityMinRuleViolation(final @MapsTo("target") String target,
-                                       final @MapsTo("candidate") String candidate,
+    private final String candidate;
+    private final Integer restrictedOccurrences;
+    private final Integer currentOccurrences;
+
+    public CardinalityMinRuleViolation(final @MapsTo("candidate") String candidate,
                                        final @MapsTo("restrictedOccurrences") Integer restrictedOccurrences,
                                        final @MapsTo("currentOccurrences") Integer currentOccurrences) {
-        super(target,
-              candidate,
-              restrictedOccurrences,
-              currentOccurrences);
+        this.candidate = candidate;
+        this.restrictedOccurrences = restrictedOccurrences;
+        this.currentOccurrences = currentOccurrences;
+    }
+
+    @Override
+    public Optional<Object[]> getArguments() {
+        return Optional.of(new Object[]{candidate, restrictedOccurrences, currentOccurrences});
     }
 
     @Override
     public String getMessage() {
-        return " Label ['" + target + "'] require a minimum '" + restrictedOccurrences + "' of '" + candidate + "' roles. Found '" + currentOccurrences + "'.";
+        return "The diagram requires a minimum of '" + restrictedOccurrences + "' occurrences for the candidate with roles '" + candidate + "', but only found '" + currentOccurrences + "' occurrences.";
     }
 }

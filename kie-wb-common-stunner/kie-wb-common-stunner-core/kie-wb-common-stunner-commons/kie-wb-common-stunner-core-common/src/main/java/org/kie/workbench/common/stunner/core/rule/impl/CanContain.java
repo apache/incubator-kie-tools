@@ -24,19 +24,19 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 @Portable
 public final class CanContain extends AbstractRule {
 
-    private final String parentId;
+    private final String role;
     private final Set<String> allowedRoles;
 
     public CanContain(final @MapsTo("name") String name,
-                      final @MapsTo("parentId") String parentId,
+                      final @MapsTo("role") String role,
                       final @MapsTo("allowedRoles") Set<String> allowedRoles) {
         super(name);
-        this.parentId = parentId;
+        this.role = role;
         this.allowedRoles = allowedRoles;
     }
 
-    public String getParentId() {
-        return parentId;
+    public String getRole() {
+        return role;
     }
 
     public Set<String> getAllowedRoles() {

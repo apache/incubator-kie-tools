@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.stunner.core.lookup.util;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,8 +50,8 @@ import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.rule.RuleViolations;
 import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.ConnectorCardinalityContext;
-import org.kie.workbench.common.stunner.core.rule.context.RuleContextBuilder;
+import org.kie.workbench.common.stunner.core.rule.context.EdgeCardinalityContext;
+import org.kie.workbench.common.stunner.core.rule.context.impl.RuleContextBuilder;
 import org.kie.workbench.common.stunner.core.rule.impl.CanConnect;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
@@ -71,12 +73,10 @@ public class CommonLookups {
     private final DefinitionLookupManager definitionLookupManager;
     private final RuleManager ruleManager;
     private final RuleLookupManager ruleLookupManager;
-    private final GraphUtils graphUtils;
     private final FactoryManager factoryManager;
 
     protected CommonLookups() {
         this(null,
-             null,
              null,
              null,
              null,
@@ -85,14 +85,12 @@ public class CommonLookups {
 
     @Inject
     public CommonLookups(final DefinitionUtils definitionUtils,
-                         final GraphUtils graphUtils,
                          final RuleManager ruleManager,
                          final DefinitionLookupManager definitionLookupManager,
                          final RuleLookupManager ruleLookupManager,
                          final FactoryManager factoryManager) {
         this.definitionUtils = definitionUtils;
         this.ruleManager = ruleManager;
-        this.graphUtils = graphUtils;
         this.definitionLookupManager = definitionLookupManager;
         this.ruleLookupManager = ruleLookupManager;
         this.factoryManager = factoryManager;
@@ -113,16 +111,19 @@ public class CommonLookups {
                                                                                       page,
                                                                                       pageSize);
             if (null != connectionAllowedEdges && !connectionAllowedEdges.isEmpty()) {
+                final RuleSet ruleSet = getRuleSet(defSetId);
                 connectionAllowedEdges.stream().forEach(allowedEdgeId -> {
                     final int edgeCount = countOutgoingEdges(sourceNode,
                                                              allowedEdgeId);
-                    final RuleViolations oev = ruleManager.evaluate(getRuleSet(defSetId),
-                                                                    RuleContextBuilder.DomainContexts.edgeCardinality(sourceNode.getLabels(),
-                                                                                                                      allowedEdgeId,
-                                                                                                                      edgeCount,
-                                                                                                                      ConnectorCardinalityContext.Direction.OUTGOING,
-                                                                                                                      CardinalityContext.Operation.ADD));
-                    final boolean oeCardinalityAllowed = pass(oev);
+                    final boolean oeCardinalityAllowed = getDefinitionLabels(definition).stream()
+                            .filter(role -> pass(ruleManager.evaluate(ruleSet,
+                                                                      RuleContextBuilder.DomainContexts.edgeCardinality(sourceNode.getLabels(),
+                                                                                                                        allowedEdgeId,
+                                                                                                                        edgeCount,
+                                                                                                                        EdgeCardinalityContext.Direction.OUTGOING,
+                                                                                                                        Optional.of(CardinalityContext.Operation.ADD)))))
+                            .findAny()
+                            .isPresent();
                     log(Level.FINEST,
                         "Outgoing edge cardinality rules evaluation - Result = [" + oeCardinalityAllowed + "]");
                     if (oeCardinalityAllowed) {
@@ -195,6 +196,7 @@ public class CommonLookups {
      * <p>
      * TODO: Handle several result pages.
      */
+    @SuppressWarnings("unchecked")
     public <T> Set<Object> getAllowedTargetDefinitions(final String defSetId,
                                                        final Graph<?, ? extends Node> graph,
                                                        final Node<? extends Definition<T>, ? extends Edge> sourceNode,
@@ -218,8 +220,8 @@ public class CommonLookups {
                                          RuleContextBuilder.DomainContexts.edgeCardinality(sourceNode.getLabels(),
                                                                                            edgeId,
                                                                                            outConnectorsCount,
-                                                                                           ConnectorCardinalityContext.Direction.OUTGOING,
-                                                                                           CardinalityContext.Operation.ADD));
+                                                                                           EdgeCardinalityContext.Direction.OUTGOING,
+                                                                                           Optional.of(CardinalityContext.Operation.ADD)));
             final boolean oeCardinalityAllowed = pass(oev);
             log(Level.FINEST,
                 "Outgoing edge cardinality rules evaluation " +
@@ -261,12 +263,12 @@ public class CommonLookups {
                                         final boolean hasCardinalityViolations = targetDefinitionRoles
                                                 .stream()
                                                 .filter(role -> {
-                                                    final Integer i = graphLabelCount.get(role);
+                                                    final Integer roleCount = Optional.ofNullable(graphLabelCount.get(role)).orElse(0);
                                                     final RuleViolations violations =
                                                             ruleManager.evaluate(ruleSet,
-                                                                                 RuleContextBuilder.DomainContexts.cardinality(role,
-                                                                                                                               null != i ? i : 0,
-                                                                                                                               CardinalityContext.Operation.ADD));
+                                                                                 RuleContextBuilder.DomainContexts.cardinality(Collections.singleton(role),
+                                                                                                                               roleCount,
+                                                                                                                               Optional.of(CardinalityContext.Operation.ADD)));
                                                     return !pass(violations);
                                                 })
                                                 .findFirst()
@@ -277,13 +279,12 @@ public class CommonLookups {
                                         if (!hasCardinalityViolations) {
                                             // Check incoming connector cardinality for each the target node.
                                             final RuleViolations iev =
-
                                                     ruleManager.evaluate(ruleSet,
-                                                                         RuleContextBuilder.DomainContexts.edgeCardinality(targetDefinitionRoles,
+                                                                         RuleContextBuilder.DomainContexts.edgeCardinality(Collections.singleton(defId),
                                                                                                                            edgeId,
                                                                                                                            inConnectorsCount,
-                                                                                                                           ConnectorCardinalityContext.Direction.INCOMING,
-                                                                                                                           CardinalityContext.Operation.ADD));
+                                                                                                                           EdgeCardinalityContext.Direction.INCOMING,
+                                                                                                                           Optional.of(CardinalityContext.Operation.ADD)));
                                             final boolean ieCardinalityAllowed = pass(iev);
                                             log(Level.FINEST,
                                                 "Incoming edge cardinality rules evaluation " +
@@ -350,7 +351,7 @@ public class CommonLookups {
             final Set<String> result = new LinkedHashSet<>();
             for (final Rule rule : rules) {
                 final CanConnect cr = (CanConnect) rule;
-                final String edgeId = cr.getConnectorId();
+                final String edgeId = cr.getRole();
                 result.add(edgeId);
             }
             return result;
@@ -416,14 +417,16 @@ public class CommonLookups {
     private <T> int countIncomingEdges(final Node<? extends Definition<T>, ? extends Edge> sourceNode,
                                        final String edgeId) {
         final List<? extends Edge> edges = sourceNode.getInEdges();
-        return graphUtils.countEdges(edgeId,
+        return GraphUtils.countEdges(getDefinitionManager(),
+                                     edgeId,
                                      edges);
     }
 
     private <T> int countOutgoingEdges(final Node<? extends Definition<T>, ? extends Edge> sourceNode,
                                        final String edgeId) {
         final List<? extends Edge> edges = sourceNode.getOutEdges();
-        return graphUtils.countEdges(edgeId,
+        return GraphUtils.countEdges(getDefinitionManager(),
+                                     edgeId,
                                      edges);
     }
 

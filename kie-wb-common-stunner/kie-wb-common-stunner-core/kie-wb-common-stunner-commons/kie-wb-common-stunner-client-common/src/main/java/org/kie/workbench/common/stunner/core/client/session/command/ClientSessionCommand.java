@@ -15,24 +15,23 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command;
 
-import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.uberfire.mvp.Command;
 
 public interface ClientSessionCommand<S extends ClientSession> {
 
-    interface Callback<T> {
+    interface Callback<V> {
 
-        void onSuccess(final T result);
+        void onSuccess();
 
-        void onError(final ClientRuntimeError error);
+        void onError(final V error);
     }
 
     ClientSessionCommand<S> bind(final S session);
 
     ClientSessionCommand<S> listen(final Command statusCallback);
 
-    <T> void execute(final Callback<T> callback);
+    <V> void execute(final Callback<V> callback);
 
     boolean isEnabled();
 

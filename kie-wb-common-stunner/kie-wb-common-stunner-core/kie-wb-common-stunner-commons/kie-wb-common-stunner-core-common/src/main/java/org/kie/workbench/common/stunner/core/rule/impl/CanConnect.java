@@ -56,19 +56,19 @@ public final class CanConnect extends AbstractRule {
         }
     }
 
-    private final String connectorId;
+    private final String role;
     private final List<PermittedConnection> permittedConnections;
 
     public CanConnect(final @MapsTo("name") String name,
-                      final @MapsTo("connectorId") String connectorId,
+                      final @MapsTo("role") String role,
                       final @MapsTo("permittedConnections") List<PermittedConnection> permittedConnections) {
         super(name);
-        this.connectorId = connectorId;
+        this.role = role;
         this.permittedConnections = permittedConnections;
     }
 
-    public String getConnectorId() {
-        return connectorId;
+    public String getRole() {
+        return role;
     }
 
     public List<CanConnect.PermittedConnection> getPermittedConnections() {

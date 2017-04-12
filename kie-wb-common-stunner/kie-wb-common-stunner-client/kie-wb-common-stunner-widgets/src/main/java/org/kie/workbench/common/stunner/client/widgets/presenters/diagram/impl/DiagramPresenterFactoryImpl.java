@@ -28,7 +28,6 @@ import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasFactory;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.CanvasValidationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.connection.ConnectionAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.containment.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.docking.DockingAcceptorControl;
@@ -80,13 +79,11 @@ public class DiagramPresenterFactoryImpl implements DiagramPresenterFactory<Diag
     public DiagramEditor<Diagram, ?> newEditor(final Diagram diagram) {
         final DiagramViewer<Diagram, AbstractCanvasHandler> viewer = (DiagramViewer<Diagram, AbstractCanvasHandler>) newViewer(diagram);
         final CanvasFactory<AbstractCanvas, AbstractCanvasHandler> canvasFactory = shapeManager.getCanvasFactory(diagram);
-        final CanvasValidationControl<AbstractCanvasHandler> validationControl = canvasFactory.newControl(CanvasValidationControl.class);
         final ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl = canvasFactory.newControl(ConnectionAcceptorControl.class);
         final ContainmentAcceptorControl<AbstractCanvasHandler> containmentAcceptorControl = canvasFactory.newControl(ContainmentAcceptorControl.class);
         final DockingAcceptorControl<AbstractCanvasHandler> dockingAcceptorControl = canvasFactory.newControl(DockingAcceptorControl.class);
         return new DiagramEditorImpl<>(viewer,
                                        commandManagerInstances.get(),
-                                       validationControl,
                                        connectionAcceptorControl,
                                        containmentAcceptorControl,
                                        dockingAcceptorControl);

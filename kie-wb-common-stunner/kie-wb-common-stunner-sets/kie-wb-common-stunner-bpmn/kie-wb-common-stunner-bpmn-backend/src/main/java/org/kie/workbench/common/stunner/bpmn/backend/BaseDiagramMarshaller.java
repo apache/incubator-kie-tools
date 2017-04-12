@@ -52,7 +52,6 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
-import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,13 +69,11 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
     private final GraphCommandFactory commandFactory;
 
     protected final DefinitionManager definitionManager;
-    protected final GraphUtils graphUtils;
     protected final OryxManager oryxManager;
 
     public BaseDiagramMarshaller(final XMLEncoderDiagramMetadataMarshaller diagramMetadataMarshaller,
                                  final GraphObjectBuilderFactory bpmnGraphBuilderFactory,
                                  final DefinitionManager definitionManager,
-                                 final GraphUtils graphUtils,
                                  final GraphIndexBuilder<?> indexBuilder,
                                  final OryxManager oryxManager,
                                  final FactoryManager factoryManager,
@@ -86,7 +83,6 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
         this.diagramMetadataMarshaller = diagramMetadataMarshaller;
         this.bpmnGraphBuilderFactory = bpmnGraphBuilderFactory;
         this.definitionManager = definitionManager;
-        this.graphUtils = graphUtils;
         this.indexBuilder = indexBuilder;
         this.oryxManager = oryxManager;
         this.factoryManager = factoryManager;
@@ -101,7 +97,6 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
         LOG.debug("Starting diagram marshalling...");
 
         final Bpmn2Marshaller marshaller = new Bpmn2Marshaller(definitionManager,
-                                                               graphUtils,
                                                                oryxManager);
         String result = null;
         try {
@@ -130,7 +125,6 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
                                                                definitionManager,
                                                                factoryManager,
                                                                rulesManager,
-                                                               graphUtils,
                                                                oryxManager,
                                                                graphCommandManager,
                                                                commandFactory,

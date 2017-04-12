@@ -16,7 +16,12 @@
 
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
+import java.util.Optional;
+
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
+import org.kie.workbench.common.stunner.client.widgets.notification.Notification;
+import org.kie.workbench.common.stunner.client.widgets.notification.NotificationContext;
+import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
 import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.PaletteWidgetFactory;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
@@ -35,9 +40,10 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         implements SessionPresenter<S, H, D> {
 
     private final SessionManager sessionManager;
-    private final ToolbarFactory<S> toolbarFactory;
-    private final PaletteWidgetFactory<DefinitionSetPalette, ?> paletteFactory;
+    private final Optional<ToolbarFactory<S>> toolbarFactory;
+    private final Optional<PaletteWidgetFactory<DefinitionSetPalette, ?>> paletteFactory;
     private final SessionPresenter.View view;
+    private final NotificationsObserver notificationsObserver;
 
     private D diagram;
     private Toolbar<S> toolbar;
@@ -49,33 +55,17 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
 
     @SuppressWarnings("unchecked")
     protected AbstractSessionPresenter(final SessionManager sessionManager,
-                                       final ToolbarFactory<S> toolbarFactory,
-                                       final PaletteWidgetFactory<DefinitionSetPalette, ?> paletteFactory,
-                                       final SessionPresenter.View view) {
+                                       final SessionPresenter.View view,
+                                       final Optional<? extends ToolbarFactory<S>> toolbarFactory,
+                                       final Optional<PaletteWidgetFactory<DefinitionSetPalette, ?>> paletteFactory,
+                                       final NotificationsObserver notificationsObserver) {
         this.sessionManager = sessionManager;
-        this.toolbarFactory = toolbarFactory;
+        this.toolbarFactory = (Optional<ToolbarFactory<S>>) toolbarFactory;
         this.paletteFactory = paletteFactory;
+        this.notificationsObserver = notificationsObserver;
         this.view = view;
         this.hasToolbar = true;
         this.hasPalette = true;
-    }
-
-    protected AbstractSessionPresenter(final SessionManager sessionManager,
-                                       final ToolbarFactory<S> toolbarFactory,
-                                       final SessionPresenter.View view) {
-        this(sessionManager,
-             toolbarFactory,
-             null,
-             view);
-    }
-
-    protected AbstractSessionPresenter(final SessionManager sessionManager,
-                                       final PaletteWidgetFactory<DefinitionSetPalette, ?> paletteFactory,
-                                       final SessionPresenter.View view) {
-        this(sessionManager,
-             null,
-             paletteFactory,
-             view);
     }
 
     protected abstract E getDisplayer();
@@ -85,6 +75,9 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
                      final S session,
                      final SessionPresenterCallback<S, D> callback) {
         this.diagram = diagram;
+        notificationsObserver.onCommandExecutionFailed(this::showNotificationError);
+        notificationsObserver.onValidationSuccess(this::showNotificationMessage);
+        notificationsObserver.onValidationFailed(this::showNotificationError);
         open(session,
              callback);
     }
@@ -238,19 +231,38 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         getView().showLoading(false);
     }
 
+    protected void showError(final ClientRuntimeError error) {
+        if (isDisplayErrors()) {
+            getView().showLoading(false);
+            getView().showError(error.getMessage());
+        }
+    }
+
+    protected void showError(final String error) {
+        if (isDisplayErrors()) {
+            getView().showError(error);
+        }
+    }
+
+    protected void showMessage(final String message) {
+        if (isDisplayNotifications()) {
+            getView().showMessage(message);
+        }
+    }
+
     private Toolbar<S> buildToolbar(final S session) {
-        if (null == toolbarFactory) {
+        if (!toolbarFactory.isPresent()) {
             throw new UnsupportedOperationException("This session presenter with type [" + this.getClass().getName() + "] does not supports the toolbar.");
         }
-        return toolbarFactory.build(session);
+        return toolbarFactory.get().build(session);
     }
 
     private PaletteWidget<DefinitionSetPalette> buildPalette(final S session) {
-        if (null == paletteFactory) {
+        if (!paletteFactory.isPresent()) {
             throw new UnsupportedOperationException("This session presenter with type [" + this.getClass().getName() + "] does not supports the palette.");
         }
         final Diagram diagram = session.getCanvasHandler().getDiagram();
-        return paletteFactory.newPalette(diagram.getMetadata().getShapeSetId(),
+        return paletteFactory.get().newPalette(diagram.getMetadata().getShapeSetId(),
                                          session.getCanvasHandler());
     }
 
@@ -268,22 +280,24 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
         }
     }
 
-    protected void showError(final ClientRuntimeError error) {
-        if (isDisplayErrors()) {
-            getView().showLoading(false);
-            getView().showMessage(error.getMessage());
+    private void showNotificationMessage(final Notification notification) {
+        if (isThisContext(notification)) {
+            showMessage(notification.getMessage());
         }
     }
 
-    protected void showError(final String error) {
-        if (isDisplayErrors()) {
-            getView().showMessage(error);
+    private void showNotificationError(final Notification notification) {
+        if (isThisContext(notification)) {
+            showError(notification.getMessage());
         }
     }
 
-    protected void showMessage(final String message) {
-        if (isDisplayNotifications()) {
-            getView().showMessage(message);
+    private boolean isThisContext(final Notification notification) {
+        try {
+            final NotificationContext context = (NotificationContext) notification.getContext();
+            return null != getDiagram() && getDiagram().getName().equals(context.getDiagramName());
+        } catch (final ClassCastException e) {
+            return false;
         }
     }
 
