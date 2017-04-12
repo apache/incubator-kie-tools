@@ -9,7 +9,6 @@ import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.wires.*;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectionControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresDragControlContext;
 import com.ait.lienzo.client.core.types.*;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
@@ -44,7 +43,7 @@ public class WiresConnectorControlImpl implements WiresConnectorControl {
 
 
     @Override
-    public void dragStart( final Context context ) {
+    public void dragStart( final DragContext context ) {
 
         IControlHandleList handles = m_connector.getPointHandles();
 
@@ -61,15 +60,15 @@ public class WiresConnectorControlImpl implements WiresConnectorControl {
     }
 
     @Override
-    public void dragMove( final Context context ) {
+    public void dragMove( final DragContext context ) {
 
         IControlHandleList handles = m_connector.getPointHandles();
 
         for ( int i = 0, j = 0; i < handles.size(); i++, j += 2 ) {
             IControlHandle h = handles.getHandle( i );
             IPrimitive<?> prim = h.getControl();
-            prim.setX( m_startPoints.get( j ) + context.getX() );
-            prim.setY( m_startPoints.get( j + 1 ) + context.getY() );
+            prim.setX( m_startPoints.get( j ) + context.getDragStartX() );
+            prim.setY( m_startPoints.get( j + 1 ) + context.getDragStartY() );
         }
 
         m_wiresManager.getLayer().getLayer().batch();
@@ -77,7 +76,7 @@ public class WiresConnectorControlImpl implements WiresConnectorControl {
     }
 
     @Override
-    public boolean dragEnd( final Context context ) {
+    public boolean dragEnd( final DragContext context ) {
 
         m_connector.getGroup().setX( 0 ).setY( 0 );
 
@@ -86,13 +85,13 @@ public class WiresConnectorControlImpl implements WiresConnectorControl {
 
         for ( int i = 0, j = 0; i < handles.size(); i++, j += 2 ) {
             Point2D p = points.get( i );
-            p.setX( p.getX() + context.getX() );
-            p.setY( p.getY() + context.getY() );
+            p.setX( p.getX() + context.getDragStartX() );
+            p.setY( p.getY() + context.getDragStartY() );
 
             IControlHandle h = handles.getHandle( i );
             IPrimitive<?> prim = h.getControl();
-            prim.setX( m_startPoints.get( j ) + context.getX() );
-            prim.setY( m_startPoints.get( j + 1 ) + context.getY() );
+            prim.setX( m_startPoints.get( j ) + context.getDragStartX() );
+            prim.setY( m_startPoints.get( j + 1 ) + context.getDragStartY() );
         }
 
         m_connector.getLine().refresh();
@@ -351,7 +350,7 @@ public class WiresConnectorControlImpl implements WiresConnectorControl {
 
         @Override
         public void startDrag( final DragContext dragContext ) {
-            connectionControl.dragStart( buildContext( dragContext ) );
+            connectionControl.dragStart(dragContext);
         }
 
         @Override
@@ -361,12 +360,13 @@ public class WiresConnectorControlImpl implements WiresConnectorControl {
 
         @Override
         public void onNodeDragEnd( final NodeDragEndEvent event ) {
-            connectionControl.dragEnd( buildContext( event.getDragContext() ) );
-        }
-    }
+            final boolean allowed = connectionControl.dragEnd(event.getDragContext());
 
-    private WiresDragControlContext buildContext( DragContext context ) {
-        return new WiresDragControlContext( context.getDx(), context.getDy(), context.getNode() );
+            // Cancel the drag operation if the connection operation is not allowed.
+            if (!allowed) {
+                event.getDragContext().reset();
+            }
+        }
     }
 
     private final class WiresConnectorControlHandler implements NodeMouseExitHandler, NodeMouseEnterHandler, NodeMouseDoubleClickHandler {

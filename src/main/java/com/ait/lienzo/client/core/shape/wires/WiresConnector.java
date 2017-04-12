@@ -20,7 +20,6 @@ package com.ait.lienzo.client.core.shape.wires;
 import com.ait.lienzo.client.core.event.*;
 import com.ait.lienzo.client.core.shape.*;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
-import com.ait.lienzo.client.core.shape.wires.handlers.WiresDragControlContext;
 import com.ait.lienzo.shared.core.types.ArrowEnd;
 import com.ait.lienzo.shared.core.types.EventPropagationMode;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
@@ -277,25 +276,21 @@ public class WiresConnector
         @Override
         public void onNodeDragStart(NodeDragStartEvent event)
         {
-            this.m_control.dragStart(buildDragControlContext(event));
+            this.m_control.dragStart(event.getDragContext());
         }
 
         @Override
         public void onNodeDragMove(NodeDragMoveEvent event)
         {
-            this.m_control.dragMove(buildDragControlContext(event));
+            this.m_control.dragMove(event.getDragContext());
         }
 
         @Override
         public void onNodeDragEnd(NodeDragEndEvent event)
         {
-            this.m_control.dragEnd(buildDragControlContext(event));
+            this.m_control.dragEnd(event.getDragContext());
         }
 
-        private WiresDragControlContext buildDragControlContext(final AbstractNodeDragEvent<?> event)
-        {
-            return new WiresDragControlContext(event.getDragContext().getDx(), event.getDragContext().getDy(), event.getSource());
-        }
 
         @Override
         public void onNodeMouseClick(NodeMouseClickEvent event)
