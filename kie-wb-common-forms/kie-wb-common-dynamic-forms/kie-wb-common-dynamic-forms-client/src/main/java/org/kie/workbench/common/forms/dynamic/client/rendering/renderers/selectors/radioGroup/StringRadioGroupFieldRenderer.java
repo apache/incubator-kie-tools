@@ -73,6 +73,7 @@ public class StringRadioGroupFieldRenderer extends RadioGroupFieldRendererBase<S
             }
             radio.setValue( key.equals( defaultValue ) );
             radio.setFormValue( key );
+            radio.setEnabled(!field.getReadOnly());
             input.add( radio );
         }
     }
