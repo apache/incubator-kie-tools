@@ -28,6 +28,7 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
 import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.subform.widget.SubFormWidget;
 import org.kie.workbench.common.forms.dynamic.client.resources.i18n.FormRenderingConstants;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 
 @Dependent
@@ -41,11 +42,15 @@ public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition> 
     @Override
     public void initInputWidget() {
         container.clear();
-        container.add( new Legend( field.getLabel() ) );
-        container.add( subFormWidget );
-        if ( renderingContext != null && field.getNestedForm() != null ) {
-            FormRenderingContext nestedContext = renderingContext.getCopyFor( field.getNestedForm(), null );
-            subFormWidget.render( nestedContext );
+        container.add(new Legend(field.getLabel()));
+        container.add(subFormWidget);
+        if (renderingContext != null && field.getNestedForm() != null) {
+            FormRenderingContext nestedContext = renderingContext.getCopyFor(field.getNestedForm(),
+                                                                             null);
+            if (field.getReadOnly()) {
+                nestedContext.setRenderMode(RenderMode.READ_ONLY_MODE);
+            }
+            subFormWidget.render(nestedContext);
         }
     }
 
@@ -53,8 +58,8 @@ public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition> 
     protected List<String> getConfigErrors() {
         List<String> configErrors = new ArrayList<>();
 
-        if ( field.getNestedForm() == null || field.getNestedForm().isEmpty() ) {
-            configErrors.add( FormRenderingConstants.SubFormNoForm );
+        if (field.getNestedForm() == null || field.getNestedForm().isEmpty()) {
+            configErrors.add(FormRenderingConstants.SubFormNoForm);
         }
         return configErrors;
     }
@@ -86,7 +91,7 @@ public class SubFormFieldRenderer extends FieldRenderer<SubFormFieldDefinition> 
     }
 
     @Override
-    protected void setReadOnly( boolean readOnly ) {
-        subFormWidget.setReadOnly( readOnly );
+    protected void setReadOnly(boolean readOnly) {
+        subFormWidget.setReadOnly(readOnly);
     }
 }
