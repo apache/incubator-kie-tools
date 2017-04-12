@@ -20,7 +20,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.SelectionChangeEvent;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.kie.workbench.common.widgets.client.widget.KSessionSelector;
 import org.uberfire.backend.vfs.Path;
@@ -28,36 +27,33 @@ import org.uberfire.backend.vfs.Path;
 public class ScenarioKSessionSelector
         implements IsWidget {
 
-    private Scenario         scenario;
+    private Scenario scenario;
     private KSessionSelector selector;
 
     public ScenarioKSessionSelector() {
     }
 
     @Inject
-    public ScenarioKSessionSelector( final KSessionSelector selector ) {
+    public ScenarioKSessionSelector(final KSessionSelector selector) {
         this.selector = selector;
-        selector.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
-            @Override
-            public void onSelectionChange( final SelectionChangeEvent selectionChangeEvent ) {
-                scenario.getKSessions().clear();
-                scenario.getKSessions().add( selector.getSelectedKSessionName() );
-            }
-        } );
+        selector.setSelectionChangeHandler(() -> {
+            scenario.getKSessions().clear();
+            scenario.getKSessions().add(selector.getSelectedKSessionName());
+        });
     }
 
-    public void init( Path path,
-                      Scenario scenario ) {
+    public void init(final Path path,
+                     final Scenario scenario) {
         this.scenario = scenario;
-        selector.init( path,
-                       getKSessionName() );
+        selector.init(path,
+                      getKSessionName());
     }
 
     private String getKSessionName() {
-        if ( scenario.getKSessions().isEmpty() ) {
+        if (scenario.getKSessions().isEmpty()) {
             return null;
         } else {
-            return scenario.getKSessions().get( 0 );
+            return scenario.getKSessions().get(0);
         }
     }
 
