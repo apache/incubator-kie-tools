@@ -28,7 +28,7 @@ import static com.ait.lienzo.client.core.shape.wires.IControlHandle.ControlHandl
 
 public class WiresConnector
 {
-    interface WiresConnectorHandler extends NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler, NodeMouseExitHandler, NodeMouseEnterHandler, NodeMouseClickHandler, NodeMouseDoubleClickHandler
+    interface WiresConnectorHandler extends NodeDragStartHandler, NodeDragMoveHandler, NodeDragEndHandler, NodeMouseClickHandler, NodeMouseDoubleClickHandler
     {
 
         WiresConnectorControl getControl();
@@ -262,15 +262,12 @@ public class WiresConnector
 
             m_connector.m_HandlerRegistrationManager = new HandlerRegistrationManager();
 
-            m_connector.m_HandlerRegistrationManager.register(m_connector.getLine().addNodeMouseEnterHandler(this));
-            m_connector.m_HandlerRegistrationManager.register(m_connector.getLine().addNodeMouseExitHandler(this));
             m_connector.m_HandlerRegistrationManager.register(m_connector.getLine().addNodeMouseClickHandler(this));
-            m_connector.m_HandlerRegistrationManager.register(m_connector.getHead().addNodeMouseEnterHandler(this));
-            m_connector.m_HandlerRegistrationManager.register(m_connector.getHead().addNodeMouseExitHandler(this));
+            m_connector.m_HandlerRegistrationManager.register(m_connector.getLine().addNodeMouseDoubleClickHandler(this));
             m_connector.m_HandlerRegistrationManager.register(m_connector.getHead().addNodeMouseClickHandler(this));
-            m_connector.m_HandlerRegistrationManager.register(m_connector.getTail().addNodeMouseEnterHandler(this));
-            m_connector.m_HandlerRegistrationManager.register(m_connector.getTail().addNodeMouseExitHandler(this));
+            m_connector.m_HandlerRegistrationManager.register(m_connector.getHead().addNodeMouseDoubleClickHandler(this));
             m_connector.m_HandlerRegistrationManager.register(m_connector.getTail().addNodeMouseClickHandler(this));
+            m_connector.m_HandlerRegistrationManager.register(m_connector.getTail().addNodeMouseDoubleClickHandler(this));
         }
 
         @Override
@@ -295,9 +292,14 @@ public class WiresConnector
         @Override
         public void onNodeMouseClick(NodeMouseClickEvent event)
         {
-            if (event.isShiftKeyDown())
+
+            if (m_connector.getPointHandles().isVisible())
             {
-                this.m_control.addControlPoint(event.getX(), event.getY());
+                this.m_control.hideControlPoints();
+            }
+            else if (((Node<?> ) event.getSource()).getParent() == m_connector.getGroup() )
+            {
+                this.m_control.showControlPoints();
             }
         }
 
@@ -305,22 +307,10 @@ public class WiresConnector
         public void onNodeMouseDoubleClick(NodeMouseDoubleClickEvent event)
         {
 
-            this.m_control.destroyControlPoint(event.getSource());
-        }
-
-        @Override
-        public void onNodeMouseEnter(NodeMouseEnterEvent event)
-        {
-            if (((Node<?> ) event.getSource()).getParent() == m_connector.getGroup() && event.isShiftKeyDown())
+            if (m_connector.getPointHandles().isVisible())
             {
-                this.m_control.showControlPoints();
+                this.m_control.addControlPoint(event.getX(), event.getY());
             }
-        }
-
-        @Override
-        public void onNodeMouseExit(NodeMouseExitEvent event)
-        {
-            this.m_control.hideControlPoints();
         }
 
         public WiresConnectorControl getControl()

@@ -1,15 +1,33 @@
 package com.ait.lienzo.client.core.shape.wires.handlers.impl;
 
 import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.event.*;
+import com.ait.lienzo.client.core.event.NodeDragEndEvent;
+import com.ait.lienzo.client.core.event.NodeDragEndHandler;
+import com.ait.lienzo.client.core.event.NodeMouseDoubleClickEvent;
+import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
+import com.ait.lienzo.client.core.event.NodeMouseEnterEvent;
+import com.ait.lienzo.client.core.event.NodeMouseEnterHandler;
+import com.ait.lienzo.client.core.event.NodeMouseExitEvent;
+import com.ait.lienzo.client.core.event.NodeMouseExitHandler;
 import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Shape;
-import com.ait.lienzo.client.core.shape.wires.*;
+import com.ait.lienzo.client.core.shape.wires.BackingColorMapUtils;
+import com.ait.lienzo.client.core.shape.wires.IControlHandle;
+import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
+import com.ait.lienzo.client.core.shape.wires.MagnetManager;
+import com.ait.lienzo.client.core.shape.wires.WiresConnector;
+import com.ait.lienzo.client.core.shape.wires.WiresManager;
+import com.ait.lienzo.client.core.shape.wires.WiresUtils;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectionControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectorControl;
-import com.ait.lienzo.client.core.types.*;
+import com.ait.lienzo.client.core.types.BoundingBox;
+import com.ait.lienzo.client.core.types.ImageData;
+import com.ait.lienzo.client.core.types.PathPartEntryJSO;
+import com.ait.lienzo.client.core.types.PathPartList;
+import com.ait.lienzo.client.core.types.Point2D;
+import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.client.widget.DragConstraintEnforcer;
 import com.ait.lienzo.client.widget.DragContext;
@@ -17,7 +35,6 @@ import com.ait.tooling.nativetools.client.collection.NFastDoubleArray;
 import com.ait.tooling.nativetools.client.collection.NFastDoubleArrayJSO;
 import com.ait.tooling.nativetools.client.collection.NFastStringMap;
 import com.ait.tooling.nativetools.client.event.HandlerRegistrationManager;
-import com.google.gwt.user.client.Timer;
 
 public class WiresConnectorControlImpl implements WiresConnectorControl {
 
@@ -25,22 +42,15 @@ public class WiresConnectorControlImpl implements WiresConnectorControl {
 
     private HandlerRegistrationManager m_HandlerRegistrationManager;
 
-    private Timer m_timer;
-
     private WiresManager m_wiresManager;
 
     private NFastDoubleArray m_startPoints;
 
     public WiresConnectorControlImpl( final WiresConnector connector,
                                       final WiresManager wiresManager ) {
-        m_connector = connector;
-        m_wiresManager = wiresManager;
+        this.m_connector = connector;
+        this.m_wiresManager = wiresManager;
     }
-
-    /*
-        ***************** DRAG **********************************
-     */
-
 
     @Override
     public void dragStart( final DragContext context ) {
@@ -177,7 +187,6 @@ public class WiresConnectorControlImpl implements WiresConnectorControl {
     public void showControlPoints() {
 
         if ( this.m_HandlerRegistrationManager == null ) {
-            cancelTimer();
             showPointHandles();
         }
 
@@ -187,9 +196,15 @@ public class WiresConnectorControlImpl implements WiresConnectorControl {
     public void hideControlPoints() {
 
         if ( m_HandlerRegistrationManager != null ) {
-            createHideTimer();
+            m_HandlerRegistrationManager.destroy();
         }
+        m_HandlerRegistrationManager = null;
+        m_connector.getPointHandles().hide();
 
+    }
+
+    public HandlerRegistrationManager getM_HandlerRegistrationManager() {
+        return m_HandlerRegistrationManager;
     }
 
     private int getIndexForSelectedSegment( final int mouseX,
@@ -333,9 +348,7 @@ public class WiresConnectorControlImpl implements WiresConnectorControl {
 
         for ( IControlHandle handle : m_connector.getPointHandles() ) {
             Shape<?> shape = handle.getControl().asShape();
-            m_HandlerRegistrationManager.register( shape.addNodeMouseEnterHandler( controlPointsHandler ) );
-            m_HandlerRegistrationManager.register( shape.addNodeMouseExitHandler( controlPointsHandler ) );
-            m_HandlerRegistrationManager.register( shape.addNodeMouseDoubleClickHandler( controlPointsHandler ) );
+            m_HandlerRegistrationManager.register( shape.addNodeMouseDoubleClickHandler( controlPointsHandler) );
         }
 
     }
@@ -369,54 +382,13 @@ public class WiresConnectorControlImpl implements WiresConnectorControl {
         }
     }
 
-    private final class WiresConnectorControlHandler implements NodeMouseExitHandler, NodeMouseEnterHandler, NodeMouseDoubleClickHandler {
+    private final class WiresConnectorControlHandler implements NodeMouseDoubleClickHandler {
 
         @Override
         public void onNodeMouseDoubleClick( final NodeMouseDoubleClickEvent event ) {
             WiresConnectorControlImpl.this.destroyControlPoint( event.getSource() );
         }
 
-        @Override
-        public void onNodeMouseEnter( final NodeMouseEnterEvent event ) {
-
-            WiresConnectorControlImpl.this.cancelTimer();
-
-            if (((Node<?> ) event.getSource()).getParent() == m_connector.getGroup() && event.isShiftKeyDown())
-            {
-                WiresConnectorControlImpl.this.showControlPoints();
-            }
-
-        }
-
-        @Override
-        public void onNodeMouseExit( final NodeMouseExitEvent event ) {
-
-            WiresConnectorControlImpl.this.hideControlPoints();
-
-        }
-
     }
 
-    private void cancelTimer() {
-        if ( m_timer != null ) {
-            m_timer.cancel();
-            m_timer = null;
-        }
-    }
-
-    private void createHideTimer() {
-        if ( m_timer == null ) {
-            m_timer = new Timer() {
-                @Override
-                public void run() {
-                    if ( m_HandlerRegistrationManager != null ) {
-                        m_HandlerRegistrationManager.destroy();
-                    }
-                    m_HandlerRegistrationManager = null;
-                    m_connector.getPointHandles().hide();
-                }
-            };
-            m_timer.schedule( 1000 );
-        }
-    }
 }
