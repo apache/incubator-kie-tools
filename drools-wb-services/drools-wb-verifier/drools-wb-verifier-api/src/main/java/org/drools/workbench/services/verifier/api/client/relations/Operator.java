@@ -65,6 +65,10 @@ public enum Operator {
         this.operator = operator;
     }
 
+    public boolean isRangeOperator() {
+        return this == GREATER_THAN || this == GREATER_OR_EQUAL ||this == LESS_THAN ||this == LESS_OR_EQUAL;
+    }
+
     public static Operator resolve( final String operator ) {
         if ( operator.equals( "== null" ) ) {
             return EQUALS;

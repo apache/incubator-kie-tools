@@ -25,7 +25,7 @@ import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.uberfire.commons.validation.PortablePreconditions;
 
-abstract class CheckBase
+public abstract class CheckBase
         implements Check {
 
     protected final AnalyzerConfiguration configuration;

@@ -61,8 +61,9 @@ public class Issue {
         return debugMessage;
     }
 
-    public void setDebugMessage( final String debugMessage ) {
+    public Issue setDebugMessage( final String debugMessage ) {
         this.debugMessage = debugMessage;
+        return this;
     }
 
     @Override

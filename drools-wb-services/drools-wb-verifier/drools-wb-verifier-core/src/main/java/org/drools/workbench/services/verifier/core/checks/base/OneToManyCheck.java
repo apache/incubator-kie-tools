@@ -16,20 +16,21 @@
 
 package org.drools.workbench.services.verifier.core.checks.base;
 
+import java.util.function.Predicate;
+
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.maps.InspectorList;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
-import org.drools.workbench.services.verifier.core.cache.RuleInspectorCache;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
 
 public abstract class OneToManyCheck
         extends SingleCheck {
 
     private final InspectorList<RuleInspector> ruleInspectors;
-    private RuleInspectorCache.Filter filter;
+    private Predicate<RuleInspector> filter;
 
     public OneToManyCheck( final RuleInspector ruleInspector,
-                           final RuleInspectorCache.Filter filter,
+                           final Predicate<RuleInspector> filter,
                            final AnalyzerConfiguration configuration,
                            final CheckType checkType ) {
         this( ruleInspector,
@@ -57,10 +58,7 @@ public abstract class OneToManyCheck
 
     public InspectorList<RuleInspector> getOtherRows() {
         ruleInspectors.clear();
-
-        ruleInspectors.addAll( ruleInspector.getCache()
-                                       .all( filter ) );
-
+        ruleInspectors.addAll( ruleInspector.getCache().all( filter ) );
         return ruleInspectors;
     }
 }

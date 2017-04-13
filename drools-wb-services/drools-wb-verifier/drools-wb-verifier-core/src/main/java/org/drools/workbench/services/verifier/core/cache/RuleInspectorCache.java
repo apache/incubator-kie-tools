@@ -19,7 +19,10 @@ package org.drools.workbench.services.verifier.core.cache;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
 
 import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerConfiguration;
 import org.drools.workbench.services.verifier.api.client.index.Action;
@@ -30,16 +33,21 @@ import org.drools.workbench.services.verifier.api.client.index.Fields;
 import org.drools.workbench.services.verifier.api.client.index.Index;
 import org.drools.workbench.services.verifier.api.client.index.Rule;
 import org.drools.workbench.services.verifier.api.client.index.matchers.UUIDMatcher;
+import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
+import org.drools.workbench.services.verifier.core.checks.SingleRangeCheck;
+import org.drools.workbench.services.verifier.core.checks.base.Check;
 import org.drools.workbench.services.verifier.core.checks.base.CheckFactory;
 import org.drools.workbench.services.verifier.core.checks.base.CheckStorage;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 public class RuleInspectorCache {
 
     private final Map<Rule, RuleInspector> ruleInspectors = new HashMap<>();
+    private final Set<Check> generalChecks = new HashSet<>();
     protected final Index index;
     private final CheckStorage checkStorage;
     private final AnalyzerConfiguration configuration;
@@ -60,10 +68,10 @@ public class RuleInspectorCache {
         }
 
         ruleInspectors.clear();
+        generalChecks.clear();
 
         for ( final Rule rule : index.getRules()
-                .where( Rule.uuid()
-                                .any() )
+                .where( Rule.uuid().any() )
                 .select()
                 .all() ) {
             add( new RuleInspector( rule,
@@ -71,6 +79,12 @@ public class RuleInspectorCache {
                                     this,
                                     configuration ) );
         }
+
+        generalChecks.add( new SingleRangeCheck( configuration, ruleInspectors.values() ) );
+    }
+
+    public Set<Check> getGeneralChecks() {
+        return generalChecks;
     }
 
     public void newColumn( final Column column ) {
@@ -82,8 +96,25 @@ public class RuleInspectorCache {
         return ruleInspectors.values();
     }
 
-    public Collection<RuleInspector> all( final Filter filter ) {
-        return all().stream().filter( filter::accept ).collect( toList() );
+    public Set<Issue> getAllIssues() {
+        Set<Issue> issues = new HashSet<>();
+        issues.addAll(
+               all().stream()
+                    .flatMap( inspector -> inspector.getChecks().stream() )
+                    .filter( Check::hasIssues )
+                    .map( Check::getIssue )
+                    .collect( toSet() )
+        );
+        issues.addAll( generalChecks.stream()
+                                    .filter( Check::hasIssues )
+                                    .map( Check::getIssue )
+                                    .collect( toSet() )
+        );
+        return issues;
+    }
+
+    public Collection<RuleInspector> all( Predicate<RuleInspector> filter ) {
+        return all().stream().filter( filter ).collect( toList() );
     }
 
     private void add( final RuleInspector ruleInspector ) {
@@ -191,11 +222,5 @@ public class RuleInspectorCache {
 
     public AnalyzerConfiguration getConfiguration() {
         return configuration;
-    }
-
-    public interface Filter {
-
-        boolean accept( final RuleInspector ruleInspector );
-
     }
 }

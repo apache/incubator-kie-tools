@@ -23,7 +23,6 @@ import org.drools.workbench.services.verifier.api.client.configuration.AnalyzerC
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
-import org.drools.workbench.services.verifier.core.cache.RuleInspectorCache;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.workbench.services.verifier.core.checks.base.OneToManyCheck;
 
@@ -33,15 +32,9 @@ public class DetectDeficientRowsCheck
     public DetectDeficientRowsCheck( final RuleInspector ruleInspector,
                                      final AnalyzerConfiguration configuration ) {
         super( ruleInspector,
-               new RuleInspectorCache.Filter() {
-                   @Override
-                   public boolean accept( final RuleInspector other ) {
-                       return !ruleInspector.getRule()
-                               .getUuidKey()
-                               .equals( other.getRule()
-                                                .getUuidKey() ) && !other.isEmpty();
-                   }
-               },
+               other -> !ruleInspector.getRule()
+                       .getUuidKey()
+                       .equals( other.getRule().getUuidKey() ) && !other.isEmpty(),
                configuration,
                CheckType.DEFICIENT_ROW );
     }

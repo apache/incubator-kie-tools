@@ -28,11 +28,12 @@ import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.core.main.Analyzer;
 import org.drools.workbench.services.verifier.plugin.client.Coordinate;
 import org.drools.workbench.services.verifier.plugin.client.api.FactTypes;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DecisionTableAnalyzerFromFileTest extends AnalyzerUpdateTestBase {
@@ -88,6 +89,7 @@ public class DecisionTableAnalyzerFromFileTest extends AnalyzerUpdateTestBase {
     }
 
     @Test
+    @Ignore("list of admitted values is in the model and currently not accessible for the analyzer")
     public void testFilePricingLoansGDST() throws
             Exception {
         final String xml = loadResource("Pricing loans.gdst");

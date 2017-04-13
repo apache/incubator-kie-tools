@@ -161,8 +161,10 @@ public class PatternInspector
         final ConditionsInspectorMultiMap conditionsInspector = new ConditionsInspectorMultiMap( configuration );
 
         for ( final FieldInspector fieldInspector : inspectorList ) {
-            conditionsInspector.addAllValues( fieldInspector.getObjectField(),
-                                              fieldInspector.getConditionInspectorList() );
+            if (!fieldInspector.getConditionInspectorList().isEmpty()) {
+                conditionsInspector.addAllValues( fieldInspector.getObjectField(),
+                                                  fieldInspector.getConditionInspectorList() );
+            }
         }
 
         return conditionsInspector;

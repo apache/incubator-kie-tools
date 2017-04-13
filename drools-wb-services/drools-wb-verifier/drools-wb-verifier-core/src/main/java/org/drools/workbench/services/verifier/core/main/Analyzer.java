@@ -26,13 +26,11 @@ import org.drools.workbench.services.verifier.api.client.index.Column;
 import org.drools.workbench.services.verifier.api.client.index.Index;
 import org.drools.workbench.services.verifier.api.client.index.Rule;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
-import org.uberfire.commons.validation.PortablePreconditions;
 import org.drools.workbench.services.verifier.core.cache.RuleInspectorCache;
 import org.drools.workbench.services.verifier.core.cache.inspectors.RuleInspector;
 import org.drools.workbench.services.verifier.core.checks.base.Check;
 import org.drools.workbench.services.verifier.core.checks.base.CheckRunManager;
-
-import static java.util.stream.Collectors.toSet;
+import org.uberfire.commons.validation.PortablePreconditions;
 
 public class Analyzer {
 
@@ -76,14 +74,11 @@ public class Analyzer {
         for ( final RuleInspector ruleInspector : cache.all() ) {
             checkRunManager.addChecks( ruleInspector.getChecks() );
         }
+        checkRunManager.addChecks( cache.getGeneralChecks() );
     }
 
     private Set<Issue> getIssues() {
-        return cache.all().stream()
-                    .flatMap( inspector -> inspector.getChecks().stream() )
-                    .filter( Check::hasIssues )
-                    .map( Check::getIssue )
-                    .collect( toSet() );
+        return cache.getAllIssues();
     }
 
     public void removeRule( final Integer rowDeleted ) {

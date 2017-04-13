@@ -18,10 +18,12 @@ package org.drools.workbench.services.verifier.webworker.client;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.*;
+import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.assertContains;
+import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.assertDoesNotContain;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DecisionTableAnalyzerRangeCheckTest
@@ -67,6 +69,7 @@ public class DecisionTableAnalyzerRangeCheckTest
     }
 
     @Test
+    @Ignore("list of admitted values is in the model and currently not accessible for the analyzer")
     public void testMissingRangeMissingNotApprovedFromLHS() throws Exception {
         analyzer = analyzerProvider.makeAnalyser()
                 .withPersonApprovedColumn("==")

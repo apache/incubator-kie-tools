@@ -24,7 +24,6 @@ import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
-import org.drools.workbench.services.verifier.api.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.services.verifier.webworker.client.testutil.ExtendedGuidedDecisionTableBuilder;
 import org.drools.workbench.services.verifier.webworker.client.testutil.LimitedGuidedDecisionTableBuilder;
 import org.junit.Test;
@@ -370,7 +369,7 @@ public class DecisionTableAnalyzerTest
                                             "age",
                                             ">")
                 .withActionBRLFragment()
-                .withData(new Object[][]{{1, "description", 0, null}})
+                .withData(new Object[][]{{1, "description", Integer.MIN_VALUE, null}})
                 .buildTable();
 
         fireUpAnalyzer();

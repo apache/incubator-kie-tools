@@ -18,21 +18,19 @@ package org.drools.workbench.services.verifier.webworker.client;
 
 import java.util.HashSet;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTXMLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
-import org.drools.workbench.services.verifier.api.client.resources.i18n.AnalysisConstants;
 import org.drools.workbench.services.verifier.core.main.Analyzer;
 import org.drools.workbench.services.verifier.plugin.client.api.FactTypes;
-import org.drools.workbench.services.verifier.webworker.client.testutil.AnalyzerProvider;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.*;
+import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.assertOnlyContains;
+import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.loadResource;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class RangeCheckFromFileTest extends AnalyzerUpdateTestBase {
@@ -58,6 +56,7 @@ public class RangeCheckFromFileTest extends AnalyzerUpdateTestBase {
     }
 
     @Test
+    @Ignore("list of admitted values is in the model and currently not accessible for the analyzer")
     public void testFileExtraDays() throws
             Exception {
         final String xml = loadResource("Extra 5 days.gdst");

@@ -35,7 +35,6 @@ import org.drools.workbench.services.verifier.core.checks.DetectRedundantActionF
 import org.drools.workbench.services.verifier.core.checks.DetectRedundantActionValueCheck;
 import org.drools.workbench.services.verifier.core.checks.DetectRedundantConditionsCheck;
 import org.drools.workbench.services.verifier.core.checks.DetectRedundantRowsCheck;
-import org.drools.workbench.services.verifier.core.checks.RangeCheck;
 import org.drools.workbench.services.verifier.core.checks.SingleHitCheck;
 import org.uberfire.commons.validation.PortablePreconditions;
 
@@ -67,8 +66,6 @@ public class CheckFactory {
                                                                        configuration  ),
                                       new DetectDeficientRowsCheck( ruleInspector,
                                                      configuration ),
-                                      new RangeCheck( ruleInspector,
-                                                      configuration ),
                                       new DetectRedundantActionFactFieldCheck( ruleInspector,
                                                                                configuration  ),
                                       new DetectRedundantActionValueCheck( ruleInspector,

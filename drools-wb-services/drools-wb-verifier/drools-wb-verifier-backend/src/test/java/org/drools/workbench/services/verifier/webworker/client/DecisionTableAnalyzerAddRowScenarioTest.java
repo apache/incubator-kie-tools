@@ -39,7 +39,7 @@ public class DecisionTableAnalyzerAddRowScenarioTest
                 .withPersonAgeColumn(">")
                 .withPersonApprovedActionSetField()
                 .withData(DataBuilderProvider
-                                  .row(0,
+                                  .row(Integer.MIN_VALUE,
                                        true)
                                   .end())
                 .buildTable();

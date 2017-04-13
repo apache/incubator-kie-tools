@@ -18,17 +18,17 @@ package org.drools.workbench.services.verifier.webworker.client;
 
 import java.util.HashSet;
 
-import org.drools.workbench.services.verifier.api.client.index.DataType;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.drools.workbench.services.verifier.api.client.index.DataType;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
 import org.drools.workbench.services.verifier.plugin.client.api.FactTypes;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.assertContains;
 import static org.drools.workbench.services.verifier.webworker.client.testutil.TestUtil.assertOnlyContains;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpdateTestBase {
@@ -177,7 +177,6 @@ public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpd
                        3);
     }
 
-    @Ignore
     @Test
     public void testSubsumptionAndRedundancyMultipleFields() throws Exception {
         analyze("subsumptionAndRedundancyMultipleFields.gdst");
@@ -226,7 +225,6 @@ public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpd
                        4);
     }
 
-    @Ignore
     @Test
     public void testSubsumptionAndMissingAction() throws Exception {
         analyze("subsumptionAndMissingAction.gdst");
@@ -268,7 +266,6 @@ public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpd
                        4);
     }
 
-    @Ignore
     @Test
     public void testRedundancyAndConflictsMultipleFields() throws Exception {
         analyze("redundancyAndConflictsMultipleFields.gdst");
@@ -304,5 +301,12 @@ public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpd
                            RULE_HAS_NO_RESTRICTIONS_AND_WILL_ALWAYS_FIRE,
                            RULE_HAS_NO_ACTION,
                            SINGLE_HIT_LOST);
+    }
+
+    @Test
+    public void testGapAnalysis() throws Exception {
+        // GUVNOR-2990
+        analyze("gapAnalysis.gdst");
+        assertTrue( analyzerProvider.getAnalysisReport().isEmpty() );
     }
 }
