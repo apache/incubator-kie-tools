@@ -21,7 +21,10 @@ import javax.inject.Inject;
 
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.screens.defaulteditor.client.editor.resources.i18n.GuvnorDefaultEditorConstants;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
@@ -29,9 +32,9 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.commons.data.Pair;
+import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.core.client.editors.defaulteditor.DefaultEditorNewFileUpload;
-import org.uberfire.mvp.Command;
 import org.uberfire.workbench.type.AnyResourceTypeDefinition;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
@@ -43,6 +46,7 @@ public class NewFileUploader
     private DefaultEditorNewFileUpload options;
     private AnyResourceTypeDefinition resourceType;
     private BusyIndicatorView busyIndicatorView;
+    private Caller<KieProjectService> projectService;
 
     public NewFileUploader() {
         //Zero-argument constructor for CDI proxies
@@ -52,11 +56,13 @@ public class NewFileUploader
     public NewFileUploader( final PlaceManager placeManager,
                             final DefaultEditorNewFileUpload options,
                             final AnyResourceTypeDefinition resourceType,
-                            final BusyIndicatorView busyIndicatorView ) {
+                            final BusyIndicatorView busyIndicatorView,
+                            final Caller<KieProjectService> projectService ) {
         this.placeManager = placeManager;
         this.options = options;
         this.resourceType = resourceType;
         this.busyIndicatorView = busyIndicatorView;
+        this.projectService = projectService;
     }
 
     @PostConstruct
@@ -89,50 +95,49 @@ public class NewFileUploader
         //See https://bugzilla.redhat.com/show_bug.cgi?id=1091204
         //If the User-provided file name has an extension use that; otherwise use the same extension as the original (OS FileSystem) extension
         String targetFileName;
+        String extension;
         final String originalFileName = options.getFormFileName();
         final String providedFileName = baseFileName;
         if ( providedFileName.contains( "." ) ) {
             targetFileName = providedFileName;
+            extension = getExtension( providedFileName );
         } else {
-            targetFileName = providedFileName + getExtension( originalFileName );
+            extension = getExtension( originalFileName );
+            targetFileName = providedFileName + "." + extension;
         }
 
-        final Path path = pkg.getPackageMainResourcesPath();
-        final Path newPath = PathFactory.newPathBasedOn( targetFileName,
-                                                         encode( path.toURI() + "/" + targetFileName ),
-                                                         path );
+        projectService.call( getResolvePathSuccessCallback( targetFileName, presenter ),
+                new HasBusyIndicatorDefaultErrorCallback( busyIndicatorView) ).resolveDefaultPath( pkg, extension );
+    }
 
-        options.setFolderPath( pkg.getPackageMainResourcesPath() );
-        options.setFileName( targetFileName );
+    private RemoteCallback<Path> getResolvePathSuccessCallback( final String targetFileName,
+                                                                final NewResourcePresenter presenter ) {
+        return path -> {
+            final Path newPath = PathFactory.newPathBasedOn( targetFileName,
+                    encode( path.toURI( ) + "/" + targetFileName ),
+                    path );
 
-        options.upload( new Command() {
+            options.setFolderPath( path );
+            options.setFileName( targetFileName );
 
-                            @Override
-                            public void execute() {
-                                busyIndicatorView.hideBusyIndicator();
-                                presenter.complete();
-                                notifySuccess();
-                                newResourceSuccessEvent.fire( new NewResourceSuccessEvent( path ) );
-                                placeManager.goTo( newPath );
-                            }
-
-                        },
-                        new Command() {
-
-                            @Override
-                            public void execute() {
-                                busyIndicatorView.hideBusyIndicator();
-                            }
-                        } );
+            options.upload( ( ) -> {
+                        busyIndicatorView.hideBusyIndicator( );
+                        presenter.complete( );
+                        notifySuccess( );
+                        newResourceSuccessEvent.fire( new NewResourceSuccessEvent( path ) );
+                        placeManager.goTo( newPath );
+                    },
+                    ( ) -> busyIndicatorView.hideBusyIndicator( ) );
+        };
     }
 
     String encode( final String uri ) {
         return URL.encode( uri );
     }
 
-    private String getExtension( final String originalFileName ) {
-        if ( originalFileName.contains( "." ) ) {
-            return "." + originalFileName.substring( originalFileName.lastIndexOf( "." ) + 1 );
+    private String getExtension( final String fileName ) {
+        if ( fileName.contains( "." ) ) {
+            return fileName.substring( fileName.lastIndexOf( "." ) + 1 );
         }
         return "";
     }

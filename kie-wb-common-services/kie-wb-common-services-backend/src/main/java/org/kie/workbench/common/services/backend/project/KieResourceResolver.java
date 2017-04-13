@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.services.backend.project;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.guvnor.common.services.backend.exceptions.ExceptionUtilities;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
+import org.guvnor.common.services.project.backend.server.ProjectResourcePathResolver;
 import org.guvnor.common.services.project.backend.server.ResourceResolver;
 import org.guvnor.common.services.project.model.POM;
 import org.guvnor.common.services.project.model.Project;
@@ -52,12 +54,14 @@ public class KieResourceResolver
                                 final ConfigurationService configurationService,
                                 final CommentedOptionFactory commentedOptionFactory,
                                 final BackwardCompatibleUtil backward,
-                                final KModuleService kModuleService ) {
+                                final KModuleService kModuleService,
+                                final Instance<ProjectResourcePathResolver> resourcePathResolversInstance ) {
         super( ioService,
                pomService,
                configurationService,
                commentedOptionFactory,
-               backward );
+               backward,
+               resourcePathResolversInstance );
         this.kModuleService = kModuleService;
     }
 

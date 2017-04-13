@@ -38,6 +38,7 @@ import org.guvnor.common.services.project.backend.server.POMServiceImpl;
 import org.guvnor.common.services.project.backend.server.ProjectConfigurationContentHandler;
 import org.guvnor.common.services.project.backend.server.ProjectRepositoriesContentHandler;
 import org.guvnor.common.services.project.backend.server.ProjectRepositoryResolverImpl;
+import org.guvnor.common.services.project.backend.server.ProjectResourcePathResolver;
 import org.guvnor.common.services.project.backend.server.utils.POMContentHandler;
 import org.guvnor.common.services.project.builder.events.InvalidateDMOProjectCacheEvent;
 import org.guvnor.common.services.project.builder.service.BuildService;
@@ -103,6 +104,7 @@ import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.services.shared.project.ProjectImportsService;
 import org.kie.workbench.common.services.shared.whitelist.PackageNameWhiteListService;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.backend.server.io.ConfigIOServiceProducer;
 import org.uberfire.backend.server.util.Paths;
@@ -133,6 +135,9 @@ public class DataModelServiceConstructorTest {
     private SimpleFileSystemProvider fs = new SimpleFileSystemProvider();
 
     private ResourceType REPOSITORY_TYPE = Repository.RESOURCE_TYPE;
+
+    @Mock
+    private Instance<ProjectResourcePathResolver > resourcePathResolversInstance;
 
     private class HackedKModuleServiceImpl extends KModuleServiceImpl {
 
@@ -292,7 +297,8 @@ public class DataModelServiceConstructorTest {
                                                                        configurationService,
                                                                        commentedOptionFactory,
                                                                        backward,
-                                                                       kModuleService) {
+                                                                       kModuleService,
+                                                                       resourcePathResolversInstance ) {
             @Override
             protected void addSecurityGroups(final KieProject project) {
                 //Do nothing. This test demonstrating DMO usage without WELD does not use permissions.

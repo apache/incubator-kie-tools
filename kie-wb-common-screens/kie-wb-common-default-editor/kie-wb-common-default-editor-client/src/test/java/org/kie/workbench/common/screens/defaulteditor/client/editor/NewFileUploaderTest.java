@@ -23,6 +23,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.handlers.NewResourceSuccessEvent;
 import org.mockito.ArgumentCaptor;
@@ -31,6 +32,7 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
 import org.uberfire.ext.widgets.core.client.editors.defaulteditor.DefaultEditorNewFileUpload;
+import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -76,6 +78,9 @@ public class NewFileUploaderTest {
         }
     };
 
+    @Mock
+    private KieProjectService projectService;
+
     private NewFileUploader uploader;
 
     @Before
@@ -83,7 +88,8 @@ public class NewFileUploaderTest {
         uploader = new NewFileUploader( placeManager,
                                         options,
                                         resourceType,
-                                        busyIndicatorView ) {
+                                        busyIndicatorView,
+                                        new CallerMock<>( projectService ) ) {
             {
                 super.notificationEvent = mockNotificationEvent;
                 super.newResourceSuccessEvent = newResourceSuccessEventMock;
@@ -95,7 +101,7 @@ public class NewFileUploaderTest {
                 return uri;
             }
         };
-        when( pkg.getPackageMainResourcesPath() ).thenReturn( pkgResourcesPath );
+        when( projectService.resolveDefaultPath( pkg, "txt" ) ).thenReturn( pkgResourcesPath );
         when( pkgResourcesPath.toURI() ).thenReturn( "default://p0/src/main/resources" );
         when( options.getFormFileName() ).thenReturn( "file.txt" );
     }
@@ -106,6 +112,8 @@ public class NewFileUploaderTest {
                          "file.txt",
                          presenter );
 
+        verify( projectService,
+                times( 1 ) ).resolveDefaultPath( pkg, "txt" );
         verify( busyIndicatorView,
                 times( 1 ) ).showBusyIndicator( any( String.class ) );
         verify( options,
@@ -121,6 +129,8 @@ public class NewFileUploaderTest {
                          "file",
                          presenter );
 
+        verify( projectService,
+                times( 1 ) ).resolveDefaultPath( pkg, "txt" );
         verify( busyIndicatorView,
                 times( 1 ) ).showBusyIndicator( any( String.class ) );
         verify( options,
@@ -139,6 +149,8 @@ public class NewFileUploaderTest {
                          "file",
                          presenter );
 
+        verify( projectService,
+                times( 1 ) ).resolveDefaultPath( pkg, "txt" );
         verify( busyIndicatorView,
                 times( 1 ) ).showBusyIndicator( any( String.class ) );
         verify( options,
@@ -174,6 +186,8 @@ public class NewFileUploaderTest {
                          "file",
                          presenter );
 
+        verify( projectService,
+                times( 1 ) ).resolveDefaultPath( pkg, "txt" );
         verify( busyIndicatorView,
                 times( 1 ) ).showBusyIndicator( any( String.class ) );
         verify( options,
