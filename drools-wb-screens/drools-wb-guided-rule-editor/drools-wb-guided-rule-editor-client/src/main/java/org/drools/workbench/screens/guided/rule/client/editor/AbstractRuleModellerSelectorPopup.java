@@ -25,7 +25,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.gwtbootstrap3.client.ui.ListBox;
-import org.gwtbootstrap3.client.ui.ModalBody;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.uberfire.ext.widgets.common.client.common.FormStyleLayout;
@@ -41,7 +40,7 @@ public abstract class AbstractRuleModellerSelectorPopup extends BaseModal {
     protected int MIN_WIDTH = 500;
     protected int MIN_HEIGHT = 200;
 
-    protected boolean onlyShowDSLStatements = ApplicationPreferences.getBooleanPref( "rule-modeller-onlyShowDSLStatements" );
+    protected boolean onlyShowDSLStatements = ApplicationPreferences.getBooleanPref("rule-modeller-onlyShowDSLStatements");
 
     protected final RuleModel model;
     protected final RuleModeller ruleModeller;
@@ -54,18 +53,15 @@ public abstract class AbstractRuleModellerSelectorPopup extends BaseModal {
     protected final ListBox positionCbo = new ListBox();
     protected ListBox choices;
 
-    public AbstractRuleModellerSelectorPopup( final RuleModel model,
-                                              final RuleModeller ruleModeller,
-                                              final Integer position,
-                                              final AsyncPackageDataModelOracle oracle ) {
+    public AbstractRuleModellerSelectorPopup(final RuleModel model,
+                                             final RuleModeller ruleModeller,
+                                             final Integer position,
+                                             final AsyncPackageDataModelOracle oracle) {
         this.model = model;
         this.position = position;
         this.ruleModeller = ruleModeller;
         this.oracle = oracle;
-        this.setTitle( getPopupTitle() );
-        this.add( new ModalBody() {{
-            add( getContent() );
-        }} );
+        this.setTitle(getPopupTitle());
     }
 
     /**
@@ -86,9 +82,9 @@ public abstract class AbstractRuleModellerSelectorPopup extends BaseModal {
      */
     protected void selectSomething() {
         int sel = choices.getSelectedIndex();
-        if ( sel != -1 ) {
-            Command cmd = cmds.get( choices.getValue( sel ) );
-            if ( cmd != null ) {
+        if (sel != -1) {
+            Command cmd = cmds.get(choices.getValue(sel));
+            if (cmd != null) {
                 cmd.execute();
                 ruleModeller.refreshWidget();
             }
@@ -101,7 +97,7 @@ public abstract class AbstractRuleModellerSelectorPopup extends BaseModal {
      */
     protected int getChoicesWidth() {
         int w = Window.getClientWidth() / 4;
-        if ( w < MIN_WIDTH ) {
+        if (w < MIN_WIDTH) {
             w = MIN_WIDTH;
         }
         return w;
@@ -113,10 +109,9 @@ public abstract class AbstractRuleModellerSelectorPopup extends BaseModal {
      */
     protected int getChoicesHeight() {
         int h = Window.getClientHeight() / 2;
-        if ( h < MIN_HEIGHT ) {
+        if (h < MIN_HEIGHT) {
             h = MIN_HEIGHT;
         }
         return h;
     }
-
 }

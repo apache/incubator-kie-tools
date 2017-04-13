@@ -16,6 +16,8 @@
 
 package org.drools.workbench.screens.guided.rule.backend.server;
 
+import javax.enterprise.inject.Instance;
+
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDSLRResourceTypeDefinition;
 import org.guvnor.common.services.backend.util.CommentedOptionFactory;
@@ -69,63 +71,63 @@ public class GuidedRuleEditorCopyHelperTest {
             ">}\n" +
             "end";
 
-    private String[] dsls = new String[]{ "There is a person=Person()" };
+    private String[] dsls = new String[]{"There is a person=Person()"};
 
     @Before
     public void setup() {
-        helper = new GuidedRuleEditorCopyHelper( ioService,
-                                                 drlResourceType,
-                                                 dslrResourceType,
-                                                 utilities,
-                                                 commentedOptionFactory,
-                                                 dataModelService );
-        when( utilities.loadDslsForPackage( any( Path.class ) ) ).thenReturn( dsls );
+        helper = new GuidedRuleEditorCopyHelper(ioService,
+                                                drlResourceType,
+                                                dslrResourceType,
+                                                utilities,
+                                                commentedOptionFactory,
+                                                dataModelService,
+                                                mock(Instance.class));
+        when(utilities.loadDslsForPackage(any(Path.class))).thenReturn(dsls);
     }
 
     @Test
     public void testRDRLFile() {
-        final Path pathSource = mock( Path.class );
-        final Path pathDestination = mock( Path.class );
-        when( pathSource.toURI() ).thenReturn( "default://p0/src/main/resources/MyFile.rdrl" );
-        when( pathDestination.toURI() ).thenReturn( "default://p0/src/main/resources/MyNewFile.rdrl" );
-        when( pathDestination.getFileName() ).thenReturn( "MyNewFile.rdrl" );
-        when( ioService.readAllString( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( drl );
+        final Path pathSource = mock(Path.class);
+        final Path pathDestination = mock(Path.class);
+        when(pathSource.toURI()).thenReturn("default://p0/src/main/resources/MyFile.rdrl");
+        when(pathDestination.toURI()).thenReturn("default://p0/src/main/resources/MyNewFile.rdrl");
+        when(pathDestination.getFileName()).thenReturn("MyNewFile.rdrl");
+        when(ioService.readAllString(any(org.uberfire.java.nio.file.Path.class))).thenReturn(drl);
 
-        helper.postProcess( pathSource,
-                            pathDestination );
+        helper.postProcess(pathSource,
+                           pathDestination);
 
-        final ArgumentCaptor<String> drlArgumentCaptor = ArgumentCaptor.forClass( String.class );
-        verify( ioService,
-                times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
-                                    drlArgumentCaptor.capture(),
-                                    any( CommentedOption.class ) );
+        final ArgumentCaptor<String> drlArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(ioService,
+               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+                               drlArgumentCaptor.capture(),
+                               any(CommentedOption.class));
 
         final String newDrl = drlArgumentCaptor.getValue();
-        assertNotNull( newDrl );
-        assertTrue( newDrl.contains( "MyNewFile" ) );
+        assertNotNull(newDrl);
+        assertTrue(newDrl.contains("MyNewFile"));
     }
 
     @Test
     public void testRDSLRFile() {
-        final Path pathSource = mock( Path.class );
-        final Path pathDestination = mock( Path.class );
-        when( pathSource.toURI() ).thenReturn( "default://p0/src/main/resources/MyFile.rdslr" );
-        when( pathDestination.toURI() ).thenReturn( "default://p0/src/main/resources/MyNewFile.rdslr" );
-        when( pathDestination.getFileName() ).thenReturn( "MyNewFile.rdslr" );
-        when( ioService.readAllString( any( org.uberfire.java.nio.file.Path.class ) ) ).thenReturn( dslr );
+        final Path pathSource = mock(Path.class);
+        final Path pathDestination = mock(Path.class);
+        when(pathSource.toURI()).thenReturn("default://p0/src/main/resources/MyFile.rdslr");
+        when(pathDestination.toURI()).thenReturn("default://p0/src/main/resources/MyNewFile.rdslr");
+        when(pathDestination.getFileName()).thenReturn("MyNewFile.rdslr");
+        when(ioService.readAllString(any(org.uberfire.java.nio.file.Path.class))).thenReturn(dslr);
 
-        helper.postProcess( pathSource,
-                            pathDestination );
+        helper.postProcess(pathSource,
+                           pathDestination);
 
-        final ArgumentCaptor<String> drlArgumentCaptor = ArgumentCaptor.forClass( String.class );
-        verify( ioService,
-                times( 1 ) ).write( any( org.uberfire.java.nio.file.Path.class ),
-                                    drlArgumentCaptor.capture(),
-                                    any( CommentedOption.class ) );
+        final ArgumentCaptor<String> drlArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        verify(ioService,
+               times(1)).write(any(org.uberfire.java.nio.file.Path.class),
+                               drlArgumentCaptor.capture(),
+                               any(CommentedOption.class));
 
         final String newDrl = drlArgumentCaptor.getValue();
-        assertNotNull( newDrl );
-        assertTrue( newDrl.contains( "MyNewFile" ) );
+        assertNotNull(newDrl);
+        assertTrue(newDrl.contains("MyNewFile"));
     }
-
 }

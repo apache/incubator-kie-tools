@@ -16,17 +16,21 @@
 
 package org.drools.workbench.screens.guided.rule.backend.server;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
+import org.drools.workbench.models.commons.backend.rule.RuleModelIActionPersistenceExtension;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
+import org.kie.workbench.common.services.backend.source.BaseSourceService;
 import org.kie.workbench.common.services.shared.source.SourceGenerationFailedException;
 import org.uberfire.backend.server.util.Paths;
 import org.uberfire.java.nio.file.Path;
-import org.kie.workbench.common.services.backend.source.BaseSourceService;
 
 @ApplicationScoped
 public class GuidedRuleDRLSourceService
@@ -38,25 +42,32 @@ public class GuidedRuleDRLSourceService
     @Inject
     private GuidedRuleEditorService guidedRuleEditorService;
 
+    private Collection<RuleModelIActionPersistenceExtension> persistenceExtensions = new ArrayList<>();
+
+    @Inject
+    public GuidedRuleDRLSourceService(final Instance<RuleModelIActionPersistenceExtension> persistenceExtensionInstance) {
+        persistenceExtensionInstance.forEach(persistenceExtensions::add);
+    }
+
     @Override
     public String getPattern() {
         return resourceType.getSuffix();
     }
 
     @Override
-    public String getSource( final Path path,
-                             final RuleModel model ) throws SourceGenerationFailedException {
-        try{
-            return new StringBuilder().append( RuleModelDRLPersistenceImpl.getInstance().marshal( model ) ).toString();
-        }catch (Exception e){
+    public String getSource(final Path path,
+                            final RuleModel model) throws SourceGenerationFailedException {
+        try {
+            return new StringBuilder().append(RuleModelDRLPersistenceImpl.getInstance().marshal(model,
+                                                                                                persistenceExtensions)).toString();
+        } catch (Exception e) {
             throw new SourceGenerationFailedException(e.getMessage());
         }
     }
 
     @Override
-    public String getSource( final Path path ) throws SourceGenerationFailedException {
-        return getSource( path,
-                          guidedRuleEditorService.load( Paths.convert( path ) ) );
+    public String getSource(final Path path) throws SourceGenerationFailedException {
+        return getSource(path,
+                         guidedRuleEditorService.load(Paths.convert(path)));
     }
-
 }

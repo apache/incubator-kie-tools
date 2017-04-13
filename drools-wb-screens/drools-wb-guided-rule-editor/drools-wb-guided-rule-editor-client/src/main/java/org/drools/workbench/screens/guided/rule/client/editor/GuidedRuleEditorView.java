@@ -16,8 +16,11 @@
 
 package org.drools.workbench.screens.guided.rule.client.editor;
 
+import java.util.Collection;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.screens.guided.rule.client.editor.plugin.RuleModellerActionPlugin;
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -28,14 +31,14 @@ public interface GuidedRuleEditorView
         KieEditorView,
         IsWidget {
 
-    void setContent( final RuleModel model,
-                     final AsyncPackageDataModelOracle dataModel,
-                     final Caller<RuleNamesService> ruleNamesService,
-                     final boolean isReadOnly,
-                     final boolean isDSLEnabled );
+    void setContent(final RuleModel model,
+                    final Collection<RuleModellerActionPlugin> actionPlugins,
+                    final AsyncPackageDataModelOracle dataModel,
+                    final Caller<RuleNamesService> ruleNamesService,
+                    final boolean isReadOnly,
+                    final boolean isDSLEnabled);
 
     RuleModel getContent();
 
     void refresh();
-
 }

@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.rule.client.editor;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
@@ -23,6 +24,7 @@ import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.screens.guided.rule.client.editor.plugin.RuleModellerActionPlugin;
 import org.drools.workbench.screens.guided.rule.client.editor.validator.GuidedRuleEditorValidator;
 import org.drools.workbench.screens.guided.rule.client.resources.GuidedRuleEditorResources;
 import org.drools.workbench.screens.guided.rule.client.type.GuidedRuleDRLResourceType;
@@ -32,6 +34,7 @@ import org.drools.workbench.screens.guided.rule.service.GuidedRuleEditorService;
 import org.guvnor.common.services.shared.validation.model.ValidationMessage;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
+import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.services.datamodel.model.PackageDataModelOracleBaselinePayload;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
@@ -93,6 +96,9 @@ public class GuidedRuleEditorPresenter
     @Inject
     private ValidationPopup validationPopup;
 
+    @Inject
+    private ManagedInstance<RuleModellerActionPlugin> actionPluginInstance;
+
     private boolean isDSLEnabled;
 
     private RuleModel model;
@@ -153,7 +159,12 @@ public class GuidedRuleEditorPresenter
 
                 addImportsTab(importsWidget);
 
+                List<RuleModellerActionPlugin> actionPlugins = new ArrayList<>();
+
+                actionPluginInstance.forEach(actionPlugins::add);
+
                 view.setContent(model,
+                                actionPlugins,
                                 oracle,
                                 ruleNamesService,
                                 isReadOnly,

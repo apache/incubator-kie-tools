@@ -16,14 +16,18 @@
 
 package org.drools.workbench.screens.guided.rule.backend.server;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
+import org.drools.workbench.models.commons.backend.rule.RuleModelIActionPersistenceExtension;
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
@@ -96,228 +100,229 @@ public class GuidedRuleEditorServiceImpl
 
     private SafeSessionInfo safeSessionInfo;
 
+    private Collection<RuleModelIActionPersistenceExtension> persistenceExtensions = new ArrayList<>();
+
     public GuidedRuleEditorServiceImpl() {
     }
 
     @Inject
-    public GuidedRuleEditorServiceImpl( final SessionInfo sessionInfo ) {
-        safeSessionInfo = new SafeSessionInfo( sessionInfo );
+    public GuidedRuleEditorServiceImpl(final SessionInfo sessionInfo,
+                                       final Instance<RuleModelIActionPersistenceExtension> persistenceExtensionInstance) {
+        this.safeSessionInfo = new SafeSessionInfo(sessionInfo);
+
+        persistenceExtensionInstance.forEach(persistenceExtensions::add);
     }
 
     @Override
-    public Path create( final Path context,
-                        final String fileName,
-                        final RuleModel model,
-                        final String comment ) {
+    public Path create(final Path context,
+                       final String fileName,
+                       final RuleModel model,
+                       final String comment) {
         try {
-            final Package pkg = projectService.resolvePackage( context );
-            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
-            model.setPackageName( packageName );
+            final Package pkg = projectService.resolvePackage(context);
+            final String packageName = (pkg == null ? null : pkg.getPackageName());
+            model.setPackageName(packageName);
 
             // Temporal fix for https://bugzilla.redhat.com/show_bug.cgi?id=998922
-            model.getImports().addImport( new Import( "java.lang.Number" ) );
+            model.getImports().addImport(new Import("java.lang.Number"));
 
-            final org.uberfire.java.nio.file.Path nioPath = Paths.convert( context ).resolve( fileName );
-            final Path newPath = Paths.convert( nioPath );
+            final org.uberfire.java.nio.file.Path nioPath = Paths.convert(context).resolve(fileName);
+            final Path newPath = Paths.convert(nioPath);
 
-            if ( ioService.exists( nioPath ) ) {
-                throw new FileAlreadyExistsException( nioPath.toString() );
+            if (ioService.exists(nioPath)) {
+                throw new FileAlreadyExistsException(nioPath.toString());
             }
 
-            ioService.write( nioPath,
-                             toSource( newPath,
-                                       model ),
-                             commentedOptionFactory.makeCommentedOption( comment ) );
+            ioService.write(nioPath,
+                            toSource(newPath,
+                                     model),
+                            commentedOptionFactory.makeCommentedOption(comment));
 
             return newPath;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public RuleModel load( final Path path ) {
+    public RuleModel load(final Path path) {
         try {
-            final String drl = ioService.readAllString( Paths.convert( path ) );
-            final List<String> globals = utilities.loadGlobalsForPackage( path );
-            final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
+            final String drl = ioService.readAllString(Paths.convert(path));
+            final List<String> globals = utilities.loadGlobalsForPackage(path);
+            final PackageDataModelOracle oracle = dataModelService.getDataModel(path);
 
             RuleModel ruleModel = null;
-            if ( dslrResourceType.accept( path ) ) {
-                final String[] dsls = utilities.loadDslsForPackage( path );
-                ruleModel = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl,
-                                                                                         globals,
-                                                                                         oracle,
-                                                                                         dsls );
+            if (dslrResourceType.accept(path)) {
+                final String[] dsls = utilities.loadDslsForPackage(path);
+                ruleModel = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL(drl,
+                                                                                        globals,
+                                                                                        oracle,
+                                                                                        persistenceExtensions,
+                                                                                        dsls);
             } else {
-                ruleModel = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
-                                                                                 globals,
-                                                                                 oracle );
+                ruleModel = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                                globals,
+                                                                                oracle,
+                                                                                persistenceExtensions);
             }
 
             return ruleModel;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public GuidedEditorContent loadContent( final Path path ) {
-        return super.loadContent( path );
+    public GuidedEditorContent loadContent(final Path path) {
+        return super.loadContent(path);
     }
 
     @Override
-    protected GuidedEditorContent constructContent( Path path,
-                                                    Overview overview ) {
-        final RuleModel model = load( path );
-        final PackageDataModelOracle oracle = dataModelService.getDataModel( path );
+    protected GuidedEditorContent constructContent(Path path,
+                                                   Overview overview) {
+        final RuleModel model = load(path);
+        final PackageDataModelOracle oracle = dataModelService.getDataModel(path);
         final PackageDataModelOracleBaselinePayload dataModel = new PackageDataModelOracleBaselinePayload();
 
         //Get FQCN's used by model
-        final GuidedRuleModelVisitor visitor = new GuidedRuleModelVisitor( model );
+        final GuidedRuleModelVisitor visitor = new GuidedRuleModelVisitor(model);
         final Set<String> consumedFQCNs = visitor.getConsumedModelClasses();
 
         //Get FQCN's used by Globals
-        consumedFQCNs.addAll( oracle.getPackageGlobals().values() );
+        consumedFQCNs.addAll(oracle.getPackageGlobals().values());
 
-        DataModelOracleUtilities.populateDataModel( oracle,
-                                                    dataModel,
-                                                    consumedFQCNs );
+        DataModelOracleUtilities.populateDataModel(oracle,
+                                                   dataModel,
+                                                   consumedFQCNs);
 
         //Signal opening to interested parties
-        resourceOpenedEvent.fire( new ResourceOpenedEvent( path,
-                                                           safeSessionInfo ) );
+        resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
+                                                         safeSessionInfo));
 
-        return new GuidedEditorContent( model,
-                                        overview,
-                                        dataModel );
+        return new GuidedEditorContent(model,
+                                       overview,
+                                       dataModel);
     }
 
     @Override
-    public Path save( final Path resource,
-                      final RuleModel model,
-                      final Metadata metadata,
-                      final String comment ) {
+    public Path save(final Path resource,
+                     final RuleModel model,
+                     final Metadata metadata,
+                     final String comment) {
         try {
-            final Package pkg = projectService.resolvePackage( resource );
-            final String packageName = ( pkg == null ? null : pkg.getPackageName() );
-            model.setPackageName( packageName );
+            final Package pkg = projectService.resolvePackage(resource);
+            final String packageName = (pkg == null ? null : pkg.getPackageName());
+            model.setPackageName(packageName);
 
-            Metadata currentMetadata = metadataService.getMetadata( resource );
-            ioService.write( Paths.convert( resource ),
-                             toSourceUnexpanded( resource,
-                                                 model ),
-                             metadataService.setUpAttributes( resource,
-                                                              metadata ),
-                             commentedOptionFactory.makeCommentedOption( comment ) );
+            Metadata currentMetadata = metadataService.getMetadata(resource);
+            ioService.write(Paths.convert(resource),
+                            toSourceUnexpanded(resource,
+                                               model),
+                            metadataService.setUpAttributes(resource,
+                                                            metadata),
+                            commentedOptionFactory.makeCommentedOption(comment));
 
-            fireMetadataSocialEvents( resource, currentMetadata, metadata );
+            fireMetadataSocialEvents(resource,
+                                     currentMetadata,
+                                     metadata);
             return resource;
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public void delete( final Path path,
-                        final String comment ) {
+    public void delete(final Path path,
+                       final String comment) {
         try {
-            deleteService.delete( path,
-                                  comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            deleteService.delete(path,
+                                 comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path rename( final Path path,
-                        final String newName,
-                        final String comment ) {
+    public Path rename(final Path path,
+                       final String newName,
+                       final String comment) {
         try {
-            return renameService.rename( path,
-                                         newName,
-                                         comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return renameService.rename(path,
+                                        newName,
+                                        comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path copy( final Path path,
-                      final String newName,
-                      final String comment ) {
+    public Path copy(final Path path,
+                     final String newName,
+                     final String comment) {
         try {
-            return copyService.copy( path,
-                                     newName,
-                                     comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return copyService.copy(path,
+                                    newName,
+                                    comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public Path copy( final Path path,
-                      final String newName,
-                      final Path targetDirectory,
-                      final String comment ) {
+    public Path copy(final Path path,
+                     final String newName,
+                     final Path targetDirectory,
+                     final String comment) {
         try {
-            return copyService.copy( path,
-                                     newName,
-                                     targetDirectory,
-                                     comment );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return copyService.copy(path,
+                                    newName,
+                                    targetDirectory,
+                                    comment);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public String toSource( final Path path,
-                            final RuleModel model ) {
+    public String toSource(final Path path,
+                           final RuleModel model) {
         try {
-            return toSourceExpanded( path,
-                                     model );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            return toSourceExpanded(path,
+                                    model);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public List<ValidationMessage> validate( final Path path,
-                                             final RuleModel content ) {
+    public List<ValidationMessage> validate(final Path path,
+                                            final RuleModel content) {
         try {
-            final String source = toSourceUnexpanded( path,
-                                                      content );
-            return genericValidator.validate( path,
-                                              source );
-
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+            final String source = toSourceUnexpanded(path,
+                                                     content);
+            return genericValidator.validate(path,
+                                             source);
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
-    private String toSourceExpanded( final Path path,
-                                     final RuleModel model ) {
+    private String toSourceExpanded(final Path path,
+                                    final RuleModel model) {
         //This returns the expanded Source as used in "View Source" within the UI.
-        return sourceServices.getServiceFor( Paths.convert( path ) ).getSource( Paths.convert( path ), model );
+        return sourceServices.getServiceFor(Paths.convert(path)).getSource(Paths.convert(path),
+                                                                           model);
     }
 
-    private String toSourceUnexpanded( final Path path,
-                                       final RuleModel content ) {
+    private String toSourceUnexpanded(final Path path,
+                                      final RuleModel content) {
         //Wrap RuleModel as we need to control whether the DSLs are expanded. Both DRL and DSLR files should not have
         //DSLs expanded. In the case of DSLRs we need to explicitly control escaping plain-DRL to prevent attempts
         //by drools to expand it, by forcing the Model->DRL persistence into believing the model has DSLs.
-        final RuleModelWrapper model = new RuleModelWrapper( content,
-                                                             dslrResourceType.accept( path ) );
-        final String source = RuleModelDRLPersistenceImpl.getInstance().marshal( model );
+        final RuleModelWrapper model = new RuleModelWrapper(content,
+                                                            dslrResourceType.accept(path));
+        final String source = RuleModelDRLPersistenceImpl.getInstance().marshal(model,
+                                                                                persistenceExtensions);
         return source;
     }
-
 }

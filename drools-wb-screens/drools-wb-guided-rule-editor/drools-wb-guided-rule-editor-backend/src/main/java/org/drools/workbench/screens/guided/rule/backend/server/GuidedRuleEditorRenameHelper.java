@@ -15,12 +15,16 @@
 */
 package org.drools.workbench.screens.guided.rule.backend.server;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
+import org.drools.workbench.models.commons.backend.rule.RuleModelIActionPersistenceExtension;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDRLResourceTypeDefinition;
 import org.drools.workbench.screens.guided.rule.type.GuidedRuleDSLRResourceTypeDefinition;
@@ -44,65 +48,71 @@ public class GuidedRuleEditorRenameHelper implements RenameHelper {
     private GuidedRuleEditorServiceUtilities utilities;
     private CommentedOptionFactory commentedOptionFactory;
     private DataModelService dataModelService;
+    private Collection<RuleModelIActionPersistenceExtension> persistenceExtensions = new ArrayList<>();
 
     public GuidedRuleEditorRenameHelper() {
         //Zero-parameter constructor for CDI proxies
     }
 
     @Inject
-    public GuidedRuleEditorRenameHelper( final @Named("ioStrategy") IOService ioService,
-                                         final GuidedRuleDRLResourceTypeDefinition drlResourceType,
-                                         final GuidedRuleDSLRResourceTypeDefinition dslrResourceType,
-                                         final GuidedRuleEditorServiceUtilities utilities,
-                                         final CommentedOptionFactory commentedOptionFactory,
-                                         final DataModelService dataModelService ) {
+    public GuidedRuleEditorRenameHelper(final @Named("ioStrategy") IOService ioService,
+                                        final GuidedRuleDRLResourceTypeDefinition drlResourceType,
+                                        final GuidedRuleDSLRResourceTypeDefinition dslrResourceType,
+                                        final GuidedRuleEditorServiceUtilities utilities,
+                                        final CommentedOptionFactory commentedOptionFactory,
+                                        final DataModelService dataModelService,
+                                        final Instance<RuleModelIActionPersistenceExtension> persistenceExtensionInstance) {
         this.ioService = ioService;
         this.drlResourceType = drlResourceType;
         this.dslrResourceType = dslrResourceType;
         this.utilities = utilities;
         this.commentedOptionFactory = commentedOptionFactory;
         this.dataModelService = dataModelService;
+
+        persistenceExtensionInstance.forEach(persistenceExtensions::add);
     }
 
     @Override
-    public boolean supports( final Path destination ) {
-        return ( drlResourceType.accept( destination ) || dslrResourceType.accept( destination ) );
+    public boolean supports(final Path destination) {
+        return (drlResourceType.accept(destination) || dslrResourceType.accept(destination));
     }
 
     @Override
-    public void postProcess( final Path source,
-                             final Path destination ) {
+    public void postProcess(final Path source,
+                            final Path destination) {
         //Load existing file
-        final org.uberfire.java.nio.file.Path _destination = Paths.convert( destination );
-        final String drl = ioService.readAllString( _destination );
-        final String[] dsls = utilities.loadDslsForPackage( destination );
-        final List<String> globals = utilities.loadGlobalsForPackage( destination );
+        final org.uberfire.java.nio.file.Path _destination = Paths.convert(destination);
+        final String drl = ioService.readAllString(_destination);
+        final String[] dsls = utilities.loadDslsForPackage(destination);
+        final List<String> globals = utilities.loadGlobalsForPackage(destination);
 
         //Update rule name
         RuleModel model = null;
         String ruleName = null;
-        if ( drlResourceType.accept( destination ) ) {
-            model = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
-                                                                         globals,
-                                                                         dataModelService.getDataModel( destination ) );
-            ruleName = FileNameUtil.removeExtension( destination,
-                                                     drlResourceType );
-        } else if ( dslrResourceType.accept( destination ) ) {
-            model = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL( drl,
-                                                                                 globals,
-                                                                                 dataModelService.getDataModel( destination ),
-                                                                                 dsls );
-            ruleName = FileNameUtil.removeExtension( destination,
-                                                     dslrResourceType );
+        if (drlResourceType.accept(destination)) {
+            model = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                                                                        globals,
+                                                                        dataModelService.getDataModel(destination),
+                                                                        persistenceExtensions);
+            ruleName = FileNameUtil.removeExtension(destination,
+                                                    drlResourceType);
+        } else if (dslrResourceType.accept(destination)) {
+            model = RuleModelDRLPersistenceImpl.getInstance().unmarshalUsingDSL(drl,
+                                                                                globals,
+                                                                                dataModelService.getDataModel(destination),
+                                                                                persistenceExtensions,
+                                                                                dsls);
+            ruleName = FileNameUtil.removeExtension(destination,
+                                                    dslrResourceType);
         }
 
-        if ( model != null ) {
+        if (model != null) {
             //Save file
             model.name = ruleName;
-            ioService.write( _destination,
-                             RuleModelDRLPersistenceImpl.getInstance().marshal( model ),
-                             commentedOptionFactory.makeCommentedOption( "File [" + source.toURI() + "] renamed to [" + destination.toURI() + "]." ) );
+            ioService.write(_destination,
+                            RuleModelDRLPersistenceImpl.getInstance().marshal(model,
+                                                                              persistenceExtensions),
+                            commentedOptionFactory.makeCommentedOption("File [" + source.toURI() + "] renamed to [" + destination.toURI() + "]."));
         }
     }
-
 }

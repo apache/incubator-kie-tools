@@ -23,12 +23,12 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.SimplePanel;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+import org.drools.workbench.screens.guided.rule.client.editor.plugin.RuleModellerActionPlugin;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.kie.workbench.common.services.shared.rulename.RuleNamesService;
 import org.kie.workbench.common.widgets.client.datamodel.AsyncPackageDataModelOracle;
 import org.kie.workbench.common.widgets.metadata.client.KieEditorViewImpl;
-import org.uberfire.backend.vfs.Path;
 
 public class GuidedRuleEditorViewImpl
         extends KieEditorViewImpl
@@ -41,37 +41,39 @@ public class GuidedRuleEditorViewImpl
     @Inject
     public GuidedRuleEditorViewImpl() {
 
-        panel.setWidth( "100%" );
-        initWidget( panel );
+        panel.setWidth("100%");
+        initWidget(panel);
     }
 
     @Override
-    public void setContent( final RuleModel model,
-                            final AsyncPackageDataModelOracle oracle,
-                            final Caller<RuleNamesService> ruleNamesService,
-                            final boolean isReadOnly,
-                            final boolean isDSLEnabled ) {
-        this.modeller = new RuleModeller( model,
-                                          oracle,
-                                          new RuleModellerWidgetFactory(),
-                                          localBus,
-                                          isReadOnly,
-                                          isDSLEnabled );
-        panel.setWidget( modeller );
+    public void setContent(final RuleModel model,
+                           final Collection<RuleModellerActionPlugin> actionPlugins,
+                           final AsyncPackageDataModelOracle oracle,
+                           final Caller<RuleNamesService> ruleNamesService,
+                           final boolean isReadOnly,
+                           final boolean isDSLEnabled) {
+        this.modeller = new RuleModeller(model,
+                                         actionPlugins,
+                                         oracle,
+                                         new RuleModellerWidgetFactory(actionPlugins),
+                                         localBus,
+                                         isReadOnly,
+                                         isDSLEnabled);
+        panel.setWidget(modeller);
 
-        ruleNamesService.call( new RemoteCallback<Collection<String>>() {
+        ruleNamesService.call(new RemoteCallback<Collection<String>>() {
             @Override
-            public void callback( Collection<String> ruleNames ) {
-                modeller.setRuleNamesForPackage( ruleNames );
+            public void callback(Collection<String> ruleNames) {
+                modeller.setRuleNamesForPackage(ruleNames);
             }
-        } ).getRuleNames( oracle.getResourcePath(),
-                          model.getPackageName() );
+        }).getRuleNames(oracle.getResourcePath(),
+                        model.getPackageName());
     }
 
     @Override
     public RuleModel getContent() {
         //RuleModeller could be null if the Rule failed to load (e.g. the file was not found in VFS)
-        if ( modeller == null ) {
+        if (modeller == null) {
             return null;
         }
         return modeller.getModel();
