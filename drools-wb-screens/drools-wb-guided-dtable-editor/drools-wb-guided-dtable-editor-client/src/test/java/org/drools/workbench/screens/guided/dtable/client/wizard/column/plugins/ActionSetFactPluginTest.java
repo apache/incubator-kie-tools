@@ -154,23 +154,6 @@ public class ActionSetFactPluginTest {
     }
 
     @Test
-    public void testIsValidWhenFactFieldIsBlank() {
-        final ActionCol52 actionCol52 = mock(ActionCol52.class);
-        final ActionWrapper actionWrapper = mock(ActionWrapper.class);
-        final String errorKey = GuidedDecisionTableErraiConstants.ActionInsertFactPlugin_YouMustEnterAColumnField;
-
-        when(actionWrapper.getFactField()).thenReturn("");
-        when(actionWrapper.getFactType()).thenReturn("factType");
-        when(actionWrapper.getActionCol52()).thenReturn(actionCol52);
-        when(plugin.editingWrapper()).thenReturn(actionWrapper);
-
-        final boolean valid = plugin.isValid(actionWrapper);
-
-        assertFalse(valid);
-        verify(translationService).format(errorKey);
-    }
-
-    @Test
     public void testIsValidWhenHeaderIsBlank() {
         final ActionCol52 actionCol52 = mock(ActionCol52.class);
         final ActionWrapper actionWrapper = mock(ActionWrapper.class);
@@ -225,7 +208,7 @@ public class ActionSetFactPluginTest {
         when(presenter.getModel()).thenReturn(model);
         when(actionCol52.getHeader()).thenReturn("header");
         when(actionWrapper.getFactField()).thenReturn("factField");
-        when(actionWrapper.getFactType()).thenReturn("factType");
+        when(actionWrapper.getFactType()).thenReturn("");
         when(actionWrapper.getActionCol52()).thenReturn(actionCol52);
         when(plugin.editingWrapper()).thenReturn(actionWrapper);
 
@@ -264,12 +247,14 @@ public class ActionSetFactPluginTest {
         final PatternWrapper patternWrapper = mock(PatternWrapper.class);
 
         when(plugin.editingWrapper()).thenReturn(actionWrapper);
+        when(patternWrapper.getFactType()).thenReturn("factType");
+        when(patternWrapper.getBoundName()).thenReturn("boundName");
 
         plugin.setEditingPattern(patternWrapper);
 
         verify(actionWrapper).setFactField("");
-        verify(actionWrapper).setFactType("");
-        verify(actionWrapper).setBoundName("");
+        verify(actionWrapper).setFactType("factType");
+        verify(actionWrapper).setBoundName("boundName");
         verify(actionWrapper).setType("");
 
         verify(plugin).fireChangeEvent(patternPage);
@@ -555,13 +540,13 @@ public class ActionSetFactPluginTest {
 
     @Test
     public void testGetBinding() {
-        final ActionWrapper actionWrapper = mock(ActionWrapper.class);
+        final PatternWrapper patternWrapper = mock(PatternWrapper.class);
 
-        doReturn(actionWrapper).when(plugin).editingWrapper();
+        doReturn(patternWrapper).when(plugin).patternWrapper();
 
         plugin.getBinding();
 
-        verify(actionWrapper).getBoundName();
+        verify(patternWrapper).getBoundName();
     }
 
     @Test

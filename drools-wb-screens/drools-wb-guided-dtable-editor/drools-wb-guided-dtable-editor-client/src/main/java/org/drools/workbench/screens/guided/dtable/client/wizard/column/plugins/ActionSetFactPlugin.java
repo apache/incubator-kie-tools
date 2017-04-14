@@ -127,7 +127,7 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
     boolean isValid(final ActionWrapper editingWrapper) {
         final ActionCol52 actionCol52 = editingWrapper.getActionCol52();
 
-        if (nil(getFactType())) {
+        if (nil(getFactField())) {
             Window.alert(translate(GuidedDecisionTableErraiConstants.ActionInsertFactPlugin_YouMustEnterAColumnPattern));
             return false;
         }
@@ -313,7 +313,7 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
 
     @Override
     public String getBinding() {
-        return editingWrapper().getBoundName();
+        return patternWrapper().getBoundName();
     }
 
     @Override
@@ -392,11 +392,9 @@ public class ActionSetFactPlugin extends BaseDecisionTableColumnPlugin implement
     }
 
     private void resetField() {
-        final PatternWrapper defaultPattern = new PatternWrapper();
-
         editingWrapper().setFactField("");
-        editingWrapper().setFactType(defaultPattern.getFactType());
-        editingWrapper().setBoundName(defaultPattern.getBoundName());
+        editingWrapper().setFactType(patternWrapper().getFactType());
+        editingWrapper().setBoundName(patternWrapper().getBoundName());
         editingWrapper().setType("");
     }
 }
