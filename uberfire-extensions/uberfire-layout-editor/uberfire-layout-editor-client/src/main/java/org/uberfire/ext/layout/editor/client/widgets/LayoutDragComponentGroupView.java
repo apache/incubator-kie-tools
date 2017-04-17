@@ -61,13 +61,11 @@ public class LayoutDragComponentGroupView implements UberElement<LayoutDragCompo
     }
 
     @Override
-    public void setTitle(String name) {
+    public void setTitle(String id, String name) {
         groupTitle.setTextContent(name);
-        String componentId = name.replaceAll("\\s",
-                                             "");
-        collapse.setId(componentId);
+        collapse.setId(id);
         groupTitle.setAttribute("href",
-                                "#" + componentId);
+                                "#" + id);
     }
 
     @Override

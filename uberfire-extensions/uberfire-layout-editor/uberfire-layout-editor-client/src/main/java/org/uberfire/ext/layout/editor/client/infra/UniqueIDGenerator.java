@@ -16,6 +16,7 @@
 
 package org.uberfire.ext.layout.editor.client.infra;
 
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class UniqueIDGenerator {
@@ -32,6 +33,16 @@ public class UniqueIDGenerator {
 
     public String createColumnID(String rowID) {
         return rowID + "|column: " + String.valueOf(counter.getAndIncrement());
+    }
+
+    public String createAccordionID(String name) {
+        StringBuilder randomString = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < 5; i++) {
+            randomString.append(random.nextInt(26));
+        }
+        return name.replaceAll("\\s",
+                               "") + randomString.toString();
     }
 }
 

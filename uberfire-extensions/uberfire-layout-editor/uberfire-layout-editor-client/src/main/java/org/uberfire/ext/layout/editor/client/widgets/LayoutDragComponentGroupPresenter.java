@@ -16,18 +16,21 @@
 package org.uberfire.ext.layout.editor.client.widgets;
 
 import java.util.Map;
+import java.util.Random;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.uberfire.client.mvp.UberElement;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponentGroup;
+import org.uberfire.ext.layout.editor.client.infra.UniqueIDGenerator;
 
 @Dependent
 public class LayoutDragComponentGroupPresenter {
 
     private final View view;
     private LayoutDragComponentGroup group;
+    private UniqueIDGenerator idGenerator = new UniqueIDGenerator();
 
     @Inject
     public LayoutDragComponentGroupPresenter(final View view) {
@@ -37,9 +40,12 @@ public class LayoutDragComponentGroupPresenter {
 
     public void init(LayoutDragComponentGroup group) {
         this.group = group;
-        view.setTitle(group.getName());
+        view.setTitle(idGenerator.createAccordionID(group.getName()),
+                      group.getName());
         view.addComponents(group.getComponents());
     }
+
+
 
     public void add(String componentId,
                     LayoutDragComponent component) {
@@ -57,7 +63,8 @@ public class LayoutDragComponentGroupPresenter {
 
     public interface View extends UberElement<LayoutDragComponentGroupPresenter> {
 
-        void setTitle(String name);
+        void setTitle(String id,
+                      String name);
 
         void addComponents(Map<String, LayoutDragComponent> components);
 
