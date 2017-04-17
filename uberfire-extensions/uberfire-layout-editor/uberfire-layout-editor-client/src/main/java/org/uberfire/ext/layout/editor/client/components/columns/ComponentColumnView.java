@@ -300,6 +300,7 @@ public class ComponentColumnView
             contentDropOrientation = null;
         });
         content.setOndrop(e -> {
+            e.preventDefault();
             if (contentDropOrientation != null) {
                 presenter.onDrop(contentDropOrientation,
                                  extractDndData(e));
@@ -327,6 +328,7 @@ public class ComponentColumnView
         });
         content.setOndragstart(e -> {
             e.stopPropagation();
+            e.getDataTransfer().setData("text/plain", "this-is-a-requirement-to-firefox-html5dnd");
             addCSSClass(row,
                         "rowDndPreview");
             presenter.dragStartComponent();

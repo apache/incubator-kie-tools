@@ -105,9 +105,10 @@ public class RowView
             upper.setAttribute("draggable",
                                "true");
         }
-        upper.setOndragstart(event -> {
+        upper.setOndragstart(e -> {
             if (presenter.isDropEnable()) {
                 presenter.dragStart();
+                e.getDataTransfer().setData("text/plain", "this-is-a-requirement-to-firefox-html5dnd");
                 addCSSClass(row,
                             "rowDndPreview");
                 removeCSSClass(upper,
