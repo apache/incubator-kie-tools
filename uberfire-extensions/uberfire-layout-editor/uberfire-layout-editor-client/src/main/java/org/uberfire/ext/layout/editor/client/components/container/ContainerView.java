@@ -51,17 +51,6 @@ public class ContainerView
     @DataField
     Div layout;
     private Container presenter;
-    @Inject
-    @DataField
-    private Span mobile;
-
-    @Inject
-    @DataField
-    private Span tablet;
-
-    @Inject
-    @DataField
-    private Span desktop;
 
     @Inject
     private Event<ContainerResizeEvent> resizeEvent;
@@ -69,33 +58,6 @@ public class ContainerView
     @Override
     public void init(Container presenter) {
         this.presenter = presenter;
-    }
-
-    @EventHandler("mobile")
-    public void mobileSize(ClickEvent e) {
-        removeCSSClass(layout,
-                       "simulate-sm");
-        addCSSClass(layout,
-                    "simulate-xs");
-        resizeEvent.fire(new ContainerResizeEvent());
-    }
-
-    @EventHandler("tablet")
-    public void tabletSize(ClickEvent e) {
-        addCSSClass(layout,
-                    "simulate-sm");
-        removeCSSClass(layout,
-                       "simulate-xs");
-        resizeEvent.fire(new ContainerResizeEvent());
-    }
-
-    @EventHandler("desktop")
-    public void desktopSize(ClickEvent e) {
-        removeCSSClass(layout,
-                       "simulate-xs");
-        removeCSSClass(layout,
-                       "simulate-sm");
-        resizeEvent.fire(new ContainerResizeEvent());
     }
 
     @Override
