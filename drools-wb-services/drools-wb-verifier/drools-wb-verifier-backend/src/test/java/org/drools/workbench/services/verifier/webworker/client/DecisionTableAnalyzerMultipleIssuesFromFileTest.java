@@ -309,4 +309,19 @@ public class DecisionTableAnalyzerMultipleIssuesFromFileTest extends AnalyzerUpd
         analyze("gapAnalysis.gdst");
         assertTrue( analyzerProvider.getAnalysisReport().isEmpty() );
     }
+
+    @Test
+    public void testBidimensionalGapAnalysis() throws Exception {
+        // GUVNOR-3010
+        analyze("gapAnalysis2D.gdst");
+        assertOnlyContains(analyzerProvider.getAnalysisReport(),
+                           MISSING_RANGE_TITLE);
+    }
+
+    @Test
+    public void testBidimensionalGapAnalysisOK() throws Exception {
+        // GUVNOR-3010
+        analyze("gapAnalysis2DOK.gdst");
+        assertTrue( analyzerProvider.getAnalysisReport().isEmpty() );
+    }
 }

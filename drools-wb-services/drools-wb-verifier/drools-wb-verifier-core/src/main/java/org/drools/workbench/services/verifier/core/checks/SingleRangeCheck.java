@@ -19,12 +19,19 @@ package org.drools.workbench.services.verifier.core.checks;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -80,20 +87,93 @@ public class SingleRangeCheck extends CheckBase {
 
     private void checkRanges( Collection<ObjectField> rangeFields, Map<PartitionKey, List<RuleInspector>> partitions, int conditionIndex ) {
         for (Map.Entry<PartitionKey, List<RuleInspector>> partition : partitions.entrySet()) {
+            List<List<? extends Range<?>>> dimensions = new ArrayList<>();
+
             for ( ObjectField field : rangeFields ) {
                 if ( "Integer".equals( field.getFieldType() ) ) {
-                    int upper = getIntegerCoveredUpperBound( partition.getValue(), field, conditionIndex, Integer.MIN_VALUE );
-                    if ( upper != Integer.MAX_VALUE ) {
-                        errors.add( new RangeError( partition.getValue(), partition.getKey(), upper ) );
-                    }
+                    checkMonodimensionalRange( partition, dimensions, field, conditionIndex, IntegerRange::new, Integer.MIN_VALUE, Integer.MAX_VALUE );
                 } else {
-                    double upper = getNumericCoveredUpperBound( partition.getValue(), field, conditionIndex, Double.MIN_VALUE );
-                    if ( upper != Double.MAX_VALUE ) {
-                        errors.add( new RangeError( partition.getValue(), partition.getKey(), upper ) );
+                    checkMonodimensionalRange( partition, dimensions, field, conditionIndex, NumericRange::new, Double.MIN_VALUE, Double.MAX_VALUE );
+                }
+            }
+
+            checkBidimensionalRanges( partition, dimensions );
+        }
+    }
+
+    private <T extends Comparable> void checkMonodimensionalRange( Entry<PartitionKey, List<RuleInspector>> partition,
+                                            List<List<? extends Range<?>>> dimensions, ObjectField field, int conditionIndex,
+                                            Function<List<ConditionInspector>, Range<T>> rangeSupplier, T min, T max ) {
+        List<Range<T>> ranges = partition.getValue().stream()
+                                         .map( r -> r.getConditionsInspectors().get( conditionIndex ) )
+                                         .map(c -> c.get(field))
+                                         .map( rangeSupplier )
+                                         .collect( toList() );
+
+        T upper = getCoverageUpperBound( min, ranges );
+        if ( upper.equals(  max ) ) {
+            dimensions.add( ranges );
+        } else {
+            errors.add( new RangeError( partition.getValue(), partition.getKey(), upper ) );
+        }
+    }
+
+    private void checkBidimensionalRanges( Entry<PartitionKey, List<RuleInspector>> partition, List<List<? extends Range<?>>> dimensions ) {
+        if (errors.isEmpty() && dimensions.size() >= 2) {
+            for (int i = 0; i < dimensions.size()-1; i++) {
+                for ( int j = i + 1; j < dimensions.size(); j++ ) {
+                    if ( !checkBidimensionalRanges( dimensions.get( i ), dimensions.get( j ) ) ) {
+                        errors.add( new RangeError( partition.getValue(), partition.getKey(), null ) );
                     }
                 }
             }
         }
+    }
+
+    private <H extends Comparable, V extends Comparable> boolean checkBidimensionalRanges( List<? extends Range<? extends H>> hRanges,
+                                                                                           List<? extends Range<? extends V>> vRanges ) {
+        List<BidimensionalRange<H,V>> bidiRanges = IntStream.range( 0, hRanges.size() )
+                                                            .mapToObj( i -> new BidimensionalRange<H,V>( hRanges.get(i), vRanges.get(i) ) )
+                                                            .sorted( Comparator.comparing( r -> r.horizontal ) )
+                                                            .collect( toList() );
+
+        SortedSet<H> hBreakPoints = new TreeSet<>();
+        Map<H, List<BidimensionalRange<H,V>>> lowerHBounds = new HashMap<>();
+        Map<H, List<BidimensionalRange<H,V>>> upperHBounds = new HashMap<>();
+        for ( BidimensionalRange<H,V> bidiRange : bidiRanges ) {
+            Range<? extends H> hRange = bidiRange.horizontal;
+            hBreakPoints.add( hRange.lowerBound );
+            lowerHBounds.computeIfAbsent( hRange.lowerBound, x -> new ArrayList<>() ).add( bidiRange );
+            if ( !hRange.upperBound.equals( hRange.maxValue() ) ) {
+                hBreakPoints.add( hRange.upperBound );
+                upperHBounds.computeIfAbsent( hRange.upperBound, x -> new ArrayList<>() ).add( bidiRange );
+            }
+        }
+
+        V minV = vRanges.get(0).minValue();
+        V maxV = vRanges.get(0).maxValue();
+
+        boolean first = true;
+        List<BidimensionalRange<H,V>> parsedRanges = new ArrayList<>();
+        for ( H sweep : hBreakPoints ) {
+            List<BidimensionalRange<H,V>> enteringRanges = lowerHBounds.get(sweep);
+            if (enteringRanges != null) {
+                parsedRanges.addAll( enteringRanges );
+            }
+
+            List<BidimensionalRange<H,V>> exitingRanges = upperHBounds.get(sweep);
+            if (exitingRanges != null) {
+                parsedRanges.removeAll( exitingRanges );
+            }
+
+            if ( ( first || exitingRanges != null ) &&
+                 !maxV.equals( getCoverageUpperBound( minV, parsedRanges.stream().map( br -> br.vertical ) ) )) {
+                return false;
+            }
+            first = false;
+        }
+
+        return true;
     }
 
     private OperatorType getFieldOperatorType(ObjectField field, int conditionIndex) {
@@ -192,7 +272,7 @@ public class SingleRangeCheck extends CheckBase {
             return Arrays.toString( keys );
         }
 
-        public boolean hasNulls() {
+        boolean hasNulls() {
             return Stream.of( keys ).anyMatch( Objects::isNull );
         }
 
@@ -201,34 +281,57 @@ public class SingleRangeCheck extends CheckBase {
         }
     }
 
-    private int getIntegerCoveredUpperBound(Collection<RuleInspector> rules, ObjectField field, int conditionIndex, int lowerBound) {
-        List<IntegerRange> ranges = rules.stream()
-                                         .map( r -> r.getConditionsInspectors().get( conditionIndex ) )
-                                         .map(c -> c.get(field))
-                                         .map( IntegerRange::new )
-                                         .sorted().collect( toList() );
-        int limit = lowerBound;
-        for (IntegerRange range : ranges) {
-            if (range.lowerBound > limit) {
+    private <T extends Comparable> T getCoverageUpperBound( T lowerBound, List<? extends Range<? extends T>> ranges ) {
+        return getCoverageUpperBound( lowerBound, ranges.stream() );
+    }
+
+    private <T extends Comparable> T getCoverageUpperBound( T lowerBound, Stream<? extends Range<? extends T>> ranges ) {
+        T limit = lowerBound;
+        Iterator<? extends Range<? extends T>> i = ranges.sorted().iterator();
+        while (i.hasNext()) {
+            Range<? extends T> range = i.next();
+            if (range.lowerBound.compareTo( limit ) > 0) {
                 return limit;
             }
-            limit = Math.max(limit, range.upperBound);
+            limit = range.upperBound.compareTo( limit ) > 0 ? range.upperBound : limit;
         }
         return limit;
     }
 
-    private static class IntegerRange implements Comparable<IntegerRange> {
-        private int lowerBound = Integer.MIN_VALUE;
-        private int upperBound = Integer.MAX_VALUE;
+    private abstract static class Range<T extends Comparable> implements Comparable<Range<T>> {
+        protected T lowerBound = minValue();
+        protected T upperBound = maxValue();
 
-        public IntegerRange(List<ConditionInspector> conditionInspectors) {
+        public Range(List<ConditionInspector> conditionInspectors) {
             if (conditionInspectors != null) {
-                init( conditionInspectors );
+                conditionInspectors.forEach( getConditionParser() );
             }
         }
 
-        private void init( List<ConditionInspector> conditionInspectors ) {
-            for (ConditionInspector c : conditionInspectors) {
+        protected abstract Consumer<ConditionInspector> getConditionParser();
+
+        @Override
+        public String toString() {
+            return lowerBound + " < x < " + upperBound;
+        }
+
+        @Override
+        public int compareTo( Range<T> o ) {
+            return lowerBound.compareTo( o.lowerBound );
+        }
+
+        protected abstract T minValue();
+        protected abstract T maxValue();
+    }
+
+    private static class IntegerRange extends Range<Integer> implements Comparable<Range<Integer>> {
+        IntegerRange( List<ConditionInspector> conditionInspectors ) {
+            super(conditionInspectors);
+        }
+
+        @Override
+        protected Consumer<ConditionInspector> getConditionParser() {
+            return c -> {
                 FieldCondition cond = ( FieldCondition ) c.getCondition();
                 Operator op = resolve( cond.getOperator() );
                 switch (op) {
@@ -249,48 +352,29 @@ public class SingleRangeCheck extends CheckBase {
                         upperBound = (Integer) cond.getValues().iterator().next();
                         break;
                 }
-            }
+            };
         }
 
         @Override
-        public String toString() {
-            return lowerBound + " < x < " + upperBound;
+        protected Integer minValue() {
+            return Integer.MIN_VALUE;
         }
 
         @Override
-        public int compareTo( IntegerRange o ) {
-            return lowerBound < o.lowerBound ? -1 : lowerBound > o.lowerBound ? 1 : 0;
+        protected Integer maxValue() {
+            return Integer.MAX_VALUE;
         }
     }
 
-    private double getNumericCoveredUpperBound(Collection<RuleInspector> rules, ObjectField field, int conditionIndex, double lowerBound) {
-        List<NumericRange> ranges = rules.stream()
-                                         .map( r -> r.getConditionsInspectors().get( conditionIndex ) )
-                                         .map(c -> c.get(field))
-                                         .map( NumericRange::new )
-                                         .sorted().collect( toList() );
-        double limit = lowerBound;
-        for (NumericRange range : ranges) {
-            if (range.lowerBound > limit) {
-                return limit;
-            }
-            limit = Math.max(limit, range.upperBound);
-        }
-        return limit;
-    }
+    private static class NumericRange extends Range<Double> implements Comparable<Range<Double>> {
 
-    private static class NumericRange implements Comparable<NumericRange> {
-        private double lowerBound = Double.MIN_VALUE;
-        private double upperBound = Double.MAX_VALUE;
-
-        public NumericRange(List<ConditionInspector> conditionInspectors) {
-            if (conditionInspectors != null) {
-                init( conditionInspectors );
-            }
+        NumericRange( List<ConditionInspector> conditionInspectors ) {
+            super(conditionInspectors);
         }
 
-        private void init( List<ConditionInspector> conditionInspectors ) {
-            for (ConditionInspector c : conditionInspectors) {
+        @Override
+        protected Consumer<ConditionInspector> getConditionParser() {
+            return c -> {
                 FieldCondition cond = ( FieldCondition ) c.getCondition();
                 Operator op = resolve( cond.getOperator() );
                 switch (op) {
@@ -303,17 +387,32 @@ public class SingleRangeCheck extends CheckBase {
                         lowerBound = ((Number) cond.getValues().iterator().next()).doubleValue();
                         break;
                 }
-            }
+            };
+        }
+
+        @Override
+        protected Double minValue() {
+            return Double.MIN_VALUE;
+        }
+
+        @Override
+        protected Double maxValue() {
+            return Double.MAX_VALUE;
+        }
+    }
+
+    private static class BidimensionalRange<H extends Comparable, V extends Comparable> {
+        private final Range<? extends H> horizontal;
+        private final Range<? extends V> vertical;
+
+        private BidimensionalRange( Range<? extends H> horizontal, Range<? extends V> vertical ) {
+            this.horizontal = horizontal;
+            this.vertical = vertical;
         }
 
         @Override
         public String toString() {
-            return lowerBound + " < x < " + upperBound;
-        }
-
-        @Override
-        public int compareTo( NumericRange o ) {
-            return lowerBound < o.lowerBound ? -1 : lowerBound > o.lowerBound ? 1 : 0;
+            return "[" + horizontal + "][" + vertical + "]";
         }
     }
 
@@ -337,7 +436,13 @@ public class SingleRangeCheck extends CheckBase {
             return new Issue( severity,
                               checkType,
                               new HashSet<>( ruleInspectors.stream().map( r -> r.getRowIndex() + 1 ).collect( toSet() ) )
-            ).setDebugMessage( "Uncovered range starting from value " + uncoveredValue + " in partition " + partitionKey );
+            ).setDebugMessage( getMessage() );
+        }
+
+        private String getMessage() {
+            return "Uncovered range" +
+                   (uncoveredValue != null ? " starting from value " + uncoveredValue : "") +
+                   (partitionKey != PartitionKey.EMPTY_KEY ? " in partition " + partitionKey : "");
         }
     }
 
