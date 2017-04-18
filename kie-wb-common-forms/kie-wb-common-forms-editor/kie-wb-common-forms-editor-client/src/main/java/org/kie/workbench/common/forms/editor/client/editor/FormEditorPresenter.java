@@ -33,7 +33,7 @@ import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorField
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
 import org.kie.workbench.common.forms.editor.client.type.FormDefinitionResourceType;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
-import org.kie.workbench.common.forms.editor.service.FormEditorService;
+import org.kie.workbench.common.forms.editor.service.shared.FormEditorService;
 import org.kie.workbench.common.forms.model.DefaultFormModel;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;

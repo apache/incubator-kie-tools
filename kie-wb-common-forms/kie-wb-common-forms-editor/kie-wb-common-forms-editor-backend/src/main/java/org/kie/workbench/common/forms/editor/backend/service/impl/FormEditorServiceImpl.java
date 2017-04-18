@@ -32,17 +32,17 @@ import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.bus.server.annotations.Service;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
-import org.kie.workbench.common.forms.editor.service.FormCreatorService;
-import org.kie.workbench.common.forms.editor.service.FormEditorRenderingContext;
-import org.kie.workbench.common.forms.editor.service.FormEditorService;
-import org.kie.workbench.common.forms.editor.service.VFSFormFinderService;
+import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
+import org.kie.workbench.common.forms.editor.service.backend.FormModelHandlerManager;
+import org.kie.workbench.common.forms.editor.service.backend.util.UIDGenerator;
+import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
+import org.kie.workbench.common.forms.editor.service.shared.FormEditorService;
+import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
 import org.kie.workbench.common.forms.service.FieldManager;
-import org.kie.workbench.common.forms.service.FormModelHandler;
-import org.kie.workbench.common.forms.service.FormModelHandlerManager;
 import org.kie.workbench.common.services.backend.service.KieService;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.slf4j.Logger;
@@ -77,8 +77,6 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
 
     protected FormDefinitionSerializer formDefinitionSerializer;
 
-    protected FormCreatorService formCreatorService;
-
     protected VFSFormFinderService vfsFormFinderService;
 
     @Inject
@@ -90,7 +88,6 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
                                   FormModelHandlerManager modelHandlerManager,
                                   KieProjectService projectService,
                                   FormDefinitionSerializer formDefinitionSerializer,
-                                  FormCreatorService formCreatorService,
                                   VFSFormFinderService vfsFormFinderService ) {
         this.ioService = ioService;
         this.identity = identity;
@@ -100,7 +97,6 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
         this.modelHandlerManager = modelHandlerManager;
         this.projectService = projectService;
         this.formDefinitionSerializer = formDefinitionSerializer;
-        this.formCreatorService = formCreatorService;
         this.vfsFormFinderService = vfsFormFinderService;
     }
 
@@ -119,9 +115,9 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
             if (ioService.exists(kiePath)) {
                 throw new FileAlreadyExistsException(kiePath.toString());
             }
-            FormDefinition form = formCreatorService.getNewFormInstance();
+            FormDefinition form = new FormDefinition( formModel );
 
-            form.setModel( formModel );
+            form.setId(UIDGenerator.generateUID());
 
             form.setName( formName.substring( 0, formName.lastIndexOf( "." ) ) );
 
@@ -220,7 +216,8 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
 
         FormDefinition form = formDefinitionSerializer.deserialize( template );
         if ( form == null ) {
-            form = formCreatorService.getNewFormInstance();
+            form = new FormDefinition();
+            form.setId(UIDGenerator.generateUID());
         }
 
         return form;

@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.tools.ant.taskdefs.Java;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.forms.commons.layout.impl.DynamicFormLayoutTemplateGenerator;
@@ -31,6 +32,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipl
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
+import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.runtime.BPMNRuntimeFormGeneratorService;
 import org.kie.workbench.common.forms.jbpm.server.service.impl.model.LogEntry;
 import org.kie.workbench.common.forms.jbpm.server.service.impl.model.Person;
 import org.kie.workbench.common.forms.jbpm.server.service.impl.model.PersonType;
@@ -38,7 +40,7 @@ import org.kie.workbench.common.forms.jbpm.server.service.impl.model.PersonalDat
 import org.kie.workbench.common.forms.jbpm.service.bpmn.util.BPMNVariableUtils;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
-import org.kie.workbench.common.forms.model.PortableJavaModel;
+import org.kie.workbench.common.forms.model.JavaModel;
 import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
@@ -52,13 +54,17 @@ public abstract class BPMNFormGenerationTest<MODEL extends JBPMFormModel> {
     @Mock
     private ClassLoader classLoader;
 
+    protected BPMNRuntimeFormGeneratorService generatorService;
+
     protected DynamicBPMNFormGeneratorImpl generator;
 
     private MODEL model;
 
     @Before
     public void initTest() {
-        generator = new DynamicBPMNFormGeneratorImpl( new TestFieldManager(), new DynamicFormLayoutTemplateGenerator() );
+        generatorService = new BPMNRuntimeFormGeneratorService(new TestFieldManager(), new DynamicFormLayoutTemplateGenerator());
+
+        generator = new DynamicBPMNFormGeneratorImpl( generatorService );
     }
 
     protected abstract String getModelId();
@@ -92,7 +98,7 @@ public abstract class BPMNFormGenerationTest<MODEL extends JBPMFormModel> {
 
         FormDefinition form = forms.iterator().next();
 
-        assertEquals( getModelId(), form.getId() );
+        assertEquals( getModelId() + BPMNVariableUtils.TASK_FORM_SUFFIX, form.getId() );
         assertEquals( getModelId() + BPMNVariableUtils.TASK_FORM_SUFFIX, form.getName() );
 
         assertEquals( form.getModel(), model );
@@ -140,7 +146,7 @@ public abstract class BPMNFormGenerationTest<MODEL extends JBPMFormModel> {
         forms.forEach( form -> allForms.put( form.getId(), form ) );
 
         try {
-            verify( classLoader, times(1) ).loadClass( anyString() );
+            verify( classLoader, times(3) ).loadClass( anyString() );
         } catch ( ClassNotFoundException e ) {
             fail( e.getMessage() );
         }
@@ -149,20 +155,27 @@ public abstract class BPMNFormGenerationTest<MODEL extends JBPMFormModel> {
 
         assertEquals( "There should 4 forms", 4, forms.size() );
 
-        FormDefinition form  = allForms.get( getModelId() );
+        FormDefinition form  = allForms.get( getModelId() + BPMNVariableUtils.TASK_FORM_SUFFIX );
         checkBPMForm( form, allForms );
-        form = allForms.get( Person.class.getName() );
+        form = findFormForModel(Person.class.getName(), allForms);
         checkPersonForm( form, allForms );
-        form = allForms.get( PersonalData.class.getName() );
+        form = findFormForModel(PersonalData.class.getName(), allForms);
         checkPersonalDataForm( form, allForms );
-        form = allForms.get( LogEntry.class.getName() );
+        form = findFormForModel(LogEntry.class.getName(), allForms);
         checkLogEntryForm( form );
+    }
+
+    protected FormDefinition findFormForModel(String className, Map<String, FormDefinition> allForms) {
+        return allForms.values().stream().filter( formDefinition -> {
+            if(formDefinition.getModel() instanceof JavaModel) {
+                return ((JavaModel)formDefinition.getModel()).getType().equals(className);
+            }
+            return false;
+        }).findFirst().orElse(null);
     }
 
     private void checkLogEntryForm( FormDefinition form ) {
         assertNotNull( form );
-        assertEquals( LogEntry.class.getName(), form.getId() );
-        assertEquals( LogEntry.class.getName(), form.getName() );
 
         assertEquals( 2, form.getFields().size() );
 
@@ -175,8 +188,6 @@ public abstract class BPMNFormGenerationTest<MODEL extends JBPMFormModel> {
 
     private void checkPersonalDataForm( FormDefinition form, Map<String, FormDefinition> allForms ) {
         assertNotNull( form );
-        assertEquals( PersonalData.class.getName(), form.getId() );
-        assertEquals( PersonalData.class.getName(), form.getName() );
 
         assertEquals( 2, form.getFields().size() );
 
@@ -189,7 +200,7 @@ public abstract class BPMNFormGenerationTest<MODEL extends JBPMFormModel> {
 
     private void checkBPMForm( FormDefinition form, Map<String, FormDefinition> allForms ) {
         assertNotNull( form );
-        assertEquals( getModelId(), form.getId() );
+        assertEquals( getModelId() + BPMNVariableUtils.TASK_FORM_SUFFIX, form.getId() );
         assertEquals( getModelId() + BPMNVariableUtils.TASK_FORM_SUFFIX, form.getName() );
         assertEquals( 1, form.getFields().size() );
 
@@ -202,17 +213,13 @@ public abstract class BPMNFormGenerationTest<MODEL extends JBPMFormModel> {
 
         assertNotNull( subForm.getNestedForm() );
 
-        assertEquals( subForm.getNestedForm(), Person.class.getName() );
-
         assertNotNull( allForms.get( subForm.getNestedForm() ) );
     }
 
     private void checkPersonForm( FormDefinition form, Map<String, FormDefinition> allForms ) {
         assertNotNull( form );
-        assertEquals( Person.class.getName(), form.getId() );
-        assertEquals( Person.class.getName(), form.getName() );
 
-        assertTrue( form.getModel() instanceof PortableJavaModel );
+        assertTrue( form.getModel() instanceof JavaModel );
 
         assertEquals( 4, form.getFields().size() );
 
@@ -235,8 +242,6 @@ public abstract class BPMNFormGenerationTest<MODEL extends JBPMFormModel> {
 
         assertNotNull( subForm.getNestedForm() );
 
-        assertEquals( PersonalData.class.getName(), subForm.getNestedForm() );
-
         assertNotNull( allForms.get( subForm.getNestedForm() ) );
 
         field = form.getFieldByBinding( "log" );
@@ -250,8 +255,6 @@ public abstract class BPMNFormGenerationTest<MODEL extends JBPMFormModel> {
         assertNotNull( multipleSubForm.getCreationForm() );
 
         assertEquals( multipleSubForm.getCreationForm(), multipleSubForm.getEditionForm() );
-
-        assertEquals( LogEntry.class.getName(), multipleSubForm.getCreationForm() );
 
         FormDefinition nestedForm = allForms.get( multipleSubForm.getCreationForm() );
 

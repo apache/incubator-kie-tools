@@ -37,7 +37,7 @@ import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorField
 import org.kie.workbench.common.forms.editor.client.resources.images.FormEditorImageResources;
 import org.kie.workbench.common.forms.editor.client.type.FormDefinitionResourceType;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
-import org.kie.workbench.common.forms.editor.service.FormEditorService;
+import org.kie.workbench.common.forms.editor.service.shared.FormEditorService;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.definition.CheckBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.definition.DatePickerFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.definition.TextAreaFieldDefinition;

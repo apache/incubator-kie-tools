@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.service.impl;
+package org.kie.workbench.common.forms.editor.service.backend.impl;
 
 import java.util.List;
 
+import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
-import org.kie.workbench.common.forms.service.FormModelHandler;
 import org.uberfire.backend.vfs.Path;
 
 public abstract class AbstractFormModelHandler<F extends FormModel> implements FormModelHandler<F> {

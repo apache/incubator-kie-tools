@@ -34,7 +34,7 @@ import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorCont
 import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorContextResponse;
 import org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent;
 import org.kie.workbench.common.forms.editor.model.FormModelerContent;
-import org.kie.workbench.common.forms.editor.service.FormEditorRenderingContext;
+import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;

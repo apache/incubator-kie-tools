@@ -27,7 +27,7 @@ import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContex
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.TableColumnMeta;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
-import org.kie.workbench.common.forms.editor.service.FormEditorRenderingContext;
+import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
 import org.uberfire.backend.vfs.Path;
 
 @Dependent

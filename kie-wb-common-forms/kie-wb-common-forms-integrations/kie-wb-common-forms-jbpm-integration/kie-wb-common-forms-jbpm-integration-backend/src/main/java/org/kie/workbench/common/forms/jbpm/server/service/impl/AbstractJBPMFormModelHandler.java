@@ -24,7 +24,7 @@ import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
 import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.service.FieldManager;
-import org.kie.workbench.common.forms.service.impl.AbstractFormModelHandler;
+import org.kie.workbench.common.forms.editor.service.backend.impl.AbstractFormModelHandler;
 
 public abstract class AbstractJBPMFormModelHandler<M extends JBPMFormModel> extends AbstractFormModelHandler<M> {
 

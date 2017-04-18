@@ -34,7 +34,7 @@ import org.jboss.errai.ui.shared.api.annotations.EventHandler;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
-import org.kie.workbench.common.forms.editor.service.FormEditorRenderingContext;
+import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
 import org.uberfire.ext.widgets.common.client.common.popups.footers.ModalFooterOKButton;
 

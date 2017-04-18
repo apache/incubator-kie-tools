@@ -27,7 +27,7 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.editor.client.handler.formModel.FormModelsPresenter;
 import org.kie.workbench.common.forms.editor.client.resources.i18n.FormEditorConstants;
 import org.kie.workbench.common.forms.editor.client.type.FormDefinitionResourceType;
-import org.kie.workbench.common.forms.editor.service.FormEditorService;
+import org.kie.workbench.common.forms.editor.service.shared.FormEditorService;
 import org.kie.workbench.common.widgets.client.handlers.DefaultNewResourceHandler;
 import org.kie.workbench.common.widgets.client.handlers.NewResourcePresenter;
 import org.kie.workbench.common.widgets.client.resources.i18n.CommonConstants;

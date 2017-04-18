@@ -34,7 +34,6 @@ import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FieldType;
 import org.kie.workbench.common.forms.service.FieldManager;
-import org.kie.workbench.common.forms.service.MultipleFieldProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +56,7 @@ public abstract class AbstractFieldManager implements FieldManager {
 
     protected void registerFieldProvider(FieldProvider provider) {
 
-        boolean isMultiple = provider instanceof MultipleFieldProvider;
+        boolean isMultiple = provider instanceof MultipleValueFieldProvider;
 
         if (provider instanceof BasicTypeFieldProvider) {
             BasicTypeFieldProvider basicTypeProvider = (BasicTypeFieldProvider) provider;

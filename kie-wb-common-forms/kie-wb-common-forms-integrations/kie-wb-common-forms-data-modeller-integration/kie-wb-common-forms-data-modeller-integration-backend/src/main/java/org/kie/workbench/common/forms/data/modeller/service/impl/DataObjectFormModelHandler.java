@@ -22,13 +22,13 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 import org.kie.workbench.common.forms.data.modeller.service.DataObjectFinderService;
+import org.kie.workbench.common.forms.editor.service.backend.impl.AbstractFormModelHandler;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.service.FormModelHandler;
-import org.kie.workbench.common.forms.service.impl.AbstractFormModelHandler;
+import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 
 @Dependent
-public class DataObjectFormModelHandler extends AbstractFormModelHandler<DataObjectFormModel>{
+public class DataObjectFormModelHandler extends AbstractFormModelHandler<DataObjectFormModel> {
 
     protected DataObjectFinderService finderService;
 

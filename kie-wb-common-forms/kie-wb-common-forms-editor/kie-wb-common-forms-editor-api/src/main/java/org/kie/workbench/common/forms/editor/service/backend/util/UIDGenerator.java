@@ -1,11 +1,11 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.forms.editor.service;
+package org.kie.workbench.common.forms.editor.service.backend.util;
 
-import org.jboss.errai.bus.server.annotations.Remote;
-import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.uberfire.backend.vfs.Path;
+import java.util.UUID;
 
-@Remote
-public interface FieldPropertiesService {
+public class UIDGenerator {
 
-    FormEditorRenderingContext getFieldPropertiesRenderingContext( FieldDefinition fieldDefinition, Path formPath );
+    public static String generateUID() {
+        return UUID.randomUUID().toString();
+    }
+
 }

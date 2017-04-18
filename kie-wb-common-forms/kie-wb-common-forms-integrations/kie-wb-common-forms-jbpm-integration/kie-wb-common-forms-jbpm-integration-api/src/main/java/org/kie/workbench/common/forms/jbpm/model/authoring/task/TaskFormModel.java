@@ -22,6 +22,7 @@ import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.forms.jbpm.model.authoring.AbstractJBPMFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
+import org.kie.workbench.common.forms.jbpm.service.bpmn.util.BPMNVariableUtils;
 
 @Portable
 public class TaskFormModel extends AbstractJBPMFormModel {
@@ -77,7 +78,7 @@ public class TaskFormModel extends AbstractJBPMFormModel {
 
     @Override
     public String getFormName() {
-        return formName;
+        return formName + BPMNVariableUtils.TASK_FORM_SUFFIX;
     }
 
     public void setFormName( String formName ) {

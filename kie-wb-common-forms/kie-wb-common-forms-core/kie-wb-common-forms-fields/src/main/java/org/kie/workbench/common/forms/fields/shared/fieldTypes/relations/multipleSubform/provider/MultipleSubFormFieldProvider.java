@@ -24,12 +24,12 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipl
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.type.MultipleSubFormFieldType;
 import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.service.MultipleFieldProvider;
+import org.kie.workbench.common.forms.fields.shared.MultipleValueFieldProvider;
 
 @Dependent
 public class MultipleSubFormFieldProvider
         implements ModelTypeFieldProvider<MultipleSubFormFieldDefinition>,
-                   MultipleFieldProvider<MultipleSubFormFieldDefinition> {
+                   MultipleValueFieldProvider<MultipleSubFormFieldDefinition> {
 
     @Override
     public Class<MultipleSubFormFieldType> getFieldType() {

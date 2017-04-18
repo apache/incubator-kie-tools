@@ -34,7 +34,7 @@ import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorCont
 import org.kie.workbench.common.forms.editor.client.editor.events.FormEditorContextResponse;
 import org.kie.workbench.common.forms.editor.client.editor.properties.FieldPropertiesRenderer;
 import org.kie.workbench.common.forms.editor.client.editor.properties.FieldPropertiesRendererHelper;
-import org.kie.workbench.common.forms.editor.service.FormEditorRenderingContext;
+import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;

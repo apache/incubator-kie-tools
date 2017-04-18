@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 import org.kie.workbench.common.forms.service.FieldManager;
-import org.kie.workbench.common.forms.service.FormModelHandler;
+import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 
 @Dependent
 public class TaskFormModelHandler extends AbstractJBPMFormModelHandler<TaskFormModel> {

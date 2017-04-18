@@ -17,7 +17,7 @@ package org.kie.workbench.common.forms.editor.model;
 
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.workbench.common.forms.editor.service.FormEditorRenderingContext;
+import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.uberfire.backend.vfs.Path;
