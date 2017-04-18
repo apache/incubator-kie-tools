@@ -16,6 +16,8 @@
 
 package org.drools.workbench.client;
 
+import java.util.ArrayList;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.drools.workbench.client.resources.i18n.AppConstants;
 import org.guvnor.common.services.shared.config.AppConfigService;
@@ -35,13 +37,10 @@ import org.uberfire.ext.preferences.client.admin.page.AdminPage;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mocks.ConstantsAnswerMock;
 import org.uberfire.mocks.IocTestingUtils;
-import org.uberfire.mvp.Command;
 import org.uberfire.workbench.model.menu.MenuItem;
 import org.uberfire.workbench.model.menu.Menus;
 
-import java.util.ArrayList;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
@@ -80,50 +79,52 @@ public class DroolsWorkbenchEntryPointTest {
 
     @Before
     public void setup() {
-        appConfigServiceCallerMock = new CallerMock<>( appConfigService );
-        pmasCallerMock = new CallerMock<>( pmas );
+        appConfigServiceCallerMock = new CallerMock<>(appConfigService);
+        pmasCallerMock = new CallerMock<>(pmas);
 
-        droolsWorkbenchEntryPoint = spy( new DroolsWorkbenchEntryPoint( appConfigServiceCallerMock,
-                                                                        pmasCallerMock,
-                                                                        activityBeansCache,
-                                                                        placeManager,
-                                                                        iocManager,
-                                                                        menusHelper,
-                                                                        menuBar,
-                                                                        adminPage,
-                                                                        adminPageHelper) );
+        droolsWorkbenchEntryPoint = spy(new DroolsWorkbenchEntryPoint(appConfigServiceCallerMock,
+                                                                      pmasCallerMock,
+                                                                      activityBeansCache,
+                                                                      placeManager,
+                                                                      iocManager,
+                                                                      menusHelper,
+                                                                      menuBar,
+                                                                      adminPage,
+                                                                      adminPageHelper));
         mockMenuHelper();
         mockConstants();
-        IocTestingUtils.mockIocManager( iocManager );
+        IocTestingUtils.mockIocManager(iocManager);
     }
 
     @Test
     public void setupMenuTest() {
         droolsWorkbenchEntryPoint.setupMenu();
 
-        ArgumentCaptor<Menus> menusCaptor = ArgumentCaptor.forClass( Menus.class );
-        verify( menuBar ).addMenus( menusCaptor.capture() );
+        ArgumentCaptor<Menus> menusCaptor = ArgumentCaptor.forClass(Menus.class);
+        verify(menuBar).addMenus(menusCaptor.capture());
 
         Menus menus = menusCaptor.getValue();
 
-        assertEquals( 4, menus.getItems().size() );
+        assertEquals(2,
+                     menus.getItems().size());
 
-        assertEquals( droolsWorkbenchEntryPoint.constants.Home(), menus.getItems().get( 0 ).getCaption() );
-        assertEquals( droolsWorkbenchEntryPoint.constants.AdminPreferences(), menus.getItems().get( 1 ).getCaption() );
-        assertEquals( droolsWorkbenchEntryPoint.constants.Perspectives(), menus.getItems().get( 2 ).getCaption() );
+        assertEquals(droolsWorkbenchEntryPoint.constants.Home(),
+                     menus.getItems().get(0).getCaption());
+        assertEquals(droolsWorkbenchEntryPoint.constants.Perspectives(),
+                     menus.getItems().get(1).getCaption());
 
-        verify( menusHelper ).addRolesMenuItems();
-        verify( menusHelper ).addUtilitiesMenuItems();
+        verify(menusHelper).addRolesMenuItems();
+        verify(menusHelper).addUtilitiesMenuItems();
     }
 
     private void mockMenuHelper() {
         final ArrayList<MenuItem> menuItems = new ArrayList<>();
-        menuItems.add( mock( MenuItem.class ) );
-        doReturn( menuItems ).when( menusHelper ).getPerspectivesMenuItems();
+        menuItems.add(mock(MenuItem.class));
+        doReturn(menuItems).when(menusHelper).getPerspectivesMenuItems();
     }
 
     private void mockConstants() {
-        droolsWorkbenchEntryPoint.constants = mock( AppConstants.class, new ConstantsAnswerMock() );
+        droolsWorkbenchEntryPoint.constants = mock(AppConstants.class,
+                                                   new ConstantsAnswerMock());
     }
-
 }

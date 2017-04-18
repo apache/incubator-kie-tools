@@ -23,7 +23,6 @@ import org.guvnor.common.services.shared.config.AppConfigService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.kie.workbench.common.screens.search.client.menu.SearchMenuBuilder;
 import org.kie.workbench.common.services.shared.service.PlaceManagerActivityService;
 import org.kie.workbench.common.workbench.client.admin.DefaultAdminPageHelper;
 import org.kie.workbench.common.workbench.client.entrypoint.DefaultWorkbenchEntryPoint;
@@ -55,16 +54,18 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
     protected DefaultAdminPageHelper adminPageHelper;
 
     @Inject
-    public DroolsWorkbenchEntryPoint( final Caller<AppConfigService> appConfigService,
-                                      final Caller<PlaceManagerActivityService> pmas,
-                                      final ActivityBeansCache activityBeansCache,
-                                      final PlaceManager placeManager,
-                                      final SyncBeanManager iocManager,
-                                      final DefaultWorkbenchFeaturesMenusHelper menusHelper,
-                                      final WorkbenchMenuBarPresenter menuBar,
-                                      AdminPage adminPage,
-                                      DefaultAdminPageHelper adminPageHelper) {
-        super( appConfigService, pmas, activityBeansCache );
+    public DroolsWorkbenchEntryPoint(final Caller<AppConfigService> appConfigService,
+                                     final Caller<PlaceManagerActivityService> pmas,
+                                     final ActivityBeansCache activityBeansCache,
+                                     final PlaceManager placeManager,
+                                     final SyncBeanManager iocManager,
+                                     final DefaultWorkbenchFeaturesMenusHelper menusHelper,
+                                     final WorkbenchMenuBarPresenter menuBar,
+                                     final AdminPage adminPage,
+                                     final DefaultAdminPageHelper adminPageHelper) {
+        super(appConfigService,
+              pmas,
+              activityBeansCache);
         this.placeManager = placeManager;
         this.iocManager = iocManager;
         this.menusHelper = menusHelper;
@@ -75,14 +76,15 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
 
     @Override
     public void setupMenu() {
-        adminPage.addScreen( "root", AppConstants.INSTANCE.Settings() );
-        adminPage.setDefaultScreen( "root" );
+        adminPage.addScreen("root",
+                            AppConstants.INSTANCE.Settings());
+        adminPage.setDefaultScreen("root");
 
-        adminPage.addPreference( "root",
-                                 "LibraryPreferences",
-                                 AppConstants.INSTANCE.Library(),
-                                 "fa-cubes",
-                                 "preferences" );
+        adminPage.addPreference("root",
+                                "LibraryPreferences",
+                                AppConstants.INSTANCE.Library(),
+                                "fa-cubes",
+                                "preferences");
 
         final AbstractWorkbenchPerspectiveActivity defaultPerspective = menusHelper.getDefaultPerspectiveActivity();
 
@@ -90,22 +92,20 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
         menusHelper.addUtilitiesMenuItems();
 
         final Menus menus = MenuFactory
-                .newTopLevelMenu( constants.Home() )
-                .respondsWith( () -> {
-                    if ( defaultPerspective != null ) {
-                        placeManager.goTo( new DefaultPlaceRequest( defaultPerspective.getIdentifier() ) );
+                .newTopLevelMenu(constants.Home())
+                .respondsWith(() -> {
+                    if (defaultPerspective != null) {
+                        placeManager.goTo(new DefaultPlaceRequest(defaultPerspective.getIdentifier()));
                     } else {
-                        Window.alert( "Default perspective not found." );
+                        Window.alert("Default perspective not found.");
                     }
-                } )
+                })
                 .endMenu()
-                .newTopLevelMenu( constants.Perspectives() )
-                .withItems( menusHelper.getPerspectivesMenuItems() )
-                .endMenu()
-                .newTopLevelCustomMenu( iocManager.lookupBean( SearchMenuBuilder.class ).getInstance() )
+                .newTopLevelMenu(constants.Perspectives())
+                .withItems(menusHelper.getPerspectivesMenuItems())
                 .endMenu()
                 .build();
 
-        menuBar.addMenus( menus );
+        menuBar.addMenus(menus);
     }
 }
