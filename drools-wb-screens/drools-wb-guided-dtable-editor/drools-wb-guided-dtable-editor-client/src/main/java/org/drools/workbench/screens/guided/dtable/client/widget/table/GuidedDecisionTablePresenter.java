@@ -485,7 +485,7 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
                                                                       final int targetColumnIndex) -> {
                                                                          final GridData sourceUiModel = GuidedDecisionTablePresenter.this.getView().getModel();
                                                                          final GridData targetUiModel = e.getView().getModel();
-                                                                         sourceUiModel.getColumns().get(sourceColumnIndex).setLink(targetUiModel.getColumns().get(targetColumnIndex));
+                                                                         targetUiModel.getColumns().get(targetColumnIndex).setLink(sourceUiModel.getColumns().get(sourceColumnIndex));
                                                                      }));
     }
 
@@ -747,15 +747,15 @@ public class GuidedDecisionTablePresenter implements GuidedDecisionTableView.Pre
         if (isReadOnly()) {
             return;
         }
-        view.newAttributeOrMetaDataColumn( getReservedAttributeNames() );
+        view.newAttributeOrMetaDataColumn(getReservedAttributeNames());
     }
 
     @Override
     public Set<String> getReservedAttributeNames() {
         final Set<String> result = new HashSet<>();
 
-        result.addAll( getExistingAttributeNames() );
-        result.addAll( HitPolicyValidation.getReservedAttributes( model.getHitPolicy() ) );
+        result.addAll(getExistingAttributeNames());
+        result.addAll(HitPolicyValidation.getReservedAttributes(model.getHitPolicy()));
 
         return result;
     }
