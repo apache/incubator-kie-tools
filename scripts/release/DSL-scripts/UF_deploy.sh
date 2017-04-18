@@ -5,7 +5,7 @@ if [ -d $MAVEN_REPO_LOCAL ]; then
 fi
 
 # clones uberfire branch 
-git clone git@github.com:uberfire/uberfire.git -b $BASE_BRANCH
+git clone git@github.com:appformer/uberfire.git -b $BASE_BRANCH
 
 cd uberfire
 
