@@ -17,6 +17,7 @@
 
 <module>
 
+  <inherits name="com.google.gwt.typedarrays.TypedArrays"/>
   <inherits name="org.gwtbootstrap3.GwtBootstrap3NoTheme"/>
   <inherits name="org.uberfire.UberfireClientAll"/>
   <inherits name="org.uberfire.UberfireWorkbench"/>
