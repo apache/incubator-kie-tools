@@ -33,7 +33,8 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberElement;
 
 @Dependent
-public class JBPMFormModelCreationPresenterManager implements FormModelCreationViewManager<JBPMFormModel>, JBPMFormModelCreationView.Presenter {
+public class JBPMFormModelCreationPresenterManager implements FormModelCreationViewManager<JBPMFormModel>,
+                                                              JBPMFormModelCreationView.Presenter {
 
     protected Caller<BPMFinderService> finderService;
 
@@ -46,10 +47,10 @@ public class JBPMFormModelCreationPresenterManager implements FormModelCreationV
     private JBPMFormModel model;
 
     @Inject
-    public JBPMFormModelCreationPresenterManager( Caller<BPMFinderService> finderService,
-                                                  JBPMFormModelCreationView view,
-                                                  TranslationService translationService,
-                                                  NewResourcePresenter newResourcePresenter ) {
+    public JBPMFormModelCreationPresenterManager(Caller<BPMFinderService> finderService,
+                                                 JBPMFormModelCreationView view,
+                                                 TranslationService translationService,
+                                                 NewResourcePresenter newResourcePresenter) {
         this.finderService = finderService;
         this.view = view;
         this.translationService = translationService;
@@ -58,7 +59,7 @@ public class JBPMFormModelCreationPresenterManager implements FormModelCreationV
 
     @PostConstruct
     public void init() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
@@ -67,9 +68,9 @@ public class JBPMFormModelCreationPresenterManager implements FormModelCreationV
     }
 
     @Override
-    public void init( Path projectPath ) {
-        finderService.call( dataObjectFormModels -> view.setProcessModels( (List<JBPMProcessModel>) dataObjectFormModels ) ).getAvailableProcessModels(
-                projectPath );
+    public void init(Path projectPath) {
+        finderService.call(dataObjectFormModels -> view.setProcessModels((List<JBPMProcessModel>) dataObjectFormModels)).getAvailableProcessModels(
+                projectPath);
         model = null;
     }
 
@@ -80,8 +81,8 @@ public class JBPMFormModelCreationPresenterManager implements FormModelCreationV
 
     @Override
     public boolean isValid() {
-        if ( model == null ) {
-            view.setErrorMessage( translationService.getTranslation( Constants.InvalidFormModel ) );
+        if (model == null) {
+            view.setErrorMessage(translationService.getTranslation(Constants.InvalidFormModel));
             return false;
         }
         view.clearValidationErrors();
@@ -90,7 +91,7 @@ public class JBPMFormModelCreationPresenterManager implements FormModelCreationV
 
     @Override
     public String getLabel() {
-        return translationService.getTranslation( Constants.Process );
+        return translationService.getTranslation(Constants.Process);
     }
 
     @Override
@@ -104,11 +105,11 @@ public class JBPMFormModelCreationPresenterManager implements FormModelCreationV
     }
 
     @Override
-    public void setModel( JBPMFormModel model ) {
+    public void setModel(JBPMFormModel model) {
 
         this.model = model;
 
-        if ( model != null ) {
+        if (model != null) {
             newResourcePresenter.setResourceName(model.getFormName());
         }
     }

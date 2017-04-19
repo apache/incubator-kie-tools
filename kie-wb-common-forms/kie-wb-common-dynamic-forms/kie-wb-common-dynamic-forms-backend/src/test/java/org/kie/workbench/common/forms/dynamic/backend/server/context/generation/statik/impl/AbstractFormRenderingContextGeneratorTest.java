@@ -57,69 +57,80 @@ public abstract class AbstractFormRenderingContextGeneratorTest<T> {
 
     public void init() {
         final List<FieldAnnotationProcessor> processors = Arrays.asList(
-                new ListBoxFieldAnnotationProcessor( new ListBoxFieldProvider() {
+                new ListBoxFieldAnnotationProcessor(new ListBoxFieldProvider() {
                     {
                         registerFields();
                     }
-                } ),
-                new RadioGroupFieldAnnotationProcessor( new RadioGroupFieldProvider() {
+                }),
+                new RadioGroupFieldAnnotationProcessor(new RadioGroupFieldProvider() {
                     {
                         registerFields();
                     }
-                } ),
-                new SliderAnnotationProcessor( new SliderFieldProvider() {
+                }),
+                new SliderAnnotationProcessor(new SliderFieldProvider() {
                     {
                         registerFields();
                     }
-                } ),
-                new TextAreaAnnotationProcessor( new TextAreaFieldProvider() {
+                }),
+                new TextAreaAnnotationProcessor(new TextAreaFieldProvider() {
                     {
                         registerFields();
                     }
-                } ) );
+                }));
 
-        final List<FieldInitializer> initializers = Arrays.asList( new SubFormFieldInitializer(),
-                                                                   new MultipleSubFormFieldInitializer(),
-                                                                   new EnumSelectorFieldInitializer() );
+        final List<FieldInitializer> initializers = Arrays.asList(new SubFormFieldInitializer(),
+                                                                  new MultipleSubFormFieldInitializer(),
+                                                                  new EnumSelectorFieldInitializer());
 
-        annotationProcessors = mock( Instance.class );
-        when( annotationProcessors.iterator() ).then( inv -> processors.iterator() );
+        annotationProcessors = mock(Instance.class);
+        when(annotationProcessors.iterator()).then(inv -> processors.iterator());
 
-
-        fieldInitializers = mock( Instance.class );
-        when( fieldInitializers.iterator() ).then( inv -> initializers.iterator() );
+        fieldInitializers = mock(Instance.class);
+        when(fieldInitializers.iterator()).then(inv -> initializers.iterator());
 
         layoutTemplateGenerator = new DynamicFormLayoutTemplateGenerator();
 
-        service = new FormRenderingContextGeneratorImpl( annotationProcessors,
-                                                         fieldInitializers,
-                                                         layoutTemplateGenerator,
-                                                         new TestFieldManager() );
+        service = new FormRenderingContextGeneratorImpl(annotationProcessors,
+                                                        fieldInitializers,
+                                                        layoutTemplateGenerator,
+                                                        new TestFieldManager());
     }
 
-    public void initTest( T model, int expectedFields ) {
+    public void initTest(T model,
+                         int expectedFields) {
 
-        assertNotNull( "Model cannot be null", model );
+        assertNotNull("Model cannot be null",
+                      model);
 
-        context = service.createContext( model );
+        context = service.createContext(model);
 
-        assertNotNull( "Context cannot be null", context );
-        assertNotNull( "Context must have a root form", context.getRootForm() );
-        assertFalse( "Context must have at least one form", context.getAvailableForms().isEmpty() );
+        assertNotNull("Context cannot be null",
+                      context);
+        assertNotNull("Context must have a root form",
+                      context.getRootForm());
+        assertFalse("Context must have at least one form",
+                    context.getAvailableForms().isEmpty());
 
         FormDefinition form = context.getRootForm();
 
-        assertNotNull( "Form must contain fields", form.getFields() );
-        assertFalse( "Form must contain fields", form.getFields().isEmpty() );
+        assertNotNull("Form must contain fields",
+                      form.getFields());
+        assertFalse("Form must contain fields",
+                    form.getFields().isEmpty());
 
-        assertEquals( "Form should have " + expectedFields + " fields", expectedFields, form.getFields().size() );
+        assertEquals("Form should have " + expectedFields + " fields",
+                     expectedFields,
+                     form.getFields().size());
 
-        for ( FieldDefinition field : form.getFields() ) {
-            assertNotNull( "Field should have an ID!", field.getId() );
-            assertNotNull( "Field should have a name!", field.getName() );
-            assertNotNull( "Field should have a label!", field.getLabel() );
-            assertNotNull( "Field should have a model!", field.getBinding() );
+        for (FieldDefinition field : form.getFields()) {
+            assertNotNull("Field should have an ID!",
+                          field.getId());
+            assertNotNull("Field should have a name!",
+                          field.getName());
+            assertNotNull("Field should have a label!",
+                          field.getLabel());
+            assertNotNull("Field should have a model!",
+                          field.getBinding());
         }
     }
-
 }

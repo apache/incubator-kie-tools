@@ -23,6 +23,5 @@ public interface ColumnGenerator<T> {
 
     public String getType();
 
-    public Column<HasProperties, T> getColumn( String property );
-
+    public Column<HasProperties, T> getColumn(String property);
 }

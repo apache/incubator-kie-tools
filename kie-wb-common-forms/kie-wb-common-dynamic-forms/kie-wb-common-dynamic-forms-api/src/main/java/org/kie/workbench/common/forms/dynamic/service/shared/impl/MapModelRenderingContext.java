@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.forms.dynamic.service.shared.AbstractFormRenderingContext;
-import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.validation.DynamicModelConstraints;
 
 /**
@@ -38,7 +37,7 @@ public class MapModelRenderingContext extends AbstractFormRenderingContext<Map<S
     @Override
     protected MapModelRenderingContext getNewInstance() {
         MapModelRenderingContext copy = new MapModelRenderingContext();
-        copy.setModelValidations( modelValidations );
+        copy.setModelValidations(modelValidations);
         return copy;
     }
 
@@ -46,7 +45,7 @@ public class MapModelRenderingContext extends AbstractFormRenderingContext<Map<S
         return modelValidations;
     }
 
-    public void setModelValidations( Map<String, DynamicModelConstraints> modelValidations ) {
+    public void setModelValidations(Map<String, DynamicModelConstraints> modelValidations) {
         this.modelValidations = modelValidations;
     }
 }

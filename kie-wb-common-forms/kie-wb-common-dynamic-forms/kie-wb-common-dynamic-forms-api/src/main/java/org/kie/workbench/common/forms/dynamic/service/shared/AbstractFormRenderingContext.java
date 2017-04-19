@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.kie.workbench.common.forms.model.FormDefinition;
 
-
 public abstract class AbstractFormRenderingContext<T> implements FormRenderingContext<T> {
 
     protected Map<String, FormDefinition> availableForms = new HashMap<String, FormDefinition>();
@@ -36,17 +35,18 @@ public abstract class AbstractFormRenderingContext<T> implements FormRenderingCo
 
     @Override
     public FormDefinition getRootForm() {
-        return availableForms.get( rootFormId );
+        return availableForms.get(rootFormId);
     }
 
     @Override
-    public void setRootForm( FormDefinition rootForm ) {
+    public void setRootForm(FormDefinition rootForm) {
         this.rootFormId = rootForm.getId();
-        availableForms.put( rootFormId, rootForm );
+        availableForms.put(rootFormId,
+                           rootForm);
     }
 
     @Override
-    public void setModel( T model ) {
+    public void setModel(T model) {
         this.model = model;
     }
 
@@ -61,7 +61,7 @@ public abstract class AbstractFormRenderingContext<T> implements FormRenderingCo
     }
 
     @Override
-    public void setParentContext( FormRenderingContext parentContext ) {
+    public void setParentContext(FormRenderingContext parentContext) {
         this.parentContext = parentContext;
     }
 
@@ -71,7 +71,7 @@ public abstract class AbstractFormRenderingContext<T> implements FormRenderingCo
     }
 
     @Override
-    public void setRenderMode( RenderMode renderMode ) {
+    public void setRenderMode(RenderMode renderMode) {
         this.renderMode = renderMode;
     }
 
@@ -83,16 +83,17 @@ public abstract class AbstractFormRenderingContext<T> implements FormRenderingCo
     protected abstract AbstractFormRenderingContext<T> getNewInstance();
 
     @Override
-    public FormRenderingContext getCopyFor( String formKey, T model ) {
-        if ( formKey == null || formKey.isEmpty() ) {
+    public FormRenderingContext getCopyFor(String formKey,
+                                           T model) {
+        if (formKey == null || formKey.isEmpty()) {
             return null;
         }
         AbstractFormRenderingContext copy = getNewInstance();
-        copy.setRenderMode( renderMode );
-        copy.setRootForm( availableForms.get( formKey ) );
-        copy.setModel( model );
+        copy.setRenderMode(renderMode);
+        copy.setRootForm(availableForms.get(formKey));
+        copy.setModel(model);
         copy.availableForms = availableForms;
-        copy.setParentContext( this );
+        copy.setParentContext(this);
         return copy;
     }
 }

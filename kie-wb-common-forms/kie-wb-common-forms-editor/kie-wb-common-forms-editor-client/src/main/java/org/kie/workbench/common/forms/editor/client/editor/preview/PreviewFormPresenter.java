@@ -29,24 +29,25 @@ import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRender
 public class PreviewFormPresenter implements IsWidget {
 
     public interface PreviewFormPresenterView extends IsWidget {
-        public void preview( FormRenderingContext context );
+
+        public void preview(FormRenderingContext context);
     }
 
     private PreviewFormPresenterView view;
 
     @Inject
-    public PreviewFormPresenter( PreviewFormPresenterView view ) {
+    public PreviewFormPresenter(PreviewFormPresenterView view) {
         this.view = view;
     }
 
-    public void preview( FormRenderingContext context ) {
+    public void preview(FormRenderingContext context) {
 
         MapModelRenderingContext mapContext = new MapModelRenderingContext();
-        mapContext.getAvailableForms().putAll( context.getAvailableForms() );
-        mapContext.setRootForm( context.getRootForm() );
-        mapContext.setModel( new HashMap<>() );
+        mapContext.getAvailableForms().putAll(context.getAvailableForms());
+        mapContext.setRootForm(context.getRootForm());
+        mapContext.setModel(new HashMap<>());
 
-        view.preview( mapContext );
+        view.preview(mapContext);
     }
 
     @Override

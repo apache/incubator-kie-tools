@@ -17,7 +17,10 @@
 package org.kie.workbench.common.forms.metaModel;
 
 public @interface DateBox {
+
     String label();
+
     String placeHolder() default "";
+
     boolean showTime() default true;
 }

@@ -28,7 +28,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DynamicFormModelGeneratorTest extends AbstractFormGenerationTest {
 
     private DynamicFormModelGenerator dynamicFormModelGenerator;
@@ -40,23 +40,26 @@ public class DynamicFormModelGeneratorTest extends AbstractFormGenerationTest {
     public void init() {
         super.init();
 
-        formBuildingService = new FormBuildingServiceImpl( generator );
+        formBuildingService = new FormBuildingServiceImpl(generator);
 
-        dynamicFormModelGenerator = new DynamicFormModelGenerator( formBuildingService, new TestPropertyValueExtractor() );
+        dynamicFormModelGenerator = new DynamicFormModelGenerator(formBuildingService,
+                                                                  new TestPropertyValueExtractor());
     }
 
     @Test
     public void testGenerateContextForModel() {
-        StaticModelFormRenderingContext context = dynamicFormModelGenerator.getContextForModel( model );
+        StaticModelFormRenderingContext context = dynamicFormModelGenerator.getContextForModel(model);
 
-        assertNotNull( context );
+        assertNotNull(context);
 
-        assertNotNull( context.getRootForm() );
+        assertNotNull(context.getRootForm());
 
-        assertEquals( 3, context.getAvailableForms().size() );
+        assertEquals(3,
+                     context.getAvailableForms().size());
 
-        context.getAvailableForms().forEach( (id, form) -> {
-            testGeneratedForm( form, id );
-        } );
+        context.getAvailableForms().forEach((id, form) -> {
+            testGeneratedForm(form,
+                              id);
+        });
     }
 }

@@ -21,9 +21,9 @@ public class IDGenerator {
 
     public static String generateRandomId() {
         Date date = new Date();
-        String value = String.valueOf( Math.random() * date.getTime() );
+        String value = String.valueOf(Math.random() * date.getTime());
 
-        if ( value.indexOf(".") != -1 ) {
+        if (value.indexOf(".") != -1) {
             value = value.substring(value.indexOf(".") + 1);
         }
         return value;

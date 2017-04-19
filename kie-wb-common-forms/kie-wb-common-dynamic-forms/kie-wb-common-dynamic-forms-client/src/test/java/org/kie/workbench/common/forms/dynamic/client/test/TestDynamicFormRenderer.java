@@ -18,18 +18,21 @@ package org.kie.workbench.common.forms.dynamic.client.test;
 
 import org.jboss.errai.common.client.api.Caller;
 import org.kie.workbench.common.forms.dynamic.client.DynamicFormRenderer;
-import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
 import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGeneratorManager;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContextGeneratorService;
+import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
 
 public class TestDynamicFormRenderer extends DynamicFormRenderer {
 
     protected Object model;
 
-    public TestDynamicFormRenderer( DynamicFormRendererView view,
-                                    Caller<FormRenderingContextGeneratorService> transformerService,
-                                    FormHandlerGeneratorManager handlerGeneratorManager,
-                                    DynamicFormModelGenerator dynamicFormModelGenerator ) {
-        super( view, transformerService, handlerGeneratorManager, dynamicFormModelGenerator );
+    public TestDynamicFormRenderer(DynamicFormRendererView view,
+                                   Caller<FormRenderingContextGeneratorService> transformerService,
+                                   FormHandlerGeneratorManager handlerGeneratorManager,
+                                   DynamicFormModelGenerator dynamicFormModelGenerator) {
+        super(view,
+              transformerService,
+              handlerGeneratorManager,
+              dynamicFormModelGenerator);
     }
 }

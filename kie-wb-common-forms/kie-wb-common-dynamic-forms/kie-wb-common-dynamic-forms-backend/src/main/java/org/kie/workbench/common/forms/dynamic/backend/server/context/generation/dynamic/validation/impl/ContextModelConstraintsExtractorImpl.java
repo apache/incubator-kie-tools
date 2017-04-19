@@ -21,83 +21,88 @@ import org.slf4j.LoggerFactory;
 
 @Dependent
 @Default
-public class ContextModelConstraintsExtractorImpl implements ContextModelConstraintsExtractor, Serializable {
-    private static final Logger logger = LoggerFactory.getLogger( ContextModelConstraintsExtractorImpl.class );
+public class ContextModelConstraintsExtractorImpl implements ContextModelConstraintsExtractor,
+                                                             Serializable {
+
+    private static final Logger logger = LoggerFactory.getLogger(ContextModelConstraintsExtractorImpl.class);
 
     @Override
-    public void readModelConstraints( MapModelRenderingContext clientRenderingContext, ClassLoader classLoader ) {
-        if ( clientRenderingContext == null ) {
-            throw new IllegalArgumentException( "Context cannot be null" );
+    public void readModelConstraints(MapModelRenderingContext clientRenderingContext,
+                                     ClassLoader classLoader) {
+        if (clientRenderingContext == null) {
+            throw new IllegalArgumentException("Context cannot be null");
         }
-        if ( classLoader == null ) {
-            throw new IllegalArgumentException( "ClassLoader cannot be null" );
+        if (classLoader == null) {
+            throw new IllegalArgumentException("ClassLoader cannot be null");
         }
 
-        clientRenderingContext.getAvailableForms().values().forEach( formDefinition -> {
-            if ( formDefinition.getModel() instanceof JavaModel ) {
+        clientRenderingContext.getAvailableForms().values().forEach(formDefinition -> {
+            if (formDefinition.getModel() instanceof JavaModel) {
                 JavaModel javaModel = (JavaModel) formDefinition.getModel();
 
-                if ( clientRenderingContext.getModelConstraints().containsKey( javaModel ) ) {
+                if (clientRenderingContext.getModelConstraints().containsKey(javaModel)) {
                     return;
                 }
 
                 Class clazz = null;
                 try {
-                    clazz = classLoader.loadClass( javaModel.getType() );
-                    if ( clazz == null ) {
-                        clazz = getClass().forName( javaModel.getType() );
+                    clazz = classLoader.loadClass(javaModel.getType());
+                    if (clazz == null) {
+                        clazz = getClass().forName(javaModel.getType());
                     }
-                } catch ( ClassNotFoundException e ) {
+                } catch (ClassNotFoundException e) {
                     // maybe Class is not on the project ClassLoader, let's try on the main ClassLoader
                     try {
-                        clazz = getClass().forName( javaModel.getType() );
-                    } catch ( ClassNotFoundException e1 ) {
+                        clazz = getClass().forName(javaModel.getType());
+                    } catch (ClassNotFoundException e1) {
                         // ops! class not available on the main classLoader
                     }
                 }
 
-                if ( clazz == null ) {
-                    logger.warn( "Unable to find class for type {} on any classLoader. Skipping annotation processing",
-                                 javaModel.getType() );
+                if (clazz == null) {
+                    logger.warn("Unable to find class for type {} on any classLoader. Skipping annotation processing",
+                                javaModel.getType());
                 } else {
 
-                    BeanDescriptor descriptor = Validation.buildDefaultValidatorFactory().getValidator().getConstraintsForClass( clazz );
+                    BeanDescriptor descriptor = Validation.buildDefaultValidatorFactory().getValidator().getConstraintsForClass(clazz);
 
                     Set<PropertyDescriptor> properties = descriptor.getConstrainedProperties();
 
-                    DynamicModelConstraints constraints = new DynamicModelConstraints( javaModel.getType() );
+                    DynamicModelConstraints constraints = new DynamicModelConstraints(javaModel.getType());
 
-                    clientRenderingContext.getModelConstraints().put( javaModel.getType(), constraints );
+                    clientRenderingContext.getModelConstraints().put(javaModel.getType(),
+                                                                     constraints);
 
-                    properties.forEach( property -> {
+                    properties.forEach(property -> {
 
-                        property.getConstraintDescriptors().forEach( constraintDescriptor -> {
+                        property.getConstraintDescriptors().forEach(constraintDescriptor -> {
 
                             Map<String, Object> attributes = new HashMap<>();
 
-                            constraintDescriptor.getAttributes().forEach( (key, value) -> {
+                            constraintDescriptor.getAttributes().forEach((key, value) -> {
 
-                                if ( key.equals( "payload" ) || key.equals( "groups" ) ) {
+                                if (key.equals("payload") || key.equals("groups")) {
                                     return;
                                 }
 
                                 Object portableValue;
 
-                                if ( EnvUtil.isPortableType( value.getClass() ) ) {
+                                if (EnvUtil.isPortableType(value.getClass())) {
                                     portableValue = value;
                                 } else {
                                     portableValue = value.toString();
                                 }
-                                attributes.put( key, portableValue );
-
+                                attributes.put(key,
+                                               portableValue);
                             });
 
-                            constraints.addConstraintForField( property.getPropertyName(), new FieldConstraint( constraintDescriptor.getAnnotation().annotationType().getName(), attributes ) );
-                        } );
-                    } );
+                            constraints.addConstraintForField(property.getPropertyName(),
+                                                              new FieldConstraint(constraintDescriptor.getAnnotation().annotationType().getName(),
+                                                                                  attributes));
+                        });
+                    });
                 }
             }
-        } );
-
+        });
     }
 }

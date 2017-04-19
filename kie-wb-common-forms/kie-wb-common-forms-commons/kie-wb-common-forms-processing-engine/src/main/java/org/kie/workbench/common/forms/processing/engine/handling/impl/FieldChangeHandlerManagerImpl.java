@@ -37,63 +37,81 @@ public class FieldChangeHandlerManagerImpl implements FieldChangeHandlerManager 
     private List<FieldChangeHandler> defaultChangeHandlers = new ArrayList<>();
 
     @Override
-    public void setValidator( FormValidator validator ) {
+    public void setValidator(FormValidator validator) {
         this.validator = validator;
     }
 
     @Override
-    public void registerField( String fieldName ) {
-        registerField( fieldName, false );
+    public void registerField(String fieldName) {
+        registerField(fieldName,
+                      false);
     }
 
     @Override
-    public void registerField( String fieldName, boolean validateOnChange ) {
-        fieldExecutors.put( fieldName, new FieldChangeProcessor( fieldName, validateOnChange ) );
+    public void registerField(String fieldName,
+                              boolean validateOnChange) {
+        fieldExecutors.put(fieldName,
+                           new FieldChangeProcessor(fieldName,
+                                                    validateOnChange));
     }
 
     @Override
-    public void addFieldChangeHandler( FieldChangeHandler changeHandler ) {
-        defaultChangeHandlers.add( changeHandler );
+    public void addFieldChangeHandler(FieldChangeHandler changeHandler) {
+        defaultChangeHandlers.add(changeHandler);
     }
 
     @Override
-    public void addFieldChangeHandler( String fieldName, FieldChangeHandler changeHandler ) {
-        Assert.notNull( "FieldName cannot be null", fieldName );
-        Assert.notNull( "FieldChangeHandler cannot be null", changeHandler );
+    public void addFieldChangeHandler(String fieldName,
+                                      FieldChangeHandler changeHandler) {
+        Assert.notNull("FieldName cannot be null",
+                       fieldName);
+        Assert.notNull("FieldChangeHandler cannot be null",
+                       changeHandler);
 
-        FieldChangeProcessor executor = fieldExecutors.get( fieldName );
+        FieldChangeProcessor executor = fieldExecutors.get(fieldName);
 
-        if ( executor != null ) {
-            executor.addFieldChangeHandler( changeHandler );
+        if (executor != null) {
+            executor.addFieldChangeHandler(changeHandler);
         }
     }
 
     @Override
-    public void processFieldChange( String fieldName, Object newValue, Object model ) {
+    public void processFieldChange(String fieldName,
+                                   Object newValue,
+                                   Object model) {
         assert fieldName != null;
 
         String realFieldName = fieldName;
 
-        if ( realFieldName.indexOf( "." ) != -1 ) {
-            realFieldName = realFieldName.substring( 0, realFieldName.indexOf( "." ) );
+        if (realFieldName.indexOf(".") != -1) {
+            realFieldName = realFieldName.substring(0,
+                                                    realFieldName.indexOf("."));
         }
 
-        FieldChangeProcessor executor = fieldExecutors.get( realFieldName );
+        FieldChangeProcessor executor = fieldExecutors.get(realFieldName);
 
-        if ( executor != null ) {
-            if ( executor.isRequiresValidation() ) {
-                if ( validator != null && !validator.validate( realFieldName, model ) ) {
+        if (executor != null) {
+            if (executor.isRequiresValidation()) {
+                if (validator != null && !validator.validate(realFieldName,
+                                                             model)) {
                     return;
                 }
             }
-            doProcess( executor.getChangeHandlers(), fieldName, newValue );
-            doProcess( defaultChangeHandlers, fieldName, newValue );
+            doProcess(executor.getChangeHandlers(),
+                      fieldName,
+                      newValue);
+            doProcess(defaultChangeHandlers,
+                      fieldName,
+                      newValue);
         }
     }
 
-    protected void doProcess( Collection<FieldChangeHandler> handlers, String fieldName, Object newValue ) {
-        for ( FieldChangeHandler handler : handlers ) {
-            handler.onFieldChange( fieldName, newValue );
+    protected void doProcess(Collection<FieldChangeHandler> handlers,
+                             String fieldName,
+                             Object newValue) {
+        for (FieldChangeHandler handler : handlers) {
+            handler.onFieldChange(fieldName,
+                                  newValue);
         }
     }
 

@@ -28,6 +28,7 @@ import org.kie.workbench.common.forms.crud.client.component.formDisplay.IsFormVi
 import org.uberfire.ext.widgets.table.client.ColumnMeta;
 
 public class CrudComponentTestHelper<FORM_MODEL> implements CrudActionsHelper<CrudModel> {
+
     private boolean embeddedForms = true;
     private List<CrudModel> models;
 
@@ -35,24 +36,29 @@ public class CrudComponentTestHelper<FORM_MODEL> implements CrudActionsHelper<Cr
 
     private IsFormView<FORM_MODEL> formView;
 
-    public CrudComponentTestHelper( IsFormView<FORM_MODEL> formView, List<CrudModel> listModels ) {
+    public CrudComponentTestHelper(IsFormView<FORM_MODEL> formView,
+                                   List<CrudModel> listModels) {
         this.formView = formView;
         this.models = listModels;
         dataProvider = new AsyncDataProvider<CrudModel>() {
             @Override
-            protected void onRangeChanged( HasData<CrudModel> hasData ) {
-                if ( models != null ) {
-                    updateRowCount( models.size(), true );
-                    updateRowData( 0, models );
+            protected void onRangeChanged(HasData<CrudModel> hasData) {
+                if (models != null) {
+                    updateRowCount(models.size(),
+                                   true);
+                    updateRowData(0,
+                                  models);
                 } else {
-                    updateRowCount( 0, true );
-                    updateRowData( 0, new ArrayList<CrudModel>() );
+                    updateRowCount(0,
+                                   true);
+                    updateRowData(0,
+                                  new ArrayList<CrudModel>());
                 }
             }
         };
     }
 
-    public void setEmbeddedForms( boolean embeddedForms ) {
+    public void setEmbeddedForms(boolean embeddedForms) {
         this.embeddedForms = embeddedForms;
     }
 
@@ -85,41 +91,44 @@ public class CrudComponentTestHelper<FORM_MODEL> implements CrudActionsHelper<Cr
     public List<ColumnMeta<CrudModel>> getGridColumns() {
         List<ColumnMeta<CrudModel>> metas = new ArrayList<>();
 
-        ColumnMeta<CrudModel> columnMeta = new ColumnMeta<>( new TextColumn<CrudModel>() {
+        ColumnMeta<CrudModel> columnMeta = new ColumnMeta<>(new TextColumn<CrudModel>() {
             @Override
-            public String getValue( CrudModel model ) {
-                if ( model.getName() == null ) {
+            public String getValue(CrudModel model) {
+                if (model.getName() == null) {
                     return "";
                 }
-                return String.valueOf( model.getName() );
+                return String.valueOf(model.getName());
             }
-        }, "Name" );
+        },
+                                                            "Name");
 
-        metas.add( columnMeta );
+        metas.add(columnMeta);
 
-        columnMeta = new ColumnMeta<>( new TextColumn<CrudModel>() {
+        columnMeta = new ColumnMeta<>(new TextColumn<CrudModel>() {
             @Override
-            public String getValue( CrudModel model ) {
-                if ( model.getLastName() == null ) {
+            public String getValue(CrudModel model) {
+                if (model.getLastName() == null) {
                     return "";
                 }
-                return String.valueOf( model.getLastName() );
+                return String.valueOf(model.getLastName());
             }
-        }, "Last Name" );
+        },
+                                      "Last Name");
 
-        metas.add( columnMeta );
+        metas.add(columnMeta);
 
-        columnMeta = new ColumnMeta<>( new TextColumn<CrudModel>() {
+        columnMeta = new ColumnMeta<>(new TextColumn<CrudModel>() {
             @Override
-            public String getValue( CrudModel model ) {
-                if ( model.getBirthday() == null ) {
+            public String getValue(CrudModel model) {
+                if (model.getBirthday() == null) {
                     return "";
                 }
-                return String.valueOf( model.getBirthday() );
+                return String.valueOf(model.getBirthday());
             }
-        }, "Birthday" );
+        },
+                                      "Birthday");
 
-        metas.add( columnMeta );
+        metas.add(columnMeta);
 
         return metas;
     }
@@ -131,18 +140,20 @@ public class CrudComponentTestHelper<FORM_MODEL> implements CrudActionsHelper<Cr
 
     @Override
     public void createInstance() {
-        models.add( new CrudModel( "Ned", "Stark", new Date() ) );
+        models.add(new CrudModel("Ned",
+                                 "Stark",
+                                 new Date()));
     }
 
     @Override
-    public void deleteInstance( int index ) {
-        if ( index != -1 && index < models.size() ) {
-            models.remove( index );
+    public void deleteInstance(int index) {
+        if (index != -1 && index < models.size()) {
+            models.remove(index);
         }
     }
 
     @Override
-    public void editInstance( int index ) {
+    public void editInstance(int index) {
         // TODO Auto-generated method stub
 
     }

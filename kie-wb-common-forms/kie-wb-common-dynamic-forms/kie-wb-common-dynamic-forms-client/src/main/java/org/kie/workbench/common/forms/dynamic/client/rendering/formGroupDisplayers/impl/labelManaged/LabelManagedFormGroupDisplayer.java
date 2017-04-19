@@ -25,7 +25,7 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplaye
 public class LabelManagedFormGroupDisplayer extends AbstractFormGroupDisplayer<LabelManagedFormGroupDisplayerView> {
 
     @Inject
-    public LabelManagedFormGroupDisplayer( LabelManagedFormGroupDisplayerView view ) {
-        super( view );
+    public LabelManagedFormGroupDisplayer(LabelManagedFormGroupDisplayerView view) {
+        super(view);
     }
 }

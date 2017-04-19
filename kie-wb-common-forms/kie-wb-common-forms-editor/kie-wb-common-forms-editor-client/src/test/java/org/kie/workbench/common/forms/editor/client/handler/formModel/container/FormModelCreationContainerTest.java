@@ -27,7 +27,7 @@ import org.uberfire.backend.vfs.Path;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class FormModelCreationContainerTest {
 
     @Mock
@@ -46,33 +46,34 @@ public class FormModelCreationContainerTest {
 
     @Before
     public void init() {
-        container = new FormModelCreationContainer( view );
+        container = new FormModelCreationContainer(view);
     }
 
     @Test
     public void testGeneralFunctionallity() {
-        container.setup( creationViewManager, callback );
+        container.setup(creationViewManager,
+                        callback);
 
-        verify( view ).init( container );
+        verify(view).init(container);
 
-        container.initData( path );
-        verify( creationViewManager ).init( path );
+        container.initData(path);
+        verify(creationViewManager).init(path);
 
         container.getFormModelLabel();
-        verify( creationViewManager ).getLabel();
+        verify(creationViewManager).getLabel();
 
         container.getCreationView();
-        verify( creationViewManager ).getView();
+        verify(creationViewManager).getView();
 
         container.selectManager();
 
-        verify( view ).select();
-        verify( callback ).selectContainerCallback( container );
+        verify(view).select();
+        verify(callback).selectContainerCallback(container);
 
         container.showCreationView();
-        verify( view ).showCreationView();
+        verify(view).showCreationView();
 
         container.hideCreationView();
-        verify( view ).hideCreationView();
+        verify(view).hideCreationView();
     }
 }

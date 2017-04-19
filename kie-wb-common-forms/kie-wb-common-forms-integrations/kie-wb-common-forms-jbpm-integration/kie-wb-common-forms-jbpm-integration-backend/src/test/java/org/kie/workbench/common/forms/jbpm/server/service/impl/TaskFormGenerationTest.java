@@ -25,7 +25,7 @@ import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.mockito.runners.MockitoJUnitRunner;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class TaskFormGenerationTest extends BPMNFormGenerationTest<TaskFormModel> {
 
     @Override
@@ -34,12 +34,19 @@ public class TaskFormGenerationTest extends BPMNFormGenerationTest<TaskFormModel
     }
 
     @Override
-    protected TaskFormModel getModel( String modelId, List<JBPMVariable> variables ) {
-        return new TaskFormModel( modelId, modelId, modelId, modelId, variables );
+    protected TaskFormModel getModel(String modelId,
+                                     List<JBPMVariable> variables) {
+        return new TaskFormModel(modelId,
+                                 modelId,
+                                 modelId,
+                                 modelId,
+                                 variables);
     }
 
     @Override
-    protected Collection<FormDefinition> getModelForms( TaskFormModel model, ClassLoader classLoader ) {
-        return generator.generateTaskForms( model, classLoader );
+    protected Collection<FormDefinition> getModelForms(TaskFormModel model,
+                                                       ClassLoader classLoader) {
+        return generator.generateTaskForms(model,
+                                           classLoader);
     }
 }

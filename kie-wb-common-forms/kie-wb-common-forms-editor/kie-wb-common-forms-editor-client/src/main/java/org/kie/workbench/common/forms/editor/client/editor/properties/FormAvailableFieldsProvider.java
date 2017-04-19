@@ -19,5 +19,6 @@ package org.kie.workbench.common.forms.editor.client.editor.properties;
 import java.util.List;
 
 public interface FormAvailableFieldsProvider {
+
     List<String> getAvailableFields();
 }

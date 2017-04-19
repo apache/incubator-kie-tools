@@ -24,12 +24,13 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class FieldConstraint {
+
     private String annotationType;
 
     private Map<String, Object> params = new HashMap();
 
-    public FieldConstraint( @MapsTo( "annotationType" ) String annotationType,
-                            @MapsTo( "params" ) Map<String, Object> params ) {
+    public FieldConstraint(@MapsTo("annotationType") String annotationType,
+                           @MapsTo("params") Map<String, Object> params) {
         this.annotationType = annotationType;
         this.params = params;
     }

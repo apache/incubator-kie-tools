@@ -16,14 +16,12 @@
 
 package org.kie.workbench.common.forms.crud.client.component;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.FormDisplayer;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
+import static org.mockito.Mockito.*;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class CrudComponentTest<MODEL, FORM_MODEL> extends AbstractCrudComponentTest<MODEL, FORM_MODEL> {
@@ -32,11 +30,11 @@ public class CrudComponentTest<MODEL, FORM_MODEL> extends AbstractCrudComponentT
     public void usesEmbeddedDisplayerWhenShowEmbeddedFormsTrue() {
         initTest();
 
-        when( helper.showEmbeddedForms() ).thenReturn( true );
+        when(helper.showEmbeddedForms()).thenReturn(true);
 
         final FormDisplayer displayer = crudComponent.getFormDisplayer();
 
-        assertTrue( displayer.equals( embeddedFormDisplayer ) );
+        assertTrue(displayer.equals(embeddedFormDisplayer));
 
         runFormTest();
     }
@@ -45,11 +43,11 @@ public class CrudComponentTest<MODEL, FORM_MODEL> extends AbstractCrudComponentT
     public void useModalDisplayerWhenShowEmbeddedFormsFalse() {
         initTest();
 
-        when( helper.showEmbeddedForms() ).thenReturn( false );
+        when(helper.showEmbeddedForms()).thenReturn(false);
 
         final FormDisplayer displayer = crudComponent.getFormDisplayer();
 
-        assertTrue( displayer.equals( modalFormDisplayer ) );
+        assertTrue(displayer.equals(modalFormDisplayer));
 
         runFormTest();
     }
@@ -58,21 +56,20 @@ public class CrudComponentTest<MODEL, FORM_MODEL> extends AbstractCrudComponentT
     public void createInstanceCallsHelperCreateInstance() {
         initTest();
         crudComponent.createInstance();
-        verify( helper ).createInstance();
+        verify(helper).createInstance();
     }
 
     @Test
     public void editInstanceCallsHelperEditInstance() {
         initTest();
-        crudComponent.editInstance( 0 );
-        verify( helper ).editInstance( 0 );
+        crudComponent.editInstance(0);
+        verify(helper).editInstance(0);
     }
 
     @Test
     public void deleteInstanceCallsHelperDeleteInstance() {
         initTest();
-        crudComponent.deleteInstance( 0 );
-        verify( helper ).deleteInstance( 0 );
+        crudComponent.deleteInstance(0);
+        verify(helper).deleteInstance(0);
     }
-
 }

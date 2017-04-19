@@ -34,9 +34,9 @@ public interface FormValuesProcessor extends Serializable {
      * @param context BackendFormRenderingContext containing all the info about the current processed form
      * @return A Map<String, Object> representing all the data that is going to be used on the form.
      */
-    Map<String, Object> readFormValues( FormDefinition form,
-                                        Map<String, Object> rawValues,
-                                        BackendFormRenderingContext context );
+    Map<String, Object> readFormValues(FormDefinition form,
+                                       Map<String, Object> rawValues,
+                                       BackendFormRenderingContext context);
 
     /**
      * Reads the data comming from the form and converts it into the Data that the jBPM engine expects,
@@ -47,8 +47,8 @@ public interface FormValuesProcessor extends Serializable {
      * @param context BackendFormRenderingContext containing all the info about the current processed form
      * @return A Map<String, Object> that contains a pair of field, value for the given form.
      */
-    Map<String, Object> writeFormValues( FormDefinition form,
-                                         Map<String, Object> formValues,
-                                         Map<String, Object> rawValues,
-                                         BackendFormRenderingContext context );
+    Map<String, Object> writeFormValues(FormDefinition form,
+                                        Map<String, Object> formValues,
+                                        Map<String, Object> rawValues,
+                                        BackendFormRenderingContext context);
 }

@@ -21,7 +21,7 @@ import org.kie.workbench.common.forms.editor.client.resources.images.FormEditorI
 
 public interface FormModelerEditorResources extends ClientBundle {
 
-    public static final FormModelerEditorResources INSTANCE = GWT.create(FormModelerEditorResources.class );
+    public static final FormModelerEditorResources INSTANCE = GWT.create(FormModelerEditorResources.class);
 
     FormEditorImageResources images();
 }

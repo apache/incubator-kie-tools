@@ -15,6 +15,9 @@
  */
 package org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,10 +28,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textArea.de
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -54,7 +54,6 @@ public class TextAreaFieldInitializerTest {
     @Mock
     private I18nHelper i18nHelper;
 
-
     private Map<String, String> fieldElementParams = new HashMap<>();
 
     @Before
@@ -69,16 +68,24 @@ public class TextAreaFieldInitializerTest {
 
     @Test
     public void testInitializeWithParams() throws Exception {
-        fieldElementParams.put(PLACEHOLDER_PARAM, PLACEHOLDER);
-        fieldElementParams.put(ROWS_PARAM, ROWS);
+        fieldElementParams.put(PLACEHOLDER_PARAM,
+                               PLACEHOLDER);
+        fieldElementParams.put(ROWS_PARAM,
+                               ROWS);
 
-        placeholderInitializer.initialize(field, fieldElement, context);
-        rowsInitializer.initialize(field, fieldElement, context);
+        placeholderInitializer.initialize(field,
+                                          fieldElement,
+                                          context);
+        rowsInitializer.initialize(field,
+                                   fieldElement,
+                                   context);
 
         verify(field).setPlaceHolder(any());
         verify(field).setRows(any());
 
-        assertEquals(PLACEHOLDER, field.getPlaceHolder());
-        assertEquals(Integer.valueOf(ROWS), field.getRows());
+        assertEquals(PLACEHOLDER,
+                     field.getPlaceHolder());
+        assertEquals(Integer.valueOf(ROWS),
+                     field.getRows());
     }
 }

@@ -27,6 +27,7 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
 @Portable
 public class FormDefinition {
+
     private String id;
     private String name;
     private FormModel model;
@@ -38,7 +39,7 @@ public class FormDefinition {
     public FormDefinition() {
     }
 
-    public FormDefinition( @MapsTo( "model" ) FormModel model ) {
+    public FormDefinition(@MapsTo("model") FormModel model) {
         this.model = model;
     }
 
@@ -46,7 +47,7 @@ public class FormDefinition {
         return id;
     }
 
-    public void setId( String id ) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -54,7 +55,7 @@ public class FormDefinition {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -66,7 +67,7 @@ public class FormDefinition {
         return layoutTemplate;
     }
 
-    public void setLayoutTemplate( LayoutTemplate layoutTemplate ) {
+    public void setLayoutTemplate(LayoutTemplate layoutTemplate) {
         this.layoutTemplate = layoutTemplate;
     }
 
@@ -74,30 +75,56 @@ public class FormDefinition {
         return model;
     }
 
-    public void setModel( FormModel model ) {
+    public void setModel(FormModel model) {
         this.model = model;
     }
 
-    public FieldDefinition getFieldByBinding( final String binding ) {
-        return getFieldBy( field -> field.getBinding() != null && field.getBinding().equals( binding ) );
+    public FieldDefinition getFieldByBinding(final String binding) {
+        return getFieldBy(field -> field.getBinding() != null && field.getBinding().equals(binding));
     }
 
-    public FieldDefinition getFieldByName( final String name ) {
-        return getFieldBy( field -> field.getName().equals( name ) );
+    public FieldDefinition getFieldByName(final String name) {
+        return getFieldBy(field -> field.getName().equals(name));
     }
 
-    public FieldDefinition getFieldById( final String fieldId ) {
-        return getFieldBy( field -> field.getId().equals( fieldId ) );
+    public FieldDefinition getFieldById(final String fieldId) {
+        return getFieldBy(field -> field.getId().equals(fieldId));
     }
 
-    protected FieldDefinition getFieldBy( Predicate<FieldDefinition> predicate ) {
-        if ( predicate != null ) {
-            Optional<FieldDefinition> result = fields.stream().filter( predicate ).findFirst();
-            if ( result.isPresent() ) {
+    protected FieldDefinition getFieldBy(Predicate<FieldDefinition> predicate) {
+        if (predicate != null) {
+            Optional<FieldDefinition> result = fields.stream().filter(predicate).findFirst();
+            if (result.isPresent()) {
                 return result.get();
             }
         }
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        FormDefinition form = (FormDefinition) o;
+
+        if (!id.equals(form.id)) {
+            return false;
+        }
+        if (!name.equals(form.name)) {
+            return false;
+        }
+        if (!model.equals(form.model)) {
+            return false;
+        }
+        if (!fields.equals(form.fields)) {
+            return false;
+        }
+        return layoutTemplate.equals(form.layoutTemplate);
     }
 
     @Override

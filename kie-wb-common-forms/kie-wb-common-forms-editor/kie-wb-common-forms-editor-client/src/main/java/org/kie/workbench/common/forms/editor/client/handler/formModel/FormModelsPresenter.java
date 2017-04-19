@@ -45,9 +45,9 @@ public class FormModelsPresenter implements IsWidget {
     protected ManagedInstance<FormModelCreationViewManager> modelManagerInstance;
 
     @Inject
-    public FormModelsPresenter( FormModelsView view,
-                                ManagedInstance<FormModelCreationContainer> containerInstance,
-                                ManagedInstance<FormModelCreationViewManager> modelManagerInstance) {
+    public FormModelsPresenter(FormModelsView view,
+                               ManagedInstance<FormModelCreationContainer> containerInstance,
+                               ManagedInstance<FormModelCreationViewManager> modelManagerInstance) {
         this.view = view;
         this.containerInstance = containerInstance;
         this.modelManagerInstance = modelManagerInstance;
@@ -57,34 +57,35 @@ public class FormModelsPresenter implements IsWidget {
     protected void init() {
         containers = getRegisteredCreationManagers();
 
-        containers.sort( Comparator.comparingInt( o -> o.getCreationViewManager().getPriority() ) );
+        containers.sort(Comparator.comparingInt(o -> o.getCreationViewManager().getPriority()));
 
-        view.setCreationViews( containers );
+        view.setCreationViews(containers);
     }
 
     protected List<FormModelCreationContainer> getRegisteredCreationManagers() {
         List<FormModelCreationContainer> registeredContainers = new ArrayList<>();
 
-        modelManagerInstance.forEach( modelManager -> {
+        modelManagerInstance.forEach(modelManager -> {
             FormModelCreationContainer container = containerInstance.get();
 
-            container.setup( modelManager, this::selectContainer );
+            container.setup(modelManager,
+                            this::selectContainer);
 
-            registeredContainers.add( container );
-        } );
+            registeredContainers.add(container);
+        });
 
         return registeredContainers;
     }
 
-    public void initialize( Path projectPath ) {
+    public void initialize(Path projectPath) {
         view.reset();
 
-        currentManager = containers.get( 0 );
+        currentManager = containers.get(0);
         currentManager.selectManager();
 
-        containers.forEach( container -> {
-            container.initData( projectPath );
-        } );
+        containers.forEach(container -> {
+            container.initData(projectPath);
+        });
     }
 
     public boolean isValid() {
@@ -95,15 +96,15 @@ public class FormModelsPresenter implements IsWidget {
         return currentManager.getCreationViewManager().getFormModel();
     }
 
-    public void selectContainer( FormModelCreationContainer container ) {
-        PortablePreconditions.checkNotNull( "container", container );
+    public void selectContainer(FormModelCreationContainer container) {
+        PortablePreconditions.checkNotNull("container",
+                                           container);
 
-        if ( currentManager != null ) {
+        if (currentManager != null) {
             currentManager.hideCreationView();
         }
         currentManager = container;
         currentManager.showCreationView();
-
     }
 
     @Override

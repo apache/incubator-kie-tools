@@ -20,75 +20,75 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 
 public interface FormEditorConstants {
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String NewFormDefinitionlHandlerForm = "NewFormDefinitionlHandler.form";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String NewFormDefinitionlHandlerCreatingNewForm = "NewFormDefinitionlHandler.creatingNewForm";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String NewFormDefinitionlHandlerSelectFormUse = "NewFormDefinitionlHandler.selectFormUse";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String FormDefinitionResourceTypeFormTypeShortName = "FormDefinitionResourceType.formTypeShortName";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String FormDefinitionResourceTypeFormTypeDescription = "FormDefinitionResourceType.formTypeDescription";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String FormEditorPresenterTitle = "FormEditorPresenter.title";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String FormEditorViewImplDataObjects = "FormEditorViewImpl.dataObjects";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String FormEditorViewImplPreview = "FormEditorViewImpl.preview";
 
-    @TranslationKey( defaultValue = "")
+    @TranslationKey(defaultValue = "")
     String FormEditorPresenterLayoutTitle = "FormEditorPresenter.layoutTitle";
 
-    @TranslationKey( defaultValue = "")
+    @TranslationKey(defaultValue = "")
     String FormEditorPresenterLayoutSubTitle = "FormEditorPresenter.layoutSubTitle";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataObjectsAdminViewImplDataObjectID = "DataObjectsAdminViewImpl.dataObjectID";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataObjectsAdminViewImplDataObjectType = "DataObjectsAdminViewImpl.dataObjectType";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataObjectsAdminViewImplAddDataObject = "DataObjectsAdminViewImpl.addDataObject";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataObjectsAdminViewImplIdCannotBeEmpty = "DataObjectsAdminViewImpl.idCannotBeEmpty";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataObjectsAdminViewImplIdAreadyExists = "DataObjectsAdminViewImpl.idAreadyExists";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataObjectsAdminViewImplTypeCannotBeEmpty = "DataObjectsAdminViewImpl.typeCannotBeEmpty";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataObjectsAdminViewImplEmptyDataObjectsTable = "DataObjectsAdminViewImpl.emptyDataObjectsTable";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataObjectsAdminViewImplRemove = "DataObjectsAdminViewImpl.remove";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataObjectsAdminViewImplDataObjectIsBindedMessage = "DataObjectsAdminViewImpl.dataObjectIsBindedMessage";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DataObjectsAdminViewImplAreYouSureRemoveDataObject = "DataObjectsAdminViewImpl.areYouSureRemoveDataObject";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String FieldPropertiesRendererViewImplTitle = "FieldPropertiesRendererViewImpl.title";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String FieldPropertiesRendererViewImplFieldType = "FieldPropertiesRendererViewImpl.fieldType";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String FieldPropertiesRendererViewImplFieldBinding = "FieldPropertiesRendererViewImpl.fieldBinding";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String DefaultFormModelLabel = "DefaultFormModel.label";
 }

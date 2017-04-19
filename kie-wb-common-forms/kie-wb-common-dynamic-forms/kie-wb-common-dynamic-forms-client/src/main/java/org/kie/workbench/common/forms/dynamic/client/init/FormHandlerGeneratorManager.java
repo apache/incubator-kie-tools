@@ -21,8 +21,8 @@ import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Assert;
 import org.kie.workbench.common.forms.dynamic.service.shared.DynamicContext;
-import org.kie.workbench.common.forms.dynamic.service.shared.StaticContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.StaticContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
 import org.kie.workbench.common.forms.processing.engine.handling.FormHandler;
 
@@ -34,17 +34,18 @@ public class FormHandlerGeneratorManager {
     protected FormHandlerGenerator dynamicGenerator;
 
     @Inject
-    public FormHandlerGeneratorManager( @StaticContext FormHandlerGenerator staticGenerator,
-                                        @DynamicContext FormHandlerGenerator dynamicGenerator ) {
+    public FormHandlerGeneratorManager(@StaticContext FormHandlerGenerator staticGenerator,
+                                       @DynamicContext FormHandlerGenerator dynamicGenerator) {
         this.staticGenerator = staticGenerator;
         this.dynamicGenerator = dynamicGenerator;
     }
 
-    public FormHandler getFormHandler( FormRenderingContext context ) {
-        Assert.notNull("Context cannot be null", context);
-        if ( context instanceof MapModelRenderingContext ) {
-            return dynamicGenerator.generateFormHandler( context );
+    public FormHandler getFormHandler(FormRenderingContext context) {
+        Assert.notNull("Context cannot be null",
+                       context);
+        if (context instanceof MapModelRenderingContext) {
+            return dynamicGenerator.generateFormHandler(context);
         }
-        return staticGenerator.generateFormHandler( context );
+        return staticGenerator.generateFormHandler(context);
     }
 }

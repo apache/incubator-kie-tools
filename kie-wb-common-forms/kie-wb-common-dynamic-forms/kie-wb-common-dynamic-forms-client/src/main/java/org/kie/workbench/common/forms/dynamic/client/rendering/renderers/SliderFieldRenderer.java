@@ -36,11 +36,11 @@ public class SliderFieldRenderer extends FieldRenderer<SliderBaseDefinition> {
 
     @Override
     public void initInputWidget() {
-        slider = new Slider( field.getMin().doubleValue(),
-                             field.getMax().doubleValue(),
-                             field.getPrecision().doubleValue(),
-                             field.getStep().doubleValue() );
-        slider.setEnabled( !field.getReadOnly() && renderingContext.getRenderMode().equals( RenderMode.EDIT_MODE ) );
+        slider = new Slider(field.getMin().doubleValue(),
+                            field.getMax().doubleValue(),
+                            field.getPrecision().doubleValue(),
+                            field.getStep().doubleValue());
+        slider.setEnabled(!field.getReadOnly() && renderingContext.getRenderMode().equals(RenderMode.EDIT_MODE));
     }
 
     @Override
@@ -60,7 +60,7 @@ public class SliderFieldRenderer extends FieldRenderer<SliderBaseDefinition> {
     }
 
     @Override
-    protected void setReadOnly( boolean readOnly ) {
-        slider.setEnabled( !readOnly );
+    protected void setReadOnly(boolean readOnly) {
+        slider.setEnabled(!readOnly);
     }
 }

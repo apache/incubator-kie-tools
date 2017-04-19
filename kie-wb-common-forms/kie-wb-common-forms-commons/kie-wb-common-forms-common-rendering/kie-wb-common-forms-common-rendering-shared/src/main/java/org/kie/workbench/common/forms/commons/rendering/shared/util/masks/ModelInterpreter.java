@@ -24,5 +24,5 @@ public interface ModelInterpreter<T> {
     /**
      * Returns the value of the specified property.
      */
-    String getPropertyValue( String propertyName );
+    String getPropertyValue(String propertyName);
 }

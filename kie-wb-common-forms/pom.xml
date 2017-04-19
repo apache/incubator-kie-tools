@@ -25,6 +25,11 @@
     <module>kie-wb-common-forms-integrations</module>
   </modules>
 
+  <properties>
+    <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
+    <checkstyle.logViolationsToConsole>true</checkstyle.logViolationsToConsole>
+  </properties>
+
   <build>
     <plugins>
       <plugin>

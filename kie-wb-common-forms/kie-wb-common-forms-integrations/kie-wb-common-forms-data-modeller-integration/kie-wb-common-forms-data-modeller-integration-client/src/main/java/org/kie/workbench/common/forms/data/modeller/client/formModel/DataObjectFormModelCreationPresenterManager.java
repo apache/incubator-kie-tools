@@ -22,7 +22,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.common.client.api.Caller;
-import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.data.modeller.client.resources.i18n.DataModellerIntegrationConstants;
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
@@ -32,7 +31,8 @@ import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.mvp.UberElement;
 
 @Dependent
-public class DataObjectFormModelCreationPresenterManager implements FormModelCreationViewManager<DataObjectFormModel>, DataObjectFormModelCreationView.Presenter {
+public class DataObjectFormModelCreationPresenterManager implements FormModelCreationViewManager<DataObjectFormModel>,
+                                                                    DataObjectFormModelCreationView.Presenter {
 
     protected Caller<DataObjectFinderService> finderService;
 
@@ -41,9 +41,9 @@ public class DataObjectFormModelCreationPresenterManager implements FormModelCre
     protected TranslationService translationService;
 
     @Inject
-    public DataObjectFormModelCreationPresenterManager( Caller<DataObjectFinderService> finderService,
-                                                        DataObjectFormModelCreationView view,
-                                                        TranslationService translationService ) {
+    public DataObjectFormModelCreationPresenterManager(Caller<DataObjectFinderService> finderService,
+                                                       DataObjectFormModelCreationView view,
+                                                       TranslationService translationService) {
         this.finderService = finderService;
         this.view = view;
         this.translationService = translationService;
@@ -51,7 +51,7 @@ public class DataObjectFormModelCreationPresenterManager implements FormModelCre
 
     @PostConstruct
     public void initialize() {
-        view.init( this );
+        view.init(this);
     }
 
     @Override
@@ -60,9 +60,9 @@ public class DataObjectFormModelCreationPresenterManager implements FormModelCre
     }
 
     @Override
-    public void init( Path projectPath ) {
-        finderService.call( dataObjectFormModels -> view.setFormModels( (List<DataObjectFormModel>) dataObjectFormModels ) ).getAvailableDataObjects(
-                projectPath );
+    public void init(Path projectPath) {
+        finderService.call(dataObjectFormModels -> view.setFormModels((List<DataObjectFormModel>) dataObjectFormModels)).getAvailableDataObjects(
+                projectPath);
     }
 
     @Override
@@ -72,8 +72,8 @@ public class DataObjectFormModelCreationPresenterManager implements FormModelCre
 
     @Override
     public boolean isValid() {
-        if ( getFormModel() == null ) {
-            view.setErrorMessage( translationService.getTranslation( DataModellerIntegrationConstants.InvalidDataObject ) );
+        if (getFormModel() == null) {
+            view.setErrorMessage(translationService.getTranslation(DataModellerIntegrationConstants.InvalidDataObject));
             return false;
         }
         view.clearValidationErrors();
@@ -82,7 +82,7 @@ public class DataObjectFormModelCreationPresenterManager implements FormModelCre
 
     @Override
     public String getLabel() {
-        return translationService.getTranslation( DataModellerIntegrationConstants.DataObject );
+        return translationService.getTranslation(DataModellerIntegrationConstants.DataObject);
     }
 
     @Override

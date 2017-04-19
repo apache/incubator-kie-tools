@@ -23,7 +23,7 @@ import org.kie.workbench.common.forms.editor.client.handler.formModel.container.
 
 public interface FormModelsView extends IsWidget {
 
-    void setCreationViews( List<FormModelCreationContainer> creationViews );
+    void setCreationViews(List<FormModelCreationContainer> creationViews);
 
     void reset();
 }

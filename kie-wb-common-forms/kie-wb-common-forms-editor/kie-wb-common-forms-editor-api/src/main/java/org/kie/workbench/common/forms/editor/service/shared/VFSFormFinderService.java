@@ -25,10 +25,11 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface VFSFormFinderService {
 
-    public List<FormDefinition> findAllForms( Path path );
+    public List<FormDefinition> findAllForms(Path path);
 
-    public List<FormDefinition> findFormsForType( String typeName, Path path );
+    public List<FormDefinition> findFormsForType(String typeName,
+                                                 Path path);
 
-    public FormDefinition findFormById( String id, Path path );
-
+    public FormDefinition findFormById(String id,
+                                       Path path);
 }

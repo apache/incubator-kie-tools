@@ -23,40 +23,41 @@ import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorDataProvider;
 import org.kie.workbench.common.forms.dynamic.model.config.SystemSelectorDataProvider;
 
-
 public abstract class AbstractSelectorDataProviderManager implements SelectorDataProviderManager {
 
     protected Map<String, SelectorDataProvider> providers = new HashMap<>();
 
-    protected void registerProvider( SelectorDataProvider provider ) {
-        providers.put( getPreffix() + SEPARATOR + provider.getClass().getName(), provider );
+    protected void registerProvider(SelectorDataProvider provider) {
+        providers.put(getPreffix() + SEPARATOR + provider.getClass().getName(),
+                      provider);
     }
 
     @Override
     public Map<String, String> availableProviders() {
         Map<String, String> result = new HashMap<>();
 
-        for ( String key : providers.keySet() ) {
-            SelectorDataProvider provider = providers.get( key );
-            if ( !(provider instanceof SystemSelectorDataProvider ) ) {
-                result.put( key, provider.getProviderName() );
+        for (String key : providers.keySet()) {
+            SelectorDataProvider provider = providers.get(key);
+            if (!(provider instanceof SystemSelectorDataProvider)) {
+                result.put(key,
+                           provider.getProviderName());
             }
         }
         return result;
     }
 
     @Override
-    public SelectorData getDataFromProvider( FormRenderingContext context, String provider ) {
+    public SelectorData getDataFromProvider(FormRenderingContext context,
+                                            String provider) {
 
-        SelectorDataProvider dataProvider = providers.get( provider );
+        SelectorDataProvider dataProvider = providers.get(provider);
 
-        if ( dataProvider == null ) {
+        if (dataProvider == null) {
             return null;
         }
 
-        return dataProvider.getSelectorData( context );
+        return dataProvider.getSelectorData(context);
     }
-
 
     public abstract String getPreffix();
 }

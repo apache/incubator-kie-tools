@@ -57,37 +57,53 @@ public abstract class AbstractSliderFieldInitializerTest<INITIALIZER extends Abs
     public void init() {
         initializer = getInitializerInstance();
         field = spy(getFieldInstance());
-        when( fieldElement.getParams()).thenReturn(fieldElementParams);
+        when(fieldElement.getParams()).thenReturn(fieldElementParams);
     }
 
     @Test
     public void testInitializeWithParams() {
-        fieldElementParams.put(MIN_PARAM, MIN);
-        fieldElementParams.put(MAX_PARAM, MAX);
-        fieldElementParams.put(STEP_PARAM, STEP);
-        fieldElementParams.put(PRECISION_PARAM, PRECISION);
+        fieldElementParams.put(MIN_PARAM,
+                               MIN);
+        fieldElementParams.put(MAX_PARAM,
+                               MAX);
+        fieldElementParams.put(STEP_PARAM,
+                               STEP);
+        fieldElementParams.put(PRECISION_PARAM,
+                               PRECISION);
 
-        initializer.initialize(field, fieldElement, context);
+        initializer.initialize(field,
+                               fieldElement,
+                               context);
 
         verify(field).setMin(any());
         verify(field).setMax(any());
         verify(field).setStep(any());
         verify(field).setPrecision(any());
 
-        assertEquals(initializer.parseValue(MIN), field.getMin());
-        assertEquals(initializer.parseValue(MAX), field.getMax());
-        assertEquals(initializer.parseValue(STEP), field.getStep());
-        assertEquals(initializer.parseValue(PRECISION), field.getPrecision());
+        assertEquals(initializer.parseValue(MIN),
+                     field.getMin());
+        assertEquals(initializer.parseValue(MAX),
+                     field.getMax());
+        assertEquals(initializer.parseValue(STEP),
+                     field.getStep());
+        assertEquals(initializer.parseValue(PRECISION),
+                     field.getPrecision());
     }
 
     @Test
     public void testInitializeWithoutParams() {
-        initializer.initialize(field, fieldElement, context);
+        initializer.initialize(field,
+                               fieldElement,
+                               context);
 
-        verify(field, never()).setMin(any());
-        verify(field, never()).setMax(any());
-        verify(field, never()).setStep(any());
-        verify(field, never()).setPrecision(any());
+        verify(field,
+               never()).setMin(any());
+        verify(field,
+               never()).setMax(any());
+        verify(field,
+               never()).setStep(any());
+        verify(field,
+               never()).setPrecision(any());
     }
 
     abstract INITIALIZER getInitializerInstance();

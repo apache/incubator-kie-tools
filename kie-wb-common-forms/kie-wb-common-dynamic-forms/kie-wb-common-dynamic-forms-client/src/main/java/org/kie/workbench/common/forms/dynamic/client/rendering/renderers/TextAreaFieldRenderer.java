@@ -37,10 +37,10 @@ public class TextAreaFieldRenderer extends FieldRenderer<TextAreaFieldDefinition
     @Override
     public void initInputWidget() {
         textArea = new TextArea();
-        textArea.setPlaceholder( field.getPlaceHolder() );
-        textArea.setVisibleLines( field.getRows() );
-        textArea.setEnabled( !field.getReadOnly() );
-        textArea.setVisibleLines( field.getRows() );
+        textArea.setPlaceholder(field.getPlaceHolder());
+        textArea.setVisibleLines(field.getRows());
+        textArea.setEnabled(!field.getReadOnly());
+        textArea.setVisibleLines(field.getRows());
     }
 
     @Override
@@ -59,7 +59,7 @@ public class TextAreaFieldRenderer extends FieldRenderer<TextAreaFieldDefinition
     }
 
     @Override
-    protected void setReadOnly( boolean readOnly ) {
-        textArea.setEnabled( !readOnly );
+    protected void setReadOnly(boolean readOnly) {
+        textArea.setEnabled(!readOnly);
     }
 }

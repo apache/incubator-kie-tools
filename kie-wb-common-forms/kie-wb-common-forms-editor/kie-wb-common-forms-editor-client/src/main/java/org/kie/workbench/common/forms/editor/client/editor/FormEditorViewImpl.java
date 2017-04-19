@@ -31,7 +31,8 @@ import org.uberfire.ext.layout.editor.client.api.LayoutEditor;
 
 @Dependent
 @Templated
-public class FormEditorViewImpl extends KieEditorViewImpl implements FormEditorPresenter.FormEditorView, RequiresResize {
+public class FormEditorViewImpl extends KieEditorViewImpl implements FormEditorPresenter.FormEditorView,
+                                                                     RequiresResize {
 
     @DataField
     private Element container = DOM.createDiv();
@@ -45,30 +46,32 @@ public class FormEditorViewImpl extends KieEditorViewImpl implements FormEditorP
     private FormEditorPresenter presenter;
 
     @Inject
-    public FormEditorViewImpl( TranslationService translationService ) {
+    public FormEditorViewImpl(TranslationService translationService) {
         this.translationService = translationService;
     }
 
     @Override
-    public void init( FormEditorPresenter presenter ) {
+    public void init(FormEditorPresenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setupLayoutEditor( LayoutEditor layoutEditor ) {
+    public void setupLayoutEditor(LayoutEditor layoutEditor) {
         editorContent.clear();
-        editorContent.add( layoutEditor.asWidget() );
+        editorContent.add(layoutEditor.asWidget());
     }
 
     @Override
     public void onResize() {
-        if ( getParent() == null ) {
+        if (getParent() == null) {
             return;
         }
         int height = getParent().getOffsetHeight();
         int width = getParent().getOffsetWidth();
 
-        container.getStyle().setWidth( width, Style.Unit.PX );
-        container.getStyle().setHeight( height, Style.Unit.PX );
+        container.getStyle().setWidth(width,
+                                      Style.Unit.PX);
+        container.getStyle().setHeight(height,
+                                       Style.Unit.PX);
     }
 }

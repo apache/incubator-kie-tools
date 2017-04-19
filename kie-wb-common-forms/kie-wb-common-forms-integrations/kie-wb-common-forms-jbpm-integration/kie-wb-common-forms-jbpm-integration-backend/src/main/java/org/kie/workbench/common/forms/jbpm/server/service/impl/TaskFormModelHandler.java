@@ -19,16 +19,16 @@ package org.kie.workbench.common.forms.jbpm.server.service.impl;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 import org.kie.workbench.common.forms.service.FieldManager;
-import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 
 @Dependent
 public class TaskFormModelHandler extends AbstractJBPMFormModelHandler<TaskFormModel> {
 
     @Inject
-    public TaskFormModelHandler( FieldManager fieldManager ) {
-        super( fieldManager );
+    public TaskFormModelHandler(FieldManager fieldManager) {
+        super(fieldManager);
     }
 
     @Override
@@ -38,6 +38,6 @@ public class TaskFormModelHandler extends AbstractJBPMFormModelHandler<TaskFormM
 
     @Override
     public FormModelHandler<TaskFormModel> newInstance() {
-        return new TaskFormModelHandler( fieldManager );
+        return new TaskFormModelHandler(fieldManager);
     }
 }

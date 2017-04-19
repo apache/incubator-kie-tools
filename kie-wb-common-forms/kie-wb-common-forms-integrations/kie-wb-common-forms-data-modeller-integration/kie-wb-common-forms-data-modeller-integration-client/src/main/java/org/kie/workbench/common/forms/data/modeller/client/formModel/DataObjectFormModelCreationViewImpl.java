@@ -17,7 +17,6 @@
 package org.kie.workbench.common.forms.data.modeller.client.formModel;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.dom.client.DivElement;
@@ -31,7 +30,8 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 
 @Templated
-public class DataObjectFormModelCreationViewImpl implements DataObjectFormModelCreationView, IsElement {
+public class DataObjectFormModelCreationViewImpl implements DataObjectFormModelCreationView,
+                                                            IsElement {
 
     @DataField
     private DivElement formGroup = Document.get().createDivElement();
@@ -42,30 +42,31 @@ public class DataObjectFormModelCreationViewImpl implements DataObjectFormModelC
     private Presenter presenter;
 
     @DataField
-    private ValueListBox<DataObjectFormModel> listBox = new ValueListBox<>( new Renderer<DataObjectFormModel>() {
+    private ValueListBox<DataObjectFormModel> listBox = new ValueListBox<>(new Renderer<DataObjectFormModel>() {
         @Override
-        public String render( DataObjectFormModel formModel ) {
-            if ( formModel != null ) {
+        public String render(DataObjectFormModel formModel) {
+            if (formModel != null) {
                 return formModel.getClassName();
             }
             return "";
         }
 
         @Override
-        public void render( DataObjectFormModel object, Appendable appendable ) throws IOException {
-            appendable.append( render( object ) );
+        public void render(DataObjectFormModel object,
+                           Appendable appendable) throws IOException {
+            appendable.append(render(object));
         }
-    } );
+    });
 
     @Override
-    public void init( Presenter presenter ) {
+    public void init(Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setFormModels( List<DataObjectFormModel> formModels ) {
-        listBox.setValue( null );
-        listBox.setAcceptableValues( formModels );
+    public void setFormModels(List<DataObjectFormModel> formModels) {
+        listBox.setValue(null);
+        listBox.setAcceptableValues(formModels);
     }
 
     @Override
@@ -75,19 +76,19 @@ public class DataObjectFormModelCreationViewImpl implements DataObjectFormModelC
 
     @Override
     public void reset() {
-        listBox.setValue( null );
+        listBox.setValue(null);
         clearValidationErrors();
     }
 
     @Override
     public void clearValidationErrors() {
-        formGroup.removeClassName( ValidationState.ERROR.getCssName() );
-        modelHelpBlock.setInnerText( "" );
+        formGroup.removeClassName(ValidationState.ERROR.getCssName());
+        modelHelpBlock.setInnerText("");
     }
 
     @Override
-    public void setErrorMessage( String errorMessage ) {
-        formGroup.addClassName( ValidationState.ERROR.getCssName() );
-        modelHelpBlock.setInnerText( errorMessage );
+    public void setErrorMessage(String errorMessage) {
+        formGroup.addClassName(ValidationState.ERROR.getCssName());
+        modelHelpBlock.setInnerText(errorMessage);
     }
 }

@@ -25,21 +25,24 @@ import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRender
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 
 public class BindingHelpers {
+
     private static Map<Class<? extends FormRenderingContext>, Class<? extends BindingHelper>> helpers = new HashMap<>();
 
-    public static BindingHelper getHelper( FormRenderingContext context, MultipleSubFormFieldDefinition field ) {
+    public static BindingHelper getHelper(FormRenderingContext context,
+                                          MultipleSubFormFieldDefinition field) {
 
         Class<? extends BindingHelper> helperClazz = null;
 
-        if ( context instanceof MapModelRenderingContext ) {
+        if (context instanceof MapModelRenderingContext) {
             helperClazz = DynamicBindingHelper.class;
         } else {
             helperClazz = StaticBindingHelper.class;
         }
 
-        BindingHelper helper = IOC.getBeanManager().lookupBean( helperClazz ).newInstance();
+        BindingHelper helper = IOC.getBeanManager().lookupBean(helperClazz).newInstance();
 
-        helper.setUp( field, context );
+        helper.setUp(field,
+                     context);
 
         return helper;
     }

@@ -32,7 +32,7 @@ public class DocumentPropertyGenerator implements PropertyGenerator<DocumentFiel
     }
 
     @Override
-    public PropertyType generatePropertyType( DocumentFieldDefinition field ) {
-        return new PropertyType( DocumentData.class );
+    public PropertyType generatePropertyType(DocumentFieldDefinition field) {
+        return new PropertyType(DocumentData.class);
     }
 }

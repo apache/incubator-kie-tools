@@ -23,30 +23,29 @@ import org.kie.workbench.common.forms.commons.rendering.shared.util.masks.ModelI
 
 public class ClientMaskInterpreter<T> extends MaskInterpreter<T> {
 
-    public ClientMaskInterpreter( String mask ) {
-        super( mask );
+    public ClientMaskInterpreter(String mask) {
+        super(mask);
     }
 
     @Override
-    protected ModelInterpreter<T> getModelInterpreter( T model ) {
+    protected ModelInterpreter<T> getModelInterpreter(T model) {
 
         HasProperties hasProperties;
 
-        if ( model instanceof HasProperties ) {
+        if (model instanceof HasProperties) {
             hasProperties = (HasProperties) model;
         } else {
-            hasProperties = (HasProperties) DataBinder.forModel( model ).getModel();
+            hasProperties = (HasProperties) DataBinder.forModel(model).getModel();
         }
 
         return propertyName -> {
-            Object result = hasProperties.get( propertyName );
+            Object result = hasProperties.get(propertyName);
 
-            if ( result == null ) {
+            if (result == null) {
                 return "";
             }
 
             return result.toString();
         };
-
     }
 }

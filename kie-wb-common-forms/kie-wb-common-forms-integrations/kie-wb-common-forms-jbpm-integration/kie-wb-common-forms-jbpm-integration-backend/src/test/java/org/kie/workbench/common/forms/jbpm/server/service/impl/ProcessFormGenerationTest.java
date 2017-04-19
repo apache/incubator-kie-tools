@@ -25,7 +25,7 @@ import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProce
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.mockito.runners.MockitoJUnitRunner;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class ProcessFormGenerationTest extends BPMNFormGenerationTest<BusinessProcessFormModel> {
 
     @Override
@@ -34,12 +34,17 @@ public class ProcessFormGenerationTest extends BPMNFormGenerationTest<BusinessPr
     }
 
     @Override
-    protected BusinessProcessFormModel getModel( String modelId, List<JBPMVariable> variables ) {
-        return new BusinessProcessFormModel( modelId, modelId, variables );
+    protected BusinessProcessFormModel getModel(String modelId,
+                                                List<JBPMVariable> variables) {
+        return new BusinessProcessFormModel(modelId,
+                                            modelId,
+                                            variables);
     }
 
     @Override
-    protected Collection<FormDefinition> getModelForms( BusinessProcessFormModel model, ClassLoader classLoader ) {
-        return generator.generateProcessForms( model, classLoader );
+    protected Collection<FormDefinition> getModelForms(BusinessProcessFormModel model,
+                                                       ClassLoader classLoader) {
+        return generator.generateProcessForms(model,
+                                              classLoader);
     }
 }

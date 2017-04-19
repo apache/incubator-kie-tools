@@ -21,5 +21,5 @@ import org.jboss.errai.bus.server.annotations.Remote;
 @Remote
 public interface FormRenderingContextGeneratorService {
 
-    FormRenderingContext createContext( Object model );
+    FormRenderingContext createContext(Object model);
 }

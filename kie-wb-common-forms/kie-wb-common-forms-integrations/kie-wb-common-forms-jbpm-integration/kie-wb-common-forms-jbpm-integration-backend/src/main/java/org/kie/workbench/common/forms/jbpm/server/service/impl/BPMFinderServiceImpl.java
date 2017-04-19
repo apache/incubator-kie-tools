@@ -63,9 +63,9 @@ public class BPMFinderServiceImpl implements BPMFinderService {
     private FileUtils fileUtils;
 
     @Inject
-    public BPMFinderServiceImpl( @Named( "ioStrategy" ) IOService ioService,
-                                 KieProjectService projectService,
-                                 BPMNFormModelGenerator bpmnFormModelGenerator ) {
+    public BPMFinderServiceImpl(@Named("ioStrategy") IOService ioService,
+                                KieProjectService projectService,
+                                BPMNFormModelGenerator bpmnFormModelGenerator) {
         this.ioService = ioService;
         this.projectService = projectService;
         this.bpmnFormModelGenerator = bpmnFormModelGenerator;
@@ -77,60 +77,74 @@ public class BPMFinderServiceImpl implements BPMFinderService {
     }
 
     @Override
-    public List<JBPMProcessModel> getAvailableProcessModels( Path path ) {
+    public List<JBPMProcessModel> getAvailableProcessModels(Path path) {
 
-        Project project = projectService.resolveProject( path );
+        Project project = projectService.resolveProject(path);
 
         List<JBPMProcessModel> result = new ArrayList<>();
 
-        scannProcessesForType( project.getRootPath(), "bpmn2", result );
-        scannProcessesForType( project.getRootPath(), "bpmn", result );
+        scannProcessesForType(project.getRootPath(),
+                              "bpmn2",
+                              result);
+        scannProcessesForType(project.getRootPath(),
+                              "bpmn",
+                              result);
 
         return result;
     }
 
-    protected void scannProcessesForType( Path path, String extension, List<JBPMProcessModel> models ) {
+    protected void scannProcessesForType(Path path,
+                                         String extension,
+                                         List<JBPMProcessModel> models) {
         List<org.uberfire.java.nio.file.Path> nioPaths = new ArrayList<>();
 
-        nioPaths.add( Paths.convert( path ) );
+        nioPaths.add(Paths.convert(path));
 
-        Collection<FileUtils.ScanResult> processes = fileUtils.scan( ioService, nioPaths, extension, true );
+        Collection<FileUtils.ScanResult> processes = fileUtils.scan(ioService,
+                                                                    nioPaths,
+                                                                    extension,
+                                                                    true);
 
-        for ( FileUtils.ScanResult process : processes ) {
+        for (FileUtils.ScanResult process : processes) {
             org.uberfire.java.nio.file.Path formPath = process.getFile();
 
             try {
                 ResourceSet resourceSet = new ResourceSetImpl();
 
                 resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put
-                        ( Resource.Factory.Registry.DEFAULT_EXTENSION,
-                          new DroolsResourceFactoryImpl() );
+                        (Resource.Factory.Registry.DEFAULT_EXTENSION,
+                         new DroolsResourceFactoryImpl());
                 resourceSet.getPackageRegistry().put
-                        ( DroolsPackage.eNS_URI,
-                          DroolsPackage.eINSTANCE );
+                        (DroolsPackage.eNS_URI,
+                         DroolsPackage.eINSTANCE);
                 resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
-                        .put( Resource.Factory.Registry.DEFAULT_EXTENSION, new Bpmn2ResourceFactoryImpl() );
-                resourceSet.getPackageRegistry().put( "http://www.omg.org/spec/BPMN/20100524/MODEL",
-                                                      Bpmn2Package.eINSTANCE );
+                        .put(Resource.Factory.Registry.DEFAULT_EXTENSION,
+                             new Bpmn2ResourceFactoryImpl());
+                resourceSet.getPackageRegistry().put("http://www.omg.org/spec/BPMN/20100524/MODEL",
+                                                     Bpmn2Package.eINSTANCE);
 
-                XMLResource outResource = (XMLResource) resourceSet.createResource( URI.createURI(
-                        "inputStream://dummyUriWithValidSuffix.xml" ) );
-                outResource.getDefaultLoadOptions().put( XMLResource.OPTION_ENCODING, "UTF-8" );
-                outResource.setEncoding( "UTF-8" );
+                XMLResource outResource = (XMLResource) resourceSet.createResource(URI.createURI(
+                        "inputStream://dummyUriWithValidSuffix.xml"));
+                outResource.getDefaultLoadOptions().put(XMLResource.OPTION_ENCODING,
+                                                        "UTF-8");
+                outResource.setEncoding("UTF-8");
 
                 Map<String, Object> options = new HashMap<String, Object>();
-                options.put( XMLResource.OPTION_ENCODING, "UTF-8" );
-                outResource.load( ioService.newInputStream( formPath ), options );
+                options.put(XMLResource.OPTION_ENCODING,
+                            "UTF-8");
+                outResource.load(ioService.newInputStream(formPath),
+                                 options);
 
-                DocumentRoot root = (DocumentRoot) outResource.getContents().get( 0 );
+                DocumentRoot root = (DocumentRoot) outResource.getContents().get(0);
 
                 Definitions definitions = root.getDefinitions();
 
-                BusinessProcessFormModel processFormModel = bpmnFormModelGenerator.generateProcessFormModel( definitions );
-                List<TaskFormModel> taskModels = bpmnFormModelGenerator.generateTaskFormModels( definitions );
+                BusinessProcessFormModel processFormModel = bpmnFormModelGenerator.generateProcessFormModel(definitions);
+                List<TaskFormModel> taskModels = bpmnFormModelGenerator.generateTaskFormModels(definitions);
 
-                models.add( new JBPMProcessModel( processFormModel, taskModels ) );
-            } catch ( IOException e ) {
+                models.add(new JBPMProcessModel(processFormModel,
+                                                taskModels));
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

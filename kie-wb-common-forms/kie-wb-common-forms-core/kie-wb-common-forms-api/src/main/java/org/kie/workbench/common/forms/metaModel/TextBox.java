@@ -20,7 +20,10 @@ import java.lang.annotation.Inherited;
 
 @Inherited
 public @interface TextBox {
+
     String label();
+
     String placeHolder() default "";
+
     int maxLength() default 100;
 }

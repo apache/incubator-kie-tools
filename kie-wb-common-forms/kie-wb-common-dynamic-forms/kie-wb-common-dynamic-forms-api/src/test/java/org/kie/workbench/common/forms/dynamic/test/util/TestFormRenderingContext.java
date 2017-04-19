@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.dynamic.test.util;
 import org.kie.workbench.common.forms.dynamic.service.shared.AbstractFormRenderingContext;
 
 public class TestFormRenderingContext extends AbstractFormRenderingContext {
+
     @Override
     protected AbstractFormRenderingContext getNewInstance() {
         return new TestFormRenderingContext();

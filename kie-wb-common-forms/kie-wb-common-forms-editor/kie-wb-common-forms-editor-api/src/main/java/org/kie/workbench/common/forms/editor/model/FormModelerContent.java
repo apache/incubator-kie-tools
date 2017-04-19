@@ -15,6 +15,9 @@
  */
 package org.kie.workbench.common.forms.editor.model;
 
+import java.util.List;
+import java.util.Map;
+
 import org.guvnor.common.services.shared.metadata.model.Overview;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
@@ -22,11 +25,9 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.uberfire.backend.vfs.Path;
 
-import java.util.List;
-import java.util.Map;
-
 @Portable
 public class FormModelerContent {
+
     private Path path;
     private Overview overview;
     private FormDefinition definition;
@@ -37,7 +38,7 @@ public class FormModelerContent {
         return path;
     }
 
-    public void setPath( Path path ) {
+    public void setPath(Path path) {
         this.path = path;
     }
 
@@ -45,7 +46,7 @@ public class FormModelerContent {
         return overview;
     }
 
-    public void setOverview( Overview overview ) {
+    public void setOverview(Overview overview) {
         this.overview = overview;
     }
 
@@ -53,11 +54,11 @@ public class FormModelerContent {
         return definition;
     }
 
-    public void setDefinition( FormDefinition definition ) {
+    public void setDefinition(FormDefinition definition) {
         this.definition = definition;
     }
 
-    public void setAvailableFields( Map<String, List<FieldDefinition>> availableFields ) {
+    public void setAvailableFields(Map<String, List<FieldDefinition>> availableFields) {
         this.availableFields = availableFields;
     }
 
@@ -65,7 +66,7 @@ public class FormModelerContent {
         return renderingContext;
     }
 
-    public void setRenderingContext( FormEditorRenderingContext renderingContext ) {
+    public void setRenderingContext(FormEditorRenderingContext renderingContext) {
         this.renderingContext = renderingContext;
     }
 
@@ -74,10 +75,24 @@ public class FormModelerContent {
     }
 
     @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+
+        FormModelerContent content = (FormModelerContent) other;
+
+        return definition.equals(content);
+    }
+
+    @Override
     public int hashCode() {
         int result = definition != null ? definition.hashCode() : 0;
         result = ~~result;
-        result = 31 * result + ( overview != null ? overview.hashCode() : 0 );
+        result = 31 * result + (overview != null ? overview.hashCode() : 0);
         result = ~~result;
         return result;
     }

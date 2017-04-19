@@ -20,7 +20,7 @@ import org.kie.workbench.common.forms.model.FormDefinition;
 
 public interface FormDefinitionSerializer {
 
-    String serialize( FormDefinition form );
+    String serialize(FormDefinition form);
 
-    FormDefinition deserialize( String serializedForm );
+    FormDefinition deserialize(String serializedForm);
 }

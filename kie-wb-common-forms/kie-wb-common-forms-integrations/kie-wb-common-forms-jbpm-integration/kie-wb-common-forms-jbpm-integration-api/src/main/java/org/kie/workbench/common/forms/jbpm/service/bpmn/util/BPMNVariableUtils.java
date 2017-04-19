@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 public class BPMNVariableUtils {
+
     public static final String TASK_FORM_VARIABLE = "TaskName";
     public static final String TASK_FORM_SUFFIX = "-taskform";
 
@@ -36,32 +37,54 @@ public class BPMNVariableUtils {
                 "Content", "Priority", "Locale", "CreatedBy", "NotCompletedReassign", "NotStartedReassign",
                 "NotCompletedNotify", "NotStartedNotify"};
 
-        bannedTaskInputNames = Collections.unmodifiableList( Arrays.asList( bannedNames ));
+        bannedTaskInputNames = Collections.unmodifiableList(Arrays.asList(bannedNames));
     }
 
-    public static boolean isValidInputName( String inputName ) {
-        return !bannedTaskInputNames.contains( inputName );
+    public static boolean isValidInputName(String inputName) {
+        return !bannedTaskInputNames.contains(inputName);
     }
 
-    public static String getRealTypeForInput( String inputType ) {
+    public static String getRealTypeForInput(String inputType) {
 
-        String type = StringUtils.defaultIfEmpty( inputType, "java.lang.String" );
+        String type = StringUtils.defaultIfEmpty(inputType,
+                                                 "java.lang.String");
 
-        if ( !type.contains( "." ) ) {
-            if ( "Object".equals( type ) ) return String.class.getName();
-            if ( "String".equals( type ) ) return String.class.getName();
-            if ( "Integer".equals( type ) ) return Integer.class.getName();
-            if ( "Short".equals( type ) ) return Short.class.getName();
-            if ( "Long".equals( type ) ) return Long.class.getName();
-            if ( "Float".equals( type ) ) return Float.class.getName();
-            if ( "Double".equals( type ) ) return Double.class.getName();
-            if ( "Boolean".equals( type ) ) return Boolean.class.getName();
-            if ( "Date".equals( type ) ) return Date.class.getName();
-            if ( "BigDecimal".equals( type ) ) return BigDecimal.class.getName();
-            if ( "BigInteger".equals( type ) ) return BigInteger.class.getName();
+        if (!type.contains(".")) {
+            if ("Object".equals(type)) {
+                return String.class.getName();
+            }
+            if ("String".equals(type)) {
+                return String.class.getName();
+            }
+            if ("Integer".equals(type)) {
+                return Integer.class.getName();
+            }
+            if ("Short".equals(type)) {
+                return Short.class.getName();
+            }
+            if ("Long".equals(type)) {
+                return Long.class.getName();
+            }
+            if ("Float".equals(type)) {
+                return Float.class.getName();
+            }
+            if ("Double".equals(type)) {
+                return Double.class.getName();
+            }
+            if ("Boolean".equals(type)) {
+                return Boolean.class.getName();
+            }
+            if ("Date".equals(type)) {
+                return Date.class.getName();
+            }
+            if ("BigDecimal".equals(type)) {
+                return BigDecimal.class.getName();
+            }
+            if ("BigInteger".equals(type)) {
+                return BigInteger.class.getName();
+            }
         }
 
         return type;
     }
-
 }

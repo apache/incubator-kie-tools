@@ -24,20 +24,20 @@ import org.kie.workbench.common.forms.commons.rendering.shared.util.masks.ModelI
 
 public class BackendMaskInterpreter<T> extends MaskInterpreter<T> {
 
-    public BackendMaskInterpreter( String mask ) {
-        super( mask );
+    public BackendMaskInterpreter(String mask) {
+        super(mask);
     }
 
     @Override
-    protected ModelInterpreter<T> getModelInterpreter( T model ) {
+    protected ModelInterpreter<T> getModelInterpreter(T model) {
         Gson gson = new Gson();
 
-        JsonObject jsonObject = gson.toJsonTree( model ).getAsJsonObject();
+        JsonObject jsonObject = gson.toJsonTree(model).getAsJsonObject();
 
         return propertyName -> {
             String value = "";
-            JsonElement propertyValue = jsonObject.get( propertyName );
-            if ( propertyValue != null ) {
+            JsonElement propertyValue = jsonObject.get(propertyName);
+            if (propertyValue != null) {
                 value = propertyValue.getAsString();
             }
             return value;

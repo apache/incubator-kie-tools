@@ -24,7 +24,7 @@ import org.jboss.errai.ioc.client.api.EntryPoint;
 import org.jboss.errai.ui.shared.api.annotations.Bundle;
 
 @EntryPoint
-@Bundle( "resources/i18n/FormWidgetsConstants.properties" )
+@Bundle("resources/i18n/FormWidgetsConstants.properties")
 public class FormWidgetsEntryPoint {
 
     @PostConstruct
@@ -33,9 +33,9 @@ public class FormWidgetsEntryPoint {
         TODO fix this:
          Temporary fix: We need to inject manually the TypeAhead script without removing the script tag to avoid errors.
         */
-        ScriptInjector.fromString( TypeaheadClientBundle.INSTANCE.typeahead().getText() )
-                .setWindow( ScriptInjector.TOP_WINDOW )
-                .setRemoveTag( false )
+        ScriptInjector.fromString(TypeaheadClientBundle.INSTANCE.typeahead().getText())
+                .setWindow(ScriptInjector.TOP_WINDOW)
+                .setRemoveTag(false)
                 .inject();
     }
 }

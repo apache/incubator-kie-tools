@@ -26,14 +26,14 @@ public interface JBPMFormModelCreationView extends UberElement<JBPMFormModelCrea
 
     interface Presenter {
 
-        void setModel( JBPMFormModel model );
+        void setModel(JBPMFormModel model);
     }
 
-    void setProcessModels( List<JBPMProcessModel> processModels );
+    void setProcessModels(List<JBPMProcessModel> processModels);
 
     void reset();
 
     void clearValidationErrors();
 
-    void setErrorMessage( String errorMessage );
+    void setErrorMessage(String errorMessage);
 }

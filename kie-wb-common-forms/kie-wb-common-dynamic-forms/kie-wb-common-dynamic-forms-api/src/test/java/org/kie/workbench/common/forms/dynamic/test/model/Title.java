@@ -22,5 +22,8 @@ import org.jboss.errai.databinding.client.api.Bindable;
 @Bindable
 @Portable
 public enum Title {
-    MR, MS, MISS, MASTER
+    MR,
+    MS,
+    MISS,
+    MASTER
 }

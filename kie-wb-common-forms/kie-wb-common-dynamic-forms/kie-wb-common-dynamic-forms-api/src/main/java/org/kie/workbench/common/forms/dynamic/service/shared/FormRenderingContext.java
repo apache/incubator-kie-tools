@@ -21,23 +21,25 @@ import java.util.Map;
 import org.kie.workbench.common.forms.model.FormDefinition;
 
 public interface FormRenderingContext<T> {
+
     FormDefinition getRootForm();
 
-    void setRootForm( FormDefinition rootForm );
+    void setRootForm(FormDefinition rootForm);
 
-    void setModel( T model );
+    void setModel(T model);
 
     T getModel();
 
-    void setRenderMode( RenderMode renderMode );
+    void setRenderMode(RenderMode renderMode);
 
     RenderMode getRenderMode();
 
     FormRenderingContext getParentContext();
 
-    void setParentContext( FormRenderingContext parentContext );
+    void setParentContext(FormRenderingContext parentContext);
 
     Map<String, FormDefinition> getAvailableForms();
 
-    FormRenderingContext getCopyFor( String formKey, T model );
+    FormRenderingContext getCopyFor(String formKey,
+                                    T model);
 }

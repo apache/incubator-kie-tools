@@ -34,12 +34,12 @@ public class StringColumnGenerator implements ColumnGenerator<String> {
     }
 
     @Override
-    public Column<HasProperties, String> getColumn( final String property ) {
+    public Column<HasProperties, String> getColumn(final String property) {
         Column<HasProperties, String> column = new TextColumn<HasProperties>() {
             @Override
-            public String getValue( HasProperties hasProperties ) {
-                Object value = hasProperties.get( property );
-                if ( value != null ) {
+            public String getValue(HasProperties hasProperties) {
+                Object value = hasProperties.get(property);
+                if (value != null) {
                     return value.toString();
                 }
                 return "";
@@ -47,5 +47,4 @@ public class StringColumnGenerator implements ColumnGenerator<String> {
         };
         return column;
     }
-
 }

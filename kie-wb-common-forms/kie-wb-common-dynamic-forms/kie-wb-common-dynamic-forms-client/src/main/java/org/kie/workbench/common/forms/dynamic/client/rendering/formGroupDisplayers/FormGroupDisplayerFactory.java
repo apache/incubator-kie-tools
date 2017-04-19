@@ -35,6 +35,7 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relatio
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 
 public class FormGroupDisplayerFactory {
+
     protected static Map<Class<? extends FieldRenderer>, SyncBeanDef<? extends FormGroupDisplayerWidgetAware>> formGroups = new HashMap<>();
 
     protected static SyncBeanDef<DefaultFormGroupDisplayer> defaultDisplayer;
@@ -44,20 +45,24 @@ public class FormGroupDisplayerFactory {
     static {
         SyncBeanManager beanManager = IOC.getBeanManager();
 
-        formGroups.put( SliderFieldRenderer.class, beanManager.lookupBean( SliderFormGroupDisplayer.class ) );
-        formGroups.put( CheckBoxFieldRenderer.class, beanManager.lookupBean( LabelManagedFormGroupDisplayer.class ) );
-        formGroups.put( MultipleSubFormFieldRenderer.class, beanManager.lookupBean( FieldSetFormGroupDisplayer.class ) );
-        formGroups.put( SubFormFieldRenderer.class, beanManager.lookupBean( FieldSetFormGroupDisplayer.class ) );
+        formGroups.put(SliderFieldRenderer.class,
+                       beanManager.lookupBean(SliderFormGroupDisplayer.class));
+        formGroups.put(CheckBoxFieldRenderer.class,
+                       beanManager.lookupBean(LabelManagedFormGroupDisplayer.class));
+        formGroups.put(MultipleSubFormFieldRenderer.class,
+                       beanManager.lookupBean(FieldSetFormGroupDisplayer.class));
+        formGroups.put(SubFormFieldRenderer.class,
+                       beanManager.lookupBean(FieldSetFormGroupDisplayer.class));
 
-        defaultDisplayer = beanManager.lookupBean( DefaultFormGroupDisplayer.class );
-        configErrorDisplayer = beanManager.lookupBean( ConfigErrorFormGroupDisplayer.class );
+        defaultDisplayer = beanManager.lookupBean(DefaultFormGroupDisplayer.class);
+        configErrorDisplayer = beanManager.lookupBean(ConfigErrorFormGroupDisplayer.class);
     }
 
-    public static FormGroupDisplayerWidgetAware getGeneratorForRenderer( FormRenderingContext context,
-                                                                         FieldRenderer renderer ) {
-        SyncBeanDef<? extends FormGroupDisplayerWidgetAware> beanDef = formGroups.get( renderer.getClass() );
+    public static FormGroupDisplayerWidgetAware getGeneratorForRenderer(FormRenderingContext context,
+                                                                        FieldRenderer renderer) {
+        SyncBeanDef<? extends FormGroupDisplayerWidgetAware> beanDef = formGroups.get(renderer.getClass());
 
-        if ( beanDef == null ) {
+        if (beanDef == null) {
             beanDef = defaultDisplayer;
         }
         return beanDef.newInstance();

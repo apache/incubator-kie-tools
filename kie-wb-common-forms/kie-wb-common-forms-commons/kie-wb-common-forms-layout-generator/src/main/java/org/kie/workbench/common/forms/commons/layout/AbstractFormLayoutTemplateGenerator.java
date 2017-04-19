@@ -29,43 +29,52 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 public abstract class AbstractFormLayoutTemplateGenerator implements FormLayoutTemplateGenerator {
 
     @Override
-    public void generateLayoutTemplate( FormDefinition formDefinition ) {
+    public void generateLayoutTemplate(FormDefinition formDefinition) {
 
-        formDefinition.setLayoutTemplate( new LayoutTemplate() );
+        formDefinition.setLayoutTemplate(new LayoutTemplate());
 
-        addFieldsToTemplate( formDefinition.getLayoutTemplate(), formDefinition.getFields(), formDefinition.getId() );
+        addFieldsToTemplate(formDefinition.getLayoutTemplate(),
+                            formDefinition.getFields(),
+                            formDefinition.getId());
     }
 
     @Override
-    public void updateLayoutTemplate( FormDefinition form, List<FieldDefinition> newFields ) {
+    public void updateLayoutTemplate(FormDefinition form,
+                                     List<FieldDefinition> newFields) {
 
-        newFields.forEach( newField -> {
-            if ( form.getFieldById( newField.getId() ) == null ) {
-                form.getFields().add( newField );
+        newFields.forEach(newField -> {
+            if (form.getFieldById(newField.getId()) == null) {
+                form.getFields().add(newField);
             }
-        } );
+        });
 
-        if ( form.getLayoutTemplate() == null || form.getLayoutTemplate().isEmpty() ) {
-            generateLayoutTemplate( form );
+        if (form.getLayoutTemplate() == null || form.getLayoutTemplate().isEmpty()) {
+            generateLayoutTemplate(form);
             return;
         }
 
-        addFieldsToTemplate( form.getLayoutTemplate(), newFields, form.getId() );
+        addFieldsToTemplate(form.getLayoutTemplate(),
+                            newFields,
+                            form.getId());
     }
 
-    protected void addFieldsToTemplate( LayoutTemplate template, List<FieldDefinition> fields, String formId ) {
-        fields.forEach( field -> {
-            LayoutComponent layoutComponent = new LayoutComponent( getDraggableType() );
-            layoutComponent.addProperty( FormLayoutComponent.FORM_ID, formId );
-            layoutComponent.addProperty( FormLayoutComponent.FIELD_ID, field.getId() );
+    protected void addFieldsToTemplate(LayoutTemplate template,
+                                       List<FieldDefinition> fields,
+                                       String formId) {
+        fields.forEach(field -> {
+            LayoutComponent layoutComponent = new LayoutComponent(getDraggableType());
+            layoutComponent.addProperty(FormLayoutComponent.FORM_ID,
+                                        formId);
+            layoutComponent.addProperty(FormLayoutComponent.FIELD_ID,
+                                        field.getId());
 
-            LayoutColumn column = new LayoutColumn( "12" );
-            column.add( layoutComponent );
+            LayoutColumn column = new LayoutColumn("12");
+            column.add(layoutComponent);
 
             LayoutRow row = new LayoutRow();
-            row.add( column );
+            row.add(column);
 
-            template.addRow( row );
-        } );
+            template.addRow(row);
+        });
     }
 }

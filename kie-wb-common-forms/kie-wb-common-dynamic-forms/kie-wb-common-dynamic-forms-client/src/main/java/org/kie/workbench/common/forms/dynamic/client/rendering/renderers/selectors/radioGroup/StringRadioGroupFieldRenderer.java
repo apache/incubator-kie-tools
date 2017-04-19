@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.selectors.radioGroup;
 
-
 import java.util.Map;
 import javax.enterprise.context.Dependent;
 
@@ -42,7 +41,7 @@ public class StringRadioGroupFieldRenderer extends RadioGroupFieldRendererBase<S
 
     @Override
     public void initInputWidget() {
-        input = new StringRadioGroup( field.getName() );
+        input = new StringRadioGroup(field.getName());
         refreshSelectorOptions();
     }
 
@@ -61,32 +60,35 @@ public class StringRadioGroupFieldRenderer extends RadioGroupFieldRendererBase<S
         return StringRadioGroupFieldDefinition.FIELD_TYPE.getTypeName();
     }
 
-    protected void refreshInput( Map<String, String> optionsValues, String defaultValue ) {
+    protected void refreshInput(Map<String, String> optionsValues,
+                                String defaultValue) {
         input.clear();
-        for ( String key : optionsValues.keySet() ) {
+        for (String key : optionsValues.keySet()) {
             Radio radio;
-            SafeHtml text = getOptionLabel( optionsValues.get( key ) );
-            if ( field.getInline() ) {
-                radio = new InlineRadio( field.getId(), text );
+            SafeHtml text = getOptionLabel(optionsValues.get(key));
+            if (field.getInline()) {
+                radio = new InlineRadio(field.getId(),
+                                        text);
             } else {
-                radio = new Radio( field.getId(), text );
+                radio = new Radio(field.getId(),
+                                  text);
             }
-            radio.setValue( key.equals( defaultValue ) );
-            radio.setFormValue( key );
+            radio.setValue(key.equals(defaultValue));
+            radio.setFormValue(key);
             radio.setEnabled(!field.getReadOnly());
-            input.add( radio );
+            input.add(radio);
         }
     }
 
-    protected SafeHtml getOptionLabel( String text ) {
-        if ( text == null || text.isEmpty() ) {
-            return SafeHtmlUtils.fromTrustedString( "&nbsp;" );
+    protected SafeHtml getOptionLabel(String text) {
+        if (text == null || text.isEmpty()) {
+            return SafeHtmlUtils.fromTrustedString("&nbsp;");
         }
-        return SafeHtmlUtils.fromString( text );
+        return SafeHtmlUtils.fromString(text);
     }
 
     @Override
-    protected void setReadOnly( boolean readOnly ) {
-        input.getRadioChildren().forEach( radio -> radio.setEnabled( !readOnly ) );
+    protected void setReadOnly(boolean readOnly) {
+        input.getRadioChildren().forEach(radio -> radio.setEnabled(!readOnly));
     }
 }

@@ -24,14 +24,15 @@ import org.uberfire.backend.vfs.Path;
 
 @Portable
 public class FormEditorRenderingContext extends AbstractFormRenderingContext<FieldDefinition> {
+
     private Path formPath;
 
-    public FormEditorRenderingContext( @MapsTo( "formPath" ) Path formPath ) {
+    public FormEditorRenderingContext(@MapsTo("formPath") Path formPath) {
         super();
         this.formPath = formPath;
     }
 
-    public void setFormPath( Path formPath ) {
+    public void setFormPath(Path formPath) {
         this.formPath = formPath;
     }
 
@@ -41,6 +42,6 @@ public class FormEditorRenderingContext extends AbstractFormRenderingContext<Fie
 
     @Override
     protected AbstractFormRenderingContext getNewInstance() {
-        return new FormEditorRenderingContext( formPath );
+        return new FormEditorRenderingContext(formPath);
     }
 }

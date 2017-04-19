@@ -38,14 +38,10 @@ import org.uberfire.io.IOService;
 import org.uberfire.java.nio.base.options.CommentedOption;
 import org.uberfire.java.nio.fs.file.SimpleFileSystemProvider;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 public abstract class BPMNVFSFormDefinitionGeneratorServiceTest extends AbstractBPMNFormGeneratorServiceTest<BPMNVFSFormDefinitionGeneratorService, Path> {
-
 
     @Mock
     protected VFSFormFinderService formFinderService;

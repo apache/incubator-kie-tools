@@ -22,42 +22,52 @@ import javax.inject.Inject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.model.FormDefinition;;
+import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
 
+;
+
 @Dependent
-public class FormDefinitionSerializerImpl implements FormDefinitionSerializer {;
+public class FormDefinitionSerializerImpl implements FormDefinitionSerializer {
+
+    ;
 
     private FieldSerializer fieldSerializer;
 
     private FormModelSerializer formModelSerializer;
 
     @Inject
-    public FormDefinitionSerializerImpl( FieldSerializer fieldSerializer, FormModelSerializer formModelSerializer ) {
+    public FormDefinitionSerializerImpl(FieldSerializer fieldSerializer,
+                                        FormModelSerializer formModelSerializer) {
         this.fieldSerializer = fieldSerializer;
         this.formModelSerializer = formModelSerializer;
     }
 
     @Override
-    public String serialize( FormDefinition form ) {
+    public String serialize(FormDefinition form) {
         GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter( FormModel.class, formModelSerializer );
-        builder.registerTypeAdapter( FieldDefinition.class, fieldSerializer );
+        builder.registerTypeAdapter(FormModel.class,
+                                    formModelSerializer);
+        builder.registerTypeAdapter(FieldDefinition.class,
+                                    fieldSerializer);
 
         Gson gson = builder.create();
 
-        return gson.toJson( form );
+        return gson.toJson(form);
     }
 
     @Override
-    public FormDefinition deserialize( String serializedForm ) {
+    public FormDefinition deserialize(String serializedForm) {
         GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter( FormModel.class, formModelSerializer );
-        builder.registerTypeAdapter( FieldDefinition.class, fieldSerializer );
+        builder.registerTypeAdapter(FormModel.class,
+                                    formModelSerializer);
+        builder.registerTypeAdapter(FieldDefinition.class,
+                                    fieldSerializer);
 
         Gson gson = builder.create();
 
-        return gson.fromJson( serializedForm, FormDefinition.class );
+        return gson.fromJson(serializedForm,
+                             FormDefinition.class);
     }
 }

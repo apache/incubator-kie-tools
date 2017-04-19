@@ -43,23 +43,24 @@ public class MultipleSubFormFieldRenderer extends FieldRenderer<MultipleSubFormF
     @Override
     public void initInputWidget() {
         container.clear();
-        container.add( new Legend( field.getLabel() ) );
-        subFormWidget.config( field, renderingContext );
-        container.add( subFormWidget );
+        container.add(new Legend(field.getLabel()));
+        subFormWidget.config(field,
+                             renderingContext);
+        container.add(subFormWidget);
     }
 
     @Override
     protected List<String> getConfigErrors() {
         List<String> configErrors = new ArrayList<>();
 
-        if ( field.getColumnMetas() == null || field.getColumnMetas().size() == 0 ) {
-            configErrors.add( FormRenderingConstants.MultipleSubformNoColumns );
+        if (field.getColumnMetas() == null || field.getColumnMetas().size() == 0) {
+            configErrors.add(FormRenderingConstants.MultipleSubformNoColumns);
         }
-        if ( field.getCreationForm() == null || field.getCreationForm().isEmpty() ) {
-            configErrors.add( FormRenderingConstants.MultipleSubformNoCreationForm );
+        if (field.getCreationForm() == null || field.getCreationForm().isEmpty()) {
+            configErrors.add(FormRenderingConstants.MultipleSubformNoCreationForm);
         }
-        if ( field.getEditionForm() == null || field.getEditionForm().isEmpty() ) {
-            configErrors.add( FormRenderingConstants.MultipleSubformNoEditionForm );
+        if (field.getEditionForm() == null || field.getEditionForm().isEmpty()) {
+            configErrors.add(FormRenderingConstants.MultipleSubformNoEditionForm);
         }
         return configErrors;
     }
@@ -81,7 +82,7 @@ public class MultipleSubFormFieldRenderer extends FieldRenderer<MultipleSubFormF
     }
 
     @Override
-    protected void setReadOnly( boolean readOnly ) {
-        subFormWidget.setReadOnly( readOnly );
+    protected void setReadOnly(boolean readOnly) {
+        subFormWidget.setReadOnly(readOnly);
     }
 }

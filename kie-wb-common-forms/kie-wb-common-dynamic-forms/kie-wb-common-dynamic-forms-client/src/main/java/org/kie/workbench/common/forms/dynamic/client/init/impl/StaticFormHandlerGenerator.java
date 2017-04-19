@@ -21,8 +21,8 @@ import javax.inject.Inject;
 import javax.validation.Validator;
 
 import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGenerator;
-import org.kie.workbench.common.forms.dynamic.service.shared.StaticContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
+import org.kie.workbench.common.forms.dynamic.service.shared.StaticContext;
 import org.kie.workbench.common.forms.processing.engine.handling.FormHandler;
 import org.kie.workbench.common.forms.processing.engine.handling.FormValidator;
 import org.kie.workbench.common.forms.processing.engine.handling.impl.DefaultModelValidator;
@@ -37,15 +37,16 @@ public class StaticFormHandlerGenerator implements FormHandlerGenerator<FormRend
     protected Validator validator;
 
     @Inject
-    public StaticFormHandlerGenerator( Validator validator ) {
+    public StaticFormHandlerGenerator(Validator validator) {
         this.validator = validator;
     }
 
     @Override
-    public FormHandler generateFormHandler( FormRenderingContext context ) {
-        FormValidator formValidator = new FormValidatorImpl( new DefaultModelValidator( validator ) );
+    public FormHandler generateFormHandler(FormRenderingContext context) {
+        FormValidator formValidator = new FormValidatorImpl(new DefaultModelValidator(validator));
 
-        FormHandler handler = new FormHandlerImpl( formValidator, new FieldChangeHandlerManagerImpl() );
+        FormHandler handler = new FormHandlerImpl(formValidator,
+                                                  new FieldChangeHandlerManagerImpl());
 
         return handler;
     }

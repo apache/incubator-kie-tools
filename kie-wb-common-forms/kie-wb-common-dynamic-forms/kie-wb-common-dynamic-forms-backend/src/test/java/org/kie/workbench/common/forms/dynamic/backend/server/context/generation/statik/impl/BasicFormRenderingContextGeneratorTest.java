@@ -21,11 +21,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.test.model.Person;
 import org.kie.workbench.common.forms.dynamic.test.model.Title;
-import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.definition.DatePickerFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.EnumListBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
+import org.kie.workbench.common.forms.model.FieldDefinition;
+import org.kie.workbench.common.forms.model.FormDefinition;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
@@ -41,30 +41,31 @@ public class BasicFormRenderingContextGeneratorTest extends AbstractFormRenderin
 
     @Test
     public void testCreateContextForBasicModel() {
-        initTest( new Person(), 4 );
+        initTest(new Person(),
+                 4);
 
         FormDefinition form = context.getRootForm();
 
-        checkTitleField(  form.getFieldById( "title" ) );
-        checkSurname(  form.getFieldById( "surname" ) );
-        checkBirthday(  form.getFieldById( "birthday" ) );
-
+        checkTitleField(form.getFieldById("title"));
+        checkSurname(form.getFieldById("surname"));
+        checkBirthday(form.getFieldById("birthday"));
     }
 
-    protected void checkTitleField( FieldDefinition field ) {
-        assertNotNull( field );
-        assertTrue( field instanceof EnumListBoxFieldDefinition );
-        assertEquals( Title.class.getName(), field.getFieldTypeInfo().getType() );
-        assertTrue( field.getFieldTypeInfo().isEnum() );
+    protected void checkTitleField(FieldDefinition field) {
+        assertNotNull(field);
+        assertTrue(field instanceof EnumListBoxFieldDefinition);
+        assertEquals(Title.class.getName(),
+                     field.getFieldTypeInfo().getType());
+        assertTrue(field.getFieldTypeInfo().isEnum());
     }
 
-    protected void checkSurname( FieldDefinition field ) {
-        assertNotNull( field );
-        assertTrue( field instanceof TextBoxFieldDefinition );
+    protected void checkSurname(FieldDefinition field) {
+        assertNotNull(field);
+        assertTrue(field instanceof TextBoxFieldDefinition);
     }
 
-    protected void checkBirthday( FieldDefinition field ) {
-        assertNotNull( field );
-        assertTrue( field instanceof DatePickerFieldDefinition );
+    protected void checkBirthday(FieldDefinition field) {
+        assertNotNull(field);
+        assertTrue(field instanceof DatePickerFieldDefinition);
     }
 }

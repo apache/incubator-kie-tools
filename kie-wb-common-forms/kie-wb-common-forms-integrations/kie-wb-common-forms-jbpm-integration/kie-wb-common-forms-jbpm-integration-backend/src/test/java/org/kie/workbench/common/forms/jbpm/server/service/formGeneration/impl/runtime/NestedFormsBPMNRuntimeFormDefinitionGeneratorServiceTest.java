@@ -23,7 +23,6 @@ import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model.E
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model.Line;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -47,7 +46,7 @@ public class NestedFormsBPMNRuntimeFormDefinitionGeneratorServiceTest extends BP
         launchNestedFormsTest();
     }
 
-    protected Class loadClass( String className ) {
+    protected Class loadClass(String className) {
         if (Expense.class.equals(className)) {
             return Expense.class;
         } else if (Client.class.equals(className)) {
@@ -57,6 +56,4 @@ public class NestedFormsBPMNRuntimeFormDefinitionGeneratorServiceTest extends BP
         }
         return null;
     }
-
-
 }

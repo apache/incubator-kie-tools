@@ -29,7 +29,8 @@ public abstract class AbstractFormModelHandler<F extends FormModel> implements F
     protected Path path;
 
     @Override
-    public void init( F formModel, Path path ) {
+    public void init(F formModel,
+                     Path path) {
         this.formModel = formModel;
         this.path = path;
         initialize();
@@ -42,20 +43,20 @@ public abstract class AbstractFormModelHandler<F extends FormModel> implements F
     }
 
     @Override
-    public FieldDefinition createFieldDefinition( String fieldName ) {
+    public FieldDefinition createFieldDefinition(String fieldName) {
         checkInitialized();
-        return doCreateFieldDefinition( fieldName );
+        return doCreateFieldDefinition(fieldName);
     }
 
     protected abstract void initialize();
 
     protected abstract List<FieldDefinition> doGenerateModelFields();
 
-    protected abstract FieldDefinition doCreateFieldDefinition( String fieldName );
+    protected abstract FieldDefinition doCreateFieldDefinition(String fieldName);
 
     public void checkInitialized() {
-        if ( path == null || formModel == null ) {
-            throw new IllegalArgumentException( "Handler isn't initialized" );
+        if (path == null || formModel == null) {
+            throw new IllegalArgumentException("Handler isn't initialized");
         }
     }
 }

@@ -26,6 +26,7 @@ import org.kie.workbench.common.forms.commons.layout.Static;
 @Default
 @Dependent
 public class StaticFormLayoutTemplateGenerator extends AbstractFormLayoutTemplateGenerator {
+
     public static final String DRAGGABLE_TYPE = "org.kie.workbench.common.forms.editor.client.editor.rendering.EditorFieldLayoutComponent";
 
     @Override

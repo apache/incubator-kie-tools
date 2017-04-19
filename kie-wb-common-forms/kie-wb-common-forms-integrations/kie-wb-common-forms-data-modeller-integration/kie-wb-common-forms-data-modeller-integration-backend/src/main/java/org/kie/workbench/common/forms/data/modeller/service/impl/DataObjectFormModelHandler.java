@@ -22,9 +22,9 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 import org.kie.workbench.common.forms.data.modeller.service.DataObjectFinderService;
+import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.forms.editor.service.backend.impl.AbstractFormModelHandler;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.editor.service.backend.FormModelHandler;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 
 @Dependent
@@ -37,8 +37,8 @@ public class DataObjectFormModelHandler extends AbstractFormModelHandler<DataObj
     protected DataObject dataObject;
 
     @Inject
-    public DataObjectFormModelHandler( DataObjectFinderService finderService,
-                                       DataModellerFieldGenerator dataModellerFieldGenerator ) {
+    public DataObjectFormModelHandler(DataObjectFinderService finderService,
+                                      DataModellerFieldGenerator dataModellerFieldGenerator) {
         this.finderService = finderService;
         this.dataModellerFieldGenerator = dataModellerFieldGenerator;
     }
@@ -52,21 +52,25 @@ public class DataObjectFormModelHandler extends AbstractFormModelHandler<DataObj
     protected void initialize() {
         super.checkInitialized();
 
-        dataObject = finderService.getDataObject( formModel.getClassName(), path );
+        dataObject = finderService.getDataObject(formModel.getClassName(),
+                                                 path);
     }
 
     @Override
     public FormModelHandler<DataObjectFormModel> newInstance() {
-        return new DataObjectFormModelHandler( finderService, dataModellerFieldGenerator );
+        return new DataObjectFormModelHandler(finderService,
+                                              dataModellerFieldGenerator);
     }
 
     @Override
     protected List<FieldDefinition> doGenerateModelFields() {
-        return dataModellerFieldGenerator.getFieldsFromDataObject( formModel.getName(), dataObject );
+        return dataModellerFieldGenerator.getFieldsFromDataObject(formModel.getName(),
+                                                                  dataObject);
     }
 
     @Override
-    protected FieldDefinition doCreateFieldDefinition( String fieldName ) {
-        return dataModellerFieldGenerator.createFieldDefinition( formModel.getName(), dataObject.getProperty( fieldName ) );
+    protected FieldDefinition doCreateFieldDefinition(String fieldName) {
+        return dataModellerFieldGenerator.createFieldDefinition(formModel.getName(),
+                                                                dataObject.getProperty(fieldName));
     }
 }

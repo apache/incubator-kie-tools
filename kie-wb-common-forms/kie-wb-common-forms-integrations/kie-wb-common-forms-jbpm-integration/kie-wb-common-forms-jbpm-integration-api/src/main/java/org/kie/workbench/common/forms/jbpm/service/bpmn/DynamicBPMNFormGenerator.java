@@ -24,8 +24,9 @@ import org.kie.workbench.common.forms.model.FormDefinition;
 
 public interface DynamicBPMNFormGenerator {
 
-    Collection<FormDefinition> generateProcessForms( BusinessProcessFormModel model, ClassLoader classLoader );
+    Collection<FormDefinition> generateProcessForms(BusinessProcessFormModel model,
+                                                    ClassLoader classLoader);
 
-    Collection<FormDefinition> generateTaskForms( TaskFormModel model, ClassLoader classLoader );
-
+    Collection<FormDefinition> generateTaskForms(TaskFormModel model,
+                                                 ClassLoader classLoader);
 }

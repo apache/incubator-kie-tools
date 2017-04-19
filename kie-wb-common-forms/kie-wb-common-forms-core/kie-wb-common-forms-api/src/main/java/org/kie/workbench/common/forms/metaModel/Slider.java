@@ -21,11 +21,15 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.RetentionPolicy;
 
 @Inherited
-@java.lang.annotation.Retention( RetentionPolicy.RUNTIME )
-@java.lang.annotation.Target({ ElementType.TYPE, ElementType.FIELD })
+@java.lang.annotation.Retention(RetentionPolicy.RUNTIME)
+@java.lang.annotation.Target({ElementType.TYPE, ElementType.FIELD})
 public @interface Slider {
+
     double min();
+
     double max();
+
     double precision() default 2.0;
+
     double step() default 1.0;
 }

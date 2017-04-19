@@ -27,9 +27,11 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface DataObjectFinderService {
 
-    DataObject getDataObject( String typeName, Path path );
+    DataObject getDataObject(String typeName,
+                             Path path);
 
-    List<ObjectProperty> getDataObjectProperties( String typeName, Path path );
+    List<ObjectProperty> getDataObjectProperties(String typeName,
+                                                 Path path);
 
-    List<DataObjectFormModel> getAvailableDataObjects( Path path );
+    List<DataObjectFormModel> getAvailableDataObjects(Path path);
 }

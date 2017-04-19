@@ -29,7 +29,7 @@ import org.kie.workbench.common.forms.common.rendering.client.widgets.model.Guit
 
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class BindableTypeAheadTest {
 
     public static final String MASK = "{brand} {model}: {body} body with {neck} neck";
@@ -47,68 +47,76 @@ public class BindableTypeAheadTest {
 
     protected BindableTypeAhead<Guitar> typeAhead;
 
-    protected Guitar guitar = new Guitar( "50's style", "T-Shape", "alder", "mapple" );
+    protected Guitar guitar = new Guitar("50's style",
+                                         "T-Shape",
+                                         "alder",
+                                         "mapple");
 
     @Before
     public void setup() {
-        view = mock( BindableTypeAheadView.class );
+        view = mock(BindableTypeAheadView.class);
 
-        when( view.asWidget() ).thenReturn( viewWidget );
+        when(view.asWidget()).thenReturn(viewWidget);
 
-        typeAhead = new BindableTypeAhead<>( view );
+        typeAhead = new BindableTypeAhead<>(view);
 
-        verify( view ).setPresenter( typeAhead );
+        verify(view).setPresenter(typeAhead);
 
-        typeAhead.init( MASK, dataset );
+        typeAhead.init(MASK,
+                       dataset);
 
-        verify( view ).init( dataset, MASK );
+        verify(view).init(dataset,
+                          MASK);
 
         typeAhead.asWidget();
 
-        verify( view ).asWidget();
+        verify(view).asWidget();
     }
 
     @Test
     public void testSetValueWithoutEvents() {
 
-        typeAhead.setValue( guitar );
+        typeAhead.setValue(guitar);
 
-        verify( view ).setValue( guitar );
+        verify(view).setValue(guitar);
     }
 
     @Test
     public void testSetValueWithEvents() {
 
-        typeAhead.setValue( guitar, true );
+        typeAhead.setValue(guitar,
+                           true);
 
-        verify( view ).setValue( guitar );
+        verify(view).setValue(guitar);
     }
 
     @Test
     public void testEvents() {
-        ValueChangeHandler handler = mock( ValueChangeHandler.class );
-        typeAhead.addValueChangeHandler( handler );
-        verify( view, atLeast( 1 ) ).asWidget();
-        verify( viewWidget ).addHandler( any(), any() );
+        ValueChangeHandler handler = mock(ValueChangeHandler.class);
+        typeAhead.addValueChangeHandler(handler);
+        verify(view,
+               atLeast(1)).asWidget();
+        verify(viewWidget).addHandler(any(),
+                                      any());
 
-        typeAhead.fireEvent( event );
-        verify( view, atLeast( 2 ) ).asWidget();
-        verify( viewWidget ).fireEvent( event );
+        typeAhead.fireEvent(event);
+        verify(view,
+               atLeast(2)).asWidget();
+        verify(viewWidget).fireEvent(event);
     }
 
     @Test
     public void testReadOnlyTrue() {
-        testReadonly( true );
+        testReadonly(true);
     }
 
     @Test
     public void testReadOnlyFalse() {
-        testReadonly( false );
+        testReadonly(false);
     }
 
-    private void testReadonly( boolean readOnly ) {
-        typeAhead.setReadOnly( readOnly );
-        verify( view ).setReadOnly( readOnly );
+    private void testReadonly(boolean readOnly) {
+        typeAhead.setReadOnly(readOnly);
+        verify(view).setReadOnly(readOnly);
     }
-
 }

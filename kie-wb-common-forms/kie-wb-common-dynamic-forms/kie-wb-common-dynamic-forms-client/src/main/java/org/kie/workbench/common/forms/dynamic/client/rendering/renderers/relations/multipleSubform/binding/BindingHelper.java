@@ -22,13 +22,14 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipl
 
 public interface BindingHelper<C extends FormRenderingContext, P extends BindableProxy, M> {
 
-    void setUp( MultipleSubFormFieldDefinition field, C context );
+    void setUp(MultipleSubFormFieldDefinition field,
+               C context);
 
     P getProxyDefinition();
 
     P getNewProxy();
 
-    P getProxyForModel( M model );
+    P getProxyForModel(M model);
 
-    void afterEdit( M model );
+    void afterEdit(M model);
 }

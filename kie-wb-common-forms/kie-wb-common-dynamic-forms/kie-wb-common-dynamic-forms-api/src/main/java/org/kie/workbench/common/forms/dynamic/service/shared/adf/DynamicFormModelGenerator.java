@@ -38,101 +38,125 @@ public class DynamicFormModelGenerator {
     private PropertyValueExtractor propertyValueExtractor;
 
     @Inject
-    public DynamicFormModelGenerator( FormBuildingService formBuildingService,
-                                      PropertyValueExtractor propertyValueExtractor ) {
+    public DynamicFormModelGenerator(FormBuildingService formBuildingService,
+                                     PropertyValueExtractor propertyValueExtractor) {
         this.formBuildingService = formBuildingService;
         this.propertyValueExtractor = propertyValueExtractor;
     }
 
-    public StaticModelFormRenderingContext getContextForModel( Object model ) {
-        PortablePreconditions.checkNotNull( "model", model );
+    public StaticModelFormRenderingContext getContextForModel(Object model) {
+        PortablePreconditions.checkNotNull("model",
+                                           model);
 
-        FormDefinition formDefinition = formBuildingService.generateFormForModel( model );
+        FormDefinition formDefinition = formBuildingService.generateFormForModel(model);
 
-        if ( formDefinition == null ) {
+        if (formDefinition == null) {
             return null;
         }
 
         StaticModelFormRenderingContext context = new StaticModelFormRenderingContext();
 
-        context.setModel( model );
-        context.setRootForm( formDefinition );
+        context.setModel(model);
+        context.setRootForm(formDefinition);
 
-        if ( context.getModel() != null ) {
-            initNestedFormSettings( formDefinition, context.getModel(), context );
+        if (context.getModel() != null) {
+            initNestedFormSettings(formDefinition,
+                                   context.getModel(),
+                                   context);
         } else {
-            initNestedFormSettings( formDefinition, null, context );
+            initNestedFormSettings(formDefinition,
+                                   null,
+                                   context);
         }
-
 
         return context;
     }
 
-    private void initNestedFormSettings( final FormDefinition form,
-                                           final Object model,
-                                           final StaticModelFormRenderingContext context ) {
-        form.getFields().forEach( field -> {
-            if ( field instanceof HasNestedForm ) {
+    private void initNestedFormSettings(final FormDefinition form,
+                                        final Object model,
+                                        final StaticModelFormRenderingContext context) {
+        form.getFields().forEach(field -> {
+            if (field instanceof HasNestedForm) {
                 HasNestedForm hasNestedForm = (HasNestedForm) field;
 
-                if ( !context.getAvailableForms().containsKey( ( (HasNestedForm) field ).getNestedForm() ) ) {
-                    addNestedForm( model, hasNestedForm.getNestedForm(), field.getName(), context );
+                if (!context.getAvailableForms().containsKey(((HasNestedForm) field).getNestedForm())) {
+                    addNestedForm(model,
+                                  hasNestedForm.getNestedForm(),
+                                  field.getName(),
+                                  context);
                 }
-            } else if ( field instanceof IsCRUDDefinition ) {
+            } else if (field instanceof IsCRUDDefinition) {
                 IsCRUDDefinition isCRUDDefinitionField = (IsCRUDDefinition) field;
 
-                if ( !context.getAvailableForms().containsKey( isCRUDDefinitionField.getCreationForm() ) ){
-                    addNestedForm( field.getStandaloneClassName(), context );
+                if (!context.getAvailableForms().containsKey(isCRUDDefinitionField.getCreationForm())) {
+                    addNestedForm(field.getStandaloneClassName(),
+                                  context);
                 }
 
-                if ( isCRUDDefinitionField.getColumnMetas() == null || isCRUDDefinitionField.getColumnMetas().isEmpty() ) {
-                    if ( isCRUDDefinitionField.getColumnMetas() == null ) {
-                        isCRUDDefinitionField.setColumnMetas( new ArrayList<>() );
+                if (isCRUDDefinitionField.getColumnMetas() == null || isCRUDDefinitionField.getColumnMetas().isEmpty()) {
+                    if (isCRUDDefinitionField.getColumnMetas() == null) {
+                        isCRUDDefinitionField.setColumnMetas(new ArrayList<>());
                     }
 
-                    FormDefinition nestedForm = context.getAvailableForms().get( isCRUDDefinitionField.getCreationForm() );
+                    FormDefinition nestedForm = context.getAvailableForms().get(isCRUDDefinitionField.getCreationForm());
 
-                    nestedForm.getFields().forEach( nestedField -> {
-                        if ( nestedField instanceof EntityRelationField ) {
+                    nestedForm.getFields().forEach(nestedField -> {
+                        if (nestedField instanceof EntityRelationField) {
                             return;
                         }
-                        isCRUDDefinitionField.getColumnMetas().add( new TableColumnMeta( nestedField.getLabel(), nestedField.getBinding() ) );
-                    } );
+                        isCRUDDefinitionField.getColumnMetas().add(new TableColumnMeta(nestedField.getLabel(),
+                                                                                       nestedField.getBinding()));
+                    });
                 }
             }
-        } );
+        });
     }
 
-    private void addNestedForm( final Object parentModel, final String className, final String fieldName, final StaticModelFormRenderingContext context ) {
-        if ( !context.getAvailableForms().containsKey( className ) ) {
-            if ( parentModel != null ) {
+    private void addNestedForm(final Object parentModel,
+                               final String className,
+                               final String fieldName,
+                               final StaticModelFormRenderingContext context) {
+        if (!context.getAvailableForms().containsKey(className)) {
+            if (parentModel != null) {
 
-                Object value = propertyValueExtractor.readPropertyValue( parentModel, fieldName );
+                Object value = propertyValueExtractor.readPropertyValue(parentModel,
+                                                                        fieldName);
 
-                if ( value != null ) {
-                    addNestedForm( value, context );
+                if (value != null) {
+                    addNestedForm(value,
+                                  context);
                 } else {
-                    addNestedForm( className, context );
+                    addNestedForm(className,
+                                  context);
                 }
             } else {
-                addNestedForm( className, context );
+                addNestedForm(className,
+                              context);
             }
         }
     }
 
-    private void addNestedForm( String className, StaticModelFormRenderingContext context ) {
-        if ( !context.getAvailableForms().containsKey( className ) ) {
-            FormDefinition nested = formBuildingService.generateFormForClassName( className );
-            context.getAvailableForms().put( className, nested );
-            initNestedFormSettings( nested, null, context );
+    private void addNestedForm(String className,
+                               StaticModelFormRenderingContext context) {
+        if (!context.getAvailableForms().containsKey(className)) {
+            FormDefinition nested = formBuildingService.generateFormForClassName(className);
+            context.getAvailableForms().put(className,
+                                            nested);
+            initNestedFormSettings(nested,
+                                   null,
+                                   context);
         }
     }
 
-    private void addNestedForm( Object model, StaticModelFormRenderingContext context ) {
-        if ( !context.getAvailableForms().containsKey( model.getClass().getName() ) ) {
-            FormDefinition nested = formBuildingService.generateFormForModel( model );
-            context.getAvailableForms().put( model.getClass().getName(), nested );
-            initNestedFormSettings( nested, model, context );
+    private void addNestedForm(Object model,
+                               StaticModelFormRenderingContext context) {
+        if (!context.getAvailableForms().containsKey(model.getClass().getName())) {
+            FormDefinition nested = formBuildingService.generateFormForModel(model);
+            context.getAvailableForms().put(model.getClass().getName(),
+                                            nested);
+            initNestedFormSettings(nested,
+                                   model,
+                                   context);
         }
     }
 }

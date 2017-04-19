@@ -22,5 +22,4 @@ package org.kie.workbench.common.forms.model;
 public interface FormModel {
 
     public String getName();
-
 }

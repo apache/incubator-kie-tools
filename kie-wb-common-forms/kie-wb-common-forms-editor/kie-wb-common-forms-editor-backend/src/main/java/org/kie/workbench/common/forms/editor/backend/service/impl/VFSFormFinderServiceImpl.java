@@ -25,13 +25,13 @@ import javax.inject.Named;
 
 import org.guvnor.common.services.project.model.Project;
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService;
+import org.kie.workbench.common.forms.editor.type.FormResourceTypeDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.JavaModel;
 import org.kie.workbench.common.forms.serialization.FormDefinitionSerializer;
 import org.kie.workbench.common.services.datamodeller.util.FileUtils;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
-import org.kie.workbench.common.forms.editor.service.shared.VFSFormFinderService;
-import org.kie.workbench.common.forms.editor.type.FormResourceTypeDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.uberfire.backend.server.util.Paths;
@@ -41,8 +41,8 @@ import org.uberfire.io.IOService;
 @Dependent
 @Service
 public class VFSFormFinderServiceImpl implements VFSFormFinderService {
-    private static final Logger logger = LoggerFactory.getLogger( VFSFormFinderServiceImpl.class );
 
+    private static final Logger logger = LoggerFactory.getLogger(VFSFormFinderServiceImpl.class);
 
     private IOService ioService;
 
@@ -51,74 +51,85 @@ public class VFSFormFinderServiceImpl implements VFSFormFinderService {
     private FormDefinitionSerializer serializer;
 
     @Inject
-    public VFSFormFinderServiceImpl( @Named("ioStrategy") IOService ioService,
-                                     KieProjectService projectService,
-                                     FormDefinitionSerializer serializer ) {
+    public VFSFormFinderServiceImpl(@Named("ioStrategy") IOService ioService,
+                                    KieProjectService projectService,
+                                    FormDefinitionSerializer serializer) {
         this.ioService = ioService;
         this.projectService = projectService;
         this.serializer = serializer;
     }
 
     @Override
-    public List<FormDefinition> findAllForms( Path path ) {
-        return findForms( path, null );
+    public List<FormDefinition> findAllForms(Path path) {
+        return findForms(path,
+                         null);
     }
 
     @Override
-    public List<FormDefinition> findFormsForType( final String typeName, Path path ) {
-        return findForms( path, new FormSearchConstraint() {
-            @Override
-            public boolean accepts( FormDefinition form ) {
+    public List<FormDefinition> findFormsForType(final String typeName,
+                                                 Path path) {
+        return findForms(path,
+                         new FormSearchConstraint() {
+                             @Override
+                             public boolean accepts(FormDefinition form) {
 
-                if ( form.getModel() instanceof JavaModel ) {
-                    return ((JavaModel) form.getModel()).getType().equals( typeName );
-                }
+                                 if (form.getModel() instanceof JavaModel) {
+                                     return ((JavaModel) form.getModel()).getType().equals(typeName);
+                                 }
 
-                return false;
-            }
-        } );
+                                 return false;
+                             }
+                         });
     }
 
     @Override
-    public FormDefinition findFormById( final String id, Path path ) {
-        List<FormDefinition> forms = findForms( path, new FormSearchConstraint() {
-            @Override
-            public boolean accepts( FormDefinition form ) {
-                return form.getId().equals( id );
-            }
-        } );
+    public FormDefinition findFormById(final String id,
+                                       Path path) {
+        List<FormDefinition> forms = findForms(path,
+                                               new FormSearchConstraint() {
+                                                   @Override
+                                                   public boolean accepts(FormDefinition form) {
+                                                       return form.getId().equals(id);
+                                                   }
+                                               });
 
-        if ( forms != null && !forms.isEmpty() ) {
-            return forms.get( 0 );
+        if (forms != null && !forms.isEmpty()) {
+            return forms.get(0);
         }
         return null;
     }
 
-    private List<FormDefinition> findForms( Path path, FormSearchConstraint constraint ) {
+    private List<FormDefinition> findForms(Path path,
+                                           FormSearchConstraint constraint) {
 
         List<FormDefinition> result = new ArrayList<>();
 
-        Project project = projectService.resolveProject( path );
+        Project project = projectService.resolveProject(path);
 
         FileUtils utils = FileUtils.getInstance();
 
         List<org.uberfire.java.nio.file.Path> nioPaths = new ArrayList<>();
 
-        nioPaths.add( Paths.convert( project.getRootPath() ) );
+        nioPaths.add(Paths.convert(project.getRootPath()));
 
-        Collection<FileUtils.ScanResult> forms = utils.scan( ioService, nioPaths, FormResourceTypeDefinition.EXTENSION, true );
+        Collection<FileUtils.ScanResult> forms = utils.scan(ioService,
+                                                            nioPaths,
+                                                            FormResourceTypeDefinition.EXTENSION,
+                                                            true);
 
-        for ( FileUtils.ScanResult form : forms ) {
+        for (FileUtils.ScanResult form : forms) {
             org.uberfire.java.nio.file.Path formPath = form.getFile();
 
             try {
-                FormDefinition formDefinition = serializer.deserialize( ioService.readAllString( formPath ).trim() );
+                FormDefinition formDefinition = serializer.deserialize(ioService.readAllString(formPath).trim());
 
-                if ( constraint == null || constraint.accepts( formDefinition ) ) {
-                    result.add( formDefinition );
+                if (constraint == null || constraint.accepts(formDefinition)) {
+                    result.add(formDefinition);
                 }
-            } catch ( Exception ex ) {
-                logger.warn( "Unable to generate FormDefinition for {}", path, ex );
+            } catch (Exception ex) {
+                logger.warn("Unable to generate FormDefinition for {}",
+                            path,
+                            ex);
             }
         }
 
@@ -126,6 +137,7 @@ public class VFSFormFinderServiceImpl implements VFSFormFinderService {
     }
 
     private interface FormSearchConstraint {
-        boolean accepts( FormDefinition form );
+
+        boolean accepts(FormDefinition form);
     }
 }

@@ -40,23 +40,23 @@ public class DatePickerFieldRenderer extends FieldRenderer<DatePickerFieldDefini
 
     @Override
     public void initInputWidget() {
-        if ( field.getShowTime() ) {
+        if (field.getShowTime()) {
             DateTimePicker box = new DateTimePicker();
-            box.setPlaceholder( field.getPlaceHolder() );
-            box.setEnabled( !field.getReadOnly() );
-            box.setAutoClose( true );
-            box.setHighlightToday( true );
-            box.setShowTodayButton( true );
-            handler = readOnly -> box.setEnabled( !readOnly );
+            box.setPlaceholder(field.getPlaceHolder());
+            box.setEnabled(!field.getReadOnly());
+            box.setAutoClose(true);
+            box.setHighlightToday(true);
+            box.setShowTodayButton(true);
+            handler = readOnly -> box.setEnabled(!readOnly);
             input = box;
         } else {
             final DatePicker box = new DatePicker();
-            box.setPlaceholder( field.getPlaceHolder() );
-            box.setEnabled( !field.getReadOnly() );
-            box.setAutoClose( true );
-            box.setHighlightToday( true );
-            box.setShowTodayButton( true );
-            handler = readOnly -> box.setEnabled( !readOnly );
+            box.setPlaceholder(field.getPlaceHolder());
+            box.setEnabled(!field.getReadOnly());
+            box.setAutoClose(true);
+            box.setHighlightToday(true);
+            box.setShowTodayButton(true);
+            handler = readOnly -> box.setEnabled(!readOnly);
             input = box;
         }
     }
@@ -77,11 +77,12 @@ public class DatePickerFieldRenderer extends FieldRenderer<DatePickerFieldDefini
     }
 
     @Override
-    protected void setReadOnly( boolean readOnly ) {
-        handler.setReadOnly( readOnly );
+    protected void setReadOnly(boolean readOnly) {
+        handler.setReadOnly(readOnly);
     }
 
     protected interface WidgetHandler {
-        void setReadOnly( boolean readOnly );
+
+        void setReadOnly(boolean readOnly);
     }
 }

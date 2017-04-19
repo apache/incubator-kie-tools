@@ -41,25 +41,28 @@ public class VFSSelectorFormProvider implements SystemSelectorDataProvider {
     }
 
     @Override
-    public SelectorData getSelectorData( FormRenderingContext context ) {
+    public SelectorData getSelectorData(FormRenderingContext context) {
         Map<String, String> values = new TreeMap<>();
 
-        if ( context.getModel() instanceof EntityRelationField ) {
+        if (context.getModel() instanceof EntityRelationField) {
             FormEditorRenderingContext editorContext = (FormEditorRenderingContext) context;
 
             FieldDefinition field = (FieldDefinition) context.getModel();
 
             List<FormDefinition> forms;
-            if ( field != null ) {
-                forms = vfsFormFinderService.findFormsForType( field.getStandaloneClassName(), editorContext.getFormPath());
+            if (field != null) {
+                forms = vfsFormFinderService.findFormsForType(field.getStandaloneClassName(),
+                                                              editorContext.getFormPath());
             } else {
-                forms = vfsFormFinderService.findAllForms( editorContext.getFormPath() );
+                forms = vfsFormFinderService.findAllForms(editorContext.getFormPath());
             }
 
-            for ( FormDefinition form : forms ) {
-                values.put( form.getId(), form.getName() );
+            for (FormDefinition form : forms) {
+                values.put(form.getId(),
+                           form.getName());
             }
         }
-        return  new SelectorData( values, null );
+        return new SelectorData(values,
+                                null);
     }
 }

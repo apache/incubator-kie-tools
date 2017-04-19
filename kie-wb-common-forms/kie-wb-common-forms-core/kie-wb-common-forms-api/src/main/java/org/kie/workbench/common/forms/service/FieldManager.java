@@ -16,11 +16,11 @@
 
 package org.kie.workbench.common.forms.service;
 
+import java.util.Collection;
+
 import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FieldType;
-
-import java.util.Collection;
 
 public interface FieldManager {
 
@@ -28,17 +28,20 @@ public interface FieldManager {
 
     Collection<String> getBaseFieldTypes();
 
-    FieldDefinition getDefinitionByFieldType( FieldType fieldType );
+    FieldDefinition getDefinitionByFieldType(FieldType fieldType);
 
-    FieldDefinition getDefinitionByFieldTypeName( String typeCode );
+    FieldDefinition getDefinitionByFieldTypeName(String typeCode);
 
-    FieldDefinition getDefinitionByDataType( FieldDataType typeInfo );
+    FieldDefinition getDefinitionByDataType(FieldDataType typeInfo);
 
-    Collection<String> getCompatibleFields( FieldDefinition fieldDefinition );
+    Collection<String> getCompatibleFields(FieldDefinition fieldDefinition);
 
-    FieldDefinition getFieldFromProvider( String typeCode, FieldDataType typeInfo );
+    FieldDefinition getFieldFromProvider(String typeCode,
+                                         FieldDataType typeInfo);
 
-    FieldDefinition getFieldFromProviderWithType( String typeCode, FieldDataType typeInfo );
+    FieldDefinition getFieldFromProviderWithType(String typeCode,
+                                                 FieldDataType typeInfo);
 
-    FieldDefinition getDefinitionByFieldType( Class<? extends FieldType> fieldType, FieldDataType typeInfo );
+    FieldDefinition getDefinitionByFieldType(Class<? extends FieldType> fieldType,
+                                             FieldDataType typeInfo);
 }

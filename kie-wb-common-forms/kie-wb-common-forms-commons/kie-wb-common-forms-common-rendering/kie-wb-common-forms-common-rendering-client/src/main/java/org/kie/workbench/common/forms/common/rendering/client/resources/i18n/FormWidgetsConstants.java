@@ -20,7 +20,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.Messages;
 
 public interface FormWidgetsConstants extends Messages {
-    public static final FormWidgetsConstants INSTANCE = GWT.create( FormWidgetsConstants.class );
+
+    public static final FormWidgetsConstants INSTANCE = GWT.create(FormWidgetsConstants.class);
 
     public String takePicture();
 

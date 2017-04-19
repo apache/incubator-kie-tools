@@ -23,51 +23,51 @@ package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model;
 @javax.persistence.Entity
 public class Client implements java.io.Serializable {
 
-	static final long serialVersionUID = 1L;
+    static final long serialVersionUID = 1L;
 
-	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "CLIENT_ID_GENERATOR")
-	@javax.persistence.Id
-	@javax.persistence.SequenceGenerator(sequenceName = "CLIENT_ID_SEQ", name = "CLIENT_ID_GENERATOR")
-	private Long id;
+    @javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "CLIENT_ID_GENERATOR")
+    @javax.persistence.Id
+    @javax.persistence.SequenceGenerator(sequenceName = "CLIENT_ID_SEQ", name = "CLIENT_ID_GENERATOR")
+    private Long id;
 
-	@org.kie.api.definition.type.Label(value = "Name")
-	private String name;
+    @org.kie.api.definition.type.Label(value = "Name")
+    private String name;
 
-	@org.kie.api.definition.type.Label(value = "Last Name")
-	private String lastName;
+    @org.kie.api.definition.type.Label(value = "Last Name")
+    private String lastName;
 
-	public Client() {
-	}
+    public Client() {
+    }
 
-	public Long getId() {
-		return this.id;
-	}
+    public Long getId() {
+        return this.id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getLastName() {
-		return this.lastName;
-	}
+    public String getLastName() {
+        return this.lastName;
+    }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-	public Client(Long id, String name,
+    public Client(Long id,
+                  String name,
                   String lastName) {
-		this.id = id;
-		this.name = name;
-		this.lastName = lastName;
-	}
-
+        this.id = id;
+        this.name = name;
+        this.lastName = lastName;
+    }
 }

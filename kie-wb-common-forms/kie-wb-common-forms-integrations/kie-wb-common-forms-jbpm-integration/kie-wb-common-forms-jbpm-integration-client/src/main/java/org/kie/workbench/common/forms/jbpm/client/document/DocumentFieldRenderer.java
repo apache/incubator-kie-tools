@@ -31,13 +31,13 @@ public class DocumentFieldRenderer extends FieldRenderer<DocumentFieldDefinition
     private DocumentFieldRendererView view;
 
     @Inject
-    public DocumentFieldRenderer( DocumentFieldRendererView view ) {
+    public DocumentFieldRenderer(DocumentFieldRendererView view) {
         this.view = view;
     }
 
     @PostConstruct
     protected void doInit() {
-        view.setRenderer( this );
+        view.setRenderer(this);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class DocumentFieldRenderer extends FieldRenderer<DocumentFieldDefinition
 
     @Override
     public void initInputWidget() {
-        view.setReadOnly( field.getReadOnly() || !renderingContext.getRenderMode().equals( RenderMode.EDIT_MODE ) );
+        view.setReadOnly(field.getReadOnly() || !renderingContext.getRenderMode().equals(RenderMode.EDIT_MODE));
     }
 
     @Override
@@ -67,7 +67,7 @@ public class DocumentFieldRenderer extends FieldRenderer<DocumentFieldDefinition
     }
 
     @Override
-    protected void setReadOnly( boolean readOnly ) {
-        view.setReadOnly( readOnly );
+    protected void setReadOnly(boolean readOnly) {
+        view.setReadOnly(readOnly);
     }
 }

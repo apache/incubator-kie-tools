@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.jbpm.server.service.impl.model;
 import java.util.Date;
 
 public class LogEntry {
+
     private Date date;
     private String text;
 
@@ -26,7 +27,7 @@ public class LogEntry {
         return date;
     }
 
-    public void setDate( Date date ) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -34,7 +35,7 @@ public class LogEntry {
         return text;
     }
 
-    public void setText( String text ) {
+    public void setText(String text) {
         this.text = text;
     }
 }

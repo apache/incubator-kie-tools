@@ -22,4 +22,5 @@ import org.jboss.errai.ui.shared.api.annotations.Bundle;
 @EntryPoint
 @Bundle("resources/i18n/DataModellerIntegrationConstants.properties")
 public class FormsDataModellerIntegrationEntryPoint {
+
 }

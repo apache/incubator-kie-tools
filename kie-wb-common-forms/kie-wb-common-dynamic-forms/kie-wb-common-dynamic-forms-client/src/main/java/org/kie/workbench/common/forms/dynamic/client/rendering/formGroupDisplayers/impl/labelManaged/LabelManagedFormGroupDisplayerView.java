@@ -19,4 +19,5 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplay
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.FormGroupDisplayerView;
 
 public interface LabelManagedFormGroupDisplayerView extends FormGroupDisplayerView {
+
 }

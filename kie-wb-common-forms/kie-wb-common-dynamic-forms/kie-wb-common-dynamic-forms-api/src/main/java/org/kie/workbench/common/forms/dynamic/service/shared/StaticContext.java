@@ -21,7 +21,8 @@ import java.lang.annotation.RetentionPolicy;
 import javax.inject.Qualifier;
 
 @Qualifier
-@java.lang.annotation.Retention( RetentionPolicy.RUNTIME )
-@java.lang.annotation.Target( {ElementType.TYPE, ElementType.PARAMETER} )
+@java.lang.annotation.Retention(RetentionPolicy.RUNTIME)
+@java.lang.annotation.Target({ElementType.TYPE, ElementType.PARAMETER})
 public @interface StaticContext {
+
 }

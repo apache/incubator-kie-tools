@@ -23,65 +23,66 @@ package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.model;
 @javax.persistence.Entity
 public class Expense implements java.io.Serializable {
 
-	static final long serialVersionUID = 1L;
+    static final long serialVersionUID = 1L;
 
-	@javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "EXPENSE_ID_GENERATOR")
-	@javax.persistence.Id
-	@javax.persistence.SequenceGenerator(sequenceName = "EXPENSE_ID_SEQ", name = "EXPENSE_ID_GENERATOR")
-	private Long id;
+    @javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO, generator = "EXPENSE_ID_GENERATOR")
+    @javax.persistence.Id
+    @javax.persistence.SequenceGenerator(sequenceName = "EXPENSE_ID_SEQ", name = "EXPENSE_ID_GENERATOR")
+    private Long id;
 
-	@org.kie.api.definition.type.Label(value = "Date")
-	private java.util.Date date;
+    @org.kie.api.definition.type.Label(value = "Date")
+    private java.util.Date date;
 
-	@javax.persistence.ManyToOne(cascade = {javax.persistence.CascadeType.ALL}, fetch = javax.persistence.FetchType.EAGER)
-	@org.kie.api.definition.type.Label(value = "Client")
-	private Client client;
+    @javax.persistence.ManyToOne(cascade = {javax.persistence.CascadeType.ALL}, fetch = javax.persistence.FetchType.EAGER)
+    @org.kie.api.definition.type.Label(value = "Client")
+    private Client client;
 
-	@javax.persistence.OneToMany(cascade = {javax.persistence.CascadeType.ALL}, fetch = javax.persistence.FetchType.EAGER)
-	@org.kie.api.definition.type.Label(value = "Lines")
-	private java.util.List<Line> lines;
+    @javax.persistence.OneToMany(cascade = {javax.persistence.CascadeType.ALL}, fetch = javax.persistence.FetchType.EAGER)
+    @org.kie.api.definition.type.Label(value = "Lines")
+    private java.util.List<Line> lines;
 
-	public Expense() {
-	}
+    public Expense() {
+    }
 
-	public Long getId() {
-		return this.id;
-	}
+    public Long getId() {
+        return this.id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public java.util.Date getDate() {
-		return this.date;
-	}
+    public java.util.Date getDate() {
+        return this.date;
+    }
 
-	public void setDate(java.util.Date date) {
-		this.date = date;
-	}
+    public void setDate(java.util.Date date) {
+        this.date = date;
+    }
 
-	public Client getClient() {
-		return this.client;
-	}
+    public Client getClient() {
+        return this.client;
+    }
 
-	public void setClient(Client client) {
-		this.client = client;
-	}
+    public void setClient(Client client) {
+        this.client = client;
+    }
 
-	public java.util.List<Line> getLines() {
-		return this.lines;
-	}
+    public java.util.List<Line> getLines() {
+        return this.lines;
+    }
 
-	public void setLines(java.util.List<Line> lines) {
-		this.lines = lines;
-	}
+    public void setLines(java.util.List<Line> lines) {
+        this.lines = lines;
+    }
 
-	public Expense(Long id, java.util.Date date,
-                   Client client, java.util.List<Line> lines) {
-		this.id = id;
-		this.date = date;
-		this.client = client;
-		this.lines = lines;
-	}
-
+    public Expense(Long id,
+                   java.util.Date date,
+                   Client client,
+                   java.util.List<Line> lines) {
+        this.id = id;
+        this.date = date;
+        this.client = client;
+        this.lines = lines;
+    }
 }

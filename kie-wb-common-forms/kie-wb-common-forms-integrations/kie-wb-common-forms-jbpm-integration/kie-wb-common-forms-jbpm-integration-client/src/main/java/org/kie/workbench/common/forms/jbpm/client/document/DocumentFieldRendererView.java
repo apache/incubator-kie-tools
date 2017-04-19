@@ -20,10 +20,10 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.kie.workbench.common.forms.dynamic.model.document.DocumentData;
 
-public interface DocumentFieldRendererView extends IsWidget, HasValue<DocumentData> {
+public interface DocumentFieldRendererView extends IsWidget,
+                                                   HasValue<DocumentData> {
 
-    public void setRenderer( DocumentFieldRenderer renderer );
+    public void setRenderer(DocumentFieldRenderer renderer);
 
-    public void setReadOnly( boolean readOnly );
-
+    public void setReadOnly(boolean readOnly);
 }

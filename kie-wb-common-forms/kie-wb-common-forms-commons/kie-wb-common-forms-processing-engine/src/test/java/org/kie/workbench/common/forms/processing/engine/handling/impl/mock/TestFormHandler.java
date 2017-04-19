@@ -25,15 +25,16 @@ public class TestFormHandler extends FormHandlerImpl {
 
     protected DataBinder dataBinder;
 
-    public TestFormHandler( FormValidator validator,
-                            FieldChangeHandlerManager fieldChangeManager, DataBinder binder ) {
-        super( validator, fieldChangeManager );
+    public TestFormHandler(FormValidator validator,
+                           FieldChangeHandlerManager fieldChangeManager,
+                           DataBinder binder) {
+        super(validator,
+              fieldChangeManager);
         this.dataBinder = binder;
     }
 
-
     @Override
-    protected DataBinder getBinderForModel( Object model ) {
+    protected DataBinder getBinderForModel(Object model) {
         return dataBinder;
     }
 }

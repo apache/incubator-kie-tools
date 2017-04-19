@@ -20,15 +20,15 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 
 public interface FormRenderingConstants {
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String MultipleSubformNoColumns = "MultipleSubform.noColumns";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String MultipleSubformNoCreationForm = "MultipleSubform.noCreationForm";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String MultipleSubformNoEditionForm = "MultipleSubform.noEditionForm";
 
-    @TranslationKey( defaultValue = "" )
+    @TranslationKey(defaultValue = "")
     String SubFormNoForm = "SubForm.noForm";
 }

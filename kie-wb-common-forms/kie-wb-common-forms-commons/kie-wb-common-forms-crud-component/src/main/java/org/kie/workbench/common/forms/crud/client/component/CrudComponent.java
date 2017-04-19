@@ -15,13 +15,14 @@
  */
 package org.kie.workbench.common.forms.crud.client.component;
 
-import static org.kie.workbench.common.forms.crud.client.resources.i18n.CrudComponentConstants.CrudComponentViewImplNewInstanceTitle;
-
 import java.util.List;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.AsyncDataProvider;
+import com.google.gwt.view.client.HasData;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.FormDisplayer;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.FormDisplayer.FormDisplayerCallback;
@@ -30,28 +31,27 @@ import org.kie.workbench.common.forms.crud.client.component.formDisplay.embedded
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.modal.ModalFormDisplayer;
 import org.uberfire.ext.widgets.table.client.ColumnMeta;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.AsyncDataProvider;
-import com.google.gwt.view.client.HasData;
+import static org.kie.workbench.common.forms.crud.client.resources.i18n.CrudComponentConstants.CrudComponentViewImplNewInstanceTitle;
 
 @Dependent
-public class CrudComponent<MODEL, FORM_MODEL> implements IsWidget{
+public class CrudComponent<MODEL, FORM_MODEL> implements IsWidget {
 
-    public interface CrudComponentView<MODEL, FORM_MODEL> extends IsWidget{
-        void setPresenter( CrudComponent<MODEL, FORM_MODEL> presenter );
+    public interface CrudComponentView<MODEL, FORM_MODEL> extends IsWidget {
+
+        void setPresenter(CrudComponent<MODEL, FORM_MODEL> presenter);
 
         int getCurrentPage();
 
-        void addDisplayer( FormDisplayer displayer );
+        void addDisplayer(FormDisplayer displayer);
 
-        void removeDisplayer( FormDisplayer displayer );
+        void removeDisplayer(FormDisplayer displayer);
 
-        void initTableView( List<ColumnMeta<MODEL>> dataColumns, int pageSize );
+        void initTableView(List<ColumnMeta<MODEL>> dataColumns,
+                           int pageSize);
 
         void showCreateButton();
 
-        void setDataProvider( final AsyncDataProvider<MODEL> dataProvider );
+        void setDataProvider(final AsyncDataProvider<MODEL> dataProvider);
 
         void showDeleteButtons();
 
@@ -71,36 +71,37 @@ public class CrudComponent<MODEL, FORM_MODEL> implements IsWidget{
     private final TranslationService translationService;
 
     @Inject
-    public CrudComponent( final CrudComponentView<MODEL, FORM_MODEL> view,
-                          final EmbeddedFormDisplayer embeddedFormDisplayer,
-                          final ModalFormDisplayer modalFormDisplayer,
-                          final TranslationService translationService ) {
+    public CrudComponent(final CrudComponentView<MODEL, FORM_MODEL> view,
+                         final EmbeddedFormDisplayer embeddedFormDisplayer,
+                         final ModalFormDisplayer modalFormDisplayer,
+                         final TranslationService translationService) {
         this.view = view;
         this.embeddedFormDisplayer = embeddedFormDisplayer;
         this.modalFormDisplayer = modalFormDisplayer;
         this.translationService = translationService;
-        view.setPresenter( this );
+        view.setPresenter(this);
     }
 
-    public void init( final CrudActionsHelper<MODEL> helper ) {
+    public void init(final CrudActionsHelper<MODEL> helper) {
         this.helper = helper;
-        view.initTableView( helper.getGridColumns(), helper.getPageSize() );
-        if ( helper.isAllowCreate() ) {
+        view.initTableView(helper.getGridColumns(),
+                           helper.getPageSize());
+        if (helper.isAllowCreate()) {
             view.showCreateButton();
         }
-        if ( helper.isAllowEdit() ) {
+        if (helper.isAllowEdit()) {
             view.showEditButtons();
         }
-        if ( helper.isAllowDelete() ) {
+        if (helper.isAllowDelete()) {
             view.showDeleteButtons();
         }
 
-        view.setDataProvider( helper.getDataProvider() );
+        view.setDataProvider(helper.getDataProvider());
         refresh();
     }
 
     public FormDisplayer getFormDisplayer() {
-        if ( helper.showEmbeddedForms() ) {
+        if (helper.showEmbeddedForms()) {
             return embeddedFormDisplayer;
         }
         return modalFormDisplayer;
@@ -110,12 +111,12 @@ public class CrudComponent<MODEL, FORM_MODEL> implements IsWidget{
         helper.createInstance();
     }
 
-    public void editInstance( int index ) {
-        helper.editInstance( index );
+    public void editInstance(int index) {
+        helper.editInstance(index);
     }
 
-    public void deleteInstance( final int index ) {
-        helper.deleteInstance( index );
+    public void deleteInstance(final int index) {
+        helper.deleteInstance(index);
     }
 
     public int getCurrentPage() {
@@ -124,14 +125,15 @@ public class CrudComponent<MODEL, FORM_MODEL> implements IsWidget{
 
     public void refresh() {
         final HasData<MODEL> next = helper.getDataProvider().getDataDisplays().iterator().next();
-        next.setVisibleRangeAndClearData( next.getVisibleRange(), true );
+        next.setVisibleRangeAndClearData(next.getVisibleRange(),
+                                         true);
     }
 
     public boolean isEmbedded() {
         return embedded;
     }
 
-    public void setEmbedded( final boolean embedded ) {
+    public void setEmbedded(final boolean embedded) {
         this.embedded = embedded;
     }
 
@@ -140,39 +142,44 @@ public class CrudComponent<MODEL, FORM_MODEL> implements IsWidget{
         return view.asWidget();
     }
 
-    public void displayForm( final String title, final IsFormView<FORM_MODEL> formView, final FormDisplayer.FormDisplayerCallback callback ) {
+    public void displayForm(final String title,
+                            final IsFormView<FORM_MODEL> formView,
+                            final FormDisplayer.FormDisplayerCallback callback) {
         final FormDisplayer displayer = getFormDisplayer();
 
-        if ( displayer.isEmbeddable() ) {
-            view.addDisplayer( displayer );
+        if (displayer.isEmbeddable()) {
+            view.addDisplayer(displayer);
         }
 
-        displayer.display( title, formView, new FormDisplayerCallback() {
+        displayer.display(title,
+                          formView,
+                          new FormDisplayerCallback() {
 
-            @Override
-            public void onCancel() {
-                restoreTable();
-                callback.onCancel();
-            }
+                              @Override
+                              public void onCancel() {
+                                  restoreTable();
+                                  callback.onCancel();
+                              }
 
-            @Override
-            public void onAccept() {
-                restoreTable();
-                callback.onAccept();
-            }
-        } );
+                              @Override
+                              public void onAccept() {
+                                  restoreTable();
+                                  callback.onAccept();
+                              }
+                          });
     }
 
-    public void displayForm( IsFormView<FORM_MODEL> formView, FormDisplayerCallback callback ) {
-        displayForm( translationService.getTranslation( CrudComponentViewImplNewInstanceTitle ),
-                          formView,
-                          callback );
+    public void displayForm(IsFormView<FORM_MODEL> formView,
+                            FormDisplayerCallback callback) {
+        displayForm(translationService.getTranslation(CrudComponentViewImplNewInstanceTitle),
+                    formView,
+                    callback);
     }
 
     public void restoreTable() {
         final FormDisplayer displayer = getFormDisplayer();
-        if ( displayer.isEmbeddable() ) {
-            view.removeDisplayer( displayer );
+        if (displayer.isEmbeddable()) {
+            view.removeDisplayer(displayer);
         }
     }
 }

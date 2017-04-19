@@ -21,7 +21,8 @@ import org.kie.workbench.common.forms.model.FormDefinition;
 
 public interface FormRenderingContextGenerator<T extends TransformerContext<C>, C extends FormRenderingContext> {
 
-    C createContext( Object model );
+    C createContext(Object model);
 
-    FormDefinition generateFormDefinitionForType( String type, T context );
+    FormDefinition generateFormDefinitionForType(String type,
+                                                 T context);
 }

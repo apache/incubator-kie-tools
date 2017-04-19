@@ -22,12 +22,13 @@ import org.jboss.errai.databinding.client.api.Bindable;
 @Bindable
 @Portable
 public class Age {
+
     private Integer value;
 
     public Age() {
     }
 
-    public Age( Integer value ) {
+    public Age(Integer value) {
         this.value = value;
     }
 
@@ -35,7 +36,7 @@ public class Age {
         return value;
     }
 
-    public void setValue( Integer value ) {
+    public void setValue(Integer value) {
         this.value = value;
     }
 }

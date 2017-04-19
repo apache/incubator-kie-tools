@@ -15,6 +15,9 @@
  */
 package org.kie.workbench.common.forms.adf.engine.shared.formGeneration.processing.fields.fieldInitializers.selectors;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,14 +29,9 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.l
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SelectorFieldInitilizerTest {
@@ -61,12 +59,14 @@ public class SelectorFieldInitilizerTest {
 
     @Test
     public void testInitialize() {
-        fieldElementParams.put(DATA_PROVIDER, DATA_PROVIDER);
-        initializer.initialize(field, fieldElement, context);
+        fieldElementParams.put(DATA_PROVIDER,
+                               DATA_PROVIDER);
+        initializer.initialize(field,
+                               fieldElement,
+                               context);
 
         verify(field).setDataProvider(any());
-        assertEquals(DATA_PROVIDER, field.getDataProvider());
+        assertEquals(DATA_PROVIDER,
+                     field.getDataProvider());
     }
-
-
 }

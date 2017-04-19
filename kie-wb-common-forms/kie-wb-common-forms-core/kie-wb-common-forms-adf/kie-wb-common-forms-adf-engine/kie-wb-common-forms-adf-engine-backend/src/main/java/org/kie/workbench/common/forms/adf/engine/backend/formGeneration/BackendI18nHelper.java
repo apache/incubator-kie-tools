@@ -29,7 +29,8 @@ public class BackendI18nHelper extends AbstractI18nHelper {
     public BackendI18nHelper(I18nSettings settings) {
         super(settings);
 
-        bundle = ResourceBundle.getBundle(settings.getBundle(), RpcContext.getServletRequest().getLocale());
+        bundle = ResourceBundle.getBundle(settings.getBundle(),
+                                          RpcContext.getServletRequest().getLocale());
     }
 
     @Override

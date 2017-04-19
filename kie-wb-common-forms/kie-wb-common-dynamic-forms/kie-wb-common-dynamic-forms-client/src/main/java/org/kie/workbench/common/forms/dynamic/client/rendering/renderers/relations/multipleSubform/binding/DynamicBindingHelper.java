@@ -36,40 +36,45 @@ public class DynamicBindingHelper extends AbstractBindingHelper<MapModelRenderin
     protected MapPropertyType dynamicDefinition = null;
 
     @Inject
-    public DynamicBindingHelper( MapModelBindingHelper helper ) {
+    public DynamicBindingHelper(MapModelBindingHelper helper) {
         this.helper = helper;
     }
 
     @Override
-    public void setUp( MultipleSubFormFieldDefinition field, MapModelRenderingContext context ) {
-        super.setUp( field, context );
-        dynamicDefinition = helper.getModeldefinitionFor( field, context, new HashMap<>() );
+    public void setUp(MultipleSubFormFieldDefinition field,
+                      MapModelRenderingContext context) {
+        super.setUp(field,
+                    context);
+        dynamicDefinition = helper.getModeldefinitionFor(field,
+                                                         context,
+                                                         new HashMap<>());
     }
 
     @Override
     public MapBindableProxy getProxyDefinition() {
-        return (MapBindableProxy) DataBinder.forMap( dynamicDefinition.getPropertyTypes() ).getModel();
+        return (MapBindableProxy) DataBinder.forMap(dynamicDefinition.getPropertyTypes()).getModel();
     }
 
     @Override
     public MapBindableProxy getNewProxy() {
-        return getProxyForModel( new HashMap<>() );
+        return getProxyForModel(new HashMap<>());
     }
 
     @Override
-    public MapBindableProxy getProxyForModel( Map<String, Object> model ) {
-        Map<String, Object> content = DataBinder.forMap( dynamicDefinition.getPropertyTypes() ).getModel();
+    public MapBindableProxy getProxyForModel(Map<String, Object> model) {
+        Map<String, Object> content = DataBinder.forMap(dynamicDefinition.getPropertyTypes()).getModel();
 
-        helper.prepareMapContent( content,
-                                  context.getAvailableForms().get( field.getCreationForm() ),
-                                  model,
-                                  context );
+        helper.prepareMapContent(content,
+                                 context.getAvailableForms().get(field.getCreationForm()),
+                                 model,
+                                 context);
 
         return (MapBindableProxy) content;
     }
 
     @Override
-    public void afterEdit( Map<String, Object> model ) {
-        model.put( MapModelRenderingContext.FORM_ENGINE_EDITED_OBJECT, Boolean.TRUE );
+    public void afterEdit(Map<String, Object> model) {
+        model.put(MapModelRenderingContext.FORM_ENGINE_EDITED_OBJECT,
+                  Boolean.TRUE);
     }
 }

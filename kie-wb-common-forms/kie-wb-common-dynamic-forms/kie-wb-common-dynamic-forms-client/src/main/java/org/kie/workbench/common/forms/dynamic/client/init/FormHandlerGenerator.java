@@ -16,12 +16,10 @@
 
 package org.kie.workbench.common.forms.dynamic.client.init;
 
-
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.processing.engine.handling.FormHandler;
 
 public interface FormHandlerGenerator<CTX extends FormRenderingContext> {
 
-    FormHandler generateFormHandler( CTX context );
-
+    FormHandler generateFormHandler(CTX context);
 }

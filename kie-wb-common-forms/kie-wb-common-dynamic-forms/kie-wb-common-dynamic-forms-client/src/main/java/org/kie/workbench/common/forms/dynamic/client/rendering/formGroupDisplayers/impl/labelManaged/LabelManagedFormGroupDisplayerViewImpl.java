@@ -36,9 +36,10 @@ public class LabelManagedFormGroupDisplayerViewImpl extends Composite implements
     @DataField
     protected Element helpBlock = DOM.createDiv();
 
-    public void render( Widget widget, FieldDefinition field ) {
-        this.getElement().setId( generateFormGroupId( field ) );
-        fieldContainer.add( widget );
-        helpBlock.setId( generateHelpBlockId( field ) );
+    public void render(Widget widget,
+                       FieldDefinition field) {
+        this.getElement().setId(generateFormGroupId(field));
+        fieldContainer.add(widget);
+        helpBlock.setId(generateHelpBlockId(field));
     }
 }

@@ -29,9 +29,9 @@ public class BackendSelectorDataProviderManager extends AbstractSelectorDataProv
     public static final String PREFFIX = "remote";
 
     @Inject
-    public BackendSelectorDataProviderManager( Instance<SelectorDataProvider> providers ) {
-        for ( SelectorDataProvider provider : providers ) {
-            registerProvider( provider );
+    public BackendSelectorDataProviderManager(Instance<SelectorDataProvider> providers) {
+        for (SelectorDataProvider provider : providers) {
+            registerProvider(provider);
         }
     }
 

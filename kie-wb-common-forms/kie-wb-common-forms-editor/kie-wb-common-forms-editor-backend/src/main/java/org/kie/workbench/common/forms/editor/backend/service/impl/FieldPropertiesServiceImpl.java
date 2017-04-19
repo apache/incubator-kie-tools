@@ -34,20 +34,20 @@ public class FieldPropertiesServiceImpl implements FieldPropertiesService {
     protected FormRenderingContextGeneratorService formRenderingContextGeneratorService;
 
     @Inject
-    public FieldPropertiesServiceImpl( FormRenderingContextGeneratorService formRenderingContextGeneratorService ) {
+    public FieldPropertiesServiceImpl(FormRenderingContextGeneratorService formRenderingContextGeneratorService) {
         this.formRenderingContextGeneratorService = formRenderingContextGeneratorService;
     }
 
     @Override
-    public FormEditorRenderingContext getFieldPropertiesRenderingContext( FieldDefinition fieldDefinition,
-                                                                          Path formPath ) {
-        FormRenderingContext context = formRenderingContextGeneratorService.createContext( fieldDefinition );
+    public FormEditorRenderingContext getFieldPropertiesRenderingContext(FieldDefinition fieldDefinition,
+                                                                         Path formPath) {
+        FormRenderingContext context = formRenderingContextGeneratorService.createContext(fieldDefinition);
 
-        FormEditorRenderingContext editorContext = new FormEditorRenderingContext( formPath );
-        editorContext.setRootForm( context.getRootForm() );
-        editorContext.setModel( fieldDefinition );
+        FormEditorRenderingContext editorContext = new FormEditorRenderingContext(formPath);
+        editorContext.setRootForm(context.getRootForm());
+        editorContext.setModel(fieldDefinition);
 
-        editorContext.getAvailableForms().putAll( context.getAvailableForms() );
+        editorContext.getAvailableForms().putAll(context.getAvailableForms());
 
         return editorContext;
     }

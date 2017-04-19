@@ -25,7 +25,7 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplaye
 public class FieldSetFormGroupDisplayer extends AbstractFormGroupDisplayer<FieldSetFormGroupDisplayerView> {
 
     @Inject
-    public FieldSetFormGroupDisplayer( FieldSetFormGroupDisplayerView view ) {
-        super( view );
+    public FieldSetFormGroupDisplayer(FieldSetFormGroupDisplayerView view) {
+        super(view);
     }
 }

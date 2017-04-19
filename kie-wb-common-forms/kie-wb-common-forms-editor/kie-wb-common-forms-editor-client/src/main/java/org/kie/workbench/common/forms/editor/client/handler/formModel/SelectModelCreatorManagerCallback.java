@@ -26,5 +26,5 @@ public interface SelectModelCreatorManagerCallback {
     /**
      * Selects the given container
      */
-    void selectContainerCallback( FormModelCreationContainer container );
+    void selectContainerCallback(FormModelCreationContainer container);
 }

@@ -17,7 +17,9 @@ package org.kie.workbench.common.forms.editor.client.editor.events;
 
 public class FormEditorContextRequest extends FormEditorEvent {
 
-    public FormEditorContextRequest( String formId, String fieldId ) {
-        super( formId, fieldId );
+    public FormEditorContextRequest(String formId,
+                                    String fieldId) {
+        super(formId,
+              fieldId);
     }
 }

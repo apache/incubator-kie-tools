@@ -37,20 +37,21 @@ public class FieldRendererManager {
     private static Map<String, FieldRenderer> availableRenderers = new HashMap<String, FieldRenderer>();
 
     static {
-        Collection<SyncBeanDef<FieldRenderer>> renderers = IOC.getBeanManager().lookupBeans( FieldRenderer.class );
-        for ( SyncBeanDef<FieldRenderer> rendererDef : renderers ) {
+        Collection<SyncBeanDef<FieldRenderer>> renderers = IOC.getBeanManager().lookupBeans(FieldRenderer.class);
+        for (SyncBeanDef<FieldRenderer> rendererDef : renderers) {
             FieldRenderer renderer = rendererDef.getInstance();
-            if ( renderer != null ) {
-                availableRenderers.put( renderer.getSupportedCode(), renderer );
+            if (renderer != null) {
+                availableRenderers.put(renderer.getSupportedCode(),
+                                       renderer);
             }
         }
     }
 
-    public FieldRenderer getRendererForField( FieldDefinition fieldDefinition ) {
-        FieldRenderer def = availableRenderers.get( fieldDefinition.getFieldType().getTypeName() );
+    public FieldRenderer getRendererForField(FieldDefinition fieldDefinition) {
+        FieldRenderer def = availableRenderers.get(fieldDefinition.getFieldType().getTypeName());
 
-        if ( def != null ) {
-            return renderers.select( def.getClass() ).get();
+        if (def != null) {
+            return renderers.select(def.getClass()).get();
         }
         return null;
     }

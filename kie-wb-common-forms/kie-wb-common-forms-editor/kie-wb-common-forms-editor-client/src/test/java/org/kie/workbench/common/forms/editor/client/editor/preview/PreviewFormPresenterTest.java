@@ -46,30 +46,30 @@ public class PreviewFormPresenterTest extends TestCase {
 
     private PreviewFormPresenter presenter;
 
-
     @Before
     public void init() {
-        presenter = new PreviewFormPresenter( view );
-        when( form.getId() ).thenReturn( "randomId" );
-        when( context.getAvailableForms() ).thenAnswer( new Answer<Map<String, FormDefinition>>() {
+        presenter = new PreviewFormPresenter(view);
+        when(form.getId()).thenReturn("randomId");
+        when(context.getAvailableForms()).thenAnswer(new Answer<Map<String, FormDefinition>>() {
             @Override
-            public Map<String, FormDefinition> answer( InvocationOnMock invocation ) throws Throwable {
+            public Map<String, FormDefinition> answer(InvocationOnMock invocation) throws Throwable {
                 Map<String, FormDefinition> forms = new HashMap<>();
-                forms.put( form.getId(), form );
+                forms.put(form.getId(),
+                          form);
                 return forms;
             }
-        } );
-        when( context.getRootForm() ).thenReturn( form );
+        });
+        when(context.getRootForm()).thenReturn(form);
     }
 
     @Test
     public void testRenderContext() {
-        presenter.preview( context );
+        presenter.preview(context);
 
         presenter.asWidget();
 
-        verify( view ).preview( any() );
+        verify(view).preview(any());
 
-        verify( view ).asWidget();
+        verify(view).asWidget();
     }
 }

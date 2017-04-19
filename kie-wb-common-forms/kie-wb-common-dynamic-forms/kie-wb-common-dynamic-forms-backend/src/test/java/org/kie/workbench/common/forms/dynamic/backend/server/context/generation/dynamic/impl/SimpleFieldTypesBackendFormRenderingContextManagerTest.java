@@ -29,7 +29,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class SimpleFieldTypesBackendFormRenderingContextManagerTest extends AbstractBackendFormRenderingContextManagerTest {
 
     private Map<String, Object> contextData;
@@ -38,16 +38,23 @@ public class SimpleFieldTypesBackendFormRenderingContextManagerTest extends Abst
     public void readSimpleData() {
         Map<String, Object> result = context.getRenderingContext().getModel();
 
-        assertTrue( "There shouldn't be any validations", context.getRenderingContext().getModelConstraints().isEmpty() );
+        assertTrue("There shouldn't be any validations",
+                   context.getRenderingContext().getModelConstraints().isEmpty());
 
-        assertNotNull( "Result cannot be null ", result );
-        assertTrue( "Result cannot be empty ", !result.isEmpty() );
+        assertNotNull("Result cannot be null ",
+                      result);
+        assertTrue("Result cannot be empty ",
+                   !result.isEmpty());
 
-        formData.forEach( ( key, value ) -> {
-            assertTrue( "Processed map must contain value for field '" + key + "'", result.containsKey( key ) );
-            assertNotNull( "Processed map must contain value for field '" + key + "'", result.get( key ) );
-            assertEquals( "Processed value must be equal to formValue", value, result.get( key ) );
-        } );
+        formData.forEach((key, value) -> {
+            assertTrue("Processed map must contain value for field '" + key + "'",
+                       result.containsKey(key));
+            assertNotNull("Processed map must contain value for field '" + key + "'",
+                          result.get(key));
+            assertEquals("Processed value must be equal to formValue",
+                         value,
+                         result.get(key));
+        });
     }
 
     @Test
@@ -55,28 +62,40 @@ public class SimpleFieldTypesBackendFormRenderingContextManagerTest extends Abst
         Map<String, Object> formValues = new HashMap<>();
 
         Date date = new Date();
-        date.setTime( date.getTime() + 5000 );
+        date.setTime(date.getTime() + 5000);
 
-        formValues.put( "string", "newString" );
-        formValues.put( "integer", 3 );
-        formValues.put( "date", date );
-        formValues.put( "boolean", Boolean.FALSE );
+        formValues.put("string",
+                       "newString");
+        formValues.put("integer",
+                       3);
+        formValues.put("date",
+                       date);
+        formValues.put("boolean",
+                       Boolean.FALSE);
 
-        assertTrue( "There shouldn't be any validations", context.getRenderingContext().getModelConstraints().isEmpty() );
+        assertTrue("There shouldn't be any validations",
+                   context.getRenderingContext().getModelConstraints().isEmpty());
 
-        Map<String, Object> result = contextManager.updateContextData( context.getTimestamp(), formValues ).getFormData();
+        Map<String, Object> result = contextManager.updateContextData(context.getTimestamp(),
+                                                                      formValues).getFormData();
 
-        assertNotNull( "Result cannot be null ", result );
-        assertTrue( "Result cannot be empty ", !result.isEmpty() );
+        assertNotNull("Result cannot be null ",
+                      result);
+        assertTrue("Result cannot be empty ",
+                   !result.isEmpty());
 
-        formValues.forEach( ( key, value ) -> {
-            assertTrue( "Processed map must contain value for field '" + key + "'", result.containsKey( key ) );
-            assertNotNull( "Processed map must contain value for field '" + key + "'", result.get( key ) );
-            assertEquals( "Processed value must be equal to formValue", value, result.get( key ) );
-            assertNotEquals( "Processed value must not be equal to the original value",
-                             value,
-                             contextData.get( key ) );
-        } );
+        formValues.forEach((key, value) -> {
+            assertTrue("Processed map must contain value for field '" + key + "'",
+                       result.containsKey(key));
+            assertNotNull("Processed map must contain value for field '" + key + "'",
+                          result.get(key));
+            assertEquals("Processed value must be equal to formValue",
+                         value,
+                         result.get(key));
+            assertNotEquals("Processed value must not be equal to the original value",
+                            value,
+                            contextData.get(key));
+        });
     }
 
     @Override
@@ -87,33 +106,33 @@ public class SimpleFieldTypesBackendFormRenderingContextManagerTest extends Abst
     @Override
     protected FormDefinition getRootForm() {
         FormDefinition form = new FormDefinition();
-        FieldDefinition field = fieldManager.getDefinitionByDataType( new FieldDataType( String.class.getName() ) );
+        FieldDefinition field = fieldManager.getDefinitionByDataType(new FieldDataType(String.class.getName()));
 
-        field.setName( "string" );
-        field.setBinding( "string" );
+        field.setName("string");
+        field.setBinding("string");
 
-        form.getFields().add( field );
+        form.getFields().add(field);
 
-        field = fieldManager.getDefinitionByDataType( new FieldDataType( Integer.class.getName() ) );
+        field = fieldManager.getDefinitionByDataType(new FieldDataType(Integer.class.getName()));
 
-        field.setName( "integer" );
-        field.setBinding( "integer" );
+        field.setName("integer");
+        field.setBinding("integer");
 
-        form.getFields().add( field );
+        form.getFields().add(field);
 
-        field = fieldManager.getDefinitionByDataType( new FieldDataType( Date.class.getName() ) );
+        field = fieldManager.getDefinitionByDataType(new FieldDataType(Date.class.getName()));
 
-        field.setName( "date" );
-        field.setBinding( "date" );
+        field.setName("date");
+        field.setBinding("date");
 
-        form.getFields().add( field );
+        form.getFields().add(field);
 
-        field = fieldManager.getDefinitionByDataType( new FieldDataType( Boolean.class.getName() ) );
+        field = fieldManager.getDefinitionByDataType(new FieldDataType(Boolean.class.getName()));
 
-        field.setName( "boolean" );
-        field.setBinding( "boolean" );
+        field.setName("boolean");
+        field.setBinding("boolean");
 
-        form.getFields().add( field );
+        form.getFields().add(field);
         return form;
     }
 
@@ -121,10 +140,14 @@ public class SimpleFieldTypesBackendFormRenderingContextManagerTest extends Abst
     protected Map<String, Object> generateFormData() {
         contextData = new HashMap<>();
 
-        contextData.put( "string", "string" );
-        contextData.put( "integer", 1 );
-        contextData.put( "date", new Date() );
-        contextData.put( "boolean", Boolean.TRUE );
+        contextData.put("string",
+                        "string");
+        contextData.put("integer",
+                        1);
+        contextData.put("date",
+                        new Date());
+        contextData.put("boolean",
+                        Boolean.TRUE);
 
         return contextData;
     }

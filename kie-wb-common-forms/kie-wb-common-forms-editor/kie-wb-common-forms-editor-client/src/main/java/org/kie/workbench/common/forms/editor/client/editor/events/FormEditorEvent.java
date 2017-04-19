@@ -16,10 +16,12 @@
 package org.kie.workbench.common.forms.editor.client.editor.events;
 
 public abstract class FormEditorEvent {
+
     protected String formId;
     protected String fieldId;
 
-    public FormEditorEvent( String formId, String fieldId) {
+    public FormEditorEvent(String formId,
+                           String fieldId) {
         this.formId = formId;
         this.fieldId = fieldId;
     }
@@ -28,7 +30,7 @@ public abstract class FormEditorEvent {
         return formId;
     }
 
-    public void setFormId( String formId ) {
+    public void setFormId(String formId) {
         this.formId = formId;
     }
 

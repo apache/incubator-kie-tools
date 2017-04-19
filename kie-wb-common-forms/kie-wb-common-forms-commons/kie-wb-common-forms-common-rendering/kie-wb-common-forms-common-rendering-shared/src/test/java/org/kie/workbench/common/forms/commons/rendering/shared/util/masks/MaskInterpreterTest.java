@@ -32,56 +32,68 @@ public abstract class MaskInterpreterTest<T extends MaskInterpreter<Product>> {
     protected String name = "Electric Guitar";
     protected String description = "T-Shape Alder body mapple neck, humbucker & single pickups";
     protected double price = 2999.99;
-    protected Product product = new Product( id, name, description, price );
+    protected Product product = new Product(id,
+                                            name,
+                                            description,
+                                            price);
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     protected MaskInterpreter<Product> interpreter;
 
-
-    protected abstract T getMaskInterpreter( String mask );
+    protected abstract T getMaskInterpreter(String mask);
 
     @Test
     public void testValidateWrongMask() {
-        thrown.expect( IllegalArgumentException.class );
-        thrown.expectMessage( "Invalid mask!" );
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("Invalid mask!");
 
-        interpreter = getMaskInterpreter( WRONG_MASK );
+        interpreter = getMaskInterpreter(WRONG_MASK);
 
-        fail( "We shouldn't be there! IllegalArgumentException must be thrown during the test!");
+        fail("We shouldn't be there! IllegalArgumentException must be thrown during the test!");
     }
 
     @Test
     public void testValidateNullMask() {
-        thrown.expect( NullPointerException.class );
-        thrown.expectMessage( "Mask cannot be null!" );
+        thrown.expect(NullPointerException.class);
+        thrown.expectMessage("Mask cannot be null!");
 
-        interpreter = getMaskInterpreter( null );
+        interpreter = getMaskInterpreter(null);
 
-        fail( "We shouldn't be there! NullPointerException must be thrown during the test!");
+        fail("We shouldn't be there! NullPointerException must be thrown during the test!");
     }
 
     @Test
     public void testShortMask() {
         String expecteResult = name + ": " + price;
 
-        testMask( SHORT_MASK, 3, expecteResult );
+        testMask(SHORT_MASK,
+                 3,
+                 expecteResult);
     }
 
     @Test
     public void testLongMask() {
-        String expecteResult = "ID:" + id + "\nNAME:" + name + "\nDESCRIPTION:" + description + "\nPRICE:"+ price;
+        String expecteResult = "ID:" + id + "\nNAME:" + name + "\nDESCRIPTION:" + description + "\nPRICE:" + price;
 
-        testMask( LONG_MASK, 8, expecteResult );
+        testMask(LONG_MASK,
+                 8,
+                 expecteResult);
     }
 
-    protected void testMask( String mask, int sections, String expectedResult ) {
-        interpreter = getMaskInterpreter( mask );
+    protected void testMask(String mask,
+                            int sections,
+                            String expectedResult) {
+        interpreter = getMaskInterpreter(mask);
 
-        assertNotNull( "Interpreter must have a mask: ", interpreter.getMask() );
-        assertEquals( "Interpreter must have " + sections + " sections", sections, interpreter.getSections().size() );
-        assertEquals( "Parsed result should be '" + expectedResult + "'", expectedResult, interpreter.render( product ) );
+        assertNotNull("Interpreter must have a mask: ",
+                      interpreter.getMask());
+        assertEquals("Interpreter must have " + sections + " sections",
+                     sections,
+                     interpreter.getSections().size());
+        assertEquals("Parsed result should be '" + expectedResult + "'",
+                     expectedResult,
+                     interpreter.render(product));
     }
-
 }

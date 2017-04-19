@@ -59,7 +59,7 @@ public class ModalFormDisplayerViewImpl extends Composite implements ModalFormDi
     private TranslationService translationService;
 
     @Inject
-    public ModalFormDisplayerViewImpl( TranslationService translationService ) {
+    public ModalFormDisplayerViewImpl(TranslationService translationService) {
         this.translationService = translationService;
     }
 
@@ -68,63 +68,64 @@ public class ModalFormDisplayerViewImpl extends Composite implements ModalFormDi
 
         modal = new Modal();
 
-        modal.setHideOtherModals( false );
-        modal.setClosable( true );
-        modal.setFade( true );
-        modal.setDataKeyboard( true );
-        modal.setDataBackdrop( ModalBackdrop.FALSE );
-        modal.setSize( ModalSize.LARGE );
-        modal.setRemoveOnHide( true );
+        modal.setHideOtherModals(false);
+        modal.setClosable(true);
+        modal.setFade(true);
+        modal.setDataKeyboard(true);
+        modal.setDataBackdrop(ModalBackdrop.FALSE);
+        modal.setSize(ModalSize.LARGE);
+        modal.setRemoveOnHide(true);
 
         modalBody = new ModalBody();
 
-        modalBody.add( this );
+        modalBody.add(this);
 
-        modal.add( modalBody );
+        modal.add(modalBody);
 
-        submit = new Button( translationService.getTranslation( CrudComponentConstants.ModalFormDisplayerViewImplAccept ) );
+        submit = new Button(translationService.getTranslation(CrudComponentConstants.ModalFormDisplayerViewImplAccept));
 
-        submit.setType( ButtonType.PRIMARY );
+        submit.setType(ButtonType.PRIMARY);
 
-        cancel = new Button( translationService.getTranslation( CrudComponentConstants.ModalFormDisplayerViewImplCancel ) );
+        cancel = new Button(translationService.getTranslation(CrudComponentConstants.ModalFormDisplayerViewImplCancel));
 
-        modal.add( new ModalFooter() {{
-            add( submit );
-            add( cancel );
-        }} );
+        modal.add(new ModalFooter() {{
+            add(submit);
+            add(cancel);
+        }});
 
-        submit.addClickHandler( new ClickHandler() {
+        submit.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 presenter.submitForm();
             }
-        } );
+        });
 
-        cancel.addClickHandler( new ClickHandler() {
+        cancel.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 doCancel();
             }
-        } );
+        });
 
-        modal.addHiddenHandler( new ModalHiddenHandler() {
+        modal.addHiddenHandler(new ModalHiddenHandler() {
             @Override
-            public void onHidden( ModalHiddenEvent evt ) {
+            public void onHidden(ModalHiddenEvent evt) {
                 doCancel();
             }
-        } );
+        });
     }
 
     @Override
-    public void setPresenter( ModalFormDisplayer presenter ) {
+    public void setPresenter(ModalFormDisplayer presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void show( String title, IsFormView formView ) {
-        modal.setTitle( title );
+    public void show(String title,
+                     IsFormView formView) {
+        modal.setTitle(title);
         content.clear();
-        content.add( formView );
+        content.add(formView);
         modal.show();
     }
 

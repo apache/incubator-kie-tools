@@ -32,7 +32,7 @@ public class BackendSelectorDataProviderServiceImpl implements BackendSelectorDa
     private BackendSelectorDataProviderManager providerManager;
 
     @Inject
-    public BackendSelectorDataProviderServiceImpl( BackendSelectorDataProviderManager providerManager ) {
+    public BackendSelectorDataProviderServiceImpl(BackendSelectorDataProviderManager providerManager) {
         this.providerManager = providerManager;
     }
 
@@ -42,7 +42,9 @@ public class BackendSelectorDataProviderServiceImpl implements BackendSelectorDa
     }
 
     @Override
-    public SelectorData getDataFromProvider( FormRenderingContext context, String provider ) {
-        return providerManager.getDataFromProvider( context, provider );
+    public SelectorData getDataFromProvider(FormRenderingContext context,
+                                            String provider) {
+        return providerManager.getDataFromProvider(context,
+                                                   provider);
     }
 }

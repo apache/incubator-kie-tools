@@ -30,31 +30,40 @@ import org.kie.workbench.common.forms.model.FormModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FormModelSerializer implements JsonSerializer<FormModel>, JsonDeserializer<FormModel> {
+public class FormModelSerializer implements JsonSerializer<FormModel>,
+                                            JsonDeserializer<FormModel> {
 
-    private Logger log = LoggerFactory.getLogger( FormModelSerializer.class );
+    private Logger log = LoggerFactory.getLogger(FormModelSerializer.class);
 
     @Override
-    public JsonElement serialize( FormModel formModel, Type type, JsonSerializationContext context ) {
-        JsonElement serializedModel = context.serialize( formModel, formModel.getClass() );
+    public JsonElement serialize(FormModel formModel,
+                                 Type type,
+                                 JsonSerializationContext context) {
+        JsonElement serializedModel = context.serialize(formModel,
+                                                        formModel.getClass());
 
-        serializedModel.getAsJsonObject().addProperty( "formModelType", formModel.getClass().getName() );
+        serializedModel.getAsJsonObject().addProperty("formModelType",
+                                                      formModel.getClass().getName());
 
         return serializedModel;
     }
 
     @Override
-    public FormModel deserialize( JsonElement json, Type typeOfT, JsonDeserializationContext context ) throws JsonParseException {
+    public FormModel deserialize(JsonElement json,
+                                 Type typeOfT,
+                                 JsonDeserializationContext context) throws JsonParseException {
 
-        JsonObject jsonField =  json.getAsJsonObject();
+        JsonObject jsonField = json.getAsJsonObject();
 
-        JsonElement jsonClassName = jsonField.get( "formModelType" );
+        JsonElement jsonClassName = jsonField.get("formModelType");
 
-        if ( jsonClassName != null && !StringUtils.isEmpty( jsonClassName.getAsString() ) ) {
+        if (jsonClassName != null && !StringUtils.isEmpty(jsonClassName.getAsString())) {
             try {
-                return context.deserialize( json, Class.forName( jsonClassName.getAsString() ) );
-            } catch ( Exception ex ) {
-                log.error( "Error deserializing formModel", ex );
+                return context.deserialize(json,
+                                           Class.forName(jsonClassName.getAsString()));
+            } catch (Exception ex) {
+                log.error("Error deserializing formModel",
+                          ex);
             }
         }
 

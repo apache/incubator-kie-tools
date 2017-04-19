@@ -25,12 +25,14 @@ public abstract class AbstractFormGroupDisplayer<V extends FormGroupDisplayerVie
 
     protected V view;
 
-    public AbstractFormGroupDisplayer( V view ) {
+    public AbstractFormGroupDisplayer(V view) {
         this.view = view;
     }
 
-    public void render( Widget widget, FieldDefinition field ) {
-        view.render( widget, field );
+    public void render(Widget widget,
+                       FieldDefinition field) {
+        view.render(widget,
+                    field);
     }
 
     @Override

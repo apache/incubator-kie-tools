@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.test;
 
-import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 import org.kie.workbench.common.forms.data.modeller.service.DataObjectFinderService;
 import org.kie.workbench.common.forms.data.modeller.service.impl.DataModellerFieldGenerator;
 import org.kie.workbench.common.forms.data.modeller.service.impl.DataObjectFormModelHandler;
@@ -53,6 +52,7 @@ public class TestFormModelHandlerManager implements FormModelHandlerManager {
         if (TaskFormModel.class.equals(clazz)) {
             return new TaskFormModelHandler(fieldManager);
         }
-        return new DataObjectFormModelHandler(finderService, dataModellerFieldGenerator);
+        return new DataObjectFormModelHandler(finderService,
+                                              dataModellerFieldGenerator);
     }
 }

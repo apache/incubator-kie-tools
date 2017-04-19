@@ -24,17 +24,17 @@ import org.kie.workbench.common.forms.metaModel.FieldDef;
 @Portable
 public class Address {
 
-    @FieldDef( label = "Street Name")
+    @FieldDef(label = "Street Name")
     private String street;
 
-    @FieldDef( label = "#")
+    @FieldDef(label = "#")
     private Integer num;
 
     public String getStreet() {
         return street;
     }
 
-    public void setStreet( String street ) {
+    public void setStreet(String street) {
         this.street = street;
     }
 
@@ -42,7 +42,7 @@ public class Address {
         return num;
     }
 
-    public void setNum( Integer num ) {
+    public void setNum(Integer num) {
         this.num = num;
     }
 }

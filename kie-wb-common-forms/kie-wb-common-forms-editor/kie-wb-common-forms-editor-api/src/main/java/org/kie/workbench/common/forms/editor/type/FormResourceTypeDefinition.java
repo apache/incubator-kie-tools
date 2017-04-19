@@ -15,10 +15,10 @@
  */
 package org.kie.workbench.common.forms.editor.type;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
-
-import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 public class FormResourceTypeDefinition implements ResourceTypeDefinition {
@@ -51,8 +51,8 @@ public class FormResourceTypeDefinition implements ResourceTypeDefinition {
     }
 
     @Override
-    public boolean accept( final Path path ) {
-        return path.getFileName().endsWith( "." + getSuffix() );
+    public boolean accept(final Path path) {
+        return path.getFileName().endsWith("." + getSuffix());
     }
 
     @Override

@@ -37,67 +37,76 @@ public class FormValidatorImplTest extends AbstractFormEngineTest {
 
         validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-        formValidator = new FormValidatorImpl( new DefaultModelValidator( validator ) );
+        formValidator = new FormValidatorImpl(new DefaultModelValidator(validator));
 
-        formValidator.setFormFieldProvider( formFieldProvider );
+        formValidator.setFormFieldProvider(formFieldProvider);
     }
 
     @Test
     public void testFullModelSuccesfulValidation() {
-        assertTrue( formValidator.validate( model ) );
-        checkClearedFields( ALL_FIELDS );
-        checkValidFields( ALL_FIELDS );
+        assertTrue(formValidator.validate(model));
+        checkClearedFields(ALL_FIELDS);
+        checkValidFields(ALL_FIELDS);
     }
 
     @Test
     public void testFullModelFailedValidation() {
-        model.setValue( 600 );
-        model.getUser().setName( null );
-        model.getUser().setLastName( "" );
+        model.setValue(600);
+        model.getUser().setName(null);
+        model.getUser().setLastName("");
 
-        assertFalse( formValidator.validate( model ) );
-        checkClearedFields( ALL_FIELDS );
-        checkWrongFields( VALUE_FIELD, USER_NAME_FIELD, USER_LAST_NAME_FIELD );
-        checkValidFields( USER_BIRTHDAY_FIELD, USER_MARRIED_FIELD );
+        assertFalse(formValidator.validate(model));
+        checkClearedFields(ALL_FIELDS);
+        checkWrongFields(VALUE_FIELD,
+                         USER_NAME_FIELD,
+                         USER_LAST_NAME_FIELD);
+        checkValidFields(USER_BIRTHDAY_FIELD,
+                         USER_MARRIED_FIELD);
     }
 
     @Test
     public void testpropertySuccesfullValidation() {
-        assertTrue( formValidator.validate( VALUE_FIELD, model ) );
+        assertTrue(formValidator.validate(VALUE_FIELD,
+                                          model));
 
-        checkClearedFields( VALUE_FIELD );
-        checkValidFields( VALUE_FIELD );
+        checkClearedFields(VALUE_FIELD);
+        checkValidFields(VALUE_FIELD);
 
-        assertTrue( formValidator.validate( USER_NAME_FIELD, model ) );
+        assertTrue(formValidator.validate(USER_NAME_FIELD,
+                                          model));
 
-        checkClearedFields( USER_NAME_FIELD );
-        checkValidFields( USER_NAME_FIELD );
+        checkClearedFields(USER_NAME_FIELD);
+        checkValidFields(USER_NAME_FIELD);
 
-        assertTrue( formValidator.validate( USER_ADDRESS_FIELD, model ) );
+        assertTrue(formValidator.validate(USER_ADDRESS_FIELD,
+                                          model));
 
-        checkClearedFields( USER_ADDRESS_FIELD );
-        checkValidFields( USER_ADDRESS_FIELD );
+        checkClearedFields(USER_ADDRESS_FIELD);
+        checkValidFields(USER_ADDRESS_FIELD);
     }
 
     @Test
     public void testPropertyFailedValidation() {
-        model.setValue( 70 );
-        model.getUser().setName( "" );
-        model.getUser().setLastName( "abc" );
+        model.setValue(70);
+        model.getUser().setName("");
+        model.getUser().setLastName("abc");
 
-        assertFalse( formValidator.validate( VALUE_FIELD, model ) );
+        assertFalse(formValidator.validate(VALUE_FIELD,
+                                           model));
 
-        checkClearedFields( VALUE_FIELD );
-        checkWrongFields( VALUE_FIELD );
+        checkClearedFields(VALUE_FIELD);
+        checkWrongFields(VALUE_FIELD);
 
-        assertFalse( formValidator.validate( USER_NAME_FIELD, model ) );
+        assertFalse(formValidator.validate(USER_NAME_FIELD,
+                                           model));
 
-        checkClearedFields( USER_NAME_FIELD );
-        checkWrongFields( USER_NAME_FIELD );
+        checkClearedFields(USER_NAME_FIELD);
+        checkWrongFields(USER_NAME_FIELD);
 
-        assertFalse( formValidator.validate( USER_LAST_NAME_FIELD, model ) );
+        assertFalse(formValidator.validate(USER_LAST_NAME_FIELD,
+                                           model));
 
-        checkClearedFields( USER_LAST_NAME_FIELD );
-        checkWrongFields( USER_LAST_NAME_FIELD );
+        checkClearedFields(USER_LAST_NAME_FIELD);
+        checkWrongFields(USER_LAST_NAME_FIELD);
     }
 }

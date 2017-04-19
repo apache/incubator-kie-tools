@@ -20,12 +20,12 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.bus.server.annotations.Service;
+import org.kie.workbench.common.forms.dynamic.service.context.generation.FormRenderingContextGenerator;
+import org.kie.workbench.common.forms.dynamic.service.context.generation.TransformerContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.DynamicContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
-import org.kie.workbench.common.forms.dynamic.service.context.generation.FormRenderingContextGenerator;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContextGeneratorService;
 import org.kie.workbench.common.forms.dynamic.service.shared.StaticContext;
-import org.kie.workbench.common.forms.dynamic.service.context.generation.TransformerContext;
 
 @Dependent
 @Service
@@ -35,16 +35,16 @@ public class FormRenderingContextGeneratorServiceImpl implements FormRenderingCo
     protected FormRenderingContextGenerator dynamicContextGenerator;
 
     @Inject
-    public FormRenderingContextGeneratorServiceImpl( @StaticContext FormRenderingContextGenerator<? extends TransformerContext<?>, ? extends FormRenderingContext> staticContextGenerator,
-                                                     @DynamicContext FormRenderingContextGenerator<? extends TransformerContext<?>, ? extends FormRenderingContext> dynamicContextGenerator ) {
+    public FormRenderingContextGeneratorServiceImpl(@StaticContext FormRenderingContextGenerator<? extends TransformerContext<?>, ? extends FormRenderingContext> staticContextGenerator,
+                                                    @DynamicContext FormRenderingContextGenerator<? extends TransformerContext<?>, ? extends FormRenderingContext> dynamicContextGenerator) {
         // There could be two different context generator for static models & dynamic
         this.staticContextGenerator = staticContextGenerator;
         this.dynamicContextGenerator = dynamicContextGenerator;
     }
 
     @Override
-    public FormRenderingContext createContext( Object model ) {
+    public FormRenderingContext createContext(Object model) {
         // right now we don't support dynamic forms so static conversion will be incharged of doing everything.
-        return staticContextGenerator.createContext( model );
+        return staticContextGenerator.createContext(model);
     }
 }

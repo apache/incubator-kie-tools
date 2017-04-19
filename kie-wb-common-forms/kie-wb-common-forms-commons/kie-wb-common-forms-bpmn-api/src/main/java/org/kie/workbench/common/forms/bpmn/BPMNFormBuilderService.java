@@ -16,15 +16,15 @@
 
 package org.kie.workbench.common.forms.bpmn;
 
-
 import org.uberfire.backend.vfs.Path;
 
 public interface BPMNFormBuilderService<D> {
 
-    String buildFormContent( Path formPath, D definition, String id ) throws Exception;
+    String buildFormContent(Path formPath,
+                            D definition,
+                            String id) throws Exception;
 
-    String buildEmptyFormContent( String fileName ) throws Exception;
+    String buildEmptyFormContent(String fileName) throws Exception;
 
     String getFormExtension();
-
 }

@@ -30,8 +30,8 @@ public class JBPMProcessModel {
 
     protected List<TaskFormModel> taskFormModels;
 
-    public JBPMProcessModel( @MapsTo( "processFormModel" ) BusinessProcessFormModel processFormModel,
-                             @MapsTo( "taskFormModels" ) List<TaskFormModel> taskFormModels ) {
+    public JBPMProcessModel(@MapsTo("processFormModel") BusinessProcessFormModel processFormModel,
+                            @MapsTo("taskFormModels") List<TaskFormModel> taskFormModels) {
         this.processFormModel = processFormModel;
         this.taskFormModels = taskFormModels;
     }
@@ -40,7 +40,7 @@ public class JBPMProcessModel {
         return processFormModel;
     }
 
-    public void setProcessFormModel( BusinessProcessFormModel processFormModel ) {
+    public void setProcessFormModel(BusinessProcessFormModel processFormModel) {
         this.processFormModel = processFormModel;
     }
 
@@ -48,7 +48,7 @@ public class JBPMProcessModel {
         return taskFormModels;
     }
 
-    public void setTaskFormModels( List<TaskFormModel> taskFormModels ) {
+    public void setTaskFormModels(List<TaskFormModel> taskFormModels) {
         this.taskFormModels = taskFormModels;
     }
 }

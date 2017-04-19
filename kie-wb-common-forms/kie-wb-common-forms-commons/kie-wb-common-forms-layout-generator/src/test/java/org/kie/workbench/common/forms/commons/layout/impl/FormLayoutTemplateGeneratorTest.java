@@ -37,6 +37,7 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import static org.junit.Assert.*;
 
 public abstract class FormLayoutTemplateGeneratorTest {
+
     private FormDefinition form;
     private FormLayoutTemplateGenerator templateGenerator;
 
@@ -45,48 +46,48 @@ public abstract class FormLayoutTemplateGeneratorTest {
         templateGenerator = getTemplateGenerator();
 
         form = new FormDefinition();
-        form.setName( "Test" );
-        form.setId( "Test-ID" );
+        form.setName("Test");
+        form.setId("Test-ID");
 
         TextBoxFieldDefinition name = new TextBoxFieldDefinition();
-        name.setId( "name" );
-        name.setName( "employee_name" );
-        name.setLabel( "Name" );
-        name.setPlaceHolder( "Name" );
-        name.setBinding( "name" );
-        name.setStandaloneClassName( String.class.getName() );
+        name.setId("name");
+        name.setName("employee_name");
+        name.setLabel("Name");
+        name.setPlaceHolder("Name");
+        name.setBinding("name");
+        name.setStandaloneClassName(String.class.getName());
 
         TextBoxFieldDefinition lastName = new TextBoxFieldDefinition();
-        lastName.setId( "lastName" );
-        lastName.setName( "employee_lastName" );
-        lastName.setLabel( "Last Name" );
-        lastName.setPlaceHolder( "Last Name" );
-        lastName.setBinding( "lastName" );
-        lastName.setStandaloneClassName( String.class.getName() );
+        lastName.setId("lastName");
+        lastName.setName("employee_lastName");
+        lastName.setLabel("Last Name");
+        lastName.setPlaceHolder("Last Name");
+        lastName.setBinding("lastName");
+        lastName.setStandaloneClassName(String.class.getName());
 
         DatePickerFieldDefinition birthday = new DatePickerFieldDefinition();
-        birthday.setId( "birthday" );
-        birthday.setName( "employee_birthday" );
-        birthday.setLabel( "Birthday" );
-        birthday.setBinding( "birthday" );
-        birthday.setStandaloneClassName( Date.class.getName() );
+        birthday.setId("birthday");
+        birthday.setName("employee_birthday");
+        birthday.setLabel("Birthday");
+        birthday.setBinding("birthday");
+        birthday.setStandaloneClassName(Date.class.getName());
 
         CheckBoxFieldDefinition married = new CheckBoxFieldDefinition();
         married.setId("married");
-        married.setName( "employee_married" );
-        married.setLabel( "Married" );
-        married.setBinding( "married" );
-        married.setStandaloneClassName( Boolean.class.getName() );
+        married.setName("employee_married");
+        married.setLabel("Married");
+        married.setBinding("married");
+        married.setStandaloneClassName(Boolean.class.getName());
 
-        form.getFields().add( name );
-        form.getFields().add( lastName );
-        form.getFields().add( birthday );
-        form.getFields().add( married );
+        form.getFields().add(name);
+        form.getFields().add(lastName);
+        form.getFields().add(birthday);
+        form.getFields().add(married);
     }
 
     @Test
     public void testTemplateGeneration() {
-        templateGenerator.generateLayoutTemplate( form );
+        templateGenerator.generateLayoutTemplate(form);
 
         testGeneratedLayout();
     }
@@ -94,37 +95,41 @@ public abstract class FormLayoutTemplateGeneratorTest {
     protected void testGeneratedLayout() {
         LayoutTemplate layout = form.getLayoutTemplate();
 
-        assertNotNull( layout );
+        assertNotNull(layout);
 
-        assertNotNull( layout.getRows() );
+        assertNotNull(layout.getRows());
 
-        assertEquals( form.getFields().size(), layout.getRows().size() );
+        assertEquals(form.getFields().size(),
+                     layout.getRows().size());
 
-        for( LayoutRow row : layout.getRows() ) {
-            assertEquals( 1, row.getLayoutColumns().size() );
+        for (LayoutRow row : layout.getRows()) {
+            assertEquals(1,
+                         row.getLayoutColumns().size());
 
-            for ( LayoutColumn col : row.getLayoutColumns() ) {
-                assertEquals( "12", col.getSpan() );
+            for (LayoutColumn col : row.getLayoutColumns()) {
+                assertEquals("12",
+                             col.getSpan());
 
-                assertEquals( 0, col.getRows().size() );
+                assertEquals(0,
+                             col.getRows().size());
 
-                assertEquals( 1, col.getLayoutComponents().size() );
+                assertEquals(1,
+                             col.getLayoutComponents().size());
 
-                for ( LayoutComponent component : col.getLayoutComponents() ) {
-                    assertEquals( templateGenerator.getDraggableType(), component.getDragTypeName() );
+                for (LayoutComponent component : col.getLayoutComponents()) {
+                    assertEquals(templateGenerator.getDraggableType(),
+                                 component.getDragTypeName());
 
-                    assertEquals( form.getId(), component.getProperties().get( FormLayoutComponent.FORM_ID ) );
+                    assertEquals(form.getId(),
+                                 component.getProperties().get(FormLayoutComponent.FORM_ID));
 
-                    String fieldId = component.getProperties().get( FormLayoutComponent.FIELD_ID );
+                    String fieldId = component.getProperties().get(FormLayoutComponent.FIELD_ID);
 
-                    assertNotNull( fieldId );
+                    assertNotNull(fieldId);
 
-                    assertNotNull( form.getFieldById( fieldId ) );
-
+                    assertNotNull(form.getFieldById(fieldId));
                 }
-
             }
-
         }
     }
 
@@ -133,30 +138,30 @@ public abstract class FormLayoutTemplateGeneratorTest {
         testTemplateGeneration();
 
         TextBoxFieldDefinition address = new TextBoxFieldDefinition();
-        address.setId( "address" );
-        address.setName( "employee_Address" );
-        address.setLabel( "Address" );
-        address.setPlaceHolder( "Address" );
-        address.setBinding( "Address" );
-        address.setStandaloneClassName( String.class.getName() );
+        address.setId("address");
+        address.setName("employee_Address");
+        address.setLabel("Address");
+        address.setPlaceHolder("Address");
+        address.setBinding("Address");
+        address.setStandaloneClassName(String.class.getName());
 
         TextBoxFieldDefinition age = new TextBoxFieldDefinition();
-        age.setId( "age" );
-        age.setName( "employee_age" );
-        age.setLabel( "age" );
-        age.setPlaceHolder( "age" );
-        age.setBinding( "age" );
-        age.setStandaloneClassName( Integer.class.getName() );
+        age.setId("age");
+        age.setName("employee_age");
+        age.setLabel("age");
+        age.setPlaceHolder("age");
+        age.setBinding("age");
+        age.setStandaloneClassName(Integer.class.getName());
 
         List<FieldDefinition> newFields = new ArrayList<>();
 
-        newFields.add( address );
-        newFields.add( age );
+        newFields.add(address);
+        newFields.add(age);
 
-        templateGenerator.updateLayoutTemplate( form, newFields );
+        templateGenerator.updateLayoutTemplate(form,
+                                               newFields);
 
         testGeneratedLayout();
-
     }
 
     protected abstract FormLayoutTemplateGenerator getTemplateGenerator();

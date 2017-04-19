@@ -16,6 +16,7 @@
 package org.kie.workbench.common.forms.model;
 
 public interface FormLayoutComponent {
+
     public static String FORM_ID = "form_id";
     public static String FIELD_ID = "field_id";
 }

@@ -17,5 +17,6 @@
 package org.kie.workbench.common.forms.model;
 
 public interface IsJavaModel {
+
     String getType();
 }

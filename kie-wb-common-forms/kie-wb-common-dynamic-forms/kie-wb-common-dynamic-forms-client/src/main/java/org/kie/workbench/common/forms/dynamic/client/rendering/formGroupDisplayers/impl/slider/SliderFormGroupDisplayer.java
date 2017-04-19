@@ -25,7 +25,7 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplaye
 public class SliderFormGroupDisplayer extends AbstractFormGroupDisplayer<SliderFormGroupDisplayerView> {
 
     @Inject
-    public SliderFormGroupDisplayer( SliderFormGroupDisplayerView view ) {
-        super( view );
+    public SliderFormGroupDisplayer(SliderFormGroupDisplayerView view) {
+        super(view);
     }
 }

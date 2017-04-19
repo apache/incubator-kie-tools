@@ -20,9 +20,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.validation.client.dynamic.DynamicValidator;
-import org.kie.workbench.common.forms.dynamic.client.processing.engine.handling.DynamicModelValidator;
 import org.kie.workbench.common.forms.dynamic.client.helper.MapModelBindingHelper;
 import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGenerator;
+import org.kie.workbench.common.forms.dynamic.client.processing.engine.handling.DynamicModelValidator;
 import org.kie.workbench.common.forms.dynamic.service.shared.DynamicContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.validation.DynamicModelConstraints;
@@ -42,28 +42,32 @@ public class DynamicFormHandlerGenerator implements FormHandlerGenerator<MapMode
     private MapModelBindingHelper helper;
 
     @Inject
-    public DynamicFormHandlerGenerator( DynamicValidator validator, MapModelBindingHelper helper ) {
+    public DynamicFormHandlerGenerator(DynamicValidator validator,
+                                       MapModelBindingHelper helper) {
         this.validator = validator;
         this.helper = helper;
     }
 
     @Override
-    public FormHandler generateFormHandler( MapModelRenderingContext context ) {
+    public FormHandler generateFormHandler(MapModelRenderingContext context) {
 
-        DynamicModelValidator dynamicValidator =  new DynamicModelValidator( validator );
+        DynamicModelValidator dynamicValidator = new DynamicModelValidator(validator);
 
-        if ( context.getRootForm().getModel() instanceof JavaModel ) {
-            DynamicModelConstraints constraints = context.getModelConstraints().get( ((JavaModel)context.getRootForm().getModel()).getType() );
+        if (context.getRootForm().getModel() instanceof JavaModel) {
+            DynamicModelConstraints constraints = context.getModelConstraints().get(((JavaModel) context.getRootForm().getModel()).getType());
 
-            if (constraints != null ) dynamicValidator.setModelConstraints( constraints );
+            if (constraints != null) {
+                dynamicValidator.setModelConstraints(constraints);
+            }
         }
 
-        FormValidator formValidator = new FormValidatorImpl( dynamicValidator );
+        FormValidator formValidator = new FormValidatorImpl(dynamicValidator);
 
-        FormHandler handler = new FormHandlerImpl( formValidator, new FieldChangeHandlerManagerImpl() );
+        FormHandler handler = new FormHandlerImpl(formValidator,
+                                                  new FieldChangeHandlerManagerImpl());
 
-        if ( context.getParentContext() == null ) {
-            helper.initContext( context );
+        if (context.getParentContext() == null) {
+            helper.initContext(context);
         }
 
         return handler;

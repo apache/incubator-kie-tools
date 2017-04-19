@@ -43,13 +43,13 @@ public class PreviewFormPresenterViewImpl extends Composite implements PreviewFo
     private SimplePanel content = new SimplePanel();
 
     @DataField
-    private InputElement editRadio = Document.get().createRadioInputElement( "renderMode" );
+    private InputElement editRadio = Document.get().createRadioInputElement("renderMode");
 
     @DataField
-    private InputElement readOnlyRadio = Document.get().createRadioInputElement( "renderMode" );
+    private InputElement readOnlyRadio = Document.get().createRadioInputElement("renderMode");
     @Inject
     @DataField
-    private InputElement prettyRadio = Document.get().createRadioInputElement( "renderMode" );
+    private InputElement prettyRadio = Document.get().createRadioInputElement("renderMode");
 
     private DynamicFormRenderer formRenderer;
 
@@ -58,7 +58,8 @@ public class PreviewFormPresenterViewImpl extends Composite implements PreviewFo
     private BaseModal modal;
 
     @Inject
-    public PreviewFormPresenterViewImpl( DynamicFormRenderer formRenderer, TranslationService translationService ) {
+    public PreviewFormPresenterViewImpl(DynamicFormRenderer formRenderer,
+                                        TranslationService translationService) {
         this.formRenderer = formRenderer;
         this.translationService = translationService;
     }
@@ -66,35 +67,35 @@ public class PreviewFormPresenterViewImpl extends Composite implements PreviewFo
     @PostConstruct
     protected void doInit() {
         modal = new BaseModal();
-        modal.setBody( this );
-        modal.setTitle( translationService.getTranslation( FormEditorConstants.FormEditorViewImplPreview ) );
-        modal.add( new ModalFooterOKButton( new Command() {
+        modal.setBody(this);
+        modal.setTitle(translationService.getTranslation(FormEditorConstants.FormEditorViewImplPreview));
+        modal.add(new ModalFooterOKButton(new Command() {
             @Override
             public void execute() {
                 modal.hide();
             }
-        } ) );
-        content.add( formRenderer );
+        }));
+        content.add(formRenderer);
     }
 
     @Override
-    public void preview( FormRenderingContext context ) {
-        formRenderer.render( context );
+    public void preview(FormRenderingContext context) {
+        formRenderer.render(context);
         modal.show();
     }
 
     @EventHandler("editRadio")
-    public void onEdit( ClickEvent clickEvent ) {
-        formRenderer.switchToMode( RenderMode.EDIT_MODE );
+    public void onEdit(ClickEvent clickEvent) {
+        formRenderer.switchToMode(RenderMode.EDIT_MODE);
     }
 
     @EventHandler("readOnlyRadio")
-    public void onReadOnly( ClickEvent clickEvent ) {
-        formRenderer.switchToMode( RenderMode.READ_ONLY_MODE );
+    public void onReadOnly(ClickEvent clickEvent) {
+        formRenderer.switchToMode(RenderMode.READ_ONLY_MODE);
     }
 
     @EventHandler("prettyRadio")
-    public void onPretty( ClickEvent clickEvent ) {
-        formRenderer.switchToMode( RenderMode.PRETTY_MODE );
+    public void onPretty(ClickEvent clickEvent) {
+        formRenderer.switchToMode(RenderMode.PRETTY_MODE);
     }
 }

@@ -26,7 +26,7 @@ public class PersonalData {
         return address;
     }
 
-    public void setAddress( String address ) {
+    public void setAddress(String address) {
         this.address = address;
     }
 
@@ -34,7 +34,7 @@ public class PersonalData {
         return phone;
     }
 
-    public void setPhone( String phone ) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 }

@@ -26,8 +26,8 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
 import org.kie.workbench.common.forms.dynamic.backend.server.context.generation.dynamic.impl.model.Person;
+import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
@@ -37,10 +37,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class MultipleSubformBackendFormRenderingContextManagerTest extends AbstractBackendFormRenderingContextManagerTest {
 
-    protected SimpleDateFormat sdf = new SimpleDateFormat( "dd-MM-yyyy" );
+    protected SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
     protected List<Person> persons;
 
@@ -52,27 +52,42 @@ public class MultipleSubformBackendFormRenderingContextManagerTest extends Abstr
     protected Map<String, Object> doReadNestedData() {
         Map<String, Object> result = context.getRenderingContext().getModel();
 
-        assertFalse( "There should be some validations for model", context.getRenderingContext().getModelConstraints().isEmpty() );
+        assertFalse("There should be some validations for model",
+                    context.getRenderingContext().getModelConstraints().isEmpty());
 
-        assertNotNull( "Result cannot be null ", result );
-        assertTrue( "Result must contain only one entry", result.size() == 1 );
+        assertNotNull("Result cannot be null ",
+                      result);
+        assertTrue("Result must contain only one entry",
+                   result.size() == 1);
 
-        assertTrue( "Processed map must contain value for field 'persons'", result.containsKey( "persons" ) );
-        assertNotNull( "Processed map must contain value for field 'persons'", result.get( "persons" ) );
+        assertTrue("Processed map must contain value for field 'persons'",
+                   result.containsKey("persons"));
+        assertNotNull("Processed map must contain value for field 'persons'",
+                      result.get("persons"));
 
-        List<Map<String, Object>> personMaps = (List<Map<String, Object>>) result.get( "persons" );
+        List<Map<String, Object>> personMaps = (List<Map<String, Object>>) result.get("persons");
 
-        assertEquals( "There must be 4 persons", 4, personMaps.size() );
+        assertEquals("There must be 4 persons",
+                     4,
+                     personMaps.size());
 
-        for ( int i = 0; i < personMaps.size(); i++ ) {
-            Person person = persons.get( i );
+        for (int i = 0; i < personMaps.size(); i++) {
+            Person person = persons.get(i);
 
-            Map<String, Object> personMap = personMaps.get( i );
+            Map<String, Object> personMap = personMaps.get(i);
 
-            assertEquals( "Id must be equal", person.getId(), personMap.get( "id" ) );
-            assertEquals( "Name must be equal", person.getName(), personMap.get( "name" ) );
-            assertEquals( "LastName must be equal", person.getLastName(), personMap.get( "lastName" ) );
-            assertEquals( "Birthday must be equal", person.getBirthday(), personMap.get( "birthday" ) );
+            assertEquals("Id must be equal",
+                         person.getId(),
+                         personMap.get("id"));
+            assertEquals("Name must be equal",
+                         person.getName(),
+                         personMap.get("name"));
+            assertEquals("LastName must be equal",
+                         person.getLastName(),
+                         personMap.get("lastName"));
+            assertEquals("Birthday must be equal",
+                         person.getBirthday(),
+                         personMap.get("birthday"));
         }
 
         return result;
@@ -82,34 +97,49 @@ public class MultipleSubformBackendFormRenderingContextManagerTest extends Abstr
     public void testEditExistingObjects() {
         Map<String, Object> formValues = doReadNestedData();
 
-        List<Map<String, Object>> personMaps = (List<Map<String, Object>>) formValues.get( "persons" );
+        List<Map<String, Object>> personMaps = (List<Map<String, Object>>) formValues.get("persons");
 
         String[] names = new String[]{"Tyrion", "Jaime", "Cersei", "Tywin"};
 
-        for ( int i = 0; i < personMaps.size(); i++ ) {
-            Map<String, Object> person = personMaps.get( i );
+        for (int i = 0; i < personMaps.size(); i++) {
+            Map<String, Object> person = personMaps.get(i);
 
-            person.put( "name", names[i] );
-            person.put( "lastName", "Lannister" );
-            person.put( MapModelRenderingContext.FORM_ENGINE_EDITED_OBJECT, Boolean.TRUE );
+            person.put("name",
+                       names[i]);
+            person.put("lastName",
+                       "Lannister");
+            person.put(MapModelRenderingContext.FORM_ENGINE_EDITED_OBJECT,
+                       Boolean.TRUE);
         }
 
-        Map<String, Object> result = contextManager.updateContextData( context.getTimestamp(), formValues ).getFormData();
+        Map<String, Object> result = contextManager.updateContextData(context.getTimestamp(),
+                                                                      formValues).getFormData();
 
-        assertNotNull( "Result cannot be null ", result );
-        assertTrue( "Result must contain only one entry", result.size() == 1 );
+        assertNotNull("Result cannot be null ",
+                      result);
+        assertTrue("Result must contain only one entry",
+                   result.size() == 1);
 
-        assertTrue( "Processed map must contain value for field 'person'", result.containsKey( "persons" ) );
-        assertNotNull( "Processed map must contain value for field 'person'", result.get( "persons" ) );
-        assertTrue( "Persons must be a List", result.get( "persons" ) instanceof List );
+        assertTrue("Processed map must contain value for field 'person'",
+                   result.containsKey("persons"));
+        assertNotNull("Processed map must contain value for field 'person'",
+                      result.get("persons"));
+        assertTrue("Persons must be a List",
+                   result.get("persons") instanceof List);
 
-        List value = (List) result.get( "persons" );
+        List value = (List) result.get("persons");
 
-        assertEquals( "There should be 4 persons", 4, value.size() );
+        assertEquals("There should be 4 persons",
+                     4,
+                     value.size());
 
-        for ( int i = 0; i < persons.size(); i++ ) {
-            assertEquals( "Name must be equal", names[i], persons.get( i ).getName() );
-            assertEquals( "LastName must be equal", "Lannister", persons.get( i ).getLastName() );
+        for (int i = 0; i < persons.size(); i++) {
+            assertEquals("Name must be equal",
+                         names[i],
+                         persons.get(i).getName());
+            assertEquals("LastName must be equal",
+                         "Lannister",
+                         persons.get(i).getLastName());
         }
     }
 
@@ -118,83 +148,112 @@ public class MultipleSubformBackendFormRenderingContextManagerTest extends Abstr
 
         Map<String, Object> formValues = doReadNestedData();
 
-        List<Map<String, Object>> personMaps = (List<Map<String, Object>>) formValues.get( "persons" );
+        List<Map<String, Object>> personMaps = (List<Map<String, Object>>) formValues.get("persons");
 
-        personMaps.remove( 0 );
-        personMaps.remove( 0 );
+        personMaps.remove(0);
+        personMaps.remove(0);
 
-        Map<String, Object> result = contextManager.updateContextData( context.getTimestamp(), formValues ).getFormData();
+        Map<String, Object> result = contextManager.updateContextData(context.getTimestamp(),
+                                                                      formValues).getFormData();
 
-        assertNotNull( "Result cannot be null ", result );
-        assertTrue( "Result must contain only one entry", result.size() == 1 );
+        assertNotNull("Result cannot be null ",
+                      result);
+        assertTrue("Result must contain only one entry",
+                   result.size() == 1);
 
-        assertTrue( "Processed map must contain value for field 'person'", result.containsKey( "persons" ) );
-        assertNotNull( "Processed map must contain value for field 'person'", result.get( "persons" ) );
-        assertTrue( "Persons must be a List", result.get( "persons" ) instanceof List );
+        assertTrue("Processed map must contain value for field 'person'",
+                   result.containsKey("persons"));
+        assertNotNull("Processed map must contain value for field 'person'",
+                      result.get("persons"));
+        assertTrue("Persons must be a List",
+                   result.get("persons") instanceof List);
 
-        List<Person> value = (List) result.get( "persons" );
+        List<Person> value = (List) result.get("persons");
 
-        assertEquals( "There should be 2 persons", 2, value.size() );
+        assertEquals("There should be 2 persons",
+                     2,
+                     value.size());
 
         String[] names = new String[]{"Rob", "John"};
 
-        for ( int i = 0; i < value.size(); i++ ) {
-            assertEquals( "Name must be equal", names[i], value.get( i ).getName() );
+        for (int i = 0; i < value.size(); i++) {
+            assertEquals("Name must be equal",
+                         names[i],
+                         value.get(i).getName());
         }
     }
 
     @Test
     public void testWriteNestedModelWithoutModelContentMarshaller() {
-        testCreateNestedModels( true );
+        testCreateNestedModels(true);
     }
 
     @Test
     public void testCreateInstancesWithClassOnClassPath() {
-        testCreateNestedModels( false );
+        testCreateNestedModels(false);
     }
 
-    protected void testCreateNestedModels( boolean classOnContentMarshaller ) {
+    protected void testCreateNestedModels(boolean classOnContentMarshaller) {
         try {
-            initContentMarshallerClassLoader( Person.class, classOnContentMarshaller );
+            initContentMarshallerClassLoader(Person.class,
+                                             classOnContentMarshaller);
 
             Map<String, Object> formValues = doReadNestedData();
 
-            List<Map<String, Object>> personMaps = (List<Map<String, Object>>) formValues.get( "persons" );
+            List<Map<String, Object>> personMaps = (List<Map<String, Object>>) formValues.get("persons");
 
             Map<String, Object> bran = new HashMap<>();
-            bran.put( "id", 4 );
-            bran.put( "name", "Bran" );
-            bran.put( "lastName", "Stark" );
-            bran.put( "birthday", sdf.parse( "14-01-2000" ) );
+            bran.put("id",
+                     4);
+            bran.put("name",
+                     "Bran");
+            bran.put("lastName",
+                     "Stark");
+            bran.put("birthday",
+                     sdf.parse("14-01-2000"));
 
             Map<String, Object> sansa = new HashMap<>();
-            sansa.put( "id", 5 );
-            sansa.put( "name", "Sansa" );
-            sansa.put( "lastName", "Stark" );
-            sansa.put( "birthday", sdf.parse( "14-11-2005" ) );
+            sansa.put("id",
+                      5);
+            sansa.put("name",
+                      "Sansa");
+            sansa.put("lastName",
+                      "Stark");
+            sansa.put("birthday",
+                      sdf.parse("14-11-2005"));
 
-            personMaps.add( bran );
-            personMaps.add( sansa );
+            personMaps.add(bran);
+            personMaps.add(sansa);
 
-            Map<String, Object> result = contextManager.updateContextData( context.getTimestamp(), formValues ).getFormData();
+            Map<String, Object> result = contextManager.updateContextData(context.getTimestamp(),
+                                                                          formValues).getFormData();
 
-            assertNotNull( "Result cannot be null ", result );
-            assertTrue( "Result must contain only one entry", result.size() == 1 );
+            assertNotNull("Result cannot be null ",
+                          result);
+            assertTrue("Result must contain only one entry",
+                       result.size() == 1);
 
-            assertTrue( "Processed map must contain value for field 'person'", result.containsKey( "persons" ) );
-            assertNotNull( "Processed map must contain value for field 'person'", result.get( "persons" ) );
-            assertTrue( "Persons must be a List", result.get( "persons" ) instanceof List );
+            assertTrue("Processed map must contain value for field 'person'",
+                       result.containsKey("persons"));
+            assertNotNull("Processed map must contain value for field 'person'",
+                          result.get("persons"));
+            assertTrue("Persons must be a List",
+                       result.get("persons") instanceof List);
 
-            List<Person> value = (List) result.get( "persons" );
+            List<Person> value = (List) result.get("persons");
 
-            assertEquals( "There should be 6 persons", 6, value.size() );
+            assertEquals("There should be 6 persons",
+                         6,
+                         value.size());
 
             String[] names = new String[]{"Ned", "Catelyn", "Rob", "John", "Bran", "Sansa"};
 
-            for ( int i = 0; i < value.size(); i++ ) {
-                assertEquals( "Name must be equal", names[i], value.get( i ).getName() );
+            for (int i = 0; i < value.size(); i++) {
+                assertEquals("Name must be equal",
+                             names[i],
+                             value.get(i).getName());
             }
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -214,74 +273,74 @@ public class MultipleSubformBackendFormRenderingContextManagerTest extends Abstr
             }
         };
 
-        FormDefinition creationForm = new FormDefinition( model );
-        creationForm.setId( "person-creation" );
+        FormDefinition creationForm = new FormDefinition(model);
+        creationForm.setId("person-creation");
 
-        FieldDefinition field = fieldManager.getDefinitionByDataType( new FieldDataType( Long.class.getName() ) );
-        field.setName( "id" );
-        field.setBinding( "id" );
-        creationForm.getFields().add( field );
+        FieldDefinition field = fieldManager.getDefinitionByDataType(new FieldDataType(Long.class.getName()));
+        field.setName("id");
+        field.setBinding("id");
+        creationForm.getFields().add(field);
 
-        field = fieldManager.getDefinitionByDataType( new FieldDataType( String.class.getName() ) );
-        field.setName( "name" );
-        field.setBinding( "name" );
-        creationForm.getFields().add( field );
+        field = fieldManager.getDefinitionByDataType(new FieldDataType(String.class.getName()));
+        field.setName("name");
+        field.setBinding("name");
+        creationForm.getFields().add(field);
 
-        field = fieldManager.getDefinitionByDataType( new FieldDataType( String.class.getName() ) );
-        field.setName( "lastName" );
-        field.setBinding( "lastName" );
-        creationForm.getFields().add( field );
+        field = fieldManager.getDefinitionByDataType(new FieldDataType(String.class.getName()));
+        field.setName("lastName");
+        field.setBinding("lastName");
+        creationForm.getFields().add(field);
 
-        field = fieldManager.getDefinitionByDataType( new FieldDataType( Date.class.getName() ) );
-        field.setName( "birthday" );
-        field.setBinding( "birthday" );
-        creationForm.getFields().add( field );
+        field = fieldManager.getDefinitionByDataType(new FieldDataType(Date.class.getName()));
+        field.setName("birthday");
+        field.setBinding("birthday");
+        creationForm.getFields().add(field);
 
-        FormDefinition editionForm = new FormDefinition( model );
-        editionForm.setId( "person-edition" );
+        FormDefinition editionForm = new FormDefinition(model);
+        editionForm.setId("person-edition");
 
-        field = fieldManager.getDefinitionByDataType( new FieldDataType( Long.class.getName() ) );
-        field.setName( "id" );
-        field.setBinding( "id" );
-        editionForm.getFields().add( field );
+        field = fieldManager.getDefinitionByDataType(new FieldDataType(Long.class.getName()));
+        field.setName("id");
+        field.setBinding("id");
+        editionForm.getFields().add(field);
 
-        field = fieldManager.getDefinitionByDataType( new FieldDataType( String.class.getName() ) );
-        field.setName( "name" );
-        field.setBinding( "name" );
-        editionForm.getFields().add( field );
+        field = fieldManager.getDefinitionByDataType(new FieldDataType(String.class.getName()));
+        field.setName("name");
+        field.setBinding("name");
+        editionForm.getFields().add(field);
 
-        field = fieldManager.getDefinitionByDataType( new FieldDataType( String.class.getName() ) );
-        field.setName( "lastName" );
-        field.setBinding( "lastName" );
-        editionForm.getFields().add( field );
+        field = fieldManager.getDefinitionByDataType(new FieldDataType(String.class.getName()));
+        field.setName("lastName");
+        field.setBinding("lastName");
+        editionForm.getFields().add(field);
 
-        field = fieldManager.getDefinitionByDataType( new FieldDataType( Date.class.getName() ) );
-        field.setName( "birthday" );
-        field.setBinding( "birthday" );
-        editionForm.getFields().add( field );
+        field = fieldManager.getDefinitionByDataType(new FieldDataType(Date.class.getName()));
+        field.setName("birthday");
+        field.setBinding("birthday");
+        editionForm.getFields().add(field);
 
-        return new FormDefinition[] { creationForm, editionForm };
+        return new FormDefinition[]{creationForm, editionForm};
     }
 
     @Override
     protected FormDefinition getRootForm() {
-        FormDefinition form = new FormDefinition( () -> "root" );
-        form.setId( "form" );
+        FormDefinition form = new FormDefinition(() -> "root");
+        form.setId("form");
 
-        FieldDefinition field = fieldManager.getDefinitionByDataType( new FieldDataType( Person.class.getName(),
-                                                                                 true,
-                                                                                 false ) );
-        field.setName( "persons" );
-        field.setBinding( "persons" );
+        FieldDefinition field = fieldManager.getDefinitionByDataType(new FieldDataType(Person.class.getName(),
+                                                                                       true,
+                                                                                       false));
+        field.setName("persons");
+        field.setBinding("persons");
 
         MultipleSubFormFieldDefinition multpleSubForm = (MultipleSubFormFieldDefinition) field;
 
-        multpleSubForm.setCreationForm( "person-creation" );
-        multpleSubForm.setEditionForm( "person-edition" );
+        multpleSubForm.setCreationForm("person-creation");
+        multpleSubForm.setEditionForm("person-edition");
 
-        form.getFields().add( field );
+        form.getFields().add(field);
 
-        form.setModel( () -> "default" );
+        form.setModel(() -> "default");
 
         return form;
     }
@@ -292,17 +351,30 @@ public class MultipleSubformBackendFormRenderingContextManagerTest extends Abstr
         persons = new ArrayList<>();
 
         try {
-            persons.add( new Person( 0, "Ned", "Stark", sdf.parse( "24-02-1981" ) ) );
-            persons.add( new Person( 1, "Catelyn", "Stark", sdf.parse( "04-05-1983" ) ) );
-            persons.add( new Person( 2, "Rob", "Stark", sdf.parse( "12-04-2013" ) ) );
-            persons.add( new Person( 3, "John", "Snow", sdf.parse( "21-05-2015" ) ) );
-        } catch ( ParseException e ) {
+            persons.add(new Person(0,
+                                   "Ned",
+                                   "Stark",
+                                   sdf.parse("24-02-1981")));
+            persons.add(new Person(1,
+                                   "Catelyn",
+                                   "Stark",
+                                   sdf.parse("04-05-1983")));
+            persons.add(new Person(2,
+                                   "Rob",
+                                   "Stark",
+                                   sdf.parse("12-04-2013")));
+            persons.add(new Person(3,
+                                   "John",
+                                   "Snow",
+                                   sdf.parse("21-05-2015")));
+        } catch (ParseException e) {
             // swallow
         }
 
         Map<String, Object> data = new HashMap<>();
 
-        data.put( "persons", persons );
+        data.put("persons",
+                 persons);
 
         return data;
     }

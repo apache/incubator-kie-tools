@@ -40,23 +40,25 @@ public abstract class AbstractFormGroupDisplayerTest<D extends AbstractFormGroup
 
     @Before
     public void setUp() {
-        view = mock( getViewClass() );
+        view = mock(getViewClass());
 
-        displayer = getDisplayerInstance( view );
+        displayer = getDisplayerInstance(view);
     }
 
     @Test
     public void testFunctionallity() {
-        displayer.render( widget, fieldDefinition );
+        displayer.render(widget,
+                         fieldDefinition);
 
-        verify( view ).render( widget, fieldDefinition );
+        verify(view).render(widget,
+                            fieldDefinition);
 
         displayer.asWidget();
 
-        verify( view ).asWidget();
+        verify(view).asWidget();
     }
 
     protected abstract Class<V> getViewClass();
 
-    protected abstract D getDisplayerInstance( V view );
+    protected abstract D getDisplayerInstance(V view);
 }

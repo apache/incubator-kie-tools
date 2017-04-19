@@ -35,66 +35,74 @@ public class FormValuesProcessorImpl implements FormValuesProcessor {
     protected Map<Class<? extends FieldDefinition>, FieldValueProcessor> fieldValueProcessors = new HashMap<>();
 
     @Inject
-    public FormValuesProcessorImpl( Instance<FieldValueProcessor<? extends FieldDefinition, ?, ?>> installedProcessors ) {
-        for ( FieldValueProcessor processor : installedProcessors ) {
-            if ( processor instanceof NestedFormFieldValueProcessor ) {
-                ( (NestedFormFieldValueProcessor) processor ).init( this );
+    public FormValuesProcessorImpl(Instance<FieldValueProcessor<? extends FieldDefinition, ?, ?>> installedProcessors) {
+        for (FieldValueProcessor processor : installedProcessors) {
+            if (processor instanceof NestedFormFieldValueProcessor) {
+                ((NestedFormFieldValueProcessor) processor).init(this);
             }
-            fieldValueProcessors.put( processor.getSupportedField(), processor );
+            fieldValueProcessors.put(processor.getSupportedField(),
+                                     processor);
         }
     }
 
     @Override
-    public Map<String, Object> readFormValues( FormDefinition form,
-                                               Map<String, Object> rawValues,
-                                               BackendFormRenderingContext context ) {
+    public Map<String, Object> readFormValues(FormDefinition form,
+                                              Map<String, Object> rawValues,
+                                              BackendFormRenderingContext context) {
         final Map<String, Object> result = new HashMap<>();
 
-        rawValues.forEach( ( String key, final Object value ) -> {
+        rawValues.forEach((String key, final Object value) -> {
 
-            FieldDefinition field = form.getFieldByBinding( key );
+            FieldDefinition field = form.getFieldByBinding(key);
 
             Object fieldValue = value;
 
-            if ( field != null ) {
-                if ( value != null ) {
-                    FieldValueProcessor processor = fieldValueProcessors.get( field.getClass() );
+            if (field != null) {
+                if (value != null) {
+                    FieldValueProcessor processor = fieldValueProcessors.get(field.getClass());
 
-                    if ( processor != null ) {
-                        fieldValue = processor.toFlatValue( field, value, context );
+                    if (processor != null) {
+                        fieldValue = processor.toFlatValue(field,
+                                                           value,
+                                                           context);
                     }
                 }
-                result.put( key, fieldValue );
+                result.put(key,
+                           fieldValue);
             }
-        } );
+        });
 
         return result;
     }
 
     @Override
-    public Map<String, Object> writeFormValues( FormDefinition form,
-                                                Map<String, Object> formValues,
-                                                Map<String, Object> rawValues,
-                                                BackendFormRenderingContext context ) {
+    public Map<String, Object> writeFormValues(FormDefinition form,
+                                               Map<String, Object> formValues,
+                                               Map<String, Object> rawValues,
+                                               BackendFormRenderingContext context) {
 
         final Map<String, Object> result = new HashMap<>();
 
-        formValues.forEach( ( key, value ) -> {
+        formValues.forEach((key, value) -> {
 
-            FieldDefinition field = form.getFieldByBinding( key );
+            FieldDefinition field = form.getFieldByBinding(key);
 
-            if ( field != null ) {
-                if ( value != null ) {
-                    FieldValueProcessor processor = fieldValueProcessors.get( field.getClass() );
+            if (field != null) {
+                if (value != null) {
+                    FieldValueProcessor processor = fieldValueProcessors.get(field.getClass());
 
-                    if ( processor != null ) {
-                        value = processor.toRawValue( field, value, rawValues.get( key ), context );
+                    if (processor != null) {
+                        value = processor.toRawValue(field,
+                                                     value,
+                                                     rawValues.get(key),
+                                                     context);
                     }
                 }
             }
 
-            result.put( key, value );
-        } );
+            result.put(key,
+                       value);
+        });
 
         return result;
     }

@@ -39,12 +39,12 @@ public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
 
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
-        FormValidatorImpl formValidator = new FormValidatorImpl( new DefaultModelValidator( validator ) );
+        FormValidatorImpl formValidator = new FormValidatorImpl(new DefaultModelValidator(validator));
 
-        formValidator.setFormFieldProvider( formFieldProvider );
+        formValidator.setFormFieldProvider(formFieldProvider);
 
         fieldChangeHandlerManager = new FieldChangeHandlerManagerImpl();
-        fieldChangeHandlerManager.setValidator( formValidator );
+        fieldChangeHandlerManager.setValidator(formValidator);
 
         executionCounts = 0;
     }
@@ -56,170 +56,282 @@ public class FieldChangeHandlerManagerImplTest extends AbstractFormEngineTest {
 
     @Test
     public void testAnonymousFieldChangeProcessing() {
-        registerFields( false );
+        registerFields(false);
 
-        fieldChangeHandlerManager.addFieldChangeHandler( anonymous );
+        fieldChangeHandlerManager.addFieldChangeHandler(anonymous);
 
-        fieldChangeHandlerManager.processFieldChange( VALUE_FIELD, model.getValue(), model );
+        fieldChangeHandlerManager.processFieldChange(VALUE_FIELD,
+                                                     model.getValue(),
+                                                     model);
 
-        assertEquals( 1, executionCounts );
+        assertEquals(1,
+                     executionCounts);
 
-        verify( anonymous ).onFieldChange( anyString(), anyObject() );
+        verify(anonymous).onFieldChange(anyString(),
+                                        anyObject());
 
-        fieldChangeHandlerManager.processFieldChange( USER_NAME_FIELD, model.getUser().getName(), model );
+        fieldChangeHandlerManager.processFieldChange(USER_NAME_FIELD,
+                                                     model.getUser().getName(),
+                                                     model);
 
-        assertEquals( 2, executionCounts );
+        assertEquals(2,
+                     executionCounts);
 
-        verify( anonymous, times( 2 ) ).onFieldChange( anyString(), anyObject() );
+        verify(anonymous,
+               times(2)).onFieldChange(anyString(),
+                                       anyObject());
 
-        fieldChangeHandlerManager.processFieldChange( USER_LAST_NAME_FIELD, model.getUser().getLastName(), model );
-        fieldChangeHandlerManager.processFieldChange( USER_ADDRESS_FIELD, model.getUser().getName(), model );
+        fieldChangeHandlerManager.processFieldChange(USER_LAST_NAME_FIELD,
+                                                     model.getUser().getLastName(),
+                                                     model);
+        fieldChangeHandlerManager.processFieldChange(USER_ADDRESS_FIELD,
+                                                     model.getUser().getName(),
+                                                     model);
 
-        assertEquals( 4, executionCounts );
-        verify( anonymous, times( 4 ) ).onFieldChange( anyString(), anyObject() );
+        assertEquals(4,
+                     executionCounts);
+        verify(anonymous,
+               times(4)).onFieldChange(anyString(),
+                                       anyObject());
     }
-
 
     @Test
     public void testAnonymousFieldChangeProcessingWithValidation() {
-        registerFields( true );
+        registerFields(true);
 
-        fieldChangeHandlerManager.addFieldChangeHandler( anonymous );
+        fieldChangeHandlerManager.addFieldChangeHandler(anonymous);
 
-        fieldChangeHandlerManager.processFieldChange( VALUE_FIELD, model.getValue(), model );
+        fieldChangeHandlerManager.processFieldChange(VALUE_FIELD,
+                                                     model.getValue(),
+                                                     model);
 
-        assertEquals( 1, executionCounts );
+        assertEquals(1,
+                     executionCounts);
 
-        verify( anonymous ).onFieldChange( anyString(), anyObject() );
+        verify(anonymous).onFieldChange(anyString(),
+                                        anyObject());
 
-        fieldChangeHandlerManager.processFieldChange( USER_NAME_FIELD, model.getUser().getName(), model );
+        fieldChangeHandlerManager.processFieldChange(USER_NAME_FIELD,
+                                                     model.getUser().getName(),
+                                                     model);
 
-        assertEquals( 2, executionCounts );
+        assertEquals(2,
+                     executionCounts);
 
-        verify( anonymous, times( 2 ) ).onFieldChange( anyString(), anyObject() );
+        verify(anonymous,
+               times(2)).onFieldChange(anyString(),
+                                       anyObject());
 
-        fieldChangeHandlerManager.processFieldChange( USER_LAST_NAME_FIELD, model.getUser().getLastName(), model );
-        fieldChangeHandlerManager.processFieldChange( USER_ADDRESS_FIELD, model.getUser().getName(), model );
+        fieldChangeHandlerManager.processFieldChange(USER_LAST_NAME_FIELD,
+                                                     model.getUser().getLastName(),
+                                                     model);
+        fieldChangeHandlerManager.processFieldChange(USER_ADDRESS_FIELD,
+                                                     model.getUser().getName(),
+                                                     model);
 
-        assertEquals( 4, executionCounts );
-        verify( anonymous, times( 4 ) ).onFieldChange( anyString(), anyObject() );
+        assertEquals(4,
+                     executionCounts);
+        verify(anonymous,
+               times(4)).onFieldChange(anyString(),
+                                       anyObject());
     }
 
     @Test
     public void testAnonymousFieldChangeProcessingWithValidationFailure() {
-        registerFields( true );
+        registerFields(true);
 
-        fieldChangeHandlerManager.addFieldChangeHandler( anonymous );
+        fieldChangeHandlerManager.addFieldChangeHandler(anonymous);
 
-        model.setValue( 60 );
-        fieldChangeHandlerManager.processFieldChange( VALUE_FIELD, model.getValue(), model );
+        model.setValue(60);
+        fieldChangeHandlerManager.processFieldChange(VALUE_FIELD,
+                                                     model.getValue(),
+                                                     model);
 
         // Validation must file model.value must be between 0 : 50
-        assertEquals( 0, executionCounts );
-        verify( anonymous, never() ).onFieldChange( anyString(), anyObject() );
+        assertEquals(0,
+                     executionCounts);
+        verify(anonymous,
+               never()).onFieldChange(anyString(),
+                                      anyObject());
 
-        fieldChangeHandlerManager.processFieldChange( USER_NAME_FIELD, model.getUser().getName(), model );
+        fieldChangeHandlerManager.processFieldChange(USER_NAME_FIELD,
+                                                     model.getUser().getName(),
+                                                     model);
 
         // Validation must work!
-        assertEquals( 1, executionCounts );
-        verify( anonymous ).onFieldChange( anyString(), anyObject() );
+        assertEquals(1,
+                     executionCounts);
+        verify(anonymous).onFieldChange(anyString(),
+                                        anyObject());
 
-        model.getUser().setAddress( "Pentos" );
+        model.getUser().setAddress("Pentos");
 
-        fieldChangeHandlerManager.processFieldChange( USER_LAST_NAME_FIELD, model.getUser().getLastName(), model );
-        fieldChangeHandlerManager.processFieldChange( USER_ADDRESS_FIELD, model.getUser().getName(), model );
+        fieldChangeHandlerManager.processFieldChange(USER_LAST_NAME_FIELD,
+                                                     model.getUser().getLastName(),
+                                                     model);
+        fieldChangeHandlerManager.processFieldChange(USER_ADDRESS_FIELD,
+                                                     model.getUser().getName(),
+                                                     model);
 
         // Validation must fail for USER_ADDRESS_FIELD -> address between 10 : 100
-        assertEquals( 2, executionCounts );
-        verify( anonymous, times( 2 ) ).onFieldChange( anyString(), anyObject() );
+        assertEquals(2,
+                     executionCounts);
+        verify(anonymous,
+               times(2)).onFieldChange(anyString(),
+                                       anyObject());
     }
-
 
     @Test
     public void testNamedFieldChangeProcessing() {
-        registerFields( false );
+        registerFields(false);
 
-        fieldChangeHandlerManager.addFieldChangeHandler( VALUE_FIELD, value );
-        fieldChangeHandlerManager.addFieldChangeHandler( USER_NAME_FIELD, userName );
-        fieldChangeHandlerManager.addFieldChangeHandler( USER_LAST_NAME_FIELD, userLastName );
-        fieldChangeHandlerManager.addFieldChangeHandler( USER_BIRTHDAY_FIELD, userBirthday );
-        fieldChangeHandlerManager.addFieldChangeHandler( USER_MARRIED_FIELD, userMarried );
-        fieldChangeHandlerManager.addFieldChangeHandler( USER_ADDRESS_FIELD, userAddress );
+        fieldChangeHandlerManager.addFieldChangeHandler(VALUE_FIELD,
+                                                        value);
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_NAME_FIELD,
+                                                        userName);
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_LAST_NAME_FIELD,
+                                                        userLastName);
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_BIRTHDAY_FIELD,
+                                                        userBirthday);
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_MARRIED_FIELD,
+                                                        userMarried);
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_ADDRESS_FIELD,
+                                                        userAddress);
 
-        fieldChangeHandlerManager.processFieldChange( VALUE_FIELD, model.getValue(), model );
+        fieldChangeHandlerManager.processFieldChange(VALUE_FIELD,
+                                                     model.getValue(),
+                                                     model);
 
-        assertEquals( 1, executionCounts );
+        assertEquals(1,
+                     executionCounts);
 
-        verify( value ).onFieldChange( anyString(), anyObject() );
-        verify( userName, never() ).onFieldChange( anyString(), anyObject() );
-        verify( userLastName, never() ).onFieldChange( anyString(), anyObject() );
-        verify( userBirthday, never() ).onFieldChange( anyString(), anyObject() );
-        verify( userMarried, never() ).onFieldChange( anyString(), anyObject() );
-        verify( userAddress, never() ).onFieldChange( anyString(), anyObject() );
+        verify(value).onFieldChange(anyString(),
+                                    anyObject());
+        verify(userName,
+               never()).onFieldChange(anyString(),
+                                      anyObject());
+        verify(userLastName,
+               never()).onFieldChange(anyString(),
+                                      anyObject());
+        verify(userBirthday,
+               never()).onFieldChange(anyString(),
+                                      anyObject());
+        verify(userMarried,
+               never()).onFieldChange(anyString(),
+                                      anyObject());
+        verify(userAddress,
+               never()).onFieldChange(anyString(),
+                                      anyObject());
 
+        fieldChangeHandlerManager.processFieldChange(USER_NAME_FIELD,
+                                                     model.getUser().getName(),
+                                                     model);
+        fieldChangeHandlerManager.processFieldChange(USER_LAST_NAME_FIELD,
+                                                     model.getUser().getName(),
+                                                     model);
+        fieldChangeHandlerManager.processFieldChange(USER_MARRIED_FIELD,
+                                                     model.getUser().getName(),
+                                                     model);
 
-        fieldChangeHandlerManager.processFieldChange( USER_NAME_FIELD, model.getUser().getName(), model );
-        fieldChangeHandlerManager.processFieldChange( USER_LAST_NAME_FIELD, model.getUser().getName(), model );
-        fieldChangeHandlerManager.processFieldChange( USER_MARRIED_FIELD, model.getUser().getName(), model );
+        assertEquals(4,
+                     executionCounts);
 
-        assertEquals( 4, executionCounts );
-
-        verify( value ).onFieldChange( anyString(), anyObject() );
-        verify( userName ).onFieldChange( anyString(), anyObject() );
-        verify( userLastName ).onFieldChange( anyString(), anyObject() );
-        verify( userBirthday, never() ).onFieldChange( anyString(), anyObject() );
-        verify( userMarried ).onFieldChange( anyString(), anyObject() );
-        verify( userAddress, never() ).onFieldChange( anyString(), anyObject() );
+        verify(value).onFieldChange(anyString(),
+                                    anyObject());
+        verify(userName).onFieldChange(anyString(),
+                                       anyObject());
+        verify(userLastName).onFieldChange(anyString(),
+                                           anyObject());
+        verify(userBirthday,
+               never()).onFieldChange(anyString(),
+                                      anyObject());
+        verify(userMarried).onFieldChange(anyString(),
+                                          anyObject());
+        verify(userAddress,
+               never()).onFieldChange(anyString(),
+                                      anyObject());
     }
 
     @Test
     public void testNamedFieldChangeProcessingWithValidation() {
-        registerFields( true );
+        registerFields(true);
 
-        fieldChangeHandlerManager.addFieldChangeHandler( VALUE_FIELD, value );
-        fieldChangeHandlerManager.addFieldChangeHandler( USER_NAME_FIELD, userName );
-        fieldChangeHandlerManager.addFieldChangeHandler( USER_LAST_NAME_FIELD, userLastName );
-        fieldChangeHandlerManager.addFieldChangeHandler( USER_BIRTHDAY_FIELD, userBirthday );
-        fieldChangeHandlerManager.addFieldChangeHandler( USER_MARRIED_FIELD, userMarried );
-        fieldChangeHandlerManager.addFieldChangeHandler( USER_ADDRESS_FIELD, userAddress );
+        fieldChangeHandlerManager.addFieldChangeHandler(VALUE_FIELD,
+                                                        value);
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_NAME_FIELD,
+                                                        userName);
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_LAST_NAME_FIELD,
+                                                        userLastName);
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_BIRTHDAY_FIELD,
+                                                        userBirthday);
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_MARRIED_FIELD,
+                                                        userMarried);
+        fieldChangeHandlerManager.addFieldChangeHandler(USER_ADDRESS_FIELD,
+                                                        userAddress);
 
         // Validation must work here
-        fieldChangeHandlerManager.processFieldChange( VALUE_FIELD, model.getValue(), model );
-        assertEquals( 1, executionCounts );
+        fieldChangeHandlerManager.processFieldChange(VALUE_FIELD,
+                                                     model.getValue(),
+                                                     model);
+        assertEquals(1,
+                     executionCounts);
 
-        verify( value ).onFieldChange( anyString(), anyObject() );
-        verify( userName, never() ).onFieldChange( anyString(), anyObject() );
-        verify( userLastName, never() ).onFieldChange( anyString(), anyObject() );
-        verify( userBirthday, never() ).onFieldChange( anyString(), anyObject() );
-        verify( userMarried, never() ).onFieldChange( anyString(), anyObject() );
-        verify( userAddress, never() ).onFieldChange( anyString(), anyObject() );
+        verify(value).onFieldChange(anyString(),
+                                    anyObject());
+        verify(userName,
+               never()).onFieldChange(anyString(),
+                                      anyObject());
+        verify(userLastName,
+               never()).onFieldChange(anyString(),
+                                      anyObject());
+        verify(userBirthday,
+               never()).onFieldChange(anyString(),
+                                      anyObject());
+        verify(userMarried,
+               never()).onFieldChange(anyString(),
+                                      anyObject());
+        verify(userAddress,
+               never()).onFieldChange(anyString(),
+                                      anyObject());
 
-
-        model.getUser().setName( null );
-        model.getUser().setLastName( null );
-        fieldChangeHandlerManager.processFieldChange( USER_NAME_FIELD, model.getUser().getName(), model );
-        fieldChangeHandlerManager.processFieldChange( USER_LAST_NAME_FIELD, model.getUser().getName(), model );
-        fieldChangeHandlerManager.processFieldChange( USER_MARRIED_FIELD, model.getUser().getName(), model );
+        model.getUser().setName(null);
+        model.getUser().setLastName(null);
+        fieldChangeHandlerManager.processFieldChange(USER_NAME_FIELD,
+                                                     model.getUser().getName(),
+                                                     model);
+        fieldChangeHandlerManager.processFieldChange(USER_LAST_NAME_FIELD,
+                                                     model.getUser().getName(),
+                                                     model);
+        fieldChangeHandlerManager.processFieldChange(USER_MARRIED_FIELD,
+                                                     model.getUser().getName(),
+                                                     model);
 
         // Validation must fail for USER_NAME_FIELD && USER_LAST_NAME_FIELD (cannot be null or empty string)
-        assertEquals( 2, executionCounts );
+        assertEquals(2,
+                     executionCounts);
 
-        verify( value ).onFieldChange( anyString(), anyObject() );
-        verify( userName, never() ).onFieldChange( anyString(), anyObject() );
-        verify( userLastName, never() ).onFieldChange( anyString(), anyObject() );
-        verify( userBirthday, never() ).onFieldChange( anyString(), anyObject() );
-        verify( userMarried ).onFieldChange( anyString(), anyObject() );
-        verify( userAddress, never() ).onFieldChange( anyString(), anyObject() );
+        verify(value).onFieldChange(anyString(),
+                                    anyObject());
+        verify(userName,
+               never()).onFieldChange(anyString(),
+                                      anyObject());
+        verify(userLastName,
+               never()).onFieldChange(anyString(),
+                                      anyObject());
+        verify(userBirthday,
+               never()).onFieldChange(anyString(),
+                                      anyObject());
+        verify(userMarried).onFieldChange(anyString(),
+                                          anyObject());
+        verify(userAddress,
+               never()).onFieldChange(anyString(),
+                                      anyObject());
     }
 
-
-
-
-
-    protected void registerFields( boolean validateOnChange ) {
-        for ( FormField formField : formFieldProvider.getAll() ) {
-            fieldChangeHandlerManager.registerField( formField.getFieldName(), validateOnChange );
+    protected void registerFields(boolean validateOnChange) {
+        for (FormField formField : formFieldProvider.getAll()) {
+            fieldChangeHandlerManager.registerField(formField.getFieldName(),
+                                                    validateOnChange);
         }
     }
-
 }

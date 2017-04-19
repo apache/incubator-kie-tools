@@ -41,10 +41,11 @@ public class FieldSetFormGroupDisplayerViewImpl extends Composite implements Fie
     @DataField
     protected Element helpBlock = DOM.createDiv();
 
-    public void render( Widget widget, FieldDefinition field ) {
-        this.getElement().setId( generateFormGroupId( field ) );
-        legend.setInnerText( field.getLabel() );
-        fieldContainer.add( widget );
-        helpBlock.setId( generateHelpBlockId( field ) );
+    public void render(Widget widget,
+                       FieldDefinition field) {
+        this.getElement().setId(generateFormGroupId(field));
+        legend.setInnerText(field.getLabel());
+        fieldContainer.add(widget);
+        helpBlock.setId(generateHelpBlockId(field));
     }
 }

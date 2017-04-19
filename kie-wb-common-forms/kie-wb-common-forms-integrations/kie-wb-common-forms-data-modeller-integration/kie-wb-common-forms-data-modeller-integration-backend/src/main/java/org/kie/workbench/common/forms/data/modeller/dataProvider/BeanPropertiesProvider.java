@@ -24,10 +24,10 @@ import org.kie.workbench.common.forms.data.modeller.service.DataObjectFinderServ
 import org.kie.workbench.common.forms.dynamic.model.config.SelectorData;
 import org.kie.workbench.common.forms.dynamic.model.config.SystemSelectorDataProvider;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.TableColumnMeta;
-import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.kie.workbench.common.forms.editor.service.shared.FormEditorRenderingContext;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.TableColumnMeta;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
+import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 import org.uberfire.backend.vfs.Path;
 
 @Dependent
@@ -42,12 +42,12 @@ public class BeanPropertiesProvider implements SystemSelectorDataProvider {
     }
 
     @Override
-    public SelectorData getSelectorData( FormRenderingContext context ) {
+    public SelectorData getSelectorData(FormRenderingContext context) {
 
         HashMap<String, String> values = new HashMap<>();
 
-        if ( context instanceof FormEditorRenderingContext && context.getParentContext() != null ) {
-            if ( context.getParentContext().getModel() instanceof MultipleSubFormFieldDefinition ) {
+        if (context instanceof FormEditorRenderingContext && context.getParentContext() != null) {
+            if (context.getParentContext().getModel() instanceof MultipleSubFormFieldDefinition) {
 
                 FormEditorRenderingContext editorContext = (FormEditorRenderingContext) context;
 
@@ -58,24 +58,28 @@ public class BeanPropertiesProvider implements SystemSelectorDataProvider {
 
                 TableColumnMeta model = (TableColumnMeta) context.getModel();
 
-                for ( ObjectProperty property : dataObjectFinderService.getDataObjectProperties( typeName, path ) ) {
+                for (ObjectProperty property : dataObjectFinderService.getDataObjectProperties(typeName,
+                                                                                               path)) {
                     boolean add = true;
 
-                    for ( int i = 0; i < subForm.getColumnMetas().size() && add == true; i++ ) {
-                        TableColumnMeta meta = subForm.getColumnMetas().get( i );
-                        if ( model != null && property.getName().equals( model.getProperty() ) ) {
+                    for (int i = 0; i < subForm.getColumnMetas().size() && add == true; i++) {
+                        TableColumnMeta meta = subForm.getColumnMetas().get(i);
+                        if (model != null && property.getName().equals(model.getProperty())) {
                             break;
                         }
-                        if ( meta.getProperty().equals( property.getName() ) ) {
+                        if (meta.getProperty().equals(property.getName())) {
                             add = false;
                         }
                     }
 
-                    if ( add ) {
-                        values.put( property.getName(), property.getName() );
+                    if (add) {
+                        values.put(property.getName(),
+                                   property.getName());
                     }
-                }}
+                }
+            }
         }
-        return new SelectorData( values, null );
+        return new SelectorData(values,
+                                null);
     }
 }

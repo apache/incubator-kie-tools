@@ -32,7 +32,6 @@ import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
-import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
@@ -53,47 +52,50 @@ public class FormLayoutGenerator extends AbstractLayoutGenerator {
     private FormRenderingContext renderingContext;
 
     @Inject
-    public FormLayoutGenerator( SyncBeanManager beanManager, ManagedInstance<LayoutDragComponent> instance ) {
+    public FormLayoutGenerator(SyncBeanManager beanManager,
+                               ManagedInstance<LayoutDragComponent> instance) {
         this.beanManager = beanManager;
         this.instance = instance;
     }
 
-    public Panel buildLayout( FormRenderingContext renderingContext ) {
+    public Panel buildLayout(FormRenderingContext renderingContext) {
         this.renderingContext = renderingContext;
         layoutComponents.clear();
-        if ( renderingContext == null || renderingContext.getRootForm() == null ) {
+        if (renderingContext == null || renderingContext.getRootForm() == null) {
             return getLayoutContainer();
         }
-        return build( renderingContext.getRootForm().getLayoutTemplate() );
+        return build(renderingContext.getRootForm().getLayoutTemplate());
     }
 
     @Override
     public ComplexPanel getLayoutContainer() {
-        return new Column( ColumnSize.MD_12 );
+        return new Column(ColumnSize.MD_12);
     }
 
     @Override
-    public LayoutDragComponent getLayoutDragComponent( LayoutComponent layoutComponent ) {
+    public LayoutDragComponent getLayoutDragComponent(LayoutComponent layoutComponent) {
 
-        Class<? extends LayoutDragComponent> clazz = componentsCache.get( layoutComponent.getDragTypeName() );
-        if ( clazz == null ) {
-            SyncBeanDef dragTypeDef = beanManager.lookupBeans( layoutComponent.getDragTypeName() ).iterator().next();
+        Class<? extends LayoutDragComponent> clazz = componentsCache.get(layoutComponent.getDragTypeName());
+        if (clazz == null) {
+            SyncBeanDef dragTypeDef = beanManager.lookupBeans(layoutComponent.getDragTypeName()).iterator().next();
 
-            componentsCache.put( layoutComponent.getDragTypeName(), dragTypeDef.getBeanClass() );
+            componentsCache.put(layoutComponent.getDragTypeName(),
+                                dragTypeDef.getBeanClass());
 
             clazz = dragTypeDef.getBeanClass();
         }
 
-        LayoutDragComponent dragComponent = instance.select( clazz ).get();
+        LayoutDragComponent dragComponent = instance.select(clazz).get();
 
-        if ( dragComponent instanceof FieldLayoutComponent ) {
+        if (dragComponent instanceof FieldLayoutComponent) {
             FieldLayoutComponent fieldComponent = (FieldLayoutComponent) dragComponent;
 
-            FieldDefinition field = renderingContext.getRootForm().getFieldById( layoutComponent.getProperties().get(
-                    FieldLayoutComponent.FIELD_ID ) );
-            fieldComponent.init( renderingContext, field );
+            FieldDefinition field = renderingContext.getRootForm().getFieldById(layoutComponent.getProperties().get(
+                    FieldLayoutComponent.FIELD_ID));
+            fieldComponent.init(renderingContext,
+                                field);
 
-            layoutComponents.add( fieldComponent );
+            layoutComponents.add(fieldComponent);
         }
 
         return dragComponent;
@@ -103,9 +105,11 @@ public class FormLayoutGenerator extends AbstractLayoutGenerator {
         return layoutComponents;
     }
 
-    public FieldLayoutComponent getFieldLayoutComponentForField( FieldDefinition field ) {
-        for ( FieldLayoutComponent component : layoutComponents ) {
-            if ( component.getField().equals( field ) ) return component;
+    public FieldLayoutComponent getFieldLayoutComponentForField(FieldDefinition field) {
+        for (FieldLayoutComponent component : layoutComponents) {
+            if (component.getField().equals(field)) {
+                return component;
+            }
         }
         return null;
     }

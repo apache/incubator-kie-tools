@@ -26,7 +26,10 @@ public class Guitar {
     public Guitar() {
     }
 
-    public Guitar( String brand, String model, String body, String neck ) {
+    public Guitar(String brand,
+                  String model,
+                  String body,
+                  String neck) {
         this.brand = brand;
         this.model = model;
         this.body = body;
@@ -37,7 +40,7 @@ public class Guitar {
         return brand;
     }
 
-    public void setBrand( String brand ) {
+    public void setBrand(String brand) {
         this.brand = brand;
     }
 
@@ -45,7 +48,7 @@ public class Guitar {
         return model;
     }
 
-    public void setModel( String model ) {
+    public void setModel(String model) {
         this.model = model;
     }
 
@@ -53,7 +56,7 @@ public class Guitar {
         return body;
     }
 
-    public void setBody( String body ) {
+    public void setBody(String body) {
         this.body = body;
     }
 
@@ -61,7 +64,7 @@ public class Guitar {
         return neck;
     }
 
-    public void setNeck( String neck ) {
+    public void setNeck(String neck) {
         this.neck = neck;
     }
 }

@@ -30,17 +30,18 @@ public class FieldChangeProcessor {
 
     private List<FieldChangeHandler> changeHandlers = new ArrayList<>();
 
-    public FieldChangeProcessor( String fieldName, boolean requiresValidation ) {
+    public FieldChangeProcessor(String fieldName,
+                                boolean requiresValidation) {
         assert fieldName != null;
 
         this.fieldName = fieldName;
         this.requiresValidation = requiresValidation;
     }
 
-    public void addFieldChangeHandler( FieldChangeHandler handler ) {
+    public void addFieldChangeHandler(FieldChangeHandler handler) {
         assert handler != null;
 
-        changeHandlers.add( handler );
+        changeHandlers.add(handler);
     }
 
     public String getFieldName() {
@@ -52,6 +53,6 @@ public class FieldChangeProcessor {
     }
 
     public Collection<FieldChangeHandler> getChangeHandlers() {
-        return Collections.unmodifiableCollection( changeHandlers );
+        return Collections.unmodifiableCollection(changeHandlers);
     }
 }

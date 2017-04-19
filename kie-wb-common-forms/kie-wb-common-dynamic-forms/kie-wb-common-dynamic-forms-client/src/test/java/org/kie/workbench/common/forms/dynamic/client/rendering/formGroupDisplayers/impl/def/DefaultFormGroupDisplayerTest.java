@@ -20,7 +20,7 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.AbstractFormGroupDisplayerTest;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class DefaultFormGroupDisplayerTest extends AbstractFormGroupDisplayerTest<DefaultFormGroupDisplayer, DefaultFormGroupDisplayerView> {
 
     @Override
@@ -29,7 +29,7 @@ public class DefaultFormGroupDisplayerTest extends AbstractFormGroupDisplayerTes
     }
 
     @Override
-    protected DefaultFormGroupDisplayer getDisplayerInstance( DefaultFormGroupDisplayerView view ) {
-        return new DefaultFormGroupDisplayer( view );
+    protected DefaultFormGroupDisplayer getDisplayerInstance(DefaultFormGroupDisplayerView view) {
+        return new DefaultFormGroupDisplayer(view);
     }
 }

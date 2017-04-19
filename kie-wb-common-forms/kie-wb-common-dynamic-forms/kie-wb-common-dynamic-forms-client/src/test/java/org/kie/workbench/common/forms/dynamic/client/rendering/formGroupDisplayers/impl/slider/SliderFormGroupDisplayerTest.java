@@ -20,15 +20,16 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.AbstractFormGroupDisplayerTest;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class SliderFormGroupDisplayerTest extends AbstractFormGroupDisplayerTest<SliderFormGroupDisplayer, SliderFormGroupDisplayerView> {
+
     @Override
     protected Class<SliderFormGroupDisplayerView> getViewClass() {
         return SliderFormGroupDisplayerView.class;
     }
 
     @Override
-    protected SliderFormGroupDisplayer getDisplayerInstance( SliderFormGroupDisplayerView view ) {
-        return new SliderFormGroupDisplayer( view );
+    protected SliderFormGroupDisplayer getDisplayerInstance(SliderFormGroupDisplayerView view) {
+        return new SliderFormGroupDisplayer(view);
     }
 }

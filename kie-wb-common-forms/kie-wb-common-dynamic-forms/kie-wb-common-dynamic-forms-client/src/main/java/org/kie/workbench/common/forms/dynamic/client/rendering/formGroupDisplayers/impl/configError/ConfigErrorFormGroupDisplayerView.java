@@ -21,5 +21,6 @@ import java.util.List;
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface ConfigErrorFormGroupDisplayerView extends IsWidget {
-    void render( List<String> errorMessages );
+
+    void render(List<String> errorMessages);
 }

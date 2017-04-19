@@ -27,14 +27,15 @@ import org.kie.workbench.common.forms.dynamic.service.shared.AbstractSelectorDat
 
 @ApplicationScoped
 public class ClientSelectorDataProviderManager extends AbstractSelectorDataProviderManager {
+
     public static final String PREFFIX = "local";
 
     @PostConstruct
     public void init() {
-        Collection<SyncBeanDef<SelectorDataProvider>> providers = IOC.getBeanManager().lookupBeans( SelectorDataProvider.class );
+        Collection<SyncBeanDef<SelectorDataProvider>> providers = IOC.getBeanManager().lookupBeans(SelectorDataProvider.class);
 
-        for ( SyncBeanDef<SelectorDataProvider> provider : providers ) {
-            registerProvider( provider.newInstance() );
+        for (SyncBeanDef<SelectorDataProvider> provider : providers) {
+            registerProvider(provider.newInstance());
         }
     }
 

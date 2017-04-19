@@ -42,7 +42,7 @@ public class Person {
         return title;
     }
 
-    public void setTitle( Title title ) {
+    public void setTitle(Title title) {
         this.title = title;
     }
 
@@ -50,7 +50,7 @@ public class Person {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -58,7 +58,7 @@ public class Person {
         return surname;
     }
 
-    public void setSurname( String surname ) {
+    public void setSurname(String surname) {
         this.surname = surname;
     }
 
@@ -66,7 +66,7 @@ public class Person {
         return birthday;
     }
 
-    public void setBirthday( Date birthday ) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 }

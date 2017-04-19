@@ -23,12 +23,12 @@ import org.kie.workbench.common.forms.dynamic.backend.server.document.UploadedDo
 
 public class TestDocumentFieldValueProcessor extends DocumentFieldValueProcessor {
 
-    public TestDocumentFieldValueProcessor( UploadedDocumentManager uploadedDocumentManager ) {
-        super( uploadedDocumentManager );
+    public TestDocumentFieldValueProcessor(UploadedDocumentManager uploadedDocumentManager) {
+        super(uploadedDocumentManager);
     }
 
     @Override
-    protected byte[] getFileContent( File content ) throws IOException {
+    protected byte[] getFileContent(File content) throws IOException {
         return new byte[0];
     }
 }

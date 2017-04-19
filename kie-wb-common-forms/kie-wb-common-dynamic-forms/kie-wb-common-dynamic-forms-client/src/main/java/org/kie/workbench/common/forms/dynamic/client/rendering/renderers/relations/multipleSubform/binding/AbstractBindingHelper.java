@@ -26,7 +26,8 @@ public abstract class AbstractBindingHelper<C extends FormRenderingContext, P ex
     protected MultipleSubFormFieldDefinition field;
 
     @Override
-    public void setUp( MultipleSubFormFieldDefinition field, C context ) {
+    public void setUp(MultipleSubFormFieldDefinition field,
+                      C context) {
         this.field = field;
         this.context = context;
     }

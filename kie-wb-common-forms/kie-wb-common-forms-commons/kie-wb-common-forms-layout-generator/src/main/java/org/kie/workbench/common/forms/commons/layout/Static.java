@@ -25,4 +25,5 @@ import javax.inject.Qualifier;
 @Target({ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER})
 @Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 public @interface Static {
+
 }

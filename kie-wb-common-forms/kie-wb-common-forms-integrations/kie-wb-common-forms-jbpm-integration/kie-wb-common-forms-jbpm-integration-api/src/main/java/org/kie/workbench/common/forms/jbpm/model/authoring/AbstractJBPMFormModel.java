@@ -22,7 +22,7 @@ public abstract class AbstractJBPMFormModel implements JBPMFormModel {
 
     protected List<JBPMVariable> variables;
 
-    public AbstractJBPMFormModel( List<JBPMVariable> variables ) {
+    public AbstractJBPMFormModel(List<JBPMVariable> variables) {
         this.variables = variables;
     }
 
@@ -31,7 +31,7 @@ public abstract class AbstractJBPMFormModel implements JBPMFormModel {
         return variables;
     }
 
-    public void setVariables( List<JBPMVariable> variables ) {
+    public void setVariables(List<JBPMVariable> variables) {
         this.variables = variables;
     }
 }

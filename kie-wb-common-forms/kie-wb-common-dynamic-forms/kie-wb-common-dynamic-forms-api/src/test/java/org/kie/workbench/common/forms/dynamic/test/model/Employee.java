@@ -29,20 +29,20 @@ public class Employee extends Person {
     private Boolean married;
 
     @FieldDef(label = "Age", position = 4, property = "value")
-    private Age age = new Age( 18 );
+    private Age age = new Age(18);
 
-    @FieldDef( label = "Address" )
+    @FieldDef(label = "Address")
     private Address address = new Address();
 
-    @FieldDef( label = "Role Description" )
-    @TextArea( placeHolder = "Role Description")
+    @FieldDef(label = "Role Description")
+    @TextArea(placeHolder = "Role Description")
     private String roleDescription;
 
     public Boolean getMarried() {
         return married;
     }
 
-    public void setMarried( Boolean married ) {
+    public void setMarried(Boolean married) {
         this.married = married;
     }
 
@@ -50,7 +50,7 @@ public class Employee extends Person {
         return age;
     }
 
-    public void setAge( Age age ) {
+    public void setAge(Age age) {
         this.age = age;
     }
 
@@ -58,7 +58,7 @@ public class Employee extends Person {
         return address;
     }
 
-    public void setAddress( Address address ) {
+    public void setAddress(Address address) {
         this.address = address;
     }
 
@@ -66,7 +66,7 @@ public class Employee extends Person {
         return roleDescription;
     }
 
-    public void setRoleDescription( String roleDescription ) {
+    public void setRoleDescription(String roleDescription) {
         this.roleDescription = roleDescription;
     }
 }

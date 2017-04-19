@@ -19,12 +19,12 @@ package org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multip
 import javax.enterprise.context.Dependent;
 
 import org.jboss.errai.common.client.api.Assert;
+import org.kie.workbench.common.forms.fields.shared.MultipleValueFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.ModelTypeFieldProvider;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.type.MultipleSubFormFieldType;
 import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.fields.shared.MultipleValueFieldProvider;
 
 @Dependent
 public class MultipleSubFormFieldProvider

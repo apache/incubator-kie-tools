@@ -18,10 +18,17 @@ package org.kie.workbench.common.forms.crud.client.component;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.view.client.AsyncDataProvider;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
@@ -34,15 +41,6 @@ import org.kie.workbench.common.forms.crud.client.component.formDisplay.FormDisp
 import org.kie.workbench.common.forms.crud.client.resources.i18n.CrudComponentConstants;
 import org.uberfire.ext.widgets.table.client.ColumnMeta;
 import org.uberfire.ext.widgets.table.client.UberfirePagedTable;
-
-import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.view.client.AsyncDataProvider;
 
 @Dependent
 @Templated
@@ -61,78 +59,89 @@ public class CrudComponentViewImpl<MODEL, FORM_MODEL> extends Composite implemen
     private final TranslationService translationService;
 
     @Inject
-    public CrudComponentViewImpl( final TranslationService translationService ) {
+    public CrudComponentViewImpl(final TranslationService translationService) {
         this.translationService = translationService;
     }
 
     @Override
-    public void setPresenter( final CrudComponent<MODEL, FORM_MODEL> presenter ) {
+    public void setPresenter(final CrudComponent<MODEL, FORM_MODEL> presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setDataProvider( final AsyncDataProvider<MODEL> dataProvider ) {
-        table.setDataProvider( dataProvider );
+    public void setDataProvider(final AsyncDataProvider<MODEL> dataProvider) {
+        table.setDataProvider(dataProvider);
     }
 
     @Override
     public void showDeleteButtons() {
-        final Column<MODEL, String> column = new Column<MODEL, String>( new ButtonCell( IconType.TRASH, ButtonType.DANGER, ButtonSize.SMALL ) ) {
+        final Column<MODEL, String> column = new Column<MODEL, String>(new ButtonCell(IconType.TRASH,
+                                                                                      ButtonType.DANGER,
+                                                                                      ButtonSize.SMALL)) {
             @Override
-            public String getValue( final MODEL model ) {
-                return translationService.getTranslation( CrudComponentConstants.CrudComponentViewImplDeleteInstance );
+            public String getValue(final MODEL model) {
+                return translationService.getTranslation(CrudComponentConstants.CrudComponentViewImplDeleteInstance);
             }
         };
-        column.setFieldUpdater( new FieldUpdater<MODEL, String>() {
+        column.setFieldUpdater(new FieldUpdater<MODEL, String>() {
             @Override
-            public void update( final int index, final Object model, final String s ) {
-                if ( Window.confirm( translationService.getTranslation( CrudComponentConstants.CrudComponentViewImplDeleteBody ) ) ) {
-                    presenter.deleteInstance( index );
+            public void update(final int index,
+                               final Object model,
+                               final String s) {
+                if (Window.confirm(translationService.getTranslation(CrudComponentConstants.CrudComponentViewImplDeleteBody))) {
+                    presenter.deleteInstance(index);
                 }
             }
-        } );
-        table.addColumn( column, "" );
+        });
+        table.addColumn(column,
+                        "");
     }
 
     @Override
     public void showEditButtons() {
-        final Column<MODEL, String> column = new Column<MODEL, String>( new ButtonCell( IconType.EDIT, ButtonType.PRIMARY, ButtonSize.SMALL ) ) {
+        final Column<MODEL, String> column = new Column<MODEL, String>(new ButtonCell(IconType.EDIT,
+                                                                                      ButtonType.PRIMARY,
+                                                                                      ButtonSize.SMALL)) {
             @Override
-            public String getValue( final Object model ) {
-                return translationService.getTranslation( CrudComponentConstants.CrudComponentViewImplEditInstanceButton );
+            public String getValue(final Object model) {
+                return translationService.getTranslation(CrudComponentConstants.CrudComponentViewImplEditInstanceButton);
             }
         };
-        column.setFieldUpdater( new FieldUpdater<MODEL, String>() {
+        column.setFieldUpdater(new FieldUpdater<MODEL, String>() {
             @Override
-            public void update( final int index, final Object model, final String s ) {
-                presenter.editInstance( index );
+            public void update(final int index,
+                               final Object model,
+                               final String s) {
+                presenter.editInstance(index);
             }
-        } );
-        table.addColumn( column, "" );
+        });
+        table.addColumn(column,
+                        "");
     }
 
     @Override
-    public void initTableView( final List<ColumnMeta<MODEL>> dataColumns, final int pageSize ) {
+    public void initTableView(final List<ColumnMeta<MODEL>> dataColumns,
+                              final int pageSize) {
         content.clear();
-        table = new UberfirePagedTable<>( pageSize );
+        table = new UberfirePagedTable<>(pageSize);
         table.getRightToolbar().clear();
-        final List<ColumnMeta<MODEL>> columns = new ArrayList<>( dataColumns );
-        table.addColumns( columns );
-        content.add( table );
+        final List<ColumnMeta<MODEL>> columns = new ArrayList<>(dataColumns);
+        table.addColumns(columns);
+        content.add(table);
     }
 
     @Override
     public void showCreateButton() {
-        final Button createButton = new Button( translationService.getTranslation( CrudComponentConstants.CrudComponentViewImplNewInstanceButton ) );
-        createButton.setType( ButtonType.PRIMARY );
-        createButton.setIcon( IconType.PLUS );
-        table.getLeftToolbar().add( createButton );
-        createButton.addClickHandler( new ClickHandler() {
+        final Button createButton = new Button(translationService.getTranslation(CrudComponentConstants.CrudComponentViewImplNewInstanceButton));
+        createButton.setType(ButtonType.PRIMARY);
+        createButton.setIcon(IconType.PLUS);
+        table.getLeftToolbar().add(createButton);
+        createButton.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( final ClickEvent clickEvent ) {
+            public void onClick(final ClickEvent clickEvent) {
                 presenter.createInstance();
             }
-        } );
+        });
     }
 
     @Override
@@ -141,14 +150,14 @@ public class CrudComponentViewImpl<MODEL, FORM_MODEL> extends Composite implemen
     }
 
     @Override
-    public void addDisplayer( final FormDisplayer displayer ) {
+    public void addDisplayer(final FormDisplayer displayer) {
         content.clear();
-        content.add( displayer );
+        content.add(displayer);
     }
 
     @Override
-    public void removeDisplayer( final FormDisplayer displayer ) {
-        content.remove( displayer );
-        content.add( table );
+    public void removeDisplayer(final FormDisplayer displayer) {
+        content.remove(displayer);
+        content.add(table);
     }
 }

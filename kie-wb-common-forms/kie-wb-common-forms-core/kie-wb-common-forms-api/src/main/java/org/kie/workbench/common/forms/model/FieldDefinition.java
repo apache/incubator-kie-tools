@@ -20,43 +20,43 @@ public interface FieldDefinition {
 
     String getId();
 
-    void setId( String id );
+    void setId(String id);
 
     FieldType getFieldType();
 
     String getName();
 
-    void setName( String name );
+    void setName(String name);
 
     String getLabel();
 
-    void setLabel( String label );
+    void setLabel(String label);
 
     Boolean getRequired();
 
-    void setRequired( Boolean required );
+    void setRequired(Boolean required);
 
     Boolean getReadOnly();
 
-    void setReadOnly( Boolean readOnly );
+    void setReadOnly(Boolean readOnly);
 
     boolean isAnnotatedId();
 
-    void setAnnotatedId( boolean annotatedId );
+    void setAnnotatedId(boolean annotatedId);
 
     String getBinding();
 
-    void setBinding( String binding );
+    void setBinding(String binding);
 
     String getStandaloneClassName();
 
-    void setStandaloneClassName( String standaloneClassName );
+    void setStandaloneClassName(String standaloneClassName);
 
     FieldDataType getFieldTypeInfo();
 
     Boolean getValidateOnChange();
 
-    void setValidateOnChange( Boolean validateOnChange );
+    void setValidateOnChange(Boolean validateOnChange);
 
-    void copyFrom( FieldDefinition other );
+    void copyFrom(FieldDefinition other);
 }

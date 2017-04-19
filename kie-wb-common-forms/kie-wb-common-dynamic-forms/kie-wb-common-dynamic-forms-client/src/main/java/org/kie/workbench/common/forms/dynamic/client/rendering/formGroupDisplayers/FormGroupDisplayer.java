@@ -19,4 +19,5 @@ package org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplay
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface FormGroupDisplayer extends IsWidget {
+
 }

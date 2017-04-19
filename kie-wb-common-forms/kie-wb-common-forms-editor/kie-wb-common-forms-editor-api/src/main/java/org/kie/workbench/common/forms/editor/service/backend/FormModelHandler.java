@@ -35,7 +35,8 @@ public interface FormModelHandler<F extends FormModel> {
     /**
      * Initializes the FormModelHandler with the {@link FormModel} and a {@link Path} to get {@link FieldDefinition}.
      */
-    void init( F formModel, Path path );
+    void init(F formModel,
+              Path path);
 
     /**
      * Retrieves the available {@link FieldDefinition} for the {@link FormModel} which it's been initialized
@@ -45,7 +46,7 @@ public interface FormModelHandler<F extends FormModel> {
     /**
      * Creates a {@link FieldDefinition} for the given fieldName if the {@link FormModel} allows it.
      */
-    public FieldDefinition createFieldDefinition( String fieldName );
+    public FieldDefinition createFieldDefinition(String fieldName);
 
     /**
      * Creates a new {@link FormModelHandler} instance.

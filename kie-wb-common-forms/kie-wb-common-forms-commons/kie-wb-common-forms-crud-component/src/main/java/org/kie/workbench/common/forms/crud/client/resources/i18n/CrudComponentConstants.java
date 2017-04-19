@@ -20,27 +20,27 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 
 public interface CrudComponentConstants {
 
-    @TranslationKey( defaultValue = "")
+    @TranslationKey(defaultValue = "")
     String CrudComponentViewImplNewInstanceButton = "CrudComponentViewImpl.newInstanceButton";
 
-    @TranslationKey( defaultValue = "")
+    @TranslationKey(defaultValue = "")
     String CrudComponentViewImplNewInstanceTitle = "CrudComponentViewImpl.newInstanceTitle";
 
-    @TranslationKey( defaultValue = "")
+    @TranslationKey(defaultValue = "")
     String CrudComponentViewImplEditInstanceButton = "CrudComponentViewImpl.editInstanceButton";
 
-    @TranslationKey( defaultValue = "")
+    @TranslationKey(defaultValue = "")
     String CrudComponentViewImplEditInstanceTitle = "CrudComponentViewImpl.editInstanceTitle";
 
-    @TranslationKey( defaultValue = "")
+    @TranslationKey(defaultValue = "")
     String CrudComponentViewImplDeleteInstance = "CrudComponentViewImpl.deleteInstance";
 
-    @TranslationKey( defaultValue = "")
+    @TranslationKey(defaultValue = "")
     String CrudComponentViewImplDeleteBody = "CrudComponentViewImpl.deleteBody";
 
-    @TranslationKey( defaultValue = "")
+    @TranslationKey(defaultValue = "")
     String ModalFormDisplayerViewImplAccept = "ModalFormDisplayerViewImpl.accept";
 
-    @TranslationKey( defaultValue = "")
+    @TranslationKey(defaultValue = "")
     String ModalFormDisplayerViewImplCancel = "ModalFormDisplayerViewImpl.cancel";
 }

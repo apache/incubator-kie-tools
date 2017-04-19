@@ -25,8 +25,7 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplaye
 public class DefaultFormGroupDisplayer extends AbstractFormGroupDisplayer<DefaultFormGroupDisplayerView> {
 
     @Inject
-    public DefaultFormGroupDisplayer( DefaultFormGroupDisplayerView view ) {
-        super( view );
+    public DefaultFormGroupDisplayer(DefaultFormGroupDisplayerView view) {
+        super(view);
     }
-
 }

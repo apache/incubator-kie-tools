@@ -22,7 +22,6 @@ import java.util.List;
 import org.kie.workbench.common.forms.commons.layout.FormLayoutTemplateGenerator;
 import org.kie.workbench.common.forms.data.modeller.model.DataObjectFormModel;
 import org.kie.workbench.common.forms.editor.service.backend.util.UIDGenerator;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.EntityRelationField;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.HasNestedForm;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.IsCRUDDefinition;
@@ -30,7 +29,6 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.TableCo
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.BPMNFormGeneratorService;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.FormGenerationResult;
-import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.JavaModel;

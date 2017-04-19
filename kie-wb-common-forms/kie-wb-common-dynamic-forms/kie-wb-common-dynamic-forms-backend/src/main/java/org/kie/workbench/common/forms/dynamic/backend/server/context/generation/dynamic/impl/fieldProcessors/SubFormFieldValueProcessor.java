@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 @Dependent
 public class SubFormFieldValueProcessor extends NestedFormFieldValueProcessor<SubFormFieldDefinition, Object, Map<String, Object>> {
 
-    private static final Logger logger = LoggerFactory.getLogger( SubFormFieldValueProcessor.class );
+    private static final Logger logger = LoggerFactory.getLogger(SubFormFieldValueProcessor.class);
 
     @Override
     public Class<SubFormFieldDefinition> getSupportedField() {
@@ -37,30 +37,40 @@ public class SubFormFieldValueProcessor extends NestedFormFieldValueProcessor<Su
     }
 
     @Override
-    public Map<String, Object> toFlatValue( SubFormFieldDefinition field,
-                                            Object rawValue,
-                                            BackendFormRenderingContext context ) {
+    public Map<String, Object> toFlatValue(SubFormFieldDefinition field,
+                                           Object rawValue,
+                                           BackendFormRenderingContext context) {
 
-        FormDefinition nestedForm = context.getRenderingContext().getAvailableForms().get( field.getNestedForm() );
+        FormDefinition nestedForm = context.getRenderingContext().getAvailableForms().get(field.getNestedForm());
 
         Map<String, Object> nestedRawValues = new HashMap<>();
 
-        prepareNestedRawValues( nestedRawValues, nestedForm, rawValue );
+        prepareNestedRawValues(nestedRawValues,
+                               nestedForm,
+                               rawValue);
 
-        return processor.readFormValues( nestedForm, nestedRawValues, context );
+        return processor.readFormValues(nestedForm,
+                                        nestedRawValues,
+                                        context);
     }
 
     @Override
-    public Object toRawValue( SubFormFieldDefinition field,
-                              Map<String, Object> flatValue,
-                              Object originalValue,
-                              BackendFormRenderingContext context ) {
+    public Object toRawValue(SubFormFieldDefinition field,
+                             Map<String, Object> flatValue,
+                             Object originalValue,
+                             BackendFormRenderingContext context) {
 
-        FormDefinition nestedForm = context.getRenderingContext().getAvailableForms().get( field.getNestedForm() );
+        FormDefinition nestedForm = context.getRenderingContext().getAvailableForms().get(field.getNestedForm());
 
-        Map<String, Object> nestedValues = processor.writeFormValues( nestedForm, flatValue, new HashMap<>(), context );
+        Map<String, Object> nestedValues = processor.writeFormValues(nestedForm,
+                                                                     flatValue,
+                                                                     new HashMap<>(),
+                                                                     context);
 
-        return writeObjectValues( originalValue, nestedValues, field, context );
+        return writeObjectValues(originalValue,
+                                 nestedValues,
+                                 field,
+                                 context);
     }
 
     @Override

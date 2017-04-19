@@ -17,12 +17,16 @@
 package org.kie.workbench.common.forms.commons.rendering.shared.util.masks;
 
 public class Product {
+
     private Integer id;
     private String name;
     private String description;
     private Double price;
 
-    public Product( Integer id, String name, String description, Double price ) {
+    public Product(Integer id,
+                   String name,
+                   String description,
+                   Double price) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -33,7 +37,7 @@ public class Product {
         return id;
     }
 
-    public void setId( Integer id ) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -41,7 +45,7 @@ public class Product {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -49,7 +53,7 @@ public class Product {
         return description;
     }
 
-    public void setDescription( String description ) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -57,7 +61,7 @@ public class Product {
         return price;
     }
 
-    public void setPrice( Double price ) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 }

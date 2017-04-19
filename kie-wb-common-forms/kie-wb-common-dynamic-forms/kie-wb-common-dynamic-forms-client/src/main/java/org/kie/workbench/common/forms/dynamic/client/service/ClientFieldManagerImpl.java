@@ -23,18 +23,16 @@ import org.jboss.errai.ioc.client.container.IOC;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.kie.workbench.common.forms.fields.shared.AbstractFieldManager;
 import org.kie.workbench.common.forms.fields.shared.FieldProvider;
-import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.model.FieldType;
 
 @ApplicationScoped
 public class ClientFieldManagerImpl extends AbstractFieldManager {
 
     @PostConstruct
     protected void init() {
-        Collection<SyncBeanDef<FieldProvider>> providers = IOC.getBeanManager().lookupBeans( FieldProvider.class );
+        Collection<SyncBeanDef<FieldProvider>> providers = IOC.getBeanManager().lookupBeans(FieldProvider.class);
 
-        for ( SyncBeanDef<FieldProvider> provider : providers ) {
-            registerFieldProvider( provider.newInstance() );
+        for (SyncBeanDef<FieldProvider> provider : providers) {
+            registerFieldProvider(provider.newInstance());
         }
     }
 }

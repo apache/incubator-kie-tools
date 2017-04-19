@@ -21,10 +21,13 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.RetentionPolicy;
 
 @Inherited
-@java.lang.annotation.Retention( RetentionPolicy.RUNTIME )
-@java.lang.annotation.Target({ ElementType.TYPE, ElementType.FIELD })
+@java.lang.annotation.Retention(RetentionPolicy.RUNTIME)
+@java.lang.annotation.Target({ElementType.TYPE, ElementType.FIELD})
 public @interface FieldDef {
+
     String label();
+
     int position() default -1;
-    String property() default  "";
+
+    String property() default "";
 }

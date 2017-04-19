@@ -20,7 +20,9 @@ import java.util.Collection;
 
 public interface ModelValidator<MODEL> {
 
-    boolean validate( Collection<FormField> fields, MODEL model );
+    boolean validate(Collection<FormField> fields,
+                     MODEL model);
 
-    boolean validate( FormField field, MODEL model );
+    boolean validate(FormField field,
+                     MODEL model);
 }

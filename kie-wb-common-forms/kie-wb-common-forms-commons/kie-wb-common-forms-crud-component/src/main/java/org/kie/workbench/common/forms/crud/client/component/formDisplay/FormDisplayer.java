@@ -20,7 +20,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface FormDisplayer extends IsWidget {
 
-    void display( String title, IsFormView formView, FormDisplayerCallback callback );
+    void display(String title,
+                 IsFormView formView,
+                 FormDisplayerCallback callback);
 
     boolean isEmbeddable();
 
@@ -29,7 +31,9 @@ public interface FormDisplayer extends IsWidget {
     void cancel();
 
     public interface FormDisplayerCallback {
+
         void onAccept();
+
         void onCancel();
     }
 }

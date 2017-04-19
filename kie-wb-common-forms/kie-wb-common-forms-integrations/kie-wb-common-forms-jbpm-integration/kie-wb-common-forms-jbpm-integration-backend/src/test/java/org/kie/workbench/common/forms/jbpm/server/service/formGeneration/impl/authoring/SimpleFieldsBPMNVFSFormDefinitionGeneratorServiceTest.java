@@ -18,23 +18,13 @@ package org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.a
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
-import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
-import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProcessFormModel;
-import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.FormGenerationResult;
-import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.model.FormDefinition;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;

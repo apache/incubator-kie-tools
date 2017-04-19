@@ -21,14 +21,15 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.RetentionPolicy;
 
 @Inherited
-@java.lang.annotation.Retention( RetentionPolicy.RUNTIME )
-@java.lang.annotation.Target({ ElementType.FIELD })
+@java.lang.annotation.Retention(RetentionPolicy.RUNTIME)
+@java.lang.annotation.Target({ElementType.FIELD})
 public @interface SelectorDataProvider {
 
     public enum ProviderType {
-        CLIENT( "local" ), REMOTE( "remote" );
+        CLIENT("local"),
+        REMOTE("remote");
 
-        ProviderType( String code ) {
+        ProviderType(String code) {
             this.code = code;
         }
 

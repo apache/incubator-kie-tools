@@ -40,41 +40,46 @@ public abstract class SelectorFieldRenderer<F extends SelectorFieldBaseDefinitio
     protected Caller<BackendSelectorDataProviderService> backendSelectorDataProviderService;
 
     public void refreshSelectorOptions() {
-        if ( field.getDataProvider() != null && !field.getDataProvider().isEmpty() ) {
-            if ( field.getDataProvider().startsWith( ClientSelectorDataProviderManager.PREFFIX ) ) {
-                refreshSelectorOptions( clientProviderManager.getDataFromProvider(
+        if (field.getDataProvider() != null && !field.getDataProvider().isEmpty()) {
+            if (field.getDataProvider().startsWith(ClientSelectorDataProviderManager.PREFFIX)) {
+                refreshSelectorOptions(clientProviderManager.getDataFromProvider(
                         renderingContext,
-                        field.getDataProvider() ) );
+                        field.getDataProvider()));
             } else {
-                backendSelectorDataProviderService.call( new RemoteCallback<SelectorData>() {
+                backendSelectorDataProviderService.call(new RemoteCallback<SelectorData>() {
                     @Override
-                    public void callback( SelectorData data ) {
-                        refreshSelectorOptions( data );
+                    public void callback(SelectorData data) {
+                        refreshSelectorOptions(data);
                     }
-                } ).getDataFromProvider( renderingContext, field.getDataProvider() );
+                }).getDataFromProvider(renderingContext,
+                                       field.getDataProvider());
             }
         } else {
-            refreshSelectorOptions( field.getOptions() );
+            refreshSelectorOptions(field.getOptions());
         }
     }
 
-    public void refreshSelectorOptions( List<O> options ) {
+    public void refreshSelectorOptions(List<O> options) {
         Map<T, String> optionsValues = new HashMap<>();
         T defaultValue = null;
 
-        for ( O option : options ) {
-            optionsValues.put( option.getValue(), option.getText() );
-            if ( option.isDefaultValue() ) {
+        for (O option : options) {
+            optionsValues.put(option.getValue(),
+                              option.getText());
+            if (option.isDefaultValue()) {
                 defaultValue = option.getValue();
             }
         }
 
-        refreshInput( optionsValues, defaultValue );
+        refreshInput(optionsValues,
+                     defaultValue);
     }
 
-    public void refreshSelectorOptions( SelectorData<T> data ) {
-        refreshInput( data.getValues(), data.getSelectedValue() );
+    public void refreshSelectorOptions(SelectorData<T> data) {
+        refreshInput(data.getValues(),
+                     data.getSelectedValue());
     }
 
-    protected abstract void refreshInput( Map<T, String> optionsValues, T defaultValue );
+    protected abstract void refreshInput(Map<T, String> optionsValues,
+                                         T defaultValue);
 }

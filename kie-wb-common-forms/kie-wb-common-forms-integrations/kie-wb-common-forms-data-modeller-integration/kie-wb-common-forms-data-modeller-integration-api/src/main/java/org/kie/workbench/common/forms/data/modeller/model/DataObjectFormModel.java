@@ -22,13 +22,15 @@ import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.model.JavaModel;
 
 @Portable
-public class DataObjectFormModel implements FormModel, JavaModel {
+public class DataObjectFormModel implements FormModel,
+                                            JavaModel {
 
     private String className;
 
     private String name;
 
-    public DataObjectFormModel( @MapsTo( "name" ) String name, @MapsTo( "className" ) String className ) {
+    public DataObjectFormModel(@MapsTo("name") String name,
+                               @MapsTo("className") String className) {
         this.name = name;
         this.className = className;
     }
@@ -38,7 +40,7 @@ public class DataObjectFormModel implements FormModel, JavaModel {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -46,7 +48,7 @@ public class DataObjectFormModel implements FormModel, JavaModel {
         return className;
     }
 
-    public void setClassName( String className ) {
+    public void setClassName(String className) {
         this.className = className;
     }
 

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.forms.dynamic.client.rendering.renderers.relations.subform.widget;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.TakesValue;
@@ -32,7 +31,8 @@ import org.kie.workbench.common.forms.processing.engine.handling.FieldChangeHand
 import org.kie.workbench.common.forms.processing.engine.handling.IsNestedModel;
 
 @Templated
-public class SubFormWidget extends Composite implements TakesValue<Object>, IsNestedModel {
+public class SubFormWidget extends Composite implements TakesValue<Object>,
+                                                        IsNestedModel {
 
     @Inject
     private DynamicFormRenderer formRenderer;
@@ -45,16 +45,16 @@ public class SubFormWidget extends Composite implements TakesValue<Object>, IsNe
 
     @PostConstruct
     protected void init() {
-        formContent.add( formRenderer );
+        formContent.add(formRenderer);
     }
 
-    public void render( FormRenderingContext renderingContext ) {
+    public void render(FormRenderingContext renderingContext) {
         this.renderingContext = renderingContext;
-        formRenderer.render( renderingContext );
+        formRenderer.render(renderingContext);
     }
 
     protected void render() {
-        formRenderer.render( renderingContext );
+        formRenderer.render(renderingContext);
     }
 
     @Override
@@ -63,21 +63,21 @@ public class SubFormWidget extends Composite implements TakesValue<Object>, IsNe
     }
 
     @Override
-    public void setValue( Object value ) {
-        formRenderer.bind( value );
+    public void setValue(Object value) {
+        formRenderer.bind(value);
     }
 
     @Override
-    public void addFieldChangeHandler( FieldChangeHandler handler ) {
-        formRenderer.addFieldChangeHandler( handler );
+    public void addFieldChangeHandler(FieldChangeHandler handler) {
+        formRenderer.addFieldChangeHandler(handler);
     }
 
     public void unBind() {
         formRenderer.unBind();
     }
 
-    public void setReadOnly( boolean readOnly ) {
-        formRenderer.switchToMode( readOnly ? RenderMode.READ_ONLY_MODE : RenderMode.EDIT_MODE );
+    public void setReadOnly(boolean readOnly) {
+        formRenderer.switchToMode(readOnly ? RenderMode.READ_ONLY_MODE : RenderMode.EDIT_MODE);
     }
 
     public boolean isValid() {

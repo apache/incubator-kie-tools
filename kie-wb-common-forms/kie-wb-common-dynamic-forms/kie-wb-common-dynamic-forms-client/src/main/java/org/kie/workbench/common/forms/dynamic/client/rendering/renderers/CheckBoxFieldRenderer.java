@@ -26,6 +26,7 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.de
 
 @Dependent
 public class CheckBoxFieldRenderer extends FieldRenderer<CheckBoxFieldDefinition> {
+
     private CheckBox checkbox;
 
     @Override
@@ -35,8 +36,8 @@ public class CheckBoxFieldRenderer extends FieldRenderer<CheckBoxFieldDefinition
 
     @Override
     public void initInputWidget() {
-        checkbox = new CheckBox( field.getLabel() );
-        checkbox.setEnabled( !field.getReadOnly() && renderingContext.getRenderMode().equals( RenderMode.EDIT_MODE ) );
+        checkbox = new CheckBox(field.getLabel());
+        checkbox.setEnabled(!field.getReadOnly() && renderingContext.getRenderMode().equals(RenderMode.EDIT_MODE));
     }
 
     @Override
@@ -56,7 +57,7 @@ public class CheckBoxFieldRenderer extends FieldRenderer<CheckBoxFieldDefinition
     }
 
     @Override
-    protected void setReadOnly( boolean readOnly ) {
-        checkbox.setEnabled( !readOnly );
+    protected void setReadOnly(boolean readOnly) {
+        checkbox.setEnabled(!readOnly);
     }
 }

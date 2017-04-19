@@ -55,24 +55,30 @@ public abstract class AbstractBackendFormRenderingContextManagerTest {
     @Before
     public void initTest() {
 
-        List<FieldValueProcessor> processors = Arrays.asList( new SubFormFieldValueProcessor(), new MultipleSubFormFieldValueProcessor() );
+        List<FieldValueProcessor> processors = Arrays.asList(new SubFormFieldValueProcessor(),
+                                                             new MultipleSubFormFieldValueProcessor());
 
-        fieldValueProcessors = mock( Instance.class );
-        when( fieldValueProcessors.iterator() ).then( proc -> processors.iterator() );
+        fieldValueProcessors = mock(Instance.class);
+        when(fieldValueProcessors.iterator()).then(proc -> processors.iterator());
 
-        formValuesProcessor = new FormValuesProcessorImpl( fieldValueProcessors );
+        formValuesProcessor = new FormValuesProcessorImpl(fieldValueProcessors);
 
-        contextManager = new BackendFormRenderingContextManagerImpl( formValuesProcessor, new ContextModelConstraintsExtractorImpl() );
+        contextManager = new BackendFormRenderingContextManagerImpl(formValuesProcessor,
+                                                                    new ContextModelConstraintsExtractorImpl());
 
         formData = generateFormData();
 
-        classLoader = mock( ClassLoader.class );
+        classLoader = mock(ClassLoader.class);
 
-        long timestamp = contextManager.registerContext( getRootForm(), formData, classLoader, getNestedForms() ).getTimestamp();
+        long timestamp = contextManager.registerContext(getRootForm(),
+                                                        formData,
+                                                        classLoader,
+                                                        getNestedForms()).getTimestamp();
 
-        context = contextManager.getContext( timestamp );
+        context = contextManager.getContext(timestamp);
 
-        assertNotNull( "Context cannot be null", context );
+        assertNotNull("Context cannot be null",
+                      context);
     }
 
     protected abstract FormDefinition[] getNestedForms();
@@ -81,17 +87,18 @@ public abstract class AbstractBackendFormRenderingContextManagerTest {
 
     protected abstract Map<String, Object> generateFormData();
 
-    protected void initContentMarshallerClassLoader( Class clazz, boolean availableOnClassLoader ) {
-        if ( availableOnClassLoader ) {
+    protected void initContentMarshallerClassLoader(Class clazz,
+                                                    boolean availableOnClassLoader) {
+        if (availableOnClassLoader) {
             try {
-                when( classLoader.loadClass( clazz.getName() ) ).thenReturn( (Class) Person.class );
-            } catch ( ClassNotFoundException e ) {
+                when(classLoader.loadClass(clazz.getName())).thenReturn((Class) Person.class);
+            } catch (ClassNotFoundException e) {
                 // Swallow
             }
         } else {
             try {
-                when( classLoader.loadClass( clazz.getName() ) ).thenThrow( ClassNotFoundException.class );
-            } catch ( ClassNotFoundException e ) {
+                when(classLoader.loadClass(clazz.getName())).thenThrow(ClassNotFoundException.class);
+            } catch (ClassNotFoundException e) {
                 // Swallow
             }
         }
@@ -99,8 +106,9 @@ public abstract class AbstractBackendFormRenderingContextManagerTest {
 
     @After
     public void afterTest() {
-        contextManager.removeContext( context.getTimestamp() );
+        contextManager.removeContext(context.getTimestamp());
 
-        assertNull( "There shouldn't be any context", contextManager.getContext( context.getTimestamp() ) );
+        assertNull("There shouldn't be any context",
+                   contextManager.getContext(context.getTimestamp()));
     }
 }

@@ -21,9 +21,11 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.RetentionPolicy;
 
 @Inherited
-@java.lang.annotation.Retention( RetentionPolicy.RUNTIME )
-@java.lang.annotation.Target({ ElementType.TYPE, ElementType.FIELD })
+@java.lang.annotation.Retention(RetentionPolicy.RUNTIME)
+@java.lang.annotation.Target({ElementType.TYPE, ElementType.FIELD})
 public @interface TextArea {
+
     String placeHolder() default "";
+
     int rows() default 4;
 }

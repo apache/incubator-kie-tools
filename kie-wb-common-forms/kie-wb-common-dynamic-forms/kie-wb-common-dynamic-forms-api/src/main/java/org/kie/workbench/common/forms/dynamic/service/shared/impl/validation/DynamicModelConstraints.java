@@ -31,7 +31,7 @@ public class DynamicModelConstraints {
 
     private Map<String, List<FieldConstraint>> fieldConstraints = new HashMap<>();
 
-    public DynamicModelConstraints( @MapsTo( "modelType" ) String modelType ) {
+    public DynamicModelConstraints(@MapsTo("modelType") String modelType) {
         this.modelType = modelType;
     }
 
@@ -39,7 +39,7 @@ public class DynamicModelConstraints {
         return modelType;
     }
 
-    public void setModelType( String modelType ) {
+    public void setModelType(String modelType) {
         this.modelType = modelType;
     }
 
@@ -47,18 +47,20 @@ public class DynamicModelConstraints {
         return fieldConstraints;
     }
 
-    public void setFieldConstraints( Map<String, List<FieldConstraint>> fieldConstraints ) {
+    public void setFieldConstraints(Map<String, List<FieldConstraint>> fieldConstraints) {
         this.fieldConstraints = fieldConstraints;
     }
 
-    public void addConstraintForField( String fieldName, FieldConstraint constraint ) {
-        List existingFieldConstraint = fieldConstraints.get( fieldName );
+    public void addConstraintForField(String fieldName,
+                                      FieldConstraint constraint) {
+        List existingFieldConstraint = fieldConstraints.get(fieldName);
 
-        if ( existingFieldConstraint == null ) {
+        if (existingFieldConstraint == null) {
             existingFieldConstraint = new ArrayList();
-            fieldConstraints.put( fieldName, existingFieldConstraint );
+            fieldConstraints.put(fieldName,
+                                 existingFieldConstraint);
         }
 
-        existingFieldConstraint.add( constraint );
+        existingFieldConstraint.add(constraint);
     }
 }

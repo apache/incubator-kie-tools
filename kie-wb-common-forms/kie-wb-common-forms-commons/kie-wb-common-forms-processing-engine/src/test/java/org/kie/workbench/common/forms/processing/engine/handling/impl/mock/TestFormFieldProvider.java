@@ -28,15 +28,15 @@ public class TestFormFieldProvider implements FormFieldProvider {
 
     List<FormField> formFieldList = new ArrayList<>();
 
-    public void addFormField( FormField field ) {
-        formFieldList.add( field );
+    public void addFormField(FormField field) {
+        formFieldList.add(field);
     }
 
     @Override
-    public FormField findFormField( String fieldName ) {
-        Optional<FormField> result = formFieldList.stream().filter( formField -> formField.getFieldName().endsWith(
-                fieldName ) ).findFirst();
-        if ( result.isPresent() ) {
+    public FormField findFormField(String fieldName) {
+        Optional<FormField> result = formFieldList.stream().filter(formField -> formField.getFieldName().endsWith(
+                fieldName)).findFirst();
+        if (result.isPresent()) {
             return result.get();
         }
 

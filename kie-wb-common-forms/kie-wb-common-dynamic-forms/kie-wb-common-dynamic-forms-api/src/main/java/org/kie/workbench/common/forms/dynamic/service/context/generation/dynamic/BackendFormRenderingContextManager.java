@@ -26,14 +26,15 @@ import org.kie.workbench.common.forms.model.FormDefinition;
  */
 public interface BackendFormRenderingContextManager extends Serializable {
 
-    BackendFormRenderingContext registerContext( FormDefinition rootForm,
-                                                 Map<String, Object> formData,
-                                                 ClassLoader classLoader,
-                                                 FormDefinition... nestedForms );
+    BackendFormRenderingContext registerContext(FormDefinition rootForm,
+                                                Map<String, Object> formData,
+                                                ClassLoader classLoader,
+                                                FormDefinition... nestedForms);
 
-    BackendFormRenderingContext updateContextData( long timestamp, Map<String, Object> formValues );
+    BackendFormRenderingContext updateContextData(long timestamp,
+                                                  Map<String, Object> formValues);
 
-    BackendFormRenderingContext getContext( Long timestamp );
+    BackendFormRenderingContext getContext(Long timestamp);
 
-    boolean removeContext( Long timestamp );
+    boolean removeContext(Long timestamp);
 }

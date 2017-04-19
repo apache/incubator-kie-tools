@@ -24,6 +24,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 @Portable
 @Bindable
 public class CrudModel {
+
     private String name;
     private String lastName;
     private Date birthday;
@@ -32,7 +33,9 @@ public class CrudModel {
         //test
     }
 
-    public CrudModel( String name, String lastName, Date birthday ) {
+    public CrudModel(String name,
+                     String lastName,
+                     Date birthday) {
         this.name = name;
         this.lastName = lastName;
         this.birthday = birthday;
@@ -42,7 +45,7 @@ public class CrudModel {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -50,7 +53,7 @@ public class CrudModel {
         return lastName;
     }
 
-    public void setLastName( String lastName ) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
@@ -58,7 +61,7 @@ public class CrudModel {
         return birthday;
     }
 
-    public void setBirthday( Date birthday ) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 }

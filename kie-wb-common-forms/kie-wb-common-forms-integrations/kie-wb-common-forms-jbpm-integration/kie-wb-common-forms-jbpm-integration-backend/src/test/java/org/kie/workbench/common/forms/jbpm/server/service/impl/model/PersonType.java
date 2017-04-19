@@ -17,5 +17,6 @@
 package org.kie.workbench.common.forms.jbpm.server.service.impl.model;
 
 public enum PersonType {
-    HUMAN_BEING, DEVELOPER
+    HUMAN_BEING,
+    DEVELOPER
 }

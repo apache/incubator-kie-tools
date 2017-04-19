@@ -19,7 +19,6 @@ package org.kie.workbench.common.forms.processing.engine.handling.impl;
 import java.util.Arrays;
 import java.util.Date;
 
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import junit.framework.TestCase;
@@ -84,72 +83,93 @@ public abstract class AbstractFormEngineTest extends TestCase {
 
         User user = new User();
 
-        user.setName( "John" );
-        user.setLastName( "Snow" );
-        user.setBirtDay( new Date() );
-        user.setMarried( false );
-        user.setAddress( "Winterfell" );
+        user.setName("John");
+        user.setLastName("Snow");
+        user.setBirtDay(new Date());
+        user.setMarried(false);
+        user.setAddress("Winterfell");
 
         model = new Model();
-        model.setUser( user );
-        model.setValue( 25 );
+        model.setUser(user);
+        model.setValue(25);
 
         formFieldProvider = new TestFormFieldProvider();
 
-        formFieldProvider.addFormField( generateFormField( VALUE_FIELD, "value", true ) );
-        formFieldProvider.addFormField( generateFormField( USER_NAME_FIELD, "user.name", true ) );
-        formFieldProvider.addFormField( generateFormField( USER_LAST_NAME_FIELD, "user.lastName", true ) );
-        formFieldProvider.addFormField( generateFormField( USER_BIRTHDAY_FIELD, "user.birthday", true ) );
-        formFieldProvider.addFormField( generateFormField( USER_MARRIED_FIELD, "user.married", true ) );
-        formFieldProvider.addFormField( generateFormField( USER_ADDRESS_FIELD, "user.address", true ) );
+        formFieldProvider.addFormField(generateFormField(VALUE_FIELD,
+                                                         "value",
+                                                         true));
+        formFieldProvider.addFormField(generateFormField(USER_NAME_FIELD,
+                                                         "user.name",
+                                                         true));
+        formFieldProvider.addFormField(generateFormField(USER_LAST_NAME_FIELD,
+                                                         "user.lastName",
+                                                         true));
+        formFieldProvider.addFormField(generateFormField(USER_BIRTHDAY_FIELD,
+                                                         "user.birthday",
+                                                         true));
+        formFieldProvider.addFormField(generateFormField(USER_MARRIED_FIELD,
+                                                         "user.married",
+                                                         true));
+        formFieldProvider.addFormField(generateFormField(USER_ADDRESS_FIELD,
+                                                         "user.address",
+                                                         true));
 
         executionCounts = 0;
 
         Answer answer = new Answer() {
             @Override
-            public Void answer( InvocationOnMock invocationOnMock ) throws Throwable {
+            public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
                 executionCounts++;
                 return null;
             }
         };
-        doAnswer( answer ).when( anonymous ).onFieldChange( anyString(), anyObject() );
-        doAnswer( answer ).when( value ).onFieldChange( anyString(), anyObject() );
-        doAnswer( answer ).when( userName ).onFieldChange( anyString(), anyObject() );
-        doAnswer( answer ).when( userLastName ).onFieldChange( anyString(), anyObject() );
-        doAnswer( answer ).when( userBirthday ).onFieldChange( anyString(), anyObject() );
-        doAnswer( answer ).when( userMarried ).onFieldChange( anyString(), anyObject() );
-        doAnswer( answer ).when( userAddress ).onFieldChange( anyString(), anyObject() );
+        doAnswer(answer).when(anonymous).onFieldChange(anyString(),
+                                                       anyObject());
+        doAnswer(answer).when(value).onFieldChange(anyString(),
+                                                   anyObject());
+        doAnswer(answer).when(userName).onFieldChange(anyString(),
+                                                      anyObject());
+        doAnswer(answer).when(userLastName).onFieldChange(anyString(),
+                                                          anyObject());
+        doAnswer(answer).when(userBirthday).onFieldChange(anyString(),
+                                                          anyObject());
+        doAnswer(answer).when(userMarried).onFieldChange(anyString(),
+                                                         anyObject());
+        doAnswer(answer).when(userAddress).onFieldChange(anyString(),
+                                                         anyObject());
     }
 
-    public FormField generateFormField( String fieldName, String binding, boolean validateOnChange ) {
+    public FormField generateFormField(String fieldName,
+                                       String binding,
+                                       boolean validateOnChange) {
 
-        Widget widget = mock( Widget.class );
+        Widget widget = mock(Widget.class);
 
-        IsWidget isWidget = mock( IsWidget.class );
+        IsWidget isWidget = mock(IsWidget.class);
 
-        when( isWidget.asWidget() ).thenReturn( widget );
+        when(isWidget.asWidget()).thenReturn(widget);
 
-        FormField field = mock( FormField.class );
+        FormField field = mock(FormField.class);
 
-        when( field.getFieldName() ).thenReturn( fieldName );
-        when( field.getFieldBinding() ).thenReturn( binding );
-        when( field.isValidateOnChange() ).thenReturn( validateOnChange );
-        when( field.isBindable() ).thenReturn( true );
-        when( field.getWidget() ).thenReturn( isWidget );
+        when(field.getFieldName()).thenReturn(fieldName);
+        when(field.getFieldBinding()).thenReturn(binding);
+        when(field.isValidateOnChange()).thenReturn(validateOnChange);
+        when(field.isBindable()).thenReturn(true);
+        when(field.getWidget()).thenReturn(isWidget);
 
         return field;
     }
 
-
-    protected void checkClearedFields( String... cleared ) {
-        Arrays.stream( cleared ).forEach( fieldName -> {
-            FormField field = formFieldProvider.findFormField( fieldName );
-            assertNotNull( field );
-            verify( field, atLeastOnce() ).clearError();
-        } );
+    protected void checkClearedFields(String... cleared) {
+        Arrays.stream(cleared).forEach(fieldName -> {
+            FormField field = formFieldProvider.findFormField(fieldName);
+            assertNotNull(field);
+            verify(field,
+                   atLeastOnce()).clearError();
+        });
     }
 
-    protected void checkWrongFields( String... wrongFields ) {
+    protected void checkWrongFields(String... wrongFields) {
         /*
         Checking that the validation given fields has been successfull. The conditions to check:
         - Group Verification: VALIDATION_ERROR_CLASSNAME should be added to at least one time
@@ -157,27 +177,31 @@ public abstract class AbstractFormEngineTest extends TestCase {
         - HelpBlock Verification: helpBlock's innerHTML should be modified at least two times (one to clean it up
             and at least one more to add the validation error message )
         */
-        doValidationFailure( atLeast( 1 ), wrongFields );
+        doValidationFailure(atLeast(1),
+                            wrongFields);
     }
 
-    protected void checkValidFields( String... validFields ) {
+    protected void checkValidFields(String... validFields) {
 
         /*
         Checking that the validation given fields has been successfull. The conditions to check:
         - Group Verification: group shouldn't contain the VALIDATION_ERROR_CLASSNAME
         - HelpBlock Verification: helpBlock's innerHTML should be modified only one time (to clean it up)
         */
-        doValidationFailure( never(), validFields );
+        doValidationFailure(never(),
+                            validFields);
     }
 
-    protected void doValidationFailure( VerificationMode setErrorTimes,
-                                        String... fields ) {
+    protected void doValidationFailure(VerificationMode setErrorTimes,
+                                       String... fields) {
 
-        Arrays.stream( fields ).forEach( fieldName -> {
-            FormField field = formFieldProvider.findFormField( fieldName );
-            assertNotNull( field );
-            verify( field, atLeastOnce() ).clearError();
-            verify( field, setErrorTimes ).setError( anyString() );
-        } );
+        Arrays.stream(fields).forEach(fieldName -> {
+            FormField field = formFieldProvider.findFormField(fieldName);
+            assertNotNull(field);
+            verify(field,
+                   atLeastOnce()).clearError();
+            verify(field,
+                   setErrorTimes).setError(anyString());
+        });
     }
 }

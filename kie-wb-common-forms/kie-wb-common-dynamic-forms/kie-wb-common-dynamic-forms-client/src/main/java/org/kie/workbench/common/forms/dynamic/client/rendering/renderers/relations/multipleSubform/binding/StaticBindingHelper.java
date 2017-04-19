@@ -28,7 +28,7 @@ public class StaticBindingHelper extends AbstractBindingHelper<AbstractFormRende
 
     @Override
     public BindableProxy getProxyDefinition() {
-        return BindableProxyFactory.getBindableProxy( field.getStandaloneClassName() );
+        return BindableProxyFactory.getBindableProxy(field.getStandaloneClassName());
     }
 
     @Override
@@ -37,15 +37,15 @@ public class StaticBindingHelper extends AbstractBindingHelper<AbstractFormRende
     }
 
     @Override
-    public BindableProxy getProxyForModel( Object model ) {
-        if ( model instanceof BindableProxy ) {
+    public BindableProxy getProxyForModel(Object model) {
+        if (model instanceof BindableProxy) {
             return (BindableProxy) model;
         }
-        return (BindableProxy) DataBinder.forModel( model ).getModel();
+        return (BindableProxy) DataBinder.forModel(model).getModel();
     }
 
     @Override
-    public void afterEdit( Object model ) {
+    public void afterEdit(Object model) {
         // nothing to do here
     }
 }

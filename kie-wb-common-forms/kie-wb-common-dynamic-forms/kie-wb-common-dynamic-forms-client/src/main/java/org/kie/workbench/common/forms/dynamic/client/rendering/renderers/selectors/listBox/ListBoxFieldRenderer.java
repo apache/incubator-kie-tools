@@ -34,7 +34,7 @@ public class ListBoxFieldRenderer<F extends ListBoxBaseDefinition, O extends Sel
 
     protected DefaultValueListBoxRenderer<T> optionsRenderer = new DefaultValueListBoxRenderer();
 
-    protected ValueListBox<T> widgetList = new ValueListBox<T>( optionsRenderer );
+    protected ValueListBox<T> widgetList = new ValueListBox<T>(optionsRenderer);
 
     @Override
     public String getName() {
@@ -42,26 +42,27 @@ public class ListBoxFieldRenderer<F extends ListBoxBaseDefinition, O extends Sel
     }
 
     @Override
-    protected void refreshInput( Map<T, String> optionsValues, T defaultValue ) {
+    protected void refreshInput(Map<T, String> optionsValues,
+                                T defaultValue) {
         Set<T> values = optionsValues.keySet();
 
-        if ( field.getRequired() ) {
-            if ( defaultValue == null && !values.isEmpty() ) {
+        if (field.getRequired()) {
+            if (defaultValue == null && !values.isEmpty()) {
                 defaultValue = values.iterator().next();
             }
         }
 
-        if ( defaultValue != null ) {
-            widgetList.setValue( defaultValue );
+        if (defaultValue != null) {
+            widgetList.setValue(defaultValue);
         }
 
-        optionsRenderer.setValues( optionsValues );
-        widgetList.setAcceptableValues( optionsValues.keySet() );
+        optionsRenderer.setValues(optionsValues);
+        widgetList.setAcceptableValues(optionsValues.keySet());
     }
 
     @Override
     public void initInputWidget() {
-        widgetList.setEnabled( !field.getReadOnly() );
+        widgetList.setEnabled(!field.getReadOnly());
         refreshSelectorOptions();
     }
 
@@ -81,7 +82,7 @@ public class ListBoxFieldRenderer<F extends ListBoxBaseDefinition, O extends Sel
     }
 
     @Override
-    protected void setReadOnly( boolean readOnly ) {
-        widgetList.setEnabled( !readOnly );
+    protected void setReadOnly(boolean readOnly) {
+        widgetList.setEnabled(!readOnly);
     }
 }

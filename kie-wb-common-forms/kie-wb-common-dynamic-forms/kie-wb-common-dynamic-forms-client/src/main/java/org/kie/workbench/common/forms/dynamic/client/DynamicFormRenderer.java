@@ -27,8 +27,6 @@ import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.RemoteCallback;
 import org.jboss.errai.databinding.client.api.Converter;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.IsFormView;
-import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.RequiresValueConverter;
-import org.kie.workbench.common.forms.dynamic.service.shared.adf.DynamicFormModelGenerator;
 import org.kie.workbench.common.forms.dynamic.client.init.FormHandlerGeneratorManager;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;

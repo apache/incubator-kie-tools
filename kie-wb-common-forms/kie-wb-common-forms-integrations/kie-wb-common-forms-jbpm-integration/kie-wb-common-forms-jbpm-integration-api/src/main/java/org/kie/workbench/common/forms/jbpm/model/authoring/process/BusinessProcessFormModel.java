@@ -31,10 +31,10 @@ public class BusinessProcessFormModel extends AbstractJBPMFormModel {
 
     protected String processName;
 
-    public BusinessProcessFormModel( @MapsTo( "processId" ) String processId,
-                                     @MapsTo( "processName" ) String processName,
-                                     @MapsTo( "variables" ) List<JBPMVariable> variables ) {
-        super( variables );
+    public BusinessProcessFormModel(@MapsTo("processId") String processId,
+                                    @MapsTo("processName") String processName,
+                                    @MapsTo("variables") List<JBPMVariable> variables) {
+        super(variables);
         this.processId = processId;
         this.processName = processName;
     }
@@ -48,7 +48,7 @@ public class BusinessProcessFormModel extends AbstractJBPMFormModel {
         return processId;
     }
 
-    public void setProcessId( String processId ) {
+    public void setProcessId(String processId) {
         this.processId = processId;
     }
 
@@ -56,7 +56,7 @@ public class BusinessProcessFormModel extends AbstractJBPMFormModel {
         return processName;
     }
 
-    public void setProcessName( String processName ) {
+    public void setProcessName(String processName) {
         this.processName = processName;
     }
 

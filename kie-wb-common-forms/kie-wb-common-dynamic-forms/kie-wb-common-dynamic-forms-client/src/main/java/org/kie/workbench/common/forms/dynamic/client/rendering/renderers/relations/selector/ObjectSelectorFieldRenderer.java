@@ -35,7 +35,8 @@ public class ObjectSelectorFieldRenderer extends FieldRenderer<ObjectSelectorFie
 
     protected Dataset dataset = new Dataset() {
         @Override
-        public void findMatches( String query, SuggestionCallback callback ) {
+        public void findMatches(String query,
+                                SuggestionCallback callback) {
 
         }
     };
@@ -47,7 +48,8 @@ public class ObjectSelectorFieldRenderer extends FieldRenderer<ObjectSelectorFie
 
     @Override
     public void initInputWidget() {
-        widget.init( field.getMask(), dataset );
+        widget.init(field.getMask(),
+                    dataset);
     }
 
     @Override
@@ -57,7 +59,7 @@ public class ObjectSelectorFieldRenderer extends FieldRenderer<ObjectSelectorFie
 
     @Override
     public IsWidget getPrettyViewWidget() {
-        return new ObjectFlatView( field.getMask() );
+        return new ObjectFlatView(field.getMask());
     }
 
     @Override
@@ -66,7 +68,7 @@ public class ObjectSelectorFieldRenderer extends FieldRenderer<ObjectSelectorFie
     }
 
     @Override
-    protected void setReadOnly( boolean readOnly ) {
-        widget.setReadOnly( readOnly );
+    protected void setReadOnly(boolean readOnly) {
+        widget.setReadOnly(readOnly);
     }
 }

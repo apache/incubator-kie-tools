@@ -58,13 +58,14 @@ import org.uberfire.workbench.model.menu.Menus;
 import org.uberfire.workbench.type.FileNameUtil;
 
 @Dependent
-@WorkbenchEditor( identifier = "FormEditor", supportedTypes = {FormDefinitionResourceType.class} )
+@WorkbenchEditor(identifier = "FormEditor", supportedTypes = {FormDefinitionResourceType.class})
 public class FormEditorPresenter extends KieEditor {
 
     public interface FormEditorView extends KieEditorView {
-        public void init( FormEditorPresenter presenter );
 
-        public void setupLayoutEditor( LayoutEditor layoutEditor );
+        public void init(FormEditorPresenter presenter);
+
+        public void setupLayoutEditor(LayoutEditor layoutEditor);
     }
 
     @Inject
@@ -91,12 +92,12 @@ public class FormEditorPresenter extends KieEditor {
     private TranslationService translationService;
 
     @Inject
-    public FormEditorPresenter( FormEditorView view,
-                                FormDefinitionResourceType resourceType,
-                                Caller<FormEditorService> editorService,
-                                SyncBeanManager beanManager,
-                                TranslationService translationService ) {
-        super( view );
+    public FormEditorPresenter(FormEditorView view,
+                               FormDefinitionResourceType resourceType,
+                               Caller<FormEditorService> editorService,
+                               SyncBeanManager beanManager,
+                               TranslationService translationService) {
+        super(view);
         this.view = view;
         this.resourceType = resourceType;
         this.editorService = editorService;
@@ -105,71 +106,78 @@ public class FormEditorPresenter extends KieEditor {
     }
 
     @OnStartup
-    public void onStartup( final ObservablePath path,
-                           final PlaceRequest place ) {
+    public void onStartup(final ObservablePath path,
+                          final PlaceRequest place) {
 
-        init( path, place, resourceType );
+        init(path,
+             place,
+             resourceType);
     }
 
     @Override
     protected void loadContent() {
-        editorService.call( new RemoteCallback<FormModelerContent>() {
-            @Override
-            public void callback( FormModelerContent content ) {
-                doLoadContent( content );
-            }
-        }, getNoSuchFileExceptionErrorCallback() ).loadContent( versionRecordManager.getCurrentPath() );
+        editorService.call(new RemoteCallback<FormModelerContent>() {
+                               @Override
+                               public void callback(FormModelerContent content) {
+                                   doLoadContent(content);
+                               }
+                           },
+                           getNoSuchFileExceptionErrorCallback()).loadContent(versionRecordManager.getCurrentPath());
     }
 
     @Override
-    protected void save( String commitMessage ) {
+    protected void save(String commitMessage) {
         synchronizeFormLayout();
-        editorService.call( getSaveSuccessCallback( editorContext.getContent().hashCode() ) )
-                .save( versionRecordManager.getCurrentPath(),
-                       editorContext.getContent(),
-                       metadata,
-                       commitMessage );
+        editorService.call(getSaveSuccessCallback(editorContext.getContent().hashCode()))
+                .save(versionRecordManager.getCurrentPath(),
+                      editorContext.getContent(),
+                      metadata,
+                      commitMessage);
     }
 
     protected void synchronizeFormLayout() {
-        editorContext.getFormDefinition().setLayoutTemplate( layoutEditor.getLayout() );
+        editorContext.getFormDefinition().setLayoutTemplate(layoutEditor.getLayout());
     }
 
-    public void doLoadContent( FormModelerContent content ) {
+    public void doLoadContent(FormModelerContent content) {
         busyIndicatorView.hideBusyIndicator();
 
         // Clear LayoutEditor before loading new content.
-        if ( editorContext.getContent() != null ) {
+        if (editorContext.getContent() != null) {
             layoutEditor.clear();
         }
 
-        editorContext.initHelper( content );
+        editorContext.initHelper(content);
 
-        layoutEditor.init( content.getDefinition().getName(), getLayoutComponent(),
-                           translationService
-                                   .getTranslation( FormEditorConstants.FormEditorPresenterLayoutTitle ),
-                           translationService
-                                   .getTranslation( FormEditorConstants.FormEditorPresenterLayoutSubTitle ) );
+        layoutEditor.init(content.getDefinition().getName(),
+                          getLayoutComponent(),
+                          translationService
+                                  .getTranslation(FormEditorConstants.FormEditorPresenterLayoutTitle),
+                          translationService
+                                  .getTranslation(FormEditorConstants.FormEditorPresenterLayoutSubTitle));
 
-        if ( content.getDefinition().getLayoutTemplate() == null )
-            content.getDefinition().setLayoutTemplate( new LayoutTemplate() );
+        if (content.getDefinition().getLayoutTemplate() == null) {
+            content.getDefinition().setLayoutTemplate(new LayoutTemplate());
+        }
 
-        loadAvailableFields( content );
+        loadAvailableFields(content);
 
-        layoutEditor.loadLayout( content.getDefinition().getLayoutTemplate() );
+        layoutEditor.loadLayout(content.getDefinition().getLayoutTemplate());
 
-        resetEditorPages( content.getOverview() );
+        resetEditorPages(content.getOverview());
 
-        view.init( this );
+        view.init(this);
 
-        view.setupLayoutEditor( layoutEditor );
+        view.setupLayoutEditor(layoutEditor);
     }
 
     protected LayoutDragComponentGroup getLayoutComponent() {
-        LayoutDragComponentGroup group = new LayoutDragComponentGroup( "Tools" );
-        group.addLayoutDragComponent( "id", htmlLayoutDragComponent );
-        for ( EditorFieldLayoutComponent drag : editorContext.getBaseFieldsDraggables() ) {
-            group.addLayoutDragComponent( drag.getFieldId(), drag );
+        LayoutDragComponentGroup group = new LayoutDragComponentGroup("Tools");
+        group.addLayoutDragComponent("id",
+                                     htmlLayoutDragComponent);
+        for (EditorFieldLayoutComponent drag : editorContext.getBaseFieldsDraggables()) {
+            group.addLayoutDragComponent(drag.getFieldId(),
+                                         drag);
         }
         return group;
     }
@@ -177,13 +185,15 @@ public class FormEditorPresenter extends KieEditor {
     @Override
     @WorkbenchPartTitle
     public String getTitleText() {
-        String fileName = FileNameUtil.removeExtension( versionRecordManager.getCurrentPath(), resourceType );
-        return translationService.format( FormEditorConstants.FormEditorPresenterTitle, fileName );
+        String fileName = FileNameUtil.removeExtension(versionRecordManager.getCurrentPath(),
+                                                       resourceType);
+        return translationService.format(FormEditorConstants.FormEditorPresenterTitle,
+                                         fileName);
     }
 
     @WorkbenchMenu
     public Menus getMenus() {
-        if ( menus == null ) {
+        if (menus == null) {
             makeMenuBar();
         }
         return menus;
@@ -198,18 +208,18 @@ public class FormEditorPresenter extends KieEditor {
     @Override
     protected void makeMenuBar() {
         menus = menuBuilder
-                .addSave( versionRecordManager.newSaveMenuItem( new Command() {
+                .addSave(versionRecordManager.newSaveMenuItem(new Command() {
                     @Override
                     public void execute() {
                         onSave();
                     }
-                } ) )
-                .addCopy( versionRecordManager.getCurrentPath(),
-                          fileNameValidator )
-                .addRename( versionRecordManager.getPathToLatest(),
-                            fileNameValidator )
-                .addDelete( versionRecordManager.getPathToLatest() )
-                .addNewTopLevelMenu( versionRecordManager.buildMenu() )
+                }))
+                .addCopy(versionRecordManager.getCurrentPath(),
+                         fileNameValidator)
+                .addRename(versionRecordManager.getPathToLatest(),
+                           fileNameValidator)
+                .addDelete(versionRecordManager.getPathToLatest())
+                .addNewTopLevelMenu(versionRecordManager.buildMenu())
                 /*.addCommand( "PREVIEW",
                              () -> {
                                  synchronizeFormLayout();
@@ -226,70 +236,77 @@ public class FormEditorPresenter extends KieEditor {
         return editorContext.getFormDefinition();
     }
 
-    private void loadAvailableFields( FormModelerContent content ) {
-        if ( content.getDefinition().getModel() instanceof DefaultFormModel || content.getAvailableFields() == null ) {
+    private void loadAvailableFields(FormModelerContent content) {
+        if (content.getDefinition().getModel() instanceof DefaultFormModel || content.getAvailableFields() == null) {
             return;
         }
 
-        for ( String modelName : content.getAvailableFields().keySet() ) {
-            List<FieldDefinition> availableFields = content.getAvailableFields().get( modelName );
-            addAvailableFields( modelName, availableFields );
+        for (String modelName : content.getAvailableFields().keySet()) {
+            List<FieldDefinition> availableFields = content.getAvailableFields().get(modelName);
+            addAvailableFields(modelName,
+                               availableFields);
         }
     }
 
-    protected void addAvailableFields( String model, List<FieldDefinition> fields ) {
-        editorContext.addAvailableFields( fields );
+    protected void addAvailableFields(String model,
+                                      List<FieldDefinition> fields) {
+        editorContext.addAvailableFields(fields);
 
-        LayoutDragComponentGroup group = new LayoutDragComponentGroup( model );
+        LayoutDragComponentGroup group = new LayoutDragComponentGroup(model);
 
-        for ( FieldDefinition field : fields ) {
-            EditorFieldLayoutComponent layoutFieldComponent = beanManager.lookupBean( EditorFieldLayoutComponent.class )
+        for (FieldDefinition field : fields) {
+            EditorFieldLayoutComponent layoutFieldComponent = beanManager.lookupBean(EditorFieldLayoutComponent.class)
                     .newInstance();
-            if ( layoutFieldComponent != null ) {
-                layoutFieldComponent.init( editorContext.getRenderingContext(), field );
-                group.addLayoutDragComponent( field.getId(), layoutFieldComponent );
+            if (layoutFieldComponent != null) {
+                layoutFieldComponent.init(editorContext.getRenderingContext(),
+                                          field);
+                group.addLayoutDragComponent(field.getId(),
+                                             layoutFieldComponent);
             }
         }
 
-        layoutEditor.addDraggableComponentGroup( group );
+        layoutEditor.addDraggableComponentGroup(group);
     }
 
-    public void onDropComponent( @Observes ComponentDropEvent event ) {
-        if ( editorContext == null || editorContext.getContent() == null ) {
+    public void onDropComponent(@Observes ComponentDropEvent event) {
+        if (editorContext == null || editorContext.getContent() == null) {
             return;
         }
 
-        String formId = event.getComponent().getProperties().get( FieldLayoutComponent.FORM_ID );
+        String formId = event.getComponent().getProperties().get(FieldLayoutComponent.FORM_ID);
 
-        if ( editorContext.getFormDefinition().getId().equals( formId ) ) {
-            String fieldId = event.getComponent().getProperties().get( FieldLayoutComponent.FIELD_ID );
+        if (editorContext.getFormDefinition().getId().equals(formId)) {
+            String fieldId = event.getComponent().getProperties().get(FieldLayoutComponent.FIELD_ID);
 
-            FieldDefinition field = editorContext.getDroppedField( fieldId );
-            if ( field != null && field.getBinding() != null ) {
-                layoutEditor.removeDraggableGroupComponent( getFormDefinition().getModel().getName(), field.getId() );
+            FieldDefinition field = editorContext.getDroppedField(fieldId);
+            if (field != null && field.getBinding() != null) {
+                layoutEditor.removeDraggableGroupComponent(getFormDefinition().getModel().getName(),
+                                                           field.getId());
             }
         }
     }
 
-    public void onRemoveComponent( @Observes ComponentRemovedEvent event ) {
-        if ( editorContext == null || editorContext.getContent() == null ) {
+    public void onRemoveComponent(@Observes ComponentRemovedEvent event) {
+        if (editorContext == null || editorContext.getContent() == null) {
             return;
         }
 
-        String formId = event.getLayoutComponent().getProperties().get( FieldLayoutComponent.FORM_ID );
+        String formId = event.getLayoutComponent().getProperties().get(FieldLayoutComponent.FORM_ID);
 
-        if ( editorContext.getFormDefinition().getId().equals( formId ) ) {
-            String fieldId = event.getLayoutComponent().getProperties().get( FieldLayoutComponent.FIELD_ID );
-            FieldDefinition field = editorContext.removeField( fieldId, true );
-            if ( field != null && ( field.getBinding() != null && !field.getBinding().isEmpty() ) ) {
+        if (editorContext.getFormDefinition().getId().equals(formId)) {
+            String fieldId = event.getLayoutComponent().getProperties().get(FieldLayoutComponent.FIELD_ID);
+            FieldDefinition field = editorContext.removeField(fieldId,
+                                                              true);
+            if (field != null && (field.getBinding() != null && !field.getBinding().isEmpty())) {
                 EditorFieldLayoutComponent layoutFieldComponent = beanManager
-                        .lookupBean( EditorFieldLayoutComponent.class ).newInstance();
-                if ( layoutFieldComponent != null ) {
-                    layoutFieldComponent.init( editorContext.getRenderingContext(), field );
+                        .lookupBean(EditorFieldLayoutComponent.class).newInstance();
+                if (layoutFieldComponent != null) {
+                    layoutFieldComponent.init(editorContext.getRenderingContext(),
+                                              field);
                     layoutEditor
-                            .addDraggableComponentToGroup( getFormDefinition().getModel().getName(),
-                                                           field.getId(),
-                                                           layoutFieldComponent );
+                            .addDraggableComponentToGroup(getFormDefinition().getModel().getName(),
+                                                          field.getId(),
+                                                          layoutFieldComponent);
                 }
             }
         }

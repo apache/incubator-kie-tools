@@ -23,5 +23,5 @@ public interface PropertyGenerator<F extends FieldDefinition> {
 
     Class<F> getType();
 
-    PropertyType generatePropertyType( F field );
+    PropertyType generatePropertyType(F field);
 }

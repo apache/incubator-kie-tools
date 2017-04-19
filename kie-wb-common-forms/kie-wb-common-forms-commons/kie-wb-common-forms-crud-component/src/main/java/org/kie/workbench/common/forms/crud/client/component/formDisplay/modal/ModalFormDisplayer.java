@@ -28,22 +28,27 @@ import org.kie.workbench.common.forms.crud.client.component.formDisplay.IsFormVi
 public class ModalFormDisplayer extends AbstractFormDisplayer {
 
     public interface ModalFormDisplayerView extends IsWidget {
-        public void setPresenter( ModalFormDisplayer presenter );
-        public void show( String title, IsFormView formView );
+
+        public void setPresenter(ModalFormDisplayer presenter);
+
+        public void show(String title,
+                         IsFormView formView);
+
         public void hide();
     }
 
     private ModalFormDisplayerView view;
 
     @Inject
-    public ModalFormDisplayer( ModalFormDisplayerView view ) {
+    public ModalFormDisplayer(ModalFormDisplayerView view) {
         this.view = view;
-        view.setPresenter( this );
+        view.setPresenter(this);
     }
 
     @Override
     public void display() {
-        view.show( title , formView );
+        view.show(title,
+                  formView);
     }
 
     @Override

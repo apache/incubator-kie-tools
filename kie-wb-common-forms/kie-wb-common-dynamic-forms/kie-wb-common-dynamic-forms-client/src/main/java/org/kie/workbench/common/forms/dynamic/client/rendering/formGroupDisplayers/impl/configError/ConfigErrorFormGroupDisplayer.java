@@ -29,13 +29,13 @@ public class ConfigErrorFormGroupDisplayer implements FormGroupDisplayer {
     private ConfigErrorFormGroupDisplayerView view;
 
     @Inject
-    public ConfigErrorFormGroupDisplayer( ConfigErrorFormGroupDisplayerView view ) {
+    public ConfigErrorFormGroupDisplayer(ConfigErrorFormGroupDisplayerView view) {
         this.view = view;
     }
 
-    public void render( List<String> configErrors ) {
-        if ( configErrors != null ) {
-            view.render( configErrors );
+    public void render(List<String> configErrors) {
+        if (configErrors != null) {
+            view.render(configErrors);
         }
     }
 

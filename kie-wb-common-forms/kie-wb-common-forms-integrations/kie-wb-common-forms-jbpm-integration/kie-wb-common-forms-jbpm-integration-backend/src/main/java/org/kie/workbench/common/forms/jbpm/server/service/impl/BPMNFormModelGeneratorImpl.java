@@ -47,71 +47,80 @@ import org.kie.workbench.common.forms.jbpm.service.bpmn.util.BPMNVariableUtils;
 public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
 
     @Override
-    public BusinessProcessFormModel generateProcessFormModel( Definitions source ) {
+    public BusinessProcessFormModel generateProcessFormModel(Definitions source) {
 
-        Process process = getProcess( source );
+        Process process = getProcess(source);
 
-        if ( process != null ) {
+        if (process != null) {
 
             List<JBPMVariable> variables = new ArrayList<>();
 
-            process.getProperties().forEach( prop -> {
+            process.getProperties().forEach(prop -> {
                 String varName = prop.getId();
-                String varType = getDefinitionType( prop.getItemSubjectRef() );
+                String varType = getDefinitionType(prop.getItemSubjectRef());
 
-                variables.add( new JBPMVariable( varName, varType ) );
+                variables.add(new JBPMVariable(varName,
+                                               varType));
+            });
 
-            } );
-
-            return new BusinessProcessFormModel( process.getId(), process.getName(), variables );
+            return new BusinessProcessFormModel(process.getId(),
+                                                process.getName(),
+                                                variables);
         }
 
         return null;
     }
 
     @Override
-    public List<TaskFormModel> generateTaskFormModels( Definitions source ) {
+    public List<TaskFormModel> generateTaskFormModels(Definitions source) {
 
-        Process process = getProcess( source );
+        Process process = getProcess(source);
 
         List<TaskFormModel> models = new ArrayList<>();
 
-        if ( process != null ) {
+        if (process != null) {
 
-            generateTaskFormModels( process, models );
+            generateTaskFormModels(process,
+                                   models);
         }
         return models;
     }
 
-    public void generateTaskFormModels( FlowElementsContainer container,
-                                        List<TaskFormModel> models ) {
-        for ( FlowElement fe : container.getFlowElements() ) {
-            if ( fe instanceof UserTask ) {
-                models.add( getTaskFormModel( (UserTask) fe, container ) );
-            } else if ( fe instanceof FlowElementsContainer ) {
-                generateTaskFormModels( (FlowElementsContainer) fe, models );
+    public void generateTaskFormModels(FlowElementsContainer container,
+                                       List<TaskFormModel> models) {
+        for (FlowElement fe : container.getFlowElements()) {
+            if (fe instanceof UserTask) {
+                models.add(getTaskFormModel((UserTask) fe,
+                                            container));
+            } else if (fe instanceof FlowElementsContainer) {
+                generateTaskFormModels((FlowElementsContainer) fe,
+                                       models);
             }
         }
     }
 
     @Override
-    public TaskFormModel generateTaskFormModel( Definitions source, String taskId ) {
-        Process process = getProcess( source );
+    public TaskFormModel generateTaskFormModel(Definitions source,
+                                               String taskId) {
+        Process process = getProcess(source);
 
-        if ( process != null ) {
-            return generateTaskFormModel( taskId, process );
+        if (process != null) {
+            return generateTaskFormModel(taskId,
+                                         process);
         }
         return null;
     }
 
-    protected TaskFormModel generateTaskFormModel( String taskId,
-                                                   FlowElementsContainer container ) {
-        for ( FlowElement fe : container.getFlowElements() ) {
-            if ( fe instanceof UserTask && fe.getId().equals( taskId ) ) {
-                return getTaskFormModel( (UserTask) fe, container );
-            } else if ( fe instanceof FlowElementsContainer ) {
-                TaskFormModel model = generateTaskFormModel( taskId, (FlowElementsContainer) fe );
-                if ( model != null ) {
+    protected TaskFormModel generateTaskFormModel(String taskId,
+                                                  FlowElementsContainer container) {
+        for (FlowElement fe : container.getFlowElements()) {
+            if (fe instanceof UserTask && fe.getId().equals(taskId)) {
+                return getTaskFormModel((UserTask) fe,
+                                        container);
+            } else if (fe instanceof FlowElementsContainer) {
+                TaskFormModel model = generateTaskFormModel(taskId,
+                                                            (FlowElementsContainer) fe);
+                if (model != null) {
                     return model;
                 }
             }
@@ -119,8 +128,8 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
         return null;
     }
 
-    protected TaskFormModel getTaskFormModel( UserTask userTask,
-                                              FlowElementsContainer container ) {
+    protected TaskFormModel getTaskFormModel(UserTask userTask,
+                                             FlowElementsContainer container) {
 
         Map<String, JBPMVariable> taskVariables = new HashMap<>();
 
@@ -128,31 +137,33 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
 
         String taskFormName = "";
 
-        if ( dataInputAssociations != null ) {
+        if (dataInputAssociations != null) {
 
-            for ( DataInputAssociation inputAssociation : dataInputAssociations ) {
-                if ( inputAssociation.getTargetRef() != null ) {
+            for (DataInputAssociation inputAssociation : dataInputAssociations) {
+                if (inputAssociation.getTargetRef() != null) {
 
-                    String name = ( (DataInput) inputAssociation.getTargetRef() ).getName();
+                    String name = ((DataInput) inputAssociation.getTargetRef()).getName();
 
-                    if ( !BPMNVariableUtils.isValidInputName( name ) ) {
-                        if ( BPMNVariableUtils.TASK_FORM_VARIABLE.equals( name ) ) {
+                    if (!BPMNVariableUtils.isValidInputName(name)) {
+                        if (BPMNVariableUtils.TASK_FORM_VARIABLE.equals(name)) {
                             List<Assignment> assignments = inputAssociation.getAssignment();
-                            for ( Iterator<Assignment> it = assignments.iterator(); it.hasNext() && StringUtils.isEmpty(
-                                    taskFormName ); ) {
+                            for (Iterator<Assignment> it = assignments.iterator(); it.hasNext() && StringUtils.isEmpty(
+                                    taskFormName); ) {
                                 Assignment assignment = it.next();
-                                if ( assignment.getFrom() != null ) {
-                                    String taskName = ( (FormalExpression) assignment.getFrom() ).getBody();
-                                    if ( !StringUtils.isEmpty( taskName ) ) {
+                                if (assignment.getFrom() != null) {
+                                    String taskName = ((FormalExpression) assignment.getFrom()).getBody();
+                                    if (!StringUtils.isEmpty(taskName)) {
                                         taskFormName = taskName + BPMNVariableUtils.TASK_FORM_SUFFIX;
                                     }
                                 }
                             }
                         }
                     } else {
-                        String type = getDefinitionType( inputAssociation.getTargetRef().getItemSubjectRef() );
+                        String type = getDefinitionType(inputAssociation.getTargetRef().getItemSubjectRef());
 
-                        taskVariables.put( name, new JBPMVariable( name, type ) );
+                        taskVariables.put(name,
+                                          new JBPMVariable(name,
+                                                           type));
                     }
                 }
             }
@@ -160,56 +171,60 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
 
         List<DataOutputAssociation> dataOutputAssociations = userTask.getDataOutputAssociations();
 
-        if ( dataOutputAssociations != null ) {
+        if (dataOutputAssociations != null) {
 
-            dataOutputAssociations.forEach( outputAssociation -> {
-                if ( outputAssociation.getSourceRef() != null && outputAssociation.getSourceRef().size() == 1 ) {
+            dataOutputAssociations.forEach(outputAssociation -> {
+                if (outputAssociation.getSourceRef() != null && outputAssociation.getSourceRef().size() == 1) {
 
-                    String name = ( (DataOutput) outputAssociation.getSourceRef().get( 0 ) ).getName();
+                    String name = ((DataOutput) outputAssociation.getSourceRef().get(0)).getName();
 
-                    if ( !taskVariables.containsKey( name ) ) {
-                        String type = getDefinitionType( outputAssociation.getSourceRef().get( 0 ).getItemSubjectRef() );
+                    if (!taskVariables.containsKey(name)) {
+                        String type = getDefinitionType(outputAssociation.getSourceRef().get(0).getItemSubjectRef());
 
-                        taskVariables.put( name, new JBPMVariable( name, type ) );
+                        taskVariables.put(name,
+                                          new JBPMVariable(name,
+                                                           type));
                     }
                 }
-            } );
+            });
         }
 
-        return new TaskFormModel( container.getId(),
-                                  userTask.getId(),
-                                  userTask.getName(),
-                                  taskFormName,
-                                  new ArrayList( taskVariables.values() ) );
+        return new TaskFormModel(container.getId(),
+                                 userTask.getId(),
+                                 userTask.getName(),
+                                 taskFormName,
+                                 new ArrayList(taskVariables.values()));
     }
 
-    protected Process getProcess( Definitions source ) {
-        for ( RootElement re : source.getRootElements() ) {
-            if ( re instanceof Process ) {
+    protected Process getProcess(Definitions source) {
+        for (RootElement re : source.getRootElements()) {
+            if (re instanceof Process) {
                 return (Process) re;
             }
         }
         return null;
     }
 
-    private String getDefinitionType( ItemDefinition definition ) {
+    private String getDefinitionType(ItemDefinition definition) {
 
         String type = null;
 
-        if ( definition != null ) {
+        if (definition != null) {
             type = definition.getStructureRef();
         }
 
-        return BPMNVariableUtils.getRealTypeForInput( type );
+        return BPMNVariableUtils.getRealTypeForInput(type);
     }
 
     private class TaskVariableSetting {
+
         private String variable;
         private String input;
         private String output;
         private String type;
 
-        public TaskVariableSetting( String variable, String type ) {
+        public TaskVariableSetting(String variable,
+                                   String type) {
             this.variable = variable;
             this.type = type;
         }
@@ -222,7 +237,7 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
             return input;
         }
 
-        public void setInput( String input ) {
+        public void setInput(String input) {
             this.input = input;
         }
 
@@ -230,7 +245,7 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
             return output;
         }
 
-        public void setOutput( String output ) {
+        public void setOutput(String output) {
             this.output = output;
         }
 
@@ -238,5 +253,4 @@ public class BPMNFormModelGeneratorImpl implements BPMNFormModelGenerator {
             return type;
         }
     }
-
 }

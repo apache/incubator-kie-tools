@@ -24,8 +24,8 @@ import javax.validation.constraints.NotNull;
 public class Model {
 
     @NotNull
-    @Min( 0 )
-    @Max( 50 )
+    @Min(0)
+    @Max(50)
     private Integer value;
 
     @NotNull
@@ -36,7 +36,7 @@ public class Model {
         return value;
     }
 
-    public void setValue( Integer value ) {
+    public void setValue(Integer value) {
         this.value = value;
     }
 
@@ -44,7 +44,7 @@ public class Model {
         return user;
     }
 
-    public void setUser( User user ) {
+    public void setUser(User user) {
         this.user = user;
     }
 }

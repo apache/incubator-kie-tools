@@ -38,7 +38,7 @@ import org.kie.workbench.common.forms.crud.client.resources.i18n.CrudComponentCo
 public class EmbeddedFormDisplayerViewImpl extends Composite implements EmbeddedFormDisplayer.EmbeddedFormDisplayerView {
 
     @DataField
-    private Element heading = Document.get().createHElement( 3 );
+    private Element heading = Document.get().createHElement(3);
 
     @DataField
     private SimplePanel content = new SimplePanel();
@@ -56,25 +56,26 @@ public class EmbeddedFormDisplayerViewImpl extends Composite implements Embedded
     private TranslationService translationService;
 
     @Inject
-    public EmbeddedFormDisplayerViewImpl( TranslationService translationService ) {
+    public EmbeddedFormDisplayerViewImpl(TranslationService translationService) {
         this.translationService = translationService;
     }
 
     @PostConstruct
     protected void initialize() {
-        accept.setText( translationService.getTranslation( CrudComponentConstants.ModalFormDisplayerViewImplAccept ) );
-        cancel.setText( translationService.getTranslation( CrudComponentConstants.ModalFormDisplayerViewImplCancel ) );
+        accept.setText(translationService.getTranslation(CrudComponentConstants.ModalFormDisplayerViewImplAccept));
+        cancel.setText(translationService.getTranslation(CrudComponentConstants.ModalFormDisplayerViewImplCancel));
     }
 
     @Override
-    public void setPresenter( EmbeddedFormDisplayer presenter ) {
+    public void setPresenter(EmbeddedFormDisplayer presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void show( String title, IsFormView formView ) {
-        heading.setInnerHTML( title );
-        content.add( formView );
+    public void show(String title,
+                     IsFormView formView) {
+        heading.setInnerHTML(title);
+        content.add(formView);
     }
 
     @Override
@@ -82,13 +83,13 @@ public class EmbeddedFormDisplayerViewImpl extends Composite implements Embedded
         content.clear();
     }
 
-    @EventHandler( "accept" )
-    public void doAccept( ClickEvent event ) {
+    @EventHandler("accept")
+    public void doAccept(ClickEvent event) {
         presenter.submitForm();
     }
 
-    @EventHandler( "cancel" )
-    public void doCancel( ClickEvent event ) {
+    @EventHandler("cancel")
+    public void doCancel(ClickEvent event) {
         presenter.cancel();
     }
 }

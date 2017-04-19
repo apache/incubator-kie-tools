@@ -21,10 +21,13 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.RetentionPolicy;
 
 @Inherited
-@java.lang.annotation.Retention( RetentionPolicy.RUNTIME )
-@java.lang.annotation.Target({ ElementType.FIELD })
+@java.lang.annotation.Retention(RetentionPolicy.RUNTIME)
+@java.lang.annotation.Target({ElementType.FIELD})
 public @interface Option {
+
     String value();
+
     String text();
+
     boolean isDefault() default false;
 }

@@ -31,7 +31,7 @@ public class MetaAddresses {
         return addresses;
     }
 
-    public void setAddresses( List<Address> addresses ) {
+    public void setAddresses(List<Address> addresses) {
         this.addresses = addresses;
     }
 }

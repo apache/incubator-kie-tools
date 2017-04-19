@@ -28,11 +28,13 @@ public class FieldDataType {
 
     private boolean isEnum = false;
 
-    public FieldDataType( String type ) {
+    public FieldDataType(String type) {
         this.type = type;
     }
 
-    public FieldDataType( @MapsTo( "type" ) String type, @MapsTo( "isList" ) boolean isList, @MapsTo( "isEnum" ) boolean isEnum ) {
+    public FieldDataType(@MapsTo("type") String type,
+                         @MapsTo("isList") boolean isList,
+                         @MapsTo("isEnum") boolean isEnum) {
         this.type = type;
         this.isList = isList;
         this.isEnum = isEnum;
@@ -42,7 +44,7 @@ public class FieldDataType {
         return type;
     }
 
-    public void setType( String type ) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -50,7 +52,7 @@ public class FieldDataType {
         return isList;
     }
 
-    public void setList( boolean list ) {
+    public void setList(boolean list) {
         isList = list;
     }
 
@@ -58,7 +60,7 @@ public class FieldDataType {
         return isEnum;
     }
 
-    public void setEnum( boolean anEnum ) {
+    public void setEnum(boolean anEnum) {
         isEnum = anEnum;
     }
 }

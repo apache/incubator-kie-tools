@@ -58,29 +58,32 @@ public class FormModelsPresenterTest {
     @Before
     public void setup() {
 
-        for ( int i = 0; i < 5; i ++ ) {
-            FormModelCreationContainerView containerView = mock( FormModelCreationContainerView.class );
+        for (int i = 0; i < 5; i++) {
+            FormModelCreationContainerView containerView = mock(FormModelCreationContainerView.class);
 
-            FormModelCreationContainer container = new FormModelCreationContainer( containerView );
+            FormModelCreationContainer container = new FormModelCreationContainer(containerView);
 
-            FormModelCreationViewManager creationManager = mock( FormModelCreationViewManager.class );
+            FormModelCreationViewManager creationManager = mock(FormModelCreationViewManager.class);
 
-            when( creationManager.getFormModel() ).thenReturn( mock( FormModel.class ) );
-            when( creationManager.getLabel() ).thenReturn( "Container: " + i );
-            when( creationManager.getPriority() ).thenReturn( i );
-            when( creationManager.isValid() ).thenReturn( i%2 ==0 );
+            when(creationManager.getFormModel()).thenReturn(mock(FormModel.class));
+            when(creationManager.getLabel()).thenReturn("Container: " + i);
+            when(creationManager.getPriority()).thenReturn(i);
+            when(creationManager.isValid()).thenReturn(i % 2 == 0);
 
-            container.setup( creationManager, aContainer -> doSelect( aContainer ) );
+            container.setup(creationManager,
+                            aContainer -> doSelect(aContainer));
 
-            testContainers.add( container );
+            testContainers.add(container);
 
-            if ( i == 0) {
+            if (i == 0) {
                 this.container = container;
                 this.containerView = containerView;
             }
         }
 
-        presenter = new FormModelsPresenter( view, containerInstance, modelManagerInstance ) {
+        presenter = new FormModelsPresenter(view,
+                                            containerInstance,
+                                            modelManagerInstance) {
             @Override
             protected List<FormModelCreationContainer> getRegisteredCreationManagers() {
                 return testContainers;
@@ -88,8 +91,8 @@ public class FormModelsPresenterTest {
         };
     }
 
-    protected void doSelect( FormModelCreationContainer container ) {
-        presenter.selectContainer( container );
+    protected void doSelect(FormModelCreationContainer container) {
+        presenter.selectContainer(container);
     }
 
     @Test
@@ -97,33 +100,35 @@ public class FormModelsPresenterTest {
 
         presenter.init();
 
-        verify( view ).setCreationViews( testContainers );
+        verify(view).setCreationViews(testContainers);
 
-        presenter.initialize( path );
+        presenter.initialize(path);
 
-        testContainers.forEach( container -> {
-            verify( container.getCreationViewManager(), atLeastOnce() ).getPriority();
-            verify( container.getCreationViewManager(), atLeastOnce() ).init( path );
-        } );
+        testContainers.forEach(container -> {
+            verify(container.getCreationViewManager(),
+                   atLeastOnce()).getPriority();
+            verify(container.getCreationViewManager(),
+                   atLeastOnce()).init(path);
+        });
 
-        presenter.selectContainer( container );
+        presenter.selectContainer(container);
 
-        verify( containerView ).select();
+        verify(containerView).select();
 
-        presenter.selectContainer( container );
+        presenter.selectContainer(container);
 
-        verify( containerView, times( 3 ) ).showCreationView();
+        verify(containerView,
+               times(3)).showCreationView();
 
         presenter.isValid();
 
-        verify( container.getCreationViewManager() ).isValid();
+        verify(container.getCreationViewManager()).isValid();
 
         presenter.getFormModel();
 
-        verify( container.getCreationViewManager() ).getFormModel();
+        verify(container.getCreationViewManager()).getFormModel();
 
         presenter.asWidget();
-        verify( view ).asWidget();
+        verify(view).asWidget();
     }
-
 }

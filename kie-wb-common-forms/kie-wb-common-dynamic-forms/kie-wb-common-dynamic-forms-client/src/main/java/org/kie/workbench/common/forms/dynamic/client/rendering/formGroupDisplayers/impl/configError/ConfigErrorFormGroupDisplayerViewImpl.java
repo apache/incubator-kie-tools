@@ -37,18 +37,19 @@ public class ConfigErrorFormGroupDisplayerViewImpl extends Composite implements 
     protected TranslationService translationService;
 
     @Inject
-    public ConfigErrorFormGroupDisplayerViewImpl( TranslationService translationService ) {
+    public ConfigErrorFormGroupDisplayerViewImpl(TranslationService translationService) {
         this.translationService = translationService;
     }
 
     @Override
-    public void render( List<String> errorMessages ) {
-        Assert.notNull( "Messages cannot be null", errorMessages );
+    public void render(List<String> errorMessages) {
+        Assert.notNull("Messages cannot be null",
+                       errorMessages);
 
-        errorMessages.forEach( message -> {
+        errorMessages.forEach(message -> {
             LIElement listElement = Document.get().createLIElement();
-            listElement.setInnerHTML( translationService.getTranslation( message ) );
-            list.appendChild( listElement );
-        } );
+            listElement.setInnerHTML(translationService.getTranslation(message));
+            list.appendChild(listElement);
+        });
     }
 }

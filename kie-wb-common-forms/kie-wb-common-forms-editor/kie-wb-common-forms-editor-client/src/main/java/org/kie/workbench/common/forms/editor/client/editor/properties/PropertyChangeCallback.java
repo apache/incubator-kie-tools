@@ -17,5 +17,6 @@
 package org.kie.workbench.common.forms.editor.client.editor.properties;
 
 public interface PropertyChangeCallback<T> {
+
     public void onChange(T newValue);
 }

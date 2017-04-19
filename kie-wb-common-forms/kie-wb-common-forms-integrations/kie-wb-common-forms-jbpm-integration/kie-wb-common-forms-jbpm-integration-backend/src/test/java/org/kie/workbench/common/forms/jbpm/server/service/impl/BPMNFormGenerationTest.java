@@ -23,13 +23,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.tools.ant.taskdefs.Java;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.forms.commons.layout.impl.DynamicFormLayoutTemplateGenerator;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.listBox.definition.EnumListBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.multipleSubform.definition.MultipleSubFormFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
+import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
 import org.kie.workbench.common.forms.jbpm.server.service.formGeneration.impl.runtime.BPMNRuntimeFormGeneratorService;
@@ -41,7 +41,6 @@ import org.kie.workbench.common.forms.jbpm.service.bpmn.util.BPMNVariableUtils;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.model.JavaModel;
-import org.kie.workbench.common.forms.fields.test.TestFieldManager;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -62,225 +61,298 @@ public abstract class BPMNFormGenerationTest<MODEL extends JBPMFormModel> {
 
     @Before
     public void initTest() {
-        generatorService = new BPMNRuntimeFormGeneratorService(new TestFieldManager(), new DynamicFormLayoutTemplateGenerator());
+        generatorService = new BPMNRuntimeFormGeneratorService(new TestFieldManager(),
+                                                               new DynamicFormLayoutTemplateGenerator());
 
-        generator = new DynamicBPMNFormGeneratorImpl( generatorService );
+        generator = new DynamicBPMNFormGeneratorImpl(generatorService);
     }
 
     protected abstract String getModelId();
 
-    protected abstract MODEL getModel( String modelId, List<JBPMVariable> variables );
+    protected abstract MODEL getModel(String modelId,
+                                      List<JBPMVariable> variables);
 
-    protected abstract Collection<FormDefinition> getModelForms( MODEL model, ClassLoader classLoader );
+    protected abstract Collection<FormDefinition> getModelForms(MODEL model,
+                                                                ClassLoader classLoader);
 
     @Test
     public void testSimpleVariables() {
         List<JBPMVariable> variables = new ArrayList<>();
 
-        variables.add( new JBPMVariable( "employee", String.class.getName() ) );
-        variables.add( new JBPMVariable( "manager", String.class.getName() ) );
-        variables.add( new JBPMVariable( "performance", Integer.class.getName() ) );
-        variables.add( new JBPMVariable( "approved", Boolean.class.getName() ) );
+        variables.add(new JBPMVariable("employee",
+                                       String.class.getName()));
+        variables.add(new JBPMVariable("manager",
+                                       String.class.getName()));
+        variables.add(new JBPMVariable("performance",
+                                       Integer.class.getName()));
+        variables.add(new JBPMVariable("approved",
+                                       Boolean.class.getName()));
 
-        model = getModel( getModelId(), variables );
+        model = getModel(getModelId(),
+                         variables);
 
-        Collection<FormDefinition> forms = getModelForms( model, classLoader );
+        Collection<FormDefinition> forms = getModelForms(model,
+                                                         classLoader);
 
         try {
-            verify( classLoader, never() ).loadClass( anyString() );
-        } catch ( ClassNotFoundException e ) {
-            fail( "We shouldn't be here: " + e.getMessage() );
+            verify(classLoader,
+                   never()).loadClass(anyString());
+        } catch (ClassNotFoundException e) {
+            fail("We shouldn't be here: " + e.getMessage());
         }
 
-        assertNotNull( "There should one form", forms );
+        assertNotNull("There should one form",
+                      forms);
 
-        assertEquals( "There should one form", 1, forms.size() );
+        assertEquals("There should one form",
+                     1,
+                     forms.size());
 
         FormDefinition form = forms.iterator().next();
 
-        assertEquals( getModelId() + BPMNVariableUtils.TASK_FORM_SUFFIX, form.getId() );
-        assertEquals( getModelId() + BPMNVariableUtils.TASK_FORM_SUFFIX, form.getName() );
+        assertEquals(getModelId() + BPMNVariableUtils.TASK_FORM_SUFFIX,
+                     form.getId());
+        assertEquals(getModelId() + BPMNVariableUtils.TASK_FORM_SUFFIX,
+                     form.getName());
 
-        assertEquals( form.getModel(), model );
+        assertEquals(form.getModel(),
+                     model);
 
-        assertEquals( "There should be 4 fields", 4, form.getFields().size() );
+        assertEquals("There should be 4 fields",
+                     4,
+                     form.getFields().size());
 
-        variables.forEach( variable -> {
-            FieldDefinition field = form.getFieldByBinding( variable.getName() );
-            assertFieldStatus( field, variable );
-        } );
+        variables.forEach(variable -> {
+            FieldDefinition field = form.getFieldByBinding(variable.getName());
+            assertFieldStatus(field,
+                              variable);
+        });
     }
 
     @Test
     public void testComplexFieldsFromClassLoader() {
-        testComplexFields( true );
+        testComplexFields(true);
     }
 
     @Test
     public void testComplexFieldsFromGeneralClassLoader() {
-        testComplexFields( false );
+        testComplexFields(false);
     }
 
-    protected void testComplexFields( boolean fromClassLoader ) {
-        if ( fromClassLoader ) {
+    protected void testComplexFields(boolean fromClassLoader) {
+        if (fromClassLoader) {
             try {
-                when( classLoader.loadClass( Person.class.getName() ) ).then( new Answer<Class<?>>() {
+                when(classLoader.loadClass(Person.class.getName())).then(new Answer<Class<?>>() {
                     @Override
-                    public Class<?> answer( InvocationOnMock invocationOnMock ) throws Throwable {
+                    public Class<?> answer(InvocationOnMock invocationOnMock) throws Throwable {
                         return Person.class;
                     }
-                } );
-            } catch ( ClassNotFoundException e ) {
-                fail( "We shouldn't be here: " + e.getMessage() );
+                });
+            } catch (ClassNotFoundException e) {
+                fail("We shouldn't be here: " + e.getMessage());
             }
         }
         List<JBPMVariable> variables = new ArrayList<>();
-        variables.add( new JBPMVariable( "person", Person.class.getName() ) );
+        variables.add(new JBPMVariable("person",
+                                       Person.class.getName()));
 
-        model = getModel( getModelId(), variables );
+        model = getModel(getModelId(),
+                         variables);
 
-        Collection<FormDefinition> forms = getModelForms( model, classLoader );
+        Collection<FormDefinition> forms = getModelForms(model,
+                                                         classLoader);
 
         Map<String, FormDefinition> allForms = new HashMap<>();
 
-        forms.forEach( form -> allForms.put( form.getId(), form ) );
+        forms.forEach(form -> allForms.put(form.getId(),
+                                           form));
 
         try {
-            verify( classLoader, times(3) ).loadClass( anyString() );
-        } catch ( ClassNotFoundException e ) {
-            fail( e.getMessage() );
+            verify(classLoader,
+                   times(3)).loadClass(anyString());
+        } catch (ClassNotFoundException e) {
+            fail(e.getMessage());
         }
 
-        assertNotNull( "There should some forms", forms );
+        assertNotNull("There should some forms",
+                      forms);
 
-        assertEquals( "There should 4 forms", 4, forms.size() );
+        assertEquals("There should 4 forms",
+                     4,
+                     forms.size());
 
-        FormDefinition form  = allForms.get( getModelId() + BPMNVariableUtils.TASK_FORM_SUFFIX );
-        checkBPMForm( form, allForms );
-        form = findFormForModel(Person.class.getName(), allForms);
-        checkPersonForm( form, allForms );
-        form = findFormForModel(PersonalData.class.getName(), allForms);
-        checkPersonalDataForm( form, allForms );
-        form = findFormForModel(LogEntry.class.getName(), allForms);
-        checkLogEntryForm( form );
+        FormDefinition form = allForms.get(getModelId() + BPMNVariableUtils.TASK_FORM_SUFFIX);
+        checkBPMForm(form,
+                     allForms);
+        form = findFormForModel(Person.class.getName(),
+                                allForms);
+        checkPersonForm(form,
+                        allForms);
+        form = findFormForModel(PersonalData.class.getName(),
+                                allForms);
+        checkPersonalDataForm(form,
+                              allForms);
+        form = findFormForModel(LogEntry.class.getName(),
+                                allForms);
+        checkLogEntryForm(form);
     }
 
-    protected FormDefinition findFormForModel(String className, Map<String, FormDefinition> allForms) {
-        return allForms.values().stream().filter( formDefinition -> {
-            if(formDefinition.getModel() instanceof JavaModel) {
-                return ((JavaModel)formDefinition.getModel()).getType().equals(className);
+    protected FormDefinition findFormForModel(String className,
+                                              Map<String, FormDefinition> allForms) {
+        return allForms.values().stream().filter(formDefinition -> {
+            if (formDefinition.getModel() instanceof JavaModel) {
+                return ((JavaModel) formDefinition.getModel()).getType().equals(className);
             }
             return false;
         }).findFirst().orElse(null);
     }
 
-    private void checkLogEntryForm( FormDefinition form ) {
-        assertNotNull( form );
+    private void checkLogEntryForm(FormDefinition form) {
+        assertNotNull(form);
 
-        assertEquals( 2, form.getFields().size() );
+        assertEquals(2,
+                     form.getFields().size());
 
-        FieldDefinition field = form.getFieldByBinding( "date" );
-        assertFieldStatus( field, "date", Date.class.getName() );
+        FieldDefinition field = form.getFieldByBinding("date");
+        assertFieldStatus(field,
+                          "date",
+                          Date.class.getName());
 
-        field = form.getFieldByBinding( "text" );
-        assertFieldStatus( field, "text", String.class.getName() );
+        field = form.getFieldByBinding("text");
+        assertFieldStatus(field,
+                          "text",
+                          String.class.getName());
     }
 
-    private void checkPersonalDataForm( FormDefinition form, Map<String, FormDefinition> allForms ) {
-        assertNotNull( form );
+    private void checkPersonalDataForm(FormDefinition form,
+                                       Map<String, FormDefinition> allForms) {
+        assertNotNull(form);
 
-        assertEquals( 2, form.getFields().size() );
+        assertEquals(2,
+                     form.getFields().size());
 
-        FieldDefinition field = form.getFieldByBinding( "address" );
-        assertFieldStatus( field, "address", String.class.getName() );
+        FieldDefinition field = form.getFieldByBinding("address");
+        assertFieldStatus(field,
+                          "address",
+                          String.class.getName());
 
-        field = form.getFieldByBinding( "phone" );
-        assertFieldStatus( field, "phone", String.class.getName() );
+        field = form.getFieldByBinding("phone");
+        assertFieldStatus(field,
+                          "phone",
+                          String.class.getName());
     }
 
-    private void checkBPMForm( FormDefinition form, Map<String, FormDefinition> allForms ) {
-        assertNotNull( form );
-        assertEquals( getModelId() + BPMNVariableUtils.TASK_FORM_SUFFIX, form.getId() );
-        assertEquals( getModelId() + BPMNVariableUtils.TASK_FORM_SUFFIX, form.getName() );
-        assertEquals( 1, form.getFields().size() );
+    private void checkBPMForm(FormDefinition form,
+                              Map<String, FormDefinition> allForms) {
+        assertNotNull(form);
+        assertEquals(getModelId() + BPMNVariableUtils.TASK_FORM_SUFFIX,
+                     form.getId());
+        assertEquals(getModelId() + BPMNVariableUtils.TASK_FORM_SUFFIX,
+                     form.getName());
+        assertEquals(1,
+                     form.getFields().size());
 
-        FieldDefinition field = form.getFieldByBinding( "person" );
-        assertFieldStatus( field, "person", Person.class.getName() );
+        FieldDefinition field = form.getFieldByBinding("person");
+        assertFieldStatus(field,
+                          "person",
+                          Person.class.getName());
 
-        assertTrue( field instanceof SubFormFieldDefinition );
+        assertTrue(field instanceof SubFormFieldDefinition);
 
         SubFormFieldDefinition subForm = (SubFormFieldDefinition) field;
 
-        assertNotNull( subForm.getNestedForm() );
+        assertNotNull(subForm.getNestedForm());
 
-        assertNotNull( allForms.get( subForm.getNestedForm() ) );
+        assertNotNull(allForms.get(subForm.getNestedForm()));
     }
 
-    private void checkPersonForm( FormDefinition form, Map<String, FormDefinition> allForms ) {
-        assertNotNull( form );
+    private void checkPersonForm(FormDefinition form,
+                                 Map<String, FormDefinition> allForms) {
+        assertNotNull(form);
 
-        assertTrue( form.getModel() instanceof JavaModel );
+        assertTrue(form.getModel() instanceof JavaModel);
 
-        assertEquals( 4, form.getFields().size() );
+        assertEquals(4,
+                     form.getFields().size());
 
-        FieldDefinition field = form.getFieldByBinding( "name" );
-        assertFieldStatus( field, "name", String.class.getName() );
+        FieldDefinition field = form.getFieldByBinding("name");
+        assertFieldStatus(field,
+                          "name",
+                          String.class.getName());
 
-        field = form.getFieldByBinding( "type" );
+        field = form.getFieldByBinding("type");
 
-        assertFieldStatus( field, "type", PersonType.class.getName() );
+        assertFieldStatus(field,
+                          "type",
+                          PersonType.class.getName());
 
-        assertTrue( field instanceof EnumListBoxFieldDefinition );
+        assertTrue(field instanceof EnumListBoxFieldDefinition);
 
-        field = form.getFieldByBinding( "personalData" );
+        field = form.getFieldByBinding("personalData");
 
-        assertFieldStatus( field, "personalData", PersonalData.class.getName() );
+        assertFieldStatus(field,
+                          "personalData",
+                          PersonalData.class.getName());
 
-        assertTrue( field instanceof SubFormFieldDefinition );
+        assertTrue(field instanceof SubFormFieldDefinition);
 
         SubFormFieldDefinition subForm = (SubFormFieldDefinition) field;
 
-        assertNotNull( subForm.getNestedForm() );
+        assertNotNull(subForm.getNestedForm());
 
-        assertNotNull( allForms.get( subForm.getNestedForm() ) );
+        assertNotNull(allForms.get(subForm.getNestedForm()));
 
-        field = form.getFieldByBinding( "log" );
+        field = form.getFieldByBinding("log");
 
-        assertFieldStatus( field, "log", LogEntry.class.getName() );
+        assertFieldStatus(field,
+                          "log",
+                          LogEntry.class.getName());
 
-        assertTrue( field instanceof MultipleSubFormFieldDefinition );
+        assertTrue(field instanceof MultipleSubFormFieldDefinition);
 
         MultipleSubFormFieldDefinition multipleSubForm = (MultipleSubFormFieldDefinition) field;
 
-        assertNotNull( multipleSubForm.getCreationForm() );
+        assertNotNull(multipleSubForm.getCreationForm());
 
-        assertEquals( multipleSubForm.getCreationForm(), multipleSubForm.getEditionForm() );
+        assertEquals(multipleSubForm.getCreationForm(),
+                     multipleSubForm.getEditionForm());
 
-        FormDefinition nestedForm = allForms.get( multipleSubForm.getCreationForm() );
+        FormDefinition nestedForm = allForms.get(multipleSubForm.getCreationForm());
 
-        assertNotNull( nestedForm );
+        assertNotNull(nestedForm);
 
-        assertNotNull( multipleSubForm.getColumnMetas() );
+        assertNotNull(multipleSubForm.getColumnMetas());
 
-        assertEquals( nestedForm.getFields().size(), multipleSubForm.getColumnMetas().size() );
+        assertEquals(nestedForm.getFields().size(),
+                     multipleSubForm.getColumnMetas().size());
 
-        multipleSubForm.getColumnMetas().forEach( columnMeta -> {
-            FieldDefinition nestedField = nestedForm.getFieldByBinding( columnMeta.getProperty() );
+        multipleSubForm.getColumnMetas().forEach(columnMeta -> {
+            FieldDefinition nestedField = nestedForm.getFieldByBinding(columnMeta.getProperty());
 
-            assertNotNull( nestedField );
-            assertEquals( nestedField.getLabel(), columnMeta.getLabel() );
-        } );
+            assertNotNull(nestedField);
+            assertEquals(nestedField.getLabel(),
+                         columnMeta.getLabel());
+        });
     }
 
-    private void assertFieldStatus( FieldDefinition field, JBPMVariable variable ) {
-        assertFieldStatus( field, variable.getName(), variable.getType() );
+    private void assertFieldStatus(FieldDefinition field,
+                                   JBPMVariable variable) {
+        assertFieldStatus(field,
+                          variable.getName(),
+                          variable.getType());
     }
 
-    private void assertFieldStatus( FieldDefinition field, String name, String className ) {
-        assertNotNull( field );
-        assertEquals( name, field.getName() );
-        assertEquals( name.toLowerCase(), field.getName().toLowerCase() );
-        assertEquals( name, field.getBinding() );
-        assertEquals( className, field.getStandaloneClassName() );
+    private void assertFieldStatus(FieldDefinition field,
+                                   String name,
+                                   String className) {
+        assertNotNull(field);
+        assertEquals(name,
+                     field.getName());
+        assertEquals(name.toLowerCase(),
+                     field.getName().toLowerCase());
+        assertEquals(name,
+                     field.getBinding());
+        assertEquals(className,
+                     field.getStandaloneClassName());
     }
 }

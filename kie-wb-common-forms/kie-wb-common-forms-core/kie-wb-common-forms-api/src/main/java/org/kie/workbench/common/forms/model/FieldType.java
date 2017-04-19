@@ -20,5 +20,6 @@ package org.kie.workbench.common.forms.model;
  * Defines the type of the field.
  */
 public interface FieldType {
+
     String getTypeName();
 }

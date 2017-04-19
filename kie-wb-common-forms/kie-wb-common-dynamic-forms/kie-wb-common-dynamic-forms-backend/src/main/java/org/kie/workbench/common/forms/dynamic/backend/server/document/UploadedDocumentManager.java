@@ -24,18 +24,21 @@ import javax.enterprise.context.SessionScoped;
 
 @SessionScoped
 public class UploadedDocumentManager implements Serializable {
+
     protected Map<String, File> uploadedFiles = new HashMap<>();
 
-    public void uploadFile( String name, File file ) {
-        uploadedFiles.put( name, file );
+    public void uploadFile(String name,
+                           File file) {
+        uploadedFiles.put(name,
+                          file);
     }
 
-    public File getFile( String name ) {
-        return uploadedFiles.get( name );
+    public File getFile(String name) {
+        return uploadedFiles.get(name);
     }
 
-    public void removeFile( String name ) {
-        File file = uploadedFiles.remove( name );
+    public void removeFile(String name) {
+        File file = uploadedFiles.remove(name);
         file.delete();
     }
 }

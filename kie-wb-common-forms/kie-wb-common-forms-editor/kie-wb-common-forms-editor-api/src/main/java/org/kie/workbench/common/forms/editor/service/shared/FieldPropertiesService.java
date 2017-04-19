@@ -23,5 +23,6 @@ import org.uberfire.backend.vfs.Path;
 @Remote
 public interface FieldPropertiesService {
 
-    FormEditorRenderingContext getFieldPropertiesRenderingContext( FieldDefinition fieldDefinition, Path formPath );
+    FormEditorRenderingContext getFieldPropertiesRenderingContext(FieldDefinition fieldDefinition,
+                                                                  Path formPath);
 }

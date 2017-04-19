@@ -23,13 +23,15 @@ import org.jboss.errai.common.client.api.annotations.Portable;
 
 @Portable
 public class SelectorData<T> {
+
     private Map<T, String> values;
     private T selectedValue;
 
     public SelectorData() {
     }
 
-    public SelectorData( @MapsTo( "values" ) Map<T, String> values, @MapsTo( "selectedValue" ) T selectedValue ) {
+    public SelectorData(@MapsTo("values") Map<T, String> values,
+                        @MapsTo("selectedValue") T selectedValue) {
         this.values = values;
         this.selectedValue = selectedValue;
     }
@@ -38,7 +40,7 @@ public class SelectorData<T> {
         return values;
     }
 
-    public void setValues( Map<T, String> values ) {
+    public void setValues(Map<T, String> values) {
         this.values = values;
     }
 
@@ -46,7 +48,7 @@ public class SelectorData<T> {
         return selectedValue;
     }
 
-    public void setSelectedValue( T selectedValue ) {
+    public void setSelectedValue(T selectedValue) {
         this.selectedValue = selectedValue;
     }
 }

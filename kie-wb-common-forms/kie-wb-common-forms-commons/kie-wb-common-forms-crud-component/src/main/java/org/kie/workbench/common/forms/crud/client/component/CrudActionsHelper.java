@@ -18,9 +18,8 @@ package org.kie.workbench.common.forms.crud.client.component;
 
 import java.util.List;
 
-import org.uberfire.ext.widgets.table.client.ColumnMeta;
-
 import com.google.gwt.view.client.AsyncDataProvider;
+import org.uberfire.ext.widgets.table.client.ColumnMeta;
 
 public interface CrudActionsHelper<MODEL> {
 
@@ -40,7 +39,7 @@ public interface CrudActionsHelper<MODEL> {
 
     public void createInstance();
 
-    public void editInstance( int index );
+    public void editInstance(int index);
 
-    public void deleteInstance( int index );
+    public void deleteInstance(int index);
 }

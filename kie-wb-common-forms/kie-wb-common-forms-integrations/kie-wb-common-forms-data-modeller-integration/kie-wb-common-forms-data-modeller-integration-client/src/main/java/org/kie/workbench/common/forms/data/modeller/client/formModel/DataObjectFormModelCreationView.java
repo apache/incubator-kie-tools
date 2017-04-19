@@ -27,13 +27,13 @@ public interface DataObjectFormModelCreationView extends UberElement<DataObjectF
 
     }
 
-    void setFormModels( List<DataObjectFormModel> formModels );
+    void setFormModels(List<DataObjectFormModel> formModels);
 
     DataObjectFormModel getSelectedFormModel();
 
     void reset();
 
-    void setErrorMessage( String translation );
+    void setErrorMessage(String translation);
 
     void clearValidationErrors();
 }

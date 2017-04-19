@@ -24,7 +24,7 @@ public class PortableJavaModel implements JavaModel {
 
     private String type;
 
-    public PortableJavaModel( @MapsTo( "type" ) String type ) {
+    public PortableJavaModel(@MapsTo("type") String type) {
         this.type = type;
     }
 
@@ -33,7 +33,7 @@ public class PortableJavaModel implements JavaModel {
         return type;
     }
 
-    public void setType( String type ) {
+    public void setType(String type) {
         this.type = type;
     }
 

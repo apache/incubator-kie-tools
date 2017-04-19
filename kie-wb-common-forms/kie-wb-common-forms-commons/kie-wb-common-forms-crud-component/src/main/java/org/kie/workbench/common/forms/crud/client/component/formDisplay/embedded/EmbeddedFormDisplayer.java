@@ -28,22 +28,27 @@ import org.kie.workbench.common.forms.crud.client.component.formDisplay.IsFormVi
 public class EmbeddedFormDisplayer extends AbstractFormDisplayer {
 
     public interface EmbeddedFormDisplayerView extends IsWidget {
-        public void setPresenter( EmbeddedFormDisplayer presenter );
-        public void show( String title, IsFormView formView );
+
+        public void setPresenter(EmbeddedFormDisplayer presenter);
+
+        public void show(String title,
+                         IsFormView formView);
+
         public void clear();
     }
 
     private EmbeddedFormDisplayerView view;
 
     @Inject
-    public EmbeddedFormDisplayer( EmbeddedFormDisplayerView view ) {
+    public EmbeddedFormDisplayer(EmbeddedFormDisplayerView view) {
         this.view = view;
-        view.setPresenter( this );
+        view.setPresenter(this);
     }
 
     @Override
     public void display() {
-        view.show( title, formView );
+        view.show(title,
+                  formView);
     }
 
     @Override

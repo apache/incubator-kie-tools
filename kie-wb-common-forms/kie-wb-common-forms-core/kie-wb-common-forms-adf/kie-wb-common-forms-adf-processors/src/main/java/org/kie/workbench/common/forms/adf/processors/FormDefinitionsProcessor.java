@@ -512,7 +512,7 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
                         } else {
                             FormDefinition formDefinitionAnnotation = finalTypeElement.getAnnotation(FormDefinition.class);
 
-                            if ( formDefinitionAnnotation != null ) {
+                            if (formDefinitionAnnotation != null) {
                                 Collection<FieldInfo> labelInfos = extractFieldInfos((TypeElement) finalTypeElement,
                                                                                      fieldElement -> fieldElement.getAnnotation(FieldLabel.class) != null);
 
@@ -612,8 +612,8 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
                                        "1");
                 }
 
-                if ( !overrideI18nLabel ) {
-                    if ( !StringUtils.isEmpty(i18nSettings.keyPreffix())) {
+                if (!overrideI18nLabel) {
+                    if (!StringUtils.isEmpty(i18nSettings.keyPreffix())) {
                         fieldLabel = i18nSettings.keyPreffix() + i18nSettings.separator() + fieldLabel;
                     }
                 }
@@ -645,8 +645,6 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
         return elementsSettings;
     }
 
-
-
     protected void extractFieldExtraSettings(Map<String, Object> fieldContext,
                                              VariableElement fieldElement) {
         SelectorDataProvider selectorDataProvider = fieldElement.getAnnotation(SelectorDataProvider.class);
@@ -668,7 +666,7 @@ public class FormDefinitionsProcessor extends AbstractErrorAbsorbingProcessor {
         // The stream returned by 'getResourceAsStream(templateName)' was sometimes already closed (!) and as the
         // Template class tried to read from the stream it resulted in IOException. Changing the code to
         // 'getResource(templateName).openStream()' seems to be a sensible workaround
-        try(InputStream templateIs = this.getClass().getResource(templateName).openStream()) {
+        try (InputStream templateIs = this.getClass().getResource(templateName).openStream()) {
             Configuration config = new Configuration();
 
             Template template = new Template("",

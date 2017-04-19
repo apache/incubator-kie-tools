@@ -17,5 +17,6 @@
 package org.kie.workbench.common.forms.processing.engine.handling;
 
 public interface IsNestedModel {
-    void addFieldChangeHandler( FieldChangeHandler notifyParentField );
+
+    void addFieldChangeHandler(FieldChangeHandler notifyParentField);
 }

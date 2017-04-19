@@ -20,7 +20,7 @@ import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContex
 
 public interface TransformerContext<F extends FormRenderingContext> {
 
-    TransformerContext copyFor( String type );
+    TransformerContext copyFor(String type);
 
     Object getModel();
 

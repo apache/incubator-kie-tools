@@ -25,7 +25,6 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplaye
 import org.kie.workbench.common.forms.dynamic.client.rendering.formGroupDisplayers.impl.configError.ConfigErrorFormGroupDisplayer;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
-import org.kie.workbench.common.forms.fields.shared.AbstractFieldDefinition;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 public abstract class FieldRenderer<F extends FieldDefinition> {
@@ -35,7 +34,8 @@ public abstract class FieldRenderer<F extends FieldDefinition> {
     protected DefaultDynamicFormField formField = null;
     protected FormGroupDisplayer group;
 
-    public void init( FormRenderingContext renderingContext, F field ) {
+    public void init(FormRenderingContext renderingContext,
+                     F field) {
         this.renderingContext = renderingContext;
         this.field = field;
     }
@@ -43,16 +43,16 @@ public abstract class FieldRenderer<F extends FieldDefinition> {
     public IsWidget renderWidget() {
         FieldConfigStatus configStatus = checkFieldConfig();
 
-        if ( !configStatus.isWellConfigured() ) {
+        if (!configStatus.isWellConfigured()) {
             ConfigErrorFormGroupDisplayer errorGroup = FormGroupDisplayerFactory.getErrorGroup();
 
-            errorGroup.render( configStatus.getConfigErrors() );
+            errorGroup.render(configStatus.getConfigErrors());
 
             group = errorGroup;
         } else {
             IsWidget widget = null;
 
-            if ( renderingContext.getRenderMode().equals( RenderMode.PRETTY_MODE ) ) {
+            if (renderingContext.getRenderMode().equals(RenderMode.PRETTY_MODE)) {
                 widget = getPrettyViewWidget();
             } else {
                 initInputWidget();
@@ -62,19 +62,21 @@ public abstract class FieldRenderer<F extends FieldDefinition> {
 
             FormGroupDisplayerWidgetAware formGroup = FormGroupDisplayerFactory.getGeneratorForRenderer(
                     renderingContext,
-                    this );
+                    this);
 
-            formGroup.render( widget.asWidget(), field );
+            formGroup.render(widget.asWidget(),
+                             field);
 
             group = formGroup;
 
-            formField = new DefaultDynamicFormField( field, widget.asWidget() ) {
+            formField = new DefaultDynamicFormField(field,
+                                                    widget.asWidget()) {
                 @Override
-                protected void doSetReadOnly( boolean readOnly ) {
-                    if ( renderingContext.getRenderMode().equals( RenderMode.PRETTY_MODE ) ) {
+                protected void doSetReadOnly(boolean readOnly) {
+                    if (renderingContext.getRenderMode().equals(RenderMode.PRETTY_MODE)) {
                         return;
                     }
-                    FieldRenderer.this.setReadOnly( readOnly );
+                    FieldRenderer.this.setReadOnly(readOnly);
                 }
 
                 @Override
@@ -83,11 +85,10 @@ public abstract class FieldRenderer<F extends FieldDefinition> {
                 }
             };
 
-            formField.setReadOnly( renderingContext.getRenderMode().equals( RenderMode.READ_ONLY_MODE ) );
+            formField.setReadOnly(renderingContext.getRenderMode().equals(RenderMode.READ_ONLY_MODE));
         }
         return group;
     }
-
 
     public DefaultDynamicFormField getFormField() {
         return formField;
@@ -98,7 +99,7 @@ public abstract class FieldRenderer<F extends FieldDefinition> {
     }
 
     protected FieldConfigStatus checkFieldConfig() {
-        return new FieldConfigStatus( getConfigErrors() );
+        return new FieldConfigStatus(getConfigErrors());
     }
 
     protected List<String> getConfigErrors() {
@@ -115,7 +116,7 @@ public abstract class FieldRenderer<F extends FieldDefinition> {
 
     public abstract String getSupportedCode();
 
-    protected abstract void setReadOnly( boolean readOnly );
+    protected abstract void setReadOnly(boolean readOnly);
 
     protected boolean isContentValid() {
         return true;
@@ -125,7 +126,7 @@ public abstract class FieldRenderer<F extends FieldDefinition> {
 
         protected List<String> configErrors;
 
-        public FieldConfigStatus( List<String> configErrors ) {
+        public FieldConfigStatus(List<String> configErrors) {
             this.configErrors = configErrors;
         }
 

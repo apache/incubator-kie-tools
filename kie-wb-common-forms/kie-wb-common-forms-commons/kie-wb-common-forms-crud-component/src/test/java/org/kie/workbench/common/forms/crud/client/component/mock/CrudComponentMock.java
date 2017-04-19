@@ -23,11 +23,14 @@ import org.kie.workbench.common.forms.crud.client.component.formDisplay.modal.Mo
 
 public class CrudComponentMock<MODEL, FORM_MODEL> extends CrudComponent<MODEL, FORM_MODEL> {
 
-    public CrudComponentMock( final CrudComponentView<MODEL, FORM_MODEL> view,
-                              final EmbeddedFormDisplayer embeddedFormDisplayer,
-                              final ModalFormDisplayer modalFormDisplayer,
-                              final TranslationService translationService ) {
-        super( view, embeddedFormDisplayer, modalFormDisplayer, translationService );
+    public CrudComponentMock(final CrudComponentView<MODEL, FORM_MODEL> view,
+                             final EmbeddedFormDisplayer embeddedFormDisplayer,
+                             final ModalFormDisplayer modalFormDisplayer,
+                             final TranslationService translationService) {
+        super(view,
+              embeddedFormDisplayer,
+              modalFormDisplayer,
+              translationService);
     }
 
     @Override

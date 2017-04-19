@@ -32,15 +32,15 @@ import org.apache.commons.fileupload.FileItem;
 import org.kie.workbench.common.forms.dynamic.model.document.DocumentData;
 import org.uberfire.server.BaseUploadServlet;
 
-@WebServlet( name = "FormsDocumentServlet", urlPatterns = "/documentUploadServlet")
+@WebServlet(name = "FormsDocumentServlet", urlPatterns = "/documentUploadServlet")
 public class FormsDocumentServlet extends BaseUploadServlet {
 
     @Inject
     protected UploadedDocumentManager manager;
 
-
     @Override
-    protected void doPost( HttpServletRequest req, HttpServletResponse resp ) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req,
+                          HttpServletResponse resp) throws ServletException, IOException {
 
         Map<String, Object> response = new HashMap<>();
 
@@ -48,34 +48,40 @@ public class FormsDocumentServlet extends BaseUploadServlet {
 
             String id = UUID.randomUUID().toString();
 
-            FileItem fileItem = getFileItem( req );
+            FileItem fileItem = getFileItem(req);
 
-            File file = File.createTempFile( id, ".tmp" );
+            File file = File.createTempFile(id,
+                                            ".tmp");
 
             file.deleteOnExit();
 
-            fileItem.write( file );
+            fileItem.write(file);
 
-            manager.uploadFile( id, file );
+            manager.uploadFile(id,
+                               file);
 
-            DocumentData data = new DocumentData( fileItem.getName(), fileItem.getSize(), null );
+            DocumentData data = new DocumentData(fileItem.getName(),
+                                                 fileItem.getSize(),
+                                                 null);
 
-            data.setContentId( id );
+            data.setContentId(id);
 
-            response.put( "document", data );
-
-        } catch ( Exception e ) {
-            response.put( "error", "error" );
+            response.put("document",
+                         data);
+        } catch (Exception e) {
+            response.put("error",
+                         "error");
         } finally {
-            writeResponse( resp, response );
+            writeResponse(resp,
+                          response);
         }
     }
 
-    protected void writeResponse( HttpServletResponse response,
-                                  Map<String, Object> uploadResponse ) throws IOException {
+    protected void writeResponse(HttpServletResponse response,
+                                 Map<String, Object> uploadResponse) throws IOException {
         Gson gson = new Gson();
-        response.setContentType( "text/html" );
-        response.getWriter().write( gson.toJson( uploadResponse ) );
+        response.setContentType("text/html");
+        response.getWriter().write(gson.toJson(uploadResponse));
         response.getWriter().flush();
     }
 }

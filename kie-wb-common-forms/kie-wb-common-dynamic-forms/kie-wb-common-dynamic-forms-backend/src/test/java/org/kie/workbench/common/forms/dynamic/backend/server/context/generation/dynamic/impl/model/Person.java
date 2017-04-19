@@ -25,8 +25,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 public class Person {
 
-    @Min( 1 )
-    @Max( 20 )
+    @Min(1)
+    @Max(20)
     Integer id;
 
     @NotNull
@@ -41,7 +41,10 @@ public class Person {
     public Person() {
     }
 
-    public Person( Integer id, String name, String lastName, Date birthday ) {
+    public Person(Integer id,
+                  String name,
+                  String lastName,
+                  Date birthday) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
@@ -52,7 +55,7 @@ public class Person {
         return id;
     }
 
-    public void setId( Integer id ) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -60,7 +63,7 @@ public class Person {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -68,7 +71,7 @@ public class Person {
         return lastName;
     }
 
-    public void setLastName( String lastName ) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
@@ -76,7 +79,7 @@ public class Person {
         return birthday;
     }
 
-    public void setBirthday( Date birthday ) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 }

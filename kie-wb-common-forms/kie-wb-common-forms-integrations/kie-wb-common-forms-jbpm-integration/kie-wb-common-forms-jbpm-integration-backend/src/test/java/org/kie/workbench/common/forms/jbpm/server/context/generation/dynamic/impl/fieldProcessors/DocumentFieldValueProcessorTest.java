@@ -32,11 +32,13 @@ import org.kie.workbench.common.forms.jbpm.model.authoring.document.definition.D
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static junit.framework.TestCase.*;
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
-@RunWith( MockitoJUnitRunner.class )
+@RunWith(MockitoJUnitRunner.class)
 public class DocumentFieldValueProcessorTest {
 
     @Mock
@@ -54,71 +56,112 @@ public class DocumentFieldValueProcessorTest {
 
     @Before
     public void initTest() {
-        when( uploadedDocumentManager.getFile( anyString() )).thenReturn( uploaded );
-        when( uploaded.length() ).thenReturn( new Long(1024) );
+        when(uploadedDocumentManager.getFile(anyString())).thenReturn(uploaded);
+        when(uploaded.length()).thenReturn(new Long(1024));
 
         field = new DocumentFieldDefinition();
-        field.setBinding( "document" );
-        field.setName( "document" );
-        field.setLabel( "document" );
+        field.setBinding("document");
+        field.setName("document");
+        field.setLabel("document");
 
-        processor = new TestDocumentFieldValueProcessor( uploadedDocumentManager );
+        processor = new TestDocumentFieldValueProcessor(uploadedDocumentManager);
     }
 
     @Test
     public void testNull2FlatValue() {
-        DocumentData documentData = processor.toFlatValue( field, null, context );
-        assertNull( "DocumentData must be null!", documentData );
+        DocumentData documentData = processor.toFlatValue(field,
+                                                          null,
+                                                          context);
+        assertNull("DocumentData must be null!",
+                   documentData);
     }
 
     @Test
     public void testDocument2FlatValue() {
-        Document doc = new DocumentImpl( "id", "docName", 1024, new Date() );
+        Document doc = new DocumentImpl("id",
+                                        "docName",
+                                        1024,
+                                        new Date());
 
-        DocumentData documentData = processor.toFlatValue( field, doc, context );
+        DocumentData documentData = processor.toFlatValue(field,
+                                                          doc,
+                                                          context);
 
-        assertNotNull( "DocumentData cannot be null!", documentData );
-        assertEquals( "Names are not equal", doc.getName(), documentData.getFileName() );
-        assertEquals( "Sizes are not equal", doc.getSize(), documentData.getSize() );
-        assertEquals( "Link must be empty", "", documentData.getLink() );
+        assertNotNull("DocumentData cannot be null!",
+                      documentData);
+        assertEquals("Names are not equal",
+                     doc.getName(),
+                     documentData.getFileName());
+        assertEquals("Sizes are not equal",
+                     doc.getSize(),
+                     documentData.getSize());
+        assertEquals("Link must be empty",
+                     "",
+                     documentData.getLink());
     }
 
     @Test
     public void testNullFlatValue2Document() {
 
-        Document doc = processor.toRawValue( field, null, null, context );
+        Document doc = processor.toRawValue(field,
+                                            null,
+                                            null,
+                                            context);
 
-        assertNull( "Document must be null!", doc );
+        assertNull("Document must be null!",
+                   doc);
     }
 
     @Test
     public void testNewFlatValue2Document() {
-        DocumentData data = new DocumentData( "test", 1024, null );
-        data.setContentId( "content" );
+        DocumentData data = new DocumentData("test",
+                                             1024,
+                                             null);
+        data.setContentId("content");
 
-        Document doc = processor.toRawValue( field, data, null, context );
+        Document doc = processor.toRawValue(field,
+                                            data,
+                                            null,
+                                            context);
 
-        verify( uploadedDocumentManager ).getFile( anyString() );
-        verify( uploadedDocumentManager ).removeFile( anyString() );
+        verify(uploadedDocumentManager).getFile(anyString());
+        verify(uploadedDocumentManager).removeFile(anyString());
 
-        assertNotNull( "Document cannot be null!", doc );
-        assertEquals( "Names are not equal", data.getFileName(), doc.getName() );
-        assertEquals( "Sizes are not equal", data.getSize(), doc.getSize() );
+        assertNotNull("Document cannot be null!",
+                      doc);
+        assertEquals("Names are not equal",
+                     data.getFileName(),
+                     doc.getName());
+        assertEquals("Sizes are not equal",
+                     data.getSize(),
+                     doc.getSize());
     }
 
     @Test
     public void testExistingFlatValue2Document() {
-        Document doc = new DocumentImpl( "id", "docName", 1024, new Date(), "aLink" );
+        Document doc = new DocumentImpl("id",
+                                        "docName",
+                                        1024,
+                                        new Date(),
+                                        "aLink");
 
-        DocumentData data = new DocumentData( doc.getName(), doc.getSize(), doc.getLink() );
-        data.setStatus( DocumentStatus.STORED );
+        DocumentData data = new DocumentData(doc.getName(),
+                                             doc.getSize(),
+                                             doc.getLink());
+        data.setStatus(DocumentStatus.STORED);
 
-        Document rawDoc = processor.toRawValue( field, data, doc, context );
+        Document rawDoc = processor.toRawValue(field,
+                                               data,
+                                               doc,
+                                               context);
 
-        assertEquals( "Documents must be equal!", doc, rawDoc );
+        assertEquals("Documents must be equal!",
+                     doc,
+                     rawDoc);
 
-        verify( uploadedDocumentManager, never() ).getFile( anyString() );
-        verify( uploadedDocumentManager, never() ).removeFile( anyString() );
+        verify(uploadedDocumentManager,
+               never()).getFile(anyString());
+        verify(uploadedDocumentManager,
+               never()).removeFile(anyString());
     }
-
 }

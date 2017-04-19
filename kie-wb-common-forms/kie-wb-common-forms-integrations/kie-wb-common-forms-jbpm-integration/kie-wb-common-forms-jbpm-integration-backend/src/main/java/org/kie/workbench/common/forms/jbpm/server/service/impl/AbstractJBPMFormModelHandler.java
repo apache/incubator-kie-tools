@@ -19,18 +19,18 @@ package org.kie.workbench.common.forms.jbpm.server.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.workbench.common.forms.editor.service.backend.impl.AbstractFormModelHandler;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMFormModel;
 import org.kie.workbench.common.forms.jbpm.model.authoring.JBPMVariable;
 import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 import org.kie.workbench.common.forms.service.FieldManager;
-import org.kie.workbench.common.forms.editor.service.backend.impl.AbstractFormModelHandler;
 
 public abstract class AbstractJBPMFormModelHandler<M extends JBPMFormModel> extends AbstractFormModelHandler<M> {
 
     protected FieldManager fieldManager;
 
-    public AbstractJBPMFormModelHandler( FieldManager fieldManager ) {
+    public AbstractJBPMFormModelHandler(FieldManager fieldManager) {
         this.fieldManager = fieldManager;
     }
 
@@ -43,30 +43,30 @@ public abstract class AbstractJBPMFormModelHandler<M extends JBPMFormModel> exte
     protected List<FieldDefinition> doGenerateModelFields() {
         List<FieldDefinition> fields = new ArrayList<>();
 
-        formModel.getVariables().forEach( variable -> {
-            FieldDefinition field = fieldManager.getDefinitionByDataType( new FieldDataType( variable.getType() ) );
+        formModel.getVariables().forEach(variable -> {
+            FieldDefinition field = fieldManager.getDefinitionByDataType(new FieldDataType(variable.getType()));
 
-            if ( field != null ) {
-                field.setName( variable.getName() );
-                field.setBinding( variable.getName() );
-                field.setLabel( variable.getName() );
-                fields.add( field );
+            if (field != null) {
+                field.setName(variable.getName());
+                field.setBinding(variable.getName());
+                field.setLabel(variable.getName());
+                fields.add(field);
             }
-        } );
+        });
 
         return fields;
     }
 
     @Override
-    protected FieldDefinition doCreateFieldDefinition( String fieldName ) {
+    protected FieldDefinition doCreateFieldDefinition(String fieldName) {
 
-        for ( JBPMVariable variable : formModel.getVariables() ) {
-            FieldDefinition field = fieldManager.getDefinitionByDataType( new FieldDataType( variable.getType() ) );
+        for (JBPMVariable variable : formModel.getVariables()) {
+            FieldDefinition field = fieldManager.getDefinitionByDataType(new FieldDataType(variable.getType()));
 
-            if ( field != null ) {
-                field.setName( variable.getName() );
-                field.setBinding( variable.getName() );
-                field.setLabel( variable.getName() );
+            if (field != null) {
+                field.setName(variable.getName());
+                field.setBinding(variable.getName());
+                field.setLabel(variable.getName());
                 return field;
             }
         }

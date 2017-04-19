@@ -26,5 +26,5 @@ public interface FormModelHandlerManager {
     /**
      * Retrieves the {@link FormModelHandler} associated with a given {@link FormModel} type.
      */
-    public FormModelHandler getFormModelHandler( Class<? extends FormModel> clazz );
+    public FormModelHandler getFormModelHandler(Class<? extends FormModel> clazz);
 }

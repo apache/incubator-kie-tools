@@ -42,11 +42,12 @@ public abstract class AbstractFormGroupDisplayerView extends Composite implement
     protected Element helpBlock = DOM.createDiv();
 
     @Override
-    public void render( Widget widget, FieldDefinition field ) {
-        this.getElement().setId( generateFormGroupId( field ) );
-        fieldLabel.setHtmlFor( widget.getElement().getId() );
-        fieldLabel.setInnerHTML( field.getLabel() );
-        fieldContainer.add( widget );
-        helpBlock.setId( generateHelpBlockId( field ) );
+    public void render(Widget widget,
+                       FieldDefinition field) {
+        this.getElement().setId(generateFormGroupId(field));
+        fieldLabel.setHtmlFor(widget.getElement().getId());
+        fieldLabel.setInnerHTML(field.getLabel());
+        fieldContainer.add(widget);
+        helpBlock.setId(generateHelpBlockId(field));
     }
 }

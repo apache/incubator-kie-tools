@@ -38,7 +38,8 @@ import org.kie.workbench.common.forms.jbpm.model.authoring.process.BusinessProce
 import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 
 @Templated
-public class JBPMFormModelCreationViewImpl implements JBPMFormModelCreationView, IsElement {
+public class JBPMFormModelCreationViewImpl implements JBPMFormModelCreationView,
+                                                      IsElement {
 
     @DataField
     DivElement formGroup = Document.get().createDivElement();
@@ -47,35 +48,36 @@ public class JBPMFormModelCreationViewImpl implements JBPMFormModelCreationView,
     DivElement modelHelpBlock = Document.get().createDivElement();
 
     @DataField
-    protected ValueListBox<JBPMProcessModel> processes = new ValueListBox( new Renderer<JBPMProcessModel>() {
+    protected ValueListBox<JBPMProcessModel> processes = new ValueListBox(new Renderer<JBPMProcessModel>() {
         @Override
-        public String render( JBPMProcessModel model ) {
-            if ( model == null ) {
+        public String render(JBPMProcessModel model) {
+            if (model == null) {
                 return "";
             }
             return model.getProcessFormModel().getProcessName();
         }
 
         @Override
-        public void render( JBPMProcessModel model, Appendable appendable ) throws IOException {
-            appendable.append( render( model ) );
+        public void render(JBPMProcessModel model,
+                           Appendable appendable) throws IOException {
+            appendable.append(render(model));
         }
-    } );
+    });
 
     @DataField
-    protected ValueListBox<JBPMFormModel> tasks = new ValueListBox<>( new Renderer<JBPMFormModel>() {
+    protected ValueListBox<JBPMFormModel> tasks = new ValueListBox<>(new Renderer<JBPMFormModel>() {
         @Override
-        public String render( JBPMFormModel model ) {
+        public String render(JBPMFormModel model) {
             String result = "";
 
-            if ( model != null ) {
-                if ( model instanceof BusinessProcessFormModel ) {
-                    result = translationService.getTranslation( Constants.JBPMFormModelCreationViewImplStartProcessForm );
-                } else if ( model instanceof TaskFormModel ) {
+            if (model != null) {
+                if (model instanceof BusinessProcessFormModel) {
+                    result = translationService.getTranslation(Constants.JBPMFormModelCreationViewImplStartProcessForm);
+                } else if (model instanceof TaskFormModel) {
                     TaskFormModel taskFormModel = (TaskFormModel) model;
                     result = taskFormModel.getTaskName();
                 }
-                if ( model.getFormName() != null && ! model.getFormName().isEmpty() ) {
+                if (model.getFormName() != null && !model.getFormName().isEmpty()) {
                     result += " ( " + model.getFormName() + " )";
                 }
             }
@@ -84,70 +86,72 @@ public class JBPMFormModelCreationViewImpl implements JBPMFormModelCreationView,
         }
 
         @Override
-        public void render( JBPMFormModel object, Appendable appendable ) throws IOException {
-            appendable.append( render( object ) );
+        public void render(JBPMFormModel object,
+                           Appendable appendable) throws IOException {
+            appendable.append(render(object));
         }
-    } );
+    });
 
     protected TranslationService translationService;
 
     protected Presenter presenter;
 
     @Inject
-    public JBPMFormModelCreationViewImpl( TranslationService translationService ) {
+    public JBPMFormModelCreationViewImpl(TranslationService translationService) {
         this.translationService = translationService;
     }
 
     @PostConstruct
     protected void init() {
-        processes.addValueChangeHandler( event -> {
+        processes.addValueChangeHandler(event -> {
             JBPMProcessModel model = processes.getValue();
-            if ( model != null ) {
+            if (model != null) {
                 List<JBPMFormModel> models = new ArrayList<JBPMFormModel>();
-                models.add( model.getProcessFormModel() );
-                models.addAll( model.getTaskFormModels() );
-                tasks.setValue( null );
-                tasks.setAcceptableValues( models );
+                models.add(model.getProcessFormModel());
+                models.addAll(model.getTaskFormModels());
+                tasks.setValue(null);
+                tasks.setAcceptableValues(models);
             } else {
-                tasks.setAcceptableValues( new ArrayList<>() );
-                tasks.setValue( null, true );
+                tasks.setAcceptableValues(new ArrayList<>());
+                tasks.setValue(null,
+                               true);
             }
-        } );
+        });
 
-        tasks.addValueChangeHandler( event -> {
-            presenter.setModel( event.getValue() );
+        tasks.addValueChangeHandler(event -> {
+            presenter.setModel(event.getValue());
             clearValidationErrors();
-        } );
+        });
     }
 
     @Override
-    public void init( Presenter presenter ) {
+    public void init(Presenter presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void setProcessModels( List<JBPMProcessModel> processModels ) {
-        processes.setValue( null );
-        processes.setAcceptableValues( processModels );
+    public void setProcessModels(List<JBPMProcessModel> processModels) {
+        processes.setValue(null);
+        processes.setAcceptableValues(processModels);
     }
 
     @Override
     public void reset() {
-        processes.setValue( null );
-        tasks.setValue( null );
-        tasks.setAcceptableValues( new ArrayList<>() );
+        processes.setValue(null);
+        tasks.setValue(null);
+        tasks.setAcceptableValues(new ArrayList<>());
         clearValidationErrors();
     }
 
     @Override
     public void clearValidationErrors() {
-        formGroup.removeClassName( ValidationState.ERROR.getCssName() );
-        modelHelpBlock.setInnerText( "" );
+        formGroup.removeClassName(ValidationState.ERROR.getCssName());
+        modelHelpBlock.setInnerText("");
     }
 
     @Override
-    public void setErrorMessage( String errorMessage ) {
-        formGroup.addClassName( ValidationState.ERROR.getCssName() );
-        modelHelpBlock.setInnerText( errorMessage );
+    public void setErrorMessage(String errorMessage) {
+        formGroup.addClassName(ValidationState.ERROR.getCssName());
+        modelHelpBlock.setInnerText(errorMessage);
     }
 }

@@ -26,7 +26,7 @@ public interface FormFieldProvider {
     /**
      * Retrieves the FormField identified by the given name
      */
-    FormField findFormField( String fieldName );
+    FormField findFormField(String fieldName);
 
     /**
      * Retrieves all the available fields on the Form

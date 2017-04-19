@@ -24,9 +24,10 @@ import org.kie.workbench.common.forms.jbpm.model.authoring.task.TaskFormModel;
 
 public interface BPMNFormModelGenerator {
 
-    BusinessProcessFormModel generateProcessFormModel( Definitions source );
+    BusinessProcessFormModel generateProcessFormModel(Definitions source);
 
-    List<TaskFormModel> generateTaskFormModels( Definitions source );
+    List<TaskFormModel> generateTaskFormModels(Definitions source);
 
-    TaskFormModel generateTaskFormModel( Definitions source, String taskId );
+    TaskFormModel generateTaskFormModel(Definitions source,
+                                        String taskId);
 }

@@ -22,4 +22,5 @@ import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.selectors.r
 
 public abstract class RadioGroupFieldRendererBase<F extends RadioGroupBaseDefinition<O>, O extends SelectorOption<T>, T>
         extends SelectorFieldRenderer<F, O, T> {
+
 }

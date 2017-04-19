@@ -32,12 +32,13 @@ import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.mvp.UberElement;
 
 @Templated
-public class FormModelCreationContainerViewImpl implements FormModelCreationContainerView, IsElement {
+public class FormModelCreationContainerViewImpl implements FormModelCreationContainerView,
+                                                           IsElement {
 
     private Presenter container;
 
     @DataField
-    private Radio modelCreator = new Radio( "modelCreatorRadio" );
+    private Radio modelCreator = new Radio("modelCreatorRadio");
 
     @DataField
     private DivElement viewPanel = Document.get().createDivElement();
@@ -49,41 +50,41 @@ public class FormModelCreationContainerViewImpl implements FormModelCreationCont
     private boolean hasCreationView;
 
     @Override
-    public void init( Presenter container ) {
+    public void init(Presenter container) {
         this.container = container;
 
-        modelCreator.setText( container.getFormModelLabel() );
+        modelCreator.setText(container.getFormModelLabel());
 
-        DOMUtil.removeAllChildren( viewContainer );
+        DOMUtil.removeAllChildren(viewContainer);
 
         UberElement creationView = container.getCreationView();
 
         hasCreationView = creationView != null;
 
-        if ( hasCreationView ) {
-            viewContainer.appendChild( creationView.getElement() );
+        if (hasCreationView) {
+            viewContainer.appendChild(creationView.getElement());
         }
     }
 
-    @EventHandler ( "modelCreator" )
-    public void onClick( ClickEvent event ) {
+    @EventHandler("modelCreator")
+    public void onClick(ClickEvent event) {
         container.selectManager();
     }
 
     @Override
     public void hideCreationView() {
-        viewPanel.getStyle().setDisplay( Style.Display.NONE );
+        viewPanel.getStyle().setDisplay(Style.Display.NONE);
     }
 
     @Override
     public void showCreationView() {
-        if ( hasCreationView ) {
-            viewPanel.getStyle().setDisplay( Style.Display.BLOCK );
+        if (hasCreationView) {
+            viewPanel.getStyle().setDisplay(Style.Display.BLOCK);
         }
     }
 
     @Override
     public void select() {
-        modelCreator.setValue( true );
+        modelCreator.setValue(true);
     }
 }

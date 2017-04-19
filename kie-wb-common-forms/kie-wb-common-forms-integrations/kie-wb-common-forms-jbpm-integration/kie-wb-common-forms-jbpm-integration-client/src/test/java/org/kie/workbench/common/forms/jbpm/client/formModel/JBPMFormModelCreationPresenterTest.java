@@ -38,7 +38,7 @@ import org.uberfire.mocks.CallerMock;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith ( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class JBPMFormModelCreationPresenterTest {
 
     private BPMFinderService finderService;
@@ -62,21 +62,24 @@ public class JBPMFormModelCreationPresenterTest {
 
         initFormModels();
 
-        path = mock( Path.class );
+        path = mock(Path.class);
 
-        finderService = mock( BPMFinderService.class );
+        finderService = mock(BPMFinderService.class);
 
-        when( finderService.getAvailableProcessModels( path ) ).thenReturn( formModels );
+        when(finderService.getAvailableProcessModels(path)).thenReturn(formModels);
 
-        finderServiceCallerMock = new CallerMock<>( finderService );
+        finderServiceCallerMock = new CallerMock<>(finderService);
 
-        view = mock( JBPMFormModelCreationView.class );
+        view = mock(JBPMFormModelCreationView.class);
 
-        translationService = mock( TranslationService.class );
+        translationService = mock(TranslationService.class);
 
-        newResourcePresenter = mock( NewResourcePresenter.class );
+        newResourcePresenter = mock(NewResourcePresenter.class);
 
-        presenter = new JBPMFormModelCreationPresenterManager( finderServiceCallerMock, view, translationService, newResourcePresenter );
+        presenter = new JBPMFormModelCreationPresenterManager(finderServiceCallerMock,
+                                                              view,
+                                                              translationService,
+                                                              newResourcePresenter);
     }
 
     @Test
@@ -84,17 +87,17 @@ public class JBPMFormModelCreationPresenterTest {
         presenter.getPriority();
 
         presenter.reset();
-        verify( view ).reset();
+        verify(view).reset();
 
-        presenter.init( path );
+        presenter.init(path);
 
         presenter.getLabel();
-        verify( translationService ).getTranslation( Constants.Process );
+        verify(translationService).getTranslation(Constants.Process);
 
-        verify( finderService ).getAvailableProcessModels( path );
-        verify( view ).setProcessModels( formModels );
+        verify(finderService).getAvailableProcessModels(path);
+        verify(view).setProcessModels(formModels);
 
-        presenter.setModel( new JBPMFormModel() {
+        presenter.setModel(new JBPMFormModel() {
             @Override
             public String getFormName() {
                 return "testFormName";
@@ -109,80 +112,109 @@ public class JBPMFormModelCreationPresenterTest {
             public String getName() {
                 return null;
             }
-        } );
+        });
 
-        verify( newResourcePresenter ).setResourceName( "testFormName" );
+        verify(newResourcePresenter).setResourceName("testFormName");
 
         presenter.reset();
 
         boolean isValid = presenter.isValid();
 
-        assertTrue( isValid );
-        verify( translationService, never() ).getTranslation( Constants.InvalidFormModel );
-
+        assertTrue(isValid);
+        verify(translationService,
+               never()).getTranslation(Constants.InvalidFormModel);
     }
 
     protected void initFormModels() {
         List<JBPMVariable> processVariables = new ArrayList<>();
 
-        JBPMVariable variable = new JBPMVariable( "name", String.class.getName() );
-        processVariables.add( variable );
-        variable = new JBPMVariable( "age", Integer.class.getName() );
-        processVariables.add( variable );
-        variable = new JBPMVariable( "twitter", String.class.getName() );
-        processVariables.add( variable );
-        variable = new JBPMVariable( "offering", Integer.class.getName() );
-        processVariables.add( variable );
-        variable = new JBPMVariable( "skills", String.class.getName() );
-        processVariables.add( variable );
-        variable = new JBPMVariable( "mail", String.class.getName() );
-        processVariables.add( variable );
-        variable = new JBPMVariable( "hr_score", Integer.class.getName() );
-        processVariables.add( variable );
-        variable = new JBPMVariable( "tech_score", Integer.class.getName() );
-        processVariables.add( variable );
-        variable = new JBPMVariable( "signed", Boolean.class.getName() );
-        processVariables.add( variable );
+        JBPMVariable variable = new JBPMVariable("name",
+                                                 String.class.getName());
+        processVariables.add(variable);
+        variable = new JBPMVariable("age",
+                                    Integer.class.getName());
+        processVariables.add(variable);
+        variable = new JBPMVariable("twitter",
+                                    String.class.getName());
+        processVariables.add(variable);
+        variable = new JBPMVariable("offering",
+                                    Integer.class.getName());
+        processVariables.add(variable);
+        variable = new JBPMVariable("skills",
+                                    String.class.getName());
+        processVariables.add(variable);
+        variable = new JBPMVariable("mail",
+                                    String.class.getName());
+        processVariables.add(variable);
+        variable = new JBPMVariable("hr_score",
+                                    Integer.class.getName());
+        processVariables.add(variable);
+        variable = new JBPMVariable("tech_score",
+                                    Integer.class.getName());
+        processVariables.add(variable);
+        variable = new JBPMVariable("signed",
+                                    Boolean.class.getName());
+        processVariables.add(variable);
 
-        BusinessProcessFormModel processFormModel = new BusinessProcessFormModel( "hiring", "hiring", processVariables );
+        BusinessProcessFormModel processFormModel = new BusinessProcessFormModel("hiring",
+                                                                                 "hiring",
+                                                                                 processVariables);
 
         TaskFormModel taskFormModel;
         JBPMVariable taskVariable;
         List<TaskFormModel> processTasks = new ArrayList<>();
         List<JBPMVariable> taskVariables = new ArrayList<>();
 
-        taskVariable = new JBPMVariable( "name", String.class.getName() );
-        taskVariables.add( taskVariable );
-        taskVariable = new JBPMVariable( "age", Integer.class.getName() );
-        taskVariables.add( taskVariable );
-        taskVariable = new JBPMVariable( "mail", String.class.getName() );
-        taskVariables.add( taskVariable );
-        taskVariable = new JBPMVariable( "hr_score", Integer.class.getName() );
-        taskVariables.add( taskVariable );
+        taskVariable = new JBPMVariable("name",
+                                        String.class.getName());
+        taskVariables.add(taskVariable);
+        taskVariable = new JBPMVariable("age",
+                                        Integer.class.getName());
+        taskVariables.add(taskVariable);
+        taskVariable = new JBPMVariable("mail",
+                                        String.class.getName());
+        taskVariables.add(taskVariable);
+        taskVariable = new JBPMVariable("hr_score",
+                                        Integer.class.getName());
+        taskVariables.add(taskVariable);
 
-        taskFormModel = new TaskFormModel( "hiring", "task", "HR Interview", "HRInterview-taskform", taskVariables );
-        processTasks.add( taskFormModel );
+        taskFormModel = new TaskFormModel("hiring",
+                                          "task",
+                                          "HR Interview",
+                                          "HRInterview-taskform",
+                                          taskVariables);
+        processTasks.add(taskFormModel);
 
         taskVariables = new ArrayList<>();
-        taskVariable = new JBPMVariable( "name", String.class.getName() );
-        taskVariables.add( taskVariable );
-        taskVariable = new JBPMVariable( "age", Integer.class.getName() );
-        taskVariables.add( taskVariable );
-        taskVariable = new JBPMVariable( "mail", String.class.getName() );
-        taskVariables.add( taskVariable );
-        taskVariable = new JBPMVariable( "skills", String.class.getName() );
-        taskVariables.add( taskVariable );
-        taskVariable = new JBPMVariable( "tech_score", Integer.class.getName() );
-        taskVariables.add( taskVariable );
-        taskVariable = new JBPMVariable( "twitter", Integer.class.getName() );
-        taskVariables.add( taskVariable );
+        taskVariable = new JBPMVariable("name",
+                                        String.class.getName());
+        taskVariables.add(taskVariable);
+        taskVariable = new JBPMVariable("age",
+                                        Integer.class.getName());
+        taskVariables.add(taskVariable);
+        taskVariable = new JBPMVariable("mail",
+                                        String.class.getName());
+        taskVariables.add(taskVariable);
+        taskVariable = new JBPMVariable("skills",
+                                        String.class.getName());
+        taskVariables.add(taskVariable);
+        taskVariable = new JBPMVariable("tech_score",
+                                        Integer.class.getName());
+        taskVariables.add(taskVariable);
+        taskVariable = new JBPMVariable("twitter",
+                                        Integer.class.getName());
+        taskVariables.add(taskVariable);
 
-        taskFormModel = new TaskFormModel( "hiring", "task", "Tech Interview", "TechInterview-taskform", taskVariables );
-        processTasks.add( taskFormModel );
+        taskFormModel = new TaskFormModel("hiring",
+                                          "task",
+                                          "Tech Interview",
+                                          "TechInterview-taskform",
+                                          taskVariables);
+        processTasks.add(taskFormModel);
 
-        JBPMProcessModel model = new JBPMProcessModel( processFormModel, processTasks );
+        JBPMProcessModel model = new JBPMProcessModel(processFormModel,
+                                                      processTasks);
 
-        formModels.add( model );
+        formModels.add(model);
     }
-
 }

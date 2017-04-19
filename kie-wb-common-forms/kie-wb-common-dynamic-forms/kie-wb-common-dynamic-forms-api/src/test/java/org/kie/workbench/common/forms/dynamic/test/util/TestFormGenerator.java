@@ -21,114 +21,114 @@ import java.util.Date;
 import org.kie.workbench.common.forms.dynamic.service.shared.FormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.test.model.Address;
 import org.kie.workbench.common.forms.dynamic.test.model.Employee;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
-import org.kie.workbench.common.forms.model.FormDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.checkBox.definition.CheckBoxFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.datePicker.definition.DatePickerFieldDefinition;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.textBox.definition.TextBoxFieldDefinition;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.relations.subForm.definition.SubFormFieldDefinition;
+import org.kie.workbench.common.forms.model.FormDefinition;
 
 public class TestFormGenerator {
 
-    public static FormRenderingContext getContextForEmployee( Employee employee ) {
+    public static FormRenderingContext getContextForEmployee(Employee employee) {
         FormDefinition form = getEmployeeForm();
         TestFormRenderingContext context = new TestFormRenderingContext();
-        context.setRootForm( form );
-        context.setModel( employee );
-        context.getAvailableForms().put( form.getId(), form );
+        context.setRootForm(form);
+        context.setModel(employee);
+        context.getAvailableForms().put(form.getId(),
+                                        form);
 
         form = getAddressForm();
-        context.getAvailableForms().put( form.getId(), form );
+        context.getAvailableForms().put(form.getId(),
+                                        form);
 
         return context;
     }
 
     public static FormDefinition getEmployeeForm() {
         FormDefinition form = new FormDefinition();
-        form.setName( "Employee" );
-        form.setId( "Employee" );
+        form.setName("Employee");
+        form.setId("Employee");
 
         TextBoxFieldDefinition name = new TextBoxFieldDefinition();
-        name.setId( "name" );
-        name.setName( "name" );
-        name.setLabel( "Name" );
-        name.setPlaceHolder( "Name" );
-        name.setBinding( "name" );
-        name.setStandaloneClassName( String.class.getName() );
+        name.setId("name");
+        name.setName("name");
+        name.setLabel("Name");
+        name.setPlaceHolder("Name");
+        name.setBinding("name");
+        name.setStandaloneClassName(String.class.getName());
 
         TextBoxFieldDefinition lastName = new TextBoxFieldDefinition();
-        lastName.setId( "surname" );
-        lastName.setName( "surname" );
-        lastName.setLabel( "Surname" );
-        lastName.setPlaceHolder( "SurName" );
-        lastName.setBinding( "surname" );
-        lastName.setStandaloneClassName( String.class.getName() );
+        lastName.setId("surname");
+        lastName.setName("surname");
+        lastName.setLabel("Surname");
+        lastName.setPlaceHolder("SurName");
+        lastName.setBinding("surname");
+        lastName.setStandaloneClassName(String.class.getName());
 
         DatePickerFieldDefinition birthday = new DatePickerFieldDefinition();
-        birthday.setId( "birthday" );
-        birthday.setName( "birthday" );
-        birthday.setLabel( "Birthday" );
-        birthday.setBinding( "birthday" );
-        birthday.setStandaloneClassName( Date.class.getName() );
+        birthday.setId("birthday");
+        birthday.setName("birthday");
+        birthday.setLabel("Birthday");
+        birthday.setBinding("birthday");
+        birthday.setStandaloneClassName(Date.class.getName());
 
         TextBoxFieldDefinition age = new TextBoxFieldDefinition();
-        age.setId( "age" );
-        age.setName( "age" );
-        age.setLabel( "Age" );
-        age.setPlaceHolder( "age" );
-        age.setBinding( "age.value" );
-        age.setStandaloneClassName( Integer.class.getName() );
+        age.setId("age");
+        age.setName("age");
+        age.setLabel("Age");
+        age.setPlaceHolder("age");
+        age.setBinding("age.value");
+        age.setStandaloneClassName(Integer.class.getName());
 
         CheckBoxFieldDefinition married = new CheckBoxFieldDefinition();
         married.setId("married");
-        married.setName( "married" );
-        married.setLabel( "Married" );
-        married.setBinding( "married" );
-        married.setStandaloneClassName( Boolean.class.getName() );
+        married.setName("married");
+        married.setLabel("Married");
+        married.setBinding("married");
+        married.setStandaloneClassName(Boolean.class.getName());
 
         SubFormFieldDefinition address = new SubFormFieldDefinition();
-        address.setId( "address" );
-        address.setName( "address" );
-        address.setLabel( "Address" );
-        address.setBinding( "address" );
-        address.setNestedForm( "Address" );
-        address.setStandaloneClassName( Address.class.getName() );
+        address.setId("address");
+        address.setName("address");
+        address.setLabel("Address");
+        address.setBinding("address");
+        address.setNestedForm("Address");
+        address.setStandaloneClassName(Address.class.getName());
 
-        form.getFields().add( name );
-        form.getFields().add( lastName );
-        form.getFields().add( birthday );
-        form.getFields().add( age );
-        form.getFields().add( married );
-        form.getFields().add( address );
+        form.getFields().add(name);
+        form.getFields().add(lastName);
+        form.getFields().add(birthday);
+        form.getFields().add(age);
+        form.getFields().add(married);
+        form.getFields().add(address);
 
         return form;
     }
 
     public static FormDefinition getAddressForm() {
         FormDefinition form = new FormDefinition();
-        form.setName( "Address" );
-        form.setId( "Address" );
+        form.setName("Address");
+        form.setId("Address");
 
         TextBoxFieldDefinition name = new TextBoxFieldDefinition();
-        name.setId( "street" );
-        name.setName( "street" );
-        name.setLabel( "Street Name" );
-        name.setPlaceHolder( "Street Name" );
-        name.setBinding( "street" );
-        name.setStandaloneClassName( String.class.getName() );
+        name.setId("street");
+        name.setName("street");
+        name.setLabel("Street Name");
+        name.setPlaceHolder("Street Name");
+        name.setBinding("street");
+        name.setStandaloneClassName(String.class.getName());
 
         TextBoxFieldDefinition num = new TextBoxFieldDefinition();
-        num.setId( "num" );
-        num.setName( "num" );
-        num.setLabel( "#" );
-        num.setPlaceHolder( "#" );
-        num.setBinding( "num" );
-        num.setStandaloneClassName( Integer.class.getName() );
+        num.setId("num");
+        num.setName("num");
+        num.setLabel("#");
+        num.setPlaceHolder("#");
+        num.setBinding("num");
+        num.setStandaloneClassName(Integer.class.getName());
 
-
-        form.getFields().add( name );
-        form.getFields().add( num );
+        form.getFields().add(name);
+        form.getFields().add(num);
 
         return form;
     }
-
 }

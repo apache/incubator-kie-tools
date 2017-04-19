@@ -28,7 +28,8 @@ import org.uberfire.client.mvp.UberElement;
 import org.uberfire.commons.validation.PortablePreconditions;
 
 @Dependent
-public class FormModelCreationContainer implements FormModelCreationContainerView.Presenter, IsElement {
+public class FormModelCreationContainer implements FormModelCreationContainerView.Presenter,
+                                                   IsElement {
 
     private FormModelCreationContainerView view;
 
@@ -37,18 +38,21 @@ public class FormModelCreationContainer implements FormModelCreationContainerVie
     private FormModelCreationViewManager creationViewManager;
 
     @Inject
-    public FormModelCreationContainer( FormModelCreationContainerView view ) {
+    public FormModelCreationContainer(FormModelCreationContainerView view) {
         this.view = view;
     }
 
-    public void setup( FormModelCreationViewManager creationViewManager, SelectModelCreatorManagerCallback callback ) {
-        PortablePreconditions.checkNotNull( "creationViewManager", creationViewManager );
-        PortablePreconditions.checkNotNull( "SelectModelCreatorManagerCallback", callback );
+    public void setup(FormModelCreationViewManager creationViewManager,
+                      SelectModelCreatorManagerCallback callback) {
+        PortablePreconditions.checkNotNull("creationViewManager",
+                                           creationViewManager);
+        PortablePreconditions.checkNotNull("SelectModelCreatorManagerCallback",
+                                           callback);
 
         this.creationViewManager = creationViewManager;
         this.callback = callback;
 
-        view.init( this );
+        view.init(this);
     }
 
     public FormModelCreationViewManager getCreationViewManager() {
@@ -58,7 +62,7 @@ public class FormModelCreationContainer implements FormModelCreationContainerVie
     @Override
     public void selectManager() {
         view.select();
-        callback.selectContainerCallback( this );
+        callback.selectContainerCallback(this);
     }
 
     public void showCreationView() {
@@ -88,7 +92,7 @@ public class FormModelCreationContainer implements FormModelCreationContainerVie
         return view.getElement();
     }
 
-    public void initData( Path projectPath ) {
-        creationViewManager.init( projectPath );
+    public void initData(Path projectPath) {
+        creationViewManager.init(projectPath);
     }
 }

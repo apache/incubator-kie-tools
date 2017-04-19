@@ -23,7 +23,8 @@ import org.kie.workbench.common.forms.commons.layout.Dynamic;
 
 @Dynamic
 @Dependent
-public class DynamicFormLayoutTemplateGenerator extends AbstractFormLayoutTemplateGenerator{
+public class DynamicFormLayoutTemplateGenerator extends AbstractFormLayoutTemplateGenerator {
+
     public static final String DRAGGABLE_TYPE = "org.kie.workbench.common.forms.dynamic.client.rendering.FieldLayoutComponent";
 
     @Override

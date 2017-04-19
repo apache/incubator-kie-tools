@@ -17,5 +17,6 @@
 package org.kie.workbench.common.forms.metaModel;
 
 public @interface CheckBox {
+
     String label();
 }

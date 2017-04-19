@@ -37,10 +37,10 @@ public class TextBoxFieldRenderer extends FieldRenderer<TextBoxBaseDefinition> {
     @Override
     public void initInputWidget() {
         textBox = new TextBox();
-        textBox.setId( field.getId() );
-        textBox.setPlaceholder( field.getPlaceHolder() );
-        textBox.setMaxLength( field.getMaxLength() );
-        textBox.setEnabled( !field.getReadOnly() );
+        textBox.setId(field.getId());
+        textBox.setPlaceholder(field.getPlaceHolder());
+        textBox.setMaxLength(field.getMaxLength());
+        textBox.setEnabled(!field.getReadOnly());
     }
 
     @Override
@@ -59,7 +59,7 @@ public class TextBoxFieldRenderer extends FieldRenderer<TextBoxBaseDefinition> {
     }
 
     @Override
-    protected void setReadOnly( boolean readOnly ) {
-        textBox.setEnabled( !readOnly );
+    protected void setReadOnly(boolean readOnly) {
+        textBox.setEnabled(!readOnly);
     }
 }

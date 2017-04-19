@@ -25,7 +25,9 @@ public abstract class AbstractFormDisplayer implements FormDisplayer {
     protected FormDisplayerCallback callback;
 
     @Override
-    public void display( String title, IsFormView formView, FormDisplayerCallback callback ) {
+    public void display(String title,
+                        IsFormView formView,
+                        FormDisplayerCallback callback) {
         this.title = title;
         this.formView = formView;
         this.callback = callback;
@@ -48,8 +50,8 @@ public abstract class AbstractFormDisplayer implements FormDisplayer {
     protected abstract void hide();
 
     public void submitForm() {
-        if ( formView.isValid() ) {
-            if ( callback != null ) {
+        if (formView.isValid()) {
+            if (callback != null) {
                 callback.onAccept();
             }
             formView = null;
@@ -60,7 +62,7 @@ public abstract class AbstractFormDisplayer implements FormDisplayer {
 
     @Override
     public void cancel() {
-        if ( callback != null ) {
+        if (callback != null) {
             callback.onCancel();
         }
         hide();

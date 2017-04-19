@@ -33,7 +33,8 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 @Templated
 public class DynamicFormRendererViewImpl extends Composite implements DynamicFormRenderer.DynamicFormRendererView {
 
-    @Inject @Any
+    @Inject
+    @Any
     private FormLayoutGenerator layoutGenerator;
 
     @Inject
@@ -43,30 +44,30 @@ public class DynamicFormRendererViewImpl extends Composite implements DynamicFor
     private DynamicFormRenderer presenter;
 
     @Override
-    public void setPresenter( DynamicFormRenderer presenter ) {
+    public void setPresenter(DynamicFormRenderer presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void render( FormRenderingContext context ) {
+    public void render(FormRenderingContext context) {
         layoutGenerator.clear();
         formContent.clear();
 
-        if( context != null ) {
-            formContent.add( layoutGenerator.buildLayout( context ) );
+        if (context != null) {
+            formContent.add(layoutGenerator.buildLayout(context));
         }
     }
 
     @Override
     public void bind() {
-        for ( FieldLayoutComponent fieldComponent : layoutGenerator.getLayoutFields() ) {
-            presenter.bind( fieldComponent.getFieldRenderer() );
+        for (FieldLayoutComponent fieldComponent : layoutGenerator.getLayoutFields()) {
+            presenter.bind(fieldComponent.getFieldRenderer());
         }
     }
 
     @Override
-    public FieldLayoutComponent getFieldLayoutComponentForField( FieldDefinition field ) {
-        return layoutGenerator.getFieldLayoutComponentForField( field );
+    public FieldLayoutComponent getFieldLayoutComponentForField(FieldDefinition field) {
+        return layoutGenerator.getFieldLayoutComponentForField(field);
     }
 
     @Override

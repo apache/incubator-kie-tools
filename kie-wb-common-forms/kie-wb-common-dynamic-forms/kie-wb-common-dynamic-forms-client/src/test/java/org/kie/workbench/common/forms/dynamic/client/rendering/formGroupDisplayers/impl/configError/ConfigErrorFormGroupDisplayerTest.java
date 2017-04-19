@@ -27,7 +27,7 @@ import org.mockito.Mock;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class ConfigErrorFormGroupDisplayerTest {
 
     @Mock
@@ -37,31 +37,32 @@ public class ConfigErrorFormGroupDisplayerTest {
 
     @Before
     public void setUp() {
-        presenter = new ConfigErrorFormGroupDisplayer( view );
+        presenter = new ConfigErrorFormGroupDisplayer(view);
     }
 
     @Test
     public void testDefaultFuncionallity() {
         List<String> errors = new ArrayList<>();
 
-        presenter.render( errors );
+        presenter.render(errors);
 
-        verify( view ).render( errors );
+        verify(view).render(errors);
 
         presenter.asWidget();
 
-        verify( view ).asWidget();
+        verify(view).asWidget();
     }
 
     @Test
     public void testDefaultFuncionallityWithNullErrors() {
 
-        presenter.render( null );
+        presenter.render(null);
 
-        verify( view, never() ).render( null );
+        verify(view,
+               never()).render(null);
 
         presenter.asWidget();
 
-        verify( view ).asWidget();
+        verify(view).asWidget();
     }
 }

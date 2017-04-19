@@ -65,13 +65,14 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
     private BaseModal modal;
 
     @Inject
-    public FieldPropertiesRendererViewImpl( DynamicFormRenderer formRenderer, TranslationService translationService ) {
+    public FieldPropertiesRendererViewImpl(DynamicFormRenderer formRenderer,
+                                           TranslationService translationService) {
         this.formRenderer = formRenderer;
         this.translationService = translationService;
     }
 
     protected void closeModal() {
-        if ( formRenderer.isValid() ) {
+        if (formRenderer.isValid()) {
             helper.onClose();
             modal.hide();
         }
@@ -81,31 +82,32 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
     protected void init() {
 
         modal = new BaseModal();
-        modal.setClosable( false );
-        modal.setBody( this );
-        modal.add( new ModalFooterOKButton( new Command() {
+        modal.setClosable(false);
+        modal.setBody(this);
+        modal.add(new ModalFooterOKButton(new Command() {
             @Override
             public void execute() {
                 closeModal();
             }
-        } ) );
+        }));
 
-        formContent.add( formRenderer );
+        formContent.add(formRenderer);
     }
 
     @Override
-    public void setPresenter( FieldPropertiesRenderer presenter ) {
+    public void setPresenter(FieldPropertiesRenderer presenter) {
         this.presenter = presenter;
     }
 
     @Override
-    public void render( FieldPropertiesRendererHelper helper, FormEditorRenderingContext renderingContext ) {
+    public void render(FieldPropertiesRendererHelper helper,
+                       FormEditorRenderingContext renderingContext) {
         this.helper = helper;
-        formRenderer.render( renderingContext );
+        formRenderer.render(renderingContext);
         initFieldTypeList();
         initFieldBindings();
 
-        modal.setTitle( translationService.getTranslation( FormEditorConstants.FieldPropertiesRendererViewImplTitle ) );
+        modal.setTitle(translationService.getTranslation(FormEditorConstants.FieldPropertiesRendererViewImplTitle));
     }
 
     @Override
@@ -117,34 +119,34 @@ public class FieldPropertiesRendererViewImpl extends Composite implements FieldP
         fieldType.clear();
         Collection<String> types = helper.getCompatibleFieldTypes();
         int i = 0;
-        for ( String type : types ) {
-            fieldType.addItem( type );
-            if ( type.equals( helper.getCurrentField().getFieldType().getTypeName() )) {
-                fieldType.setSelectedIndex( i );
+        for (String type : types) {
+            fieldType.addItem(type);
+            if (type.equals(helper.getCurrentField().getFieldType().getTypeName())) {
+                fieldType.setSelectedIndex(i);
             }
             i++;
         }
     }
 
-    @EventHandler( "fieldType" )
-    public void onTypeChange( ChangeEvent event ) {
-        helper.onFieldTypeChange( fieldType.getSelectedValue() );
+    @EventHandler("fieldType")
+    public void onTypeChange(ChangeEvent event) {
+        helper.onFieldTypeChange(fieldType.getSelectedValue());
     }
 
-    @EventHandler( "fieldBinding" )
-    public void onBindingChange( ChangeEvent event ) {
-        helper.onFieldBindingChange( fieldBinding.getSelectedValue() );
+    @EventHandler("fieldBinding")
+    public void onBindingChange(ChangeEvent event) {
+        helper.onFieldBindingChange(fieldBinding.getSelectedValue());
         initFieldBindings();
     }
 
     protected void initFieldBindings() {
         fieldBinding.clear();
         List<String> fields = helper.getAvailableFields();
-        for ( int i = 0; i < fields.size(); i++ ) {
-            String field = fields.get( i );
-            fieldBinding.addItem( field );
-            if ( field.equals( helper.getCurrentField().getBinding() )) {
-                fieldBinding.setSelectedIndex( i );
+        for (int i = 0; i < fields.size(); i++) {
+            String field = fields.get(i);
+            fieldBinding.addItem(field);
+            if (field.equals(helper.getCurrentField().getBinding())) {
+                fieldBinding.setSelectedIndex(i);
             }
         }
     }

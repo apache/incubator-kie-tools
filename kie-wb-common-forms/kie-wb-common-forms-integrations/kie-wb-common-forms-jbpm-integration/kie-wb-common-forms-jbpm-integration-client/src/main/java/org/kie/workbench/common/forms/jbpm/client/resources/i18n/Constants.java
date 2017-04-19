@@ -20,13 +20,12 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 
 public interface Constants {
 
-    @TranslationKey( defaultValue = "Business Process")
+    @TranslationKey(defaultValue = "Business Process")
     public static final String Process = "JBPMFormModelCreationPresenter.Process";
 
-    @TranslationKey( defaultValue = "Start Process Form")
+    @TranslationKey(defaultValue = "Start Process Form")
     public static final String JBPMFormModelCreationViewImplStartProcessForm = "JBPMFormModelCreationViewImpl.StartProcessForm";
 
-    @TranslationKey( defaultValue = "There's no process or task selected")
+    @TranslationKey(defaultValue = "There's no process or task selected")
     public static final String InvalidFormModel = "JBPMFormModelCreationPresenter.InvalidFormModel";
-
 }

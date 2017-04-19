@@ -21,5 +21,6 @@ import org.kie.workbench.common.forms.model.FieldDefinition;
 
 public interface FormGroupDisplayerWidgetAware extends FormGroupDisplayer {
 
-    void render( Widget widget, FieldDefinition field );
+    void render(Widget widget,
+                FieldDefinition field);
 }

@@ -43,31 +43,33 @@ public class FormModelsViewImpl extends Composite implements FormModelsView {
     protected List<FormModelCreationContainer> creationViews;
 
     @Override
-    public void setCreationViews( List<FormModelCreationContainer> creationViews ) {
+    public void setCreationViews(List<FormModelCreationContainer> creationViews) {
         this.creationViews = creationViews;
 
         render();
     }
 
     protected void render() {
-        DOMUtil.removeAllChildren( content );
+        DOMUtil.removeAllChildren(content);
 
-        creationViews.forEach( container -> {
+        creationViews.forEach(container -> {
 
-            HTMLElement row = document.createElement( "div" );
-            DOMUtil.addCSSClass( row, Styles.ROW );
+            HTMLElement row = document.createElement("div");
+            DOMUtil.addCSSClass(row,
+                                Styles.ROW);
 
-            HTMLElement col = document.createElement( "div" );
-            DOMUtil.addCSSClass( col, ColumnSize.MD_12.getCssName() );
+            HTMLElement col = document.createElement("div");
+            DOMUtil.addCSSClass(col,
+                                ColumnSize.MD_12.getCssName());
 
-            col.appendChild( container.getElement() );
+            col.appendChild(container.getElement());
 
-            row.appendChild( col );
+            row.appendChild(col);
 
-            content.appendChild( row );
-        } );
+            content.appendChild(row);
+        });
 
-        creationViews.get( 0 ).selectManager();
+        creationViews.get(0).selectManager();
     }
 
     @Override

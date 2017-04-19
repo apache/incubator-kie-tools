@@ -38,7 +38,7 @@ public interface FormModelCreationViewManager<F extends FormModel> {
     /**
      * Initializes the view
      */
-    void init( Path projectPath );
+    void init(Path projectPath);
 
     /**
      * Retrieves a FormModel instance

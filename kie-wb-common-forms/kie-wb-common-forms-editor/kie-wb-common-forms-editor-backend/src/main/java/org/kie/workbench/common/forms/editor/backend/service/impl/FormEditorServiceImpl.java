@@ -57,9 +57,10 @@ import org.uberfire.workbench.events.ResourceOpenedEvent;
 @Service
 @ApplicationScoped
 public class FormEditorServiceImpl extends KieService<FormModelerContent> implements FormEditorService {
+
     public final static String RESOURCE_PATH = "src/main/resources/";
 
-    private Logger log = LoggerFactory.getLogger( FormEditorServiceImpl.class );
+    private Logger log = LoggerFactory.getLogger(FormEditorServiceImpl.class);
 
     private IOService ioService;
 
@@ -80,15 +81,15 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
     protected VFSFormFinderService vfsFormFinderService;
 
     @Inject
-    public FormEditorServiceImpl( @Named("ioStrategy") IOService ioService,
-                                  User identity,
-                                  SessionInfo sessionInfo,
-                                  Event<ResourceOpenedEvent> resourceOpenedEvent,
-                                  FieldManager fieldManager,
-                                  FormModelHandlerManager modelHandlerManager,
-                                  KieProjectService projectService,
-                                  FormDefinitionSerializer formDefinitionSerializer,
-                                  VFSFormFinderService vfsFormFinderService ) {
+    public FormEditorServiceImpl(@Named("ioStrategy") IOService ioService,
+                                 User identity,
+                                 SessionInfo sessionInfo,
+                                 Event<ResourceOpenedEvent> resourceOpenedEvent,
+                                 FieldManager fieldManager,
+                                 FormModelHandlerManager modelHandlerManager,
+                                 KieProjectService projectService,
+                                 FormDefinitionSerializer formDefinitionSerializer,
+                                 VFSFormFinderService vfsFormFinderService) {
         this.ioService = ioService;
         this.identity = identity;
         this.sessionInfo = sessionInfo;
@@ -101,121 +102,140 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
     }
 
     @Override
-    public FormModelerContent loadContent( Path path ) {
-        return super.loadContent( path );
+    public FormModelerContent loadContent(Path path) {
+        return super.loadContent(path);
     }
 
     @Inject
     private CommentedOptionFactory commentedOptionFactory;
 
     @Override
-    public Path createForm( Path path, String formName, FormModel formModel ) {
-        org.uberfire.java.nio.file.Path kiePath = Paths.convert( path ).resolve(formName);
+    public Path createForm(Path path,
+                           String formName,
+                           FormModel formModel) {
+        org.uberfire.java.nio.file.Path kiePath = Paths.convert(path).resolve(formName);
         try {
             if (ioService.exists(kiePath)) {
                 throw new FileAlreadyExistsException(kiePath.toString());
             }
-            FormDefinition form = new FormDefinition( formModel );
+            FormDefinition form = new FormDefinition(formModel);
 
             form.setId(UIDGenerator.generateUID());
 
-            form.setName( formName.substring( 0, formName.lastIndexOf( "." ) ) );
+            form.setName(formName.substring(0,
+                                            formName.lastIndexOf(".")));
 
-            ioService.write( kiePath, formDefinitionSerializer.serialize( form ),
-                    commentedOptionFactory.makeCommentedOption( "" ) );
+            ioService.write(kiePath,
+                            formDefinitionSerializer.serialize(form),
+                            commentedOptionFactory.makeCommentedOption(""));
 
             return Paths.convert(kiePath);
-        } catch ( Exception e ) {
-            throw ExceptionUtilities.handleException( e );
+        } catch (Exception e) {
+            throw ExceptionUtilities.handleException(e);
         }
     }
 
     @Override
-    public void delete( Path path, String comment ) {
+    public void delete(Path path,
+                       String comment) {
 
     }
 
     @Override
-    public Path rename( Path path, String newName, String comment ) {
+    public Path rename(Path path,
+                       String newName,
+                       String comment) {
         return null;
     }
 
     @Override
-    public Path save( Path path, FormModelerContent content, Metadata metadata, String comment ) {
-        ioService.write(Paths.convert(path), formDefinitionSerializer.serialize( content.getDefinition() ),
-                metadataService.setUpAttributes(path, metadata), commentedOptionFactory.makeCommentedOption(comment));
+    public Path save(Path path,
+                     FormModelerContent content,
+                     Metadata metadata,
+                     String comment) {
+        ioService.write(Paths.convert(path),
+                        formDefinitionSerializer.serialize(content.getDefinition()),
+                        metadataService.setUpAttributes(path,
+                                                        metadata),
+                        commentedOptionFactory.makeCommentedOption(comment));
 
         return path;
     }
 
     @Override
-    protected FormModelerContent constructContent( Path path, Overview overview ) {
+    protected FormModelerContent constructContent(Path path,
+                                                  Overview overview) {
         try {
             org.uberfire.java.nio.file.Path kiePath = Paths.convert(path);
 
-            FormDefinition form = findForm( kiePath );
+            FormDefinition form = findForm(kiePath);
 
             FormModelerContent result = new FormModelerContent();
-            result.setDefinition( form );
-            result.setPath( path );
-            result.setOverview( overview );
+            result.setDefinition(form);
+            result.setPath(path);
+            result.setOverview(overview);
 
-            FormEditorRenderingContext context = createRenderingContext( form, path );
+            FormEditorRenderingContext context = createRenderingContext(form,
+                                                                        path);
 
-            result.setRenderingContext( context );
+            result.setRenderingContext(context);
 
+            if (form.getModel() != null) {
 
-            if ( form.getModel() != null ) {
+                FormModelHandler formModelHandler = getHandlerForForm(form,
+                                                                      path);
 
-                FormModelHandler formModelHandler = getHandlerForForm( form, path );
-
-                if ( formModelHandler != null ) {
+                if (formModelHandler != null) {
                     List<FieldDefinition> modelFields = formModelHandler.getAllFormModelFields();
 
                     Map<String, List<FieldDefinition>> availableFields = new HashMap<String, List<FieldDefinition>>();
                     List<FieldDefinition> availableModelFields = new ArrayList<>();
 
-                    availableFields.put( form.getModel().getName(), availableModelFields );
+                    availableFields.put(form.getModel().getName(),
+                                        availableModelFields);
 
-                    modelFields.forEach( fieldDefinition -> {
-                        if ( form.getFieldByName( fieldDefinition.getName() ) == null ) {
-                            availableModelFields.add( fieldDefinition );
+                    modelFields.forEach(fieldDefinition -> {
+                        if (form.getFieldByName(fieldDefinition.getName()) == null) {
+                            availableModelFields.add(fieldDefinition);
                         }
-                    } );
+                    });
 
-                    result.setAvailableFields( availableFields );
+                    result.setAvailableFields(availableFields);
                 }
             }
 
-            resourceOpenedEvent.fire(new ResourceOpenedEvent( path, sessionInfo ));
+            resourceOpenedEvent.fire(new ResourceOpenedEvent(path,
+                                                             sessionInfo));
 
             return result;
         } catch (Exception e) {
-            log.warn("Error loading form " + path.toURI(), e);
+            log.warn("Error loading form " + path.toURI(),
+                     e);
         }
         return null;
     }
 
-    protected FormEditorRenderingContext createRenderingContext( FormDefinition form, Path formPath ) {
-        FormEditorRenderingContext context = new FormEditorRenderingContext( formPath );
-        context.setRootForm( form );
+    protected FormEditorRenderingContext createRenderingContext(FormDefinition form,
+                                                                Path formPath) {
+        FormEditorRenderingContext context = new FormEditorRenderingContext(formPath);
+        context.setRootForm(form);
 
-        List<FormDefinition> allForms = vfsFormFinderService.findAllForms( formPath );
+        List<FormDefinition> allForms = vfsFormFinderService.findAllForms(formPath);
 
-        for ( FormDefinition vfsForm : allForms ) {
-            if ( !vfsForm.getId().equals( form.getId() ) ) {
-                context.getAvailableForms().put( vfsForm.getId(), vfsForm );
+        for (FormDefinition vfsForm : allForms) {
+            if (!vfsForm.getId().equals(form.getId())) {
+                context.getAvailableForms().put(vfsForm.getId(),
+                                                vfsForm);
             }
         }
         return context;
     }
 
+    protected FormDefinition findForm(org.uberfire.java.nio.file.Path path) throws Exception {
+        String template = ioService.readAllString(path).trim();
 
-    protected FormDefinition findForm( org.uberfire.java.nio.file.Path path ) throws Exception {
-        String template = ioService.readAllString( path ).trim();
-
-        FormDefinition form = formDefinitionSerializer.deserialize( template );
-        if ( form == null ) {
+        FormDefinition form = formDefinitionSerializer.deserialize(template);
+        if (form == null) {
             form = new FormDefinition();
             form.setId(UIDGenerator.generateUID());
         }
@@ -223,13 +243,15 @@ public class FormEditorServiceImpl extends KieService<FormModelerContent> implem
         return form;
     }
 
-    protected FormModelHandler getHandlerForForm( FormDefinition form, Path path ) {
+    protected FormModelHandler getHandlerForForm(FormDefinition form,
+                                                 Path path) {
 
-        Optional<FormModelHandler> optional = Optional.ofNullable( modelHandlerManager.getFormModelHandler( form.getModel().getClass() ) );
+        Optional<FormModelHandler> optional = Optional.ofNullable(modelHandlerManager.getFormModelHandler(form.getModel().getClass()));
 
-        if ( optional.isPresent() ) {
-            optional.get().init( form.getModel(), path );
+        if (optional.isPresent()) {
+            optional.get().init(form.getModel(),
+                                path);
         }
-        return optional.orElse( null );
+        return optional.orElse(null);
     }
 }

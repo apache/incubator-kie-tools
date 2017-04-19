@@ -20,10 +20,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface IsFormView<T> extends IsWidget {
 
-    public void setModel( T model );
+    public void setModel(T model);
 
     public T getModel();
 
     public boolean isValid();
-
 }

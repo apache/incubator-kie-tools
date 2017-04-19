@@ -29,7 +29,8 @@ import org.uberfire.ext.layout.editor.client.api.LayoutDragComponent;
 import org.uberfire.ext.layout.editor.client.api.RenderingContext;
 
 @Dependent
-public class FieldLayoutComponent implements FormLayoutComponent, LayoutDragComponent {
+public class FieldLayoutComponent implements FormLayoutComponent,
+                                             LayoutDragComponent {
 
     protected FlowPanel content = new FlowPanel();
 
@@ -45,7 +46,8 @@ public class FieldLayoutComponent implements FormLayoutComponent, LayoutDragComp
 
     protected FormRenderingContext renderingContext;
 
-    public void init( FormRenderingContext renderingContext, FieldDefinition field ) {
+    public void init(FormRenderingContext renderingContext,
+                     FieldDefinition field) {
         this.renderingContext = renderingContext;
 
         this.field = field;
@@ -54,9 +56,10 @@ public class FieldLayoutComponent implements FormLayoutComponent, LayoutDragComp
     }
 
     protected void initComponent() {
-        fieldRenderer = fieldRendererManager.getRendererForField( field );
-        if ( fieldRenderer != null ) {
-            fieldRenderer.init( renderingContext, field );
+        fieldRenderer = fieldRendererManager.getRendererForField(field);
+        if (fieldRenderer != null) {
+            fieldRenderer.init(renderingContext,
+                               field);
         }
     }
 
@@ -65,11 +68,11 @@ public class FieldLayoutComponent implements FormLayoutComponent, LayoutDragComp
 
         String name = "";
 
-        if ( field.getBinding() != null ) {
+        if (field.getBinding() != null) {
             name = field.getBinding();
         } else {
-            name = translationService.getTranslation( fieldRenderer.getName() );
-            if ( name == null || name.isEmpty() ) {
+            name = translationService.getTranslation(fieldRenderer.getName());
+            if (name == null || name.isEmpty()) {
                 name = fieldRenderer.getName();
             }
         }
@@ -78,17 +81,17 @@ public class FieldLayoutComponent implements FormLayoutComponent, LayoutDragComp
     }
 
     @Override
-    public IsWidget getPreviewWidget( RenderingContext ctx ) {
-        return generateContent( ctx );
+    public IsWidget getPreviewWidget(RenderingContext ctx) {
+        return generateContent(ctx);
     }
 
     @Override
-    public IsWidget getShowWidget( RenderingContext ctx ) {
-        return generateContent( ctx );
+    public IsWidget getShowWidget(RenderingContext ctx) {
+        return generateContent(ctx);
     }
 
-    protected IsWidget generateContent( RenderingContext ctx ) {
-        if ( fieldRenderer != null ) {
+    protected IsWidget generateContent(RenderingContext ctx) {
+        if (fieldRenderer != null) {
             renderContent();
         }
 
@@ -97,7 +100,7 @@ public class FieldLayoutComponent implements FormLayoutComponent, LayoutDragComp
 
     protected void renderContent() {
         content.clear();
-        content.add( fieldRenderer.renderWidget() );
+        content.add(fieldRenderer.renderWidget());
     }
 
     public String getFieldId() {

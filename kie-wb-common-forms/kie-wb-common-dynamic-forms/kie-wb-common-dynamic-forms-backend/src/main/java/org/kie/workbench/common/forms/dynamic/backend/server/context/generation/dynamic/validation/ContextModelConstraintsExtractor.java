@@ -9,9 +9,9 @@ public interface ContextModelConstraintsExtractor {
 
     /**
      * Checks for bean validation constraints on the form models and initializes the context validations
-     *
      * @param clientRenderingContext
      * @param classLoader
      */
-    void readModelConstraints( MapModelRenderingContext clientRenderingContext, ClassLoader classLoader );
+    void readModelConstraints(MapModelRenderingContext clientRenderingContext,
+                              ClassLoader classLoader);
 }

@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.forms.jbpm.model.authoring.document.provider;
 
-
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.BasicTypeFieldProvider;
@@ -49,12 +48,12 @@ public class DocumentFieldProvider extends BasicTypeFieldProvider<DocumentFieldD
 
     @Override
     protected void doRegisterFields() {
-        registerPropertyType( "org.jbpm.document.Document" );
-        registerPropertyType( "org.jbpm.document.service.impl.DocumentImpl" );
+        registerPropertyType("org.jbpm.document.Document");
+        registerPropertyType("org.jbpm.document.service.impl.DocumentImpl");
     }
 
     @Override
-    public DocumentFieldDefinition createFieldByType( FieldDataType typeInfo ) {
+    public DocumentFieldDefinition createFieldByType(FieldDataType typeInfo) {
         return new DocumentFieldDefinition();
     }
 }

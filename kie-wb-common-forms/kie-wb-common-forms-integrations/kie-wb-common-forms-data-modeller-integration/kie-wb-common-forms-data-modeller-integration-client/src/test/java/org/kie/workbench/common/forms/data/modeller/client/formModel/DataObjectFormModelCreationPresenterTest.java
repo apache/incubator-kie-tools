@@ -33,7 +33,7 @@ import org.uberfire.mocks.CallerMock;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@RunWith ( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class DataObjectFormModelCreationPresenterTest {
 
     private DataObjectFinderService finderService;
@@ -53,24 +53,30 @@ public class DataObjectFormModelCreationPresenterTest {
     @Before
     public void setup() {
 
-        path = mock( Path.class );
+        path = mock(Path.class);
 
-        formModels.add( new DataObjectFormModel( "employee", "org.kie.wb.test.Employee" ) );
-        formModels.add( new DataObjectFormModel( "address", "org.kie.wb.test.Address" ) );
-        formModels.add( new DataObjectFormModel( "company", "org.kie.wb.test.Company" ) );
-        formModels.add( new DataObjectFormModel( "department", "org.kie.wb.test.Department" ) );
+        formModels.add(new DataObjectFormModel("employee",
+                                               "org.kie.wb.test.Employee"));
+        formModels.add(new DataObjectFormModel("address",
+                                               "org.kie.wb.test.Address"));
+        formModels.add(new DataObjectFormModel("company",
+                                               "org.kie.wb.test.Company"));
+        formModels.add(new DataObjectFormModel("department",
+                                               "org.kie.wb.test.Department"));
 
-        finderService = mock( DataObjectFinderService.class );
+        finderService = mock(DataObjectFinderService.class);
 
-        when( finderService.getAvailableDataObjects( path ) ).thenReturn( formModels );
+        when(finderService.getAvailableDataObjects(path)).thenReturn(formModels);
 
-        finderServiceCallerMock = new CallerMock<>( finderService );
+        finderServiceCallerMock = new CallerMock<>(finderService);
 
-        view = mock( DataObjectFormModelCreationView.class );
+        view = mock(DataObjectFormModelCreationView.class);
 
-        translationService = mock( TranslationService.class );
+        translationService = mock(TranslationService.class);
 
-        presenter = new DataObjectFormModelCreationPresenterManager( finderServiceCallerMock, view, translationService );
+        presenter = new DataObjectFormModelCreationPresenterManager(finderServiceCallerMock,
+                                                                    view,
+                                                                    translationService);
     }
 
     @Test
@@ -78,22 +84,23 @@ public class DataObjectFormModelCreationPresenterTest {
         presenter.getPriority();
 
         presenter.reset();
-        verify( view ).reset();
+        verify(view).reset();
 
-        presenter.init( path );
+        presenter.init(path);
 
         presenter.getLabel();
-        verify( translationService ).getTranslation( DataModellerIntegrationConstants.DataObject );
+        verify(translationService).getTranslation(DataModellerIntegrationConstants.DataObject);
 
-        verify( finderService ).getAvailableDataObjects( path );
-        verify( view ).setFormModels( formModels );
+        verify(finderService).getAvailableDataObjects(path);
+        verify(view).setFormModels(formModels);
 
         boolean valid = presenter.isValid();
 
-        assertFalse( valid );
-        verify( translationService ).getTranslation( DataModellerIntegrationConstants.InvalidDataObject );
+        assertFalse(valid);
+        verify(translationService).getTranslation(DataModellerIntegrationConstants.InvalidDataObject);
 
         presenter.getFormModel();
-        verify( view, times( 2 ) ).getSelectedFormModel();
+        verify(view,
+               times(2)).getSelectedFormModel();
     }
 }

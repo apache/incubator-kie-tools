@@ -18,10 +18,14 @@ package org.kie.workbench.common.forms.editor.client.editor.events;
 import org.kie.workbench.common.forms.editor.client.editor.FormEditorHelper;
 
 public class FormEditorContextResponse extends FormEditorEvent {
+
     protected FormEditorHelper editorHelper;
 
-    public FormEditorContextResponse( String formId, String fieldId, FormEditorHelper formEditorHelper ) {
-        super(formId, fieldId);
+    public FormEditorContextResponse(String formId,
+                                     String fieldId,
+                                     FormEditorHelper formEditorHelper) {
+        super(formId,
+              fieldId);
         this.editorHelper = formEditorHelper;
     }
 

@@ -26,7 +26,6 @@ import org.jboss.errai.databinding.client.api.Converter;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.decimalBox.DecimalBox;
 import org.kie.workbench.common.forms.common.rendering.client.widgets.decimalBox.converters.FloatToDoubleConverter;
 import org.kie.workbench.common.forms.dynamic.client.rendering.FieldRenderer;
-import org.kie.workbench.common.forms.dynamic.client.rendering.renderers.RequiresValueConverter;
 import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.decimalBox.definition.DecimalBoxFieldDefinition;
 
 @Dependent

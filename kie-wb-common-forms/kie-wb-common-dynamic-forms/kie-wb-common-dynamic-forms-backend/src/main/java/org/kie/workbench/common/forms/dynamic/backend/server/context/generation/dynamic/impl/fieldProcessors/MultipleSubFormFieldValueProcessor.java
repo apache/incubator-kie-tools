@@ -31,7 +31,8 @@ import org.slf4j.LoggerFactory;
 
 @Dependent
 public class MultipleSubFormFieldValueProcessor extends NestedFormFieldValueProcessor<MultipleSubFormFieldDefinition, List, List<Map<String, Object>>> {
-    private static final Logger logger = LoggerFactory.getLogger( MultipleSubFormFieldValueProcessor.class );
+
+    private static final Logger logger = LoggerFactory.getLogger(MultipleSubFormFieldValueProcessor.class);
 
     @Override
     public Class<MultipleSubFormFieldDefinition> getSupportedField() {
@@ -39,78 +40,89 @@ public class MultipleSubFormFieldValueProcessor extends NestedFormFieldValueProc
     }
 
     @Override
-    public List<Map<String, Object>> toFlatValue( MultipleSubFormFieldDefinition field,
-                                                  List rawValues,
-                                                  BackendFormRenderingContext context ) {
+    public List<Map<String, Object>> toFlatValue(MultipleSubFormFieldDefinition field,
+                                                 List rawValues,
+                                                 BackendFormRenderingContext context) {
 
         final FormDefinition creationForm = context.getRenderingContext().getAvailableForms().get(
-                field.getCreationForm() );
+                field.getCreationForm());
 
         final FormDefinition editionForm = context.getRenderingContext().getAvailableForms().get(
-                field.getEditionForm() );
+                field.getEditionForm());
 
         final List<Map<String, Object>> nestedRawValues = new ArrayList<>();
 
-        if ( rawValues != null ) {
-            rawValues.forEach( nestedValue -> {
+        if (rawValues != null) {
+            rawValues.forEach(nestedValue -> {
                 Map<String, Object> nestedRawValue = new HashMap<>();
 
-                nestedRawValues.add( nestedRawValue );
+                nestedRawValues.add(nestedRawValue);
 
-                prepareNestedRawValues( nestedRawValue, creationForm, nestedValue );
+                prepareNestedRawValues(nestedRawValue,
+                                       creationForm,
+                                       nestedValue);
 
-                prepareNestedRawValues( nestedRawValue, editionForm, nestedValue );
-
-            } );
+                prepareNestedRawValues(nestedRawValue,
+                                       editionForm,
+                                       nestedValue);
+            });
         }
 
         List<Map<String, Object>> nestedFormValues = new ArrayList<>();
 
-        nestedRawValues.forEach( rawValue -> {
-            Map<String, Object> formValue = processor.readFormValues( creationForm, rawValue, context );
+        nestedRawValues.forEach(rawValue -> {
+            Map<String, Object> formValue = processor.readFormValues(creationForm,
+                                                                     rawValue,
+                                                                     context);
 
-            formValue.putAll( processor.readFormValues( editionForm, rawValue, context ) );
+            formValue.putAll(processor.readFormValues(editionForm,
+                                                      rawValue,
+                                                      context));
 
-            formValue.put( MapModelRenderingContext.FORM_ENGINE_OBJECT_IDX, nestedFormValues.size() );
+            formValue.put(MapModelRenderingContext.FORM_ENGINE_OBJECT_IDX,
+                          nestedFormValues.size());
 
-            formValue.put( MapModelRenderingContext.FORM_ENGINE_EDITED_OBJECT, Boolean.FALSE );
+            formValue.put(MapModelRenderingContext.FORM_ENGINE_EDITED_OBJECT,
+                          Boolean.FALSE);
 
-            nestedFormValues.add( formValue );
-        } );
+            nestedFormValues.add(formValue);
+        });
 
         return nestedFormValues;
     }
 
     @Override
-    public List toRawValue( MultipleSubFormFieldDefinition field,
-                            List<Map<String, Object>> flatValues,
-                            List originalValues,
-                            BackendFormRenderingContext context ) {
+    public List toRawValue(MultipleSubFormFieldDefinition field,
+                           List<Map<String, Object>> flatValues,
+                           List originalValues,
+                           BackendFormRenderingContext context) {
 
         final List originalObjects = originalValues != null ? originalValues : new ArrayList<>();
 
         List fieldValue = new ArrayList();
 
-        flatValues.forEach( nestedObjectValues -> {
-            if ( nestedObjectValues.containsKey( MapModelRenderingContext.FORM_ENGINE_OBJECT_IDX ) ) {
-                int originalPosition = (Integer) nestedObjectValues.get( MapModelRenderingContext.FORM_ENGINE_OBJECT_IDX );
-                boolean edited = Boolean.TRUE.equals( nestedObjectValues.get( MapModelRenderingContext.FORM_ENGINE_EDITED_OBJECT ) );
+        flatValues.forEach(nestedObjectValues -> {
+            if (nestedObjectValues.containsKey(MapModelRenderingContext.FORM_ENGINE_OBJECT_IDX)) {
+                int originalPosition = (Integer) nestedObjectValues.get(MapModelRenderingContext.FORM_ENGINE_OBJECT_IDX);
+                boolean edited = Boolean.TRUE.equals(nestedObjectValues.get(MapModelRenderingContext.FORM_ENGINE_EDITED_OBJECT));
 
-                if ( originalPosition < originalObjects.size() ) {
-                    Object originalObject = originalObjects.get( originalPosition );
-                    if ( edited ) {
-                        originalObject = writeObjectValues( originalObject,
-                                                            nestedObjectValues,
-                                                            field,
-                                                            context );
+                if (originalPosition < originalObjects.size()) {
+                    Object originalObject = originalObjects.get(originalPosition);
+                    if (edited) {
+                        originalObject = writeObjectValues(originalObject,
+                                                           nestedObjectValues,
+                                                           field,
+                                                           context);
                     }
-                    fieldValue.add( originalObject );
+                    fieldValue.add(originalObject);
                 }
             } else {
-                fieldValue.add( writeObjectValues( null, nestedObjectValues, field, context ) );
+                fieldValue.add(writeObjectValues(null,
+                                                 nestedObjectValues,
+                                                 field,
+                                                 context));
             }
-
-        } );
+        });
         return fieldValue;
     }
 

@@ -31,7 +31,7 @@ public class PictureFieldRenderer extends FieldRenderer<PictureFieldDefinition> 
     private PictureInput pictureInput;
 
     @Inject
-    public PictureFieldRenderer( PictureInput pictureInput ) {
+    public PictureFieldRenderer(PictureInput pictureInput) {
         this.pictureInput = pictureInput;
     }
 
@@ -42,8 +42,9 @@ public class PictureFieldRenderer extends FieldRenderer<PictureFieldDefinition> 
 
     @Override
     public void initInputWidget() {
-        pictureInput.init( field.getSize().getWidth(), field.getSize().getHeight() );
-        pictureInput.setReadOnly( field.getReadOnly() || renderingContext.getRenderMode().equals( RenderMode.PRETTY_MODE ) );
+        pictureInput.init(field.getSize().getWidth(),
+                          field.getSize().getHeight());
+        pictureInput.setReadOnly(field.getReadOnly() || renderingContext.getRenderMode().equals(RenderMode.PRETTY_MODE));
     }
 
     @Override
@@ -63,7 +64,7 @@ public class PictureFieldRenderer extends FieldRenderer<PictureFieldDefinition> 
     }
 
     @Override
-    protected void setReadOnly( boolean readOnly ) {
-        pictureInput.setReadOnly( readOnly );
+    protected void setReadOnly(boolean readOnly) {
+        pictureInput.setReadOnly(readOnly);
     }
 }

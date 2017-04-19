@@ -37,12 +37,13 @@ import org.slf4j.LoggerFactory;
 
 @Dependent
 public class DocumentFieldValueProcessor implements FieldValueProcessor<DocumentFieldDefinition, Document, DocumentData> {
-    private static final Logger logger = LoggerFactory.getLogger( DocumentFieldValueProcessor.class );
+
+    private static final Logger logger = LoggerFactory.getLogger(DocumentFieldValueProcessor.class);
 
     protected UploadedDocumentManager uploadedDocumentManager;
 
     @Inject
-    public DocumentFieldValueProcessor( UploadedDocumentManager uploadedDocumentManager ) {
+    public DocumentFieldValueProcessor(UploadedDocumentManager uploadedDocumentManager) {
         this.uploadedDocumentManager = uploadedDocumentManager;
     }
 
@@ -52,53 +53,56 @@ public class DocumentFieldValueProcessor implements FieldValueProcessor<Document
     }
 
     @Override
-    public DocumentData toFlatValue( DocumentFieldDefinition field,
-                                     Document document,
-                                     BackendFormRenderingContext context ) {
+    public DocumentData toFlatValue(DocumentFieldDefinition field,
+                                    Document document,
+                                    BackendFormRenderingContext context) {
 
-        if ( document == null ) {
+        if (document == null) {
             return null;
         }
 
-        DocumentData data = new DocumentData( document.getName(), document.getSize(), document.getLink() );
-        data.setStatus( DocumentStatus.STORED );
+        DocumentData data = new DocumentData(document.getName(),
+                                             document.getSize(),
+                                             document.getLink());
+        data.setStatus(DocumentStatus.STORED);
         return data;
     }
 
     @Override
-    public Document toRawValue( DocumentFieldDefinition field,
-                                DocumentData documentData,
-                                Document originalValue,
-                                BackendFormRenderingContext context ) {
+    public Document toRawValue(DocumentFieldDefinition field,
+                               DocumentData documentData,
+                               Document originalValue,
+                               BackendFormRenderingContext context) {
 
-        if ( documentData == null ) {
+        if (documentData == null) {
             return null;
         }
 
-        if ( documentData.getStatus().equals( DocumentStatus.STORED ) ) {
+        if (documentData.getStatus().equals(DocumentStatus.STORED)) {
             return originalValue;
         }
 
-        File content = uploadedDocumentManager.getFile( documentData.getContentId() );
+        File content = uploadedDocumentManager.getFile(documentData.getContentId());
 
-        if ( content != null ) {
+        if (content != null) {
 
             try {
                 String id = UUID.randomUUID().toString();
-                Document doc = new DocumentImpl( documentData.getFileName(),
-                                                 content.length(),
-                                                 new Date( content.lastModified() ) );
-                doc.setContent( getFileContent( content ) );
-                uploadedDocumentManager.removeFile( documentData.getContentId() );
+                Document doc = new DocumentImpl(documentData.getFileName(),
+                                                content.length(),
+                                                new Date(content.lastModified()));
+                doc.setContent(getFileContent(content));
+                uploadedDocumentManager.removeFile(documentData.getContentId());
                 return doc;
-            } catch ( IOException e ) {
-                logger.warn( "Error reading file content: ", e );
+            } catch (IOException e) {
+                logger.warn("Error reading file content: ",
+                            e);
             }
         }
         return null;
     }
 
-    protected byte[] getFileContent( File content ) throws IOException {
-        return FileUtils.readFileToByteArray( content );
+    protected byte[] getFileContent(File content) throws IOException {
+        return FileUtils.readFileToByteArray(content);
     }
 }

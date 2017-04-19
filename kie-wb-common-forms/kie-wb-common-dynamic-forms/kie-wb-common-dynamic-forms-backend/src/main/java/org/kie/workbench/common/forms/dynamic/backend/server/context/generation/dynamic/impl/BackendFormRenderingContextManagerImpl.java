@@ -33,7 +33,8 @@ import org.slf4j.LoggerFactory;
 
 @SessionScoped
 public class BackendFormRenderingContextManagerImpl implements BackendFormRenderingContextManager {
-    private static final Logger logger = LoggerFactory.getLogger( BackendFormRenderingContextManagerImpl.class );
+
+    private static final Logger logger = LoggerFactory.getLogger(BackendFormRenderingContextManagerImpl.class);
 
     protected Map<Long, BackendFormRenderingContextImpl> contexts = new HashMap<>();
 
@@ -42,67 +43,72 @@ public class BackendFormRenderingContextManagerImpl implements BackendFormRender
     protected ContextModelConstraintsExtractor constraintsExtractor;
 
     @Inject
-    public BackendFormRenderingContextManagerImpl( FormValuesProcessor valuesProcessor,
-                                                   ContextModelConstraintsExtractor constraintsExtractor ) {
+    public BackendFormRenderingContextManagerImpl(FormValuesProcessor valuesProcessor,
+                                                  ContextModelConstraintsExtractor constraintsExtractor) {
         this.valuesProcessor = valuesProcessor;
         this.constraintsExtractor = constraintsExtractor;
     }
 
     @Override
-    public BackendFormRenderingContext registerContext( FormDefinition rootForm,
-                                                        Map<String, Object> formData,
-                                                        ClassLoader classLoader,
-                                                        FormDefinition... nestedForms ) {
+    public BackendFormRenderingContext registerContext(FormDefinition rootForm,
+                                                       Map<String, Object> formData,
+                                                       ClassLoader classLoader,
+                                                       FormDefinition... nestedForms) {
 
         MapModelRenderingContext clientRenderingContext = new MapModelRenderingContext();
 
-        clientRenderingContext.setRootForm( rootForm );
+        clientRenderingContext.setRootForm(rootForm);
 
-        Arrays.stream( nestedForms ).forEach( form -> clientRenderingContext.getAvailableForms().put( form.getId(),
-                                                                                                      form ) );
+        Arrays.stream(nestedForms).forEach(form -> clientRenderingContext.getAvailableForms().put(form.getId(),
+                                                                                                  form));
 
-        BackendFormRenderingContextImpl context = new BackendFormRenderingContextImpl( System.currentTimeMillis(),
-                                                                                       clientRenderingContext,
-                                                                                       formData,
-                                                                                       classLoader );
+        BackendFormRenderingContextImpl context = new BackendFormRenderingContextImpl(System.currentTimeMillis(),
+                                                                                      clientRenderingContext,
+                                                                                      formData,
+                                                                                      classLoader);
 
-        Map<String, Object> clienFormData = valuesProcessor.readFormValues( rootForm, formData, context );
+        Map<String, Object> clienFormData = valuesProcessor.readFormValues(rootForm,
+                                                                           formData,
+                                                                           context);
 
-        constraintsExtractor.readModelConstraints( clientRenderingContext, classLoader );
+        constraintsExtractor.readModelConstraints(clientRenderingContext,
+                                                  classLoader);
 
-        clientRenderingContext.setModel( clienFormData );
+        clientRenderingContext.setModel(clienFormData);
 
-        contexts.put( context.getTimestamp(), context );
+        contexts.put(context.getTimestamp(),
+                     context);
 
         return context;
     }
 
     @Override
-    public BackendFormRenderingContext updateContextData( long timestamp, Map<String, Object> formValues ) {
+    public BackendFormRenderingContext updateContextData(long timestamp,
+                                                         Map<String, Object> formValues) {
 
-        BackendFormRenderingContextImpl context = contexts.get( timestamp );
+        BackendFormRenderingContextImpl context = contexts.get(timestamp);
 
-        if ( context == null ) {
-            throw new IllegalArgumentException( "Unable to find context with id '" + timestamp + "'" );
+        if (context == null) {
+            throw new IllegalArgumentException("Unable to find context with id '" + timestamp + "'");
         }
 
-        Map<String, Object> contextData = valuesProcessor.writeFormValues( context.getRenderingContext().getRootForm(),
-                                                                           formValues,
-                                                                           context.getFormData(),
-                                                                           context );
+        Map<String, Object> contextData = valuesProcessor.writeFormValues(context.getRenderingContext().getRootForm(),
+                                                                          formValues,
+                                                                          context.getFormData(),
+                                                                          context);
 
-        context.setFormData( contextData );
+        context.setFormData(contextData);
 
         return context;
     }
 
     @Override
-    public BackendFormRenderingContext getContext( Long timestamp ) {
-        return contexts.get( timestamp );
+    public BackendFormRenderingContext getContext(Long timestamp) {
+        return contexts.get(timestamp);
     }
 
     @Override
-    public boolean removeContext( Long timestamp ) {
-        return contexts.remove( timestamp ) != null;
+    public boolean removeContext(Long timestamp) {
+        return contexts.remove(timestamp) != null;
     }
 }

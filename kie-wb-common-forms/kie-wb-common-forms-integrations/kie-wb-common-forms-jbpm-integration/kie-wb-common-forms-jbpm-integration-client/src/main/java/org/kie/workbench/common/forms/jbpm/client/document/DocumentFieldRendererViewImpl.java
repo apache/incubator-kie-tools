@@ -50,7 +50,6 @@ public class DocumentFieldRendererViewImpl extends Composite implements Document
     @DataField
     protected FlowPanel linkContainer;
 
-
     @DataField
     protected DivElement inputContainer = Document.get().createDivElement();
 
@@ -72,71 +71,74 @@ public class DocumentFieldRendererViewImpl extends Composite implements Document
 
     protected void initForm() {
         documentForm.clear();
-         uploader = new FileUpload( () -> {
-             if (uploader.getFilename() != null && !uploader.getFilename().isEmpty() ) {
-                 documentForm.submit();
-             }
-         } );
-        uploader.setName( "document" );
-        documentForm.setEncoding( FormPanel.ENCODING_MULTIPART );
-        documentForm.setMethod( FormPanel.METHOD_POST );
-        documentForm.setAction( "/documentUploadServlet" );
-        formEncoder.addUtf8Charset( documentForm );
-        documentForm.add( uploader );
-        documentForm.addSubmitCompleteHandler( event -> {
-            onSubmit( event.getResults() );
+        uploader = new FileUpload(() -> {
+            if (uploader.getFilename() != null && !uploader.getFilename().isEmpty()) {
+                documentForm.submit();
+            }
+        });
+        uploader.setName("document");
+        documentForm.setEncoding(FormPanel.ENCODING_MULTIPART);
+        documentForm.setMethod(FormPanel.METHOD_POST);
+        documentForm.setAction("/documentUploadServlet");
+        formEncoder.addUtf8Charset(documentForm);
+        documentForm.add(uploader);
+        documentForm.addSubmitCompleteHandler(event -> {
+            onSubmit(event.getResults());
         });
     }
 
     @Override
-    public void setRenderer( DocumentFieldRenderer renderer ) {
+    public void setRenderer(DocumentFieldRenderer renderer) {
         this.renderer = renderer;
     }
 
     @Override
-    public void setReadOnly( boolean readOnly ) {
-        if ( readOnly ) {
-            inputContainer.getStyle().setDisplay( Style.Display.NONE );
+    public void setReadOnly(boolean readOnly) {
+        if (readOnly) {
+            inputContainer.getStyle().setDisplay(Style.Display.NONE);
         } else {
-            inputContainer.getStyle().setDisplay( Style.Display.BLOCK );
+            inputContainer.getStyle().setDisplay(Style.Display.BLOCK);
         }
     }
 
     @Override
-    public void setValue( DocumentData value ) {
-        setValue( value, false );
+    public void setValue(DocumentData value) {
+        setValue(value,
+                 false);
     }
 
     @Override
-    public void setValue( DocumentData value, boolean fireEvents ) {
-        if ( this.value == value ) {
+    public void setValue(DocumentData value,
+                         boolean fireEvents) {
+        if (this.value == value) {
             return;
         }
-        if ( value == null || value.getStatus().equals( DocumentStatus.NEW ) || !value.equals( this.value )) {
+        if (value == null || value.getStatus().equals(DocumentStatus.NEW) || !value.equals(this.value)) {
 
             this.value = value;
 
             linkContainer.clear();
-            if ( this.value != null ) {
+            if (this.value != null) {
 
                 Anchor link = new Anchor();
-                link.setText( value.getFileName() + " (" + calculateSize() + ")" );
+                link.setText(value.getFileName() + " (" + calculateSize() + ")");
 
-                if ( value.getLink() == null ) {
-                    link.setEnabled( false );
-                    link.setHref( "#" );
-                    link.addClickHandler( event -> {
+                if (value.getLink() == null) {
+                    link.setEnabled(false);
+                    link.setHref("#");
+                    link.addClickHandler(event -> {
                         return;
-                    } );
+                    });
                 } else {
-                    link.setHref( value.getLink() );
-                    link.setTarget( "_blank" );
+                    link.setHref(value.getLink());
+                    link.setTarget("_blank");
                 }
-                linkContainer.add( link );
+                linkContainer.add(link);
             }
 
-            if ( fireEvents ) {
-                ValueChangeEvent.fire( this, this.value );
+            if (fireEvents) {
+                ValueChangeEvent.fire(this,
+                                      this.value);
             }
         }
     }
@@ -144,22 +146,23 @@ public class DocumentFieldRendererViewImpl extends Composite implements Document
     protected String calculateSize() {
         String result = "";
 
-        if ( value != null ) {
+        if (value != null) {
             double size = value.getSize();
             int position;
             for (position = 0; position < SIZE_UNITS.length && size > 1024; position++) {
                 size = size / 1024;
             }
 
-            result = NumberFormat.getDecimalFormat().format( size ) + " " + SIZE_UNITS[position];
+            result = NumberFormat.getDecimalFormat().format(size) + " " + SIZE_UNITS[position];
         }
 
         return result;
     }
 
     @Override
-    public HandlerRegistration addValueChangeHandler( ValueChangeHandler<DocumentData> valueChangeHandler ) {
-        return this.addHandler( valueChangeHandler, ValueChangeEvent.getType() );
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<DocumentData> valueChangeHandler) {
+        return this.addHandler(valueChangeHandler,
+                               ValueChangeEvent.getType());
     }
 
     @Override
@@ -167,25 +170,26 @@ public class DocumentFieldRendererViewImpl extends Composite implements Document
         return value;
     }
 
-    public void onSubmit( String results ) {
+    public void onSubmit(String results) {
         initForm();
-        JavaScriptObject jsResponse = JsonUtils.safeEval( results );
+        JavaScriptObject jsResponse = JsonUtils.safeEval(results);
 
-        if ( jsResponse != null ) {
-            JSONObject response = new JSONObject( jsResponse );
-            if ( response.get( "document" ) != null ) {
-                JSONObject document = response.get( "document" ).isObject();
+        if (jsResponse != null) {
+            JSONObject response = new JSONObject(jsResponse);
+            if (response.get("document") != null) {
+                JSONObject document = response.get("document").isObject();
 
-                DocumentData data = new DocumentData( document.get( "fileName" ).isString().stringValue(),
-                                                      new Double(document.get( "size" ).isNumber().doubleValue()).longValue(),
-                                                      null );
+                DocumentData data = new DocumentData(document.get("fileName").isString().stringValue(),
+                                                     new Double(document.get("size").isNumber().doubleValue()).longValue(),
+                                                     null);
 
-                data.setContentId( document.get( "contentId" ).isString().stringValue() );
+                data.setContentId(document.get("contentId").isString().stringValue());
 
-                setValue( data, true );
-
-            } else if (response.get( "error" ).isNull() != null ) {
-                setValue( null, true );
+                setValue(data,
+                         true);
+            } else if (response.get("error").isNull() != null) {
+                setValue(null,
+                         true);
             }
         }
     }

@@ -45,18 +45,18 @@ public class SelectorProvidersProvider implements SystemSelectorDataProvider {
     protected void doInit() {
         final Map<String, String> providers = new TreeMap<String, String>();
 
-        providers.putAll( clientProvider.availableProviders() );
+        providers.putAll(clientProvider.availableProviders());
 
-        selectorProviderService.call( new RemoteCallback<Map<String, String>>() {
+        selectorProviderService.call(new RemoteCallback<Map<String, String>>() {
             @Override
-            public void callback( Map<String, String> backendProviders ) {
-                if ( backendProviders != null ) {
-                    providers.putAll( backendProviders );
+            public void callback(Map<String, String> backendProviders) {
+                if (backendProviders != null) {
+                    providers.putAll(backendProviders);
                 }
             }
-        } ).availableProviders();
+        }).availableProviders();
 
-        data.setValues( providers );
+        data.setValues(providers);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class SelectorProvidersProvider implements SystemSelectorDataProvider {
     }
 
     @Override
-    public SelectorData getSelectorData( FormRenderingContext context ) {
+    public SelectorData getSelectorData(FormRenderingContext context) {
         return data;
     }
 }

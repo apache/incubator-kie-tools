@@ -26,6 +26,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 @Portable
 @Bindable
 public class DocumentData {
+
     private String contentId;
     private String fileName;
     private long size;
@@ -35,9 +36,9 @@ public class DocumentData {
     public DocumentData() {
     }
 
-    public DocumentData( @MapsTo( "fileName" ) String fileName,
-                         @MapsTo( "size" ) long size,
-                         @MapsTo( "link" ) String link ) {
+    public DocumentData(@MapsTo("fileName") String fileName,
+                        @MapsTo("size") long size,
+                        @MapsTo("link") String link) {
         this.fileName = fileName;
         this.size = size;
         this.link = link;
@@ -47,7 +48,7 @@ public class DocumentData {
         return fileName;
     }
 
-    public void setFileName( String fileName ) {
+    public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
@@ -55,7 +56,7 @@ public class DocumentData {
         return size;
     }
 
-    public void setSize( long size ) {
+    public void setSize(long size) {
         this.size = size;
     }
 
@@ -63,7 +64,7 @@ public class DocumentData {
         return link;
     }
 
-    public void setLink( String link ) {
+    public void setLink(String link) {
         this.link = link;
     }
 
@@ -71,7 +72,7 @@ public class DocumentData {
         return contentId;
     }
 
-    public void setContentId( String contentId ) {
+    public void setContentId(String contentId) {
         this.contentId = contentId;
     }
 
@@ -79,7 +80,7 @@ public class DocumentData {
         return status;
     }
 
-    public void setStatus( DocumentStatus status ) {
+    public void setStatus(DocumentStatus status) {
         this.status = status;
     }
 }

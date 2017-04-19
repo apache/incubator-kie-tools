@@ -16,70 +16,88 @@
 
 package org.kie.workbench.common.forms.data.modeller.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
+
 import org.apache.commons.lang3.ArrayUtils;
+import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.model.FieldDataType;
 import org.kie.workbench.common.forms.model.FieldDefinition;
-import org.kie.workbench.common.forms.fields.shared.fieldTypes.basic.HasPlaceHolder;
 import org.kie.workbench.common.forms.service.FieldManager;
 import org.kie.workbench.common.screens.datamodeller.model.maindomain.MainDomainAnnotations;
 import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-
 public class DataModellerFieldGenerator {
+
     public static final String[] RESTRICTED_PROPERTY_NAMES = new String[]{"serialVersionUID"};
 
     private FieldManager fieldManager;
 
     @Inject
-    public DataModellerFieldGenerator( FieldManager fieldManager ) {
+    public DataModellerFieldGenerator(FieldManager fieldManager) {
         this.fieldManager = fieldManager;
     }
 
-    public List<FieldDefinition> getFieldsFromDataObject( String holderName, DataObject dataObject) {
-        List<FieldDefinition> result = new ArrayList<FieldDefinition>( );
+    public List<FieldDefinition> getFieldsFromDataObject(String holderName,
+                                                         DataObject dataObject) {
+        List<FieldDefinition> result = new ArrayList<>();
         if (dataObject != null) {
             for (ObjectProperty property : dataObject.getProperties()) {
-                if ( ArrayUtils.contains( RESTRICTED_PROPERTY_NAMES, property.getName() ) ) continue;
+                if (ArrayUtils.contains(RESTRICTED_PROPERTY_NAMES,
+                                        property.getName())) {
+                    continue;
+                }
 
-                FieldDefinition field = createFieldDefinition( holderName, property );
-                result.add( field );
+                FieldDefinition field = createFieldDefinition(holderName,
+                                                              property);
+                result.add(field);
             }
         }
         return result;
     }
 
-    public FieldDefinition createFieldDefinition( String holderName, ObjectProperty property ) {
+    public FieldDefinition createFieldDefinition(String holderName,
+                                                 ObjectProperty property) {
         String propertyName = holderName + "_" + property.getName();
 
         FieldDefinition field = null;
-        if (property.getBag() == null) field = fieldManager.getDefinitionByDataType( new FieldDataType( property.getClassName(), false, false ) );
-        else field = fieldManager.getDefinitionByDataType( new FieldDataType( property.getClassName(), true, false ) );
+        if (property.getBag() == null) {
+            field = fieldManager.getDefinitionByDataType(new FieldDataType(property.getClassName(),
+                                                                           false,
+                                                                           false));
+        } else {
+            field = fieldManager.getDefinitionByDataType(new FieldDataType(property.getClassName(),
+                                                                           true,
+                                                                           false));
+        }
 
-        if (field == null) return null;
+        if (field == null) {
+            return null;
+        }
 
         // TODO: improve this
-        field.setAnnotatedId( property.getAnnotation( "javax.persistence.Id" ) != null );
-        field.setReadOnly( field.isAnnotatedId() );
+        field.setAnnotatedId(property.getAnnotation("javax.persistence.Id") != null);
+        field.setReadOnly(field.isAnnotatedId());
 
-        field.setName( propertyName );
-        String label = getPropertyLabel( property );
-        field.setLabel( label );
-        field.setBinding( property.getName() );
+        field.setName(propertyName);
+        String label = getPropertyLabel(property);
+        field.setLabel(label);
+        field.setBinding(property.getName());
 
-        if (field instanceof HasPlaceHolder ) {
-            ((HasPlaceHolder) field).setPlaceHolder( label );
+        if (field instanceof HasPlaceHolder) {
+            ((HasPlaceHolder) field).setPlaceHolder(label);
         }
-        return  field;
+        return field;
     }
 
-    private String getPropertyLabel( ObjectProperty property ) {
-        Annotation labelAnnotation = property.getAnnotation( MainDomainAnnotations.LABEL_ANNOTATION );
-        if ( labelAnnotation != null ) return labelAnnotation.getValue( MainDomainAnnotations.VALUE_PARAM ).toString();
+    private String getPropertyLabel(ObjectProperty property) {
+        Annotation labelAnnotation = property.getAnnotation(MainDomainAnnotations.LABEL_ANNOTATION);
+        if (labelAnnotation != null) {
+            return labelAnnotation.getValue(MainDomainAnnotations.VALUE_PARAM).toString();
+        }
 
         return property.getName();
     }

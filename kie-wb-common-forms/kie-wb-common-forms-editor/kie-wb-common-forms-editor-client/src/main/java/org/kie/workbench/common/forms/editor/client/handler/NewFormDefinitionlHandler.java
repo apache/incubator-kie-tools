@@ -58,12 +58,12 @@ public class NewFormDefinitionlHandler extends DefaultNewResourceHandler {
     private FormModelsPresenter formModelsPresenter;
 
     @Inject
-    public NewFormDefinitionlHandler( Caller<FormEditorService> modelerService,
-                                      PlaceManager placeManager,
-                                      FormDefinitionResourceType resourceType,
-                                      Event<NotificationEvent> notificationEvent,
-                                      TranslationService translationService,
-                                      FormModelsPresenter formModelsPresenter ) {
+    public NewFormDefinitionlHandler(Caller<FormEditorService> modelerService,
+                                     PlaceManager placeManager,
+                                     FormDefinitionResourceType resourceType,
+                                     Event<NotificationEvent> notificationEvent,
+                                     TranslationService translationService,
+                                     FormModelsPresenter formModelsPresenter) {
         this.modelerService = modelerService;
         this.placeManager = placeManager;
         this.resourceType = resourceType;
@@ -74,12 +74,13 @@ public class NewFormDefinitionlHandler extends DefaultNewResourceHandler {
 
     @PostConstruct
     private void setupExtensions() {
-        extensions.add( new Pair<String, IsWidget>( translationService.getTranslation( FormEditorConstants.NewFormDefinitionlHandlerSelectFormUse ), formModelsPresenter ) );
+        extensions.add(new Pair<String, IsWidget>(translationService.getTranslation(FormEditorConstants.NewFormDefinitionlHandlerSelectFormUse),
+                                                  formModelsPresenter));
     }
 
     @Override
     public String getDescription() {
-        final String description = translationService.getTranslation( FormEditorConstants.NewFormDefinitionlHandlerForm );
+        final String description = translationService.getTranslation(FormEditorConstants.NewFormDefinitionlHandlerForm);
         return description != null && !description.isEmpty() ? description : "Form Definition (Preview)";
     }
 
@@ -95,46 +96,48 @@ public class NewFormDefinitionlHandler extends DefaultNewResourceHandler {
 
     @Override
     public List<Pair<String, ? extends IsWidget>> getExtensions() {
-        formModelsPresenter.initialize( context.getActiveProject().getRootPath() );
+        formModelsPresenter.initialize(context.getActiveProject().getRootPath());
 
         return super.getExtensions();
     }
 
     @Override
-    public void validate( String baseFileName, ValidatorWithReasonCallback callback ) {
+    public void validate(String baseFileName,
+                         ValidatorWithReasonCallback callback) {
 
         boolean isValid = formModelsPresenter.isValid();
 
-        if ( !isValid ) {
+        if (!isValid) {
             callback.onFailure();
         } else {
-            super.validate( baseFileName, callback );
+            super.validate(baseFileName,
+                           callback);
         }
     }
 
     @Override
-    public void create( org.guvnor.common.services.project.model.Package pkg,
-                        String baseFileName,
-                        final NewResourcePresenter presenter ) {
+    public void create(org.guvnor.common.services.project.model.Package pkg,
+                       String baseFileName,
+                       final NewResourcePresenter presenter) {
 
-        BusyPopup.showMessage( translationService.getTranslation( FormEditorConstants.NewFormDefinitionlHandlerSelectFormUse ) );
+        BusyPopup.showMessage(translationService.getTranslation(FormEditorConstants.NewFormDefinitionlHandlerSelectFormUse));
 
-        modelerService.call( path -> {
-            BusyPopup.close();
-            presenter.complete();
-            notifySuccess();
-            PlaceRequest place = new PathPlaceRequest( (Path) path, "FormEditor" );
-            placeManager.goTo( place );
-
-        }, ( message, throwable ) -> {
-            BusyPopup.close();
-            ErrorPopup.showMessage( CommonConstants.INSTANCE.SorryAnItemOfThatNameAlreadyExistsInTheRepositoryPleaseChooseAnother() );
-            return false;
-        }
-        ).createForm( pkg.getPackageMainResourcesPath(),
-                      buildFileName( baseFileName,
-                                     resourceType ),
-                      formModelsPresenter.getFormModel() );
+        modelerService.call(path -> {
+                                BusyPopup.close();
+                                presenter.complete();
+                                notifySuccess();
+                                PlaceRequest place = new PathPlaceRequest((Path) path,
+                                                                          "FormEditor");
+                                placeManager.goTo(place);
+                            },
+                            (message, throwable) -> {
+                                BusyPopup.close();
+                                ErrorPopup.showMessage(CommonConstants.INSTANCE.SorryAnItemOfThatNameAlreadyExistsInTheRepositoryPleaseChooseAnother());
+                                return false;
+                            }
+        ).createForm(pkg.getPackageMainResourcesPath(),
+                     buildFileName(baseFileName,
+                                   resourceType),
+                     formModelsPresenter.getFormModel());
     }
-
 }

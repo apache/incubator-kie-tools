@@ -22,8 +22,8 @@ import java.util.Map;
 import org.kie.workbench.common.forms.dynamic.service.context.generation.dynamic.BackendFormRenderingContext;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.MapModelRenderingContext;
 
-
 public class BackendFormRenderingContextImpl implements BackendFormRenderingContext {
+
     protected Long timestamp;
 
     protected MapModelRenderingContext renderingContext;
@@ -34,10 +34,10 @@ public class BackendFormRenderingContextImpl implements BackendFormRenderingCont
 
     protected Map<String, Object> attributes = new HashMap<>();
 
-    public BackendFormRenderingContextImpl( Long timestamp,
-                                            MapModelRenderingContext renderingContext,
-                                            Map<String, Object> formData,
-                                            ClassLoader classLoader ) {
+    public BackendFormRenderingContextImpl(Long timestamp,
+                                           MapModelRenderingContext renderingContext,
+                                           Map<String, Object> formData,
+                                           ClassLoader classLoader) {
         this.timestamp = timestamp;
         this.renderingContext = renderingContext;
         this.formData = formData;
@@ -59,7 +59,7 @@ public class BackendFormRenderingContextImpl implements BackendFormRenderingCont
         return formData;
     }
 
-    public void setFormData( Map<String, Object> formData ) {
+    public void setFormData(Map<String, Object> formData) {
         this.formData = formData;
     }
 

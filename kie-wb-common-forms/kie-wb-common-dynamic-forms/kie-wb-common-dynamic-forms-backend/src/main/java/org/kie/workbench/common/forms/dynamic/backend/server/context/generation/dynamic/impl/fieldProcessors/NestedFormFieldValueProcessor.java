@@ -34,87 +34,108 @@ public abstract class NestedFormFieldValueProcessor<F extends FieldDefinition, R
 
     public abstract Logger getLogger();
 
-    public void init( FormValuesProcessor processor ) {
+    public void init(FormValuesProcessor processor) {
         this.processor = processor;
     }
 
-    protected void prepareNestedRawValues( final Map<String, Object> valuesMap,
-                                           final FormDefinition nestedForm,
-                                           final Object value ) {
-        nestedForm.getFields().forEach( field -> {
-            if ( !valuesMap.containsKey( field.getBinding() ) ) {
-                valuesMap.put( field.getBinding(),
-                               readValue( field.getBinding(), value ) );
+    protected void prepareNestedRawValues(final Map<String, Object> valuesMap,
+                                          final FormDefinition nestedForm,
+                                          final Object value) {
+        nestedForm.getFields().forEach(field -> {
+            if (!valuesMap.containsKey(field.getBinding())) {
+                valuesMap.put(field.getBinding(),
+                              readValue(field.getBinding(),
+                                        value));
             }
-        } );
+        });
     }
 
-    protected Object writeObjectValues( Object originalValue,
-                                        Map<String, Object> formValues,
-                                        FieldDefinition field,
-                                        BackendFormRenderingContext context ) {
-        if ( originalValue != null && originalValue.getClass().getName().equals( field.getStandaloneClassName() ) ) {
-            writeValues( formValues, originalValue );
+    protected Object writeObjectValues(Object originalValue,
+                                       Map<String, Object> formValues,
+                                       FieldDefinition field,
+                                       BackendFormRenderingContext context) {
+        if (originalValue != null && originalValue.getClass().getName().equals(field.getStandaloneClassName())) {
+            writeValues(formValues,
+                        originalValue);
         } else {
             Class clazz = null;
             try {
-                clazz = context.getClassLoader().loadClass( field.getStandaloneClassName() );
-            } catch ( ClassNotFoundException e ) {
+                clazz = context.getClassLoader().loadClass(field.getStandaloneClassName());
+            } catch (ClassNotFoundException e) {
                 // Maybe the nested class it is not on the classLoader context... let's try on the app classloader
                 try {
-                    clazz = Class.forName( field.getStandaloneClassName() );
-                } catch ( ClassNotFoundException e1 ) {
-                    getLogger().warn( "Unable to find class '{}' on classLoader for field '{}'",
-                                      field.getStandaloneClassName(),
-                                      field.getBinding() );
+                    clazz = Class.forName(field.getStandaloneClassName());
+                } catch (ClassNotFoundException e1) {
+                    getLogger().warn("Unable to find class '{}' on classLoader for field '{}'",
+                                     field.getStandaloneClassName(),
+                                     field.getBinding());
                 }
             }
-            if ( clazz != null ) {
-                originalValue = writeValues( formValues, clazz );
+            if (clazz != null) {
+                originalValue = writeValues(formValues,
+                                            clazz);
             }
         }
         return originalValue;
     }
 
-    protected Object writeValues( Map<String, Object> values, Class clazz ) {
+    protected Object writeValues(Map<String, Object> values,
+                                 Class clazz) {
         try {
-            Object value = ConstructorUtils.invokeConstructor( clazz, null );
-            writeValues( values, value );
+            Object value = ConstructorUtils.invokeConstructor(clazz,
+                                                              null);
+            writeValues(values,
+                        value);
             return value;
-        } catch ( Exception e ) {
-            getLogger().warn( "Unable to create instance for class {}: ", clazz.getName() );
+        } catch (Exception e) {
+            getLogger().warn("Unable to create instance for class {}: ",
+                             clazz.getName());
         }
         return null;
     }
 
-    protected void writeValues( Map<String, Object> values, Object model ) {
-        if ( model == null ) {
+    protected void writeValues(Map<String, Object> values,
+                               Object model) {
+        if (model == null) {
             return;
         }
-        values.forEach( ( property, value ) -> {
+        values.forEach((property, value) -> {
             try {
-                if ( property.equals( MapModelRenderingContext.FORM_ENGINE_OBJECT_IDX ) || property.equals(
-                        MapModelRenderingContext.FORM_ENGINE_EDITED_OBJECT ) ) {
+                if (property.equals(MapModelRenderingContext.FORM_ENGINE_OBJECT_IDX) || property.equals(
+                        MapModelRenderingContext.FORM_ENGINE_EDITED_OBJECT)) {
                     return;
                 }
-                if ( PropertyUtils.getPropertyDescriptor( model, property ) != null ) {
-                    BeanUtils.setProperty( model, property, value );
+                if (PropertyUtils.getPropertyDescriptor(model,
+                                                        property) != null) {
+                    BeanUtils.setProperty(model,
+                                          property,
+                                          value);
                 }
-            } catch ( Exception e ) {
-                getLogger().warn( "Error modifying object '{}': cannot set value '{}' to property '{}'", model, value, property );
-                getLogger().warn( "Caused by:", e );
+            } catch (Exception e) {
+                getLogger().warn("Error modifying object '{}': cannot set value '{}' to property '{}'",
+                                 model,
+                                 value,
+                                 property);
+                getLogger().warn("Caused by:",
+                                 e);
             }
-        } );
+        });
     }
 
-    protected Object readValue( String property, Object model ) {
+    protected Object readValue(String property,
+                               Object model) {
         try {
-            if ( PropertyUtils.getPropertyDescriptor( model, property ) != null ) {
-                return PropertyUtils.getProperty( model, property );
+            if (PropertyUtils.getPropertyDescriptor(model,
+                                                    property) != null) {
+                return PropertyUtils.getProperty(model,
+                                                 property);
             }
-        } catch ( Exception e ) {
-            getLogger().warn( "Error getting property '{}' from object '{}'", property, model );
-            getLogger().warn( "Caused by:", e );
+        } catch (Exception e) {
+            getLogger().warn("Error getting property '{}' from object '{}'",
+                             property,
+                             model);
+            getLogger().warn("Caused by:",
+                             e);
         }
         return null;
     }

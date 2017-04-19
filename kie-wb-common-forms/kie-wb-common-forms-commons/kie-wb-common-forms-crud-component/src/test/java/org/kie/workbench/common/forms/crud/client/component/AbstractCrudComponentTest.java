@@ -16,11 +16,8 @@
 
 package org.kie.workbench.common.forms.crud.client.component;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import com.google.gwtmockito.GwtMock;
+import junit.framework.TestCase;
 import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.kie.workbench.common.forms.crud.client.component.formDisplay.FormDisplayer;
@@ -33,11 +30,12 @@ import org.kie.workbench.common.forms.crud.client.resources.i18n.CrudComponentCo
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import com.google.gwtmockito.GwtMock;
-
-import junit.framework.TestCase;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 public abstract class AbstractCrudComponentTest<MODEL, FORM_MODEL> extends TestCase {
+
     @Mock
     protected CrudComponent.CrudComponentView<MODEL, FORM_MODEL> view;
 
@@ -56,8 +54,8 @@ public abstract class AbstractCrudComponentTest<MODEL, FORM_MODEL> extends TestC
     @Mock
     private FormDisplayerCallback callback;
 
-    @SuppressWarnings( "unchecked" )
-    protected CrudActionsHelper<MODEL> helper = Mockito.mock( CrudActionsHelper.class );
+    @SuppressWarnings("unchecked")
+    protected CrudActionsHelper<MODEL> helper = Mockito.mock(CrudActionsHelper.class);
 
     protected CrudComponentMock<MODEL, FORM_MODEL> crudComponent;
 
@@ -66,36 +64,45 @@ public abstract class AbstractCrudComponentTest<MODEL, FORM_MODEL> extends TestC
 
     @Before
     public void init() {
-        when( translationService.getTranslation( CrudComponentConstants.CrudComponentViewImplNewInstanceTitle ) ).thenReturn( NEW_INSTANCE_TITLE );
-        when( translationService.getTranslation( CrudComponentConstants.CrudComponentViewImplEditInstanceTitle ) ).thenReturn( EDIT_INSTANCE_TITLE );
-        when( embeddedFormDisplayer.isEmbeddable() ).thenReturn( true );
-        crudComponent = new CrudComponentMock<>( view, embeddedFormDisplayer, modalFormDisplayer, translationService );
+        when(translationService.getTranslation(CrudComponentConstants.CrudComponentViewImplNewInstanceTitle)).thenReturn(NEW_INSTANCE_TITLE);
+        when(translationService.getTranslation(CrudComponentConstants.CrudComponentViewImplEditInstanceTitle)).thenReturn(EDIT_INSTANCE_TITLE);
+        when(embeddedFormDisplayer.isEmbeddable()).thenReturn(true);
+        crudComponent = new CrudComponentMock<>(view,
+                                                embeddedFormDisplayer,
+                                                modalFormDisplayer,
+                                                translationService);
     }
 
     protected void initTest() {
-        verify( view ).setPresenter( crudComponent );
+        verify(view).setPresenter(crudComponent);
 
-        crudComponent.init( getActionsHelper() );
-        verify( view ).initTableView( helper.getGridColumns(), helper.getPageSize() );
+        crudComponent.init(getActionsHelper());
+        verify(view).initTableView(helper.getGridColumns(),
+                                   helper.getPageSize());
 
         crudComponent.getCurrentPage();
-        verify( view ).getCurrentPage();
+        verify(view).getCurrentPage();
     }
 
     protected void runFormTest() {
-        crudComponent.displayForm( formView, callback );
+        crudComponent.displayForm(formView,
+                                  callback);
 
-        if ( getActionsHelper().showEmbeddedForms() ) {
-            verify( view ).addDisplayer( embeddedFormDisplayer );
-            verify( embeddedFormDisplayer ).display( eq( NEW_INSTANCE_TITLE ), eq( getFormView() ), any( FormDisplayer.FormDisplayerCallback.class ) );
+        if (getActionsHelper().showEmbeddedForms()) {
+            verify(view).addDisplayer(embeddedFormDisplayer);
+            verify(embeddedFormDisplayer).display(eq(NEW_INSTANCE_TITLE),
+                                                  eq(getFormView()),
+                                                  any(FormDisplayer.FormDisplayerCallback.class));
         } else {
-            verify( modalFormDisplayer ).display( eq( NEW_INSTANCE_TITLE ), eq( getFormView() ), any( FormDisplayer.FormDisplayerCallback.class ) );
+            verify(modalFormDisplayer).display(eq(NEW_INSTANCE_TITLE),
+                                               eq(getFormView()),
+                                               any(FormDisplayer.FormDisplayerCallback.class));
         }
 
         crudComponent.restoreTable();
 
-        if ( getActionsHelper().showEmbeddedForms() ) {
-            verify( view ).removeDisplayer( embeddedFormDisplayer );
+        if (getActionsHelper().showEmbeddedForms()) {
+            verify(view).removeDisplayer(embeddedFormDisplayer);
         }
     }
 

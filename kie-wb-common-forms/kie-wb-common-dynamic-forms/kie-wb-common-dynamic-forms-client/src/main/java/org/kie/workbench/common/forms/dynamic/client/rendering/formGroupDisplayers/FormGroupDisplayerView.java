@@ -23,13 +23,14 @@ import org.kie.workbench.common.forms.processing.engine.handling.FormField;
 
 public interface FormGroupDisplayerView extends IsWidget {
 
-    void render( Widget widget, FieldDefinition field );
+    void render(Widget widget,
+                FieldDefinition field);
 
-    default String generateFormGroupId( FieldDefinition field ) {
+    default String generateFormGroupId(FieldDefinition field) {
         return field.getName() + FormField.FORM_GROUP_SUFFIX;
     }
 
-    default String generateHelpBlockId( FieldDefinition field ) {
+    default String generateHelpBlockId(FieldDefinition field) {
         return field.getName() + FormField.HELP_BLOCK_SUFFIX;
     }
 }

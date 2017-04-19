@@ -25,8 +25,6 @@ import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 
-import com.google.gwt.core.client.GWT;
-import org.jboss.errai.databinding.client.MapBindableProxy;
 import org.jboss.errai.validation.client.dynamic.DynamicValidator;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.validation.DynamicModelConstraints;
 import org.kie.workbench.common.forms.dynamic.service.shared.impl.validation.FieldConstraint;
@@ -42,22 +40,24 @@ public class DynamicModelValidator implements ModelValidator<Map<String, Object>
     protected DynamicModelConstraints modelConstraints;
 
     @Inject
-    public DynamicModelValidator( DynamicValidator validator ) {
+    public DynamicModelValidator(DynamicValidator validator) {
         this.validator = validator;
     }
 
     @Override
-    public boolean validate( Collection<FormField> fields, Map<String, Object> model ) {
+    public boolean validate(Collection<FormField> fields,
+                            Map<String, Object> model) {
 
-        if ( validator == null ) {
+        if (validator == null) {
             return true;
         }
 
         boolean isValid = true;
 
-        for ( FormField formField : fields ) {
-            boolean validField = validate( formField, model ) && formField.isContentValid();
-            if ( !validField ) {
+        for (FormField formField : fields) {
+            boolean validField = validate(formField,
+                                          model) && formField.isContentValid();
+            if (!validField) {
                 isValid = false;
             }
         }
@@ -66,27 +66,28 @@ public class DynamicModelValidator implements ModelValidator<Map<String, Object>
     }
 
     @Override
-    public boolean validate( FormField formField, Map<String, Object> model ) {
+    public boolean validate(FormField formField,
+                            Map<String, Object> model) {
 
-        if ( validator == null ) {
+        if (validator == null) {
             return true;
         }
 
-        if ( modelConstraints != null ) {
-            List<FieldConstraint> fieldConstraints = modelConstraints.getFieldConstraints().get( formField.getFieldBinding() );
+        if (modelConstraints != null) {
+            List<FieldConstraint> fieldConstraints = modelConstraints.getFieldConstraints().get(formField.getFieldBinding());
 
-            if ( fieldConstraints != null ) {
+            if (fieldConstraints != null) {
 
-                for ( FieldConstraint constraint : fieldConstraints ) {
+                for (FieldConstraint constraint : fieldConstraints) {
                     try {
-                        Set<ConstraintViolation<Object>> constraintViolations = validator.validate( constraint.getAnnotationType(),
-                                                                                                    constraint.getParams(),
-                                                                                                    model.get( formField.getFieldBinding() ) );
-                        if ( !constraintViolations.isEmpty() ) {
-                            formField.setError( constraintViolations.iterator().next().getMessage() );
+                        Set<ConstraintViolation<Object>> constraintViolations = validator.validate(constraint.getAnnotationType(),
+                                                                                                   constraint.getParams(),
+                                                                                                   model.get(formField.getFieldBinding()));
+                        if (!constraintViolations.isEmpty()) {
+                            formField.setError(constraintViolations.iterator().next().getMessage());
                             return false;
                         }
-                    } catch ( IllegalArgumentException ex ) {
+                    } catch (IllegalArgumentException ex) {
                         // Maybe trying to validate an Annotation which is not a a Validation
                     }
                 }
@@ -99,7 +100,7 @@ public class DynamicModelValidator implements ModelValidator<Map<String, Object>
         return modelConstraints;
     }
 
-    public void setModelConstraints( DynamicModelConstraints modelConstraints ) {
+    public void setModelConstraints(DynamicModelConstraints modelConstraints) {
         this.modelConstraints = modelConstraints;
     }
 }

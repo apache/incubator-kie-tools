@@ -17,4 +17,5 @@
 package org.kie.workbench.common.forms.dynamic.model.config;
 
 public interface SystemSelectorDataProvider extends SelectorDataProvider {
+
 }

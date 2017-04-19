@@ -20,12 +20,16 @@ import java.io.Serializable;
 
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
-public interface FieldValueProcessor<F extends FieldDefinition, RAW_VALUE, FLAT_VALUE > extends Serializable {
+public interface FieldValueProcessor<F extends FieldDefinition, RAW_VALUE, FLAT_VALUE> extends Serializable {
 
     Class<F> getSupportedField();
 
-    FLAT_VALUE toFlatValue( F field, RAW_VALUE rawValue, BackendFormRenderingContext context );
+    FLAT_VALUE toFlatValue(F field,
+                           RAW_VALUE rawValue,
+                           BackendFormRenderingContext context);
 
-    RAW_VALUE toRawValue( F field, FLAT_VALUE flatValue, RAW_VALUE originalValue, BackendFormRenderingContext context );
-
+    RAW_VALUE toRawValue(F field,
+                         FLAT_VALUE flatValue,
+                         RAW_VALUE originalValue,
+                         BackendFormRenderingContext context);
 }

@@ -23,6 +23,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class User {
+
     @NotNull
     @NotEmpty
     private String name;
@@ -45,7 +46,7 @@ public class User {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -53,7 +54,7 @@ public class User {
         return lastName;
     }
 
-    public void setLastName( String lastName ) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
@@ -61,7 +62,7 @@ public class User {
         return birtDay;
     }
 
-    public void setBirtDay( Date birtDay ) {
+    public void setBirtDay(Date birtDay) {
         this.birtDay = birtDay;
     }
 
@@ -69,7 +70,7 @@ public class User {
         return married;
     }
 
-    public void setMarried( Boolean married ) {
+    public void setMarried(Boolean married) {
         this.married = married;
     }
 
@@ -77,7 +78,7 @@ public class User {
         return address;
     }
 
-    public void setAddress( String address ) {
+    public void setAddress(String address) {
         this.address = address;
     }
 }

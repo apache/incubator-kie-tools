@@ -30,7 +30,7 @@ import org.mockito.Mock;
 
 import static org.mockito.Mockito.*;
 
-@RunWith( GwtMockitoTestRunner.class )
+@RunWith(GwtMockitoTestRunner.class)
 public class EmbeddedFormDisplayerTest extends TestCase {
 
     private EmbeddedFormDisplayer displayer;
@@ -44,54 +44,58 @@ public class EmbeddedFormDisplayerTest extends TestCase {
     @Mock
     private FormDisplayer.FormDisplayerCallback displayerCallback;
 
-
     @Before
     public void setup() {
-        displayer = new EmbeddedFormDisplayer( displayerView );
+        displayer = new EmbeddedFormDisplayer(displayerView);
 
-        verify( displayerView ).setPresenter( displayer );
+        verify(displayerView).setPresenter(displayer);
 
         displayer.asWidget();
 
-        verify( displayerView ).asWidget();
+        verify(displayerView).asWidget();
 
-        displayer.display( "Form Title", formView, displayerCallback );
+        displayer.display("Form Title",
+                          formView,
+                          displayerCallback);
 
-        verify( displayerView ).show( "Form Title", formView );
+        verify(displayerView).show("Form Title",
+                                   formView);
     }
 
     @Test
     public void testCancelForm() {
         displayer.cancel();
 
-        verify( displayerCallback ).onCancel();
+        verify(displayerCallback).onCancel();
 
-        verify( displayerView ).clear();
+        verify(displayerView).clear();
     }
 
     @Test
     public void testSubmitFormValidationPassed() {
-        testSubmitForm( true );
+        testSubmitForm(true);
 
-        verify( displayerCallback ).onAccept();
+        verify(displayerCallback).onAccept();
 
-        verify( displayerView ).clear();
+        verify(displayerView).clear();
     }
 
     @Test
     public void testSubmitFormValidationFailed() {
-        testSubmitForm( false );
+        testSubmitForm(false);
 
-        verify( displayerCallback, never() ).onAccept();
+        verify(displayerCallback,
+               never()).onAccept();
 
-        verify( displayerView, never() ).clear();
+        verify(displayerView,
+               never()).clear();
     }
 
-    private void testSubmitForm( final boolean validate ) {
-        when( formView.isValid() ).thenReturn( validate );
+    private void testSubmitForm(final boolean validate) {
+        when(formView.isValid()).thenReturn(validate);
 
         displayer.submitForm();
 
-        verify( formView ).isValid();
+        verify(formView).isValid();
     }
 }

@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.jbpm.server.service.impl.model;
 import java.util.List;
 
 public class Person {
+
     private String name;
 
     private PersonType type;
@@ -31,7 +32,7 @@ public class Person {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -39,7 +40,7 @@ public class Person {
         return type;
     }
 
-    public void setType( PersonType type ) {
+    public void setType(PersonType type) {
         this.type = type;
     }
 
@@ -47,7 +48,7 @@ public class Person {
         return personalData;
     }
 
-    public void setPersonalData( PersonalData personalData ) {
+    public void setPersonalData(PersonalData personalData) {
         this.personalData = personalData;
     }
 
@@ -55,7 +56,7 @@ public class Person {
         return log;
     }
 
-    public void setLog( List<LogEntry> log ) {
+    public void setLog(List<LogEntry> log) {
         this.log = log;
     }
 }

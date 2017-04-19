@@ -26,22 +26,24 @@ import org.kie.workbench.common.forms.metaModel.FieldDef;
 @Portable
 public class Department {
 
-    @FieldDef( label = "Name")
+    @FieldDef(label = "Name")
     private String name;
 
-    @FieldDef( label = "Address")
+    @FieldDef(label = "Address")
     private Address address;
 
-    @FieldDef( label = "Employees")
+    @FieldDef(label = "Employees")
     private List<Employee> employees;
 
-    @FieldDef( label = "Meta Address", property = "address")
+    @FieldDef(label = "Meta Address", property = "address")
     private MetaAddress metaAddress;
 
-    @FieldDef( label = "Meta Addresses", property = "addresses")
+    @FieldDef(label = "Meta Addresses", property = "addresses")
     private MetaAddresses metaAddresses;
 
-    public Department( String name, Address address, List<Employee> employees ) {
+    public Department(String name,
+                      Address address,
+                      List<Employee> employees) {
         this.name = name;
         this.address = address;
         this.employees = employees;
@@ -51,7 +53,7 @@ public class Department {
         return name;
     }
 
-    public void setName( String name ) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -59,7 +61,7 @@ public class Department {
         return address;
     }
 
-    public void setAddress( Address address ) {
+    public void setAddress(Address address) {
         this.address = address;
     }
 
@@ -67,7 +69,7 @@ public class Department {
         return employees;
     }
 
-    public void setEmployees( List<Employee> employees ) {
+    public void setEmployees(List<Employee> employees) {
         this.employees = employees;
     }
 
@@ -75,7 +77,7 @@ public class Department {
         return metaAddress;
     }
 
-    public void setMetaAddress( MetaAddress metaAddress ) {
+    public void setMetaAddress(MetaAddress metaAddress) {
         this.metaAddress = metaAddress;
     }
 
@@ -83,7 +85,7 @@ public class Department {
         return metaAddresses;
     }
 
-    public void setMetaAddresses( MetaAddresses metaAddresses ) {
+    public void setMetaAddresses(MetaAddresses metaAddresses) {
         this.metaAddresses = metaAddresses;
     }
 }

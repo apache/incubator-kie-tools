@@ -22,7 +22,7 @@ import org.kie.workbench.common.forms.commons.rendering.shared.util.masks.Produc
 public class BackendMaskInterpreterTest extends MaskInterpreterTest<BackendMaskInterpreter<Product>> {
 
     @Override
-    protected BackendMaskInterpreter<Product> getMaskInterpreter( String mask ) {
-        return new BackendMaskInterpreter<>( mask );
+    protected BackendMaskInterpreter<Product> getMaskInterpreter(String mask) {
+        return new BackendMaskInterpreter<>(mask);
     }
 }

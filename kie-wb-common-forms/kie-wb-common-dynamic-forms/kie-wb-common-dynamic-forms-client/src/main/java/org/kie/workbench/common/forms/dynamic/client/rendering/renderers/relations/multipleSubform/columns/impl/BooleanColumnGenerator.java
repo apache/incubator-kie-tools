@@ -34,22 +34,21 @@ public class BooleanColumnGenerator implements ColumnGenerator<Boolean> {
     }
 
     @Override
-    public Column<HasProperties, Boolean> getColumn( final String property ) {
-        final CheckboxCellImpl checkbox = new CheckboxCellImpl( true );
+    public Column<HasProperties, Boolean> getColumn(final String property) {
+        final CheckboxCellImpl checkbox = new CheckboxCellImpl(true);
 
-        final Column<HasProperties, Boolean> column = new Column<HasProperties, Boolean>( checkbox ) {
+        final Column<HasProperties, Boolean> column = new Column<HasProperties, Boolean>(checkbox) {
             @Override
-            public Boolean getValue( HasProperties object ) {
-                Object value = object.get( property );
+            public Boolean getValue(HasProperties object) {
+                Object value = object.get(property);
 
-                if ( value == null ) {
+                if (value == null) {
                     return Boolean.FALSE;
                 }
 
-                return Boolean.TRUE.equals( value );
+                return Boolean.TRUE.equals(value);
             }
         };
         return column;
     }
-
 }

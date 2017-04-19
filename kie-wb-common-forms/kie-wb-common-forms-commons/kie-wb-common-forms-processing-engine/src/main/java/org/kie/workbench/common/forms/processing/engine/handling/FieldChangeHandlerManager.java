@@ -17,17 +17,22 @@
 package org.kie.workbench.common.forms.processing.engine.handling;
 
 public interface FieldChangeHandlerManager {
-    void registerField( String fieldName );
 
-    void registerField( String fieldName, boolean validateOnChange );
+    void registerField(String fieldName);
 
-    void addFieldChangeHandler( FieldChangeHandler changeHandler );
+    void registerField(String fieldName,
+                       boolean validateOnChange);
 
-    void addFieldChangeHandler( String fieldName, FieldChangeHandler changeHandler );
+    void addFieldChangeHandler(FieldChangeHandler changeHandler);
 
-    void processFieldChange( String fieldName, Object newValue, Object model );
+    void addFieldChangeHandler(String fieldName,
+                               FieldChangeHandler changeHandler);
+
+    void processFieldChange(String fieldName,
+                            Object newValue,
+                            Object model);
 
     void clear();
 
-    void setValidator( FormValidator validator );
+    void setValidator(FormValidator validator);
 }

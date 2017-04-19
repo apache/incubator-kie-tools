@@ -32,45 +32,48 @@ public class FormValidatorImpl implements FormValidator {
     private FormFieldProvider formFieldProvider;
 
     @Inject
-    public FormValidatorImpl( ModelValidator modelValidator ) {
+    public FormValidatorImpl(ModelValidator modelValidator) {
         this.modelValidator = modelValidator;
     }
 
     @Override
-    public boolean validate( Object model ) {
+    public boolean validate(Object model) {
         boolean isValid = true;
 
         clearAllFieldErrors();
 
-        return modelValidator.validate( formFieldProvider.getAll(), model );
+        return modelValidator.validate(formFieldProvider.getAll(),
+                                       model);
     }
 
     @Override
-    public boolean validate( String fieldName, Object model ) {
+    public boolean validate(String fieldName,
+                            Object model) {
 
-        clearFieldError( fieldName );
+        clearFieldError(fieldName);
 
-        return modelValidator.validate( formFieldProvider.findFormField( fieldName ), model );
+        return modelValidator.validate(formFieldProvider.findFormField(fieldName),
+                                       model);
     }
 
-    public void setFormFieldProvider( FormFieldProvider formFieldProvider ) {
+    public void setFormFieldProvider(FormFieldProvider formFieldProvider) {
         this.formFieldProvider = formFieldProvider;
     }
 
     protected void clearAllFieldErrors() {
-        for ( FormField formField : formFieldProvider.getAll() ) {
+        for (FormField formField : formFieldProvider.getAll()) {
             formField.clearError();
         }
     }
 
-    protected void clearFieldError( String fieldName ) {
-        FormField field = formFieldProvider.findFormField( fieldName );
-        if ( field != null ) {
+    protected void clearFieldError(String fieldName) {
+        FormField field = formFieldProvider.findFormField(fieldName);
+        if (field != null) {
             field.clearError();
         }
     }
 
-    public void setModelValidator( ModelValidator modelValidator ) {
+    public void setModelValidator(ModelValidator modelValidator) {
         this.modelValidator = modelValidator;
     }
 }

@@ -36,25 +36,26 @@ public class ColumnGeneratorManager {
     protected Map<String, ColumnGenerator> generators = new HashMap<String, ColumnGenerator>();
 
     @Inject
-    public ColumnGeneratorManager( @Default ColumnGenerator defaultColumnGenerator ) {
+    public ColumnGeneratorManager(@Default ColumnGenerator defaultColumnGenerator) {
         this.defaultColumnGenerator = defaultColumnGenerator;
     }
 
     @PostConstruct
     protected void init() {
-        Collection<SyncBeanDef<ColumnGenerator>> generatorDefs = IOC.getBeanManager().lookupBeans( ColumnGenerator.class );
-        for ( SyncBeanDef<ColumnGenerator> generatorDef : generatorDefs ) {
+        Collection<SyncBeanDef<ColumnGenerator>> generatorDefs = IOC.getBeanManager().lookupBeans(ColumnGenerator.class);
+        for (SyncBeanDef<ColumnGenerator> generatorDef : generatorDefs) {
             ColumnGenerator generator = generatorDef.getInstance();
-            if ( !defaultColumnGenerator.equals( generator ) ) {
-                generators.put( generator.getType(), generator );
+            if (!defaultColumnGenerator.equals(generator)) {
+                generators.put(generator.getType(),
+                               generator);
             }
         }
     }
 
-    public ColumnGenerator getGeneratorByType( String type ) {
-        ColumnGenerator generator = generators.get( type );
+    public ColumnGenerator getGeneratorByType(String type) {
+        ColumnGenerator generator = generators.get(type);
 
-        if ( generator != null ) {
+        if (generator != null) {
             return generator;
         }
 

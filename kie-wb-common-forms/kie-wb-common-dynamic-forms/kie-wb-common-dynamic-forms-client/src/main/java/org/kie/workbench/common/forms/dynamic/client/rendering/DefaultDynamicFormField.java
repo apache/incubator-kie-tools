@@ -38,10 +38,12 @@ public abstract class DefaultDynamicFormField<F extends FieldDefinition, W exten
 
     protected Element helpBlock;
 
-    public DefaultDynamicFormField( F field,
-                                    W widget ) {
-        Assert.notNull( "Field cannot be null", field );
-        Assert.notNull( "Widget cannot be null", widget );
+    public DefaultDynamicFormField(F field,
+                                   W widget) {
+        Assert.notNull("Field cannot be null",
+                       field);
+        Assert.notNull("Widget cannot be null",
+                       widget);
         this.field = field;
         this.widget = widget;
         this.formGroup = findFormGroup();
@@ -63,50 +65,54 @@ public abstract class DefaultDynamicFormField<F extends FieldDefinition, W exten
         return field.getValidateOnChange();
     }
 
-
     @Override
     public boolean isBindable() {
         return field.getBinding() != null && !field.getBinding().isEmpty();
     }
 
     @Override
-    public void setVisible( boolean visible ) {
-        formGroup.getStyle().setVisibility( visible ? Style.Visibility.VISIBLE : Style.Visibility.HIDDEN );
+    public void setVisible(boolean visible) {
+        formGroup.getStyle().setVisibility(visible ? Style.Visibility.VISIBLE : Style.Visibility.HIDDEN);
     }
 
     @Override
-    public void setReadOnly( boolean readOnly ) {
-        if ( !field.getReadOnly() ) {
-            doSetReadOnly( readOnly );
+    public void setReadOnly(boolean readOnly) {
+        if (!field.getReadOnly()) {
+            doSetReadOnly(readOnly);
         }
     }
 
-    protected abstract void doSetReadOnly( boolean readOnly );
+    protected abstract void doSetReadOnly(boolean readOnly);
 
     @Override
     public void clearError() {
-        if ( formGroup != null ) {
-            StyleHelper.addEnumStyleName( formGroup, ValidationState.NONE );
-            StyleHelper.removeEnumStyleName( formGroup, ValidationState.ERROR );
+        if (formGroup != null) {
+            StyleHelper.addEnumStyleName(formGroup,
+                                         ValidationState.NONE);
+            StyleHelper.removeEnumStyleName(formGroup,
+                                            ValidationState.ERROR);
         }
-        if ( helpBlock != null ) {
-            helpBlock.setInnerHTML( "" );
+        if (helpBlock != null) {
+            helpBlock.setInnerHTML("");
         }
     }
 
     @Override
-    public void setError( String error ) {
-        if ( error == null ) {
+    public void setError(String error) {
+        if (error == null) {
             error = "";
-        } else if ( !error.isEmpty() ) {
-            error = error.substring( 0, 1 ).toUpperCase() + error.substring( 1 );
+        } else if (!error.isEmpty()) {
+            error = error.substring(0,
+                                    1).toUpperCase() + error.substring(1);
         }
-        if ( formGroup != null ) {
-            StyleHelper.addEnumStyleName( formGroup, ValidationState.ERROR );
-            StyleHelper.removeEnumStyleName( formGroup, ValidationState.NONE );
+        if (formGroup != null) {
+            StyleHelper.addEnumStyleName(formGroup,
+                                         ValidationState.ERROR);
+            StyleHelper.removeEnumStyleName(formGroup,
+                                            ValidationState.NONE);
         }
-        if ( helpBlock != null ) {
-            helpBlock.setInnerHTML( error );
+        if (helpBlock != null) {
+            helpBlock.setInnerHTML(error);
         }
     }
 
@@ -116,24 +122,31 @@ public abstract class DefaultDynamicFormField<F extends FieldDefinition, W exten
     }
 
     private Element findHelpBlock() {
-        if ( formGroup != null ) {
+        if (formGroup != null) {
             String helpBlockId = field.getName() + HELP_BLOCK_SUFFIX;
-            return findHelpBlock( helpBlockId, formGroup );
+            return findHelpBlock(helpBlockId,
+                                 formGroup);
         }
         return null;
     }
 
-    private Element findHelpBlock( String helpBlockId, Element parent ) {
-        if ( parent == null ) return null;
-        for ( int i = 0; i < parent.getChildCount(); i++ ) {
-            Node child = parent.getChild( i );
-            if ( child.getNodeType() == Node.ELEMENT_NODE ) {
+    private Element findHelpBlock(String helpBlockId,
+                                  Element parent) {
+        if (parent == null) {
+            return null;
+        }
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            Node child = parent.getChild(i);
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
                 Element childE = (Element) child;
-                if ( childE.getId().equals( helpBlockId ) ) {
+                if (childE.getId().equals(helpBlockId)) {
                     return childE;
                 }
-                childE = findHelpBlock( helpBlockId, childE );
-                if ( childE != null ) return childE;
+                childE = findHelpBlock(helpBlockId,
+                                       childE);
+                if (childE != null) {
+                    return childE;
+                }
             }
         }
         return null;
@@ -144,16 +157,19 @@ public abstract class DefaultDynamicFormField<F extends FieldDefinition, W exten
 
         Element element = widget.asWidget().getElement();
 
-        return findFormGroup( groupId, element );
+        return findFormGroup(groupId,
+                             element);
     }
 
-    private Element findFormGroup( String groupId, Element element ) {
-        if ( element.getTagName().equals( FormElement.TAG ) ) {
+    private Element findFormGroup(String groupId,
+                                  Element element) {
+        if (element.getTagName().equals(FormElement.TAG)) {
             return null;
         }
-        if ( element.getId().equals( groupId ) ) {
+        if (element.getId().equals(groupId)) {
             return element;
         }
-        return findFormGroup( groupId, element.getParentElement() );
+        return findFormGroup(groupId,
+                             element.getParentElement());
     }
 }
