@@ -26,9 +26,19 @@
     </dependency>
 
     <dependency>
-    <groupId>org.guvnor</groupId>
-    <artifactId>guvnor-project-api</artifactId>
-  </dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-structure-client</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-project-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.guvnor</groupId>
+      <artifactId>guvnor-project-client</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.jboss.errai</groupId>

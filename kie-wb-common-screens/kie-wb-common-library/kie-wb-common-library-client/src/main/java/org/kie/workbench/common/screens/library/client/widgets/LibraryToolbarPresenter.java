@@ -17,14 +17,17 @@
 package org.kie.workbench.common.screens.library.client.widgets;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
-import org.kie.workbench.common.screens.library.api.LibraryPreferences;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElement;
@@ -35,16 +38,6 @@ public class LibraryToolbarPresenter {
 
     public interface View extends UberElement<LibraryToolbarPresenter> {
 
-        void setOrganizationalUnitLabel(String label);
-
-        void clearOrganizationalUnits();
-
-        void addOrganizationUnit(String identifier);
-
-        String getSelectedOrganizationalUnit();
-
-        void setSelectedOrganizationalUnit(String identifier);
-
         void clearRepositories();
 
         void addRepository(String alias);
@@ -52,6 +45,8 @@ public class LibraryToolbarPresenter {
         String getSelectedRepository();
 
         void setSelectedRepository(String alias);
+
+        void setRepositorySelectorVisibility(final boolean visible);
 
         void clearBranches();
 
@@ -67,10 +62,12 @@ public class LibraryToolbarPresenter {
     private View view;
     private Caller<LibraryService> libraryService;
     private LibraryPreferences libraryPreferences;
+    private LibraryInternalPreferences libraryInternalPreferences;
     private PlaceManager placeManager;
     private LibraryPlaces libraryPlaces;
+    private Event<ProjectContextChangeEvent> projectContextChangeEvent;
+
     private OrganizationalUnitRepositoryInfo info;
-    private OrganizationalUnit selectedOrganizationalUnit;
     private Repository selectedRepository;
     private String selectedBranch;
 
@@ -78,50 +75,46 @@ public class LibraryToolbarPresenter {
     public LibraryToolbarPresenter(final View view,
                                    final Caller<LibraryService> libraryService,
                                    final LibraryPreferences libraryPreferences,
+                                   final LibraryInternalPreferences libraryInternalPreferences,
                                    final PlaceManager placeManager,
-                                   final LibraryPlaces libraryPlaces) {
+                                   final LibraryPlaces libraryPlaces,
+                                   final Event<ProjectContextChangeEvent> projectContextChangeEvent) {
         this.view = view;
         this.libraryService = libraryService;
         this.libraryPreferences = libraryPreferences;
+        this.libraryInternalPreferences = libraryInternalPreferences;
         this.placeManager = placeManager;
         this.libraryPlaces = libraryPlaces;
+        this.projectContextChangeEvent = projectContextChangeEvent;
     }
 
     public void init(final Command callback) {
         libraryService.call((OrganizationalUnitRepositoryInfo info) -> {
             LibraryToolbarPresenter.this.info = info;
             view.init(LibraryToolbarPresenter.this);
-            setupOrganizationUnits(info);
+
             setupRepositories(info);
-            selectedOrganizationalUnit = info.getSelectedOrganizationalUnit();
             selectedRepository = info.getSelectedRepository();
             selectedBranch = info.getSelectedRepository().getDefaultBranch();
+
             setBranchSelectorVisibility();
+            setRepositorySelectorVisibility();
+
+            final ProjectContextChangeEvent event = new ProjectContextChangeEvent(info.getSelectedOrganizationalUnit());
+            projectContextChangeEvent.fire(event);
+
             callback.execute();
         }).getDefaultOrganizationalUnitRepositoryInfo();
-
-        libraryPreferences.load(loadedLibraryPreferences -> {
-                                    view.setOrganizationalUnitLabel(loadedLibraryPreferences.getOuAlias());
-                                },
-                                parameter -> {
-                                });
     }
 
     public void setSelectedInfo(final OrganizationalUnit organizationalUnit,
                                 final Repository repository,
                                 final Command callback) {
         libraryService.call((OrganizationalUnitRepositoryInfo newInfo) -> {
-            setupOrganizationUnits(newInfo);
             newInfo.setSelectedRepository(repository);
             refreshLibrary(newInfo,
                            callback);
         }).getOrganizationalUnitRepositoryInfo(organizationalUnit);
-    }
-
-    private void setupOrganizationUnits(final OrganizationalUnitRepositoryInfo info) {
-        view.clearOrganizationalUnits();
-        info.getOrganizationalUnits().forEach(ou -> view.addOrganizationUnit(ou.getIdentifier()));
-        view.setSelectedOrganizationalUnit(info.getSelectedOrganizationalUnit().getIdentifier());
     }
 
     private void setupRepositories(final OrganizationalUnitRepositoryInfo info) {
@@ -142,22 +135,17 @@ public class LibraryToolbarPresenter {
         view.setSelectedBranch(selectedBranch);
     }
 
-    void onUpdateSelectedOrganizationalUnit() {
-        final OrganizationalUnit selectedOrganizationalUnit = getViewSelectedOrganizationalUnit();
-        libraryService.call((OrganizationalUnitRepositoryInfo newInfo) -> refreshLibrary(newInfo))
-                .getOrganizationalUnitRepositoryInfo(selectedOrganizationalUnit);
-
-        libraryPreferences.setOuIdentifier(selectedOrganizationalUnit.getIdentifier());
-        libraryPreferences.save();
-    }
-
     void onUpdateSelectedRepository() {
         refreshLibrary(null);
         setUpBranches(selectedBranch,
                       selectedRepository);
 
-        libraryPreferences.setRepositoryAlias(selectedRepository.getAlias());
-        libraryPreferences.save();
+        libraryInternalPreferences.load(loadedLibraryInternalPreferences -> {
+                                            loadedLibraryInternalPreferences.setLastOpenedRepository(selectedRepository.getAlias());
+                                            loadedLibraryInternalPreferences.save();
+                                        },
+                                        error -> {
+                                        });
     }
 
     void onUpdateSelectedBranch() {
@@ -176,20 +164,23 @@ public class LibraryToolbarPresenter {
                 this.info = newInfo;
                 setupRepositories(info);
             }
-            selectedOrganizationalUnit = getViewSelectedOrganizationalUnit();
             selectedRepository = getViewSelectedRepository();
             selectedBranch = getViewSelectedBranch();
 
             setBranchSelectorVisibility();
+            setRepositorySelectorVisibility();
 
             libraryPlaces.goToLibrary(callback);
         } else {
-            view.setSelectedOrganizationalUnit(selectedOrganizationalUnit.getIdentifier());
             view.setSelectedRepository(selectedRepository.getAlias());
 
             setUpBranches(selectedBranch,
                           selectedRepository);
         }
+    }
+
+    private void setRepositorySelectorVisibility() {
+        view.setRepositorySelectorVisibility(info.getRepositories().size() > 1);
     }
 
     private void setBranchSelectorVisibility() {
@@ -204,18 +195,8 @@ public class LibraryToolbarPresenter {
         }
     }
 
-    public OrganizationalUnit getSelectedOrganizationalUnit() {
-        return selectedOrganizationalUnit;
-    }
-
     public Repository getSelectedRepository() {
         return selectedRepository;
-    }
-
-    private OrganizationalUnit getViewSelectedOrganizationalUnit() {
-        return info.getOrganizationalUnits().stream()
-                .filter(ou -> ou.getIdentifier().equals(view.getSelectedOrganizationalUnit()))
-                .findFirst().get();
     }
 
     private Repository getViewSelectedRepository() {

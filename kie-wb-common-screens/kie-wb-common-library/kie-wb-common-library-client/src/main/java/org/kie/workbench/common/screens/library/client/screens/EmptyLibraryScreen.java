@@ -19,10 +19,9 @@ package org.kie.workbench.common.screens.library.client.screens;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.jboss.errai.security.shared.api.identity.User;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.kie.workbench.common.screens.examples.model.ExampleProject;
-import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryConstants;
 import org.kie.workbench.common.screens.library.client.util.ExamplesUtils;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
@@ -35,9 +34,9 @@ public class EmptyLibraryScreen {
 
     public interface View extends UberElement<EmptyLibraryScreen> {
 
-        void setup( String username );
+        void setup(String username);
 
-        void addProjectToImport( ExampleProject exampleProject );
+        void addProjectToImport(ExampleProject exampleProject);
 
         void clearImportProjectsContainer();
     }
@@ -50,35 +49,47 @@ public class EmptyLibraryScreen {
 
     private ExamplesUtils examplesUtils;
 
+    private ProjectController projectController;
+
     @Inject
-    public EmptyLibraryScreen( final View view,
-                               final User user,
-                               final LibraryPlaces libraryPlaces,
-                               final ExamplesUtils examplesUtils ) {
+    public EmptyLibraryScreen(final View view,
+                              final User user,
+                              final LibraryPlaces libraryPlaces,
+                              final ExamplesUtils examplesUtils,
+                              final ProjectController projectController) {
         this.view = view;
         this.user = user;
         this.libraryPlaces = libraryPlaces;
         this.examplesUtils = examplesUtils;
+        this.projectController = projectController;
     }
 
     @PostConstruct
     public void setup() {
-        view.init( this );
-        view.setup( user.getIdentifier() );
-        examplesUtils.getExampleProjects( exampleProjects -> {
+        view.init(this);
+        view.setup(user.getIdentifier());
+        examplesUtils.getExampleProjects(exampleProjects -> {
             view.clearImportProjectsContainer();
-            for ( ExampleProject exampleProject : exampleProjects ) {
-                view.addProjectToImport( exampleProject );
+            for (ExampleProject exampleProject : exampleProjects) {
+                view.addProjectToImport(exampleProject);
             }
-        } );
+        });
     }
 
     public void newProject() {
-        libraryPlaces.goToNewProject();
+        if (userCanCreateProjects()) {
+            libraryPlaces.goToNewProject();
+        }
     }
 
-    public void importProject( final ExampleProject exampleProject ) {
-        examplesUtils.importProject( exampleProject );
+    public void importProject(final ExampleProject exampleProject) {
+        if (userCanCreateProjects()) {
+            examplesUtils.importProject(exampleProject);
+        }
+    }
+
+    public boolean userCanCreateProjects() {
+        return projectController.canCreateProjects();
     }
 
     @WorkbenchPartTitle

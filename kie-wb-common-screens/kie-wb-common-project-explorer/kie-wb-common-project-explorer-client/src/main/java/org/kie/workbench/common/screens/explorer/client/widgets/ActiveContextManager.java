@@ -25,9 +25,7 @@ import org.guvnor.common.services.project.events.NewProjectEvent;
 import org.guvnor.common.services.project.events.RenameProjectEvent;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.config.SystemRepositoryChangedEvent;
-import org.guvnor.structure.organizationalunit.NewOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
-import org.guvnor.structure.organizationalunit.RemoveOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoAddedToOrganizationalUnitEvent;
 import org.guvnor.structure.organizationalunit.RepoRemovedFromOrganizationalUnitEvent;
 import org.guvnor.structure.repositories.NewBranchEvent;
@@ -231,74 +229,6 @@ public class ActiveContextManager {
     public void onSystemRepositoryChanged(@Observes final SystemRepositoryChangedEvent event) {
         if (view.isVisible()) {
             refresh();
-        }
-    }
-
-    public void onOrganizationalUnitAdded(@Observes final NewOrganizationalUnitEvent event) {
-        if (!view.isVisible()) {
-            return;
-        }
-        final OrganizationalUnit organizationalUnit = event.getOrganizationalUnit();
-        if (organizationalUnit == null) {
-            return;
-        }
-        if (authorizationManager.authorize(organizationalUnit,
-                                           sessionInfo.getIdentity())) {
-            refresh();
-        }
-    }
-
-    public void onOrganizationalUnitRemoved(@Observes final RemoveOrganizationalUnitEvent event) {
-        if (!view.isVisible()) {
-            return;
-        }
-        final OrganizationalUnit organizationalUnit = event.getOrganizationalUnit();
-        if (organizationalUnit == null) {
-            return;
-        }
-
-        refresh();
-    }
-
-    public void onRepoAddedToOrganizationalUnitEvent(@Observes final RepoAddedToOrganizationalUnitEvent event) {
-        if (!view.isVisible()) {
-            return;
-        }
-        final Repository repository = event.getRepository();
-        if (repository == null) {
-            return;
-        }
-        if (authorizationManager.authorize(repository,
-                                           sessionInfo.getIdentity())) {
-            refresh();
-        }
-    }
-
-    public void onRepoRemovedFromOrganizationalUnitEvent(@Observes final RepoRemovedFromOrganizationalUnitEvent event) {
-        if (view.isVisible()) {
-            refresh();
-        }
-    }
-
-    public void onRepositoryRemovedEvent(@Observes final RepositoryRemovedEvent event) {
-        if (!view.isVisible()) {
-            return;
-        }
-
-        // The following comparison must stay in that order to avoid a NullPointerException
-        if (event.getRepository().equals(activeContextItems.getActiveRepository())) {
-            activeContextItems.flush();
-        }
-
-        refresh();
-    }
-
-    public void onRepositoryUpdatedEvent(@Observes final RepositoryEnvironmentUpdatedEvent event) {
-        if (activeContextItems.isTheActiveRepository(event.getUpdatedRepository().getAlias())) {
-            refresh();
-        } else {
-            activeContextItems.updateRepository(event.getUpdatedRepository().getAlias(),
-                                                event.getUpdatedRepository().getEnvironment());
         }
     }
 

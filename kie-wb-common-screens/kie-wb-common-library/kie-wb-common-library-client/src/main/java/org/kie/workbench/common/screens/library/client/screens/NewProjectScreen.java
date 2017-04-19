@@ -151,7 +151,7 @@ public class NewProjectScreen {
     }
 
     private void notifySuccess() {
-        notificationEvent.fire(new NotificationEvent(ts.getTranslation(LibraryConstants.Project_Created),
+        notificationEvent.fire(new NotificationEvent(ts.getTranslation(LibraryConstants.ProjectCreated),
                                                      NotificationEvent.NotificationType.SUCCESS));
     }
 
@@ -161,7 +161,7 @@ public class NewProjectScreen {
 
     @WorkbenchPartTitle
     public String getTitle() {
-        return ts.getTranslation(LibraryConstants.NewProjectScreen);
+        return "New Project Screen";
     }
 
     @WorkbenchPartView

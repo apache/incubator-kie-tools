@@ -44,148 +44,137 @@ public class ExplorerMenuViewImpl
     @Inject
     private ProjectScreenMenuItem projectScreenMenuItem;
 
-    private final AnchorListItem businessView = new AnchorListItem( ProjectExplorerConstants.INSTANCE.projectView() );
-    private final AnchorListItem techView = new AnchorListItem( ProjectExplorerConstants.INSTANCE.repositoryView() );
-    private final AnchorListItem treeExplorer = new AnchorListItem( ProjectExplorerConstants.INSTANCE.showAsFolders() );
-    private final AnchorListItem breadcrumbExplorer = new AnchorListItem( ProjectExplorerConstants.INSTANCE.showAsLinks() );
-    private final AnchorListItem showTagFilter = new AnchorListItem( ProjectExplorerConstants.INSTANCE.enableTagFiltering() );
-    private final AnchorListItem archiveRepository = new AnchorListItem( ProjectExplorerConstants.INSTANCE.downloadRepository() );
+    private final AnchorListItem businessView = new AnchorListItem(ProjectExplorerConstants.INSTANCE.projectView());
+    private final AnchorListItem techView = new AnchorListItem(ProjectExplorerConstants.INSTANCE.repositoryView());
+    private final AnchorListItem treeExplorer = new AnchorListItem(ProjectExplorerConstants.INSTANCE.showAsFolders());
+    private final AnchorListItem breadcrumbExplorer = new AnchorListItem(ProjectExplorerConstants.INSTANCE.showAsLinks());
+    private final AnchorListItem showTagFilter = new AnchorListItem(ProjectExplorerConstants.INSTANCE.enableTagFiltering());
+    private final AnchorListItem archiveRepository = new AnchorListItem(ProjectExplorerConstants.INSTANCE.downloadRepository());
 
-    private final AnchorListItem archiveProject = new AnchorListItem( ProjectExplorerConstants.INSTANCE.downloadProject() );
+    private final AnchorListItem archiveProject = new AnchorListItem(ProjectExplorerConstants.INSTANCE.downloadProject());
 
     private ExplorerMenu presenter;
 
     @Override
-    public void setPresenter( ExplorerMenu presenter ) {
+    public void setPresenter(ExplorerMenu presenter) {
         this.presenter = presenter;
     }
 
     @PostConstruct
     protected void postConstruct() {
-        businessView.setIconFixedWidth( true );
-        businessView.addClickHandler( new ClickHandler() {
+        businessView.setIconFixedWidth(true);
+        businessView.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent clickEvent ) {
+            public void onClick(ClickEvent clickEvent) {
                 presenter.onBusinessViewSelected();
             }
-        } );
+        });
 
-        techView.setIconFixedWidth( true );
-        techView.addClickHandler( new ClickHandler() {
+        techView.setIconFixedWidth(true);
+        techView.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent clickEvent ) {
+            public void onClick(ClickEvent clickEvent) {
                 presenter.onTechViewSelected();
             }
-        } );
+        });
 
-        treeExplorer.setIconFixedWidth( true );
-        treeExplorer.addClickHandler( new ClickHandler() {
+        treeExplorer.setIconFixedWidth(true);
+        treeExplorer.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent clickEvent ) {
+            public void onClick(ClickEvent clickEvent) {
                 presenter.onTreeExplorerSelected();
             }
-        } );
+        });
 
-        breadcrumbExplorer.setIconFixedWidth( true );
-        breadcrumbExplorer.addClickHandler( new ClickHandler() {
+        breadcrumbExplorer.setIconFixedWidth(true);
+        breadcrumbExplorer.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent clickEvent ) {
+            public void onClick(ClickEvent clickEvent) {
                 presenter.onBreadCrumbExplorerSelected();
             }
-        } );
+        });
 
-        showTagFilter.setIconFixedWidth( true );
-        showTagFilter.addClickHandler( new ClickHandler() {
+        showTagFilter.setIconFixedWidth(true);
+        showTagFilter.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent clickEvent ) {
+            public void onClick(ClickEvent clickEvent) {
                 presenter.onShowTagFilterSelected();
             }
-        } );
+        });
 
-        archiveProject.setIcon( IconType.DOWNLOAD );
-        archiveProject.addClickHandler( new ClickHandler() {
+        archiveProject.setIcon(IconType.DOWNLOAD);
+        archiveProject.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 presenter.onArchiveActiveProject();
             }
-        } );
+        });
 
-        archiveRepository.setIcon( IconType.DOWNLOAD );
-        archiveRepository.addClickHandler( new ClickHandler() {
+        archiveRepository.setIcon(IconType.DOWNLOAD);
+        archiveRepository.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 presenter.onArchiveActiveRepository();
             }
-        } );
+        });
     }
 
     @Override
-    public void archive( Path path ) {
-        Window.open( URLHelper.getDownloadUrl( path ),
-                     "downloading",
-                     "resizable=no,scrollbars=yes,status=no" );
+    public void archive(Path path) {
+        Window.open(URLHelper.getDownloadUrl(path),
+                    "downloading",
+                    "resizable=no,scrollbars=yes,status=no");
     }
 
     @Override
     public void showTreeNav() {
-        treeExplorer.setIcon( IconType.CHECK );
-        breadcrumbExplorer.setIcon( null );
+        treeExplorer.setIcon(IconType.CHECK);
+        breadcrumbExplorer.setIcon(null);
     }
 
     @Override
     public void showBreadcrumbNav() {
-        breadcrumbExplorer.setIcon( IconType.CHECK );
-        treeExplorer.setIcon( null );
+        breadcrumbExplorer.setIcon(IconType.CHECK);
+        treeExplorer.setIcon(null);
     }
 
     @Override
     public void showTechViewIcon() {
-        techView.setIcon( IconType.CHECK );
+        techView.setIcon(IconType.CHECK);
     }
 
     @Override
     public void hideBusinessViewIcon() {
-        businessView.setIcon( null );
+        businessView.setIcon(null);
     }
 
     @Override
     public void showBusinessViewIcon() {
-        businessView.setIcon( IconType.CHECK );
+        businessView.setIcon(IconType.CHECK);
     }
 
     @Override
     public void hideTechViewIcon() {
-        techView.setIcon( null );
+        techView.setIcon(null);
     }
 
     @Override
     public void showTagFilterIcon() {
-        showTagFilter.setIcon( IconType.CHECK );
+        showTagFilter.setIcon(IconType.CHECK);
     }
 
     @Override
     public void hideTagFilterIcon() {
-        showTagFilter.setIcon( null );
+        showTagFilter.setIcon(null);
     }
 
     @Override
     public Menus asMenu() {
 
         return MenuFactory
-                .newTopLevelCustomMenu( new MenuFactory.CustomMenuBuilder() {
+                .newTopLevelCustomMenu(new MenuFactory.CustomMenuBuilder() {
                     @Override
-                    public void push( MenuFactory.CustomMenuBuilder element ) {
-                    }
-
-                    @Override
-                    public MenuItem build() {
-                        return projectScreenMenuItem;
-                    }
-                } )
-                .endMenu()
-                .newTopLevelCustomMenu( new MenuFactory.CustomMenuBuilder() {
-                    @Override
-                    public void push( MenuFactory.CustomMenuBuilder element ) {
+                    public void push(MenuFactory.CustomMenuBuilder element) {
                     }
 
                     @Override
@@ -194,35 +183,35 @@ public class ExplorerMenuViewImpl
                             @Override
                             public Widget build() {
                                 return new ButtonGroup() {{
-                                    add( new Button() {{
-                                        setToggleCaret( false );
-                                        setDataToggle( Toggle.DROPDOWN );
-                                        setIcon( IconType.COG );
-                                        setSize( ButtonSize.SMALL );
-                                        setTitle( ProjectExplorerConstants.INSTANCE.customizeView() );
-                                    }} );
-                                    add( new DropDownMenu() {{
-                                        addStyleName( "pull-right" );
-                                        add( businessView );
-                                        add( techView );
-                                        add( new Divider() );
-                                        add( breadcrumbExplorer );
-                                        add( treeExplorer );
-                                        add( new Divider() );
-                                        add( showTagFilter );
-                                        add( new Divider() );
-                                        add( archiveProject );
-                                        add( archiveRepository );
-                                    }} );
+                                    add(new Button() {{
+                                        setToggleCaret(false);
+                                        setDataToggle(Toggle.DROPDOWN);
+                                        setIcon(IconType.COG);
+                                        setSize(ButtonSize.SMALL);
+                                        setTitle(ProjectExplorerConstants.INSTANCE.customizeView());
+                                    }});
+                                    add(new DropDownMenu() {{
+                                        addStyleName("pull-right");
+                                        add(businessView);
+                                        add(techView);
+                                        add(new Divider());
+                                        add(breadcrumbExplorer);
+                                        add(treeExplorer);
+                                        add(new Divider());
+                                        add(showTagFilter);
+                                        add(new Divider());
+                                        add(archiveProject);
+                                        add(archiveRepository);
+                                    }});
                                 }};
                             }
                         };
                     }
-                } )
+                })
                 .endMenu()
-                .newTopLevelCustomMenu( new MenuFactory.CustomMenuBuilder() {
+                .newTopLevelCustomMenu(new MenuFactory.CustomMenuBuilder() {
                     @Override
-                    public void push( MenuFactory.CustomMenuBuilder element ) {
+                    public void push(MenuFactory.CustomMenuBuilder element) {
                     }
 
                     @Override
@@ -231,20 +220,20 @@ public class ExplorerMenuViewImpl
                             @Override
                             public Widget build() {
                                 return new Button() {{
-                                    setIcon( IconType.REFRESH );
-                                    setSize( ButtonSize.SMALL );
-                                    setTitle( ProjectExplorerConstants.INSTANCE.refresh() );
-                                    addClickHandler( new ClickHandler() {
+                                    setIcon(IconType.REFRESH);
+                                    setSize(ButtonSize.SMALL);
+                                    setTitle(ProjectExplorerConstants.INSTANCE.refresh());
+                                    addClickHandler(new ClickHandler() {
                                         @Override
-                                        public void onClick( ClickEvent event ) {
+                                        public void onClick(ClickEvent event) {
                                             presenter.onRefresh();
                                         }
-                                    } );
+                                    });
                                 }};
                             }
                         };
                     }
-                } )
+                })
                 .endMenu()
                 .build();
     }

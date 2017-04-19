@@ -61,6 +61,11 @@ public class ProjectActionsView implements ProjectActionsWidget.View,
     @Override
     public void init(final ProjectActionsWidget presenter) {
         this.presenter = presenter;
+
+        if (!presenter.userCanBuildProject()) {
+            compile.setHidden(true);
+            buildAndDeploy.setHidden(true);
+        }
     }
 
     @EventHandler("settings")

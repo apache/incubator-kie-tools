@@ -22,6 +22,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
@@ -60,7 +61,6 @@ public class LibraryScreen {
         void clearImportProjectsContainer();
     }
 
-    LibraryInfo libraryInfo;
     private View view;
 
     private PlaceManager placeManager;
@@ -73,19 +73,25 @@ public class LibraryScreen {
 
     private ExamplesUtils examplesUtils;
 
+    private ProjectController projectController;
+
+    LibraryInfo libraryInfo;
+
     @Inject
     public LibraryScreen(final View view,
                          final PlaceManager placeManager,
                          final LibraryPlaces libraryPlaces,
                          final Event<ProjectDetailEvent> projectDetailEvent,
                          final Caller<LibraryService> libraryService,
-                         final ExamplesUtils examplesUtils) {
+                         final ExamplesUtils examplesUtils,
+                         final ProjectController projectController) {
         this.view = view;
         this.placeManager = placeManager;
         this.libraryPlaces = libraryPlaces;
         this.projectDetailEvent = projectDetailEvent;
         this.libraryService = libraryService;
         this.examplesUtils = examplesUtils;
+        this.projectController = projectController;
     }
 
     @PostConstruct
@@ -111,13 +117,12 @@ public class LibraryScreen {
     private void setupProjects(final Set<Project> projects) {
         view.clearProjects();
 
-        projects.stream().forEach(p -> view.addProject(p.getProjectName(),
-                                                       detailsCommand(p),
-                                                       selectCommand(p)));
-    }
-
-    public void newProject() {
-        libraryPlaces.goToNewProject();
+        if (projectController.canReadProjects()) {
+            projects.stream().filter(p -> projectController.canReadProject(p))
+                    .forEach(p -> view.addProject(p.getProjectName(),
+                                                  detailsCommand(p),
+                                                  selectCommand(p)));
+        }
     }
 
     public void updateProjectsBy(final String filter) {
@@ -128,7 +133,9 @@ public class LibraryScreen {
     }
 
     public void importProject(final ExampleProject exampleProject) {
-        examplesUtils.importProject(exampleProject);
+        if (userCanCreateProjects()) {
+            examplesUtils.importProject(exampleProject);
+        }
     }
 
     public void updateImportProjects() {
@@ -138,6 +145,10 @@ public class LibraryScreen {
                 view.addProjectToImport(exampleProject);
             }
         });
+    }
+
+    public boolean userCanCreateProjects() {
+        return projectController.canCreateProjects();
     }
 
     Command selectCommand(final Project project) {

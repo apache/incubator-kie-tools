@@ -29,6 +29,7 @@ import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContext;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContextChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchFocusEvent;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
 import org.kie.workbench.common.workbench.client.resources.images.WorkbenchImageResources;
 import org.mockito.InjectMocks;
@@ -38,6 +39,7 @@ import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.docks.UberfireDockReadyEvent;
 import org.uberfire.client.workbench.docks.UberfireDocks;
+import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
@@ -65,6 +67,9 @@ public class AuthoringWorkbenchDocksTest {
 
     @Mock
     private User user;
+
+    @Mock
+    private LibraryInternalPreferences libraryInternalPreferences;
 
     private UberfireDock plannerDock;
 
@@ -287,5 +292,53 @@ public class AuthoringWorkbenchDocksTest {
 
         verify(authoringDocks,
                never()).expandProjectExplorer();
+    }
+
+    @Test
+    public void projectExplorerExpandedEvent_NotProjectExplorerDock() {
+        final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(mock(UberfireDock.class),
+                                                                                                                UberfireDocksInteractionEvent.InteractionType.SELECTED);
+
+        authoringDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
+
+        verify(authoringDocks,
+               never()).setProjectExplorerExpandedPreference(anyBoolean());
+    }
+
+    @Test
+    public void projectExplorerExpandedEvent_SelectedInteraction() {
+        final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(authoringDocks.projectExplorerDock,
+                                                                                                                UberfireDocksInteractionEvent.InteractionType.SELECTED);
+
+        authoringDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
+
+        verify(authoringDocks).setProjectExplorerExpandedPreference(true);
+    }
+
+    @Test
+    public void projectExplorerExpandedEvent_DeselectedInteraction() {
+        final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(authoringDocks.projectExplorerDock,
+                                                                                                                UberfireDocksInteractionEvent.InteractionType.DESELECTED);
+
+        authoringDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
+
+        verify(authoringDocks).setProjectExplorerExpandedPreference(false);
+    }
+
+    @Test
+    public void projectExplorerExpandedEvent_ResizeInteraction() {
+        final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(authoringDocks.projectExplorerDock,
+                                                                                                                UberfireDocksInteractionEvent.InteractionType.RESIZED);
+
+        authoringDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
+
+        verify(authoringDocks,
+               never()).setProjectExplorerExpandedPreference(anyBoolean());
+    }
+
+    private UberfireDocksInteractionEvent createUberfireDocksInteractionEvent(final UberfireDock uberfireDock,
+                                                                              final UberfireDocksInteractionEvent.InteractionType interactionType) {
+        return new UberfireDocksInteractionEvent(uberfireDock,
+                                                 interactionType);
     }
 }

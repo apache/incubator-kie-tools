@@ -52,9 +52,10 @@ import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.explorer.service.Option;
 import org.kie.workbench.common.screens.library.api.AssetInfo;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
-import org.kie.workbench.common.screens.library.api.LibraryPreferences;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
 import org.kie.workbench.common.services.shared.project.KieProject;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.uberfire.backend.server.util.Paths;
@@ -77,6 +78,8 @@ public class LibraryServiceImpl implements LibraryService {
     private KieProjectService kieProjectService;
 
     private LibraryPreferences preferences;
+
+    private LibraryInternalPreferences internalPreferences;
 
     private AuthorizationManager authorizationManager;
 
@@ -103,7 +106,8 @@ public class LibraryServiceImpl implements LibraryService {
                               final ExplorerServiceHelper explorerServiceHelper,
                               final KieProjectService projectService,
                               final ExamplesService examplesService,
-                              @Named("ioStrategy") final IOService ioService) {
+                              @Named("ioStrategy") final IOService ioService,
+                              final LibraryInternalPreferences internalPreferences) {
         this.ouService = ouService;
         this.repositoryService = repositoryService;
         this.kieProjectService = kieProjectService;
@@ -114,6 +118,7 @@ public class LibraryServiceImpl implements LibraryService {
         this.projectService = projectService;
         this.examplesService = examplesService;
         this.ioService = ioService;
+        this.internalPreferences = internalPreferences;
     }
 
     @Override
@@ -244,24 +249,34 @@ public class LibraryServiceImpl implements LibraryService {
         return projectContextChangeEvent.getProject();
     }
 
+    @Override
+    public List<OrganizationalUnit> getOrganizationalUnits() {
+        return new ArrayList<>(ouService.getOrganizationalUnits());
+    }
+
     LibraryPreferences getPreferences() {
         preferences.load();
         return preferences;
+    }
+
+    LibraryInternalPreferences getInternalPreferences() {
+        internalPreferences.load();
+        return internalPreferences;
     }
 
     POM createPOM(final String projectName,
                   final LibraryPreferences preferences,
                   final GAV gav) {
         return new POM(projectName,
-                       preferences.getProjectDescription(),
+                       preferences.getProjectPreferences().getDescription(),
                        gav);
     }
 
     GAV createGAV(final String projectName,
                   final LibraryPreferences preferences) {
-        return new GAV(preferences.getProjectGroupId(),
+        return new GAV(preferences.getProjectPreferences().getGroupId(),
                        projectName,
-                       preferences.getProjectVersion());
+                       preferences.getProjectPreferences().getVersion());
     }
 
     private Optional<Object> getAttribute(final FolderItem asset,
@@ -273,10 +288,6 @@ public class LibraryServiceImpl implements LibraryService {
                 .findFirst();
     }
 
-    private List<OrganizationalUnit> getOrganizationalUnits() {
-        return new ArrayList<>(ouService.getOrganizationalUnits());
-    }
-
     private Set<Project> getProjects(final Repository repository,
                                      final String branch) {
         return kieProjectService.getProjects(repository,
@@ -284,9 +295,12 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     private OrganizationalUnit getDefaultOrganizationalUnit() {
+        String defaultOUIdentifier = getInternalPreferences().getLastOpenedOrganizationalUnit();
+        if (defaultOUIdentifier == null || defaultOUIdentifier.isEmpty()) {
+            defaultOUIdentifier = getPreferences().getOrganizationalUnitPreferences().getName();
+        }
+
         final List<OrganizationalUnit> organizationalUnits = getOrganizationalUnits();
-        final LibraryPreferences preferences = getPreferences();
-        final String defaultOUIdentifier = preferences.getOuIdentifier();
         final Optional<OrganizationalUnit> defaultOU = getOrganizationalUnit(defaultOUIdentifier,
                                                                              organizationalUnits);
 
@@ -300,18 +314,21 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     private Repository getDefaultRepository(final OrganizationalUnit ou) {
+        final String lastOpenedRepositoryName = getInternalPreferences().getLastOpenedRepository();
         final String primaryDefaultRepositoryName = getPrimaryDefaultRepositoryName(ou);
         final String secondaryDefaultRepositoryName = getSecondaryDefaultRepositoryName(ou);
 
         final List<Repository> repositories = new ArrayList<>(ou.getRepositories());
-        final Optional<Repository> primaryRepository = repositories.stream()
-                .filter(r -> r.getAlias().equalsIgnoreCase(primaryDefaultRepositoryName))
-                .findAny();
-        final Optional<Repository> secondaryRepository = repositories.stream()
-                .filter(r -> r.getAlias().equalsIgnoreCase(secondaryDefaultRepositoryName))
-                .findAny();
+        final Optional<Repository> lastOpenedRepository = getRepositoryByName(lastOpenedRepositoryName,
+                                                                              repositories);
+        final Optional<Repository> primaryRepository = getRepositoryByName(primaryDefaultRepositoryName,
+                                                                           repositories);
+        final Optional<Repository> secondaryRepository = getRepositoryByName(secondaryDefaultRepositoryName,
+                                                                             repositories);
 
-        if (primaryRepository.isPresent()) {
+        if (lastOpenedRepository.isPresent()) {
+            return lastOpenedRepository.get();
+        } else if (primaryRepository.isPresent()) {
             return primaryRepository.get();
         } else if (secondaryRepository.isPresent()) {
             return secondaryRepository.get();
@@ -328,16 +345,23 @@ public class LibraryServiceImpl implements LibraryService {
         }
     }
 
+    private Optional<Repository> getRepositoryByName(String lastOpenedRepositoryName,
+                                                     List<Repository> repositories) {
+        return repositories.stream()
+                .filter(r -> r.getAlias().equalsIgnoreCase(lastOpenedRepositoryName))
+                .findAny();
+    }
+
     private OrganizationalUnit createDefaultOrganizationalUnit() {
         final LibraryPreferences preferences = getPreferences();
-        return ouService.createOrganizationalUnit(preferences.getOuIdentifier(),
-                                                  preferences.getOuOwner(),
-                                                  preferences.getOuGroupId());
+        return ouService.createOrganizationalUnit(preferences.getOrganizationalUnitPreferences().getName(),
+                                                  preferences.getOrganizationalUnitPreferences().getOwner(),
+                                                  preferences.getOrganizationalUnitPreferences().getGroupId());
     }
 
     private Repository createDefaultRepository(final OrganizationalUnit ou,
                                                final String repositoryName) {
-        final String scheme = getPreferences().getRepositoryDefaultScheme();
+        final String scheme = getPreferences().getRepositoryPreferences().getScheme();
         final RepositoryEnvironmentConfigurations configuration = getDefaultRepositoryEnvironmentConfigurations();
 
         return repositoryService.createRepository(ou,
@@ -354,11 +378,11 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     private String getPrimaryDefaultRepositoryName(final OrganizationalUnit ou) {
-        return getPreferences().getRepositoryAlias();
+        return getPreferences().getRepositoryPreferences().getName();
     }
 
     private String getSecondaryDefaultRepositoryName(final OrganizationalUnit ou) {
-        return ou.getIdentifier() + "-" + getPreferences().getRepositoryAlias();
+        return ou.getIdentifier() + "-" + getPreferences().getRepositoryPreferences().getName();
     }
 
     private RepositoryEnvironmentConfigurations getDefaultRepositoryEnvironmentConfigurations() {

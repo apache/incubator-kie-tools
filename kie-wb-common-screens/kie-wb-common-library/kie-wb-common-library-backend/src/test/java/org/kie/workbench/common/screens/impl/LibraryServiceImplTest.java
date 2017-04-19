@@ -44,8 +44,12 @@ import org.kie.workbench.common.screens.examples.service.ExamplesService;
 import org.kie.workbench.common.screens.explorer.backend.server.ExplorerServiceHelper;
 import org.kie.workbench.common.screens.explorer.service.ActiveOptions;
 import org.kie.workbench.common.screens.library.api.LibraryInfo;
-import org.kie.workbench.common.screens.library.api.LibraryPreferences;
 import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryOrganizationalUnitPreferences;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryProjectPreferences;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryRepositoryPreferences;
 import org.kie.workbench.common.services.shared.project.KieProjectService;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -74,6 +78,9 @@ public class LibraryServiceImplTest {
 
     @Mock
     private LibraryPreferences preferences;
+
+    @Mock
+    private LibraryInternalPreferences internalPreferences;
 
     @Mock
     private AuthorizationManager authorizationManager;
@@ -135,6 +142,10 @@ public class LibraryServiceImplTest {
         projectsMock.add(mock(Project.class));
         projectsMock.add(mock(Project.class));
 
+        when(preferences.getOrganizationalUnitPreferences()).thenReturn(spy(new LibraryOrganizationalUnitPreferences()));
+        when(preferences.getRepositoryPreferences()).thenReturn(spy(new LibraryRepositoryPreferences()));
+        when(preferences.getProjectPreferences()).thenReturn(spy(new LibraryProjectPreferences()));
+
         libraryService = spy(new LibraryServiceImpl(ouService,
                                                     repositoryService,
                                                     kieProjectService,
@@ -144,7 +155,9 @@ public class LibraryServiceImplTest {
                                                     explorerServiceHelper,
                                                     projectService,
                                                     examplesService,
-                                                    ioService));
+                                                    ioService,
+                                                    internalPreferences
+        ));
     }
 
     @Test
@@ -158,7 +171,7 @@ public class LibraryServiceImplTest {
 
     @Test
     public void getOrganizationalUnitRepositoryInfoTest() {
-        when(preferences.getRepositoryAlias()).thenReturn("repository1");
+        when(preferences.getRepositoryPreferences().getName()).thenReturn("repository1");
         doAnswer(invocationOnMock -> getRepository((String) invocationOnMock.getArguments()[2]))
                 .when(repositoryService).createRepository(any(OrganizationalUnit.class),
                                                           anyString(),
@@ -218,12 +231,12 @@ public class LibraryServiceImplTest {
 
     @Test
     public void newProjectTest() {
-        when(preferences.getOuIdentifier()).thenReturn("ou2");
-        when(preferences.getRepositoryAlias()).thenReturn("repo-alias");
-        when(preferences.getOuAlias()).thenReturn("team");
-        when(preferences.getProjectDefaultBranch()).thenReturn("master");
-        when(preferences.getProjectGroupId()).thenReturn("projectGroupID");
-        when(preferences.getProjectVersion()).thenReturn("1.0");
+        when(preferences.getOrganizationalUnitPreferences().getName()).thenReturn("ou2");
+        when(preferences.getRepositoryPreferences().getName()).thenReturn("repo-alias");
+        when(preferences.getOrganizationalUnitPreferences().getAliasInSingular()).thenReturn("team");
+        when(preferences.getProjectPreferences().getBranch()).thenReturn("master");
+        when(preferences.getProjectPreferences().getGroupId()).thenReturn("projectGroupID");
+        when(preferences.getProjectPreferences().getVersion()).thenReturn("1.0");
 
         final Repository repository = mock(Repository.class);
         final Path projectRootPath = mock(Path.class);
@@ -374,9 +387,9 @@ public class LibraryServiceImplTest {
 
     @Test
     public void createPOM() {
-        when(preferences.getProjectGroupId()).thenReturn("projectGroupID");
-        when(preferences.getProjectVersion()).thenReturn("1.0");
-        when(preferences.getProjectDescription()).thenReturn("desc");
+        when(preferences.getProjectPreferences().getGroupId()).thenReturn("projectGroupID");
+        when(preferences.getProjectPreferences().getVersion()).thenReturn("1.0");
+        when(preferences.getProjectPreferences().getDescription()).thenReturn("desc");
 
         GAV gav = libraryService.createGAV("proj",
                                            preferences);
@@ -386,7 +399,7 @@ public class LibraryServiceImplTest {
 
         assertEquals("proj",
                      proj.getName());
-        assertEquals(preferences.getProjectDescription(),
+        assertEquals(preferences.getProjectPreferences().getDescription(),
                      proj.getDescription());
         assertEquals(gav,
                      proj.getGav());
@@ -394,17 +407,17 @@ public class LibraryServiceImplTest {
 
     @Test
     public void createGAV() {
-        when(preferences.getProjectGroupId()).thenReturn("projectGroupID");
-        when(preferences.getProjectVersion()).thenReturn("1.0");
+        when(preferences.getProjectPreferences().getGroupId()).thenReturn("projectGroupID");
+        when(preferences.getProjectPreferences().getVersion()).thenReturn("1.0");
 
         GAV gav = libraryService.createGAV("proj",
                                            preferences);
 
-        assertEquals(preferences.getProjectGroupId(),
+        assertEquals(preferences.getProjectPreferences().getGroupId(),
                      gav.getGroupId());
         assertEquals("proj",
                      gav.getArtifactId());
-        assertEquals(preferences.getProjectVersion(),
+        assertEquals(preferences.getProjectPreferences().getVersion(),
                      gav.getVersion());
     }
 

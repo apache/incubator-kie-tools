@@ -58,4 +58,6 @@ public interface LibraryService {
                           final Repository repository,
                           final String branch,
                           final ExampleProject exampleProject);
+
+    List<OrganizationalUnit> getOrganizationalUnits();
 }

@@ -17,23 +17,28 @@ package org.kie.workbench.common.screens.library.client.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.event.Event;
 
+import org.guvnor.common.services.project.context.ProjectContextChangeEvent;
 import org.guvnor.structure.organizationalunit.OrganizationalUnit;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.screens.library.api.LibraryPreferences;
 import org.kie.workbench.common.screens.library.api.LibraryService;
 import org.kie.workbench.common.screens.library.api.OrganizationalUnitRepositoryInfo;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryPreferences;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mocks.CallerMock;
 import org.uberfire.mvp.Command;
+import org.uberfire.mvp.ParameterizedCommand;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -52,10 +57,16 @@ public class LibraryToolbarPresenterTest {
     private LibraryPreferences libraryPreferences;
 
     @Mock
+    private LibraryInternalPreferences libraryInternalPreferences;
+
+    @Mock
     private PlaceManager placeManager;
 
     @Mock
     private LibraryPlaces libraryPlaces;
+
+    @Mock
+    private Event<ProjectContextChangeEvent> projectContextChangeEvent;
 
     private LibraryToolbarPresenter presenter;
 
@@ -75,8 +86,10 @@ public class LibraryToolbarPresenterTest {
         presenter = new LibraryToolbarPresenter(view,
                                                 libraryServiceCaller,
                                                 libraryPreferences,
+                                                libraryInternalPreferences,
                                                 placeManager,
-                                                libraryPlaces);
+                                                libraryPlaces,
+                                                projectContextChangeEvent);
 
         selectedOrganizationalUnit = mock(OrganizationalUnit.class);
         doReturn("organizationalUnit1").when(selectedOrganizationalUnit).getIdentifier();
@@ -117,25 +130,24 @@ public class LibraryToolbarPresenterTest {
                 .when(libraryService).getOrganizationalUnitRepositoryInfo(organizationalUnit2);
 
         callback = mock(Command.class);
+
+        doAnswer(invocationOnMock -> {
+            ((ParameterizedCommand) invocationOnMock.getArguments()[0]).execute(libraryInternalPreferences);
+            return null;
+        }).when(libraryInternalPreferences).load(Matchers.<ParameterizedCommand<LibraryInternalPreferences>>any(),
+                                                 any());
     }
 
     @Test
     public void initTest() {
         presenter.init(callback);
 
-        assertEquals(selectedOrganizationalUnit,
-                     presenter.getSelectedOrganizationalUnit());
         assertEquals(selectedRepository,
                      presenter.getSelectedRepository());
         assertEquals("master",
                      presenter.getSelectedBranch());
 
         verify(view).init(presenter);
-
-        verify(view).clearOrganizationalUnits();
-        verify(view).addOrganizationUnit("organizationalUnit1");
-        verify(view).addOrganizationUnit("organizationalUnit2");
-        verify(view).setSelectedOrganizationalUnit("organizationalUnit1");
 
         verify(view).clearRepositories();
         verify(view).addRepository("repository1");
@@ -162,64 +174,15 @@ public class LibraryToolbarPresenterTest {
     }
 
     @Test
-    public void updateSelectedOrganizationalUnitFailedTest() {
-        presenter.init(callback);
-        Mockito.reset(view);
-
-        doReturn(false).when(placeManager).closeAllPlacesOrNothing();
-        doReturn("organizationalUnit2").when(view).getSelectedOrganizationalUnit();
-        doReturn("repository2").when(view).getSelectedRepository();
-
-        presenter.onUpdateSelectedOrganizationalUnit();
-
-        assertEquals("organizationalUnit1",
-                     presenter.getSelectedOrganizationalUnit().getIdentifier());
-        assertEquals("repository1",
-                     presenter.getSelectedRepository().getAlias());
-        assertEquals("master",
-                     presenter.getSelectedBranch());
-    }
-
-    @Test
-    public void updateSelectedOrganizationalUnitSucceededTest() {
-        presenter.init(callback);
-        Mockito.reset(view);
-
-        doReturn(true).when(placeManager).closeAllPlacesOrNothing();
-        doReturn("organizationalUnit2").when(view).getSelectedOrganizationalUnit();
-        doReturn("repository2").when(view).getSelectedRepository();
-
-        presenter.onUpdateSelectedOrganizationalUnit();
-
-        assertEquals("organizationalUnit2",
-                     presenter.getSelectedOrganizationalUnit().getIdentifier());
-        assertEquals("repository2",
-                     presenter.getSelectedRepository().getAlias());
-
-        verify(libraryPlaces).goToLibrary(any());
-
-        verify(view).clearRepositories();
-        verify(view).addRepository("repository1");
-        verify(view).addRepository("repository2");
-        verify(view).setSelectedRepository("repository1");
-
-        verify(libraryPreferences).setOuIdentifier("organizationalUnit2");
-        verify(libraryPreferences).save();
-    }
-
-    @Test
     public void updateSelectedRepositoryFailedTest() {
         presenter.init(callback);
         Mockito.reset(view);
 
         doReturn(false).when(placeManager).closeAllPlacesOrNothing();
-        doReturn("organizationalUnit1").when(view).getSelectedOrganizationalUnit();
         doReturn("repository2").when(view).getSelectedRepository();
 
         presenter.onUpdateSelectedRepository();
 
-        assertEquals("organizationalUnit1",
-                     presenter.getSelectedOrganizationalUnit().getIdentifier());
         assertEquals("repository1",
                      presenter.getSelectedRepository().getAlias());
     }
@@ -230,13 +193,10 @@ public class LibraryToolbarPresenterTest {
         Mockito.reset(view);
 
         doReturn(true).when(placeManager).closeAllPlacesOrNothing();
-        doReturn("organizationalUnit1").when(view).getSelectedOrganizationalUnit();
         doReturn("repository2").when(view).getSelectedRepository();
 
         presenter.onUpdateSelectedRepository();
 
-        assertEquals("organizationalUnit1",
-                     presenter.getSelectedOrganizationalUnit().getIdentifier());
         assertEquals("repository2",
                      presenter.getSelectedRepository().getAlias());
         assertEquals("defaultBranch",
@@ -252,8 +212,8 @@ public class LibraryToolbarPresenterTest {
                never()).setSelectedRepository(anyString());
         verify(view).setSelectedBranch("defaultBranch");
 
-        verify(libraryPreferences).setRepositoryAlias("repository2");
-        verify(libraryPreferences).save();
+        verify(libraryInternalPreferences).setLastOpenedRepository("repository2");
+        verify(libraryInternalPreferences).save();
     }
 
     @Test
@@ -264,7 +224,6 @@ public class LibraryToolbarPresenterTest {
         Mockito.reset(view);
 
         doReturn(true).when(placeManager).closeAllPlacesOrNothing();
-        doReturn("organizationalUnit1").when(view).getSelectedOrganizationalUnit();
         doReturn("repository1").when(view).getSelectedRepository();
         doReturn("dev").when(view).getSelectedBranch();
 
@@ -288,7 +247,6 @@ public class LibraryToolbarPresenterTest {
         Mockito.reset(view);
 
         doReturn(true).when(placeManager).closeAllPlacesOrNothing();
-        doReturn("organizationalUnit2").when(view).getSelectedOrganizationalUnit();
         doReturn("repository2").when(view).getSelectedRepository();
 
         final Command callback = mock(Command.class);
@@ -296,15 +254,11 @@ public class LibraryToolbarPresenterTest {
                                   selectedRepository,
                                   callback);
 
-        assertEquals("organizationalUnit2",
-                     presenter.getSelectedOrganizationalUnit().getIdentifier());
         assertEquals("repository2",
                      presenter.getSelectedRepository().getAlias());
 
         verify(libraryPlaces).goToLibrary(callback);
 
-        verify(view).clearOrganizationalUnits();
-        verify(view).setSelectedOrganizationalUnit("organizationalUnit2");
         verify(view).clearRepositories();
         verify(view).addRepository("repository1");
         verify(view).addRepository("repository2");

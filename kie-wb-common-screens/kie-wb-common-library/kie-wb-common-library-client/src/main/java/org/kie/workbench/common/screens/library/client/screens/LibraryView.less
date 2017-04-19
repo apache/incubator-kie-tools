@@ -190,16 +190,8 @@
         margin-left: .5em;
     }
 
-    .card-pf {
-        margin: 0 3px 3px 3px
-    }
-
     .card-pf-heading-link-kie {
         padding: 20px 0;
-    }
-
-    .card-pf-body {
-        margin: auto;
     }
 
     .card-pf-footer {
@@ -347,5 +339,107 @@
         content: " ";
         display: table;
         clear: both;
+    }
+
+    .card-action {
+        text-align: center;
+        display: inline-block;
+    }
+
+    .card-action .card-pf-body {
+        display: table-cell;
+        vertical-align: middle;
+        margin: 0;
+        padding: 0;
+        height: 228px;
+    }
+
+    .card-action .card-pf-body .card-pf-icon-circle {
+        border: 0;
+        font-size: 72px;
+    }
+
+    .kie-background--settings {
+        background-color: @well-bg;
+    }
+
+    .kie-badge--circle {
+        background-color: @color-pf-black-300;
+        border-radius: 50%;
+        font-size: large;
+        color: @color-pf-black-900;
+        height: 2em;
+        width: 2em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .card-pf-view .card-pf-top-element .kie-card-pf-icon-circle--disabled {
+        background: @card-pf-container-bg-color;
+        color: @color-pf-white;
+        border-color: transparent;
+    }
+
+    .card-pf-view > .card-pf-body > .card-pf-top-element > .fa + .fa,
+    .card-pf-view:hover > .card-pf-body > .card-pf-top-element > .fa {
+        display: none;
+    }
+
+    .card-pf-view:hover > .card-pf-body > .card-pf-top-element > .fa + .fa {
+        display: inherit;
+    }
+
+    .card-actions {
+        position: absolute;
+        top: 0;
+        right: 0;
+        font-size: 1.5em;
+        z-index: 5;
+        cursor: pointer;
+        margin: 0.2em 0.5em;
+
+        .fa {
+            display: block;
+            padding: 0.3em 0.5em;
+            color: #DDD;
+        }
+    }
+
+    div:hover > .card-actions .fa {
+        color: #999;
+
+        &:hover {
+            color: #000;
+        }
+    }
+
+    .required:after {
+        content: "*";
+        font-size: 80%;
+        padding-left: 2px;
+        padding-right: 5px;
+        color: rgb(185, 74, 72);
+        vertical-align: super;
+    }
+
+    .page-content-kie > .toolbar-pf {
+        margin-top: -1em;
+    }
+
+    .card-pf-item .bold {
+        font-weight: bold;
+    }
+
+    .card-pf-item.small {
+        font-size: 1.1em;
+    }
+
+    .toolbar-pf .form-group {
+        margin-right: 20px;
+    }
+
+    [hidden] {
+        display: none !important;
     }
 }

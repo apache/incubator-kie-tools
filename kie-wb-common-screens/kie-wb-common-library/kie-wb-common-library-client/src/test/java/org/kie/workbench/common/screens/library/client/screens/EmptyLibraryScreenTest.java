@@ -18,6 +18,7 @@ package org.kie.workbench.common.screens.library.client.screens;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.jboss.errai.security.shared.api.identity.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,57 +48,88 @@ public class EmptyLibraryScreenTest {
     @Mock
     private ExamplesUtils examplesUtils;
 
+    @Mock
+    private ProjectController projectController;
+
     private EmptyLibraryScreen emptyLibraryScreen;
 
     @Before
     public void setup() {
-        emptyLibraryScreen = new EmptyLibraryScreen( view,
-                                                     user,
-                                                     libraryPlaces,
-                                                     examplesUtils );
+        emptyLibraryScreen = new EmptyLibraryScreen(view,
+                                                    user,
+                                                    libraryPlaces,
+                                                    examplesUtils,
+                                                    projectController);
 
-        doReturn( "user" ).when( user ).getIdentifier();
+        doReturn("user").when(user).getIdentifier();
     }
 
     @Test
     public void setupTest() {
-        final ExampleProject exampleProject1 = mock( ExampleProject.class );
-        final ExampleProject exampleProject2 = mock( ExampleProject.class );
+        final ExampleProject exampleProject1 = mock(ExampleProject.class);
+        final ExampleProject exampleProject2 = mock(ExampleProject.class);
 
         final Set<ExampleProject> exampleProjects = new HashSet<>();
-        exampleProjects.add( exampleProject1 );
-        exampleProjects.add( exampleProject2 );
+        exampleProjects.add(exampleProject1);
+        exampleProjects.add(exampleProject2);
 
-        doAnswer( invocationOnMock -> {
-            final ParameterizedCommand<Set<ExampleProject>> callback = (ParameterizedCommand<Set<ExampleProject>>) invocationOnMock.getArguments()[ 0 ];
-            callback.execute( exampleProjects );
+        doAnswer(invocationOnMock -> {
+            final ParameterizedCommand<Set<ExampleProject>> callback = (ParameterizedCommand<Set<ExampleProject>>) invocationOnMock.getArguments()[0];
+            callback.execute(exampleProjects);
             return null;
-        } ).when( examplesUtils ).getExampleProjects( any( ParameterizedCommand.class ) );
+        }).when(examplesUtils).getExampleProjects(any(ParameterizedCommand.class));
 
         emptyLibraryScreen.setup();
 
-        verify( view ).init( emptyLibraryScreen );
-        verify( view ).setup( "user" );
-        verify( view ).clearImportProjectsContainer();
+        verify(view).init(emptyLibraryScreen);
+        verify(view).setup("user");
+        verify(view).clearImportProjectsContainer();
 
-        verify( view, times( 2 ) ).addProjectToImport( any( ExampleProject.class ) );
-        verify( view ).addProjectToImport( exampleProject1 );
-        verify( view ).addProjectToImport( exampleProject2 );
+        verify(view,
+               times(2)).addProjectToImport(any(ExampleProject.class));
+        verify(view).addProjectToImport(exampleProject1);
+        verify(view).addProjectToImport(exampleProject2);
     }
 
     @Test
-    public void newProjectTest() {
+    public void canCreateNewProjectTest() {
+        doReturn(true).when(projectController).canCreateProjects();
+
         emptyLibraryScreen.newProject();
 
-        verify( libraryPlaces ).goToNewProject();
+        verify(libraryPlaces).goToNewProject();
     }
 
     @Test
-    public void importProjectTest() {
-        final ExampleProject exampleProject = mock( ExampleProject.class );
+    public void cannotCreateNewProjectTest() {
+        doReturn(false).when(projectController).canCreateProjects();
 
-        emptyLibraryScreen.importProject( exampleProject );
+        emptyLibraryScreen.newProject();
 
-        verify( examplesUtils ).importProject( exampleProject );
+        verify(libraryPlaces,
+               never()).goToNewProject();
+    }
+
+    @Test
+    public void canImportProjectTest() {
+        doReturn(true).when(projectController).canCreateProjects();
+
+        final ExampleProject exampleProject = mock(ExampleProject.class);
+
+        emptyLibraryScreen.importProject(exampleProject);
+
+        verify(examplesUtils).importProject(exampleProject);
+    }
+
+    @Test
+    public void cannotImportProjectTest() {
+        doReturn(false).when(projectController).canCreateProjects();
+
+        final ExampleProject exampleProject = mock(ExampleProject.class);
+
+        emptyLibraryScreen.importProject(exampleProject);
+
+        verify(examplesUtils,
+               never()).importProject(exampleProject);
     }
 }

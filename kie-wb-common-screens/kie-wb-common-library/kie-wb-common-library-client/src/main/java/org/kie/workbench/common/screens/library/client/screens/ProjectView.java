@@ -88,7 +88,7 @@ public class ProjectView implements ProjectScreen.View,
         assetsActionsWidget.init();
         projectActionsWidget.init(presenter::goToSettings);
         filterText.setAttribute("placeholder",
-                                ts.getTranslation(LibraryConstants.LibraryView_Filter));
+                                ts.getTranslation(LibraryConstants.FilterByName));
         detailsContainer.appendChild(projectsDetailScreen.getView().getElement());
         assetsToolbar.appendChild(assetsActionsWidget.getView().getElement());
         projectToolbar.appendChild(projectActionsWidget.getView().getElement());

@@ -22,6 +22,7 @@ import org.jboss.errai.common.client.dom.Button;
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Div;
 import org.jboss.errai.common.client.dom.Input;
+import org.jboss.errai.common.client.dom.Span;
 import org.jboss.errai.common.client.dom.UnorderedList;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.jboss.errai.ui.client.local.api.IsElement;
@@ -86,6 +87,10 @@ public class LibraryView implements LibraryScreen.View,
     @DataField("import-example")
     Button importProject;
 
+    @Inject
+    @DataField("create-project-container")
+    Span createProjectContainer;
+
     private ProjectItemWidget selectedProjectItemWidget;
 
     private boolean importProjectLoaded = false;
@@ -95,9 +100,12 @@ public class LibraryView implements LibraryScreen.View,
         this.presenter = presenter;
         this.selectedProjectItemWidget = null;
         filterText.setAttribute("placeholder",
-                                ts.getTranslation(LibraryConstants.LibraryView_Filter));
+                                ts.getTranslation(LibraryConstants.FilterByName));
         detailsContainer.appendChild(projectsDetailScreen.getView().getElement());
         newProjectContainer.appendChild(newProjectButtonWidget.getView().getElement());
+        if (!presenter.userCanCreateProjects()) {
+            createProjectContainer.setHidden(true);
+        }
     }
 
     @Override

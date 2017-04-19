@@ -24,6 +24,7 @@ import org.kie.workbench.common.screens.datamodeller.client.DataModelerContext;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContext;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchContextChangeEvent;
 import org.kie.workbench.common.screens.datamodeller.client.context.DataModelerWorkbenchFocusEvent;
+import org.kie.workbench.common.screens.library.api.preferences.LibraryInternalPreferences;
 import org.kie.workbench.common.workbench.client.authz.WorkbenchFeatures;
 import org.kie.workbench.common.workbench.client.resources.i18n.DefaultWorkbenchConstants;
 import org.kie.workbench.common.workbench.client.resources.images.WorkbenchImageResources;
@@ -31,6 +32,7 @@ import org.uberfire.client.workbench.docks.UberfireDock;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.docks.UberfireDockReadyEvent;
 import org.uberfire.client.workbench.docks.UberfireDocks;
+import org.uberfire.client.workbench.docks.UberfireDocksInteractionEvent;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.rpc.SessionInfo;
@@ -46,6 +48,8 @@ public class AuthoringWorkbenchDocks {
     protected DataModelerWorkbenchContext dataModelerWBContext;
 
     protected SessionInfo sessionInfo;
+
+    protected LibraryInternalPreferences libraryInternalPreferences;
 
     protected AuthorizationManager authorizationManager;
 
@@ -69,11 +73,13 @@ public class AuthoringWorkbenchDocks {
     public AuthoringWorkbenchDocks(final UberfireDocks uberfireDocks,
                                    final DataModelerWorkbenchContext dataModelerWBContext,
                                    final AuthorizationManager authorizationManager,
-                                   final SessionInfo sessionInfo) {
+                                   final SessionInfo sessionInfo,
+                                   final LibraryInternalPreferences libraryInternalPreferences) {
         this.uberfireDocks = uberfireDocks;
         this.dataModelerWBContext = dataModelerWBContext;
         this.authorizationManager = authorizationManager;
         this.sessionInfo = sessionInfo;
+        this.libraryInternalPreferences = libraryInternalPreferences;
     }
 
     public void perspectiveChangeEvent(@Observes UberfireDockReadyEvent dockReadyEvent) {
@@ -205,11 +211,40 @@ public class AuthoringWorkbenchDocks {
                              authoringPerspectiveIdentifier);
         handleDocks();
         projectExplorerEnabled = true;
+
+        libraryInternalPreferences.load(loadedLibraryInternalPreferences -> {
+                                            if (loadedLibraryInternalPreferences.isProjectExplorerExpanded()) {
+                                                expandProjectExplorer();
+                                            }
+                                        },
+                                        parameter -> {
+                                        });
     }
 
     public void expandProjectExplorer() {
         if (projectExplorerDock != null) {
             uberfireDocks.expand(projectExplorerDock);
         }
+    }
+
+    public void projectExplorerExpandedEvent(@Observes final UberfireDocksInteractionEvent uberfireDocksInteractionEvent) {
+        if (uberfireDocksInteractionEvent.getTargetDock().equals(projectExplorerDock)) {
+            if (uberfireDocksInteractionEvent.getType().equals(UberfireDocksInteractionEvent.InteractionType.SELECTED)) {
+                setProjectExplorerExpandedPreference(true);
+            } else if (uberfireDocksInteractionEvent.getType().equals(UberfireDocksInteractionEvent.InteractionType.DESELECTED)) {
+                setProjectExplorerExpandedPreference(false);
+            }
+        }
+    }
+
+    void setProjectExplorerExpandedPreference(final boolean expand) {
+        libraryInternalPreferences.load(loadedLibraryInternalPreferences -> {
+                                            if (expand != loadedLibraryInternalPreferences.isProjectExplorerExpanded()) {
+                                                loadedLibraryInternalPreferences.setProjectExplorerExpanded(expand);
+                                                loadedLibraryInternalPreferences.save();
+                                            }
+                                        },
+                                        error -> {
+                                        });
     }
 }

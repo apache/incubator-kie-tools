@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.screens.library.api;
+package org.kie.workbench.common.screens.library.api.preferences;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.services.backend.validation.PackageNameValidator;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class LibraryPreferencesTest {
 
@@ -31,12 +31,22 @@ public class LibraryPreferencesTest {
     @Before
     public void setup() {
         libraryPreferences = new LibraryPreferences();
+        libraryPreferences.organizationalUnitPreferences = new LibraryOrganizationalUnitPreferences();
+        libraryPreferences.repositoryPreferences = new LibraryRepositoryPreferences();
+        libraryPreferences.projectPreferences = new LibraryProjectPreferences();
+
         packageNameValidator = new PackageNameValidator();
     }
 
     @Test
     public void projectGroupIdIsAValidPackageTest() {
-        libraryPreferences = libraryPreferences.defaultValue( libraryPreferences );
-        assertTrue( packageNameValidator.isValid( libraryPreferences.getProjectGroupId() ) );
+        libraryPreferences = libraryPreferences.defaultValue(libraryPreferences);
+        assertTrue(packageNameValidator.isValid(libraryPreferences.getProjectPreferences().getGroupId()));
+    }
+
+    @Test
+    public void organizationalUnitGroupIdIsAValidPackageTest() {
+        libraryPreferences = libraryPreferences.defaultValue(libraryPreferences);
+        assertTrue(packageNameValidator.isValid(libraryPreferences.getOrganizationalUnitPreferences().getGroupId()));
     }
 }

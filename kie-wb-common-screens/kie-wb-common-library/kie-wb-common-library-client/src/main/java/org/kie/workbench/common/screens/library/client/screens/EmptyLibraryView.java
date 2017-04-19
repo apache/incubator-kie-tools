@@ -15,6 +15,9 @@
  */
 package org.kie.workbench.common.screens.library.client.screens;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import com.google.gwt.user.client.Event;
 import org.jboss.errai.common.client.dom.Anchor;
 import org.jboss.errai.common.client.dom.Div;
@@ -31,12 +34,9 @@ import org.kie.workbench.common.screens.library.client.resources.i18n.LibraryCon
 import org.kie.workbench.common.screens.library.client.widgets.ImportExampleButtonWidget;
 import org.kie.workbench.common.screens.library.client.widgets.NewProjectButtonWidget;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 @Templated
 public class EmptyLibraryView implements EmptyLibraryScreen.View,
-        IsElement {
+                                         IsElement {
 
     private EmptyLibraryScreen presenter;
 
@@ -66,6 +66,10 @@ public class EmptyLibraryView implements EmptyLibraryScreen.View,
     @DataField("new-project-button-container")
     Div newProjectButtonContainer;
 
+    @Inject
+    @DataField("projects-container")
+    private Div projectsContainer;
+
     @Override
     public void init(EmptyLibraryScreen presenter) {
         this.presenter = presenter;
@@ -75,14 +79,17 @@ public class EmptyLibraryView implements EmptyLibraryScreen.View,
     public void setup(String username) {
         welcome.setInnerHTML(ts.getTranslation(LibraryConstants.EmptyLibraryView_Welcome) + " " + username + ".");
         newProjectButtonContainer.appendChild(newProjectButtonWidget.getView().getElement());
+        if (!presenter.userCanCreateProjects()) {
+            projectsContainer.setHidden(true);
+        }
     }
 
     @Override
     public void addProjectToImport(final ExampleProject exampleProject) {
         final ImportExampleButtonWidget importExampleButton = importExampleButtonWidgets.get();
         importExampleButton.init(exampleProject.getName(),
-                exampleProject.getDescription(),
-                () -> presenter.importProject(exampleProject));
+                                 exampleProject.getDescription(),
+                                 () -> presenter.importProject(exampleProject));
 
         importContainer.appendChild(importExampleButton.getElement());
     }

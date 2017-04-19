@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.enterprise.event.Event;
 
+import org.guvnor.common.services.project.client.security.ProjectController;
 import org.guvnor.common.services.project.model.Project;
 import org.guvnor.structure.repositories.Repository;
 import org.jboss.errai.common.client.api.Caller;
@@ -64,6 +65,9 @@ public class LibraryScreenTest {
     @Mock
     private ExamplesUtils examplesUtils;
 
+    @Mock
+    private ProjectController projectController;
+
     private LibraryScreen libraryScreen;
 
     private ExampleProject exampleProject1;
@@ -95,7 +99,8 @@ public class LibraryScreenTest {
                                               libraryPlaces,
                                               projectDetailEvent,
                                               libraryServiceCaller,
-                                              examplesUtils));
+                                              examplesUtils,
+                                              projectController));
 
         project1 = mock(Project.class);
         doReturn("project1Name").when(project1).getProjectName();
@@ -114,9 +119,13 @@ public class LibraryScreenTest {
         doReturn(libraryInfo).when(libraryService).getLibraryInfo(any(Repository.class),
                                                                   anyString());
 
+        doReturn(true).when(projectController).canCreateProjects();
+        doReturn(true).when(projectController).canReadProjects();
+        doReturn(true).when(projectController).canReadProject(any());
+        doReturn(false).when(projectController).canReadProject(project2);
+
         libraryScreen.setup();
     }
-
 
     @Test
     public void setupTest() {
@@ -125,7 +134,7 @@ public class LibraryScreenTest {
         verify(placeManager).closePlace(LibraryPlaces.EMPTY_LIBRARY_SCREEN);
 
         verify(view,
-               times(3)).addProject(anyString(),
+               times(2)).addProject(anyString(),
                                     any(Command.class),
                                     any(Command.class));
 
@@ -134,9 +143,9 @@ public class LibraryScreenTest {
                                     any(Command.class),
                                     any(Command.class));
         verify(view,
-               times(1)).addProject(eq("project2Name"),
-                                    any(Command.class),
-                                    any(Command.class));
+               never()).addProject(eq("project2Name"),
+                                   any(Command.class),
+                                   any(Command.class));
         verify(view,
                times(1)).addProject(eq("project3Name"),
                                     any(Command.class),
@@ -144,19 +153,24 @@ public class LibraryScreenTest {
     }
 
     @Test
-    public void newProjectTest() {
-        libraryScreen.newProject();
-
-        verify(libraryPlaces).goToNewProject();
-    }
-
-    @Test
-    public void importProjectTest() {
+    public void canImportProjectTest() {
         final ExampleProject exampleProject = mock(ExampleProject.class);
 
         libraryScreen.importProject(exampleProject);
 
         verify(examplesUtils).importProject(exampleProject);
+    }
+
+    @Test
+    public void cannotImportProjectTest() {
+        doReturn(false).when(projectController).canCreateProjects();
+
+        final ExampleProject exampleProject = mock(ExampleProject.class);
+
+        libraryScreen.importProject(exampleProject);
+
+        verify(examplesUtils,
+               never()).importProject(exampleProject);
     }
 
     @Test

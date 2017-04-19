@@ -20,63 +20,108 @@ import org.jboss.errai.ui.shared.api.annotations.TranslationKey;
 
 public class LibraryConstants {
 
-    @TranslationKey(defaultValue = "")
+    @TranslationKey(defaultValue = "Welcome")
     public static final String EmptyLibraryView_Welcome = "EmptyLibraryView.Welcome";
 
-    @TranslationKey(defaultValue = "")
-    public static final String LibraryView_Filter = "LibraryView.Filter";
-
-    @TranslationKey(defaultValue = "")
+    @TranslationKey(defaultValue = "Creating project")
     public static final String NewProjectScreen_Saving = "NewProjectScreen.Saving";
 
-    @TranslationKey(defaultValue = "")
+    @TranslationKey(defaultValue = "Error while creating the project.")
     public static final String NewProjectScreen_Error = "NewProjectScreen.Error";
 
-    @TranslationKey(defaultValue = "")
+    @TranslationKey(defaultValue = "New project")
     public static final String NewProject = "NewProject";
 
-    @TranslationKey(defaultValue = "")
-    public static final String Project_Created = "Project_Created";
+    @TranslationKey(defaultValue = "Project successfully created!")
+    public static final String ProjectCreated = "ProjectCreated";
 
-    @TranslationKey(defaultValue = "")
-    public static final String NewProjectScreen = "New_Project_Screen";
-
-    @TranslationKey(defaultValue = "")
+    @TranslationKey(defaultValue = "Settings")
     public static final String Settings = "Settings";
 
-    @TranslationKey(defaultValue = "")
+    @TranslationKey(defaultValue = "Project successfully imported!")
     public static final String ProjectImportedSuccessfully = "ProjectImportedSuccessfully";
 
-    @TranslationKey(defaultValue = "")
+    @TranslationKey(defaultValue = "Error while importing the project.")
     public static final String ProjectImportError = "ProjectImportError";
 
-    @TranslationKey(defaultValue = "")
+    @TranslationKey(defaultValue = "Importing project")
     public static final String Importing = "Importing";
 
-    @TranslationKey(defaultValue = "")
+    @TranslationKey(defaultValue = "Loading assets")
     public static final String LoadingAssets = "LoadingAssets";
 
-    @TranslationKey(defaultValue = "")
+    @TranslationKey(defaultValue = "Last modified")
     public static final String LastModified = "LastModified";
 
-    @TranslationKey(defaultValue = "")
+    @TranslationKey(defaultValue = "Created")
     public static final String Created = "Created";
 
-    @TranslationKey(defaultValue = "")
+    @TranslationKey(defaultValue = "Default project")
     public static final String DefaultProject = "DefaultProject";
 
-    @TranslationKey(defaultValue = "")
+    @TranslationKey(defaultValue = "Quick setup")
     public static final String QuickSetup = "QuickSetup";
 
-    @TranslationKey(defaultValue = "")
+    @TranslationKey(defaultValue = "Advanced setup")
     public static final String AdvancedSetup = "AdvancedSetup";
 
-    @TranslationKey(defaultValue = "")
+    @TranslationKey(defaultValue = "Other projects")
     public static final String OtherProjects = "OtherProjects";
 
-    @TranslationKey(defaultValue = "")
+    @TranslationKey(defaultValue = "Project deleted.")
     public static final String ProjectDeleted = "ProjectDeleted";
 
-    @TranslationKey(defaultValue = "")
+    @TranslationKey(defaultValue = "A build is already running.")
     public static final String ABuildIsAlreadyRunning = "ABuildIsAlreadyRunning";
+
+    @TranslationKey(defaultValue = "Filter By Name")
+    public static final String FilterByName = "FilterByName";
+
+    @TranslationKey(defaultValue = "Create {0}")
+    public static final String CreateOrganizationalUnit = "CreateOrganizationalUnit";
+
+    @TranslationKey(defaultValue = "Save")
+    public static final String Save = "Save";
+
+    @TranslationKey(defaultValue = "Cancel")
+    public static final String Cancel = "Cancel";
+
+    @TranslationKey(defaultValue = "Removing")
+    public static final String Removing = "Removing";
+
+    @TranslationKey(defaultValue = "Are you sure you want to remove the \"{0}\" {1}?")
+    public static final String RemoveOrganizationalUnitWarningMessage = "RemoveOrganizationalUnitWarningMessage";
+
+    @TranslationKey(defaultValue = "{0} removed successfully!")
+    public static final String RemoveOrganizationalUnitSuccess = "RemoveOrganizationalUnitSuccess";
+
+    @TranslationKey(defaultValue = "The field \"{0}\" should not be empty.")
+    public static final String EmptyFieldValidation = "EmptyFieldValidation";
+
+    @TranslationKey(defaultValue = "A {0} with the same name already exists.")
+    public static final String DuplicatedOrganizationalUnitValidation = "DuplicatedOrganizationalUnitValidation";
+
+    @TranslationKey(defaultValue = "The field \"{0}\" is invalid.")
+    public static final String InvalidFieldValidation = "InvalidFieldValidation";
+
+    @TranslationKey(defaultValue = "Saving")
+    public static final String Saving = "Saving";
+
+    @TranslationKey(defaultValue = "The {0} was saved successfully.")
+    public static final String OrganizationalUnitSaveSuccess = "OrganizationalUnitSaveSuccess";
+
+    @TranslationKey(defaultValue = "Name")
+    public static final String Name = "Name";
+
+    @TranslationKey(defaultValue = "Default Group ID")
+    public static final String DefaultGroupId = "DefaultGroupId";
+
+    @TranslationKey(defaultValue = "repositories")
+    public static final String Repositories = "Repositories";
+
+    @TranslationKey(defaultValue = "Team")
+    public static final String OrganizationalUnitDefaultAliasInSingular = "OrganizationalUnitDefaultAliasInSingular";
+
+    @TranslationKey(defaultValue = "Teams")
+    public static final String OrganizationalUnitDefaultAliasInPlural = "OrganizationalUnitDefaultAliasInPlural";
 }

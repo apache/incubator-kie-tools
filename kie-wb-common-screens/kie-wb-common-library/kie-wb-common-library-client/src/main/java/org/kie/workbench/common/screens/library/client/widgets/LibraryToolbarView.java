@@ -19,7 +19,6 @@ import javax.inject.Inject;
 
 import org.jboss.errai.common.client.dom.DOMUtil;
 import org.jboss.errai.common.client.dom.Document;
-import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.dom.Label;
 import org.jboss.errai.common.client.dom.Option;
 import org.jboss.errai.common.client.dom.Select;
@@ -35,19 +34,15 @@ public class LibraryToolbarView implements LibraryToolbarPresenter.View,
     Document document;
 
     @Inject
-    @DataField
-    Label organizationalUnitsLabel;
-
-    @Inject
-    @DataField
-    Select organizationalUnits;
+    @DataField("repositories-label")
+    Label repositoriesLabel;
 
     @Inject
     @DataField
     Select repositories;
 
     @Inject
-    @DataField
+    @DataField("branches-label")
     Label branchesLabel;
 
     @Inject
@@ -59,34 +54,8 @@ public class LibraryToolbarView implements LibraryToolbarPresenter.View,
     @Override
     public void init(final LibraryToolbarPresenter presenter) {
         this.presenter = presenter;
-        organizationalUnits.setOnchange(event -> presenter.onUpdateSelectedOrganizationalUnit());
         repositories.setOnchange(event -> presenter.onUpdateSelectedRepository());
         branches.setOnchange(event -> presenter.onUpdateSelectedBranch());
-    }
-
-    @Override
-    public void setOrganizationalUnitLabel(final String label) {
-        organizationalUnitsLabel.setTextContent(label + ": ");
-    }
-
-    @Override
-    public void clearOrganizationalUnits() {
-        DOMUtil.removeAllChildren(organizationalUnits);
-    }
-
-    @Override
-    public void addOrganizationUnit(final String identifier) {
-        organizationalUnits.add(createOption(identifier));
-    }
-
-    @Override
-    public String getSelectedOrganizationalUnit() {
-        return organizationalUnits.getValue();
-    }
-
-    @Override
-    public void setSelectedOrganizationalUnit(final String identifier) {
-        organizationalUnits.setValue(identifier);
     }
 
     @Override
@@ -107,6 +76,12 @@ public class LibraryToolbarView implements LibraryToolbarPresenter.View,
     @Override
     public void setSelectedRepository(final String alias) {
         repositories.setValue(alias);
+    }
+
+    @Override
+    public void setRepositorySelectorVisibility(final boolean visible) {
+        repositories.setHidden(!visible);
+        repositoriesLabel.setHidden(!visible);
     }
 
     @Override
@@ -131,48 +106,8 @@ public class LibraryToolbarView implements LibraryToolbarPresenter.View,
 
     @Override
     public void setBranchSelectorVisibility(final boolean visible) {
-        branches.getStyle()
-                .setProperty("visibility",
-                             getVisibility(visible));
-        branchesLabel.getStyle()
-                .setProperty("visibility",
-                             getVisibility(visible));
-        if (visible) {
-            expand(branches);
-            expand(branchesLabel);
-        } else {
-            shrink(branches);
-            shrink(branchesLabel);
-        }
-    }
-
-    private void shrink(final HTMLElement element) {
-        element.getStyle()
-                .setProperty("width",
-                             "0px");
-        element.getStyle()
-                .setProperty("border",
-                             "0px");
-        element.getStyle()
-                .setProperty("padding",
-                             "0px");
-    }
-
-    private void expand(final HTMLElement element) {
-        element.getStyle()
-                .removeProperty("width");
-        element.getStyle()
-                .removeProperty("border");
-        element.getStyle()
-                .removeProperty("padding");
-    }
-
-    private String getVisibility(boolean visible) {
-        if (visible) {
-            return "visible";
-        } else {
-            return "hidden";
-        }
+        branches.setHidden(!visible);
+        branchesLabel.setHidden(!visible);
     }
 
     private Option createOption(String ou) {

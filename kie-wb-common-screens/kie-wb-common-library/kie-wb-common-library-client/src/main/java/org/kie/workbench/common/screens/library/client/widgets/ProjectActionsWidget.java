@@ -18,6 +18,9 @@ package org.kie.workbench.common.screens.library.client.widgets;
 
 import javax.inject.Inject;
 
+import org.guvnor.common.services.project.client.security.ProjectController;
+import org.guvnor.common.services.project.context.ProjectContext;
+import org.guvnor.common.services.project.model.Project;
 import org.kie.workbench.common.screens.library.client.util.LibraryPlaces;
 import org.kie.workbench.common.screens.projecteditor.client.build.BuildExecutor;
 import org.uberfire.client.mvp.UberElement;
@@ -38,13 +41,21 @@ public class ProjectActionsWidget {
 
     private Command showSettingsCommand;
 
+    private ProjectContext projectContext;
+
+    private ProjectController projectController;
+
     @Inject
     public ProjectActionsWidget(final View view,
                                 final BuildExecutor buildExecutor,
-                                final LibraryPlaces libraryPlaces) {
+                                final LibraryPlaces libraryPlaces,
+                                final ProjectContext projectContext,
+                                final ProjectController projectController) {
         this.view = view;
         this.buildExecutor = buildExecutor;
         this.libraryPlaces = libraryPlaces;
+        this.projectContext = projectContext;
+        this.projectController = projectController;
     }
 
     public void init(final Command showSettingsCommand) {
@@ -58,15 +69,24 @@ public class ProjectActionsWidget {
     }
 
     public void compileProject() {
-        buildExecutor.triggerBuild();
+        if (userCanBuildProject()) {
+            buildExecutor.triggerBuild();
+        }
     }
 
     public void buildAndDeployProject() {
-        buildExecutor.triggerBuildAndDeploy();
+        if (userCanBuildProject()) {
+            buildExecutor.triggerBuildAndDeploy();
+        }
     }
 
     public void goToMessages() {
         libraryPlaces.goToMessages();
+    }
+
+    public boolean userCanBuildProject() {
+        final Project activeProject = projectContext.getActiveProject();
+        return projectController.canBuildProjects() && projectController.canBuildProject(activeProject);
     }
 
     public View getView() {
