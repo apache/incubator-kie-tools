@@ -22,7 +22,7 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxIdMappings;
-import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.mockito.Mock;
@@ -44,34 +44,23 @@ public class CaseManagementOryxIdMappingsTest {
     @Test
     public void checkSkippedProperties() {
         final Map<Class<?>, Set<String>> skippedProperties = oryxIdMappings.getSkippedProperties();
-        final Set<String> bpmnSkippedProperties = skippedProperties.get(org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram.class);
-        final Set<String> cmSkippedProperties = skippedProperties.get(BPMNDiagram.class);
-        assertNotNull(bpmnSkippedProperties);
+        final Set<String> cmSkippedProperties = skippedProperties.get(CaseManagementDiagram.class);
         assertNotNull(cmSkippedProperties);
-        assertEquals(bpmnSkippedProperties,
-                     cmSkippedProperties);
     }
 
     @Test
     public void checkGetDefinitionMappingsForDiagram() {
-        assertDefinitionMappings(org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram.class,
-                                 BPMNDiagram.class);
+        assertDefinitionMappings(CaseManagementDiagram.class);
     }
 
     @Test
     public void checkGetDefinitionMappingsForReusableSubprocess() {
-        assertDefinitionMappings(org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess.class,
-                                 ReusableSubprocess.class);
+        assertDefinitionMappings(ReusableSubprocess.class);
     }
 
-    private void assertDefinitionMappings(final Class bpmnClass,
-                                          final Class cmClass) {
+    private void assertDefinitionMappings(final Class cmClass) {
         final Map<Class<?>, Map<Class<?>, String>> definitionMappings = oryxIdMappings.getDefinitionMappings();
-        final Map<Class<?>, String> bpmnDefinitionMappings = definitionMappings.get(bpmnClass);
         final Map<Class<?>, String> cmDefinitionMappings = definitionMappings.get(cmClass);
-        assertNotNull(bpmnDefinitionMappings);
         assertNotNull(cmDefinitionMappings);
-        assertEquals(bpmnDefinitionMappings,
-                     cmDefinitionMappings);
     }
 }

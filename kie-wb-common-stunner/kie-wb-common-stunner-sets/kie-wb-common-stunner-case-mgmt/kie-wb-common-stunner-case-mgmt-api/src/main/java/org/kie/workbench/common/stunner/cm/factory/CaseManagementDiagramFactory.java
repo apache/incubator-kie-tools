@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.bpmn.project.factory.impl;
+package org.kie.workbench.common.stunner.cm.factory;
 
-import org.kie.workbench.common.stunner.bpmn.factory.BPMNFactory;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
-import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
-import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 
-public interface BPMNProjectDiagramFactory
-        extends BPMNFactory,
-                DiagramFactory<ProjectMetadata, ProjectDiagram> {
+public interface CaseManagementDiagramFactory<M extends Metadata, D extends Diagram<Graph, M>>
+        extends DiagramFactory<M, D> {
 
 }

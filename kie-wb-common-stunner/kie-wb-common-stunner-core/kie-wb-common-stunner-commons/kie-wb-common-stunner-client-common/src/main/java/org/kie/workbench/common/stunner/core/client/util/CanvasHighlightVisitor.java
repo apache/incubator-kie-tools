@@ -89,7 +89,13 @@ public class CanvasHighlightVisitor {
     @SuppressWarnings("unchecked")
     private void prepareVisit(final Command command) {
         final Graph graph = canvasHandler.getDiagram().getGraph();
-        new ViewTraverseProcessorImpl(new TreeWalkTraverseProcessorImpl().useStartingNodesPolicy(TreeWalkTraverseProcessor.StartingNodesPolicy.NO_INCOMING_VIEW_EDGES))
+        final TreeWalkTraverseProcessor treeWalkTraverseProcessor =
+                new TreeWalkTraverseProcessorImpl()
+                        .useStartNodePredicate(node -> !node.getInEdges().stream()
+                                .filter(e -> e.getContent() instanceof View)
+                                .findAny()
+                                .isPresent());
+        new ViewTraverseProcessorImpl(treeWalkTraverseProcessor)
                 .traverse(graph,
                           new ContentTraverseCallback<View<?>, Node<View, Edge>, Edge<View<?>, Node>>() {
                               @Override

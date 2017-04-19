@@ -100,6 +100,8 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
         this.definitionManager = definitionManager;
     }
 
+    protected abstract Class<? extends BPMNDiagram> getDiagramType();
+
     @Override
     public void init(final List<Class<?>> definitions) {
         // Load default & custom mappings for BPMN definitions.
@@ -115,6 +117,8 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
     @Override
     public Map<Class<?>, String> getGlobalMappings() {
         final Map<Class<?>, String> globalMappings = new HashMap<Class<?>, String>() {{
+            put(getDiagramType(),
+                "BPMNDiagram");
             // Add here global class <-> oryxId mappings, if any.
             put(Name.class,
                 "name");
@@ -203,7 +207,7 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
     public Map<Class<?>, Set<String>> getSkippedProperties() {
         final Map<Class<?>, Set<String>> skippedProperties = new HashMap<Class<?>, Set<String>>() {{
             // Add here global class <-> collection oryx property identifiers to skip processing, if any.
-            put(BPMNDiagram.class,
+            put(getDiagramType(),
                 new HashSet<String>() {{
                     add("name");
                 }});
@@ -217,7 +221,7 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
         final Map<Class<?>, Map<Class<?>, String>> definitionMappings = new HashMap<Class<?>, Map<Class<?>, String>>() {{
             // Add here class <-> oryxId mappings just for a concrete definition (stencil), if any.
             Map<Class<?>, String> diagramPropertiesMap = new HashMap<Class<?>, String>();
-            put(BPMNDiagram.class,
+            put(getDiagramType(),
                 diagramPropertiesMap);
             // The name property in the diagram stencil is "processn".
             diagramPropertiesMap.put(Name.class,
@@ -261,7 +265,7 @@ public abstract class BaseOryxIdMappings implements OryxIdMappings {
             put(IntermediateTimerEvent.class,
                 intermediateTimerEventPropertiesMap);
             intermediateTimerEventPropertiesMap.put(AssignmentsInfo.class,
-                                             "assignmentsinfo");
+                                                    "assignmentsinfo");
 
             Map<Class<?>, String> endEventPropertiesMap = new HashMap<Class<?>, String>();
             put(EndNoneEvent.class,

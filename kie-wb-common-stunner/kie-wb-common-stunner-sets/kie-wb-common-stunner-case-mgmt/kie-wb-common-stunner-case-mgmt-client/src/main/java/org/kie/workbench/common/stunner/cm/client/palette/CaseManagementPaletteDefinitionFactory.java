@@ -33,7 +33,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
-import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.factory.BindableDefSetPaletteDefinitionFactory;
@@ -69,7 +69,7 @@ public class CaseManagementPaletteDefinitionFactory extends BindableDefSetPalett
     @Override
     protected void configureBuilder() {
         super.configureBuilder();
-        excludeDefinition(BPMNDiagram.class);
+        excludeDefinition(CaseManagementDiagram.class);
         excludeDefinition(Lane.class);
         excludeDefinition(NoneTask.class);
         excludeDefinition(StartNoneEvent.class);

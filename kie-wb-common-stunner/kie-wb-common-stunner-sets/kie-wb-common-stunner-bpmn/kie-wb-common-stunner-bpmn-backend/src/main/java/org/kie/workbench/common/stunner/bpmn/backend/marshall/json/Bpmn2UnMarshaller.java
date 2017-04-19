@@ -39,7 +39,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.legacy.Bpmn2JsonMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder.BPMNGraphGenerator;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder.GraphObjectBuilderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.command.CommandManager;
@@ -77,7 +77,7 @@ public class Bpmn2UnMarshaller extends Bpmn2JsonMarshaller {
                              final GraphCommandFactory commandFactory,
                              final GraphIndexBuilder<?> indexBuilder,
                              final Class<?> diagramDefinitionSetClass,
-                             final Class<? extends BPMNDefinition> diagramDefinitionClass) {
+                             final Class<? extends BPMNDiagram> diagramDefinitionClass) {
         this.bpmnGraphGenerator = new BPMNGraphGenerator(elementBuilderFactory,
                                                          definitionManager,
                                                          factoryManager,

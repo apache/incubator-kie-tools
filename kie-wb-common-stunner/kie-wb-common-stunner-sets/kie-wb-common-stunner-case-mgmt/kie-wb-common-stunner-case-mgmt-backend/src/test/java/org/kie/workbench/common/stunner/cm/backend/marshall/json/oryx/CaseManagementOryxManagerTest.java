@@ -50,7 +50,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
-import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -102,7 +102,7 @@ public class CaseManagementOryxManagerTest {
         final Set<Class<?>> classes = oryxManager.getDefinitionClasses();
         assertEquals(17,
                      classes.size());
-        assertTrue(classes.contains(BPMNDiagram.class));
+        assertTrue(classes.contains(CaseManagementDiagram.class));
         assertTrue(classes.contains(Lane.class));
         assertTrue(classes.contains(NoneTask.class));
         assertTrue(classes.contains(UserTask.class));

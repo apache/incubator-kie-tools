@@ -18,22 +18,67 @@ package org.kie.workbench.common.stunner.cm.project.factory;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.project.factory.impl.BPMNProjectDiagramFactory;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
+import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class CaseManagementProjectDiagramFactoryTest {
+
+    @Mock
+    private Graph graph;
+
+    @Mock
+    private ProjectMetadata metadata;
+
+    @Mock
+    private BPMNProjectDiagramFactory bpmnDiagramFactory;
 
     private CaseManagementProjectDiagramFactory factory;
 
     @Before
     public void setup() {
-        this.factory = new CaseManagementProjectDiagramFactory();
+        this.factory = new CaseManagementProjectDiagramFactory(bpmnDiagramFactory);
+    }
+
+    @Test
+    public void assertDiagamType() {
+        factory.init();
+        verify(bpmnDiagramFactory,
+               times(1)).setDiagramType(eq(CaseManagementDiagram.class));
     }
 
     @Test
     public void assertDefinitionSetType() {
         assertEquals(CaseManagementDefinitionSet.class,
                      factory.getDefinitionSetType());
+    }
+
+    @Test
+    public void assertMetadataType() {
+        assertEquals(ProjectMetadata.class,
+                     factory.getMetadataType());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testBuild() {
+        factory.init();
+        factory.build("diagram1",
+                      metadata,
+                      graph);
+        verify(bpmnDiagramFactory,
+               times(1)).build(eq("diagram1"),
+                               eq(metadata),
+                               eq(graph));
     }
 }

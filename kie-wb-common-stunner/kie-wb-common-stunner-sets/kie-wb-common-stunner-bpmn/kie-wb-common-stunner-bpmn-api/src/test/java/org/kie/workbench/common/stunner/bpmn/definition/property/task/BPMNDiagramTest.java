@@ -24,7 +24,7 @@ import javax.validation.ValidatorFactory;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
@@ -55,56 +55,56 @@ public class BPMNDiagramTest {
         this.validator = vf.getValidator();
     }
 
-    public BPMNDiagram createValidBpmnDiagram() {
-        BPMNDiagram bpmnDiagram = new BPMNDiagram.BPMNDiagramBuilder().build();
-        DiagramSet diagramSet = bpmnDiagram.getDiagramSet();
+    public BPMNDiagramImpl createValidBpmnDiagram() {
+        BPMNDiagramImpl BPMNDiagramImpl = new BPMNDiagramImpl.BPMNDiagramBuilder().build();
+        DiagramSet diagramSet = BPMNDiagramImpl.getDiagramSet();
         diagramSet.setName(new Name(NAME_VALID));
         diagramSet.setId(new Id(ID_VALID));
         diagramSet.setPackageProperty(new Package(PACKAGE_VALID));
         diagramSet.setVersion(new Version(VERSION_VALID));
 
-        return bpmnDiagram;
+        return BPMNDiagramImpl;
     }
 
     @Test
     public void testAllValid() {
-        BPMNDiagram bpmnDiagram = createValidBpmnDiagram();
-        Set<ConstraintViolation<BPMNDiagram>> violations = this.validator.validate(bpmnDiagram);
+        BPMNDiagramImpl BPMNDiagramImpl = createValidBpmnDiagram();
+        Set<ConstraintViolation<BPMNDiagramImpl>> violations = this.validator.validate(BPMNDiagramImpl);
         assertTrue(violations.isEmpty());
     }
 
     @Test
     public void testNameInvalid() {
-        BPMNDiagram bpmnDiagram = createValidBpmnDiagram();
-        bpmnDiagram.getDiagramSet().setName(new Name(NAME_INVALID));
-        Set<ConstraintViolation<BPMNDiagram>> violations = this.validator.validate(bpmnDiagram);
+        BPMNDiagramImpl BPMNDiagramImpl = createValidBpmnDiagram();
+        BPMNDiagramImpl.getDiagramSet().setName(new Name(NAME_INVALID));
+        Set<ConstraintViolation<BPMNDiagramImpl>> violations = this.validator.validate(BPMNDiagramImpl);
         assertEquals(1,
                      violations.size());
     }
 
     @Test
     public void testIDInvalid() {
-        BPMNDiagram bpmnDiagram = createValidBpmnDiagram();
-        bpmnDiagram.getDiagramSet().setId(new Id(ID_INVALID));
-        Set<ConstraintViolation<BPMNDiagram>> violations = this.validator.validate(bpmnDiagram);
+        BPMNDiagramImpl BPMNDiagramImpl = createValidBpmnDiagram();
+        BPMNDiagramImpl.getDiagramSet().setId(new Id(ID_INVALID));
+        Set<ConstraintViolation<BPMNDiagramImpl>> violations = this.validator.validate(BPMNDiagramImpl);
         assertEquals(1,
                      violations.size());
     }
 
     @Test
     public void testPackageInvalid() {
-        BPMNDiagram bpmnDiagram = createValidBpmnDiagram();
-        bpmnDiagram.getDiagramSet().setPackageProperty(new Package(PACKAGE_INVALID));
-        Set<ConstraintViolation<BPMNDiagram>> violations = this.validator.validate(bpmnDiagram);
+        BPMNDiagramImpl BPMNDiagramImpl = createValidBpmnDiagram();
+        BPMNDiagramImpl.getDiagramSet().setPackageProperty(new Package(PACKAGE_INVALID));
+        Set<ConstraintViolation<BPMNDiagramImpl>> violations = this.validator.validate(BPMNDiagramImpl);
         assertEquals(1,
                      violations.size());
     }
 
     @Test
     public void testVersionInvalid() {
-        BPMNDiagram bpmnDiagram = createValidBpmnDiagram();
-        bpmnDiagram.getDiagramSet().setVersion(new Version(VERSION_INVALID));
-        Set<ConstraintViolation<BPMNDiagram>> violations = this.validator.validate(bpmnDiagram);
+        BPMNDiagramImpl BPMNDiagramImpl = createValidBpmnDiagram();
+        BPMNDiagramImpl.getDiagramSet().setVersion(new Version(VERSION_INVALID));
+        Set<ConstraintViolation<BPMNDiagramImpl>> violations = this.validator.validate(BPMNDiagramImpl);
         assertEquals(1,
                      violations.size());
     }

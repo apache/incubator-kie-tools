@@ -16,7 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.graph.processing.index.bounds;
 
-import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -123,11 +124,6 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
 
     private abstract class NodeBoundsTraverseCallback {
 
-        public boolean onNodeTraverseStart(final Node<View, Edge> node,
-                                           final Iterator<Node<View, Edge>> parents) {
-            return true;
-        }
-
         public abstract void onNodeTraverse(final Node<View, Edge> node,
                                             final double parentX,
                                             final double parentY);
@@ -144,40 +140,35 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
         @Override
         public void startNodeTraversal(final Node<View, Edge> node) {
             super.startNodeTraversal(node);
-            onStartNodeTraversal(null,
+            onStartNodeTraversal(Optional.empty(),
                                  node);
         }
 
         @Override
-        public boolean startNodeTraversal(final Iterator<Node<View, Edge>> parents,
+        public boolean startNodeTraversal(final List<Node<View, Edge>> parents,
                                           final Node<View, Edge> node) {
             super.startNodeTraversal(parents,
                                      node);
-            onStartNodeTraversal(parents,
+            onStartNodeTraversal(Optional.ofNullable(parents),
                                  node);
             return true;
         }
 
-        private void onStartNodeTraversal(final Iterator<Node<View, Edge>> parents,
+        private void onStartNodeTraversal(final Optional<List<Node<View, Edge>>> parents,
                                           final Node<View, Edge> node) {
-            if (callback.onNodeTraverseStart(node,
-                                             parents)) {
-                double parentX = 0;
-                double parentY = 0;
-                if (null != parents && parents.hasNext()) {
-                    while (parents.hasNext()) {
-                        final Node tParent = parents.next();
-                        final Point2D nodeCoordinates = getNodeCoordinates(tParent);
-                        if (null != nodeCoordinates) {
-                            parentX += nodeCoordinates.getX();
-                            parentY += nodeCoordinates.getY();
-                        }
+            final double[] parentLocation = {0, 0};
+            if (parents.isPresent()) {
+                parents.get().forEach(parent -> {
+                    final Point2D nodeCoordinates = getNodeCoordinates(parent);
+                    if (null != nodeCoordinates) {
+                        parentLocation[0] += nodeCoordinates.getX();
+                        parentLocation[1] += nodeCoordinates.getY();
                     }
-                }
-                callback.onNodeTraverse(node,
-                                        parentX,
-                                        parentY);
+                });
             }
+            callback.onNodeTraverse(node,
+                                    parentLocation[0],
+                                    parentLocation[1]);
         }
     }
 
@@ -187,17 +178,6 @@ public class GraphBoundsIndexerImpl implements GraphBoundsIndexer {
             if (content instanceof View) {
                 final View viewContent = (View) content;
                 return GraphUtils.getPosition(viewContent);
-            }
-        }
-        return null;
-    }
-
-    private Point2D getNodeCoordinates(final Node node,
-                                       final String root) {
-        if (null != node) {
-            final String uuid = node.getUUID();
-            if (null == root || !root.equals(uuid)) {
-                return getNodeCoordinates(node);
             }
         }
         return null;

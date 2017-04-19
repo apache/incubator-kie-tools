@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.ParallelGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.SequenceFlow;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
-import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
 import org.kie.workbench.common.stunner.core.client.components.palette.model.definition.DefinitionSetPaletteBuilder;
 import org.mockito.Mock;
@@ -66,7 +66,7 @@ public class CaseManagementPaletteDefinitionFactoryTest {
     public void checkBuilderConfiguration() {
         factory.configureBuilder();
 
-        verify(paletteBuilder).excludeDefinition(BPMNDiagram.class.getName());
+        verify(paletteBuilder).excludeDefinition(CaseManagementDiagram.class.getName());
         verify(paletteBuilder).excludeDefinition(Lane.class.getName());
         verify(paletteBuilder).excludeDefinition(NoneTask.class.getName());
         verify(paletteBuilder).excludeDefinition(StartNoneEvent.class.getName());

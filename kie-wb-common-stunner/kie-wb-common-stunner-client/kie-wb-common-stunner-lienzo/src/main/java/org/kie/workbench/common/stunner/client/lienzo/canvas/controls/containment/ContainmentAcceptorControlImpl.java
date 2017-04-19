@@ -124,9 +124,11 @@ public class ContainmentAcceptorControlImpl extends AbstractContainmentBasedCont
 
     @Override
     protected CommandResult<CanvasViolation> runAllow(final Node parent,
-                                                      final Node child) {
+                                                      final Node child,
+                                                      final Edge edge) {
         final CommandResult<CanvasViolation> result = super.runAllow(parent,
-                                                                     child);
+                                                                     child,
+                                                                     edge);
         if (CommandUtils.isError(result)) {
             canvasHighlight.invalid(result.getViolations());
         }

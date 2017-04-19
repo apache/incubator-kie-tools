@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.client.widgets.explorer.tree;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -163,7 +162,7 @@ public class TreeExplorer implements IsWidget {
                                                }
 
                                                @Override
-                                               public boolean startNodeTraversal(final Iterator<Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge>> parents,
+                                               public boolean startNodeTraversal(final List<Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge>> parents,
                                                                                  final Node<org.kie.workbench.common.stunner.core.graph.content.view.View, Edge> node) {
                                                    super.startNodeTraversal(parents,
                                                                             node);

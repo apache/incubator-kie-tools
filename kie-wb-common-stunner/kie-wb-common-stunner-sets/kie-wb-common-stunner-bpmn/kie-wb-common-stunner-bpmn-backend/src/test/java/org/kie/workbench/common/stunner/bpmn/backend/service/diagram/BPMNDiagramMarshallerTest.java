@@ -47,6 +47,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.StringTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.property.VariablesTypeSerializer;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
@@ -398,7 +399,7 @@ public class BPMNDiagramMarshallerTest {
             if (element.getContent() instanceof View) {
                 Object oDefinition = ((View) element.getContent()).getDefinition();
                 if (oDefinition instanceof BPMNDiagram) {
-                    BPMNDiagram bpmnDiagram = (BPMNDiagram) oDefinition;
+                    BPMNDiagramImpl bpmnDiagram = (BPMNDiagramImpl) oDefinition;
                     variables = bpmnDiagram.getProcessData().getProcessVariables();
                     break;
                 }
@@ -408,7 +409,7 @@ public class BPMNDiagramMarshallerTest {
                      "employee:java.lang.String,reason:java.lang.String,performance:java.lang.String");
         Node<? extends Definition, ?> diagramNode = diagram.getGraph().getNode("_luRBMdEjEeWXpsZ1tNStKQ");
         assertTrue(diagramNode.getContent().getDefinition() instanceof BPMNDiagram);
-        BPMNDiagram bpmnDiagram = (BPMNDiagram) diagramNode.getContent().getDefinition();
+        BPMNDiagramImpl bpmnDiagram = (BPMNDiagramImpl) diagramNode.getContent().getDefinition();
         assertTrue(bpmnDiagram.getProcessData() != null);
         assertTrue(bpmnDiagram.getProcessData().getProcessVariables() != null);
         variables = bpmnDiagram.getProcessData().getProcessVariables();
@@ -431,7 +432,7 @@ public class BPMNDiagramMarshallerTest {
             if (element.getContent() instanceof View) {
                 Object oDefinition = ((View) element.getContent()).getDefinition();
                 if (oDefinition instanceof BPMNDiagram) {
-                    BPMNDiagram bpmnDiagram = (BPMNDiagram) oDefinition;
+                    BPMNDiagramImpl bpmnDiagram = (BPMNDiagramImpl) oDefinition;
                     diagramProperties = bpmnDiagram.getDiagramSet();
                     break;
                 }
@@ -1476,24 +1477,17 @@ public class BPMNDiagramMarshallerTest {
         Graph graph = tested.unmarshall(metadata,
                                         is);
         result.setGraph(graph);
-        // Update diagram's  metadata.
+        // Update diagram's metadata attributes.
         tested.updateRootUUID(result.getMetadata(),
                               graph);
-        updateTitle(result.getMetadata(),
-                    graph);
+        tested.updateTitle(result.getMetadata(),
+                           graph);
         return result;
     }
 
     @SuppressWarnings("unchecked")
     private Iterator<Element> nodesIterator(Diagram<Graph, Metadata> diagram) {
         return (Iterator<Element>) diagram.getGraph().nodes().iterator();
-    }
-
-    private void updateTitle(final Metadata metadata,
-                             final Graph graph) {
-        // Update metadata's title.
-        final String title = tested.getTitle(graph);
-        metadata.setTitle(title);
     }
 
     private InputStream loadStream(String path) {

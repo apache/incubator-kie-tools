@@ -185,7 +185,7 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
         fireLoadingStarted(context);
         final Node targetNode = graphBoundsIndexer.getAt(x1,
                                                          y1);
-        log(Level.INFO,
+        log(Level.FINE,
             "Completing element creation - Creating node for parent ["
                     + (null != targetNode ? targetNode.getUUID() : "null"));
         if (null != targetNode) {
@@ -217,6 +217,9 @@ public abstract class AbstractBuilderCommand<I> extends AbstractToolboxCommand<I
                                                                                   error);
                                           }
                                       });
+        } else {
+            log(Level.FINE,
+                "No candidate node found at [" + x1 + ", " + y1 + "]. Nothing to do.");
         }
         context.getCanvasHandler().getAbstractCanvas().getView().setCursor(AbstractCanvas.Cursors.AUTO);
     }

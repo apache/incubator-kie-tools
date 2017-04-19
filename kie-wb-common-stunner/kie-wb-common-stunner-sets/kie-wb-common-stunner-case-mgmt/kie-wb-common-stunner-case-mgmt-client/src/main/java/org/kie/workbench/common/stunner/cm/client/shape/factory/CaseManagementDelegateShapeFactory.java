@@ -38,7 +38,7 @@ import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementReusab
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementSubprocessShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.CaseManagementTaskShapeDef;
 import org.kie.workbench.common.stunner.cm.client.shape.def.NullShapeDef;
-import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -78,7 +78,7 @@ public class CaseManagementDelegateShapeFactory
         addDelegate(caseManagementShapesFactory);
 
         // Register the shapes and definitions.
-        caseManagementShapesFactory.addShapeDef(BPMNDiagram.class,
+        caseManagementShapesFactory.addShapeDef(CaseManagementDiagram.class,
                                                 new CaseManagementDiagramShapeDef());
         caseManagementShapesFactory.addShapeDef(AdHocSubprocess.class,
                                                 new CaseManagementSubprocessShapeDef());

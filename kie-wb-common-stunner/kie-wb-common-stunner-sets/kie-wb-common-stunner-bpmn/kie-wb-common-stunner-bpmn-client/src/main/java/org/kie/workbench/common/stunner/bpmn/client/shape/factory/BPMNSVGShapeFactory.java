@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.bpmn.client.shape.def.ReusableSubprocess
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.SequenceFlowConnectorDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.StartEventShapeDef;
 import org.kie.workbench.common.stunner.bpmn.client.shape.def.TaskShapeDef;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
@@ -98,7 +98,7 @@ public class BPMNSVGShapeFactory
                                     new StartEventShapeDef());
         svgShapeFactory.addShapeDef(StartTimerEvent.class,
                                     new StartEventShapeDef());
-        svgShapeFactory.addShapeDef(BPMNDiagram.class,
+        svgShapeFactory.addShapeDef(BPMNDiagramImpl.class,
                                     new BPMNDiagramShapeDef());
         svgShapeFactory.addShapeDef(BusinessRuleTask.class,
                                     new TaskShapeDef());

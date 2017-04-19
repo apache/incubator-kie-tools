@@ -16,50 +16,67 @@
 
 package org.kie.workbench.common.stunner.core.graph.processing.traverse.tree;
 
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import javax.enterprise.context.Dependent;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.uberfire.mvp.Command;
 
 @Dependent
 public final class TreeWalkTraverseProcessorImpl implements TreeWalkTraverseProcessor {
 
     private Graph graph;
     private EdgeVisitorPolicy edgeVisitorPolicy;
-    private StartingNodesPolicy startingNodesPolicy;
     private TreeTraverseCallback<Graph, Node, Edge> callback;
     private final Set<String> processesEdges = new HashSet<String>();
     private final Set<String> processesNodes = new HashSet<String>();
+    private Predicate<Node<?, Edge>> startNodePredicate;
 
     public TreeWalkTraverseProcessorImpl() {
         this.edgeVisitorPolicy = EdgeVisitorPolicy.VISIT_EDGE_BEFORE_TARGET_NODE;
-        this.startingNodesPolicy = StartingNodesPolicy.NO_INCOMING_EDGES;
+        this.startNodePredicate = n -> n.getInEdges().isEmpty();
     }
 
     @Override
-    public TreeWalkTraverseProcessor useEdgeVisitorPolicy(final EdgeVisitorPolicy policy) {
+    public TreeWalkTraverseProcessorImpl useEdgeVisitorPolicy(final EdgeVisitorPolicy policy) {
         this.edgeVisitorPolicy = policy;
         return this;
     }
 
     @Override
-    public TreeWalkTraverseProcessor useStartingNodesPolicy(final StartingNodesPolicy policy) {
-        this.startingNodesPolicy = policy;
+    public TreeWalkTraverseProcessorImpl useStartNodePredicate(final Predicate<Node<?, Edge>> predicate) {
+        this.startNodePredicate = predicate;
         return this;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void traverse(final Graph graph,
                          final Node node,
                          final TreeTraverseCallback<Graph, Node, Edge> callback) {
+        this.doTraverse(graph,
+                        Optional.ofNullable(node),
+                        callback);
+    }
+
+    @Override
+    public void traverse(final Graph graph,
+                         final TreeTraverseCallback<Graph, Node, Edge> callback) {
+        this.doTraverse(graph,
+                        Optional.empty(),
+                        callback);
+    }
+
+    private void doTraverse(final Graph graph,
+                            final Optional<Node<?, Edge>> node,
+                            final TreeTraverseCallback<Graph, Node, Edge> callback) {
         this.graph = graph;
         this.callback = callback;
         processesNodes.clear();
@@ -67,15 +84,7 @@ public final class TreeWalkTraverseProcessorImpl implements TreeWalkTraverseProc
         startTraverse(node);
     }
 
-    @Override
-    public void traverse(final Graph graph,
-                         final TreeTraverseCallback<Graph, Node, Edge> callback) {
-        this.traverse(graph,
-                      null,
-                      callback);
-    }
-
-    private void startTraverse(final Node startNode) {
+    private void startTraverse(final Optional<Node<?, Edge>> startNode) {
         startGraphTraversal(startNode);
         endGraphTraversal();
     }
@@ -88,107 +97,79 @@ public final class TreeWalkTraverseProcessorImpl implements TreeWalkTraverseProc
         this.processesNodes.clear();
     }
 
-    private void startGraphTraversal(final Node startNode) {
+    @SuppressWarnings("unchecked")
+    private void startGraphTraversal(final Optional<Node<?, Edge>> startNode) {
         assert graph != null && callback != null;
-        doStartGraphTraversal();
-        if (null == startNode) {
-            final Collection<Node> startingNodes = getStartingNodes(graph);
-            if (!startingNodes.isEmpty()) {
-                for (Node node : startingNodes) {
-                    startNodeTraversal(node);
-                }
+        callback.startGraphTraversal(graph);
+        if (!startNode.isPresent()) {
+            final List<Node<?, Edge>> orderedGraphNodes = getStartingNodes();
+            for (final Node<?, Edge> node : orderedGraphNodes) {
+                ifNotProcessed(node,
+                               () -> startNodeTraversal(node));
             }
         } else {
-            startNodeTraversal(startNode);
+            startNodeTraversal(startNode.get());
         }
-    }
-
-    private void doStartGraphTraversal() {
-        callback.startGraphTraversal(graph);
     }
 
     @SuppressWarnings("unchecked")
-    private void startNodeTraversal(final Node graphNode) {
-        final String uuid = graphNode.getUUID();
-        if (!this.processesNodes.contains(uuid)) {
-            this.processesNodes.add(uuid);
-            if (doStartNodeTraversal(graphNode)) {
-                List<Edge> outEdges = graphNode.getOutEdges();
-                if (outEdges != null && !outEdges.isEmpty()) {
-                    for (Edge edge : outEdges) {
-                        startEdgeTraversal(edge);
-                    }
-                }
-            }
-            doEndNodeTraversal(graphNode);
+    private void startNodeTraversal(final Node<?, Edge> node) {
+        this.processesNodes.add(node.getUUID());
+        if (callback.startNodeTraversal(node)) {
+            node.getOutEdges().forEach(this::startEdgeTraversal);
+            callback.endNodeTraversal(node);
         }
     }
 
-    private boolean doStartNodeTraversal(final Node node) {
-        return callback.startNodeTraversal(node);
-    }
-
-    private void doEndNodeTraversal(final Node node) {
-        callback.endNodeTraversal(node);
-    }
-
+    @SuppressWarnings("unchecked")
     private void startEdgeTraversal(final Edge edge) {
         final String uuid = edge.getUUID();
         if (!this.processesEdges.contains(uuid)) {
             processesEdges.add(uuid);
             boolean isTraverNode = true;
-            if (EdgeVisitorPolicy.VISIT_EDGE_BEFORE_TARGET_NODE.equals(edgeVisitorPolicy)) {
-                isTraverNode = doStartEdgeTraversal(edge);
+            if (isVisitBefore()) {
+                isTraverNode = callback.startEdgeTraversal(edge);
             }
             if (isTraverNode) {
-                final Node outNode = edge.getTargetNode();
-                if (outNode != null) {
-                    startNodeTraversal(outNode);
-                }
+                ifNotProcessed(edge.getTargetNode(),
+                               () -> startNodeTraversal(edge.getTargetNode()));
             }
-            if (EdgeVisitorPolicy.VISIT_EDGE_AFTER_TARGET_NODE.equals(edgeVisitorPolicy)) {
-                doStartEdgeTraversal(edge);
+            if (isVisitAfter()) {
+                callback.startEdgeTraversal(edge);
             }
-            doEndEdgeTraversal(edge);
+            callback.endEdgeTraversal(edge);
         }
     }
 
-    private boolean doStartEdgeTraversal(final Edge edge) {
-        return callback.startEdgeTraversal(edge);
+    private boolean isVisitBefore() {
+        return EdgeVisitorPolicy.VISIT_EDGE_BEFORE_TARGET_NODE.equals(edgeVisitorPolicy);
     }
 
-    private void doEndEdgeTraversal(final Edge edge) {
-        callback.endEdgeTraversal(edge);
+    private boolean isVisitAfter() {
+        return !isVisitBefore();
+    }
+
+    private void ifNotProcessed(final Node node,
+                                final Command action) {
+        if (null != node && !processesNodes.contains(node.getUUID())) {
+            action.execute();
+        }
     }
 
     @SuppressWarnings("unchecked")
-    private Collection<Node> getStartingNodes(final Graph graph) {
-        final Collection<Node> result = new LinkedList<Node>();
-        final Iterator<Node> nodesIt = graph.nodes().iterator();
-        while (nodesIt.hasNext()) {
-            final Node node = nodesIt.next();
-            if (isStartingNode(node)) {
-                result.add(node);
+    private List<Node<?, Edge>> getStartingNodes() {
+        final Iterable<Node> nodes = graph.nodes();
+        final List<Node<?, Edge>> result = new LinkedList<>();
+        nodes.forEach(n -> {
+            if (isStartingNode(n)) {
+                result.add(n);
             }
-        }
+        });
         return result;
     }
 
     @SuppressWarnings("unchecked")
     private boolean isStartingNode(final Node node) {
-        final List<Edge> inEdges = node.getInEdges();
-        final int c = null != inEdges ? inEdges.size() : 0;
-        if (c > 0) {
-            if (StartingNodesPolicy.NO_INCOMING_VIEW_EDGES.equals(startingNodesPolicy)) {
-                for (final Edge edge : inEdges) {
-                    if (edge.getContent() instanceof View) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            return false;
-        }
-        return true;
+        return null == node.getInEdges() || startNodePredicate.test(node);
     }
 }

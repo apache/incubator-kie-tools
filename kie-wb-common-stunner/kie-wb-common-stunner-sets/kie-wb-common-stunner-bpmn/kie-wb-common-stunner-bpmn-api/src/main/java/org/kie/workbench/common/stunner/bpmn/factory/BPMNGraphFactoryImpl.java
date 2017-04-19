@@ -18,10 +18,11 @@ package org.kie.workbench.common.stunner.bpmn.factory;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -50,18 +51,22 @@ import org.kie.workbench.common.stunner.core.util.UUID;
  * so this will avoid further errors, but in fact there should be not need to check runtime rules when executing
  * these commands.
  */
-@ApplicationScoped
+@Dependent
 public class BPMNGraphFactoryImpl
         extends AbstractGraphFactory
         implements BPMNGraphFactory {
 
+    static final double START_X = 100d;
+    static final double START_Y = 100d;
+
     private final DefinitionManager definitionManager;
     private final RuleManager ruleManager;
     private final GraphIndexBuilder<?> indexBuilder;
+    private final GraphCommandManager graphCommandManager;
+    private final GraphCommandFactory graphCommandFactory;
+    private final FactoryManager factoryManager;
 
-    protected final GraphCommandManager graphCommandManager;
-    protected final GraphCommandFactory graphCommandFactory;
-    protected final FactoryManager factoryManager;
+    private Class<? extends BPMNDiagram> diagramType;
 
     protected BPMNGraphFactoryImpl() {
         this(null,
@@ -85,6 +90,11 @@ public class BPMNGraphFactoryImpl
         this.graphCommandManager = graphCommandManager;
         this.graphCommandFactory = graphCommandFactory;
         this.indexBuilder = indexBuilder;
+        this.diagramType = BPMNDiagramImpl.class;
+    }
+
+    public void setDiagramType(final Class<? extends BPMNDiagram> diagramType) {
+        this.diagramType = diagramType;
     }
 
     @Override
@@ -129,14 +139,14 @@ public class BPMNGraphFactoryImpl
     protected List<Command> buildInitialisationCommands() {
         final List<Command> commands = new ArrayList<>();
         final Node<Definition<BPMNDiagram>, Edge> diagramNode = (Node<Definition<BPMNDiagram>, Edge>) factoryManager.newElement(UUID.uuid(),
-                                                                                                                                BPMNDiagram.class);
+                                                                                                                                diagramType);
         final Node<Definition<StartNoneEvent>, Edge> startEventNode = (Node<Definition<StartNoneEvent>, Edge>) factoryManager.newElement(UUID.uuid(),
                                                                                                                                          StartNoneEvent.class);
         commands.add(graphCommandFactory.addNode(diagramNode));
         commands.add(graphCommandFactory.addChildNode(diagramNode,
                                                       startEventNode,
-                                                      100d,
-                                                      100d));
+                                                      START_X,
+                                                      START_Y));
         return commands;
     }
 

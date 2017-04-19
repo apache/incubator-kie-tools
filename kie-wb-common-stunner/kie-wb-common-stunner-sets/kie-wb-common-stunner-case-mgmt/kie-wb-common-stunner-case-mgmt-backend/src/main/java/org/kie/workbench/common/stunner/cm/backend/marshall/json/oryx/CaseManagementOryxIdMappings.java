@@ -17,12 +17,12 @@
 package org.kie.workbench.common.stunner.cm.backend.marshall.json.oryx;
 
 import java.util.Map;
-import java.util.Set;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.BaseOryxIdMappings;
-import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -41,22 +41,13 @@ public class CaseManagementOryxIdMappings extends BaseOryxIdMappings {
     }
 
     @Override
-    public Map<Class<?>, Set<String>> getSkippedProperties() {
-        final Map<Class<?>, Set<String>> skippedProperties = super.getSkippedProperties();
-        final Set<String> diagramSkippedProperties = skippedProperties.get(org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram.class);
-        skippedProperties.put(BPMNDiagram.class,
-                              diagramSkippedProperties);
-
-        return skippedProperties;
+    protected Class<? extends BPMNDiagram> getDiagramType() {
+        return CaseManagementDiagram.class;
     }
 
     @Override
     public Map<Class<?>, Map<Class<?>, String>> getDefinitionMappings() {
         final Map<Class<?>, Map<Class<?>, String>> definitionMappings = super.getDefinitionMappings();
-        final Map<Class<?>, String> diagramPropertiesMap = definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram.class);
-        definitionMappings.put(BPMNDiagram.class,
-                               diagramPropertiesMap);
-
         final Map<Class<?>, String> reusableSubprocessPropertiesMap = definitionMappings.get(org.kie.workbench.common.stunner.bpmn.definition.ReusableSubprocess.class);
         definitionMappings.put(ReusableSubprocess.class,
                                reusableSubprocessPropertiesMap);

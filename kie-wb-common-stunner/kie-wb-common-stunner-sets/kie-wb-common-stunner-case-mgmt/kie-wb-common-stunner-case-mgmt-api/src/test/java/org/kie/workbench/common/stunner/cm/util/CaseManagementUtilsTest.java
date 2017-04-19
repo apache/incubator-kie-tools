@@ -16,7 +16,7 @@
 package org.kie.workbench.common.stunner.cm.util;
 
 import org.junit.Test;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -33,7 +33,7 @@ public class CaseManagementUtilsTest {
     public void checkGetFirstDiagramNodeWithEmptyGraph() {
         final Graph graph = new GraphImpl<>("uuid",
                                             new GraphNodeStoreImpl());
-        final Node<Definition<BPMNDiagram>, ?> fNode = CaseManagementUtils.getFirstDiagramNode(graph);
+        final Node<Definition<CaseManagementDiagram>, ?> fNode = CaseManagementUtils.getFirstDiagramNode(graph);
         assertNull(fNode);
     }
 
@@ -43,12 +43,12 @@ public class CaseManagementUtilsTest {
         final Graph graph = new GraphImpl<>("uuid",
                                             new GraphNodeStoreImpl());
         final Node node = new NodeImpl<Definition>("node-uuid");
-        final org.kie.workbench.common.stunner.cm.definition.BPMNDiagram content = new org.kie.workbench.common.stunner.cm.definition.BPMNDiagram.BPMNDiagramBuilder().build();
+        final CaseManagementDiagram content = new CaseManagementDiagram.CaseManagementDiagramBuilder().build();
         node.setContent(new DefinitionImpl<>(content));
 
         graph.addNode(node);
 
-        final Node<Definition<org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram>, ?> fNode = CaseManagementUtils.getFirstDiagramNode(graph);
+        final Node<Definition<CaseManagementDiagram>, ?> fNode = CaseManagementUtils.getFirstDiagramNode(graph);
         assertNotNull(fNode);
         assertEquals("node-uuid",
                      fNode.getUUID());

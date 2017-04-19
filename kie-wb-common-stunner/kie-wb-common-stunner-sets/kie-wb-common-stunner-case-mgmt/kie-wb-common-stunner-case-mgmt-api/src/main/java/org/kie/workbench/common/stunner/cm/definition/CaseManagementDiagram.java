@@ -26,7 +26,7 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
 import org.kie.workbench.common.forms.adf.definitions.settings.FieldPolicy;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.definition.Categories;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
@@ -45,7 +45,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 
 @Portable
 @Bindable
-@Definition(graphFactory = NodeFactory.class, builder = BPMNDiagram.BPMNDiagramBuilder.class)
+@Definition(graphFactory = NodeFactory.class, builder = CaseManagementDiagram.CaseManagementDiagramBuilder.class)
 @CanContain(roles = {"cm_stage", "cm_nop"})
 @FormDefinition(
         startElement = "diagramSet",
@@ -55,7 +55,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 // Unfortunately extending the foregoing and providing a new @CanContain annotation leads to problems with identifying
 // Factories for Definitions; as CM's BindableDefinitionAdapterProxy is then generated with support for the super-class.
 // This then leads the unmarshalling of model Elements to Definitions to use the wrong Factory and hence fail.
-public class BPMNDiagram implements BPMNDefinition {
+public class CaseManagementDiagram implements BPMNDiagram {
 
     @Category
     public static final transient String category = Categories.LANES;
@@ -94,7 +94,7 @@ public class BPMNDiagram implements BPMNDefinition {
     }};
 
     @NonPortable
-    public static class BPMNDiagramBuilder implements Builder<BPMNDiagram> {
+    public static class CaseManagementDiagramBuilder implements Builder<CaseManagementDiagram> {
 
         public static final transient String COLOR = "#FFFFFF";
         public static final transient String BORDER_COLOR = "#000000";
@@ -103,26 +103,26 @@ public class BPMNDiagram implements BPMNDefinition {
         public static final Double HEIGHT = 950d;
 
         @Override
-        public BPMNDiagram build() {
-            return new BPMNDiagram(new DiagramSet(""),
-                                   new ProcessData(),
-                                   new BackgroundSet(COLOR,
-                                                     BORDER_COLOR,
-                                                     BORDER_SIZE),
-                                   new FontSet(),
-                                   new RectangleDimensionsSet(WIDTH,
-                                                              HEIGHT));
+        public CaseManagementDiagram build() {
+            return new CaseManagementDiagram(new DiagramSet(""),
+                                             new ProcessData(),
+                                             new BackgroundSet(COLOR,
+                                                               BORDER_COLOR,
+                                                               BORDER_SIZE),
+                                             new FontSet(),
+                                             new RectangleDimensionsSet(WIDTH,
+                                                                        HEIGHT));
         }
     }
 
-    public BPMNDiagram() {
+    public CaseManagementDiagram() {
     }
 
-    public BPMNDiagram(final @MapsTo("diagramSet") DiagramSet diagramSet,
-                       final @MapsTo("processData") ProcessData processData,
-                       final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
-                       final @MapsTo("fontSet") FontSet fontSet,
-                       final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
+    public CaseManagementDiagram(final @MapsTo("diagramSet") DiagramSet diagramSet,
+                                 final @MapsTo("processData") ProcessData processData,
+                                 final @MapsTo("backgroundSet") BackgroundSet backgroundSet,
+                                 final @MapsTo("fontSet") FontSet fontSet,
+                                 final @MapsTo("dimensionsSet") RectangleDimensionsSet dimensionsSet) {
         this.diagramSet = diagramSet;
         this.processData = processData;
         this.backgroundSet = backgroundSet;

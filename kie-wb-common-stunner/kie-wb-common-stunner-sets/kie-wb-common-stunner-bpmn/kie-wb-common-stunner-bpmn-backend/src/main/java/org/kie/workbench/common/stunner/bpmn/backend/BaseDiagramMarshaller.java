@@ -39,7 +39,7 @@ import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.Bpmn2Marshall
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.Bpmn2UnMarshaller;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.builder.GraphObjectBuilderFactory;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.service.DiagramMarshaller;
@@ -52,6 +52,7 @@ import org.kie.workbench.common.stunner.core.graph.command.GraphCommandManager;
 import org.kie.workbench.common.stunner.core.graph.command.impl.GraphCommandFactory;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
+import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,17 +155,37 @@ public abstract class BaseDiagramMarshaller<D> implements DiagramMarshaller<Grap
 
     public abstract Class<?> getDiagramDefinitionSetClass();
 
-    public abstract Class<? extends BPMNDefinition> getDiagramDefinitionClass();
-
-    public abstract Node<Definition<D>, ?> getFirstDiagramNode(final Graph graph);
-
-    public abstract String getTitle(final Graph graph);
+    public abstract Class<? extends BPMNDiagram> getDiagramDefinitionClass();
 
     public void updateRootUUID(final Metadata settings,
                                final Graph graph) {
         // Update settings's root UUID.
         final String rootUUID = getRootUUID(graph);
         settings.setCanvasRootUUID(rootUUID);
+    }
+
+    public void updateTitle(final Metadata metadata,
+                            final Graph graph) {
+        // Update metadata's title.
+        final String title = getTitle(graph);
+        metadata.setTitle(title);
+    }
+
+    private String getTitle(final Graph graph) {
+        final Node<Definition<BPMNDiagram>, ?> diagramNode = getFirstDiagramNode(graph);
+        final BPMNDiagram diagramBean = null != diagramNode ? (BPMNDiagram) ((Definition) diagramNode.getContent()).getDefinition() : null;
+        return getTitle(diagramBean);
+    }
+
+    private String getTitle(final BPMNDiagram diagram) {
+        final String title = diagram.getDiagramSet().getName().getValue();
+        return title != null && title.trim().length() > 0 ? title : "-- Untitled diagram --";
+    }
+
+    @SuppressWarnings("unchecked")
+    private Node<Definition<BPMNDiagram>, ?> getFirstDiagramNode(final Graph graph) {
+        return GraphUtils.getFirstNode(graph,
+                                       getDiagramDefinitionClass());
     }
 
     private String getRootUUID(final Graph graph) {

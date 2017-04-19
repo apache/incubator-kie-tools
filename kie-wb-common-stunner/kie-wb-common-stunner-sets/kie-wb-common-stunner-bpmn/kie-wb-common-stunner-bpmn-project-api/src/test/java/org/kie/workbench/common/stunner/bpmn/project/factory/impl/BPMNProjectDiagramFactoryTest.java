@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Package;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -42,6 +43,7 @@ import static org.mockito.Mockito.*;
 public class BPMNProjectDiagramFactoryTest {
 
     private static final String NAME = "name1";
+    private static final String DIAGRAM_NODE_UUID = "dnuuid";
     private static final String PKG = "org.kie.wb.common.stunner.bpmn.project.test";
 
     @Mock
@@ -52,21 +54,22 @@ public class BPMNProjectDiagramFactoryTest {
     Node diagramNode;
     @Mock
     Bounds bounds;
-    BPMNDiagram diagram;
+    BPMNDiagramImpl diagram;
     private View<BPMNDiagram> diagramNodeContent;
     private final List<Node> graphNodes = new ArrayList<>(1);
 
-    private BPMNProjectDiagramFactory tested;
+    private BPMNProjectDiagramFactoryImpl tested;
 
     @Before
     public void setup() throws Exception {
-        diagram = new BPMNDiagram.BPMNDiagramBuilder().build();
+        diagram = new BPMNDiagramImpl.BPMNDiagramBuilder().build();
         diagramNodeContent = new ViewImpl<BPMNDiagram>(diagram,
                                                        bounds);
         graphNodes.add(diagramNode);
+        when(diagramNode.getUUID()).thenReturn(DIAGRAM_NODE_UUID);
         when(diagramNode.getContent()).thenReturn(diagramNodeContent);
         when(graph.nodes()).thenReturn(graphNodes);
-        tested = new BPMNProjectDiagramFactory();
+        tested = new BPMNProjectDiagramFactoryImpl();
     }
 
     @Test
@@ -97,6 +100,8 @@ public class BPMNProjectDiagramFactoryTest {
                      diagram.getDiagramSet().getId().getValue());
         assertEquals(Package.DEFAULT_PACKAGE,
                      diagram.getDiagramSet().getPackageProperty().getValue());
+        verify(metadata,
+               times(1)).setCanvasRootUUID(eq(DIAGRAM_NODE_UUID));
     }
 
     @Test
@@ -115,5 +120,7 @@ public class BPMNProjectDiagramFactoryTest {
                      diagram.getDiagramSet().getId().getValue());
         assertEquals(PKG,
                      diagram.getDiagramSet().getPackageProperty().getValue());
+        verify(metadata,
+               times(1)).setCanvasRootUUID(eq(DIAGRAM_NODE_UUID));
     }
 }

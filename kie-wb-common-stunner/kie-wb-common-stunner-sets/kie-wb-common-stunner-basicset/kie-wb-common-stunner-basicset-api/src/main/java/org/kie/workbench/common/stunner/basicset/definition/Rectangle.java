@@ -44,11 +44,15 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Title;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
+import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
+import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 import org.kie.workbench.common.stunner.shapes.factory.BasicShapesFactory;
 
 @Portable
 @Bindable
 @Definition(graphFactory = NodeFactory.class, builder = Rectangle.RectangleBuilder.class)
+@CanContain(roles = {"all"})
+@CanDock(roles = {"all"})
 @Shape(factory = BasicShapesFactory.class, def = RectangleShapeDefImpl.class)
 @FormDefinition(startElement = "backgroundSet")
 public class Rectangle {

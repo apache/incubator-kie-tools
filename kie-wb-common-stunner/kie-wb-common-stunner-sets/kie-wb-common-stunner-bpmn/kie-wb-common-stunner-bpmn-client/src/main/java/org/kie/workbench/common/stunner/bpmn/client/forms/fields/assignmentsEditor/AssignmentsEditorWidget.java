@@ -47,7 +47,7 @@ import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Assignmen
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.util.StringUtils;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
@@ -270,8 +270,8 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
             Element element = it.next();
             if (element.getContent() instanceof View) {
                 Object oDefinition = ((View) element.getContent()).getDefinition();
-                if (oDefinition instanceof BPMNDiagram) {
-                    BPMNDiagram bpmnDiagram = (BPMNDiagram) oDefinition;
+                if (oDefinition instanceof BPMNDiagramImpl) {
+                    BPMNDiagramImpl bpmnDiagram = (BPMNDiagramImpl) oDefinition;
                     ProcessVariables variables = bpmnDiagram.getProcessData().getProcessVariables();
                     if (variables != null) {
                         return variables.getValue();

@@ -34,7 +34,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
-import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.factory.CaseManagementGraphFactory;
 import org.kie.workbench.common.stunner.cm.qualifiers.CaseManagementEditor;
@@ -51,7 +51,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
         graphFactory = CaseManagementGraphFactory.class,
         qualifier = CaseManagementEditor.class,
         definitions = {
-                BPMNDiagram.class,
+                CaseManagementDiagram.class,
                 Lane.class,
                 NoneTask.class,
                 UserTask.class,

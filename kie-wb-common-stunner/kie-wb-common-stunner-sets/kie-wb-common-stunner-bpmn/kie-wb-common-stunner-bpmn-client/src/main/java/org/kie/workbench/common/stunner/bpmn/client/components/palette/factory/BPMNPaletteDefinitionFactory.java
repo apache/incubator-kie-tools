@@ -22,7 +22,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.bpmn.BPMNDefinitionSet;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseGateway;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseStartEvent;
@@ -106,7 +106,7 @@ public class BPMNPaletteDefinitionFactory extends BindableDefSetPaletteDefinitio
     protected void configureBuilder() {
         super.configureBuilder();
         // Exclude BPMN Diagram from palette model.
-        excludeDefinition(BPMNDiagram.class);
+        excludeDefinition(BPMNDiagramImpl.class);
         // Exclude the none task from palette, it will be available by dragging from the main Activities category.
         excludeDefinition(NoneTask.class);
         // TODO: Exclude connectors category from being present on the palette model - Dropping connectors from palette produces an error right now, must fix it on lienzo side.

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.graph.processing.traverse.tree;
 
+import java.util.function.Predicate;
+
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -30,16 +32,11 @@ public interface TreeWalkTraverseProcessor extends TreeTraverseProcessor<Graph, 
         VISIT_EDGE_AFTER_TARGET_NODE;
     }
 
-    enum StartingNodesPolicy {
-        NO_INCOMING_EDGES,
-        NO_INCOMING_VIEW_EDGES
-    }
-
     TreeWalkTraverseProcessor useEdgeVisitorPolicy(final EdgeVisitorPolicy policy);
 
-    TreeWalkTraverseProcessor useStartingNodesPolicy(final StartingNodesPolicy policy);
+    TreeWalkTraverseProcessor useStartNodePredicate(final Predicate<Node<?, Edge>> predicate);
 
     void traverse(final Graph graph,
-                  final Node node,
+                  final Node root,
                   final TreeTraverseCallback<Graph, Node, Edge> callback);
 }

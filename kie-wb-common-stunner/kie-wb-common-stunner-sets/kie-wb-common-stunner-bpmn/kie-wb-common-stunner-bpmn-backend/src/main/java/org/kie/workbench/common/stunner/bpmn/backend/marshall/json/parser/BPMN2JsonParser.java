@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -81,7 +80,7 @@ public class BPMN2JsonParser extends JsonParserMinimalBase {
                               }
 
                               @Override
-                              public boolean startNodeTraversal(final Iterator<Node<View, Edge>> parents,
+                              public boolean startNodeTraversal(final List<Node<View, Edge>> parents,
                                                                 final Node<View, Edge> node) {
                                   super.startNodeTraversal(parents,
                                                            node);

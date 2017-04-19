@@ -20,7 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.errai.common.client.api.annotations.NonPortable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BusinessRuleTask;
 import org.kie.workbench.common.stunner.bpmn.definition.EndNoneEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.EndTerminateEvent;
@@ -50,7 +50,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.Occurrences;
         graphFactory = BPMNGraphFactory.class,
         qualifier = BPMN.class,
         definitions = {
-                BPMNDiagram.class,
+                BPMNDiagramImpl.class,
                 Lane.class,
                 NoneTask.class,
                 UserTask.class,

@@ -14,40 +14,40 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.cm.project.factory;
+package org.kie.workbench.common.stunner.cm.factory;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.workbench.common.stunner.bpmn.project.factory.impl.BPMNProjectDiagramFactory;
+import org.kie.workbench.common.stunner.bpmn.factory.BPMNDiagramFactory;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.factory.impl.BindableDiagramFactory;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.project.diagram.ProjectDiagram;
-import org.kie.workbench.common.stunner.project.diagram.ProjectMetadata;
 
 @Dependent
-public class CaseManagementProjectDiagramFactory
-        extends BindableDiagramFactory<ProjectMetadata, ProjectDiagram> {
+public class CaseManagementDiagramFactoryImpl
+        extends BindableDiagramFactory<Metadata, Diagram<Graph, Metadata>>
+        implements CaseManagementDiagramFactory<Metadata, Diagram<Graph, Metadata>> {
 
-    private final BPMNProjectDiagramFactory bpmnDiagramFactory;
+    private final BPMNDiagramFactory bpmnDiagramFactory;
 
-    protected CaseManagementProjectDiagramFactory() {
+    protected CaseManagementDiagramFactoryImpl() {
         this(null);
     }
 
     @Inject
-    public CaseManagementProjectDiagramFactory(final BPMNProjectDiagramFactory bpmnDiagramFactory) {
+    public CaseManagementDiagramFactoryImpl(final BPMNDiagramFactory bpmnDiagramFactory) {
         this.bpmnDiagramFactory = bpmnDiagramFactory;
     }
 
     @PostConstruct
     public void init() {
-        this.bpmnDiagramFactory.setDiagramType(CaseManagementDiagram.class);
+        bpmnDiagramFactory.setDiagramType(CaseManagementDiagram.class);
     }
 
     @Override
@@ -57,13 +57,13 @@ public class CaseManagementProjectDiagramFactory
 
     @Override
     public Class<? extends Metadata> getMetadataType() {
-        return ProjectMetadata.class;
+        return Metadata.class;
     }
 
     @Override
-    public ProjectDiagram build(final String name,
-                                final ProjectMetadata metadata,
-                                final Graph<DefinitionSet, ?> graph) {
+    public Diagram<Graph, Metadata> build(final String name,
+                                          final Metadata metadata,
+                                          final Graph<DefinitionSet, ?> graph) {
         return bpmnDiagramFactory.build(name,
                                         metadata,
                                         graph);

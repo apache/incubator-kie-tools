@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.api;
 
-import java.util.Iterator;
-
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -26,10 +24,8 @@ import org.kie.workbench.common.stunner.core.factory.diagram.DiagramFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Graph;
-import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
-import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.registry.RegistryFactory;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
 import org.kie.workbench.common.stunner.core.util.UUID;
@@ -84,10 +80,6 @@ public abstract class AbstractFactoryManager {
                                                                 final M metadata) {
         final Graph<DefinitionSet, ?> graph = (Graph<DefinitionSet, ?>) newElement(UUID.uuid(),
                                                                                    id);
-        final String rootId = getCanvasRoot(graph);
-        if (null != rootId) {
-            metadata.setCanvasRootUUID(rootId);
-        }
         return (D) checkDiagramFactoryNotNull(graph.getContent().getDefinition(),
                                               metadata).build(name,
                                                               metadata,
@@ -142,34 +134,5 @@ public abstract class AbstractFactoryManager {
         final ElementFactory<String, DefinitionSet, Element<DefinitionSet>> factory = factoryRegistry.getElementFactory(factoryType);
         return (Element<C>) factory.build(uuid,
                                           defSetId);
-    }
-
-    // TODO: Refactor this - do not apply by default this behavior?
-    private String getCanvasRoot(final Graph graph) {
-        final Node view = getFirstGraphViewNode(graph);
-        if (null != view) {
-            return view.getUUID();
-        }
-        return null;
-    }
-
-    @SuppressWarnings("unchecked")
-    private Node getFirstGraphViewNode(final Graph graph) {
-        if (null != graph) {
-            Iterable<Node> nodesIterable = graph.nodes();
-            if (null != nodesIterable) {
-                Iterator<Node> nodesIt = nodesIterable.iterator();
-                if (null != nodesIt) {
-                    while (nodesIt.hasNext()) {
-                        Node node = nodesIt.next();
-                        Object content = node.getContent();
-                        if (content instanceof View) {
-                            return node;
-                        }
-                    }
-                }
-            }
-        }
-        return null;
     }
 }

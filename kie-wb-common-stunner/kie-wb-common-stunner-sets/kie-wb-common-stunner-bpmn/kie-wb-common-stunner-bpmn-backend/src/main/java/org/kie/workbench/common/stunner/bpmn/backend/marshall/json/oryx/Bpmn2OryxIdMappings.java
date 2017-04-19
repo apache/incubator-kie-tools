@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 
 /**
@@ -31,5 +33,10 @@ public class Bpmn2OryxIdMappings extends BaseOryxIdMappings {
     @Inject
     public Bpmn2OryxIdMappings(final DefinitionManager definitionManager) {
         super(definitionManager);
+    }
+
+    @Override
+    protected Class<? extends BPMNDiagram> getDiagramType() {
+        return BPMNDiagramImpl.class;
     }
 }

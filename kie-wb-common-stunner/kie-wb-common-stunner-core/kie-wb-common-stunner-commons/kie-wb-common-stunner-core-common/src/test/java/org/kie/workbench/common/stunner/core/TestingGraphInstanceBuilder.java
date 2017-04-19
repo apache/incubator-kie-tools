@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
 /**
@@ -56,6 +57,7 @@ public class TestingGraphInstanceBuilder {
      */
     public static class TestGraph1 {
 
+        public Graph graph;
         public Object startNodeBean;
         public Node startNode;
         public Object intermNodeBean;
@@ -86,6 +88,7 @@ public class TestingGraphInstanceBuilder {
      */
     public static class TestGraph2 {
 
+        public Graph graph;
         public Node parentNode;
         public Node startNode;
         public Node intermNode;
@@ -107,6 +110,7 @@ public class TestingGraphInstanceBuilder {
 
     private static TestGraph1 buildTestGraph1(final TestingGraphMockHandler graphTestHandler) {
         TestGraph1 result = new TestGraph1();
+        result.graph = graphTestHandler.graph;
         result.startNodeBean = graphTestHandler.newDef(DEF1_ID,
                                                        Optional.of(DEF1_LABELS));
         result.startNode =
@@ -147,6 +151,7 @@ public class TestingGraphInstanceBuilder {
 
     private static TestGraph2 buildTestGraph2(final TestingGraphMockHandler graphTestHandler) {
         TestGraph2 result = new TestGraph2();
+        result.graph = graphTestHandler.graph;
         result.parentNode =
                 graphTestHandler.newNode(PARENT_NODE_UUID,
                                          DEF0_ID,

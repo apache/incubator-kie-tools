@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2017 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.core.graph.processing.traverse.path;
+package org.kie.workbench.common.stunner.bpmn.factory;
 
-/**
- * <p>Basic contract for any processor that traverse over adjacent nodes/vertices
- * following a given path.</p>
- */
-public interface PathTraverseProcessor {
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.core.factory.Factory;
 
+public interface BPMNFactory extends Factory<String> {
+
+    public void setDiagramType(final Class<? extends BPMNDiagram> diagramType);
 }

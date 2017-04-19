@@ -33,6 +33,7 @@ import org.codehaus.jackson.JsonStreamContext;
 import org.codehaus.jackson.ObjectCodec;
 import org.kie.workbench.common.stunner.bpmn.backend.marshall.json.oryx.OryxManager;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -85,7 +86,7 @@ public class BPMNGraphGenerator extends JsonGenerator {
                               final GraphCommandFactory commandFactory,
                               final GraphIndexBuilder<?> indexBuilder,
                               final Class<?> diagramDefinitionSetClass,
-                              final Class<? extends BPMNDefinition> diagramDefinitionClass) {
+                              final Class<? extends BPMNDiagram> diagramDefinitionClass) {
         this.bpmnGraphBuilderFactory = bpmnGraphBuilderFactory;
         this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;

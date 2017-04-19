@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.stunner.cm.util;
 
-import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
@@ -31,8 +31,8 @@ public class CaseManagementUtils {
      * @param graph The graph structure.
      */
     @SuppressWarnings("unchecked")
-    public static Node<Definition<BPMNDiagram>, ?> getFirstDiagramNode(final Graph<?, Node> graph) {
+    public static Node<Definition<CaseManagementDiagram>, ?> getFirstDiagramNode(final Graph<?, Node> graph) {
         return GraphUtils.getFirstNode(graph,
-                                       BPMNDiagram.class);
+                                       CaseManagementDiagram.class);
     }
 }

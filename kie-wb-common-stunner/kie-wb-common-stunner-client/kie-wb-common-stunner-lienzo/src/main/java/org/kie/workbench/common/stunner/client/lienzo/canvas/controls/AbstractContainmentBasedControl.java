@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
+import org.kie.workbench.common.stunner.core.command.CompositeCommand;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommandImpl;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -88,12 +89,13 @@ public abstract class AbstractContainmentBasedControl
             return false;
         }
         boolean isAllow = true;
-        final Edge dockEdge = getTheEdge(child);
+        final Edge edge = getTheEdge(child);
         final boolean isSameParent = isSameParent(parent,
-                                                  dockEdge);
+                                                  edge);
         if (!isSameParent) {
             final CommandResult<CanvasViolation> violations = runAllow(parent,
-                                                                       child);
+                                                                       child,
+                                                                       edge);
             isAllow = isAccept(child,
                                violations);
         }
@@ -130,9 +132,12 @@ public abstract class AbstractContainmentBasedControl
 
     @SuppressWarnings("unchecked")
     protected CommandResult<CanvasViolation> runAllow(final Node parent,
-                                                      final Node child) {
-        final Command<AbstractCanvasHandler, CanvasViolation> command = getAddEdgeCommand(parent,
-                                                                                          child);
+                                                      final Node child,
+                                                      final Edge edge) {
+        final CompositeCommand<AbstractCanvasHandler, CanvasViolation> command =
+                buildCommands(parent,
+                              child,
+                              edge);
         return getCommandManager().allow(canvasHandler,
                                          command);
     }
@@ -141,24 +146,10 @@ public abstract class AbstractContainmentBasedControl
     protected CommandResult<CanvasViolation> runAccept(final Node parent,
                                                        final Node child,
                                                        final Edge edge) {
-        CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation> builder = null;
-        // Remove current relationship.
-        if (null != edge && null != edge.getSourceNode()) {
-            builder = new CompositeCommandImpl
-                    .CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
-                    .reverse()
-                    .addCommand(getDeleteEdgeCommand(edge.getSourceNode(),
-                                                     child));
-        }
-        // Add a new relationship.
-        final Command<AbstractCanvasHandler, CanvasViolation> c = getAddEdgeCommand(parent,
-                                                                                    child);
-        final Command<AbstractCanvasHandler, CanvasViolation> command =
-                null == builder ?
-                        c :
-                        builder
-                                .addCommand(c)
-                                .build();
+        final CompositeCommand<AbstractCanvasHandler, CanvasViolation> command =
+                buildCommands(parent,
+                              child,
+                              edge);
         return getCommandManager().execute(canvasHandler,
                                            command);
     }
@@ -167,12 +158,46 @@ public abstract class AbstractContainmentBasedControl
         return canvasHandler;
     }
 
+    protected CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {
+        return commandManagerProvider.getCommandManager();
+    }
+
+    private CompositeCommand<AbstractCanvasHandler, CanvasViolation> buildCommands(final Node parent,
+                                                                                   final Node child,
+                                                                                   final Edge edge) {
+        // Remove current relationship, if any.
+        final boolean hasSourceNode = null != edge && null != edge.getSourceNode();
+        final Command<AbstractCanvasHandler, CanvasViolation> deleteEdgeCommand =
+                hasSourceNode ?
+                        getDeleteEdgeCommand(edge.getSourceNode(),
+                                             child) :
+                        null;
+        // Add a new relationship, if any.
+        final boolean hasNewTarget = null != parent;
+        final Command<AbstractCanvasHandler, CanvasViolation> addEdgeCommand =
+                hasNewTarget ?
+                        getAddEdgeCommand(parent,
+                                          child) :
+                        null;
+        final CompositeCommandImpl.CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation> commandBuilder =
+                new CompositeCommandImpl
+                        .CompositeCommandBuilder<AbstractCanvasHandler, CanvasViolation>()
+                        .reverse();
+        if (null != deleteEdgeCommand) {
+            commandBuilder.addCommand(deleteEdgeCommand);
+        }
+        if (null != addEdgeCommand) {
+            commandBuilder.addCommand(addEdgeCommand);
+        }
+        return commandBuilder.build();
+    }
+
     private boolean isEnabled() {
         return canvasHandler != null;
     }
 
-    protected boolean isSameParent(final Node parent,
-                                   final Edge<Child, Node> edge) {
+    private boolean isSameParent(final Node parent,
+                                 final Edge<Child, Node> edge) {
         if (null != edge) {
             final Node sourceNode = edge.getSourceNode();
             if (null != sourceNode) {
@@ -184,7 +209,7 @@ public abstract class AbstractContainmentBasedControl
     }
 
     @SuppressWarnings("unchecked")
-    protected Edge<Object, Node> getTheEdge(final Node child) {
+    private Edge<Object, Node> getTheEdge(final Node child) {
         if (child != null) {
             final List<Edge> outEdges = child.getInEdges();
             if (null != outEdges && !outEdges.isEmpty()) {
@@ -198,17 +223,13 @@ public abstract class AbstractContainmentBasedControl
         return null;
     }
 
-    protected boolean isAccept(final Node candidate,
-                               final CommandResult<CanvasViolation> result) {
+    private boolean isAccept(final Node candidate,
+                             final CommandResult<CanvasViolation> result) {
         return !CommandUtils.isError(result);
     }
 
-    protected CanvasCommandManager<AbstractCanvasHandler> getCommandManager() {
-        return commandManagerProvider.getCommandManager();
-    }
-
-    protected void log(final Level level,
-                       final String message) {
+    private void log(final Level level,
+                     final String message) {
         if (LogConfiguration.loggingIsEnabled()) {
             LOGGER.log(level,
                        message);

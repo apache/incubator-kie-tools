@@ -56,8 +56,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartTimerEvent.StartTim
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask.UserTaskBuilder;
 import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
-import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
-import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram.BPMNDiagramBuilder;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess.ReusableSubprocessBuilder;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -86,7 +85,7 @@ import static org.mockito.Mockito.*;
 public class CaseManagementDefinitionSetPaletteBuilderImplTest {
 
     final Set<String> definitions = new HashSet<String>() {{
-        add(BPMNDiagram.class.getName());
+        add(CaseManagementDiagram.class.getName());
         add(Lane.class.getName());
         add(NoneTask.class.getName());
         add(UserTask.class.getName());
@@ -153,7 +152,7 @@ public class CaseManagementDefinitionSetPaletteBuilderImplTest {
         when(adapterManager.forDefinition()).thenReturn(definitionAdapter);
         when(definitionAdapter.getId(anyObject())).thenAnswer((i) -> i.getArguments()[0].getClass().getName());
 
-        when(definitionAdapter.getCategory(argThat(new ClassOrSubclassMatcher(BPMNDiagram.class)))).thenReturn(BPMNDiagram.category);
+        when(definitionAdapter.getCategory(argThat(new ClassOrSubclassMatcher(CaseManagementDiagram.class)))).thenReturn(CaseManagementDiagram.category);
         when(definitionAdapter.getCategory(argThat(new ClassOrSubclassMatcher(Lane.class)))).thenReturn(Lane.category);
         when(definitionAdapter.getCategory(argThat(new ClassOrSubclassMatcher(StartNoneEvent.class)))).thenReturn(StartNoneEvent.category);
         when(definitionAdapter.getCategory(argThat(new ClassOrSubclassMatcher(StartSignalEvent.class)))).thenReturn(StartSignalEvent.category);
@@ -172,7 +171,7 @@ public class CaseManagementDefinitionSetPaletteBuilderImplTest {
         when(definitionAdapter.getCategory(argThat(new ClassOrSubclassMatcher(BusinessRuleTask.class)))).thenReturn(BusinessRuleTask.category);
         when(definitionAdapter.getCategory(argThat(new ClassOrSubclassMatcher(ReusableSubprocess.class)))).thenReturn(ReusableSubprocess.category);
 
-        when(clientFactoryManager.newDefinition(eq(BPMNDiagram.class.getName()))).thenReturn(new BPMNDiagramBuilder().build());
+        when(clientFactoryManager.newDefinition(eq(CaseManagementDiagram.class.getName()))).thenReturn(new CaseManagementDiagram.CaseManagementDiagramBuilder().build());
         when(clientFactoryManager.newDefinition(eq(Lane.class.getName()))).thenReturn(new LaneBuilder().build());
         when(clientFactoryManager.newDefinition(eq(StartNoneEvent.class.getName()))).thenReturn(new StartNoneEventBuilder().build());
         when(clientFactoryManager.newDefinition(eq(StartSignalEvent.class.getName()))).thenReturn(new StartSignalEventBuilder().build());

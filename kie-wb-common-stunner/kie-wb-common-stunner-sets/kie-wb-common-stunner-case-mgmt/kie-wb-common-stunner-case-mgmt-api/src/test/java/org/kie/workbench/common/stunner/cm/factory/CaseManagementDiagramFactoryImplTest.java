@@ -19,8 +19,11 @@ package org.kie.workbench.common.stunner.cm.factory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.workbench.common.stunner.bpmn.factory.BPMNGraphFactory;
+import org.kie.workbench.common.stunner.bpmn.factory.BPMNDiagramFactory;
+import org.kie.workbench.common.stunner.cm.CaseManagementDefinitionSet;
 import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
+import org.kie.workbench.common.stunner.core.diagram.Metadata;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -29,41 +32,55 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CaseManagementGraphFactoryImplTest {
+public class CaseManagementDiagramFactoryImplTest {
+
+    private static final String NAME = "diagram1";
 
     @Mock
-    private BPMNGraphFactory bpmnGraphFactory;
+    private Graph graph;
 
-    private CaseManagementGraphFactoryImpl factory;
+    @Mock
+    private Metadata metadata;
+
+    @Mock
+    private BPMNDiagramFactory bpmnDiagramFactory;
+
+    private CaseManagementDiagramFactoryImpl factory;
 
     @Before
     public void setup() {
-        this.factory = new CaseManagementGraphFactoryImpl(bpmnGraphFactory);
+        factory = new CaseManagementDiagramFactoryImpl(bpmnDiagramFactory);
     }
 
     @Test
     public void assertSetDiagramType() {
         factory.init();
-        verify(bpmnGraphFactory,
+        verify(bpmnDiagramFactory,
                times(1)).setDiagramType(eq(CaseManagementDiagram.class));
     }
 
     @Test
-    public void assertFactoryType() {
-        // It is important that CaseManagementGraphFactoryImpl declares it relates to the CaseManagementGraphFactory
-        // otherwise all sorts of things break. This test attempts to drawer the importance of this to future changes
-        // should someone decide to change the apparent innocuous method in CaseManagementGraphFactoryImpl.
-        assertEquals(CaseManagementGraphFactory.class,
-                     factory.getFactoryType());
+    public void assertDefSetType() {
+        assertEquals(CaseManagementDefinitionSet.class,
+                     factory.getDefinitionSetType());
     }
 
     @Test
+    public void assertMetadataType() {
+        assertEquals(Metadata.class,
+                     factory.getMetadataType());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void testBuild() {
         factory.init();
-        factory.build("uuid1",
-                      "defSet1");
-        verify(bpmnGraphFactory,
-               times(1)).build(eq("uuid1"),
-                               eq("defSet1"));
+        factory.build(NAME,
+                      metadata,
+                      graph);
+        verify(bpmnDiagramFactory,
+               times(1)).build(eq(NAME),
+                               eq(metadata),
+                               eq(graph));
     }
 }

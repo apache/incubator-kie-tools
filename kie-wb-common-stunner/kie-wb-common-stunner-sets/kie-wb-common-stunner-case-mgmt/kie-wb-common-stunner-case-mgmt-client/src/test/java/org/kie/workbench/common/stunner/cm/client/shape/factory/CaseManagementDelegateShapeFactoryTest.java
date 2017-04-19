@@ -53,7 +53,7 @@ import org.kie.workbench.common.stunner.cm.client.shape.view.DiagramView;
 import org.kie.workbench.common.stunner.cm.client.shape.view.NullView;
 import org.kie.workbench.common.stunner.cm.client.shape.view.StageView;
 import org.kie.workbench.common.stunner.cm.client.wires.AbstractCaseManagementShape;
-import org.kie.workbench.common.stunner.cm.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.cm.definition.CaseManagementDiagram;
 import org.kie.workbench.common.stunner.cm.definition.ReusableSubprocess;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -172,15 +172,15 @@ public class CaseManagementDelegateShapeFactoryTest {
     }
 
     @Test
-    public void checkBPMNDiagram() {
-        assertShapeConstruction(new BPMNDiagram.BPMNDiagramBuilder().build(),
+    public void checkCMDiagram() {
+        assertShapeConstruction(new CaseManagementDiagram.CaseManagementDiagramBuilder().build(),
                                 (shape) -> {
                                     assertNotNull(shape.getShapeView());
                                     assertTrue(shape instanceof DiagramShape);
                                     assertTrue(shape.getShapeView() instanceof DiagramView);
                                     assertTrue(((AbstractElementShape) shape).getShapeDefinition() instanceof CaseManagementDiagramShapeDef);
                                 });
-        assertShapeGlyph(new BPMNDiagram.BPMNDiagramBuilder().build());
+        assertShapeGlyph(new CaseManagementDiagram.CaseManagementDiagramBuilder().build());
     }
 
     @Test

@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.graph.processing.traverse.content;
 
-import java.util.Iterator;
+import java.util.List;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -25,6 +25,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
 public interface ChildrenTraverseCallback<N extends Node<View, Edge>, E extends Edge<Child, Node>> extends ContentTraverseCallback<Child, N, E> {
 
-    boolean startNodeTraversal(final Iterator<N> parents,
+    boolean startNodeTraversal(final List<N> parents,
                                final N node);
 }

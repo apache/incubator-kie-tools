@@ -169,7 +169,13 @@ public class CanvasFactoryImpl implements CanvasFactory<AbstractCanvas, Abstract
     public <A extends CanvasControl> A newControl(final Class<A> type) {
         if (controls.containsKey(type)) {
             final ManagedInstance<A> mi = controls.get(type);
-            return mi.get();
+            if (!mi.isUnsatisfied()) {
+                return mi.get();
+            } else {
+                LOGGER.log(Level.SEVERE,
+                           "Canvas Control for type [" + type.getName() + "] is cannot be resolved by " +
+                                   "this canvas factory [" + this.getClass().getName() + "]");
+            }
         } else {
             LOGGER.log(Level.WARNING,
                        "Canvas Control for type [" + type.getName() + "] is not supported by " +
