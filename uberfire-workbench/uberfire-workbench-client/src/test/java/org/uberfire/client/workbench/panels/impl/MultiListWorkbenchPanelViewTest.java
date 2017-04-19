@@ -82,6 +82,7 @@ public class MultiListWorkbenchPanelViewTest extends AbstractDockingWorkbenchPan
 
         verify(listBar).addSelectionHandler(any(SelectionHandler.class));
         verify(listBar).addOnFocusHandler(any(Command.class));
+        verify(listBar).disableDnd();
 
         verify(maximizeButton).setVisible(true);
         verify(maximizeButton).setMaximizeCommand(any(Command.class));

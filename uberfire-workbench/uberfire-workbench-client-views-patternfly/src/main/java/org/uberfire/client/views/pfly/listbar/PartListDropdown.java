@@ -130,8 +130,10 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
                 entry.getValue().removeStyleName("uf-part-list-dropdown-selected");
             }
         }
-        makeDraggable(title,
-                      partView.get(part));
+        if (dndEnabled) {
+            makeDraggable(title,
+                          partView.get(part));
+        }
     }
 
     public void changeTitle(final PartDefinition part,
@@ -226,8 +228,8 @@ public class PartListDropdown extends ListDropdown implements HasSelectionHandle
         }
     }
 
-    private void makeDraggable(final Widget title,
-                               final WorkbenchPartPresenter.View view) {
+    void makeDraggable(final Widget title,
+                       final WorkbenchPartPresenter.View view) {
         if (this.dndManager == null || this.dndEnabled == false) {
             return;
         }

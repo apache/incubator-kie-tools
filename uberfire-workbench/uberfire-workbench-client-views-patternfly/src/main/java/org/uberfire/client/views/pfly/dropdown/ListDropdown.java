@@ -18,6 +18,7 @@ package org.uberfire.client.views.pfly.dropdown;
 
 import java.util.Iterator;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
@@ -33,8 +34,8 @@ import org.gwtbootstrap3.client.ui.constants.Toggle;
  */
 public class ListDropdown extends DropDown {
 
-    protected Button button = new Button();
-    protected DropDownMenu dropDownMenu = new DropDownMenu();
+    protected Button button = GWT.create(Button.class);
+    protected DropDownMenu dropDownMenu = GWT.create(DropDownMenu.class);
     protected boolean hideOnSingleElement = true;
 
     public ListDropdown() {
