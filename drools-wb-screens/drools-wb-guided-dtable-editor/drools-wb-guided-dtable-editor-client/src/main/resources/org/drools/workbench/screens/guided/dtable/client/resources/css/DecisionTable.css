@@ -219,13 +219,6 @@
 .actionColumn {
 }
 
-.patternSectionHeader {
-    padding: 2px 2px 2px 2px;
-    margin: 2px 2px 2px 2px;
-    background-color: #d0d0d0;
-    width: 400px;
-}
-
 .patternConditionSectionHeader {
     margin-left: 16px;
 }
@@ -233,4 +226,26 @@
 .columnLabelHidden {
     font-style: italic;
     color: grey;
+}
+
+/* - Guided Decision Table Modeller - */
+
+div.openedAccordion {
+    height: 100%;
+}
+
+.ruleInheritance {
+    padding: 15px 20px;
+    color: #777;
+}
+
+.ruleInheritanceLabel,
+.ruleInheritance > table {
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 10px;
+}
+
+.ruleInheritanceDropdown button {
+    margin: -5px 10px;
 }

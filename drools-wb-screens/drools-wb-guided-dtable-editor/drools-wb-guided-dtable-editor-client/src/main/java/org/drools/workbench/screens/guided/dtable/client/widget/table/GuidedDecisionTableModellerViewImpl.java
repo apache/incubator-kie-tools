@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.types.Point2D;
@@ -12,28 +13,23 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
@@ -46,16 +42,14 @@ import org.drools.workbench.models.guided.dtable.shared.model.MetadataCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.screens.guided.dtable.client.resources.GuidedDecisionTableResources;
 import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
-import org.drools.workbench.screens.guided.dtable.client.resources.images.GuidedDecisionTableImageResources508;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.accordion.GuidedDecisionTableAccordion;
+import org.drools.workbench.screens.guided.dtable.client.widget.table.accordion.GuidedDecisionTableAccordionItem;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control.AttributeColumnConfigRow;
 import org.drools.workbench.screens.guided.dtable.client.widget.table.utilities.ColumnUtilities;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.CheckBox;
-import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.widgets.client.ruleselector.RuleSelector;
-import org.uberfire.ext.widgets.common.client.common.DecoratedDisclosurePanel;
-import org.uberfire.ext.widgets.common.client.common.ImageButton;
-import org.uberfire.ext.widgets.common.client.common.PrettyFormLayout;
 import org.uberfire.ext.widgets.common.client.common.SmallLabel;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
@@ -71,198 +65,228 @@ import org.uberfire.mvp.ParameterizedCommand;
 public class GuidedDecisionTableModellerViewImpl extends Composite implements GuidedDecisionTableModellerView {
 
     private static final double VP_SCALE = 1.0;
-    private static GuidedDecisionTableModellerViewImplUiBinder uiBinder = GWT.create( GuidedDecisionTableModellerViewImplUiBinder.class );
+
+    private static GuidedDecisionTableModellerViewImplUiBinder uiBinder = GWT.create(GuidedDecisionTableModellerViewImplUiBinder.class);
+
     private final RuleSelector ruleSelector = new RuleSelector();
+
     private final GuidedDecisionTableModellerBoundsHelper boundsHelper = new GuidedDecisionTableModellerBoundsHelper();
+
     @UiField
-    VerticalPanel configuration;
+    FlowPanel accordionContainer;
+
+    @UiField
+    Button addColumn;
+
+    @UiField
+    Button editColumns;
+
     @UiField(provided = true)
     GridLienzoPanel gridPanel = new GridLienzoPanel() {
 
         @Override
         public void onResize() {
-            Scheduler.get().scheduleDeferred( new Scheduler.ScheduledCommand() {
+            Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
                 @Override
                 public void execute() {
                     final int width = getParent().getOffsetWidth();
                     final int height = getParent().getOffsetHeight();
-                    if ( ( width != 0 ) && ( height != 0 ) ) {
-                        domElementContainer.setPixelSize( width,
-                                                          height );
-                        lienzoPanel.setPixelSize( width,
-                                                  height );
+                    if ((width != 0) && (height != 0)) {
+                        domElementContainer.setPixelSize(width,
+                                                         height);
+                        lienzoPanel.setPixelSize(width,
+                                                 height);
                     }
 
                     final TransformMediator restriction = mousePanMediator.getTransformMediator();
-                    final Transform transform = restriction.adjust( gridLayer.getViewport().getTransform(),
-                                                                    gridLayer.getVisibleBounds() );
-                    gridLayer.getViewport().setTransform( transform );
+                    final Transform transform = restriction.adjust(gridLayer.getViewport().getTransform(),
+                                                                   gridLayer.getVisibleBounds());
+                    gridLayer.getViewport().setTransform(transform);
                     gridLayer.draw();
                 }
-            } );
+            });
         }
     };
+
+    @Inject
+    private GuidedDecisionTableAccordion guidedDecisionTableAccordion;
+
+    private VerticalPanel attributeConfigWidget = makeDefaultPanel();
+
+    private VerticalPanel metaDataConfigWidget = makeDefaultPanel();
+
+    private VerticalPanel conditionsConfigWidget = makeDefaultPanel();
+
+    private VerticalPanel actionsConfigWidget = makeDefaultPanel();
+
+    private GuidedDecisionTableAccordion accordion;
+
     private TransformMediator defaultTransformMediator;
+
     private GuidedDecisionTableModellerView.Presenter presenter;
-    private final DefaultGridLayer gridLayer = new DefaultGridLayer() {
-        @Override
-        public void enterPinnedMode( final GridWidget gridWidget,
-                                     final Command onStartCommand ) {
-            super.enterPinnedMode( gridWidget,
-                                   new Command() {
-                                       @Override
-                                       public void execute() {
-                                           onStartCommand.execute();
-                                           presenter.onViewPinned( true );
-                                       }
-                                   } );
-        }
 
-        @Override
-        public void exitPinnedMode( final Command onCompleteCommand ) {
-            super.exitPinnedMode( new Command() {
-                @Override
-                public void execute() {
-                    onCompleteCommand.execute();
-                    presenter.onViewPinned( false );
-                }
-            } );
-        }
+    private final DefaultGridLayer gridLayer = defaultGridLayer();
 
-        @Override
-        public TransformMediator getDefaultTransformMediator() {
-            return defaultTransformMediator;
-        }
-    };
-    private final RestrictedMousePanMediator mousePanMediator = new RestrictedMousePanMediator( gridLayer ) {
-        @Override
-        protected void onMouseMove( final NodeMouseMoveEvent event ) {
-            super.onMouseMove( event );
-            presenter.updateRadar();
-        }
-    };
-    private Button addButton = new Button() {{
-        setIcon( IconType.PLUS_SQUARE );
-        setText( GuidedDecisionTableConstants.INSTANCE.NewColumn() );
-        setTitle( GuidedDecisionTableConstants.INSTANCE.AddNewColumn() );
-        setEnabled( false );
-    }};
-    private VerticalPanel config = new VerticalPanel();
-    private DecoratedDisclosurePanel disclosurePanelConditions;
-    private DecoratedDisclosurePanel disclosurePanelActions;
-    protected DecoratedDisclosurePanel disclosurePanelAttributes;
-    private DecoratedDisclosurePanel disclosurePanelMetaData;
-    private PrettyFormLayout configureColumnsNote;
-    protected VerticalPanel attributeConfigWidget;
-    private VerticalPanel metaDataConfigWidget;
-    private VerticalPanel conditionsConfigWidget;
-    private VerticalPanel actionsConfigWidget;
+    private final RestrictedMousePanMediator mousePanMediator = restrictedMousePanMediator();
 
     public GuidedDecisionTableModellerViewImpl() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
+    }
+
+    DefaultGridLayer defaultGridLayer() {
+        return new DefaultGridLayer() {
+            @Override
+            public void enterPinnedMode(final GridWidget gridWidget,
+                                        final Command onStartCommand) {
+                super.enterPinnedMode(gridWidget,
+                                      new Command() {
+                                          @Override
+                                          public void execute() {
+                                              onStartCommand.execute();
+                                              presenter.onViewPinned(true);
+                                          }
+                                      });
+            }
+
+            @Override
+            public void exitPinnedMode(final Command onCompleteCommand) {
+                super.exitPinnedMode(new Command() {
+                    @Override
+                    public void execute() {
+                        onCompleteCommand.execute();
+                        presenter.onViewPinned(false);
+                    }
+                });
+            }
+
+            @Override
+            public TransformMediator getDefaultTransformMediator() {
+                return defaultTransformMediator;
+            }
+        };
+    }
+
+    RestrictedMousePanMediator restrictedMousePanMediator() {
+        return new RestrictedMousePanMediator(gridLayer) {
+            @Override
+            protected void onMouseMove(final NodeMouseMoveEvent event) {
+                super.onMouseMove(event);
+                presenter.updateRadar();
+            }
+        };
+    }
+
+    protected void initWidget(final Widget widget) {
+        super.initWidget(widget);
     }
 
     @Override
-    public void init( final GuidedDecisionTableModellerView.Presenter presenter ) {
+    public void init(final GuidedDecisionTableModellerView.Presenter presenter) {
         this.presenter = presenter;
+
+        setupAccordion(presenter);
     }
 
     @PostConstruct
     public void setup() {
-        configureColumnsNote = new PrettyFormLayout();
-        configureColumnsNote.startSection();
-        configureColumnsNote.addRow( new HTML( AbstractImagePrototype.create( GuidedDecisionTableResources.INSTANCE.images().information() ).getHTML()
-                                                       + "&nbsp;"
-                                                       + GuidedDecisionTableConstants.INSTANCE.ConfigureColumnsNote() ) );
-        configureColumnsNote.endSection();
-
-        final DecoratedDisclosurePanel disclosurePanelContainer = new DecoratedDisclosurePanel( GuidedDecisionTableConstants.INSTANCE.DecisionTable() );
-        disclosurePanelContainer.setTitle( GuidedDecisionTableConstants.INSTANCE.DecisionTable() );
-        disclosurePanelContainer.setWidth( "100%" );
-
-        config.setWidth( "100%" );
-        disclosurePanelContainer.add( config );
-
-        config.add( newColumn() );
-
-        disclosurePanelMetaData = setupDisclosurePanel( GuidedDecisionTableConstants.INSTANCE.MetadataColumns(),
-                                                        wrapDisclosurePanelContent( getMetaDataWidget() ) );
-        disclosurePanelAttributes = setupDisclosurePanel( GuidedDecisionTableConstants.INSTANCE.AttributeColumns(),
-                                                          wrapDisclosurePanelContent( getAttributesWidget() ) );
-        disclosurePanelConditions = setupDisclosurePanel( GuidedDecisionTableConstants.INSTANCE.ConditionColumns(),
-                                                          wrapDisclosurePanelContent( getConditionsWidget() ) );
-        disclosurePanelActions = setupDisclosurePanel( GuidedDecisionTableConstants.INSTANCE.ActionColumns(),
-                                                       wrapDisclosurePanelContent( getActionsWidget() ) );
-
-        config.add( disclosurePanelMetaData );
-        config.add( disclosurePanelAttributes );
-        config.add( disclosurePanelConditions );
-        config.add( disclosurePanelActions );
-
-        configuration.add( disclosurePanelContainer );
-        configuration.add( configureColumnsNote );
-        configuration.add( getRuleInheritanceWidget() );
-
-        //Lienzo stuff - Set default scale
-        final Transform transform = new Transform().scale( VP_SCALE );
-        gridPanel.getViewport().setTransform( transform );
-
-        //Lienzo stuff - Add mouse pan support
-        defaultTransformMediator = new BoundaryTransformMediator( GuidedDecisionTableModellerViewImpl.this );
-        mousePanMediator.setTransformMediator( defaultTransformMediator );
-        gridPanel.getViewport().getMediators().push( mousePanMediator );
-        mousePanMediator.setBatchDraw( true );
-
-        //Wire-up widgets
-        gridPanel.add( gridLayer );
-
-        //Set ID on GridLienzoPanel for Selenium tests.
-        gridPanel.getElement().setId( "dtable_container_" + Document.get().createUniqueId() );
+        setupSubMenu();
+        setupGridPanel();
     }
 
-    private DecoratedDisclosurePanel setupDisclosurePanel( final String title,
-                                                           final Widget content ) {
-        final DecoratedDisclosurePanel panel = new DecoratedDisclosurePanel( title );
-        panel.setWidth( "75%" );
-        panel.setOpen( false );
-        panel.add( content );
-        return panel;
+    void setupGridPanel() {
+        //Lienzo stuff - Set default scale
+        final Transform transform = new Transform().scale(VP_SCALE);
+        gridPanel.getViewport().setTransform(transform);
+
+        //Lienzo stuff - Add mouse pan support
+        defaultTransformMediator = new BoundaryTransformMediator(GuidedDecisionTableModellerViewImpl.this);
+        mousePanMediator.setTransformMediator(defaultTransformMediator);
+        gridPanel.getViewport().getMediators().push(mousePanMediator);
+        mousePanMediator.setBatchDraw(true);
+
+        //Wire-up widgets
+        gridPanel.add(gridLayer);
+
+        //Set ID on GridLienzoPanel for Selenium tests.
+        gridPanel.getElement().setId("dtable_container_" + Document.get().createUniqueId());
+    }
+
+    void setupSubMenu() {
+        getAddColumn().addClickHandler((e) -> addColumn());
+        getEditColumns().addClickHandler((e) -> editColumns());
+    }
+
+    void addColumn() {
+        getPresenter().openNewGuidedDecisionTableColumnWizard();
+    }
+
+    void editColumns() {
+        toggleClassName(getAccordionContainer(),
+                        GuidedDecisionTableResources.INSTANCE.css().openedAccordion());
+
+        toggleClassName(getEditColumns(),
+                        "active");
+    }
+
+    void toggleClassName(final Widget widget,
+                         final String className) {
+        widget.getElement().toggleClassName(className);
     }
 
     @Override
     public void onResize() {
         gridPanel.onResize();
-        presenter.updateRadar();
+        getPresenter().updateRadar();
     }
 
     @Override
-    public HandlerRegistration addKeyDownHandler( final KeyDownHandler handler ) {
-        return gridPanel.addKeyDownHandler( handler );
+    public HandlerRegistration addKeyDownHandler(final KeyDownHandler handler) {
+        return gridPanel.addKeyDownHandler(handler);
     }
 
     @Override
-    public HandlerRegistration addContextMenuHandler( final ContextMenuHandler handler ) {
-        return gridPanel.addDomHandler( handler,
-                                        ContextMenuEvent.getType() );
+    public HandlerRegistration addContextMenuHandler(final ContextMenuHandler handler) {
+        return gridPanel.addDomHandler(handler,
+                                       ContextMenuEvent.getType());
     }
 
     @Override
-    public HandlerRegistration addMouseDownHandler( final MouseDownHandler handler ) {
-        return gridPanel.addMouseDownHandler( handler );
+    public HandlerRegistration addMouseDownHandler(final MouseDownHandler handler) {
+        return gridPanel.addMouseDownHandler(handler);
     }
 
-    private Widget getRuleInheritanceWidget() {
-        ruleSelector.setEnabled( false );
-        final HorizontalPanel result = new HorizontalPanel();
-        result.add( new Label( GuidedDecisionTableConstants.INSTANCE.AllTheRulesInherit() ) );
-        ruleSelector.addValueChangeHandler( new ValueChangeHandler<String>() {
-            @Override
-            public void onValueChange( ValueChangeEvent<String> event ) {
-                presenter.getActiveDecisionTable().setParentRuleName( event.getValue() );
-            }
-        } );
-        result.add( ruleSelector );
+    Widget ruleInheritanceWidget() {
+        final FlowPanel result = makeFlowPanel();
+
+        result.setStyleName(GuidedDecisionTableResources.INSTANCE.css().ruleInheritance());
+        result.add(ruleInheritanceLabel());
+        result.add(ruleSelector());
+
         return result;
+    }
+
+    FlowPanel makeFlowPanel() {
+        return new FlowPanel();
+    }
+
+    Widget ruleSelector() {
+        getRuleSelector().setEnabled(false);
+
+        getRuleSelector().addValueChangeHandler(e -> {
+            presenter.getActiveDecisionTable().setParentRuleName(e.getValue());
+        });
+
+        getRuleSelector().setStyleName(GuidedDecisionTableResources.INSTANCE.css().ruleInheritanceDropdown());
+
+        return getRuleSelector();
+    }
+
+    Label ruleInheritanceLabel() {
+        final Label label = new Label(GuidedDecisionTableConstants.INSTANCE.AllTheRulesInherit());
+
+        label.setStyleName(GuidedDecisionTableResources.INSTANCE.css().ruleInheritanceLabel());
+
+        return label;
     }
 
     @Override
@@ -271,45 +295,46 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     }
 
     @Override
-    public void addDecisionTable( final GuidedDecisionTableView gridWidget ) {
+    public void addDecisionTable(final GuidedDecisionTableView gridWidget) {
         //Ensure the first Decision Table is visible
-        if ( gridLayer.getGridWidgets().isEmpty() ) {
-            final Point2D translation = getTranslation( gridWidget );
+        if (gridLayer.getGridWidgets().isEmpty()) {
+            final Point2D translation = getTranslation(gridWidget);
             final Transform t = gridLayer.getViewport().getTransform();
-            t.translate( translation.getX(),
-                         translation.getY() );
+            t.translate(translation.getX(),
+                        translation.getY());
         }
-        gridLayer.add( gridWidget );
+        gridLayer.add(gridWidget);
         gridLayer.batch();
     }
 
-    private Point2D getTranslation( final GuidedDecisionTableView gridWidget ) {
+    private Point2D getTranslation(final GuidedDecisionTableView gridWidget) {
+        final double boundsPadding = GuidedDecisionTableModellerBoundsHelper.BOUNDS_PADDING;
         final Transform t = gridLayer.getViewport().getTransform();
-        final double requiredTranslateX = GuidedDecisionTableModellerBoundsHelper.BOUNDS_PADDING - gridWidget.getX();
-        final double requiredTranslateY = GuidedDecisionTableModellerBoundsHelper.BOUNDS_PADDING - gridWidget.getY();
+        final double requiredTranslateX = boundsPadding - gridWidget.getX();
+        final double requiredTranslateY = boundsPadding - gridWidget.getY();
         final double actualTranslateX = t.getTranslateX();
         final double actualTranslateY = t.getTranslateY();
         final double dx = requiredTranslateX - actualTranslateX;
         final double dy = requiredTranslateY - actualTranslateY;
-        return new Point2D( dx,
-                            dy );
+        return new Point2D(dx,
+                           dy);
     }
 
     @Override
-    public void removeDecisionTable( final GuidedDecisionTableView gridWidget,
-                                     final Command afterRemovalCommand ) {
-        if ( gridWidget == null ) {
+    public void removeDecisionTable(final GuidedDecisionTableView gridWidget,
+                                    final Command afterRemovalCommand) {
+        if (gridWidget == null) {
             return;
         }
         final Command remove = () -> {
-            gridLayer.remove( gridWidget );
+            gridLayer.remove(gridWidget);
             gridLayer.batch();
             afterRemovalCommand.execute();
         };
-        if ( gridLayer.isGridPinned() ) {
+        if (gridLayer.isGridPinned()) {
             final GridPinnedModeManager.PinnedContext context = gridLayer.getPinnedContext();
-            if ( gridWidget.equals( context.getGridWidget() ) ) {
-                gridLayer.exitPinnedMode( remove );
+            if (gridWidget.equals(context.getGridWidget())) {
+                gridLayer.exitPinnedMode(remove);
             }
         } else {
             remove.execute();
@@ -317,367 +342,365 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
     }
 
     @Override
-    public void setEnableColumnCreation( final boolean enabled ) {
-        addButton.setEnabled( enabled );
-    }
-
-    private Widget newColumn() {
-        addButton.addClickHandler( w -> doNewColumn() );
-
-        return addButton;
-    }
-
-    private void doNewColumn() {
-        presenter.openNewGuidedDecisionTableColumnWizard();
+    public void setEnableColumnCreation(final boolean enabled) {
+        addColumn.setEnabled(enabled);
     }
 
     @Override
-    public void refreshRuleInheritance( final String selectedParentRuleName,
-                                        final Collection<String> availableParentRuleNames ) {
-        ruleSelector.setRuleName( selectedParentRuleName );
-        ruleSelector.setRuleNames( availableParentRuleNames );
+    public void refreshRuleInheritance(final String selectedParentRuleName,
+                                       final Collection<String> availableParentRuleNames) {
+        ruleSelector.setRuleName(selectedParentRuleName);
+        ruleSelector.setRuleNames(availableParentRuleNames);
     }
 
-    private Widget getAttributesWidget() {
-        attributeConfigWidget = new VerticalPanel();
-        return attributeConfigWidget;
+    private VerticalPanel makeDefaultPanel() {
+        return new VerticalPanel() {{
+            add(blankSlate());
+        }};
     }
 
-    private Widget wrapDisclosurePanelContent( final Widget content ) {
-        final SimplePanel container = new SimplePanel();
-        container.getElement().getStyle().setProperty( "maxHeight",
-                                                       "200px" );
-        container.getElement().getStyle().setOverflowY( Style.Overflow.SCROLL );
-        container.add( content );
-        return container;
+    Label blankSlate() {
+        final String disabledLabelStyle = "text-muted";
+        final String noColumns = GuidedDecisionTableConstants.INSTANCE.NoColumnsAvailable();
+
+        return new Label() {{
+            setText(noColumns);
+            setStyleName(disabledLabelStyle);
+        }};
     }
 
     @Override
-    public void refreshAttributeWidget( final List<AttributeCol52> attributeColumns ) {
-        this.attributeConfigWidget.clear();
+    public void refreshAttributeWidget(final List<AttributeCol52> attributeColumns) {
+        getAttributeConfigWidget().clear();
 
-        if ( attributeColumns == null || attributeColumns.isEmpty() ) {
-            disclosurePanelAttributes.setOpen( false );
+        if (attributeColumns == null || attributeColumns.isEmpty()) {
+            getAccordion().getItem(GuidedDecisionTableAccordionItem.Type.ATTRIBUTE).setOpen(false);
+            getAttributeConfigWidget().add(blankSlate());
             return;
         }
 
-        for ( AttributeCol52 attributeColumn : attributeColumns ) {
+        for (AttributeCol52 attributeColumn : attributeColumns) {
             AttributeColumnConfigRow attributeColumnConfigRow = new AttributeColumnConfigRow();
-            attributeColumnConfigRow.init(attributeColumn, presenter);
-            attributeConfigWidget.add(attributeColumnConfigRow.getView());
+            attributeColumnConfigRow.init(attributeColumn,
+                                          getPresenter());
+            getAttributeConfigWidget().add(attributeColumnConfigRow.getView());
         }
     }
 
-    private Widget getMetaDataWidget() {
-        metaDataConfigWidget = new VerticalPanel();
-        return metaDataConfigWidget;
-    }
-
     @Override
-    public void refreshMetaDataWidget( final List<MetadataCol52> metaDataColumns ) {
-        this.metaDataConfigWidget.clear();
+    public void refreshMetaDataWidget(final List<MetadataCol52> metaDataColumns) {
+        metaDataConfigWidget.clear();
 
-        if ( metaDataColumns == null || metaDataColumns.isEmpty() ) {
-            disclosurePanelMetaData.setOpen( false );
+        if (metaDataColumns == null || metaDataColumns.isEmpty()) {
+            accordion.getItem(GuidedDecisionTableAccordionItem.Type.METADATA).setOpen(false);
+            metaDataConfigWidget.add(blankSlate());
             return;
         }
 
         final boolean isEditable = presenter.isActiveDecisionTableEditable();
-        for ( MetadataCol52 metaDataColumn : metaDataColumns ) {
+        for (MetadataCol52 metaDataColumn : metaDataColumns) {
             HorizontalPanel hp = new HorizontalPanel();
-            hp.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
-            hp.add( new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) );
+            hp.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 
-            if ( isEditable ) {
-                hp.add( removeMetaData( metaDataColumn ) );
-            }
-
-            final SmallLabel label = makeColumnLabel( metaDataColumn );
-            hp.add( label );
+            final SmallLabel label = makeColumnLabel(metaDataColumn);
+            hp.add(label);
 
             final MetadataCol52 originalColumn = metaDataColumn;
-            final CheckBox chkHideColumn = new CheckBox( new StringBuilder( GuidedDecisionTableConstants.INSTANCE.HideThisColumn() ).append( GuidedDecisionTableConstants.COLON ).toString() );
-            chkHideColumn.setValue( metaDataColumn.isHideColumn() );
-            chkHideColumn.addClickHandler( new ClickHandler() {
+            final CheckBox chkHideColumn = new CheckBox(new StringBuilder(GuidedDecisionTableConstants.INSTANCE.HideThisColumn()).append(GuidedDecisionTableConstants.COLON).toString());
+            chkHideColumn.setValue(metaDataColumn.isHideColumn());
+            chkHideColumn.addClickHandler(new ClickHandler() {
 
                 @Override
-                public void onClick( final ClickEvent event ) {
+                public void onClick(final ClickEvent event) {
                     final MetadataCol52 editedColumn = originalColumn.cloneColumn();
-                    editedColumn.setHideColumn( chkHideColumn.getValue() );
-                    presenter.getActiveDecisionTable().updateColumn( originalColumn,
-                                                                     editedColumn );
+                    editedColumn.setHideColumn(chkHideColumn.getValue());
+                    presenter.getActiveDecisionTable().updateColumn(originalColumn,
+                                                                    editedColumn);
                 }
-            } );
-            hp.add( new HTML( "&nbsp;&nbsp;" ) );
-            hp.add( chkHideColumn );
+            });
 
-            metaDataConfigWidget.add( hp );
+            hp.add(chkHideColumn);
+
+            if (isEditable) {
+                hp.add(deleteAnchor((e) -> {
+                    String ms = GuidedDecisionTableConstants.INSTANCE.DeleteActionColumnWarning(metaDataColumn.getMetadata());
+                    if (Window.confirm(ms)) {
+                        presenter.getActiveDecisionTable().deleteColumn(metaDataColumn);
+                    }
+                }));
+            }
+
+            metaDataConfigWidget.add(hp);
         }
     }
 
-    private SmallLabel makeColumnLabel( final MetadataCol52 metaDataColumn ) {
-        SmallLabel label = new SmallLabel( metaDataColumn.getMetadata() );
-        ColumnUtilities.setColumnLabelStyleWhenHidden( label,
-                                                       metaDataColumn.isHideColumn() );
+    private SmallLabel makeColumnLabel(final MetadataCol52 metaDataColumn) {
+        SmallLabel label = new SmallLabel(metaDataColumn.getMetadata());
+        ColumnUtilities.setColumnLabelStyleWhenHidden(label,
+                                                      metaDataColumn.isHideColumn());
         return label;
     }
 
-    private Widget removeMetaData( final MetadataCol52 md ) {
-        Image image = GuidedDecisionTableImageResources508.INSTANCE.DeleteItemSmall();
-        image.setAltText( GuidedDecisionTableConstants.INSTANCE.RemoveThisMetadata() );
-
-        return new ImageButton( image,
-                                GuidedDecisionTableConstants.INSTANCE.RemoveThisMetadata(),
-                                new ClickHandler() {
-                                    public void onClick( ClickEvent w ) {
-                                        String ms = GuidedDecisionTableConstants.INSTANCE.DeleteActionColumnWarning( md.getMetadata() );
-                                        if ( Window.confirm( ms ) ) {
-                                            presenter.getActiveDecisionTable().deleteColumn( md );
-                                        }
-                                    }
-                                } );
-    }
-
-    private Widget getConditionsWidget() {
-        conditionsConfigWidget = new VerticalPanel();
-        return conditionsConfigWidget;
-    }
-
     @Override
-    public void refreshConditionsWidget( final List<CompositeColumn<? extends BaseColumn>> conditionColumns ) {
-        this.conditionsConfigWidget.clear();
+    public void refreshConditionsWidget(final List<CompositeColumn<? extends BaseColumn>> conditionColumns) {
+        conditionsConfigWidget.clear();
 
-        if ( conditionColumns == null || conditionColumns.isEmpty() ) {
-            disclosurePanelConditions.setOpen( false );
+        if (conditionColumns == null || conditionColumns.isEmpty()) {
+            accordion.getItem(GuidedDecisionTableAccordionItem.Type.CONDITION).setOpen(false);
+            conditionsConfigWidget.add(blankSlate());
             return;
         }
 
         //Each Pattern is a row in a vertical panel
         final VerticalPanel patternsPanel = new VerticalPanel();
-        conditionsConfigWidget.add( patternsPanel );
+        conditionsConfigWidget.add(patternsPanel);
 
         final boolean isEditable = presenter.isActiveDecisionTableEditable();
-        for ( CompositeColumn<?> conditionColumn : conditionColumns ) {
-            if ( conditionColumn instanceof Pattern52 ) {
+        for (CompositeColumn<?> conditionColumn : conditionColumns) {
+            if (conditionColumn instanceof Pattern52) {
                 Pattern52 p = (Pattern52) conditionColumn;
                 VerticalPanel patternPanel = new VerticalPanel();
                 VerticalPanel conditionsPanel = new VerticalPanel();
                 HorizontalPanel patternHeaderPanel = new HorizontalPanel();
-                patternHeaderPanel.setStylePrimaryName( GuidedDecisionTableResources.INSTANCE.css().patternSectionHeader() );
-                Label patternLabel = makePatternLabel( p );
-                patternHeaderPanel.add( patternLabel );
-                patternPanel.add( patternHeaderPanel );
-                patternPanel.add( conditionsPanel );
-                patternsPanel.add( patternPanel );
+                Label patternLabel = makePatternLabel(p);
+                patternHeaderPanel.add(patternLabel);
+                patternPanel.add(patternHeaderPanel);
+                patternPanel.add(conditionsPanel);
+                patternsPanel.add(patternPanel);
 
                 List<ConditionCol52> conditions = p.getChildColumns();
-                for ( ConditionCol52 c : conditions ) {
+                for (ConditionCol52 c : conditions) {
                     HorizontalPanel hp = new HorizontalPanel();
-                    hp.setStylePrimaryName( GuidedDecisionTableResources.INSTANCE.css().patternConditionSectionHeader() );
-                    if ( isEditable ) {
-                        hp.add( removeCondition( c ) );
-                    }
-                    hp.add( editCondition( p,
-                                           c ) );
-                    SmallLabel conditionLabel = makeColumnLabel( c );
-                    hp.add( conditionLabel );
-                    conditionsPanel.add( hp );
+
+                    SmallLabel conditionLabel = makeColumnLabel(c);
+                    hp.add(conditionLabel);
+
+                    final FlowPanel buttons = new FlowPanel() {{
+                        add(editCondition(p,
+                                          c));
+
+                        if (isEditable) {
+                            add(removeCondition(c));
+                        }
+                    }};
+
+                    hp.add(buttons);
+
+                    conditionsPanel.add(hp);
                 }
-            } else if ( conditionColumn instanceof BRLConditionColumn ) {
+            } else if (conditionColumn instanceof BRLConditionColumn) {
                 BRLConditionColumn brl = (BRLConditionColumn) conditionColumn;
 
                 HorizontalPanel patternHeaderPanel = new HorizontalPanel();
-                patternHeaderPanel.setStylePrimaryName( GuidedDecisionTableResources.INSTANCE.css().patternSectionHeader() );
                 HorizontalPanel patternPanel = new HorizontalPanel();
-                if ( isEditable ) {
-                    patternPanel.add( removeCondition( brl ) );
-                }
-                patternPanel.add( editCondition( brl ) );
-                Label patternLabel = makePatternLabel( brl );
-                patternPanel.add( patternLabel );
-                patternHeaderPanel.add( patternPanel );
-                patternsPanel.add( patternHeaderPanel );
+
+                SmallLabel patternLabel = makePatternLabel(brl);
+                patternPanel.add(patternLabel);
+                patternHeaderPanel.add(patternPanel);
+
+                final FlowPanel buttons = new FlowPanel() {{
+                    add(editCondition(brl));
+
+                    if (isEditable) {
+                        add(removeCondition(brl));
+                    }
+                }};
+
+                patternPanel.add(buttons);
+
+                patternsPanel.add(patternHeaderPanel);
             }
         }
     }
 
-    private Label makePatternLabel( final Pattern52 p ) {
+    private Label makePatternLabel(final Pattern52 p) {
         StringBuilder patternLabel = new StringBuilder();
         String factType = p.getFactType();
         String boundName = p.getBoundName();
-        if ( factType != null && factType.length() > 0 ) {
-            if ( p.isNegated() ) {
-                patternLabel.append( GuidedDecisionTableConstants.INSTANCE.negatedPattern() ).append( " " ).append( factType );
+        if (factType != null && factType.length() > 0) {
+            if (p.isNegated()) {
+                patternLabel.append(GuidedDecisionTableConstants.INSTANCE.negatedPattern()).append(" ").append(factType);
             } else {
-                patternLabel.append( factType ).append( " [" ).append( boundName ).append( "]" );
+                patternLabel.append(factType).append(" [").append(boundName).append("]");
             }
         }
-        return new Label( patternLabel.toString() );
+        return new Label(patternLabel.toString());
     }
 
-    private Label makePatternLabel( final BRLConditionColumn brl ) {
+    private SmallLabel makePatternLabel(final BRLConditionColumn brl) {
         StringBuilder sb = new StringBuilder();
-        sb.append( brl.getHeader() );
-        return new Label( sb.toString() );
+        sb.append(brl.getHeader());
+        return new SmallLabel(sb.toString());
     }
 
-    private SmallLabel makeColumnLabel( final ConditionCol52 cc ) {
+    private SmallLabel makeColumnLabel(final ConditionCol52 cc) {
         StringBuilder sb = new StringBuilder();
-        if ( cc.isBound() ) {
-            sb.append( cc.getBinding() );
-            sb.append( " : " );
+        if (cc.isBound()) {
+            sb.append(cc.getBinding());
+            sb.append(" : ");
         }
-        sb.append( cc.getHeader() );
-        SmallLabel label = new SmallLabel( sb.toString() );
-        if ( cc.isHideColumn() ) {
-            label.setStylePrimaryName( GuidedDecisionTableResources.INSTANCE.css().columnLabelHidden() );
+        sb.append(cc.getHeader());
+        SmallLabel label = new SmallLabel(sb.toString());
+        if (cc.isHideColumn()) {
+            label.setStylePrimaryName(GuidedDecisionTableResources.INSTANCE.css().columnLabelHidden());
         }
         return label;
     }
 
-    private Widget editCondition( final Pattern52 origPattern,
-                                  final ConditionCol52 origCol ) {
-        return makeEditColumnWidget( GuidedDecisionTableConstants.INSTANCE.EditThisColumnsConfiguration(),
-                                     () -> presenter.getActiveDecisionTable().editCondition( origPattern,
-                                                                                             origCol ) );
+    private Widget editCondition(final Pattern52 origPattern,
+                                 final ConditionCol52 origCol) {
+        return makeEditColumnWidget(GuidedDecisionTableConstants.INSTANCE.EditThisColumnsConfiguration(),
+                                    () -> presenter.getActiveDecisionTable().editCondition(origPattern,
+                                                                                           origCol));
     }
 
-    private Widget editCondition( final BRLConditionColumn origCol ) {
-        return makeEditColumnWidget( GuidedDecisionTableConstants.INSTANCE.EditThisColumnsConfiguration(),
-                                     () -> presenter.getActiveDecisionTable().editCondition( origCol ) );
+    private Widget editCondition(final BRLConditionColumn origCol) {
+        return makeEditColumnWidget(GuidedDecisionTableConstants.INSTANCE.EditThisColumnsConfiguration(),
+                                    () -> presenter.getActiveDecisionTable().editCondition(origCol));
     }
 
-    private Widget makeEditColumnWidget( final String caption,
-                                         final Command command ) {
-        final Image icon = GuidedDecisionTableImageResources508.INSTANCE.Edit();
-        icon.setAltText( caption );
-        return new ImageButton( icon,
-                                caption,
-                                ( ClickEvent e ) -> command.execute() );
+    private Widget makeEditColumnWidget(final String caption,
+                                        final Command command) {
+
+        return editAnchor((e) -> command.execute());
     }
 
-    private Widget removeCondition( final ConditionCol52 column ) {
-        if ( column instanceof BRLConditionColumn ) {
-            return makeRemoveConditionWidget( column,
-                                              ( command ) -> {
-                                                  if ( !presenter.getActiveDecisionTable().canConditionBeDeleted( (BRLConditionColumn) column ) ) {
-                                                      Window.alert( GuidedDecisionTableConstants.INSTANCE.UnableToDeleteConditionColumn0( column.getHeader() ) );
-                                                      return;
-                                                  }
-                                                  command.execute();
-                                              } );
+    private Widget editAnchor(final ClickHandler clickHandler) {
+        return anchor(GuidedDecisionTableConstants.INSTANCE.Edit(),
+                      clickHandler);
+    }
+
+    private Widget deleteAnchor(final ClickHandler clickHandler) {
+        return anchor(GuidedDecisionTableConstants.INSTANCE.Delete(),
+                      clickHandler);
+    }
+
+    private Anchor anchor(final String text,
+                          final ClickHandler clickHandler) {
+        return new Anchor() {{
+            setText(text);
+            addClickHandler(clickHandler);
+        }};
+    }
+
+    private Widget removeCondition(final ConditionCol52 column) {
+        if (column instanceof BRLConditionColumn) {
+            return makeRemoveConditionWidget(column,
+                                             (command) -> {
+                                                 if (!presenter.getActiveDecisionTable().canConditionBeDeleted((BRLConditionColumn) column)) {
+                                                     Window.alert(GuidedDecisionTableConstants.INSTANCE.UnableToDeleteConditionColumn0(column.getHeader()));
+                                                     return;
+                                                 }
+                                                 command.execute();
+                                             });
         }
 
-        return makeRemoveConditionWidget( column,
-                                          ( command ) -> {
-                                              if ( !presenter.getActiveDecisionTable().canConditionBeDeleted( column ) ) {
-                                                  Window.alert( GuidedDecisionTableConstants.INSTANCE.UnableToDeleteConditionColumn0( column.getHeader() ) );
-                                                  return;
-                                              }
-                                              command.execute();
-                                          } );
+        return makeRemoveConditionWidget(column,
+                                         (command) -> {
+                                             if (!presenter.getActiveDecisionTable().canConditionBeDeleted(column)) {
+                                                 Window.alert(GuidedDecisionTableConstants.INSTANCE.UnableToDeleteConditionColumn0(column.getHeader()));
+                                                 return;
+                                             }
+                                             command.execute();
+                                         });
     }
 
-    private Widget makeRemoveConditionWidget( final ConditionCol52 column,
-                                              final ParameterizedCommand<Command> command ) {
-        Image image = GuidedDecisionTableImageResources508.INSTANCE.DeleteItemSmall();
-        image.setAltText( GuidedDecisionTableConstants.INSTANCE.RemoveThisConditionColumn() );
-        return new ImageButton( image,
-                                GuidedDecisionTableConstants.INSTANCE.RemoveThisConditionColumn(),
-                                ( e ) -> command.execute( () -> {
-                                    String cm = GuidedDecisionTableConstants.INSTANCE.DeleteConditionColumnWarning0( column.getHeader() );
-                                    if ( Window.confirm( cm ) ) {
-                                        presenter.getActiveDecisionTable().deleteColumn( column );
-                                    }
-                                } ) );
-    }
+    private Widget makeRemoveConditionWidget(final ConditionCol52 column,
+                                             final ParameterizedCommand<Command> command) {
 
-    private Widget getActionsWidget() {
-        actionsConfigWidget = new VerticalPanel();
-        return actionsConfigWidget;
+        final ClickHandler clickHandler = (e) -> command.execute(() -> {
+            String cm = GuidedDecisionTableConstants.INSTANCE.DeleteConditionColumnWarning0(column.getHeader());
+            if (Window.confirm(cm)) {
+                presenter.getActiveDecisionTable().deleteColumn(column);
+            }
+        });
+
+        return deleteAnchor(clickHandler);
     }
 
     @Override
-    public void refreshActionsWidget( final List<ActionCol52> actionColumns ) {
-        this.actionsConfigWidget.clear();
+    public void refreshActionsWidget(final List<ActionCol52> actionColumns) {
+        actionsConfigWidget.clear();
 
-        if ( actionColumns == null || actionColumns.isEmpty() ) {
-            disclosurePanelActions.setOpen( false );
+        if (actionColumns == null || actionColumns.isEmpty()) {
+            accordion.getItem(GuidedDecisionTableAccordionItem.Type.ACTION).setOpen(false);
+            actionsConfigWidget.add(blankSlate());
             return;
         }
 
         //Each Action is a row in a vertical panel
         final VerticalPanel actionsPanel = new VerticalPanel();
-        this.actionsConfigWidget.add( actionsPanel );
+        this.actionsConfigWidget.add(actionsPanel);
 
         //Add Actions to panel
         final boolean isEditable = presenter.isActiveDecisionTableEditable();
-        for ( ActionCol52 actionColumn : actionColumns ) {
+        for (ActionCol52 actionColumn : actionColumns) {
             HorizontalPanel hp = new HorizontalPanel();
-            if ( isEditable ) {
-                hp.add( removeAction( actionColumn ) );
-            }
-            hp.add( editAction( actionColumn ) );
-            Label actionLabel = makeColumnLabel( actionColumn );
-            hp.add( actionLabel );
-            actionsPanel.add( hp );
+
+            Label actionLabel = makeColumnLabel(actionColumn);
+            hp.add(actionLabel);
+
+            final FlowPanel buttons = new FlowPanel() {{
+                add(editAction(actionColumn));
+
+                if (isEditable) {
+                    add(deleteAnchor((e) -> {
+                        final String cm = GuidedDecisionTableConstants.INSTANCE.DeleteActionColumnWarning(actionColumn.getHeader());
+
+                        if (Window.confirm(cm)) {
+                            presenter.getActiveDecisionTable().deleteColumn(actionColumn);
+                        }
+                    }));
+                }
+            }};
+
+            hp.add(buttons);
+
+            actionsPanel.add(hp);
         }
     }
 
-    private SmallLabel makeColumnLabel( final ActionCol52 actionColumn ) {
-        SmallLabel label = new SmallLabel( actionColumn.getHeader() );
-        if ( actionColumn.isHideColumn() ) {
-            label.setStylePrimaryName( GuidedDecisionTableResources.INSTANCE.css().columnLabelHidden() );
+    private SmallLabel makeColumnLabel(final ActionCol52 actionColumn) {
+        SmallLabel label = new SmallLabel(actionColumn.getHeader());
+        if (actionColumn.isHideColumn()) {
+            label.setStylePrimaryName(GuidedDecisionTableResources.INSTANCE.css().columnLabelHidden());
         }
         return label;
     }
 
-    private Widget editAction( final ActionCol52 actionColumn ) {
-        return makeEditColumnWidget( GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration(),
-                                     () -> presenter.getActiveDecisionTable().editAction( actionColumn ) );
-    }
-
-    private Widget removeAction( final ActionCol52 column ) {
-        final Image image = GuidedDecisionTableImageResources508.INSTANCE.DeleteItemSmall();
-        image.setAltText( GuidedDecisionTableConstants.INSTANCE.RemoveThisActionColumn() );
-        return new ImageButton( image,
-                                GuidedDecisionTableConstants.INSTANCE.RemoveThisActionColumn(),
-                                ( e ) -> {
-                                    String cm = GuidedDecisionTableConstants.INSTANCE.DeleteActionColumnWarning( column.getHeader() );
-                                    if ( Window.confirm( cm ) ) {
-                                        presenter.getActiveDecisionTable().deleteColumn( column );
-                                    }
-                                } );
+    private Widget editAction(final ActionCol52 actionColumn) {
+        return makeEditColumnWidget(GuidedDecisionTableConstants.INSTANCE.EditThisActionColumnConfiguration(),
+                                    () -> presenter.getActiveDecisionTable().editAction(actionColumn));
     }
 
     @Override
-    public void refreshColumnsNote( final boolean hasColumnDefinitions ) {
-        configureColumnsNote.setVisible( !hasColumnDefinitions );
+    public void refreshColumnsNote(final boolean hasColumnDefinitions) {
+        getGuidedDecisionTableAccordion().setColumnsNoteInfoHidden(hasColumnDefinitions);
     }
 
     @Override
-    public void setZoom( final int zoom ) {
+    public void setZoom(final int zoom) {
         //Set zoom preserving translation
         final Transform transform = new Transform();
         final double tx = gridPanel.getViewport().getTransform().getTranslateX();
         final double ty = gridPanel.getViewport().getTransform().getTranslateY();
-        transform.translate( tx,
-                             ty );
-        transform.scale( zoom / 100.0 );
+        transform.translate(tx,
+                            ty);
+        transform.scale(zoom / 100.0);
 
         //Ensure the change in zoom keeps the view in bounds. IGridLayer's visibleBounds depends
         //on the Viewport Transformation; so set it to the "proposed" transformation before checking.
-        gridPanel.getViewport().setTransform( transform );
+        gridPanel.getViewport().setTransform(transform);
         final TransformMediator restriction = mousePanMediator.getTransformMediator();
-        final Transform newTransform = restriction.adjust( transform,
-                                                           gridLayer.getVisibleBounds() );
-        gridPanel.getViewport().setTransform( newTransform );
+        final Transform newTransform = restriction.adjust(transform,
+                                                          gridLayer.getVisibleBounds());
+        gridPanel.getViewport().setTransform(newTransform);
         gridPanel.getViewport().batch();
     }
 
     @Override
     public void onInsertColumn() {
-        doNewColumn();
+        addColumn();
     }
 
     @Override
@@ -692,27 +715,101 @@ public class GuidedDecisionTableModellerViewImpl extends Composite implements Gu
 
     @Override
     public Bounds getBounds() {
-        if ( presenter == null ) {
-            return boundsHelper.getBounds( Collections.emptySet() );
+        if (presenter == null) {
+            return boundsHelper.getBounds(Collections.emptySet());
         } else {
-            return boundsHelper.getBounds( presenter.getAvailableDecisionTables() );
+            return boundsHelper.getBounds(presenter.getAvailableDecisionTables());
         }
     }
 
     @Override
-    public void select( final GridWidget selectedGridWidget ) {
-        ruleSelector.setEnabled( true );
-        gridLayer.select( selectedGridWidget );
+    public void select(final GridWidget selectedGridWidget) {
+        ruleSelector.setEnabled(true);
+        gridLayer.select(selectedGridWidget);
     }
 
     @Override
-    public void selectLinkedColumn( final GridColumn<?> link ) {
-        gridLayer.selectLinkedColumn( link );
+    public void selectLinkedColumn(final GridColumn<?> link) {
+        gridLayer.selectLinkedColumn(link);
     }
 
     @Override
     public Set<GridWidget> getGridWidgets() {
         return gridLayer.getGridWidgets();
+    }
+
+    GuidedDecisionTableAccordion getGuidedDecisionTableAccordion() {
+        return guidedDecisionTableAccordion;
+    }
+
+    void setupAccordion(final Presenter presenter) {
+        accordion = makeAccordion(presenter);
+
+        final Widget widget = asWidget(accordion);
+
+        getAccordionContainer().add(widget);
+        getAccordionContainer().add(ruleInheritanceWidget());
+    }
+
+    FlowPanel getAccordionContainer() {
+        return accordionContainer;
+    }
+
+    Widget asWidget(final GuidedDecisionTableAccordion accordion) {
+        final GuidedDecisionTableAccordion.View accordionView = accordion.getView();
+
+        return ElementWrapperWidget.getWidget(accordionView.getElement());
+    }
+
+    GuidedDecisionTableAccordion makeAccordion(final Presenter presenter) {
+        final GuidedDecisionTableAccordion accordion = getGuidedDecisionTableAccordion();
+
+        accordion.addItem(GuidedDecisionTableAccordionItem.Type.ATTRIBUTE,
+                          getAttributeConfigWidget());
+        accordion.addItem(GuidedDecisionTableAccordionItem.Type.METADATA,
+                          getMetaDataConfigWidget());
+        accordion.addItem(GuidedDecisionTableAccordionItem.Type.CONDITION,
+                          getConditionsConfigWidget());
+        accordion.addItem(GuidedDecisionTableAccordionItem.Type.ACTION,
+                          getActionsConfigWidget());
+
+        return accordion;
+    }
+
+    VerticalPanel getAttributeConfigWidget() {
+        return attributeConfigWidget;
+    }
+
+    VerticalPanel getMetaDataConfigWidget() {
+        return metaDataConfigWidget;
+    }
+
+    VerticalPanel getConditionsConfigWidget() {
+        return conditionsConfigWidget;
+    }
+
+    VerticalPanel getActionsConfigWidget() {
+        return actionsConfigWidget;
+    }
+
+    RuleSelector getRuleSelector() {
+        return ruleSelector;
+    }
+
+    Button getAddColumn() {
+        return addColumn;
+    }
+
+    Button getEditColumns() {
+        return editColumns;
+    }
+
+    Presenter getPresenter() {
+        return presenter;
+    }
+
+    GuidedDecisionTableAccordion getAccordion() {
+        return accordion;
     }
 
     interface GuidedDecisionTableModellerViewImplUiBinder extends UiBinder<Widget, GuidedDecisionTableModellerViewImpl> {

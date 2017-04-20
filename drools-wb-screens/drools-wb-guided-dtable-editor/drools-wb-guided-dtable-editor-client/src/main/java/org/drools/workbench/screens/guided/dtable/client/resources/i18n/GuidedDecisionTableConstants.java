@@ -212,29 +212,13 @@ public interface GuidedDecisionTableConstants
 
     String OverCEPWindow();
 
-    String ConfigureColumnsNote();
-
-    String DecisionTable();
-
-    String ConditionColumns();
-
-    String ActionColumns();
-
-    String MetadataColumns();
-
-    String AttributeColumns();
-
     String Options();
 
     String EditThisActionColumnConfiguration();
 
-    String RemoveThisActionColumn();
-
     String DeleteActionColumnWarning(String p0);
 
     String NewColumn();
-
-    String AddNewColumn();
 
     String AddNewMetadataOrAttributeColumn();
 
@@ -274,8 +258,6 @@ public interface GuidedDecisionTableConstants
 
     String EditThisColumnsConfiguration();
 
-    String RemoveThisConditionColumn();
-
     String UnableToDeletePatterns();
 
     String UnableToDeleteConditionColumns();
@@ -284,15 +266,9 @@ public interface GuidedDecisionTableConstants
 
     String DeleteConditionColumnWarning0(String p0);
 
-    String Attributes();
-
     String UseRowNumber();
 
     String ReverseOrder();
-
-    String RemoveThisAttribute();
-
-    String RemoveThisMetadata();
 
     String DeleteItem();
 
@@ -549,4 +525,10 @@ public interface GuidedDecisionTableConstants
     String HasPriorityOverRow();
 
     String ResolvedHitPolicy();
+
+    String NoColumnsAvailable();
+
+    String AddColumn();
+
+    String EditColumns();
 }

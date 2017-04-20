@@ -40,23 +40,4 @@ public class GuidedDecisionTableImageResources508 {
         image.setAltText( GuidedDecisionTableConstants.INSTANCE.EditDisabled() );
         return image;
     }
-
-    public Image Config() {
-        Image image = new Image( GuidedDecisionTableResources.INSTANCE.images().config() );
-        image.setAltText( GuidedDecisionTableConstants.INSTANCE.Config() );
-        return image;
-    }
-
-    public Image DeleteItemSmall() {
-        Image image = new Image( GuidedDecisionTableResources.INSTANCE.itemImages().deleteItemSmall() );
-        image.setAltText( GuidedDecisionTableConstants.INSTANCE.DeleteItem() );
-        return image;
-    }
-
-    public Image NewItem() {
-        Image image = new Image( GuidedDecisionTableResources.INSTANCE.itemImages().newItem() );
-        image.setAltText( GuidedDecisionTableConstants.INSTANCE.NewItem() );
-        return image;
-    }
-
 }

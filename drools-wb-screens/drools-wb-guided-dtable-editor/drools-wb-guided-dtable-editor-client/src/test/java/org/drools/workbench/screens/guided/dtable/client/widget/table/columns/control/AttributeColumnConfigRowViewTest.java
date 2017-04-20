@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.dtable.client.widget.table.columns.control;
 
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
@@ -24,6 +25,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.screens.guided.rule.client.editor.RuleAttributeWidget;
 import org.gwtbootstrap3.client.ui.CheckBox;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.services.shared.preferences.ApplicationPreferences;
@@ -58,14 +60,7 @@ public class AttributeColumnConfigRowViewTest {
 
     @Before
     public void setUp() throws Exception {
-        view = spy(new AttributeColumnConfigRowView() {
-            @Override
-            protected Image constructImageForRemoveAttributeButton() {
-                // GwtMockitoTestRunner has problems to create Image
-                // Do nothing for test purposes
-                return null;
-            }
-        });
+        view = spy(new AttributeColumnConfigRowView());
 
         when(attributeColumn.getAttribute()).thenReturn(RuleAttributeWidget.SALIENCE_ATTR);
         when(attributeColumn.getDefaultValue()).thenReturn(defaultValue);
@@ -77,9 +72,9 @@ public class AttributeColumnConfigRowViewTest {
 
     @Test
     public void testAddRemoveAttributeButton() throws Exception {
-        view.addRemoveAttributeButton(null);
+        view.addRemoveAttributeButton(null, false);
         verify(view).add(widgetCaptor.capture());
-        assertTrue(widgetCaptor.getValue() instanceof ImageButton);
+        assertTrue(widgetCaptor.getValue() instanceof Anchor);
     }
 
     @Test

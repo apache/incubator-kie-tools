@@ -30,11 +30,15 @@ public interface CssResources
 
     String actionColumn();
 
-    String patternSectionHeader();
-
     String patternConditionSectionHeader();
 
     String columnLabelHidden();
 
-}
+    String openedAccordion();
 
+    String ruleInheritance();
+
+    String ruleInheritanceDropdown();
+
+    String ruleInheritanceLabel();
+}

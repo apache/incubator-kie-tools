@@ -253,4 +253,16 @@ public class GuidedDecisionTableErraiConstants {
 
     @TranslationKey(defaultValue = "")
     public static final String ActionWorkItemSetFieldPlugin_ThatColumnNameIsAlreadyInUsePleasePickAnother = "ActionWorkItemSetFieldPlugin.ThatColumnNameIsAlreadyInUsePleasePickAnother";
+
+    @TranslationKey(defaultValue = "")
+    public static final String GuidedDecisionTableAccordionItem_Metadata = "GuidedDecisionTableAccordionItem.Metadata";
+
+    @TranslationKey(defaultValue = "")
+    public static final String GuidedDecisionTableAccordionItem_Attribute = "GuidedDecisionTableAccordionItem.Attribute";
+
+    @TranslationKey(defaultValue = "")
+    public static final String GuidedDecisionTableAccordionItem_Condition = "GuidedDecisionTableAccordionItem.Condition";
+
+    @TranslationKey(defaultValue = "")
+    public static final String GuidedDecisionTableAccordionItem_Action = "GuidedDecisionTableAccordionItem.Action";
 }
