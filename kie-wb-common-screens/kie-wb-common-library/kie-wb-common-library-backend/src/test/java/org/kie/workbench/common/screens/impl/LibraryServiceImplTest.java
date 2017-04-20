@@ -58,6 +58,7 @@ import org.uberfire.io.IOService;
 import org.uberfire.rpc.SessionInfo;
 import org.uberfire.security.authz.AuthorizationManager;
 
+import static java.util.Collections.singletonList;
 import static org.jgroups.util.Util.assertEquals;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -383,6 +384,35 @@ public class LibraryServiceImplTest {
 
         assertEquals(project,
                      importedProject);
+    }
+
+    @Test
+    public void importDefaultProjectTest() {
+        final Repository repository = mock(Repository.class);
+        when(repository.getAlias()).thenReturn("repoAlias");
+        final OrganizationalUnit organizationalUnit = mock(OrganizationalUnit.class);
+        when(organizationalUnit.getName()).thenReturn("ou");
+        when(organizationalUnit.getIdentifier()).thenReturn("ou");
+        when(organizationalUnit.getRepositories()).thenReturn(singletonList(repository));
+        when(ouService.getOrganizationalUnits()).thenReturn(singletonList(organizationalUnit));
+
+        final ExampleProject exampleProject = mock(ExampleProject.class);
+
+        final Project project = mock(Project.class);
+        final ProjectContextChangeEvent projectContextChangeEvent = mock(ProjectContextChangeEvent.class);
+        doReturn(project).when(projectContextChangeEvent).getProject();
+        doReturn(projectContextChangeEvent).when(examplesService).setupExamples(any(ExampleOrganizationalUnit.class),
+                                                                                any(ExampleTargetRepository.class),
+                                                                                anyString(),
+                                                                                anyList());
+
+        final Project importedProject = libraryService.importProject(exampleProject);
+
+        assertEquals(project, importedProject);
+        verify(examplesService).setupExamples(new ExampleOrganizationalUnit(organizationalUnit.getName()),
+                                              new ExampleTargetRepository(repository.getAlias()),
+                                              "master",
+                                              singletonList(exampleProject));
     }
 
     @Test

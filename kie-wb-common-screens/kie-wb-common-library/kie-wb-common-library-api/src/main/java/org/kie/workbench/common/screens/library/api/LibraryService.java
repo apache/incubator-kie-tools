@@ -59,5 +59,8 @@ public interface LibraryService {
                           final String branch,
                           final ExampleProject exampleProject);
 
+    Project importProject(final ExampleProject exampleProject);
+
     List<OrganizationalUnit> getOrganizationalUnits();
+
 }

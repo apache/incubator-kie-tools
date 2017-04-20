@@ -32,4 +32,22 @@ public class ExampleTargetRepository {
         return alias;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ExampleTargetRepository that = (ExampleTargetRepository) o;
+
+        return alias.equals(that.alias);
+    }
+
+    @Override
+    public int hashCode() {
+        return alias.hashCode();
+    }
 }

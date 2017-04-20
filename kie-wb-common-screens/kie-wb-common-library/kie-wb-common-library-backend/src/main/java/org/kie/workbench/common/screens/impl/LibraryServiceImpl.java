@@ -233,6 +233,12 @@ public class LibraryServiceImpl implements LibraryService {
     }
 
     @Override
+    public Project importProject(final ExampleProject exampleProject) {
+        final OrganizationalUnit ou = getDefaultOrganizationalUnit();
+        return importProject(ou, getDefaultRepository(ou), "master", exampleProject);
+    }
+
+    @Override
     public Project importProject(final OrganizationalUnit organizationalUnit,
                                  final Repository repository,
                                  final String branch,
