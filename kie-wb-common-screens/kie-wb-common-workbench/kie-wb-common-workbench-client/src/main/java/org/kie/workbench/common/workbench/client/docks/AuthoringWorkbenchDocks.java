@@ -228,10 +228,15 @@ public class AuthoringWorkbenchDocks {
     }
 
     public void projectExplorerExpandedEvent(@Observes final UberfireDocksInteractionEvent uberfireDocksInteractionEvent) {
-        if (uberfireDocksInteractionEvent.getTargetDock().equals(projectExplorerDock)) {
-            if (uberfireDocksInteractionEvent.getType().equals(UberfireDocksInteractionEvent.InteractionType.SELECTED)) {
+        final UberfireDock targetDock = uberfireDocksInteractionEvent.getTargetDock();
+        if (targetDock == null) {
+            return;
+        }
+        if (targetDock.equals(projectExplorerDock)) {
+            final UberfireDocksInteractionEvent.InteractionType interactionType = uberfireDocksInteractionEvent.getType();
+            if (interactionType.equals(UberfireDocksInteractionEvent.InteractionType.SELECTED)) {
                 setProjectExplorerExpandedPreference(true);
-            } else if (uberfireDocksInteractionEvent.getType().equals(UberfireDocksInteractionEvent.InteractionType.DESELECTED)) {
+            } else if (interactionType.equals(UberfireDocksInteractionEvent.InteractionType.DESELECTED)) {
                 setProjectExplorerExpandedPreference(false);
             }
         }

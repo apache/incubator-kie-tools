@@ -336,9 +336,26 @@ public class AuthoringWorkbenchDocksTest {
                never()).setProjectExplorerExpandedPreference(anyBoolean());
     }
 
+    @Test
+    public void projectExplorerExpandedEvent_WithNullTargetDock() {
+        final UberfireDocksInteractionEvent uberfireDocksInteractionEvent = createUberfireDocksInteractionEvent(UberfireDockPosition.WEST,
+                                                                                                                UberfireDocksInteractionEvent.InteractionType.RESIZED);
+
+        authoringDocks.projectExplorerExpandedEvent(uberfireDocksInteractionEvent);
+
+        verify(authoringDocks,
+               never()).setProjectExplorerExpandedPreference(anyBoolean());
+    }
+
     private UberfireDocksInteractionEvent createUberfireDocksInteractionEvent(final UberfireDock uberfireDock,
                                                                               final UberfireDocksInteractionEvent.InteractionType interactionType) {
         return new UberfireDocksInteractionEvent(uberfireDock,
+                                                 interactionType);
+    }
+
+    private UberfireDocksInteractionEvent createUberfireDocksInteractionEvent(final UberfireDockPosition position,
+                                                                              final UberfireDocksInteractionEvent.InteractionType interactionType) {
+        return new UberfireDocksInteractionEvent(position,
                                                  interactionType);
     }
 }
