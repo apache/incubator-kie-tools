@@ -61,9 +61,6 @@ public class DroolsWorkbenchEntryPointTest {
     private PlaceManager placeManager;
 
     @Mock
-    private SyncBeanManager iocManager;
-
-    @Mock
     private DefaultWorkbenchFeaturesMenusHelper menusHelper;
 
     @Mock
@@ -86,14 +83,12 @@ public class DroolsWorkbenchEntryPointTest {
                                                                       pmasCallerMock,
                                                                       activityBeansCache,
                                                                       placeManager,
-                                                                      iocManager,
                                                                       menusHelper,
                                                                       menuBar,
                                                                       adminPage,
                                                                       adminPageHelper));
         mockMenuHelper();
         mockConstants();
-        IocTestingUtils.mockIocManager(iocManager);
     }
 
     @Test

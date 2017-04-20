@@ -22,7 +22,6 @@ import org.drools.workbench.client.resources.i18n.AppConstants;
 import org.guvnor.common.services.shared.config.AppConfigService;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
 import org.kie.workbench.common.services.shared.service.PlaceManagerActivityService;
 import org.kie.workbench.common.workbench.client.admin.DefaultAdminPageHelper;
 import org.kie.workbench.common.workbench.client.entrypoint.DefaultWorkbenchEntryPoint;
@@ -43,8 +42,6 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
 
     protected PlaceManager placeManager;
 
-    protected SyncBeanManager iocManager;
-
     protected DefaultWorkbenchFeaturesMenusHelper menusHelper;
 
     protected WorkbenchMenuBarPresenter menuBar;
@@ -58,7 +55,6 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
                                      final Caller<PlaceManagerActivityService> pmas,
                                      final ActivityBeansCache activityBeansCache,
                                      final PlaceManager placeManager,
-                                     final SyncBeanManager iocManager,
                                      final DefaultWorkbenchFeaturesMenusHelper menusHelper,
                                      final WorkbenchMenuBarPresenter menuBar,
                                      final AdminPage adminPage,
@@ -67,7 +63,6 @@ public class DroolsWorkbenchEntryPoint extends DefaultWorkbenchEntryPoint {
               pmas,
               activityBeansCache);
         this.placeManager = placeManager;
-        this.iocManager = iocManager;
         this.menusHelper = menusHelper;
         this.menuBar = menuBar;
         this.adminPage = adminPage;

@@ -61,10 +61,9 @@ public class HomeProducer {
         final SectionEntry s1 = ModelUtils.makeSectionEntry( "Discover and Author:" );
 
         final DefaultPlaceRequest libraryPlaceRequest = new DefaultPlaceRequest( LIBRARY );
-        final PlaceRequest authoringPlaceRequest = new ConditionalPlaceRequest( AUTHORING ).when( p -> libraryMonitor.thereIsAtLeastOneProjectAccessible() ).orElse( libraryPlaceRequest );
         s1.addChild( ModelUtils.makeSectionEntry( "Author",
-                () -> placeManager.goTo( authoringPlaceRequest ),
-                AUTHORING, PERSPECTIVE ) );
+                () -> placeManager.goTo( libraryPlaceRequest ),
+                LIBRARY, PERSPECTIVE ) );
 
         model.addSection( s1 );
 
