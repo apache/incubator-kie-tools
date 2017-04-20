@@ -40,10 +40,6 @@ public interface FieldDefinition {
 
     void setReadOnly(Boolean readOnly);
 
-    boolean isAnnotatedId();
-
-    void setAnnotatedId(boolean annotatedId);
-
     String getBinding();
 
     void setBinding(String binding);

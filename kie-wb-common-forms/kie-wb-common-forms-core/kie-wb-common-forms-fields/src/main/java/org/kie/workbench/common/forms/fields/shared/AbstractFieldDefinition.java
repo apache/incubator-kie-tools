@@ -28,9 +28,6 @@ public abstract class AbstractFieldDefinition implements FieldDefinition {
     public static final String ID_PREFFIX = "field" + FieldManager.FIELD_NAME_SEPARATOR;
 
     @SkipFormField
-    protected boolean annotatedId;
-
-    @SkipFormField
     private String id;
 
     @SkipFormField
@@ -118,16 +115,6 @@ public abstract class AbstractFieldDefinition implements FieldDefinition {
     }
 
     @Override
-    public boolean isAnnotatedId() {
-        return annotatedId;
-    }
-
-    @Override
-    public void setAnnotatedId(boolean annotatedId) {
-        this.annotatedId = annotatedId;
-    }
-
-    @Override
     public String getBinding() {
         return binding;
     }
@@ -167,11 +154,6 @@ public abstract class AbstractFieldDefinition implements FieldDefinition {
             return;
         }
         setLabel(other.getLabel());
-
-        setAnnotatedId(other.isAnnotatedId());
-        if (!other.isAnnotatedId()) {
-            setReadOnly(other.getReadOnly());
-        }
 
         setStandaloneClassName(other.getStandaloneClassName());
         setBinding(other.getBinding());

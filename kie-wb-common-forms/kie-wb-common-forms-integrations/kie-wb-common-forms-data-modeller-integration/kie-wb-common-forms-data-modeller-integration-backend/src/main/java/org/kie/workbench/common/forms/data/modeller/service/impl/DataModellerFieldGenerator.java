@@ -18,6 +18,7 @@ package org.kie.workbench.common.forms.data.modeller.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -30,9 +31,14 @@ import org.kie.workbench.common.services.datamodeller.core.Annotation;
 import org.kie.workbench.common.services.datamodeller.core.DataObject;
 import org.kie.workbench.common.services.datamodeller.core.ObjectProperty;
 
+@Dependent
 public class DataModellerFieldGenerator {
 
-    public static final String[] RESTRICTED_PROPERTY_NAMES = new String[]{"serialVersionUID"};
+    public static final String SERIAL_VERSION_UID = "serialVersionUID";
+    public static final String[] RESTRICTED_PROPERTY_NAMES = new String[]{SERIAL_VERSION_UID};
+
+    public static final String PERSISTENCE_ANNOTATION = "javax.persistence.Id";
+    public static final String[] RESTRICTED_ANNOTATIONS = new String[]{PERSISTENCE_ANNOTATION};
 
     private FieldManager fieldManager;
 
@@ -51,12 +57,25 @@ public class DataModellerFieldGenerator {
                     continue;
                 }
 
+                if (hasRestrictedAnnotation(property)) {
+                    continue;
+                }
+
                 FieldDefinition field = createFieldDefinition(holderName,
                                                               property);
                 result.add(field);
             }
         }
         return result;
+    }
+
+    protected boolean hasRestrictedAnnotation(ObjectProperty property) {
+        for (String annotation : RESTRICTED_ANNOTATIONS) {
+            if (property.getAnnotation(annotation) != null) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public FieldDefinition createFieldDefinition(String holderName,
@@ -77,10 +96,6 @@ public class DataModellerFieldGenerator {
         if (field == null) {
             return null;
         }
-
-        // TODO: improve this
-        field.setAnnotatedId(property.getAnnotation("javax.persistence.Id") != null);
-        field.setReadOnly(field.isAnnotatedId());
 
         field.setName(propertyName);
         String label = getPropertyLabel(property);
